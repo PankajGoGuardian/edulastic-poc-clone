@@ -15,6 +15,7 @@ export const MathInputStyles = styled.div`
     padding-right: 40px;
     position: relative;
     border-radius: 5px;
+    background: #fff;
     border: 1px solid ${props => props.theme.common.mathInputMathBorderColor};
     padding: 15px 25px;
 

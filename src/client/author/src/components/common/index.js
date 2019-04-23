@@ -10,3 +10,4 @@ export { default as SecondHeadBar } from "./SecondHeadBar";
 export { default as Container } from "./Container";
 export { default as Title } from "./Title";
 export { default as Back } from "./Back";
+export { default as ButtonAction } from "./ButtonAction";

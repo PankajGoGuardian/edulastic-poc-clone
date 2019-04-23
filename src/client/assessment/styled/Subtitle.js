@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { desktopWidth } from "@edulastic/colors";
 
 export const Subtitle = styled.div`
   font-size: ${({ fontSize, theme }) => fontSize || theme.common.subtitleFontSize};
@@ -6,11 +7,17 @@ export const Subtitle = styled.div`
   font-style: ${props => props.theme.common.subtitleFontStyle};
   font-stretch: ${props => props.theme.common.subtitleFontStretch};
   line-height: 1.36;
-  letter-spacing: 0.3px;
+  letter-spacing: 0;
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
-  padding: ${({ padding }) => padding || "30px 0 16px 0"};
+  padding: 0;
+  margin-bottom: 29px;
+
   @media screen {
-    padding: 16px 0 16px 0;
+    padding: 0;
+  }
+
+  @media (max-width: ${desktopWidth}) {
+    margin-bottom: 20px;
   }
 `;

@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { textColor, blue, mobileWidth, greenDark, mainBgColor } from "@edulastic/colors";
+import { newBlue, white, mobileWidth, greenDark } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
-const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange, data_cy }) => {
+const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange, data_cy, type }) => {
   const inputTab = (
     <EditableTab onClick={onClick}>
       <Input type="text" value={label} onChange={onChange} />
@@ -13,7 +13,7 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
   );
   const closeButton = (
     <CloseIcon>
-      <IconClose color={blue} width={10} height={10} onClick={onClose} />
+      <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
   );
   const labelBar = (
@@ -22,7 +22,7 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
     </span>
   );
   return (
-    <Container active={active} style={style}>
+    <Container active={active} style={style} type={type}>
       {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
@@ -38,7 +38,8 @@ Tab.propTypes = {
   close: PropTypes.bool,
   onChange: PropTypes.func,
   onClose: PropTypes.func,
-  data_cy: PropTypes.string
+  data_cy: PropTypes.string,
+  type: PropTypes.string
 };
 
 Tab.defaultProps = {
@@ -51,17 +52,29 @@ Tab.defaultProps = {
   onClose: evt => {
     evt.stopPropagation();
   },
-  data_cy: ""
+  data_cy: "",
+  type: "default"
 };
 
 export default Tab;
 
 const Container = styled.div`
-  color: ${({ active }) => (active ? blue : textColor)};
-  padding: 10px 25px;
+  color: ${({ active }) => (active ? white : "#7C848E")};
+  padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  border-bottom: 2px solid ${({ active }) => (active ? blue : mainBgColor)};
+  background: ${({ active }) => (active ? newBlue : white)};
+  height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
+  line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
+  min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
+  text-align: center;
+  border-radius: 4px;
 
+  span {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: ${({ active }) => (active ? white : "#7C848E")};
+  }
   @media (max-width: ${mobileWidth}) {
     width: 50%;
     margin-bottom: 10px;
@@ -82,5 +95,5 @@ const EditableTab = styled.div`
 `;
 
 const CloseIcon = styled.span`
-  margin-left: 10px;
+  margin-left: 14px;
 `;

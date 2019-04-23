@@ -1,4 +1,4 @@
-import { blue, darkBlue, darkBlueSecondary, mobileWidth, white } from "@edulastic/colors";
+import { blue, darkBlue, newBlue, darkBlueSecondary, mobileWidth, white, desktopWidth } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -22,7 +22,7 @@ export const Container = styled(HeaderWrapper)`
 export const ExtraFlex = styled(FlexContainer)`
   @media (max-width: ${mobileWidth}) {
     flex-direction: column;
-    margin-top: 20px;
+    max-width: 100%;
   }
 `;
 
@@ -30,8 +30,11 @@ export const LeftSide = styled.div`
   display: flex;
   align-items: center;
   @media (max-width: ${mobileWidth}) {
-    padding-bottom: 15px;
-    padding-top: 8px;
+    padding-bottom: 0;
+    padding-top: 0;
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
   }
 `;
 
@@ -39,6 +42,92 @@ export const RightSide = styled.div`
   text-align: right;
   flex: 1;
   position: relative;
+
+  @media (max-width: ${mobileWidth}) {
+    position: static;
+    width: 100vw;
+    height: 40px;
+    max-height: 40px;
+    margin-top: auto;
+    background: ${newBlue};
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0 25px;
+    display: flex;
+
+    &:after {
+      content: "";
+      display: inline-block;
+      width: 25px;
+      height: 40px;
+    }
+
+    > div > div {
+      justify-content: initial;
+    }
+
+    .btn {
+      &-edit,
+      &-preview,
+      &-source,
+      &-settings {
+        height: 40px;
+        width: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        background: #277df1;
+        font-size: 11px;
+        text-transform: uppercase;
+        color: #bed8fa;
+        margin-right: 10px;
+        transition: all 0.3s ease;
+
+        svg {
+          fill: #bed8fa;
+          transition: all 0.3s ease;
+        }
+
+        &:last-child {
+          margin-right: 25px;
+        }
+
+        &:hover {
+          background: #277df1;
+        }
+
+        &.active {
+          background: #5196f3;
+          color: #fff;
+
+          svg {
+            fill: #fff;
+          }
+        }
+      }
+      &-save {
+        font-size: 0;
+        position: absolute;
+        top: 11px;
+        right: 26px;
+        background: #ffffff;
+        border-radius: 4px;
+        height: 40px;
+        width: 45px;
+        padding: 0;
+
+        > div {
+          margin-right: 0;
+        }
+        svg {
+          width: 20px;
+          height: 20px;
+          fill: ${newBlue};
+        }
+      }
+    }
+  }
 `;
 
 export const Title = styled.div`
@@ -47,8 +136,12 @@ export const Title = styled.div`
   font-weight: 700;
   line-height: 1.36;
   color: ${white};
+
   @media (max-width: ${mobileWidth}) {
-    font-size: 18px;
+    font-size: 22px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 `;
 
@@ -57,6 +150,12 @@ export const ToggleButton = styled.div`
   font-size: 18px;
   margin-right: 10px;
   cursor: pointer;
+  display: none;
+
+  @media (max-width: ${desktopWidth}) {
+    display: block;
+    margin-right: 26px;
+  }
 `;
 
 export const Back = styled(Link)`
@@ -73,5 +172,11 @@ export const Back = styled(Link)`
 
 export const TitleNav = styled.div`
   display: flex;
-  width: 200px;
+  width: auto;
+  min-width: 200px;
+
+  @media (max-width: ${desktopWidth}) {
+    min-width: 0;
+    max-width: calc(100vw - 150px);
+  }
 `;

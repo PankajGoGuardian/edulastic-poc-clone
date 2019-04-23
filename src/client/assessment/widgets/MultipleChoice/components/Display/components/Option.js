@@ -24,7 +24,8 @@ const Option = props => {
     uiStyle,
     correct = [],
     checkAnswer,
-    validation
+    validation,
+    styleType
   } = props;
   const [className, setClassName] = useState("");
   const isSelected = userSelections.includes(item.value);
@@ -86,7 +87,7 @@ const Option = props => {
   };
 
   const container = (
-    <CheckboxContainer smallSize={smallSize}>
+    <CheckboxContainer smallSize={smallSize} styleType={styleType}>
       <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
       <span
         style={{
@@ -106,7 +107,7 @@ const Option = props => {
       case "radioBelow":
         return (
           <FlexContainer flexDirection="column" justifyContent="center">
-            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} style={{ marginBottom: 10 }}>
+            <MultiChoiceContent fontSize={fontSize} smallSize={smallSize} style={{ marginBottom: 17 }}>
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item.label }} />
             </MultiChoiceContent>
             {container}
@@ -139,7 +140,7 @@ const Option = props => {
   return (
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
-    <Label smallSize={smallSize} className={className} showAnswer>
+    <Label smallSize={smallSize} className={className} showAnswer styleType={styleType}>
       <PaddingDiv top={0} bottom={0}>
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}
@@ -163,13 +164,15 @@ Option.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   validation: PropTypes.any.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  correct: PropTypes.any.isRequired
+  correct: PropTypes.any.isRequired,
+  styleType: PropTypes.string
 };
 
 Option.defaultProps = {
   showAnswer: false,
   smallSize: false,
-  userSelections: []
+  userSelections: [],
+  styleType: "default"
 };
 
 export default React.memo(Option);

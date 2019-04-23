@@ -7,7 +7,7 @@ export const themes = {
       addNewChoiceButtonFontStyle: "normal",
       addNewChoiceButtonFontStretch: "normal",
       addNewChoiceButtonBorderColor: "#12a6e8",
-      addNewChoiceButtonColor: "#00b0ff",
+      addNewChoiceButtonColor: "#fff",
       addNewChoiceButtonBgHoverColor: "#00b0ff",
       addNewChoiceButtonHoverColor: "#ffffff",
       addNewChoiceButtonBgActiveColor: "#59c7f9",
@@ -28,11 +28,11 @@ export const themes = {
       questionHeaderFontSize: "16px",
       questionHeaderSmallFontSize: "13px",
       questionHeaderColor: "#444444",
-      subtitleFontSize: "14px",
-      subtitleFontWeight: "600",
+      subtitleFontSize: "20px",
+      subtitleFontWeight: "700",
       subtitleFontStyle: "normal",
       subtitleFontStretch: "normal",
-      subtitleColor: "#4aac8b", // greenDark
+      subtitleColor: "#434B5D", // greenDark
       toolbarBgColor: "#f3f3f3", // mainBgColor
       toolbarBorderColor: "#e6e6e6", // dashBorderColor
       triangleBorderLeftColor: "transparent",
@@ -110,7 +110,7 @@ export const themes = {
       itemFontWeight: "700"
     },
     sortableList: {
-      iconTrashColor: "#4aac8b", // greenDark
+      iconTrashColor: "#1774F0", // greenDark
       iconTrashHoverColor: "#ee1658", // red
       iconTrashWrapperBgHoverColor: "#f9f9f9", // lightGrey
       itemContainerBorderColor: "#dfdfdf",

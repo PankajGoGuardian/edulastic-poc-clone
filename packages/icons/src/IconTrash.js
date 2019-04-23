@@ -1,15 +1,15 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React from "react";
 
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import withIconStyles from "./HOC/withIconStyles";
+import SVG from "./common/SVG";
 
 const IconTrash = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14.397 15.702" {...props}>
-    <g>
-      <path d="M50.62.522V0h-4.28v.522h-5.058v2.112h14.4V.522z" transform="translate(-41.282)" />
+  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 11.729 15.702" {...props}>
+    <g transform="translate(0)">
+      <path d="M48.889.522V0H45.4V.522h-4.12V2.634H53.01V.522Z" transform="translate(-41.282)" />
       <path
-        d="M57.714 80.756h11.273l.81-12.412H56.9zm6.919-9.511h1.4v6.325h-1.4zm-3.96 0h1.4v6.325h-1.4z"
+        d="M57.546,80.756h8.939l.642-12.412H56.9Zm5.486-9.511h1.107V77.57H63.032Zm-3.14,0H61V77.57H59.892Z"
         transform="translate(-56.152 -65.054)"
       />
     </g>

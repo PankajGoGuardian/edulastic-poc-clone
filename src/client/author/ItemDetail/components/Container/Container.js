@@ -33,7 +33,7 @@ import { getQuestionsSelector } from "../../../sharedDucks/questions";
 import { Content, ItemDetailWrapper, PreviewContent, ButtonClose } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
-import { ButtonBar, SecondHeadBar } from "../../../src/components/common";
+import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
@@ -57,18 +57,21 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, modalItemId } = this.props;
+    const { getItemDetailById, match, modalItemId, setRedirectTest } = this.props;
     getItemDetailById(modalItemId || match.params.id, { data: true, validation: true });
+
     if (match.params.testId) {
-      this.props.setRedirectTest(match.params.testId);
+      setRedirectTest(match.params.testId);
     }
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
+  componentDidUpdate(prevProps) {
+    const { getItemDetailById, match } = this.props;
     const oldId = prevProps.match.params.id;
-    const newId = this.props.match.params.id;
+    const newId = match.params.id;
+
     if (oldId !== newId) {
-      this.props.getItemDetailById(newId, { data: true, validation: true });
+      getItemDetailById(newId, { data: true, validation: true });
     }
   }
 
@@ -134,11 +137,10 @@ class Container extends Component {
     this.setState({ showModal: true });
   };
 
-  handleShowSettings = () => {
+  handleShowSettings = () =>
     this.setState({
       showSettings: true
     });
-  };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
     const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
@@ -251,8 +253,8 @@ class Container extends Component {
   };
 
   renderPreview = () => {
-    const { rows, preview, questions } = this.props;
-    const item = this.props.item || {};
+    const { rows, preview, questions, item: itemProps } = this.props;
+    const item = itemProps || {};
     return (
       <PreviewContent>
         <TestItemPreview
@@ -273,6 +275,35 @@ class Container extends Component {
       <TestItemMetadata />
     </Content>
   );
+
+  renderButtons = () => {
+    const { item, updating, testItemStatus, changePreview } = this.props;
+
+    const { previewTab, view, enableEdit } = this.state;
+
+    let showPublishButton = false;
+
+    if (item) {
+      const { _id: testItemId } = item;
+      showPublishButton =
+        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+    }
+
+    return (
+      <ButtonAction
+        onShowSource={this.handleShowSource}
+        onShowSettings={this.handleShowSettings}
+        onChangeView={this.handleChangeView}
+        changePreview={changePreview}
+        changePreviewTab={this.handleChangePreviewTab}
+        onSave={this.handleSave}
+        saving={updating}
+        view={view}
+        previewTab={previewTab}
+        showPublishButton={showPublishButton}
+      />
+    );
+  };
 
   render() {
     const { showModal, showSettings, view, previewTab, enableEdit, hasAuthorPermission } = this.state;
@@ -348,23 +379,10 @@ class Container extends Component {
                 </ButtonClose>
               )
             }
+            renderRightSide={this.renderButtons}
           />
         </ItemHeader>
-        {windowWidth > MAX_MOBILE_WIDTH && (
-          <SecondHeadBar
-            onShowSource={this.handleShowSource}
-            onShowSettings={this.handleShowSettings}
-            onChangeView={this.handleChangeView}
-            changePreview={changePreview}
-            changePreviewTab={this.handleChangePreviewTab}
-            onSave={this.handleSave}
-            saving={updating}
-            view={view}
-            previewTab={previewTab}
-            itemStatus={item && item.status}
-            showPublishButton={showPublishButton}
-          />
-        )}
+        {windowWidth > MAX_MOBILE_WIDTH && <SecondHeadBar />}
         {view === "edit" && (
           <ItemDetailWrapper>
             {loading && <Progress />}
@@ -416,6 +434,8 @@ Container.propTypes = {
   questions: PropTypes.func.isRequired,
   changeView: PropTypes.func.isRequired,
   testItemStatus: PropTypes.string.isRequired,
+  setRedirectTest: PropTypes.func,
+  publishTestItem: PropTypes.func,
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
   navigateToPickupQuestionType: PropTypes.func
@@ -423,6 +443,9 @@ Container.propTypes = {
 
 Container.defaultProps = {
   rows: [],
+  setRedirectTest: () => {},
+  publishTestItem: () => {},
+  item: {},
   modalItemId: undefined,
   onModalClose: () => {},
   navigateToPickupQuestionType: () => {}

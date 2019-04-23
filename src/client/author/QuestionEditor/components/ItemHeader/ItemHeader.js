@@ -3,24 +3,12 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { IconChevronLeft, IconPencilEdit } from "@edulastic/icons";
 import { FlexContainer, TextField } from "@edulastic/common";
-import {
-  greenDark,
-  white
-} from "@edulastic/colors";
-import {
-  Container,
-  Title,
-  RightSide,
-  LeftSide,
-  Back,
-  ExtraFlex,
-  TitleNav,
-  ToggleButton
-} from "./styled";
+import { greenDark, white } from "@edulastic/colors";
+import { Container, Title, RightSide, LeftSide, Back, ExtraFlex, TitleNav, ToggleButton } from "./styled";
 import { toggleSideBarAction } from "../../../src/actions/togglemenu";
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon, toggleSideBar }) => (
-  <Container>
+  <Container type="questionEditing">
     <ExtraFlex alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
         <ToggleButton onClick={toggleSideBar}>

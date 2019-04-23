@@ -24,7 +24,7 @@ export const PreviewContent = styled(Content)`
 
 export const ItemDetailWrapper = styled.div`
   display: flex;
-  padding: 0px 40px;
+  padding: 0px 40px 40px;
   flex-wrap: nowrap;
   width: 100%;
 

@@ -23,7 +23,7 @@ const QuillSortableItem = SortableElement(
             onChange={onChange}
             showResponseBtn={false}
             value={value}
-            style={{ minHeight: "auto", padding: 10 }}
+            style={{ minHeight: "auto", padding: "0px 10px" }}
           />
         </div>
         {onRemove && <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />}

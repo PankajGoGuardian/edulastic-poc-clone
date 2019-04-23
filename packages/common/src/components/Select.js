@@ -1,12 +1,7 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import styled from 'styled-components';
-import {
-  white,
-  grey,
-  blue,
-  secondaryTextColor
-} from '@edulastic/colors';
+import PropTypes from "prop-types";
+import React from "react";
+import styled from "styled-components";
+import { white, grey, blue, secondaryTextColor } from "@edulastic/colors";
 
 const Select = ({ onChange, options, value, style, arrowColor }) => (
   <SelectContainer style={style} arrowColor={arrowColor}>
@@ -30,12 +25,12 @@ Select.propTypes = {
   onChange: PropTypes.func.isRequired,
   options: PropTypes.array.isRequired,
   style: PropTypes.object,
-  arrowColor: PropTypes.string,
+  arrowColor: PropTypes.string
 };
 
 Select.defaultProps = {
   style: {},
-  arrowColor: blue,
+  arrowColor: blue
 };
 
 export default Select;
@@ -45,13 +40,13 @@ const Main = styled.select`
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  border-radius: ${props => (props.borderRadius ? props.borderRadius : '4px')};
+  border-radius: ${props => (props.borderRadius ? props.borderRadius : "4px")};
   background-color: ${white};
   color: ${secondaryTextColor};
   font-size: 13px;
   font-weight: 600;
   line-height: 1.38;
-  border: 1px solid ${grey};
+  border: 1px solid #e1e1e1;
   -webkit-appearance: none;
   outline: 0;
 `;
@@ -63,14 +58,14 @@ const SelectContainer = styled.div`
   min-height: 40px;
   &:before {
     position: absolute;
-    font-family: 'FontAwesome';
+    font-family: "FontAwesome";
     top: 0;
     right: 25px;
     display: flex;
     align-items: center;
     height: 100%;
     color: ${props => props.arrowColor};
-    content: '\f0d7';
+    content: "\f0d7";
   }
   @media (max-width: 760px) {
     height: 52px;

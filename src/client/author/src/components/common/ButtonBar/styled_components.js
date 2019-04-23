@@ -119,12 +119,17 @@ export const RightSide = styled.div`
   align-item: center;
 
   .ant-btn {
-    width: 86px;
+    width: 137px;
+    height: 45px;
     background: #fff;
     margin-left: 10px;
 
     span {
       color: ${newBlue};
+      margin-left: 12px;
+      margin-right: 31px;
+      font-size: 11px;
+      text-transform: uppercase;
     }
   }
 `;

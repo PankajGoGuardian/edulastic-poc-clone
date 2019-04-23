@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { grey, mainBlueColor, newBlue } from "@edulastic/colors";
+import { white, mainBlueColor, newBlue } from "@edulastic/colors";
 
 class TextField extends Component {
   state = {
@@ -79,7 +79,7 @@ const Icon = styled.span`
 `;
 
 const Field = styled.input`
-  border: 1px solid ${props => (props.referenceEditable ? mainBlueColor : grey)};
+  border: 1px solid ${props => (props.referenceEditable ? mainBlueColor : "#E1E1E1")};
   border-radius: 4px;
   min-height: 100%;
   width: 100%;

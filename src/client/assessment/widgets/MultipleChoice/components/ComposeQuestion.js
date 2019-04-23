@@ -1,39 +1,46 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
-import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
+import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
-
-import { ALPHABET } from "../constants/alphabet";
-import QuillSortableList from "../../../components/QuillSortableList";
 import { updateVariables } from "../../../utils/variables";
-import ComposeQuestion from "./ComposeQuestion";
-import MultipleChoiceOptions from "./MultipleChoiceOptions";
 
-class Authoring extends Component {
+class ComposeQuestion extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
+    cleanSections: PropTypes.func,
+    setQuestionData: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
   };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.multiplechoice.composequestion"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -102,51 +109,19 @@ class Authoring extends Component {
     );
   };
 
-  addNewChoiceBtn = () => {
-    const { item, setQuestionData, t } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.options.push({
-          value: uuid(),
-          label: `${t("component.multiplechoice.choice")} ${ALPHABET[draft.options.length]}`
-        });
-      })
-    );
-  };
-
-  editOptions = (index, value) => {
-    const { item, setQuestionData } = this.props;
-    setQuestionData(
-      produce(item, draft => {
-        draft.options[index] = {
-          value: index,
-          label: value
-        };
-        updateVariables(draft);
-      })
-    );
-  };
-
   render() {
-    const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
+    const { t, item } = this.props;
 
     return (
-      <div>
-        <PaddingDiv bottom={0}>
-          <ComposeQuestion
-            item={item}
-            fillSections={fillSections}
-            setQuestionData={setQuestionData}
-            cleanSections={cleanSections}
-          />
-          <MultipleChoiceOptions
-            item={item}
-            fillSections={fillSections}
-            setQuestionData={setQuestionData}
-            cleanSections={cleanSections}
-          />
-        </PaddingDiv>
-      </div>
+      <Widget questionTextArea>
+        <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
+        <QuestionTextArea
+          onChange={this.onChangeQuestion}
+          value={item.stimulus}
+          firstFocus={item.firstMount}
+          placeholder={t("component.multiplechoice.thisisstem")}
+        />
+      </Widget>
     );
   }
 }
@@ -160,4 +135,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(Authoring);
+export default enhance(ComposeQuestion);

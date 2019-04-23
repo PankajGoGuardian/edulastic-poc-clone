@@ -45,6 +45,9 @@ export const CartButtonWrapper = styled(Button)`
     width: 45px;
     border-radius: 3px;
     background-size: 40%;
+    font-size: 0;
+    background-position: center;
+    padding: 0;
   }
 `;
 

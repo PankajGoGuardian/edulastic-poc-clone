@@ -1,14 +1,17 @@
 import styled from "styled-components";
+import { newBlue } from "@edulastic/colors";
 
 export const AddNewChoiceBtn = styled.a`
-  width: 227px;
+  width: 220px;
   height: 40px;
   border-radius: 4px;
-  border: solid 1px ${props => props.theme.common.addNewChoiceButtonBorderColor};
+  border: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  margin-top: 14px;
+  background: ${newBlue};
 
   font-family: '${props => props.theme.common.addNewChoiceButtonFontFamily}';
   text-transform: uppercase;

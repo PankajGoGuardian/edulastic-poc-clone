@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -8,7 +9,6 @@ import produce from "immer";
 import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
@@ -18,10 +18,8 @@ import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 import { ALPHABET } from "../constants/alphabet";
 import QuillSortableList from "../../../components/QuillSortableList";
 import { updateVariables } from "../../../utils/variables";
-import ComposeQuestion from "./ComposeQuestion";
-import MultipleChoiceOptions from "./MultipleChoiceOptions";
 
-class Authoring extends Component {
+class MultipleChoiceOptions extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
@@ -34,6 +32,19 @@ class Authoring extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.multiplechoice.multiplechoiceoptions"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -128,25 +139,25 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, setQuestionData, fillSections, cleanSections } = this.props;
+    const { t, item } = this.props;
 
     return (
-      <div>
-        <PaddingDiv bottom={0}>
-          <ComposeQuestion
-            item={item}
-            fillSections={fillSections}
-            setQuestionData={setQuestionData}
-            cleanSections={cleanSections}
-          />
-          <MultipleChoiceOptions
-            item={item}
-            fillSections={fillSections}
-            setQuestionData={setQuestionData}
-            cleanSections={cleanSections}
-          />
-        </PaddingDiv>
-      </div>
+      <Widget>
+        <Subtitle>{t("component.multiplechoice.multiplechoiceoptions")}</Subtitle>
+        <QuillSortableList
+          items={item.options.map(o => o.label)}
+          onSortEnd={this.onSortEnd}
+          useDragHandle
+          firstFocus={item.firstMount}
+          onRemove={this.remove}
+          onChange={this.editOptions}
+        />
+        <div>
+          <AddNewChoiceBtn data-cy="add-new-ch" onClick={this.addNewChoiceBtn}>
+            {t("component.multiplechoice.addnewchoice")}
+          </AddNewChoiceBtn>
+        </div>
+      </Widget>
     );
   }
 }
@@ -160,4 +171,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(Authoring);
+export default enhance(MultipleChoiceOptions);

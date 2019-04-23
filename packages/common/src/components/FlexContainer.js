@@ -5,6 +5,7 @@ const FlexContainer = styled.div`
   align-items: ${props => (props.alignItems ? props.alignItems : "center")};
   justify-content: ${props => (props.justifyContent ? props.justifyContent : "flex-start")};
   flex-direction: ${props => (props.flexDirection ? props.flexDirection : "row")};
+  height: 100%;
   /* margin-bottom: 15px; */
   & > * {
     margin-right: ${({ childMarginRight }) => (childMarginRight !== undefined ? childMarginRight : 10)}px;

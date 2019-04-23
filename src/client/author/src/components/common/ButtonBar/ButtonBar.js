@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Menu, Button } from "antd";
 import {
-  IconSave,
+  IconSaveNew,
   IconSource,
   IconPreview,
   IconSettings,
@@ -10,8 +10,7 @@ import {
   IconEye,
   IconCheck,
   IconEraseText,
-  IconMetadata,
-  IconSelected
+  IconMetadata
 } from "@edulastic/icons";
 import { white, newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
@@ -38,6 +37,7 @@ class ButtonBar extends Component {
       current: "edit"
     };
   }
+
   handleMenuClick = view => {
     const { onChangeView } = this.props;
     onChangeView(view);
@@ -66,26 +66,29 @@ class ButtonBar extends Component {
       view,
       hasAuthorPermission = true,
       itemStatus,
-      renderExtra
+      renderExtra,
+      renderRightSide,
+      withLabels
     } = this.props;
-
     return (
       <React.Fragment>
         {windowWidth > 468 ? (
           <Container>
-            <Menu mode="horizontal" selectedKeys={[current]} style={{ marginLeft: 80 }}>
-              {hasAuthorPermission && (
-                <MenuItem
-                  data-cy="editButton"
-                  className={current === "edit" && "active"}
-                  onClick={() => this.handleMenuClick("edit")}
-                >
-                  <HeadIcon>
-                    <IconSelected color={white} width={18} height={16} />
-                  </HeadIcon>
-                  Edit Mode
-                </MenuItem>
-              )}
+            <Menu
+              mode="horizontal"
+              selectedKeys={[current]}
+              style={{ marginLeft: 80, marginRight: 80, justifyContent: "center" }}
+            >
+              <MenuItem
+                data-cy="editButton"
+                className={current === "edit" && "active"}
+                onClick={() => this.handleMenuClick("edit")}
+              >
+                <HeadIcon>
+                  <IconPencilEdit color={white} width={18} height={16} />
+                </HeadIcon>
+                Edit Mode
+              </MenuItem>
               <MenuItem
                 data-cy="previewButton"
                 className={current === "preview" && "active"}
@@ -110,11 +113,12 @@ class ButtonBar extends Component {
 
             {hasAuthorPermission && (
               <RightSide>
+                {renderRightSide()}
                 {showPublishButton && itemStatus === "draft" && <Button onClick={onPublishTestItem}>Publish</Button>}
                 {(showPublishButton || showPublishButton === undefined) && (
                   <Button data-cy="saveButton" onClick={onSave}>
                     <HeadIcon>
-                      <IconSave color={newBlue} width={18} height={16} />
+                      <IconSaveNew color={newBlue} width={20.4} height={20.4} />
                     </HeadIcon>
                     Save
                   </Button>
@@ -132,30 +136,41 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileFirstContainer>
-              <Button onClick={() => this.optionHandler("edit")}>
+              <Button
+                onClick={() => this.optionHandler("edit")}
+                className={`btn-edit ${current === "edit" && "active"}`}
+              >
                 <HeadIcon>
                   <IconPencilEdit color={white} width={18} height={16} />
                 </HeadIcon>
+                {withLabels ? "Edit Mode" : ""}
               </Button>
-              <Button onClick={() => this.optionHandler("preview")}>
+              <Button
+                onClick={() => this.optionHandler("preview")}
+                className={`btn-preview ${current === "preview" && "active"}`}
+              >
                 <HeadIcon>
                   <IconPreview color={white} width={18} height={16} />
                 </HeadIcon>
+                {withLabels ? "Preview mode" : ""}
               </Button>
-              <Button data-cy="saveButton" onClick={onSave}>
+              <Button data-cy="saveButton" onClick={onSave} className="btn-save">
                 <HeadIcon>
-                  <IconSave color={white} width={18} height={16} />
+                  <IconSaveNew color={white} width={18} height={16} />
                 </HeadIcon>
+                {withLabels ? "Save" : ""}
               </Button>
-              <Button onClick={onShowSource}>
+              <Button onClick={onShowSource} className="btn-source">
                 <HeadIcon>
                   <IconSource color={white} width={18} height={16} />
                 </HeadIcon>
+                {withLabels ? "Source" : ""}
               </Button>
-              <Button onClick={onShowSettings}>
+              <Button onClick={onShowSettings} className="btn-settings">
                 <HeadIcon>
                   <IconSettings color={white} width={24} height={16} />
                 </HeadIcon>
+                {withLabels ? "Settings" : ""}
               </Button>
             </MobileFirstContainer>
             {current === "preview" && (
@@ -228,14 +243,20 @@ ButtonBar.propTypes = {
   onShowSettings: PropTypes.func,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  onEnableEdit: PropTypes.func.isRequired,
+  onEnableEdit: PropTypes.func,
   clearAnswers: PropTypes.func.isRequired,
-  renderExtra: PropTypes.func
+  renderExtra: PropTypes.func,
+  renderRightSide: PropTypes.func,
+  withLabels: PropTypes.bool
 };
 
 ButtonBar.defaultProps = {
   onShowSettings: () => {},
-  renderExtra: () => null
+  renderRightSide: () => {},
+  onEnableEdit: () => {},
+  renderExtra: () => null,
+  withLabels: false
+  // saving: false,
 };
 
 const enhance = compose(

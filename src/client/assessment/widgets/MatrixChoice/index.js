@@ -4,27 +4,34 @@ import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
-import { arrayMove } from "react-sortable-hoc";
 import { withRouter } from "react-router-dom";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { desktopWidth } from "@edulastic/colors";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
-import withAddButton from "../../components/HOC/withAddButton";
-import QuestionTextArea from "../../components/QuestionTextArea";
-import QuillSortableList from "../../components/QuillSortableList";
-import { Subtitle } from "../../styled/Subtitle";
-
 import Options from "./components/Options";
-import Answers from "./Answers";
 import Preview from "./components/Preview";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
+import ComposeQuestion from "./ComposeQuestion";
+import MultipleChoiceOptions from "./MultipleChoiceOptions";
+import Steams from "./Steams";
+import Answers from "./Answers";
+
 const EmptyWrapper = styled.div``;
-const List = withAddButton(QuillSortableList);
+
+const ContentArea = styled.div`
+  max-width: 76.7%;
+  margin-left: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 100%;
+  }
+`;
 
 const MatrixChoice = ({
   view,
@@ -36,97 +43,12 @@ const MatrixChoice = ({
   userAnswer,
   smallSize,
   checkAnswer,
-  t
+  fillSections,
+  cleanSections
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
-  const handleSortEndStems = ({ oldIndex, newIndex }) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.stems = arrayMove(item.stems, oldIndex, newIndex);
-      })
-    );
-  };
-
-  const handleRemoveStem = index => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.stems.splice(index, 1);
-      })
-    );
-  };
-
-  const handleAddStem = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.stems.push("");
-      })
-    );
-  };
-
-  const handleChangeStem = (index, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.stems[index] = value;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleChangeOption = (index, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.options[index] = value;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const reduceResponseValue = (val, index) => {
-    if (!val) return val;
-
-    val = val.filter(i => i !== index);
-    if (!val.length) {
-      return null;
-    }
-
-    return val;
-  };
-
-  const handleRemoveOption = index => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.options.splice(index, 1);
-        draft.validation.valid_response.value = draft.validation.valid_response.value.map(val =>
-          reduceResponseValue(val, index)
-        );
-
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.map(res => {
-            res.value = res.value.map(val => reduceResponseValue(val, index));
-            return res;
-          });
-        }
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleAddOption = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.options.push("");
-      })
-    );
-  };
-  const handleSortEndOptions = ({ oldIndex, newIndex }) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.options = arrayMove(item.options, oldIndex, newIndex);
-      })
-    );
-  };
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
@@ -162,39 +84,41 @@ const MatrixChoice = ({
   return (
     <Fragment>
       {view === "edit" && (
-        <Fragment>
-          <Paper style={{ marginBottom: 30 }}>
-            <QuestionTextArea
-              placeholder={t("component.matrix.enterQuestion")}
-              onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-              value={item.stimulus}
+        <ContentArea>
+          <Fragment>
+            <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
+              <ComposeQuestion
+                setQuestionData={setQuestionData}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              />
+              <MultipleChoiceOptions
+                item={item}
+                setQuestionData={setQuestionData}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              />
+              <Steams
+                item={item}
+                setQuestionData={setQuestionData}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              />
+              <Answers
+                item={item}
+                setQuestionData={setQuestionData}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              />
+            </Paper>
+            <Options
+              onChange={handleItemChangeChange}
+              uiStyle={item.ui_style}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
             />
-            <Subtitle>{t("component.matrix.multipleChoiceOptions")}</Subtitle>
-            <List
-              items={item.stems}
-              onSortEnd={handleSortEndStems}
-              useDragHandle
-              onRemove={handleRemoveStem}
-              onChange={handleChangeStem}
-              onAdd={handleAddStem}
-              columns={2}
-              prefix="list1"
-            />
-            <Subtitle>{t("component.matrix.steams")}</Subtitle>
-            <List
-              items={item.options}
-              onSortEnd={handleSortEndOptions}
-              useDragHandle
-              onRemove={handleRemoveOption}
-              onChange={handleChangeOption}
-              onAdd={handleAddOption}
-              columns={2}
-              prefix="list2"
-            />
-            <Answers item={item} setQuestionData={setQuestionData} />
-          </Paper>
-          <Options onChange={handleItemChangeChange} uiStyle={item.ui_style} />
-        </Fragment>
+          </Fragment>
+        </ContentArea>
       )}
       {view === "preview" && (
         <Wrapper>
@@ -247,7 +171,8 @@ MatrixChoice.propTypes = {
   previewTab: PropTypes.string,
   testItem: PropTypes.bool,
   item: PropTypes.object,
-  t: PropTypes.func.isRequired
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 MatrixChoice.defaultProps = {
@@ -255,7 +180,9 @@ MatrixChoice.defaultProps = {
   testItem: false,
   item: {},
   userAnswer: null,
-  smallSize: false
+  smallSize: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

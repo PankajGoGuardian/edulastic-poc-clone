@@ -105,6 +105,7 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
         top: getTopStyle(),
         opacity: active ? 1 : 0,
         zIndex: active ? 1000 : -1,
+        pointerEvents: active ? "all" : "none",
         maxWidth
       }}
       className="toolbars"
@@ -198,8 +199,10 @@ class CustomQuillComponent extends React.Component {
     readOnly: false,
     style: {
       minHeight: 134,
-      border: "1px solid rgb(223, 223, 223)",
-      padding: "18px 33px"
+      background: "#fff",
+      padding: "18px 23px",
+      border: `1px solid #E1E1E1`,
+      borderRadius: "4px"
     }
   };
 
@@ -384,7 +387,7 @@ class CustomQuillComponent extends React.Component {
           active={active && !readOnly}
           showResponseBtn={showResponseBtn}
           id={toolbarId}
-          maxWidth={style.width}
+          maxWidth={style.width ? style.width : "initial"}
         />
         <ReactQuill
           ref={el => (this.quillRef = el)}

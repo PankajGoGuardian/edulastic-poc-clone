@@ -5,36 +5,35 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 15px 40px;
-  min-height: 62px;
+  padding: 4px 45px;
+  min-height: 53px;
   position: ${props => props.position};
   z-index: ${props => props.zIndex};
   right: ${props => (props.showPublishButton ? "208px" : "101px")};
   top: 13px;
+
+  .ant-breadcrumb {
+    &-link,
+    &-separator {
+      font-size: 11px !important;
+      font-weight: 600 !important;
+      color: #69727e !important;
+      text-transform: uppercase !important;
+
+      a {
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        color: #69727e !important;
+        text-transform: uppercase !important;
+      }
+    }
+    &-separator {
+      margin: 0 10px !important;
+    }
+  }
+
   @media (max-width: ${mobileWidth}) {
     margin-top: 32px;
-  }
-`;
-
-export const PreviewBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-
-  .ant-btn {
-    background: transparent;
-    height: 32px;
-    padding: 0 11px;
-    margin-left: 17px;
-    border: 0;
-    background: #fff;
-    box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-
-    button {
-      padding: 0;
-      text-transform: initial;
-      font-size: 12px;
-    }
   }
 `;
 

@@ -8,11 +8,12 @@ import { withRouter } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
+import { desktopWidth } from "@edulastic/colors";
 
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
-import { ButtonBar, SecondHeadBar } from "../../../src/components/common";
+import { ButtonBar, SecondHeadBar, ButtonAction } from "../../../src/components/common";
 import QuestionWrapper from "../../../../assessment/components/QuestionWrapper";
 import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
@@ -21,6 +22,7 @@ import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
+import { BackLink } from "./styled";
 
 class Container extends Component {
   state = {
@@ -136,8 +138,28 @@ class Container extends Component {
     ];
   }
 
+  renderButtons = () => {
+    const { view, question } = this.props;
+    const { previewTab } = this.state;
+    const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
+
+    return (
+      <ButtonAction
+        onShowSource={this.handleShowSource}
+        onShowSettings={this.handleShowSettings}
+        onChangeView={this.handleChangeView}
+        changePreviewTab={this.handleChangePreviewTab}
+        onSave={this.handleSave}
+        view={view}
+        showCheckButton={checkAnswerButton}
+        allowedAttempts={checkAttempts}
+        previewTab={previewTab}
+      />
+    );
+  };
+
   render() {
-    const { view, question, history, modalItemId, onModalClose } = this.props;
+    const { view, question, history, modalItemId, onModalClose, windowWidth } = this.props;
 
     if (!question) {
       const backUrl = get(history, "location.state.backUrl", "");
@@ -153,7 +175,6 @@ class Container extends Component {
 
     const { previewTab, showModal } = this.state;
     const itemId = question === null ? "" : question._id;
-    const { checkAnswerButton = false, checkAttempts = 1 } = question.validation || {};
 
     return (
       <div>
@@ -170,6 +191,8 @@ class Container extends Component {
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
+            renderRightSide={this.renderButtons}
+            withLabels
             renderExtra={() =>
               modalItemId && (
                 <ButtonClose onClick={onModalClose}>
@@ -180,18 +203,11 @@ class Container extends Component {
           />
         </ItemHeader>
 
-        <SecondHeadBar
-          onShowSource={this.handleShowSource}
-          onShowSettings={this.handleShowSettings}
-          onChangeView={this.handleChangeView}
-          changePreviewTab={this.handleChangePreviewTab}
-          onSave={this.handleSave}
-          view={view}
-          showCheckButton={checkAnswerButton}
-          allowedAttempts={checkAttempts}
-          previewTab={previewTab}
-          breadcrumb={this.breadcrumb}
-        />
+        {windowWidth > desktopWidth.replace("px", "") ? (
+          <SecondHeadBar breadcrumb={this.breadcrumb} />
+        ) : (
+          <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+        )}
 
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
       </div>
@@ -214,7 +230,8 @@ Container.propTypes = {
   onModalClose: PropTypes.func,
   navigateToPickupQuestionType: PropTypes.func,
   navigateToItemDetail: PropTypes.func,
-  onCompleteItemCreation: PropTypes.func
+  onCompleteItemCreation: PropTypes.func,
+  windowWidth: PropTypes.number.isRequired
 };
 
 Container.defaultProps = {

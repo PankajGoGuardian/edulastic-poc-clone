@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
+import { newBlue, desktopWidth } from "@edulastic/colors";
 
 class QuestionMenu extends Component {
   state = {
@@ -95,7 +96,7 @@ class QuestionMenu extends Component {
     const { advancedAreOpen, activeTab } = this.state;
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
-        <MainOptions activeTab={activeTab} main={main}>
+        <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen}>
           {main &&
             main.map((option, index) => (
               <Option
@@ -109,8 +110,8 @@ class QuestionMenu extends Component {
         </MainOptions>
         {advanced.length > 0 && (
           <Fragment>
-            <AdvancedOptionsHeader onClick={this.handleAdvancedOpen}>
-              <p>HIDE ADVANCED OPTIONS</p>
+            <AdvancedOptionsHeader onClick={this.handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
+              <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
             </AdvancedOptionsHeader>
             {advancedAreOpen && (
               <AdvancedOptions>
@@ -134,9 +135,14 @@ class QuestionMenu extends Component {
 
 QuestionMenu.propTypes = {
   activeTab: PropTypes.number.isRequired,
-  main: PropTypes.shape.isRequired,
-  advanced: PropTypes.shape.isRequired,
+  main: PropTypes.shape,
+  advanced: PropTypes.shape,
   isSidebarCollapsed: PropTypes.bool.isRequired
+};
+
+QuestionMenu.defaultProps = {
+  main: [],
+  advanced: []
 };
 
 export default connect(({ authorUi }) => ({
@@ -148,61 +154,92 @@ const Menu = styled.div`
   left: ${props => (props.isSidebarCollapsed ? "185px" : "325px")};
   top: 150px;
   width: 280px;
-  padding: 40px 0;
+  padding: 56px 0 0 27px;
   margin-right: 40px;
+
+  @media (max-width: ${desktopWidth}) {
+    display: none;
+  }
 `;
 
 const MainOptions = styled.ul`
   position: relative;
   list-style: none;
-  padding: 7.5px 0;
-  border-left: 2px solid rgba(0, 0, 0, 0.09);
+  padding: 0;
+  border-left: 2px solid #b9d5fa;
 
   &::before {
-    opacity: ${props => (props.activeTab > props.main.length - 1 ? "0" : "1")};
-    width: 10px;
-    height: 10px;
+    opacity: ${props => (props.activeTab > props.main.length - 1 ? (props.advancedAreOpen ? 1 : 0) : 1)};
+    width: 12px;
+    height: 12px;
     border-radius: 50%;
-    border: 2px solid #00b0ff;
+    background: ${newBlue};
     content: "";
     position: absolute;
-    left: -6.5px;
-    top: 14px;
+    left: -7.5px;
+    top: -5px;
+    z-index: 5;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(${props => `${props.activeTab * 47.5}px`});
+    transform: translateY(
+      ${props => `${props.activeTab * 80 + (props.activeTab > props.main.length - 1 ? 115 : 0)}px`}
+    );
   }
 `;
 
 const Option = styled.li`
   cursor: pointer;
-  font-size: 11px;
+  font-size: 14px;
   padding-left: 35px;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
-  line-height: 2;
+  line-height: 0;
+  position: relative;
   letter-spacing: 0.2px;
   text-align: left;
-  color: #b1b1b1;
-  margin-bottom: 25px;
+  color: #6a737f;
+  margin-bottom: 80px;
   transition: 0.2s ease color;
-  text-transform: uppercase;
 
   &:last-of-type {
     margin-bottom: 0;
   }
 
+  &:before {
+    content: "";
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    top: 50%;
+    left: -5.5px;
+    background: #b9d5fa;
+    border-radius: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+  }
   &.active {
-    color: #00b0ff;
+    color: ${newBlue};
   }
 `;
 const AdvancedOptionsHeader = styled.div`
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   justify-content: space-between;
   align-items: center;
-  margin: 25px 0;
+  margin: 101px 0 65px;
+  position: relative;
 
+  &:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: -27px;
+    transform: translateY(-50%) ${props => props.advancedAreOpen && "rotate(180deg)"};
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5.5px solid ${newBlue};
+    transition: all 0.2s ease;
+  }
   p {
     margin: 0;
     font-size: 11px;
@@ -218,5 +255,6 @@ const AdvancedOptionsHeader = styled.div`
 
 const AdvancedOptions = styled.ul`
   list-style: none;
-  padding: 7.5px 0;
+  padding: 0;
+  border-left: 2px solid #b9d5fa;
 `;

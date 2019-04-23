@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
@@ -9,6 +10,7 @@ import { Button, Tab, TabContainer, Tabs } from "@edulastic/common";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
+import { CorrectAnswersContainer } from "./styled/CorrectAnswers";
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
@@ -19,6 +21,19 @@ class CorrectAnswers extends Component {
     this.state = {
       value: 0
     };
+  }
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
   }
 
   handleTabChange = value => {
@@ -33,6 +48,7 @@ class CorrectAnswers extends Component {
         <Tab
           key={i}
           close
+          type="primary"
           onClose={() => {
             onRemoveAltResponses(i);
             this.handleTabChange(0);
@@ -49,7 +65,7 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        style={{ minWidth: 70, minHeight: 25 }}
+        style={{ minWidth: 20, minHeight: 20, width: 20, padding: 0, marginLeft: 20 }}
         icon={<IconPlus data-cy="alternate" />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
@@ -108,15 +124,15 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, multipleResponses, uiStyle } = this.props;
+    const { validation, stimulus, options, t, multipleResponses, uiStyle, styleType } = this.props;
     const { value } = this.state;
 
     return (
       <div>
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
-        <div>
+        <CorrectAnswersContainer>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label={t("component.correctanswers.correct")} />
+            <Tab label={t("component.correctanswers.correct")} type="primary" />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
@@ -129,6 +145,7 @@ class CorrectAnswers extends Component {
                 options={options}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                styleType={styleType}
               />
             </TabContainer>
           )}
@@ -145,6 +162,7 @@ class CorrectAnswers extends Component {
                       stimulus={stimulus}
                       options={options}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
+                      styleType={styleType}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />
                   </TabContainer>
@@ -152,7 +170,7 @@ class CorrectAnswers extends Component {
               }
               return null;
             })}
-        </div>
+        </CorrectAnswersContainer>
       </div>
     );
   }
@@ -168,13 +186,19 @@ CorrectAnswers.propTypes = {
   question: PropTypes.object.isRequired,
   multipleResponses: PropTypes.bool.isRequired,
   onRemoveAltResponses: PropTypes.func.isRequired,
-  uiStyle: PropTypes.object.isRequired
+  uiStyle: PropTypes.object.isRequired,
+  styleType: PropTypes.string,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
-  validation: {}
+  validation: {},
+  styleType: "default",
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

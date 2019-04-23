@@ -5,7 +5,8 @@ import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, desktopWidth } from "@edulastic/colors";
+import { withWindowSizes } from "@edulastic/common";
 
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
@@ -149,6 +150,7 @@ class QuestionWrapper extends Component {
       t,
       changePreviewTab,
       qIndex,
+      windowWidth,
       ...restProps
     } = this.props;
     const { main, advanced, activeTab } = this.state;
@@ -158,11 +160,16 @@ class QuestionWrapper extends Component {
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
-          <PaperWrapper style={{ width: "-webkit-fill-available", display: "flex", overflowX: "auto" }}>
-            {type === "graph" && view === "edit" && (
-              <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />
-            )}
-            <div style={{ flex: "auto" }}>
+          <PaperWrapper
+            style={{
+              width: "-webkit-fill-available",
+              display: "flex",
+              overflowX: "auto",
+              boxShadow: "none"
+            }}
+          >
+            {view === "edit" && <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />}
+            <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
               {timespent ? <Timespent timespent={timespent} view={view} /> : null}
               <Question
                 {...restProps}
@@ -198,7 +205,8 @@ QuestionWrapper.propTypes = {
   noPadding: PropTypes.bool,
   isFlex: PropTypes.bool,
   timespent: PropTypes.string,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  windowWidth: PropTypes.number.isRequired
 };
 
 QuestionWrapper.defaultProps = {
@@ -217,6 +225,7 @@ QuestionWrapper.defaultProps = {
 
 const enhance = compose(
   React.memo,
+  withWindowSizes,
   withAnswerSave,
   withNamespaces("assessment"),
   connect(

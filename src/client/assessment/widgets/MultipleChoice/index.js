@@ -10,6 +10,7 @@ import produce from "immer";
 
 import { PaddingDiv, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { desktopWidth } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
@@ -19,7 +20,22 @@ import Display from "./components/Display";
 import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables, replaceValues } from "../../utils/variables";
 
+import { Widget } from "../../styled/Widget";
+
 const EmptyWrapper = styled.div``;
+
+const ContentArea = styled.div`
+  max-width: 76.7%;
+  margin-left: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 100%;
+  }
+`;
+
+const Divider = styled.div`
+  padding: 10px 0;
+`;
 
 class MultipleChoice extends Component {
   state = {
@@ -154,7 +170,20 @@ class MultipleChoice extends Component {
   };
 
   render() {
-    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, ...restProps } = this.props;
+    const {
+      qIndex,
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      fillSections,
+      cleanSections,
+      ...restProps
+    } = this.props;
     const { shuffledOptions } = this.state;
     const {
       previewStimulus,
@@ -171,35 +200,49 @@ class MultipleChoice extends Component {
       <React.Fragment>
         <PaddingDiv>
           {view === EDIT && (
-            <React.Fragment>
-              <Paper style={{ marginBottom: 25 }}>
-                <Authoring item={itemForEdit} />
-                <CorrectAnswers
+            <ContentArea>
+              <React.Fragment>
+                <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
+                  <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                  <Widget>
+                    <CorrectAnswers
+                      uiStyle={uiStyle}
+                      options={previewDisplayOptions}
+                      question={previewStimulus}
+                      multipleResponses={multipleResponses}
+                      onAddAltResponses={this.handleAddAltResponses}
+                      onRemoveAltResponses={this.handleRemoveAltResponses}
+                      validation={item.validation}
+                      styleType="primary"
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
+                      {...restProps}
+                    />
+                    <Divider />
+                    <Checkbox
+                      data-cy="multi"
+                      onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
+                      checked={multipleResponses}
+                    >
+                      {t("component.multiplechoice.multipleResponses")}
+                    </Checkbox>
+                    <Checkbox
+                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                      checked={shuffleOptions}
+                    >
+                      {t("component.multiplechoice.shuffleOptions")}
+                    </Checkbox>
+                  </Widget>
+                </Paper>
+                <Options
+                  onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
-                  options={previewDisplayOptions}
-                  question={previewStimulus}
-                  multipleResponses={multipleResponses}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                  validation={item.validation}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
                   {...restProps}
                 />
-                <Checkbox
-                  data-cy="multi"
-                  onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
-                  checked={multipleResponses}
-                >
-                  {t("component.multiplechoice.multipleResponses")}
-                </Checkbox>
-                <Checkbox
-                  onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                  checked={shuffleOptions}
-                >
-                  {t("component.multiplechoice.shuffleOptions")}
-                </Checkbox>
-              </Paper>
-              <Options onChange={this.handleOptionsChange} uiStyle={uiStyle} {...restProps} />
-            </React.Fragment>
+              </React.Fragment>
+            </ContentArea>
           )}
           {view === PREVIEW && (
             <Wrapper>
@@ -273,7 +316,9 @@ MultipleChoice.propTypes = {
   userAnswer: PropTypes.any,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 MultipleChoice.defaultProps = {
@@ -285,7 +330,9 @@ MultipleChoice.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

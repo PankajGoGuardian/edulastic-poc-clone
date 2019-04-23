@@ -2,7 +2,11 @@ import styled from "styled-components";
 import { TextField } from "@edulastic/common";
 
 export const CorrectAnswerPointField = styled(TextField)`
-  width: 100px;
-  padding: 0 0 0 40px;
+  width: 170px;
+  height: 40px !important;
+  min-height: 40px;
+  line-height: 40px;
+  padding: 0 15px;
   margin-right: 25px;
+  border: 1px solid #e1e1e1;
 `;

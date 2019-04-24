@@ -130,18 +130,22 @@ const SingleAssessmentReportFilters = ({
     }
 
     let arr = _dropDownData.testDataArr.filter((item, index) => (groupIdMap[item.groupId] ? true : false));
-    let finalTestIds = new Array(arr.length);
-    for (let i = 0; i < arr.length; i++) {
-      finalTestIds[i] = { key: arr[i].testId, title: arr[i].testName };
+    let finalTestIds = [];
+    let makeUniqueMap = {};
+    for (let item of arr) {
+      if (!makeUniqueMap[item.testId]) {
+        finalTestIds.push({ key: item.testId, title: item.testName });
+        makeUniqueMap[item.testId] = true;
+      }
     }
 
-    let isPresent = arr.find((item, index) => (item.testId === selectedTest.key ? true : false));
+    let isPresent = finalTestIds.find((item, index) => (item.key === selectedTest.key ? true : false));
 
     let selected = selectedTest;
-    if (!isPresent && arr.length) {
+    if (!isPresent && finalTestIds.length) {
       selected = finalTestIds[0];
       setSelectedTest(selected);
-    } else if (!isPresent && !arr.length) {
+    } else if (!isPresent && !finalTestIds.length) {
       selected = { key: "", title: "" };
       setSelectedTest(selected);
     }

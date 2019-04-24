@@ -57,28 +57,30 @@ const getRequestParams = obj => {
 
 const fetchResponseFrequency = params => {
   return api.callApi({
-    url: `/report/responseFrequency?testId=${params.testId}`,
-    params: params.requestFilters
+    url: `/report/responseFrequency`,
+    params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchAssessmentSummaryReport = params => {
   return api.callApi({
-    url: `/report/assessmentSummary?testId=${params.testId}`,
-    params: params.requestFilters
+    url: `/report/assessmentSummary`,
+    params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchPeerPerformanceReport = params => {
   return api.callApi({
-    url: `/report/peerPerformance?testId=${params.testId}`,
-    params: params.requestFilters
+    url: `/report/peerPerformance`,
+    params: { ...params.requestFilters, testId: params.testId }
   });
 };
 
 const fetchPerformanceByStandard = params => {
+  console.log("params", params);
   return api.callApi({
-    url: `/report/performanceByStandards?testId=${params.testId}`
+    url: `/report/performanceByStandards`,
+    params: { ...params.requestFilters, testId: params.testId }
   });
 };
 

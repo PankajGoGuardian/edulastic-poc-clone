@@ -210,7 +210,12 @@ const Container = props => {
         exact
         path={`${props.match.path}performance-by-standards/test/:testId?`}
         render={_props => (
-          <PerformanceByStandards {..._props} showFilter={showFilter} filters={settings.requestFilters} />
+          <PerformanceByStandards
+            {..._props}
+            showFilter={showFilter}
+            filters={settings.requestFilters}
+            settings={settings}
+          />
         )}
       />
     </div>

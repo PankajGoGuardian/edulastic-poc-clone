@@ -51,7 +51,8 @@ const PerformanceByStandards = ({
   match,
   assignments,
   history,
-  location
+  location,
+  settings
 }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
@@ -87,7 +88,7 @@ const PerformanceByStandards = ({
         const q = {
           testId: match.params.testId
         };
-
+        q.requestFilters = { ...settings.requestFilters };
         getPerformanceByStandards(q);
         setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
       } else {
@@ -95,6 +96,7 @@ const PerformanceByStandards = ({
         tests.sort((a, b) => b.updatedDate - a.updatedDate);
 
         const q = { testId: tests[0]._id };
+        q.requestFilters = { ...settings.requestFilters };
         history.push(location.pathname + q.testId);
         getPerformanceByStandards(q);
         setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
@@ -102,7 +104,7 @@ const PerformanceByStandards = ({
     } else {
       getAssignmentsRequestAction();
     }
-  }, [assignments]);
+  }, [assignments, settings]);
 
   const setSelectedData = ({ skillInfo, defaultStandardId, standardsMap }) => {
     const selectedData = skillInfo.reduce(

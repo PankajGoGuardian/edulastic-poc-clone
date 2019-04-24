@@ -15,6 +15,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { Widget } from "../../styled/Widget";
 
 const defaultTemplateMarkup =
   '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
@@ -115,48 +116,54 @@ class ClozeDropDownAuthoring extends Component {
 
     return (
       <div>
-        <PaddingDiv bottom={20}>
-          <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="stimulus"
-            wrappedRef={instance => {
-              this.stimulus = instance;
-            }}
-            placeholder={t("component.cloze.dropDown.thisisstem")}
-            onChange={this.onChangeQuestion}
-            showResponseBtn={false}
-            value={item.stimulus}
-          />
-          <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="templatemarkup"
-            wrappedRef={instance => {
-              this.templatemarkup = instance;
-            }}
-            placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
-            onChange={this.onChangeMarkUp}
-            firstFocus={!item.templateMarkUp}
-            showResponseBtn
-            value={item.templateMarkUp || defaultTemplateMarkup}
-          />
-          {responseContainers.map((resp, index) => (
-            <PaddingDiv key={`${resp}_${index}`}>
-              <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`}</Subtitle>
-              <SortableList
-                items={item.options[index] || []}
-                dirty={item.templateMarkUp}
-                onSortEnd={params => this.onSortEnd(index, params)}
-                useDragHandle
-                onRemove={itemIndex => this.remove(index, itemIndex)}
-                onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
-              />
-              <div>
-                <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-                  {t("component.cloze.dropDown.addnewchoice")}
-                </AddNewChoiceBtn>
-              </div>
-            </PaddingDiv>
-          ))}
+        <PaddingDiv>
+          <Widget>
+            <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
+            <CustomQuillComponent
+              toolbarId="stimulus"
+              wrappedRef={instance => {
+                this.stimulus = instance;
+              }}
+              placeholder={t("component.cloze.dropDown.thisisstem")}
+              onChange={this.onChangeQuestion}
+              showResponseBtn={false}
+              value={item.stimulus}
+            />
+          </Widget>
+          <Widget>
+            <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
+            <CustomQuillComponent
+              toolbarId="templatemarkup"
+              wrappedRef={instance => {
+                this.templatemarkup = instance;
+              }}
+              placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
+              onChange={this.onChangeMarkUp}
+              firstFocus={!item.templateMarkUp}
+              showResponseBtn
+              value={item.templateMarkUp || defaultTemplateMarkup}
+            />
+          </Widget>
+          <Widget>
+            {responseContainers.map((resp, index) => (
+              <PaddingDiv key={`${resp}_${index}`}>
+                <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`}</Subtitle>
+                <SortableList
+                  items={item.options[index] || []}
+                  dirty={item.templateMarkUp}
+                  onSortEnd={params => this.onSortEnd(index, params)}
+                  useDragHandle
+                  onRemove={itemIndex => this.remove(index, itemIndex)}
+                  onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
+                />
+                <div>
+                  <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
+                    {t("component.cloze.dropDown.addnewchoice")}
+                  </AddNewChoiceBtn>
+                </div>
+              </PaddingDiv>
+            ))}
+          </Widget>
         </PaddingDiv>
       </div>
     );

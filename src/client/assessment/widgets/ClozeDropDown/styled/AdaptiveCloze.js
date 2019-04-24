@@ -3,7 +3,7 @@ import { mobileWidth } from "@edulastic/colors";
 
 export const AdaptiveCloze = styled.div`
   border-radius: 5px;
-  padding: 30px 120px;
+  padding: 0px 0px 30px;
   background: ${props => props.background};
 
   @media (max-width: ${mobileWidth}) {

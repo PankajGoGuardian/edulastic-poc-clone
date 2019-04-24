@@ -7,22 +7,17 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
-import { Block } from "../../../styled/WidgetOptions/Block";
-import { Heading } from "../../../styled/WidgetOptions/Heading";
 
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ questionData, onChange, uiStyle, t, outerStyle }) => (
+const Options = ({ questionData, onChange, uiStyle, outerStyle }) => (
   <WidgetOptions outerStyle={outerStyle}>
-    <Block>
-      <Heading>{t("component.options.layout")}</Heading>
-      <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
-      <Extras>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
-    </Block>
+    <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
+    <Extras>
+      <Extras.Distractors />
+      <Extras.Hints />
+    </Extras>
   </WidgetOptions>
 );
 
@@ -30,7 +25,6 @@ Options.propTypes = {
   questionData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  t: PropTypes.func.isRequired,
   outerStyle: PropTypes.object
 };
 

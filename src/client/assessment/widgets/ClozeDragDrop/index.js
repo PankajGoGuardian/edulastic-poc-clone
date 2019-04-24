@@ -20,6 +20,7 @@ import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Options from "./components/Options";
+import { Widget } from "../../styled/Widget";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -118,53 +119,55 @@ class ClozeDragDrop extends Component {
             <ResponseQuestion background={theme.widgets.clozeDragDrop.editViewBgColor}>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  hasGroupResponses={item.hasGroupResponses}
-                  configureOptions={{
-                    duplicatedResponses,
-                    showDraghandle,
-                    shuffleOptions
-                  }}
-                  options={previewDisplayOptions}
-                  question={previewStimulus}
-                  uiStyle={uiStyle}
-                  templateMarkUp={itemForEdit.templateMarkUp}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                />
-                <CorrectAnswerOptions>
-                  <Checkbox
-                    className="additional-options"
-                    key={`duplicatedResponses_${duplicatedResponses}`}
-                    onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
-                    label={t("component.cloze.dragDrop.duplicatedresponses")}
-                    checked={duplicatedResponses}
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    hasGroupResponses={item.hasGroupResponses}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions
+                    }}
+                    options={previewDisplayOptions}
+                    question={previewStimulus}
+                    uiStyle={uiStyle}
+                    templateMarkUp={itemForEdit.templateMarkUp}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
-                  <Checkbox
-                    className="additional-options"
-                    key={`showDraghandle_${showDraghandle}`}
-                    onChange={() => this.handleOptionsChange("showDraghandle", !showDraghandle)}
-                    label={t("component.cloze.dragDrop.showdraghandle")}
-                    checked={showDraghandle}
-                  />
-                  <Checkbox
-                    className="additional-options"
-                    key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                    label={t("component.cloze.dragDrop.shuffleoptions")}
-                    checked={shuffleOptions}
-                  />
-                </CorrectAnswerOptions>
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      className="additional-options"
+                      key={`duplicatedResponses_${duplicatedResponses}`}
+                      onChange={() => this.handleOptionsChange("duplicatedResponses", !duplicatedResponses)}
+                      label={t("component.cloze.dragDrop.duplicatedresponses")}
+                      checked={duplicatedResponses}
+                    />
+                    <Checkbox
+                      className="additional-options"
+                      key={`showDraghandle_${showDraghandle}`}
+                      onChange={() => this.handleOptionsChange("showDraghandle", !showDraghandle)}
+                      label={t("component.cloze.dragDrop.showdraghandle")}
+                      checked={showDraghandle}
+                    />
+                    <Checkbox
+                      className="additional-options"
+                      key={`shuffleOptions_${shuffleOptions}`}
+                      onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                      label={t("component.cloze.dragDrop.shuffleoptions")}
+                      checked={shuffleOptions}
+                    />
+                  </CorrectAnswerOptions>
+                </Widget>
               </div>
             </ResponseQuestion>
-            <div style={{ marginTop: 35 }}>
+            <div>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: "30px 0px"
                 }}
               />
             </div>

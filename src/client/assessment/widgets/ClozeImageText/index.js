@@ -20,6 +20,7 @@ import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
+import { Widget } from "../../styled/Widget";
 
 class ClozeImageText extends Component {
   state = {
@@ -134,39 +135,41 @@ class ClozeImageText extends Component {
       <React.Fragment>
         {view === "edit" && (
           <React.Fragment>
-            <EditorContainer top={36} bottom={36} left={60} right={60}>
+            <EditorContainer>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    duplicatedResponses,
-                    showDraghandle,
-                    shuffleOptions,
-                    transparentResponses
-                  }}
-                  options={previewDisplayOptions}
-                  imageAlterText={item.imageAlterText}
-                  responses={item.responses}
-                  imageUrl={item.imageUrl}
-                  imageWidth={item.imageWidth}
-                  question={previewStimulus}
-                  showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                  uiStyle={uiStyle}
-                  backgroundColor={item.background}
-                  maxRespCount={item.maxRespCount}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                />
-                <CorrectAnswerOptions>
-                  <Checkbox
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                    label={t("component.cloze.imageText.shuffleoptions")}
-                    checked={shuffleOptions}
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions,
+                      transparentResponses
+                    }}
+                    options={previewDisplayOptions}
+                    imageAlterText={item.imageAlterText}
+                    responses={item.responses}
+                    imageUrl={item.imageUrl}
+                    imageWidth={item.imageWidth}
+                    question={previewStimulus}
+                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                    uiStyle={uiStyle}
+                    backgroundColor={item.background}
+                    maxRespCount={item.maxRespCount}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
-                </CorrectAnswerOptions>
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                      label={t("component.cloze.imageText.shuffleoptions")}
+                      checked={shuffleOptions}
+                    />
+                  </CorrectAnswerOptions>
+                </Widget>
               </div>
             </EditorContainer>
             <OptionsContainer>

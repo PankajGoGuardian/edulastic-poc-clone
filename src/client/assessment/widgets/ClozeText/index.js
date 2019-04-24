@@ -18,6 +18,7 @@ import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import Display from "./Display";
+import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -110,29 +111,31 @@ class ClozeText extends Component {
             <AdaptiveCloze background={theme.widgets.clozeText.editViewBgColor}>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    shuffleOptions
-                  }}
-                  options={previewDisplayOptions}
-                  question={previewStimulus}
-                  uiStyle={uiStyle}
-                  templateMarkUp={itemForEdit.templateMarkUp}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                />
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      shuffleOptions
+                    }}
+                    options={previewDisplayOptions}
+                    question={previewStimulus}
+                    uiStyle={uiStyle}
+                    templateMarkUp={itemForEdit.templateMarkUp}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
+                  />
+                </Widget>
               </div>
             </AdaptiveCloze>
-            <div style={{ marginTop: 35 }}>
+            <div>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 characterMap={item.character_map}
                 multipleLine={item.multiple_line}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: "30px 0px"
                 }}
               />
             </div>

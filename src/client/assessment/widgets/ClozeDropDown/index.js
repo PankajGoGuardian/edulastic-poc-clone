@@ -20,6 +20,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Options from "./components/Options";
 import { AdaptiveCloze } from "./styled/AdaptiveCloze";
+import { Widget } from "../../styled/Widget";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -113,35 +114,37 @@ class ClozeDropDown extends Component {
             <AdaptiveCloze background={theme.widgets.clozeDropDown.editViewBgColor}>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
-                <CorrectAnswers
-                  key={shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    shuffleOptions
-                  }}
-                  options={previewDisplayOptions}
-                  question={previewStimulus}
-                  uiStyle={uiStyle}
-                  templateMarkUp={itemForEdit.templateMarkUp}
-                  onAddAltResponses={this.handleAddAltResponses}
-                />
-                <CorrectAnswerOptions>
-                  <Checkbox
-                    className="additional-options"
-                    key={`shuffleOptions_${shuffleOptions}`}
-                    onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
-                    label={t("component.cloze.dropDown.shuffleoptions")}
-                    checked={shuffleOptions}
+                <Widget>
+                  <CorrectAnswers
+                    key={shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      shuffleOptions
+                    }}
+                    options={previewDisplayOptions}
+                    question={previewStimulus}
+                    uiStyle={uiStyle}
+                    templateMarkUp={itemForEdit.templateMarkUp}
+                    onAddAltResponses={this.handleAddAltResponses}
                   />
-                </CorrectAnswerOptions>
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      className="additional-options"
+                      key={`shuffleOptions_${shuffleOptions}`}
+                      onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
+                      label={t("component.cloze.dropDown.shuffleoptions")}
+                      checked={shuffleOptions}
+                    />
+                  </CorrectAnswerOptions>
+                </Widget>
               </div>
             </AdaptiveCloze>
-            <div style={{ marginTop: 35 }}>
+            <div>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: "30px 0px"
                 }}
               />
             </div>

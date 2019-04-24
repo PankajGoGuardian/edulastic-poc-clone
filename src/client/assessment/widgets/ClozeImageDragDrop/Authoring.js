@@ -31,6 +31,7 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
+import { Widget } from "../../styled/Widget";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -182,220 +183,226 @@ class Authoring extends Component {
     };
     return (
       <div>
-        <PaddingDiv bottom={20}>
-          <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="stimulus"
-            firstFocus={item.firstMount}
-            wrappedRef={instance => {
-              this.stimulus = instance;
-            }}
-            placeholder={t("component.cloze.imageDragDrop.thisisstem")}
-            onChange={this.onChangeQuestion}
-            showResponseBtn={false}
-            value={item.stimulus}
-          />
-          <PaddingDiv top={30} />
-          <FlexContainer
-            style={{
-              background: theme.widgets.clozeImageDragDrop.imageSettingsContainerBgColor,
-              height: 70,
-              fontSize: theme.widgets.clozeImageDragDrop.imageSettingsContainerFontSize
-            }}
-          >
-            <div style={{ alignItems: "center" }}>
-              <InputNumber
-                data-cy="image-width-input"
-                defaultValue={imageWidth || 600}
-                onChange={val => this.onItemPropChange("imageWidth", val)}
-              />
-
-              <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.widthpx")}</PaddingDiv>
-            </div>
-            <div style={{ alignItems: "center" }}>
-              <Input
-                data-cy="image-alternate-input"
-                size="large"
-                style={{ width: 220 }}
-                defaultValue={imageAlterText}
-                onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
-              />
-              <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.imagealtertext")}</PaddingDiv>
-            </div>
-            <div style={{ alignItems: "center" }}>
-              <ColorBox
-                data-cy="image-text-box-color-picker"
-                style={{ backgroundColor: background }}
-                onClick={() => this.showColorPicker(true)}
-              />
-              {isColorPickerVisible && (
-                <ColorPickerContainer data-cy="image-text-box-color-panel">
-                  <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
-                  <ChromePicker
-                    color={background}
-                    onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                  />
-                </ColorPickerContainer>
-              )}
-              <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
-            </div>
-            <div style={{ alignItems: "center" }}>
-              <InputNumber
-                data-cy="drag-drop-image-max-res"
-                min={1}
-                max={10}
-                style={{ width: 100 }}
-                defaultValue={maxRespCount}
-                onChange={val => this.onItemPropChange("maxRespCount", val)}
-              />
-              <PaddingDiv left={20} style={{ width: 160 }}>
-                {t("component.cloze.imageDragDrop.maximumresponses")}
-              </PaddingDiv>
-            </div>
-          </FlexContainer>
-          <PaddingDiv top={30} />
-          <FlexContainer>
-            <div
-              className="controls-bar"
+        <PaddingDiv>
+          <Widget>
+            <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
+            <CustomQuillComponent
+              toolbarId="stimulus"
+              firstFocus={item.firstMount}
+              wrappedRef={instance => {
+                this.stimulus = instance;
+              }}
+              placeholder={t("component.cloze.imageDragDrop.thisisstem")}
+              onChange={this.onChangeQuestion}
+              showResponseBtn={false}
+              value={item.stimulus}
+            />
+          </Widget>
+          <Widget>
+            <PaddingDiv />
+            <FlexContainer
               style={{
-                width: 120,
-                background: theme.widgets.clozeImageDragDrop.controlsBarBgColor,
-                alignItems: "center",
-                alignSelf: "flex-start",
-                flexDirection: "column"
+                background: theme.widgets.clozeImageDragDrop.imageSettingsContainerBgColor,
+                height: 70,
+                fontSize: theme.widgets.clozeImageDragDrop.imageSettingsContainerFontSize
               }}
             >
-              <Button style={{ width: 100, height: 100, whiteSpace: "normal" }}>
-                <IconDrawResize />
-                {t("component.cloze.imageDragDrop.drawresize")}
-              </Button>
+              <div style={{ alignItems: "center" }}>
+                <InputNumber
+                  data-cy="image-width-input"
+                  defaultValue={imageWidth || 600}
+                  onChange={val => this.onItemPropChange("imageWidth", val)}
+                />
 
+                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.widthpx")}</PaddingDiv>
+              </div>
+              <div style={{ alignItems: "center" }}>
+                <Input
+                  data-cy="image-alternate-input"
+                  size="large"
+                  style={{ width: 220 }}
+                  defaultValue={imageAlterText}
+                  onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
+                />
+                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.imagealtertext")}</PaddingDiv>
+              </div>
+              <div style={{ alignItems: "center" }}>
+                <ColorBox
+                  data-cy="image-text-box-color-picker"
+                  style={{ backgroundColor: background }}
+                  onClick={() => this.showColorPicker(true)}
+                />
+                {isColorPickerVisible && (
+                  <ColorPickerContainer data-cy="image-text-box-color-panel">
+                    <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
+                    <ChromePicker
+                      color={background}
+                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                    />
+                  </ColorPickerContainer>
+                )}
+                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
+              </div>
+              <div style={{ alignItems: "center" }}>
+                <InputNumber
+                  data-cy="drag-drop-image-max-res"
+                  min={1}
+                  max={10}
+                  style={{ width: 100 }}
+                  defaultValue={maxRespCount}
+                  onChange={val => this.onItemPropChange("maxRespCount", val)}
+                />
+                <PaddingDiv left={20} style={{ width: 160 }}>
+                  {t("component.cloze.imageDragDrop.maximumresponses")}
+                </PaddingDiv>
+              </div>
+            </FlexContainer>
+            <PaddingDiv top={30} />
+            <FlexContainer>
               <div
+                className="controls-bar"
                 style={{
-                  position: "relative",
-                  width: 100,
-                  marginTop: 10,
-                  marginBottom: 10
+                  width: 120,
+                  background: theme.widgets.clozeImageDragDrop.controlsBarBgColor,
+                  alignItems: "center",
+                  alignSelf: "flex-start",
+                  flexDirection: "column"
                 }}
               >
-                <Button
-                  disabled={!hasActive}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    whiteSpace: "normal"
-                  }}
-                >
-                  <IconPin />
-                  {t("component.cloze.imageDragDrop.pointers")}
+                <Button style={{ width: 100, height: 100, whiteSpace: "normal" }}>
+                  <IconDrawResize />
+                  {t("component.cloze.imageDragDrop.drawresize")}
                 </Button>
-                <Select
-                  disabled={!hasActive}
-                  defaultValue="none"
+
+                <div
                   style={{
+                    position: "relative",
                     width: 100,
-                    height: 100,
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    display: "flex",
-                    alignItems: "flex-end"
+                    marginTop: 10,
+                    marginBottom: 10
                   }}
-                  onChange={this.handlePointersChange}
                 >
-                  <Option value="none">{t("component.cloze.imageDragDrop.none")}</Option>
-                  <Option value="top">{t("component.cloze.imageDragDrop.top")}</Option>
-                  <Option value="bottom">{t("component.cloze.imageDragDrop.bottom")}</Option>
-                  <Option value="left">{t("component.cloze.imageDragDrop.left")}</Option>
-                  <Option value="right">{t("component.cloze.imageDragDrop.right")}</Option>
-                </Select>
+                  <Button
+                    disabled={!hasActive}
+                    style={{
+                      width: 100,
+                      height: 100,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      whiteSpace: "normal"
+                    }}
+                  >
+                    <IconPin />
+                    {t("component.cloze.imageDragDrop.pointers")}
+                  </Button>
+                  <Select
+                    disabled={!hasActive}
+                    defaultValue="none"
+                    style={{
+                      width: 100,
+                      height: 100,
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      display: "flex",
+                      alignItems: "flex-end"
+                    }}
+                    onChange={this.handlePointersChange}
+                  >
+                    <Option value="none">{t("component.cloze.imageDragDrop.none")}</Option>
+                    <Option value="top">{t("component.cloze.imageDragDrop.top")}</Option>
+                    <Option value="bottom">{t("component.cloze.imageDragDrop.bottom")}</Option>
+                    <Option value="left">{t("component.cloze.imageDragDrop.left")}</Option>
+                    <Option value="right">{t("component.cloze.imageDragDrop.right")}</Option>
+                  </Select>
+                </div>
               </div>
-            </div>
-            <FlexView
-              size={1}
-              style={{
-                flexDirection: "column",
-                alignItems: "center",
-                marginLeft: 20,
-                overflowX: "auto",
-                overflowY: "hidden"
-              }}
-            >
-              <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth}>
-                {item.imageUrl && (
-                  <React.Fragment>
-                    <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
-                    <DropArea updateData={this.updateData} item={item} />
-                  </React.Fragment>
-                )}
-                {!item.imageUrl && (
-                  <Dragger {...draggerProps} onChange={this.handleImageUpload}>
-                    <p className="ant-upload-drag-icon">
-                      <IconUpload />
-                    </p>
-                    <p className="ant-upload-hint">
-                      <strong>{t("component.cloze.imageDragDrop.draganddrop")}</strong>
-                    </p>
-                    <h2 className="ant-upload-text">{t("component.cloze.imageDragDrop.yourOwnImage")}</h2>
-                    <p className="ant-upload-hint">
-                      {t("component.cloze.imageDragDrop.orBrowse")}: PNG, JPG, GIF (1024KB MAX.)
-                    </p>
-                  </Dragger>
-                )}
-              </ImageContainer>
-              <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
-                <Checkbox
-                  data-cy="drag-drop-image-dashboard-check"
-                  defaultChecked={responseLayout && responseLayout.showdashedborder}
-                  onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
-                >
-                  {t("component.cloze.imageDragDrop.showdashedborder")}
-                </Checkbox>
-                <Checkbox
-                  data-cy="drag-drop-image-aria-check"
-                  defaultChecked={isEditAriaLabels}
-                  onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-                >
-                  {t("component.cloze.imageDragDrop.editAriaLabels")}
-                </Checkbox>
-              </PaddingDiv>
-            </FlexView>
-          </FlexContainer>
-          <PaddingDiv>
-            {isEditAriaLabels && (
-              <React.Fragment>
-                <Subtitle>{t("component.cloze.imageDragDrop.editAriaLabels")}</Subtitle>
-                {responses.map((responseContainer, index) => (
-                  <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
-                    <span className="index-box">{index + 1}</span>
-                    <Input
-                      defaultValue={responseContainer.label}
-                      onChange={e => this.onResponseLabelChange(index, e.target.value)}
-                    />
-                  </div>
-                ))}
-              </React.Fragment>
-            )}
-          </PaddingDiv>
-          <PaddingDiv>
-            <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
-            <SortableList
-              dirty={item.firstMount}
-              items={item.options}
-              onSortEnd={this.onSortEnd}
-              useDragHandle
-              onRemove={this.remove}
-              onChange={this.editOptions}
-            />
-            <div>
-              <AddNewChoiceBtn data-cy="add-new-ch" onClick={() => this.addNewChoiceBtn()}>
-                {t("component.cloze.imageDragDrop.addnewchoice")}
-              </AddNewChoiceBtn>
-            </div>
-          </PaddingDiv>
+              <FlexView
+                size={1}
+                style={{
+                  flexDirection: "column",
+                  alignItems: "center",
+                  marginLeft: 20,
+                  overflowX: "auto",
+                  overflowY: "hidden"
+                }}
+              >
+                <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth}>
+                  {item.imageUrl && (
+                    <React.Fragment>
+                      <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
+                      <DropArea updateData={this.updateData} item={item} />
+                    </React.Fragment>
+                  )}
+                  {!item.imageUrl && (
+                    <Dragger {...draggerProps} onChange={this.handleImageUpload}>
+                      <p className="ant-upload-drag-icon">
+                        <IconUpload />
+                      </p>
+                      <p className="ant-upload-hint">
+                        <strong>{t("component.cloze.imageDragDrop.draganddrop")}</strong>
+                      </p>
+                      <h2 className="ant-upload-text">{t("component.cloze.imageDragDrop.yourOwnImage")}</h2>
+                      <p className="ant-upload-hint">
+                        {t("component.cloze.imageDragDrop.orBrowse")}: PNG, JPG, GIF (1024KB MAX.)
+                      </p>
+                    </Dragger>
+                  )}
+                </ImageContainer>
+                <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
+                  <Checkbox
+                    data-cy="drag-drop-image-dashboard-check"
+                    defaultChecked={responseLayout && responseLayout.showdashedborder}
+                    onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
+                  >
+                    {t("component.cloze.imageDragDrop.showdashedborder")}
+                  </Checkbox>
+                  <Checkbox
+                    data-cy="drag-drop-image-aria-check"
+                    defaultChecked={isEditAriaLabels}
+                    onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+                  >
+                    {t("component.cloze.imageDragDrop.editAriaLabels")}
+                  </Checkbox>
+                </PaddingDiv>
+              </FlexView>
+            </FlexContainer>
+            <PaddingDiv>
+              {isEditAriaLabels && (
+                <React.Fragment>
+                  <Subtitle>{t("component.cloze.imageDragDrop.editAriaLabels")}</Subtitle>
+                  {responses.map((responseContainer, index) => (
+                    <div className="imagelabeldragdrop-droppable iseditablearialabel" key={index}>
+                      <span className="index-box">{index + 1}</span>
+                      <Input
+                        defaultValue={responseContainer.label}
+                        onChange={e => this.onResponseLabelChange(index, e.target.value)}
+                      />
+                    </div>
+                  ))}
+                </React.Fragment>
+              )}
+            </PaddingDiv>
+          </Widget>
+          <Widget>
+            <PaddingDiv>
+              <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
+              <SortableList
+                dirty={item.firstMount}
+                items={item.options}
+                onSortEnd={this.onSortEnd}
+                useDragHandle
+                onRemove={this.remove}
+                onChange={this.editOptions}
+              />
+              <div>
+                <AddNewChoiceBtn data-cy="add-new-ch" onClick={() => this.addNewChoiceBtn()}>
+                  {t("component.cloze.imageDragDrop.addnewchoice")}
+                </AddNewChoiceBtn>
+              </div>
+            </PaddingDiv>
+          </Widget>
         </PaddingDiv>
       </div>
     );

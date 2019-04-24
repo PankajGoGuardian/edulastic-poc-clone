@@ -18,6 +18,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+import { Widget } from "../../styled/Widget";
 
 const defaultTemplateMarkup =
   '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
@@ -221,117 +222,123 @@ class Authoring extends Component {
     const { hasGroupResponses, groupResponses } = this.state;
     return (
       <div>
-        <PaddingDiv bottom={20}>
-          <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="stimulus"
-            wrappedRef={instance => {
-              this.stimulus = instance;
-            }}
-            placeholder={t("component.cloze.dragDrop.thisisstem")}
-            onChange={this.onChangeQuestion}
-            showResponseBtn={false}
-            value={item.stimulus}
-          />
-          <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
-          <CustomQuillComponent
-            toolbarId="templatemarkup"
-            wrappedRef={instance => {
-              this.templatemarkup = instance;
-            }}
-            placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
-            onChange={this.onChangeMarkUp}
-            firstFocus={!item.templateMarkUp}
-            showResponseBtn
-            clearOnFirstFocus
-            value={item.templateMarkUp || defaultTemplateMarkup}
-          />
-          <PaddingDiv>
-            <Subtitle>
-              <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
-              <label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</label>
-            </Subtitle>
-          </PaddingDiv>
-          {!hasGroupResponses && (
-            <PaddingDiv>
-              <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
-              <SortableList
-                items={item.options}
-                dirty={!!item.templateMarkUp}
-                onSortEnd={this.onSortEnd}
-                useDragHandle
-                onRemove={this.remove}
-                onChange={this.editOptions}
-              />
-              <div>
-                <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
-                  {t("component.cloze.dragDrop.addnewchoice")}
-                </AddNewChoiceBtn>
-              </div>
-            </PaddingDiv>
-          )}
-          {hasGroupResponses &&
-            groupResponses.length > 0 &&
-            groupResponses.map((group, index) => (
-              <div key={index}>
-                <fieldset
-                  style={{
-                    borderColor: theme.widgets.clozeDragDrop.groupResponseFieldsetBorderColor,
-                    borderRadius: 2,
-                    padding: "0 20px",
-                    marginBottom: 15,
-                    border: "solid 1px"
-                  }}
-                >
-                  <legend style={{ padding: "0 20px", width: "auto" }}>
-                    {t("component.cloze.dragDrop.group")} {index + 1}
-                  </legend>
-                  <div style={{ float: "right" }}>
-                    <Button onClick={() => this.removeGroup(index)} size="small" type="button">
-                      <Icon type="close" />
-                    </Button>
-                  </div>
-                  <PaddingDiv top={10} bottom={10}>
-                    <div>{t("component.cloze.dragDrop.title")}</div>
-                  </PaddingDiv>
-                  <div>
-                    <Input
-                      size="large"
-                      style={{ width: "100%" }}
-                      onChange={e => this.changeGroupRespTitle(index, e)}
-                      value={group.title}
-                    />
-                  </div>
-                  <PaddingDiv top={20} bottom={10}>
-                    <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
-                    <SortableList
-                      dirty={!!item.templateMarkUp}
-                      items={group.options}
-                      onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
-                      useDragHandle
-                      onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
-                      onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
-                    />
-                    <PaddingDiv top={10} bottom={10}>
-                      <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
-                        {t("component.cloze.dragDrop.addnewchoice")}
-                      </AddNewChoiceBtn>
-                    </PaddingDiv>
-                  </PaddingDiv>
-                </fieldset>
-              </div>
-            ))}
-          {hasGroupResponses && (
-            <Button
-              type="primary"
-              onClick={this.addGroup}
-              style={{
-                background: theme.widgets.clozeDragDrop.addGroupButtonBgColor
+        <PaddingDiv>
+          <Widget>
+            <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
+            <CustomQuillComponent
+              toolbarId="stimulus"
+              wrappedRef={instance => {
+                this.stimulus = instance;
               }}
-            >
-              {t("component.cloze.dragDrop.addgroup")}
-            </Button>
-          )}
+              placeholder={t("component.cloze.dragDrop.thisisstem")}
+              onChange={this.onChangeQuestion}
+              showResponseBtn={false}
+              value={item.stimulus}
+            />
+          </Widget>
+          <Widget>
+            <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
+            <CustomQuillComponent
+              toolbarId="templatemarkup"
+              wrappedRef={instance => {
+                this.templatemarkup = instance;
+              }}
+              placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
+              onChange={this.onChangeMarkUp}
+              firstFocus={!item.templateMarkUp}
+              showResponseBtn
+              clearOnFirstFocus
+              value={item.templateMarkUp || defaultTemplateMarkup}
+            />
+          </Widget>
+          <Widget>
+            <PaddingDiv>
+              <Subtitle>
+                <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
+                <label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</label>
+              </Subtitle>
+            </PaddingDiv>
+            {!hasGroupResponses && (
+              <PaddingDiv>
+                <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
+                <SortableList
+                  items={item.options}
+                  dirty={!!item.templateMarkUp}
+                  onSortEnd={this.onSortEnd}
+                  useDragHandle
+                  onRemove={this.remove}
+                  onChange={this.editOptions}
+                />
+                <div>
+                  <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
+                    {t("component.cloze.dragDrop.addnewchoice")}
+                  </AddNewChoiceBtn>
+                </div>
+              </PaddingDiv>
+            )}
+            {hasGroupResponses &&
+              groupResponses.length > 0 &&
+              groupResponses.map((group, index) => (
+                <div key={index}>
+                  <fieldset
+                    style={{
+                      borderColor: theme.widgets.clozeDragDrop.groupResponseFieldsetBorderColor,
+                      borderRadius: 2,
+                      padding: "0 20px",
+                      marginBottom: 15,
+                      border: "solid 1px"
+                    }}
+                  >
+                    <legend style={{ padding: "0 20px", width: "auto" }}>
+                      {t("component.cloze.dragDrop.group")} {index + 1}
+                    </legend>
+                    <div style={{ float: "right" }}>
+                      <Button onClick={() => this.removeGroup(index)} size="small" type="button">
+                        <Icon type="close" />
+                      </Button>
+                    </div>
+                    <PaddingDiv top={10} bottom={10}>
+                      <div>{t("component.cloze.dragDrop.title")}</div>
+                    </PaddingDiv>
+                    <div>
+                      <Input
+                        size="large"
+                        style={{ width: "100%" }}
+                        onChange={e => this.changeGroupRespTitle(index, e)}
+                        value={group.title}
+                      />
+                    </div>
+                    <PaddingDiv top={20} bottom={10}>
+                      <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
+                      <SortableList
+                        dirty={!!item.templateMarkUp}
+                        items={group.options}
+                        onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
+                        useDragHandle
+                        onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
+                        onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
+                      />
+                      <PaddingDiv top={10} bottom={10}>
+                        <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
+                          {t("component.cloze.dragDrop.addnewchoice")}
+                        </AddNewChoiceBtn>
+                      </PaddingDiv>
+                    </PaddingDiv>
+                  </fieldset>
+                </div>
+              ))}
+            {hasGroupResponses && (
+              <Button
+                type="primary"
+                onClick={this.addGroup}
+                style={{
+                  background: theme.widgets.clozeDragDrop.addGroupButtonBgColor
+                }}
+              >
+                {t("component.cloze.dragDrop.addgroup")}
+              </Button>
+            )}
+          </Widget>
         </PaddingDiv>
       </div>
     );

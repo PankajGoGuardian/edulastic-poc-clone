@@ -22,6 +22,7 @@ import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
+import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -131,69 +132,71 @@ class ClozeImageDragDrop extends Component {
             <AdaptiveCloze background={theme.widgets.clozeImageDragDrop.editViewBgColor}>
               <div className="authoring">
                 <Authoring item={itemForEdit} />
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    duplicatedResponses,
-                    showDraghandle,
-                    shuffleOptions,
-                    transparentResponses
-                  }}
-                  options={previewDisplayOptions}
-                  imageAlterText={item.imageAlterText}
-                  responses={item.responses}
-                  imageUrl={item.imageUrl}
-                  imageWidth={item.imageWidth}
-                  question={previewStimulus}
-                  showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                  uiStyle={uiStyle}
-                  backgroundColor={item.background}
-                  maxRespCount={item.maxRespCount}
-                  onAddAltResponses={this.handleAddAltResponses}
-                />
-                <CorrectAnswerOptions>
-                  <Checkbox
-                    data-cy="multi-check"
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
-                    defaultChecked={duplicatedResponses}
-                  >
-                    {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                  </Checkbox>
-                  <Checkbox
-                    data-cy="drag-check"
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
-                    defaultChecked={showDraghandle}
-                  >
-                    {t("component.cloze.imageDragDrop.showdraghandle")}
-                  </Checkbox>
-                  <Checkbox
-                    data-cy="shuffle-check"
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                    defaultChecked={shuffleOptions}
-                  >
-                    {t("component.cloze.imageDragDrop.shuffleoptions")}
-                  </Checkbox>
-                  <Checkbox
-                    data-cy="transparent-check"
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
-                    defaultChecked={transparentResponses}
-                  >
-                    {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                  </Checkbox>
-                </CorrectAnswerOptions>
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions,
+                      transparentResponses
+                    }}
+                    options={previewDisplayOptions}
+                    imageAlterText={item.imageAlterText}
+                    responses={item.responses}
+                    imageUrl={item.imageUrl}
+                    imageWidth={item.imageWidth}
+                    question={previewStimulus}
+                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                    uiStyle={uiStyle}
+                    backgroundColor={item.background}
+                    maxRespCount={item.maxRespCount}
+                    onAddAltResponses={this.handleAddAltResponses}
+                  />
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      data-cy="multi-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
+                      defaultChecked={duplicatedResponses}
+                    >
+                      {t("component.cloze.imageDragDrop.duplicatedresponses")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="drag-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
+                      defaultChecked={showDraghandle}
+                    >
+                      {t("component.cloze.imageDragDrop.showdraghandle")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="shuffle-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                      defaultChecked={shuffleOptions}
+                    >
+                      {t("component.cloze.imageDragDrop.shuffleoptions")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="transparent-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
+                      defaultChecked={transparentResponses}
+                    >
+                      {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+                    </Checkbox>
+                  </CorrectAnswerOptions>
+                </Widget>
               </div>
             </AdaptiveCloze>
-            <div style={{ marginTop: 35 }}>
+            <div>
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
                 outerStyle={{
-                  padding: "30px 120px"
+                  padding: "30px 0px"
                 }}
               />
             </div>

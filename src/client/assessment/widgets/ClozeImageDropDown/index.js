@@ -21,6 +21,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
+import { Widget } from "../../styled/Widget";
 
 class ClozeImageDropDown extends Component {
   state = {
@@ -167,40 +168,42 @@ class ClozeImageDropDown extends Component {
       <React.Fragment>
         {view === "edit" && (
           <React.Fragment>
-            <EditorContainer top={36} bottom={36} left={60} right={60}>
+            <EditorContainer>
               <div className="authoring">
                 <Authoring fontSize={fontSize} item={itemForEdit} />
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    duplicatedResponses,
-                    showDraghandle,
-                    shuffleOptions,
-                    transparentResponses
-                  }}
-                  imagescale={imagescale}
-                  options={previewDisplayOptions}
-                  imageAlterText={item.imageAlterText}
-                  responses={item.responses}
-                  imageUrl={item.imageUrl}
-                  imageWidth={item.imageWidth}
-                  question={previewStimulus}
-                  showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                  uiStyle={uiStyle}
-                  backgroundColor={item.background}
-                  maxRespCount={item.maxRespCount}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
-                />
-                <CorrectAnswerOptions>
-                  <Checkbox
-                    className="additional-options"
-                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                    label={t("component.cloze.imageDropDown.shuffleoptions")}
-                    checked={shuffleOptions}
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions,
+                      transparentResponses
+                    }}
+                    imagescale={imagescale}
+                    options={previewDisplayOptions}
+                    imageAlterText={item.imageAlterText}
+                    responses={item.responses}
+                    imageUrl={item.imageUrl}
+                    imageWidth={item.imageWidth}
+                    question={previewStimulus}
+                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                    uiStyle={uiStyle}
+                    backgroundColor={item.background}
+                    maxRespCount={item.maxRespCount}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
                   />
-                </CorrectAnswerOptions>
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                      label={t("component.cloze.imageDropDown.shuffleoptions")}
+                      checked={shuffleOptions}
+                    />
+                  </CorrectAnswerOptions>
+                </Widget>
               </div>
             </EditorContainer>
             <OptionsContainer>

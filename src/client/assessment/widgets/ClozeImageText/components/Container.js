@@ -2,6 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { TextField } from "@edulastic/common";
+import styled from "styled-components";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
@@ -23,16 +24,18 @@ const Container = ({ t, onChange, uiStyle }) => {
 
   return (
     <Fragment>
-      <Row gutter={36}>
+      <Row gutter={20}>
         <Col md={12}>
           <Label>{t("component.options.inputtype")}</Label>
-          <OptionSelect size="large" onChange={type => onChange("inputtype", type)} value={uiStyle.inputtype}>
-            {inputtypeOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
-                {label}
-              </Select.Option>
-            ))}
-          </OptionSelect>
+          <SelectWrapper>
+            <OptionSelect size="large" onChange={type => onChange("inputtype", type)} value={uiStyle.inputtype}>
+              {inputtypeOptions.map(({ value: val, label }) => (
+                <Select.Option key={val} value={val}>
+                  {label}
+                </Select.Option>
+              ))}
+            </OptionSelect>
+          </SelectWrapper>
         </Col>
         <Col md={12}>
           <Label>{t("component.options.placeholder")}</Label>
@@ -43,7 +46,7 @@ const Container = ({ t, onChange, uiStyle }) => {
           />
         </Col>
       </Row>
-      <Row gutter={36}>
+      <Row gutter={20}>
         <Col md={12}>
           <Label>{t("component.options.widthpx")}</Label>
           <TextField
@@ -65,16 +68,18 @@ const Container = ({ t, onChange, uiStyle }) => {
           />
         </Col>
       </Row>
-      <Row gutter={36}>
+      <Row gutter={20}>
         <Col md={12}>
           <Label>{t("component.options.pointers")}</Label>
-          <OptionSelect size="large" onChange={val => onChange("pointer", val)} value={uiStyle.pointer}>
-            {pointerOptions.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
-                {label}
-              </Select.Option>
-            ))}
-          </OptionSelect>
+          <SelectWrapper>
+            <OptionSelect size="large" onChange={val => onChange("pointer", val)} value={uiStyle.pointer}>
+              {pointerOptions.map(({ value: val, label }) => (
+                <Select.Option key={val} value={val}>
+                  {label}
+                </Select.Option>
+              ))}
+            </OptionSelect>
+          </SelectWrapper>
         </Col>
       </Row>
     </Fragment>
@@ -88,3 +93,9 @@ Container.propTypes = {
 };
 
 export default Container;
+
+const SelectWrapper = styled.div`
+  & > div {
+    min-width: 100%;
+  }
+`;

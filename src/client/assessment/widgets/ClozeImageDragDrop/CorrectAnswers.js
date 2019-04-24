@@ -8,7 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { setQuestionDataAction, getQuestionDataSelector } from '../../../author/QuestionEditor/ducks';
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
@@ -38,6 +38,7 @@ class CorrectAnswers extends Component {
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
         <Tab
+          style={{ marginRight: 5, marginBottom: 5 }}
           key={i}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
           close
@@ -53,7 +54,7 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        style={{ minWidth: 70, minHeight: 25 }}
+        style={{ minWidth: 70, marginBottom: 5 }}
         icon={<IconPlus data-cy="alternate" />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
@@ -134,7 +135,7 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label={t("component.correctanswers.correct")} />
+            <Tab style={{ marginBottom: 5, marginRight: 5 }} label={t("component.correctanswers.correct")} />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

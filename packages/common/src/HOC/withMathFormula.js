@@ -15,6 +15,9 @@ export const withMathFormula = WrappedComponent => {
   `;
 
   const MathFormulaWrapped = props => {
+    /**
+     * this whole component needs rethinking.
+     */
     const { dangerouslySetInnerHTML } = props;
 
     const [mathField, setMathField] = useState(null);
@@ -69,7 +72,7 @@ export const withMathFormula = WrappedComponent => {
     const startMathValidating = () => {
       console.log("startMathValidation: ", mathField, window.MathQuill);
       if (mathField || !window.MathQuill) return;
-      if (mathFieldRef.current) {
+      if (mathFieldRef && mathFieldRef.current) {
         const MQ = window.MathQuill.getInterface(2);
         try {
           setMathField(MQ.StaticMath(mathFieldRef.current));

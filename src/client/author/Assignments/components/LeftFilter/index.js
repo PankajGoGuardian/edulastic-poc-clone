@@ -65,10 +65,10 @@ class LeftFilter extends React.Component {
   };
 
   handleChange = key => value => {
-    const { loadAssignments } = this.props;
-    filterState[key] = value;
-    const filters = { filters: filterState };
-    loadAssignments(filters);
+    const { loadAssignments, onSetFilter, filterState } = this.props;
+    const filters = { ...filterState, [key]: value };
+    loadAssignments({ filters });
+    onSetFilter(filters);
   };
 
   renderFolders = () => (
@@ -86,8 +86,9 @@ class LeftFilter extends React.Component {
   );
 
   render() {
-    const { termsData, selectedRows } = this.props;
+    const { termsData, selectedRows, filterState } = this.props;
     const { visibleModal } = this.state;
+    const { subject, grades, termId } = filterState;
     return (
       <FilterContainer>
         <FolderActionModal
@@ -135,7 +136,7 @@ class LeftFilter extends React.Component {
         ) : (
           <>
             <StyledBoldText>Grade</StyledBoldText>
-            <Select mode="multiple" placeholder="All grades" onChange={this.handleChange("grades")}>
+            <Select mode="multiple" placeholder="All grades" value={grades} onChange={this.handleChange("grades")}>
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
                   !isContentGrade && (
@@ -146,7 +147,7 @@ class LeftFilter extends React.Component {
               )}
             </Select>
             <StyledBoldText>Subject</StyledBoldText>
-            <Select mode="default" placeholder="All subjects" onChange={this.handleChange("subject")}>
+            <Select mode="default" placeholder="All subjects" value={subject} onChange={this.handleChange("subject")}>
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
@@ -154,7 +155,7 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Year</StyledBoldText>
-            <Select mode="default" placeholder="All years" onChange={this.handleChange("termId")}>
+            <Select mode="default" placeholder="All years" value={termId} onChange={this.handleChange("termId")}>
               <Select.Option key="all" value="">
                 {"All years"}
               </Select.Option>

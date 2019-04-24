@@ -50,7 +50,12 @@ class Assignments extends Component {
   state = {
     showFilter: false,
     isAdvancedView: false,
-    selectedRows: []
+    selectedRows: [],
+    filterState: {
+      grades: [],
+      subject: "",
+      termId: ""
+    }
   };
 
   componentDidMount() {
@@ -58,6 +63,10 @@ class Assignments extends Component {
     loadAssignments();
     loadAssignmentsSummary({ districtId });
   }
+
+  setFilterState = filterState => {
+    this.setState({ filterState });
+  };
 
   handleCreate = () => {
     const { history } = this.props;
@@ -125,7 +134,7 @@ class Assignments extends Component {
       assignmentsSummary,
       districtId
     } = this.props;
-    const { showFilter, isAdvancedView, selectedRows } = this.state;
+    const { showFilter, isAdvancedView, selectedRows, filterState } = this.state;
     const tabletWidth = 768;
 
     return (
@@ -142,7 +151,13 @@ class Assignments extends Component {
             <Main>
               {window.innerWidth >= tabletWidth && (
                 <>
-                  {(isAdvancedView || showFilter) && <LeftFilter selectedRows={selectedRows} />}
+                  {(isAdvancedView || showFilter) && (
+                    <LeftFilter
+                      selectedRows={selectedRows}
+                      onSetFilter={this.setFilterState}
+                      filterState={filterState}
+                    />
+                  )}
                   <TableWrapper>
                     {!isAdvancedView && (
                       <FilterButton

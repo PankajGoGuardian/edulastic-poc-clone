@@ -7,6 +7,8 @@ class HotspotPage {
   constructor() {
     this.editToolBar = new EditToolBar();
     this.header = new Header();
+
+    this.scoringTypeOption = { "Exact match": "exactMatch", "Partial match": "partialMatch" };
   }
 
   // get current question from Store
@@ -28,6 +30,36 @@ class HotspotPage {
     const storeValue = JSON.parse(window.localStorage.getItem("persist:root")).question;
     return JSON.parse(storeValue).entity.data;
   };
+
+  getMaxScore = () => cy.get('[data-cy="maxscore"]').should("be.visible");
+
+  selectScoringType(option) {
+    const selectOp = `[data-cy="${this.scoringTypeOption[option]}"]`;
+    cy.get('[data-cy="scoringType"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="scoringType"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  getPanalty = () => cy.get('[data-cy="penalty"]').should("be.visible");
+
+  getEnableAutoScoring = () =>
+    cy
+      .contains("Enable auto scoring")
+      .children()
+      .eq(0)
+      .should("be.visible");
+
+  getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
   getDropZoneImageContainer = () => cy.get('[data-cy="dropzone-image-container"]');
 

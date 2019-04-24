@@ -546,4 +546,30 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       });
     });
   });
+
+  context.only("Scoring block tests", () => {
+    before("visit items page and select question type", () => {
+      editItem.getItemWithId(testItemId);
+      editItem.deleteAllQuestion();
+      // create new que and select type
+      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+    });
+
+    afterEach(() => {
+      preview = question.header.preview();
+
+      preview.getClear().click();
+
+      preview.header.edit();
+    });
+
+    it("Test score with max score", () => {
+      question
+        .getMaxScore()
+        .clear()
+        .type(1);
+
+      preview = question.header.preview();
+    });
+  });
 });

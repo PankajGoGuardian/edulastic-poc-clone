@@ -70,12 +70,11 @@ export const withMathFormula = WrappedComponent => {
     };
 
     const startMathValidating = () => {
-      console.log("startMathValidation: ", mathField, window.MathQuill);
       if (mathField || !window.MathQuill) return;
-      if (mathFieldRef && mathFieldRef.current) {
+      if (mathFieldRef) {
         const MQ = window.MathQuill.getInterface(2);
         try {
-          setMathField(MQ.StaticMath(mathFieldRef.current));
+          setMathField(MQ.StaticMath(mathFieldRef));
         } catch (e) {
           console.warn("setMathField Error", e.message, e.stack);
         }
@@ -85,12 +84,12 @@ export const withMathFormula = WrappedComponent => {
     useEffect(() => {
       mathFieldRef = ref.current;
       startMathValidating();
-    });
+    }, []);
 
     const convertLatexToHTML = latex => {
       if (!mathField) return latex;
       mathField.latex(latex);
-      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.current.outerHTML}</span>`;
+      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.outerHTML}</span>`;
     };
 
     const convertLatexesToMathHtmls = () => {

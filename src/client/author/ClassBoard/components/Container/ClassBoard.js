@@ -260,7 +260,7 @@ class ClassBoard extends Component {
             <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
             <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
-          <StudentButtonDiv>
+          <StudentButtonDiv data-cy="studentnQuestionTab">
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
               CARD VIEW
             </BothButton>

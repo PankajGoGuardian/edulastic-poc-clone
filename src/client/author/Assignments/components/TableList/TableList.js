@@ -117,7 +117,7 @@ class TableList extends Component {
         dataIndex: "action",
         width: "14%",
         render: (_, row) => (
-          <ActionsWrapper>
+          <ActionsWrapper data-cy="PresentationIcon">
             <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
               <Icon src={presentationIcon} alt="Images" />
             </Link>
@@ -195,7 +195,7 @@ class TableList extends Component {
         sorter: true,
         width: "11%",
         render: text => (
-          <ExpandDivdier>
+          <ExpandDivdier data-cy="ButtonToShowAllClasses">
             <IconArrowDown onclick={() => false} src={arrowUpIcon} />
             {text}
           </ExpandDivdier>

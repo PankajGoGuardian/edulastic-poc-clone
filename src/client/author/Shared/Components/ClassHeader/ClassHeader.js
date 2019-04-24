@@ -90,7 +90,7 @@ class ClassHeader extends Component {
     return (
       <Container>
         <StyledTitle>
-          <StyledParaFirst>{additionalData.className || "loading..."}</StyledParaFirst>
+          <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
             Done(Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
@@ -98,25 +98,28 @@ class ClassHeader extends Component {
         <StyledTabContainer>
           <StyledTabs>
             <StyledAnchor isActive={active === "summary"}>
-              <StyledLink to={`/author/summary/${assignmentId}/${classId}`}>
+              <StyledLink to={`/author/summary/${assignmentId}/${classId}`} data-cy="Summary">
                 <IconSummaryBoard color={active === "summary" ? "#FFFFFF" : "#bed8fa"} left={0} />
                 <LinkLabel>{t("common.summaryBoard")}</LinkLabel>
               </StyledLink>
             </StyledAnchor>
             <StyledAnchor isActive={active === "classboard"}>
-              <StyledLink to={`/author/classboard/${assignmentId}/${classId}`}>
+              <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
                 <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledLink>
             </StyledAnchor>
             <StyledAnchor isActive={active === "expressgrader"}>
-              <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}>
+              <StyledLink
+                to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
+                data-cy="Expressgrader"
+              >
                 <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
                 <LinkLabel>{t("common.expressGrader")}</LinkLabel>
               </StyledLink>
             </StyledAnchor>
             <StyledAnchor isActive={active === "standard_report"}>
-              <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`}>
+              <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
                 <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
               </StyledLink>

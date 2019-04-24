@@ -60,6 +60,7 @@ const SelectContainer = styled.div`
     position: absolute;
     font-family: "FontAwesome";
     top: 0;
+    pointer-events: none;
     right: 25px;
     display: flex;
     align-items: center;

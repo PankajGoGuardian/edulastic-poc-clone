@@ -36,9 +36,9 @@ const AlignmentRow = ({
     editAlignment(alignmentIndex, { grades: val, standards: [] });
   };
 
-  const handleChangeStandard = id => {
-    const curriculum = curriculums.find(({ _id }) => id === _id);
-    editAlignment(alignmentIndex, { curriculumId: id, curriculum: curriculum.curriculum, standards: [] });
+  const handleChangeStandard = (curriculum, event) => {
+    const curriculumId = event.key;
+    editAlignment(alignmentIndex, { curriculumId, curriculum, standards: [] });
   };
 
   const standardsArr = standards.map(el => el.identifier);
@@ -148,11 +148,11 @@ const AlignmentRow = ({
                       style={{ width: "100%" }}
                       showSearch
                       filterOption
-                      value={curriculumId}
+                      value={curriculum}
                       onChange={handleChangeStandard}
                     >
                       {filteredStandards.map(({ curriculum, _id }) => (
-                        <Select.Option key={_id} value={_id}>
+                        <Select.Option key={_id} value={curriculum}>
                           {curriculum}
                         </Select.Option>
                       ))}

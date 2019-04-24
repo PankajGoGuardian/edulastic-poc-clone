@@ -54,9 +54,9 @@ const StandardsModal = ({
     </div>
   );
 
-  const handleChangeStandard = id => {
-    const curriculum = curriculums.find(({ _id }) => id === _id);
-    setState({ ...state, standard: { id, curriculum: curriculum.curriculum }, eloStandards: [] });
+  const handleChangeStandard = (curriculum, event) => {
+    const id = event.key;
+    setState({ ...state, standard: { id, curriculum }, eloStandards: [] });
     getCurriculumStandards({ id, grades: state.grades, searchStr: "" });
   };
 
@@ -101,11 +101,11 @@ const StandardsModal = ({
                 style={{ width: "100%" }}
                 showSearch
                 filterOption
-                value={state.standard.id}
+                value={state.standard.curriculum}
                 onChange={handleChangeStandard}
               >
                 {filteredStandards.map(({ curriculum, _id }) => (
-                  <Select.Option key={_id} value={_id}>
+                  <Select.Option key={_id} value={curriculum}>
                     {curriculum}
                   </Select.Option>
                 ))}

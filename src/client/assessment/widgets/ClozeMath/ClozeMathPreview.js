@@ -242,7 +242,9 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
         .find(".mathField")
         // eslint-disable-next-line func-names
         .each(function(index) {
-          $(".icon-wrapper", this).remove();
+          $(this)
+            .find(".icon-wrapper")
+            .remove();
           if (typeof evaluation[index] !== "undefined") {
             if (evaluation[index]) {
               $(this).addClass("success");
@@ -314,11 +316,13 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
 
   useEffect(() => {
     if (showKeyboard) {
-      $(mathFieldRef.current)
+      $($(wrappedRef.current).find(".ql-editor")[0])
         .find(".mathField")
         // eslint-disable-next-line func-names
         .each(function() {
-          $(".icon-wrapper", this).remove();
+          $(this)
+            .find(".icon-wrapper")
+            .remove();
           $(this).removeClass("success");
           $(this).removeClass("wrong");
           $(this).removeClass("check");

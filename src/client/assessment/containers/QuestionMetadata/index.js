@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { Button, Typography } from "antd";
+import { Button, Typography, Select } from "antd";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
 import connect from "react-redux/es/connect/connect";
@@ -9,6 +9,7 @@ import _ from "lodash";
 
 import { themes } from "../../themes";
 
+import selectsData from "../../../author/TestPage/components/common/selectsData";
 import {
   getDictCurriculumsAction,
   getDictStandardsForCurriculumAction,
@@ -33,6 +34,7 @@ import {
 import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
 import { AddButtonContainer } from "./styled/AddButtonContainer";
+import { CustomSelect } from "./styled/SubjectAndGradeSelect";
 import SecondBlock from "./SecondBlock";
 import AlignmentRow from "./AlignmentRow";
 
@@ -60,13 +62,15 @@ const QuestionMetadata = ({
   editAlignment,
   curriculumStandardsLoading
 }) => {
+  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
+  const [selectedSubjects, setSelectSubject] = useState([]);
+  const [selectedGrades, setSelectGrade] = useState([]);
+
   useEffect(() => {
     if (curriculums.length === 0) {
       getCurriculums();
     }
   }, []);
-
-  const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
 
   const handleDelete = curriculumId => () => {
     removeAlignment(curriculumId);
@@ -93,10 +97,14 @@ const QuestionMetadata = ({
   };
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
-    const newAlignments = questionData.alignment.map((c, i) => (i === index ? alignment : c));
+    const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
+    const subjects = selectedSubjects;
+    const grades = selectedGrades;
     const newQuestionData = {
       ...questionData,
-      alignment: newAlignments
+      alignment: newAlignments,
+      subjects,
+      grades
     };
     setQuestionData(newQuestionData);
   };
@@ -106,6 +114,38 @@ const QuestionMetadata = ({
       setSearchProps(searchObject);
       getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
     }
+  };
+
+  const handleSubjectsChange = value => {
+    setSelectSubject(value);
+    const subjects = value;
+    const newQuestionData = {
+      ...questionData,
+      subjects
+    };
+    setQuestionData(newQuestionData);
+  };
+
+  const handleGradesChange = value => {
+    setSelectGrade(value);
+    const grades = value;
+    const newQuestionData = {
+      ...questionData,
+      grades
+    };
+    setQuestionData(newQuestionData);
+  };
+
+  const createUniqGrades = (grades, alignmentIndex) => {
+    const uniqGrades = _.uniq([...grades, ...selectedGrades]);
+    setSelectGrade(uniqGrades);
+    editAlignment(alignmentIndex, { grades: uniqGrades });
+  };
+
+  const createUniqSubjects = (subject, alignmentIndex) => {
+    const uniqSubjects = _.uniq([subject, ...selectedSubjects]).filter(item => !!item);
+    setSelectSubject(uniqSubjects);
+    editAlignment(alignmentIndex, { subject });
   };
 
   return (
@@ -129,14 +169,47 @@ const QuestionMetadata = ({
                 curriculumStandardsTLO={curriculumStandards.tlo}
                 curriculumStandardsLoading={curriculumStandardsLoading}
                 editAlignment={editAlignment}
+                onCreateUniqSubjects={createUniqSubjects}
+                onCreateUniqGrades={createUniqGrades}
               />
             ))}
           </ShowAlignmentRowsContainer>
 
-          <AddButtonContainer>
+          <AddButtonContainer autoheight={true}>
             <Button htmlType="button" type="primary" onClick={handleAdd}>
               <span>{t("component.options.newAligment")}</span>
             </Button>
+            <CustomSelect
+              mode="multiple"
+              placeholder="Select Grades"
+              key="grade"
+              defaultValue={[]}
+              value={selectedGrades}
+              onChange={handleGradesChange}
+            >
+              {selectsData.allGrades.map(grade => (
+                <Select.Option key={grade.value} value={grade.value}>
+                  {grade.text}
+                </Select.Option>
+              ))}
+            </CustomSelect>
+            <CustomSelect
+              mode="multiple"
+              placeholder="Select Subjects"
+              key="subject"
+              defaultValue={[]}
+              value={selectedSubjects}
+              onChange={handleSubjectsChange}
+            >
+              {selectsData.allSubjects.map(
+                subject =>
+                  subject.value && (
+                    <Select.Option key={subject.value} value={subject.value}>
+                      {subject.text}
+                    </Select.Option>
+                  )
+              )}
+            </CustomSelect>
           </AddButtonContainer>
         </Container>
 

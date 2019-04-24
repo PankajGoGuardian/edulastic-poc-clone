@@ -24,7 +24,9 @@ const AlignmentRow = ({
   onDelete,
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
-  editAlignment
+  editAlignment,
+  onCreateUniqSubjects,
+  onCreateUniqGrades
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -69,6 +71,11 @@ const AlignmentRow = ({
 
     const newStandards = [...standards, newStandard];
     editAlignment(alignmentIndex, { standards: newStandards });
+    const subject = alignment.subject;
+    const alignmentGrades = alignment.grades;
+    const standardsGrades = newStandards.flatMap(standard => standard.grades);
+    onCreateUniqSubjects(subject, alignmentIndex);
+    onCreateUniqGrades([...alignmentGrades, ...standardsGrades], alignmentIndex);
   };
 
   const handleStandardDeselect = removedElement => {
@@ -187,7 +194,7 @@ const AlignmentRow = ({
                   {!curriculumStandardsLoading &&
                     curriculumStandardsELO.map(el => (
                       <Select.Option
-                        title
+                        title={"true"}
                         key={el.identifier}
                         value={el.identifier}
                         obj={el}
@@ -230,7 +237,6 @@ const AlignmentRow = ({
 AlignmentRow.propTypes = {
   t: PropTypes.func.isRequired,
   getCurriculumStandards: PropTypes.func.isRequired,
-  addAlignment: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
   curriculums: PropTypes.array.isRequired,
   curriculumStandardsELO: PropTypes.array.isRequired,

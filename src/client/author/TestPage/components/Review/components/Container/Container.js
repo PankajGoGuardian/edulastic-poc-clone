@@ -1,7 +1,7 @@
 import React, { PureComponent } from "react";
 import { Row, Col } from "antd";
 import PropTypes from "prop-types";
-import { cloneDeep, get } from "lodash";
+import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Paper, withWindowSizes } from "@edulastic/common";
@@ -184,8 +184,8 @@ class Review extends PureComponent {
 
     const isSmallSize = windowWidth > 993 ? 1 : 0;
     const isMobileSize = windowWidth > 468 ? 1 : 0;
-    const grades = [...new Set([...test.grades, ...itemsSubjectAndGrade.grades])];
-    const subjects = [...new Set([...test.subjects, ...itemsSubjectAndGrade.subjects])];
+    const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
+    const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     return (
       <div style={{ paddingTop: 10 }}>
         <Row>

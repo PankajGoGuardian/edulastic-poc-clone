@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Button } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
-
+import { uniq as _uniq } from "lodash";
 import { IconSource } from "@edulastic/icons";
 import { blue } from "@edulastic/colors";
 import { Paper, withWindowSizes } from "@edulastic/common";
@@ -50,8 +50,8 @@ const Summary = ({
       to: ""
     }
   ];
-  const grades = [...new Set([...test.grades, ...itemsSubjectAndGrade.grades])];
-  const subjects = [...new Set([...test.subjects, ...itemsSubjectAndGrade.subjects])];
+  const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
+  const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
   return (
     <Container>
       <SecondHeader>

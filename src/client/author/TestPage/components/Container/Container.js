@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject } from "lodash";
+import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
@@ -214,8 +214,8 @@ class Container extends PureComponent {
     const testItems = selectedRows.data;
     const newTest = cloneDeep(test);
 
-    newTest.subjects = [...new Set([...newTest.subjects, ...itemsSubjectAndGrade.subjects])];
-    newTest.grades = [...new Set([...newTest.grades, ...itemsSubjectAndGrade.grades])];
+    newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
+    newTest.grades = _uniq([...newTest.grades, ...itemsSubjectAndGrade.grades]);
 
     newTest.createdBy = {
       id: user._id,

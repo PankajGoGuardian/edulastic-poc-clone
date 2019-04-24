@@ -8,7 +8,7 @@ import { FlexContainer, MoveLink } from "@edulastic/common";
 import { IconShare, IconHeart } from "@edulastic/icons";
 import { greenDark, textColor, grey, white } from "@edulastic/colors";
 import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, uniq as _uniq } from "lodash";
 
 import Tags from "../../../../src/components/common/Tags";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
@@ -75,6 +75,10 @@ class MetaInfoCell extends Component {
     // getting grades and subjects from each question array in test items
     const { testItems = [] } = newTest;
 
+    const questionGrades = testItems.flatMap(item => item.data.questions).flatMap(question => question.grades || []);
+    const questionSubjects = testItems
+      .flatMap(item => item.data.questions)
+      .flatMap(question => question.subjects || []);
     //alignment object inside questions contains subject and domains
     const getAlignmentsObject = testItems
       .flatMap(item => item.data.questions)
@@ -87,7 +91,10 @@ class MetaInfoCell extends Component {
       .flatMap(alignment => alignment.domains)
       .flatMap(domain => domain.standards)
       .flatMap(standard => standard.grades);
-    getItemsSubjectAndGrade({ subjects, grades });
+    getItemsSubjectAndGrade({
+      subjects: _uniq([...subjects, ...questionSubjects]),
+      grades: _uniq([...grades, ...questionGrades])
+    });
     setTestData(newTest);
   };
 

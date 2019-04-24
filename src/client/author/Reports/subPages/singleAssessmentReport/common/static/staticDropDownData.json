@@ -42,9 +42,6 @@
     { "key": "10", "title": "Grade 10" },
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
-    { "key": "Algebra", "title": "Algebra" },
-    { "key": "Calculus", "title": "Calculus" },
-    { "key": "Trigonometry", "title": "Trigonometry" },
     { "key": "other", "title": "Other" }
   ],
   "assessmentType": [

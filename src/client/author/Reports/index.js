@@ -1,8 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
+import next from "immer";
+
+import Breadcrumb from "../src/components/Breadcrumb";
 
 import ResponseFrequency from "./subPages/singleAssessmentReport/ResponseFrequency";
 import AssessmentSummary from "./subPages/singleAssessmentReport/AssessmentSummary";
@@ -13,61 +16,46 @@ import { StyledContainer, StyledCard } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
 import { CustomizedHeaderWrapper } from "./common/components/header";
+import SingleAssessmentReportFilters from "./subPages/singleAssessmentReport/common/components/filters";
+import { NavigatorTabs } from "./common/components/widgets/navigatorTabs";
 
-import { getAssignmentsRequestAction, getReportsAssignments } from "./assignmentsDucks";
+import { getNavigationTabLinks } from "./common/util";
 
-const locToTitle = {
-  "assessment-summary": "Assessment Summary",
-  "peer-performance": "Peer Performance",
-  "response-frequency": "Response Frequency",
-  "performance-by-standards": "Performance By Standards"
-};
-
-const locToBreadcrumb = {
-  "assessment-summary": [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "ASSESSMENT SUMMARY"
-    }
-  ],
-  "peer-performance": [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "PEER PERFORMANCE"
-    }
-  ],
-  "response-frequency": [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "RESPONSE FREQUENCY"
-    }
-  ],
-  "performance-by-standards": [
-    {
-      title: "REPORTS",
-      to: "/author/reports"
-    },
-    {
-      title: "PERFORMANCE BY STANDARDS"
-    }
-  ]
-};
+import navigation from "./common/static/json/navigation.json";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
+  const [settings, setSettings] = useState({
+    selectedTest: { key: "", title: "" },
+    requestFilters: {
+      termId: "",
+      subject: "",
+      grade: "",
+      courseId: "",
+      groupId: "",
+      schoolId: "",
+      teacherId: "",
+      assessmentType: ""
+    }
+  });
 
   useEffect(() => {
-    props.getAssignmentsRequestAction();
-  }, []);
+    let loc = getLoc();
+    if (loc) {
+      let str = "?";
+      Object.keys(settings.requestFilters).map((item, index) => {
+        if (settings.requestFilters[item] === "") {
+          str = str + item + "=" + "All" + "&";
+        } else {
+          str = str + item + "=" + settings.requestFilters[item] + "&";
+        }
+        let path = props.match.path + loc + "/test/" + settings.selectedTest.key + str;
+        props.history.push(path);
+      });
+    }
+  }, [settings]);
+
+  // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
     console.log("not implemented yet");
@@ -85,18 +73,91 @@ const Container = props => {
     setShowFilter(status);
   };
 
-  const getHeaderSettings = () => {
+  // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
+
+  const getLoc = () => {
     let url = props.location.pathname;
     if (url.length > 16) {
       let _url = url.substring(16);
       let loc = _url.substring(0, _url.indexOf("/"));
+      return loc;
+    }
+    return false;
+  };
+
+  let computedChartNavigatorLinks;
+
+  const computeChartNavigationLinks = (sel, filt) => {
+    if (navigation.locToData[getLoc()]) {
+      let str = "?";
+      Object.keys(filt).map((item, index) => {
+        let val = filt[item] === "" ? "All" : filt[item];
+        str = str + item + "=" + val + "&";
+      });
+      return next(navigation.navigation[navigation.locToData[getLoc()].group], arr => {
+        getNavigationTabLinks(arr, sel.key + str);
+      });
+    } else {
+      return [];
+    }
+  };
+
+  computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
+
+  const onTestIdChange = (selected, filters) => {
+    let loc = getLoc();
+    if (loc) {
+      let str = "?";
+      let obj = {};
+      Object.keys(filters).map((item, index) => {
+        if (filters[item].substring(0, 3) === "All") {
+          obj[item] = "";
+        } else {
+          obj[item] = filters[item];
+        }
+        str = str + item + "=" + filters[item] + "&";
+      });
+
+      setSettings({
+        selectedTest: selected,
+        requestFilters: obj
+      });
+    }
+  };
+
+  const onGoClick = _settings => {
+    let loc = getLoc();
+    if (loc) {
+      let str = "?";
+      let obj = {};
+      Object.keys(_settings.filters).map((item, index) => {
+        if (_settings.filters[item].substring(0, 3) === "All") {
+          obj[item] = "";
+        } else {
+          obj[item] = _settings.filters[item];
+        }
+        str = str + item + "=" + _settings.filters[item] + "&";
+      });
+
+      setSettings({
+        selectedTest: _settings.selectedTest,
+        requestFilters: obj
+      });
+    }
+  };
+
+  const getHeaderSettings = () => {
+    let loc = getLoc();
+    if (loc) {
       return {
-        title: locToTitle[loc],
+        loc: loc,
+        group: navigation.locToData[loc].group,
+        title: navigation.locToData[loc].title,
         onShareClickCB: onShareClickCB,
         onPrintClickCB: onPrintClickCB,
         onDownloadCSVClickCB: onDownloadCSVClickCB,
         onRefineResultsCB: onRefineResultsCB,
-        breadcrumbData: locToBreadcrumb[loc]
+        breadcrumbData: navigation.locToData[loc].breadcrumb
       };
     } else {
       return { title: "Reports" };
@@ -115,28 +176,41 @@ const Container = props => {
         onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
         onRefineResultsCB={headerSettings.onRefineResultsCB}
       />
-
+      {headerSettings.group === "singleAssessmentReport" ? (
+        <div>
+          <SingleAssessmentReportFilters
+            onTestIdChange={onTestIdChange}
+            onGoClick={onGoClick}
+            loc={headerSettings.loc}
+            history={props.history}
+            location={props.location}
+            match={props.match}
+            style={showFilter ? { display: "block" } : { display: "none" }}
+          />
+          <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={headerSettings.loc} />
+        </div>
+      ) : null}
       <Route exact path={props.match.path} component={Reports} />
       <Route
         exact
         path={`${props.match.path}assessment-summary/test/:testId?`}
-        render={_props => <AssessmentSummary {..._props} showFilter={showFilter} assignments={props.assignments} />}
+        render={_props => <AssessmentSummary {..._props} settings={settings} />}
       />
       <Route
         exact
         path={`${props.match.path}peer-performance/test/:testId?`}
-        render={_props => <PeerPerformance {..._props} showFilter={showFilter} assignments={props.assignments} />}
+        render={_props => <PeerPerformance {..._props} settings={settings} />}
       />
       <Route
         exact
         path={`${props.match.path}response-frequency/test/:testId?`}
-        render={_props => <ResponseFrequency {..._props} showFilter={showFilter} assignments={props.assignments} />}
+        render={_props => <ResponseFrequency {..._props} settings={settings} />}
       />
       <Route
         exact
         path={`${props.match.path}performance-by-standards/test/:testId?`}
         render={_props => (
-          <PerformanceByStandards {..._props} showFilter={showFilter} assignments={props.assignments} />
+          <PerformanceByStandards {..._props} showFilter={showFilter} filters={settings.requestFilters} />
         )}
       />
     </div>
@@ -163,15 +237,4 @@ const Reports = props => {
   );
 };
 
-const enhance = compose(
-  connect(
-    state => ({
-      assignments: getReportsAssignments(state)
-    }),
-    {
-      getAssignmentsRequestAction: getAssignmentsRequestAction
-    }
-  )
-);
-
-export default enhance(Container);
+export default Container;

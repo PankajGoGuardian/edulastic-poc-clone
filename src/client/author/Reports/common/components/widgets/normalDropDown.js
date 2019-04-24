@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { Button, Dropdown, Menu, Icon } from "antd";
+import styled from "styled-components";
 import { partial } from "lodash";
 
 const CustomMenu = (className, data, handleMenuClick) => {
@@ -16,7 +17,7 @@ const CustomMenu = (className, data, handleMenuClick) => {
   );
 };
 
-export const NormalDropDown = ({ className, by, updateCB, data, comData }) => {
+const NormalDropDown = ({ className, containerClassName = "", by, updateCB, data, comData }) => {
   const [selected, setSelected] = useState(by);
 
   const handleMenuClick = useCallback(
@@ -31,13 +32,25 @@ export const NormalDropDown = ({ className, by, updateCB, data, comData }) => {
   );
 
   return (
-    <div className={`${className}`}>
+    <StyledDiv className={`${className} ${containerClassName} normal-dropdown`}>
       <Dropdown overlay={partial(CustomMenu, className, data, handleMenuClick)}>
         <Button>
           {selected.title}
           <Icon type="caret-down" />
         </Button>
       </Dropdown>
-    </div>
+    </StyledDiv>
   );
 };
+
+const StyledDiv = styled.div`
+  margin: 0px 5px;
+  overflow: hidden;
+  button {
+    white-space: pre-wrap;
+  }
+`;
+
+const StyledNormalDropDown = styled(NormalDropDown)``;
+
+export { StyledNormalDropDown as NormalDropDown };

@@ -1,0 +1,90 @@
+{
+  "locToData": {
+    "assessment-summary": {
+      "title": "Assessment Summary",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "ASSESSMENT SUMMARY"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    },
+    "peer-performance": {
+      "title": "Peer Performance",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "PEER PERFORMANCE"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    },
+    "response-frequency": {
+      "title": "Response Frequency",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "RESPONSE FREQUENCY"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    },
+    "performance-by-standards": {
+      "title": "Performance by Standards",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "PERFORMANCE BY STANDARDS"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    }
+  },
+  "navigation": {
+    "singleAssessmentReport": [
+      {
+        "key": "assessment-summary",
+        "title": "Assessment Summary",
+        "location": "/author/reports/assessment-summary/test/"
+      },
+      {
+        "key": "peer-performance",
+        "title": "Peer Performance",
+        "location": "/author/reports/peer-performance/test/"
+      },
+      {
+        "key": "question-analysis",
+        "title": "Question Analysis",
+        "location": "/author/reports/"
+      },
+      {
+        "key": "response-frequency",
+        "title": "Response Frequency",
+        "location": "/author/reports/response-frequency/test/"
+      },
+      {
+        "key": "performance-by-standards",
+        "title": "Performance by Standards",
+        "location": "/author/reports/"
+      },
+      {
+        "key": "performance-by-students",
+        "title": "Performance by Students",
+        "location": "/author/reports/"
+      }
+    ]
+  }
+}

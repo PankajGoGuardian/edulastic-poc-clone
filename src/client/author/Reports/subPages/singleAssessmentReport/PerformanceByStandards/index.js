@@ -6,7 +6,7 @@ import { Spin, Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
 import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
-import { StyledControlDropDown, FullWidthControlDropDown } from "../../../common/styled";
+import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
 import { NavigatorTabs } from "../../../common/components/navigatorTabs";
 import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
@@ -28,6 +28,7 @@ import {
   getPerformanceByStandardsReportSelector,
   defaultReport
 } from "./ducks";
+import { getAssignmentsRequestAction, getReportsAssignments } from "../../../assignmentsDucks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 
@@ -46,8 +47,8 @@ const PerformanceByStandards = ({
   loading,
   report,
   getPerformanceByStandards,
+  getAssignmentsRequestAction,
   match,
-  showFilter,
   assignments,
   history,
   location
@@ -98,6 +99,8 @@ const PerformanceByStandards = ({
         getPerformanceByStandards(q);
         setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
       }
+    } else {
+      getAssignmentsRequestAction();
     }
   }, [assignments]);
 
@@ -238,31 +241,20 @@ const PerformanceByStandards = ({
 
   return (
     <>
-      {showFilter ? (
-        <FullWidthControlDropDown
-          prefix="Assessment Name"
-          showPrefixOnSelected={false}
-          by={selectedTest}
-          updateCB={handleUpdateTestId}
-          data={testIds}
-          trigger="click"
-        />
-      ) : null}
-      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab="performanceByStandards" />
       <Card>
         <CardHeader>
           <CardTitle>Performance by Standards</CardTitle>
           <CardDropdownWrapper>
-            <StyledControlDropDown
+            <ControlDropDown
               prefix="View By"
               by={dropDownFormat.viewByDropDownData[0]}
-              updateCB={handleViewByChange}
+              selectCB={handleViewByChange}
               data={dropDownFormat.viewByDropDownData}
             />
-            <StyledControlDropDown
+            <ControlDropDown
               prefix="Analyze By"
               by={dropDownFormat.analyzeByDropDownData[0]}
-              updateCB={handleAnalyzeByChange}
+              selectCB={handleAnalyzeByChange}
               data={dropDownFormat.analyzeByDropDownData}
             />
             <GroupingTitle>Standard:</GroupingTitle>
@@ -302,10 +294,10 @@ const PerformanceByStandards = ({
         <CardHeader>
           <CardTitle>Performance by Standards</CardTitle>
           <CardDropdownWrapper>
-            <StyledControlDropDown
+            <ControlDropDown
               prefix="Compare By"
               by={dropDownFormat.compareByDropDownData[0]}
-              updateCB={handleCompareByChange}
+              selectCB={handleCompareByChange}
               data={dropDownFormat.compareByDropDownData}
             />
           </CardDropdownWrapper>
@@ -337,7 +329,6 @@ PerformanceByStandards.propTypes = {
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
-  showFilter: PropTypes.bool.isRequired,
   assignments: PropTypes.array,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
@@ -350,10 +341,12 @@ PerformanceByStandards.defaultProps = {
 const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
-    report: getPerformanceByStandardsReportSelector(state)
+    report: getPerformanceByStandardsReportSelector(state),
+    assignments: getReportsAssignments(state)
   }),
   {
-    getPerformanceByStandards: getPerformanceByStandardsAction
+    getPerformanceByStandards: getPerformanceByStandardsAction,
+    getAssignmentsRequestAction: getAssignmentsRequestAction
   }
 );
 

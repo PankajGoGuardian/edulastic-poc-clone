@@ -28,6 +28,11 @@ export const getUserRole = createSelector(
   state => state.user.role
 );
 
+export const getUser = createSelector(
+  stateSelector,
+  state => state.user
+);
+
 export const getCurrentTerm = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.defaultTermId")

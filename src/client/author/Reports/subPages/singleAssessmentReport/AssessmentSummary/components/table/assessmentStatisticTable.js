@@ -6,7 +6,8 @@ import next from "immer";
 import { StyledTable } from "../styled";
 
 import { getStandardDeviation, getVariance } from "../../../../../common/util";
-import { StyledControlDropDown, StyledH3 } from "../../../../../common/styled";
+import { StyledH3 } from "../../../../../common/styled";
+import { ControlDropDown } from "../../../../../common/components/widgets/controlDropDown";
 
 import columnData from "../../static/json/tableColumns.json";
 
@@ -170,7 +171,7 @@ export const AssessmentStatisticTable = props => {
         </Col>
         {props.role !== "teacher" ? (
           <Col className="top-area-col control-area">
-            <StyledControlDropDown prefix={"Compare by"} by={tableType} updateCB={updateTableCB} data={dropDownData} />
+            <ControlDropDown prefix={"Compare by"} by={tableType} selectCB={updateTableCB} data={dropDownData} />
           </Col>
         ) : (
           ""

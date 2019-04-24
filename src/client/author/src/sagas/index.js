@@ -12,6 +12,7 @@ import { testsAddItemsSaga } from "../../TestPage/components/AddItems";
 import { testsAssignSaga } from "../../TestPage/components/Assign";
 import assignmentsSaga from "./assignments";
 import { reportAssignmentsSaga } from "../../Reports/assignmentsDucks";
+import { reportSARFilterDataSaga } from "../../Reports/subPages/singleAssessmentReport/common/filterDataDucks";
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportPeerPerformanceSaga } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
@@ -42,6 +43,7 @@ const authorSagas = [
   classBoardSaga(),
   assignmentsSaga(),
   reportAssignmentsSaga(),
+  reportSARFilterDataSaga(),
   reportAssessmentSummarySaga(),
   reportResponseFrequencySaga(),
   reportPeerPerformanceSaga(),

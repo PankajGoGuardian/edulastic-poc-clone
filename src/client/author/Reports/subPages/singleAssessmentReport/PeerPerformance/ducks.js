@@ -26,6 +26,11 @@ export const getReportsPeerPerformance = createSelector(
   state => state.peerPerformance
 );
 
+export const getReportsPeerPerformanceLoader = createSelector(
+  stateSelector,
+  state => state.loading
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -59,7 +64,7 @@ export const reportPeerPerformanceReducer = createReducer(initialState, {
 function* getReportsPeerPerformanceRequest({ payload }) {
   try {
     const peerPerformance = yield call(reportsApi.fetchPeerPerformanceReport, payload);
-    console.log("peerPerformance", peerPerformance);
+
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_SUCCESS,
       payload: { peerPerformance }

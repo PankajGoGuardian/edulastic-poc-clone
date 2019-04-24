@@ -25,6 +25,11 @@ export const getReportsResponseFrequency = createSelector(
   state => state.responseFrequency
 );
 
+export const getReportsResponseFrequencyLoader = createSelector(
+  stateSelector,
+  state => state.loading
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //

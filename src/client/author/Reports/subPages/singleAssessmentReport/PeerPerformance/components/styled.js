@@ -1,11 +1,20 @@
 import styled from "styled-components";
 import { Row, Col } from "antd";
 import { fadedBlack } from "@edulastic/colors";
-import {
-  StyledFilterDropDownWithDropDown as FilterDropDownWithDropDown,
-  StyledTable as Table
-} from "../../../../common/styled";
+import { StyledTable as Table } from "../../../../common/styled";
+import { FilterDropDownWithDropDown } from "../../../../common/components/widgets/filterDropDownWithDropDown";
 import { CustomTableTooltip } from "../../../../common/components/customTableTooltip";
+import { StyledCard as Card } from "../../../../common/styled";
+
+export const StyledCard = styled(Card)`
+  .recharts-default-legend {
+    .recharts-legend-item {
+      &:nth-child(1) {
+        padding-left: 90px;
+      }
+    }
+  }
+`;
 
 export const UpperContainer = styled.div`
   .dropdown-container {

@@ -25,6 +25,11 @@ export const getReportsAssessmentSummary = createSelector(
   state => state.assessmentSummary
 );
 
+export const getReportsAssessmentSummaryLoader = createSelector(
+  stateSelector,
+  state => state.loading
+);
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //

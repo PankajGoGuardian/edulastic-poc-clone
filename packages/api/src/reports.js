@@ -45,26 +45,46 @@ const fetchAssignments = () => {
   return api.callApi({ url: `/assignments` });
 };
 
+const getRequestParams = obj => {
+  let str = "";
+  let arr = Object.keys(obj);
+  arr.map((item, index) => {
+    str = str + item + "=" + obj[item] + "&";
+  });
+
+  return str;
+};
+
 const fetchResponseFrequency = params => {
-  return api.callApi({ url: `/report/responseFrequency?testId=${params.testId}` });
+  return api.callApi({
+    url: `/report/responseFrequency?testId=${params.testId}`,
+    params: params.requestFilters
+  });
 };
 
 const fetchAssessmentSummaryReport = params => {
   return api.callApi({
-    url: `/report/assessmentSummary?testId=${params.testId}`
+    url: `/report/assessmentSummary?testId=${params.testId}`,
+    params: params.requestFilters
   });
-  // ?testId=5c90d974a649cb81bc5d4ca2&districtId=5c9089b1a649cb81bc398b1f
 };
 
 const fetchPeerPerformanceReport = params => {
   return api.callApi({
-    url: `/report/peerPerformance?testId=${params.testId}`
+    url: `/report/peerPerformance?testId=${params.testId}`,
+    params: params.requestFilters
   });
 };
 
 const fetchPerformanceByStandard = params => {
   return api.callApi({
     url: `/report/performanceByStandards?testId=${params.testId}`
+  });
+};
+
+const fetchSARFilterData = params => {
+  return api.callApi({
+    url: `/report/filter/single-assessment`
   });
 };
 
@@ -77,5 +97,6 @@ export default {
   fetchResponseFrequency,
   fetchAssessmentSummaryReport,
   fetchPeerPerformanceReport,
-  fetchPerformanceByStandard
+  fetchPerformanceByStandard,
+  fetchSARFilterData
 };

@@ -3,22 +3,11 @@ import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
 import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
-import { ControlDropDown } from "./components/controlDropDown";
-import { NormalDropDown } from "./components/normalDropDown";
-import { FilterDropDownWithDropDown } from "./components/filterDropDownWithDropDown";
 import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors";
 import { Text } from "@vx/text";
 
 export const StyledCard = styled(Card)`
   margin: 8px;
-
-  .recharts-default-legend {
-    .recharts-legend-item {
-      &:nth-child(1) {
-        padding-left: 90px;
-      }
-    }
-  }
 
   .ant-card-body {
     padding: 18px;
@@ -56,8 +45,6 @@ export const StyledCard = styled(Card)`
 `;
 
 export const StyledContainer = styled(Row)`
-  //   flex-flow: row wrap;
-
   .report-category {
     flex: 50%;
     max-width: 50%;
@@ -148,6 +135,7 @@ export const StyledTable = styled(Table)`
 
   .ant-table-body::-webkit-scrollbar {
     height: 10px;
+    width: 10px;
   }
 
   .ant-table-body::-webkit-scrollbar-track {
@@ -211,61 +199,6 @@ export const StyledSlider = styled(Slider)`
     width: 22px;
     height: 22px;
     border: solid 4px #69c0ff;
-  }
-`;
-
-export const StyledControlDropDown = styled(ControlDropDown)`
-  margin: 0px 5px;
-  button {
-    white-space: pre-wrap;
-  }
-  .ant-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
-  }
-`;
-
-export const StyledNormalDropDown = styled(NormalDropDown)`
-  margin: 0px 5px;
-  max-height: 400px;
-  overflow: auto;
-  button {
-    white-space: pre-wrap;
-  }
-`;
-
-export const FullWidthControlDropDown = styled(ControlDropDown)`
-  margin: 0px 5px;
-  max-height: 400px;
-  overflow: auto;
-  button {
-    white-space: pre-wrap;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: left;
-    span {
-      flex: 1;
-    }
-  }
-  .ant-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
-  }
-`;
-
-export const StyledFilterDropDownWithDropDown = styled(FilterDropDownWithDropDown)`
-  margin: 0px 5px;
-  button {
-    white-space: pre-wrap;
-  }
-  .ant-dropdown-menu-item-disabled {
-    font-weight: 900;
-    color: ${black};
-    cursor: default;
   }
 `;
 

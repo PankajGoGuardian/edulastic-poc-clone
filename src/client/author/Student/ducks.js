@@ -1,0 +1,264 @@
+import { createAction, createReducer } from "redux-starter-kit";
+import { createSelector } from "reselect";
+import { takeEvery, call, put, all } from "redux-saga/effects";
+import { userApi, groupApi } from "@edulastic/api";
+import { message } from "antd";
+
+const RECEIVE_STUDENTLIST_REQUEST = "[student] receive list request";
+const RECEIVE_STUDENTLIST_SUCCESS = "[student] receive list success";
+const RECEIVE_STUDENTLIST_ERROR = "[student] receive list error";
+const UPDATE_STUDENT_REQUEST = "[student] update data request";
+const UPDATE_STUDENT_SUCCESS = "[student] update data success";
+const UPDATE_STUDENT_ERROR = "[student] update data error";
+const CREATE_STUDENT_REQUEST = "[student] create data request";
+const CREATE_STUDENT_SUCCESS = "[student] create data success";
+const CREATE_STUDENT_ERROR = "[student] create data error";
+const DELETE_STUDENT_REQUEST = "[student] delete data request";
+const DELETE_STUDENT_SUCCESS = "[student] delete data success";
+const DELETE_STUDENT_ERROR = "[student] delete data error";
+
+const SET_STUDENT_SEARCHNAME = "[student] set search name";
+const SET_STUDENT_SETFILTERS = "[student] set filters";
+
+export const receiveStudentsListAction = createAction(RECEIVE_STUDENTLIST_REQUEST);
+export const receiveStudentsListSuccessAction = createAction(RECEIVE_STUDENTLIST_SUCCESS);
+export const receiveStudentsListErrorAction = createAction(RECEIVE_STUDENTLIST_ERROR);
+export const updateStudentAction = createAction(UPDATE_STUDENT_REQUEST);
+export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS);
+export const updateStudentErrorAction = createAction(UPDATE_STUDENT_ERROR);
+export const createStudentAction = createAction(CREATE_STUDENT_REQUEST);
+export const createStudentSuccessAction = createAction(CREATE_STUDENT_SUCCESS);
+export const createStudentErrorAction = createAction(CREATE_STUDENT_ERROR);
+export const deleteStudentAction = createAction(DELETE_STUDENT_REQUEST);
+export const deleteStudentSuccessAction = createAction(DELETE_STUDENT_SUCCESS);
+export const deleteStudentErrorAction = createAction(DELETE_STUDENT_ERROR);
+
+export const setSearchNameAction = createAction(SET_STUDENT_SEARCHNAME);
+export const setFiltersAction = createAction(SET_STUDENT_SETFILTERS);
+
+//selectors
+const stateStudentSelector = state => state.studentReducer;
+export const getStudentsListSelector = createSelector(
+  stateStudentSelector,
+  state => {
+    if (state.data.length > 0) {
+      let searchByNameData = [];
+      if (state.searchName.length > 0) {
+        searchByNameData = state.data.filter(row => {
+          let name = row.firstName + " " + row.lastName;
+          if (name === state.searchName) return row;
+        });
+      } else {
+        searchByNameData = state.data;
+      }
+
+      let possibleFilterKey = [];
+
+      if (state.filtersColumn !== "") {
+        possibleFilterKey.push(state.filtersColumn);
+      } else {
+        possibleFilterKey = ["firstName", "lastName", "email"];
+      }
+
+      const filterSource = searchByNameData.filter(row => {
+        if (state.filtersText === "") {
+          return row;
+        } else {
+          if (state.filtersValue === "equals") {
+            const equalKeys = possibleFilterKey.filter(key => {
+              if (row[key] === state.filtersText) return row;
+            });
+            if (equalKeys.length > 0) return row;
+          } else if (state.filtersValue === "contains" || state.filtersValue === "") {
+            const equalKeys = possibleFilterKey.filter(key => {
+              if (row[key] !== undefined) {
+                if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
+              }
+            });
+            if (equalKeys.length > 0) return row;
+          }
+        }
+      });
+      return filterSource;
+    } else {
+      return state.data;
+    }
+  }
+);
+
+// reducers
+const initialState = {
+  data: {},
+  loading: false,
+  error: null,
+  update: {},
+  updating: false,
+  updateError: null,
+  create: { _id: -1 },
+  creating: false,
+  createError: null,
+  delete: null,
+  deleting: false,
+  deleteError: null,
+  searchName: "",
+  filtersColumn: "",
+  filtersValue: "",
+  filtersText: ""
+};
+
+export const reducer = createReducer(initialState, {
+  [RECEIVE_STUDENTLIST_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_STUDENTLIST_SUCCESS]: (state, { payload }) => {
+    const studentsList = [];
+    for (let i = 0; i < payload.length; i++) {
+      let studentData = payload[i];
+      studentData.key = index;
+      if (studentData.hasOwnProperty("_source")) {
+        const source = studentData._source;
+        Object.keys(source).map((key, value) => {
+          studentData[key] = source[key];
+        });
+      }
+      delete studentData._source;
+      studentsList.push(studentData);
+    }
+
+    state.loading = false;
+    state.data = studentsList;
+  },
+  [RECEIVE_STUDENTLIST_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_STUDENT_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_STUDENT_SUCCESS]: (state, { payload }) => {
+    const studentsList = state.data.map(student => {
+      if (student._id === payload._id) {
+        const newData = {
+          ...payload
+        };
+        return { ...student, ...newData };
+      } else return student;
+    });
+
+    (state.update = payload), (state.updating = false), (state.data = studentsList);
+  },
+  [UPDATE_STUDENT_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  },
+  [CREATE_STUDENT_REQUEST]: state => {
+    state.creating = true;
+  },
+  [CREATE_STUDENT_SUCCESS]: (state, { payload }) => {
+    const createdStudent = {
+      key: state.data.length,
+      _id: payload._id,
+      firstName: payload.firstName,
+      lastName: payload.lastName,
+      role: payload.role,
+      email: payload.email,
+      institutionIds: payload.institutionIds
+    };
+
+    state.creating = false;
+    state.create = createdStudent;
+    state.data = [createdStudent, ...state.data];
+  },
+  [CREATE_STUDENT_ERROR]: (state, { payload }) => {
+    state.createError = payload.error;
+    state.creating = false;
+  },
+  [DELETE_STUDENT_REQUEST]: state => {
+    state.deleting = true;
+  },
+  [DELETE_STUDENT_SUCCESS]: (state, { payload }) => {
+    (state.delete = payload),
+      (state.deleting = false),
+      (state.data = state.data.filter(studentData => {
+        let nMatchCount = 0;
+        for (let i = 0; i < payload.length; i++) {
+          if (payload[i].userId === studentData._id) nMatchCount++;
+        }
+        if (nMatchCount == 0) return studentData;
+      }));
+  },
+  [DELETE_STUDENT_ERROR]: (state, { payload }) => {
+    state.deleting = false;
+    state.deleteError = payload.error;
+  },
+  [SET_STUDENT_SEARCHNAME]: (state, { payload }) => {
+    state.searchName = payload;
+  },
+  [SET_STUDENT_SETFILTERS]: (state, { payload }) => {
+    state.filtersColumn = payload.column;
+    state.filtersValue = payload.value;
+    state.filtersText = payload.text;
+  }
+});
+
+// sagas
+function* receiveStudentsListSaga({ payload }) {
+  try {
+    const studentsList = yield call(userApi.fetchUsers, payload);
+    const successMessage = "Receive Students is successed!";
+    yield call(message.success, successMessage);
+    yield put(receiveStudentsListSuccessAction(studentsList.data));
+  } catch (err) {
+    const errorMessage = "Receive Students is failing!";
+    yield call(message.error, errorMessage);
+    yield put(receiveStudentsListErrorAction({ error: errorMessage }));
+  }
+}
+
+function* updateStudentSaga({ payload }) {
+  try {
+    const updateStudentData = yield call(userApi.updateUser, payload);
+    yield put(updateStudentSuccessAction(updateStudentData));
+    const successMessage = "Update Student is successed!";
+    yield call(message.success, successMessage);
+  } catch (err) {
+    const errorMessage = "Update Student is failing";
+    yield call(message.error, errorMessage);
+    yield put(updateStudentErrorAction({ error: errorMessage }));
+  }
+}
+
+function* createStudentSaga({ payload }) {
+  try {
+    const createStudent = yield call(userApi.createUser, payload);
+    const successMessage = "Create Student is successed!";
+    yield call(message.success, successMessage);
+    yield put(createStudentSuccessAction(createStudent));
+  } catch (err) {
+    const errorMessage = "Create Student is failing";
+    yield call(message.error, errorMessage);
+    yield put(createStudentErrorAction({ error: errorMessage }));
+  }
+}
+
+function* deleteStudentSaga({ payload }) {
+  try {
+    for (let i = 0; i < payload.length; i++) {
+      yield call(userApi.deleteUser, payload[i]);
+    }
+    const successMessage = "Student Deleted Successfully!";
+    yield call(message.success, successMessage);
+    yield put(deleteStudentSuccessAction(payload));
+  } catch (err) {
+    const errorMessage = "Delete Student is failing";
+    yield call(message.error, errorMessage);
+    yield put(deleteStudentErrorAction({ deleteError: errorMessage }));
+  }
+}
+
+export function* watcherSaga() {
+  yield all([yield takeEvery(RECEIVE_STUDENTLIST_REQUEST, receiveStudentsListSaga)]);
+  yield all([yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentSaga)]);
+  yield all([yield takeEvery(CREATE_STUDENT_REQUEST, createStudentSaga)]);
+  yield all([yield takeEvery(DELETE_STUDENT_REQUEST, deleteStudentSaga)]);
+}

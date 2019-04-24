@@ -28,6 +28,7 @@ import { districtPolicySaga } from "../../DistrictPolicy";
 import { performanceBandSaga } from "../../PerformanceBand";
 import { standardsProficiencySaga } from "../../StandardsProficiency";
 import { schoolsSaga } from "../../Schools";
+import { studentSaga } from "../../Student";
 import { teacherSaga } from "../../Teacher";
 import { districtAdminSaga } from "../../DistrictAdmin";
 import { schoolAdminSaga } from "../../SchoolAdmin";
@@ -65,6 +66,7 @@ const authorSagas = [
   standardsProficiencySaga(),
   schoolsSaga(),
   performanceByStandardsSaga(),
+  studentSaga(),
   teacherSaga(),
   districtAdminSaga(),
   schoolAdminSaga(),

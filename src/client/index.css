@@ -1120,10 +1120,10 @@ span.token.active-word {
 }
 
 .ant-select-selection {
-  border: 1px solid #e1e1e1; 
+  border: 1px solid #e1e1e1;
 }
 
-  .mq-math-mode.wrong:after {
+.mq-math-mode.wrong:after {
   /* position: absolute;
   right: 5px;
   top: calc(50% - 10px);

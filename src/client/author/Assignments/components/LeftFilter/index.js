@@ -13,6 +13,7 @@ import {
 } from "@edulastic/icons";
 
 import selectsData from "../../../TestPage/components/common/selectsData";
+import { receiveAssignmentsAction } from "../../../src/actions/assignments";
 import {
   FilterContainer,
   StyledBoldText,
@@ -26,6 +27,11 @@ import {
 
 const { allGrades, allSubjects, testType } = selectsData;
 
+const filterState = {
+  grades: [],
+  subject: "",
+  termId: ""
+};
 class LeftFilter extends React.Component {
   state = { visibleModal: {} };
 
@@ -56,6 +62,13 @@ class LeftFilter extends React.Component {
         [name]: false
       }
     });
+  };
+
+  handleChange = key => value => {
+    const { loadAssignments } = this.props;
+    filterState[key] = value;
+    const filters = { filters: filterState };
+    loadAssignments(filters);
   };
 
   renderFolders = () => (
@@ -122,7 +135,7 @@ class LeftFilter extends React.Component {
         ) : (
           <>
             <StyledBoldText>Grade</StyledBoldText>
-            <Select mode="multiple" placeholder="All grades">
+            <Select mode="multiple" placeholder="All grades" onChange={this.handleChange("grades")}>
               {allGrades.map(
                 ({ value, text, isContentGrade }) =>
                   !isContentGrade && (
@@ -133,7 +146,7 @@ class LeftFilter extends React.Component {
               )}
             </Select>
             <StyledBoldText>Subject</StyledBoldText>
-            <Select mode="default" placeholder="All subjects">
+            <Select mode="default" placeholder="All subjects" onChange={this.handleChange("subject")}>
               {allSubjects.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
@@ -141,7 +154,7 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Year</StyledBoldText>
-            <Select mode="default" placeholder="All years">
+            <Select mode="default" placeholder="All years" onChange={this.handleChange("termId")}>
               <Select.Option key="all" value="">
                 {"All years"}
               </Select.Option>
@@ -190,5 +203,7 @@ export default connect(
   state => ({
     termsData: get(state, "user.user.orgData.terms", [])
   }),
-  {}
+  {
+    loadAssignments: receiveAssignmentsAction
+  }
 )(LeftFilter);

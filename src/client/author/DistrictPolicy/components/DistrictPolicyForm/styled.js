@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Button, Select } from "antd";
+import { Row, Button, Select, Form } from "antd";
 
 export const StyledFormDiv = styled.div`
   display: flex;
@@ -44,6 +44,10 @@ export const StyledElementDiv = styled.div`
   .ant-checkbox-wrapper {
     margin-bottom: 15px;
   }
+`;
+
+export const StyledFormItem = styled(Form.Item)`
+  width: 500px;
 `;
 
 export const StyledSelectTag = styled(Select)`

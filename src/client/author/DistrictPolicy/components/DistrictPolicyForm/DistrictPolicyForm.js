@@ -3,7 +3,39 @@ import PropTypes from "prop-types";
 import { Form, Checkbox, Radio, message } from "antd";
 const RadioGroup = Radio.Group;
 
-import { StyledFormDiv, StyledRow, StyledLabel, StyledElementDiv, StyledSelectTag, SaveButton } from "./styled";
+import {
+  StyledFormDiv,
+  StyledRow,
+  StyledLabel,
+  StyledElementDiv,
+  StyledSelectTag,
+  SaveButton,
+  StyledFormItem
+} from "./styled";
+
+function validURL(value) {
+  var pattern = new RegExp(
+    "^(https?:\\/\\/)?" + // protocol
+    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
+    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
+    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
+    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
+      "(\\#[-a-z\\d_]*)?$",
+    "i"
+  ); // fragment locator
+  for (let i = 0; i < value.length; i++) {
+    if (!pattern.test(value[i])) {
+      return {
+        validateStatus: "error",
+        errorMsg: "Enter allowed domain(s), example - gmail.com, edulastic.com"
+      };
+    }
+    return {
+      validateStatus: "success",
+      errorMsg: null
+    };
+  }
+}
 
 class DistrictPolicyForm extends React.Component {
   constructor(props) {
@@ -16,7 +48,15 @@ class DistrictPolicyForm extends React.Component {
         ...this.props.districtPolicy
       },
       thirdPartyValue: optionalValue.thirdPartyValue,
-      optionalStatus: optionalValue.status
+      optionalStatus: optionalValue.status,
+      allowDomainForTeacher: {
+        value: this.props.districtPolicy.allowedDomainForTeachers,
+        ...validURL(this.props.districtPolicy.allowedDomainForTeachers)
+      },
+      allowDomainForStudent: {
+        value: this.props.districtPolicy.allowedDomainForStudents,
+        ...validURL(this.props.districtPolicy.allowedDomainForStudents)
+      }
     };
   }
 
@@ -81,11 +121,21 @@ class DistrictPolicyForm extends React.Component {
     });
   };
 
-  handleTagChange = (e, keyName) => {
-    const { districtPolicy: policyData } = this.state;
-    policyData[keyName] = e;
+  handleTagTeacherChange = e => {
     this.setState({
-      districtPolicy: policyData
+      allowDomainForTeacher: {
+        ...validURL(e),
+        value: e
+      }
+    });
+  };
+
+  handleTagStudentChange = e => {
+    this.setState({
+      allowDomainForStudent: {
+        ...validURL(e),
+        value: e
+      }
     });
   };
 
@@ -127,8 +177,8 @@ class DistrictPolicyForm extends React.Component {
       cleverSignOn: policyData.cleverSignOn,
       teacherSignUp: policyData.teacherSignUp,
       studentSignUp: policyData.studentSignUp,
-      allowedDomainForTeachers: policyData.allowedDomainForTeachers,
-      allowedDomainForStudents: policyData.allowedDomainForStudents
+      allowedDomainForTeachers: allowDomainForStudent.value,
+      allowedDomainForStudents: allowDomainForTeacher.value
     };
 
     if (optionalStatus.thirdPartyValue) {
@@ -144,7 +194,7 @@ class DistrictPolicyForm extends React.Component {
   };
 
   render() {
-    const { districtPolicy, thirdPartyValue } = this.state;
+    const { districtPolicy, thirdPartyValue, allowDomainForStudent, allowDomainForTeacher } = this.state;
 
     return (
       <StyledFormDiv>
@@ -209,13 +259,14 @@ class DistrictPolicyForm extends React.Component {
               <br />
               Teachers:
             </StyledLabel>
-            <StyledSelectTag
-              mode="tags"
-              placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
-              defaultValue={districtPolicy.allowedDomainForTeachers}
-              tokenSeparators={[","]}
-              onChange={e => this.handleTagChange(e, "allowedDomainForTeachers")}
-            />
+            <StyledFormItem validateStatus={allowDomainForTeacher.validateStatus} help={allowDomainForTeacher.errorMsg}>
+              <StyledSelectTag
+                mode="tags"
+                defaultValue={districtPolicy.allowedDomainForTeachers}
+                tokenSeparators={[","]}
+                onChange={this.handleTagTeacherChange}
+              />
+            </StyledFormItem>
           </StyledRow>
           <StyledRow>
             <StyledLabel>
@@ -223,13 +274,14 @@ class DistrictPolicyForm extends React.Component {
               <br />
               Students:
             </StyledLabel>
-            <StyledSelectTag
-              mode="tags"
-              placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
-              defaultValue={districtPolicy.allowedDomainForStudents}
-              tokenSeparators={[","]}
-              onChange={e => this.handleTagChange(e, "allowedDomainForStudents")}
-            />
+            <StyledFormItem validateStatus={allowDomainForStudent.validateStatus} help={allowDomainForStudent.errorMsg}>
+              <StyledSelectTag
+                mode="tags"
+                defaultValue={districtPolicy.allowedDomainForStudents}
+                tokenSeparators={[","]}
+                onChange={this.handleTagStudentChange}
+              />
+            </StyledFormItem>
           </StyledRow>
           <StyledRow>
             <StyledLabel>3rd-party integrations:</StyledLabel>

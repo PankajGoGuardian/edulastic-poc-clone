@@ -75,11 +75,18 @@ const SimpleBarChartContainer = ({
 
     const selectedColor = "#99ca7a";
     const unselectedColor = "#bbbbbb";
+    const badScoreColor = "#ff9b9b";
 
     const itemInSelected = item =>
       selectedData.includes(item[field])
         ? analyzeBy === analyzeByMode.MASTERY_LEVEL
           ? getMasteryScore(item.masteryScoreRaw)
+          : analyzeBy === analyzeByMode.RAW_SCORE
+          ? item.totalScore < 0.5
+            ? badScoreColor
+            : selectedColor
+          : item.totalScore < 50
+          ? badScoreColor
           : selectedColor
         : unselectedColor;
 

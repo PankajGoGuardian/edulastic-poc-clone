@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
 
-import { compareByColumns, analyzeByMode, viewByMode } from "../../util/transformers";
+import { compareByColumns, analyzeByMode, viewByMode, compareByMode } from "../../util/transformers";
 
 const makeStandardColumnConfig = skill => ({
   [viewByMode.STANDARDS]: {
@@ -101,7 +101,19 @@ const PerformanceAnalysisTable = ({
         key: config.key,
         render: (studentId, student) => {
           const standard = student.standardMetrics[config.key];
-          return standard ? formatScore(standard[field]) : "N/A";
+          let color = "white";
+
+          if (!standard) {
+            return <ScoreCell color={color}>N/A</ScoreCell>;
+          }
+
+          const score = standard[field];
+
+          if ([analyzeByMode.SCORE, analyzeByMode.RAW_SCORE].includes(analyzeBy)) {
+            color = score < 0.5 ? "#ff9b9b" : "#99ca7a";
+          }
+
+          return <ScoreCell color={color}>{standard ? formatScore(standard[field]) : "N/A"}</ScoreCell>;
         }
       };
     };
@@ -142,7 +154,13 @@ export default PerformanceAnalysisTable;
 const AnalysisTable = styled(Table)`
   .ant-table-tbody {
     td:nth-child(n + 3) {
-      background: #d4ecc4;
+      padding: 0 !important;
     }
   }
+`;
+
+const ScoreCell = styled.div`
+  background: ${props => props.color};
+  height: 51px;
+  padding: 16px;
 `;

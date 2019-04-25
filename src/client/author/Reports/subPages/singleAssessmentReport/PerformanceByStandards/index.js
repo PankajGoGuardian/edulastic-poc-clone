@@ -167,6 +167,10 @@ const PerformanceByStandards = ({
     setCompareBy(selected.key);
   };
 
+  const handleStandardIdChange = (event, selected) => {
+    setStandardId(selected.key);
+  };
+
   const handleUpdateTestId = (event, selected) => {
     const url = match.path.substring(0, match.path.length - 8);
     history.push(url + selected.key);
@@ -273,11 +277,17 @@ const PerformanceByStandards = ({
   const prevButtonDisabled = page === 0;
   const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
 
+  const { testId } = match.params;
+  const assignmentInfo = `${getTitleByTestId(testId)} (ID: ${testId})`;
+
+  const standardsDropdownData = standardsList.map(s => ({ key: s.id, title: s.name }));
+  const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
+
   return (
     <>
       <Card>
         <CardHeader>
-          <CardTitle>Performance by Standards</CardTitle>
+          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="View By"
@@ -291,20 +301,12 @@ const PerformanceByStandards = ({
               selectCB={handleAnalyzeByChange}
               data={dropDownFormat.analyzeByDropDownData}
             />
-            <GroupingTitle>Standard:</GroupingTitle>
-            <GroupingSelect
-              showSearch
-              value={standardId}
-              onChange={setStandardId}
-              optionFilterProp="children"
-              filterOption={filterOption}
-            >
-              {standardsList.map((standard, key) => (
-                <Select.Option key={key + standard.id} value={standard.name}>
-                  {standard.name}
-                </Select.Option>
-              ))}
-            </GroupingSelect>
+            <ControlDropDown
+              prefix=""
+              by={selectedStandardId || { key: "", title: "" }}
+              selectCB={handleStandardIdChange}
+              data={standardsDropdownData}
+            />
             {renderFilters()}
           </CardDropdownWrapper>
         </CardHeader>
@@ -328,7 +330,7 @@ const PerformanceByStandards = ({
       </Card>
       <Card style={{ marginTop: "20px" }}>
         <CardHeader>
-          <CardTitle>Performance by Standards</CardTitle>
+          <CardTitle>Performance by Standards | {assignmentInfo}</CardTitle>
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"

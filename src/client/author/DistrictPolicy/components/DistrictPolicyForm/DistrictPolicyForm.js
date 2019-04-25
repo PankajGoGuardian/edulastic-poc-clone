@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Form, Checkbox, Radio } from "antd";
+import { Form, Checkbox, Radio, message } from "antd";
 const RadioGroup = Radio.Group;
 
 import { StyledFormDiv, StyledRow, StyledLabel, StyledElementDiv, StyledSelectTag, SaveButton } from "./styled";
@@ -108,6 +108,16 @@ class DistrictPolicyForm extends React.Component {
   onSave = () => {
     const { districtPolicy: policyData, optionalStatus } = this.state;
 
+    if (
+      !policyData.userNameAndPassword &&
+      !policyData.office365SignOn &&
+      !policyData.cleverSignOn &&
+      !policyData.googleSignOn
+    ) {
+      message.error("Please select 1 or more sign-on policies");
+      return;
+    }
+
     const updateData = {
       orgId: policyData.orgId,
       orgType: policyData.orgType,
@@ -147,6 +157,9 @@ class DistrictPolicyForm extends React.Component {
                 onChange={e => this.change(e, "userNameAndPassword")}
               >
                 Username and password
+              </Checkbox>
+              <Checkbox checked={districtPolicy.googleSignOn} onChange={e => this.change(e, "googleSignOn")}>
+                Google Single signon
               </Checkbox>
               <Checkbox checked={districtPolicy.office365SignOn} onChange={e => this.change(e, "office365SignOn")}>
                 Office365 Single signon

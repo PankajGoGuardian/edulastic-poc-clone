@@ -61,6 +61,8 @@ const PerformanceByStandards = ({
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
   const [selectedTest, setSelectedTest] = useState({});
+  const [totalStandards, setTotalStandards] = useState(0);
+  const [totalDomains, setTotalDomains] = useState(0);
 
   const [filter, setFilter] = useState(
     dropDownFormat.filterDropDownData.reduce(
@@ -123,6 +125,8 @@ const PerformanceByStandards = ({
     setStandardId(standardsMap[defaultStandardId]);
     setSelectedStandards(selectedData.selectedStandards);
     setSelectedDomains(selectedData.selectedDomains);
+    setTotalStandards(selectedData.selectedStandards.length);
+    setTotalDomains(selectedData.selectedDomains.length);
   };
 
   useEffect(() => {
@@ -241,6 +245,9 @@ const PerformanceByStandards = ({
     return getDropDownTestIds(_testsArr);
   })();
 
+  const shouldShowReset =
+    viewBy === viewByMode.STANDARDS ? totalStandards > selectedDomains.length : totalDomains > selectedDomains.length;
+
   return (
     <>
       <Card>
@@ -277,9 +284,11 @@ const PerformanceByStandards = ({
           </CardDropdownWrapper>
         </CardHeader>
         <div>
-          <ResetButton type="dashed" size="small" onClick={handleResetSelection}>
-            Reset
-          </ResetButton>
+          {shouldShowReset && (
+            <ResetButton type="dashed" size="small" onClick={handleResetSelection}>
+              Reset
+            </ResetButton>
+          )}
           {analyzeBy === analyzeByMode.MASTERY_LEVEL && <MasteryLevels scaleInfo={scaleInfo} />}
         </div>
         <SimpleBarChartContainer

@@ -15,8 +15,7 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown,
-  StyledSelectedSchoolSelect
+  StyledActionDropDown
 } from "./styled";
 
 import AddTeacherModal from "./AddTeacherModal/AddTeacherModal";
@@ -323,9 +322,6 @@ class TeacherTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showInviteTeacherModal}>
             + Invite Multiple Teachers

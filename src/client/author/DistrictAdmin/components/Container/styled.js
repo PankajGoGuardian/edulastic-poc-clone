@@ -3,19 +3,20 @@ import { Layout, Spin } from "antd";
 
 const { Content } = Layout;
 
-export const DistrictAdminDiv = styled.div``;
+export const DistrictAdminDiv = styled.div`
+  background-color: #fff;
+`;
 
 export const StyledContent = styled(Content)`
-  width: 95%;
-  margin: 40px auto 0;
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin: 20px auto 0;
 `;
 
 export const StyledLayout = styled(Layout)`
   position: relative;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
   background: #fff;
-  padding: 30px 40px;
   display: flex;
   flex-direction: column;
   pointer-events: ${props => (props.loading === "true" ? "none" : "auto")}
@@ -28,9 +29,7 @@ export const SpinContainer = styled.div`
   height: 100%;
   left: 0;
   top: 0;
-  background: rgba(68, 68, 68, 0.1);
   z-index: 999;
-  border-radius: 10px;
 `;
 
 export const StyledSpin = styled(Spin)`

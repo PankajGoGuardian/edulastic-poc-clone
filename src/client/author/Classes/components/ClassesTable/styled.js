@@ -57,7 +57,3 @@ export const StyledActionDropDown = styled(Dropdown)`
   align-items: center;
   justify-content: space-between;
 `;
-
-export const StyledSelectedSchoolSelect = styled(Select)`
-  width: 100%;
-`;

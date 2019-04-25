@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import { StyledUploadContainer, StyledUpload, StyledP, StyledImg, StyledIcon, StyledPP, StyledInput } from "./styled";
+import { StyledUploadContainer, StyledUpload, StyledP, StyledImg, StyledIcon, StyledPP } from "./styled";
+import { message } from "antd";
 import { fileApi } from "@edulastic/api";
 
 class ImageUpload extends Component {
@@ -13,10 +14,14 @@ class ImageUpload extends Component {
 
   async handleChange(event) {
     const file = event.target.files[0];
-    const { fileUri } = await fileApi.upload({ file });
-    this.setState({ file: fileUri });
-    const { keyName } = this.props;
-    this.props.updateImgUrl(fileUri, keyName);
+    if (file.size > 2 * 1024 * 1024) {
+      message.error("Image must smaller then 2MB!");
+    } else {
+      const { fileUri } = await fileApi.upload({ file });
+      this.setState({ file: fileUri });
+      const { keyName } = this.props;
+      this.props.updateImgUrl(fileUri, keyName);
+    }
   }
 
   clickFileOpen = () => {

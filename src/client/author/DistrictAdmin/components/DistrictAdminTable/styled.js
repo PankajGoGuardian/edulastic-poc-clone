@@ -7,10 +7,6 @@ export const StyledTableContainer = styled.div`
   flex-direction: column;
   width: 100%;
 
-  th {
-    border: none !important;
-  }
-
   .ant-table-wrapper {
     width: 100%;
   }
@@ -32,8 +28,6 @@ export const StyledFilterSelect = styled(Select)`
     margin-left: 0;
   }
 `;
-
-export const StyledTable = styled(Table)``;
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
@@ -60,8 +54,4 @@ export const StyledActionDropDown = styled(Dropdown)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-export const StyledSelectedSchoolSelect = styled(Select)`
-  width: 100%;
 `;

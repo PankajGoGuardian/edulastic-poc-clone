@@ -7,10 +7,6 @@ export const StyledTableContainer = styled.div`
   flex-direction: column;
   width: 100%;
 
-  th {
-    border: none !important;
-  }
-
   .ant-table-wrapper {
     width: 100%;
   }
@@ -33,19 +29,7 @@ export const StyledFilterSelect = styled(Select)`
   }
 `;
 
-export const StyledTable = styled(Table)``;
-
-export const StyledButton = styled(Button)`
-  background-color: #409aff;
-  border: 2px solid #409aff;
-  color: #fff;
-  &:hover {
-    background-color: #fff;
-    color: #409aff;
-  }
-`;
-
-export const StyledAddFilterButton = styled(StyledButton)`
+export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
 `;
 
@@ -59,8 +43,6 @@ export const StyledFilterInput = styled(Input)`
   width: 300px;
 `;
 
-export const StyledCreateSchoolButton = styled(StyledButton)``;
-
 export const StyledSchoolSearch = styled(Search)`
   margin-left: 20px;
   width: 465px;
@@ -69,8 +51,4 @@ export const StyledSchoolSearch = styled(Search)`
 export const StyledSelectStatus = styled(Select)`
   margin-left: auto;
   width: 200px;
-`;
-
-export const StyledSelectedSchoolSelect = styled(Select)`
-  width: 100%;
 `;

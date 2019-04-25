@@ -7,10 +7,6 @@ export const StyledTableContainer = styled.div`
   flex-direction: column;
   width: 100%;
 
-  th {
-    border: none !important;
-  }
-
   .ant-table-wrapper {
     width: 100%;
   }
@@ -60,8 +56,4 @@ export const StyledActionDropDown = styled(Dropdown)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-export const StyledSelectedSchoolSelect = styled(Select)`
-  width: 100%;
 `;

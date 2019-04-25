@@ -20,7 +20,6 @@ import {
   StyledAddFilterButton,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledSelectedSchoolSelect,
   StyledActiveCheckbox,
   StyledUploadCSVDiv
 } from "./styled";
@@ -295,9 +294,6 @@ class CoursesTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showAddCourseModal}>
             + Create Course

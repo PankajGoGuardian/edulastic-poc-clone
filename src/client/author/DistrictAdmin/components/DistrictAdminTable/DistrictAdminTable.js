@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
+import { Popconfirm, Icon, Select, message, Button, Menu, Table } from "antd";
 const Option = Select.Option;
 
 import {
@@ -15,8 +15,7 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown,
-  StyledSelectedSchoolSelect
+  StyledActionDropDown
 } from "./styled";
 
 import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
@@ -298,9 +297,6 @@ class DistrictAdminTable extends React.Component {
     return (
       <StyledTableContainer>
         <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
-        <StyledControlDiv>
           <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
             + Create District Admin
           </Button>
@@ -340,7 +336,7 @@ class DistrictAdminTable extends React.Component {
             </StyledAddFilterButton>
           )}
         </StyledControlDiv>
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
+        <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
         {editDistrictAdminModaVisible && editDistrictAdminKey >= 0 && (
           <EditDistrictAdminModal
             districtAdminData={selectedDistrictAdmin[0]}

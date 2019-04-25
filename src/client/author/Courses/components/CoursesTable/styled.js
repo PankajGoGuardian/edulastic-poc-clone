@@ -59,10 +59,6 @@ export const StyledActionDropDown = styled(Dropdown)`
   justify-content: space-between;
 `;
 
-export const StyledSelectedSchoolSelect = styled(Select)`
-  width: 100%;
-`;
-
 export const StyledActiveCheckbox = styled(Checkbox)`
   margin-left: auto;
 `;

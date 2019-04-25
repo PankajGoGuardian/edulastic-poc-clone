@@ -16,8 +16,7 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown,
-  StyledSelectedSchoolSelect
+  StyledActionDropDown
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -290,9 +289,6 @@ class ClassesTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showAddClassModal}>
             + Create Class

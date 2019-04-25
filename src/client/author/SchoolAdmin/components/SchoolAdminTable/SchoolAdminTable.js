@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
+import { Popconfirm, Icon, Select, message, Button, Menu, Table } from "antd";
 const Option = Select.Option;
 
 import {
@@ -15,8 +15,7 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown,
-  StyledSelectedSchoolSelect
+  StyledActionDropDown
 } from "./styled";
 
 import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminModal";
@@ -325,9 +324,6 @@ class SchoolAdminTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
         <StyledControlDiv>
           <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
             + Add School Admin

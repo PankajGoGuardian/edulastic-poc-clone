@@ -3,22 +3,18 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Form, Icon, Select, message } from "antd";
+import { Popconfirm, Form, Icon, Select, message, Button, Table } from "antd";
 const Option = Select.Option;
 
 import {
   StyledTableContainer,
   StyledControlDiv,
-  StyledButton,
   StyledFilterSelect,
-  StyledTable,
   StyledTableButton,
   StyledFilterInput,
-  StyledAddFilterButton,
-  StyledCreateSchoolButton,
+  StyledFilterButton,
   StyledSchoolSearch,
-  StyledSelectStatus,
-  StyledSelectedSchoolSelect
+  StyledSelectStatus
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -380,10 +376,9 @@ class SchoolsTable extends React.Component {
     return (
       <StyledTableContainer>
         <StyledControlDiv>
-          <StyledSelectedSchoolSelect />
-        </StyledControlDiv>
-        <StyledControlDiv>
-          <StyledCreateSchoolButton onClick={this.showCreateSchoolModal}>+ Create School</StyledCreateSchoolButton>
+          <Button type="primary" onClick={this.showCreateSchoolModal}>
+            + Create School
+          </Button>
           <CreateSchoolModal
             modalVisible={createSchoolModalVisible}
             createSchool={this.createSchool}
@@ -414,10 +409,16 @@ class SchoolsTable extends React.Component {
             <Option value="contains">Contains</Option>
           </StyledFilterSelect>
           <StyledFilterInput placeholder="Enter text" onChange={this.changeFilterText} value={filterStr} />
-          <StyledAddFilterButton onClick={this.addFilter}>+ Add Filter</StyledAddFilterButton>
-          {filterAdded && <StyledAddFilterButton onClick={this.removeFilter}>- Remove Filter</StyledAddFilterButton>}
+          <StyledFilterButton type="primary" onClick={this.addFilter}>
+            + Add Filter
+          </StyledFilterButton>
+          {filterAdded && (
+            <StyledFilterButton type="primary" onClick={this.removeFilter}>
+              - Remove Filter
+            </StyledFilterButton>
+          )}
         </StyledControlDiv>
-        <StyledTable
+        <Table
           rowSelection={rowSelection}
           dataSource={dataSource}
           columns={columns}

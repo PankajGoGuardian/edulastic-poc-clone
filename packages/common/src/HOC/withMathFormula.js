@@ -104,7 +104,7 @@ export const withMathFormula = WrappedComponent => {
       const nNewInnerHtml = generateNewHtml(latexHtmls, mathHtmls);
 
       setNewInnerHtml(nNewInnerHtml);
-    }, [dangerouslySetInnerHTML, mathField.current, window.MathQuill]);
+    }, [dangerouslySetInnerHTML, mathField, window.MathQuill]);
 
     return (
       <WithResources

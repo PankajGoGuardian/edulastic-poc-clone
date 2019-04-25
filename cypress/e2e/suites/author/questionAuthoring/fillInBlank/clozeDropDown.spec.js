@@ -183,7 +183,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
           cy.get("div.right,div.wrong").should("have.length", 0);
           preview.header.edit();
 
-          question.clickOnAdvancedOptions();
+          // question.clickOnAdvancedOptions();
         });
     });
 

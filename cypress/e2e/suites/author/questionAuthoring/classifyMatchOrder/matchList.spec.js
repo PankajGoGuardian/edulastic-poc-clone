@@ -392,7 +392,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
     beforeEach(() => {
       editItem.header.edit();
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {
@@ -575,11 +575,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
       question.header.edit();
 
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     it("Test score with max score", () => {
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
 
       question
         .getMaxScore()

@@ -45,7 +45,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
     beforeEach(() => {
       editItem.header.edit();
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {
@@ -784,11 +784,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
       question.header.edit();
 
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
     });
 
     it("test score with max score", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question
         .getMaxScore()

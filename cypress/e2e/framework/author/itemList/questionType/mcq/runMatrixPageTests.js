@@ -211,7 +211,7 @@ const runMatrixPageTests = queData => {
 
     beforeEach(() => {
       editItem.header.edit();
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {
@@ -509,12 +509,12 @@ const runMatrixPageTests = queData => {
         .then(() => {
           question.header.edit();
 
-          question.clickOnAdvancedOptions();
+          // question.clickOnAdvancedOptions();
         });
     });
 
     it("test score with alternate answer", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       queData.forScoringCorrectAns.forEach((element, index) => {
         question.markAnswerInput(index, element + 1, "input");

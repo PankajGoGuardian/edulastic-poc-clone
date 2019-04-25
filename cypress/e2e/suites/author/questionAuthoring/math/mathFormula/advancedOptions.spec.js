@@ -31,10 +31,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
     });
 
     describe("Extras", () => {
-      before(() => {
-        editItem.clickAdvancedOptionsButton();
+      /*       before(() => {
+        editItem.clickAdvancedOptionsButton(); // UI toggel has been removed
       });
-
+ */
       describe("Main options", () => {
         it("Enter acknowledgements text", () => {
           const text = "acknowledgements";

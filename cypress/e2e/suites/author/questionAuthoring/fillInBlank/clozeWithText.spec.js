@@ -134,7 +134,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         .click()
         .then(() => {
           question.header.edit();
-          question.clickOnAdvancedOptions();
+          // question.clickOnAdvancedOptions();
         });
     });
 

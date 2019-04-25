@@ -190,7 +190,7 @@ describe(`${FileHelper.getSpecName(
     });
 
     it("[Tc_304]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);
@@ -480,7 +480,7 @@ describe(`${FileHelper.getSpecName(
     });
 
     it("[Tc_311]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);
@@ -673,7 +673,7 @@ describe(`${FileHelper.getSpecName(
         .click();
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question.getEnableAutoScoring().click();
 
@@ -773,7 +773,7 @@ describe(`${FileHelper.getSpecName(
         .getEditButton()
         .click();
 
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question.selectScoringType("Partial match");
 

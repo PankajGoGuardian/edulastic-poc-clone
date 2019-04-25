@@ -257,7 +257,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
     beforeEach(() => {
       editItem.header.edit();
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {

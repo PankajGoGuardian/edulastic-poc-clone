@@ -191,7 +191,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it("[Tc_253]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);
@@ -485,7 +485,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it("[Tc_260]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);
@@ -750,7 +750,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .should("be.checked");
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question.getEnableAutoScoring().click();
 
@@ -852,7 +852,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getEditButton()
         .click();
 
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question.selectScoringType("Partial match");
 
@@ -1002,7 +1002,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .should("be.checked");
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // enable Auto Scoring option
       question.getEnableAutoScoring().click();
@@ -1066,7 +1066,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .click();
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // // question.clickOnAdvancedOptions(); // UI toggel has been removed
 
       question.getMinScore().type(2);
 
@@ -1101,7 +1101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .click();
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question
         .getPoints()
@@ -1150,7 +1150,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .click();
 
       // advanced
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question.getMultipleResponse().click();
 
@@ -1229,7 +1229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .getEditButton()
         .click();
 
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question
         .getEnableAutoScoring()

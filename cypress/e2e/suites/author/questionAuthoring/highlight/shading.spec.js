@@ -168,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
       beforeEach(() => {
         editItem.header.edit();
-        editItem.showAdvancedOptions();
+        // editItem.showAdvancedOptions(); // UI toggle has been removed
       });
 
       afterEach(() => {
@@ -441,7 +441,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
 
         editItem.header.edit();
-        editItem.showAdvancedOptions();
+        // editItem.showAdvancedOptions(); //
       });
 
       it("Test with alternate answer", () => {

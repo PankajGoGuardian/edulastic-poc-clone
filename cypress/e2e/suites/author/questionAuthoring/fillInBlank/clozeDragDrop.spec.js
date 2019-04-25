@@ -503,11 +503,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
       preview.header.edit();
 
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
     });
 
     it("Test scoring with max score", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       question
         .getMaxScore()

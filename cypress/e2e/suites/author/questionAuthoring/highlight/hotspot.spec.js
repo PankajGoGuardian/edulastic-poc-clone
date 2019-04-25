@@ -408,7 +408,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
     beforeEach(() => {
       editItem.header.edit();
-      editItem.showAdvancedOptions();
+      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     afterEach(() => {
@@ -547,7 +547,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
   });
 
-  context.only("Scoring block tests", () => {
+  context("Scoring block tests", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();

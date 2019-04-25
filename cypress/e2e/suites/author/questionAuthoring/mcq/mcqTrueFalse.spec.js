@@ -147,7 +147,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
 
     it("[Tc_287]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);
@@ -395,7 +395,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
 
     it("[Tc_294]:test => Advanced Options", () => {
-      question.clickOnAdvancedOptions();
+      // question.clickOnAdvancedOptions();
 
       // scoring
       question.getMaxScore().verifyNumInput(1);

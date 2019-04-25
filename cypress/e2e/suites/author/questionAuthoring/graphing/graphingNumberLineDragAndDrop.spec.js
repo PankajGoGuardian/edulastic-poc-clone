@@ -50,7 +50,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

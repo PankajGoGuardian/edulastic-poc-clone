@@ -28,7 +28,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

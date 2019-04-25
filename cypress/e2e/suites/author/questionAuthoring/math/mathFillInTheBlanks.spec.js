@@ -239,7 +239,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

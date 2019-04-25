@@ -27,7 +27,7 @@ Cypress.Commands.add("createUser", overrides => {
     .then(({ body }) => body.user);
 });
 
-Cypress.Commands.add("login", user =>
+Cypress.Commands.add("setToken", user =>
   cy
     .request({
       url: `${BASE_URL}/auth/login`,
@@ -35,7 +35,7 @@ Cypress.Commands.add("login", user =>
       body: user
     })
     .then(({ body }) => {
-      window.localStorage.setItem("access_token", body.token);
+      window.localStorage.setItem("access_token", body.result.token);
       return body.user;
     })
 );
@@ -44,8 +44,10 @@ Cypress.Commands.add("assertHome", () => {
   cy.url().should("eq", `${Cypress.config().baseUrl}/`);
 });
 
-Cypress.Commands.add("setToken", (role = "teacher") => {
-  const postData = role === "teacher" ? DEFAULT_USERS.teacher : DEFAULT_USERS.student;
+Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") => {
+  const postData = {};
+  postData.email = !email ? (role === "teacher" ? DEFAULT_USERS.teacher.email : DEFAULT_USERS.student.email) : email;
+  postData.password = password;
   window.localStorage.clear();
   /* cy.request({
           url: `${BASE_URL}/auth/login`,

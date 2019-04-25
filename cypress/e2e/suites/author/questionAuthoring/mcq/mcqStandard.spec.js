@@ -24,7 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
   const { formates } = question;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

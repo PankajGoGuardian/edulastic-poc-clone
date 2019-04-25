@@ -109,23 +109,22 @@ Cypress.Commands.add("createTestData", () => {
   });
 });
 
-Cypress.Commands.add("deleteItem", itemId => {
+Cypress.Commands.add("deleteItem", item => {
   cy.request({
-    url: `${BASE_URL}/testitem/${itemId}`,
+    url: `${BASE_URL}/testitem/${typeof item === "string" ? item : item._id}`,
     method: "DELETE",
     headers: {
-      Authorization: window.localStorage.getItem("access_token")
+      Authorization: typeof item === "string" ? window.localStorage.getItem("access_token") : item.authToken
     }
   }).then(({ status }) => {
     expect(status).to.eq(200);
-    console.log("Item deleted with _id :", itemId);
+    console.log("Item deleted with _id :", typeof item === "string" ? item : item._id);
   });
 });
 
 Cypress.Commands.add("deleteTestData", () => {
   const fileFullPath = `${fixtureFolderPath}/${deleteTestDataFile}`;
   cy.task("readFileContent", fileFullPath).then(fileContent => {
-    console.log("fileContent", fileContent);
     let testData;
     if (fileContent !== null) {
       testData = JSON.parse(fileContent);

@@ -29,7 +29,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

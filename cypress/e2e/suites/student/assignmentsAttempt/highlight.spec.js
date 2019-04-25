@@ -35,7 +35,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   const selectedHotspotColor = "rgb(0, 123, 179)";
 
   before(() => {
-    cy.setToken("student");
+    cy.login("student");
   });
   context("Assignment attempt and stats", () => {
     before(() => {

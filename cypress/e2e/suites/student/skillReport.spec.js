@@ -3,7 +3,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test SkillReport Page`, () => {
   before(() => {
-    cy.setToken("student");
+    cy.login("student");
     cy.visit("/home/skill-report");
   });
   const skillReportsPage = new SkillReportsPage();

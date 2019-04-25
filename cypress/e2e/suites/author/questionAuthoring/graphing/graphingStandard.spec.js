@@ -73,7 +73,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

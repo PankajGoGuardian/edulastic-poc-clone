@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   let DefinedAnswers;
 
   before(() => {
-    cy.setToken("student");
+    cy.login("student");
   });
   context("Assignment attempt and stats", () => {
     before(() => {

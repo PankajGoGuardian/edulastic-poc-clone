@@ -21,7 +21,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
   let testItemId;
 
   before(() => {
-    cy.setToken();
+    cy.login();
     itemList.clickOnCreate().then(id => {
       testItemId = id;
     });

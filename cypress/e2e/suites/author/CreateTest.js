@@ -2,7 +2,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Create Test Flow`, () => {
   beforeEach(() => {
-    cy.setToken();
+    cy.login();
     cy.visit("/author/tests/create");
   });
 

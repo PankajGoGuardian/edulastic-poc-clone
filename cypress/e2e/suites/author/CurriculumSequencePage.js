@@ -4,7 +4,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Sequence Page`, () => {
   beforeEach(() => {
-    cy.setToken();
+    cy.login();
     cy.visit("/author/curriculum-sequence");
   });
 

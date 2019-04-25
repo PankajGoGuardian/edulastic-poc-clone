@@ -23,7 +23,8 @@ class ItemListPage {
 
     cy.readFile(`${fileWritePath}/${fixtureFile}`).then(json => {
       if (!json.testItems) json.testItems = [];
-      json.testItems.push(itemId);
+      const item = { _id: itemId, authToken: window.localStorage.getItem("access_token") };
+      json.testItems.push(item);
       cy.writeFile(`${fileWritePath}/${fixtureFile}`, json);
     });
     return itemId;

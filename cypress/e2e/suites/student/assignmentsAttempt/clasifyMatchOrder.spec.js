@@ -37,7 +37,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   let DefinedIndex;
 
   before(() => {
-    cy.setToken("student");
+    cy.login("student");
   });
   context("Assignment attempt and stats", () => {
     before(() => {

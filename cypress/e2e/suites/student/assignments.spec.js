@@ -16,7 +16,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   let TestTypes;
 
   before(() => {
-    cy.setToken("student");
+    cy.login("student");
     cy.fixture("studentsAttempt").then(data => {
       TestTypes = data.testTypes;
     });

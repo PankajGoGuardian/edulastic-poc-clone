@@ -2,7 +2,7 @@ import FileHelper from "../../framework/util/fileHelper";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Review Page`, () => {
   beforeEach(() => {
-    cy.setToken();
+    cy.login();
     cy.visit("/author/tests/create");
   });
 

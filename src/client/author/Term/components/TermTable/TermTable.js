@@ -2,12 +2,16 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import * as moment from "moment";
+import { get } from "lodash";
+
 import { Table, Input, Popconfirm, Form, Icon, DatePicker } from "antd";
-
 import { StyledTableContainer, StyledButton, StyledAddButton } from "./styled";
-
+import CreateTermModal from "./CreateTermModal/CreateTermModal";
+import EditTermModal from "./EditTermModal/EditTermModal";
 // selectors
-import { getCreatedTermSelector } from "../../ducks";
+import { receiveTermAction, updateTermAction, createTermAction, deleteTermAction } from "../../ducks";
+
+import { getUserOrgId } from "../../../src/selectors/user";
 
 const FormItem = Form.Item;
 const EditableContext = React.createContext();
@@ -53,21 +57,11 @@ class TermTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const data = [];
-    for (let i = 0; i < this.props.termSetting.length; i++) {
-      data.push({
-        key: i,
-        name: this.props.termSetting[i].name,
-        startDate: this.props.termSetting[i].startDate,
-        endDate: this.props.termSetting[i].endDate,
-        startDateVisible: moment(this.props.termSetting[i].startDate).format("DD MMM YYYY"),
-        endDateVisible: moment(this.props.termSetting[i].endDate).format("DD MMM YYYY"),
-        _id: this.props.termSetting[i]._id,
-        districtId: this.props.termSetting[i].districtId
-      });
-    }
-
-    this.state = { data, editingKey: "", isAdding: false };
+    this.state = {
+      selectedKey: -1,
+      createTermModalVisible: false,
+      editTermModalVisible: false
+    };
 
     this.columns = [
       {
@@ -92,158 +86,97 @@ class TermTable extends React.Component {
         title: <StyledAddButton onClick={this.handleAdd}>+ Add School Year</StyledAddButton>,
         dataIndex: "operation",
         render: (text, record) => {
-          const { editingKey } = this.state;
-          const editable = this.isEditing(record);
           return (
-            <div>
-              {editable ? (
-                <span>
-                  <EditableContext.Consumer>
-                    {form => (
-                      <a href="javascript:;" onClick={() => this.save(form, record.key)} style={{ marginRight: 8 }}>
-                        Save
-                      </a>
-                    )}
-                  </EditableContext.Consumer>
-                  <Popconfirm title="Sure to cancel?" onConfirm={() => this.cancel(record.key)}>
-                    <a>Cancel</a>
-                  </Popconfirm>
-                </span>
-              ) : (
-                <React.Fragment>
-                  <StyledButton disabled={editingKey !== ""} onClick={() => this.edit(record.key)}>
-                    <Icon type="edit" theme="twoTone" />
-                  </StyledButton>
-                  <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                    <StyledButton disabled={editingKey !== ""}>
-                      <Icon type="delete" theme="twoTone" />
-                    </StyledButton>
-                  </Popconfirm>
-                </React.Fragment>
-              )}
-            </div>
+            <React.Fragment>
+              <StyledButton onClick={() => this.showEditTermModal(record.key)}>
+                <Icon type="edit" theme="twoTone" />
+              </StyledButton>
+              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                <StyledButton>
+                  <Icon type="delete" theme="twoTone" />
+                </StyledButton>
+              </Popconfirm>
+            </React.Fragment>
           );
         }
       }
     ];
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (
-      Object.keys(nextProps.createdTerm.data).length > 0 &&
-      this.props.createdTerm.key !== nextProps.createdTerm.key
-    ) {
-      const { createdTerm } = nextProps;
-
-      const newData = [...this.state.data];
-      newData.map(data => {
-        if (data.key === createdTerm.key) {
-          data._id = createdTerm._id;
-        }
-      });
-      this.setState({ data: newData, editingKey: "" });
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.termSetting.length === undefined) {
+      return {
+        data: []
+      };
+    } else {
+      if (nextProps.loading || nextProps.creating || nextProps.deleting || nextProps.updating) {
+        return null;
+      } else {
+        return {
+          data: nextProps.termSetting
+        };
+      }
     }
   }
 
-  isEditing = record => record.key === this.state.editingKey;
-
-  cancel = key => {
-    if (this.state.isAdding) {
-      const data = [...this.state.data];
-      this.setState({ data: data.filter(item => item.key !== key) });
-    }
-    this.setState({ editingKey: "", isAdding: false });
-  };
-
-  save = (form, key) => {
-    form.validateFields((error, row) => {
-      if (error) {
-        return;
-      }
-      const saveValue = row;
-
-      if (saveValue.hasOwnProperty("startDateVisible")) {
-        saveValue.startDate = saveValue.startDateVisible.valueOf();
-        saveValue.startDateVisible = saveValue.startDateVisible.format("DD MMM YYYY");
-      }
-
-      if (saveValue.hasOwnProperty("endDateVisible")) {
-        saveValue.endDate = saveValue.endDateVisible.valueOf();
-        saveValue.endDateVisible = saveValue.endDateVisible.format("DD MMM YYYY");
-      }
-
-      const newData = [...this.state.data];
-      const index = newData.findIndex(item => key === item.key);
-      if (index > -1) {
-        const item = newData[index];
-        newData.splice(index, 1, {
-          ...item,
-          ...saveValue
-        });
-        this.setState({ data: newData, editingKey: "" });
-      } else {
-        newData.push(saveValue);
-        this.setState({ data: newData, editingKey: "" });
-      }
-
-      if (this.state.isAdding) {
-        const createTermData = {
-          body: {
-            name: saveValue.name,
-            districtId: this.state.data[key].districtId,
-            startDate: saveValue.startDate,
-            endDate: saveValue.endDate
-          },
-          key: key
-        };
-        this.props.createTerm(createTermData);
-      } else {
-        const updateTermData = {
-          _id: this.state.data[key]._id,
-          name: saveValue.name,
-          districtId: this.state.data[key].districtId,
-          startDate: saveValue.startDate,
-          endDate: saveValue.endDate
-        };
-        this.props.updateTerm(updateTermData);
-      }
-
-      this.setState({ isAdding: false });
-    });
-  };
-
-  edit = key => {
-    this.setState({ editingKey: key });
-  };
+  componentDidMount() {
+    const { loadTermSetting, userOrgId } = this.props;
+    loadTermSetting({ orgId: userOrgId });
+  }
 
   handleAdd = () => {
-    const { data, editingKey } = this.state;
-
-    if (editingKey !== "") return;
-
-    const newData = {
-      key: data.length,
-      name: `New School Year`,
-      startDate: moment().valueOf(),
-      endDate: moment().valueOf(),
-      startDateVisible: moment().format("DD MMM YYYY"),
-      endDateVisible: moment().format("DD MMM YYYY"),
-      _id: "",
-      districtId: this.props.districtId
-    };
-
-    this.setState({
-      data: [newData, ...data],
-      editingKey: data.length,
-      isAdding: true
-    });
+    this.showCreateTermModal();
   };
 
   handleDelete = key => {
     const data = [...this.state.data];
-    this.setState({ data: data.filter(item => item.key !== key) });
     const selectedTerm = data.filter(item => item.key == key);
-    this.props.deleteTerm(selectedTerm[0]._id);
+    const { deleteTermSetting, userOrgId } = this.props;
+    deleteTermSetting({ body: { termId: selectedTerm[0]._id, orgId: userOrgId } });
+  };
+
+  createTerm = termData => {
+    const { userOrgId, createTermSetting } = this.props;
+    const createdTermData = {
+      body: {
+        name: termData.name,
+        startDate: termData.startDate.valueOf(),
+        endDate: termData.endDate.valueOf(),
+        districtId: userOrgId
+      },
+      key: this.state.data.length
+    };
+    createTermSetting(createdTermData);
+    this.setState({ createTermModalVisible: false });
+  };
+
+  showCreateTermModal = () => {
+    this.setState({ createTermModalVisible: true });
+  };
+
+  closeCreateTermModal = () => {
+    this.setState({ createTermModalVisible: false });
+  };
+
+  updateTerm = termData => {
+    const { updateTermSetting, userOrgId } = this.props;
+    termData.districtId = userOrgId;
+    updateTermSetting(termData);
+    this.setState({ selectedKey: -1 });
+  };
+
+  showEditTermModal = key => {
+    this.setState({
+      editTermModalVisible: true,
+      selectedKey: key
+    });
+  };
+
+  closeEditTermModal = () => {
+    this.setState({
+      editTermModalVisible: false,
+      selectedKey: -1
+    });
   };
 
   render() {
@@ -264,17 +197,18 @@ class TermTable extends React.Component {
           inputType: col.dataIndex === "name" ? "text" : "date",
           dataIndex: col.dataIndex,
           title: col.title,
-          editing: this.isEditing(record)
+          editing: false
         })
       };
     });
-
+    const { data, createTermModalVisible, editTermModalVisible, selectedKey } = this.state;
+    const selectedRow = data.filter(item => item.key === selectedKey);
     return (
       <StyledTableContainer>
         <EditableContext.Provider value={this.props.form}>
           <Table
             components={components}
-            dataSource={this.state.data}
+            dataSource={data}
             columns={columns}
             rowClassName="editable-row"
             pagination={{
@@ -282,6 +216,19 @@ class TermTable extends React.Component {
             }}
           />
         </EditableContext.Provider>
+        <CreateTermModal
+          modalVisible={createTermModalVisible}
+          createTerm={this.createTerm}
+          closeModal={this.closeCreateTermModal}
+        />
+        {editTermModalVisible && selectedKey >= 0 && (
+          <EditTermModal
+            modalVisible={editTermModalVisible}
+            updateTerm={this.updateTerm}
+            closeModal={this.closeEditTermModal}
+            termData={selectedRow[0]}
+          />
+        )}
       </StyledTableContainer>
     );
   }
@@ -290,9 +237,22 @@ class TermTable extends React.Component {
 const EditableTermTable = Form.create()(TermTable);
 
 const enhance = compose(
-  connect(state => ({
-    createdTerm: getCreatedTermSelector(state)
-  }))
+  connect(
+    state => ({
+      userOrgId: getUserOrgId(state),
+      termSetting: get(state, ["termReducer", "data"], []),
+      loading: get(state, ["termReducer", "loading"], false),
+      updating: get(state, ["termReducer", "updating"], false),
+      creating: get(state, ["termReducer", "creating"], false),
+      deleting: get(state, ["termReducer", "deleting"], false)
+    }),
+    {
+      loadTermSetting: receiveTermAction,
+      updateTermSetting: updateTermAction,
+      createTermSetting: createTermAction,
+      deleteTermSetting: deleteTermAction
+    }
+  )
 );
 
 export default enhance(EditableTermTable);

@@ -1,14 +1,9 @@
 import styled from "styled-components";
-import { Button } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-
-  th {
-    border: none !important;
-  }
 
   .ant-table-wrapper {
     width: 100%;

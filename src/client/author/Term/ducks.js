@@ -1,8 +1,8 @@
-import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
 import { createAction, createReducer } from "redux-starter-kit";
+import * as moment from "moment";
 
 const CREATE_TERM_REQUEST = "[term] create data request";
 const CREATE_TERM_SUCCESS = "[term] create data success";
@@ -16,6 +16,7 @@ const UPDATE_TERM_ERROR = "[term] update data error";
 const DELETE_TERM_REQUEST = "[term] delete data request";
 const DELETE_TERM_SUCCESS = "[term] delete data success";
 const DELETE_TERM_ERROR = "[term] delete data ERROR";
+const SET_TERMTABLE_EDITKEY = "[term] current editkey";
 
 export const createTermAction = createAction(CREATE_TERM_REQUEST);
 export const createTermSuccessAction = createAction(CREATE_TERM_SUCCESS);
@@ -29,39 +30,7 @@ export const updateTermErrorAction = createAction(UPDATE_TERM_ERROR);
 export const deleteTermAction = createAction(DELETE_TERM_REQUEST);
 export const deleteTermSuccessAction = createAction(DELETE_TERM_SUCCESS);
 export const deleteTermErrorAction = createAction(DELETE_TERM_ERROR);
-
-// selectors
-const stateTermSelector = state => state.termReducer;
-export const getTermSelector = createSelector(
-  stateTermSelector,
-  state => state.data
-);
-
-export const getTermLoadingSelector = createSelector(
-  stateTermSelector,
-  state => state.loading
-);
-
-export const getTermUpdatingSelector = createSelector(
-  stateTermSelector,
-  state => state.updating
-);
-
-export const getCreatedTermSelector = createSelector(
-  stateTermSelector,
-  state => ({ data: state.create })
-);
-
-export const getTermCreatingSelector = createSelector(
-  stateTermSelector,
-  state => state.creating
-);
-
-export const getDeletedTermSelector = createSelector(
-  stateTermSelector,
-  state => state.delete
-);
-
+export const setEditKeyAction = createAction(SET_TERMTABLE_EDITKEY);
 // reducers
 const initialState = {
   data: {},
@@ -74,101 +43,95 @@ const initialState = {
   create: { data: {}, key: -1 },
   createError: null,
   deleting: false,
-  deleteError: null
+  deleteError: null,
+  editingKey: ""
 };
-
-const createTermRequest = state => ({
-  ...state,
-  creating: true
-});
-
-const createTermSuccess = (state, { payload }) => ({
-  ...state,
-  creating: false,
-  create: payload,
-  data: [payload.data].concat(state.data)
-});
-
-const createTermError = (state, { payload }) => ({
-  ...state,
-  creating: false,
-  createError: payload.error
-});
-
-const receiveTermRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveTermSuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receiveTermError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updateTermRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updateTermSuccess = (state, { payload }) => {
-  const termData = state.data.map(term => {
-    if (term._id === payload._id) {
-      return { ...term, ...payload };
-    }
-    return term;
-  });
-
-  return {
-    ...state,
-    update: payload,
-    data: termData,
-    updating: false
-  };
-};
-
-const updateTermError = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  updateError: payload.error
-});
-
-const deleteTermRequest = state => ({
-  ...state,
-  deleting: true
-});
-
-const deleteTermSuccess = (state, { payload }) => ({
-  ...state,
-  deleting: false,
-  data: state.data.filter(term => term._id !== payload)
-});
-
-const deleteTermError = (state, { payload }) => ({
-  ...state,
-  deleting: false,
-  deleteError: payload.error
-});
 
 export const reducer = createReducer(initialState, {
-  [CREATE_TERM_REQUEST]: createTermRequest,
-  [CREATE_TERM_SUCCESS]: createTermSuccess,
-  [CREATE_TERM_ERROR]: createTermError,
-  [RECEIVE_TERM_REQUEST]: receiveTermRequest,
-  [RECEIVE_TERM_SUCCESS]: receiveTermSuccess,
-  [RECEIVE_TERM_ERROR]: receiveTermError,
-  [UPDATE_TERM_REQUEST]: updateTermRequest,
-  [UPDATE_TERM_SUCCESS]: updateTermSuccess,
-  [UPDATE_TERM_ERROR]: updateTermError,
-  [DELETE_TERM_REQUEST]: deleteTermRequest,
-  [DELETE_TERM_SUCCESS]: deleteTermSuccess,
-  [DELETE_TERM_ERROR]: deleteTermError
+  [CREATE_TERM_REQUEST]: state => {
+    state.creating = true;
+  },
+  [CREATE_TERM_SUCCESS]: (state, { payload }) => {
+    state.creating = false;
+    state.create = payload;
+    const createdData = [];
+    createdData.push({
+      key: payload.key,
+      name: payload.data.name,
+      startDate: payload.data.startDate,
+      endDate: payload.data.endDate,
+      startDateVisible: moment(payload.data.startDate).format("DD MMM YYYY"),
+      endDateVisible: moment(payload.data.endDate).format("DD MMM YYYY"),
+      _id: payload.data._id
+    });
+    state.data = createdData.concat(state.data);
+  },
+  [CREATE_TERM_ERROR]: (state, { payload }) => {
+    state.creating = false;
+    state.createError = payload.error;
+  },
+  [RECEIVE_TERM_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_TERM_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    const receivedTerm = [];
+    for (let i = 0; i < payload.length; i++) {
+      receivedTerm.push({
+        key: i,
+        name: payload[i].name,
+        startDate: payload[i].startDate,
+        endDate: payload[i].endDate,
+        startDateVisible: moment(payload[i].startDate).format("DD MMM YYYY"),
+        endDateVisible: moment(payload[i].endDate).format("DD MMM YYYY"),
+        _id: payload[i]._id
+      });
+    }
+    state.data = receivedTerm;
+  },
+  [RECEIVE_TERM_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_TERM_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_TERM_SUCCESS]: (state, { payload }) => {
+    const updatedTerm = {
+      name: payload.name,
+      startDate: payload.startDate,
+      endDate: payload.endDate,
+      startDateVisible: moment(payload.startDate).format("DD MMM YYYY"),
+      endDateVisible: moment(payload.endDate).format("DD MMM YYYY"),
+      _id: payload._id
+    };
+    const termData = [];
+    for (let i = 0; i < state.data.length; i++) {
+      if (state.data[i]._id === payload._id) termData.push({ ...state.data[i], ...updatedTerm });
+      else termData.push(state.data[i]);
+    }
+    state.update = payload;
+    state.data = termData;
+    state.updating = false;
+  },
+  [UPDATE_TERM_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  },
+  [DELETE_TERM_REQUEST]: state => {
+    state.deleting = true;
+  },
+  [DELETE_TERM_SUCCESS]: (state, { payload }) => {
+    state.deleting = false;
+    state.data = state.data.filter(term => term._id !== payload);
+  },
+  [DELETE_TERM_ERROR]: (state, { payload }) => {
+    state.deleting = false;
+    state.deleteError = payload.error;
+  },
+  [SET_TERMTABLE_EDITKEY]: (state, { payload }) => {
+    state.editingKey = payload;
+  }
 });
 
 // sagas

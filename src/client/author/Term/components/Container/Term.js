@@ -2,18 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
+
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import TermTable from "../TermTable/TermTable";
-import moment from "moment";
 
 import { TermDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
-
-// actions
-import { receiveTermAction, updateTermAction, createTermAction, deleteTermAction } from "../../ducks";
-
-// selectors
-import { getTermSelector, getTermLoadingSelector, getTermUpdatingSelector, getTermCreatingSelector } from "../../ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Term" };
@@ -23,45 +17,25 @@ class Term extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    const { loadTermSetting, userOrgId } = this.props;
-    loadTermSetting({ orgId: userOrgId });
-  }
-
-  createTerm = termData => {
-    this.props.createTermSetting(termData);
-  };
-
-  updateTerm = termData => {
-    this.props.updateTermSetting({ body: termData });
-  };
-
   deleteTerm = deletedTermId => {
     const { deleteTermSetting, userOrgId } = this.props;
     deleteTermSetting({ body: { termId: deletedTermId, orgId: userOrgId } });
   };
 
   render() {
-    const { termSetting, loading, creating, history } = this.props;
-    const showSpin = loading || creating;
+    const { termSetting, loading, creating, updating, deleting, history } = this.props;
+    const showSpin = loading || creating || updating || deleting;
     return (
       <TermDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
-            {loading && (
+            {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            {Object.keys(termSetting).length > 0 && (
-              <TermTable
-                termSetting={termSetting}
-                createTerm={this.createTerm}
-                updateTerm={this.updateTerm}
-                deleteTerm={this.deleteTerm}
-              />
-            )}
+            <TermTable termSetting={termSetting} />
           </StyledLayout>
         </StyledContent>
       </TermDiv>
@@ -70,30 +44,19 @@ class Term extends Component {
 }
 
 const enhance = compose(
-  connect(
-    state => ({
-      termSetting: getTermSelector(state),
-      loading: getTermLoadingSelector(state),
-      updating: getTermUpdatingSelector(state),
-      userOrgId: getUserOrgId(state),
-      creating: getTermCreatingSelector(state)
-    }),
-    {
-      loadTermSetting: receiveTermAction,
-      updateTermSetting: updateTermAction,
-      createTermSetting: createTermAction,
-      deleteTermSetting: deleteTermAction
-    }
-  )
+  connect(state => ({
+    loading: get(state, ["termReducer", "loading"], false),
+    updating: get(state, ["termReducer", "updating"], false),
+    creating: get(state, ["termReducer", "creating"], false),
+    deleting: get(state, ["termReducer", "deleting"], false)
+  }))
 );
 
 export default enhance(Term);
 
 Term.propTypes = {
-  loadTermSetting: PropTypes.func.isRequired,
-  updateTermSetting: PropTypes.func.isRequired,
-  createTermSetting: PropTypes.func.isRequired,
-  termSetting: PropTypes.array.isRequired,
-  userOrgId: PropTypes.string.isRequired,
-  creating: PropTypes.bool.isRequired
+  loading: PropTypes.bool.isRequired,
+  updating: PropTypes.bool.isRequired,
+  creating: PropTypes.bool.isRequired,
+  deleting: PropTypes.bool.isRequired
 };

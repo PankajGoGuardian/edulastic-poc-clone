@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
 
-import { analysisParseData, compareByColumns, analyzeByMode, viewByMode } from "../../util/transformers";
+import { compareByColumns, analyzeByMode, viewByMode } from "../../util/transformers";
 
 const makeStandardColumnConfig = skill => ({
   [viewByMode.STANDARDS]: {
@@ -17,7 +17,15 @@ const makeStandardColumnConfig = skill => ({
   }
 });
 
-const PerformanceAnalysisTable = ({ report, viewBy, analyzeBy, compareBy, selectedStandards, selectedDomains }) => {
+const PerformanceAnalysisTable = ({
+  report,
+  viewBy,
+  analyzeBy,
+  compareBy,
+  selectedStandards,
+  selectedDomains,
+  tableData
+}) => {
   const formatScore = score => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
@@ -103,10 +111,9 @@ const PerformanceAnalysisTable = ({ report, viewBy, analyzeBy, compareBy, select
 
   const getAnalysisColumns = () => [compareByColumns[compareBy], makeOverallColumn(), ...makeStandardColumns()];
 
-  const data = analysisParseData(report, viewBy, compareBy);
   const columns = getAnalysisColumns();
 
-  return <AnalysisTable dataSource={data} columns={columns} pagination={false} size="middle" />;
+  return <AnalysisTable dataSource={tableData} columns={columns} pagination={false} size="middle" />;
 };
 
 PerformanceAnalysisTable.propTypes = {
@@ -115,7 +122,8 @@ PerformanceAnalysisTable.propTypes = {
   analyzeBy: PropTypes.string.isRequired,
   compareBy: PropTypes.string.isRequired,
   selectedStandards: PropTypes.array,
-  selectedDomains: PropTypes.array
+  selectedDomains: PropTypes.array,
+  tableData: PropTypes.array.isRequired
 };
 
 PerformanceAnalysisTable.defaultProps = {

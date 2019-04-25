@@ -21,7 +21,7 @@ import CardHeader, {
   MasteryLevelIndicator,
   MasteryLevelTitle
 } from "./common/CardHeader/CardHeader";
-import { viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
+import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
@@ -43,6 +43,8 @@ const MasteryLevels = ({ scaleInfo }) => (
   </MasteryLevelWrapper>
 );
 
+const PAGE_SIZE = 15;
+
 const PerformanceByStandards = ({
   loading,
   report,
@@ -63,6 +65,7 @@ const PerformanceByStandards = ({
   const [selectedTest, setSelectedTest] = useState({});
   const [totalStandards, setTotalStandards] = useState(0);
   const [totalDomains, setTotalDomains] = useState(0);
+  const [page, setPage] = useState(0);
 
   const [filter, setFilter] = useState(
     dropDownFormat.filterDropDownData.reduce(
@@ -246,7 +249,29 @@ const PerformanceByStandards = ({
   })();
 
   const shouldShowReset =
-    viewBy === viewByMode.STANDARDS ? totalStandards > selectedDomains.length : totalDomains > selectedDomains.length;
+    viewBy === viewByMode.STANDARDS ? totalStandards > selectedStandards.length : totalDomains > selectedDomains.length;
+
+  const tableData = analysisParseData(report, viewBy, compareBy);
+
+  const paginationOffset = page * PAGE_SIZE;
+  const paginatedData = tableData.slice(paginationOffset, paginationOffset + PAGE_SIZE);
+
+  const handlePrevPage = () => {
+    if (page === 0) return;
+
+    setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (tableData.length <= paginationOffset) {
+      return;
+    }
+
+    setPage(page + 1);
+  };
+
+  const prevButtonDisabled = page === 0;
+  const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
 
   return (
     <>
@@ -311,9 +336,20 @@ const PerformanceByStandards = ({
               selectCB={handleCompareByChange}
               data={dropDownFormat.compareByDropDownData}
             />
+            <Button.Group size="middle">
+              <Button onClick={handlePrevPage} disabled={prevButtonDisabled}>
+                <Icon type="left" />
+                Prev
+              </Button>
+              <Button onClick={handleNextPage} disabled={nextButtonDisabled}>
+                Next
+                <Icon type="right" />
+              </Button>
+            </Button.Group>
           </CardDropdownWrapper>
         </CardHeader>
         <PerformanceAnalysisTable
+          tableData={paginatedData}
           report={report}
           viewBy={viewBy}
           analyzeBy={analyzeBy}

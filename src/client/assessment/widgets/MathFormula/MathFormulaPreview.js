@@ -95,7 +95,7 @@ const MathFormulaPreview = ({
   let statusColor = theme.widgets.mathFormula.inputColor;
   if (previewType === SHOW || previewType === CHECK) {
     statusColor = evaluation
-      ? evaluation[0]
+      ? evaluation.some(ie => ie)
         ? theme.widgets.mathFormula.inputCorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor
       : theme.widgets.mathFormula.inputIncorrectColor;
@@ -131,11 +131,13 @@ const MathFormulaPreview = ({
             value={latex}
             onInput={onUserResponse}
             onBlur={onBlur}
-            disabled={evaluation && !evaluation[0]}
+            disabled={evaluation && !evaluation.some(ie => ie)}
             style={{ background: statusColor, ...cssStyles }}
           />
         )}
-        {(previewType === SHOW || previewType === CHECK) && <MathInputStatus valid={!!evaluation && !!evaluation[0]} />}
+        {(previewType === SHOW || previewType === CHECK) && (
+          <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+        )}
       </MathInputWrapper>
 
       {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (

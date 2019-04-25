@@ -143,7 +143,6 @@ class MultipleChoice extends Component {
   };
 
   handleOptionsChange = (name, value) => {
-    console.log(name, value);
     const { setQuestionData, item, saveAnswer } = this.props;
     setQuestionData(
       produce(item, draft => {
@@ -164,7 +163,6 @@ class MultipleChoice extends Component {
         }
 
         draft[name] = value;
-        console.log(draft);
       })
     );
   };

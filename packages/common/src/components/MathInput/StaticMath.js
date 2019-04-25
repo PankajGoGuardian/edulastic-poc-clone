@@ -192,7 +192,6 @@ class StaticMath extends PureComponent {
   render() {
     const { showKeyboard } = this.state;
     const { style, onBlur, symbols, numberPad } = this.props;
-    console.log(this.props);
     return (
       <MathInputStyles minWidth={style.minWidth}>
         <div ref={this.containerRef} className="input" onBlur={onBlur}>

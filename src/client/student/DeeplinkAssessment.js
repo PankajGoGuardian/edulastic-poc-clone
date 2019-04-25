@@ -8,7 +8,6 @@ import queryString from "query-string";
 import { bootstrapAssessmentAction } from "./Assignments/ducks";
 
 const DeepLink = ({ bootstrap, match }) => {
-  console.log("rendering deeplink 2");
   //alert("rendering deeplink 1");
   useEffect(() => {
     const { testType, assignmentId, testActivityId, testId } = match.params;

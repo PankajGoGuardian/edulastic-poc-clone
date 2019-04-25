@@ -209,7 +209,6 @@ class CoursesTable extends React.Component {
         message.error("Please select course to delete.");
       }
     } else if (e.key === "bulk edit") {
-      console.log("bulk edit clicked");
     }
   };
 

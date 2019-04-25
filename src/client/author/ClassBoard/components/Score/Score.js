@@ -88,8 +88,6 @@ export default class Score extends Component {
       });
     });
 
-    // console.log(dataSource)
-
     const columns = [
       {
         title: "Question",

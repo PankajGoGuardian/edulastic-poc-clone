@@ -289,7 +289,6 @@ function* saveQuestionSaga({ payload: modalItemId }) {
       }
     };
     const redirectTestId = yield select(redirectTestIdSelector);
-    console.log("redirectTestId", redirectTestId);
     const { testId, ...item } = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
     if (testId) {
       yield put(setRedirectTestAction(testId));

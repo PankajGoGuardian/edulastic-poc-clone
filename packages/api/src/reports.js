@@ -77,7 +77,6 @@ const fetchPeerPerformanceReport = params => {
 };
 
 const fetchPerformanceByStandard = params => {
-  console.log("params", params);
   return api.callApi({
     url: `/report/performanceByStandards`,
     params: { ...params.requestFilters, testId: params.testId }

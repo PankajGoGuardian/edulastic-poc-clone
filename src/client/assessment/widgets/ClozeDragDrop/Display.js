@@ -230,7 +230,6 @@ class ClozeDragDropDisplay extends Component {
       whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
     };
 
-    console.log("templateParts: ", templateParts);
     const previewTemplateBoxLayout = (
       <div
         className={`template_box ${smallSize ? "small" : ""}`}

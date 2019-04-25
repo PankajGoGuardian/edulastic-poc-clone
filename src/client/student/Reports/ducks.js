@@ -33,7 +33,6 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS_DATA);
 function* fetchAssignments({ payload }) {
   try {
     const groupId = yield select(getCurrentGroup);
-    console.log("groupIdaksdfjadf a", groupId);
     yield put(setAssignmentsLoadingAction());
     const [assignments, reports] = yield all([
       call(assignmentApi.fetchAssigned, payload),

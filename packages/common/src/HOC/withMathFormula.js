@@ -21,18 +21,15 @@ export const withMathFormula = WrappedComponent => {
     const { dangerouslySetInnerHTML } = props;
 
     const [mathField, setMathField] = useState(null);
-    const [latexHtmls, setLatexHtmls] = useState([]);
-    const [latexes, setLatexes] = useState([]);
-    const [mathHtmls, setMathHtmls] = useState([]);
     const [newInnerHtml, setNewInnerHtml] = useState("");
-    let mathFieldRef = useRef(null);
-    const ref = useRef(null);
+    const mathFieldRef = useRef(null);
 
     const detectLatexes = () => {
       if (!dangerouslySetInnerHTML || !dangerouslySetInnerHTML.__html) {
-        setLatexHtmls([]);
-        setLatexes([]);
-        return;
+        return {
+          latexHtmls: [],
+          latexes: []
+        };
       }
       const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
       let newLatexHtmls = [];
@@ -42,9 +39,10 @@ export const withMathFormula = WrappedComponent => {
       }
 
       if (!newLatexHtmls) {
-        setLatexHtmls([]);
-        setLatexes([]);
-        return;
+        return {
+          latexHtmls: [],
+          latexes: []
+        };
       }
       const newLatexes = newLatexHtmls.map(html => {
         const mathRegex2 = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
@@ -55,71 +53,63 @@ export const withMathFormula = WrappedComponent => {
         return null;
       });
 
-      setLatexHtmls(newLatexHtmls);
-      setLatexes(newLatexes);
+      return {
+        latexHtmls: newLatexHtmls,
+        latexes: newLatexes
+      };
     };
 
-    const generateNewHtml = () => {
+    const generateNewHtml = (latexHtmls, mathHtmls) => {
       const prevHtml = dangerouslySetInnerHTML.__html;
       let nNewInnerHtml = ` ${prevHtml}`.slice(1);
       for (let i = 0; i < latexHtmls.length; i++) {
         nNewInnerHtml = nNewInnerHtml.replace(latexHtmls[i], mathHtmls[i]);
       }
-
-      setNewInnerHtml(nNewInnerHtml);
+      return nNewInnerHtml;
     };
 
-    const startMathValidating = () => {
+    const initMathField = () => {
       if (mathField || !window.MathQuill) return;
-      if (mathFieldRef) {
+      if (mathFieldRef.current) {
         const MQ = window.MathQuill.getInterface(2);
         try {
-          setMathField(MQ.StaticMath(mathFieldRef));
+          setMathField(MQ.StaticMath(mathFieldRef.current));
         } catch (e) {
           console.warn("setMathField Error", e.message, e.stack);
         }
       }
     };
 
-    useEffect(() => {
-      mathFieldRef = ref.current;
-      startMathValidating();
-    }, []);
-
     const convertLatexToHTML = latex => {
       if (!mathField) return latex;
       mathField.latex(latex);
-      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.outerHTML}</span>`;
+      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.current.outerHTML}</span>`;
     };
 
-    const convertLatexesToMathHtmls = () => {
-      const newMathHtmls = latexes.map(latex => convertLatexToHTML(latex));
-      setMathHtmls(newMathHtmls);
-    };
+    const convertLatexesToMathHtmls = latexes => latexes.map(latex => convertLatexToHTML(latex));
 
     useEffect(() => {
-      if (!window.MathQuill && dangerouslySetInnerHTML !== undefined) {
-        setNewInnerHtml(dangerouslySetInnerHTML.__html);
+      if (mathFieldRef.current) {
+        initMathField();
       }
-    }, [dangerouslySetInnerHTML, window.MathQuill]);
+    }, [mathFieldRef.current]);
 
     useEffect(() => {
-      detectLatexes();
-    }, [dangerouslySetInnerHTML]);
+      if (!mathField || (!window.MathQuill && dangerouslySetInnerHTML !== undefined)) {
+        setNewInnerHtml(dangerouslySetInnerHTML.__html);
+        return;
+      }
+      const { latexHtmls, latexes } = detectLatexes();
+      const mathHtmls = convertLatexesToMathHtmls(latexes);
+      const nNewInnerHtml = generateNewHtml(latexHtmls, mathHtmls);
 
-    useEffect(() => {
-      convertLatexesToMathHtmls();
-    }, [mathField, latexHtmls, latexes]);
-
-    useEffect(() => {
-      generateNewHtml();
-    }, [mathHtmls]);
+      setNewInnerHtml(nNewInnerHtml);
+    }, [dangerouslySetInnerHTML, mathField.current, window.MathQuill]);
 
     return (
       <WithResources
         resources={[
           "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css",
-          "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
           "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
           "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
           "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
@@ -127,7 +117,7 @@ export const withMathFormula = WrappedComponent => {
         ]}
         fallBack={<span />}
         onLoaded={() => {
-          startMathValidating();
+          initMathField();
         }}
       >
         <React.Fragment>
@@ -137,7 +127,7 @@ export const withMathFormula = WrappedComponent => {
             dangerouslySetInnerHTML={{ __html: newInnerHtml }}
           />
           <NoneDiv>
-            <span ref={ref} className="input__math__field" />
+            <span ref={mathFieldRef} className="input__math__field" />
           </NoneDiv>
         </React.Fragment>
       </WithResources>

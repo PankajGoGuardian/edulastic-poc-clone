@@ -272,7 +272,6 @@ class TeacherTable extends React.Component {
     this.setState({
       inviteTeacherModalVisible: false
     });
-    console.log(inviteTeacherList);
   };
 
   closeInviteTeacherModal = () => {

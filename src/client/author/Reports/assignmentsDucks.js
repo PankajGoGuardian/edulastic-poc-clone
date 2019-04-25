@@ -58,7 +58,6 @@ export const reportAssignmentsReducer = createReducer(initialState, {
 export function* getReportsAssignmentsRequest({ payload }) {
   try {
     const assignments = yield call(reportsApi.fetchAssignments);
-    console.log("assignments", assignments);
     yield put({
       type: GET_REPORTS_ASSIGNMENTS_REQUEST_SUCCESS,
       payload: { assignments }

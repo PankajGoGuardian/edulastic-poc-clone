@@ -142,7 +142,6 @@ class TermTable extends React.Component {
         }
       });
       this.setState({ data: newData, editingKey: "" });
-      console.log(createdTerm.key);
     }
   }
 

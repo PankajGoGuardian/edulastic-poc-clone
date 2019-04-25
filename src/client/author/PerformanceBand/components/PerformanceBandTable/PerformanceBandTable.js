@@ -188,7 +188,6 @@ class PerformanceBandTable extends React.Component {
       if (row[keyName] < 0) row[keyName] = 0;
     });
     this.setState({ dataSource: dataSource });
-    console.log(dataSource);
   };
 
   changeAbove = (e, key) => {

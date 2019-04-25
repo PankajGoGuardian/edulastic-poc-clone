@@ -48,7 +48,6 @@ class GraphDisplay extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    console.log("display");
     const { graphData } = this.props;
     if (graphData !== prevProps.graphData) {
       this.validateGraph();

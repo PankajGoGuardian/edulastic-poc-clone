@@ -418,7 +418,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         });
       });
       it("Testing equivSymbolic method", () => {
-        question.setMethod(methods.EQUIV_SYMBOLIC, question.setValue, queData.answer.value);
+        question.setMethod(methods.EQUIV_SYMBOLIC);
+        question.setValue(queData.answer.value);
         question.getAnswerValueMathOutput().should("have.length", 6);
         question
           .getAnswerAriaLabel()

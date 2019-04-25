@@ -19,7 +19,7 @@ class MathClozePage extends MathMatricesPage {
 
   typeInResponseBox = () => this.getQuestionContainer().find(".ql-editor textarea");
 
-  getLastCollapseItem = () => cy.get(".ant-collapse-item");
+  getLastCollapseItem = () => this.getQuestionArea().find(".ant-collapse-item");
 
   getResponseBoxValue = () => cy.get("span.mq-root-block.mq-hasCursor");
 
@@ -28,14 +28,20 @@ class MathClozePage extends MathMatricesPage {
   getEditableField = () => this.getQuestionContainer().find(".ql-editor .mq-editable-field");
 
   checkAnswerHighlightColor = isCorrect => () =>
-    this.getSucsessBox().should("have.class", `${isCorrect ? "success" : "wrong"}`);
+    this.getSucsessBox().each(elem => cy.wrap(elem).should("have.class", `${isCorrect ? "success" : "wrong"}`));
 
-  checkMathClozeCorrectAnswer = (expectedValues, preview, inputLength, isCorrect, clearedResponse = false) => {
+  checkMathClozeCorrectAnswer = (expectedValues, preview, inputLength, isCorrect, multipleResponse = false) => {
     preview.header.preview();
     preview.getClear().click();
-    this.typeInResponseBox().then(() => {
+    this.typeInResponseBox().then(inputElements => {
       if (Array.isArray(expectedValues)) {
-        expectedValues.forEach(expectedValue => this.typeInResponseBox().typeWithDelay(expectedValue));
+        expectedValues.forEach((expectedValue, index) => {
+          if (multipleResponse) {
+            cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
+          } else {
+            this.typeInResponseBox().typeWithDelay(expectedValue);
+          }
+        });
       } else {
         this.typeInResponseBox().typeWithDelay(expectedValues);
       }
@@ -70,6 +76,60 @@ class MathClozePage extends MathMatricesPage {
     this.findByselector(".ql-insertStar").click({ force: true });
     this.getAddNewMethod().click();
     this.setMethod(method);
+  };
+
+  setResponseBox = boxTexts => {
+    this.getComposeQuestionTextBox()
+      .last()
+      .clear();
+    boxTexts.forEach(boxText => {
+      this.getComposeQuestionTextBox()
+        .last()
+        .type(boxText);
+      this.findByselector(".ql-insertStar").click({ force: true });
+    });
+  };
+
+  getQuestionArea = () => cy.get(`[data-cy="question-area"]`);
+
+  getComposeQuestionTextBox = () => this.getQuestionArea().find(".ql-editor");
+
+  // getComposeQuestionTextBoxLink = () => this.getQuestionArea().find(".ql-editor p");
+
+  setAndCheckMathClozeCorrectAnswer = ({ expected, input, checkboxValues, isCorrectAnswer }, preview, respQuantity) => {
+    isCorrectAnswer.forEach((isCorrect, index) => {
+      this.getLastCollapseItem()
+        .last()
+        .click();
+      for (let i = 0; i < respQuantity; i++) {
+        this.setValue(input[i], i);
+        this.setSeparator(checkboxValues[index])(i);
+      }
+      this.checkMathClozeCorrectAnswer(expected, preview, input.length, isCorrect, true);
+    });
+  };
+
+  setAndCheckAllowDecimalMarks = (
+    { input, expected, isCorrectAnswer },
+    preview,
+    thousandsTestingSeparators,
+    decimalSeparators,
+    respQuantity
+  ) => {
+    isCorrectAnswer.forEach((isCorrect, index) => {
+      this.unCheckAllCheckBox();
+      this.getLastCollapseItem()
+        .last()
+        .click();
+
+      for (let i = 0; i < respQuantity; i++) {
+        this.setValue(input, i);
+        this.setSeparator("getAnswerAllowThousandsSeparator")(i);
+        this.setAnswerSetDecimalSeparatorDropdown(decimalSeparators[index], i);
+        this.setThousandsSeparatorDropdown(thousandsTestingSeparators[index], i);
+      }
+      this.checkMathClozeCorrectAnswer(expected[index], preview, 0, isCorrect, true);
+    });
   };
 }
 

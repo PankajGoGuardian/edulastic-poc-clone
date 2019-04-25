@@ -69,7 +69,7 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
     <Fragment>
       {view === EDIT && (
         <Fragment>
-          <Paper style={{ marginBottom: 30 }}>
+          <Paper style={{ marginBottom: 30 }} data-cy="question-area">
             <Subtitle>Compose question</Subtitle>
             <QuestionTextArea
               inputId="stimulusInput"

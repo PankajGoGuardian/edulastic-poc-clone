@@ -596,7 +596,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" ty
       it("Testing inverse result", () => {
         const { expected } = queData.isFactorised.inverseResult;
 
-        question.setMethod(methods.IS_FACTORISED, question.setSeparator("getAnswerInverseResult"));
+        question.setMethod(methods.IS_FACTORISED);
+        question.setSeparator("getAnswerInverseResult")();
 
         question.checkCorrectAnswerWithResponse(expected, preview, 0, false);
       });

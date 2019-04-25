@@ -234,31 +234,13 @@ class MathFormulaEdit {
       this.getAnswerMathTextArea().typeWithDelay(expectedValue);
     }
 
-    preview
-      .getCheckAnswer()
-      .click()
-      .then(() =>
-        cy
-          .get("body")
-          .children()
-          .should("contain", `score: ${isCorrect ? scoreValuse : `0/1`}`)
-      );
-
-    this.checkAttr(isCorrect);
-    preview
-      .getClear()
-      .click()
-      .then(() => {
-        cy.get("body")
-          .children()
-          .should("not.contain", "Correct Answers");
-      });
+    this.checkNoticeMessageScore(preview, isCorrect, this.checkAttr(isCorrect), scoreValuse);
 
     preview.header.edit();
     if (inputLength > 0) this.clearAnswerValueInput(inputLength);
   };
 
-  checkAttr = isCorrect => {
+  checkAttr = isCorrect => () => {
     if (isCorrect) {
       this.getAnswerMathInputStyle().should("have.attr", "style", "background: rgb(225, 251, 242);");
     } else {
@@ -367,11 +349,11 @@ class MathFormulaEdit {
     return JSON.parse(storeValue).entity.data;
   };
 
-  getComposeQuestionTextBox = () => cy.get(".ql-editor");
+  getComposeQuestionTextBox = () => this.getComposeQuestionQuillComponent().find(".ql-editor");
 
-  getComposeQuestionTextBoxLink = () => cy.get(".ql-editor p");
+  getComposeQuestionTextBoxLink = () => this.getComposeQuestionQuillComponent().find(".ql-editor p");
 
-  getSaveLink = () => cy.get(".ql-action");
+  getSaveLink = () => this.getComposeQuestionQuillComponent().find(".ql-action");
 
   getAnswerRuleDropdownByValue = val => cy.get(`[data-cy="answer-rule-dropdown-${val}"]`);
 
@@ -387,29 +369,39 @@ class MathFormulaEdit {
 
   getCorrectAnswerBox = () => cy.get('[data-cy="correct-answer-box"]');
 
-  getUploadImageIcon = () => cy.get(".ql-image");
+  getComposeQuestionQuillComponent = () => cy.get('[data-cy="compose-question-quill-component"]');
 
-  getEditorData = () => cy.get(".ql-editor p");
+  getUploadImageIcon = () => this.getComposeQuestionQuillComponent().find(".ql-image");
+
+  getEditorData = () => this.getComposeQuestionQuillComponent().find(".ql-editor p");
 
   getBody = () => cy.get("body");
 
-  setMethod = (methods, setFunction = false, argument, setChecBox) => {
+  getOrder = order => (order ? "last" : "first");
+
+  setMethod = (methods, order = 0) => {
+    const methodOrder = this.getOrder(order);
     this.getMethodSelectionDropdow()
+      [methodOrder]()
       .click({ force: true })
       .then(() => {
-        this.getMethodSelectionDropdowList(methods).click({ force: true });
+        this.getMethodSelectionDropdowList(methods)
+          [methodOrder]()
+          .click({ force: true });
       });
-    if (setFunction instanceof Function) setFunction(argument);
-    if (setChecBox instanceof Function) setChecBox();
   };
 
   setValue = (input, order = 1) => {
+    const inputOrder = this.getOrder(order);
     this.getMathFormulaAnswers()
+      [inputOrder]()
       .find(`[data-cy="answer-input-math-textarea"]`)
       .then(element => {
         cy.get("[mathquill-block-id]").then(elements => {
-          const { length } = elements[order].innerText;
+          const newOrder = elements.length === 4 && order === 1 ? 2 : order;
+          const { length } = elements[newOrder].innerText;
           cy.wrap(element)
+            [inputOrder]()
             .type("{del}".repeat(length === 0 ? 1 : length), { force: true })
             .type(input, { force: true });
         });
@@ -422,12 +414,20 @@ class MathFormulaEdit {
       .then(() => this.getAnswerRuleDropdownByValue(rule).click());
   };
 
+  unCheckAllCheckBoxInAnswers = checkBoxOrder =>
+    this.getMathFormulaAnswers()
+      [checkBoxOrder]()
+      .find("input[type='checkbox']")
+      .uncheck({ force: true });
+
   unCheckAllCheckBox = () => cy.get("input[type='checkbox']").uncheck({ force: true });
 
-  setSeparator = checBoxName => () => {
-    this.unCheckAllCheckBox();
-    if (checBoxName)
-      this[checBoxName]()
+  setSeparator = checkBoxName => (order = 0) => {
+    const checkBoxOrder = this.getOrder(order);
+    this.unCheckAllCheckBoxInAnswers(checkBoxOrder);
+    if (checkBoxName)
+      this[checkBoxName]()
+        [checkBoxOrder]()
         .check({ force: true })
         .should("be.checked");
   };
@@ -461,24 +461,32 @@ class MathFormulaEdit {
   mapIsFactorisedMethodFields = fields =>
     Object.values(fields).forEach(field => this.setIsFactorisedMethodField(field));
 
-  setAnswerSetDecimalSeparatorDropdown = separator =>
+  setAnswerSetDecimalSeparatorDropdown = (separator, order = 0) => {
+    const inputOrder = this.getOrder(order);
     this.getAnswerSetDecimalSeparatorDropdown()
+      [inputOrder]()
       .click()
       .then(() => {
         this.getAnswerSetDecimalSeparatorDropdownList(separator)
+          [inputOrder]()
           .should("be.visible")
           .click();
       });
+  };
 
   setAllowedUnitsInput = units =>
     this.getAnswerAllowedUnits()
       .clear({ force: true })
       .type(units, { force: true });
 
-  setArgumentInput = (selector, input) =>
+  setArgumentInput = (selector, input, order = 0) => {
+    const inputOrder = this.getOrder(order);
+
     this[selector]()
+      [inputOrder]()
       .clear({ force: true })
       .type("{uparrow}".repeat(input), { force: true });
+  };
 
   checkIfTextExist = data =>
     this.getComposeQuestionTextBox()
@@ -506,7 +514,7 @@ class MathFormulaEdit {
       .click()
       .then(() => this.getAnswerArgumentDropdownByValue(value).click());
 
-  checkNoticeMessageScore = (preview, isCorrect, checkAnswerHighlightColor) => {
+  checkNoticeMessageScore = (preview, isCorrect, checkAnswerHighlightColor, scoreValuse = "1/1") => {
     preview
       .getCheckAnswer()
       .click()
@@ -514,7 +522,7 @@ class MathFormulaEdit {
         cy
           .get("body")
           .children()
-          .should("contain", `score: ${isCorrect ? "1/1" : "0/1"}`)
+          .should("contain", `score: ${isCorrect ? scoreValuse : "0/1"}`)
       );
     checkAnswerHighlightColor();
 

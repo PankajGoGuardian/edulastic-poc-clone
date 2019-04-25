@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { CustomQuillComponent } from "@edulastic/common";
 
 const QuestionTextArea = ({ inputId, onChange, value, style, firstFocus, placeholder, showResponseBtn }) => (
-  <div style={style}>
+  <div style={style} data-cy="compose-question-quill-component">
     <CustomQuillComponent
       inputId={inputId}
       toolbarId="stimulus"

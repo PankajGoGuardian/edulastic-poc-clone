@@ -34,37 +34,24 @@ class MathFillInTheBlanksPage extends MathFractionPage {
         cy.wrap(inputElements).typeWithDelay(expectedValues);
       }
     });
-    preview
-      .getCheckAnswer()
-      .click()
-      .then(() =>
-        cy
-          .get("body")
-          .children()
-          .should("contain", `score: ${isCorrect ? "1/1" : "0/1"}`)
-      );
-    this.checkAttr(isCorrect);
-    preview
-      .getClear()
-      .click()
-      .then(() => {
-        cy.get("body")
-          .children()
-          .should("not.contain", "Correct Answers");
-      });
-    preview.header.edit();
 
+    this.checkNoticeMessageScore(preview, isCorrect, this.checkAttr(isCorrect));
+    preview.header.edit();
     if (inputLength > 0) this.clearAnswerValueInput(inputLength);
   };
 
-  setThousandsSeparatorDropdown = separator =>
+  setThousandsSeparatorDropdown = (separator, order = 0) => {
+    const inputOrder = order ? "last" : "first";
     this.getThousandsSeparatorDropdown()
+      [inputOrder]()
       .click()
       .then(() => {
         this.getThousandsSeparatorDropdownList(separator)
+          [inputOrder]()
           .should("be.visible")
           .click();
       });
+  };
 
   allowDecimalMarksWithResponse = (separator, thousand, inputLength, expected, preview, isCorrect = false) => {
     this.unCheckAllCheckBox();

@@ -86,7 +86,12 @@ class ButtonAction extends Component {
               }}
             >
               {(showCheckButton || window.location.pathname.includes("author")) && (
-                <Button htmlType="button" onClick={this.handleCheckClick} style={{ height: 45, width: 45 }}>
+                <Button
+                  htmlType="button"
+                  onClick={this.handleCheckClick}
+                  style={{ height: 45, width: 45 }}
+                  data-cy="check-answer-btn"
+                >
                   <ButtonLink
                     color="primary"
                     icon={<IconCheck color={attempts >= allowedAttempts ? darkGrey : newBlue} width={16} height={16} />}
@@ -96,7 +101,12 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              <Button htmlType="button" onClick={() => changePreviewTab("show")} style={{ height: 45, width: 45 }}>
+              <Button
+                htmlType="button"
+                onClick={() => changePreviewTab("show")}
+                style={{ height: 45, width: 45 }}
+                data-cy="show-answers-btn"
+              >
                 <ButtonLink
                   color="primary"
                   style={{ color: newBlue }}
@@ -112,6 +122,7 @@ class ButtonAction extends Component {
                   changePreviewTab("clear");
                 }}
                 style={{ height: 45, width: 45 }}
+                data-cy="clear-btn"
               >
                 <ButtonLink
                   color="primary"

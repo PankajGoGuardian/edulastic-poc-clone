@@ -5,23 +5,11 @@ class PreviewItemPage {
     this.header = new Header();
   }
 
-  getCheckAnswer = () =>
-    cy
-      .get("body")
-      .contains("Check Answer")
-      .should("be.visible");
+  getCheckAnswer = () => cy.get('[data-cy="check-answer-btn"]').should("be.visible");
 
-  getShowAnswer = () =>
-    cy
-      .get("body")
-      .contains("Show Answers")
-      .should("be.visible");
+  getShowAnswer = () => cy.get('[data-cy="show-answers-btn"]').should("be.visible");
 
-  getClear = () =>
-    cy
-      .get("body")
-      .contains("Clear")
-      .should("be.visible");
+  getClear = () => cy.get('[data-cy="clear-btn"]').should("be.visible");
 
   getAntMsg = () => cy.get(".ant-message-notice-content");
 

@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 
+import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 import ClozeMathAnswers from "./ClozeMathAnswers";
 import ClozeMathPreview from "./ClozeMathPreview";
@@ -71,18 +72,21 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
           <Paper style={{ marginBottom: 30 }}>
             <Subtitle>Compose question</Subtitle>
             <QuestionTextArea
+              inputId="stimulusInput"
               placeholder="Enter question"
               onChange={stimulus => _itemChange("stimulus", stimulus)}
               value={item.stimulus}
             />
-            <Subtitle>Template</Subtitle>
+            <Subtitle data-cy="template">Template</Subtitle>
             <CustomQuillComponent
+              inputId="templateInput"
               toolbarId="template"
               onChange={_updateTemplate}
               showResponseBtn
               value={item.template}
+              data-cy="templateBox"
             />
-            <ClozeMathAnswers item={item} setQuestionData={setQuestionData} />
+            <ClozeMathAnswers id="answers" item={item} setQuestionData={setQuestionData} />
           </Paper>
           <MathFormulaOptions
             onChange={_itemChange}
@@ -132,6 +136,7 @@ ClozeMath.defaultProps = {
 };
 
 const enhance = compose(
+  withTutorial("clozeMath"),
   connect(
     (state, { item }) => ({
       evaluation: state.evaluation[item.id]

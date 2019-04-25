@@ -39,8 +39,8 @@ const AssessmentContainer = ({
   answersById,
   loading
 }) => {
-  let { qid = 0 } = match.params;
-  let currentItem = Number(qid);
+  const { qid = 0 } = match.params;
+  const currentItem = Number(qid);
   gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
@@ -50,7 +50,7 @@ const AssessmentContainer = ({
     startAssessment();
   }, []);
 
-  let lastTime = useRef(Date.now());
+  const lastTime = useRef(Date.now());
   useEffect(() => {
     lastTime.current = Date.now();
   }, [currentItem]);

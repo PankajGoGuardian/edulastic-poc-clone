@@ -185,6 +185,7 @@ class CustomQuillComponent extends React.Component {
     value: PropTypes.string.isRequired,
     placeholder: PropTypes.string,
     showResponseBtn: PropTypes.bool.isRequired,
+    inputId: PropTypes.string.isRequired,
     toolbarId: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     clearOnFirstFocus: PropTypes.bool,
@@ -356,7 +357,7 @@ class CustomQuillComponent extends React.Component {
 
   render() {
     const { active, quillVal, showMath, selLatex, modules } = this.state;
-    const { placeholder, showResponseBtn, toolbarId, style, readOnly } = this.props;
+    const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
       "7",
@@ -382,7 +383,7 @@ class CustomQuillComponent extends React.Component {
     ];
 
     return (
-      <div className="text-editor" style={style}>
+      <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
         <CustomToolbar
           active={active && !readOnly}
           showResponseBtn={showResponseBtn}

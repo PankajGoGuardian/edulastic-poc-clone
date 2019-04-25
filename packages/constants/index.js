@@ -13,6 +13,7 @@ const test = require("./const/test");
 const evaluatorTypes = require("./const/evaluatorTypes");
 const variableTypes = require("./const/variableTypes");
 const testActivity = require("./const/testActivity");
+const tutorials = require("./tutorials");
 
 module.exports = {
   questionType,
@@ -29,5 +30,6 @@ module.exports = {
   rounding,
   variableTypes,
   test,
-  testActivity
+  testActivity,
+  tutorials
 };

@@ -4,12 +4,14 @@ import assessmentReducers from "./assessment/reducers";
 import authorReducers from "./author/src/reducers";
 import studentReducers from "./student/reducers";
 import curriculumSequenceReducers from "./author/CurriculumSequence/ducks";
+import tutorial from "./tutorials/tutorialReducer";
 import { LOGOUT } from "./student/Login/ducks";
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
   ...authorReducers,
   ...studentReducers,
+  tutorial,
   curriculumSequence: curriculumSequenceReducers
 });
 

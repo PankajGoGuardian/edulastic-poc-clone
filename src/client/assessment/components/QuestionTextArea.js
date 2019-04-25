@@ -2,9 +2,10 @@ import React, { memo } from "react";
 import PropTypes from "prop-types";
 import { CustomQuillComponent } from "@edulastic/common";
 
-const QuestionTextArea = ({ onChange, value, style, firstFocus, placeholder, showResponseBtn }) => (
+const QuestionTextArea = ({ inputId, onChange, value, style, firstFocus, placeholder, showResponseBtn }) => (
   <div style={style}>
     <CustomQuillComponent
+      inputId={inputId}
       toolbarId="stimulus"
       firstFocus={firstFocus}
       placeholder={placeholder}
@@ -18,6 +19,7 @@ const QuestionTextArea = ({ onChange, value, style, firstFocus, placeholder, sho
 QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  inputId: PropTypes.string,
   style: PropTypes.object,
   firstFocus: PropTypes.bool,
   showResponseBtn: PropTypes.bool,
@@ -25,6 +27,7 @@ QuestionTextArea.propTypes = {
 };
 
 QuestionTextArea.defaultProps = {
+  inputId: "",
   style: {},
   firstFocus: false,
   showResponseBtn: false,

@@ -6,6 +6,7 @@ import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin } from "antd";
+import Joyride from "react-joyride";
 import { test } from "@edulastic/constants";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 
@@ -37,11 +38,16 @@ const Loading = () => (
 
 class App extends Component {
   static propTypes = {
-    user: PropTypes.object.isRequired
+    user: PropTypes.object.isRequired,
+    tutorial: PropTypes.object
+  };
+
+  static defaultProps = {
+    tutorial: null
   };
 
   render() {
-    const { user } = this.props;
+    const { user, tutorial } = this.props;
     let defaultRoute = "/home/assignments";
     if (user && user.isAuthenticated) {
       if (user.user.role === "teacher") {
@@ -50,9 +56,11 @@ class App extends Component {
     } else {
       defaultRoute = "/Login";
     }
-    //signup routes hidden till org reference is not done
+
+    // signup routes hidden till org reference is not done
     return (
       <div>
+        {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
           <Switch>
             <Redirect exact path="/" to={defaultRoute} />
@@ -81,7 +89,7 @@ const enhance = compose(
   DragDropContext(HTML5Backend),
   withRouter,
   connect(
-    ({ user }) => ({ user }),
+    ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),
     null
   )
 );

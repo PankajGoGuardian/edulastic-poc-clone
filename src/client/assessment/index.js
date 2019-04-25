@@ -9,18 +9,13 @@ import { loadTestAction } from "./actions/test";
 
 const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
   useEffect(() => {
-    let { id: testId, utaId: testActivityId } = match.params;
+    const { id: testId, utaId: testActivityId } = match.params;
     loadTest({ testId, testActivityId });
   }, []);
 
   return (
     <Switch>
-      <Route
-        path={`${match.url}/qid/:qid`}
-        render={() => {
-          return <ThemeContainer defaultAP={defaultAP} url={match.url} />;
-        }}
-      />
+      <Route path={`${match.url}/qid/:qid`} render={() => <ThemeContainer defaultAP={defaultAP} url={match.url} />} />
     </Switch>
   );
 };
@@ -28,7 +23,7 @@ const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
   loadTest: PropTypes.func.isRequired,
-  testId: PropTypes.string
+  match: PropTypes.any.isRequired
 };
 
 AssessmentPlayer.defaultProps = {};

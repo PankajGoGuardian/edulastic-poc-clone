@@ -29,12 +29,10 @@ if (process.env.NODE_ENV === "development") {
 }
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
+let store;
 
 export default () => {
-  const store = createStore(
-    connectRouter(history)(persistedReducer),
-    composeWithDevTools(applyMiddleware(...middleware))
-  );
+  store = createStore(connectRouter(history)(persistedReducer), composeWithDevTools(applyMiddleware(...middleware)));
 
   const persistor = persistStore(store);
   sagaMiddleware.run(rootSaga);
@@ -46,6 +44,10 @@ export default () => {
       });
     }
   }
-
   return { store, persistor };
 };
+
+export function getStore() {
+  console.log(store);
+  return store;
+}

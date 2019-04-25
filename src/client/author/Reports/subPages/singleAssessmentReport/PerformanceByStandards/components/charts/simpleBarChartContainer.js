@@ -20,7 +20,7 @@ const getBarDataKey = analyzeBy => {
 
 const getYLabel = analyzeBy => {
   const proportion = analyzeBy === analyzeByMode.SCORE ? "(%)" : "";
-  return { value: `Avg. score ${proportion}`, angle: -90, position: "insideLeft" };
+  return { value: `Avg. score ${proportion}`, angle: -90, position: "insideLeft", dy: 35 };
 };
 
 const makeMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;

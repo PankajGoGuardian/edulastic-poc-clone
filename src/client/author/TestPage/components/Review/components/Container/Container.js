@@ -14,9 +14,10 @@ import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 import { setTestDataAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
-import { Calculator, Photo } from "../../../common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
+import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
+
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {
   static propTypes = {
@@ -187,9 +188,9 @@ class Review extends PureComponent {
     const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
     const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
     return (
-      <div style={{ paddingTop: 10 }}>
+      <div style={{ paddingTop: 16 }}>
         <Row>
-          <Col span={isSmallSize ? 19 : 24} style={{ padding: isMobileSize ? "0 45px" : "0 25px" }}>
+          <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
               <HeaderBar
@@ -222,28 +223,27 @@ class Review extends PureComponent {
                   types={types}
                   scoring={test.scoring}
                   questions={questions}
+                  mobile={!isSmallSize}
                   useDragHandle
                 />
               )}
             </Paper>
           </Col>
           <Col
-            span={isSmallSize ? 5 : 24}
+            span={isSmallSize ? 6 : 24}
             style={{
-              padding: isSmallSize ? "0px" : isMobileSize ? "10px 45px" : "10px 25px"
+              padding: isSmallSize ? "0 40px 0 0" : isMobileSize ? "10px 45px" : "10px 25px"
             }}
           >
-            <Calculator
-              totalPoints={totalPoints}
+            <ReviewSummary
+              tableData={this.tableData}
               questionsCount={questionsCount}
               grades={grades}
               subjects={subjects}
+              totalPoints={totalPoints}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
-              tableData={this.tableData}
-            >
-              <Photo url={test.thumbnail} />
-            </Calculator>
+            />
           </Col>
         </Row>
         <PreviewModal

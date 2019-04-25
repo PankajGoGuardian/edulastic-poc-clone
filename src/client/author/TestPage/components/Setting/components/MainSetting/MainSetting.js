@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Anchor, Input, Row, Col, Radio, Switch, List, Button, Select } from "antd";
+import { Anchor, Input, Row, Col, Radio, Switch, List, Select } from "antd";
+
 import { Paper } from "@edulastic/common";
 import { test } from "@edulastic/constants";
-import ListCard from "../Card/Card";
-import UiTime from "../UiTime/UiTime";
+import { lightBlueSecondary } from "@edulastic/colors";
+import { IconCaretDown } from "@edulastic/icons";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
 import { setTestDataAction, getTestEntitySelector } from "../../../../ducks";
+import ListCard from "../Card/Card";
+import UiTime from "../UiTime/UiTime";
 
 import {
   StyledAnchor,
@@ -20,16 +23,15 @@ import {
   Block,
   AdvancedButton,
   AdvancedSettings,
-  BandsText,
   BlueText,
   Description,
-  FlexBody,
-  Line,
   NormalText,
   StyledRadioGroup,
   RadioWrapper,
   TestTypeSelect,
-  GenerateReportSelect
+  GenerateReportSelect,
+  ActivityInput,
+  Container
 } from "./styled";
 
 const {
@@ -161,7 +163,6 @@ class MainSetting extends Component {
 
     const {
       releaseScore,
-      maxAttempts,
       safeBrowser,
       sebPassword,
       shuffleQuestions,
@@ -172,28 +173,42 @@ class MainSetting extends Component {
       generateReport,
       calcType
     } = entity;
-    const isSmallSize = windowWidth > 993 ? 1 : 0;
+    const isSmallSize = windowWidth < 993 ? 1 : 0;
     return (
-      <Paper style={{ marginTop: 27 }}>
-        <Row style={{ padding: windowWidth < 468 && "25px" }}>
-          <Col span={isSmallSize ? 6 : 0}>
-            <StyledAnchor affix={false}>
-              {settingCategories.map(category => (
+      <Container>
+        <Row style={{ padding: 0 }}>
+          <Col span={isSmallSize ? 0 : 6}>
+            <StyledAnchor affix={false} offsetTop={125}>
+              {settingCategories.slice(0, -5).map(category => (
                 <Anchor.Link
                   key={category.id}
                   href={`${history.location.pathname}#${category.id}`}
-                  title={category.title}
+                  title={category.title.toLowerCase()}
                 />
               ))}
             </StyledAnchor>
+            <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+              {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
+              <IconCaretDown color={lightBlueSecondary} width={11} height={6} />
+            </AdvancedButton>
+            {showAdvancedOption && (
+              <StyledAnchor affix={false} offsetTop={125}>
+                {settingCategories.slice(-5).map(category => (
+                  <Anchor.Link
+                    key={category.id}
+                    href={`${history.location.pathname}#${category.id}`}
+                    title={category.title.toLowerCase()}
+                  />
+                ))}
+              </StyledAnchor>
+            )}
           </Col>
-          <Col span={isSmallSize ? 18 : 24}>
-            <Block id="test-type">
+          <Col span={isSmallSize ? 24 : 18}>
+            <Block id="test-type" smallSize={isSmallSize}>
               <Row>
                 <Col span={12}>
                   <Title>Test Type</Title>
-                  <Body />
-                  <Description>
+                  <Body smallSize={isSmallSize}>
                     <TestTypeSelect defaultValue={testType} onChange={this.updateTestData("testType")}>
                       {Object.keys(testTypes).map(key => (
                         <Option key={key} value={key}>
@@ -201,14 +216,14 @@ class MainSetting extends Component {
                         </Option>
                       ))}
                     </TestTypeSelect>
-                  </Description>
+                  </Body>
                 </Col>
                 <Col span={12}>
                   {testType === PRACTICE && (
                     <React.Fragment>
                       {" "}
                       <Title>Generate Report </Title>
-                      <Body>
+                      <Body smallSize={isSmallSize}>
                         <GenerateReportSelect
                           defaultValue={generateReport}
                           onChange={this.updateTestData("generateReport")}
@@ -225,9 +240,9 @@ class MainSetting extends Component {
                 </Col>
               </Row>
             </Block>
-            <Block id="mark-as-done">
+            <Block id="mark-as-done" smallSize={isSmallSize}>
               <Title>Mark as Done</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <StyledRadioGroup onChange={this.updateFeatures("markAsDoneValue")} value={markAsDoneValue}>
                   {Object.keys(completionTypes).map(item => (
                     <Radio value={completionTypes[item]} key={completionTypes[item]}>
@@ -235,19 +250,19 @@ class MainSetting extends Component {
                     </Radio>
                   ))}
                 </StyledRadioGroup>
+                <Description>
+                  {"Control when class will be marked as Done. "}
+                  <BlueText>Automatically</BlueText>
+                  {" when all students are graded and due date has passed OR "}
+                  <BlueText>Manually</BlueText>
+                  {' when you click the "Mark as Done" button.'}
+                </Description>
               </Body>
-              <Description>
-                {"Control when class will be marked as Done. "}
-                <BlueText>Automatically</BlueText>
-                {" when all students are graded and due date has passed OR "}
-                <BlueText>Manually</BlueText>
-                {' when you click the "Mark as Done" button.'}
-              </Description>
             </Block>
 
-            <Block id="release-scores">
-              <Title>Release Grades Settings</Title>
-              <Body>
+            <Block id="release-scores" smallSize={isSmallSize}>
+              <Title>Release Scores</Title>
+              <Body smallSize={isSmallSize}>
                 <StyledRadioGroup onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
                   {releaseGradeKeys.map(item => (
                     <Radio value={item} key={item}>
@@ -255,37 +270,21 @@ class MainSetting extends Component {
                     </Radio>
                   ))}
                 </StyledRadioGroup>
+                <Description>
+                  {"Select "}
+                  <BlueText>ON</BlueText>
+                  {" for students to see their scores instantly after submission."}
+                  <br />
+                  {"Select "}
+                  <BlueText>OFF</BlueText>
+                  {" to manually control when students get to see their scores."}
+                </Description>
               </Body>
-              <Description>
-                {"Select "}
-                <BlueText>ON</BlueText>
-                {" for students to see their scores instantly after submission."}
-                <br />
-                {"Select "}
-                <BlueText>OFF</BlueText>
-                {" to manually control when students get to see their scores.\n"}
-              </Description>
             </Block>
 
-            <Block id="maximum-attempts-allowed">
-              <Title>Maximum Attempts Allowed </Title>
-              <Body />
-              <Description>
-                <Input
-                  type="number"
-                  size="large"
-                  value={maxAttempts}
-                  onChange={this.updateAttempt}
-                  min={1}
-                  step={1}
-                  style={{ width: "20%", marginRight: 30 }}
-                />
-              </Description>
-            </Block>
-
-            <Block id="require-safe-exame-browser">
+            <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
               <Title>Require Safe Exam Browser</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={safeBrowser} onChange={this.updateTestData("safeBrowser")} />
                 {safeBrowser && (
                   <InputPassword
@@ -299,45 +298,45 @@ class MainSetting extends Component {
                     placeholder="Password"
                   />
                 )}
+                <Description>
+                  {
+                    "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
+                  }
+                </Description>
               </Body>
-              <Description>
-                {
-                  "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
-                }
-              </Description>
             </Block>
 
-            <Block id="suffle-question">
+            <Block id="suffle-question" smallSize={isSmallSize}>
               <Title>Shuffle Question</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={shuffleQuestions} onChange={this.updateTestData("shuffleQuestions")} />
+                <Description>
+                  {"If "}
+                  <BlueText>ON</BlueText>
+                  {", then order of questions will be different for each student."}
+                </Description>
               </Body>
-              <Description>
-                {"If "}
-                <BlueText>ON</BlueText>
-                {", then order of questions will be different for each student."}
-              </Description>
             </Block>
 
-            <Block id="show-answer-choice">
+            <Block id="show-answer-choice" smallSize={isSmallSize}>
               <Title>Shuffle Answer Choice</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={shuffleAnswers} onChange={this.updateTestData("shuffleAnswers")} />
+                <Description>
+                  {"If set to "}
+                  <BlueText>ON</BlueText>
+                  {
+                    ", answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
+                  }
+                  <br />
+                  {"Text to speech does not work when the answer choices are shuffled."}
+                </Description>
               </Body>
-              <Description>
-                {"If set to "}
-                <BlueText>ON</BlueText>
-                {
-                  ", answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
-                }
-                <br />
-                {"Text to speech does not work when the answer choices are shuffled."}
-              </Description>
             </Block>
 
-            <Block id="show-calculator">
+            <Block id="show-calculator" smallSize={isSmallSize}>
               <Title>Show Calculator</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
                   {calculatorKeys.map(item => (
                     <Radio value={item} key={item}>
@@ -345,41 +344,41 @@ class MainSetting extends Component {
                     </Radio>
                   ))}
                 </StyledRadioGroup>
+                <Description>
+                  {
+                    "Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+                  }
+                </Description>
               </Body>
-              <Description>
-                {
-                  "Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
-                }
-              </Description>
             </Block>
 
-            <Block id="answer-on-paper">
+            <Block id="answer-on-paper" smallSize={isSmallSize}>
               <Title>Answer on Paper</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={answerOnPaper} onChange={this.updateTestData("answerOnPaper")} />
+                <Description>
+                  {
+                    "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
+                  }
+                </Description>
               </Body>
-              <Description>
-                {
-                  "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
-                }
-              </Description>
             </Block>
 
-            <Block id="require-password">
+            <Block id="require-password" smallSize={isSmallSize}>
               <Title>Require Password</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={requirePassword} onChange={this.updateTestData("shuffleAns")} />
+                <Description>
+                  {
+                    "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+                  }
+                </Description>
               </Body>
-              <Description>
-                {
-                  "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
-                }
-              </Description>
             </Block>
 
-            <Block id="evaluation-method">
+            <Block id="evaluation-method" smallSize={isSmallSize}>
               <Title>Evaluation Method</Title>
-              <Body>
+              <Body smallSize={isSmallSize}>
                 <StyledRadioGroup onChange={this.updateFeatures("evalType")} value={evalType}>
                   {Object.keys(evalTypes).map(item => (
                     <Radio value={evalTypes[item]} key={evalTypes[item]}>
@@ -387,18 +386,18 @@ class MainSetting extends Component {
                     </Radio>
                   ))}
                 </StyledRadioGroup>
+                <Description>
+                  {
+                    "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."
+                  }
+                </Description>
               </Body>
-              <Description>
-                {
-                  "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."
-                }
-              </Description>
             </Block>
 
-            <Block id="performance-bands">
-              <Row style={{ marginBottom: 18 }}>
+            <Block id="performance-bands" smallSize={isSmallSize}>
+              <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
                 <Col span={6}>
-                  <BandsText>Performance Bands</BandsText>
+                  <Title>Performance Bands</Title>
                 </Col>
                 <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
                   <NormalText>Above or at Standard</NormalText>
@@ -423,32 +422,36 @@ class MainSetting extends Component {
                 )}
               />
             </Block>
-            <AdvancedSettings style={{ display: showAdvancedOption ? "block" : "none" }}>
-              <Block id="title">
+            <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
+              <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>
-                <FlexBody>
+                <Body smallSize={isSmallSize}>
                   <RadioGroup onChange={this.enableHandler} value={enable}>
-                    <Radio value={true}>Enable</Radio>
-                    <Radio value={false}>Disable</Radio>
+                    <Radio style={{ display: "block", marginBottom: "24px" }} value={true}>
+                      Enable
+                    </Radio>
+                    <Radio style={{ display: "block", marginBottom: "24px" }} value={false}>
+                      Disable
+                    </Radio>
                   </RadioGroup>
-                </FlexBody>
-                <Row gutter={28} style={{ marginBottom: 30 }}>
-                  <Col span={12}>
-                    <InputTitle>Activity Title</InputTitle>
-                    <Input placeholder="Title of activity" />
-                  </Col>
-                  <Col span={12}>
-                    <InputTitle>Activity Title</InputTitle>
-                    <Input placeholder="Title of activity" />
-                  </Col>
-                </Row>
+                  <Row gutter={28}>
+                    <Col span={12}>
+                      <InputTitle>Activity Title</InputTitle>
+                      <ActivityInput placeholder="Title of activity" />
+                    </Col>
+                    <Col span={12}>
+                      <InputTitle>Activity Title</InputTitle>
+                      <ActivityInput placeholder="Title of activity" />
+                    </Col>
+                  </Row>
+                </Body>
               </Block>
 
-              <Block id="navigations">
+              <Block id="navigations" smallSize={isSmallSize}>
                 <Title>Navigation / Control</Title>
-                <RadioWrapper>
+                <RadioWrapper style={{ marginTop: "29px" }}>
                   {navigations.map(navigation => (
-                    <Row key={navigation} style={{ width: "100%", marginBottom: 25 }}>
+                    <Row key={navigation} style={{ width: "100%", marginBottom: 15 }}>
                       <Col span={8}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
                       </Col>
@@ -461,27 +464,29 @@ class MainSetting extends Component {
                     </Row>
                   ))}
                 </RadioWrapper>
-                <Row gutter={28} style={{ marginBottom: 30 }}>
-                  <Col span={12}>
-                    <InputTitle>On Submit Redirect URL</InputTitle>
-                    <Input placeholder="https://edulastic.com/" />
-                  </Col>
-                  <Col span={12}>
-                    <InputTitle>On Discard Redirect URL</InputTitle>
-                    <Input placeholder="https://edulastic.com/" />
-                  </Col>
-                  <Col span={12} style={{ paddingTop: 30 }}>
-                    <InputTitle>On Save Redirect URL</InputTitle>
-                    <Input placeholder="https://edulastic.com/" />
-                  </Col>
-                </Row>
+                <Body smallSize={isSmallSize}>
+                  <Row gutter={28}>
+                    <Col span={12}>
+                      <InputTitle>On Submit Redirect URL</InputTitle>
+                      <ActivityInput placeholder="https://edulastic.com/" />
+                    </Col>
+                    <Col span={12}>
+                      <InputTitle>On Discard Redirect URL</InputTitle>
+                      <ActivityInput placeholder="https://edulastic.com/" />
+                    </Col>
+                    <Col span={12} style={{ paddingTop: 15 }}>
+                      <InputTitle>On Save Redirect URL</InputTitle>
+                      <ActivityInput placeholder="https://edulastic.com/" />
+                    </Col>
+                  </Row>
+                </Body>
               </Block>
 
-              <Block id="accessibility">
+              <Block id="accessibility" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>
-                <RadioWrapper>
+                <RadioWrapper style={{ marginTop: "29px", marginBottom: 0 }}>
                   {Object.keys(accessibilities).map(item => (
-                    <Row key={accessibilities[item]} style={{ width: "100%", marginBottom: 25 }}>
+                    <Row key={accessibilities[item]} style={{ width: "100%" }}>
                       <Col span={8}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
                       </Col>
@@ -498,80 +503,75 @@ class MainSetting extends Component {
 
               <UiTime />
 
-              <Block id="administration">
+              <Block id="administration" smallSize={isSmallSize}>
                 <Title>Administration</Title>
-                <Body>
-                  <RadioWrapper>
-                    <Row style={{ width: "100%", marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
-                          <Radio value={true}>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  </RadioWrapper>
-
-                  <Row gutter={28} style={{ marginBottom: 30 }}>
+                <RadioWrapper style={{ marginTop: "29px" }}>
+                  <Row style={{ width: "100%", marginBottom: 15 }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <Radio value={true}>Enable</Radio>
+                        <Radio value={false}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+                </RadioWrapper>
+                <Body style={{ marginTop: 0, marginBottom: "15px" }} smallSize={isSmallSize}>
+                  <Row gutter={28}>
                     <Col span={12}>
                       <InputTitle>Password</InputTitle>
                       <Input placeholder="Your Password" />
                     </Col>
                   </Row>
-                  <RadioWrapper>
-                    <Row style={{ width: "100%", marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
-                          <Radio value={true}>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-
-                    <Row style={{ width: "100%", marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
-                          <Radio value={true}>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-
-                    <Row style={{ width: "100%", marginBottom: 25 }}>
-                      <Col span={8}>
-                        <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
-                      </Col>
-                      <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
-                          <Radio value={true}>Enable</Radio>
-                          <Radio value={false}>Disable</Radio>
-                        </RadioGroup>
-                      </Col>
-                    </Row>
-                  </RadioWrapper>
                 </Body>
+                <RadioWrapper>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <Radio value={true}>Enable</Radio>
+                        <Radio value={false}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+                </RadioWrapper>
+
+                <RadioWrapper>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <Radio value={true}>Enable</Radio>
+                        <Radio value={false}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+                </RadioWrapper>
+
+                <RadioWrapper style={{ marginBottom: 0 }}>
+                  <Row style={{ width: "100%" }}>
+                    <Col span={8}>
+                      <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
+                    </Col>
+                    <Col span={16}>
+                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <Radio value={true}>Enable</Radio>
+                        <Radio value={false}>Disable</Radio>
+                      </RadioGroup>
+                    </Col>
+                  </Row>
+                </RadioWrapper>
               </Block>
             </AdvancedSettings>
-
-            <AdvancedButton>
-              <Line />
-              <Button onClick={() => this.advancedHandler()}>
-                {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-              </Button>
-              <Line />
-            </AdvancedButton>
           </Col>
         </Row>
-      </Paper>
+      </Container>
     );
   }
 }

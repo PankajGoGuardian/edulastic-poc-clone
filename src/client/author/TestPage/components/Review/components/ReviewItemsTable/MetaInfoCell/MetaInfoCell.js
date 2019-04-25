@@ -1,54 +1,44 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Tag } from "antd";
-import { FlexContainer } from "@edulastic/common";
-import { IconShare, IconHeart } from "@edulastic/icons";
-import { greenDark, textColor, grey, white } from "@edulastic/colors";
-import { FirstText, CategoryTitle, SecondText, TypeContainer } from "./styled";
-import Tags from "../../../../../../src/components/common/Tags";
 
-const MetaInfoCell = ({ data }) => (
-  <FlexContainer justifyContent="space-between" style={{ fontWeight: 600, color: textColor, flexWrap: "wrap" }}>
-    <div>
-      <FlexContainer>
-        <TypeContainer>
-          {data.standards && !!data.standards.length && (
-            <FlexContainer>
-              <Tags
-                tags={data.standards}
-                labelStyle={{
-                  color: greenDark,
-                  background: white,
-                  border: `1px solid ${grey}`
-                }}
-              />
-            </FlexContainer>
-          )}
-          {data.types && !!data.types.length && (
-            <FlexContainer>
-              <CategoryTitle>Type: </CategoryTitle>
-              {data.types.map(type => (
-                <Tag color="cyan" key={type} style={{ marginTop: 3 }}>
-                  {type}
-                </Tag>
-              ))}
-            </FlexContainer>
-          )}
-        </TypeContainer>
-        <div>
-          <CategoryTitle>By:</CategoryTitle> <FirstText>{data.by}</FirstText>
-        </div>
-        <div>
-          <CategoryTitle>ID:</CategoryTitle> <FirstText>{data._id}</FirstText>
-        </div>
-        <FlexContainer style={{ marginTop: 2 }}>
-          <IconShare color={greenDark} width={16} height={16} /> <SecondText>{data.shared}</SecondText>
+import { FlexContainer } from "@edulastic/common";
+import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
+import { greenDark } from "@edulastic/colors";
+
+import Tags from "../../../../../../src/components/common/Tags";
+import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar";
+import { MetaTag } from "./styled";
+
+const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes } }) => (
+  <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
+    <FlexContainer>
+      {standards && !!standards.length && (
+        <FlexContainer>
+          <Tags
+            tags={standards}
+            labelStyle={{
+              color: greenDark,
+              background: "#d1f9eb",
+              border: "none"
+            }}
+          />
         </FlexContainer>
-        <FlexContainer style={{ marginTop: 2 }}>
-          <IconHeart color={greenDark} width={16} height={16} /> <SecondText>{data.likes}</SecondText>
+      )}
+      {types && !!types.length && (
+        <FlexContainer>
+          {types.map(type => (
+            <MetaTag key={type}>{type}</MetaTag>
+          ))}
         </FlexContainer>
-      </FlexContainer>
-    </div>
+      )}
+    </FlexContainer>
+    <FlexContainer justifyContent="flex-end">
+      {renderAnalytics(by, IconUser)}
+      {renderAnalytics(id, IconHash)}
+      {renderAnalytics(shared, IconShare)}
+      {renderAnalytics(likes, IconHeart)}
+    </FlexContainer>
   </FlexContainer>
 );
 

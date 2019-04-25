@@ -60,7 +60,7 @@ const Item = styled(Menu.Item)`
   }
 
   &.ant-menu-item-selected {
-    border-left: 3px solid ${blue};
+    border-left: 3px solid ${blue} !important;
     background-color: ${white} !important;
     color: ${blue};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);

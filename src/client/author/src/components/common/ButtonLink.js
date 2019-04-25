@@ -35,7 +35,7 @@ const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }
   <Container onClick={onClick} type="button" uppercase={uppercase} style={style} {...getColors({ color, active })}>
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
-    <span style={{ marginTop: 1 }}>{children}</span>
+    <Text>{children}</Text>
   </Container>
 );
 
@@ -64,7 +64,7 @@ export default ButtonLink;
 const Icon = styled.span`
   display: inline-flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 21px;
   font-size: 10px;
 `;
 
@@ -85,4 +85,10 @@ const Container = styled.button`
     color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
   }
+`;
+
+const Text = styled.span`
+  display: inline-block;
+  padding-top: 1px;
+  padding-right: 20px;
 `;

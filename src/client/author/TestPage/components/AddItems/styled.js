@@ -1,7 +1,16 @@
 import styled from "styled-components";
-import { desktopWidth, greenDark, mobileWidth, secondaryTextColor, tabletWidth, white } from "@edulastic/colors";
+import {
+  desktopWidth,
+  greenDark,
+  mobileWidth,
+  secondaryTextColor,
+  tabletWidth,
+  white,
+  lightGreySecondary,
+  lightBlueSecondary
+} from "@edulastic/colors";
 import { Select } from "antd/lib/index";
-import { EduButton } from "../../../../../../packages/common";
+import { EduButton, FlexContainer, Paper } from "@edulastic/common";
 
 export const Container = styled.div`
   width: 100%;
@@ -17,7 +26,25 @@ export const Container = styled.div`
 `;
 
 export const TopMenu = styled.div`
-  margin: 24px 45px 0px 45px;
+  margin: 0 45px 0px 45px;
+`;
+
+export const QuestionsFound = styled.span`
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: ${secondaryTextColor};
+`;
+
+export const ItemsMenu = styled(FlexContainer)`
+  background: ${lightGreySecondary};
+  align-items: space-between;
+  justify-content: space-between;
+  padding: 8px 40px 8px 57px;
+
+  @media screen and (max-width: 993px) {
+    padding: 8px 15px;
+  }
 `;
 
 export const MainList = styled.div`
@@ -30,7 +57,9 @@ export const MainList = styled.div`
 
 export const ListItems = styled.div`
   flex: 1;
-  margin: 29px 40px 0px 29px;
+  margin: 0 40px -51px 29px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  background: ${white};
 
   @media (min-width: 993px) {
     width: 200px;
@@ -71,14 +100,29 @@ export const ListItems = styled.div`
 `;
 
 export const ItemsTableContainer = styled.div`
-  margin: 14px 0px;
+  background: ${white};
 `;
 
 export const StyledButton = styled(EduButton)`
-  height: 32px;
+  height: 30px;
   font-size: 11px;
-  margin-right: 15px;
   text-transform: uppercase;
+  background: transparent;
+  color: ${lightBlueSecondary};
+  display: flex;
+  align-items: center;
+  border: 1px solid ${lightBlueSecondary};
+  border-radius: 5px;
+
+  &:hover,
+  &:active {
+    background: transparent;
+    color: ${lightBlueSecondary};
+  }
+
+  svg {
+    margin-right: 15px;
+  }
 
   :last-child {
     margin-right: 0;
@@ -110,5 +154,64 @@ export const StyledSelect = styled(Select)`
     svg {
       fill: #00b0ff;
     }
+  }
+`;
+
+export const ItemsPagination = styled(FlexContainer)`
+  justify-content: flex-end;
+  margin: 19px 0 39px 0;
+
+  @media screen and (max-width: 480px) {
+    padding: 30px;
+  }
+
+  .ant-pagination {
+    margin-bottom: 0;
+
+    @media screen and (max-width: 768px) {
+      margin-top: 0 !important;
+    }
+
+    &-item {
+      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+      border: none;
+      background: ${white};
+      line-height: 35px;
+
+      &-link {
+        border: none;
+      }
+
+      &-active {
+        background: ${lightBlueSecondary};
+        box-shadow: none;
+
+        a {
+          color: ${white};
+        }
+      }
+    }
+
+    &-prev,
+    &-next {
+      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+    }
+
+    &-jump {
+      &-next,
+      &-prev {
+        min-width: 33px;
+        height: 33px;
+        background: ${white};
+        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+        line-height: 35px;
+      }
+    }
+  }
+`;
+
+export const ListWrapper = styled(Paper)`
+  @media screen and (max-width: 480px) {
+    padding: 0;
   }
 `;

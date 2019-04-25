@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { FaAngleDoubleRight } from "react-icons/fa";
-import { darkBlue, secondaryTextColor } from "@edulastic/colors";
+
+import { darkBlue, lightBlueSecondary } from "@edulastic/colors";
 
 const MoveLink = ({ onClick, children }) => (
   <Link onClick={onClick}>
@@ -19,14 +19,14 @@ export default MoveLink;
 
 const Link = styled.a`
   font-size: 15px;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 20px;
   font-weight: bold;
   display: inline-flex;
   align-items: center;
   flex-wrap: nowrap;
   text-decoration: none;
-  color: ${secondaryTextColor};
+  color: ${lightBlueSecondary};
   cursor: pointer;
 
   :hover {

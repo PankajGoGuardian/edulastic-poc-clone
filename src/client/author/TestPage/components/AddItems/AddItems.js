@@ -3,11 +3,23 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Select, Pagination, Spin } from "antd";
+import { Pagination, Spin } from "antd";
 
-import { Paper, FlexContainer, withWindowSizes } from "@edulastic/common";
+import { Paper, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Container, TopMenu, MainList, ListItems, ItemsTableContainer, StyledButton, StyledSelect } from "./styled";
+import { IconPlusCircle } from "@edulastic/icons";
+
+import {
+  Container,
+  MainList,
+  ListItems,
+  ItemsTableContainer,
+  StyledButton,
+  ItemsMenu,
+  QuestionsFound,
+  ItemsPagination,
+  ListWrapper
+} from "./styled";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../src/selectors/testItem";
 import {
@@ -165,14 +177,15 @@ class AddItems extends PureComponent {
   renderPagination = () => {
     const { windowWidth, count, page } = this.props;
     return (
-      <Pagination
-        simple={windowWidth <= 768 && true}
-        showTotal={(total, range) => `${range[0]} to ${range[1]} of ${total}`}
-        onChange={this.handlePaginationChange}
-        defaultPageSize={10}
-        total={count}
-        current={page}
-      />
+      <ItemsPagination>
+        <Pagination
+          simple={windowWidth <= 768 && true}
+          onChange={this.handlePaginationChange}
+          defaultPageSize={10}
+          total={count}
+          current={page}
+        />
+      </ItemsPagination>
     );
   };
 
@@ -192,29 +205,13 @@ class AddItems extends PureComponent {
       items,
       onAddItems,
       t,
-      createTestItemModalVisible
+      createTestItemModalVisible,
+      count
     } = this.props;
 
     const { search, selectedTestItems } = this.state;
     return (
       <Container>
-        <TopMenu>
-          <FlexContainer justifyContent="space-between">
-            <FlexContainer alignItems="center" />
-            <FlexContainer alignItems="center">
-              {windowWidth > 468 && (
-                <>
-                  <StyledButton type="secondary" size="large" onClick={this.handleCreateNewItem}>
-                    Create new Item
-                  </StyledButton>
-                  <StyledSelect size="large" defaultValue="popularity" style={{ width: 120 }}>
-                    <Select.Option value="popularity">Popularity</Select.Option>
-                  </StyledSelect>
-                </>
-              )}
-            </FlexContainer>
-          </FlexContainer>
-        </TopMenu>
         <MainList id="main-list">
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
@@ -230,9 +227,15 @@ class AddItems extends PureComponent {
             t={t}
           />
           <ListItems id="item-list">
-            {windowWidth > 992 && this.renderPagination()}
             <ItemsTableContainer>
-              <Paper padding="0">
+              <ItemsMenu>
+                <QuestionsFound>{count} questions found</QuestionsFound>
+                <StyledButton type="secondary" size="large" onClick={this.handleCreateNewItem}>
+                  <IconPlusCircle color="#1774F0" width={15} height={15} />
+                  <span>Create new Item</span>
+                </StyledButton>
+              </ItemsMenu>
+              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px 71px 0 31px">
                 {loading && <Spin size="large" />}
                 {!loading && (
                   <ItemsTable
@@ -243,14 +246,9 @@ class AddItems extends PureComponent {
                     testId={this.props.match.params.id}
                   />
                 )}
-              </Paper>
+                {!loading && this.renderPagination()}
+              </ListWrapper>
             </ItemsTableContainer>
-            {windowWidth < 992 && (
-              <StyledButton style={{ width: "100%" }} type="secondary" size="large" onClick={this.handleCreateNewItem}>
-                Create new Item
-              </StyledButton>
-            )}
-            {this.renderPagination()}
           </ListItems>
         </MainList>
         {createTestItemModalVisible && <ModalCreateTestItem />}

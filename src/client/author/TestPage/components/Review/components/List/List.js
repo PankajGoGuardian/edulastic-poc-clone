@@ -1,72 +1,106 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { FlexContainer } from "@edulastic/common";
-import { Checkbox, Input } from "antd";
-import { greenDark, blue } from "@edulastic/colors";
-import { IconList, IconPreview } from "@edulastic/icons";
-
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 
-import { TestItemWrapper, PreviewContainer } from "./styled";
+import { FlexContainer } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
-
-const DragHandle = SortableHandle(() => (
-  <IconList color={greenDark} style={{ cursor: "grab" }} width={16} height={16} />
-));
+import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions }) => (
-    <TestItemWrapper>
-      <FlexContainer justifyContent="space-between">
-        <FlexContainer>
-          <DragHandle />
-          <Checkbox checked={selected.includes(indx)} onChange={e => onCheck(indx, e.target.checked)}>
-            Q{indx + 1}
-          </Checkbox>
-        </FlexContainer>
+  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
+    const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
+    const handleCheck = e => onCheck(indx, e.target.checked);
+    return (
+      <TestItemWrapper>
+        {mobile ? (
+          <FlexContainer flexDirection="column" alignItems="flex-start">
+            <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
+              <FlexContainer flexDirection="column" justifyContent="center">
+                <DragHandle />
+                <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+              </FlexContainer>
 
-        <FlexContainer>
-          <PreviewContainer onClick={() => onPreview(metaInfoData.id)}>
-            <IconPreview color={blue} width={16} height={16} />{" "}
-            <span
-              style={{
-                textTransform: "uppercase",
-                fontSize: 11,
-                fontWeight: 600
-              }}
-            >
-              Preview
-            </span>
-          </PreviewContainer>
-          <span style={{ fontWeight: 600, fontSize: 14 }}>Points</span>{" "}
-          <Input
-            size="large"
-            type="number"
-            value={points}
-            onChange={e => onChangePoints(metaInfoData._id, +e.target.value)}
-            style={{ width: 70, fontSize: 13, fontWeight: 600 }}
-          />
+              <FlexContainer>
+                <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
+                <FlexContainer flexDirection="column">
+                  <PointsLabel>Points</PointsLabel>
+                  <PointsInput
+                    size="large"
+                    type="number"
+                    value={points}
+                    onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+                  />
+                </FlexContainer>
+              </FlexContainer>
+            </FlexContainer>
+            <FlexContainer>
+              <TestItemPreview
+                style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                cols={item}
+                previewTab="clear"
+                verticalDivider={item.verticalDivider}
+                scrolling={item.scrolling}
+                questions={questions}
+                windowWidth="100%"
+              />
+            </FlexContainer>
+          </FlexContainer>
+        ) : (
+          <FlexContainer justifyContent="space-between" alignItems="flex-start">
+            <FlexContainer alignItems="flex-start">
+              <FlexContainer flexDirection="column" justifyContent="center">
+                <DragHandle />
+                <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+              </FlexContainer>
+
+              <TestItemPreview
+                style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                cols={item}
+                previewTab="clear"
+                verticalDivider={item.verticalDivider}
+                scrolling={item.scrolling}
+                questions={questions}
+                windowWidth="100%"
+              />
+            </FlexContainer>
+            <FlexContainer>
+              <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
+              <FlexContainer flexDirection="column">
+                <PointsLabel>Points</PointsLabel>
+                <PointsInput
+                  size="large"
+                  type="number"
+                  value={points}
+                  onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+                />
+              </FlexContainer>
+            </FlexContainer>
+          </FlexContainer>
+        )}
+        <FlexContainer style={{ margin: "20px 0" }}>
+          <MetaInfoCell data={metaInfoData} />
         </FlexContainer>
-      </FlexContainer>
-      <TestItemPreview
-        style={{ padding: 0, boxShadow: "none", display: "flex" }}
-        cols={item}
-        previewTab="clear"
-        verticalDivider={item.verticalDivider}
-        scrolling={item.scrolling}
-        questions={questions}
-      />
-      <FlexContainer style={{ margin: "20px 0" }}>
-        <MetaInfoCell data={metaInfoData} />
-      </FlexContainer>
-    </TestItemWrapper>
-  )
+      </TestItemWrapper>
+    );
+  }
 );
 
 const List = SortableContainer(
-  ({ rows, selected, setSelected, testItems, onChangePoints, types, standards, scoring, onPreview, questions }) => {
+  ({
+    rows,
+    selected,
+    setSelected,
+    testItems,
+    onChangePoints,
+    types,
+    standards,
+    scoring,
+    onPreview,
+    questions,
+    mobile
+  }) => {
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -82,7 +116,7 @@ const List = SortableContainer(
     const getPoints = i => {
       let item = null;
       if (scoring.testItems && scoring.testItems.length) {
-        item = scoring.testItems.find(({ id }) => id === testItems[i]._id);
+        item = scoring.testItems.find(({ id }) => id === testItems[i].id);
       }
 
       return testItems && testItems[i] && testItems[i].maxScore ? testItems[i].maxScore : 0;
@@ -94,12 +128,12 @@ const List = SortableContainer(
           <SortableItem
             key={i}
             metaInfoData={{
-              id: testItems[i]._id,
+              id: testItems[i].id,
               by: "Kevin Hart",
               shared: "9578 (1)",
               likes: 9,
-              types: types[testItems[i]._id],
-              standards: standards[testItems[i]._id]
+              types: types[testItems[i].id],
+              standards: standards[testItems[i].id]
             }}
             index={i}
             indx={i}
@@ -110,6 +144,7 @@ const List = SortableContainer(
             onPreview={onPreview}
             selected={selected}
             questions={questions}
+            mobile={mobile}
           />
         ))}
       </div>
@@ -127,7 +162,12 @@ List.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
-  questions: PropTypes.object.isRequired
+  questions: PropTypes.object.isRequired,
+  mobile: PropTypes.bool
+};
+
+List.defaultProps = {
+  mobile: false
 };
 
 export default List;

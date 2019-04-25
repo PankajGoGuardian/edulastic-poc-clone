@@ -327,6 +327,8 @@ class Container extends PureComponent {
           testStatus={testStatus}
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
+          onShowSource={this.handleNavChange("source")}
+          onAssign={this.handleNavChange("assign")}
         />
         <Content>{this.renderContent()}</Content>
       </>

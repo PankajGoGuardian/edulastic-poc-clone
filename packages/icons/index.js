@@ -138,3 +138,5 @@ export { default as IconPlay } from "./src/IconPlay";
 export { default as IconRulerPencil } from "./src/IconRulerPencil";
 export { default as IconManageDistrict } from "./src/IconManageDistrict";
 export { default as IconSaveNew } from "./src/IconSaveNew";
+export { default as IconDescription } from "./src/IconDescription";
+export { default as IconHash } from "./src/IconHash";

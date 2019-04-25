@@ -1,6 +1,7 @@
 import React from "react";
-import { Row, Col, Radio, Select, Input } from "antd";
-import { Block, Title, Body, InputTitle, RadioGroup, RowWrapper, CommonText } from "./styled";
+import { Row, Col, Radio, Select } from "antd";
+import { CommonText, RowWrapper, ContentWrapper } from "./styled";
+import { ActivityInput, Title, InputTitle, Body, Block, RadioWrapper, RadioGroup } from "../MainSetting/styled";
 
 const renderBodyContent = () => {
   const content = [
@@ -66,52 +67,56 @@ const renderBodyContent = () => {
   ];
 
   return content.map(element => (
-    <RowWrapper>
-      <Col span={8}>
-        <CommonText>{element.label}</CommonText>
-      </Col>
-      <Col span={8}>
-        <RadioGroup value={1}>
-          <Radio value={1}>Enable</Radio>
-          <Radio value={2}>Disable</Radio>
-        </RadioGroup>
-      </Col>
-      <Col span={8} style={{ marginTop: -5 }}>
-        {element.type === "select" && (
-          <Select defaultValue={element.defaultValue}>
-            {element.selectOptions.map(option => (
-              <Select.Option value={option.value}>{option.text}</Select.Option>
-            ))}
-          </Select>
-        )}
-        {element.type === "input" && <Input placeholder={element.placeholder} />}
-      </Col>
-    </RowWrapper>
+    <RadioWrapper>
+      <RowWrapper>
+        <Col span={8}>
+          <CommonText>{element.label}</CommonText>
+        </Col>
+        <Col span={8}>
+          <RadioGroup value={1}>
+            <Radio value={1}>Enable</Radio>
+            <Radio value={2}>Disable</Radio>
+          </RadioGroup>
+        </Col>
+        <Col span={8}>
+          {element.type === "select" && (
+            <Select defaultValue={element.defaultValue}>
+              {element.selectOptions.map(option => (
+                <Select.Option value={option.value}>{option.text}</Select.Option>
+              ))}
+            </Select>
+          )}
+          {element.type === "input" && <ActivityInput placeholder={element.placeholder} />}
+        </Col>
+      </RowWrapper>
+    </RadioWrapper>
   ));
 };
 
 const UiTime = () => (
   <Block id="ui-time">
     <Title>UI / Time</Title>
-    <Body>{renderBodyContent()}</Body>
-    <Row gutter={28} style={{ marginBottom: 30 }}>
-      <Col span={12}>
-        <InputTitle>Assessment Time</InputTitle>
-        <Input placeholder="000" />
-      </Col>
-      <Col span={12}>
-        <InputTitle>End Assessment Warning Time (sec)</InputTitle>
-        <Input placeholder="000" />
-      </Col>
-      <Col span={12} style={{ paddingTop: 30 }}>
-        <InputTitle>Remote Control Countdown Time (sec)</InputTitle>
-        <Input placeholder="https://edulastic.com/" />
-      </Col>
-      <Col span={12} style={{ paddingTop: 30 }}>
-        <InputTitle>Custom Stylesheet</InputTitle>
-        <Input placeholder="https://edulastic.com/" />
-      </Col>
-    </Row>
+    <ContentWrapper>{renderBodyContent()}</ContentWrapper>
+    <Body>
+      <Row gutter={28}>
+        <Col span={12}>
+          <InputTitle>Assessment Time</InputTitle>
+          <ActivityInput placeholder="000" />
+        </Col>
+        <Col span={12}>
+          <InputTitle>End Assessment Warning Time (sec)</InputTitle>
+          <ActivityInput placeholder="000" />
+        </Col>
+        <Col span={12} style={{ paddingTop: 15 }}>
+          <InputTitle>Remote Control Countdown Time (sec)</InputTitle>
+          <ActivityInput placeholder="https://edulastic.com/" />
+        </Col>
+        <Col span={12} style={{ paddingTop: 15 }}>
+          <InputTitle>Custom Stylesheet</InputTitle>
+          <ActivityInput placeholder="https://edulastic.com/" />
+        </Col>
+      </Row>
+    </Body>
   </Block>
 );
 

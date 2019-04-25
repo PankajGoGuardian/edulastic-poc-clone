@@ -4,18 +4,15 @@ import { white, desktopWidth } from "@edulastic/colors";
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  height: 60px
+  height: 60px;
   overflow-y: hidden;
   overflow-x: scroll;
-  width: 100%;
-  
   justify-content: center;
-  
+
   @media screen and (min-width: ${desktopWidth}) {
     height: 60px
     overflow-y: unset;
     overflow-x: unset;
-    width: 70%;
   }
 `;
 
@@ -36,37 +33,42 @@ export const Link = styled.div`
   border-radius: 0;
   background: #0288d1;
   background: ${props => (props.active === "true" ? "#057fc1" : "transparent")};
-  border-bottom: ${props => (props.active === "true" ? "4px solid #c9c9c9" : "none")};
+  border-bottom: none;
   white-space: nowrap;
 
-  :hover {
-    border-bottom: 4px solid #c9c9c9;
-  }
   :first-child {
-    margin-left: 120px;
+    @media screen and (min-width: ${desktopWidth}) {
+      margin-left: 120px;
+    }
   }
-  
+
+  @media screen and (max-width: ${desktopWidth}) {
+    svg {
+      display: none;
+    }
+  }
+
   @media screen and (min-width: ${desktopWidth}) {
     margin: 0 7px;
     width: 136px;
     height: 45px;
-    border-radius: 37px;
-    background: ${props => (props.active === "true" ? "#f3f3f3" : "#0e93dc")};
-    color: ${props => (props.active === "true" ? "#434b5d" : "#e5e5e5")};
+    border-radius: 5px;
+    background: ${props => (props.active === "true" ? "#5196f3" : "#277df1")};
+    color: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
     border-bottom: none;
-    
+
     svg {
-      fill: ${props => (props.active === "true" ? "#434b5d" : white)}
+      fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
     }
-      
+
     :hover {
       border-bottom: none;
-      
+
        svg {
-        fill: ${props => (props.active === "true" ? "#434b5d" : white)}
+        fill: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")}
       }
     }
-    
+
     :first-child {
       margin-left: 0;
     }

@@ -58,6 +58,7 @@ class TestItemCol extends Component {
           questionId={widget.reference}
           data={{ ...question, smallSize: true }}
           noPadding
+          noBoxShadow
           isFlex
           {...restProps}
         />

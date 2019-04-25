@@ -1,5 +1,7 @@
-import { greenDark } from "@edulastic/colors";
 import styled from "styled-components";
+import { Tag } from "antd";
+
+import { greenDark, greyDarken, lightGrey } from "@edulastic/colors";
 
 export const FirstText = styled.span`
   font-size: 13px;
@@ -21,4 +23,17 @@ export const CategoryTitle = styled.span`
 export const TypeContainer = styled.div`
   margin-top: 16px;
   margin-bottom: 15px;
+`;
+
+export const MetaTag = styled(Tag)`
+  background: ${lightGrey};
+  border: none;
+  color: ${greyDarken};
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 10px;
+
+  &:first-child {
+    margin-left: 55px;
+  }
 `;

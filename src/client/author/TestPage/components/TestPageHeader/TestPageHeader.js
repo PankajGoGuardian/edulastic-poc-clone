@@ -4,8 +4,16 @@ import { white } from "@edulastic/colors";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { FlexContainer, EduButton } from "@edulastic/common";
-import { IconAddItems, IconAssign, IconReview, IconSettings, IconSummary } from "@edulastic/icons";
-import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper } from "./styled";
+import {
+  IconAddItems,
+  IconReview,
+  IconSettings,
+  IconShare,
+  IconSource,
+  IconDiskette,
+  IconDescription
+} from "@edulastic/icons";
+import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus } from "./styled";
 
 import TestPageNav from "../TestPageNav/TestPageNav";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -14,9 +22,9 @@ import { toggleSideBarAction } from "../../../src/actions/togglemenu";
 
 export const navButtons = [
   {
-    icon: <IconSummary color={white} width={16} height={16} />,
+    icon: <IconDescription color={white} width={16} height={16} />,
     value: "summary",
-    text: "Summary"
+    text: "Description"
   },
   {
     icon: <IconAddItems color={white} width={16} height={16} />,
@@ -32,11 +40,6 @@ export const navButtons = [
     icon: <IconSettings color={white} width={16} height={16} />,
     value: "settings",
     text: "Settings"
-  },
-  {
-    icon: <IconAssign color={white} width={16} height={16} />,
-    value: "assign",
-    text: "ASSIGN"
   }
 ];
 // TODO mobile look
@@ -53,28 +56,36 @@ const TestPageHeader = ({
   toggleSideBar,
   showPublishButton,
   showShareButton,
-  testStatus
+  testStatus,
+  onShowSource,
+  onAssign
 }) =>
   windowWidth > 993 ? (
     <HeaderWrapper>
-      <Title>{title}</Title>
+      <Title>
+        {title} <TestStatus>{testStatus}</TestStatus>
+      </Title>
 
       <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
       <FlexContainer justifyContent="space-between">
+        <EduButton style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
+          <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
+        </EduButton>
+        {showShareButton && (
+          <EduButton style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+            <IconShare color="#1774F0" />
+          </EduButton>
+        )}
+        <EduButton style={{ width: 42, padding: 0 }} disabled={creating} size="large" onClick={onSave}>
+          <IconDiskette color="#1774F0" />
+        </EduButton>
+        <EduButton style={{ width: 120 }} size="large" onClick={onAssign}>
+          Assign
+        </EduButton>
         {showPublishButton && testStatus === "draft" && (
           <EduButton style={{ width: 120 }} size="large" onClick={onPublish}>
             Publish
-          </EduButton>
-        )}
-        {showShareButton && (
-          <EduButton style={{ width: 120 }} size="large" onClick={onShare}>
-            Share
-          </EduButton>
-        )}
-        {showPublishButton && (
-          <EduButton style={{ width: 120 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-            {creating ? "Saving..." : "Save changes"}
           </EduButton>
         )}
         {!showPublishButton && (
@@ -90,16 +101,14 @@ const TestPageHeader = ({
         flexDirection="column"
         style={{
           width: "100%",
-          justifyContent: "space-between",
-          height: "100px"
+          justifyContent: "space-between"
         }}
       >
         <FlexContainer
           style={{
             width: "100%",
             justifyContent: "space-between",
-            padding: "20px 25px 5px 25px",
-            marginBottom: "10px"
+            padding: "0 25px"
           }}
         >
           {" "}
@@ -130,7 +139,9 @@ TestPageHeader.propTypes = {
   creating: PropTypes.bool.isRequired,
   onShare: PropTypes.func.isRequired,
   onEnableEdit: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  onShowSource: PropTypes.func.isRequired,
+  onAssign: PropTypes.func.isRequired
 };
 
 const enhance = compose(

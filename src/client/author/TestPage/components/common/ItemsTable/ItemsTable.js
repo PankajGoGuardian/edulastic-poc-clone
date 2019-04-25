@@ -118,7 +118,7 @@ export default enhance(ItemsTable);
 
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
-    padding: 40px 40px 25px 40px;
+    padding: 38px 6px 28px 26px;
   }
 
   @media (max-width: ${tabletWidth}) {

@@ -3,7 +3,8 @@ import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 import { Breadcrumb } from "antd";
 import styled from "styled-components";
-import { secondaryTextColor } from "@edulastic/colors";
+
+import { secondaryTextColor, linkColor } from "@edulastic/colors";
 
 const BreadCrumb = props => {
   const { data, style } = props;
@@ -42,22 +43,36 @@ const Container = styled.div`
   position: fixed;
   top: 80px;
 
+  .ant-breadcrumb {
+    > span:first-child {
+      &:before {
+        position: relative;
+        display: inline-block;
+        margin-right: 5px;
+        content: "<";
+        font-size: 11px;
+        color: ${linkColor};
+      }
+    }
+  }
+
   .ant-breadcrumb-separator {
     margin: 0 3px 0 7px;
   }
 
   .ant-breadcrumb-link,
   .ant-breadcrumb-separator {
-    font-size: 16px;
-    color: ${secondaryTextColor};
-    text-transform: capitalize;
+    font-size: 11px;
+    color: ${linkColor};
+    text-transform: uppercase;
     font-weight: 700;
 
     a {
-      font-size: 16px;
-      text-transform: capitalize;
-      color: ${secondaryTextColor};
+      font-size: 11px;
+      text-transform: uppercase;
+      color: ${linkColor};
       font-weight: normal;
+
       &:hover {
         text-decoration: underline;
       }

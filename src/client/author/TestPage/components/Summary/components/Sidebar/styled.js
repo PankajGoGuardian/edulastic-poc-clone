@@ -1,13 +1,13 @@
-import styled from "styled-components/";
-import { greenDark, secondaryTextColor, white } from "@edulastic/colors";
+import styled from "styled-components";
+
+import { FlexContainer } from "@edulastic/common";
+import { lightBlueSecondary, secondaryTextColor } from "@edulastic/colors";
 
 export const Block = styled.div`
   display: flex;
   width: 100%;
   flex-direction: column;
-  border-bottom: 1px solid #dbdbdb;
-  padding-bottom: 30px;
-  margin-bottom: 25px;
+  margin-right: 0;
 
   :last-child {
     border-bottom: none;
@@ -28,12 +28,15 @@ export const Block = styled.div`
     border-radius: 5px;
     display: flex;
     align-items: center;
-    background: #d1f0ff;
-    margin-top: 7px !important;
+    background: #cbdef7;
+    color: ${lightBlueSecondary};
+    font-weight: 600;
+    margin-top: 9px !important;
   }
 
   .ant-select-selection__rendered {
-    padding-left: 20px;
+    padding-left: 9px;
+    margin-left: 0;
   }
 
   .ant-select-selection__choice__content {
@@ -47,7 +50,9 @@ export const Block = styled.div`
   }
 
   .ant-select-remove-icon svg {
-    fill: #0083be;
+    fill: ${lightBlueSecondary};
+    width: 12px;
+    height: 12px;
   }
 
   textarea {
@@ -60,20 +65,7 @@ export const MainTitle = styled.div`
   font-weight: 600;
   color: ${secondaryTextColor};
   letter-spacing: 0.2px;
-  margin-bottom: 10px;
-`;
-
-export const Avatar = styled.div`
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  background: ${greenDark};
-  color: ${white};
-  font-size: 22px;
-  font-weight: 700;
+  margin-bottom: 8px;
 `;
 
 export const Title = styled.span`
@@ -87,4 +79,18 @@ export const TitleContent = styled.span`
   font-size: 13px;
   font-weight: 600;
   color: #444444;
+`;
+
+export const MetaTitle = styled.span`
+  font-size: 10px;
+  font-weight: 600;
+  color: #bbbfc4;
+`;
+
+export const AnalyticsContainer = styled(FlexContainer)`
+  margin-top: 23px;
+`;
+
+export const AnalyticsItem = styled(FlexContainer)`
+  margin-right: 31px;
 `;

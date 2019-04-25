@@ -12,7 +12,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { Container, ButtonLink } from "../../../../../src/components/common";
 import Sidebar from "../Sidebar/Sidebar";
-import { Calculator } from "../../../common";
+import SummaryHeader from "../SummaryHeader/SummaryHeader";
+import Description from "../Description/Description";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
@@ -20,25 +21,17 @@ import { getSummarySelector } from "../../ducks";
 const Summary = ({
   setData,
   test,
-  itemsSubjectAndGrade,
-  summary,
   current,
   t,
   onShowSource,
   windowWidth,
+  itemsSubjectAndGrade,
   onChangeGrade,
   onChangeSubjects
 }) => {
   const handleChangeField = (field, value) => {
     setData({ ...test, [field]: value });
   };
-
-  const tableData = summary.map(data => ({
-    key: data.standard,
-    standard: data.standard,
-    qs: data.questionsCount,
-    points: data.score || 0
-  }));
 
   const breadcrumbData = [
     {
@@ -62,40 +55,26 @@ const Summary = ({
           </ButtonLink>
         </Button>
       </SecondHeader>
-      <Paper style={{ marginTop: 25 }}>
-        <Row style={{ display: "flex", justifyContent: "center" }}>
-          <Col span={windowWidth > 993 ? 16 : 24}>
-            <Row
-              gutter={32}
-              style={{
-                padding: windowWidth < 468 ? "20px 15px 20px 25px" : "0px"
-              }}
-            >
-              <Col span={windowWidth > 993 ? 12 : 24}>
-                <Sidebar
-                  title={test.title}
-                  description={test.description}
-                  tags={test.tags}
-                  analytics={test.analytics}
-                  collection={test.collection}
-                  createdBy={test.createdBy}
-                  onChangeField={handleChangeField}
-                  windowWidth={windowWidth}
-                />
-              </Col>
-              <Col span={windowWidth > 993 ? 12 : 24}>
-                <Calculator
-                  totalPoints={test.scoring.total}
-                  questionsCount={test.scoring.testItems.length}
-                  grades={grades}
-                  subjects={subjects}
-                  onChangeGrade={onChangeGrade}
-                  onChangeSubjects={onChangeSubjects}
-                  tableData={tableData}
-                  windowWidth={windowWidth}
-                />
-              </Col>
-            </Row>
+      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
+        <SummaryHeader createdBy={test.createdBy} windowWidth={windowWidth} />
+        <Row gutter={32}>
+          <Col span={windowWidth > 993 ? 12 : 24}>
+            <Sidebar
+              title={test.title}
+              description={test.description}
+              tags={test.tags}
+              analytics={test.analytics}
+              collection={test.collection}
+              onChangeField={handleChangeField}
+              windowWidth={windowWidth}
+              grades={grades}
+              subjects={subjects}
+              onChangeGrade={onChangeGrade}
+              onChangeSubjects={onChangeSubjects}
+            />
+          </Col>
+          <Col span={windowWidth > 993 ? 12 : 24}>
+            <Description windowWidth={windowWidth} description={test.description} onChangeField={handleChangeField} />
           </Col>
         </Row>
       </Paper>
@@ -106,11 +85,13 @@ const Summary = ({
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
-  summary: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  itemsSubjectAndGrade: PropTypes.object.isRequired,
+  onChangeGrade: PropTypes.func.isRequired,
+  onChangeSubjects: PropTypes.func.isRequired
 };
 
 const enhance = compose(

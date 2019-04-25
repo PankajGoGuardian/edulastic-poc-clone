@@ -8,6 +8,8 @@ import { blue, white } from "@edulastic/colors";
 import { API_CONFIG } from "@edulastic/api";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 
+const defaultImage = "https://fakeimg.pl/1000x300/";
+
 function getBase64(img, callback) {
   const reader = new FileReader();
   reader.addEventListener("load", () => callback(reader.result));
@@ -45,21 +47,24 @@ class Photo extends React.Component {
   };
 
   render() {
+    const { height, windowWidth } = this.props;
+
     const uploadButton = (
-      <Container>
-        <Image src="https://fakeimg.pl/500x135/" alt="Test" />
+      <Container height={height}>
+        <Image src={defaultImage} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
       </Container>
     );
+
     const { imageUrl } = this.state;
     const uploadProps = {
       name: "file",
       listType: "picture-card",
       className: "avatar-uploader",
       showUploadList: false,
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       onChange: this.handleChange,
       beforeUpload,
       headers: {
@@ -70,10 +75,12 @@ class Photo extends React.Component {
     return (
       <UploadWrapper>
         <Upload {...uploadProps}>
-          <Container>
-            {imageUrl ? <Image src={imageUrl} alt="test" /> : uploadButton}
+          <Container height={height}>
+            <ImageContainer height={height}>
+              {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
+            </ImageContainer>
             <Camera>
-              <IconPhotoCamera color={white} />
+              <IconPhotoCamera color={white} width="20px" />
             </Camera>
           </Container>
         </Upload>
@@ -83,11 +90,14 @@ class Photo extends React.Component {
 }
 
 Photo.propTypes = {
-  url: PropTypes.string
+  url: PropTypes.string,
+  height: PropTypes.number,
+  windowWidth: PropTypes.number.isRequired
 };
 
 Photo.defaultProps = {
-  url: "https://fakeimg.pl/500x135/"
+  url: defaultImage,
+  height: 240
 };
 
 export default connect(
@@ -96,24 +106,27 @@ export default connect(
 )(Photo);
 
 const Container = styled.div`
-  height: 115px;
+  height: ${props => props.height}px;
   width: 100%;
   position: relative;
 `;
 
 const UploadWrapper = styled.div`
-  height: 150px;
   .ant-upload-select {
     min-width: 100%;
     border: none;
     padding: 0px !important;
     height: 104px;
   }
+
+  .ant-upload {
+    padding: 0 !important;
+  }
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 100%;
+  height: ${props => (props.windowWidth > 993 ? "unset" : "100%")};
   border-radius: 5px;
 `;
 
@@ -128,4 +141,12 @@ const Camera = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
+`;
+
+const ImageContainer = styled.div`
+  width: 100%;
+  height: ${props => props.height}px;
+  overflow: hidden;
+  border-radius: 5px;
 `;

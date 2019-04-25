@@ -6,7 +6,8 @@ import {
   secondaryTextColor,
   mainBlueColor,
   textColor,
-  greenDark
+  greenDark,
+  dropZoneTitleColor
 } from "@edulastic/colors";
 import { TextField } from "@edulastic/common";
 import styled from "styled-components";
@@ -62,8 +63,12 @@ export const TextFieldStyled = styled(TextField)`
 export const TextFieldSearch = styled(TextField)`
   height: 40px;
   padding: 10px 15px;
-  font-size: 13px;
+  font-size: 12px;
   letter-spacing: 0;
+  border: none;
+  color: ${dropZoneTitleColor};
+  font-style: normal;
+  box-shadow: 0 2px 4px 0 #c9d0db;
 
   span {
     right: 8px;

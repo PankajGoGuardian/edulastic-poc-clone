@@ -4,10 +4,9 @@ module.exports = {
     PRACTICE: "practice"
   },
   settingCategories: [
+    { id: "test-type", title: "TEST TYPE" },
     { id: "mark-as-done", title: "MARK AS DONE" },
     { id: "release-scores", title: "RELEASE SCORES AUTOMATICALLY" },
-    { id: "maximum-attempts-allowed", title: "MAXIMUM ATTEMPTS ALLOWED" },
-    { id: "test-type", title: "TEST TYPE" },
     { id: "require-safe-exame-browser", title: "REQUIRE SAFE EXAME BROWSER" },
     { id: "show-questions", title: "RELEASE ANSWERS WITH GRADES" },
     { id: "suffle-question", title: "SUFFLE QUESTION" },

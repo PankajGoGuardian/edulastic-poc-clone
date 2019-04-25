@@ -1,6 +1,7 @@
 import styled from "styled-components";
+import { Pagination, Affix, Input } from "antd";
+
 import { desktopWidth, textColor, grey } from "@edulastic/colors";
-import { Pagination, Affix } from "antd";
 import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`

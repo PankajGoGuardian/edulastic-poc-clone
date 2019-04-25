@@ -1,10 +1,13 @@
 import styled from "styled-components";
-import { mainBlueColor, white, darkBlueSecondary, tabletWidth } from "@edulastic/colors";
-import { IconShare } from "@edulastic/icons";
 import { Icon } from "antd";
 
+import { mainBlueColor, white, darkBlueSecondary, tabletWidth, textColor } from "@edulastic/colors";
+import { IconShare } from "@edulastic/icons";
+
+import { Status } from "../../../AssessmentPage/components/Header/styled";
+
 export const Container = styled.div`
-  height: 104px;
+  height: 130px;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -16,7 +19,6 @@ export const Container = styled.div`
 export const Title = styled.div`
   font-size: 22px;
   margin: 0;
-  max-width: 35vw;
   word-break: break-all;
   font-weight: bold;
   font-style: normal;
@@ -24,6 +26,8 @@ export const Title = styled.div`
   line-height: 1.36;
   letter-spacing: normal;
   color: ${white};
+  display: flex;
+  align-items: center;
 `;
 
 export const ShareIcon = styled(IconShare)`
@@ -46,4 +50,10 @@ export const MenuIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+export const TestStatus = styled(Status)`
+  margin-top: 0;
+  color: ${textColor};
+  background: ${white};
 `;

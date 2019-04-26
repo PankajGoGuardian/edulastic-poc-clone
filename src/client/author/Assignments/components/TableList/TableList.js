@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 
 import { Link, withRouter } from "react-router-dom";
-import { Dropdown, Checkbox } from "antd";
+import { Dropdown, Checkbox, Tooltip } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -85,7 +85,11 @@ class TableList extends Component {
       {
         dataIndex: "class",
         width: "11%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => (
+          <Tooltip placement="bottom" title={<div>{text}</div>}>
+            <GreyFont>{text}</GreyFont>
+          </Tooltip>
+        )
       },
       {
         dataIndex: "testType",

@@ -27,7 +27,9 @@ const ListHeader = ({
   renderExtra,
   renderFilter,
   isAdvancedView,
-  hasButton
+  hasButton,
+  renderButton,
+  midTitle
 }) => (
   <Container>
     <FlexContainer style={{ pointerEvents: "none" }}>
@@ -35,19 +37,28 @@ const ListHeader = ({
       <Title>{title}</Title>
     </FlexContainer>
 
+    {midTitle && (
+      <MidTitleWrapper>
+        <Title>{midTitle}</Title>
+      </MidTitleWrapper>
+    )}
+
     <RightButtonWrapper>
       {renderFilter(isAdvancedView)}
-      {hasButton && (
-        <CreateButton
-          onClick={onCreate}
-          color="secondary"
-          variant="create"
-          shadow="none"
-          icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
-        >
-          {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
-        </CreateButton>
-      )}
+      {hasButton &&
+        (renderButton ? (
+          renderButton()
+        ) : (
+          <CreateButton
+            onClick={onCreate}
+            color="secondary"
+            variant="create"
+            shadow="none"
+            icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
+          >
+            {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
+          </CreateButton>
+        ))}
       {renderExtra()}
     </RightButtonWrapper>
   </Container>
@@ -62,16 +73,20 @@ ListHeader.propTypes = {
   renderExtra: PropTypes.func,
   renderFilter: PropTypes.func,
   isAdvancedView: PropTypes.bool,
-  hasButton: PropTypes.bool
+  hasButton: PropTypes.bool,
+  renderButton: PropTypes.func,
+  midTitle: PropTypes.string
 };
 
 ListHeader.defaultProps = {
   btnTitle: "",
   renderExtra: () => null,
   renderFilter: () => null,
+  renderButton: () => null,
   onCreate: () => {},
   isAdvancedView: false,
-  hasButton: true
+  hasButton: true,
+  midTitle: ""
 };
 
 const enhance = compose(
@@ -155,6 +170,12 @@ const MenuIcon = styled(IconMenuOpenClose)`
 `;
 
 const RightButtonWrapper = styled.div`
+  display: flex;
+  margin: 8px 0 5px auto;
+  align-items: center;
+`;
+
+const MidTitleWrapper = styled.div`
   display: flex;
   margin: 8px 0 5px auto;
   align-items: center;

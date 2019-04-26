@@ -9,6 +9,7 @@ import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import Sidebar from "./Sidebar/SideMenu";
 /* lazy load routes */
 const Assignments = lazy(() => import("../Assignments"));
+const AssignTest = lazy(() => import("../AssignTest"));
 const AssignmentAdvanced = lazy(() => import("../AssignmentAdvanced"));
 const Regrade = lazy(() => import("../Regrade"));
 const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
@@ -66,6 +67,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 path={`${match.url}/assignments/regrade/new/:newTestId/old/:oldTestId`}
                 component={Regrade}
               />
+              <Route exact path={`${match.url}/assignments/:testId`} component={props => <AssignTest {...props} />} />
               <Route exact path={`${match.url}/assessments/create`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />

@@ -339,9 +339,14 @@ export const ActionsWrapper = styled.div`
   width: 80px;
 `;
 
-export const GreyFont = styled.span`
+export const GreyFont = styled.div`
   color: grey;
   font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  max-width: 150px;
 `;
 
 export const ExpandedTable = styled(Table)`

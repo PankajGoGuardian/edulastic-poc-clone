@@ -1,0 +1,150 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { isEmpty, isEqual } from "lodash";
+import * as moment from "moment";
+import {
+  fetchGroupsAction,
+  getGroupsSelector,
+  fetchGroupMembersAction,
+  getStudentsSelector
+} from "../../../sharedDucks/groups";
+import { fetchAssignmentsAction, getAssignmentsSelector, getTestEntitySelector } from "../../duck";
+
+import ListHeader from "../../../src/components/common/ListHeader";
+import SimpleOptions from "../SimpleOptions/SimpleOptions";
+import AdvancedOptons from "../AdvancedOptons/AdvancedOptons";
+import {
+  Container,
+  FullFlexContainer,
+  PaginationInfo,
+  AnchorLink,
+  Anchor,
+  SwitchWrapper,
+  ViewSwitch,
+  SwitchLabel,
+  AssignButton
+} from "./styled";
+
+const initAssignment = {
+  startDate: moment(),
+  endDate: moment().add("days", 7),
+  openPolicy: "Automatically on Start Date",
+  closePolicy: "Automatically on Due Date",
+  class: [],
+  specificStudents: false
+};
+
+class AssignTest extends React.Component {
+  state = {
+    isAdvancedView: true
+  };
+
+  componentDidMount() {
+    const { fetchGroups, fetchAssignments, group, assignments, match } = this.props;
+    const { testId } = match.params;
+    if (isEmpty(group)) {
+      fetchGroups();
+    }
+    if (isEmpty(assignments) && testId) {
+      fetchAssignments(testId);
+    }
+  }
+
+  shouldComponentUpdate(_, { assignment: nextAssignment }) {
+    const { assignment: preAssignment } = this.state;
+    if (isEqual(preAssignment, nextAssignment)) {
+      return true;
+    }
+    return false;
+  }
+
+  handleAssign = () => {
+    const { assignment } = this.state;
+    console.log(assignment);
+  };
+
+  SwitchView = checked => {
+    this.setState({ isAdvancedView: checked });
+  };
+
+  renderHeaderButton = () => (
+    <AssignButton onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+      ASSIGN
+    </AssignButton>
+  );
+
+  updateAssignment = assignment => this.setState({ assignment });
+
+  render() {
+    const { isAdvancedView } = this.state;
+    const { group, fetchStudents, students, testSettings } = this.props;
+
+    return (
+      <div>
+        <ListHeader
+          title="Assign TEST"
+          midTitle="PICK CLASSES, GROUPS OR STUDENTS"
+          btnTitle="ASSIGN"
+          renderButton={this.renderHeaderButton}
+        />
+
+        <Container>
+          <FullFlexContainer justifyContent="space-between">
+            <PaginationInfo>
+              &lt; <AnchorLink to="/author/tests">TEST LIBRARY</AnchorLink> /{" "}
+              <AnchorLink to="/author/assessments/create">NEW ASSESSMENTS</AnchorLink> / <Anchor>TEST NAME</Anchor>
+            </PaginationInfo>
+            <SwitchWrapper>
+              <SwitchLabel>SIMPLE</SwitchLabel>
+              <ViewSwitch size="small" onChange={this.SwitchView} defaultChecked={isAdvancedView} />
+              <SwitchLabel>ADVANCED</SwitchLabel>
+            </SwitchWrapper>
+          </FullFlexContainer>
+
+          {isAdvancedView ? (
+            <AdvancedOptons
+              initData={initAssignment}
+              updateOptions={this.updateAssignment}
+              testSettings={testSettings}
+            />
+          ) : (
+            <SimpleOptions
+              group={group}
+              students={students}
+              initData={initAssignment}
+              fetchStudents={fetchStudents}
+              testSettings={testSettings}
+              updateOptions={this.updateAssignment}
+            />
+          )}
+        </Container>
+      </div>
+    );
+  }
+}
+
+export default connect(
+  state => ({
+    group: getGroupsSelector(state),
+    assignments: getAssignmentsSelector(state),
+    students: getStudentsSelector(state),
+    testSettings: getTestEntitySelector(state)
+  }),
+  {
+    fetchGroups: fetchGroupsAction,
+    fetchStudents: fetchGroupMembersAction,
+    fetchAssignments: fetchAssignmentsAction
+  }
+)(AssignTest);
+
+AssignTest.propTypes = {
+  match: PropTypes.object.isRequired,
+  fetchStudents: PropTypes.func.isRequired,
+  fetchGroups: PropTypes.func.isRequired,
+  fetchAssignments: PropTypes.func.isRequired,
+  group: PropTypes.array.isRequired,
+  students: PropTypes.array.isRequired,
+  testSettings: PropTypes.object.isRequired,
+  assignments: PropTypes.array.isRequired
+};

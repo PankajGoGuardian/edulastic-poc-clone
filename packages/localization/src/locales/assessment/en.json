@@ -177,6 +177,9 @@
     "dropZone": {
       "dragDrop": "Drag & Drop",
       "yourOwnImage": "Your own image",
+      "yourOwnCaption": "Your own caption",
+      "yourOwnVideo": "Your own video",
+      "yourOwnFile": "Your own file",
       "or": "or",
       "browse": "browse"
     },
@@ -652,6 +655,27 @@
       "enablePaginatedContent": "Enable paginated content",
       "mathRenderer": "Math renderer",
       "details": "Details"
+    },
+    "video": {
+      "videoPlayer": "Video player",
+      "videoType": "Video type",
+      "sourceURL": "Source URL",
+      "heading": "Heading",
+      "summary": "Summary",
+      "hostedVideo": "Hosted video",
+      "width": "Width (px)",
+      "height": "Height (px)",
+      "transcript": "Transcript",
+      "posterImage": "Poster image",
+      "hideControls": "Hide controls",
+      "captionURL": "Caption URL",
+      "hostYourOwn": "host your own ",
+      "video": "Video",
+      "file": "File",
+      "image": "Image",
+      "caption": "Caption",
+      "errorMessage": "Selected file is not allowed",
+      "uploadSuccess": " has been uploaded successfully"
     },
     "protractor": {
       "details": "Details",

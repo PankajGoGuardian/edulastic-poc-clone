@@ -64,6 +64,9 @@ import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.s
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
+//Video&Passages
+import VPVideoPlayer from "../../../src/assets/video-and-passages/videoplayer.png";
+
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
@@ -1545,6 +1548,28 @@ export const getCards = onSelectQuestionType => {
         content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items."
       },
       list: ["Item A", "Item B"],
+      onSelectQuestionType
+    },
+    {
+      type: "video-passages",
+      cardImage: VPVideoPlayer,
+      stimulus: "",
+      data: {
+        title: "Video",
+        type: questionType.VIDEO,
+        videoType: "youtube",
+        sourceURL: "",
+        heading: "",
+        summary: "",
+        transcript: "",
+        ui_style: {
+          width: 480,
+          height: 270,
+          posterImage: "",
+          hideControls: false,
+          captionURL: ""
+        }
+      },
       onSelectQuestionType
     },
     {

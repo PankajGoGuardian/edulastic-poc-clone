@@ -11,6 +11,7 @@ const CLOZE_IMAGE_DROP_DOWN = "clozeImageDropDown";
 const CLOZE_IMAGE_TEXT = "clozeImageText";
 const PROTRACTOR = "protractor";
 const PASSAGE = "passage";
+const VIDEO = "video";
 const MATH = "math";
 const FORMULA_ESSAY = "formulaessay";
 const CLOZE_MATH = "clozemath";
@@ -45,6 +46,7 @@ const selectsData = [
   { value: CLOZE_IMAGE_TEXT, text: "Cloze Image Text" },
   { value: PROTRACTOR, text: "Protractor" },
   { value: PASSAGE, text: "Passage" },
+  { value: VIDEO, text: "Video" },
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
   { value: CLOZE_MATH, text: "Cloze Math" },
@@ -80,6 +82,7 @@ module.exports = {
   CLOZE_IMAGE_TEXT,
   PROTRACTOR,
   PASSAGE,
+  VIDEO,
   MATH,
   FORMULA_ESSAY,
   CLOZE_MATH,

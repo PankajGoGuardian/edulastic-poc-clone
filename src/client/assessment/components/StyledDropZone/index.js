@@ -9,8 +9,22 @@ import { Underlined } from "./styled/Underlined";
 import { Loading } from "./styled/Loading";
 import { IconUpload } from "./styled/IconUpload";
 
-const StyledDropZone = ({ thumb, loading, isDragActive, t }) => (
-  <Container isDragActive={isDragActive} childMarginRight={0} justifyContent="center" flexDirection="column">
+const StyledDropZone = ({
+  thumb,
+  loading,
+  isDragActive,
+  t,
+  style,
+  dropzoneSettings: { name, allowedFiles, maxSize },
+  children
+}) => (
+  <Container
+    style={style}
+    isDragActive={isDragActive}
+    childMarginRight={0}
+    justifyContent="center"
+    flexDirection="column"
+  >
     {loading ? (
       <Loading type="loading" />
     ) : (
@@ -18,11 +32,12 @@ const StyledDropZone = ({ thumb, loading, isDragActive, t }) => (
         <Fragment>
           <IconUpload isDragActive={isDragActive} />
           <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
-          <ZoneTitle altColor>{t("component.dropZone.yourOwnImage")}</ZoneTitle>
+          <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
           <ZoneTitle isComment>
-            {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: PNG, JPG, GIF
-            (1024KB MAX.)
+            {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
+            {maxSize}KB MAX.)
           </ZoneTitle>
+          {children}
         </Fragment>
       )
     )}
@@ -33,12 +48,14 @@ StyledDropZone.propTypes = {
   thumb: PropTypes.any,
   loading: PropTypes.bool.isRequired,
   isDragActive: PropTypes.any,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  dropzoneSettings: PropTypes.object
 };
 
 StyledDropZone.defaultProps = {
   thumb: null,
-  isDragActive: false
+  isDragActive: false,
+  dropzoneSettings: { name: "Image", allowedFiles: "PNG, JPG, GIF", maxSize: 1024 }
 };
 
 export default withNamespaces("assessment")(StyledDropZone);

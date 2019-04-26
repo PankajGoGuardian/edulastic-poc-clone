@@ -37,6 +37,7 @@ import withAnswerSave from "./HOC/withAnswerSave";
 import { MatrixChoice } from "../widgets/MatrixChoice";
 import { Protractor } from "../widgets/Protractor";
 import { Passage } from "../widgets/Passage";
+import { Video } from "../widgets/Video";
 import { MathFormula } from "../widgets/MathFormula";
 import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
@@ -106,6 +107,8 @@ const getQuestion = type => {
       return ClozeText;
     case questionType.PASSAGE:
       return Passage;
+    case questionType.VIDEO:
+      return Video;
     case questionType.MATH:
       return MathFormula;
     case questionType.FORMULA_ESSAY:

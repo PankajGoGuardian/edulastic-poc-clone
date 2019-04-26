@@ -3,8 +3,6 @@ import { Layout, Spin } from "antd";
 
 const { Content } = Layout;
 
-export const PerformanceBandDiv = styled.div``;
-
 export const StyledContent = styled(Content)`
   width: 95%;
   margin: 40px auto 0;

@@ -1,4 +1,3 @@
-import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
@@ -18,34 +17,6 @@ export const updatePerformanceBandAction = createAction(UPDATE_PERFORMANCE_BAND_
 export const updatePerformanceBandSuccessAction = createAction(UPDATE_PERFORMANCE_BAND_SUCCESS);
 export const updatePerformanceBandErrorAction = createAction(UPDATE_PERFORMANCE_BAND_ERROR);
 
-// selectors
-const statePerformanceBandSelector = state => state.performanceBandReducer;
-
-export const getPerformanceBandSelector = createSelector(
-  statePerformanceBandSelector,
-  state => state.data
-);
-
-export const getPerformanceBandLoadingSelector = createSelector(
-  statePerformanceBandSelector,
-  state => state.loading
-);
-
-export const getPerformanceBandUpdatingSelector = createSelector(
-  statePerformanceBandSelector,
-  state => state.updating
-);
-
-export const getCreatedPerformanceBandSelector = createSelector(
-  statePerformanceBandSelector,
-  state => ({ data: state.create })
-);
-
-export const getPerformanceBandCreatingSelector = createSelector(
-  statePerformanceBandSelector,
-  state => state.creating
-);
-
 // reducers
 const initialState = {
   data: {},
@@ -55,47 +26,29 @@ const initialState = {
   updateError: null
 };
 
-const receivePerformanceBandRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receivePerformanceBandSuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receivePerformanceBandError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updatePerformanceBandRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updatePerformanceBandSucess = (state, { payload }) => ({
-  ...state,
-  data: payload,
-  updating: false
-});
-
-const updatePerformanceBandError = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  updateError: payload.error
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_PERFORMANCE_BAND_REQUEST]: receivePerformanceBandRequest,
-  [RECEIVE_PERFORMANCE_BAND_SUCCESS]: receivePerformanceBandSuccess,
-  [RECEIVE_PERFORMANCE_BAND_ERROR]: receivePerformanceBandError,
-  [UPDATE_PERFORMANCE_BAND_REQUEST]: updatePerformanceBandRequest,
-  [UPDATE_PERFORMANCE_BAND_SUCCESS]: updatePerformanceBandSucess,
-  [UPDATE_PERFORMANCE_BAND_ERROR]: updatePerformanceBandError
+  [RECEIVE_PERFORMANCE_BAND_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_PERFORMANCE_BAND_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.data = payload;
+  },
+  [RECEIVE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    stable.error = payload.error;
+  },
+  [UPDATE_PERFORMANCE_BAND_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_PERFORMANCE_BAND_SUCCESS]: (state, { payload }) => {
+    state.data = payload;
+    state.updating = false;
+  },
+  [UPDATE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  }
 });
 
 // sagas

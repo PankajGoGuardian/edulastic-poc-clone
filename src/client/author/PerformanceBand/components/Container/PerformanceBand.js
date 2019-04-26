@@ -2,20 +2,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
+
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import PerformanceBandTable from "../PerformanceBandTable/PerformanceBandTable";
 
-import { PerformanceBandDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
+import { StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
 // actions
 import { receivePerformanceBandAction, updatePerformanceBandAction } from "../../ducks";
-
-// selectors
-import {
-  getPerformanceBandSelector,
-  getPerformanceBandLoadingSelector,
-  getPerformanceBandUpdatingSelector
-} from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -47,11 +42,11 @@ class PerformanceBand extends Component {
     const showSpin = loading || updating;
 
     return (
-      <PerformanceBandDiv>
+      <div>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? "true" : "false"}>
-            {loading && (
+            {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
@@ -64,7 +59,7 @@ class PerformanceBand extends Component {
             )}
           </StyledLayout>
         </StyledContent>
-      </PerformanceBandDiv>
+      </div>
     );
   }
 }
@@ -72,9 +67,9 @@ class PerformanceBand extends Component {
 const enhance = compose(
   connect(
     state => ({
-      performanceBand: getPerformanceBandSelector(state),
-      loading: getPerformanceBandLoadingSelector(state),
-      updating: getPerformanceBandUpdatingSelector(state),
+      performanceBand: get(state, ["performanceBandReducer", "data"], []),
+      loading: get(state, ["performanceBandReducer", "loading"], false),
+      updating: get(state, ["performanceBandReducer", "updating"], false),
       userOrgId: getUserOrgId(state)
     }),
     {

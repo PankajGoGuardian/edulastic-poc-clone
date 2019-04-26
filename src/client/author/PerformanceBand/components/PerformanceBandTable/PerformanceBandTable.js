@@ -156,14 +156,12 @@ class PerformanceBandTable extends React.Component {
         dataIndex: "operation",
         render: (text, record) =>
           this.state.dataSource.length >= 1 ? (
-            <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-              <StyledDivCenter>
-                <a href="javascript:;">
-                  <Icon type="delete" theme="twoTone" />
-                  &nbsp;Delete
-                </a>
-              </StyledDivCenter>
-            </Popconfirm>
+            <StyledDivCenter>
+              <a href="javascript:;" onClick={e => this.handleDelete(e, record.key)}>
+                <Icon type="delete" theme="twoTone" />
+                &nbsp;Delete
+              </a>
+            </StyledDivCenter>
           ) : null
       }
     ];
@@ -197,8 +195,12 @@ class PerformanceBandTable extends React.Component {
     });
   };
 
-  handleDelete = key => {
+  handleDelete = (e, key) => {
     const dataSource = [...this.state.dataSource];
+
+    if (dataSource[0].key === key) dataSource[1].from = 100;
+    else if (dataSource[dataSource.length - 1].key === key) dataSource[dataSource.length - 2].to = 0;
+
     this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
   };
 

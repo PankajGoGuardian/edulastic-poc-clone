@@ -5,11 +5,6 @@ export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
 
-  tr,
-  td {
-    border: none !important;
-  }
-
   tr:nth-child(2n) {
     background-color: #fafafa !important;
   }

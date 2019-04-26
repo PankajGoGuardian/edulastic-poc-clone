@@ -59,11 +59,6 @@ class ListItem extends Component {
     this.setState({ isOpenModal: false });
   };
 
-  assignTest = () => {
-    const { history, item } = this.props;
-    history.push(`/author/assignments/${item._id}`);
-  };
-
   openModal = () => {
     this.setState({ isOpenModal: true });
   };
@@ -80,7 +75,7 @@ class ListItem extends Component {
 
     return (
       <>
-        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} assign={this.assignTest} />
+        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} />
         <Container>
           <ContentWrapper>
             <Col span={18}>

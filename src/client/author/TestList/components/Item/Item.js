@@ -58,11 +58,6 @@ class Item extends Component {
     history.push(`/author/tests/${item._id}`);
   };
 
-  assignTest = () => {
-    const { history, item } = this.props;
-    history.push(`/author/assignments/${item._id}`);
-  };
-
   closeModal = () => {
     this.setState({ isOpenModal: false });
   };
@@ -90,7 +85,7 @@ class Item extends Component {
 
     return (
       <>
-        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} assign={this.assignTest} />
+        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} />
         <Container
           title={
             <Header>

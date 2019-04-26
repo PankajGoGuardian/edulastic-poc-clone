@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 
@@ -19,7 +20,7 @@ export function findPoint(elements, coords) {
       return;
     }
 
-    if (window.JXG.isPoint(elements[key])) {
+    if (JXG.isPoint(elements[key])) {
       if (elements[key].coords.usrCoords[1] === x && elements[key].coords.usrCoords[2] === y) {
         result = elements[key];
         found = true;
@@ -43,7 +44,7 @@ function onHandler(board, event) {
   return board.$board.create("point", coords.usrCoords, {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.default[CONSTANT.TOOLS.POINT],
-    label: getLabelParameters(window.JXG.OBJECT_TYPE_POINT)
+    label: getLabelParameters(JXG.OBJECT_TYPE_POINT)
   });
   // }
   // return point;
@@ -66,7 +67,7 @@ function parseConfig(config, pointParameters) {
     [config.x, config.y],
     {
       ...(pointParameters || defaultPointParameters()),
-      label: getLabelParameters(window.JXG.OBJECT_TYPE_POINT)
+      label: getLabelParameters(JXG.OBJECT_TYPE_POINT)
     }
   ];
 }

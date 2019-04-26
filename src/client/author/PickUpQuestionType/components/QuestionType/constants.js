@@ -1135,7 +1135,9 @@ export const getCards = onSelectQuestionType => {
           x_max: 10.4,
           x_min: -10.4,
           y_max: 10.4,
-          y_min: -10.4
+          y_min: -10.4,
+          x_ratio: 1,
+          y_ratio: 1
         },
         controlbar: {
           controls: ["undo", "redo"],
@@ -1218,7 +1220,9 @@ export const getCards = onSelectQuestionType => {
           x_max: 10.4,
           x_min: -0.8,
           y_max: 10.4,
-          y_min: -0.8
+          y_min: -0.8,
+          x_ratio: 1,
+          y_ratio: 1
         },
         controlbar: {
           controls: ["undo", "redo"],
@@ -1304,7 +1308,7 @@ export const getCards = onSelectQuestionType => {
           y_min: -0.5,
           numberline: true,
           margin: 75,
-          responsesAllowed: 2,
+          responsesAllowed: 1,
           title: ""
         },
         controlbar: {

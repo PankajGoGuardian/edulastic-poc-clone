@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphRay as IconRay,
@@ -375,7 +375,7 @@ class GraphContainer extends Component {
         this._graph.setBgObjects(backgroundShapes.values, backgroundShapes.showPoints);
       }
 
-      this.setElementsToGraph();
+      this.setElementsToGraph(prevProps);
     }
   }
 
@@ -425,6 +425,11 @@ class GraphContainer extends Component {
     }
   }
 
+  onDelete() {
+    this.setState({ selectedTool: { name: "delete", index: -1, groupIndex: -1 } });
+    this._graph.setTool("trash");
+  }
+
   getStashId() {
     const { questionId, altAnswerId, view, bgShapes } = this.props;
     const type = bgShapes ? "bgShapes" : altAnswerId || view;
@@ -439,6 +444,8 @@ class GraphContainer extends Component {
         return this.onRedo();
       case "reset":
         return this.onReset();
+      case "delete":
+        return this.onDelete();
       default:
         return null;
     }
@@ -464,9 +471,10 @@ class GraphContainer extends Component {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, this.graphUpdateHandler);
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, this.graphUpdateHandler);
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_UPDATE, this.graphUpdateHandler);
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
-  setElementsToGraph = () => {
+  setElementsToGraph = (prevProps = {}) => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     if (checkAnswer || showAnswer) {
@@ -491,7 +499,7 @@ class GraphContainer extends Component {
 
       this._graph.reset();
       this._graph.loadFromConfig(coloredElements);
-    } else {
+    } else if (!isEqual(prevProps.elements, this._graph.getConfig())) {
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(elements);
@@ -596,7 +604,7 @@ class GraphContainer extends Component {
     "label"
   ];
 
-  allControls = ["undo", "redo", "reset"];
+  allControls = ["undo", "redo", "reset", "delete"];
 
   render() {
     const { tools, layout, annotation, controls, bgShapes } = this.props;

@@ -13,7 +13,7 @@ import {
   IconNotIncludedToInfinitySegment,
   IconTrash
 } from "@edulastic/icons";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 import { GraphWrapper, JSXBox } from "../AxisLabelsContainer/styled";
 import {
   defaultAxesParameters,
@@ -209,8 +209,7 @@ class AxisSegmentsContainer extends Component {
       graphType
     } = this.props;
 
-    this._graph = makeBorder(this._graphId, {}, () => {});
-    this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
+    this._graph = makeBorder(this._graphId);
 
     if (this._graph) {
       this._graph.resizeContainer(layout.width, layout.height);
@@ -467,7 +466,7 @@ class AxisSegmentsContainer extends Component {
         );
       }
 
-      this.setElementsToGraph();
+      this.setElementsToGraph(prevProps);
     }
   }
 
@@ -504,7 +503,7 @@ class AxisSegmentsContainer extends Component {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.getConfig());
   };
 
-  setElementsToGraph = () => {
+  setElementsToGraph = (prevProps = {}) => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     if (checkAnswer || showAnswer) {
@@ -529,7 +528,7 @@ class AxisSegmentsContainer extends Component {
 
       this._graph.segmentsReset();
       this._graph.loadSegments(coloredElements);
-    } else {
+    } else if (!isEqual(prevProps.elements, this._graph.getSegments())) {
       this._graph.segmentsReset();
       this._graph.resetAnswers();
       this._graph.loadSegments(elements);

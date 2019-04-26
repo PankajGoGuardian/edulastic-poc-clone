@@ -106,7 +106,9 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
             case _shapeTypes.ShapeTypes.CIRCLE:
             case _shapeTypes.ShapeTypes.EXPONENT:
             case _shapeTypes.ShapeTypes.LOGARITHM:
-              if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
+              if (
+                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+              ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
@@ -115,7 +117,7 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
             case _shapeTypes.ShapeTypes.ELLIPSE:
             case _shapeTypes.ShapeTypes.HYPERBOLA:
-              if (checkableShape.subElementsIds[2] !== allowedSubElementsIds[2]) {
+              if (!compareShapes.compare(checkableShape.subElementsIds[2], allowedSubElementsIds[2]).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
@@ -130,8 +132,9 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
             case _shapeTypes.ShapeTypes.RAY:
             default:
               if (
-                checkableShape.subElementsIds.startPoint !== allowedSubElementsIds.startPoint ||
-                checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint
+                !compareShapes.compare(checkableShape.subElementsIds.startPoint, allowedSubElementsIds.startPoint)
+                  .result ||
+                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;

@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { CONSTANT } from "./config";
 import Point from "./elements/Point";
 import { defaultConfig as lineConfig } from "./elements/Line";
@@ -238,7 +239,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
 
 export const handleSnap = (line, points) => {
   line.on("up", () => {
-    const setCoords = window.JXG.COORDS_BY_USER;
+    const setCoords = JXG.COORDS_BY_USER;
     points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
   });
 };
@@ -295,10 +296,10 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
 
   Object.keys(elements).forEach(key => {
     const el = elements[key];
-    if (el.type === window.JXG.OBJECT_TYPE_POINT) {
+    if (el.type === JXG.OBJECT_TYPE_POINT) {
       el.setAttribute(attr);
       if (isSwitchToGrid) {
-        el.setPositionDirectly(window.JXG.COORDS_BY_USER, Point.roundCoords(el.coords.usrCoords));
+        el.setPositionDirectly(JXG.COORDS_BY_USER, Point.roundCoords(el.coords.usrCoords));
       }
     } else {
       updatePointParameters(Object.values(el.ancestors), attr, isSwitchToGrid);
@@ -343,15 +344,15 @@ export function updateAxe(line, parameters, axe) {
 // Update numberline axis settings
 export const updateNumberline = (numberline, settings) => {
   if ("showTicks" in settings) {
-    numberline[0].ticks[0].setAttribute({ visible: settings.showTicks });
+    numberline.ticks[0].setAttribute({ visible: settings.showTicks });
   }
   if ("ticksDistance" in settings) {
-    numberline[0].ticks[0].setAttribute({
+    numberline.ticks[0].setAttribute({
       ticksDistance: settings.ticksDistance
     });
   }
   if ("fontSize" in settings) {
-    numberline[0].ticks[0].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
+    numberline.ticks[0].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
   }
 };
 

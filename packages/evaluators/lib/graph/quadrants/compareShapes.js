@@ -431,7 +431,8 @@ var CompareShapes =
             if (
               testParabolaPoints.startX === trueParabolaPoints.startX &&
               testParabolaPoints.startY === trueParabolaPoints.startY &&
-              testFunc.getKoefA() === trueFunc.getKoefA()
+              testFunc.getKoefA() === trueFunc.getKoefA() &&
+              testFunc.getDirection() === trueFunc.getDirection()
             ) {
               return {
                 id: testParabola.id,
@@ -807,7 +808,7 @@ var CompareShapes =
             ) {
               return {
                 id: testExponent.id,
-                relatedId: testExponent.id,
+                relatedId: trueExponent.id,
                 result: true
               };
             }
@@ -859,7 +860,7 @@ var CompareShapes =
             ) {
               return {
                 id: testLogarithm.id,
-                relatedId: testLogarithm.id,
+                relatedId: trueLogarithm.id,
                 result: true
               };
             }
@@ -929,7 +930,7 @@ var CompareShapes =
 
             return {
               id: testPolynom.id,
-              relatedId: testPolynom.id,
+              relatedId: truePolynom.id,
               result: true
             };
           }

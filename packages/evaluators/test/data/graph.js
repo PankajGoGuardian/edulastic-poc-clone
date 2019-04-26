@@ -660,8 +660,8 @@ export const trueParabolaWithOtherPoints = [
   {
     id: "lrn_5",
     type: ShapeTypes.POINT,
-    x: 0,
-    y: 6,
+    x: 6,
+    y: 18,
     subElement: true
   },
   {
@@ -1234,6 +1234,141 @@ export const errorHyperbola = [
   {
     id: "lrn_10",
     type: ShapeTypes.HYPERBOLA,
+    subElementsIds: {
+      0: "lrn_7",
+      1: "lrn_8",
+      2: "lrn_9"
+    }
+  }
+];
+
+// Polynom =======================================================================================
+
+export const trueAnswerWith1Polynom = {
+  graphType: "quadrants",
+  scoring_type: "exactMatch",
+  valid_response: {
+    score: 1,
+    value: [
+      {
+        id: "lrn_1",
+        type: ShapeTypes.POINT,
+        x: -4,
+        y: 5,
+        subElement: true
+      },
+      {
+        id: "lrn_2",
+        type: ShapeTypes.POINT,
+        x: -2,
+        y: 1,
+        subElement: true
+      },
+      {
+        id: "lrn_3",
+        type: ShapeTypes.POINT,
+        x: -1,
+        y: 2,
+        subElement: true
+      },
+      {
+        id: "lrn_4",
+        type: ShapeTypes.POLYNOM,
+        subElementsIds: {
+          0: "lrn_1",
+          1: "lrn_2",
+          2: "lrn_3"
+        }
+      }
+    ]
+  }
+};
+
+export const truePolynomWithOtherPoints = [
+  {
+    id: "lrn_5",
+    type: ShapeTypes.POINT,
+    x: 1,
+    y: 10,
+    subElement: true
+  },
+  {
+    id: "lrn_6",
+    type: ShapeTypes.POLYNOM,
+    subElementsIds: {
+      0: "lrn_1",
+      1: "lrn_2",
+      2: "lrn_5"
+    }
+  }
+];
+
+export const secondTruePolynom = [
+  {
+    id: "lrn_11",
+    type: ShapeTypes.POINT,
+    x: -5,
+    y: 1,
+    subElement: true
+  },
+  {
+    id: "lrn_12",
+    type: ShapeTypes.POINT,
+    x: -2,
+    y: 3,
+    subElement: true
+  },
+  {
+    id: "lrn_13",
+    type: ShapeTypes.POINT,
+    x: 1,
+    y: -3,
+    subElement: true
+  },
+  {
+    id: "lrn_14",
+    type: ShapeTypes.POINT,
+    x: 6,
+    y: 4,
+    subElement: true
+  },
+  {
+    id: "lrn_15",
+    type: ShapeTypes.POLYNOM,
+    subElementsIds: {
+      0: "lrn_11",
+      1: "lrn_12",
+      2: "lrn_13",
+      3: "lrn_14"
+    }
+  }
+];
+
+export const errorPolynom = [
+  {
+    id: "lrn_7",
+    type: ShapeTypes.POINT,
+    x: -3,
+    y: -1,
+    subElement: true
+  },
+  {
+    id: "lrn_8",
+    type: ShapeTypes.POINT,
+    x: 1,
+    y: 1,
+    subElement: true
+  },
+  {
+    id: "lrn_9",
+    type: ShapeTypes.POINT,
+    x: 8,
+    y: 1,
+    subElement: true
+  },
+  {
+    id: "lrn_10",
+    type: ShapeTypes.POLYNOM,
     subElementsIds: {
       0: "lrn_7",
       1: "lrn_8",

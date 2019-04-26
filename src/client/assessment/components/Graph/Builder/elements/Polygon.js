@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { Point } from ".";
 import segmentConfig from "./Segment";
 import { CONSTANT, Colors } from "../config";
@@ -33,7 +34,7 @@ function onHandler() {
         const newPolygon = board.$board.create("polygon", points, {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.POLYGON],
-          label: getLabelParameters(window.JXG.OBJECT_TYPE_POLYGON)
+          label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
         });
         points = [];
         lines = [];
@@ -86,7 +87,7 @@ function parseConfig() {
     highlightFillOpacity: 0.3,
     fillColor: "#ccc",
     ...defaultConfig,
-    label: getLabelParameters(window.JXG.OBJECT_TYPE_POLYGON)
+    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
   };
 }
 

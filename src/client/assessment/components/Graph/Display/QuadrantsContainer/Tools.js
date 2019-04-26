@@ -36,6 +36,8 @@ export default function Tools(props) {
 
   const isActive = uiTool => uiTool.index === tool.index && uiTool.groupIndex === tool.groupIndex;
 
+  const isActiveControl = control => control === tool.name;
+
   const resetThenSet = newTool => {
     onSelect(newTool);
   };
@@ -85,7 +87,11 @@ export default function Tools(props) {
 
       <ToolbarRight>
         {controls.map(control => (
-          <ToolBtn onClick={() => getHandlerByControlName(control)} style={{ width: fontSize > 20 ? 105 : 93 }}>
+          <ToolBtn
+            className={isActiveControl(control) ? "active" : ""}
+            onClick={() => getHandlerByControlName(control)}
+            style={{ width: fontSize > 20 ? 105 : 93 }}
+          >
             <ToolbarItem>
               <ToolbarItemIcon style={{ marginBottom: fontSize / 2 }}>
                 <IconClear

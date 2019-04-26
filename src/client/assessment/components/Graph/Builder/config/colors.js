@@ -17,6 +17,12 @@ export default {
       highlightStrokeColor: "#00b2ff",
       highlightFillColor: "#00b2ff"
     },
+    [TOOLS.SEGMENTS_POINT]: {
+      fillColor: "#ffffff",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "#ffffff"
+    },
     [TOOLS.LINE]: {
       fillColor: "#00b2ff",
       strokeColor: "#00b2ff",

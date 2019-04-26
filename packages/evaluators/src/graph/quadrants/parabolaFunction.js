@@ -1,4 +1,4 @@
-import { FractionDigits } from './constants/fractionDigits';
+import { FractionDigits } from "./constants/fractionDigits";
 
 class ParabolaFunction {
   constructor(points) {
@@ -9,8 +9,14 @@ class ParabolaFunction {
   }
 
   getKoefA() {
-    return ((this.endY - this.startY) / ((this.endX - this.startX) * (this.endX - this.startX)))
-      .toFixed(FractionDigits);
+    return ((this.endY - this.startY) / ((this.endX - this.startX) * (this.endX - this.startX))).toFixed(
+      FractionDigits
+    );
+  }
+
+  getDirection() {
+    const comp = (this.endY - this.startY) * (this.endX - this.startX);
+    return comp > 0 ? 1 : comp < 0 ? -1 : 0;
   }
 }
 

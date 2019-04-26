@@ -294,7 +294,8 @@ class CompareShapes {
     if (
       testParabolaPoints.startX === trueParabolaPoints.startX &&
       testParabolaPoints.startY === trueParabolaPoints.startY &&
-      testFunc.getKoefA() === trueFunc.getKoefA()
+      testFunc.getKoefA() === trueFunc.getKoefA() &&
+      testFunc.getDirection() === trueFunc.getDirection()
     ) {
       return {
         id: testParabola.id,
@@ -561,7 +562,7 @@ class CompareShapes {
     ) {
       return {
         id: testExponent.id,
-        relatedId: testExponent.id,
+        relatedId: trueExponent.id,
         result: true
       };
     }
@@ -597,7 +598,7 @@ class CompareShapes {
     ) {
       return {
         id: testLogarithm.id,
-        relatedId: testLogarithm.id,
+        relatedId: trueLogarithm.id,
         result: true
       };
     }
@@ -644,7 +645,7 @@ class CompareShapes {
 
     return {
       id: testPolynom.id,
-      relatedId: testPolynom.id,
+      relatedId: truePolynom.id,
       result: true
     };
   }

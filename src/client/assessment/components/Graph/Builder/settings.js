@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { tickLabel } from "./utils";
 
 /**
@@ -113,7 +114,7 @@ const textParameters = {
 
 const getLabelPositionParameters = elementType => {
   switch (elementType) {
-    case window.JXG.OBJECT_TYPE_POINT:
+    case JXG.OBJECT_TYPE_POINT:
       return {
         position: "top",
         offset: [0, 10],

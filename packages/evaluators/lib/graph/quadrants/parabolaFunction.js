@@ -32,6 +32,13 @@ var ParabolaFunction =
             _fractionDigits.FractionDigits
           );
         }
+      },
+      {
+        key: "getDirection",
+        value: function getDirection() {
+          var comp = (this.endY - this.startY) * (this.endX - this.startX);
+          return comp > 0 ? 1 : comp < 0 ? -1 : 0;
+        }
       }
     ]);
     return ParabolaFunction;

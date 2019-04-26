@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { handleSnap } from "../utils";
@@ -17,7 +18,7 @@ function onHandler() {
       const newLine = board.$board.create("ellipse", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-        label: getLabelParameters(window.JXG.OBJECT_TYPE_CONIC)
+        label: getLabelParameters(JXG.OBJECT_TYPE_CONIC)
       });
       handleSnap(newLine, points.filter(point => point.elType === "point"));
       if (newLine) {
@@ -51,7 +52,7 @@ function parseConfig() {
   return {
     fillColor: "transparent",
     highlightFillColor: "transparent",
-    label: getLabelParameters(window.JXG.OBJECT_TYPE_CONIC)
+    label: getLabelParameters(JXG.OBJECT_TYPE_CONIC)
   };
 }
 

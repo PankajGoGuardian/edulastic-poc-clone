@@ -190,12 +190,15 @@ class GraphDisplay extends Component {
       id
     } = graphData;
 
+    const xRatio = parseFloat(canvas.x_ratio) > 0 ? parseFloat(canvas.x_ratio) : 1;
+    const yRatio = parseFloat(canvas.y_ratio) > 0 ? parseFloat(canvas.y_ratio) : 1;
+
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min),
-        xMax: parseFloat(canvas.x_max),
-        yMin: parseFloat(canvas.y_min),
-        yMax: parseFloat(canvas.y_max)
+        xMin: parseFloat(canvas.x_min) * xRatio,
+        xMax: parseFloat(canvas.x_max) * xRatio,
+        yMin: parseFloat(canvas.y_min) * yRatio,
+        yMax: parseFloat(canvas.y_max) * yRatio
       },
       layout: {
         width: ui_style.layout_width,
@@ -212,7 +215,7 @@ class GraphDisplay extends Component {
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance),
+        ticksDistance: safeParseFloat(ui_style.xTickDistance) * xRatio,
         name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
@@ -221,7 +224,7 @@ class GraphDisplay extends Component {
         commaInLabel: ui_style.xCommaInLabel
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance),
+        ticksDistance: safeParseFloat(ui_style.yTickDistance) * yRatio,
         name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
@@ -230,8 +233,8 @@ class GraphDisplay extends Component {
         commaInLabel: ui_style.yCommaInLabel
       },
       gridParams: {
-        gridY: safeParseFloat(ui_style.yDistance),
-        gridX: safeParseFloat(ui_style.xDistance)
+        gridX: safeParseFloat(ui_style.xDistance) * xRatio,
+        gridY: safeParseFloat(ui_style.yDistance) * yRatio
       },
       bgImgOptions: {
         urlImg: background_image.src,

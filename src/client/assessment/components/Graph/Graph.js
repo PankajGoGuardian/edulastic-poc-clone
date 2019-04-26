@@ -412,16 +412,4 @@ const enhance = compose(
 
 const GraphComponent = enhance(Graph);
 
-const GraphWithResources = ({ ...props }) => (
-  <WithResources
-    resources={[
-      "https://jsxgraph.uni-bayreuth.de/distrib/jsxgraphcore.js",
-      "https://jsxgraph.uni-bayreuth.de/distrib/jsxgraph.css"
-    ]}
-    fallBack={<span />}
-  >
-    <GraphComponent {...props} />
-  </WithResources>
-);
-
-export default GraphWithResources;
+export default GraphComponent;

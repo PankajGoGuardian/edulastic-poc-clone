@@ -103,13 +103,37 @@ class GraphQuadrants extends Component {
                 />
                 <Label>X max</Label>
                 <StyledTextField
-                  marginBottom="0"
                   width="100%"
                   type="number"
                   name="x_max"
                   value={canvas.x_max}
                   onChange={this.handleCanvasChange}
                   onBlur={event => this.handleCanvasBlur(event, 10)}
+                  disabled={false}
+                  step={0.1}
+                />
+                <Label>X Axis : Y Axis</Label>
+                <StyledTextField
+                  marginBottom="0"
+                  marginRight="0"
+                  width="25%"
+                  type="number"
+                  name="x_ratio"
+                  value={canvas.x_ratio}
+                  onChange={this.handleCanvasChange}
+                  onBlur={event => this.handleCanvasBlur(event, 1)}
+                  disabled={false}
+                  step={0.1}
+                />
+                <span style={{ margin: "0 4px" }}>:</span>
+                <StyledTextField
+                  marginBottom="0"
+                  width="25%"
+                  type="number"
+                  name="y_ratio"
+                  value={canvas.y_ratio}
+                  onChange={this.handleCanvasChange}
+                  onBlur={event => this.handleCanvasBlur(event, 1)}
                   disabled={false}
                   step={0.1}
                 />

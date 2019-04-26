@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { orderPoints, findAvailableStackedSegmentPosition, getClosestTick, getSpecialTicks } from "../utils";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters } from "../settings";
@@ -41,7 +42,7 @@ const handlePointDrag = (point, board, ticksDistance, axis) => {
     let ticks = getSpecialTicks(axis);
     ticks = removeBusyTicks(segments, ticks);
     let newXCoord = getClosestTick(currentPosition, ticks);
-    point.setPosition(window.JXG.COORDS_BY_USER, [newXCoord, 0]);
+    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
@@ -54,9 +55,9 @@ const handleStackedPointDrag = (point, axis, yPosition) => {
     const xMax = axis.point2.X();
 
     if (currentPosition > xMax) {
-      point.setPosition(window.JXG.COORDS_BY_USER, [xMax, yPosition]);
+      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
     } else if (currentPosition < xMin) {
-      point.setPosition(window.JXG.COORDS_BY_USER, [xMin, yPosition]);
+      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
   });
 };
@@ -106,14 +107,13 @@ const drawPoint = (board, coord, fixed, colors, yPosition) =>
   });
 
 const loadPoint = (board, element, stackResponses) => {
-  const numberlineAxis = board.elements.filter(el => el.elType === "axis" || el.elType === "arrow");
-  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
+  const ticksDistance = board.numberlineAxis.ticks[0].getAttribute("ticksDistance");
 
   if (!stackResponses) {
     const point = drawPoint(board, element.point1, false, element.colors);
     point.segmentType = "segments_point";
     previousPointsPositions.push({ id: point.id, position: point.X() });
-    handlePointDrag(point, board, ticksDistance, numberlineAxis[0]);
+    handlePointDrag(point, board, ticksDistance, board.numberlineAxis);
 
     return point;
   } else {
@@ -121,21 +121,20 @@ const loadPoint = (board, element, stackResponses) => {
     point.segmentType = "segments_point";
 
     point.setAttribute({ snapSizeY: 0.05 });
-    point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), element.y]);
+    point.setPosition(JXG.COORDS_BY_USER, [point.X(), element.y]);
     board.$board.on("move", () => point.moveTo([point.X(), element.y]));
 
-    handleStackedPointDrag(point, numberlineAxis[0], element.y);
+    handleStackedPointDrag(point, board.numberlineAxis, element.y);
 
     return point;
   }
 };
 
 const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-  const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
+  const ticksDistance = board.numberlineAxis.ticks[0].getAttribute("ticksDistance");
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
 
-  const ticks = getSpecialTicks(numberlineAxis[0]);
+  const ticks = getSpecialTicks(board.numberlineAxis);
   let roundedCoord = coord;
   if (typeof coord !== "number") {
     const x = board.getCoords(coord).usrCoords[1];
@@ -144,29 +143,29 @@ const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
 
   if (!stackResponses) {
     if (
-      checkForPointRenderPosition(numberlineAxis[0], roundedCoord) &&
+      checkForPointRenderPosition(board.numberlineAxis, roundedCoord) &&
       checkForElementsOnPoint(segments, roundedCoord)
     ) {
       const point = drawPoint(board, roundedCoord, false, null);
       point.segmentType = "segments_point";
       previousPointsPositions.push({ id: point.id, position: point.X() });
-      handlePointDrag(point, board, ticksDistance, numberlineAxis[0]);
+      handlePointDrag(point, board, ticksDistance, board.numberlineAxis);
 
       // snapPoint(point, board);
 
       return point;
     }
-  } else if (checkForPointRenderPosition(numberlineAxis[0], roundedCoord)) {
+  } else if (checkForPointRenderPosition(board.numberlineAxis, roundedCoord)) {
     const calcedYPosition = findAvailableStackedSegmentPosition(board, segments, stackResponsesSpacing);
 
     const point = drawPoint(board, roundedCoord, false, null, calcedYPosition);
     point.segmentType = "segments_point";
 
     point.setAttribute({ snapSizeY: 0.05 });
-    point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
+    point.setPosition(JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
     board.$board.on("move", () => point.moveTo([point.X(), calcedYPosition]));
 
-    handleStackedPointDrag(point, numberlineAxis[0], calcedYPosition);
+    handleStackedPointDrag(point, board.numberlineAxis, calcedYPosition);
 
     return point;
   }
@@ -177,7 +176,7 @@ const renderAnswer = (board, config) => {
   point.answer = true;
 
   point.setAttribute({ snapSizeY: 0.05 });
-  point.setPosition(window.JXG.COORDS_BY_USER, [point.X(), config.y]);
+  point.setPosition(JXG.COORDS_BY_USER, [point.X(), config.y]);
 
   return point;
 };

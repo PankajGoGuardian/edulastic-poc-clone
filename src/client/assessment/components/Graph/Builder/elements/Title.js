@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { calcMeasure, lineLabelCoord } from "../utils";
 import { defaultTextParameters } from "../settings";
 
@@ -16,7 +17,7 @@ const renderTitle = (board, title) => {
     highlightCssClass: "title",
     visible: true
   });
-  point.label.setPosition(window.JXG.COORDS_BY_USER, [board.$board.plainBB[0], calcY]);
+  point.label.setPosition(JXG.COORDS_BY_USER, [board.$board.plainBB[0], calcY]);
   return point;
 };
 

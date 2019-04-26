@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { CONSTANT, Colors } from "../config";
 import {
   findSegmentPosition,
@@ -7,7 +8,6 @@ import {
   getClosestTick
 } from "../utils";
 import { defaultPointParameters } from "../settings";
-//import { JXG } from '../index';
 
 const previousPointsPositions = [];
 
@@ -74,7 +74,7 @@ const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
     ticks = getSpecialTicks(axis);
     ticks = removeProhibitedTicks(segmentCoords, segments, ticks, currentPosition);
     const newXCoord = getClosestTick(currentPosition, ticks);
-    point.setPosition(window.JXG.COORDS_BY_USER, [newXCoord, 0]);
+    point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
 };
@@ -87,9 +87,9 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
     const xMax = axis.point2.X();
 
     if (currentPosition > xMax) {
-      point.setPosition(window.JXG.COORDS_BY_USER, [xMax, yPosition]);
+      point.setPosition(JXG.COORDS_BY_USER, [xMax, yPosition]);
     } else if (currentPosition < xMin) {
-      point.setPosition(window.JXG.COORDS_BY_USER, [xMin, yPosition]);
+      point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
   });
 };
@@ -163,11 +163,10 @@ const drawVectorLine = (board, visiblePoint, invisiblePoint, vectorDirection, co
 };
 
 const loadVector = (board, element, pointIncluded, vectorDirection, segmentType, stackResponses) => {
-  const numberlineAxis = board.elements.filter(el => el.elType === "axis" || el.elType === "arrow");
-  const xMin = numberlineAxis[0].point1.X();
-  const xMax = numberlineAxis[0].point2.X();
+  const xMin = board.numberlineAxis.point1.X();
+  const xMax = board.numberlineAxis.point2.X();
 
-  let ticks = getSpecialTicks(numberlineAxis[0]);
+  let ticks = getSpecialTicks(board.numberlineAxis);
   ticks = ticks.sort((a, b) => a - b);
 
   const visiblePointCoord = [
@@ -189,7 +188,7 @@ const loadVector = (board, element, pointIncluded, vectorDirection, segmentType,
       { id: invisiblePoint.id, position: invisiblePoint.X() }
     );
 
-    handleSegmentPointDrag(visiblePoint, board, vector, numberlineAxis[0], ticks);
+    handleSegmentPointDrag(visiblePoint, board, vector, board.numberlineAxis, ticks);
 
     return vector;
   } else {
@@ -200,13 +199,13 @@ const loadVector = (board, element, pointIncluded, vectorDirection, segmentType,
     vector.segmentType = segmentType;
 
     visiblePoint.setAttribute({ snapSizeY: 0.05 });
-    visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), element.y]);
+    visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), element.y]);
     board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), element.y]));
 
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-    invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), element.y]);
+    invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), element.y]);
 
-    handleStackedSegmentPointDrag(visiblePoint, numberlineAxis[0], element.y);
+    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, element.y);
 
     return vector;
   }
@@ -221,13 +220,11 @@ const drawVector = (
   stackResponses,
   stackResponsesSpacing
 ) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-  // const ticksDistance = numberlineAxis[0].ticks[0].getAttribute("ticksDistance");
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
-  const xMin = numberlineAxis[0].point1.X();
-  const xMax = numberlineAxis[0].point2.X();
+  const xMin = board.numberlineAxis.point1.X();
+  const xMax = board.numberlineAxis.point2.X();
 
-  let ticks = getSpecialTicks(numberlineAxis[0]);
+  let ticks = getSpecialTicks(board.numberlineAxis);
 
   if (typeof coord !== "number") {
     const x = board.getCoords(coord).usrCoords[1];
@@ -250,7 +247,7 @@ const drawVector = (
         { id: invisiblePoint.id, position: invisiblePoint.X() }
       );
 
-      handleSegmentPointDrag(visiblePoint, board, vector, numberlineAxis[0], ticks);
+      handleSegmentPointDrag(visiblePoint, board, vector, board.numberlineAxis, ticks);
 
       return vector;
     }
@@ -264,13 +261,13 @@ const drawVector = (
     vector.segmentType = segmentType;
 
     visiblePoint.setAttribute({ snapSizeY: 0.05 });
-    visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), calcedYPosition]);
+    visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), calcedYPosition]);
     board.$board.on("move", () => visiblePoint.moveTo([visiblePoint.X(), calcedYPosition]));
 
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-    invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
+    invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
 
-    handleStackedSegmentPointDrag(visiblePoint, numberlineAxis[0], calcedYPosition);
+    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, calcedYPosition);
 
     return vector;
   }
@@ -342,9 +339,8 @@ const determineAnswerType = (board, config) => {
 };
 
 const renderAnswer = (board, config, pointIncluded, vectorDirection) => {
-  const numberlineAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-  const xMin = numberlineAxis[0].point1.X();
-  const xMax = numberlineAxis[0].point2.X();
+  const xMin = board.numberlineAxis.point1.X();
+  const xMax = board.numberlineAxis.point2.X();
 
   const visiblePoint = drawPoint(
     board,
@@ -359,10 +355,10 @@ const renderAnswer = (board, config, pointIncluded, vectorDirection) => {
   const vector = drawVectorLine(board, visiblePoint, invisiblePoint, vectorDirection, config.colors);
 
   visiblePoint.setAttribute({ snapSizeY: 0.05 });
-  visiblePoint.setPosition(window.JXG.COORDS_BY_USER, [visiblePoint.X(), config.y]);
+  visiblePoint.setPosition(JXG.COORDS_BY_USER, [visiblePoint.X(), config.y]);
 
   invisiblePoint.setAttribute({ snapSizeY: 0.05 });
-  invisiblePoint.setPosition(window.JXG.COORDS_BY_USER, [invisiblePoint.X(), config.y]);
+  invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), config.y]);
 
   vector.answer = visiblePoint.answer = invisiblePoint.answer = true;
 

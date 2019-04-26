@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { Point } from ".";
 import { getLineTypeByProp, getPropsByLineType } from "../utils";
 import { Colors, CONSTANT } from "../config";
@@ -20,7 +21,7 @@ function onLineHandler(type) {
       const newLine = board.$board.create("line", points, {
         ...getPropsByLineType(type),
         ...Colors.default[CONSTANT.TOOLS.LINE],
-        label: getLabelParameters(window.JXG.OBJECT_TYPE_LINE)
+        label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
       });
       if (newLine) {
         points = [];
@@ -52,7 +53,7 @@ function getConfig(line) {
 function parseConfig(type) {
   return {
     ...getPropsByLineType(type),
-    label: getLabelParameters(window.JXG.OBJECT_TYPE_LINE)
+    label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
   };
 }
 

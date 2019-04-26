@@ -17,7 +17,12 @@ import {
 import DeleteButton from "../common/DeleteButton";
 
 class ControlsSettings extends Component {
-  controls = [{ label: "Undo", value: "undo" }, { label: "Redo", value: "redo" }, { label: "Reset", value: "reset" }];
+  controls = [
+    { label: "Undo", value: "undo" },
+    { label: "Redo", value: "redo" },
+    { label: "Reset", value: "reset" },
+    { label: "Delete", value: "delete" }
+  ];
 
   addTool = groupIndex => {
     const { controlbar, onChange } = this.props;

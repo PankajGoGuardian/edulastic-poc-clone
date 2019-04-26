@@ -1,4 +1,5 @@
 import { cloneDeep, isEqual } from "lodash";
+import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
 import {
   Point,
@@ -47,10 +48,10 @@ import {
 } from "./utils";
 import _events from "./events";
 
+import "jsxgraph/distrib/jsxgraph.css";
 import "../common/GraphShapeLabel.css";
 import "../common/Mark.css";
-
-// export const JXG = window.JXG;
+import { inherits } from "util";
 
 /**
  * if the coords between mousedown and mouseup events are different - is it move
@@ -118,7 +119,7 @@ function dragDetector() {
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
  */
 class Board {
-  constructor(id, config = {}, setAnswers = null) {
+  constructor(id, config = {}) {
     /**
      * Elements on the board
      */
@@ -139,6 +140,8 @@ class Board {
      * Bg image
      */
     this.bgImage = null;
+
+    this.numberlineAxis = null;
     /**
      * Board settings
      */
@@ -150,17 +153,17 @@ class Board {
 
     this.stackResponses = false;
 
+    this.deleteHighlighting = false;
+
     this.stackResponsesSpacing = 30;
 
     this.responsesAllowed = 2;
-
-    this.setAnswers = setAnswers;
 
     this.dragDetector = dragDetector();
 
     this.events = _events();
 
-    this.$board = window.JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
+    this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
     this.$board.on(CONSTANT.EVENT_NAMES.DOWN, event => {
       this.dragDetector.start(event, this.elements, this.getToolTempPoints());
@@ -211,10 +214,6 @@ class Board {
     });
   }
 
-  removeBoard(id) {
-    window.JXG.JSXGraph.removeBoard(id);
-  }
-
   /**
    * Assign element handler by const
    * Constants/Tools
@@ -229,6 +228,7 @@ class Board {
         this.abortTool();
       }
     }
+    this.handleElementsHighlighting(tool);
     this.$board.off(CONSTANT.EVENT_NAMES.UP);
     this.currentTool = tool;
     switch (tool) {
@@ -291,7 +291,7 @@ class Board {
       case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
         this.setCreatingHandler(
-          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing, this.setAnswers),
+          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
           responsesAllowed
         );
         return;
@@ -386,7 +386,7 @@ class Board {
    * Add event 'Up'
    * @param {Function} handler
    */
-  setCreatingHandler(handler, responsesAllowed) {
+  setCreatingHandler(handler, responsesAllowed = null) {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
       if (this.dragDetector.isDragToolTempPoints(event, this.getToolTempPoints())) {
         return;
@@ -396,12 +396,13 @@ class Board {
         return;
       }
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
-        NumberlineTrash.removeObject(this, this.$board.getAllObjectsUnderMouse(event), this.setAnswers);
-        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
+        if (this.removeObjectsUnderMouse(event)) {
+          this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
+        }
       } else {
         let newElement;
 
-        if (responsesAllowed) {
+        if (responsesAllowed !== null) {
           const elementsLength = this.elements.filter(
             element => element.elType === "segment" || element.elType === "point"
           ).length;
@@ -420,13 +421,163 @@ class Board {
     });
   }
 
+  handleElementsHighlighting(tool) {
+    if (tool === CONSTANT.TOOLS.TRASH && !this.deleteHighlighting) {
+      // red highlighting
+      this.changeElementsHighlighting("red");
+      this.deleteHighlighting = true;
+    } else if (tool !== CONSTANT.TOOLS.TRASH && this.deleteHighlighting) {
+      // usual highlighting
+      this.changeElementsHighlighting("default");
+      this.deleteHighlighting = false;
+    }
+  }
+
+  changeElementsHighlighting(color) {
+    this.elements.forEach(element => {
+      switch (element.segmentType) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          break;
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits.forEach(point => {
+            point.setAttribute({
+              highlight: true,
+              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+              highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
+              highlightFillOpacity: 1,
+              highlightStrokeOpacity: 1
+            });
+          });
+          break;
+        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits[0].setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits[1].setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          break;
+        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits[0].setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits[1].setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          break;
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits.forEach(point => {
+            point.setAttribute({
+              highlight: true,
+              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
+              highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
+              highlightFillOpacity: 1,
+              highlightStrokeOpacity: 1
+            });
+          });
+          break;
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits.forEach(point => {
+            point.setAttribute({
+              highlight: true,
+              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+              highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
+              highlightFillOpacity: 1,
+              highlightStrokeOpacity: 1
+            });
+          });
+          break;
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+          element.setAttribute({
+            highlight: true,
+            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
+            highlightFillOpacity: 1,
+            highlightStrokeOpacity: 1
+          });
+          element.inherits.forEach(point => {
+            point.setAttribute({
+              highlight: true,
+              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
+              highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
+              highlightFillOpacity: 1,
+              highlightStrokeOpacity: 1
+            });
+          });
+          break;
+        default:
+          break;
+      }
+    });
+  }
+
   updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed) {
     if (
       this.stackResponses !== stackResponses ||
       this.responsesAllowed !== responsesAllowed ||
       this.stackResponsesSpacing !== stackResponsesSpacing
     ) {
-      NumberlineTrash.cleanBoard(this, this.setAnswers);
+      NumberlineTrash.cleanBoard(this);
     }
 
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
@@ -449,7 +600,13 @@ class Board {
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
 
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
-    this.elements.push(Numberline.onHandler(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings));
+    this.numberlineAxis = Numberline.onHandler(
+      this,
+      graphParameters.xMin,
+      graphParameters.xMax,
+      settings,
+      lineSettings
+    );
 
     if (graphType === "axisLabels") {
       Mark.updateMarksContainer(
@@ -463,6 +620,7 @@ class Board {
 
   // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
   updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
+    graphParameters.margin = Math.min(graphParameters.margin, layout.width);
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
 
@@ -500,8 +658,7 @@ class Board {
 
   // Update numberline axis settings (such as ticks visibility, font size and etc.)
   updateGraphSettings(settings, graphType) {
-    const axis = this.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-    updateNumberline(axis, settings);
+    updateNumberline(this.numberlineAxis, settings);
 
     if (graphType === "axisLabels") {
       const marks = this.elements.filter(element => element.elType === "group");
@@ -513,13 +670,12 @@ class Board {
 
   // Render marks
   renderMarks(marks, xCoords, settings, setValue, lineSettings, containerSettings, markCoords) {
-    marks.forEach((mark, index) => {
+    marks.forEach(mark => {
+      const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(
         Mark.onHandler(
           this,
-          markCoords
-            ? [markCoords[index].position, markCoords[index].y]
-            : checkMarksRenderSpace(this, settings, containerSettings),
+          markCoord ? [markCoord.position, markCoord.y] : checkMarksRenderSpace(this, settings, containerSettings),
           mark,
           calcMeasure(51.5, 45, this),
           xCoords,
@@ -535,6 +691,12 @@ class Board {
   removeMarks() {
     const marks = this.elements.filter(element => element.elType === "group");
     this.elements = this.elements.filter(element => element.elType !== "group");
+    marks.forEach(mark => Mark.removeMark(this, mark));
+  }
+
+  removeMarksAnswers() {
+    const marks = this.answers.filter(element => element.elType === "group");
+    this.answers = this.answers.filter(element => element.elType !== "group");
     marks.forEach(mark => Mark.removeMark(this, mark));
   }
 
@@ -599,10 +761,10 @@ class Board {
 
   getCoords(e) {
     // index of the finger that is used to extract the coordinates
-    const i = e[window.JXG.touchProperty] ? 1 : 0;
+    const i = e[JXG.touchProperty] ? 1 : 0;
     const pos = i ? this.$board.getMousePosition(e) : this.$board.getMousePosition(e, 0);
 
-    return new window.JXG.Coords(window.JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
+    return new JXG.Coords(JXG.COORDS_BY_SCREEN, [pos[0], pos[1]], this.$board);
   }
 
   /**
@@ -617,7 +779,7 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
   segmentsReset() {
-    NumberlineTrash.cleanBoard(this, this.setAnswers);
+    NumberlineTrash.cleanBoard(this);
   }
 
   cleanToolTempPoints() {
@@ -640,6 +802,22 @@ class Board {
     this.bgElements = [];
   }
 
+  removeObjectsUnderMouse(event) {
+    const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
+    const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
+
+    if (elementsToDelete.length === 0) {
+      return false;
+    }
+
+    this.elements = this.elements.filter(el => elementsToDelete.findIndex(etd => etd.id === el.id) === -1);
+    elementsToDelete.forEach(el => {
+      this.removeObject(el);
+    });
+
+    return true;
+  }
+
   removeObject(obj) {
     if (typeof obj === "string") {
       this.$board.removeObject(obj);
@@ -658,17 +836,17 @@ class Board {
     this.abortTool();
     const config = this.elements.map(e => {
       switch (e.type) {
-        case window.JXG.OBJECT_TYPE_POINT:
+        case JXG.OBJECT_TYPE_POINT:
           return Point.getConfig(e);
-        case window.JXG.OBJECT_TYPE_LINE:
+        case JXG.OBJECT_TYPE_LINE:
           return Line.getConfig(e);
-        case window.JXG.OBJECT_TYPE_CIRCLE:
+        case JXG.OBJECT_TYPE_CIRCLE:
           return Circle.getConfig(e);
-        case window.JXG.OBJECT_TYPE_CONIC:
+        case JXG.OBJECT_TYPE_CONIC:
           return Ellipse.getConfig(e);
-        case window.JXG.OBJECT_TYPE_POLYGON:
+        case JXG.OBJECT_TYPE_POLYGON:
           return Polygon.getConfig(e);
-        case window.JXG.OBJECT_TYPE_TEXT:
+        case JXG.OBJECT_TYPE_TEXT:
           return Mark.getConfig(e);
         case 90:
           return Hyperbola.getConfig(e);
@@ -1000,8 +1178,7 @@ class Board {
               true,
               true,
               CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED,
-              this.stackResponses,
-              this.setAnswers
+              this.stackResponses
             );
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
@@ -1010,8 +1187,7 @@ class Board {
               false,
               false,
               CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW,
-              this.stackResponses,
-              this.setAnswers
+              this.stackResponses
             );
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
@@ -1020,8 +1196,7 @@ class Board {
               false,
               true,
               CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW,
-              this.stackResponses,
-              this.setAnswers
+              this.stackResponses
             );
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
             return NumberlineSegment.loadSegment(
@@ -1030,8 +1205,7 @@ class Board {
               true,
               false,
               CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW,
-              this.stackResponses,
-              this.setAnswers
+              this.stackResponses
             );
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
             return NumberlineVector.loadVector(
@@ -1085,7 +1259,7 @@ class Board {
     const objects = [];
     objectArray.forEach(el => {
       switch (el._type) {
-        case window.JXG.OBJECT_TYPE_POINT:
+        case JXG.OBJECT_TYPE_POINT:
           objects.push(
             mixProps({
               el,
@@ -1100,7 +1274,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_LINE:
+        case JXG.OBJECT_TYPE_LINE:
           objects.push(
             mixProps({
               el,
@@ -1125,7 +1299,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_CIRCLE:
+        case JXG.OBJECT_TYPE_CIRCLE:
           objects.push(
             mixProps({
               el,
@@ -1150,7 +1324,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_CONIC:
+        case JXG.OBJECT_TYPE_CONIC:
           objects.push(
             mixProps({
               el,
@@ -1183,7 +1357,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_POLYGON:
+        case JXG.OBJECT_TYPE_POLYGON:
           objects.push(
             mixProps({
               el,
@@ -1415,31 +1589,23 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Parabola.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
-                    })
-                  )
+                const props = Parabola.parseConfig();
+                const points = el.points.map(pointEl =>
+                  mixProps({
+                    el: pointEl,
+                    objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                  })
                 );
-                const newElem = this.createElement(name, makeFn(points), {
+
+                return Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs
                 });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 97;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
               }
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_TEXT:
+        case JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
               el,
@@ -1466,7 +1632,7 @@ class Board {
     const objects = [];
     objectArray.forEach(el => {
       switch (el._type) {
-        case window.JXG.OBJECT_TYPE_POINT:
+        case JXG.OBJECT_TYPE_POINT:
           objects.push(
             mixProps({
               el,
@@ -1482,7 +1648,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_LINE:
+        case JXG.OBJECT_TYPE_LINE:
           objects.push(
             mixProps({
               el,
@@ -1508,7 +1674,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_CIRCLE:
+        case JXG.OBJECT_TYPE_CIRCLE:
           objects.push(
             mixProps({
               el,
@@ -1534,7 +1700,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_CONIC:
+        case JXG.OBJECT_TYPE_CONIC:
           objects.push(
             mixProps({
               el,
@@ -1568,7 +1734,7 @@ class Board {
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_POLYGON:
+        case JXG.OBJECT_TYPE_POLYGON:
           objects.push(
             mixProps({
               el,
@@ -1808,32 +1974,24 @@ class Board {
             mixProps({
               el,
               objectCreator: attrs => {
-                const [name, [makeFn, points], props] = Parabola.parseConfig(
-                  el.points.map(pointEl =>
-                    mixProps({
-                      el: pointEl,
-                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
-                    })
-                  )
+                const props = Parabola.parseConfig();
+                const points = el.points.map(pointEl =>
+                  mixProps({
+                    el: pointEl,
+                    objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                  })
                 );
-                const newElem = this.createElement(name, makeFn(points), {
+
+                return Parabola.renderElement(this, points, {
                   ...props,
                   ...attrs,
                   fixed: true
                 });
-                newElem.ancestors = {
-                  [points[0].id]: points[0],
-                  [points[1].id]: points[1]
-                };
-                newElem.type = 97;
-                newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
-                return newElem;
               }
             })
           );
           break;
-        case window.JXG.OBJECT_TYPE_TEXT:
+        case JXG.OBJECT_TYPE_TEXT:
           objects.push(
             mixProps({
               el,
@@ -1907,8 +2065,8 @@ class Board {
   }
 }
 
-export function makeBorder(id, config, setAnswers) {
-  return new Board(id, config, setAnswers);
+export function makeBorder(id, config) {
+  return new Board(id, config);
 }
 
 export default Board;

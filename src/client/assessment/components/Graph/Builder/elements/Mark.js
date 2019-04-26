@@ -1,14 +1,15 @@
+import JXG from "jsxgraph";
 import { clone } from "lodash";
 import { defaultTextParameters } from "../settings";
 import { calcMeasure, checkMarksRenderSpace, getClosestTick } from "../utils";
 
 const snapMark = (mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
-    const setCoords = window.JXG.COORDS_BY_USER;
+    const setCoords = JXG.COORDS_BY_USER;
     let x;
     let y;
 
-    const axis = board.elements.filter(element => element.elType === "axis")[0];
+    const axis = board.numberlineAxis;
     const ticks = axis.ticks
       .map(t => t.fixedTicks !== null && t.fixedTicks)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue))
@@ -104,7 +105,7 @@ const renderMarkShowAnswer = (board, config, measure) => {
     frozen: true
   });
   point.setLabel(config.point);
-  point.label.setPosition(window.JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
+  point.label.setPosition(JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
   point.label.setText(config.point);
   point.label.setAttribute({
     ...defaultTextParameters(),
@@ -134,7 +135,7 @@ const rerenderMark = (mark, board, graphParameters, settings, setValue, lineSett
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
   const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
 
-  const axis = board.elements.filter(element => element.elType === "axis")[0];
+  const axis = board.numberlineAxis;
   const ticks = axis.ticks.filter(t => t.fixedTicks !== null)[0];
 
   if (oldCoords[1] >= containerY - markYMeasure * 1.35) {
@@ -244,7 +245,7 @@ const swapCoordinates = (swappedMarks, board, containerSettings) => {
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
   newPositions.forEach(group => {
-    group.point.setPositionDirectly(window.JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
+    group.point.setPositionDirectly(JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
 
     if (group.point.Y() >= containerY - markYMeasure * 1.35) {
       group.mark.setAttribute({

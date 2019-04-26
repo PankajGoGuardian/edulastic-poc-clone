@@ -83,12 +83,7 @@ class AxisLabelsContainer extends Component {
       yAxesParameters,
       layout,
       gridParams,
-      graphType,
-      list,
-      showAnswer,
-      checkAnswer,
-      validation,
-      elements
+      graphType
     } = this.props;
     this._graph = makeBorder(this._graphId);
 
@@ -138,50 +133,7 @@ class AxisLabelsContainer extends Component {
         }
       );
 
-      if (!checkAnswer) {
-        this._graph.renderMarks(
-          list,
-          [canvas.xMin, canvas.xMax],
-          numberlineAxis,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          elements.length > 0 ? elements : null
-        );
-      }
-
-      if (showAnswer) {
-        this._graph.loadMarksShowAnswers(
-          getColoredAnswer(validation ? validation.valid_response.value : []),
-          [canvas.xMin, canvas.xMax],
-          numberlineAxis,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-      } else {
-        this._graph.resetAnswers();
-      }
-
-      if (checkAnswer) {
-        this.mapElementsToGraph();
-      }
+      this.setElementsToGraph();
     }
   }
 
@@ -194,31 +146,9 @@ class AxisLabelsContainer extends Component {
       yAxesParameters,
       layout,
       graphType,
-      gridParams,
-      list,
-      elements,
-      checkAnswer
+      gridParams
     } = this.props;
 
-    if (prevProps.elements.length > 0 && elements.length === 0) {
-      this._graph.removeMarks();
-      this._graph.renderMarks(
-        list,
-        [canvas.xMin, canvas.xMax],
-        numberlineAxis,
-        this.setMarks,
-        {
-          position: layout.linePosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        },
-        {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        }
-      );
-    }
     if (this._graph) {
       if (
         canvas.xMin !== prevProps.canvas.xMin ||
@@ -381,57 +311,7 @@ class AxisLabelsContainer extends Component {
         );
       }
 
-      if (list && !prevProps.list) {
-        this._graph.renderMarks(
-          list,
-          [canvas.xMin, canvas.xMax],
-          numberlineAxis,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-      }
-
-      if (list && list.length === prevProps.list.length && list !== prevProps.list) {
-        // Shuffle or text edit
-        this._graph.updateMarks(list, prevProps.list, {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        });
-      }
-
-      if (list && list.length !== prevProps.list.length) {
-        // Mark added or removed
-        this._graph.marksSizeChanged(
-          list,
-          [canvas.xMin, canvas.xMax],
-          numberlineAxis,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-      }
-
-      if (!prevProps.checkAnswer && checkAnswer) {
-        this.mapElementsToGraph();
-      }
+      this.setElementsToGraph(prevProps);
     }
   }
 
@@ -448,66 +328,69 @@ class AxisLabelsContainer extends Component {
     }
   };
 
-  mapElementsToGraph = () => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation, canvas, numberlineAxis, layout } = this.props;
+  setElementsToGraph = (prevProps = {}) => {
+    const {
+      elements,
+      checkAnswer,
+      showAnswer,
+      evaluation,
+      validation,
+      canvas,
+      numberlineAxis,
+      layout,
+      list
+    } = this.props;
 
-    let newElems = elements;
+    const options = [
+      [canvas.xMin, canvas.xMax],
+      numberlineAxis,
+      this.setMarks,
+      {
+        position: layout.linePosition,
+        yMax: canvas.yMax,
+        yMin: canvas.yMin
+      },
+      {
+        position: layout.pointBoxPosition,
+        yMax: canvas.yMax,
+        yMin: canvas.yMin
+      }
+    ];
 
-    if (checkAnswer) {
-      if (evaluation && evaluation.length) {
-        const compareResult = getCompareResult(evaluation);
-        newElems = getColoredElems(elements, compareResult);
-      } else {
-        const compareResult = getCompareResult(
-          checkAnswerMethod({
-            userResponse: elements,
-            validation
-          })
+    if (checkAnswer || showAnswer) {
+      if (showAnswer && !prevProps.showAnswer) {
+        this._graph.removeMarksAnswers();
+        this._graph.loadMarksShowAnswers(
+          getColoredAnswer(validation ? validation.valid_response.value : []),
+          ...options
         );
-        newElems = getColoredElems(elements, compareResult);
       }
 
-      this._graph.loadMarksAnswers(
-        newElems,
-        [canvas.xMin, canvas.xMax],
-        numberlineAxis,
-        this.setMarks,
-        {
-          position: layout.linePosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        },
-        {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        }
-      );
-    } else if (showAnswer) {
-      const compareResult = getCompareResult(
-        checkAnswerMethod({
-          userResponse: elements,
-          validation
-        })
-      );
-      newElems = getColoredElems(elements, compareResult);
+      this._graph.removeMarks();
 
-      this._graph.loadMarksAnswers(
-        newElems,
-        [canvas.xMin, canvas.xMax],
-        numberlineAxis,
-        this.setMarks,
-        {
-          position: layout.linePosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        },
-        {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
+      if (elements && elements.length > 0) {
+        let coloredElements;
+        if (evaluation && evaluation.length) {
+          const compareResult = getCompareResult(evaluation);
+          coloredElements = getColoredElems(elements, compareResult);
+        } else {
+          const compareResult = getCompareResult(
+            checkAnswerMethod({
+              userResponse: elements,
+              validation
+            })
+          );
+          coloredElements = getColoredElems(elements, compareResult);
         }
-      );
+
+        this._graph.loadMarksAnswers(coloredElements, ...options);
+      } else {
+        this._graph.renderMarks(list, ...options, []);
+      }
+    } else {
+      this._graph.removeMarks();
+      this._graph.removeMarksAnswers();
+      this._graph.renderMarks(list, ...options, elements || []);
     }
   };
 

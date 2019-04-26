@@ -248,13 +248,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
 };
 
 const updateCoords = (board, xMin, xMax, settings, lineSettings) => {
-  const oldAxis = board.elements.filter(element => element.elType === "axis" || element.elType === "arrow");
-  board.$board.removeObject(oldAxis);
-  board.elements = board.elements
-    .filter(element => element.elType !== "axis")
-    .filter(element => element.elType !== "arrow");
-  const newAxis = onHandler(board, xMin, xMax, settings, lineSettings);
-  board.elements.push(newAxis);
+  board.$board.removeObject(board.numberlineAxis);
+  board.numberlineAxis = onHandler(board, xMin, xMax, settings, lineSettings);
   board.$board.fullUpdate();
 };
 

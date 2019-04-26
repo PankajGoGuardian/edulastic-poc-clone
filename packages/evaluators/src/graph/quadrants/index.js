@@ -77,7 +77,9 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
             case ShapeTypes.CIRCLE:
             case ShapeTypes.EXPONENT:
             case ShapeTypes.LOGARITHM:
-              if (checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint) {
+              if (
+                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+              ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
@@ -85,7 +87,7 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
 
             case ShapeTypes.ELLIPSE:
             case ShapeTypes.HYPERBOLA:
-              if (checkableShape.subElementsIds[2] !== allowedSubElementsIds[2]) {
+              if (!compareShapes.compare(checkableShape.subElementsIds[2], allowedSubElementsIds[2]).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
@@ -99,8 +101,9 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
             case ShapeTypes.RAY:
             default:
               if (
-                checkableShape.subElementsIds.startPoint !== allowedSubElementsIds.startPoint ||
-                checkableShape.subElementsIds.endPoint !== allowedSubElementsIds.endPoint
+                !compareShapes.compare(checkableShape.subElementsIds.startPoint, allowedSubElementsIds.startPoint)
+                  .result ||
+                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;

@@ -24,13 +24,11 @@ class CorrectAnswers extends Component {
   };
 
   handleAltResponseClose = i => {
-    const { onRemoveAltResponses, graphData } = this.props;
-    const { validation } = graphData;
-
-    if (i === validation.alt_responses.length - 1) {
-      this.handleTabChange(i);
+    const { onRemoveAltResponses } = this.props;
+    const { value } = this.state;
+    if (i <= value - 1) {
+      this.handleTabChange(value - 1);
     }
-
     onRemoveAltResponses(i);
   };
 
@@ -42,7 +40,7 @@ class CorrectAnswers extends Component {
       return validation.alt_responses.map((res, i) => (
         <Tab
           key={i}
-          close={true}
+          close
           onClose={() => this.handleAltResponseClose(i)}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />

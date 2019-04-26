@@ -47,7 +47,7 @@ export const Subtitle = styled.div`
 export const StyledTextField = styled(TextField)`
   width: ${props => (props.width ? `${props.width}` : "100px")};
   padding: 0 0 0 40px;
-  margin-right: 3em;
+  margin-right: ${props => (props.marginRight ? props.marginRight : "3em")};
   height: 40px;
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "1em")};
   border-radius: 4px;

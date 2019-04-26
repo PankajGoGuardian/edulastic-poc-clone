@@ -71,8 +71,6 @@ const EditEssayRichText = ({ item, setQuestionData, t, changeItem, changeUIStyle
     setQuestionData(
       produce(item, draft => {
         draft.formatting_options[index].active = !draft.formatting_options[index].active;
-
-        setAct(draft.formatting_options);
         updateVariables(draft);
       })
     );

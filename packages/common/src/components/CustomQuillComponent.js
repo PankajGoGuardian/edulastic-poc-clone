@@ -91,7 +91,6 @@ function insertPara() {}
 
 const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
   const getTopStyle = () => {
-    console.log(document.getElementById(id) && document.getElementById(id).offsetHeight);
     return document.getElementById(id)
       ? document.getElementById(id).offsetHeight
         ? -document.getElementById(id).offsetHeight - 2

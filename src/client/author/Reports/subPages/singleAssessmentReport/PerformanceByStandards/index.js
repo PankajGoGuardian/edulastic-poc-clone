@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { uniq, xor, isEmpty, get } from "lodash";
@@ -7,14 +7,11 @@ import next from "immer";
 
 import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
 import { ControlDropDown } from "../../../common/components/widgets/controlDropDown";
-import { NavigatorTabs } from "../../../common/components/navigatorTabs";
 import SimpleBarChartContainer from "./components/charts/simpleBarChartContainer";
 import PerformanceAnalysisTable from "./components/table/performanceAnalysisTable";
 import CardHeader, {
   CardTitle,
   CardDropdownWrapper,
-  GroupingTitle,
-  GroupingSelect,
   ResetButton,
   MasteryLevelWrapper,
   MasteryLevel,
@@ -25,8 +22,7 @@ import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./u
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
-  getPerformanceByStandardsReportSelector,
-  defaultReport
+  getPerformanceByStandardsReportSelector
 } from "./ducks";
 import { getAssignmentsRequestAction, getReportsAssignments } from "../../../assignmentsDucks";
 import dropDownFormat from "./static/json/dropDownFormat.json";
@@ -62,7 +58,6 @@ const PerformanceByStandards = ({
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
-  const [selectedTest, setSelectedTest] = useState({});
   const [totalStandards, setTotalStandards] = useState(0);
   const [totalDomains, setTotalDomains] = useState(0);
   const [page, setPage] = useState(0);
@@ -95,7 +90,6 @@ const PerformanceByStandards = ({
         };
         q.requestFilters = { ...settings.requestFilters };
         getPerformanceByStandards(q);
-        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
       } else {
         const tests = [...get(assignments, "data.result.tests", [])];
         tests.sort((a, b) => b.updatedDate - a.updatedDate);
@@ -104,7 +98,6 @@ const PerformanceByStandards = ({
         q.requestFilters = { ...settings.requestFilters };
         history.push(location.pathname + q.testId);
         getPerformanceByStandards(q);
-        setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
       }
     } else {
       getAssignmentsRequestAction();
@@ -171,14 +164,6 @@ const PerformanceByStandards = ({
     setStandardId(selected.key);
   };
 
-  const handleUpdateTestId = (event, selected) => {
-    const url = match.path.substring(0, match.path.length - 8);
-    history.push(url + selected.key);
-    const q = { testId: selected.key };
-    getPerformanceByStandards(q);
-    setSelectedTest({ key: q.testId, title: getTitleByTestId(q.testId) });
-  };
-
   const renderSimpleFilter = ({ key: filterKey, title: filterTitle, data }) => {
     const radioValue = filter[filterKey];
 
@@ -238,19 +223,6 @@ const PerformanceByStandards = ({
     id,
     name: standardsMap[id]
   }));
-
-  const filterOption = (input, option) => option.props.children.toLowerCase().includes(input.toLowerCase());
-
-  const computedChartNavigatorLinks = (() => {
-    return next(chartNavigatorLinks, arr => {
-      getNavigationTabLinks(arr, match.params.testId);
-    });
-  })();
-
-  const testIds = (() => {
-    const _testsArr = get(assignments, "data.result.tests", []);
-    return getDropDownTestIds(_testsArr);
-  })();
 
   const shouldShowReset =
     viewBy === viewByMode.STANDARDS ? totalStandards > selectedStandards.length : totalDomains > selectedDomains.length;

@@ -116,6 +116,7 @@ export const ADD_DICT_ALIGNMENT = "[dictionaries] add alignment";
 export const REMOVE_DICT_ALINMENT = "[dictionaries] remove alignment";
 export const ADD_NEW_ALIGNMENT = "[question alignment] add new alignment";
 export const REMOVE_EXISTED_ALIGNMENT = "[question alignment] remove existed alignment";
+export const SET_ALIGNMENT_FROM_QUESTION = "[question alignment] set alignment from question";
 export const UPDATE_DICT_ALIGNMENT = "[dictionaries] update alignment";
 
 // ClassResponse

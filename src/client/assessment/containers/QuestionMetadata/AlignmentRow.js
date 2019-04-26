@@ -18,7 +18,7 @@ const AlignmentRow = ({
   getCurriculumStandards,
   curriculumStandardsELO,
   curriculumStandardsTLO,
-  alignment: { subject, curriculumId, curriculum, grades, standards },
+  alignment: { subject, curriculumId, curriculum, grades, standards = [] },
   alignment,
   alignmentIndex,
   onDelete,

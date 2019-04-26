@@ -4,6 +4,8 @@ import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effect
 import { cloneDeep, values, get } from "lodash";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
+import { alignmentStandardsFromMongoToUI } from "../../assessment/utils/helpers";
+
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import { setTestDataAction, getTestEntitySelector } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
@@ -15,6 +17,8 @@ import {
   getQuestionsArraySelector,
   changeCurrentQuestionAction
 } from "../sharedDucks/questions";
+
+import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 
 // constants
 export const resourceTypeQuestions = {
@@ -90,6 +94,11 @@ export const loadQuestionAction = (data, rowIndex) => ({
 export const calculateFormulaAction = data => ({
   type: CALCULATE_FORMULA,
   payload: { data }
+});
+
+export const setDictAlignmentFromQuestion = payload => ({
+  type: SET_ALIGNMENT_FROM_QUESTION,
+  payload
 });
 
 // reducer
@@ -423,6 +432,13 @@ function* loadQuestionSaga({ payload }) {
         rowIndex
       }
     });
+    const { alignment = [] } = yield select(getQuestionDataSelector);
+    const modifyAlignment = alignment.map(item => ({
+      ...item,
+      standards: alignmentStandardsFromMongoToUI(item.domains)
+    }));
+    delete modifyAlignment.domains;
+    yield put(setDictAlignmentFromQuestion(modifyAlignment));
   } catch (e) {
     const errorMessage = "Loading Question is failing";
     yield call(message.error, errorMessage);

@@ -8,6 +8,7 @@ import {
   CLEAR_DICT_STANDARDS,
   CLEAR_DICT_ALIGNMENTS,
   ADD_DICT_ALIGNMENT,
+  SET_ALIGNMENT_FROM_QUESTION,
   REMOVE_DICT_ALINMENT,
   UPDATE_DICT_ALIGNMENT
 } from "../constants/actions";
@@ -95,6 +96,11 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
       return {
         ...state,
         alignments: []
+      };
+    case SET_ALIGNMENT_FROM_QUESTION:
+      return {
+        ...state,
+        alignments: payload
       };
     case ADD_DICT_ALIGNMENT:
       const alignments = [...state.alignments];

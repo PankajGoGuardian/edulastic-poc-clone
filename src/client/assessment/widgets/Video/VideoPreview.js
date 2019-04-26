@@ -21,32 +21,34 @@ const VideoPreview = ({ item }) => {
     <div>
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
       {item.summary && <Label>{item.summary}</Label>}
-      <Media>
-        {({ isFullscreen, playPause }) => (
-          <div className="media">
-            <div className={"media-player" + (isFullscreen ? " media-player--fullscreen" : "")} tabIndex="0">
-              <Player
-                poster={item.ui_style.posterImage}
-                src={item.sourceURL}
-                style={item.ui_style}
-                onClick={playPause}
-              />
+      {item && item.ui_style && (
+        <Media>
+          {({ isFullscreen, playPause }) => (
+            <div className="media">
+              <div className={"media-player" + (isFullscreen ? " media-player--fullscreen" : "")} tabIndex="0">
+                <Player
+                  poster={item.ui_style.posterImage}
+                  src={item.sourceURL}
+                  style={item.ui_style}
+                  onClick={playPause}
+                />
+              </div>
+              {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
+                <FlexContainer style={{ width: item.ui_style.width }}>
+                  <PlayPause />
+                  <SeekBar style={{ width: item.ui_style.width - 338 }} />
+                  <div>
+                    <CurrentTime /> / <Duration />
+                  </div>
+                  <MuteUnmute />
+                  <Volume />
+                  <Fullscreen />
+                </FlexContainer>
+              )}
             </div>
-            {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
-              <FlexContainer style={{ width: item.ui_style.width }}>
-                <PlayPause />
-                <SeekBar style={{ width: item.ui_style.width - 338 }} />
-                <div>
-                  <CurrentTime /> / <Duration />
-                </div>
-                <MuteUnmute />
-                <Volume />
-                <Fullscreen />
-              </FlexContainer>
-            )}
-          </div>
-        )}
-      </Media>
+          )}
+        </Media>
+      )}
     </div>
   );
 };

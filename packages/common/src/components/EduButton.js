@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { green, white, greenDark, lightBlueSecondary } from "@edulastic/colors";
+import { green, white, greenDark, lightBlueSecondary, newBlue, darkBlue } from "@edulastic/colors";
 
 const EduButton = ({ children, ...restProps }) => <StyledButton {...restProps}>{children}</StyledButton>;
 
@@ -24,6 +24,20 @@ const StyledButton = styled(Button)`
           border: "none",
           ":hover, :focus": {
             background: greenDark,
+            color: white
+          }
+        }
+      };
+    }
+    if (props.type === "primary") {
+      style = {
+        ...style,
+        ...{
+          background: newBlue,
+          color: white,
+          border: "none",
+          ":hover, :focus": {
+            background: darkBlue,
             color: white
           }
         }

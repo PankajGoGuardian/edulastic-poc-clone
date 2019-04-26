@@ -65,7 +65,11 @@ class DistrictProfile extends Component {
               </SpinContainer>
             )}
             {Object.keys(districtProfile).length > 0 && (
-              <DistrictProfileForm districtProfile={districtProfile} saveDistrictProfile={this.saveDistrictProfile} />
+              <DistrictProfileForm
+                districtProfile={districtProfile}
+                saveDistrictProfile={this.saveDistrictProfile}
+                history={history}
+              />
             )}
           </StyledLayout>
         </StyledContent>

@@ -90,3 +90,9 @@ export const SaveButton = styled(Button)`
     border-color: #40a9ff;
   }
 `;
+
+export const StyledLink = styled.a`
+  line-height: 40px;
+  margin-left: 20px;
+  color: #1890ff;
+`;

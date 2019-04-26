@@ -9,14 +9,15 @@ import {
   StyledDivBg,
   StyledDivMain,
   StyledLabel,
-  StyledLabelSH,
   StyledRow,
   StyledRowLogo,
   StyledRowAnn,
+  StyledLabelSH,
   StyledInputB,
-  StyledInput,
   StyledTextArea,
-  SaveButton
+  StyledInput,
+  SaveButton,
+  StyledLink
 } from "./styled";
 
 class DistrictProfileForm extends React.Component {
@@ -44,7 +45,7 @@ class DistrictProfileForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { districtProfile } = this.props;
+    const { districtProfile, history } = this.props;
 
     return (
       <StyledFormDiv>
@@ -84,6 +85,9 @@ class DistrictProfileForm extends React.Component {
                   initialValue: districtProfile.shortName
                 })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
               </FormItem>
+              <StyledLink href="javascript:;" onClick={() => history.push("/author/settings/districtpolicies")}>
+                (District Url)
+              </StyledLink>
             </StyledRow>
             <StyledRow>
               <StyledLabel>City:</StyledLabel>

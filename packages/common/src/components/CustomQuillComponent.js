@@ -218,16 +218,24 @@ class CustomQuillComponent extends React.Component {
       selLatex: "",
       curMathRange: null,
       quillVal: props.value,
+      prevValue: props.value,
+      quillKey: 0,
       modules: CustomQuillComponent.modules(props.toolbarId)
     };
   }
 
   componentDidUpdate(prevProps) {
     const { value, toolbarId } = this.props;
+    const { prevValue, quillKey } = this.state;
 
-    if (prevProps.value !== value) {
+    if (prevProps.value !== value && prevValue !== value) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ quillVal: value });
+      this.setState({
+        quillVal: value,
+        quillKey: quillKey + 1,
+        modules: CustomQuillComponent.modules(toolbarId),
+        prevValue: value
+      });
     }
     if (prevProps.toolbarId !== toolbarId) {
       // eslint-disable-next-line react/no-did-update-set-state
@@ -246,7 +254,10 @@ class CustomQuillComponent extends React.Component {
       this.setState({ quillVal: "" });
       onChange("");
       this.quillRef.getEditor().setText("");
-      this.setState({ firstFocus: false });
+      this.setState({
+        firstFocus: false,
+        prevValue: ""
+      });
     }
     this.showToolbar();
   };
@@ -277,7 +288,8 @@ class CustomQuillComponent extends React.Component {
         .join("");
 
       this.setState({
-        quillVal: content
+        quillVal: content,
+        prevValue: val
       });
 
       if (showResponseBtn) {
@@ -357,7 +369,7 @@ class CustomQuillComponent extends React.Component {
   };
 
   render() {
-    const { active, quillVal, showMath, selLatex, modules } = this.state;
+    const { active, quillVal, quillKey, showMath, selLatex, modules } = this.state;
     const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
@@ -386,6 +398,7 @@ class CustomQuillComponent extends React.Component {
     return (
       <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
         <CustomToolbar
+          key={`toolbar${quillKey}`}
           active={active && !readOnly}
           showResponseBtn={showResponseBtn}
           id={toolbarId}
@@ -393,6 +406,7 @@ class CustomQuillComponent extends React.Component {
         />
         <ReactQuill
           ref={el => (this.quillRef = el)}
+          key={`math${quillKey}`}
           readOnly={readOnly}
           modules={modules}
           onChange={this.handleChange}
@@ -400,7 +414,6 @@ class CustomQuillComponent extends React.Component {
           onKeyDown={this.onKeyDownHandler}
           onChangeSelection={this.onChangeSelection}
           placeholder={placeholder}
-          value={quillVal}
           defaultValue={quillVal}
         />
         <MathModal

@@ -10,7 +10,7 @@
     gud "^1.0.0"
     warning "^4.0.3"
 
-"@ant-design/icons-react@~1.1.5":
+"@ant-design/icons-react@~1.1.2", "@ant-design/icons-react@~1.1.5":
   version "1.1.5"
   resolved "https://registry.yarnpkg.com/@ant-design/icons-react/-/icons-react-1.1.5.tgz#1b03da8dcced2a4bb982ef7b25c1d24014c35a68"
   integrity sha512-p2ybKfO/r2lC1RZu4rDY2VBDZq2zqAaJzf/B1HrKTxGo8/mM1zOOEoob/LRXZphJ9jD5wCcTdcmcB9YMaAWW4Q==
@@ -12027,9 +12027,10 @@ to-regex@^3.0.1, to-regex@^3.0.2:
     regex-not "^1.0.2"
     safe-regex "^1.1.0"
 
-toggle-selection@^1.0.6:
+toggle-selection@^1.0.3:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/toggle-selection/-/toggle-selection-1.0.6.tgz#6e45b1263f2017fa0acc7d89d78b15b8bf77da32"
+  integrity sha1-bkWxJj8gF/oKzH2J14sVuL932jI=
 
 toposort@^2.0.2:
   version "2.0.2"

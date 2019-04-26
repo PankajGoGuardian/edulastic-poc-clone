@@ -6,6 +6,7 @@ import {
   RECEIVE_DICT_STANDARDS_SUCCESS,
   RECEIVE_DICT_STANDARDS_ERROR,
   CLEAR_DICT_STANDARDS,
+  CLEAR_DICT_ALIGNMENTS,
   ADD_DICT_ALIGNMENT,
   REMOVE_DICT_ALINMENT,
   UPDATE_DICT_ALIGNMENT
@@ -88,7 +89,11 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           ...state.standards,
           elo: [],
           tlo: []
-        },
+        }
+      };
+    case CLEAR_DICT_ALIGNMENTS:
+      return {
+        ...state,
         alignments: []
       };
     case ADD_DICT_ALIGNMENT:

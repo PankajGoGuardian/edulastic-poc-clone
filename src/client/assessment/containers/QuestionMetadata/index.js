@@ -31,8 +31,6 @@ import {
   getDictionariesAlignmentsSelector
 } from "../../../author/src/selectors/dictionaries";
 
-import { updateQuestionGradesAction, updateQuestionSubjectsAction } from "../../../author/sharedDucks/questions";
-
 import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
 import { AddButtonContainer } from "./styled/AddButtonContainer";
@@ -62,21 +60,15 @@ const QuestionMetadata = ({
   getCurriculums,
   removeAlignment,
   editAlignment,
-  setQuestionGrades,
-  setQuestionSubjects,
   curriculumStandardsLoading
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
-  const [selectedSubjects, setSelectSubject] = useState([]);
-  const [selectedGrades, setSelectGrade] = useState([]);
+  const { grades: selectedGrades = [], subjects: selectedSubjects = [] } = questionData;
 
   useEffect(() => {
     if (curriculums.length === 0) {
       getCurriculums();
     }
-    const { grades = [], subjects = [] } = questionData;
-    setSelectGrade(grades);
-    setSelectSubject(subjects);
   }, []);
 
   const handleDelete = curriculumId => () => {
@@ -105,13 +97,9 @@ const QuestionMetadata = ({
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
     const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
-    const { subjects = selectedSubjects } = questionData;
-    const { grades = selectedGrades } = questionData;
     const newQuestionData = {
       ...questionData,
-      alignment: newAlignments,
-      subjects,
-      grades
+      alignment: newAlignments
     };
     setQuestionData(newQuestionData);
   };
@@ -124,7 +112,6 @@ const QuestionMetadata = ({
   };
 
   const handleSubjectsChange = value => {
-    setSelectSubject(value);
     const subjects = value;
     const newQuestionData = {
       ...questionData,
@@ -134,7 +121,6 @@ const QuestionMetadata = ({
   };
 
   const handleGradesChange = value => {
-    setSelectGrade(value);
     const grades = value;
     const newQuestionData = {
       ...questionData,
@@ -143,16 +129,10 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const createUniqGrades = grades => {
+  const createUniqGradeAndSubjects = (grades, subject) => {
     const uniqGrades = _.uniq([...grades, ...selectedGrades]).filter(item => !!item);
-    setSelectGrade(uniqGrades);
-    setQuestionGrades({ grades: uniqGrades });
-  };
-
-  const createUniqSubjects = subject => {
     const uniqSubjects = _.uniq([subject, ...selectedSubjects]).filter(item => !!item);
-    setSelectSubject(uniqSubjects);
-    setQuestionSubjects({ subjects: uniqSubjects });
+    setQuestionData({ ...questionData, grades: uniqGrades, subjects: uniqSubjects });
   };
 
   return (
@@ -176,8 +156,7 @@ const QuestionMetadata = ({
                 curriculumStandardsTLO={curriculumStandards.tlo}
                 curriculumStandardsLoading={curriculumStandardsLoading}
                 editAlignment={editAlignment}
-                onCreateUniqSubjects={createUniqSubjects}
-                onCreateUniqGrades={createUniqGrades}
+                createUniqGradeAndSubjects={createUniqGradeAndSubjects}
               />
             ))}
           </ShowAlignmentRowsContainer>
@@ -292,9 +271,7 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       addAlignment: addNewAlignmentAction,
       removeAlignment: removeExistedAlignmentAction,
-      editAlignment: updateDictAlignmentAction,
-      setQuestionGrades: updateQuestionGradesAction,
-      setQuestionSubjects: updateQuestionSubjectsAction
+      editAlignment: updateDictAlignmentAction
     }
   )
 );

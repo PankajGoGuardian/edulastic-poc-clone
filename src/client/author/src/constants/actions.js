@@ -111,6 +111,7 @@ export const RECEIVE_DICT_STANDARDS_REQUEST = "[dictionaries] receive standards 
 export const RECEIVE_DICT_STANDARDS_SUCCESS = "[dictionaries] receive standards success";
 export const RECEIVE_DICT_STANDARDS_ERROR = "[dictionaries] receive standards error";
 export const CLEAR_DICT_STANDARDS = "[dictionaries] clear standards";
+export const CLEAR_DICT_ALIGNMENTS = "[dictionaries] clear alignments";
 export const ADD_DICT_ALIGNMENT = "[dictionaries] add alignment";
 export const REMOVE_DICT_ALINMENT = "[dictionaries] remove alignment";
 export const ADD_NEW_ALIGNMENT = "[question alignment] add new alignment";

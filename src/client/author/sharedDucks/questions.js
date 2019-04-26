@@ -20,8 +20,6 @@ export const CHANGE_CURRENT_QUESTION = "[author quesitons] change current questi
 export const ADD_ALIGNMENT = "[author questions] add alignment";
 export const REMOVE_ALIGNMENT = "[author questions] remove alignment";
 export const DELETE_QUESTION = "[author questions] delete question by id";
-export const SET_QUESTION_GRADES = "[author questions] set question grades";
-export const SET_QUESTION_SUBJECTS = "[author questions] set question subjects";
 
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS);
@@ -35,8 +33,6 @@ export const changeCurrentQuestionAction = createAction(CHANGE_CURRENT_QUESTION)
 export const addAlignmentAction = createAction(ADD_ALIGNMENT);
 export const removeAlignmentAction = createAction(REMOVE_ALIGNMENT);
 export const deleteQuestionAction = createAction(DELETE_QUESTION);
-export const updateQuestionGradesAction = createAction(SET_QUESTION_GRADES);
-export const updateQuestionSubjectsAction = createAction(SET_QUESTION_SUBJECTS);
 
 // initialState
 const initialState = {
@@ -131,16 +127,6 @@ const removeAlignment = (state, { payload }) => {
   currentQuestion.alignment = currentQuestion.alignment.filter(item => item.curriculumId !== payload);
 };
 
-const setQuestionGrades = (state, payload) => {
-  const currentQuestion = state.byId[state.current];
-  currentQuestion.grades = payload.grades;
-};
-
-const setQuestionSubjects = (state, payload) => {
-  const currentQuestion = state.byId[state.current];
-  currentQuestion.subjects = payload.subjects;
-};
-
 // reducer
 export default createReducer(initialState, {
   [LOAD_QUESTIONS]: loadQuestions,
@@ -153,9 +139,7 @@ export default createReducer(initialState, {
   [CHANGE_CURRENT_QUESTION]: changeCurrent,
   [ADD_ALIGNMENT]: addAlignment,
   [REMOVE_ALIGNMENT]: removeAlignment,
-  [DELETE_QUESTION]: deleteQuestion,
-  [SET_QUESTION_GRADES]: setQuestionGrades,
-  [SET_QUESTION_SUBJECTS]: setQuestionSubjects
+  [DELETE_QUESTION]: deleteQuestion
 });
 
 // selectors

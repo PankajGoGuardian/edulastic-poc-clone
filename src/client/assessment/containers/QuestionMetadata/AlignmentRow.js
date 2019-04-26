@@ -25,8 +25,7 @@ const AlignmentRow = ({
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
   editAlignment,
-  onCreateUniqSubjects,
-  onCreateUniqGrades
+  createUniqGradeAndSubjects
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -79,8 +78,7 @@ const AlignmentRow = ({
     }
     const alignmentGrades = alignment.grades;
     const standardsGrades = newStandards.flatMap(standard => standard.grades);
-    onCreateUniqSubjects(subject, alignmentIndex);
-    onCreateUniqGrades([...alignmentGrades, ...standardsGrades], alignmentIndex);
+    createUniqGradeAndSubjects([...alignmentGrades, ...standardsGrades], subject);
     editAlignment(alignmentIndex, {
       standards: newStandards
     });
@@ -100,8 +98,7 @@ const AlignmentRow = ({
         : {};
       subject = curriculumFromStandard.subject;
     }
-    onCreateUniqSubjects(subject, alignmentIndex);
-    onCreateUniqGrades([...data.grades, ...gradesFromElo], alignmentIndex);
+    createUniqGradeAndSubjects([...data.grades, ...gradesFromElo], subject);
     editAlignment(alignmentIndex, {
       subject: data.subject,
       curriculum: data.standard.curriculum,

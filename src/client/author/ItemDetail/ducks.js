@@ -8,6 +8,7 @@ import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
 import { loadQuestionsAction, addItemsQuestionAction, deleteQuestionAction } from "../sharedDucks/questions";
+import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 
 // constants
 const testItemStatusConstants = {
@@ -375,6 +376,10 @@ function* receiveItemSaga({ payload }) {
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
+    });
+
+    yield put({
+      type: CLEAR_DICT_ALIGNMENTS
     });
 
     if (payload.params.addItem) {

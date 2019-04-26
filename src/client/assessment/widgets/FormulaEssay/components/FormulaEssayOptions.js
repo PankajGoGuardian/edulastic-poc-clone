@@ -54,33 +54,6 @@ const FormulaEssayOptions = ({ onChange, item, t }) => {
   return (
     <WidgetOptions showScoring={false}>
       <Block>
-        <Heading>{t("component.options.scoring")}</Heading>
-
-        <StyledRow gutter={36}>
-          <Col span={12}>
-            <Label>{t("component.options.maxScore")}</Label>
-            <Input
-              size="large"
-              type="number"
-              style={{ width: "30%" }}
-              onChange={e =>
-                onChange("validation", {
-                  ...item.validation,
-                  max_score: +e.target.value
-                })
-              }
-            />
-          </Col>
-          <Col span={12}>
-            <Label>{t("component.options.browserspellcheck")}</Label>
-            <Checkbox checked={item.spellcheck} size="large" onChange={e => onChange("spellcheck", e.target.checked)}>
-              Browser spellcheck
-            </Checkbox>
-          </Col>
-        </StyledRow>
-      </Block>
-
-      <Block>
         <Heading>{t("component.options.layout")}</Heading>
 
         <StyledRow gutter={36}>

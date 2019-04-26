@@ -90,12 +90,14 @@ function insertStar() {
 function insertPara() {}
 
 const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
-  const getTopStyle = () =>
-    document.getElementById(id)
+  const getTopStyle = () => {
+    console.log(document.getElementById(id) && document.getElementById(id).offsetHeight);
+    return document.getElementById(id)
       ? document.getElementById(id).offsetHeight
-        ? -document.getElementById(id).offsetHeight - 15
+        ? -document.getElementById(id).offsetHeight - 2
         : -76
       : -76;
+  };
 
   return (
     <div

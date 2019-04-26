@@ -23,7 +23,7 @@ export const Widget = styled.div`
     }
   }
 
-  .toolbars {
+  .passage_toolbar {
     top: -75px !important;
     left: 0 !important;
     z-index: 5 !important;

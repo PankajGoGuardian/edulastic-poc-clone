@@ -35,7 +35,7 @@ const PassageView = ({ item, preview }) => {
           top: 0,
           background: "transparent"
         }}
-        className="toolbars"
+        className="passage_toolbar"
       >
         <span className="ql-formats">
           <select className="ql-background">

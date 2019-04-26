@@ -19,6 +19,7 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import MatchListPreview from "./MatchListPreview";
 import Options from "./components/Options";
+import { Widget } from "../../styled/Widget";
 
 const OptionsList = withPoints(MatchListPreview);
 
@@ -273,48 +274,54 @@ const MatchListEdit = ({ item, setQuestionData, t }) => {
 
   return (
     <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.matchList.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.matchList.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
-        <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
-        <List
-          buttonText={t("component.matchList.addNew")}
-          items={item.list}
-          onAdd={handleAdd}
-          firstFocus={item.firstMount}
-          onSortEnd={handleSortEnd}
-          onChange={handleChange}
-          onRemove={handleRemove}
-          useDragHandle
-          columns={1}
-        />
-
-        <GroupPossibleResponses
-          checkboxChange={onGroupPossibleResp}
-          checkboxVal={item.group_possible_responses}
-          items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
-          firstFocus={item.firstMount}
-          onAddInner={onAddInner}
-          onTitleChange={onGroupTitleChange}
-          onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
-          onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
-          onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
-          onRemoveInner={onRemoveInner}
-          onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
-        />
-
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        />
+      <Paper padding="0px" boxShadow="none">
+        <Widget>
+          <Subtitle>{t("component.matchList.composeQuestion")}</Subtitle>
+          <QuestionTextArea
+            placeholder={t("component.matchList.enterQuestion")}
+            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </Widget>
+        <Widget>
+          <Subtitle data-cy="list-container">{t("component.matchList.list")}</Subtitle>
+          <List
+            buttonText={t("component.matchList.addNew")}
+            items={item.list}
+            onAdd={handleAdd}
+            firstFocus={item.firstMount}
+            onSortEnd={handleSortEnd}
+            onChange={handleChange}
+            onRemove={handleRemove}
+            useDragHandle
+            columns={1}
+          />
+        </Widget>
+        <Widget>
+          <GroupPossibleResponses
+            checkboxChange={onGroupPossibleResp}
+            checkboxVal={item.group_possible_responses}
+            items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
+            firstFocus={item.firstMount}
+            onAddInner={onAddInner}
+            onTitleChange={onGroupTitleChange}
+            onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
+            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
+            onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
+            onRemoveInner={onRemoveInner}
+            onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
+          />
+        </Widget>
+        <Widget>
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+          />
+        </Widget>
       </Paper>
       <Options />
     </Fragment>

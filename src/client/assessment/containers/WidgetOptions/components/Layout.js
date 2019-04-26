@@ -2,11 +2,11 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { Block } from "../../../styled/WidgetOptions/Block";
-import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { Subtitle } from "../../../styled/Subtitle";
 
 const Layout = ({ children, t }) => (
-  <Block data-cy="layout">
-    <Heading>{t("component.options.layout")}</Heading>
+  <Block style={{ paddingTop: 0 }} data-cy="layout">
+    <Subtitle>{t("component.options.layout")}</Subtitle>
     {children}
   </Block>
 );

@@ -25,6 +25,7 @@ import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
 import { getFontSize } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
+import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
@@ -215,29 +216,33 @@ const OrderList = ({
     <Fragment>
       {view === EDIT && (
         <Fragment>
-          <Paper>
-            <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
-
-            <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} style={{ marginBottom: 30 }} />
-            <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
-            <List
-              fontSize={fontSize}
-              onAdd={handleAddQuestion}
-              items={item.list}
-              onSortEnd={onSortOrderListEnd}
-              useDragHandle
-              onRemove={handleDeleteQuestion}
-              onChange={handleQuestionsChange}
-            />
-
-            <CorrectAnswers
-              onTabChange={onTabChange}
-              correctTab={correctTab}
-              onAdd={handleAddAltResponse}
-              validation={item.validation}
-              options={renderOptions()}
-              onCloseTab={handleDeleteAltAnswers}
-            />
+          <Paper padding="0px" boxShadow="none">
+            <Widget>
+              <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
+              <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} />
+            </Widget>
+            <Widget>
+              <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
+              <List
+                fontSize={fontSize}
+                onAdd={handleAddQuestion}
+                items={item.list}
+                onSortEnd={onSortOrderListEnd}
+                useDragHandle
+                onRemove={handleDeleteQuestion}
+                onChange={handleQuestionsChange}
+              />
+            </Widget>
+            <Widget>
+              <CorrectAnswers
+                onTabChange={onTabChange}
+                correctTab={correctTab}
+                onAdd={handleAddAltResponse}
+                validation={item.validation}
+                options={renderOptions()}
+                onCloseTab={handleDeleteAltAnswers}
+              />
+            </Widget>
           </Paper>
           <Options />
         </Fragment>

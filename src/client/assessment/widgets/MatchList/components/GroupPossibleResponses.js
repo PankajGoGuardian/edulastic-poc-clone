@@ -16,10 +16,10 @@ const List = withAddButton(QuillSortableList);
 const GroupPossibleResponses = ({ checkboxChange, checkboxVal, firstFocus, items, t, onAdd, ...restProps }) =>
   checkboxVal ? (
     <div>
-      <Checkbox style={{ marginTop: 29 }} defaultChecked={checkboxVal} onChange={checkboxChange}>
+      <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
         {t("component.matchList.groupPossibleRespTitle")}
       </Checkbox>
-      <Row gutter={70}>
+      <Row gutter={60}>
         {items.map((item, index) => (
           <Col data-cy={`group-container-${index}`} key={index} span={12}>
             <Group
@@ -40,12 +40,12 @@ const GroupPossibleResponses = ({ checkboxChange, checkboxVal, firstFocus, items
       </EduButton>
     </div>
   ) : (
-    <Row gutter={70}>
+    <Row gutter={60}>
       <Col span={12}>
-        <Checkbox style={{ marginTop: 29 }} defaultChecked={checkboxVal} onChange={checkboxChange}>
+        <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
           {t("component.matchList.groupPossibleRespTitle")}
         </Checkbox>
-        <Subtitle>{t("component.matchList.possibleRespTitle")}</Subtitle>
+        <Subtitle margin="20px 0px 10px">{t("component.matchList.possibleRespTitle")}</Subtitle>
         <List
           prefix="group"
           items={items}

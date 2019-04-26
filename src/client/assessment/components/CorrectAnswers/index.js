@@ -28,7 +28,9 @@ const CorrectAnswers = ({ t, onTabChange, children, correctTab, onAdd, validatio
 
   const renderAltResponses = () => {
     if (validation && validation.alt_responses && validation.alt_responses.length) {
-      return validation.alt_responses.map((res, i) => <Tab key={i} label={renderLabel(i)} />);
+      return validation.alt_responses.map((res, i) => (
+        <Tab style={{ marginRight: 5, marginBottom: 5 }} key={i} label={renderLabel(i)} />
+      ));
     }
 
     return null;
@@ -38,7 +40,7 @@ const CorrectAnswers = ({ t, onTabChange, children, correctTab, onAdd, validatio
     <Button
       style={{
         minWidth: 70,
-        minHeight: 25
+        marginBottom: 5
       }}
       icon={<IconPlus data-cy="alternate" />}
       onClick={() => {
@@ -56,7 +58,11 @@ const CorrectAnswers = ({ t, onTabChange, children, correctTab, onAdd, validatio
 
       <div>
         <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()}>
-          <Tab data_cy="correct" label={t("component.correctanswers.correct")} />
+          <Tab
+            style={{ marginRight: 5, marginBottom: 5 }}
+            data_cy="correct"
+            label={t("component.correctanswers.correct")}
+          />
           {renderAltResponses()}
         </Tabs>
         {children}

@@ -11,7 +11,7 @@ export const Subtitle = styled.div`
   text-align: left;
   color: ${({ color, theme }) => color || theme.common.subtitleColor};
   padding: 0;
-  margin-bottom: 29px;
+  margin: ${props => (props.margin ? props.margin : "0 0 29px")};
 
   @media screen {
     padding: 0;

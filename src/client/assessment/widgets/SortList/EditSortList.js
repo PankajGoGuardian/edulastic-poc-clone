@@ -13,6 +13,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
 
 import AdvancedOptions from "./components/AdvancedOptions";
 
@@ -164,34 +165,39 @@ const EditSortList = ({ item, setQuestionData, t }) => {
 
   return (
     <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.sortList.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
-        <Subtitle>{t("component.sortList.list")}</Subtitle>
-        <List
-          items={item.source}
-          onAdd={handleAdd}
-          firstFocus={item.firstMount}
-          onSortEnd={handleSortEnd}
-          onChange={handleChange}
-          onRemove={handleRemove}
-          useDragHandle
-          columns={1}
-        />
-
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          readOnly
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        />
+      <Paper padding="0px" boxShadow="none">
+        <Widget>
+          <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
+          <QuestionTextArea
+            placeholder={t("component.sortList.enterQuestion")}
+            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </Widget>
+        <Widget>
+          <Subtitle>{t("component.sortList.list")}</Subtitle>
+          <List
+            items={item.source}
+            onAdd={handleAdd}
+            firstFocus={item.firstMount}
+            onSortEnd={handleSortEnd}
+            onChange={handleChange}
+            onRemove={handleRemove}
+            useDragHandle
+            columns={1}
+          />
+        </Widget>
+        <Widget>
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            readOnly
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+          />
+        </Widget>
       </Paper>
       <AdvancedOptions item={item} onUiChange={handleUiStyleChange} />
     </Fragment>

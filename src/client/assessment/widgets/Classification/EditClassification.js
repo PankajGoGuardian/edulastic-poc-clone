@@ -25,6 +25,7 @@ import { setQuestionDataAction, setFirstMountAction } from "../../../author/Ques
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import ClassificationPreview from "./ClassificationPreview";
 import Options from "./components/Options";
+import { Widget } from "../../styled/Widget";
 
 const List = withAddButton(QuillSortableList);
 
@@ -381,132 +382,138 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t }) 
 
   return (
     <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.classification.composeQuestion")}</Subtitle>
+      <Paper padding="0px" boxShadow="none">
+        <Widget>
+          <Subtitle>{t("component.classification.composeQuestion")}</Subtitle>
+          <QuestionTextArea
+            placeholder={t("component.classification.enterQuestion")}
+            onChange={stim => handleItemChangeChange("stimulus", stim)}
+            value={stimulus}
+          />
+        </Widget>
+        <Widget>
+          <Row gutter={70}>
+            <Col data-cy="row-container" span={12}>
+              <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
 
-        <QuestionTextArea
-          placeholder={t("component.classification.enterQuestion")}
-          onChange={stim => handleItemChangeChange("stimulus", stim)}
-          value={stimulus}
-        />
+              <Subtitle
+                fontSize={theme.widgets.classification.subtitleFontSize}
+                color={theme.widgets.classification.subtitleColor}
+                margin="20px 0px 10px"
+              >
+                {t("component.classification.rowsCountSubtitle")}
+              </Subtitle>
 
-        <Row gutter={70}>
-          <Col data-cy="row-container" span={12}>
-            <Subtitle>{t("component.classification.rowsSubtitle")}</Subtitle>
+              <Select
+                data-cy="classification-row-dropdown"
+                size="large"
+                style={{ width: "calc(100% - 30px)" }}
+                value={ui_style.row_count}
+                onChange={value => onUiChange("row_count")(+value)}
+              >
+                {Array.from({ length: 10 }).map((v, index) => (
+                  <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
+                    {index + 1}
+                  </Option>
+                ))}
+              </Select>
 
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              padding="0 0 16px 0"
-            >
-              {t("component.classification.rowsCountSubtitle")}
-            </Subtitle>
+              <Subtitle
+                fontSize={theme.widgets.classification.subtitleFontSize}
+                color={theme.widgets.classification.subtitleColor}
+                margin="20px 0px 10px"
+              >
+                {t("component.classification.editRowListSubtitle")}
+              </Subtitle>
 
-            <Select
-              data-cy="classification-row-dropdown"
-              size="large"
-              style={{ width: "calc(100% - 30px)" }}
-              value={ui_style.row_count}
-              onChange={value => onUiChange("row_count")(+value)}
-            >
-              {Array.from({ length: 10 }).map((v, index) => (
-                <Option data-cy={`row-dropdown-list-${index}`} key={index} value={index + 1}>
-                  {index + 1}
-                </Option>
-              ))}
-            </Select>
+              <List
+                prefix="rows"
+                buttonText={t("component.classification.addNewRow")}
+                items={item.ui_style.row_titles}
+                onAdd={handleMain(actions.ADD, "row_titles")}
+                onSortEnd={handleMain(actions.SORTEND, "row_titles")}
+                onChange={handleChange("row_titles")}
+                onRemove={handleMain(actions.REMOVE, "row_titles")}
+                firstFocus={firstMount}
+                useDragHandle
+                columns={1}
+              />
+            </Col>
+            <Col data-cy="column-container" span={12}>
+              <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
 
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-            >
-              {t("component.classification.editRowListSubtitle")}
-            </Subtitle>
+              <Subtitle
+                fontSize={theme.widgets.classification.subtitleFontSize}
+                color={theme.widgets.classification.subtitleColor}
+                margin="20px 0px 10px"
+              >
+                {t("component.classification.columnsCountSubtitle")}
+              </Subtitle>
 
-            <List
-              prefix="rows"
-              buttonText={t("component.classification.addNewRow")}
-              items={item.ui_style.row_titles}
-              onAdd={handleMain(actions.ADD, "row_titles")}
-              onSortEnd={handleMain(actions.SORTEND, "row_titles")}
-              onChange={handleChange("row_titles")}
-              onRemove={handleMain(actions.REMOVE, "row_titles")}
-              firstFocus={firstMount}
-              useDragHandle
-              columns={1}
-            />
-          </Col>
-          <Col data-cy="column-container" span={12}>
-            <Subtitle>{t("component.classification.columnsSubtitle")}</Subtitle>
+              <Select
+                data-cy="classification-column-dropdown"
+                size="large"
+                style={{ width: "calc(100% - 30px)" }}
+                value={ui_style.column_count}
+                onChange={value => onUiChange("column_count")(+value)}
+              >
+                {Array.from({ length: 10 }).map((v, index) => (
+                  <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
+                    {index + 1}
+                  </Option>
+                ))}
+              </Select>
 
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-              padding="0 0 16px 0"
-            >
-              {t("component.classification.columnsCountSubtitle")}
-            </Subtitle>
+              <Subtitle
+                fontSize={theme.widgets.classification.subtitleFontSize}
+                color={theme.widgets.classification.subtitleColor}
+                margin="20px 0px 10px"
+              >
+                {t("component.classification.editColListSubtitle")}
+              </Subtitle>
 
-            <Select
-              data-cy="classification-column-dropdown"
-              size="large"
-              style={{ width: "calc(100% - 30px)" }}
-              value={ui_style.column_count}
-              onChange={value => onUiChange("column_count")(+value)}
-            >
-              {Array.from({ length: 10 }).map((v, index) => (
-                <Option data-cy={`coloumn-dropdown-list-${index}`} key={index} value={index + 1}>
-                  {index + 1}
-                </Option>
-              ))}
-            </Select>
-
-            <Subtitle
-              fontSize={theme.widgets.classification.subtitleFontSize}
-              color={theme.widgets.classification.subtitleColor}
-            >
-              {t("component.classification.editColListSubtitle")}
-            </Subtitle>
-
-            <List
-              prefix="columns"
-              buttonText={t("component.classification.addNewColumn")}
-              items={item.ui_style.column_titles}
-              onAdd={handleMain(actions.ADD, "column_titles")}
-              onSortEnd={handleMain(actions.SORTEND, "column_titles")}
-              onChange={handleChange("column_titles")}
-              onRemove={handleMain(actions.REMOVE, "column_titles")}
-              firstFocus={firstMount}
-              useDragHandle
-              columns={1}
-            />
-          </Col>
-        </Row>
-
-        <GroupPossibleResponses
-          checkboxChange={onGroupPossibleResp}
-          checkboxVal={item.group_possible_responses}
-          items={
-            item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite)
-          }
-          onAddInner={onAddInner}
-          onTitleChange={onGroupTitleChange}
-          onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
-          onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
-          firstFocus={firstMount}
-          onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
-          onRemoveInner={onRemoveInner}
-          onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
-        />
-
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        />
+              <List
+                prefix="columns"
+                buttonText={t("component.classification.addNewColumn")}
+                items={item.ui_style.column_titles}
+                onAdd={handleMain(actions.ADD, "column_titles")}
+                onSortEnd={handleMain(actions.SORTEND, "column_titles")}
+                onChange={handleChange("column_titles")}
+                onRemove={handleMain(actions.REMOVE, "column_titles")}
+                firstFocus={firstMount}
+                useDragHandle
+                columns={1}
+              />
+            </Col>
+          </Row>
+        </Widget>
+        <Widget>
+          <GroupPossibleResponses
+            checkboxChange={onGroupPossibleResp}
+            checkboxVal={item.group_possible_responses}
+            items={
+              item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite)
+            }
+            onAddInner={onAddInner}
+            onTitleChange={onGroupTitleChange}
+            onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
+            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
+            firstFocus={firstMount}
+            onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
+            onRemoveInner={onRemoveInner}
+            onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
+          />
+        </Widget>
+        <Widget>
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+          />
+        </Widget>
       </Paper>
       <Options />
     </Fragment>

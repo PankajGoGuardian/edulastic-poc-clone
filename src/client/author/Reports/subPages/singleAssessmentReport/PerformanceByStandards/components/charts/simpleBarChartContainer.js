@@ -73,9 +73,9 @@ const SimpleBarChartContainer = ({
     const selectedData = viewBy === viewByMode.STANDARDS ? selectedStandards : selectedDomains;
     const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
 
-    const selectedColor = "#99ca7a";
+    const selectedColor = "#c7e8b2";
     const unselectedColor = "#bbbbbb";
-    const badScoreColor = "#ff9b9b";
+    const badScoreColor = "#ffc6c6";
 
     const itemInSelected = item =>
       selectedData.includes(item[field])

@@ -406,3 +406,20 @@ export const analysisParseData = (report, viewBy, compareBy) => {
       return [];
   }
 };
+
+export const reduceAverageStandardScore = (data, field) => {
+  if (!data.length) {
+    return {};
+  }
+
+  const standards = Object.keys(data[0].standardMetrics);
+
+  return standards.reduce((pointsByStandards, standardId) => {
+    const averagePoints = data.reduce((total, item) => total + item.standardMetrics[standardId][field], 0);
+
+    return {
+      ...pointsByStandards,
+      [standardId]: averagePoints / data.length
+    };
+  }, {});
+};

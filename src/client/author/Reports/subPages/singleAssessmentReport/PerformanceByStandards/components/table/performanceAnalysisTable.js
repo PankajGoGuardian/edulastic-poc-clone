@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
 
-import { compareByColumns, analyzeByMode, viewByMode, compareByMode } from "../../util/transformers";
+import { compareByColumns, analyzeByMode, viewByMode, reduceAverageStandardScore } from "../../util/transformers";
 
 const makeStandardColumnConfig = skill => ({
   [viewByMode.STANDARDS]: {
@@ -86,7 +86,7 @@ const PerformanceAnalysisTable = ({
     };
   };
 
-  const makeStandardColumns = () => {
+  const makeStandardColumns = averageScoreByView => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
     const selectedItems = skill => selectedData.includes(skill[dataField]);
@@ -94,9 +94,18 @@ const PerformanceAnalysisTable = ({
     const makeStandardColumn = skill => {
       const config = makeStandardColumnConfig(skill)[viewBy];
       const field = getAnalyzeField();
+      const averagePoints = averageScoreByView[config.key] || 0;
 
       return {
-        title: config.title,
+        title: (
+          <p>
+            {config.title}
+            <br />
+            Points - {averagePoints.toFixed(2)}
+            <br />
+            {formatScore(averagePoints)}
+          </p>
+        ),
         dataIndex: "standardMetrics",
         key: config.key,
         render: (studentId, student) => {
@@ -110,7 +119,7 @@ const PerformanceAnalysisTable = ({
           const score = standard[field];
 
           if ([analyzeByMode.SCORE, analyzeByMode.RAW_SCORE].includes(analyzeBy)) {
-            color = score < 0.5 ? "#ff9b9b" : "#99ca7a";
+            color = score < 0.5 ? "#ffc6c6" : "#c7e8b2";
           }
 
           return <ScoreCell color={color}>{standard ? formatScore(standard[field]) : "N/A"}</ScoreCell>;
@@ -121,7 +130,13 @@ const PerformanceAnalysisTable = ({
     return standardColumnsData.filter(selectedItems).map(makeStandardColumn);
   };
 
-  const getAnalysisColumns = () => [compareByColumns[compareBy], makeOverallColumn(), ...makeStandardColumns()];
+  const averageScoreByView = reduceAverageStandardScore(tableData, getAnalyzeField());
+
+  const getAnalysisColumns = () => [
+    compareByColumns[compareBy],
+    makeOverallColumn(),
+    ...makeStandardColumns(averageScoreByView)
+  ];
 
   const columns = getAnalysisColumns();
 
@@ -152,9 +167,22 @@ PerformanceAnalysisTable.defaultProps = {
 export default PerformanceAnalysisTable;
 
 const AnalysisTable = styled(Table)`
+  .ant-table-thead {
+    th {
+      font-size: 12px;
+      font-weight: bold;
+      padding-right: 16px !important;
+
+      &:nth-child(n + 3) {
+        text-align: right;
+      }
+    }
+  }
+
   .ant-table-tbody {
     td:nth-child(n + 3) {
       padding: 0 !important;
+      text-align: right;
     }
   }
 `;

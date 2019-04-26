@@ -4,7 +4,7 @@ import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effect
 import { cloneDeep, values, get } from "lodash";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
-import { alignmentStandardsFromMongoToUI } from "../../assessment/utils/helpers";
+import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import { setTestDataAction, getTestEntitySelector } from "../TestPage/ducks";
@@ -210,7 +210,7 @@ export const getQuestionDataSelector = createSelector(
 );
 export const getQuestionAlignmentSelector = createSelector(
   getCurrentQuestionSelector,
-  state => state.alignment
+  state => state.alignment || []
 );
 
 export const getValidationSelector = createSelector(
@@ -218,6 +218,17 @@ export const getValidationSelector = createSelector(
   state => state.validation
 );
 
+export const getAlignmentFromQuestionSelector = createSelector(
+  getQuestionAlignmentSelector,
+  alignments => {
+    const modifyAlignment = alignments.map(item => ({
+      ...item,
+      standards: transformDomainsToStandard(item.domains)
+    }));
+    delete modifyAlignment.domains;
+    return modifyAlignment;
+  }
+);
 // saga
 
 function* receiveQuestionSaga({ payload }) {
@@ -432,13 +443,8 @@ function* loadQuestionSaga({ payload }) {
         rowIndex
       }
     });
-    const { alignment = [] } = yield select(getQuestionDataSelector);
-    const modifyAlignment = alignment.map(item => ({
-      ...item,
-      standards: alignmentStandardsFromMongoToUI(item.domains)
-    }));
-    delete modifyAlignment.domains;
-    yield put(setDictAlignmentFromQuestion(modifyAlignment));
+    const alignments = yield select(getAlignmentFromQuestionSelector);
+    yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {
     const errorMessage = "Loading Question is failing";
     yield call(message.error, errorMessage);

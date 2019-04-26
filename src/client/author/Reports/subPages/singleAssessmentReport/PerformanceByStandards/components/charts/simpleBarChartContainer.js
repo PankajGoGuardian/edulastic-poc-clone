@@ -4,6 +4,7 @@ import { Cell } from "recharts";
 
 import SimpleBarChart from "../../../../../common/components/charts/simpleBarChart";
 import { chartParseData, viewByMode, analyzeByMode } from "../../util/transformers";
+import { TooltipWrapper, TooltipLabel } from "./styled";
 
 const getBarDataKey = analyzeBy => {
   switch (analyzeBy) {
@@ -95,6 +96,19 @@ const SimpleBarChartContainer = ({
     ));
   };
 
+  const getTooltipPayloadRawField = () => {
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+      case analyzeByMode.RAW_SCORE:
+        return "totalScoreRaw";
+      case analyzeByMode.MASTERY_LEVEL:
+      case analyzeByMode.MASTERY_SCORE:
+        return "masteryScoreRaw";
+      default:
+        return {};
+    }
+  };
+
   const formatLabel = score => {
     const formattedScore = Number(score).toFixed(2);
 
@@ -107,12 +121,52 @@ const SimpleBarChartContainer = ({
     }
   };
 
+  const standardById = skillInfo.reduce(
+    (result, skill) => ({
+      ...result,
+      [skill.standardId]: skill.standard
+    }),
+    {}
+  );
+
+  const domainById = skillInfo.reduce(
+    (result, skill) => ({
+      ...result,
+      [skill.domainId]: skill.domain
+    }),
+    {}
+  );
+
+  const renderTooltip = ({ payload }) => {
+    if (!payload || !payload.length) {
+      return;
+    }
+
+    const [data] = payload;
+
+    const skillById = viewBy === viewByMode.STANDARDS ? standardById : domainById;
+    const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
+    const skillId = data.payload[field];
+    const skillTitle = skillById[skillId];
+
+    const rawValue = getTooltipPayloadRawField();
+
+    return (
+      <TooltipWrapper>
+        <TooltipLabel>Standard: {skillTitle}</TooltipLabel>
+        <TooltipLabel>Total Points: {(data.payload[rawValue] || data.value).toFixed(2)}</TooltipLabel>
+        <TooltipLabel>Avg.Score(%): {formatLabel(data.value)}</TooltipLabel>
+      </TooltipWrapper>
+    );
+  };
+
   const formattedData = data.map(item => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return {
           ...item,
-          totalScore: item.totalScore * 100
+          totalScore: item.totalScore * 100,
+          totalScoreRaw: item.totalScore
         };
       case analyzeByMode.MASTERY_LEVEL:
         return {
@@ -137,6 +191,7 @@ const SimpleBarChartContainer = ({
       formatScore={formatLabel}
       renderBarCells={renderBarCells}
       ticks={ticks}
+      renderTooltip={renderTooltip}
     />
   );
 };

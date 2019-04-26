@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { InstructorStimulus } from "@edulastic/common";
+import { InstructorStimulus, Stimulus } from "@edulastic/common";
 
 import Options from "./components/Options";
 
@@ -17,6 +17,7 @@ const Display = ({
 }) => (
   <div>
     <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+    <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
     <Options
       view={view}
       smallSize={smallSize}

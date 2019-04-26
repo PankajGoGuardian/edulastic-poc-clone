@@ -2,16 +2,14 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import { Icon } from "antd";
 
-import { white } from "@edulastic/colors";
 import { Tabs } from "@edulastic/common";
 import ItemDetailWidget from "../ItemDetailWidget/ItemDetailWidget";
 import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
 import { getItemDetailDraggingSelector } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
-import { Content, AddButtonContainer, MobileSide, TabContainer } from "./styled";
+import { Content, AddButtonContainer, TabContainer } from "./styled";
 
 class Container extends Component {
   state = {
@@ -61,19 +59,6 @@ class Container extends Component {
     />
   );
 
-  renderSide = () => {
-    const { row, windowWidth } = this.props;
-    const { tabIndex } = this.state;
-    if (row.tabs && windowWidth < MAX_MOBILE_WIDTH) {
-      const sideType = tabIndex === 0 ? "left" : "right";
-      return (
-        <MobileSide type={sideType} onClick={this.handleTabChange(sideType === "left" ? 1 : 0)}>
-          <Icon type={sideType} style={{ color: white }} />
-        </MobileSide>
-      );
-    }
-  };
-
   renderWidgets = () => {
     const { row, dragging, rowIndex } = this.props;
     const { tabIndex } = this.state;
@@ -121,7 +106,6 @@ class Container extends Component {
             </Tabs>
           </TabContainer>
         )}
-        {this.renderSide()}
         {!row.widgets.length && dragging && <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={0} />}
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />

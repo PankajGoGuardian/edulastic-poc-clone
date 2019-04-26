@@ -13,13 +13,17 @@ import {
   MobileContainer,
   ReferenceText,
   ReferenceValue,
-  RightSide
+  RightSide,
+  ToggleButton
 } from "./styled";
 
-const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
+const ItemHeader = ({ title, children, link, reference, windowWidth, toggleSideBar }) => {
   const width = windowWidth;
   const renderLeftSide = () => (
     <LeftSide>
+      <ToggleButton onClick={toggleSideBar}>
+        <i className="fa fa-bars" />
+      </ToggleButton>
       <Title>{title}</Title>
       {reference && (
         <FlexContainer>
@@ -49,12 +53,9 @@ const ItemHeader = ({ title, children, link, reference, windowWidth }) => {
       <LeftSide>{renderIcon()}</LeftSide>
     </HeaderWrapper>
   ) : (
-    <MobileContainer>
+    <MobileContainer type="standard">
       <Container>
-        <FlexContainer
-          alignItems="center"
-          style={{ flex: 1, paddingBottom: 20, flexDirection: "column" }}
-        >
+        <FlexContainer alignItems="center" style={{ flex: 1, paddingBottom: 20, flexDirection: "column" }}>
           {renderLeftSide()}
         </FlexContainer>
         <RightSide>{children}</RightSide>
@@ -69,6 +70,7 @@ ItemHeader.propTypes = {
   children: PropTypes.any,
   link: PropTypes.any,
   windowWidth: PropTypes.number.isRequired,
+  toggleSideBar: PropTypes.func.isRequired,
   reference: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
 };
 

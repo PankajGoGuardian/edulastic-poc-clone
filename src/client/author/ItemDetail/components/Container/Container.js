@@ -28,9 +28,10 @@ import {
   clearRedirectTestAction,
   setRedirectTestAction
 } from "../../ducks";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 import { getQuestionsSelector } from "../../../sharedDucks/questions";
-import { Content, ItemDetailWrapper, PreviewContent, ButtonClose } from "./styled";
+import { Content, ItemDetailWrapper, PreviewContent, ButtonClose, BackLink } from "./styled";
 import { loadQuestionAction } from "../../../QuestionEditor/ducks";
 import ItemDetailRow from "../ItemDetailRow";
 import { ButtonAction, ButtonBar, SecondHeadBar } from "../../../src/components/common";
@@ -321,7 +322,9 @@ class Container extends Component {
       windowWidth,
       testItemStatus,
       modalItemId,
-      onModalClose
+      onModalClose,
+      toggleSideBar,
+      history
     } = this.props;
 
     let showPublishButton = false;
@@ -356,6 +359,7 @@ class Container extends Component {
           title={t("component.itemDetail.itemDetail")}
           reference={match.params._id}
           windowWidth={windowWidth}
+          toggleSideBar={toggleSideBar}
         >
           <ButtonBar
             onShowSource={this.handleShowSource}
@@ -372,6 +376,7 @@ class Container extends Component {
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
             itemStatus={item && item.status}
+            withLabels
             renderExtra={() =>
               modalItemId && (
                 <ButtonClose onClick={onModalClose}>
@@ -382,7 +387,11 @@ class Container extends Component {
             renderRightSide={this.renderButtons}
           />
         </ItemHeader>
-        {windowWidth > MAX_MOBILE_WIDTH && <SecondHeadBar />}
+        {windowWidth > MAX_MOBILE_WIDTH ? (
+          <SecondHeadBar />
+        ) : (
+          <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+        )}
         {view === "edit" && (
           <ItemDetailWrapper>
             {loading && <Progress />}
@@ -438,7 +447,8 @@ Container.propTypes = {
   publishTestItem: PropTypes.func,
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
-  navigateToPickupQuestionType: PropTypes.func
+  navigateToPickupQuestionType: PropTypes.func,
+  toggleSideBar: PropTypes.func.isRequired
 };
 
 Container.defaultProps = {
@@ -482,7 +492,8 @@ const enhance = compose(
       publishTestItem: publishTestItemAction,
       clearRedirectTest: clearRedirectTestAction,
       setRedirectTest: setRedirectTestAction,
-      toggleCreateItemModal: toggleCreateItemModalAction
+      toggleCreateItemModal: toggleCreateItemModalAction,
+      toggleSideBar: toggleSideBarAction
     }
   )
 );

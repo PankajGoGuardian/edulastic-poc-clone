@@ -1,6 +1,5 @@
-import { greenDark, white, mobileWidth } from '@edulastic/colors';
-import { FlexContainer } from '@edulastic/common';
-import styled from 'styled-components';
+import styled from "styled-components";
+import { title, white, mobileWidth } from "@edulastic/colors";
 
 export const Content = styled.div`
   width: 25vw;
@@ -13,21 +12,23 @@ export const Content = styled.div`
   padding: 30px;
   box-shadow: -3px 3px 6px 0 rgba(0, 0, 0, 0.16);
   overflow-y: auto;
-  
-   @media (max-width: ${mobileWidth}) {
-    width: 100%
+
+  @media (max-width: ${mobileWidth}) {
+    width: 100%;
   }
 `;
 
-export const SettingsButtonWrapper = styled(FlexContainer)`
-  margin-bottom: 25px;
+export const SettingsButtonWrapper = styled.div`
+  position: absolute;
+  top: 20px;
+  right: 20px;
 `;
 
 export const Heading = styled.div`
-  color: ${greenDark};
-  margin-bottom: 25px;
-  font-size: 16px;
-  font-weight: 600;
+  color: ${title};
+  margin-bottom: 30px;
+  font-size: 20px;
+  font-weight: 700;
 `;
 
 export const Items = styled.div`

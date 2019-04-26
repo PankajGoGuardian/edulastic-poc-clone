@@ -6,26 +6,31 @@ import { evaluationType } from "@edulastic/constants";
 
 import WidgetOptions from "../../../../containers/WidgetOptions";
 import Extras from "../../../../containers/Extras";
-import Layout from "../../Layout";
+import Layout from "./Layout";
 
 const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
 
-const Options = ({ onChange, uiStyle, outerStyle }) => {
-  return (
-    <WidgetOptions outerStyle={outerStyle} scoringTypes={scoringTypes}>
-      <Layout onChange={onChange} uiStyle={uiStyle} />
-      <Extras>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
-    </WidgetOptions>
-  );
-};
+const Options = ({ onChange, uiStyle, outerStyle, fillSections, cleanSections }) => (
+  <WidgetOptions
+    outerStyle={outerStyle}
+    scoringTypes={scoringTypes}
+    fillSections={fillSections}
+    cleanSections={cleanSections}
+  >
+    <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
+    <Extras fillSections={fillSections} cleanSections={cleanSections}>
+      <Extras.Distractors />
+      <Extras.Hints />
+    </Extras>
+  </WidgetOptions>
+);
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  outerStyle: PropTypes.object
+  outerStyle: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Options.defaultProps = {
@@ -38,7 +43,9 @@ Options.defaultProps = {
     heightpx: 0,
     placeholder: "",
     responsecontainerindividuals: []
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default React.memo(withNamespaces("assessment")(Options));

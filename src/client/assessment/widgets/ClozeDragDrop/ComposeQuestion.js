@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -9,19 +10,19 @@ import { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
+import { CustomQuillComponent } from "@edulastic/common";
 
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import ComposeQuestion from "./ComposeQuestion";
-import TemplateMarkup from "./TemplateMarkup";
+import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
 
-class Authoring extends Component {
+class ComposeQuestion extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
-    theme: PropTypes.object.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
   };
@@ -30,6 +31,19 @@ class Authoring extends Component {
     fillSections: () => {},
     cleanSections: () => {}
   };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.cloze.dragDrop.composequestion"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
@@ -61,12 +75,22 @@ class Authoring extends Component {
   };
 
   render() {
-    const { item, theme, fillSections, cleanSections } = this.props;
+    const { t, item } = this.props;
+
     return (
-      <div>
-        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-        <TemplateMarkup item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
-      </div>
+      <Widget>
+        <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
+        <CustomQuillComponent
+          toolbarId="stimulus"
+          wrappedRef={instance => {
+            this.stimulus = instance;
+          }}
+          placeholder={t("component.cloze.dragDrop.thisisstem")}
+          onChange={this.onChangeQuestion}
+          showResponseBtn={false}
+          value={item.stimulus}
+        />
+      </Widget>
     );
   }
 }
@@ -81,4 +105,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(Authoring);
+export default enhance(ComposeQuestion);

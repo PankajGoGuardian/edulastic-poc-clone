@@ -1,4 +1,4 @@
-import { greenDark } from "@edulastic/colors";
+import { newBlue } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Heading = styled.div`
-  color: ${greenDark};
+  color: ${newBlue};
   font-size: 13px;
   font-weight: 600;
   margin-bottom: 15px;

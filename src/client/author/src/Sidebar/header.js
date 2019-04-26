@@ -6,7 +6,7 @@ import { IconHeader, IconClose, IconChevronLeft, IconLogoCompact } from "@edulas
 
 import Help from "./help";
 import Navigation from "./navigation";
-import { desktopSideBar } from "../actions/togglemenu";
+import { desktopSideBar } from "../actions/toggleMenu";
 import { responsiveSideBar } from "../actions/responsivetogglemenu";
 
 const Header = ({ flag, desktopSideBar: desktop, sidebar, responsiveSideBar: responsive }) => (

@@ -65,6 +65,12 @@ export const greenSomeWhatDark = "#17a67d";
 export const yellow = "#febe00";
 export const yellow1 = "#FDCC3B";
 
+export const btnBg = "#277df1";
+export const btnBgActive = "#5196f3";
+export const btnColor = "#bed8fa";
+
+export const title = "#434B5D";
+
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
 

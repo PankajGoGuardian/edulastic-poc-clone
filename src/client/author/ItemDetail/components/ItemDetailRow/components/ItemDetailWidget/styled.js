@@ -11,7 +11,7 @@ export const Container = styled.div`
   opacity: ${({ isDragging }) => (isDragging ? "0.4" : "1")};
 
   @media (max-width: ${mobileWidth}) {
-    padding: 20px;
+    padding: 0;
   }
 `;
 

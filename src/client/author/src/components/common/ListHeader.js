@@ -16,7 +16,7 @@ import {
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
-import { toggleSideBarAction } from "../../actions/togglemenu";
+import { toggleSideBarAction } from "../../actions/toggleMenu";
 
 const ListHeader = ({
   onCreate,

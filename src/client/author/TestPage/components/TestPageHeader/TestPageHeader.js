@@ -18,7 +18,7 @@ import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus } fr
 import TestPageNav from "../TestPageNav/TestPageNav";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
-import { toggleSideBarAction } from "../../../src/actions/togglemenu";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 export const navButtons = [
   {

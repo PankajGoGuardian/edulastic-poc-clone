@@ -1,8 +1,9 @@
 import React, { Component } from "react";
-import { white } from "@edulastic/colors";
-import { Button, Checkbox } from "@edulastic/common";
-import { IconSettings } from "@edulastic/icons";
 import PropTypes from "prop-types";
+
+import { title } from "@edulastic/colors";
+import { Button, Checkbox } from "@edulastic/common";
+import { IconClose } from "@edulastic/icons";
 import { withNamespaces } from "@edulastic/localization";
 
 import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
@@ -91,8 +92,12 @@ class Container extends Component {
     return (
       <Content>
         <SettingsButtonWrapper justifyContent="flex-end">
-          <Button color="primary" onClick={onCancel} style={{ minWidth: 85 }}>
-            <IconSettings color={white} />
+          <Button
+            color="primary"
+            onClick={onCancel}
+            style={{ minWidth: 40, background: "transparent", padding: 0, boxShadow: "none" }}
+          >
+            <IconClose color={title} />
           </Button>
         </SettingsButtonWrapper>
         <Heading>{t("author:component.settingsBar.layout")}</Heading>

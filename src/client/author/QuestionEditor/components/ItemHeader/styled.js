@@ -1,4 +1,15 @@
-import { blue, darkBlue, newBlue, darkBlueSecondary, mobileWidth, white, desktopWidth } from "@edulastic/colors";
+import {
+  blue,
+  darkBlue,
+  newBlue,
+  darkBlueSecondary,
+  mobileWidth,
+  white,
+  desktopWidth,
+  btnBg,
+  btnColor,
+  btnBgActive
+} from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -54,6 +65,7 @@ export const RightSide = styled.div`
     overflow-y: hidden;
     padding: 0 25px;
     display: flex;
+    margin-top: 20px;
 
     &:after {
       content: "";
@@ -77,15 +89,15 @@ export const RightSide = styled.div`
         align-items: center;
         justify-content: center;
         border-radius: 4px;
-        background: #277df1;
+        background: ${btnBg};
         font-size: 11px;
         text-transform: uppercase;
-        color: #bed8fa;
+        color: ${btnColor};
         margin-right: 10px;
         transition: all 0.3s ease;
 
         svg {
-          fill: #bed8fa;
+          fill: ${btnColor};
           transition: all 0.3s ease;
         }
 
@@ -94,15 +106,15 @@ export const RightSide = styled.div`
         }
 
         &:hover {
-          background: #277df1;
+          background: ${btnBg};
         }
 
         &.active {
-          background: #5196f3;
-          color: #fff;
+          background: ${btnBgActive};
+          color: ${white};
 
           svg {
-            fill: #fff;
+            fill: ${white};
           }
         }
       }
@@ -111,7 +123,7 @@ export const RightSide = styled.div`
         position: absolute;
         top: 11px;
         right: 26px;
-        background: #ffffff;
+        background: ${white};
         border-radius: 4px;
         height: 40px;
         width: 45px;
@@ -120,6 +132,11 @@ export const RightSide = styled.div`
         > div {
           margin-right: 0;
         }
+
+        &:hover {
+          background: ${white};
+        }
+
         svg {
           width: 20px;
           height: 20px;

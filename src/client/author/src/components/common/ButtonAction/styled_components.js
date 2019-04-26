@@ -36,7 +36,8 @@ export const PreviewBar = styled.div`
     }
 
     span {
-      display: none;
+      font-size: 0;
+      margin: 0;
     }
   }
 `;

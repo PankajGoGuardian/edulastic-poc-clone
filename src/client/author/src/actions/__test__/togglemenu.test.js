@@ -1,4 +1,4 @@
-import { desktopSideBar } from "../togglemenu";
+import { desktopSideBar } from "../toggleMenu";
 
 describe("Toggle Menu", () => {
   it("desktop sidebar should return an action", () => {

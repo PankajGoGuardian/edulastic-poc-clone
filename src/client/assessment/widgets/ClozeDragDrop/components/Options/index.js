@@ -5,13 +5,13 @@ import { withNamespaces } from "@edulastic/localization";
 
 import Extras from "../../../../containers/Extras";
 import WidgetOptions from "../../../../containers/WidgetOptions";
-import Layout from "../../Layout";
+import Layout from "./Layout";
 
-const Options = ({ onChange, uiStyle, outerStyle }) => {
+const Options = ({ onChange, uiStyle, t, outerStyle, fillSections, cleanSections }) => {
   return (
-    <WidgetOptions outerStyle={outerStyle}>
-      <Layout onChange={onChange} uiStyle={uiStyle} />
-      <Extras>
+    <WidgetOptions outerStyle={outerStyle} fillSections={fillSections} cleanSections={cleanSections}>
+      <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
+      <Extras fillSections={fillSections} cleanSections={cleanSections}>
         <Extras.Distractors />
         <Extras.Hints />
       </Extras>
@@ -22,7 +22,10 @@ const Options = ({ onChange, uiStyle, outerStyle }) => {
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  outerStyle: PropTypes.object
+  t: PropTypes.func.isRequired,
+  outerStyle: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Options.defaultProps = {
@@ -35,7 +38,9 @@ Options.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default React.memo(withNamespaces("assessment")(Options));

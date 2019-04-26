@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -8,17 +9,17 @@ import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
+import { CustomQuillComponent } from "@edulastic/common";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import ComposeQuestion from "./ComposeQuestion";
-import TemplateMarkup from "./TemplateMarkup";
-import ChoicesForResponse from "./ChoicesForResponse";
+import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
 
 const defaultTemplateMarkup =
   '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
 
-class ClozeDropDownAuthoring extends Component {
+class TemplateMarkup extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
@@ -32,14 +33,17 @@ class ClozeDropDownAuthoring extends Component {
     cleanSections: () => {}
   };
 
-  state = {
-    responseContainersCount: 2
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.cloze.dropDown.templatemarkup"), node.offsetTop);
   };
 
-  componentWillReceiveProps(nextProps) {
-    const { item } = nextProps;
-    const { responseContainersCount } = this.getTemplateParts(item);
-    this.setState({ responseContainersCount });
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
   }
 
   onChangeQuestion = stimulus => {
@@ -71,31 +75,55 @@ class ClozeDropDownAuthoring extends Component {
     );
   };
 
-  getTemplateParts = props => {
-    const { templateMarkUp } = props;
-    let templateMarkUpStr = templateMarkUp;
-    if (!templateMarkUpStr) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
-    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
-    const responseContainersCount = responseParts !== null ? responseParts.length : 0;
-    return { templateParts, responseContainersCount };
+  editOptions = (index, itemIndex, e) => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.options[index] === undefined) draft.options[index] = [];
+        draft.options[index][itemIndex] = e.target.value;
+        updateVariables(draft);
+      })
+    );
+  };
+
+  addNewChoiceBtn = index => {
+    const { item, setQuestionData, t } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        if (draft.options[index] === undefined) draft.options[index] = [];
+        draft.options[index].push(t("component.cloze.dropDown.newChoice"));
+      })
+    );
+  };
+
+  onChangeMarkUp = templateMarkUp => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.templateMarkUp = templateMarkUp;
+        updateVariables(draft);
+      })
+    );
   };
 
   render() {
-    const { item, fillSections, cleanSections } = this.props;
-    const { responseContainersCount } = this.state;
-    const responseContainers = new Array(responseContainersCount).fill(true);
+    const { t, item } = this.props;
 
     return (
-      <div>
-        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-        <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
-        {responseContainers.map((resp, index) => (
-          <ChoicesForResponse item={item} index={index} fillSections={fillSections} cleanSections={cleanSections} />
-        ))}
-      </div>
+      <Widget>
+        <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
+        <CustomQuillComponent
+          toolbarId="templatemarkup"
+          wrappedRef={instance => {
+            this.templatemarkup = instance;
+          }}
+          placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
+          onChange={this.onChangeMarkUp}
+          firstFocus={!item.templateMarkUp}
+          showResponseBtn
+          value={item.templateMarkUp || defaultTemplateMarkup}
+        />
+      </Widget>
     );
   }
 }
@@ -109,4 +137,4 @@ const enhance = compose(
   )
 );
 
-export default enhance(ClozeDropDownAuthoring);
+export default enhance(TemplateMarkup);

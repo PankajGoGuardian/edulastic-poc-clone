@@ -14,7 +14,7 @@ import Breadcrumb from "../../../src/components/Breadcrumb";
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
-import { toggleSideBarAction } from "../../../src/actions/togglemenu";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 import {
   Content,
   LeftSide,
@@ -130,7 +130,7 @@ class Container extends Component {
         ]
       : [
           {
-            title: "<&nbsp;&nbsp;&nbsp;ITEM LIBRARY",
+            title: "ITEM LIBRARY",
             to: "/author/items"
           },
           {

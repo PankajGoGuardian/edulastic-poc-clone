@@ -5,10 +5,10 @@ import { IconChevronLeft, IconPencilEdit } from "@edulastic/icons";
 import { FlexContainer, TextField } from "@edulastic/common";
 import { greenDark, white } from "@edulastic/colors";
 import { Container, Title, RightSide, LeftSide, Back, ExtraFlex, TitleNav, ToggleButton } from "./styled";
-import { toggleSideBarAction } from "../../../src/actions/togglemenu";
+import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
 const ItemHeader = ({ title, children, link, reference, editReference, onChange, hideIcon, toggleSideBar }) => (
-  <Container type="questionEditing">
+  <Container type="standard">
     <ExtraFlex alignItems="center" style={{ flex: 1 }}>
       <LeftSide>
         <ToggleButton onClick={toggleSideBar}>

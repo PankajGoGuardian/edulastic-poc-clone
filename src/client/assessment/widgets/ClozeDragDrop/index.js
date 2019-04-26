@@ -14,17 +14,26 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-import { ResponseQuestion } from "./styled/ResponseQuestion";
 
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Options from "./components/Options";
-import { Widget } from "../../styled/Widget";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
+import { desktopWidth } from "@edulastic/colors";
+import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
+
+const ContentArea = styled.div`
+  max-width: 76.7%;
+  margin-left: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 100%;
+  }
+`;
 
 class ClozeDragDrop extends Component {
   getRenderData = () => {
@@ -105,7 +114,19 @@ class ClozeDragDrop extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      theme,
+      fillSections,
+      cleanSections
+    } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
 
@@ -114,10 +135,10 @@ class ClozeDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <React.Fragment>
-            <ResponseQuestion background={theme.widgets.clozeDragDrop.editViewBgColor}>
+          <ContentArea>
+            <React.Fragment>
               <div className="authoring">
-                <Authoring item={itemForEdit} />
+                <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
                 <Widget>
                   <CorrectAnswers
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
@@ -134,6 +155,8 @@ class ClozeDragDrop extends Component {
                     templateMarkUp={itemForEdit.templateMarkUp}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -160,17 +183,19 @@ class ClozeDragDrop extends Component {
                   </CorrectAnswerOptions>
                 </Widget>
               </div>
-            </ResponseQuestion>
-            <div>
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                outerStyle={{
-                  padding: "30px 0px"
-                }}
-              />
-            </div>
-          </React.Fragment>
+              <div style={{ marginTop: 35 }}>
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                  outerStyle={{
+                    padding: "30px 120px"
+                  }}
+                />
+              </div>
+            </React.Fragment>
+          </ContentArea>
         )}
         {view === "preview" && (
           <Wrapper>
@@ -253,7 +278,9 @@ ClozeDragDrop.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 ClozeDragDrop.defaultProps = {
@@ -264,7 +291,9 @@ ClozeDragDrop.defaultProps = {
   smallSize: false,
   history: {},
   userAnswer: [],
-  testItem: false
+  testItem: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

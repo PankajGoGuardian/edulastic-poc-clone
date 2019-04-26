@@ -8,7 +8,6 @@ import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { AdaptiveCloze } from "../ClozeDropDown/styled/AdaptiveCloze";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";

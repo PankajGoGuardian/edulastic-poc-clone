@@ -24,7 +24,7 @@ import {
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
 import { logoutAction } from "../actions/auth";
-import { toggleSideBarAction } from "../actions/togglemenu";
+import { toggleSideBarAction } from "../actions/toggleMenu";
 import Profile from "../assets/Profile.png";
 
 const menuItems = [

@@ -1,16 +1,22 @@
-import React, { memo } from "react";
+import React, { memo, Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { newBlue, mobileWidth } from "@edulastic/colors";
 import { Affix } from "antd";
 
-const HeaderWrapper = ({ children, type }) => (
-  <HeaderContainer type={type}>
-    <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
-      <Container type={type}>{children}</Container>
-    </Affix>
-  </HeaderContainer>
-);
+class HeaderWrapper extends Component {
+  render = () => {
+    const { children, type } = this.props;
+
+    return (
+      <HeaderContainer type={type}>
+        <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
+          <Container type={type}>{children}</Container>
+        </Affix>
+      </HeaderContainer>
+    );
+  };
+}
 
 HeaderWrapper.propTypes = {
   children: PropTypes.array.isRequired,
@@ -27,8 +33,8 @@ const HeaderContainer = styled.div`
   padding-top: 96px;
 
   @media (max-width: ${mobileWidth}) {
-    padding-top: ${props => (props.type === "questionEditing" ? "138px" : "62px")};
-    margin-bottom: ${props => (props.type === "questionEditing" ? "26px" : "33px")};
+    padding-top: ${props => (props.type === "standard" ? "138px" : "62px")};
+    margin-bottom: ${props => (props.type === "standard" ? "26px" : "33px")};
   }
 `;
 
@@ -41,7 +47,7 @@ const Container = styled.div`
   align-items: center;
 
   @media (max-width: ${mobileWidth}) {
-    height: ${props => (props.type === "questionEditing" ? "138px" : "61px")};
+    height: ${props => (props.type === "standard" ? "auto" : "61px")};
     padding: 16px 26px;
   }
 `;

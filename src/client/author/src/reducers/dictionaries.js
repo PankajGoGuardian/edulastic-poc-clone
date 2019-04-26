@@ -88,7 +88,8 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
           ...state.standards,
           elo: [],
           tlo: []
-        }
+        },
+        alignments: []
       };
     case ADD_DICT_ALIGNMENT:
       const alignments = [...state.alignments];

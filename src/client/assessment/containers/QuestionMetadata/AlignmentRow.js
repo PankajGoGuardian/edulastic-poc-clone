@@ -1,7 +1,7 @@
-import React, { useState, useMemo, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select } from "antd";
-import { pick as _pick } from "lodash";
+import { pick as _pick, uniq as _uniq } from "lodash";
 import { FlexContainer } from "@edulastic/common";
 
 import BrowseButton from "./styled/BrowseButton";
@@ -45,7 +45,7 @@ const AlignmentRow = ({
 
   const standardsArr = standards.map(el => el.identifier);
 
-  const filteredStandards = curriculums.filter(c => {
+  const filteredCurriculums = curriculums.filter(c => {
     if (!subject) {
       return curriculums;
     }
@@ -70,12 +70,20 @@ const AlignmentRow = ({
     ]);
 
     const newStandards = [...standards, newStandard];
-    editAlignment(alignmentIndex, { standards: newStandards });
-    const subject = alignment.subject;
+    let subject = alignment.subject;
+    if (!subject) {
+      const curriculumFromStandard = (option.props.obj || {}).curriculumId
+        ? filteredCurriculums.find(curriculum => curriculum._id === option.props.obj.curriculumId)
+        : {};
+      subject = curriculumFromStandard.subject;
+    }
     const alignmentGrades = alignment.grades;
     const standardsGrades = newStandards.flatMap(standard => standard.grades);
     onCreateUniqSubjects(subject, alignmentIndex);
     onCreateUniqGrades([...alignmentGrades, ...standardsGrades], alignmentIndex);
+    editAlignment(alignmentIndex, {
+      standards: newStandards
+    });
   };
 
   const handleStandardDeselect = removedElement => {
@@ -84,6 +92,16 @@ const AlignmentRow = ({
   };
 
   const handleApply = data => {
+    const gradesFromElo = data.eloStandards.flatMap(elo => elo.grades);
+    let subject = data.subject;
+    if (!subject) {
+      const curriculumFromStandard = data.standard.id
+        ? filteredCurriculums.find(curriculum => curriculum._id === data.standard.id)
+        : {};
+      subject = curriculumFromStandard.subject;
+    }
+    onCreateUniqSubjects(subject, alignmentIndex);
+    onCreateUniqGrades([...data.grades, ...gradesFromElo], alignmentIndex);
     editAlignment(alignmentIndex, {
       subject: data.subject,
       curriculum: data.standard.curriculum,
@@ -103,7 +121,7 @@ const AlignmentRow = ({
     setShowModal(true);
   };
 
-  useMemo(() => {
+  useEffect(() => {
     handleUpdateQuestionAlignment(alignmentIndex, {
       curriculum,
       curriculumId,
@@ -158,7 +176,7 @@ const AlignmentRow = ({
                       value={curriculum}
                       onChange={handleChangeStandard}
                     >
-                      {filteredStandards.map(({ curriculum, _id }) => (
+                      {filteredCurriculums.map(({ curriculum, _id }) => (
                         <Select.Option key={_id} value={curriculum}>
                           {curriculum}
                         </Select.Option>
@@ -195,7 +213,7 @@ const AlignmentRow = ({
                     curriculumStandardsELO.map(el => (
                       <Select.Option
                         title={"true"}
-                        key={el.identifier}
+                        key={el._id}
                         value={el.identifier}
                         obj={el}
                         style={{ whiteSpace: "normal" }}

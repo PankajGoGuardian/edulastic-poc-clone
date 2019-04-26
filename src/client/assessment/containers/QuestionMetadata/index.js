@@ -31,6 +31,8 @@ import {
   getDictionariesAlignmentsSelector
 } from "../../../author/src/selectors/dictionaries";
 
+import { updateQuestionGradesAction, updateQuestionSubjectsAction } from "../../../author/sharedDucks/questions";
+
 import { Container } from "./styled/Container";
 import { ShowAlignmentRowsContainer } from "./styled/ShowAlignmentRowsContainer";
 import { AddButtonContainer } from "./styled/AddButtonContainer";
@@ -60,6 +62,8 @@ const QuestionMetadata = ({
   getCurriculums,
   removeAlignment,
   editAlignment,
+  setQuestionGrades,
+  setQuestionSubjects,
   curriculumStandardsLoading
 }) => {
   const [searchProps, setSearchProps] = useState({ id: "", grades: [], searchStr: "" });
@@ -70,6 +74,9 @@ const QuestionMetadata = ({
     if (curriculums.length === 0) {
       getCurriculums();
     }
+    const { grades = [], subjects = [] } = questionData;
+    setSelectGrade(grades);
+    setSelectSubject(subjects);
   }, []);
 
   const handleDelete = curriculumId => () => {
@@ -98,8 +105,8 @@ const QuestionMetadata = ({
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
     const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
-    const subjects = selectedSubjects;
-    const grades = selectedGrades;
+    const { subjects = selectedSubjects } = questionData;
+    const { grades = selectedGrades } = questionData;
     const newQuestionData = {
       ...questionData,
       alignment: newAlignments,
@@ -136,16 +143,16 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const createUniqGrades = (grades, alignmentIndex) => {
-    const uniqGrades = _.uniq([...grades, ...selectedGrades]);
+  const createUniqGrades = grades => {
+    const uniqGrades = _.uniq([...grades, ...selectedGrades]).filter(item => !!item);
     setSelectGrade(uniqGrades);
-    editAlignment(alignmentIndex, { grades: uniqGrades });
+    setQuestionGrades({ grades: uniqGrades });
   };
 
-  const createUniqSubjects = (subject, alignmentIndex) => {
+  const createUniqSubjects = subject => {
     const uniqSubjects = _.uniq([subject, ...selectedSubjects]).filter(item => !!item);
     setSelectSubject(uniqSubjects);
-    editAlignment(alignmentIndex, { subject });
+    setQuestionSubjects({ subjects: uniqSubjects });
   };
 
   return (
@@ -285,7 +292,9 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       addAlignment: addNewAlignmentAction,
       removeAlignment: removeExistedAlignmentAction,
-      editAlignment: updateDictAlignmentAction
+      editAlignment: updateDictAlignmentAction,
+      setQuestionGrades: updateQuestionGradesAction,
+      setQuestionSubjects: updateQuestionSubjectsAction
     }
   )
 );

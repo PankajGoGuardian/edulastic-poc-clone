@@ -63,7 +63,13 @@ const Histogram = ({
     const newLocalData = cloneDeep(localData);
     if (isMouseDown && cursorY) {
       newLocalData[activeIndex].y -= e.pageY - cursorY;
-      setCursorY(e.pageY);
+
+      if (newLocalData[activeIndex].y >= 0) {
+        setCursorY(e.pageY);
+      } else {
+        newLocalData[activeIndex].y = 0;
+      }
+
       setLocalData(newLocalData);
     }
   };

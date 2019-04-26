@@ -260,8 +260,8 @@ const ChartEdit = ({ item, setQuestionData, t }) => {
           onChange={handleUiStyleChange}
           firstAttr="width"
           secondAttr="height"
-          firstFieldValue={parseInt(item.ui_style.width) < 1 ? null : item.ui_style.width}
-          secondFieldValue={parseInt(item.ui_style.height) < 1 ? null : item.ui_style.height}
+          firstFieldValue={parseInt(item.ui_style.width, 10) < 1 ? null : item.ui_style.width}
+          secondFieldValue={parseInt(item.ui_style.height, 10) < 1 ? null : item.ui_style.height}
           t={t}
         />
 

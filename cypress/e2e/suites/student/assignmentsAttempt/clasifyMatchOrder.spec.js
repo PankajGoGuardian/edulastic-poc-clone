@@ -86,6 +86,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.clickDownMoveButton();
         test.checkAnsValidateAsRight();
 
+        test.getTargetAnswerByIndex(DefinedIndex.wrong).click();
         test.clickUpMoveButton();
         test.checkAnsValidateAsWrong();
 

@@ -2,7 +2,6 @@ import styled from "styled-components";
 import { tabletWidth } from "@edulastic/colors";
 
 export const CorrectAnswerHeader = styled.div`
-  position: absolute;
   top: 0;
   left: 0;
   height: 40px;

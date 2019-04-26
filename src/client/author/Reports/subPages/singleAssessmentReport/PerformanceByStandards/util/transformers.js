@@ -13,8 +13,6 @@ export const analyzeByMode = {
 };
 
 export const compareByMode = {
-  SCHOOL: "school",
-  TEACHER: "teacher",
   CLASS: "class",
   STUDENTS: "students",
   RACE: "race",
@@ -25,18 +23,6 @@ export const compareByMode = {
 };
 
 export const compareByColumns = {
-  [compareByMode.SCHOOL]: {
-    title: "School",
-    dataIndex: "schoolId",
-    key: "schoolId",
-    render: (schoolId, school) => school.schoolName
-  },
-  [compareByMode.TEACHER]: {
-    title: "Teacher",
-    dataIndex: "teacherId",
-    key: "teacherId",
-    render: (teacherId, teacher) => teacher.teacherName
-  },
   [compareByMode.CLASS]: {
     title: "Class",
     dataIndex: "groupId",
@@ -247,10 +233,7 @@ const groupAnalysisByCompare = (data, viewBy, compareBy) => {
 };
 
 const analysisDataSource = (compareBy, studInfo, teacherInfo) => ({
-  dataSource:
-    compareBy === compareByMode.CLASS || compareBy === compareByMode.SCHOOL || compareBy === compareByMode.TEACHER
-      ? teacherInfo
-      : studInfo,
+  dataSource: compareBy === compareByMode.CLASS ? teacherInfo : studInfo,
   dataField: compareByColumns[compareBy].key
 });
 

@@ -7,8 +7,6 @@
     { "key": "masteryScore", "title": "Mastery Score" }
   ],
   "compareByDropDownData": [
-    { "key": "school", "title": "School" },
-    { "key": "teacher", "title": "Teacher" },
     { "key": "class", "title": "Class" },
     { "key": "students", "title": "Students" },
     { "key": "race", "title": "Race" },

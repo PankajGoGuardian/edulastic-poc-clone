@@ -146,6 +146,7 @@ const SimpleBarChartContainer = ({
 
     const skillById = viewBy === viewByMode.STANDARDS ? standardById : domainById;
     const field = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
+    const title = viewBy === viewByMode.STANDARDS ? "Standard" : "Domain";
     const skillId = data.payload[field];
     const skillTitle = skillById[skillId];
 
@@ -153,7 +154,9 @@ const SimpleBarChartContainer = ({
 
     return (
       <TooltipWrapper>
-        <TooltipLabel>Standard: {skillTitle}</TooltipLabel>
+        <TooltipLabel>
+          {title}: {skillTitle}
+        </TooltipLabel>
         <TooltipLabel>Total Points: {(data.payload[rawValue] || data.value).toFixed(2)}</TooltipLabel>
         <TooltipLabel>Avg.Score(%): {formatLabel(data.value)}</TooltipLabel>
       </TooltipWrapper>

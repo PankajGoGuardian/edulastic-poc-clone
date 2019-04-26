@@ -22,23 +22,35 @@ export const compareByMode = {
   IEP_STATUS: "iepStatus"
 };
 
+const lexicSort = field => (a, b) => (a[field] >= b[field] ? (a[field] === b[field] ? 0 : 1) : -1);
+
 export const compareByColumns = {
   [compareByMode.CLASS]: {
     title: "Class",
     dataIndex: "groupId",
     key: "groupId",
+    sorter: lexicSort("className"),
     render: (groupId, studentClass) => studentClass.className
   },
   [compareByMode.STUDENTS]: {
     title: "Student",
     dataIndex: "studentId",
     key: "studentId",
+    sorter: (a, b) => {
+      const aName = `${a.firstName} ${b.lastName}`;
+      const bName = `${b.firstName} ${b.lastName}`;
+
+      if (aName > bName) return 1;
+      else if (aName < bName) return -1;
+      return 0;
+    },
     render: (studentId, student) => `${student.firstName} ${student.lastName}`
   },
   [compareByMode.RACE]: {
     title: "Race",
     dataIndex: "race",
     key: "race",
+    sorter: lexicSort("race"),
     render: capitalize
   },
   [compareByMode.GENDER]: {

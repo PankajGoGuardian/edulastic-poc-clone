@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Table } from "antd";
@@ -26,6 +26,7 @@ const PerformanceAnalysisTable = ({
   selectedDomains,
   tableData
 }) => {
+  // const [sortKey, setSortKey] =
   const formatScore = score => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
@@ -69,17 +70,23 @@ const PerformanceAnalysisTable = ({
 
     const selectedItems = metric => selectedData.includes(metric[dataField]);
 
+    const getAverage = student => {
+      const standardMetrics = Object.values(student.standardMetrics).filter(selectedItems);
+      const field = getAnalyzeField();
+
+      const sumTotal = (total, metric) => total + metric[field];
+      const overall = standardMetrics.reduce(sumTotal, 0);
+      return overall / (standardMetrics.length || 1);
+    };
+
     return {
       title: "Overall",
       dataIndex: "overall",
       key: "overall",
+      sorter: (a, b) => getAverage(a) - getAverage(b),
       render: (studentId, student) => {
         const standardMetrics = Object.values(student.standardMetrics).filter(selectedItems);
-        const field = getAnalyzeField();
-
-        const sumTotal = (total, metric) => total + metric[field];
-        const overall = standardMetrics.reduce(sumTotal, 0);
-        const average = overall / (standardMetrics.length || 1);
+        const average = getAverage(student);
 
         return standardMetrics.length ? formatScore(average) : "N/A";
       }

@@ -1,37 +1,50 @@
 import ReportsPage from "./reportsPage";
+import MathEditor from "./mathEditor";
+
 class StudentTestPage {
-  checkAnsValidateAsWrong() {
+  constructor() {
+    this.mathEditor = new MathEditor();
+  }
+
+  checkAnsValidateAsWrong = () => {
     cy.get("[data-cy=checkAnswer]")
       .should("be.visible")
       .click();
     cy.get("body")
       .contains("score: 0 / 1")
       .should("be.visible");
-  }
+    return this;
+  };
 
-  checkAnsValidateAsRight() {
+  checkAnsValidateAsRight = () => {
     cy.get("[data-cy=checkAnswer]")
       .should("be.visible")
       .click();
     cy.get("body")
       .contains("score: 1 / 1")
       .should("be.visible");
-  }
+  };
 
-  getNext() {
-    return cy.get("[data-cy=next]");
-  }
+  checkAnsValidateAsNoPoint = () => {
+    cy.get("[data-cy=checkAnswer]")
+      .should("be.visible")
+      .click();
+    cy.get("body")
+      .contains("score: 0 / 0")
+      .should("be.visible");
+    return this;
+  };
 
-  clickOnNext() {
+  getNext = () => cy.get("[data-cy=next]");
+
+  clickOnNext = () => {
     cy.wait(500);
     this.getNext()
       .should("be.visible")
       .click();
-  }
+  };
 
-  getPrevious() {
-    return cy.get("[data-cy=prev]");
-  }
+  getPrevious = () => cy.get("[data-cy=prev]");
 
   clickOnPrevious() {
     this.getPrevious()
@@ -40,25 +53,25 @@ class StudentTestPage {
   }
 
   //  click on finish test
-  clickOnExitTest() {
-    cy.get("[data-cy=finishTest]")
+  clickOnExitTest = () =>
+    cy
+      .get("[data-cy=finishTest]")
       .should("be.visible")
       .click();
-  }
 
-  clickOnCancel() {
-    cy.get("[data-cy=cancel]")
+  clickOnCancel = () =>
+    cy
+      .get("[data-cy=cancel]")
       .should("be.visible")
       .click();
-  }
 
-  clickOnProceed() {
-    cy.get("[data-cy=proceed]")
+  clickOnProceed = () =>
+    cy
+      .get("[data-cy=proceed]")
       .should("be.visible")
       .click();
-  }
 
-  submitTest() {
+  submitTest = () => {
     cy.contains("SUBMIT")
       .as("submit")
       .should("be.visible")
@@ -71,28 +84,23 @@ class StudentTestPage {
       .click();
     cy.url().should("include", "/home/reports");
     return new ReportsPage();
-  }
+  };
 
-  getQueDropDown() {
-    return cy.get("[data-cy=options]").should("be.visible");
-  }
+  getQueDropDown = () => cy.get("[data-cy=options]").should("be.visible");
 
-  clickOnMenuCheckAns() {
+  clickOnMenuCheckAns = () => {
     cy.get("[data-cy=setting]")
       .should("be.visible")
       .click();
     cy.contains("Check Answer")
       .should("be.visible")
       .click();
-  }
+    return this;
+  };
 
-  getHint() {
-    return cy.contains("hint").should("be.visible");
-  }
+  getHint = () => cy.contains("hint").should("be.visible");
 
-  getBookmark() {
-    return cy.contains("bookmark").should("be.visible");
-  }
+  getBookmark = () => cy.contains("bookmark").should("be.visible");
 
   // MCQ
 
@@ -502,5 +510,25 @@ class StudentTestPage {
       });
     return this;
   };
+
+  // Math test
+
+  typeFormula = answer => this.mathEditor.typeFormula(answer);
+
+  typeFormulaWithKeyboard = answer => this.mathEditor.typeFormulaWithVirtualKeyboard(answer);
+
+  checkSavedFormulaAnswer = answer => this.mathEditor.checkTypedFormulaCount(answer.length);
+
+  typeFractionNumerator = answer => this.mathEditor.typeFractionNumerator(answer);
+
+  typeFractionNumeratorWithKeyboard = answer => this.mathEditor.typeFractionNumeratorWithVirtualKeyboard(answer);
+
+  checkSavedFractionNumerator = answer => this.mathEditor.checkTypedFractionNumeratorCount(answer.length);
+
+  typeFractionDenominator = answer => this.mathEditor.typeFractionDenominator(answer);
+
+  typeFractionDenominatorWithKeyboard = answer => this.mathEditor.typeFractionDenominatorWithVirtualKeyboard(answer);
+
+  checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 }
 export default StudentTestPage;

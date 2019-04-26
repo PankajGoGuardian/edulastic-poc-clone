@@ -286,7 +286,7 @@ class ClozeDragDropDisplay extends Component {
                       onDrop={this.onDrop}
                       data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
                     >
-                      {userAnswers[dropTargetIndex]}
+                      <div dangerouslySetInnerHTML={{ __html: userAnswers[dropTargetIndex] || "" }} />
                     </Draggable>
                     &nbsp;
                   </ResponseContainer>
@@ -300,7 +300,11 @@ class ClozeDragDropDisplay extends Component {
                         dropTargetIndex
                       ] && userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
                     >
-                      {userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data) || ""
+                        }}
+                      />
                     </Draggable>
                     &nbsp;
                   </ResponseContainer>

@@ -46,7 +46,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                     >
                       {!dragHandler && (
                         <Draggable onDrop={onDrop} data={`${option}_${index}`}>
-                          {option}
+                          <div dangerouslySetInnerHTML={{ __html: option || "" }} />
                         </Draggable>
                       )}
                       {dragHandler && (
@@ -58,7 +58,8 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                                 fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
                               }}
                             />
-                            <span>{option}</span>
+
+                            <span dangerouslySetInnerHTML={{ __html: option || "" }} />
                           </Draggable>
                         </React.Fragment>
                       )}
@@ -84,7 +85,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
           >
             {!dragHandler && (
               <Draggable onDrop={onDrop} data={option}>
-                {option}
+                <div dangerouslySetInnerHTML={{ __html: option || "" }} />
               </Draggable>
             )}
             {dragHandler && (
@@ -96,7 +97,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                       fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
                     }}
                   />
-                  <span>{option}</span>
+                  <span dangerouslySetInnerHTML={{ __html: option || "" }} />
                 </Draggable>
               </React.Fragment>
             )}

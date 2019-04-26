@@ -10,7 +10,7 @@ import { TextField, PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
-import SortableList from "../../../components/SortableList";
+import QuillSortableList from "../../../components/QuillSortableList";
 import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
 import { Heading } from "../../../styled/WidgetOptions/Heading";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -41,14 +41,14 @@ class AdditionalOptions extends Component {
     );
   }
 
-  editOptions(index, e) {
+  editOptions(index, val) {
     const { questionData, setQuestionData } = this.props;
     setQuestionData(
       produce(questionData, draft => {
         if (draft.distractorRationaleOptions === undefined) {
           draft.distractorRationaleOptions = [];
         }
-        draft.distractorRationaleOptions[index] = e.target.value;
+        draft.distractorRationaleOptions[index] = val;
       })
     );
   }
@@ -130,7 +130,7 @@ class AdditionalOptions extends Component {
           </Col>
         </Row>
         <PaddingDiv top={30}>
-          <SortableList
+          <QuillSortableList
             items={questionData.distractorRationaleOptions || []}
             onSortEnd={params => this.onSortEnd(params)}
             useDragHandle

@@ -255,7 +255,7 @@ class Display extends Component {
                         }}
                         onDrop={this.onDrop}
                       >
-                        {answer}
+                        <div dangerouslySetInnerHTML={{ __html: answer || "" }} />
                       </DragItem>
                     ))}
                 </div>

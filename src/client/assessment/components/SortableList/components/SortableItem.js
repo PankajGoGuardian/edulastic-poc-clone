@@ -3,35 +3,38 @@ import { SortableElement } from "react-sortable-hoc";
 import { IconTrash } from "@edulastic/icons";
 import { red, greenDark } from "@edulastic/colors";
 
-import { SortableItemContainer } from "../styled/SortableItemContainer";
-import DragHandle from "./DragHandle";
+import { FlexContainer } from "@edulastic/common";
+import { SortableItemContainer } from "../../QuillSortableList/styled/SortableItemContainer";
+import DragHandle from "../../QuillSortableList/components/DragHandle";
 import FocusInput from "./FocusInput";
 
-const SortableItem = SortableElement(({ cyIndex, value, dirty, onRemove, onChange }) => (
-  <SortableItemContainer data-cy={`choice${cyIndex}`}>
-    <div className="main">
-      <DragHandle />
-      <div>
-        <FocusInput
-          style={{ background: "transparent", width: "100%" }}
-          data-cy={`edit${cyIndex}`}
-          type="text"
-          dirty={dirty}
-          value={value}
-          onChange={onChange}
-        />
+const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, dirty, onRemove, onChange }) => (
+  <SortableItemContainer fontSize={fontSize} columns={columns} data-cy={`choice${cyIndex}`}>
+    <FlexContainer style={{ flex: 1 }}>
+      <div className="main">
+        <DragHandle index={cyIndex} />
+        <div>
+          <FocusInput
+            style={{ background: "transparent", width: "100%" }}
+            data-cy={`edit${cyIndex}`}
+            type="text"
+            dirty={dirty}
+            value={value}
+            onChange={onChange}
+          />
+        </div>
       </div>
-    </div>
-    <IconTrash
-      style={{ cursor: "pointer" }}
-      data-cy="deleteButton"
-      cIndex={cyIndex}
-      onClick={onRemove}
-      color={greenDark}
-      hoverColor={red}
-      width={20}
-      height={20}
-    />
+      <IconTrash
+        style={{ cursor: "pointer" }}
+        data-cy="deleteButton"
+        cIndex={cyIndex}
+        onClick={onRemove}
+        color={greenDark}
+        hoverColor={red}
+        width={20}
+        height={20}
+      />
+    </FlexContainer>
   </SortableItemContainer>
 ));
 export default memo(SortableItem);

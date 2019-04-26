@@ -5,7 +5,7 @@ import * as moment from "moment";
 import { get } from "lodash";
 
 import { Table, Input, Popconfirm, Form, Icon, DatePicker } from "antd";
-import { StyledTableContainer, StyledButton, StyledAddButton } from "./styled";
+import { StyledTableContainer, StyledButton, StyledDeleteButton, StyledAddButton } from "./styled";
 import CreateTermModal from "./CreateTermModal/CreateTermModal";
 import EditTermModal from "./EditTermModal/EditTermModal";
 // selectors
@@ -86,15 +86,18 @@ class TermTable extends React.Component {
         title: <StyledAddButton onClick={this.handleAdd}>+ Add School Year</StyledAddButton>,
         dataIndex: "operation",
         render: (text, record) => {
+          const toDayDate = moment(new Date(), "DD MMM YYYY");
+          toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+          const deleteDisabled = toDayDate.valueOf() > record.startDate;
           return (
             <React.Fragment>
               <StyledButton onClick={() => this.showEditTermModal(record.key)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledButton>
               <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledButton>
+                <StyledDeleteButton disiable={deleteDisabled}>
+                  <Icon type="delete" />
+                </StyledDeleteButton>
               </Popconfirm>
             </React.Fragment>
           );
@@ -161,7 +164,7 @@ class TermTable extends React.Component {
   updateTerm = termData => {
     const { updateTermSetting, userOrgId } = this.props;
     termData.districtId = userOrgId;
-    updateTermSetting(termData);
+    updateTermSetting({ body: termData });
     this.setState({ selectedKey: -1 });
   };
 

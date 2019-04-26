@@ -7,8 +7,14 @@ import { StyledModal, ModalFormItem, StyledDatePicker } from "./styled";
 class EditTermModal extends React.Component {
   constructor(props) {
     super(props);
+    const toDayDate = moment(new Date(), "DD MMM YYYY");
+    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    const isSchoolStart = toDayDate.valueOf() > this.props.termData.startDate ? true : false;
+
     this.state = {
-      ...this.props.termData
+      ...this.props.termData,
+      isSchoolStart
     };
   }
 
@@ -35,6 +41,27 @@ class EditTermModal extends React.Component {
     });
   };
 
+  disableStartDate = startValue => {
+    const toDayDate = moment(new Date(), "DD MMM YYYY");
+    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    const { endDate } = this.state;
+
+    if (startValue.valueOf() < toDayDate.valueOf) return true;
+    if (startValue.valueOf() > endDate) return true;
+    return false;
+  };
+
+  disableEndDate = endValue => {
+    const { startDate } = this.state;
+    const toDayDate = moment(new Date(), "DD MMM YYYY");
+    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    if (startDate > endValue.valueOf()) return true;
+    if (toDayDate.valueOf() > endValue.valueOf()) return true;
+    return false;
+  };
+
   onCloseModal = () => {
     this.props.closeModal();
   };
@@ -42,7 +69,7 @@ class EditTermModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
-    const { startDate, endDate, name } = this.state;
+    const { startDate, endDate, name, isSchoolStart } = this.state;
     const isOverlap = startDate > endDate ? true : false;
 
     return (
@@ -85,7 +112,14 @@ class EditTermModal extends React.Component {
               {getFieldDecorator("startDate", {
                 rules: [{ required: true, message: "Please Select Start Date" }],
                 initialValue: moment(new Date(startDate), "DD MMM YYYY")
-              })(<StyledDatePicker format={"DD MMM YYYY"} onChange={this.handleStartDateChange} />)}
+              })(
+                <StyledDatePicker
+                  disabledDate={this.disableStartDate}
+                  format={"DD MMM YYYY"}
+                  onChange={this.handleStartDateChange}
+                  disabled={isSchoolStart}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -95,7 +129,13 @@ class EditTermModal extends React.Component {
               {getFieldDecorator("endDate", {
                 rules: [{ required: true, message: "Please Select End Date" }],
                 initialValue: moment(new Date(endDate), "DD MMM YYYY")
-              })(<StyledDatePicker format={"DD MMM YYYY"} onChange={this.handleEndDateChange} />)}
+              })(
+                <StyledDatePicker
+                  format={"DD MMM YYYY"}
+                  onChange={this.handleEndDateChange}
+                  disabledDate={this.disableEndDate}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>

@@ -19,6 +19,11 @@ export const StyledButton = styled.a`
   font-size: 20px;
 `;
 
+export const StyledDeleteButton = styled(StyledButton)`
+  pointer-events: ${props => (props.disiable ? "none" : "auto")};
+  color: ${props => (props.disiable ? "rgba(0,0,0,0.65)" : "#1890ff")};
+`;
+
 export const StyledAddButton = styled.a`
   float: right;
   background: #fff;

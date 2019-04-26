@@ -1,6 +1,6 @@
 import API from "./utils/API";
 
-const api = new API("https://1nz4dq81w6.execute-api.us-east-1.amazonaws.com/dev/");
+const api = new API("/math-api");
 
 const evaluate = data =>
   api

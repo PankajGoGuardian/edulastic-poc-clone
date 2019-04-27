@@ -102,10 +102,10 @@ class MathClozePage extends MathMatricesPage {
         .last()
         .click();
       for (let i = 0; i < respQuantity; i++) {
-        this.setValue(input[i], i);
-        this.setSeparator(checkboxValues[index])(i);
+        if (input) this.setValue(input[i], i);
+        if (checkboxValues) this.setSeparator(checkboxValues[index])(i);
       }
-      this.checkMathClozeCorrectAnswer(expected, preview, input.length, isCorrect, true);
+      this.checkMathClozeCorrectAnswer(expected, preview, 0, isCorrect, true);
     });
   };
 
@@ -123,13 +123,30 @@ class MathClozePage extends MathMatricesPage {
         .click();
 
       for (let i = 0; i < respQuantity; i++) {
-        this.setValue(input, i);
+        if (input) this.setValue(input, i);
         this.setSeparator("getAnswerAllowThousandsSeparator")(i);
         this.setAnswerSetDecimalSeparatorDropdown(decimalSeparators[index], i);
         this.setThousandsSeparatorDropdown(thousandsTestingSeparators[index], i);
       }
       this.checkMathClozeCorrectAnswer(expected[index], preview, 0, isCorrect, true);
     });
+  };
+
+  setAnswerTolerance = (tolerance, order) => {
+    const inputOrder = this.getOrder(order);
+    this.getAnswerTolerance()
+      [inputOrder]()
+      .clear({ force: true })
+      .type(tolerance, { force: true });
+  };
+
+  setNewMethodAnd = () => {
+    this.getLastCollapseItem()
+      .last()
+      .click();
+    this.getAddNewMethod()
+      .last()
+      .click();
   };
 }
 

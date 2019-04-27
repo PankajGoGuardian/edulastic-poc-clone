@@ -449,14 +449,18 @@ class MathFormulaEdit {
     this.getAnswerAllowThousandsSeparator().uncheck({ force: true });
   };
 
-  setIsFactorisedMethodField = field =>
+  setIsFactorisedMethodField = (field, order = 0) => {
+    const inputOrder = this.getOrder(order);
+
     this.getAnswerFieldDropdown()
+      [inputOrder]()
       .click()
       .then(() =>
         this.getAnswerFieldDropdownListValue(field)
           .click()
           .should("be.visible")
       );
+  };
 
   mapIsFactorisedMethodFields = fields =>
     Object.values(fields).forEach(field => this.setIsFactorisedMethodField(field));

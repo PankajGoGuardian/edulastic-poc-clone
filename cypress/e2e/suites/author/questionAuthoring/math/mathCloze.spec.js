@@ -99,6 +99,72 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         isCorrectAnswer: [true, true]
       }
     },
+    equivValueTwoResponse: {
+      value: {
+        input: ["4+5=9", "4+5=9"],
+        expected: ["4+5=9", "4+5=9"],
+        isCorrectAnswer: [true]
+      },
+      inverseResult: {
+        expected: ["4+6", "4+6"],
+        input: ["4+6", "4+6"],
+        checkboxValues: ["getAnswerInverseResult", null],
+        isCorrectAnswer: [false, true]
+      },
+      ignoreText: {
+        expected: ["25ms", "25asd"],
+        input: ["25", "25"],
+        checkboxValues: ["getAnswerIgnoreTextCheckox", null],
+        isCorrectAnswer: [true, false]
+      },
+      significantDecimal: {
+        expected: ["0.33", "0.33"],
+        input: "1\\div3",
+        decimalPlaces: 2
+      },
+      tolerance: {
+        input: ["10", "10"],
+        expected: ["8.5", "8.5"],
+        tolerance: ["1.5", "1.5"],
+        isCorrectAnswer: [true]
+      }
+    },
+    isSimplifiedTwoResponse: {
+      setThousandsSeparator: {
+        expected: [["1,000,000", "1,000,000"]],
+        isCorrectAnswer: [true]
+      },
+      inverseResult: {
+        expected: ["8+2=10", "2+8=10"],
+        checkboxValues: ["getAnswerInverseResult", null],
+        isCorrectAnswer: [false, true]
+      }
+    },
+    stringMatchTwoResponse: {
+      literalStringComparison: {
+        expected: ["abc", "abc"],
+        input: ["abc", "abc"],
+        isCorrectAnswer: [true]
+      },
+      leadingAndTrailing: {
+        expected: [" a ", " a "],
+        input: ["a", "a"],
+        checkboxValues: ["getAnswerIgnoreLeadingAndTrailingSpaces"],
+        isCorrectAnswer: [true]
+      },
+      multipleSpaces: {
+        expected: ["a   b", "a   b"],
+        input: ["a b", "a b"],
+        checkboxValues: ["getAnswerTreatMultipleSpacesAsOne"],
+        isCorrectAnswer: [true]
+      }
+    },
+    isFactorisedTwoResponse: {
+      inverseResult: {
+        expected: ["(x−1)(x−2)", "(x−1)(x−2)"],
+        isCorrectAnswer: [true]
+      }
+    },
     equivSymbolic: {
       value: {
         input: "80+20=100",
@@ -680,10 +746,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
 
           question.setValue(input, 0);
 
-          question
-            .getAnswerTolerance()
-            .clear({ force: true })
-            .type(tolerance, { force: true });
+          question.setAnswerTolerance(tolerance, 0);
 
           question.checkMathClozeCorrectAnswer(expected, preview, 0, true);
           question.getAnswerTolerance().clear({ force: true });
@@ -1013,14 +1076,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
           question.setMethod(methods.EQUIV_SYMBOLIC);
           question.setValue(input[0], 0);
 
-          question
-            .getLastCollapseItem()
-            .last()
-            .click();
-          question
-            .getAddNewMethod()
-            .last()
-            .click();
+          question.setNewMethodAnd();
+
           question.setMethod(methods.EQUIV_SYMBOLIC, 1);
           question.setValue(input[1], 1);
 
@@ -1086,14 +1143,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
 
           question.setResponseBox(responseBoxText);
           question.getAddNewMethod().click();
-          question
-            .getLastCollapseItem()
-            .last()
-            .click();
-          question
-            .getAddNewMethod()
-            .last()
-            .click();
+
+          question.setNewMethodAnd();
 
           for (let i = 0; i < responseBoxQuantity; i++) {
             question.setMethod(methods.EQUIV_LITERAL, i);
@@ -1151,6 +1202,207 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         });
       });
 
+      context("TC_569 => equivValue method", () => {
+        beforeEach("Change to equivValue method", () => {
+          preview.header.edit();
+        });
+
+        it("Testing Value", () => {
+          const { input, expected } = queData.equivValueTwoResponse.value;
+          const { responseBoxText, responseBoxQuantity } = queData;
+
+          question.setResponseBox(responseBoxText);
+          question.getAddNewMethod().click();
+
+          question.setNewMethodAnd();
+
+          for (let i = 0; i < responseBoxQuantity; i++) {
+            question.setMethod(methods.EQUIV_VALUE, i);
+            question.setValue(input[i], i);
+          }
+          question.checkMathClozeCorrectAnswer(expected, preview, 0, true, true);
+        });
+
+        it("Testing Inverse result", () => {
+          const { inverseResult } = queData.equivValueTwoResponse;
+          const { responseBoxQuantity } = queData;
+          question.setAndCheckMathClozeCorrectAnswer(inverseResult, preview, responseBoxQuantity);
+        });
+
+        it("Testing Ignore text", () => {
+          const { ignoreText } = queData.equivValueTwoResponse;
+          const { responseBoxQuantity } = queData;
+          question.setAndCheckMathClozeCorrectAnswer(ignoreText, preview, responseBoxQuantity);
+        });
+
+        it("Testing significant decimal places", () => {
+          const { input, expected, decimalPlaces } = queData.equivSymbolicTwoResponse.significantDecimal;
+
+          question
+            .getLastCollapseItem()
+            .last()
+            .click();
+
+          question.setValue(input, 0);
+          question.setValue(input, 1);
+          question.setArgumentInput("getAnswerSignificantDecimalPlaces", decimalPlaces, 0);
+          question.setArgumentInput("getAnswerSignificantDecimalPlaces", decimalPlaces, 1);
+          question.checkMathClozeCorrectAnswer(expected, preview, 0, true, true);
+        });
+
+        it("Testing with compare sides", () => {
+          const { compareSides } = queData.equivSymbolicTwoResponse; //
+          const { responseBoxQuantity } = queData;
+          question.setAndCheckMathClozeCorrectAnswer(compareSides, preview, responseBoxQuantity);
+        });
+
+        it("Testing with tolerance that will be deemed as correct", () => {
+          const { expected, input, tolerance, isCorrectAnswer } = queData.equivValueTwoResponse.tolerance;
+          const { responseBoxQuantity } = queData;
+
+          isCorrectAnswer.forEach((isCorrect, index) => {
+            question
+              .getLastCollapseItem()
+              .last()
+              .click();
+            for (let i = 0; i < responseBoxQuantity; i++) {
+              question.setValue(input[i], i);
+              question.setAnswerTolerance(tolerance[i], i);
+            }
+            question.checkMathClozeCorrectAnswer(expected, preview, input.length, isCorrect, true);
+            question.getAnswerTolerance().clear({ force: true });
+          });
+          question.setAnswerTolerance("0", 1);
+        });
+
+        it("Allow decimal marks", () => {
+          const { setDecimalSeparator } = queData.equivLiteralTwoResponse;
+          const { thousandsTestingSeparators, decimalSeparators, responseBoxQuantity } = queData;
+
+          question.setAndCheckAllowDecimalMarks(
+            setDecimalSeparator,
+            preview,
+            thousandsTestingSeparators,
+            decimalSeparators,
+            responseBoxQuantity
+          );
+        });
+      });
+
+      context("TC_570 => isSimplified method", () => {
+        beforeEach("Change to isSimplified method", () => {
+          preview.header.edit();
+        });
+
+        it("Testing inverse result", () => {
+          const { inverseResult } = queData.isSimplifiedTwoResponse;
+          const { responseBoxQuantity, responseBoxText } = queData;
+
+          question.setResponseBox(responseBoxText);
+          question.getAddNewMethod().click();
+          question.setNewMethodAnd();
+
+          for (let i = 0; i < responseBoxQuantity; i++) {
+            question.setMethod(methods.IS_SIMPLIFIED, i);
+          }
+          question.setAndCheckMathClozeCorrectAnswer(inverseResult, preview, responseBoxQuantity);
+        });
+
+        it("Testing with allow decimal marks", () => {
+          const { setThousandsSeparator } = queData.isSimplifiedTwoResponse;
+          const { thousandsTestingSeparators, decimalSeparators, responseBoxQuantity } = queData;
+
+          question.setAndCheckAllowDecimalMarks(
+            setThousandsSeparator,
+            preview,
+            thousandsTestingSeparators,
+            decimalSeparators,
+            responseBoxQuantity
+          );
+        });
+      });
+
+      context("TC_571 => isFactorised method", () => {
+        beforeEach("Change to isFactorised method", () => {
+          preview.header.edit();
+        });
+        it("Testing method", () => {
+          const { inverseResult } = queData.isFactorisedTwoResponse;
+          const { responseBoxQuantity, responseBoxText } = queData;
+
+          question.setResponseBox(responseBoxText);
+          question.getAddNewMethod().click();
+          question.setNewMethodAnd();
+
+          for (let i = 0; i < responseBoxQuantity; i++) {
+            question.setMethod(methods.IS_FACTORISED, i);
+          }
+          question.setAndCheckMathClozeCorrectAnswer(inverseResult, preview, responseBoxQuantity);
+        });
+        it("Testing with field", () => {
+          question.mapIsFactorisedMethodFields(fields, 0);
+          question.mapIsFactorisedMethodFields(fields, 1);
+        });
+
+        it("Testing inverse result", () => {
+          const { inverseResult } = queData.isSimplifiedTwoResponse;
+          const { responseBoxQuantity, responseBoxText } = queData;
+
+          question.setResponseBox(responseBoxText);
+          question.getAddNewMethod().click();
+          question.setNewMethodAnd();
+
+          for (let i = 0; i < responseBoxQuantity; i++) {
+            question.setMethod(methods.IS_SIMPLIFIED, i);
+          }
+          question.setAndCheckMathClozeCorrectAnswer(inverseResult, preview, responseBoxQuantity);
+        });
+        it("Testing with allow decimal marks", () => {
+          const { setThousandsSeparator } = queData.isSimplifiedTwoResponse;
+          const { thousandsTestingSeparators, decimalSeparators, responseBoxQuantity } = queData;
+
+          question.setAndCheckAllowDecimalMarks(
+            setThousandsSeparator,
+            preview,
+            thousandsTestingSeparators,
+            decimalSeparators,
+            responseBoxQuantity
+          );
+        });
+      });
+
+      context("TC_564 =>  stringMatch method", () => {
+        beforeEach("Change to stringMatch method", () => {
+          preview.header.edit();
+        });
+        it("Testing with literal string comparison", () => {
+          const { literalStringComparison } = queData.stringMatchTwoResponse;
+          const { responseBoxQuantity, responseBoxText } = queData;
+
+          question.setResponseBox(responseBoxText);
+          question.getAddNewMethod().click();
+          question.setNewMethodAnd();
+
+          for (let i = 0; i < responseBoxQuantity; i++) {
+            question.setMethod(methods.STRING_MATCH, i);
+          }
+          question.setAndCheckMathClozeCorrectAnswer(literalStringComparison, preview, responseBoxQuantity);
+        });
+
+        it("Testing ignores spaces before and after a value", () => {
+          const { leadingAndTrailing } = queData.stringMatchTwoResponse;
+          const { responseBoxQuantity } = queData;
+
+          question.setAndCheckMathClozeCorrectAnswer(leadingAndTrailing, preview, responseBoxQuantity);
+        });
+        it("Testing multiple spaces will be ignored and treated as one", () => {
+          const { multipleSpaces } = queData.stringMatchTwoResponse;
+          const { responseBoxQuantity } = queData;
+
+          question.setAndCheckMathClozeCorrectAnswer(multipleSpaces, preview, responseBoxQuantity);
+        });
+      });
+
       context("TC_568 => Save question", () => {
         it("Click on save button", () => {
           question.header.save();
@@ -1160,13 +1412,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
 
       context("TC_569 => Preview Items", () => {
         it("Click on preview", () => {
-          const { expected } = queData.equivLiteralTwoResponse.setDecimalSeparator;
+          const { expected } = queData.stringMatchTwoResponse.multipleSpaces;
 
           previewItems = editItem.header.preview();
           question.getBody().contains("span", "Check Answer");
 
           question.typeInResponseBox().then(inputElements => {
-            expected[1].forEach((expectedValue, index) => {
+            expected.forEach((expectedValue, index) => {
               cy.wrap(inputElements[index]).typeWithDelay(expectedValue);
             });
           });
@@ -1197,6 +1449,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
         it("Click on Clear", () => {
           previewItems.getClear().click();
           question.getEditableField().should("have.value", "");
+        });
+      });
+
+      context("TC_570 => delete the question after creation", () => {
+        it("Click on delete button", () => {
+          preview.header.edit();
+          editItem.getDelButton().click();
+          question.getQuestionContainer().should("not.exist");
         });
       });
     });

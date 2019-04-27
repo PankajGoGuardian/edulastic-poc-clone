@@ -240,9 +240,6 @@ const StaticMathWithResources = (props, ref) => {
   return (
     <WithResources
       resources={[
-        "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.css",
-        "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
-        "https://cdn.jsdelivr.net/npm/katex@0.10.0/dist/katex.min.js",
         "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
         "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
         "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"

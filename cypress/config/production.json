@@ -7,5 +7,5 @@
   "integrationFolder": "cypress/e2e/suites",
   "modifyObstructiveCode": false,
   "requestTimeout": 30000,
-  "API_URL": "https://4uwpei20if.execute-api.us-east-1.amazonaws.com/development/api"
+  "API_URL": "https://edulastic-poc.snapwiz.net/api"
 }

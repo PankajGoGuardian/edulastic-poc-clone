@@ -111,14 +111,14 @@ Cypress.Commands.add("createTestData", () => {
 
 Cypress.Commands.add("deleteItem", item => {
   cy.request({
-    url: `${BASE_URL}/testitem/${typeof item === "string" ? item : item._id}`,
+    url: `${BASE_URL}/testitem/${item._id}`,
     method: "DELETE",
     headers: {
-      Authorization: typeof item === "string" ? window.localStorage.getItem("access_token") : item.authToken
+      Authorization: item.authToken
     }
   }).then(({ status }) => {
     expect(status).to.eq(200);
-    console.log("Item deleted with _id :", typeof item === "string" ? item : item._id);
+    console.log("Item deleted with _id :", item._id);
   });
 });
 

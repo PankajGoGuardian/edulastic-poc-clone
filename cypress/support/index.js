@@ -9,7 +9,6 @@ require("cypress-xpath");
  *  Global before hook to delete testdata
  */
 before("delete test data", () => {
-  cy.login();
   cy.deleteTestData();
 });
 

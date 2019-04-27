@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -38,8 +38,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_238 => Image upload area", () => {
-      it("Upload image to server", () => {
+    context(" > TC_238 => Image upload area", () => {
+      it(" > Upload image to server", () => {
         cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
@@ -71,7 +71,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         //   .should("have.attr", "src", testImageUrl);
       });
 
-      it("Enter Width (px)", () => {
+      it(" > Enter Width (px)", () => {
         question.changeImageWidth(queData.imageWidth);
         question
           .getDropZoneImageContainer()
@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.attr", "width", queData.imageWidth);
       });
 
-      it("Enter Height (px)", () => {
+      it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question
           .getDropZoneImageContainer()
@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.attr", "height", queData.imageHeight);
       });
 
-      it("Image alternative text", () => {
+      it(" > Image alternative text", () => {
         question.addImageAlternative(queData.altText);
         question
           .getDropZoneImageContainer()
@@ -96,8 +96,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       });
     });
 
-    context("TC_239 => Line color options", () => {
-      it("Click on color", () => {
+    context(" > TC_239 => Line color options", () => {
+      it(" > Click on color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.line_color[0] = queData.color1;
         cy.window()
@@ -110,12 +110,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.css", "background-color", queData.color1);
       });
 
-      it("Add new color", () => {
+      it(" > Add new color", () => {
         question.clickAddColor();
         cy.contains("div", "Line color 2").should("be.visible");
       });
 
-      it("Delete Color", () => {
+      it(" > Delete Color", () => {
         cy.contains("div", "Line color 2")
           .next()
           .children()
@@ -127,15 +127,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       });
     });
 
-    context("TC_240 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_240 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_241 => Preview items", () => {
-      it("Click on preview", () => {
+    context(" > TC_241 => Preview items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Clear");
         cy.get("canvas")
@@ -145,12 +145,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .trigger("mouseup", 200, 200);
       });
 
-      it("Shoud be visible Check Answer", () => {
+      it(" > Shoud be visible Check Answer", () => {
         cy.contains("span", "Check Answer").should("be.visible");
         // cy.contains("span", "Show Answers").should("not.visible");
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .should("be.visible")
@@ -161,7 +161,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
     });
   });
 
-  context("Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -178,8 +178,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       editItem.header.edit();
     });
 
-    describe("Layout", () => {
-      it("should be able to select small font size", () => {
+    describe(" > Layout", () => {
+      it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
@@ -193,7 +193,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select normal font size", () => {
+      it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
@@ -207,7 +207,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select large font size", () => {
+      it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
@@ -221,7 +221,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select extra large font size", () => {
+      it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
@@ -235,7 +235,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select huge font size", () => {
+      it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 
@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to change line width", () => {
+      it(" > should be able to change line width", () => {
         const width = 6;
 
         question
@@ -262,7 +262,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
     });
   });
 
-  context("Edit the question created", () => {
+  context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -274,8 +274,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       editItem.getEditButton().click();
     });
 
-    context("TC_243 => Image upload area", () => {
-      it("Upload image to server", () => {
+    context(" > TC_243 => Image upload area", () => {
+      it(" > Upload image to server", () => {
         cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
@@ -304,7 +304,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
         // question.getDropZoneImageContainer().find('img').should("have.attr", "src", testImageUrl);
       });
 
-      it("Enter Width (px)", () => {
+      it(" > Enter Width (px)", () => {
         question.changeImageWidth(queData.imageWidth);
         question
           .getDropZoneImageContainer()
@@ -312,7 +312,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.attr", "width", queData.imageWidth);
       });
 
-      it("Enter Height (px)", () => {
+      it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question
           .getDropZoneImageContainer()
@@ -320,7 +320,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.attr", "height", queData.imageHeight);
       });
 
-      it("Image alternative text", () => {
+      it(" > Image alternative text", () => {
         question.addImageAlternative(queData.altText);
         question
           .getDropZoneImageContainer()
@@ -329,8 +329,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       });
     });
 
-    context("TC_244 => Line color options", () => {
-      it("Click on color", () => {
+    context(" > TC_244 => Line color options", () => {
+      it(" > Click on color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.line_color[0] = queData.color1;
         cy.window()
@@ -343,12 +343,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .should("have.css", "background-color", queData.color1);
       });
 
-      it("Add new color", () => {
+      it(" > Add new color", () => {
         question.clickAddColor();
         cy.contains("div", "Line color 2").should("be.visible");
       });
 
-      it("Delete Color", () => {
+      it(" > Delete Color", () => {
         cy.contains("div", "Line color 2")
           .next()
           .children()
@@ -360,15 +360,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       });
     });
 
-    context("TC_245 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_245 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_246 => Preview Items", () => {
-      it("Click on preview", () => {
+    context(" > TC_246 => Preview Items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Clear");
         cy.get("canvas")
@@ -378,12 +378,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
           .trigger("mouseup", 200, 200);
       });
 
-      it("Should be visible Check Answer", () => {
+      it(" > Should be visible Check Answer", () => {
         cy.contains("span", "Check Answer").should("be.visible");
         // cy.contains("span", "Show Answers").should("not.visible");
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .should("be.visible")
@@ -393,8 +393,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
       });
     });
 
-    context("TC_247 => Delete option", () => {
-      it("Click on delete button in Item Details page", () => {
+    context(" > TC_247 => Delete option", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)

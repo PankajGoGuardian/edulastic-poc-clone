@@ -5,7 +5,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Review Page`, ()
     cy.login();
   });
 
-  it("Summary Page UI Test", () => {
+  it(" > Summary Page UI Test", () => {
     cy.visit("/author/tests/create");
 
     // Review Tab Test

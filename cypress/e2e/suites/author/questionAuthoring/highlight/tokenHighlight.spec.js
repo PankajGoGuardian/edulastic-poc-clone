@@ -48,7 +48,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -56,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[Tc_210] : Enter question text in Compose Question text box", () => {
+    it(" > [Tc_210] : Enter question text in Compose Question text box", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -65,7 +65,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         .should("have.text", queData.queText);
     });
 
-    it("[Tc_211] : Edit template and token", () => {
+    it(" > [Tc_211] : Edit template and token", () => {
       // template
       question
         .getTemplateEditor()
@@ -101,7 +101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
       question.paragraph().click();
     });
 
-    it("[Tc_212] : set correct answer", () => {
+    it(" > [Tc_212] : set correct answer", () => {
       // point
       question.getPoint().verifyNumInput(1);
 
@@ -113,14 +113,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         .should("have.class", ACTIVEWORD);
     });
 
-    it("[Tc_213] : save question", () => {
+    it(" > [Tc_213] : save question", () => {
       // save que
       question.header.save();
       cy.url().should("contain", "item-detail");
     });
 
-    context("[Tc_214] :  preview and validate checkAns,ShowAns,Clear", () => {
-      it("[Tc_1] : Paragraph Token, validate checkAns,ShowAns,Clear", () => {
+    context(" > [Tc_214] :  preview and validate checkAns,ShowAns,Clear", () => {
+      it(" > [Tc_1] : Paragraph Token, validate checkAns,ShowAns,Clear", () => {
         preview.header.preview();
         // show ans
         preview
@@ -181,7 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         preview.getClear().click();
       });
 
-      it("[Tc_2] : Sentence Token, validate checkAns", () => {
+      it(" > [Tc_2] : Sentence Token, validate checkAns", () => {
         preview.header.edit();
         editItem.getEditButton().click();
 
@@ -247,7 +247,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         preview.getClear().click();
       });
 
-      it("[Tc_3] : Word Token,validate checkAns", () => {
+      it(" > [Tc_3] : Word Token,validate checkAns", () => {
         preview.header.edit();
         // set token and ans
         question.goToEditToken();
@@ -313,7 +313,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
     });
   });
 
-  context("Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -330,8 +330,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
       editItem.header.edit();
     });
 
-    describe("Layout", () => {
-      it("should be able to select small font size", () => {
+    describe(" > Layout", () => {
+      it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("small");
 
@@ -345,7 +345,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         select.should("contain", name);
         question.checkFontSize("12.8px");
       });
-      it("should be able to select normal font size", () => {
+      it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("normal");
 
@@ -359,7 +359,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         select.should("contain", name);
         question.checkFontSize("16px");
       });
-      it("should be able to select large font size", () => {
+      it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("large");
 
@@ -373,7 +373,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         select.should("contain", name);
         question.checkFontSize("19.2px");
       });
-      it("should be able to select extra large font size", () => {
+      it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("xlarge");
 
@@ -387,7 +387,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         select.should("contain", name);
         question.checkFontSize("22.4px");
       });
-      it("should be able to select huge font size", () => {
+      it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name } = Helpers.fontSize("xxlarge");
 
@@ -401,7 +401,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
         select.should("contain", name);
         question.checkFontSize("25.6px");
       });
-      it("should be able to change max selection", () => {
+      it(" > should be able to change max selection", () => {
         const maxSelection = 2;
 
         question

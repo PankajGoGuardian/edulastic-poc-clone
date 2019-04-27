@@ -7,7 +7,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test SkillReport Page`
     cy.visit("/home/skill-report");
   });
   const skillReportsPage = new SkillReportsPage();
-  it("Visit SkillReport Page", () => {
+  it(" > Visit SkillReport Page", () => {
     skillReportsPage.isVisible();
     // skillReportsPage.onRatioClick();
   });

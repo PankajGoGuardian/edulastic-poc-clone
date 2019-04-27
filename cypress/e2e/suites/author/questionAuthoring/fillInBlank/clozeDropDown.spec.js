@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
     });
   });
 
-  context("Create basic question and validate.", () => {
+  context(" > Create basic question and validate.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[clz_dropdown_s1] : user create basic question with default option and save", () => {
+    it(" > [clz_dropdown_s1] : user create basic question with default option and save", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -78,7 +78,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
       question.header.save();
     });
 
-    it("[clz_dropdown_s2] : preview and validate with right/wrong ans", () => {
+    it(" > [clz_dropdown_s2] : preview and validate with right/wrong ans", () => {
       preview = editItem.header.preview();
       // enter right ans and validate
       question.setChoiceForResponseIndex(0, queData.correctAns);
@@ -129,7 +129,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
     });
   });
 
-  context("Scoring Block test", () => {
+  context(" > Scoring Block test", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -187,7 +187,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         });
     });
 
-    it("[clz_dropdown_scoring]: Test score with alternate answer", () => {
+    it(" > [clz_dropdown_scoring]: Test score with alternate answer", () => {
       queData.forScoringCorrectAns.forEach((ans, index) => {
         question.setChoiceForResponseIndex(index, ans);
       });
@@ -244,7 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         });
     });
 
-    it("[clz_dropdown_scoring]: Test score with min score if attempted", () => {
+    it(" > [clz_dropdown_scoring]: Test score with min score if attempted", () => {
       question.getEnableAutoScoring().click();
 
       question.getMinScore().type(2);
@@ -262,7 +262,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         });
     });
 
-    it("[clz_dropdown_scoring]: Test score with partial match and penalty", () => {
+    it(" > [clz_dropdown_scoring]: Test score with partial match and penalty", () => {
       question.getMinScore().clear();
 
       question.getPanalty().type(2);
@@ -311,7 +311,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dro
         });
     });
 
-    it("[clz_dropdown_scoring]: Test score with max score", () => {
+    it(" > [clz_dropdown_scoring]: Test score with max score", () => {
       question.getEnableAutoScoring().click();
 
       question

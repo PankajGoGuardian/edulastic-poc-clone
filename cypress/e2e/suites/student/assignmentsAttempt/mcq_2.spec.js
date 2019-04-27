@@ -32,7 +32,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   before(() => {
     cy.login("student");
   });
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.fixture("studentsAttempt").then(data => {
         TestTypes = data.testTypes;
@@ -45,13 +45,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
-      it("Check Assignment Status", () => {
+    context(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+      it(" > Check Assignment Status", () => {
         assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
         test = assignmentPage.clickOnAssignmentButton();
       });
 
-      it("Attempt Q1 - Choice Matrix - Standard", () => {
+      it(" > Attempt Q1 - Choice Matrix - Standard", () => {
         cy.contains("Q1").should("be.visible");
         // highlight test & wrong ans
         test.clickSecondRadioByTitle(DefinedAnswers.right);
@@ -82,7 +82,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q2 - Choice Matrix - Inline", () => {
+      it(" > Attempt Q2 - Choice Matrix - Inline", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -114,7 +114,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q3 - Choice Matrix - Labels", () => {
+      it(" > Attempt Q3 - Choice Matrix - Labels", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -158,7 +158,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         cy.contains("Q3").should("be.visible");
       });
 
-      it("End first Attempt", () => {
+      it(" > End first Attempt", () => {
         // review page
         test.clickOnNext();
         test.submitTest();
@@ -170,8 +170,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("2nd attempt - attempt questions,submit the test,validate stats", () => {
-      it("Attempt Q1 - Choice Matrix - Standard", () => {
+    context(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
+      it(" > Attempt Q1 - Choice Matrix - Standard", () => {
         test = assignmentPage.clickOnAssignmentButton();
         cy.contains("Q1").should("be.visible");
 
@@ -191,7 +191,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Attempt Q2 - Choice Matrix - Inline", () => {
+      it(" > Attempt Q2 - Choice Matrix - Inline", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -210,7 +210,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Attempt Q3 - Choice Matrix - Labels", () => {
+      it(" > Attempt Q3 - Choice Matrix - Labels", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -229,7 +229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Check report", () => {
+      it(" > Check report", () => {
         test.clickOnNext();
 
         // review page

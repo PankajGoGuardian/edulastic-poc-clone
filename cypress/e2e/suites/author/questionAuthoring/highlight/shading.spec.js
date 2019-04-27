@@ -5,7 +5,7 @@ import Helpers from "../../../../framework/util/Helpers";
 import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type question`, () => {
-  describe("Shading", () => {
+  describe(" > Shading", () => {
     const queData = {
       group: "Highlight",
       queType: "Shading",
@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
     const CLEAR = "rgba(0, 176, 255, 0.19)";
     const BLUE = "rgba(0, 176, 255, 0.8)";
 
-    context("Create basic question and validate.", () => {
+    context(" > Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
         editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         editItem.addNew().chooseQuestion(queData.group, queData.queType);
       });
 
-      it("[shad_s1] : user create question with default option and save", () => {
+      it(" > [shad_s1] : user create question with default option and save", () => {
         // enter question
         question
           .getQuestionEditor()
@@ -68,7 +68,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         question.header.save();
       });
 
-      it("[shad_s2] : preview and validate with right/wrong ans", () => {
+      it(" > [shad_s2] : preview and validate with right/wrong ans", () => {
         preview = editItem.header.preview();
         // enter right ans
         question
@@ -158,7 +158,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       });
     });
 
-    context("Advanced Options", () => {
+    context(" > Advanced Options", () => {
       before("visit items page and select question type", () => {
         editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
@@ -175,9 +175,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         editItem.header.edit();
       });
 
-      describe("Layout", () => {
-        describe("Hide cells", () => {
-          it("should be able to hide an each cell", () => {
+      describe(" > Layout", () => {
+        describe(" > Hide cells", () => {
+          it(" > should be able to hide an each cell", () => {
             const shadesViewItems = question.getShadesViewItems();
 
             shadesViewItems.should("be.visible").each($el => {
@@ -194,7 +194,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
                 .and("eq", "hidden");
             });
           });
-          it("should be able to unhide an each cell", () => {
+          it(" > should be able to unhide an each cell", () => {
             const shadesViewItems = question.getShadesViewItems();
 
             shadesViewItems.should("be.visible").each($el => {
@@ -212,7 +212,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             });
           });
         });
-        it("should be able to select border type: Outer", () => {
+        it(" > should be able to select border type: Outer", () => {
           const select = question.getBorderTypeSelect();
 
           select.should("be.visible").click();
@@ -229,7 +229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             .should("have.css", "border")
             .and("eq", "2px solid rgb(0, 176, 255)");
         });
-        it("should be able to select border type: Full", () => {
+        it(" > should be able to select border type: Full", () => {
           question
             .getBorderTypeSelect()
             .should("be.visible")
@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
               .and("eq", "2px");
           });
         });
-        it("should be able to select border type: None", () => {
+        it(" > should be able to select border type: None", () => {
           question
             .getBorderTypeSelect()
             .should("be.visible")
@@ -269,7 +269,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
               .and("eq", "0px");
           });
         });
-        it("should be able to set 2 selection", () => {
+        it(" > should be able to set 2 selection", () => {
           const maxSelectionValue = 2;
 
           question
@@ -298,7 +298,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             }
           });
         });
-        it("should be able to set 0 selection", () => {
+        it(" > should be able to set 0 selection", () => {
           const maxSelectionValue = 0;
 
           question
@@ -321,7 +321,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
               .and("eq", BLUE);
           });
         });
-        it("should be able to check and uncheck hover state option", () => {
+        it(" > should be able to check and uncheck hover state option", () => {
           question
             .getHoverStateOption()
             .should("be.visible")
@@ -330,21 +330,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
             .uncheck({ force: true })
             .should("not.to.be.checked");
         });
-        it("should be able to check Hover state checkbox", () => {
+        it(" > should be able to check Hover state checkbox", () => {
           question
             .getHoverStateOption()
             .should("be.visible")
             .check({ force: true })
             .should("be.checked");
         });
-        it("should be able to uncheck Hover state checkbox", () => {
+        it(" > should be able to uncheck Hover state checkbox", () => {
           question
             .getHoverStateOption()
             .should("be.visible")
             .uncheck({ force: true })
             .should("not.to.be.checked");
         });
-        it("should be able to select small font size", () => {
+        it(" > should be able to select small font size", () => {
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("small");
 
@@ -358,7 +358,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           select.should("contain", name);
           question.checkFontSize(font);
         });
-        it("should be able to select normal font size", () => {
+        it(" > should be able to select normal font size", () => {
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("normal");
 
@@ -372,7 +372,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           select.should("contain", name);
           question.checkFontSize(font);
         });
-        it("should be able to select large font size", () => {
+        it(" > should be able to select large font size", () => {
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("large");
 
@@ -386,7 +386,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           select.should("contain", name);
           question.checkFontSize(font);
         });
-        it("should be able to select extra large font size", () => {
+        it(" > should be able to select extra large font size", () => {
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("xlarge");
 
@@ -400,7 +400,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           select.should("contain", name);
           question.checkFontSize(font);
         });
-        it("should be able to select huge font size", () => {
+        it(" > should be able to select huge font size", () => {
           const select = question.getFontSizeSelect();
           const { name, font } = Helpers.fontSize("xxlarge");
 
@@ -417,7 +417,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
       });
     });
 
-    context("Scoring block test", () => {
+    context(" > Scoring block test", () => {
       before("visit items page and select question type", () => {
         editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
@@ -444,7 +444,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
         // editItem.showAdvancedOptions(); //
       });
 
-      it("Test with alternate answer", () => {
+      it(" > Test with alternate answer", () => {
         // enter question
         question
           .getQuestionEditor()
@@ -620,7 +620,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
       });
 
-      it("Test with max score", () => {
+      it(" > Test with max score", () => {
         question
           .getMaxScore()
           .clear()
@@ -653,7 +653,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
       });
 
-      it("Test with min score if attempted", () => {
+      it(" > Test with min score if attempted", () => {
         question.getMaxScore().clear();
 
         question.getEnableAutoScoring().click();
@@ -696,7 +696,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
           });
       });
 
-      it("Test with penalty and partial match", () => {
+      it(" > Test with penalty and partial match", () => {
         question.selectScoringType("Partial match");
 
         question.getMinScore().clear();

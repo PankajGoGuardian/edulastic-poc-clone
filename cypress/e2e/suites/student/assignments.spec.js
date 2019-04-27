@@ -22,7 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
     });
   });
 
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.deleteAllAssignments();
       cy.assignAssignment(TestTypes.default);
@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       cy.wait("@assignment");
     });
 
-    it("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+    it(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
       assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
       const test = assignmentPage.clickOnAssignmentButton();
       // navigation
@@ -175,7 +175,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       assignmentPage.validateStats(1, "1/3", "4/4", "100%");
     });
 
-    it("2nd attempt - attempt questions,submit the test,validate stats", () => {
+    it(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
       const test = assignmentPage.clickOnAssignmentButton();
       cy.contains("Q1").should("be.visible");
       // attempt 1st que
@@ -227,7 +227,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       assignmentPage.validateAttemptLinkStats(2, 1, "4/4", "100%");
     });
 
-    it("3rd attempt - attempt questions,submit the test,validate stats", () => {
+    it(" > 3rd attempt - attempt questions,submit the test,validate stats", () => {
       const test = assignmentPage.clickOnAssignmentButton();
       cy.contains("Q1").should("be.visible");
       // attempt 1st que
@@ -282,13 +282,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
     });
   });
 
-  context("Assignment with start and due-date scenarios", () => {
+  context(" > Assignment with start and due-date scenarios", () => {
     before("delete all old assignment", () => {
       cy.visit("/home/assignments");
       cy.deleteAllAssignments();
     });
 
-    it("Verify assignments entry before and after due date", () => {
+    it(" > Verify assignments entry before and after due date", () => {
       cy.server();
       cy.route("GET", "**assignments**").as("asgns");
       cy.route("GET", "**summary**").as("summary");

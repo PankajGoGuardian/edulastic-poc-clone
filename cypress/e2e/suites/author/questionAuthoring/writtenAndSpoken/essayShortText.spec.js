@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -38,7 +38,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[essay_short_s1] => user create question with default option and save", () => {
+    it(" > [essay_short_s1] => user create question with default option and save", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -52,7 +52,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       question.header.save();
     });
 
-    it("[essay_short_s2] => preview - validate ans with exact match option", () => {
+    it(" > [essay_short_s2] => preview - validate ans with exact match option", () => {
       preview = editItem.header.preview();
 
       // verify right ans
@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Short text" ty
       preview.getClear().click();
     });
     //  TODO
-    it("[essay_short_s3] => preview - validate ans with partial match option", () => {
+    it(" > [essay_short_s3] => preview - validate ans with partial match option", () => {
       // change setting to partial matchs
       question.header.edit();
       editItem.getEditButton().click();

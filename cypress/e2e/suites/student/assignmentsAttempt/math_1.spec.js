@@ -39,7 +39,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   before(() => {
     cy.login("student");
   });
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.fixture("studentsAttempt").then(data => {
         TestTypes = data.testTypes;
@@ -50,13 +50,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
-      it("Check Assignment Status", () => {
+    context(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+      it(" > Check Assignment Status", () => {
         assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
         test = assignmentPage.clickOnAssignmentButton();
       });
 
-      it("Attempt Q1 - Math Formula", () => {
+      it(" > Attempt Q1 - Math Formula", () => {
         cy.contains("Q1").should("be.visible");
         // highlight test & wrong ans
         test.typeFormula(DefinedAnswers.wrong);
@@ -80,7 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q2 - Math With Fractions", () => {
+      it(" > Attempt Q2 - Math With Fractions", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -108,7 +108,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q3 - Math – Fill In The Blanks", () => {
+      it(" > Attempt Q3 - Math – Fill In The Blanks", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         cy.contains("Q3").should("be.visible");
       });
 
-      it("Attempt Q4 - Math With Text", () => {
+      it(" > Attempt Q4 - Math With Text", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -172,7 +172,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsRight();
       });
 
-      it("End first Attempt", () => {
+      it(" > End first Attempt", () => {
         test.clickOnNext();
         // review page
         test.submitTest();
@@ -184,8 +184,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("2nd attempt - attempt questions,submit the test,validate stats", () => {
-      it("Attempt Q1 - Math Formula", () => {
+    context(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
+      it(" > Attempt Q1 - Math Formula", () => {
         test = assignmentPage.clickOnAssignmentButton();
         cy.contains("Q1").should("be.visible");
 
@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q2 - Math With Fractions", () => {
+      it(" > Attempt Q2 - Math With Fractions", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -218,7 +218,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsWrong();
       });
 
-      it("Attempt Q3 - Math – Fill In The Blanks", () => {
+      it(" > Attempt Q3 - Math – Fill In The Blanks", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -234,7 +234,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsWrong();
       });
 
-      it("Attempt Q4 - Math With Text", () => {
+      it(" > Attempt Q4 - Math With Text", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -250,7 +250,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsNoPoint(); // test.checkAnsValidateAsWrong();
       });
 
-      it("Check report", () => {
+      it(" > Check report", () => {
         test.clickOnNext();
 
         // review page

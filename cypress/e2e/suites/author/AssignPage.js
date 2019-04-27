@@ -6,7 +6,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Review Page`, ()
     cy.visit("/author/tests/create");
   });
 
-  it("Assign Page UI Test", () => {
+  it(" > Assign Page UI Test", () => {
     // Review Tab Test
     cy.visit("/author/tests/create");
     cy.contains("ASSIGN").click();
@@ -22,7 +22,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Review Page`, ()
     cy.get("div").should("contain", "Close Date");
   });
 
-  it("Assign Page Functional Test", () => {
+  it(" > Assign Page Functional Test", () => {
     cy.contains("ASSIGN").click();
 
     cy.get("button")

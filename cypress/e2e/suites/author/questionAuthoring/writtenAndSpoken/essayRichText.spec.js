@@ -27,7 +27,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -35,7 +35,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[essay_rich_s1] => user create question with default option and save", () => {
+    it(" > [essay_rich_s1] => user create question with default option and save", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -47,7 +47,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
       question.header.save();
     });
 
-    it("[essay_rich_s2] => preview - verify default formatting options", () => {
+    it(" > [essay_rich_s2] => preview - verify default formatting options", () => {
       preview = question.header.preview();
       // type text in ans
       question
@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with ric
       });
     });
 
-    it("[essay_rich_s3] => preview - validate word limit on typing ans text", () => {
+    it(" > [essay_rich_s3] => preview - validate word limit on typing ans text", () => {
       question.getTextEditor().clear();
 
       // typing 5 words

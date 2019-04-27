@@ -12,5 +12,5 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test ManageClass Page`
     cy.visit("/home/manage");
   });
   const managePage = new ManagePage();
-  it("Visit manage Page", () => {});
+  it(" > Visit manage Page", () => {});
 });

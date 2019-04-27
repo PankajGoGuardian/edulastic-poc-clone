@@ -35,21 +35,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       // create new que and select type
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
-    context("TC_476 => Enter question text in Compose Question text box", () => {
-      it("Write text in textbox", () => {
+    context(" > TC_476 => Enter question text in Compose Question text box", () => {
+      it(" > Write text in textbox", () => {
         const { testText } = queData;
 
         question.checkIfTextExist(testText);
       });
 
-      it("give external link", () => {
+      it(" > give external link", () => {
         const { testText } = queData;
 
         question.checkIfTextExist(testText).type("{selectall}");
@@ -65,12 +65,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
           });
       });
 
-      it("insert formula", () => {
+      it(" > insert formula", () => {
         const { testText } = queData;
 
         question.checkIfTextExist(testText).clear();
       });
-      it("Upload image to server", () => {
+      it(" > Upload image to server", () => {
         question.getComposeQuestionTextBox().focus();
 
         question.getUploadImageIcon().click();
@@ -85,12 +85,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
       });
     });
 
-    context("TC_477 => Enter the Text formatting options", () => {
+    context(" > TC_477 => Enter the Text formatting options", () => {
       beforeEach("visit edit page and remove all formatting options", () => {
         question.moveToEdit(preview);
       });
 
-      it("Testing If Bold selected", () => {
+      it(" > Testing If Bold selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.BOLD;
 
@@ -102,21 +102,21 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
 
         question.checkAnswerTextEditorValue(tag, testText);
       });
-      it("Testing If Italic selected", () => {
+      it(" > Testing If Italic selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.ITALIC;
 
         question.setFormattingOptions(option);
         question.checkTextFormattingOption(preview, option, testText, tag);
       });
-      it("Testing If Underline selected", () => {
+      it(" > Testing If Underline selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.UNDERLINE;
 
         question.setFormattingOptions(option);
         question.checkTextFormattingOption(preview, option, testText, tag);
       });
-      it("Testing If bullet list selected", () => {
+      it(" > Testing If bullet list selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.UNORDERED_LIST;
         const { option: EditorOption } = selectData.BULLET;
@@ -131,7 +131,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.checkDataExist(tag, testText);
       });
 
-      it("Testing If Superscript selected", () => {
+      it(" > Testing If Superscript selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.ORDERED_LIST;
         const { option: EditorOption } = selectData.ORDERED;
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.checkDataExist(tag, testText);
       });
 
-      it("Testing If number list selected ", () => {
+      it(" > Testing If number list selected ", () => {
         const { testText } = queData;
         const { option, tag } = selectData.SUBSCRIPT;
         const { option: EditorOption } = selectData.SUB;
@@ -156,7 +156,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.checkAnswerTextEditorValue(tag, testText);
       });
 
-      it("Testing If Subscript selected", () => {
+      it(" > Testing If Subscript selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.SUPER_SCRIPT;
         const { option: EditorOption } = selectData.SUPER;
@@ -168,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.checkAnswerTextEditorValue(tag, testText);
       });
 
-      it("Testing If Clear formatting is selected", () => {
+      it(" > Testing If Clear formatting is selected", () => {
         const { testText } = queData;
         const { option, tag } = selectData.REMOVE_FORMAT;
         const { option: EditorOption } = selectData.CLEAN;
@@ -200,14 +200,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
       });
     });
 
-    context("TC_413 => Preview Items", () => {
+    context(" > TC_413 => Preview Items", () => {
       before("visit items page and select question type", () => {
         editItem.getItemWithId(testItemId);
         editItem.deleteAllQuestion();
         // create new que and select type
         editItem.addNew().chooseQuestion(queData.group, queData.queType);
       });
-      it("Click on preview", () => {
+      it(" > Click on preview", () => {
         previewItems = editItem.header.preview();
         question.getAnswerMathInputField().click();
         cy.get(".keyboard").should("be.visible");
@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
         question.getAnswerToolbarTextEditor().should("be.visible");
       });
 
-      it("Click on Check answer", () => {
+      it(" > Click on Check answer", () => {
         previewItems
           .getCheckAnswer()
           .click()
@@ -229,7 +229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
           );
       });
 
-      it("Click on Show Answers", () => {
+      it(" > Click on Show Answers", () => {
         previewItems
           .getShowAnswer()
           .click()
@@ -238,7 +238,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
           });
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         const { testText } = queData;
         question.getEditorInput().type(testText, { force: true });
         previewItems.getClear().click();
@@ -246,15 +246,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
       });
     });
 
-    context("TC_415 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_415 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_484 => delete the question after creation", () => {
-      it("Click on delete button", () => {
+    context(" > TC_484 => delete the question after creation", () => {
+      it(" > Click on delete button", () => {
         editItem.getDelButton().click();
         question.getQuestionContainer().should("not.exist");
       });

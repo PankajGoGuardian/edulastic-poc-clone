@@ -21,7 +21,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -30,13 +30,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    describe("Extras", () => {
+    describe(" > Extras", () => {
       /*       before(() => {
         editItem.clickAdvancedOptionsButton(); // UI toggel has been removed
       });
  */
-      describe("Main options", () => {
-        it("Enter acknowledgements text", () => {
+      describe(" > Main options", () => {
+        it(" > Enter acknowledgements text", () => {
           const text = "acknowledgements";
 
           extras
@@ -46,7 +46,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("contain", text);
         });
 
-        it("Enter distractor rationale text", () => {
+        it(" > Enter distractor rationale text", () => {
           const text = "distractorRationale";
 
           extras
@@ -56,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("contain", text);
         });
 
-        it("Enter rubric reference text", () => {
+        it(" > Enter rubric reference text", () => {
           const text = "rubric reference";
 
           extras
@@ -66,7 +66,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("contain", text);
         });
 
-        it("Enter instructor stimulus text", () => {
+        it(" > Enter instructor stimulus text", () => {
           const text = "instructor stimulus";
 
           extras
@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("contain", text);
         });
 
-        it("Enter sample answer text", () => {
+        it(" > Enter sample answer text", () => {
           const text = "sample answer";
 
           extras
@@ -87,12 +87,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
         });
       });
 
-      describe("Distractor rationale per response", () => {
+      describe(" > Distractor rationale per response", () => {
         beforeEach(() => {
           extras.deleteAllDistractors();
         });
 
-        it("should be able to add new distractor", () => {
+        it(" > should be able to add new distractor", () => {
           extras
             .clickAddDistractorButton()
             .getDistractorList()
@@ -100,7 +100,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("be.visible");
         });
 
-        it("should be able to delete first distractor", () => {
+        it(" > should be able to delete first distractor", () => {
           extras
             .clickAddDistractorButton()
             .getDistractorList()
@@ -120,7 +120,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("not.be.visible");
         });
 
-        it("should be able to type text", () => {
+        it(" > should be able to type text", () => {
           const text = "test text";
 
           extras
@@ -134,12 +134,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
         });
       });
 
-      describe("Hint", () => {
+      describe(" > Hint", () => {
         beforeEach(() => {
           extras.deleteAllHints();
         });
 
-        it("should be able to add new hint", () => {
+        it(" > should be able to add new hint", () => {
           extras
             .clickAddHintButton()
             .getHintsList()
@@ -148,7 +148,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("be.visible");
         });
 
-        it("should be able to delete first hint", () => {
+        it(" > should be able to delete first hint", () => {
           extras
             .clickAddHintButton()
             .getHintsList()
@@ -167,7 +167,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
             .should("not.be.visible");
         });
 
-        it("should be able to type text", () => {
+        it(" > should be able to type text", () => {
           const text = "test text";
 
           extras

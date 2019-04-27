@@ -36,14 +36,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_87 => List", () => {
-      it("Edit the list existing names", () => {
+    context(" > TC_87 => List", () => {
+      it(" > Edit the list existing names", () => {
         question.getListInputs().each(($el, index) => {
           cy.wrap($el)
             .clear()
@@ -53,7 +53,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         cy.get("body").click();
       });
 
-      it("Add/Delete new list items", () => {
+      it(" > Add/Delete new list items", () => {
         question
           .getAddInputButton()
           .click()
@@ -69,8 +69,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
       });
     });
 
-    context("TC_88 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_88 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPonitsInput()
           .focus()
@@ -82,7 +82,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           .blur();
       });
 
-      it("Provide the order of answers list", () => {
+      it(" > Provide the order of answers list", () => {
         cy.get("#drag-handler-options20")
           .customDragDrop("#drag-handler-options22")
           .then(() => {
@@ -92,7 +92,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           });
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question.addAlternate();
         question
           .getAddedAlternate()
@@ -105,15 +105,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
       });
     });
 
-    context("TC_89 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_89 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_90 => Preview Items", () => {
-      it("Click on preview", () => {
+    context(" > TC_90 => Preview Items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Check Answer");
 
@@ -122,7 +122,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         });
       });
 
-      it("Click on Check answer", () => {
+      it(" > Click on Check answer", () => {
         preview
           .getCheckAnswer()
           .click()
@@ -133,7 +133,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           });
       });
 
-      it("Click on Show Answers", () => {
+      it(" > Click on Show Answers", () => {
         preview
           .getShowAnswer()
           .click()
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           });
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .click()
@@ -159,15 +159,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
     });
   });
 
-  context("Edit the questin created", () => {
+  context(" > Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_92 => List", () => {
-      it("Edit the list existing names", () => {
+    context(" > TC_92 => List", () => {
+      it(" > Edit the list existing names", () => {
         question.getListInputs().each(($el, index) => {
           cy.wrap($el)
             .clear()
@@ -177,7 +177,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         cy.get("body").click();
       });
 
-      it("Add/Delete new list items", () => {
+      it(" > Add/Delete new list items", () => {
         question
           .getAddInputButton()
           .click()
@@ -193,8 +193,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
       });
     });
 
-    context("TC_93 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_93 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPonitsInput()
           .focus()
@@ -206,7 +206,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           .blur();
       });
 
-      it("Provide the order of answers list", () => {
+      it(" > Provide the order of answers list", () => {
         cy.get("#drag-handler-options20")
           .customDragDrop("#drag-handler-options22")
           .then(() => {
@@ -216,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
           });
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question.addAlternate();
         question
           .getAddedAlternate()
@@ -229,17 +229,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
       });
     });
 
-    context("TC_94 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_94 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
   });
 
-  context("Delete the question after creation", () => {
-    context("Tc_95 => Delete option", () => {
-      it("Click on delete button in Item Details page", () => {
+  context(" > Delete the question after creation", () => {
+    context(" > Tc_95 => Delete option", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)
@@ -249,7 +249,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
     });
   });
 
-  context("Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -264,8 +264,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
       editItem.header.edit();
     });
 
-    describe("Layout", () => {
-      it("should be able to select button list style and change layout", () => {
+    describe(" > Layout", () => {
+      it(" > should be able to select button list style and change layout", () => {
         question.getListStyleSelect().as("select");
 
         cy.get("@select")
@@ -279,7 +279,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
         cy.get("@select").should("contain", "Button");
       });
-      it("should be able to select list style and change layout", () => {
+      it(" > should be able to select list style and change layout", () => {
         question.getListStyleSelect().as("select");
 
         cy.get("@select")
@@ -293,7 +293,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
         cy.get("@select").should("contain", "List");
       });
-      it("should be able to select inline style and change layout", () => {
+      it(" > should be able to select inline style and change layout", () => {
         question.getListStyleSelect().as("select");
 
         cy.get("@select")
@@ -308,7 +308,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         cy.get("@select").should("contain", "Inline");
         question.checkListStyle("inline");
       });
-      it("should be able to select numerical stem numeration", () => {
+      it(" > should be able to select numerical stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -320,7 +320,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
         select.should("contain", "Numerical");
       });
-      it("should be able to select Uppercase Alphabet stem numeration", () => {
+      it(" > should be able to select Uppercase Alphabet stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -332,7 +332,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
         select.should("contain", "Uppercase Alphabet");
       });
-      it("should be able to select Lowercase Alphabet stem numeration", () => {
+      it(" > should be able to select Lowercase Alphabet stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -344,7 +344,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
         select.should("contain", "Lowercase Alphabet");
       });
-      it("should be able to select small font size", () => {
+      it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
@@ -358,7 +358,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select normal font size", () => {
+      it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
@@ -372,7 +372,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select large font size", () => {
+      it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
@@ -386,7 +386,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select extra large font size", () => {
+      it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
@@ -400,7 +400,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select huge font size", () => {
+      it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 

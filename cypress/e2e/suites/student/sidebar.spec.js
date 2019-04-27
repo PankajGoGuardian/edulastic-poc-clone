@@ -6,7 +6,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >>Test Sidebar Page`, () 
     cy.visit("/home/dashboard");
   });
   const sidebar = new SidebarPage();
-  it("Visit Sidebar Page", () => {
+  it(" > Visit Sidebar Page", () => {
     sidebar.onClickMenuItems();
     sidebar.onClickCollapse();
     sidebar.isVisible();

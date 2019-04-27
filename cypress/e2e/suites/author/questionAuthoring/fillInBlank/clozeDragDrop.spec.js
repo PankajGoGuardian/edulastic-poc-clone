@@ -31,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -39,8 +39,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_2 => Enter the text/inputs to Template Markup", () => {
-      it("Write text in textbox", () => {
+    context(" > TC_2 => Enter the text/inputs to Template Markup", () => {
+      it(" > Write text in textbox", () => {
         question
           .getTemplateEditor()
           .clear()
@@ -56,8 +56,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_3 => Use Group possible responses block", () => {
-      it("Check the group possible responses checkbox", () => {
+    context(" > TC_3 => Use Group possible responses block", () => {
+      it(" > Check the group possible responses checkbox", () => {
         question
           .getGroupResponsesCheckbox()
           .click()
@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.checked");
       });
 
-      it("Delete choices", () => {
+      it(" > Delete choices", () => {
         question
           .getChoiceResponseContainer()
           .each(($el, index, $list) => {
@@ -93,7 +93,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("have.length", 0);
       });
 
-      it("Add new choices", () => {
+      it(" > Add new choices", () => {
         queData.choices.forEach((ch, index) => {
           question
             .getAddChoiceButton()
@@ -112,8 +112,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_4 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_4 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPontsInput()
           .focus()
@@ -126,11 +126,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .blur();
       });
 
-      it("Drag and drop the responses", () => {
+      it(" > Drag and drop the responses", () => {
         question.setAnswerToResponseBox(queData.choices[0], 0, 0);
       });
 
-      it("Check/Uncheck duplicate response checkbox", () => {
+      it(" > Check/Uncheck duplicate response checkbox", () => {
         question.getDuplicatedResposneCheck().click();
         question
           .getDuplicatedResposneCheck()
@@ -150,7 +150,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           });
       });
 
-      it("Check/Uncheck Show Drag Handle", () => {
+      it(" > Check/Uncheck Show Drag Handle", () => {
         question.getDraghandleCheck().click();
         question
           .getDraghandleCheck()
@@ -172,7 +172,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.exist");
       });
 
-      it("Check/uncheck Shuffle Options", () => {
+      it(" > Check/uncheck Shuffle Options", () => {
         question.getShuffleOptionCheck().click();
         question
           .getShuffleOptionCheck()
@@ -208,7 +208,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .contains("div", queData.choices[2]);
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question
           .getAddAlternative()
           .click()
@@ -223,15 +223,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_5 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_5 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_6 => Preview Items", () => {
-      it("Click on preview", () => {
+    context(" > TC_6 => Preview Items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Check Answer");
 
@@ -239,7 +239,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
         question.getResponseContainerByIndex(0).contains("div", queData.choices[0]);
       });
 
-      it("Click on Check answer", () => {
+      it(" > Click on Check answer", () => {
         preview
           .getCheckAnswer()
           .click()
@@ -248,7 +248,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           });
       });
 
-      it("Click on Show Answers", () => {
+      it(" > Click on Show Answers", () => {
         preview
           .getShowAnswer()
           .click()
@@ -261,7 +261,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           });
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .click()
@@ -280,7 +280,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     });
   });
 
-  context("Edit the question created", () => {
+  context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -289,8 +289,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_8 => Enter the text/inputs to Template Markup", () => {
-      it("Write text in textbox", () => {
+    context(" > TC_8 => Enter the text/inputs to Template Markup", () => {
+      it(" > Write text in textbox", () => {
         question
           .getTemplateEditor()
           .clear()
@@ -306,8 +306,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_9 => Use Group possible responses block", () => {
-      it("Check the group possible responses checkbox", () => {
+    context(" > TC_9 => Use Group possible responses block", () => {
+      it(" > Check the group possible responses checkbox", () => {
         question
           .getGroupResponsesCheckbox()
           .click()
@@ -329,7 +329,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.checked");
       });
 
-      it("Delete choices", () => {
+      it(" > Delete choices", () => {
         question
           .getChoiceResponseContainer()
           .each(($el, index, $list) => {
@@ -343,7 +343,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("have.length", 0);
       });
 
-      it("Add new choices", () => {
+      it(" > Add new choices", () => {
         queData.choices.forEach((ch, index) => {
           question
             .getAddChoiceButton()
@@ -362,8 +362,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_10 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_10 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPontsInput()
           .focus()
@@ -376,11 +376,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .blur();
       });
 
-      it("Drag and drop the responses", () => {
+      it(" > Drag and drop the responses", () => {
         question.setAnswerToResponseBox(queData.choices[0], 0, 0);
       });
 
-      it("Check/Uncheck duplicate response checkbox", () => {
+      it(" > Check/Uncheck duplicate response checkbox", () => {
         question.getDuplicatedResposneCheck().click();
         question
           .getDuplicatedResposneCheck()
@@ -400,7 +400,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           });
       });
 
-      it("Check/Uncheck Show Drag Handle", () => {
+      it(" > Check/Uncheck Show Drag Handle", () => {
         question.getDraghandleCheck().click();
         question
           .getDraghandleCheck()
@@ -422,7 +422,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .should("not.exist");
       });
 
-      it("Check/uncheck Shuffle Options", () => {
+      it(" > Check/uncheck Shuffle Options", () => {
         question.getShuffleOptionCheck().click();
         question
           .getShuffleOptionCheck()
@@ -456,7 +456,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
           .contains("div", queData.choices[2]);
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question
           .getAddAlternative()
           .click()
@@ -471,14 +471,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       });
     });
 
-    context("TC_11 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_11 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
       });
     });
 
-    context("TC_12 => Delete options", () => {
-      it("Click on delete button in Item Details page", () => {
+    context(" > TC_12 => Delete options", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)
@@ -488,7 +488,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
     });
   });
 
-  context("Scoring block tests", () => {
+  context(" > Scoring block tests", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -506,7 +506,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
       // question.clickOnAdvancedOptions();
     });
 
-    it("Test scoring with max score", () => {
+    it(" > Test scoring with max score", () => {
       // question.clickOnAdvancedOptions();
 
       question
@@ -524,7 +524,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
         });
     });
 
-    it("Test scoring with alternate answer", () => {
+    it(" > Test scoring with alternate answer", () => {
       question.getMaxScore().clear();
 
       question
@@ -572,7 +572,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
         });
     });
 
-    it("Test scoring with partial match, min score if attempted and penalty", () => {
+    it(" > Test scoring with partial match, min score if attempted and penalty", () => {
       question.getEnableAutoScoring().click();
 
       question.getPanalty().type(2);

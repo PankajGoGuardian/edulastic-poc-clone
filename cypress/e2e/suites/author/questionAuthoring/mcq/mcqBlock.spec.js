@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -42,7 +42,7 @@ describe(`${FileHelper.getSpecName(
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[Tc_301]:test => Enter question text", () => {
+    it(" > [Tc_301]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -124,7 +124,7 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_302]:test => Multiple choices options", () => {
+    it(" > [Tc_302]:test => Multiple choices options", () => {
       // edit 1st choice
       question
         .getChoiceByIndex(0)
@@ -153,7 +153,7 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_303]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_303]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -189,7 +189,7 @@ describe(`${FileHelper.getSpecName(
         .should("have.length", queData.choices.length);
     });
 
-    it("[Tc_304]:test => Advanced Options", () => {
+    it(" > [Tc_304]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -237,7 +237,7 @@ describe(`${FileHelper.getSpecName(
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_305]:test => Layout", () => {
+    it(" > [Tc_305]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -279,13 +279,13 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_306]:test => Save question", () => {
+    it(" > [Tc_306]:test => Save question", () => {
       editItem.header.save();
       cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_307]:test => Preview Item", () => {
+    it(" > [Tc_307]:test => Preview Item", () => {
       // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
@@ -308,7 +308,7 @@ describe(`${FileHelper.getSpecName(
     });
   });
 
-  context("User edit the question.", () => {
+  context(" > User edit the question.", () => {
     const queData = {
       group: "Multiple Choice",
       queType: "Multiple choice - block layout",
@@ -332,7 +332,7 @@ describe(`${FileHelper.getSpecName(
       editItem.getEditButton().click();
     });
 
-    it("[Tc_308]:test => Enter question text", () => {
+    it(" > [Tc_308]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -414,7 +414,7 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_309]:test => Multiple choices options", () => {
+    it(" > [Tc_309]:test => Multiple choices options", () => {
       // edit 1st choice
       question
         .getChoiceByIndex(0)
@@ -443,7 +443,7 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_310]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_310]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -479,7 +479,7 @@ describe(`${FileHelper.getSpecName(
         .should("have.length", queData.choices.length);
     });
 
-    it("[Tc_311]:test => Advanced Options", () => {
+    it(" > [Tc_311]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -527,7 +527,7 @@ describe(`${FileHelper.getSpecName(
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_312]:test => Layout", () => {
+    it(" > [Tc_312]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -569,7 +569,7 @@ describe(`${FileHelper.getSpecName(
       });
     });
 
-    it("[Tc_313]:test => Save question", () => {
+    it(" > [Tc_313]:test => Save question", () => {
       editItem.header.save();
 
       cy.contains(queData.formattext).should("be.visible");
@@ -577,7 +577,7 @@ describe(`${FileHelper.getSpecName(
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_314]:test => Preview Item", () => {
+    it(" > [Tc_314]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
       preview
@@ -598,7 +598,7 @@ describe(`${FileHelper.getSpecName(
       preview.header.edit();
     });
 
-    it("[Tc_315]:test => Delete question from item", () => {
+    it(" > [Tc_315]:test => Delete question from item", () => {
       editItem
         .getDelButton()
         .should("have.length", 1)
@@ -607,7 +607,7 @@ describe(`${FileHelper.getSpecName(
     });
   });
 
-  context("[sanity]:test => Create question using different options and validate", () => {
+  context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -666,7 +666,7 @@ describe(`${FileHelper.getSpecName(
       question.header.save();
     });
 
-    it("[mcq_block_test1]:test => Create question with 2 correct ans and validate with exact & partial match", () => {
+    it(" > [mcq_block_test1]:test => Create question with 2 correct ans and validate with exact & partial match", () => {
       question.header
         .edit()
         .getEditButton()

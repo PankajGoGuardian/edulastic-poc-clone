@@ -36,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   before(() => {
     cy.login("student");
   });
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.fixture("studentsAttempt").then(data => {
         TestTypes = data.testTypes;
@@ -50,13 +50,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
-      it("Check Assignment Status", () => {
+    context(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+      it(" > Check Assignment Status", () => {
         assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
         test = assignmentPage.clickOnAssignmentButton();
       });
 
-      it("Check every question", () => {
+      it(" > Check every question", () => {
         // attempt 1st que
         // wrong ans
         test.dragAndDropByIndex(DefinedAnswers.wrong, DefinedIndex.right);
@@ -246,8 +246,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("2nd attempt - attempt questions,submit the test,validate stats", () => {
-      it("Check every question", () => {
+    context(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
+      it(" > Check every question", () => {
         test = assignmentPage.clickOnAssignmentButton();
         cy.contains("Q1").should("be.visible");
 

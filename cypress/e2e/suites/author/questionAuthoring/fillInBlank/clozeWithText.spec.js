@@ -33,7 +33,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
     });
   });
 
-  context("Create basic question and validate.", () => {
+  context(" > Create basic question and validate.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -41,7 +41,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[clz_txt_s1] : user create question with default option and save", () => {
+    it(" > [clz_txt_s1] : user create question with default option and save", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -62,7 +62,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
       question.header.save();
     });
 
-    it("[clz_txt_s2] : preview and validate with right/wrong ans", () => {
+    it(" > [clz_txt_s2] : preview and validate with right/wrong ans", () => {
       preview = editItem.header.preview();
       // enter right ans
       question.getResponseBoxByIndex(0).type(queData.correctAns);
@@ -118,7 +118,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
     });
   });
 
-  context("Scoring Block test", () => {
+  context(" > Scoring Block test", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -138,7 +138,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it("test score with alternate answer", () => {
+    it(" > test score with alternate answer", () => {
       queData.forScoringCorrectAns.forEach((ans, index) => {
         question
           .getResponseBoxByIndex(index)
@@ -182,7 +182,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it("test score with min score if attempted", () => {
+    it(" > test score with min score if attempted", () => {
       scoringBlock.getEnableAutoScoring().click();
 
       scoringBlock
@@ -203,7 +203,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it("test score with partial match and penalty", () => {
+    it(" > test score with partial match and penalty", () => {
       scoringBlock.getMinScore().clear();
 
       scoringBlock
@@ -226,7 +226,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
         });
     });
 
-    it("test score with max score", () => {
+    it(" > test score with max score", () => {
       scoringBlock.selectScoringType("Exact match");
 
       scoringBlock.getEnableAutoScoring().click();

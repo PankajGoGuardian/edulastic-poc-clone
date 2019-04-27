@@ -29,7 +29,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -37,7 +37,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[essay_p_s1]] => user create question with default option and save", () => {
+    it(" > [essay_p_s1]] => user create question with default option and save", () => {
       // enter question
       question
         .getQuestionEditor()
@@ -49,7 +49,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
       question.header.save();
     });
 
-    it("[essay_p_s2] => preview - verify default cut/copy/paste options", () => {
+    it(" > [essay_p_s2] => preview - verify default cut/copy/paste options", () => {
       preview = question.header.preview();
       // verify copy paste option
       question
@@ -88,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
       question.getTextEditor().should("have.text", `${queData.copycut}${queData.testtext}`);
     });
 
-    it("[essay_p_s3] => preview - validate word limit on typing ans text", () => {
+    it(" > [essay_p_s3] => preview - validate word limit on typing ans text", () => {
       question.getTextEditor().clear();
 
       // typing 5 words

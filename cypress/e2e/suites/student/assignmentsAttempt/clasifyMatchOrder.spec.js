@@ -39,7 +39,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   before(() => {
     cy.login("student");
   });
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.fixture("studentsAttempt").then(data => {
         TestTypes = data.testTypes;
@@ -53,13 +53,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
-      it("Check Assignment Status and Start Test", () => {
+    context(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+      it(" > Check Assignment Status and Start Test", () => {
         assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
         test = assignmentPage.clickOnAssignmentButton();
       });
 
-      it("Attepmt Sort List Test", () => {
+      it(" > Attepmt Sort List Test", () => {
         // hightlight test
         test.checkHighLightByIndex(DefinedIndex.right, selectedColor, deselectedColor);
         test.checkHighLightByIndex(DefinedIndex.wrong, selectedColor, deselectedColor);
@@ -116,7 +116,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         // test.checkAnsValidateAsRight();
       });
 
-      it("Attepmt Classification Test", () => {
+      it(" > Attepmt Classification Test", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -132,7 +132,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         // found crashing on drag drop answer to target
       });
 
-      it("Attepmt Match List Test", () => {
+      it(" > Attepmt Match List Test", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -186,7 +186,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         // test.checkAnsValidateAsRight();
       });
 
-      it("Attepmt OrderList Test", () => {
+      it(" > Attepmt OrderList Test", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -205,8 +205,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("2nd attempt - attempt questions,submit the test,validate stats", () => {
-      it("Attepmt Sort List Test", () => {
+    context(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
+      it(" > Attepmt Sort List Test", () => {
         test = assignmentPage.clickOnAssignmentButton();
         cy.contains("Q1").should("be.visible");
 
@@ -240,14 +240,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Attepmt Classification Test", () => {
+      it(" > Attepmt Classification Test", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
         // found crashing on drag drop answer to target
       });
 
-      it("Attepmt Match List Test", () => {
+      it(" > Attepmt Match List Test", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -275,7 +275,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Attepmt OrderList Test", () => {
+      it(" > Attepmt OrderList Test", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -284,7 +284,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Check report", () => {
+      it(" > Check report", () => {
         test.clickOnNext();
 
         // review page

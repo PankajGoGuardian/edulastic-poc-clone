@@ -31,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -40,7 +40,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[Tc_284]:test => Enter question text", () => {
+    it(" > [Tc_284]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -85,7 +85,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_285]:test => Multiple choices options", () => {
+    it(" > [Tc_285]:test => Multiple choices options", () => {
       // check default choice options
       question
         .getAllChoices()
@@ -121,7 +121,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_286]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_286]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -146,7 +146,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_287]:test => Advanced Options", () => {
+    it(" > [Tc_287]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -194,7 +194,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_288]:test => Layout", () => {
+    it(" > [Tc_288]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -235,13 +235,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question.selectChoicesStyle("Standard");
     });
 
-    it("[Tc_289]:test => Save question", () => {
+    it(" > [Tc_289]:test => Save question", () => {
       editItem.header.save();
       cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_290]:test => Preview Item", () => {
+    it(" > [Tc_290]:test => Preview Item", () => {
       // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
@@ -264,7 +264,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
   });
 
-  context("User edit the question.", () => {
+  context(" > User edit the question.", () => {
     const queData = {
       group: "Multiple Choice",
       queType: "True or false",
@@ -288,7 +288,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       editItem.getEditButton().click();
     });
 
-    it("[Tc_291]:test => Enter question text", () => {
+    it(" > [Tc_291]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -333,7 +333,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_292]:test => Multiple choices options", () => {
+    it(" > [Tc_292]:test => Multiple choices options", () => {
       // check default choice options
       question
         .getAllChoices()
@@ -369,7 +369,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_293]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_293]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -394,7 +394,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       });
     });
 
-    it("[Tc_294]:test => Advanced Options", () => {
+    it(" > [Tc_294]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -442,7 +442,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_295]:test => Layout", () => {
+    it(" > [Tc_295]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -483,13 +483,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question.selectChoicesStyle("Standard");
     });
 
-    it("[Tc_296]:test => Save question", () => {
+    it(" > [Tc_296]:test => Save question", () => {
       editItem.header.save();
       cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_297]:test => Preview Item", () => {
+    it(" > [Tc_297]:test => Preview Item", () => {
       // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
@@ -511,7 +511,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       preview.header.edit();
     });
 
-    it("[Tc_298]:test => Delete question from item", () => {
+    it(" > [Tc_298]:test => Delete question from item", () => {
       editItem
         .getDelButton()
         .should("have.length", 1)
@@ -520,7 +520,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     });
   });
 
-  context("[sanity]:test => Create question using different options and validate", () => {
+  context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -561,7 +561,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
       question.header.save();
     });
 
-    it("[mcq_tf_test1]:test => Validate basic question with default setting", () => {
+    it(" > [mcq_tf_test1]:test => Validate basic question with default setting", () => {
       // preview
       const preview = editItem.header.preview();
 

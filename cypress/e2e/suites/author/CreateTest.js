@@ -6,7 +6,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Create Test Flow
     cy.visit("/author/tests/create");
   });
 
-  it("Visit Create Test Page", () => {
+  it(" > Visit Create Test Page", () => {
     /* eslint-disable */
     cy.wait(5000);
 

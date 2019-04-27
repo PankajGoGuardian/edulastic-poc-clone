@@ -17,7 +17,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
     cy.wait(5000); // TODO: remove wait time
   });
 
-  it("Goto the Required Assignment ", () => {
+  it(" > Goto the Required Assignment ", () => {
     cy.visit("/author/assignments");
     cy.wait(5000); //TODO:Remove wait
     assignmentpage.clickOnEllipsis(0);
@@ -27,18 +27,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
     assignmentpage.clcikOnPresenatationIconByIndex(0);
   });
 
-  it("Verify class Name ", () => {
+  it(" > Verify class Name ", () => {
     liveclassboard.checkClassName("class3");
   });
 
-  it("Verify all tabs in Header ", () => {
+  it(" > Verify all tabs in Header ", () => {
     liveclassboard.checkSummaryTabIsPresent();
     liveclassboard.checkLiveClassBoardTabIsPresent();
     liveclassboard.checkExpressGraderTabIsPresent();
     liveclassboard.checkStandardBasedReportTabIsPresent();
   });
 
-  it("Verify Student and Question tab ", () => {
+  it(" > Verify Student and Question tab ", () => {
     liveclassboard.clickOnCardViewTab();
     liveclassboard.clickOnStudentsTab();
     liveclassboard.clickonQuestionsTab();

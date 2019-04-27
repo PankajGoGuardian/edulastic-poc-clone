@@ -34,7 +34,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -42,8 +42,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_195 => Enter question text in Compose Questino text box", () => {
-      it("Upload image to server", () => {
+    context(" > TC_195 => Enter question text in Compose Questino text box", () => {
+      it(" > Upload image to server", () => {
         cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
@@ -72,7 +72,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         // question.getDropZoneImageContainer().find('img').should("have.attr", "src", testImageUrl);
       });
 
-      it("Enter Width (px)", () => {
+      it(" > Enter Width (px)", () => {
         question.changeImageWidth(queData.imageWidth);
         question
           .getDropZoneImageContainer()
@@ -80,7 +80,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.attr", "width", queData.imageWidth);
       });
 
-      it("Enter Height (px)", () => {
+      it(" > Enter Height (px)", () => {
         question.changeImageHeight(queData.imageHeight);
         question
           .getDropZoneImageContainer()
@@ -88,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.attr", "height", queData.imageHeight);
       });
 
-      it("Image alternative text", () => {
+      it(" > Image alternative text", () => {
         question.addImageAlternative(queData.altText);
         question
           .getDropZoneImageContainer()
@@ -96,7 +96,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.attr", "alt", queData.altText);
       });
 
-      it("Change Image", () => {
+      it(" > Change Image", () => {
         const changedImage = "https://edureact-dev.s3.amazonaws.com/1552317173453_x_ba9b1be5.jpg";
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.image.source = changedImage;
@@ -110,8 +110,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       });
     });
 
-    context("TC_196 => Area", () => {
-      it("Draw spots", () => {
+    context(" > TC_196 => Area", () => {
+      it(" > Draw spots", () => {
         question.clickDrawMode();
         question
           .getDrawArea()
@@ -127,7 +127,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.length", 2);
       });
 
-      it("Delete spots", () => {
+      it(" > Delete spots", () => {
         question.clickDeleteMode();
         question.getDrawArea().then($el => {
           cy.wrap($el)
@@ -143,7 +143,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         });
       });
 
-      it("Undo", () => {
+      it(" > Undo", () => {
         question.clickDrawMode();
         question
           .getDrawArea()
@@ -168,7 +168,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         });
       });
 
-      it("Redo", () => {
+      it(" > Redo", () => {
         question.clickAreaRedo().then(() => {
           question
             .getDrawArea()
@@ -182,7 +182,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         });
       });
 
-      it("Clear", () => {
+      it(" > Clear", () => {
         question.clickAreaClear().then(() => {
           question
             .getDrawArea()
@@ -192,7 +192,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       });
     });
 
-    context("TC_197 => Attributes", () => {
+    context(" > TC_197 => Attributes", () => {
       before("add sample data", () => {
         question.clickDrawMode();
         question
@@ -209,7 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.length", 2);
       });
 
-      it("Fill Color", () => {
+      it(" > Fill Color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.area_attributes.global.fill = queData.fillColor;
         cy.window()
@@ -221,7 +221,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.attr", "fill", queData.fillColor);
       });
 
-      it("Outline Color", () => {
+      it(" > Outline Color", () => {
         const currentQuestion = question.getCurrentStoreQuestion();
         currentQuestion.area_attributes.global.stroke = queData.outLineColor;
         cy.window()
@@ -235,8 +235,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       });
     });
 
-    context("TC_198 => Set Correct Ansswers", () => {
-      it("Click on + symbol", () => {
+    context(" > TC_198 => Set Correct Ansswers", () => {
+      it(" > Click on + symbol", () => {
         question.addAlternate();
         question
           .getAddedAlternate()
@@ -248,7 +248,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("not.exist");
       });
 
-      it("Update Points", () => {
+      it(" > Update Points", () => {
         question
           .getPontsInput()
           .focus()
@@ -260,7 +260,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .blur();
       });
 
-      it("Provide the answer choices", () => {
+      it(" > Provide the answer choices", () => {
         question
           .getAnswerContainer()
           .find("polygon")
@@ -272,7 +272,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           });
       });
 
-      it("Multiple response", () => {
+      it(" > Multiple response", () => {
         question
           .getMultipleCheck()
           .should("be.visible")
@@ -310,20 +310,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       });
     });
 
-    context("TC_199 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_199 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_200 => Preview items", () => {
-      it("Click on preview", () => {
+    context(" > TC_200 => Preview items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Check Answer");
       });
 
-      it("Click on Check answer", () => {
+      it(" > Click on Check answer", () => {
         preview
           .getCheckAnswer()
           .click()
@@ -354,7 +354,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           });
       });
 
-      it("Click on Show Answers", () => {
+      it(" > Click on Show Answers", () => {
         preview
           .getShowAnswer()
           .click()
@@ -368,7 +368,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           });
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .click()
@@ -386,9 +386,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
   });
 
-  context("Delete the question after creation", () => {
-    context("TC_201 => Delete option", () => {
-      it("Click on delete button in Item Details page", () => {
+  context(" > Delete the question after creation", () => {
+    context(" > TC_201 => Delete option", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)
@@ -398,7 +398,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
   });
 
-  context("Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -415,8 +415,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       editItem.header.edit();
     });
 
-    describe("Layout", () => {
-      it("should be able to select small font size", () => {
+    describe(" > Layout", () => {
+      it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
@@ -430,7 +430,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select normal font size", () => {
+      it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
@@ -444,7 +444,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select large font size", () => {
+      it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
@@ -458,7 +458,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select extra large font size", () => {
+      it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
@@ -472,7 +472,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select huge font size", () => {
+      it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 
@@ -486,7 +486,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to change maximum width", () => {
+      it(" > should be able to change maximum width", () => {
         const width = 666;
 
         question
@@ -502,7 +502,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
           .should("have.css", "max-width")
           .and("eq", `${width}px`);
       });
-      it("should be able to select numerical stem numeration", () => {
+      it(" > should be able to select numerical stem numeration", () => {
         question
           .getStemNumeration()
           .should("be.visible")
@@ -516,7 +516,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
         cy.get("@select").should("contain", Helpers.stemNumeration.numerical);
       });
-      it("should be able to select uppercase alphabet stem numeration", () => {
+      it(" > should be able to select uppercase alphabet stem numeration", () => {
         question
           .getStemNumeration()
           .should("be.visible")
@@ -530,7 +530,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
 
         cy.get("@select").should("contain", Helpers.stemNumeration.upperAlpha);
       });
-      it("should be able to select lowercase alphabet stem numeration", () => {
+      it(" > should be able to select lowercase alphabet stem numeration", () => {
         question
           .getStemNumeration()
           .should("be.visible")
@@ -547,7 +547,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
     });
   });
 
-  context("Scoring block tests", () => {
+  context(" > Scoring block tests", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -563,7 +563,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Hotspot" type 
       preview.header.edit();
     });
 
-    it("Test score with max score", () => {
+    it(" > Test score with max score", () => {
       question
         .getMaxScore()
         .clear()

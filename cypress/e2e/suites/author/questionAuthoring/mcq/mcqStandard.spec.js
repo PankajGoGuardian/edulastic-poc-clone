@@ -30,7 +30,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       console.log("testItemId : ", testItemId);
       editItem.getItemWithId(testItemId);
@@ -40,7 +40,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("[Tc_250]:test => Enter question text", () => {
+    it(" > [Tc_250]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -122,7 +122,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       });
     });
 
-    it("[Tc_251]:test => Multiple choices options", () => {
+    it(" > [Tc_251]:test => Multiple choices options", () => {
       // edit 1st choice
       question
         .getChoiceByIndex(0)
@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       });
     });
 
-    it("[Tc_252]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_252]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -190,7 +190,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       });
     });
 
-    it("[Tc_253]:test => Advanced Options", () => {
+    it(" > [Tc_253]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -238,7 +238,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_254]:test => Layout", () => {
+    it(" > [Tc_254]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -279,13 +279,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       question.selectChoicesStyle("Standard");
     });
 
-    it("[Tc_255]:test => Save question", () => {
+    it(" > [Tc_255]:test => Save question", () => {
       editItem.header.save();
       cy.contains(queData.formattext).should("be.visible");
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_256]:test => Preview Item", () => {
+    it(" > [Tc_256]:test => Preview Item", () => {
       // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
@@ -308,7 +308,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
   });
 
-  context("User edit the question.", () => {
+  context(" > User edit the question.", () => {
     const queData = {
       group: "Multiple Choice",
       queType: "Multiple choice - standard",
@@ -332,7 +332,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       editItem.getEditButton().click();
     });
 
-    it("[Tc_257]:test => Enter question text", () => {
+    it(" > [Tc_257]:test => Enter question text", () => {
       // edit text
       question
         .getQuestionEditor()
@@ -414,7 +414,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       });
     });
 
-    it("[Tc_258]:test => Multiple choices options", () => {
+    it(" > [Tc_258]:test => Multiple choices options", () => {
       // edit 1st choice
       question
         .getChoiceByIndex(0)
@@ -443,7 +443,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       });
     });
 
-    it("[Tc_259]:test => Set Correct Answer(s)", () => {
+    it(" > [Tc_259]:test => Set Correct Answer(s)", () => {
       // update points
       question.getPoints().verifyNumInput(0.5);
 
@@ -484,7 +484,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       //
     });
 
-    it("[Tc_260]:test => Advanced Options", () => {
+    it(" > [Tc_260]:test => Advanced Options", () => {
       // question.clickOnAdvancedOptions();
 
       // scoring
@@ -532,7 +532,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         .should("not.have.class", "ant-checkbox-checked");
     });
 
-    it("[Tc_261]:test => Layout", () => {
+    it(" > [Tc_261]:test => Layout", () => {
       question.getNumofCol().verifyNumInput(1);
 
       // font select
@@ -573,7 +573,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       question.selectChoicesStyle("Standard");
     });
 
-    it("[Tc_262]:test => Save question", () => {
+    it(" > [Tc_262]:test => Save question", () => {
       editItem.header.save();
 
       cy.contains(queData.formattext).should("be.visible");
@@ -581,7 +581,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       cy.url().should("contain", "item-detail");
     });
 
-    it("[Tc_263]:test => Preview Item", () => {
+    it(" > [Tc_263]:test => Preview Item", () => {
       const preview = editItem.header.preview();
 
       preview
@@ -602,7 +602,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       preview.header.edit();
     });
 
-    it("[Tc_264]:test => Delete question from item", () => {
+    it(" > [Tc_264]:test => Delete question from item", () => {
       editItem
         .getDelButton()
         .should("have.length", 1)
@@ -611,7 +611,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
   });
 
-  context("[sanity]:test => Create question using different options and validate", () => {
+  context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -652,7 +652,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       question.header.save();
     });
 
-    it("[mcq_std_test]:test => Validate basic question with default setting", () => {
+    it(" > [mcq_std_test]:test => Validate basic question with default setting", () => {
       // preview
       const preview = editItem.header.preview();
 
@@ -732,7 +732,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it("[mcq_std_test]:test => Enable multiple responses exact and validate", () => {
+    it(" > [mcq_std_test]:test => Enable multiple responses exact and validate", () => {
       question.header
         .edit()
         .getEditButton()
@@ -843,7 +843,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it("[mcq_std_test]:test => Enable partial match with multiple responses and validate", () => {
+    it(" > [mcq_std_test]:test => Enable partial match with multiple responses and validate", () => {
       const preview = question.header.preview();
 
       // partial match
@@ -945,7 +945,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
   });
 
-  context("Scoring Block testing", () => {
+  context(" > Scoring Block testing", () => {
     before("visit items list page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -986,7 +986,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
       question.header.save();
     });
 
-    it("[mcq_std_scoring]:test => Test score with exact match", () => {
+    it(" > [mcq_std_scoring]:test => Test score with exact match", () => {
       question.header
         .edit()
         .getEditButton()
@@ -1057,7 +1057,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it("[mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
+    it(" > [mcq_std_scoring]:test => Testing min score if attempted and with alternate answer", () => {
       const preview = question.header.preview();
 
       preview.header
@@ -1141,7 +1141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it("[mcq_std_scoring]:test => Testing partial match and multiple responses with penalty", () => {
+    it(" > [mcq_std_scoring]:test => Testing partial match and multiple responses with penalty", () => {
       const preview = question.header.preview();
 
       preview.header
@@ -1221,7 +1221,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
         });
     });
 
-    it("[mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
+    it(" > [mcq_std_scoring]:test => Testing max score without Auto Scoring option", () => {
       const preview = question.header.preview();
 
       preview.header

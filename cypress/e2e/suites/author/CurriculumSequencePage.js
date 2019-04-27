@@ -8,7 +8,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
     cy.visit("/author/curriculum-sequence");
   });
 
-  it("Should add a new unit", () => {
+  it(" > Should add a new unit", () => {
     // Remove cypress unit if exists
     cy.get("[data-cy=curriculumModuleRow]").then(el => {
       if (el.find(":contains(Module Cypress Unit)").length > 0) {
@@ -29,7 +29,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
     cy.get("[data-cy=curriculumModuleRow]").contains("Module Cypress Unit");
   });
 
-  it("Should assign an item", () => {
+  it(" > Should assign an item", () => {
     // Delete test unit if exists
     cy.get("[data-cy=curriculumModuleRow]").then(el => {
       // debugger;
@@ -109,7 +109,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
   });
 
   // Module assigment
-  it("Should assign all items of the module (ones that have testIds)", () => {
+  it(" > Should assign all items of the module (ones that have testIds)", () => {
     /* Add an item to make sure we have something to assign */
     cy.get("[data-cy=openAddContent]")
       .eq(0)
@@ -144,7 +144,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
     cy.get(".ant-message-notice").contains("Successfully assigned");
   });
 
-  it("Existing item should not be added to the module", () => {
+  it(" > Existing item should not be added to the module", () => {
     // openAddContent
     cy.get("[data-cy=openAddContent]")
       .eq(0)
@@ -188,7 +188,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
       });
   });
 
-  it("Should add and remove first assigment", () => {
+  it(" > Should add and remove first assigment", () => {
     cy.get("[data-cy=curriculumModuleRow]")
       .eq(0)
       .find("[data-cy=totalAssigned]")
@@ -268,7 +268,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
       });
   });
 
-  it("Should assign an item NOW (add to misc)", () => {
+  it(" > Should assign an item NOW (add to misc)", () => {
     /* Add an item to make sure we have something to assign */
     cy.get("[data-cy=openAddContent]")
       .eq(0)
@@ -304,7 +304,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Check Curriculum Seque
       .should("have.length", 1);
   });
 
-  it("Should save the curriculum sequence", () => {
+  it(" > Should save the curriculum sequence", () => {
     // Remove cypress unit if exists
     cy.get("[data-cy=curriculumModuleRow]").then(el => {
       if (el.find(":contains(Module Cypress Unit)").length > 0) {

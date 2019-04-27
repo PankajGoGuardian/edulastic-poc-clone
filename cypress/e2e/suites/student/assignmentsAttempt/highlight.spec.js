@@ -37,7 +37,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
   before(() => {
     cy.login("student");
   });
-  context("Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.fixture("studentsAttempt").then(data => {
         TestTypes = data.testTypes;
@@ -50,13 +50,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
-      it("Check Assignment Status", () => {
+    context(" > 1st attempt - test assessment player,attempt all questions and submit the test,validate", () => {
+      it(" > Check Assignment Status", () => {
         assignmentPage.validateAssignment(assignmentName, asgnstatus.notstarted, buttonText.start);
         test = assignmentPage.clickOnAssignmentButton();
       });
 
-      it("Attempt Q1 - Highlight Image", () => {
+      it(" > Attempt Q1 - Highlight Image", () => {
         cy.contains("Q1").should("be.visible");
         // draw rect
         cy.get("canvas")
@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         cy.contains("Q1").should("be.visible");
       });
 
-      it("Attempt Q2 - Shading", () => {
+      it(" > Attempt Q2 - Shading", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -104,7 +104,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q3 - Hotspot", () => {
+      it(" > Attempt Q3 - Hotspot", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -140,7 +140,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         cy.contains("Q3").should("be.visible");
       });
 
-      it("Attempt Q4 - Token Highlight", () => {
+      it(" > Attempt Q4 - Token Highlight", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -165,7 +165,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("End first Attempt", () => {
+      it(" > End first Attempt", () => {
         test.clickOnNext();
         // review page
         test.submitTest();
@@ -177,8 +177,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
       });
     });
 
-    context("2nd attempt - attempt questions,submit the test,validate stats", () => {
-      it("Attempt Q1 - Highlight Image", () => {
+    context(" > 2nd attempt - attempt questions,submit the test,validate stats", () => {
+      it(" > Attempt Q1 - Highlight Image", () => {
         test = assignmentPage.clickOnAssignmentButton();
         cy.contains("Q1").should("be.visible");
         // draw rect
@@ -199,7 +199,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         cy.contains("Q1").should("be.visible");
       });
 
-      it("Attempt Q2 - Shading", () => {
+      it(" > Attempt Q2 - Shading", () => {
         test.clickOnNext();
         cy.contains("Q2").should("be.visible");
 
@@ -216,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsRight();
       });
 
-      it("Attempt Q3 - Hotspot", () => {
+      it(" > Attempt Q3 - Hotspot", () => {
         test.clickOnNext();
         cy.contains("Q3").should("be.visible");
 
@@ -231,7 +231,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Attempt Q4 - Token Highlight", () => {
+      it(" > Attempt Q4 - Token Highlight", () => {
         test.clickOnNext();
         cy.contains("Q4").should("be.visible");
 
@@ -247,7 +247,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
         test.checkAnsValidateAsWrong();
       });
 
-      it("Check report", () => {
+      it(" > Check report", () => {
         test.clickOnNext();
 
         // review page

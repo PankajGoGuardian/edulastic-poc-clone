@@ -37,7 +37,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     });
   });
 
-  context("Advanced Options", () => {
+  context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
@@ -52,8 +52,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       editItem.header.edit();
     });
 
-    describe("Layout", () => {
-      it("should be able to select top response container position", () => {
+    describe(" > Layout", () => {
+      it(" > should be able to select top response container position", () => {
         const select = question.getResponseContainerPositionSelect();
 
         select.should("be.visible").click();
@@ -66,7 +66,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", "Top");
         question.checkResponseContainerPosition("top");
       });
-      it("should be able to select bottom response container position", () => {
+      it(" > should be able to select bottom response container position", () => {
         const select = question.getResponseContainerPositionSelect();
 
         select.should("be.visible").click();
@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", "Bottom");
         question.checkResponseContainerPosition("bottom");
       });
-      it("should be able to select left response container position", () => {
+      it(" > should be able to select left response container position", () => {
         const select = question.getResponseContainerPositionSelect();
 
         select.should("be.visible").click();
@@ -92,7 +92,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", "Left");
         question.checkResponseContainerPosition("left");
       });
-      it("should be able to select right response container position", () => {
+      it(" > should be able to select right response container position", () => {
         const select = question.getResponseContainerPositionSelect();
 
         select.should("be.visible").click();
@@ -105,7 +105,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", "Right");
         question.checkResponseContainerPosition("right");
       });
-      it("should be able to select numerical stem numeration", () => {
+      it(" > should be able to select numerical stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -117,7 +117,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         select.should("contain", "Numerical");
       });
-      it("should be able to select Uppercase Alphabet stem numeration", () => {
+      it(" > should be able to select Uppercase Alphabet stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -129,7 +129,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         select.should("contain", "Uppercase Alphabet");
       });
-      it("should be able to select Lowercase Alphabet stem numeration", () => {
+      it(" > should be able to select Lowercase Alphabet stem numeration", () => {
         const select = question.getStemNumerationSelect();
 
         select.should("be.visible").click();
@@ -141,7 +141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         select.should("contain", "Lowercase Alphabet");
       });
-      it("should be able to change row titles width", () => {
+      it(" > should be able to change row titles width", () => {
         const width = "133px";
 
         question
@@ -151,7 +151,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         question.checkRowTitlesWidth(width);
       });
-      it("should be able to change row min height width", () => {
+      it(" > should be able to change row min height width", () => {
         const height = "173px";
 
         question
@@ -161,7 +161,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         question.checkRowTitlesMinHeight(height);
       });
-      it("should be able to type row header and change it", () => {
+      it(" > should be able to type row header and change it", () => {
         const text = "Row header";
 
         question
@@ -172,7 +172,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
         question.checkRowHeader(text);
       });
-      it("should be able to type maximum response per cell", () => {
+      it(" > should be able to type maximum response per cell", () => {
         const resPerCell = 2;
 
         question
@@ -181,7 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .type(`{selectall}${resPerCell}`)
           .should("have.value", `${resPerCell}`);
       });
-      it("should be able to select small font size", () => {
+      it(" > should be able to select small font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("small");
 
@@ -195,7 +195,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select normal font size", () => {
+      it(" > should be able to select normal font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("normal");
 
@@ -209,7 +209,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select large font size", () => {
+      it(" > should be able to select large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("large");
 
@@ -223,7 +223,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select extra large font size", () => {
+      it(" > should be able to select extra large font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xlarge");
 
@@ -237,7 +237,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         select.should("contain", name);
         question.checkFontSize(font);
       });
-      it("should be able to select huge font size", () => {
+      it(" > should be able to select huge font size", () => {
         const select = question.getFontSizeSelect();
         const { name, font } = Helpers.fontSize("xxlarge");
 
@@ -254,15 +254,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_57 => Enter the column and row", () => {
-      it("Enter only numbers", () => {
+    context(" > TC_57 => Enter the column and row", () => {
+      it(" > Enter only numbers", () => {
         question
           .getDropDownColumn()
           .click()
@@ -289,12 +289,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_58 => Column titles", () => {
+    context(" > TC_58 => Column titles", () => {
       before("Should have existing titles", () => {
         question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
       });
 
-      it("Edit the column names", () => {
+      it(" > Edit the column names", () => {
         question.getColumnTitleInptuList().each(($el, index) => {
           cy.wrap($el)
             .click()
@@ -304,7 +304,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Add new column", () => {
+      it(" > Add new column", () => {
         question
           .getColumnAddButton()
           .click()
@@ -320,7 +320,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Delete existing column", () => {
+      it(" > Delete existing column", () => {
         question
           .getColumnDeleteByIndex(queData.columnTitles.length)
           .click()
@@ -330,13 +330,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_59 => Row titles", () => {
+    context(" > TC_59 => Row titles", () => {
       before("Should have existing titles", () => {
         question.getRowAddButton().click();
         question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
       });
 
-      it("Add new row", () => {
+      it(" > Add new row", () => {
         question
           .getRowAddButton()
           .click()
@@ -352,7 +352,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Edit the row names for existing", () => {
+      it(" > Edit the row names for existing", () => {
         question.getRowTitleInptuList().each(($el, index) => {
           cy.wrap($el)
             .click()
@@ -362,7 +362,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Delete existing / newly created rows", () => {
+      it(" > Delete existing / newly created rows", () => {
         question
           .getRowDeleteByIndex(queData.rowTitles.length)
           .click()
@@ -372,8 +372,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_60 => Group possible responses", () => {
-      it("Check the group possible responses checkbox", () => {
+    context(" > TC_60 => Group possible responses", () => {
+      it(" > Check the group possible responses checkbox", () => {
         question.getGroupResponsesCheckbox().click();
 
         question
@@ -384,7 +384,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.getGroupContainerByIndex(0).should("be.visible");
       });
 
-      it("Enter the title of group", () => {
+      it(" > Enter the title of group", () => {
         question
           .getTitleInputByIndex(0)
           .clear()
@@ -392,7 +392,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .should("have.value", "Group1");
       });
 
-      it("Add/Delete new choices", () => {
+      it(" > Add/Delete new choices", () => {
         question
           .getChoiceListByGroup(0)
           .each(($el, index, $list) => {
@@ -420,7 +420,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Add new group", () => {
+      it(" > Add new group", () => {
         question
           .getAddNewGroupButton()
           .click()
@@ -429,7 +429,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Delete group", () => {
+      it(" > Delete group", () => {
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
@@ -442,8 +442,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_61 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_61 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPontsInput()
           .focus()
@@ -455,14 +455,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .blur();
       });
 
-      it("Drag and drop the answer choices inside the box", () => {
+      it(" > Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
           question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${index}`);
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question.addAlternate();
         question
           .getAddedAlternate()
@@ -475,15 +475,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_62 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_62 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("TC_63 => Preview Items", () => {
-      it("Click on preview", () => {
+    context(" > TC_63 => Preview Items", () => {
+      it(" > Click on preview", () => {
         preview = editItem.header.preview();
         cy.get("body").contains("span", "Check Answer");
 
@@ -493,7 +493,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Click on Check answer", () => {
+      it(" > Click on Check answer", () => {
         preview
           .getCheckAnswer()
           .click()
@@ -504,7 +504,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Click on Show Answers", () => {
+      it(" > Click on Show Answers", () => {
         preview
           .getShowAnswer()
           .click()
@@ -515,7 +515,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Click on Clear", () => {
+      it(" > Click on Clear", () => {
         preview
           .getClear()
           .click()
@@ -530,15 +530,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     });
   });
 
-  context("Edit the questin created", () => {
+  context(" > Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("TC_65 => Enter the column and row", () => {
-      it("Enter only numbers", () => {
+    context(" > TC_65 => Enter the column and row", () => {
+      it(" > Enter only numbers", () => {
         question
           .getDropDownColumn()
           .click()
@@ -565,12 +565,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_66 => Column titles", () => {
+    context(" > TC_66 => Column titles", () => {
       before("Should have existing titles", () => {
         question.getColumnTitleInptuList().should("have.length", queData.columnTitles.length);
       });
 
-      it("Edit the column names", () => {
+      it(" > Edit the column names", () => {
         question.getColumnTitleInptuList().each(($el, index) => {
           cy.wrap($el)
             .click()
@@ -580,7 +580,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Add new column", () => {
+      it(" > Add new column", () => {
         question
           .getColumnAddButton()
           .click()
@@ -596,7 +596,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Delete existing column", () => {
+      it(" > Delete existing column", () => {
         question
           .getColumnDeleteByIndex(queData.columnTitles.length)
           .click()
@@ -606,13 +606,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_67 => Row titles", () => {
+    context(" > TC_67 => Row titles", () => {
       before("Should have existing titles", () => {
         question.getRowAddButton().click();
         question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
       });
 
-      it("Edit the row names for existing", () => {
+      it(" > Edit the row names for existing", () => {
         question.getRowTitleInptuList().each(($el, index) => {
           cy.wrap($el)
             .click()
@@ -622,7 +622,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Add new row", () => {
+      it(" > Add new row", () => {
         question
           .getRowAddButton()
           .click()
@@ -638,7 +638,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Delete existing / newly created rows", () => {
+      it(" > Delete existing / newly created rows", () => {
         question
           .getRowDeleteByIndex(queData.rowTitles.length)
           .click()
@@ -648,8 +648,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_68 => Group possible responses", () => {
-      it("Check the group possible responses checkbox", () => {
+    context(" > TC_68 => Group possible responses", () => {
+      it(" > Check the group possible responses checkbox", () => {
         question.getGroupResponsesCheckbox().click();
 
         question
@@ -660,7 +660,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.getGroupContainerByIndex(0).should("be.visible");
       });
 
-      it("Enter the title of group", () => {
+      it(" > Enter the title of group", () => {
         question
           .getTitleInputByIndex(0)
           .clear()
@@ -668,7 +668,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .should("have.value", "Group1");
       });
 
-      it("Add/Delete new choices", () => {
+      it(" > Add/Delete new choices", () => {
         question
           .getChoiceListByGroup(0)
           .each(($el, index, $list) => {
@@ -696,7 +696,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
       });
 
-      it("Add new group", () => {
+      it(" > Add new group", () => {
         question
           .getAddNewGroupButton()
           .click()
@@ -705,7 +705,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           });
       });
 
-      it("Delete group", () => {
+      it(" > Delete group", () => {
         question
           .getGroupContainerByIndex(1)
           .contains("div", "Group 2")
@@ -718,8 +718,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_69 => Set Correct Answer(s)", () => {
-      it("Update Points", () => {
+    context(" > TC_69 => Set Correct Answer(s)", () => {
+      it(" > Update Points", () => {
         question
           .getPontsInput()
           .focus()
@@ -731,14 +731,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
           .blur();
       });
 
-      it("Drag and drop the answer choices inside the box", () => {
+      it(" > Drag and drop the answer choices inside the box", () => {
         queData.choices.forEach((ch, index) => {
           question.getDragDropItemByIndex(0).customDragDrop(`#drag-drop-board-${index}`);
           question.getDragDropBoardByIndex(index).contains("p", ch);
         });
       });
 
-      it("Click on + symbol", () => {
+      it(" > Click on + symbol", () => {
         question.addAlternate();
         question
           .getAddedAlternate()
@@ -751,17 +751,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
     });
 
-    context("TC_70 => Save question", () => {
-      it("Click on save button", () => {
+    context(" > TC_70 => Save question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
   });
 
-  context("Delete the question after creation", () => {
-    context("TC_70 => Delete option", () => {
-      it("Click on delete button in Item Details page", () => {
+  context(" > Delete the question after creation", () => {
+    context(" > TC_70 => Delete option", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)
@@ -771,7 +771,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     });
   });
 
-  context("Scoring block tests", () => {
+  context(" > Scoring block tests", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -787,7 +787,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       // question.clickOnAdvancedOptions();
     });
 
-    it("test score with max score", () => {
+    it(" > test score with max score", () => {
       // question.clickOnAdvancedOptions();
 
       question
@@ -807,7 +807,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
     });
 
-    it("test score with min score if attemted", () => {
+    it(" > test score with min score if attemted", () => {
       question.getMaxScore().clear();
 
       question.getEnableAutoScoring().click();
@@ -836,7 +836,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         });
     });
 
-    it("test score with partial match and penalty", () => {
+    it(" > test score with partial match and penalty", () => {
       question.getMinScore().clear();
 
       question.selectScoringType("Partial match");

@@ -6,7 +6,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Signup Page`, () 
     cy.visit("/login");
   });
   const signup = new SignupPage();
-  it("(Tc_223)Verify Student Signup", () => {
+  it(" > (Tc_223)Verify Student Signup", () => {
     signup.onClickSignup();
     signup.onClickStudent();
 

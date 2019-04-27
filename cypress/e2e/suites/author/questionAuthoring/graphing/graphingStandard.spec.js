@@ -79,7 +79,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItemPage.getItemWithId(testItemId);
       editItemPage.deleteAllQuestion();
@@ -88,7 +88,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       editItemPage.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("Edit question text", () => {
+    it(" > Edit question text", () => {
       question
         .getQuestionEditor()
         .clear()
@@ -110,7 +110,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
         .should("contain", queData.queText);
     });
 
-    it("Edit graph parameters", () => {
+    it(" > Edit graph parameters", () => {
       question
         .getXMinParameter()
         .clear()
@@ -141,7 +141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
         });
     });
 
-    it("Edit tools", () => {
+    it(" > Edit tools", () => {
       question.getGroups().should("have.length", 1);
       question.getGroupTools(queData.tools.defaultGroupName).should("have.length", 2);
 
@@ -339,7 +339,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       // Stem Numeration
     });
 
-    it("Edit grid", () => {
+    it(" > Edit grid", () => {
       question
         .getXDistance()
         .clear()
@@ -577,7 +577,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       // Max Arrow (both)
     });
 
-    it("Edit background image", () => {
+    it(" > Edit background image", () => {
       question
         .getBgImageUrl()
         .clear()
@@ -627,7 +627,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
         });
     });
 
-    it("Edit controls", () => {
+    it(" > Edit controls", () => {
       question.getControlsContainer().within(() => {
         question.clickOnAddToolButton();
         question.selectControlOption(2, "Reset");
@@ -643,7 +643,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       });
     });
 
-    it("Edit background shapes", () => {
+    it(" > Edit background shapes", () => {
       question.getBgShapesGraphContainer().within(() => {
         question.getGraphTools().within(() => {
           question
@@ -676,7 +676,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       question.clickOnShowBgShapesPoints();
     });
 
-    it("Edit annotation", () => {
+    it(" > Edit annotation", () => {
       question
         .getAnnotationTitle()
         .clear()
@@ -716,7 +716,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
         });
     });
 
-    it("Edit correct answers", () => {
+    it(" > Edit correct answers", () => {
       question
         .getPointsParameter()
         .clear()
@@ -869,7 +869,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
       question.getPointsParameter().should("have.value", queData.correctAnswers.points);
     });
 
-    it("Check preview", () => {
+    it(" > Check preview", () => {
       question.clickOnResetButton();
       question.selectTool(queData.tools.defaultGroupName, 0, "Point");
       question.invokeBoardClick(0, 0.6, 0.6);

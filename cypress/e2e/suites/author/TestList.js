@@ -5,7 +5,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Create a new test`, ()
     cy.login();
   });
 
-  it("Visit Create Test Page", () => {
+  it(" > Visit Create Test Page", () => {
     cy.visit("/author/tests");
     cy.contains("Create").click({ force: true });
     cy.contains("Create new Item").click();

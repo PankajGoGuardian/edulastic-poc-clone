@@ -36,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -44,8 +44,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    context("[Tc_384]:Tc_2 => Upload image", () => {
-      it("Upload image to server", () => {
+    context(" > [Tc_384]:Tc_2 => Upload image", () => {
+      it(" > Upload image to server", () => {
         cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
@@ -71,24 +71,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
       });
 
-      it("Width(px)", () => {
+      it(" > Width(px)", () => {
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.attr", "width", queData.imageWidth);
       });
 
-      it("Image alternative text", () => {
+      it(" > Image alternative text", () => {
         question.inputImageAlternate(queData.imageAlternate);
         question.checkImageAlternate(queData.imageAlternate);
       });
 
-      it("Fill color", () => {
+      it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
         question.getAllInputPanel().each($el => {
           cy.wrap($el).should("have.attr", "background", queData.testColor);
         });
       });
 
-      it("Maximum responses per container", () => {
+      it(" > Maximum responses per container", () => {
         question
           .getMaxResponseInput()
           .click()
@@ -97,7 +97,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .should("have.value", queData.maxRes);
       });
 
-      it("Edit ARIA labels", () => {
+      it(" > Edit ARIA labels", () => {
         question
           .getAriaLabelCheck()
           .click()
@@ -120,8 +120,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context("[Tc_385]:Tc_3 => Response", () => {
-      it("Edit default text", () => {
+    context(" > [Tc_385]:Tc_3 => Response", () => {
+      it(" > Edit default text", () => {
         question
           .addNewChoiceOnResponse(0)
           .getChoiceByIndexRes(0, 2)
@@ -131,7 +131,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
       for (let i = 0; i < 3; i++) {
         context(`Response ${i + 1}`, () => {
-          it("Delete Choices", () => {
+          it(" > Delete Choices", () => {
             question
               .getAllChoicesRes(i)
               .each(($el, index, $list) => {
@@ -141,7 +141,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               .should("have.length", 0);
           });
 
-          it("Add new choices", () => {
+          it(" > Add new choices", () => {
             queData.choices.forEach((ch, index) => {
               question
                 .addNewChoiceOnResponse(i)
@@ -157,8 +157,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       }
     });
 
-    context("[Tc_386]:Tc_4 => Set Correct Answer(s)", () => {
-      it("Update points", () => {
+    context(" > [Tc_386]:Tc_4 => Set Correct Answer(s)", () => {
+      it(" > Update points", () => {
         question
           .getPointsEditor()
           .clear()
@@ -170,18 +170,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .blur();
       });
 
-      it("Select the responses from drop down", () => {
+      it(" > Select the responses from drop down", () => {
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
         question.setAnswerOnBoard(2, 0);
       });
 
-      it("Add/Delete alternatives", () => {
+      it(" > Add/Delete alternatives", () => {
         question.addAlternate();
         question.checkAndDeleteAlternates();
       });
 
-      it("Check/uncheck Shuffle Possible responses", () => {
+      it(" > Check/uncheck Shuffle Possible responses", () => {
         question
           .getShuffleDropDown()
           .click()
@@ -204,15 +204,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context("[Tc_387]:Tc_5 => Save Question", () => {
-      it("Click on save button", () => {
+    context(" > [Tc_387]:Tc_5 => Save Question", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("[Tc_388]:Tc_6 => Preview items", () => {
-      it("Click on Preview, CheckAnswer", () => {
+    context(" > [Tc_388]:Tc_6 => Preview items", () => {
+      it(" > Click on Preview, CheckAnswer", () => {
         const preview = editItem.header.preview();
 
         question.setAnswerOnBoard(0, 0);
@@ -229,7 +229,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           });
       });
 
-      it("Click on ShowAnswer", () => {
+      it(" > Click on ShowAnswer", () => {
         const preview = editItem.header.preview();
         preview.getClear().click();
 
@@ -245,7 +245,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           });
       });
 
-      it("Click on Clear, Edit", () => {
+      it(" > Click on Clear, Edit", () => {
         const preview = editItem.header.preview();
         preview.getClear().click();
 
@@ -254,7 +254,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     });
   });
 
-  context("Edit the question created", () => {
+  context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -266,8 +266,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       editItem.getEditButton().click();
     });
 
-    context("[Tc_390]:Tc_2 => Upload image", () => {
-      it("Upload image to server", () => {
+    context(" > [Tc_390]:Tc_2 => Upload image", () => {
+      it(" > Upload image to server", () => {
         cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
@@ -293,24 +293,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
       });
 
-      it("Width(px)", () => {
+      it(" > Width(px)", () => {
         question.changeImageWidth(queData.imageWidth);
         question.getImageWidth().should("have.attr", "width", queData.imageWidth);
       });
 
-      it("Image alternative text", () => {
+      it(" > Image alternative text", () => {
         question.inputImageAlternate(queData.imageAlternate);
         question.checkImageAlternate(queData.imageAlternate);
       });
 
-      it("Fill color", () => {
+      it(" > Fill color", () => {
         question.updateColorPicker(queData.testColor);
         question.getAllInputPanel().each($el => {
           cy.wrap($el).should("have.attr", "background", queData.testColor);
         });
       });
 
-      it("Maximum responses per container", () => {
+      it(" > Maximum responses per container", () => {
         question
           .getMaxResponseInput()
           .click()
@@ -319,7 +319,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .should("have.value", queData.maxRes);
       });
 
-      it("Edit ARIA labels", () => {
+      it(" > Edit ARIA labels", () => {
         question
           .getAriaLabelCheck()
           .click()
@@ -342,8 +342,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context("[Tc_391]:Tc_3 => Edit Response", () => {
-      it("Edit default text", () => {
+    context(" > [Tc_391]:Tc_3 => Edit Response", () => {
+      it(" > Edit default text", () => {
         question
           .addNewChoiceOnResponse(0)
           .getChoiceByIndexRes(0, 2)
@@ -353,7 +353,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
       for (let i = 0; i < 3; i++) {
         context(`Response ${i + 1}`, () => {
-          it("Delete Choices", () => {
+          it(" > Delete Choices", () => {
             question
               .getAllChoicesRes(i)
               .each(($el, index, $list) => {
@@ -363,7 +363,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               .should("have.length", 0);
           });
 
-          it("Add new choices", () => {
+          it(" > Add new choices", () => {
             queData.choices.forEach((ch, index) => {
               question
                 .addNewChoiceOnResponse(i)
@@ -379,8 +379,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       }
     });
 
-    context("[Tc_392]:Tc_4 => Set Correct Answer(s)", () => {
-      it("Update points", () => {
+    context(" > [Tc_392]:Tc_4 => Set Correct Answer(s)", () => {
+      it(" > Update points", () => {
         question
           .getPointsEditor()
           .clear()
@@ -392,18 +392,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .blur();
       });
 
-      it("Select the responses from drop down", () => {
+      it(" > Select the responses from drop down", () => {
         question.setAnswerOnBoard(0, 0);
         question.setAnswerOnBoard(1, 0);
         question.setAnswerOnBoard(2, 0);
       });
 
-      it("Add/Delete alternatives", () => {
+      it(" > Add/Delete alternatives", () => {
         question.addAlternate();
         question.checkAndDeleteAlternates();
       });
 
-      it("Check/uncheck Shuffle Possible responses", () => {
+      it(" > Check/uncheck Shuffle Possible responses", () => {
         question
           .getShuffleDropDown()
           .click()
@@ -426,15 +426,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
       });
     });
 
-    context("[Tc_393]:Tc_5 => Save questions", () => {
-      it("Click on save button", () => {
+    context(" > [Tc_393]:Tc_5 => Save questions", () => {
+      it(" > Click on save button", () => {
         question.header.save();
         cy.url().should("contain", "item-detail");
       });
     });
 
-    context("[Tc_394]:Tc_6 => Preview items", () => {
-      it("Click on Preview, CheckAnswer", () => {
+    context(" > [Tc_394]:Tc_6 => Preview items", () => {
+      it(" > Click on Preview, CheckAnswer", () => {
         const preview = editItem.header.preview();
 
         question.setAnswerOnBoard(0, 0);
@@ -451,7 +451,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           });
       });
 
-      it("Click on ShowAnswer", () => {
+      it(" > Click on ShowAnswer", () => {
         const preview = editItem.header.preview();
         preview.getClear().click();
 
@@ -467,7 +467,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           });
       });
 
-      it("Click on Clear, Edit", () => {
+      it(" > Click on Clear, Edit", () => {
         const preview = editItem.header.preview();
         preview.getClear().click();
 
@@ -476,9 +476,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
     });
   });
 
-  context("Delete the question after creation", () => {
-    context("[Tc_395]:Tc_1 => Delete option", () => {
-      it("Click on delete button in Item Details page", () => {
+  context(" > Delete the question after creation", () => {
+    context(" > [Tc_395]:Tc_1 => Delete option", () => {
+      it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)

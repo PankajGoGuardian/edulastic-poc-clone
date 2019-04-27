@@ -44,7 +44,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     });
   });
 
-  context("User creates question", () => {
+  context(" > User creates question", () => {
     before("visit items page and select question type", () => {
       editItem.getItemWithId(testItemId);
       editItem.deleteAllQuestion();
@@ -52,14 +52,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
 
       editItem.addNew().chooseQuestion(queData.group, queData.queType);
     });
-    context("TC_429 => Enter question text in Compose Question text box", () => {
-      it("Write text in textbox", () => {
+    context(" > TC_429 => Enter question text in Compose Question text box", () => {
+      it(" > Write text in textbox", () => {
         const { testText } = queData;
 
         question.checkIfTextExist(testText);
       });
 
-      it("give external link", () => {
+      it(" > give external link", () => {
         const { testText } = queData;
         question
           .getComposeQuestionTextBox()
@@ -83,12 +83,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
           });
       });
 
-      it("insert formula", () => {
+      it(" > insert formula", () => {
         const { testText } = queData;
 
         question.checkIfTextExist(testText).clear();
       });
-      it("Upload image to server", () => {
+      it(" > Upload image to server", () => {
         question.getComposeQuestionTextBox().focus();
 
         question.getUploadImageIcon().click();
@@ -104,8 +104,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     });
   });
 
-  context("TC_411 => Template", () => {
-    it("Check default template should be Matrices", () => {
+  context(" > TC_411 => Template", () => {
+    it(" > Check default template should be Matrices", () => {
       const { label } = queData.keyboardType;
 
       question
@@ -122,7 +122,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         .should("be.visible");
     });
 
-    it("Edit template textarea", () => {
+    it(" > Edit template textarea", () => {
       const { mockString } = queData;
       question.getAnswerMathInputTemplate().then(inputElements => {
         const { length } = inputElements[0].innerText;
@@ -136,7 +136,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
       question.getTemplateOutput().should("have.length", 0);
     });
 
-    it("Edit template textarea from virtual keyboard", () => {
+    it(" > Edit template textarea from virtual keyboard", () => {
       question.getTemplateInput().clear({ force: true });
 
       question
@@ -198,14 +198,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     });
   });
 
-  context("TC_412 => Set Correct Answer(s)", () => {
-    it("Update Points", () => {
+  context(" > TC_412 => Set Correct Answer(s)", () => {
+    it(" > Update Points", () => {
       question
         .getPointsInput()
         .click({ force: true })
         .verifyNumInput(1);
     });
-    it("Add and remove new method", () => {
+    it(" > Add and remove new method", () => {
       question
         .getAddNewMethod()
         .click()
@@ -216,7 +216,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         question.getMathFormulaAnswers().should("have.length", 1);
       });
     });
-    it("Add and remove alternate answer", () => {
+    it(" > Add and remove alternate answer", () => {
       question.addAlternateAnswer();
       question
         .getAddedAlternateAnswer()
@@ -228,13 +228,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         .should("not.exist");
       question.returnToCorrectTab();
     });
-    it("Change answer methods", () => {
+    it(" > Change answer methods", () => {
       Object.values(methods).forEach(item => {
         question.setMethod(item);
         question.getMethodSelectionDropdow().contains("div", item);
       });
     });
-    it("Testing equivSymbolic method", () => {
+    it(" > Testing equivSymbolic method", () => {
       question.setMethod(methods.EQUIV_SYMBOLIC);
       question.setValue(queData.answer.value);
       question
@@ -306,15 +306,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     });
   });
 
-  context("TC_413 => Preview Items", () => {
-    it("Click on preview", () => {
+  context(" > TC_413 => Preview Items", () => {
+    it(" > Click on preview", () => {
       preview = editItem.header.preview();
       question.getBody().contains("span", "Check Answer");
 
       question.getAnswerMathTextArea().typeWithDelay(queData.answer.value);
     });
 
-    it("Click on Check answer", () => {
+    it(" > Click on Check answer", () => {
       preview
         .getCheckAnswer()
         .click()
@@ -326,7 +326,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         );
     });
 
-    it("Click on Show Answers", () => {
+    it(" > Click on Show Answers", () => {
       preview
         .getShowAnswer()
         .click()
@@ -335,7 +335,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
         });
     });
 
-    it("Click on Clear", () => {
+    it(" > Click on Clear", () => {
       preview.getClear().click();
       question.getAnswerMathTextArea().then(inputElements =>
         cy.wrap(inputElements).then(inputElement => {
@@ -346,8 +346,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
     });
   });
 
-  context("TC_415 => Save question", () => {
-    it("Click on save button", () => {
+  context(" > TC_415 => Save question", () => {
+    it(" > Click on save button", () => {
       question.header.save();
       cy.url().should("contain", "item-detail");
     });

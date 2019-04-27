@@ -56,7 +56,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
     });
   });
 
-  context("User creates question.", () => {
+  context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
       editItemPage.getItemWithId(testItemId);
       editItemPage.deleteAllQuestion();
@@ -65,7 +65,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       editItemPage.addNew().chooseQuestion(queData.group, queData.queType);
     });
 
-    it("Edit question text", () => {
+    it(" > Edit question text", () => {
       question
         .getQuestionEditor()
         .clear()
@@ -87,7 +87,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
         .should("contain", queData.queText);
     });
 
-    it("Edit line", () => {
+    it(" > Edit line", () => {
       question
         .getXMinParameter()
         .clear()
@@ -101,7 +101,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       question.getVisibleTickLabelsOnBoard().should("have.length", 10);
     });
 
-    it("Edit title", () => {
+    it(" > Edit title", () => {
       question
         .getTitleParameter()
         .clear()
@@ -110,7 +110,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       question.getTitleOnBoard().should("be.contain", queData.title);
     });
 
-    it("Edit possible responses", () => {
+    it(" > Edit possible responses", () => {
       question.clickOnPossibleResponsesDeleteButton(1);
       question.clickOnPossibleResponsesDeleteButton(0);
 
@@ -234,7 +234,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       // Point Separation distance Y
     });
 
-    it("Edit ticks", () => {
+    it(" > Edit ticks", () => {
       question
         .getTicksDistance()
         .clear()
@@ -260,7 +260,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       // Rendering base
     });
 
-    it("Edit labels", () => {
+    it(" > Edit labels", () => {
       question
         .getLabelsFrequency()
         .clear()
@@ -277,7 +277,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       question.getVisibleTickLabelsOnBoard().should("have.length", 6);
     });
 
-    it("Edit correct answers", () => {
+    it(" > Edit correct answers", () => {
       question
         .getPointsParameter()
         .clear()
@@ -326,7 +326,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       question.getPointsParameter().should("have.value", queData.correctAnswers.points);
     });
 
-    it("Check preview", () => {
+    it(" > Check preview", () => {
       question.clickOnPossibleResponsesDeleteButton(2);
       question.clickOnPossibleResponsesDeleteButton(1);
       question.clickOnPossibleResponsesDeleteButton(0);

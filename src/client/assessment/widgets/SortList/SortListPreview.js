@@ -30,7 +30,7 @@ const styles = {
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
 const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswer }) => {
-  const { source, instructor_stimulus, stimulus } = item;
+  const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
     source.map((sourceItem, i) => {

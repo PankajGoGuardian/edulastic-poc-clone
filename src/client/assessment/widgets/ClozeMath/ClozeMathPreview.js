@@ -3,7 +3,7 @@ import React, { useEffect, useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
-import { MathKeyboard, WithResources } from "@edulastic/common";
+import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
 import { black } from "@edulastic/colors";
 
 import { SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
@@ -344,6 +344,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
       }}
     >
       <div ref={wrappedRef}>
+        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
         {type === SHOW && <AnswerBox answers={_getAnswers()} />}
         {showKeyboard && (

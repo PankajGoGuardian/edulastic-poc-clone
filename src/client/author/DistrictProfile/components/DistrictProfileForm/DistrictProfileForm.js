@@ -17,7 +17,8 @@ import {
   StyledTextArea,
   StyledInput,
   SaveButton,
-  StyledLink
+  StyledLink,
+  StyledFormItem
 } from "./styled";
 
 class DistrictProfileForm extends React.Component {
@@ -25,7 +26,8 @@ class DistrictProfileForm extends React.Component {
     super(props);
     this.state = {
       logo: this.props.districtProfile.logo,
-      pageBackground: this.props.districtProfile.pageBackground
+      pageBackground: this.props.districtProfile.pageBackground,
+      nameWidth: this.props.districtProfile.name.length * 9.5
     };
   }
 
@@ -43,9 +45,16 @@ class DistrictProfileForm extends React.Component {
     else if (keyName === "logo") this.setState({ logo: imgSrc });
   };
 
+  changeProfileName = e => {
+    this.setState({
+      nameWidth: e.target.value.length * 9.5
+    });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { districtProfile, history } = this.props;
+    const { nameWidth } = this.state;
 
     return (
       <StyledFormDiv>
@@ -61,12 +70,12 @@ class DistrictProfileForm extends React.Component {
           </StyledDivBg>
           <StyledDivMain>
             <StyledRow>
-              <FormItem>
+              <StyledFormItem widthSize={nameWidth}>
                 {getFieldDecorator("name", {
                   rules: [{ required: true, message: "Please input your name!" }],
                   initialValue: districtProfile.name
-                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} onChange={this.changeProfileName} />)}
+              </StyledFormItem>
             </StyledRow>
             <StyledRow>
               <StyledLabel>District Short Name:</StyledLabel>

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Input, Button } from "antd";
+import { Row, Input, Button, Form } from "antd";
 const { TextArea } = Input;
 
 export const StyledFormDiv = styled.div`
@@ -56,13 +56,21 @@ export const StyledInput = styled(Input)`
   width: 220px;
   border: none;
 
-  &:focus {
-    border: 1px solid #40a9ff;
-  }
-
   ::placeholder {
     color: rgba(68, 68, 68, 0.4);
     font-style: italic;
+  }
+`;
+
+export const StyledFormItem = styled(Form.Item)`
+  width: 100%;
+  .ant-form-item-children {
+    width: 100%;
+  }
+
+  .ant-input-affix-wrapper {
+    width: ${props => props.widthSize + 30 + "px"};
+    min-width: 220px;
   }
 `;
 
@@ -70,6 +78,7 @@ export const StyledInputB = styled(StyledInput)`
   .ant-input {
     font-size: 18px;
     font-weight: 600;
+    width: 100%;
   }
 `;
 

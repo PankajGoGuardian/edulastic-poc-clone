@@ -185,7 +185,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
   }, [mathHtmls]);
 
   useEffect(() => {
-    replaceResponseButtons();
+    if (window.MathQuill) replaceResponseButtons();
   }, [newInnerHtml, userAnswer, wrappedRef.current]);
 
   useEffect(() => {
@@ -196,6 +196,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
   }, []);
 
   useEffect(() => {
+    if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
     if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
     $($(wrappedRef.current).find(".ql-editor")[0])

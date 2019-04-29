@@ -107,26 +107,24 @@ class ClozeText extends Component {
       <div>
         {view === "edit" && (
           <React.Fragment>
-            <AdaptiveCloze background={theme.widgets.clozeText.editViewBgColor}>
-              <div className="authoring">
-                <Authoring item={itemForEdit} />
-                <Widget>
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      shuffleOptions
-                    }}
-                    options={previewDisplayOptions}
-                    question={previewStimulus}
-                    uiStyle={uiStyle}
-                    templateMarkUp={itemForEdit.templateMarkUp}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
-                  />
-                </Widget>
-              </div>
-            </AdaptiveCloze>
+            <div className="authoring">
+              <Authoring item={itemForEdit} />
+              <Widget>
+                <CorrectAnswers
+                  key={duplicatedResponses || showDraghandle || shuffleOptions}
+                  validation={item.validation}
+                  configureOptions={{
+                    shuffleOptions
+                  }}
+                  options={previewDisplayOptions}
+                  question={previewStimulus}
+                  uiStyle={uiStyle}
+                  templateMarkUp={itemForEdit.templateMarkUp}
+                  onAddAltResponses={this.handleAddAltResponses}
+                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                />
+              </Widget>
+            </div>
             <div>
               <Options
                 onChange={this.handleOptionsChange}

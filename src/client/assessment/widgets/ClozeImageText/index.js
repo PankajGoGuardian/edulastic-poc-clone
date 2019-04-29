@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -6,6 +7,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
+import { desktopWidth } from "@edulastic/colors";
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -21,6 +23,15 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import { Widget } from "../../styled/Widget";
+
+const ContentArea = styled.div`
+  max-width: 76.7%;
+  margin-left: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 100%;
+  }
+`;
 
 class ClozeImageText extends Component {
   state = {
@@ -126,62 +137,81 @@ class ClozeImageText extends Component {
   };
 
   render() {
-    const { qIndex, view, previewTab, item, userAnswer, t, testItem, evaluation } = this.props;
+    const {
+      qIndex,
+      view,
+      previewTab,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      fillSections,
+      cleanSections
+    } = this.props;
+
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;
     return (
       <React.Fragment>
         {view === "edit" && (
-          <React.Fragment>
-            <EditorContainer>
-              <div className="authoring">
-                <Authoring item={itemForEdit} />
-                <Widget>
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      duplicatedResponses,
-                      showDraghandle,
-                      shuffleOptions,
-                      transparentResponses
-                    }}
-                    options={previewDisplayOptions}
-                    imageAlterText={item.imageAlterText}
-                    responses={item.responses}
-                    imageUrl={item.imageUrl}
-                    imageWidth={item.imageWidth}
-                    question={previewStimulus}
-                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                    uiStyle={uiStyle}
-                    backgroundColor={item.background}
-                    maxRespCount={item.maxRespCount}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
-                  />
-                  <CorrectAnswerOptions>
-                    <Checkbox
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                      label={t("component.cloze.imageText.shuffleoptions")}
-                      checked={shuffleOptions}
+          <ContentArea>
+            <React.Fragment>
+              <EditorContainer>
+                <div className="authoring">
+                  <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                  <Widget>
+                    <CorrectAnswers
+                      key={duplicatedResponses || showDraghandle || shuffleOptions}
+                      validation={item.validation}
+                      configureOptions={{
+                        duplicatedResponses,
+                        showDraghandle,
+                        shuffleOptions,
+                        transparentResponses
+                      }}
+                      options={previewDisplayOptions}
+                      imageAlterText={item.imageAlterText}
+                      responses={item.responses}
+                      imageUrl={item.imageUrl}
+                      imageWidth={item.imageWidth}
+                      question={previewStimulus}
+                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                      uiStyle={uiStyle}
+                      backgroundColor={item.background}
+                      maxRespCount={item.maxRespCount}
+                      onAddAltResponses={this.handleAddAltResponses}
+                      onRemoveAltResponses={this.handleRemoveAltResponses}
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
                     />
-                  </CorrectAnswerOptions>
-                </Widget>
-              </div>
-            </EditorContainer>
-            <OptionsContainer>
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                outerStyle={{
-                  padding: "16px 60px 7px 60px"
-                }}
-              />
-            </OptionsContainer>
-          </React.Fragment>
+                    <CorrectAnswerOptions>
+                      <Checkbox
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        label={t("component.cloze.imageText.shuffleoptions")}
+                        checked={shuffleOptions}
+                      />
+                    </CorrectAnswerOptions>
+                  </Widget>
+                </div>
+              </EditorContainer>
+              <OptionsContainer>
+                <Options
+                  onChange={this.handleOptionsChange}
+                  uiStyle={uiStyle}
+                  outerStyle={{
+                    padding: "16px 60px 7px 60px"
+                  }}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
+              </OptionsContainer>
+            </React.Fragment>
+          </ContentArea>
         )}
         {view === "preview" && (
           <Wrapper>
@@ -279,7 +309,9 @@ ClozeImageText.propTypes = {
   userAnswer: PropTypes.array,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 ClozeImageText.defaultProps = {
@@ -290,7 +322,9 @@ ClozeImageText.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: []
+  evaluation: [],
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import styled from "styled-components";
 
 import { Select } from "@edulastic/common";
@@ -15,7 +16,9 @@ import { Widget } from "../../styled/Widget";
 class Layout extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
-    uiStyle: PropTypes.object
+    uiStyle: PropTypes.object,
+    fillSections: PropTypes.func,
+    cleanSections: PropTypes.func
   };
 
   static defaultProps = {
@@ -27,8 +30,23 @@ class Layout extends Component {
       heightpx: 0,
       wordwrap: false,
       responsecontainerindividuals: []
-    }
+    },
+    fillSections: () => {},
+    cleanSections: () => {}
   };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   render() {
     const { onChange, uiStyle, t } = this.props;

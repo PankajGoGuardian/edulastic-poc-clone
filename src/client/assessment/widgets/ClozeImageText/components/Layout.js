@@ -1,15 +1,16 @@
-import React from "react";
-import { get } from "lodash";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
+import produce from "immer";
+import { get } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
-import produce from "immer";
 
 import SpecialCharacters from "../../../containers/WidgetOptions/components/SpecialCharacters";
+import Container from "./Container";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
-import Container from "./Container";
 import { Block } from "../../../styled/WidgetOptions/Block";
 import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
@@ -24,92 +25,116 @@ import {
 import { changeItemAction } from "../../../../author/src/actions/question";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
-const Layout = ({ item, t, changeItem, setQuestionData }) => {
-  const mapValues = val => (Number.isNaN(+val) ? "" : val);
+class Layout extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
 
-  const changeUiStyle = (prop, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        if (!draft.ui_style) {
-          draft.ui_style = {};
-        }
-
-        if (prop === "inputtype") {
-          draft.validation.valid_response.value = draft.validation.valid_response.value.map(mapValues);
-
-          if (Array.isArray(draft.validation.alt_responses)) {
-            draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-              res.value = res.value.map(mapValues);
-              return res;
-            });
-          }
-        }
-
-        draft.ui_style[prop] = value;
-      })
-    );
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
-  return (
-    <React.Fragment>
-      <Widget>
-        <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.layout")}</Subtitle>
-          <Row gutter={20}>
-            <Col md={12}>
-              <MultipleLineOption
-                checked={get(item, "multiple_line", false)}
-                onChange={val => changeItem("multiple_line", val)}
-              />
-            </Col>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                checked={get(item, "browserspellcheck", false)}
-                onChange={val => changeItem("browserspellcheck", val)}
-              />
-            </Col>
-          </Row>
-          <Row gutter={20}>
-            <Col md={12}>
-              <ImageScaleOption
-                checked={get(item, "imagescale", false)}
-                onChange={val => changeItem("imagescale", val)}
-              />
-            </Col>
-            <Col md={12}>
-              <VerticalTopOption
-                checked={get(item, "verticaltop", false)}
-                onChange={val => changeItem("verticaltop", val)}
-              />
-            </Col>
-          </Row>
-          <SpecialCharacters />
-          <Row gutter={20}>
-            <Col md={12}>
-              <StemNumerationOption
-                onChange={val => changeUiStyle("validation_stem_numeration", val)}
-                value={get(item, "ui_style.validation_stem_numeration", "numerical")}
-              />
-            </Col>
-            <Col md={12}>
-              <FontSizeOption
-                onChange={val => changeUiStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
-              />
-            </Col>
-          </Row>
-          <Container onChange={changeUiStyle} t={t} uiStyle={get(item, "ui_style", {})} />
-        </Block>
-      </Widget>
-    </React.Fragment>
-  );
-};
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
+  render() {
+    const { item, t, changeItem, setQuestionData } = this.props;
+
+    const mapValues = val => (Number.isNaN(+val) ? "" : val);
+
+    const changeUiStyle = (prop, value) => {
+      setQuestionData(
+        produce(item, draft => {
+          if (!draft.ui_style) {
+            draft.ui_style = {};
+          }
+
+          if (prop === "inputtype") {
+            draft.validation.valid_response.value = draft.validation.valid_response.value.map(mapValues);
+
+            if (Array.isArray(draft.validation.alt_responses)) {
+              draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+                res.value = res.value.map(mapValues);
+                return res;
+              });
+            }
+          }
+
+          draft.ui_style[prop] = value;
+        })
+      );
+    };
+
+    return (
+      <React.Fragment>
+        <Widget>
+          <Block style={{ paddingTop: 0 }}>
+            <Subtitle>{t("component.options.layout")}</Subtitle>
+            <Row gutter={20}>
+              <Col md={12}>
+                <MultipleLineOption
+                  checked={get(item, "multiple_line", false)}
+                  onChange={val => changeItem("multiple_line", val)}
+                />
+              </Col>
+              <Col md={12}>
+                <BrowserSpellcheckOption
+                  checked={get(item, "browserspellcheck", false)}
+                  onChange={val => changeItem("browserspellcheck", val)}
+                />
+              </Col>
+            </Row>
+            <Row gutter={20}>
+              <Col md={12}>
+                <ImageScaleOption
+                  checked={get(item, "imagescale", false)}
+                  onChange={val => changeItem("imagescale", val)}
+                />
+              </Col>
+              <Col md={12}>
+                <VerticalTopOption
+                  checked={get(item, "verticaltop", false)}
+                  onChange={val => changeItem("verticaltop", val)}
+                />
+              </Col>
+            </Row>
+            <SpecialCharacters />
+            <Row gutter={20}>
+              <Col md={12}>
+                <StemNumerationOption
+                  onChange={val => changeUiStyle("validation_stem_numeration", val)}
+                  value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+                />
+              </Col>
+              <Col md={12}>
+                <FontSizeOption
+                  onChange={val => changeUiStyle("fontsize", val)}
+                  value={get(item, "ui_style.fontsize", "normal")}
+                />
+              </Col>
+            </Row>
+            <Container onChange={changeUiStyle} t={t} uiStyle={get(item, "ui_style", {})} />
+          </Block>
+        </Widget>
+      </React.Fragment>
+    );
+  }
+}
 
 Layout.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   changeItem: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+Layout.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

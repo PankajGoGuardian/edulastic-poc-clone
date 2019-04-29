@@ -1,6 +1,7 @@
-import React from "react";
+import React, { Component } from "react";
 import { Select, Row, Col, Input } from "antd";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
@@ -21,278 +22,297 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
 
-const Layout = ({ questionData, onChange, uiStyle, t }) => {
-  const changeUiStyle = (prop, value) => {
-    onChange("ui_style", {
-      ...uiStyle,
-      [prop]: value
-    });
+class Layout extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
-  const changeIndividualUiStyle = (prop, value, index) => {
-    const { responsecontainerindividuals } = uiStyle;
-    const item = {};
-    Object.defineProperties(item, {
-      widthpx: {
-        value: responsecontainerindividuals[index].widthpx,
-        writable: true
-      },
-      heightpx: {
-        value: responsecontainerindividuals[index].heightpx,
-        writable: true
-      },
-      placeholder: {
-        value: responsecontainerindividuals[index].placeholder,
-        writable: true
-      }
-    });
-    item[prop] = value;
-    responsecontainerindividuals[index] = item;
-    onChange("ui_style", {
-      ...uiStyle,
-      responsecontainerindividuals
-    });
-  };
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
 
-  const removeIndividual = index => {
-    const { responsecontainerindividuals } = uiStyle;
-    responsecontainerindividuals.splice(index, 1);
-    onChange("ui_style", {
-      ...uiStyle,
-      responsecontainerindividuals
-    });
-  };
+    cleanSections();
+  }
 
-  const addNewResponseContainer = () => {
-    const { responsecontainerindividuals } = uiStyle;
-    responsecontainerindividuals.push({
-      widthpx: 0,
-      heightpx: 0,
-      placeholder: ""
-    });
-    onChange("ui_style", {
-      ...uiStyle,
-      responsecontainerindividuals
-    });
-  };
+  render() {
+    const { questionData, onChange, uiStyle, t } = this.props;
 
-  const stemnumerationOptions = [
-    { value: "numerical", label: t("component.options.numerical") },
-    { value: "uppercase", label: t("component.options.uppercasealphabet") },
-    { value: "lowercase", label: t("component.options.lowercasealphabet") }
-  ];
+    const changeUiStyle = (prop, value) => {
+      onChange("ui_style", {
+        ...uiStyle,
+        [prop]: value
+      });
+    };
 
-  const fontsizeOptions = [
-    { value: "small", label: t("component.options.small") },
-    { value: "normal", label: t("component.options.normal") },
-    { value: "large", label: t("component.options.large") },
-    { value: "xlarge", label: t("component.options.extraLarge") },
-    { value: "xxlarge", label: t("component.options.huge") }
-  ];
+    const changeIndividualUiStyle = (prop, value, index) => {
+      const { responsecontainerindividuals } = uiStyle;
+      const item = {};
+      Object.defineProperties(item, {
+        widthpx: {
+          value: responsecontainerindividuals[index].widthpx,
+          writable: true
+        },
+        heightpx: {
+          value: responsecontainerindividuals[index].heightpx,
+          writable: true
+        },
+        placeholder: {
+          value: responsecontainerindividuals[index].placeholder,
+          writable: true
+        }
+      });
+      item[prop] = value;
+      responsecontainerindividuals[index] = item;
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals
+      });
+    };
 
-  const inputtypeOptions = [
-    { value: "text", label: t("component.options.text") },
-    { value: "number", label: t("component.options.number") }
-  ];
+    const removeIndividual = index => {
+      const { responsecontainerindividuals } = uiStyle;
+      responsecontainerindividuals.splice(index, 1);
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals
+      });
+    };
 
-  const pointerOptions = [
-    { value: "right", label: t("component.options.right") },
-    { value: "left", label: t("component.options.left") },
-    { value: "top", label: t("component.options.top") },
-    { value: "bottom", label: t("component.options.bottom") }
-  ];
+    const addNewResponseContainer = () => {
+      const { responsecontainerindividuals } = uiStyle;
+      responsecontainerindividuals.push({
+        widthpx: 0,
+        heightpx: 0,
+        placeholder: ""
+      });
+      onChange("ui_style", {
+        ...uiStyle,
+        responsecontainerindividuals
+      });
+    };
 
-  return (
-    <React.Fragment>
-      <Widget>
-        <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.layout")}</Subtitle>
-          <MarginRow gutter={20}>
-            <Col md={12}>
-              <OptionCheckbox
-                checked={questionData.imagescale}
-                onChange={e => onChange("imagescale", e.target.checked)}
-                size="large"
-              >
-                {t("component.options.imagescale")}
-              </OptionCheckbox>
-            </Col>
-            <Col md={12}>
-              <OptionCheckbox
-                checked={questionData.verticaltop}
-                onChange={e => onChange("verticaltop", e.target.checked)}
-                size="large"
-              >
-                {t("component.options.verticaltop")}
-              </OptionCheckbox>
-            </Col>
-          </MarginRow>
-          <MarginRow gutter={20}>
-            <Col md={12}>
-              <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
-              <SelectWrapper>
-                <OptionSelect
+    const stemnumerationOptions = [
+      { value: "numerical", label: t("component.options.numerical") },
+      { value: "uppercase", label: t("component.options.uppercasealphabet") },
+      { value: "lowercase", label: t("component.options.lowercasealphabet") }
+    ];
+
+    const fontsizeOptions = [
+      { value: "small", label: t("component.options.small") },
+      { value: "normal", label: t("component.options.normal") },
+      { value: "large", label: t("component.options.large") },
+      { value: "xlarge", label: t("component.options.extraLarge") },
+      { value: "xxlarge", label: t("component.options.huge") }
+    ];
+
+    const inputtypeOptions = [
+      { value: "text", label: t("component.options.text") },
+      { value: "number", label: t("component.options.number") }
+    ];
+
+    const pointerOptions = [
+      { value: "right", label: t("component.options.right") },
+      { value: "left", label: t("component.options.left") },
+      { value: "top", label: t("component.options.top") },
+      { value: "bottom", label: t("component.options.bottom") }
+    ];
+
+    return (
+      <React.Fragment>
+        <Widget>
+          <Block style={{ paddingTop: 0 }}>
+            <Subtitle>{t("component.options.layout")}</Subtitle>
+            <MarginRow gutter={20}>
+              <Col md={12}>
+                <OptionCheckbox
+                  checked={questionData.imagescale}
+                  onChange={e => onChange("imagescale", e.target.checked)}
                   size="large"
-                  onChange={val => changeUiStyle("stemnumeration", val)}
-                  value={uiStyle.stemnumeration}
                 >
-                  {stemnumerationOptions.map(({ value: val, label }) => (
-                    <Select.Option key={val} value={val}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </OptionSelect>
-              </SelectWrapper>
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.options.fontSize")}</Label>
-              <SelectWrapper>
-                <OptionSelect
+                  {t("component.options.imagescale")}
+                </OptionCheckbox>
+              </Col>
+              <Col md={12}>
+                <OptionCheckbox
+                  checked={questionData.verticaltop}
+                  onChange={e => onChange("verticaltop", e.target.checked)}
                   size="large"
-                  onChange={fontsize => changeUiStyle("fontsize", fontsize)}
-                  value={uiStyle.fontsize}
                 >
-                  {fontsizeOptions.map(({ value: val, label }) => (
-                    <Select.Option key={val} value={val}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </OptionSelect>
-              </SelectWrapper>
-            </Col>
-          </MarginRow>
-          <MarginRow gutter={20}>
-            <Col md={12}>
-              <Label>{t("component.options.inputtype")}</Label>
-              <SelectWrapper>
-                <OptionSelect
-                  size="large"
-                  onChange={inputtype => changeUiStyle("inputtype", inputtype)}
-                  value={uiStyle.inputtype}
-                >
-                  {inputtypeOptions.map(({ value: val, label }) => (
-                    <Select.Option key={val} value={val}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </OptionSelect>
-              </SelectWrapper>
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.options.placeholder")}</Label>
-              <Input
-                disabled={false}
-                size="large"
-                onChange={e => changeUiStyle("placeholder", e.target.value)}
-                value={uiStyle.placeholder}
-              />
-            </Col>
-          </MarginRow>
-          <MarginRow gutter={20}>
-            <Col md={12}>
-              <Label>{t("component.options.widthpx")}</Label>
-              <Input
-                type="number"
-                size="large"
-                disabled={false}
-                onChange={e => changeUiStyle("widthpx", e.target.value)}
-                value={uiStyle.widthpx}
-              />
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.options.heightpx")}</Label>
-              <Input
-                type="number"
-                size="large"
-                disabled={false}
-                onChange={e => changeUiStyle("heightpx", e.target.value)}
-                value={uiStyle.heightpx}
-              />
-            </Col>
-          </MarginRow>
-          <MarginRow gutter={20}>
-            <Col md={12}>
-              <Label>{t("component.options.pointers")}</Label>
-              <SelectWrapper>
-                <OptionSelect
-                  size="large"
-                  onChange={inputtype => changeUiStyle("pointers", inputtype)}
-                  value={uiStyle.pointers}
-                >
-                  {pointerOptions.map(({ value: val, label }) => (
-                    <Select.Option key={val} value={val}>
-                      {label}
-                    </Select.Option>
-                  ))}
-                </OptionSelect>
-              </SelectWrapper>
-            </Col>
-          </MarginRow>
-          {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-            <Container key={index}>
-              <MarginRow gutter={20}>
-                <Col md={12}>
-                  <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-                </Col>
-                <Col md={12}>
-                  <Delete onClick={() => removeIndividual(index)}>X</Delete>
-                </Col>
-              </MarginRow>
-              <MarginRow gutter={20}>
-                <Col md={8}>
-                  <Label>{t("component.options.widthpx")}</Label>
-                  <Input
-                    type="number"
+                  {t("component.options.verticaltop")}
+                </OptionCheckbox>
+              </Col>
+            </MarginRow>
+            <MarginRow gutter={20}>
+              <Col md={12}>
+                <Label>{t("component.options.stemNumerationReviewOnly")}</Label>
+                <SelectWrapper>
+                  <OptionSelect
                     size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                    value={responsecontainerindividual.widthpx}
-                  />
-                </Col>
-                <Col md={8}>
-                  <Label>{t("component.options.heightpx")}</Label>
-                  <Input
-                    type="number"
+                    onChange={val => changeUiStyle("stemnumeration", val)}
+                    value={uiStyle.stemnumeration}
+                  >
+                    {stemnumerationOptions.map(({ value: val, label }) => (
+                      <Select.Option key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </OptionSelect>
+                </SelectWrapper>
+              </Col>
+              <Col md={12}>
+                <Label>{t("component.options.fontSize")}</Label>
+                <SelectWrapper>
+                  <OptionSelect
                     size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                    value={responsecontainerindividual.heightpx}
-                  />
-                </Col>
-                <Col md={8}>
-                  <Label>{t("component.options.placeholder")}</Label>
-                  <Input
+                    onChange={fontsize => changeUiStyle("fontsize", fontsize)}
+                    value={uiStyle.fontsize}
+                  >
+                    {fontsizeOptions.map(({ value: val, label }) => (
+                      <Select.Option key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </OptionSelect>
+                </SelectWrapper>
+              </Col>
+            </MarginRow>
+            <MarginRow gutter={20}>
+              <Col md={12}>
+                <Label>{t("component.options.inputtype")}</Label>
+                <SelectWrapper>
+                  <OptionSelect
                     size="large"
-                    disabled={false}
-                    containerStyle={{ width: 350 }}
-                    onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
-                    value={uiStyle.placeholder}
-                  />
-                </Col>
-              </MarginRow>
-            </Container>
-          ))}
-          <MarginRow gutter={20}>
-            <Col md={6}>
-              <Label>{t("component.options.responsecontainerindividual")}</Label>
-              <AddNewChoiceBtn onClick={() => addNewResponseContainer()}>
-                {t("component.options.addnewresponsecontainer")}
-              </AddNewChoiceBtn>
-            </Col>
-          </MarginRow>
-        </Block>
-      </Widget>
-    </React.Fragment>
-  );
-};
+                    onChange={inputtype => changeUiStyle("inputtype", inputtype)}
+                    value={uiStyle.inputtype}
+                  >
+                    {inputtypeOptions.map(({ value: val, label }) => (
+                      <Select.Option key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </OptionSelect>
+                </SelectWrapper>
+              </Col>
+              <Col md={12}>
+                <Label>{t("component.options.placeholder")}</Label>
+                <Input
+                  disabled={false}
+                  size="large"
+                  onChange={e => changeUiStyle("placeholder", e.target.value)}
+                  value={uiStyle.placeholder}
+                />
+              </Col>
+            </MarginRow>
+            <MarginRow gutter={20}>
+              <Col md={12}>
+                <Label>{t("component.options.widthpx")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  disabled={false}
+                  onChange={e => changeUiStyle("widthpx", e.target.value)}
+                  value={uiStyle.widthpx}
+                />
+              </Col>
+              <Col md={12}>
+                <Label>{t("component.options.heightpx")}</Label>
+                <Input
+                  type="number"
+                  size="large"
+                  disabled={false}
+                  onChange={e => changeUiStyle("heightpx", e.target.value)}
+                  value={uiStyle.heightpx}
+                />
+              </Col>
+            </MarginRow>
+            <MarginRow gutter={20}>
+              <Col md={12}>
+                <Label>{t("component.options.pointers")}</Label>
+                <SelectWrapper>
+                  <OptionSelect
+                    size="large"
+                    onChange={inputtype => changeUiStyle("pointers", inputtype)}
+                    value={uiStyle.pointers}
+                  >
+                    {pointerOptions.map(({ value: val, label }) => (
+                      <Select.Option key={val} value={val}>
+                        {label}
+                      </Select.Option>
+                    ))}
+                  </OptionSelect>
+                </SelectWrapper>
+              </Col>
+            </MarginRow>
+            {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
+              <Container key={index}>
+                <MarginRow gutter={20}>
+                  <Col md={12}>
+                    <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
+                  </Col>
+                  <Col md={12}>
+                    <Delete onClick={() => removeIndividual(index)}>X</Delete>
+                  </Col>
+                </MarginRow>
+                <MarginRow gutter={20}>
+                  <Col md={8}>
+                    <Label>{t("component.options.widthpx")}</Label>
+                    <Input
+                      type="number"
+                      size="large"
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
+                      value={responsecontainerindividual.widthpx}
+                    />
+                  </Col>
+                  <Col md={8}>
+                    <Label>{t("component.options.heightpx")}</Label>
+                    <Input
+                      type="number"
+                      size="large"
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
+                      value={responsecontainerindividual.heightpx}
+                    />
+                  </Col>
+                  <Col md={8}>
+                    <Label>{t("component.options.placeholder")}</Label>
+                    <Input
+                      size="large"
+                      disabled={false}
+                      containerStyle={{ width: 350 }}
+                      onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
+                      value={uiStyle.placeholder}
+                    />
+                  </Col>
+                </MarginRow>
+              </Container>
+            ))}
+            <MarginRow gutter={20}>
+              <Col md={6}>
+                <Label>{t("component.options.responsecontainerindividual")}</Label>
+                <AddNewChoiceBtn onClick={() => addNewResponseContainer()}>
+                  {t("component.options.addnewresponsecontainer")}
+                </AddNewChoiceBtn>
+              </Col>
+            </MarginRow>
+          </Block>
+        </Widget>
+      </React.Fragment>
+    );
+  }
+}
 
 Layout.propTypes = {
   questionData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Layout.defaultProps = {
@@ -304,7 +324,9 @@ Layout.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

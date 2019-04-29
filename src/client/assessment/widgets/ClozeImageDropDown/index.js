@@ -8,6 +8,7 @@ import produce from "immer";
 
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { desktopWidth } from "@edulastic/colors";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -22,6 +23,16 @@ import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { Widget } from "../../styled/Widget";
+import styled from "styled-components";
+
+const ContentArea = styled.div`
+  max-width: 76.7%;
+  margin-left: auto;
+
+  @media (max-width: ${desktopWidth}) {
+    max-width: 100%;
+  }
+`;
 
 class ClozeImageDropDown extends Component {
   state = {
@@ -154,7 +165,20 @@ class ClozeImageDropDown extends Component {
   };
 
   render() {
-    const { qIndex, view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation } = this.props;
+    const {
+      qIndex,
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      fillSections,
+      cleanSections
+    } = this.props;
+
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
@@ -167,49 +191,64 @@ class ClozeImageDropDown extends Component {
     return (
       <React.Fragment>
         {view === "edit" && (
-          <React.Fragment>
-            <EditorContainer>
-              <div className="authoring">
-                <Authoring fontSize={fontSize} item={itemForEdit} />
-                <Widget>
-                  <CorrectAnswers
-                    key={duplicatedResponses || showDraghandle || shuffleOptions}
-                    validation={item.validation}
-                    configureOptions={{
-                      duplicatedResponses,
-                      showDraghandle,
-                      shuffleOptions,
-                      transparentResponses
-                    }}
-                    imagescale={imagescale}
-                    options={previewDisplayOptions}
-                    imageAlterText={item.imageAlterText}
-                    responses={item.responses}
-                    imageUrl={item.imageUrl}
-                    imageWidth={item.imageWidth}
-                    question={previewStimulus}
-                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
-                    uiStyle={uiStyle}
-                    backgroundColor={item.background}
-                    maxRespCount={item.maxRespCount}
-                    onAddAltResponses={this.handleAddAltResponses}
-                    onRemoveAltResponses={this.handleRemoveAltResponses}
+          <ContentArea>
+            <React.Fragment>
+              <EditorContainer>
+                <div className="authoring">
+                  <Authoring
+                    fontSize={fontSize}
+                    item={itemForEdit}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
                   />
-                  <CorrectAnswerOptions>
-                    <Checkbox
-                      className="additional-options"
-                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                      label={t("component.cloze.imageDropDown.shuffleoptions")}
-                      checked={shuffleOptions}
+                  <Widget>
+                    <CorrectAnswers
+                      key={duplicatedResponses || showDraghandle || shuffleOptions}
+                      validation={item.validation}
+                      configureOptions={{
+                        duplicatedResponses,
+                        showDraghandle,
+                        shuffleOptions,
+                        transparentResponses
+                      }}
+                      imagescale={imagescale}
+                      options={previewDisplayOptions}
+                      imageAlterText={item.imageAlterText}
+                      responses={item.responses}
+                      imageUrl={item.imageUrl}
+                      imageWidth={item.imageWidth}
+                      question={previewStimulus}
+                      showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                      uiStyle={uiStyle}
+                      backgroundColor={item.background}
+                      maxRespCount={item.maxRespCount}
+                      onAddAltResponses={this.handleAddAltResponses}
+                      onRemoveAltResponses={this.handleRemoveAltResponses}
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
                     />
-                  </CorrectAnswerOptions>
-                </Widget>
-              </div>
-            </EditorContainer>
-            <OptionsContainer>
-              <Options questionData={item} uiStyle={uiStyle} onChange={this.handleOptionsChange} />
-            </OptionsContainer>
-          </React.Fragment>
+                    <CorrectAnswerOptions>
+                      <Checkbox
+                        className="additional-options"
+                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                        label={t("component.cloze.imageDropDown.shuffleoptions")}
+                        checked={shuffleOptions}
+                      />
+                    </CorrectAnswerOptions>
+                  </Widget>
+                </div>
+              </EditorContainer>
+              <OptionsContainer>
+                <Options
+                  questionData={item}
+                  uiStyle={uiStyle}
+                  onChange={this.handleOptionsChange}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
+              </OptionsContainer>
+            </React.Fragment>
+          </ContentArea>
         )}
         {view === "preview" && (
           <Wrapper>
@@ -262,7 +301,9 @@ ClozeImageDropDown.propTypes = {
   userAnswer: PropTypes.array,
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 ClozeImageDropDown.defaultProps = {
@@ -274,7 +315,9 @@ ClozeImageDropDown.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: []
+  evaluation: [],
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

@@ -12,11 +12,25 @@ import { Subtitle } from "../../styled/Subtitle";
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
+import ReactDOM from "react-dom";
 
 class CorrectAnswers extends Component {
   state = {
     value: 0
   };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   handleTabChange = value => {
     this.setState({ value });
@@ -202,7 +216,9 @@ CorrectAnswers.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
-  maxRespCount: PropTypes.number
+  maxRespCount: PropTypes.number,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 CorrectAnswers.defaultProps = {
@@ -224,7 +240,9 @@ CorrectAnswers.defaultProps = {
     width: 0,
     height: 0,
     wordwrap: false
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

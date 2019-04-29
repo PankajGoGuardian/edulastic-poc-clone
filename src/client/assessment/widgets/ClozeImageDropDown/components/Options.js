@@ -11,10 +11,16 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ questionData, onChange, uiStyle, outerStyle }) => (
-  <WidgetOptions outerStyle={outerStyle}>
-    <Layout questionData={questionData} onChange={onChange} uiStyle={uiStyle} />
-    <Extras>
+const Options = ({ questionData, onChange, uiStyle, outerStyle, fillSections, cleanSections }) => (
+  <WidgetOptions outerStyle={outerStyle} fillSections={fillSections} cleanSections={cleanSections}>
+    <Layout
+      questionData={questionData}
+      onChange={onChange}
+      uiStyle={uiStyle}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    />
+    <Extras fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
@@ -25,7 +31,9 @@ Options.propTypes = {
   questionData: PropTypes.object.isRequired,
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
-  outerStyle: PropTypes.object
+  outerStyle: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Options.defaultProps = {
@@ -38,7 +46,9 @@ Options.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

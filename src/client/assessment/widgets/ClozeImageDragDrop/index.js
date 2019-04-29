@@ -8,6 +8,7 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
+import { desktopWidth } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -15,12 +16,12 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
+import { Widget } from "../../styled/Widget";
 
 import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
-import { desktopWidth } from "@edulastic/colors";
 
 const EmptyWrapper = styled.div``;
 
@@ -127,81 +128,102 @@ class ClozeImageDragDrop extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, t, testItem, evaluation, theme } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      t,
+      testItem,
+      evaluation,
+      theme,
+      fillSections,
+      cleanSections
+    } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
+
     return (
       <div>
         {view === "edit" && (
-          <React.Fragment>
-            <div className="authoring">
-              <Authoring item={itemForEdit} />
-              <CorrectAnswers
-                key={duplicatedResponses || showDraghandle || shuffleOptions}
-                validation={item.validation}
-                configureOptions={{
-                  duplicatedResponses,
-                  showDraghandle,
-                  shuffleOptions,
-                  transparentResponses
-                }}
-                options={previewDisplayOptions}
-                imageAlterText={item.imageAlterText}
-                responses={item.responses}
-                imageUrl={item.imageUrl}
-                imageWidth={item.imageWidth}
-                question={previewStimulus}
-                showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+          <ContentArea>
+            <React.Fragment>
+              <div className="authoring">
+                <Authoring item={itemForEdit} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      duplicatedResponses,
+                      showDraghandle,
+                      shuffleOptions,
+                      transparentResponses
+                    }}
+                    options={previewDisplayOptions}
+                    imageAlterText={item.imageAlterText}
+                    responses={item.responses}
+                    imageUrl={item.imageUrl}
+                    imageWidth={item.imageWidth}
+                    question={previewStimulus}
+                    showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
+                    uiStyle={uiStyle}
+                    backgroundColor={item.background}
+                    maxRespCount={item.maxRespCount}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                  />
+                  <CorrectAnswerOptions>
+                    <Checkbox
+                      data-cy="multi-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
+                      defaultChecked={duplicatedResponses}
+                    >
+                      {t("component.cloze.imageDragDrop.duplicatedresponses")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="drag-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
+                      defaultChecked={showDraghandle}
+                    >
+                      {t("component.cloze.imageDragDrop.showdraghandle")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="shuffle-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                      defaultChecked={shuffleOptions}
+                    >
+                      {t("component.cloze.imageDragDrop.shuffleoptions")}
+                    </Checkbox>
+                    <Checkbox
+                      data-cy="transparent-check"
+                      className="additional-options"
+                      onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
+                      defaultChecked={transparentResponses}
+                    >
+                      {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+                    </Checkbox>
+                  </CorrectAnswerOptions>
+                </Widget>
+              </div>
+              <Options
+                onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
-                backgroundColor={item.background}
-                maxRespCount={item.maxRespCount}
-                onAddAltResponses={this.handleAddAltResponses}
+                outerStyle={{
+                  padding: "30px 120px"
+                }}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
               />
-              <CorrectAnswerOptions>
-                <Checkbox
-                  data-cy="multi-check"
-                  className="additional-options"
-                  onChange={() => this.handleOptionsChange("duplicated_responses", !duplicatedResponses)}
-                  defaultChecked={duplicatedResponses}
-                >
-                  {t("component.cloze.imageDragDrop.duplicatedresponses")}
-                </Checkbox>
-                <Checkbox
-                  data-cy="drag-check"
-                  className="additional-options"
-                  onChange={() => this.handleOptionsChange("show_draghandle", !showDraghandle)}
-                  defaultChecked={showDraghandle}
-                >
-                  {t("component.cloze.imageDragDrop.showdraghandle")}
-                </Checkbox>
-                <Checkbox
-                  data-cy="shuffle-check"
-                  className="additional-options"
-                  onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                  defaultChecked={shuffleOptions}
-                >
-                  {t("component.cloze.imageDragDrop.shuffleoptions")}
-                </Checkbox>
-                <Checkbox
-                  data-cy="transparent-check"
-                  className="additional-options"
-                  onChange={() => this.handleOptionsChange("transparent_responses", !transparentResponses)}
-                  defaultChecked={transparentResponses}
-                >
-                  {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
-                </Checkbox>
-              </CorrectAnswerOptions>
-            </div>
-            <Options
-              onChange={this.handleOptionsChange}
-              uiStyle={uiStyle}
-              outerStyle={{
-                padding: "30px 120px"
-              }}
-            />
-          </React.Fragment>
+            </React.Fragment>
+          </ContentArea>
         )}
         {view === "preview" && (
           <Wrapper>
@@ -310,7 +332,9 @@ ClozeImageDragDrop.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -322,7 +346,9 @@ ClozeImageDragDrop.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: []
+  evaluation: [],
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

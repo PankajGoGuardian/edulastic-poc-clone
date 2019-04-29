@@ -10,10 +10,10 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ outerStyle }) => (
-  <WidgetOptions outerStyle={outerStyle}>
-    <Layout />
-    <Extras>
+const Options = ({ outerStyle, fillSections, cleanSections }) => (
+  <WidgetOptions outerStyle={outerStyle} fillSections={fillSections} cleanSections={cleanSections}>
+    <Layout fillSections={fillSections} cleanSections={cleanSections} />
+    <Extras fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
@@ -21,11 +21,15 @@ const Options = ({ outerStyle }) => (
 );
 
 Options.propTypes = {
-  outerStyle: PropTypes.object
+  outerStyle: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Options.defaultProps = {
-  outerStyle: {}
+  outerStyle: {},
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

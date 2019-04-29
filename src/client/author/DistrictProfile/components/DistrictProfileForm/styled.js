@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Input, Button, Form } from "antd";
+import { Row, Input, Button } from "antd";
 const { TextArea } = Input;
 
 export const StyledFormDiv = styled.div`
@@ -56,21 +56,13 @@ export const StyledInput = styled(Input)`
   width: 220px;
   border: none;
 
+  &:focus {
+    border: 1px solid #40a9ff;
+  }
+
   ::placeholder {
     color: rgba(68, 68, 68, 0.4);
     font-style: italic;
-  }
-`;
-
-export const StyledFormItem = styled(Form.Item)`
-  width: 100%;
-  .ant-form-item-children {
-    width: 100%;
-  }
-
-  .ant-input-affix-wrapper {
-    width: ${props => props.widthSize + 30 + "px"};
-    min-width: 220px;
   }
 `;
 
@@ -78,7 +70,6 @@ export const StyledInputB = styled(StyledInput)`
   .ant-input {
     font-size: 18px;
     font-weight: 600;
-    width: 100%;
   }
 `;
 
@@ -100,8 +91,28 @@ export const SaveButton = styled(Button)`
   }
 `;
 
-export const StyledLink = styled.a`
+export const StyledUrlButton = styled.a`
   line-height: 40px;
   margin-left: 20px;
   color: #1890ff;
+`;
+
+export const StyledPopoverContent = styled.div`
+  display: flex;
+  justify-contents: space-around;
+  border: 1px solid #e8e8e8;
+  padding: 5px 10px;
+`;
+
+export const PopoverCloseButton = styled(Button)`
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: #1890ff;
+  margin-left: 30px;
+`;
+
+export const StyledDistrictUrl = styled.p`
+  line-height: 32px;
+  font-weight: 600;
 `;

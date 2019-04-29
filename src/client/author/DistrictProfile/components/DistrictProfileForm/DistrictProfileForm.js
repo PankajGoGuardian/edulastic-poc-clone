@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+
 import ImageUpload from "../../../Shared/Components/ImageUpload/ImageUpload";
-import { Form, Icon } from "antd";
+import { Form, Icon, Popover } from "antd";
 const FormItem = Form.Item;
 
 import {
@@ -17,8 +19,10 @@ import {
   StyledTextArea,
   StyledInput,
   SaveButton,
-  StyledLink,
-  StyledFormItem
+  StyledUrlButton,
+  StyledPopoverContent,
+  PopoverCloseButton,
+  StyledDistrictUrl
 } from "./styled";
 
 class DistrictProfileForm extends React.Component {
@@ -27,7 +31,8 @@ class DistrictProfileForm extends React.Component {
     this.state = {
       logo: this.props.districtProfile.logo,
       pageBackground: this.props.districtProfile.pageBackground,
-      nameWidth: this.props.districtProfile.name.length * 9.5
+      districtUrl: "http://edulastic-poc.snapwiz.net/district/" + this.props.districtProfile.shortName,
+      popoverVisible: false
     };
   }
 
@@ -40,22 +45,39 @@ class DistrictProfileForm extends React.Component {
     });
   };
 
+  handleChangeShortName = e => {
+    this.setState({
+      districtUrl: "http://edulastic-poc.snapwiz.net/district/" + e.target.value
+    });
+  };
+
+  handleVisibleChange = visible => {
+    this.setState({ popoverVisible: visible });
+  };
+
   updateImgSrc = (imgSrc, keyName) => {
     if (keyName === "pageBackground") this.setState({ pageBackground: imgSrc });
     else if (keyName === "logo") this.setState({ logo: imgSrc });
   };
 
-  changeProfileName = e => {
-    this.setState({
-      nameWidth: e.target.value.length * 9.5
-    });
-  };
-
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { districtProfile, history } = this.props;
-    const { nameWidth } = this.state;
+    const { districtProfile } = this.props;
+    const { districtUrl, popoverVisible } = this.state;
 
+    const popoverContent = (
+      <React.Fragment>
+        <StyledPopoverContent>
+          <StyledDistrictUrl>{districtUrl}</StyledDistrictUrl>
+          <CopyToClipboard text={districtUrl}>
+            <PopoverCloseButton>
+              <Icon type="copy" theme="twoTone" /> &nbsp;copy
+            </PopoverCloseButton>
+          </CopyToClipboard>
+        </StyledPopoverContent>
+        <p>Share this URL with users of your disctrict.</p>
+      </React.Fragment>
+    );
     return (
       <StyledFormDiv>
         <Form onSubmit={this.handleSubmit}>
@@ -70,12 +92,12 @@ class DistrictProfileForm extends React.Component {
           </StyledDivBg>
           <StyledDivMain>
             <StyledRow>
-              <StyledFormItem widthSize={nameWidth}>
+              <FormItem>
                 {getFieldDecorator("name", {
                   rules: [{ required: true, message: "Please input your name!" }],
                   initialValue: districtProfile.name
-                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} onChange={this.changeProfileName} />)}
-              </StyledFormItem>
+                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} />)}
+              </FormItem>
             </StyledRow>
             <StyledRow>
               <StyledLabel>District Short Name:</StyledLabel>
@@ -94,9 +116,14 @@ class DistrictProfileForm extends React.Component {
                   initialValue: districtProfile.shortName
                 })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
               </FormItem>
-              <StyledLink href="javascript:;" onClick={() => history.push("/author/settings/districtpolicies")}>
-                (District Url)
-              </StyledLink>
+              <Popover
+                trigger="click"
+                visible={popoverVisible}
+                content={popoverContent}
+                onVisibleChange={this.handleVisibleChange}
+              >
+                <StyledUrlButton>(District Url)</StyledUrlButton>
+              </Popover>
             </StyledRow>
             <StyledRow>
               <StyledLabel>City:</StyledLabel>

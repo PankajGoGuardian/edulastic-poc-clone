@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsProficiencyTable";
 
@@ -9,13 +10,6 @@ import { StandardsProficiencyDiv, StyledContent, StyledLayout, SpinContainer, St
 
 // actions
 import { receiveStandardsProficiencyAction, updateStandardsProficiencyAction } from "../../ducks";
-
-// selectors
-import {
-  getStandardsProficiencySelector,
-  getStandardsProficiencyLoadingSelector,
-  getStandardsProficiencyUpdatingSelector
-} from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -75,9 +69,9 @@ class StandardsProficiency extends Component {
 const enhance = compose(
   connect(
     state => ({
-      standardsProficiency: getStandardsProficiencySelector(state),
-      loading: getStandardsProficiencyLoadingSelector(state),
-      updating: getStandardsProficiencyUpdatingSelector(state),
+      standardsProficiency: get(state, ["standardsProficiencyReducer", "data"], []),
+      loading: get(state, ["standardsProficiencyReducer", "loading"], false),
+      updating: get(state, ["standardsProficiencyReducer", "updating"], false),
       userOrgId: getUserOrgId(state)
     }),
     {
@@ -93,5 +87,7 @@ StandardsProficiency.propTypes = {
   loadStandardsProficiency: PropTypes.func.isRequired,
   updateStandardsProficiency: PropTypes.func.isRequired,
   standardsProficiency: PropTypes.object.isRequired,
-  userOrgId: PropTypes.string.isRequired
+  userOrgId: PropTypes.string.isRequired,
+  loading: PropTypes.bool.isRequired,
+  updating: PropTypes.bool.isRequired
 };

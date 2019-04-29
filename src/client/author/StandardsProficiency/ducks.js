@@ -18,24 +18,6 @@ export const updateStandardsProficiencyAction = createAction(UPDATE_STANDARDS_PR
 export const updateStandardsProficiencySuccessAction = createAction(UPDATE_STANDARDS_PROFICIENCY_SUCCESS);
 export const updateStandardsProficiencyErrorAction = createAction(UPDATE_STANDARDS_PROFICIENCY_ERROR);
 
-// selectors
-const stateStandardsProficiencySelector = state => state.standardsProficiencyReducer;
-
-export const getStandardsProficiencySelector = createSelector(
-  stateStandardsProficiencySelector,
-  state => state.data
-);
-
-export const getStandardsProficiencyLoadingSelector = createSelector(
-  stateStandardsProficiencySelector,
-  state => state.loading
-);
-
-export const getStandardsProficiencyUpdatingSelector = createSelector(
-  stateStandardsProficiencySelector,
-  state => state.updating
-);
-
 // reducers
 const initialState = {
   data: {},
@@ -46,46 +28,29 @@ const initialState = {
   updateError: null
 };
 
-const receiveStandardProficiencyRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveStandardsProficiencySuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receiveStandardsProficiencyError = (state, { payload }) => ({
-  ...state,
-  error: payload.error
-});
-
-const updateStandardsProficiencyRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updateStandardsProficiencySuccess = (state, { payload }) => ({
-  ...state,
-  data: payload,
-  updating: false
-});
-
-const updateStandardsProficiencyError = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  updateError: payload.error
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_STANDARDS_PROFICIENCY_REQUEST]: receiveStandardProficiencyRequest,
-  [RECEIVE_STANDARDS_PROFICIENCY_SUCCESS]: receiveStandardsProficiencySuccess,
-  [RECEIVE_STANDARDS_PROFICIENCY_ERROR]: receiveStandardsProficiencyError,
-  [UPDATE_STANDARDS_PROFICIENCY_REQUEST]: updateStandardsProficiencyRequest,
-  [UPDATE_STANDARDS_PROFICIENCY_SUCCESS]: updateStandardsProficiencySuccess,
-  [UPDATE_STANDARDS_PROFICIENCY_ERROR]: updateStandardsProficiencyError
+  [RECEIVE_STANDARDS_PROFICIENCY_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_STANDARDS_PROFICIENCY_SUCCESS]: (state, { payload }) => {
+    state.data = payload;
+    state.loading = false;
+  },
+  [RECEIVE_STANDARDS_PROFICIENCY_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_STANDARDS_PROFICIENCY_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_STANDARDS_PROFICIENCY_SUCCESS]: (state, { payload }) => {
+    state.updating = false;
+    state.data = payload;
+  },
+  [UPDATE_STANDARDS_PROFICIENCY_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  }
 });
 
 // sagas

@@ -162,7 +162,7 @@ class DistrictPolicyForm extends React.Component {
   };
 
   onSave = () => {
-    const { districtPolicy: policyData, optionalStatus } = this.state;
+    const { districtPolicy: policyData, optionalStatus, allowDomainForStudent, allowDomainForTeacher } = this.state;
 
     if (
       !policyData.userNameAndPassword &&

@@ -55,26 +55,8 @@ export const SaveAlert = styled.p`
 
 export const StyledAddButton = styled(Button)`
   align-self: flex-end;
-  border-radius: 16px;
-  border: 2px solid #409aff;
-  color: #409aff;
   margin-top: 20px;
   margin-bottom: 20px;
-
-  &:hover {
-    background-color: #409aff;
-    color: #fff;
-  }
-`;
-
-export const StyledSaveButton = styled(Button)`
-  background-color: #409aff;
-  border: 2px solid #409aff;
-  color: #fff;
-  &:hover {
-    background-color: #fff;
-    color: #409aff;
-  }
 `;
 
 export const StyledMasterDiv = styled.div``;
@@ -105,4 +87,17 @@ export const StyledAverageInput = styled(Input)`
   width: 80px;
   min-width: 80px;
   margin-top: -3px;
+`;
+
+export const StyledScoreDiv = styled.div`
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+
+  .anticon-down {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.25);
+    margin-left: 5px;
+    margin-right: 4px;
+  }
 `;

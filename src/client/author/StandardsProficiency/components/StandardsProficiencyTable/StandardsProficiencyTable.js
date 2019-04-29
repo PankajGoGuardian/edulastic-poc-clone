@@ -1,11 +1,7 @@
 import React, { Component } from "react";
-import * as moment from "moment";
-import { Table, Input, Popconfirm, Form, Icon, Radio, Select } from "antd";
-
-const Option = Select.Option;
+import { Table, Popconfirm, Form, Icon, Radio, Button, message } from "antd";
 
 import StandardsProficiencyEditableCell from "./StandardsProficiencyEditableCell/StandardsProficiencyEditableCell";
-import ScoreContentDiv from "./ScoreContentDiv/ScoreContentDiv";
 
 import {
   StyledTableContainer,
@@ -18,15 +14,15 @@ import {
   StyledDescription,
   StyledMasterDiv,
   StyledButton,
-  StyledSaveButton,
   StyledAddButton,
   StyledRadioGroup,
   StyledAverageRadioDiv,
   StyledAverageInput,
-  StyledLabel
+  StyledLabel,
+  StyledScoreDiv
 } from "./styled";
+import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
 
-const FormItem = Form.Item;
 const EditableContext = React.createContext();
 
 class StandardsProficiencyTable extends React.Component {
@@ -41,7 +37,8 @@ class StandardsProficiencyTable extends React.Component {
         _id: scale[i]._id,
         shortName: scale[i].shortName,
         threshold: scale[i].threshold,
-        masteryLevel: scale[i].masteryLevel
+        masteryLevel: scale[i].masteryLevel,
+        color: scale[i].color
       });
     }
 
@@ -58,11 +55,17 @@ class StandardsProficiencyTable extends React.Component {
     this.columns = [
       {
         title: "Score",
-        dataIndex: "score",
+        dataIndex: "color",
         width: "15%",
         editable: true,
-        render: text => {
-          return <ScoreContentDiv text={text} />;
+        render: (text, record) => {
+          return (
+            <StyledScoreDiv>
+              <ScoreColorSpan color={text} />
+              <Icon type="down" />
+              {record.score}
+            </StyledScoreDiv>
+          );
         }
       },
       {
@@ -138,7 +141,6 @@ class StandardsProficiencyTable extends React.Component {
       if (error) {
         return;
       }
-
       const newData = [...this.state.data];
       const index = newData.findIndex(item => key === item.key);
       if (index > -1) {
@@ -163,27 +165,48 @@ class StandardsProficiencyTable extends React.Component {
 
   handleAdd = () => {
     const { data, editingKey } = this.state;
+    if (data.length >= 5) {
+      message.error("Maximum five levels are required.");
+      return;
+    }
 
     if (editingKey !== "") return;
 
     const newData = {
       key: data.length,
       score: 1,
-      masteryLevel: "",
-      shortName: "New User",
-      threshold: 80
+      masteryLevel: "Proficiency 1",
+      shortName: "P1",
+      threshold: 0,
+      color: "#D4E9FA"
     };
 
+    data.map(row => {
+      row.score += 1;
+    });
+
     this.setState({
-      data: [newData, ...data],
+      data: [...data, newData],
       editingKey: data.length,
-      isChangeState: true
+      isChangeState: true,
+      isAdding: true
     });
   };
 
   handleDelete = key => {
     const data = [...this.state.data];
-    this.setState({ data: data.filter(item => item.key !== key) });
+    if (data.length <= 3) {
+      message.error("Minimum three levels are required.");
+      return;
+    }
+    const newData = data.filter(item => item.key !== key);
+    newData.map((row, nIndex) => {
+      row.score = newData.length - nIndex;
+    });
+    this.setState({
+      data: newData,
+      isChangeState: true
+    });
   };
 
   changeCalcType = e => {
@@ -195,7 +218,6 @@ class StandardsProficiencyTable extends React.Component {
 
   saveScale = e => {
     if (this.state.isAdding) return;
-
     const dataSource = [];
     const { data } = this.state;
     data.map(row => {
@@ -203,7 +225,8 @@ class StandardsProficiencyTable extends React.Component {
         score: row.score,
         masteryLevel: row.masteryLevel,
         shortName: row.shortName,
-        threshold: row.threshold
+        threshold: row.threshold,
+        color: row.color
       });
     });
 
@@ -219,6 +242,8 @@ class StandardsProficiencyTable extends React.Component {
     } else if (calcType === "MOVING_AVERAGE") {
       const { calcMovingAvrAttr } = this.state;
       updateData.calcAttribute = calcMovingAvrAttr;
+    } else {
+      updateData.calcAttribute = 0;
     }
 
     this.setState({ isChangeState: false });
@@ -237,6 +262,7 @@ class StandardsProficiencyTable extends React.Component {
   };
 
   render() {
+    const { isChangeState, calcType, calcDecayingAttr, calcMovingAvrAttr, data } = this.state;
     const components = {
       body: {
         cell: StandardsProficiencyEditableCell
@@ -255,12 +281,11 @@ class StandardsProficiencyTable extends React.Component {
           dataIndex: col.dataIndex,
           title: col.title,
           editing: this.isEditing(record),
-          context: EditableContext
+          context: EditableContext,
+          dataSource: data
         })
       };
     });
-
-    const { isChangeState, calcType, calcDecayingAttr, calcMovingAvrAttr } = this.state;
 
     return (
       <StyledTableContainer>
@@ -275,14 +300,16 @@ class StandardsProficiencyTable extends React.Component {
           </InfoDiv>
           <SaveButtonDiv>
             {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-            <StyledSaveButton onClick={this.saveScale}>Save</StyledSaveButton>
+            <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
+              Save
+            </Button>
           </SaveButtonDiv>
         </TopDiv>
 
         <EditableContext.Provider value={this.props.form}>
           <Table
             components={components}
-            dataSource={this.state.data}
+            dataSource={data}
             columns={columns}
             rowClassName="editable-row"
             pagination={{
@@ -290,7 +317,9 @@ class StandardsProficiencyTable extends React.Component {
             }}
           />
         </EditableContext.Provider>
-        <StyledAddButton onClick={this.handleAdd}>+ Add Level</StyledAddButton>
+        <StyledAddButton type="primary" shape="round" onClick={this.handleAdd} ghost>
+          + Add Level
+        </StyledAddButton>
         <StyledMasterDiv>
           <StyledH3>Mastery Calculation Method</StyledH3>
           <StyledUl>
@@ -330,7 +359,7 @@ class StandardsProficiencyTable extends React.Component {
                 </React.Fragment>
               )}
             </StyledAverageRadioDiv>
-            <Radio value="POWER_LOW">Power Law</Radio>
+            <Radio value="POWER_LAW">Power Law</Radio>
           </StyledRadioGroup>
         </StyledMasterDiv>
       </StyledTableContainer>

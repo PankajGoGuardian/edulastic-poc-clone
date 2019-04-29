@@ -3,6 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { sumBy, round, size, isEmpty } from "lodash";
 import { connect } from "react-redux";
+import moment from "moment";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconCircleCheck, IconArrowCircleUp } from "@edulastic/icons";
@@ -81,15 +82,10 @@ class SummaryBoard extends Component {
   };
 
   getAverageTimeSpent = () => {
-    const { testActivity } = this.props;
-    if (!testActivity.length) {
-      return 0;
-    }
-    const totalSpentTime = sumBy(testActivity, student => {
-      const { questionActivities } = student;
-      return sumBy(questionActivities, question => question.timespent || 0);
-    });
-    return totalSpentTime / testActivity.length;
+    const { testQuestionActivities = [], testActivity } = this.props;
+    const totalSpentTime = sumBy(testQuestionActivities, student => student.timeSpent);
+    const avgTimeSpent = totalSpentTime / testActivity.length || 0;
+    return moment.utc(avgTimeSpent).format("HH:mm");
   };
 
   getMostCommonMistakes = () => {

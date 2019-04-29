@@ -124,11 +124,7 @@ export const transformGradeBookResponse = ({
         if (!questionActivitiesIndexed[el]) {
           return { _id, notStarted: true };
         }
-        const x = questionActivitiesIndexed[el];
-        const skipped = x.skipped;
-        const correct = x.correct;
-        const partialCorrect = x.partiallyCorrect;
-        const { score } = x;
+        const { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
         return {
           _id,
           skipped,
@@ -136,8 +132,7 @@ export const transformGradeBookResponse = ({
           partialCorrect,
           score,
           maxScore: testMaxScore,
-          //TODO: timespent value capture in the front-end
-          timespent: null
+          timeSpent
         };
       });
 

@@ -15,7 +15,9 @@ import {
   getTestActivitySelector,
   getGradeBookSelector,
   getAdditionalDataSelector,
-  getClassResponseSelector
+  getClassResponseSelector,
+  getTestQuestionActivitiesSelector,
+  stateStudentResponseSelector
 } from "../../ducks";
 
 import {
@@ -232,7 +234,9 @@ class ClassBoard extends Component {
       selectedStudents,
       setSelected,
       allStudents,
-      history
+      history,
+      testQuestionActivities,
+      qActivityByStudent
     } = this.props;
     const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup, selectedStudentId } = this.state;
     const { assignmentId, classId } = match.params;
@@ -276,7 +280,12 @@ class ClassBoard extends Component {
           <React.Fragment>
             <GraphContainer>
               <StyledCard bordered={false}>
-                <Graph gradebook={gradebook} testActivity={testActivity} onClickHandler={this.onClickBarGraph} />
+                <Graph
+                  gradebook={gradebook}
+                  testActivity={testActivity}
+                  testQuestionActivities={testQuestionActivities}
+                  onClickHandler={this.onClickBarGraph}
+                />
               </StyledCard>
             </GraphContainer>
             {nCountTrue > 0 && (
@@ -333,10 +342,11 @@ class ClassBoard extends Component {
           <React.Fragment>
             <StudentGrapContainer>
               <StyledCard bordered={false} paddingTop={15}>
-                <BarGraph gradebook={gradebook}>
+                <BarGraph gradebook={gradebook} studentview={true} studentResponse={qActivityByStudent}>
                   <StudentSelect
                     students={studentItems}
                     selectedStudent={selectedStudentId}
+                    studentResponse={qActivityByStudent}
                     handleChange={value => {
                       this.setState({ selectedStudentId: value });
                     }}
@@ -386,8 +396,10 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+      testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
-      allStudents: get(state, ["author_classboard_testActivity", "data", "students"], [])
+      allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
+      qActivityByStudent: stateStudentResponseSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

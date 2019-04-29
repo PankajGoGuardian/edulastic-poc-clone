@@ -104,7 +104,8 @@ export const getGradeBookSelector = createSelector(
             skippedNum: 0,
             wrongNum: 0,
             partialNum: 0,
-            notStartedNum: 0
+            notStartedNum: 0,
+            timeSpent: 0
           };
         }
         if (!notStarted) {
@@ -128,11 +129,13 @@ export const getGradeBookSelector = createSelector(
         if (partiallyCorrect) {
           questionMap[_id].partialNum += 1;
         }
-
-        if (timeSpent) {
-          questionMap[_id].timeSpent = (questionMap[_id].timeSpent + timeSpent) / 2;
+        if (timeSpent && !notStarted) {
+          questionMap[_id].timeSpent += timeSpent;
         }
       }
+    }
+    for (const question in questionMap) {
+      questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
     }
     const itemsSummary = _values(questionMap);
     const result = {

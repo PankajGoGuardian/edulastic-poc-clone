@@ -33,7 +33,7 @@ export default class Graph extends Component {
   };
 
   render() {
-    const { gradebook, onClickHandler } = this.props;
+    const { gradebook, onClickHandler, testQuestionActivities } = this.props;
     const percentage = this.calculateAvgScore();
     return (
       <StyledDiv>
@@ -59,7 +59,11 @@ export default class Graph extends Component {
             {/* <p>({gradebook.total - gradebook.submittedNumber} Absent)</p> */}
           </GraphInfo>
         </ProgressBarContainer>
-        <BarGraph gradebook={gradebook} onClickHandler={question => onClickHandler(question)} />
+        <BarGraph
+          gradebook={gradebook}
+          testQuestionActivities={testQuestionActivities}
+          onClickHandler={question => onClickHandler(question)}
+        />
       </StyledDiv>
     );
   }

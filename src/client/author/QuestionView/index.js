@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
+import { head, get } from "lodash";
 import {
   green,
   dropZoneTitleColor,
@@ -21,7 +22,8 @@ import {
   LegendItems,
   LegendItem,
   LegendIcon,
-  LegendLabel
+  LegendLabel,
+  TooltipContainer
 } from "./styled";
 import StudentResponse from "./component/studentResponses/studentResponse";
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
@@ -30,6 +32,12 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
 import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
+
+const CustomTooltip = ({ label = "", payload }) => {
+  const firstItem = head(payload) || {};
+  const timeSpent = get(firstItem, "payload.avgTimeSpent");
+  return <TooltipContainer title={label}>{`Time(seconds): ${(timeSpent / 1000).toFixed(1) || 0}`}</TooltipContainer>;
+};
 
 class QuestionViewContainer extends Component {
   static getDerivedStateFromProps(nextProps, preState) {
@@ -45,6 +53,13 @@ class QuestionViewContainer extends Component {
   }
 
   isMobile = () => window.innerWidth < 480;
+  calcTimeSpent = (student = {}) => {
+    const {
+      question: { id: qId }
+    } = this.props;
+    const { timeSpent = 0 } = student.questionActivities.find(({ _id }) => _id === qId);
+    return timeSpent;
+  };
 
   render() {
     const {
@@ -74,7 +89,8 @@ class QuestionViewContainer extends Component {
             name: student.studentName,
             score: student.score ? student.score : 0,
             time: 0,
-            maxscore: student.maxScore
+            maxscore: student.maxScore,
+            avgTimeSpent: this.calcTimeSpent(student)
           });
         }
         return "";
@@ -144,6 +160,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar stackId="a" dataKey="score" fill={barGrapColor1} onClick={this.onClickChart} />
                 <Bar stackId="a" dataKey="time" fill={barGrapColor2} onClick={this.onClickChart} />
+                <Tooltip content={<CustomTooltip />} cursor={false} />
               </ComposedChart>
             </ResponsiveContainer>
           </StyledCard>

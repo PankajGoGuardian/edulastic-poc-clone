@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { maxBy, head, get } from "lodash";
+import { maxBy, head, get, groupBy } from "lodash";
 import {
   white,
   pointColor,
@@ -66,7 +66,7 @@ const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) =>
 const CustomTooltip = ({ label, payload }) => {
   const firstItem = head(payload) || {};
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
-  return <TooltipContainer title={label}>{`Time(seconds): ${timeSpent}`}</TooltipContainer>;
+  return <TooltipContainer title={label}>{`Time(seconds): ${(timeSpent / 1000).toFixed(1) || 0}`}</TooltipContainer>;
 };
 
 export default class BarGraph extends Component {
@@ -89,6 +89,18 @@ export default class BarGraph extends Component {
     }
   };
 
+  calcTimeSpent(testItem) {
+    const { studentResponse, studentview } = this.props;
+    let timeSpent = testItem.avgTimeSpent || 0;
+    if (studentview) {
+      const getStudentActivity = get(studentResponse, "data.questionActivities", []);
+      const groupActivityByQId = groupBy(getStudentActivity, "qid") || {};
+      const [timeSpentByItemId = {}] = groupActivityByQId[testItem._id] || [];
+      timeSpent = timeSpentByItemId.timeSpent || 0;
+    }
+    return timeSpent;
+  }
+
   render() {
     const { gradebook, children } = this.props;
     const itemsSum = gradebook.itemsSummary;
@@ -104,7 +116,7 @@ export default class BarGraph extends Component {
           all: (item.wrongNum || 0) + (item.correctNum || 0) + (item.partialNum || 0) + (item.notStartedNum || 0),
           darkGrey: item.wrongNum === item.attemptsNum && item.skippedNum !== 0 ? item.attemptsNum : 0,
           lightGrey: item.notStartedNum !== 0 ? item.notStartedNum : 0,
-          avgTimeSpent: item.avgTimeSpent
+          avgTimeSpent: this.calcTimeSpent(item)
         }))
         .slice(0, 15);
     }

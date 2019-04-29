@@ -269,10 +269,22 @@ const SingleAssessmentReportFilters = ({
     <div className={className} style={style}>
       <Row type="flex" className="single-assessment-report-top-filter">
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown by={filters.termId} selectCB={updateSchoolYearDropDownCB} data={dropDownData.schoolYear} />
+          <ControlDropDown
+            by={filters.termId}
+            selectCB={updateSchoolYearDropDownCB}
+            data={dropDownData.schoolYear}
+            prefix="School Year"
+            showPrefixOnSelected={false}
+          />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown by={filters.subject} selectCB={updateSubjectDropDownCB} data={staticDropDownData.subjects} />
+          <ControlDropDown
+            by={filters.subject}
+            selectCB={updateSubjectDropDownCB}
+            data={staticDropDownData.subjects}
+            prefix="Subject"
+            showPrefixOnSelected={false}
+          />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
           <AutocompleteDropDown

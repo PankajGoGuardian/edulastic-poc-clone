@@ -1,5 +1,5 @@
 //@ts-check
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { AutoComplete, Input, Icon, Menu } from "antd";
 import styled from "styled-components";
 
@@ -23,6 +23,8 @@ const AutocompleteDropDown = ({
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
   const [text, setText] = useState(by.title);
+  const autoRef = useRef(null);
+  const textChangeStatusRef = useRef(false);
 
   useInternalEffect(() => {
     let item = null;
@@ -95,6 +97,8 @@ const AutocompleteDropDown = ({
         setDropDownData(data);
       }
     }
+    setText(value);
+    textChangeStatusRef.current = true;
   };
 
   const onBlur = key => {
@@ -102,19 +106,27 @@ const AutocompleteDropDown = ({
     if (!item) {
       setText(selected.title);
     }
+
+    textChangeStatusRef.current = false;
   };
 
   const onSelect = (key, item) => {
     let obj = { key: key, title: item.props.title };
     setSelected(obj);
     selectCB(obj, comData);
+
+    textChangeStatusRef.current = false;
   };
 
   const onChange = value => {
-    setText(value);
+    if (textChangeStatusRef.current !== true) {
+      autoRef.current.blur();
+      textChangeStatusRef.current = false;
+    }
   };
 
   const onFocus = () => {
+    setText("");
     setDropDownData(data);
   };
 
@@ -132,8 +144,9 @@ const AutocompleteDropDown = ({
         onSelect={onSelect}
         onChange={onChange}
         value={text}
+        ref={autoRef}
       >
-        <Input suffix={<Icon type={iconType} className="" />} />
+        <Input suffix={<Icon type={iconType} className="" />} placeholder={selected.title} />
       </AutoComplete>
     </StyledDiv>
   );

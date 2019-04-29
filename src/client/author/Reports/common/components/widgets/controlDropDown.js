@@ -102,6 +102,15 @@ const StyledDiv = styled.div`
   overflow: hidden;
   button {
     white-space: pre-wrap;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+
+    span {
+      flex: 1;
+      text-align: left;
+      overflow: hidden;
+    }
   }
 `;
 

@@ -91,6 +91,7 @@ class Layout extends Component {
           <Col md={6}>
             <Label>{t("component.options.style")}</Label>
             <Select
+              data-cy="styleSelect"
               size="large"
               id="select"
               style={{ width: "80%" }}
@@ -132,6 +133,7 @@ class Layout extends Component {
               <Label>{t("component.options.labelType")}</Label>
               <Select
                 size="large"
+                data-cy="labelTypeSelect"
                 style={{ width: "80%" }}
                 onChange={val => changeUiStyle("choice_label", val)}
                 value={uiStyle.choice_label}

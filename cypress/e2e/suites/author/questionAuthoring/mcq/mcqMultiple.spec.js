@@ -175,18 +175,23 @@ describe(`${FileHelper.getSpecName(
       // alternate
       question.addAlternate();
 
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
-
       question
         .getAllAnsChoicesLabel()
-        .find("input:checked")
-        .should("have.length", queData.choices.length);
+        .its("length")
+        .then(length => {
+          question.getAllAnsChoicesLabel().each($el => {
+            cy.wrap($el).click();
+
+            cy.wrap($el)
+              .find("input")
+              .should("be.checked");
+          });
+
+          question
+            .getAllAnsChoicesLabel()
+            .find("input:checked")
+            .should("have.length", length);
+        });
     });
 
     it(" > [Tc_270]:test => Advanced Options", () => {
@@ -464,18 +469,23 @@ describe(`${FileHelper.getSpecName(
       // alternate
       question.addAlternate();
 
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
-
       question
         .getAllAnsChoicesLabel()
-        .find("input:checked")
-        .should("have.length", queData.choices.length);
+        .its("length")
+        .then(length => {
+          question.getAllAnsChoicesLabel().each($el => {
+            cy.wrap($el).click();
+
+            cy.wrap($el)
+              .find("input")
+              .should("be.checked");
+          });
+
+          question
+            .getAllAnsChoicesLabel()
+            .find("input:checked")
+            .should("have.length", length);
+        });
     });
 
     it(" > [Tc_277]:test => Advanced Options", () => {

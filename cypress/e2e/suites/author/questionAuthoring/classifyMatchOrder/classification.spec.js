@@ -1,7 +1,7 @@
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import ClassificationPage from "../../../../framework/author/itemList/questionType/classifyMatchOrder/classificationPage";
 import FileHelper from "../../../../framework/util/fileHelper";
-import ItemListPage from "../../../../framework/author/itemList/itemListPage";
 import Helpers from "../../../../framework/util/Helpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification" type question`, () => {
@@ -19,7 +19,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
     column: 2,
     row: 1,
     columnTitles: ["Column1", "Column2"],
-    rowTitles: [],
+    rowTitles: ["Row1"],
     points: 2
   };
 
@@ -353,13 +353,12 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
       });
 
       it(" > Edit the row names for existing", () => {
-        question.getRowTitleInptuList().each(($el, index) => {
-          cy.wrap($el)
-            .click()
-            .clear()
-            .type(queData.rowTitles[index])
-            .should("contain", queData.rowTitles[index]);
-        });
+        question
+          .getRowTitleInputByIndex(1)
+          .click()
+          .clear()
+          .type(queData.rowTitles[0])
+          .should("contain", queData.rowTitles[0]);
       });
 
       it(" > Delete existing / newly created rows", () => {
@@ -612,16 +611,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
         question.getRowTitleInptuList().should("have.length", queData.rowTitles.length);
       });
 
-      it(" > Edit the row names for existing", () => {
-        question.getRowTitleInptuList().each(($el, index) => {
-          cy.wrap($el)
-            .click()
-            .clear()
-            .type(queData.rowTitles[index])
-            .should("contain", queData.rowTitles[index]);
-        });
-      });
-
       it(" > Add new row", () => {
         question
           .getRowAddButton()
@@ -636,6 +625,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
               .type("Last")
               .should("contain", "Last");
           });
+      });
+
+      it(" > Edit the row names for existing", () => {
+        question
+          .getRowTitleInputByIndex(1)
+          .click()
+          .clear()
+          .type(queData.rowTitles[0])
+          .should("contain", queData.rowTitles[0]);
       });
 
       it(" > Delete existing / newly created rows", () => {
@@ -760,13 +758,24 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
   });
 
   context(" > Delete the question after creation", () => {
-    context(" > TC_70 => Delete option", () => {
+    context(" > Tc_71 => Delete option", () => {
+      before(() => {
+        editItem.getItemWithId(testItemId);
+        editItem.deleteAllQuestion();
+        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.header.save();
+      });
+
       it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
           .should("have.length", 1)
           .click()
           .should("have.length", 0);
+      });
+
+      it(" > After delete, UI should not break", () => {
+        editItem.getEditButton().should("be.visible");
       });
     });
   });

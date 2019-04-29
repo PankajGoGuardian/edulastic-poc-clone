@@ -92,8 +92,8 @@ class MCQStandardPage {
 
   getAllChoices = () =>
     cy
-      .contains("div", "Multiple Choice Options")
-      .next()
+      .get('[data-cy="sortable-list-container"]')
+      .first()
       .find(".ql-editor");
 
   getAllAnsChoicesLabel = () =>
@@ -149,21 +149,44 @@ class MCQStandardPage {
     return this;
   }
 
+  getStyleOption = () => cy.get('[data-cy="styleSelect"]').should("be.visible");
+
   selectChoicesStyle(option) {
-    cy.contains("label", "Style")
+    const selectOp = `[data-cy="${this.styleOptions[option]}"]`;
+    this.getStyleOption()
+      .click()
+      .find(selectOp)
+      .should("be.visible")
+      .click();
+
+    this.getStyleOption()
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+
+    /*    cy.contains("label", "Style")
       .next()
       .find('[data-cy="selectStyle"]')
       .select(option)
       .should("have.value", this.styleOptions[option]);
-    return this;
+    return this; */
   }
 
+  getLabelType = () => cy.get('[data-cy="labelTypeSelect"]').should("be.visible");
+
   selectLabelType(option) {
-    cy.contains("label", "Label type")
-      .next()
-      .find('[data-cy="selectStyle"]')
-      .select(option)
-      .should("have.value", this.labelOption[option]);
+    const selectOp = `[data-cy="${this.labelOption[option]}"]`;
+    this.getLabelType().click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    this.getLabelType()
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 

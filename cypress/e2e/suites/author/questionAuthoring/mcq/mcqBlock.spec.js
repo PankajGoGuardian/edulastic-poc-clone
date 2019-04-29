@@ -132,6 +132,10 @@ describe(`${FileHelper.getSpecName(
         .type(text)
         .should("contain", text);
 
+      // delete first
+      question.deleteChoiceByIndex(0);
+      question.getChoiceByIndex(0).should("not.contain", text);
+
       // delete all choices
       question
         .getAllChoices()
@@ -142,7 +146,7 @@ describe(`${FileHelper.getSpecName(
         .should("have.length", 0);
 
       // add new
-      const choices = queData.choices;
+      const { choices } = queData;
       choices.forEach((ch, index) => {
         question
           .addNewChoice()
@@ -175,18 +179,23 @@ describe(`${FileHelper.getSpecName(
       // alternate
       question.addAlternate();
 
-      question.getAllAnsChoicesLabel().each($el => {
-        cy.wrap($el).click();
-
-        cy.wrap($el)
-          .find("input")
-          .should("be.checked");
-      });
-
       question
         .getAllAnsChoicesLabel()
-        .find("input:checked")
-        .should("have.length", queData.choices.length);
+        .its("length")
+        .then(length => {
+          question.getAllAnsChoicesLabel().each($el => {
+            cy.wrap($el).click();
+
+            cy.wrap($el)
+              .find("input")
+              .should("be.checked");
+          });
+
+          question
+            .getAllAnsChoicesLabel()
+            .find("input:checked")
+            .should("have.length", length);
+        });
     });
 
     it(" > [Tc_304]:test => Advanced Options", () => {
@@ -247,10 +256,10 @@ describe(`${FileHelper.getSpecName(
       question.selectOrientation("Horizontal");
 
       // check default style
-      cy.contains("label", "Style")
-        .next()
-        .find('[data-cy="selectStyle"]')
-        .should("have.value", "block");
+      question
+        .getStyleOption()
+        .find(".ant-select-selection-selected-value")
+        .should("have.text", "Block");
 
       // label type
       const labels = [

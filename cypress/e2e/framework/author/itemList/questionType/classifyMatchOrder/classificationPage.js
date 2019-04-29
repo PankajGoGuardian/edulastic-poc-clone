@@ -35,6 +35,12 @@ class ClassificationPage {
 
   getRowTitleInptuList = () => cy.get('[data-cy="row-container"]').find("div .ql-editor");
 
+  getRowTitleInputByIndex = index =>
+    cy
+      .get('[data-cy="row-container"]')
+      .find("div .ql-editor")
+      .eq(index);
+
   getRowAddButton = () =>
     cy
       .get('[data-cy="row-container"]')

@@ -44,6 +44,11 @@ class TestItemCol extends Component {
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     const question = questions[widget.reference];
+
+    if (!question) {
+      return <div />;
+    }
+
     return (
       <Tabs.TabContainer>
         <QuestionWrapper

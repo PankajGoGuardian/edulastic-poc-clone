@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Form, Checkbox, Radio, message } from "antd";
+import { Form, Checkbox, Radio, message, Input } from "antd";
 const RadioGroup = Radio.Group;
 
 import {
@@ -8,12 +8,17 @@ import {
   StyledRow,
   StyledLabel,
   StyledElementDiv,
-  StyledSelectTag,
   SaveButton,
-  StyledFormItem
+  StyledFormItem,
+  StyledInput
 } from "./styled";
 
 function validURL(value) {
+  if (value.length == 0)
+    return {
+      validateStatus: "error",
+      errorMsg: "Enter allowed domain(s), example - gmail.com, edulastic.com"
+    };
   var pattern = new RegExp(
     "^(https?:\\/\\/)?" + // protocol
     "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
@@ -23,24 +28,25 @@ function validURL(value) {
       "(\\#[-a-z\\d_]*)?$",
     "i"
   ); // fragment locator
-  for (let i = 0; i < value.length; i++) {
-    if (!pattern.test(value[i])) {
+  const spiltArray = value.split(/[\s,]+/);
+  console.log(spiltArray);
+  for (let i = 0; i < spiltArray.length; i++) {
+    if (!pattern.test(spiltArray[i]) && spiltArray[i].length != 0) {
       return {
         validateStatus: "error",
         errorMsg: "Enter allowed domain(s), example - gmail.com, edulastic.com"
       };
     }
-    return {
-      validateStatus: "success",
-      errorMsg: null
-    };
   }
+  return {
+    validateStatus: "success",
+    errorMsg: null
+  };
 }
 
 class DistrictPolicyForm extends React.Component {
   constructor(props) {
     super(props);
-
     const optionalValue = this.initOptionalStatue(this.props.districtPolicy);
 
     this.state = {
@@ -50,12 +56,12 @@ class DistrictPolicyForm extends React.Component {
       thirdPartyValue: optionalValue.thirdPartyValue,
       optionalStatus: optionalValue.status,
       allowDomainForTeacher: {
-        value: this.props.districtPolicy.allowedDomainForTeachers,
-        ...validURL(this.props.districtPolicy.allowedDomainForTeachers)
+        value: this.props.districtPolicy.allowedDomainForTeachers.toString(),
+        ...validURL(this.props.districtPolicy.allowedDomainForTeachers.toString())
       },
       allowDomainForStudent: {
-        value: this.props.districtPolicy.allowedDomainForStudents,
-        ...validURL(this.props.districtPolicy.allowedDomainForStudents)
+        value: this.props.districtPolicy.allowedDomainForStudents.toString(),
+        ...validURL(this.props.districtPolicy.allowedDomainForStudents.toString())
       }
     };
   }
@@ -124,8 +130,8 @@ class DistrictPolicyForm extends React.Component {
   handleTagTeacherChange = e => {
     this.setState({
       allowDomainForTeacher: {
-        ...validURL(e),
-        value: e
+        ...validURL(e.target.value),
+        value: e.target.value
       }
     });
   };
@@ -133,8 +139,8 @@ class DistrictPolicyForm extends React.Component {
   handleTagStudentChange = e => {
     this.setState({
       allowDomainForStudent: {
-        ...validURL(e),
-        value: e
+        ...validURL(e.target.value),
+        value: e.target.value
       }
     });
   };
@@ -260,12 +266,7 @@ class DistrictPolicyForm extends React.Component {
               Teachers:
             </StyledLabel>
             <StyledFormItem validateStatus={allowDomainForTeacher.validateStatus} help={allowDomainForTeacher.errorMsg}>
-              <StyledSelectTag
-                mode="tags"
-                defaultValue={districtPolicy.allowedDomainForTeachers}
-                tokenSeparators={[","]}
-                onChange={this.handleTagTeacherChange}
-              />
+              <Input defaultValue={districtPolicy.allowedDomainForTeachers} onChange={this.handleTagTeacherChange} />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>
@@ -275,12 +276,7 @@ class DistrictPolicyForm extends React.Component {
               Students:
             </StyledLabel>
             <StyledFormItem validateStatus={allowDomainForStudent.validateStatus} help={allowDomainForStudent.errorMsg}>
-              <StyledSelectTag
-                mode="tags"
-                defaultValue={districtPolicy.allowedDomainForStudents}
-                tokenSeparators={[","]}
-                onChange={this.handleTagStudentChange}
-              />
+              <Input defaultValue={districtPolicy.allowedDomainForStudents} onChange={this.handleTagStudentChange} />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>

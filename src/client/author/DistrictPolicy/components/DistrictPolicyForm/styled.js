@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Row, Button, Select, Form } from "antd";
+import { Row, Button, Input, Form } from "antd";
 
 export const StyledFormDiv = styled.div`
   display: flex;
@@ -48,11 +48,4 @@ export const StyledElementDiv = styled.div`
 
 export const StyledFormItem = styled(Form.Item)`
   width: 500px;
-`;
-
-export const StyledSelectTag = styled(Select)`
-  max-width: 500px;
-  .ant-select-selection--multiple .ant-select-selection__rendered {
-    margin-top: 5px;
-  }
 `;

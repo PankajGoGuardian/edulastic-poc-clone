@@ -9,7 +9,7 @@ class CreateTermModal extends React.Component {
     super(props);
     this.state = {
       startDate: moment(new Date(), "DD MMM YYYY"),
-      endDate: moment(new Date(), "DD MMM YYYY")
+      endDate: moment(new Date(), "DD MMM YYYY").add(1, "days")
     };
   }
 
@@ -34,11 +34,41 @@ class CreateTermModal extends React.Component {
     this.props.closeModal();
   };
 
+  checkShortNameUnique = (rule, value, callback) => {
+    const sameSchoolNameRow = this.props.dataSource.filter(item => item.name === value);
+    if (sameSchoolNameRow.length <= 0) {
+      callback();
+      return;
+    }
+    callback("School name should be unique.");
+  };
+
+  disableStartDate = startValue => {
+    const toDayDate = moment(new Date(), "DD MMM YYYY");
+    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    const { endDate } = this.state;
+
+    if (startValue.valueOf() < toDayDate.valueOf) return true;
+    if (startValue.valueOf() > endDate) return true;
+    return false;
+  };
+
+  disableEndDate = endValue => {
+    const { startDate } = this.state;
+    const toDayDate = moment(new Date(), "DD MMM YYYY");
+    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+
+    if (startDate >= endValue.valueOf()) return true;
+    if (toDayDate.valueOf() > endValue.valueOf()) return true;
+    return false;
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
     const { startDate, endDate } = this.state;
-    const isOverlap = startDate.valueOf() > endDate.valueOf() ? true : false;
+    const isOverlap = startDate.valueOf() >= endDate.valueOf() ? true : false;
 
     return (
       <StyledModal
@@ -63,7 +93,8 @@ class CreateTermModal extends React.Component {
                   {
                     required: true,
                     message: "Please input School Year Name"
-                  }
+                  },
+                  { validator: this.checkShortNameUnique }
                 ]
               })(<Input placeholder="Enter School Year Name" />)}
             </ModalFormItem>
@@ -79,7 +110,13 @@ class CreateTermModal extends React.Component {
               {getFieldDecorator("startDate", {
                 rules: [{ required: true, message: "Please Select Start Date" }],
                 initialValue: startDate
-              })(<StyledDatePicker format={"DD MMM YYYY"} onChange={this.handleStartDateChange} />)}
+              })(
+                <StyledDatePicker
+                  format={"DD MMM YYYY"}
+                  onChange={this.handleStartDateChange}
+                  disabledDate={this.disableStartDate}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -89,7 +126,13 @@ class CreateTermModal extends React.Component {
               {getFieldDecorator("endDate", {
                 rules: [{ required: true, message: "Please Select End Date" }],
                 initialValue: endDate
-              })(<StyledDatePicker format={"DD MMM YYYY"} onChange={this.handleEndDateChange} />)}
+              })(
+                <StyledDatePicker
+                  format={"DD MMM YYYY"}
+                  onChange={this.handleEndDateChange}
+                  disabledDate={this.disableEndDate}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>

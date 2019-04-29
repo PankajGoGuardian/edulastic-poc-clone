@@ -223,6 +223,7 @@ class TermTable extends React.Component {
           modalVisible={createTermModalVisible}
           createTerm={this.createTerm}
           closeModal={this.closeCreateTermModal}
+          dataSource={data}
         />
         {editTermModalVisible && selectedKey >= 0 && (
           <EditTermModal
@@ -230,6 +231,8 @@ class TermTable extends React.Component {
             updateTerm={this.updateTerm}
             closeModal={this.closeEditTermModal}
             termData={selectedRow[0]}
+            dataSource={data}
+            key={selectedKey}
           />
         )}
       </StyledTableContainer>

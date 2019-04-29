@@ -56,8 +56,8 @@ class EditTermModal extends React.Component {
     const { startDate } = this.state;
     const toDayDate = moment(new Date(), "DD MMM YYYY");
     toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
+    if (startDate >= endValue.valueOf()) return true;
 
-    if (startDate > endValue.valueOf()) return true;
     if (toDayDate.valueOf() > endValue.valueOf()) return true;
     return false;
   };
@@ -66,11 +66,21 @@ class EditTermModal extends React.Component {
     this.props.closeModal();
   };
 
+  checkShortNameUnique = (rule, value, callback) => {
+    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.key);
+    const sameSchoolNameRow = dataSource.filter(item => item.name === value);
+    if (sameSchoolNameRow.length <= 0) {
+      callback();
+      return;
+    }
+    callback("School name should be unique.");
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
     const { startDate, endDate, name, isSchoolStart } = this.state;
-    const isOverlap = startDate > endDate ? true : false;
+    const isOverlap = startDate >= endDate ? true : false;
 
     return (
       <StyledModal
@@ -95,7 +105,8 @@ class EditTermModal extends React.Component {
                   {
                     required: true,
                     message: "Please input School Year Name"
-                  }
+                  },
+                  { validator: this.checkShortNameUnique }
                 ],
                 initialValue: name
               })(<Input placeholder="Enter School Year Name" />)}

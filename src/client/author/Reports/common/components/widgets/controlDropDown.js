@@ -27,7 +27,7 @@ const CustomMenu = (className, data, handleMenuClick, prefix) => {
 const ControlDropDown = ({
   className,
   containerClassName = "",
-  prefix,
+  prefix = "",
   showPrefixOnSelected = true,
   by,
   selectCB,

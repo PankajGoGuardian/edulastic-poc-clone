@@ -3,15 +3,21 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { get, isEmpty, groupBy } from "lodash";
+import { get, isEmpty } from "lodash";
 import queryString from "query-string";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
 import { ControlDropDown } from "../../../../common/components/widgets/controlDropDown";
-import { NormalDropDown } from "../../../../common/components/widgets/normalDropDown";
 
-import { getDropDownTestIds } from "../../../../common/util";
-import { getSARFilterDataRequestAction, getReportsSARFilterData } from "../filterDataDucks";
+import { getDropDownData, filteredDropDownData, processTestIds } from "../utils/transformers";
+import {
+  getSARFilterDataRequestAction,
+  getReportsSARFilterData,
+  getFiltersSelector,
+  setFiltersAction,
+  getTestIdSelector,
+  setTestIdAction
+} from "../filterDataDucks";
 import { getUserRole } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
 
@@ -31,53 +37,23 @@ const getTestIdFromURL = url => {
 
 const SingleAssessmentReportFilters = ({
   SARFilterData,
+  filters,
+  testId,
   user,
   role,
   getSARFilterDataRequestAction,
-  onTestIdChange: _onTestIdChange,
+  setFiltersAction,
+  setTestIdAction,
   onGoClick: _onGoClick,
   location,
   className,
   style
 }) => {
-  const [testIds, setTestIds] = useState([]);
-  const [selectedTest, setSelectedTest] = useState({ key: "", title: "" });
+  const [prevSARFilterData, setPrevSARFilterData] = useState(null);
 
-  const search = queryString.parse(location.search);
-  let {
-    termId = "",
-    subject = "All",
-    grade = "All",
-    courseId = "All",
-    groupId = "All",
-    schoolId = "All",
-    teacherId = "All",
-    assessmentType = "All"
-  } = search;
-
-  let defaults;
-  if (role !== "teacher") {
-    defaults = {
-      termId,
-      subject,
-      grade,
-      courseId,
-      groupId,
-      schoolId,
-      teacherId,
-      assessmentType
-    };
-  } else {
-    defaults = {
-      termId,
-      subject,
-      grade,
-      courseId,
-      groupId,
-      assessmentType
-    };
-  }
-  const [filters, setFilters] = useState(defaults);
+  useEffect(() => {
+    getSARFilterDataRequestAction();
+  }, []);
 
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
@@ -89,250 +65,202 @@ const SingleAssessmentReportFilters = ({
     return "";
   };
 
-  useEffect(() => {
-    getSARFilterDataRequestAction();
-  }, []);
-
-  const updateTestIds = (_dropDownData, currentFilter) => {
-    let filtered = _dropDownData.orgDataArr.filter((item, index) => {
-      if (role !== "teacher") {
-        if (
-          item.termId === currentFilter.termId &&
-          (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-          (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
-          (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-          (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
-          (item.schoolId === currentFilter.schoolId || currentFilter.schoolId === "All") &&
-          (item.teacherId === currentFilter.teacherId || currentFilter.teacherId === "All") &&
-          (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
-        ) {
-          return true;
-        }
-      } else {
-        if (
-          item.termId === currentFilter.termId &&
-          (item.subject === currentFilter.subject || currentFilter.subject === "All") &&
-          (item.grade === currentFilter.grade || currentFilter.grade === "All") &&
-          (item.courseId === currentFilter.courseId || currentFilter.courseId === "All") &&
-          (item.groupId === currentFilter.groupId || currentFilter.groupId === "All") &&
-          (item.assessmentType === currentFilter.assessmentType || currentFilter.assessmentType === "All")
-        ) {
-          return true;
-        }
-      }
-    });
-
-    let groupIdMap = {};
-    for (let item of filtered) {
-      if (!groupIdMap[item.groupId]) {
-        groupIdMap[item.groupId] = item;
-      }
-    }
-
-    let arr = _dropDownData.testDataArr.filter((item, index) => (groupIdMap[item.groupId] ? true : false));
-    let finalTestIds = [];
-    let makeUniqueMap = {};
-    for (let item of arr) {
-      if (!makeUniqueMap[item.testId]) {
-        finalTestIds.push({ key: item.testId, title: item.testName });
-        makeUniqueMap[item.testId] = true;
-      }
-    }
-
-    let isPresent = finalTestIds.find((item, index) => (item.key === selectedTest.key ? true : false));
-
-    let selected = selectedTest;
-    if (!isPresent && finalTestIds.length) {
-      selected = finalTestIds[0];
-      setSelectedTest(selected);
-    } else if (!isPresent && !finalTestIds.length) {
-      selected = { key: "", title: "" };
-      setSelectedTest(selected);
-    }
-
-    setTestIds(finalTestIds);
-
-    return { selectedTest: selected, testIds: finalTestIds };
-  };
-
-  const dropDownData = useMemo(() => {
-    let currentFilter = { ...filters };
+  const schoolYear = useMemo(() => {
     let schoolYear = [];
     let arr = get(user, "orgData.terms", []);
     if (arr.length) {
       schoolYear = arr.map((item, index) => {
         return { key: item._id, title: item.name };
       });
-      currentFilter = { ...filters, termId: schoolYear[0].key };
-      setFilters(currentFilter);
     }
-    // -----|-----||-----|----- //
-    const orgDataArr = get(SARFilterData, "data.result.orgData", []);
-    const testDataArr = get(SARFilterData, "data.result.testData", []);
-    testDataArr.sort((a, b) => {
-      return a - b;
-    });
+    return schoolYear;
+  });
 
-    // For Group Id
-    let byGroupId = groupBy(orgDataArr.filter((item, index) => (item.groupId ? true : false)), "groupId");
-    let groupIdArr = Object.keys(byGroupId).map((item, index) => {
-      return {
-        key: byGroupId[item][0].groupId,
-        title: byGroupId[item][0].groupName
-      };
-    });
-    groupIdArr.unshift({
+  let processedTestIds;
+  let dropDownData;
+  if (SARFilterData !== prevSARFilterData && !isEmpty(SARFilterData)) {
+    const search = queryString.parse(location.search);
+    search.testId = getTestIdFromURL(location.pathname);
+
+    dropDownData = getDropDownData(SARFilterData, user);
+
+    const urlSchoolYear =
+      schoolYear.find((item, index) => item.key === search.termId) ||
+      (schoolYear[0] ? schoolYear[0] : { key: "", title: "" });
+    const urlSubject = staticDropDownData.subjects.find((item, index) => item.key === search.subject) || {
       key: "All",
-      title: "All Classes"
-    });
-
-    // For Course Id
-    let byCourseId = groupBy(orgDataArr.filter((item, index) => (item.courseId ? true : false)), "courseId");
-    let courseIdArr = Object.keys(byCourseId).map((item, index) => {
-      return {
-        key: byCourseId[item][0].courseId,
-        title: byCourseId[item][0].courseName
-      };
-    });
-    courseIdArr.unshift({
+      title: "All Subjects"
+    };
+    const urlGrade = staticDropDownData.grades.find((item, index) => item.key === search.grade) || {
+      key: "All",
+      title: "All Grades"
+    };
+    const urlCourseId = dropDownData.courses.find((item, index) => item.key === search.courseId) || {
       key: "All",
       title: "All Courses"
-    });
-
-    // Only For district admin
-    // For School Id
-    let bySchoolId = groupBy(orgDataArr.filter((item, index) => (item.schoolId ? true : false)), "schoolId");
-    let schoolIdArr = Object.keys(bySchoolId).map((item, index) => {
-      return {
-        key: bySchoolId[item][0].schoolId,
-        title: bySchoolId[item][0].schoolName
-      };
-    });
-    schoolIdArr.unshift({
+    };
+    const urlGroupId = dropDownData.groups.find((item, index) => item.key === search.groupId) || {
       key: "All",
-      title: "All Schools"
-    });
-
-    // For Teacher Id
-    let byTeacherId = groupBy(orgDataArr.filter((item, index) => (item.teacherId ? true : false)), "teacherId");
-    let teacherIdArr = Object.keys(byTeacherId).map((item, index) => {
-      return {
-        key: byTeacherId[item][0].teacherId,
-        title: byTeacherId[item][0].teacherName
+      title: "All Groups"
+    };
+    const urlSchoolId = { key: "All", title: "All Schools" };
+    const urlTeacherId = { key: "All", title: "All Teachers" };
+    if (role !== "teacher") {
+      urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
+        key: "All",
+        title: "All Schools"
       };
-    });
-    teacherIdArr.unshift({
+      urlTeacherId = dropDownData.teachers.find((item, index) => item.key === search.teacherId) || {
+        key: "All",
+        title: "All Schools"
+      };
+    }
+    const urlAssessmentType = staticDropDownData.assessmentType.find(
+      (item, index) => item.key === search.assessmentType
+    ) || {
       key: "All",
-      title: "All Teachers"
-    });
+      title: "All Assignment Types"
+    };
+    const urlTestId = dropDownData.testIdArr.find((item, index) => item.key === search.testId) || {
+      key: "",
+      title: ""
+    };
 
-    let testIdArr = getDropDownTestIds(testDataArr);
-    if (testIdArr.length) {
-      let o = updateTestIds({ orgDataArr, testDataArr }, currentFilter);
-      let testId = getTestIdFromURL(location.pathname);
-      if (testId) {
-        let searchItem = o.testIds.find(item => {
-          if (item.key === testId) {
-            return true;
-          }
-        });
-        if (searchItem) {
-          let obj = { key: testId, title: getTitleByTestId(testId) };
-          setSelectedTest(obj);
-          _onTestIdChange(obj, currentFilter);
-        } else {
-          _onTestIdChange(o.selectedTest, currentFilter);
-        }
-      } else {
-        _onTestIdChange(o.selectedTest, currentFilter);
-      }
+    let obtainedFilters = {
+      termId: urlSchoolYear.key,
+      subject: urlSubject.key,
+      grade: urlGrade.key,
+      courseId: urlCourseId.key,
+      groupId: urlGroupId.key,
+      schoolId: urlSchoolId.key,
+      teacherId: urlTeacherId.key,
+      assessmentType: urlAssessmentType.key
+    };
+
+    dropDownData = filteredDropDownData(SARFilterData, user, obtainedFilters);
+
+    processedTestIds = processTestIds(dropDownData, obtainedFilters, urlTestId.key, role);
+
+    let urlParams = { ...obtainedFilters };
+
+    let filteredUrlTestId = urlTestId.key;
+    if (urlTestId.key !== processedTestIds.validTestId || urlTestId.key === "") {
+      filteredUrlTestId = processedTestIds.testIds.length ? processedTestIds.testIds[0].key : "";
+    }
+    if (role === "teacher") {
+      delete urlParams.schoolId;
+      delete urlParams.teacherId;
     }
 
-    return {
-      orgDataArr: orgDataArr,
-      testDataArr: testDataArr,
-      testIdArr: testIdArr,
-      groups: groupIdArr,
-      courses: courseIdArr,
-      schools: schoolIdArr,
-      teachers: teacherIdArr,
-      schoolYear: schoolYear
-    };
-  }, [SARFilterData, user]);
+    setFiltersAction(urlParams);
+    setTestIdAction(filteredUrlTestId);
 
-  const onTestIdChange = (selected, comData) => {
-    setSelectedTest(selected);
-  };
+    _onGoClick({
+      selectedTest: { key: filteredUrlTestId, title: getTitleByTestId(filteredUrlTestId) },
+      filters: urlParams
+    });
+
+    setPrevSARFilterData(SARFilterData);
+  }
+
+  dropDownData = useMemo(() => filteredDropDownData(SARFilterData, user, { ...filters }), [SARFilterData, filters]);
+
+  processedTestIds = useMemo(() => {
+    return processTestIds(
+      dropDownData,
+      {
+        termId: filters.termId,
+        subject: filters.subject,
+        grade: filters.grade,
+        courseId: filters.courseId,
+        groupId: filters.groupId,
+        schoolId: filters.schoolId,
+        teacherId: filters.teacherId,
+        assessmentType: filters.assessmentType
+      },
+      testId,
+      role
+    );
+  }, [SARFilterData, filters, testId]);
+
+  if (!processedTestIds.validTestId && processedTestIds.testIds.length) {
+    setTestIdAction(processedTestIds.testIds[0].key ? processedTestIds.testIds[0].key : "");
+  }
 
   const updateSchoolYearDropDownCB = selected => {
     let obj = {
       ...filters,
       termId: selected.key
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateSubjectDropDownCB = selected => {
     let obj = {
-      ...filters,
-      subject: selected.key
+      filters: {
+        ...filters,
+        subject: selected.key
+      },
+      orgDataArr: dropDownData.orgDataArr
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateGradeDropDownCB = selected => {
     let obj = {
-      ...filters,
-      grade: selected.key
+      filters: {
+        ...filters,
+        grade: selected.key
+      },
+      orgDataArr: dropDownData.orgDataArr
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateCourseDropDownCB = selected => {
     let obj = {
-      ...filters,
-      courseId: selected.key
+      filters: {
+        ...filters,
+        courseId: selected.key
+      },
+      orgDataArr: dropDownData.orgDataArr
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateClassesDropDownCB = selected => {
     let obj = {
       ...filters,
       groupId: selected.key
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateSchoolsDropDownCB = selected => {
     let obj = {
       ...filters,
       schoolId: selected.key
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateTeachersDropDownCB = selected => {
     let obj = {
       ...filters,
       teacherId: selected.key
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
   };
   const updateAssessmentTypeDropDownCB = selected => {
     let obj = {
       ...filters,
       assessmentType: selected.key
     };
-    setFilters(obj);
-    updateTestIds(dropDownData, obj);
+    setFiltersAction(obj);
+  };
+
+  const onTestIdChange = (selected, comData) => {
+    setTestIdAction(selected.key);
   };
 
   const onGoClick = () => {
     let settings = {
       filters: { ...filters },
-      selectedTest
+      selectedTest: { key: testId, title: getTitleByTestId(testId) }
     };
     _onGoClick(settings);
   };
@@ -341,26 +269,16 @@ const SingleAssessmentReportFilters = ({
     <div className={className} style={style}>
       <Row type="flex" className="single-assessment-report-top-filter">
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            prefix="School Year:"
-            by={filters.termId}
-            selectCB={updateSchoolYearDropDownCB}
-            data={dropDownData.schoolYear}
-          />
+          <ControlDropDown by={filters.termId} selectCB={updateSchoolYearDropDownCB} data={dropDownData.schoolYear} />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
-          <ControlDropDown
-            prefix="Subject:"
-            by={filters.subject === "All" ? { key: "All", title: "All Subjects" } : filters.subject}
-            selectCB={updateSubjectDropDownCB}
-            data={staticDropDownData.subjects}
-          />
+          <ControlDropDown by={filters.subject} selectCB={updateSubjectDropDownCB} data={staticDropDownData.subjects} />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
           <AutocompleteDropDown
             prefix="Grade"
             className="custom-1-scrollbar"
-            by={filters.grade === "All" ? { key: "All", title: "All Grades" } : filters.grade}
+            by={filters.grade}
             selectCB={updateGradeDropDownCB}
             data={staticDropDownData.grades}
           />
@@ -375,7 +293,7 @@ const SingleAssessmentReportFilters = ({
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
           <AutocompleteDropDown
-            prefix="Classes"
+            prefix="Class"
             by={filters.groupId}
             selectCB={updateClassesDropDownCB}
             data={dropDownData.groups}
@@ -404,9 +322,7 @@ const SingleAssessmentReportFilters = ({
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
           <AutocompleteDropDown
             prefix="Assessment Type"
-            by={
-              filters.assessmentType === "All" ? { key: "All", title: "All Assessment Types" } : filters.assessmentType
-            }
+            by={filters.assessmentType}
             selectCB={updateAssessmentTypeDropDownCB}
             data={staticDropDownData.assessmentType}
           />
@@ -416,8 +332,8 @@ const SingleAssessmentReportFilters = ({
         <Col className="single-assessment-report-test-autocomplete-container">
           <AutocompleteDropDown
             containerClassName="single-assessment-report-test-autocomplete"
-            data={testIds}
-            by={selectedTest}
+            data={processedTestIds.testIds ? processedTestIds.testIds : []}
+            by={testId}
             prefix="Assessment Name"
             selectCB={onTestIdChange}
           />
@@ -436,11 +352,15 @@ const enhance = compose(
   connect(
     state => ({
       SARFilterData: getReportsSARFilterData(state),
+      filters: getFiltersSelector(state),
+      testId: getTestIdSelector(state),
       role: getUserRole(state),
       user: getUser(state)
     }),
     {
-      getSARFilterDataRequestAction: getSARFilterDataRequestAction
+      getSARFilterDataRequestAction: getSARFilterDataRequestAction,
+      setFiltersAction: setFiltersAction,
+      setTestIdAction: setTestIdAction
     }
   )
 );

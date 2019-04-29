@@ -41,13 +41,14 @@ const Container = props => {
 
   useEffect(() => {
     let loc = getLoc();
-    if (loc) {
+    if (loc && settings.selectedTest.key) {
       let str = "?";
-      Object.keys(settings.requestFilters).map((item, index) => {
+      let arr = Object.keys(settings.requestFilters);
+      arr.map((item, index) => {
         if (settings.requestFilters[item] === "") {
-          str = str + item + "=" + "All" + "&";
+          str = str + item + "=" + "All" + (index === arr.length - 1 ? "" : "&");
         } else {
-          str = str + item + "=" + settings.requestFilters[item] + "&";
+          str = str + item + "=" + settings.requestFilters[item] + (index === arr.length - 1 ? "" : "&");
         }
         let path = props.match.path + loc + "/test/" + settings.selectedTest.key + str;
         props.history.push(path);
@@ -90,9 +91,14 @@ const Container = props => {
   const computeChartNavigationLinks = (sel, filt) => {
     if (navigation.locToData[getLoc()]) {
       let str = "?";
-      Object.keys(filt).map((item, index) => {
+      let arr = Object.keys(filt);
+      arr.map((item, index) => {
         let val = filt[item] === "" ? "All" : filt[item];
-        str = str + item + "=" + val + "&";
+        if (index === arr.length - 1) {
+          str = str + item + "=" + val;
+        } else {
+          str = str + item + "=" + val + "&";
+        }
       });
       return next(navigation.navigation[navigation.locToData[getLoc()].group], arr => {
         getNavigationTabLinks(arr, sel.key + str);
@@ -104,39 +110,17 @@ const Container = props => {
 
   computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
 
-  const onTestIdChange = (selected, filters) => {
-    let loc = getLoc();
-    if (loc) {
-      let str = "?";
-      let obj = {};
-      Object.keys(filters).map((item, index) => {
-        if (filters[item].substring(0, 3) === "All") {
-          obj[item] = "";
-        } else {
-          obj[item] = filters[item];
-        }
-        str = str + item + "=" + filters[item] + "&";
-      });
-
-      setSettings({
-        selectedTest: selected,
-        requestFilters: obj
-      });
-    }
-  };
-
   const onGoClick = _settings => {
     let loc = getLoc();
-    if (loc) {
-      let str = "?";
+    if (loc && _settings.selectedTest.key) {
       let obj = {};
-      Object.keys(_settings.filters).map((item, index) => {
+      let arr = Object.keys(_settings.filters);
+      arr.map((item, index) => {
         if (_settings.filters[item].substring(0, 3) === "All") {
           obj[item] = "";
         } else {
           obj[item] = _settings.filters[item];
         }
-        str = str + item + "=" + _settings.filters[item] + "&";
       });
 
       setSettings({
@@ -146,7 +130,7 @@ const Container = props => {
     }
   };
 
-  const getHeaderSettings = () => {
+  const headerSettings = useMemo(() => {
     let loc = getLoc();
     if (loc) {
       return {
@@ -162,9 +146,7 @@ const Container = props => {
     } else {
       return { title: "Reports" };
     }
-  };
-
-  const headerSettings = getHeaderSettings();
+  });
 
   return (
     <div>
@@ -179,7 +161,6 @@ const Container = props => {
       {headerSettings.group === "singleAssessmentReport" ? (
         <div>
           <SingleAssessmentReportFilters
-            onTestIdChange={onTestIdChange}
             onGoClick={onGoClick}
             loc={headerSettings.loc}
             history={props.history}

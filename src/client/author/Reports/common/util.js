@@ -38,6 +38,9 @@ export const getNavigationTabLinks = (list, id) => {
 
 export const getDropDownTestIds = arr => {
   let sortedArr = [...arr];
+  sortedArr.sort((a, b) => {
+    return a - b;
+  });
 
   let _arr = sortedArr.map((data, index) => {
     return { key: data.testId, title: data.testName };

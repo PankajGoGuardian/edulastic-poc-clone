@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 /**
  *
@@ -22,8 +22,12 @@ function dependenciesCheck(prev, current) {
  */
 function useInternalEffect(callBack, dependencies) {
   const [prevDep, setPrevDep] = useState(dependencies);
+  const firsteRenderRef = useRef(true);
 
-  if (!dependenciesCheck(prevDep, dependencies)) {
+  if (firsteRenderRef.current === true) {
+    firsteRenderRef.current = false;
+    callBack();
+  } else if (!dependenciesCheck(prevDep, dependencies)) {
     callBack();
     setPrevDep(dependencies);
   }

@@ -13,7 +13,7 @@ const OptGroup = AutoComplete.OptGroup;
 const AutocompleteDropDown = ({
   className,
   containerClassName = "",
-  prefix,
+  prefix = "",
   by = { key: "", title: "" },
   selectCB,
   data = [],
@@ -121,7 +121,7 @@ const AutocompleteDropDown = ({
   const dataSource = buildDropDownData(dropDownData);
 
   return (
-    <StyledDiv className={`${containerClassName} autocomplete-dropdown`} style={{ overflow: "hidden" }}>
+    <StyledDiv className={`${containerClassName} autocomplete-dropdown`}>
       <AutoComplete
         dataSource={dataSource}
         dropdownClassName={className}
@@ -149,7 +149,6 @@ const StyledDiv = styled.div`
 
 const StyledAutocompleteDropDown = styled(AutocompleteDropDown)`
   .ant-select-dropdown-menu {
-    overflow: hidden;
     display: flex;
     flex-direction: column;
     .ant-select-dropdown-menu-item-group {

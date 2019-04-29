@@ -37,7 +37,8 @@ export const getReportsAssessmentSummaryLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  assessmentSummary: {}
+  assessmentSummary: {},
+  loading: true
 };
 
 export const reportAssessmentSummaryReducer = createReducer(initialState, {

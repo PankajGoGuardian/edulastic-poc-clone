@@ -146,6 +146,32 @@ const updatePerformanceBand = ({ body }) =>
       data: body
     })
     .then(result => result.data.result);
+// interested standards
+const getInterestedStandards = ({ orgId }) =>
+  api
+    .callApi({
+      url: `${prefix}/intrested-standards/${orgId}?orgType=district`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
+const saveInterestedStandards = body =>
+  api
+    .callApi({
+      url: `${prefix}/intrested-standards/`,
+      method: "post",
+      data: body
+    })
+    .then(result => result.data.result);
+
+const updateInterestedStandards = body =>
+  api
+    .callApi({
+      url: `${prefix}/intrested-standards/`,
+      method: "put",
+      data: body
+    })
+    .then(result => result.data.result);
 
 export default {
   getDistrictProfile,
@@ -163,5 +189,8 @@ export default {
   updateStandardsProficiency,
   getPerformanceBand,
   createPerformanceBand,
-  updatePerformanceBand
+  updatePerformanceBand,
+  getInterestedStandards,
+  saveInterestedStandards,
+  updateInterestedStandards
 };

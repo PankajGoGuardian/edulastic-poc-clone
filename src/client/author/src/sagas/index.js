@@ -34,6 +34,7 @@ import { districtAdminSaga } from "../../DistrictAdmin";
 import { schoolAdminSaga } from "../../SchoolAdmin";
 import { coursesSaga } from "../../Courses";
 import { classesSaga } from "../../Classes";
+import { interestedStandardsSaga } from "../../InterestedStandards";
 
 const authorSagas = [
   itemsSaga(),
@@ -71,7 +72,8 @@ const authorSagas = [
   districtAdminSaga(),
   schoolAdminSaga(),
   coursesSaga(),
-  classesSaga()
+  classesSaga(),
+  interestedStandardsSaga()
 ];
 
 export default authorSagas;

@@ -42,6 +42,7 @@ const DistrictAdmin = lazy(() => import("../DistrictAdmin"));
 const SchoolAdmin = lazy(() => import("../SchoolAdmin"));
 const Courses = lazy(() => import("../Courses"));
 const Classes = lazy(() => import("../Classes"));
+const InterestedStandards = lazy(() => import("../InterestedStandards"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -172,6 +173,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/users/school-admin" component={SchoolAdmin} />
               <Route exact path="/author/courses" component={Courses} />
               <Route exact path="/author/classes" component={Classes} />
+              <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
             </Switch>
           </Suspense>
         </Wrapper>

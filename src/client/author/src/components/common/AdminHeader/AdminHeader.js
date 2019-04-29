@@ -76,6 +76,9 @@ class AdminHeader extends Component {
       case "School Admin":
         history.push(`/author/users/school-admin`);
         return;
+      case "Interested Standards":
+        history.push(`/author/settings/interested-standards`);
+        return;
     }
   };
 
@@ -101,6 +104,7 @@ class AdminHeader extends Component {
             <StyledTabPane tab="District Policies" key={"District Policies"} />
             <StyledTabPane tab="Test Settings" key={"Test Settings"} />
             <StyledTabPane tab="Term" key={"Term"} />
+            <StyledTabPane tab="Interested Standards" key={"Interested Standards"} />
             <StyledTabPane tab="Performance Bands" key={"Performance Bands"} />
             <StyledTabPane tab="Standards Proficiency" key={"Standards Proficiency"} />
           </StyledSubMenu>

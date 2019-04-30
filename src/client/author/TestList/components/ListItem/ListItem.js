@@ -4,6 +4,7 @@ import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
 import { Col, Button } from "antd";
+import { assignmentApi } from "@edulastic/api";
 import Tags from "../../../src/components/common/Tags";
 import {
   Container,
@@ -55,6 +56,12 @@ class ListItem extends Component {
     history.push(`${match.url}/${item._id}`);
   };
 
+  duplicate = async () => {
+    const { history, item } = this.props;
+    const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
+    history.push(`/author/tests/${duplicateTest._id}`);
+  };
+
   closeModal = () => {
     this.setState({ isOpenModal: false });
   };
@@ -90,14 +97,18 @@ class ListItem extends Component {
                         </Button>
                       )}
 
-                      <Button type="primary">duplicate</Button>
+                      <Button type="primary" onClick={this.duplicate}>
+                        duplicate
+                      </Button>
                     </ButtonWrapper>
                   </Header>
                 }
               />
               <Inner>
                 <div>
-                  <StyledLink>{title}</StyledLink>
+                  <StyledLink title={title} onClick={this.moveToItem}>
+                    {title}
+                  </StyledLink>
                 </div>
                 <Description>
                   {

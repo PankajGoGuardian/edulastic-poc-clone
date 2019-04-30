@@ -54,8 +54,8 @@ class Item extends Component {
 
   duplicate = async () => {
     const { history, item } = this.props;
-    await assignmentApi.duplicateAssignment(item._id);
-    history.push(`/author/tests/${item._id}`);
+    const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
+    history.push(`/author/tests/${duplicateTest._id}`);
   };
 
   closeModal = () => {

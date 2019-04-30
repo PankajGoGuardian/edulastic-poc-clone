@@ -67,7 +67,8 @@ class ClozeImageText extends Component {
       previewStimulus,
       previewDisplayOptions,
       itemForEdit,
-      uiStyle: item.ui_style
+      uiStyle: item.ui_style,
+      itemForPreview
     };
   };
 
@@ -151,7 +152,6 @@ class ClozeImageText extends Component {
     } = this.props;
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
-
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;

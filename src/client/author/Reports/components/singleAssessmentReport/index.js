@@ -1,19 +1,43 @@
 import React from "react";
 import styled from "styled-components";
-import next from "immer";
 
-import { grey } from "@edulastic/colors";
-
-import { LinkItem } from "./linkItem";
+import { LinkItem } from "../../common/components/linkItem";
 import { BoxHeading } from "../../common/components/boxHeading";
-import { getNavigationTabLinks } from "../../common/util";
-import chartNavigationLinks from "../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+
+const links = [
+  {
+    key: "assessmentSummary",
+    title: "Assessment Summary",
+    location: "/author/reports/assessment-summary/test/"
+  },
+  {
+    key: "peerPerformance",
+    title: "Peer Performance",
+    location: "/author/reports/peer-performance/test/"
+  },
+  {
+    key: "questionAnalysis",
+    title: "Question Analysis",
+    location: "/author/reports/"
+  },
+  {
+    key: "responseFrequency",
+    title: "Response Frequency",
+    location: "/author/reports/response-frequency/test/"
+  },
+  {
+    key: "performanceByStandards",
+    title: "Performance by Standards",
+    location: "/author/reports/performance-by-standards/test/"
+  },
+  {
+    key: "performanceByStudents",
+    title: "Performance by Students",
+    location: "/author/reports/"
+  }
+];
 
 export const SingleAssessmentReport = props => {
-  const links = next(chartNavigationLinks, arr => {
-    getNavigationTabLinks(arr, "");
-  });
-
   return (
     <div>
       <BoxHeading heading={"Single Assessment Report"} iconType={"bar-chart"} />
@@ -21,13 +45,21 @@ export const SingleAssessmentReport = props => {
         View deep analysis of a single assessment. Compare class level performance, view item analysis, diagnose
         difficult items and areas of misunderstanding.
       </StyledP>
-      {links.map((data, index) => {
-        return <LinkItem key={data.title} data={data} />;
-      })}
+      <LinksWrapper>
+        {links.map((data, index) => {
+          return <LinkItem key={data.title} data={data} />;
+        })}
+      </LinksWrapper>
     </div>
   );
 };
 
 const StyledP = styled.p`
-  border-bottom: solid 1px ${grey};
+  margin-bottom: 10px;
+`;
+
+const LinksWrapper = styled.ul`
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
 `;

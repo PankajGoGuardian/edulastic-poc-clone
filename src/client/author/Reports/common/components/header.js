@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Button, Col } from "antd";
 import { white, fadedGrey } from "@edulastic/colors";
+import { IconBarChart } from "@edulastic/icons";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
 
@@ -32,10 +33,16 @@ export const CustomizedHeaderWrapper = ({
     onRefineResultsCB(event, !refineButtonActive);
   };
 
+  const ReportHeader = (
+    <h1>
+      <IconBarChart /> Reports
+    </h1>
+  );
+
   return (
     <HeaderWrapper>
       <HeaderTitle>
-        {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : null}
+        {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : ReportHeader}
       </HeaderTitle>
       <StyledCol>
         {onShareClickCB ? (
@@ -79,6 +86,20 @@ const StyledButton = styled(Button)`
 `;
 
 const HeaderTitle = styled.div`
+  h1 {
+    font-size: 18px;
+    font-weight: 600;
+    color: white;
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    svg {
+      width: 30px;
+      height: 30px;
+      fill: white;
+      margin-right: 10px;
+    }
+  }
   .ant-breadcrumb {
     .ant-breadcrumb-link {
       color: ${white};

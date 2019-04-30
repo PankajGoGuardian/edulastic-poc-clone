@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Card } from "@edulastic/common";
 import { Row, Col, Button, Slider } from "antd";
 import { Table } from "antd";
-import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 import { darkGrey, grey, fadedBlack, fadedGrey, black } from "@edulastic/colors";
 import { Text } from "@vx/text";
+import { CustomChartTooltip } from "./components/charts/chartUtils/tooltip";
 
 export const StyledCard = styled(Card)`
-  margin: 8px;
+  margin: ${props => (props.margin ? props.margin : "8px")};
 
   .ant-card-body {
     padding: 18px;
@@ -44,18 +44,8 @@ export const StyledCard = styled(Card)`
   }
 `;
 
-export const StyledContainer = styled(Row)`
-  .report-category {
-    flex: 50%;
-    max-width: 50%;
-  }
-
-  @media (max-width: 600px) {
-    .report-category {
-      flex: 100%;
-      max-width: 100%;
-    }
-  }
+export const StyledContainer = styled.div`
+  padding: 30px;
 `;
 
 export const StyledTable = styled(Table)`

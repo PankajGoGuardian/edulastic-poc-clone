@@ -5,8 +5,6 @@ import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
 import next from "immer";
 
-import Breadcrumb from "../src/components/Breadcrumb";
-
 import ResponseFrequency from "./subPages/singleAssessmentReport/ResponseFrequency";
 import AssessmentSummary from "./subPages/singleAssessmentReport/AssessmentSummary";
 import PeerPerformance from "./subPages/singleAssessmentReport/PeerPerformance";
@@ -15,6 +13,9 @@ import PerformanceByStandards from "./subPages/singleAssessmentReport/Performanc
 import { StyledContainer, StyledCard } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
+import { StudentProfileReport } from "./components/studentProfileReport";
+import { StandardsMasteryReport } from "./components/standardsMasteryReport";
+import { MultipleAssessmentReport } from "./components/multipleAssessmentReport";
 import { CustomizedHeaderWrapper } from "./common/components/header";
 import SingleAssessmentReportFilters from "./subPages/singleAssessmentReport/common/components/filters";
 import { NavigatorTabs } from "./common/components/widgets/navigatorTabs";
@@ -205,21 +206,27 @@ const Container = props => {
 
 const Reports = props => {
   return (
-    <div>
-      <StyledContainer type="flex" justify="center">
-        <Col className="report-category">
-          <StyledCard className="single-assessment-reports report">
+    <StyledContainer>
+      <Row gutter={20}>
+        <Col md={12} xs={24}>
+          <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
             <SingleAssessmentReport />
           </StyledCard>
-          <StyledCard className="student-profile-reports report" />
+          <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
+            <StudentProfileReport />
+          </StyledCard>
         </Col>
-        <Col className="report-category">
-          <StyledCard className="multiple-assessment-reports report" />
-          <StyledCard className="standards-mastery-reports report" />
-          <StyledCard className="engagement-reports report" />
+        <Col md={12} xs={24}>
+          <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
+            <MultipleAssessmentReport />
+          </StyledCard>
+          <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
+            <StandardsMasteryReport />
+          </StyledCard>
+          {/* <StyledCard className="engagement-reports report" /> */}
         </Col>
-      </StyledContainer>
-    </div>
+      </Row>
+    </StyledContainer>
   );
 };
 

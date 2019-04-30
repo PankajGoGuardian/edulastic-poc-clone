@@ -4,11 +4,18 @@ import styled from "styled-components";
 import { Icon } from "antd";
 import { grey, darkBlue, lightBlue, black } from "@edulastic/colors";
 
-const Item = styled.div`
-  height: 40px;
+const Item = styled.li`
   color: ${lightBlue};
-  border-bottom: solid 1px ${grey};
-  padding: 10px;
+  width: 100%;
+  border-top: 2px solid #f7f7f7;
+  a {
+    padding: 12px 10px;
+    width: 100%;
+    display: inline-block;
+    &:hover {
+      background-color: #f8f8f8;
+    }
+  }
 `;
 
 const StyledIcon = styled(Icon)`
@@ -20,8 +27,10 @@ const StyledIcon = styled(Icon)`
 export const LinkItem = props => {
   return (
     <Item>
-      <Link to={props.data.location}>{props.data.title}</Link>
-      <StyledIcon type="right" />
+      <Link to={props.data.location}>
+        {props.data.title}
+        <StyledIcon type="right" />
+      </Link>
     </Item>
   );
 };

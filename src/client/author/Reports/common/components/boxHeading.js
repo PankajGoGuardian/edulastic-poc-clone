@@ -1,16 +1,13 @@
 import React from "react";
 import { Row, Col, Icon } from "antd";
 import styled from "styled-components";
-import { StyledH3 } from "../styled";
 import { fadedBlack } from "@edulastic/colors";
 
 export const BoxHeading = props => {
   return (
     <StyledRow type="flex" justify="start">
-      <Col>
-        <Icon type={props.iconType} style={{ fontSize: 35 }} />
-      </Col>
       <StyledCol>
+        <Icon type={props.iconType} />
         <StyledH3>{props.heading}</StyledH3>
       </StyledCol>
     </StyledRow>
@@ -24,10 +21,16 @@ const StyledRow = styled(Row)`
 const StyledCol = styled(Col)`
   display: flex;
   align-items: center;
-  margin-left: 10px;
+  i {
+    font-size: 35px;
+    margin-right: 10px;
+    color: "#676a6c";
+  }
 `;
 
-const StyledIcon = styled(Icon)`
-  height: 50px;
-  width: 50px;
+const StyledH3 = styled.h3`
+  font-size: 16px;
+  font-weight: 600;
+  color: #676a6c;
+  margin: 0px;
 `;

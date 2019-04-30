@@ -2,7 +2,9 @@ import React, { useState, useEffect, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Button, Row, Col, Select, Checkbox, Spin } from "antd";
 import { Paper, FlexContainer } from "@edulastic/common";
-
+import { connect } from "react-redux";
+import { getAvailableCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
 import { StyledModal } from "./styled/StyledModal";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import { ItemBody } from "./styled/ItemBody";
@@ -19,11 +21,14 @@ const StandardsModal = ({
   standards,
   subject,
   grades,
-  curriculums,
   curriculumStandardsELO,
   curriculumStandardsTLO,
   getCurriculumStandards,
-  curriculumStandardsLoading
+  curriculumStandardsLoading,
+  filteredCurriculums,
+  editAlignment,
+  alignmentIndex,
+  clearStandards
 }) => {
   const [state, setState] = useState({
     standard,
@@ -32,12 +37,6 @@ const StandardsModal = ({
     grades
   });
   const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : "");
-  const [filteredStandards, setFilteredStandards] = useState(
-    curriculums.filter(c => {
-      if (!subject) return curriculums;
-      return c.subject === subject;
-    })
-  );
 
   useMemo(() => {
     if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id);
@@ -53,6 +52,18 @@ const StandardsModal = ({
       </Button>
     </div>
   );
+
+  const handleChangeSubject = val => {
+    setState(prevState => ({
+      ...prevState,
+      subject: val,
+      eloStandards: [],
+      standard: { ...prevState.standard, curriculum: "" }
+    }));
+    getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
+    editAlignment(alignmentIndex, { subject: val, curriculum: "" });
+    clearStandards();
+  };
 
   const handleChangeStandard = (curriculum, event) => {
     const id = event.key;
@@ -78,14 +89,7 @@ const StandardsModal = ({
           <Col md={8}>
             <ItemBody>
               <div className="select-label">{t("component.options.subject")}</div>
-              <Select
-                style={{ width: "100%" }}
-                value={state.subject}
-                onChange={val => {
-                  setState({ ...state, subject: val, eloStandards: [] });
-                  setFilteredStandards(curriculums.filter(c => c.subject === val));
-                }}
-              >
+              <Select style={{ width: "100%" }} value={state.subject} onChange={handleChangeSubject}>
                 {selectsData.allSubjects.map(({ text, value }) => (
                   <Select.Option key={value} value={value}>
                     {text}
@@ -104,11 +108,17 @@ const StandardsModal = ({
                 value={state.standard.curriculum}
                 onChange={handleChangeStandard}
               >
-                {filteredStandards.map(({ curriculum, _id }) => (
-                  <Select.Option key={_id} value={curriculum}>
-                    {curriculum}
-                  </Select.Option>
-                ))}
+                {filteredCurriculums.map(({ curriculum, name, _id }) =>
+                  name ? (
+                    <Select.Option key={_id} value={name}>
+                      {name}
+                    </Select.Option>
+                  ) : (
+                    <Select.Option key={_id} value={curriculum}>
+                      {curriculum}
+                    </Select.Option>
+                  )
+                )}
               </Select>
             </ItemBody>
           </Col>
@@ -182,7 +192,8 @@ StandardsModal.propTypes = {
   subject: PropTypes.string,
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
-  grades: PropTypes.array
+  grades: PropTypes.array,
+  filteredCurriculums: PropTypes.array
 };
 
 StandardsModal.defaultProps = {
@@ -192,4 +203,11 @@ StandardsModal.defaultProps = {
   grades: []
 };
 
-export default StandardsModal;
+export default connect(
+  (state, props) => ({
+    filteredCurriculums: getAvailableCurriculumsSelector(state, props)
+  }),
+  {
+    clearStandards: clearDictStandardsAction
+  }
+)(StandardsModal);

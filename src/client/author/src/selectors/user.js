@@ -18,6 +18,11 @@ export const getUserNameSelector = createSelector(
   state => (state.user && state.user.firstName) || "Anonymous"
 );
 
+export const getOrgDataSelector = createSelector(
+  stateSelector,
+  state => state.user.orgData
+);
+
 export const getCurrentGroup = createSelector(
   stateSelector,
   state => state.user && state.user.orgData && state.user.orgData.defaultClass
@@ -36,6 +41,11 @@ export const getUser = createSelector(
 export const getCurrentTerm = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.defaultTermId")
+);
+
+export const getInterestedCurriculumsSelector = createSelector(
+  getOrgDataSelector,
+  state => state.interestedCurriculums
 );
 
 export const getUserOrgId = createSelector(

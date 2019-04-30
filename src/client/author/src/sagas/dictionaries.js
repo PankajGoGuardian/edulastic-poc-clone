@@ -37,12 +37,18 @@ function* receiveCurriculumsSaga() {
 
 function* receiveStandardsSaga({ payload }) {
   try {
-    const { elo, tlo } = yield call(dictionariesApi.receiveStandards, payload);
-
-    yield put({
-      type: RECEIVE_DICT_STANDARDS_SUCCESS,
-      payload: { elo, tlo }
-    });
+    if (payload.curriculumId) {
+      const { elo, tlo } = yield call(dictionariesApi.receiveStandards, payload);
+      yield put({
+        type: RECEIVE_DICT_STANDARDS_SUCCESS,
+        payload: { elo, tlo }
+      });
+    } else {
+      yield put({
+        type: RECEIVE_DICT_STANDARDS_SUCCESS,
+        payload: { elo: [], tlo: [] }
+      });
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Receive standards is failing";

@@ -2,8 +2,10 @@ import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Select } from "antd";
 import { pick as _pick, uniq as _uniq } from "lodash";
+import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
-
+import { getAvailableCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
 import BrowseButton from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
@@ -18,19 +20,22 @@ const AlignmentRow = ({
   getCurriculumStandards,
   curriculumStandardsELO,
   curriculumStandardsTLO,
-  alignment: { subject, curriculumId, curriculum, grades, standards = [] },
   alignment,
   alignmentIndex,
   onDelete,
   handleUpdateQuestionAlignment,
   curriculumStandardsLoading,
   editAlignment,
-  createUniqGradeAndSubjects
+  createUniqGradeAndSubjects,
+  filteredCurriculums,
+  clearStandards
 }) => {
+  const { subject, curriculumId, curriculum, grades, standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
 
   const setSubject = val => {
-    editAlignment(alignmentIndex, { subject: val, standards: [] });
+    editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
+    clearStandards();
   };
 
   const setGrades = val => {
@@ -43,13 +48,6 @@ const AlignmentRow = ({
   };
 
   const standardsArr = standards.map(el => el.identifier);
-
-  const filteredCurriculums = curriculums.filter(c => {
-    if (!subject) {
-      return curriculums;
-    }
-    return c.subject === subject;
-  });
 
   const handleSearchStandard = searchStr => {
     getCurriculumStandards({ id: curriculumId, grades, searchStr });
@@ -146,6 +144,8 @@ const AlignmentRow = ({
           curriculumStandardsTLO={curriculumStandardsTLO}
           getCurriculumStandards={getCurriculumStandards}
           curriculumStandardsLoading={curriculumStandardsLoading}
+          editAlignment={editAlignment}
+          alignmentIndex={alignmentIndex}
         />
       )}
       <Row gutter={36}>
@@ -173,11 +173,17 @@ const AlignmentRow = ({
                       value={curriculum}
                       onChange={handleChangeStandard}
                     >
-                      {filteredCurriculums.map(({ curriculum, _id }) => (
-                        <Select.Option key={_id} value={curriculum}>
-                          {curriculum}
-                        </Select.Option>
-                      ))}
+                      {filteredCurriculums.map(({ curriculum, name, _id }) =>
+                        name ? (
+                          <Select.Option key={_id} value={name}>
+                            {name}
+                          </Select.Option>
+                        ) : (
+                          <Select.Option key={_id} value={curriculum}>
+                            {curriculum}
+                          </Select.Option>
+                        )
+                      )}
                     </Select>
                   </ItemBody>
                   <ItemBody>
@@ -260,4 +266,11 @@ AlignmentRow.propTypes = {
   editAlignment: PropTypes.func.isRequired
 };
 
-export default AlignmentRow;
+export default connect(
+  (state, props) => ({
+    filteredCurriculums: getAvailableCurriculumsSelector(state, props.alignment)
+  }),
+  {
+    clearStandards: clearDictStandardsAction
+  }
+)(AlignmentRow);

@@ -52,7 +52,7 @@ const AlignmentRow = ({
   });
 
   const handleSearchStandard = searchStr => {
-    getCurriculumStandards({ id: curriculumId, grades: grades, searchStr });
+    getCurriculumStandards({ id: curriculumId, grades, searchStr });
   };
 
   const handleStandardSelect = (chosenStandardsArr, option) => {
@@ -69,7 +69,7 @@ const AlignmentRow = ({
     ]);
 
     const newStandards = [...standards, newStandard];
-    let subject = alignment.subject;
+    let { subject } = alignment;
     if (!subject) {
       const curriculumFromStandard = (option.props.obj || {}).curriculumId
         ? filteredCurriculums.find(curriculum => curriculum._id === option.props.obj.curriculumId)
@@ -91,7 +91,7 @@ const AlignmentRow = ({
 
   const handleApply = data => {
     const gradesFromElo = data.eloStandards.flatMap(elo => elo.grades);
-    let subject = data.subject;
+    let { subject } = data;
     if (!subject) {
       const curriculumFromStandard = data.standard.id
         ? filteredCurriculums.find(curriculum => curriculum._id === data.standard.id)
@@ -110,7 +110,7 @@ const AlignmentRow = ({
   };
 
   const handleStandardFocus = () => {
-    getCurriculumStandards({ id: curriculumId, grades: grades, searchStr: "" });
+    getCurriculumStandards({ id: curriculumId, grades, searchStr: "" });
   };
 
   const handleShowBrowseModal = () => {
@@ -136,7 +136,7 @@ const AlignmentRow = ({
           subject={subject}
           grades={grades}
           standards={standards}
-          standard={{ curriculum: curriculum, id: curriculumId }}
+          standard={{ curriculum, id: curriculumId }}
           visible={showModal}
           curriculums={curriculums}
           onApply={handleApply}
@@ -165,7 +165,7 @@ const AlignmentRow = ({
                     </Select>
                   </ItemBody>
                   <ItemBody>
-                    <div className="select-label">{t("component.options.standard")}</div>
+                    <div className="select-label">{t("component.options.curriculum")}</div>
                     <Select
                       style={{ width: "100%" }}
                       showSearch
@@ -209,7 +209,7 @@ const AlignmentRow = ({
                   {!curriculumStandardsLoading &&
                     curriculumStandardsELO.map(el => (
                       <Select.Option
-                        title={"true"}
+                        title="true"
                         key={el._id}
                         value={el.identifier}
                         obj={el}

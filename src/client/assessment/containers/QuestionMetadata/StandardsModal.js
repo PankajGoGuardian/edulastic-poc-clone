@@ -96,7 +96,7 @@ const StandardsModal = ({
           </Col>
           <Col md={8}>
             <ItemBody>
-              <div className="select-label">{t("component.options.standard")}</div>
+              <div className="select-label">{t("component.options.curriculum")}</div>
               <Select
                 style={{ width: "100%" }}
                 showSearch

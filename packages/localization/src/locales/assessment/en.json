@@ -42,6 +42,7 @@
       "columns": "Number of columns",
       "orientation": "Orientation",
       "fontSize": "Font Size",
+      "curriculum": "Curriculum",
       "standard": "Standard",
       "block": "Block",
       "radioButtonBelow": "Radio Button Below",

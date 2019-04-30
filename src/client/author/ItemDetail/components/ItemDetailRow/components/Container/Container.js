@@ -79,6 +79,7 @@ class Container extends Component {
   render() {
     const { row, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
     const { tabIndex } = this.state;
+
     return (
       <Content
         value={tabIndex}

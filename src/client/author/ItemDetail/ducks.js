@@ -270,7 +270,7 @@ const updateDimension = (state, { left, right }) => {
     newState.item.rows.length = 1;
   } else if (!newState.item.rows[1]) {
     newState.item.rows[1] = {
-      tabs: ["Tab 1", "Tab 2"],
+      tabs: [],
       dimension: right,
       widgets: []
     };

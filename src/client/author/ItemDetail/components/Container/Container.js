@@ -360,7 +360,7 @@ class Container extends Component {
             onApply={this.handleApplySettings}
             useTabs={useTabs}
             useTabsLeft={!!rows[0].tabs.length}
-            useTabsRight={!!(!!rows[1] && !!rows[1].tabs.length)}
+            useTabsRight={!!rows[1] && !!rows[1].tabs.length}
             onVerticalDividerChange={this.handleVerticalDividerChange}
             onScrollingChange={this.handleScrollingChange}
             verticalDivider={item.verticalDivider}

@@ -51,17 +51,17 @@ const PassageView = ({ item, preview }) => {
         </span>
       </div>
       {!item.paginated_content && item.content && (
-        <ReactQuill id="mainContents" defaultValue={item.content} modules={PassageView.modules} />
+        <ReactQuill id="mainContents" value={item.content} modules={PassageView.modules} />
       )}
       {item.paginated_content && item.pages && !!item.pages.length && (
         <div>
-          <ReactQuill id="paginatedContents" defaultValue={item.pages[page - 1]} modules={PassageView.modules} />
+          <ReactQuill id="paginatedContents" value={item.pages[page - 1]} modules={PassageView.modules} />
 
           <Pagination
             pageSize={1}
             simple
             hideOnSinglePage
-            onChange={setPage}
+            onChange={pageNum => setPage(pageNum)}
             current={page}
             total={item.pages.length}
           />

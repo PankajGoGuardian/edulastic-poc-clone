@@ -67,12 +67,16 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match } = this.props;
+    const { getItemDetailById, match, rows } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
 
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
+    }
+
+    if (this.isPassage(rows)) {
+      this.handleApplySettings({ type: "50-50" });
     }
   }
 
@@ -87,6 +91,13 @@ class Container extends Component {
     }
     return null;
   }
+
+  isPassage = rows =>
+    rows[0] &&
+    rows[0].widgets &&
+    rows[0].widgets.length === 1 &&
+    rows[0].widgets[0].type === "passage" &&
+    rows[0].dimension !== "50%";
 
   getSizes = type => {
     switch (type) {
@@ -171,6 +182,7 @@ class Container extends Component {
   };
 
   handleApplySettings = ({ type }) => {
+    console.log(type, "type");
     const { updateDimension } = this.props;
     const { left, right } = this.getSizes(type);
     updateDimension(left, right);
@@ -333,6 +345,7 @@ class Container extends Component {
       showPublishButton =
         (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
     }
+
     return (
       <Layout>
         {showModal && item && (

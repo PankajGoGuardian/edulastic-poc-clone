@@ -23,9 +23,11 @@ const PassageView = ({ item, preview }) => {
 
   return (
     <div>
-      <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
-      <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />
-      <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />
+      {item.instructor_stimulus && (
+        <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
+      )}
+      {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
+      {item.contentsTitle && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
       <div
         id="myToolbar"
         style={{

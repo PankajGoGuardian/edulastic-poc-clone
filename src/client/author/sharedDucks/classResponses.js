@@ -1,4 +1,5 @@
-import { takeEvery, call, put, all } from "redux-saga/effects";
+import { delay } from "redux-saga";
+import { takeEvery, call, put, all, takeLatest } from "redux-saga/effects";
 import { classResponseApi } from "@edulastic/api";
 import { message } from "antd";
 
@@ -86,6 +87,7 @@ function* receiveClassStudentResponseSaga({ payload }) {
 }
 
 function* receiveFeedbackResponseSaga({ payload }) {
+  yield delay(1000);
   try {
     const feedbackResponse = yield call(classResponseApi.feedbackResponse, payload);
 
@@ -144,6 +146,6 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_CLASSSTUDENT_RESPONSE_REQUEST, receiveClassStudentResponseSaga),
     yield takeEvery(RECEIVE_CLASS_QUESTION_REQUEST, receiveClassQuestionSaga),
     yield takeEvery(RECEIVE_STUDENT_RESPONSE_REQUEST, receiveStudentResponseSaga),
-    yield takeEvery(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga)
+    yield takeLatest(RECEIVE_FEEDBACK_RESPONSE_REQUEST, receiveFeedbackResponseSaga)
   ]);
 }

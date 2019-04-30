@@ -73,10 +73,19 @@ const ResponseButton = () => (
  */
 function formula() {
   const cursorPosition = this.quill.getSelection().index;
-  this.quill.insertEmbed(cursorPosition, "MathInput", "");
-  if (this.quill.getLength() - cursorPosition === 2) {
-    this.quill.setSelection(cursorPosition, 1);
+  if (cursorPosition === 0 || this.quill.getLength() - cursorPosition <= 2) {
+    // This is the case when the MathFormula is required to be added at the very start of a line
+    // In this case react-quill works really weird for embed blot
+    // So we are just gonna add space before the MathFormula so that you can enter text there.
+    this.quill.insertText(cursorPosition, " ", "");
+    this.quill.insertEmbed(cursorPosition + 1, "MathInput", "");
+    this.quill.setSelection(cursorPosition + 2);
   } else {
+    // This is the case when the MathFormula is required to be added at the middle of a line
+    // In this case react-quill works really fine for embed blot
+    // So we are not gonna add space before the MathFormula so that you can enter text there.
+    this.quill.insertEmbed(cursorPosition, "MathInput", "");
+    this.quill.setSelection(cursorPosition, 1);
     this.quill.setSelection(cursorPosition + 1);
   }
 }
@@ -90,13 +99,12 @@ function insertStar() {
 function insertPara() {}
 
 const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
-  const getTopStyle = () => {
-    return document.getElementById(id)
+  const getTopStyle = () =>
+    document.getElementById(id)
       ? document.getElementById(id).offsetHeight
         ? -document.getElementById(id).offsetHeight - 2
         : -76
       : -76;
-  };
 
   return (
     <div
@@ -314,6 +322,7 @@ class CustomQuillComponent extends React.Component {
     const { showMath } = this.state;
     if (!range) return;
     if (showMath) return;
+    console.log("onChangeSelection: ", range);
 
     const leaf = this.quillRef.getEditor().getLeaf(range.index);
     if (range.length > 1) {
@@ -360,10 +369,12 @@ class CustomQuillComponent extends React.Component {
     const { selLatex, curMathRange } = this.state;
     if (selLatex === "" && curMathRange) {
       this.quillRef.getEditor().deleteText(curMathRange.index, 1);
+    } else {
+      this.quillRef.getEditor().setSelection(curMathRange.index + 1);
     }
     this.setState({
-      showMath: false,
       selLatex: "",
+      showMath: false,
       active: true
     });
   };

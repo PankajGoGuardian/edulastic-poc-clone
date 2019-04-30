@@ -1139,3 +1139,7 @@ span.token.active-word {
   font-size: 16px;
   color: #1fe3a1; */
 }
+
+.mq-math-mode .mq-supsub.mq-sup-only {
+  margin-bottom: 1em;
+}

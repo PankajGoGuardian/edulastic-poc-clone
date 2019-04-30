@@ -1,6 +1,6 @@
 import API from "./utils/API";
 
-const api = new API(`//edulastic-poc.snapwiz.net/math-api`);
+const api = new API(`https://edulastic-poc.snapwiz.net/math-api`);
 
 const evaluate = data =>
   api

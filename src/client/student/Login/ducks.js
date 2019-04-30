@@ -1,6 +1,6 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { pick, last } from "lodash";
-import { takeLatest, call, put, select, all } from "redux-saga/effects";
+import { takeLatest, call, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { authApi, userApi } from "@edulastic/api";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
@@ -77,6 +77,7 @@ export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!localStorage.access_token) {
+      yield put(push("/Login"));
       return;
     }
     const user = yield call(userApi.getUser);
@@ -87,12 +88,14 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
+    yield put(push("/Login"));
   }
 }
 
 function* logout() {
   try {
     delete localStorage.access_token;
+    yield put({ type: "RESET" });
     yield put(push("/Login"));
   } catch (e) {
     console.log(e);
@@ -121,12 +124,14 @@ export function* watcherSaga() {
 }
 
 const initialState = {
-  isAuthenticated: false
+  isAuthenticated: false,
+  authenticating: true
 };
 
 const setUser = (state, { payload }) => {
   state.user = payload;
   state.isAuthenticated = true;
+  state.authenticating = false;
 };
 
 export default createReducer(initialState, {
@@ -136,6 +141,10 @@ export default createReducer(initialState, {
       return state;
     }
     state.user.orgData.defaultClass = payload;
+  },
+  [FETCH_USER]: (state, { payload }) => {
+    state.isAuthenticated = false;
+    state.authenticating = true;
   }
 });
 

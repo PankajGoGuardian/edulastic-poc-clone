@@ -4,8 +4,8 @@ import createSagaMiddleware from "redux-saga";
 import { createBrowserHistory } from "history";
 import { connectRouter, routerMiddleware } from "connected-react-router";
 import { createLogger } from "redux-logger";
-import { persistStore, persistReducer } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+
+import reduxReset from "redux-reset";
 
 import rootReducer from "./reducers";
 import rootSaga from "./sagas";
@@ -16,25 +16,19 @@ const sagaMiddleware = createSagaMiddleware();
 
 const middleware = [sagaMiddleware, routerMiddleware(history)];
 
-// redux persist config
-const persistConfig = {
-  key: "root",
-  storage,
-  whitelist: ["user", "reports", "router", "studentTestItems", "question"]
-};
-
 /* istanbul ignore next */
 if (process.env.NODE_ENV === "development") {
   middleware.push(createLogger({ collapsed: true }));
 }
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
 let store;
 
 export default () => {
-  store = createStore(connectRouter(history)(persistedReducer), composeWithDevTools(applyMiddleware(...middleware)));
+  store = createStore(
+    connectRouter(history)(rootReducer),
+    composeWithDevTools(applyMiddleware(...middleware), reduxReset())
+  );
 
-  const persistor = persistStore(store);
   sagaMiddleware.run(rootSaga);
 
   if (process.env.NODE_ENV !== "production") {
@@ -44,10 +38,9 @@ export default () => {
       });
     }
   }
-  return { store, persistor };
+  return { store };
 };
 
 export function getStore() {
-  console.log(store);
   return store;
 }

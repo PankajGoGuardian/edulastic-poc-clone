@@ -9,6 +9,7 @@ import { Spin } from "antd";
 import Joyride from "react-joyride";
 import { test } from "@edulastic/constants";
 import { TestAttemptReview } from "./student/TestAttemptReview";
+import { fetchUserAction } from "./student/Login/ducks";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -46,8 +47,15 @@ class App extends Component {
     tutorial: null
   };
 
+  componentDidMount() {
+    this.props.fetchUser();
+  }
+
   render() {
     const { user, tutorial } = this.props;
+    if (user.authenticating && localStorage.access_token) {
+      return <Loading />;
+    }
     let defaultRoute = "/home/assignments";
     if (user && user.isAuthenticated) {
       if (user.user.role === "teacher") {
@@ -90,7 +98,7 @@ const enhance = compose(
   withRouter,
   connect(
     ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),
-    null
+    { fetchUser: fetchUserAction }
   )
 );
 

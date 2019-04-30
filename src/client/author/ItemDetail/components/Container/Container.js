@@ -67,12 +67,25 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows } = this.props;
+    const { getItemDetailById, match, rows, history, t } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
 
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
+    }
+
+    if (rows.length === 0 || rows[0].widgets.length === 0) {
+      history.replace({
+        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          backText: t("component.itemDetail.backText"),
+          backUrl: "/author/items",
+          rowIndex: 0,
+          tabIndex: 0,
+          testItemId: match.params._id
+        }
+      });
     }
 
     if (this.isPassage(rows)) {

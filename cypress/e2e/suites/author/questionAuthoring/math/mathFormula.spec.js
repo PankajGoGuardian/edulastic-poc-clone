@@ -130,7 +130,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
         expected: "2/4"
       },
       mixedFraction: {
-        expected: ["1+1/", "{downarrow}", "2"]
+        expected: ["1\frac{enter}1", "{downarrow}", "2"]
       },
       exponent: {
         expected: "2^2"

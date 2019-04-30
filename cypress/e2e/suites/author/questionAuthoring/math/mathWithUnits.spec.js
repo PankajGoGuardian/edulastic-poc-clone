@@ -180,7 +180,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" ty
         expected: "2÷4"
       },
       mixedFraction: {
-        expected: "1+2cm÷5cm"
+        expected: ["1\frac{enter}1cm", "{downarrow}", "2cm"]
       },
       exponent: {
         expected: ["2^2", "{downarrow}", "cm"]

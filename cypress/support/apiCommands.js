@@ -115,10 +115,13 @@ Cypress.Commands.add("deleteItem", item => {
     method: "DELETE",
     headers: {
       Authorization: item.authToken
-    }
+    },
+    failOnStatusCode: false
   }).then(({ status }) => {
-    expect(status).to.eq(200);
-    console.log("Item deleted with _id :", item._id);
+    if (status !== 403) {
+      expect(status).to.eq(200);
+      console.log("Item deleted with _id :", item._id);
+    } else console.log("API forbidden , for testItem ", JSON.stringify(item));
   });
 });
 

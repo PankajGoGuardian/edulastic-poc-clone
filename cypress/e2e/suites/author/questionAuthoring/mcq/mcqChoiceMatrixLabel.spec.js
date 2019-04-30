@@ -7,6 +7,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Choice matrix 
     queType: "Choice matrix - labels",
     queText: "Choose the correct number of days in following month",
     ansChoice: ["JAN", "APR", "MAY", "JUN"],
+    forScoringCorrectAns: [1, 1, 1, 1],
+    forScoringAltAns: [1, 1, 0, 0],
     steams: ["30", "31"],
     extlink: "www.testdomain.com",
     formattext: "formattedtext",

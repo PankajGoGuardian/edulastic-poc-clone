@@ -65,18 +65,15 @@ class ChoiceMatrixStandardPage {
 
   getallChoices() {
     return cy
-      .contains("div", "Multiple Choice Options")
-      .next()
+      .get('[data-cy="sortable-list-container"]')
+      .first()
       .find(".ql-editor");
   }
 
   addNewChoice() {
-    cy.contains("div", "Multiple Choice Options")
-      .next()
-      .next()
-      .contains("Add new choice")
+    cy.get(":nth-child(2) > [data-cy=addButton]")
       .should("be.visible")
-      .click({ force: true });
+      .click();
     return this;
   }
 
@@ -97,18 +94,15 @@ class ChoiceMatrixStandardPage {
 
   getallSteam() {
     return cy
-      .contains("div", "Steams")
-      .next()
+      .get('[data-cy="sortable-list-container"]')
+      .eq(1)
       .find(".ql-editor");
   }
 
   addNewSteam() {
-    cy.contains("div", "Steams")
-      .next()
-      .next()
-      .contains("Add new choice")
+    cy.get(":nth-child(3) > [data-cy=addButton]")
       .should("be.visible")
-      .click({ force: true });
+      .click();
     return this;
   }
 
@@ -150,9 +144,9 @@ class ChoiceMatrixStandardPage {
   }
 
   // correct ans
-  getCorrectAnsTable() {
+  getCorrectAnsTableRow() {
     return cy
-      .get("table")
+      .get('[data-cy="matrixTable"]')
       .children()
       .get("tr.ant-table-row");
   }
@@ -164,11 +158,8 @@ class ChoiceMatrixStandardPage {
     return this;
   }
 
-  getAlternates() {
-    return cy
-      .contains("div", "Set Correct Answer(s)")
-      .next()
-      .contains("span", "Alternate");
+  getAlternateTabs() {
+    return cy.get("[data-cy=tabs]").contains("span", "Alternate");
   }
 
   deleteAlternate() {
@@ -176,14 +167,8 @@ class ChoiceMatrixStandardPage {
       .should("be.visible")
       .click();
 
-    cy.contains("div", "Set Correct Answer(s)")
-      .next()
-      .contains("div", "Alternate")
-      .should("not.be.visible");
-
-    cy.contains("div", "Set Correct Answer(s)")
-      .next()
-      .contains("div", "Correct")
+    // switch back to correct ans tab
+    cy.get("[data-cy=correct]")
       .should("be.visible")
       .click();
     return this;
@@ -306,7 +291,7 @@ class ChoiceMatrixStandardPage {
 
     if (option === "Inline") {
       this.getMatrixTable()
-        .find("thead th div")
+        .find("thead th div > span")
         .each($el => {
           cy.wrap($el).should("be.empty");
         });

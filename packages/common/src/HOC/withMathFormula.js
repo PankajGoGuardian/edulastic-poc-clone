@@ -6,7 +6,10 @@ import { WithResources } from "@edulastic/common";
 
 export const withMathFormula = WrappedComponent => {
   const NoneDiv = styled.div`
-    display: none;
+    visibility: hidden;
+    position: absolute;
+    left: -900px;
+    z-index: 0;
   `;
   const StyledWrappedComponent = styled(WrappedComponent)`
     p {

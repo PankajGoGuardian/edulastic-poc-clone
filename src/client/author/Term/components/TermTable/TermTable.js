@@ -219,12 +219,15 @@ class TermTable extends React.Component {
             }}
           />
         </EditableContext.Provider>
-        <CreateTermModal
-          modalVisible={createTermModalVisible}
-          createTerm={this.createTerm}
-          closeModal={this.closeCreateTermModal}
-          dataSource={data}
-        />
+        {createTermModalVisible && (
+          <CreateTermModal
+            modalVisible={createTermModalVisible}
+            createTerm={this.createTerm}
+            closeModal={this.closeCreateTermModal}
+            dataSource={data}
+          />
+        )}
+
         {editTermModalVisible && selectedKey >= 0 && (
           <EditTermModal
             modalVisible={editTermModalVisible}
@@ -232,7 +235,6 @@ class TermTable extends React.Component {
             closeModal={this.closeEditTermModal}
             termData={selectedRow[0]}
             dataSource={data}
-            key={selectedKey}
           />
         )}
       </StyledTableContainer>

@@ -67,7 +67,7 @@ class EditTermModal extends React.Component {
   };
 
   checkShortNameUnique = (rule, value, callback) => {
-    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.key);
+    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.termData.key);
     const sameSchoolNameRow = dataSource.filter(item => item.name === value);
     if (sameSchoolNameRow.length <= 0) {
       callback();

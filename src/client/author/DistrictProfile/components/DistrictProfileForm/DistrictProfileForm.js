@@ -22,7 +22,8 @@ import {
   StyledUrlButton,
   StyledPopoverContent,
   PopoverCloseButton,
-  StyledDistrictUrl
+  StyledDistrictUrl,
+  StyledFormItem
 } from "./styled";
 
 class DistrictProfileForm extends React.Component {
@@ -32,7 +33,8 @@ class DistrictProfileForm extends React.Component {
       logo: this.props.districtProfile.logo,
       pageBackground: this.props.districtProfile.pageBackground,
       districtUrl: "http://edulastic-poc.snapwiz.net/district/" + this.props.districtProfile.shortName,
-      popoverVisible: false
+      popoverVisible: false,
+      nameWidth: this.props.districtProfile.name.length * 9.5
     };
   }
 
@@ -60,10 +62,16 @@ class DistrictProfileForm extends React.Component {
     else if (keyName === "logo") this.setState({ logo: imgSrc });
   };
 
+  changeProfileName = e => {
+    this.setState({
+      nameWidth: e.target.value.length * 9.5
+    });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { districtProfile } = this.props;
-    const { districtUrl, popoverVisible } = this.state;
+    const { districtUrl, popoverVisible, nameWidth } = this.state;
 
     const popoverContent = (
       <React.Fragment>
@@ -92,12 +100,12 @@ class DistrictProfileForm extends React.Component {
           </StyledDivBg>
           <StyledDivMain>
             <StyledRow>
-              <FormItem>
+              <StyledFormItem widthSize={nameWidth}>
                 {getFieldDecorator("name", {
                   rules: [{ required: true, message: "Please input your name!" }],
                   initialValue: districtProfile.name
-                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} onChange={this.changeProfileName} />)}
+              </StyledFormItem>
             </StyledRow>
             <StyledRow>
               <StyledLabel>District Short Name:</StyledLabel>

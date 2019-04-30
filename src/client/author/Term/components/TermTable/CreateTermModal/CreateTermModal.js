@@ -7,10 +7,19 @@ import { StyledModal, ModalFormItem, StyledDatePicker } from "./styled";
 class CreateTermModal extends React.Component {
   constructor(props) {
     super(props);
+
+    const defaultSchoolName = this.getValidateSchoolYearname();
     this.state = {
       startDate: moment(new Date(), "DD MMM YYYY"),
-      endDate: moment(new Date(), "DD MMM YYYY").add(1, "days")
+      endDate: moment(new Date(), "DD MMM YYYY").add(1, "years"),
+      defaultSchoolName
     };
+  }
+
+  getValidateSchoolYearname() {
+    const currentYear = new Date().getFullYear();
+    let defaultSchoolName = currentYear + "-" + (currentYear + 1).toString().substring(2, 4);
+    return defaultSchoolName;
   }
 
   handleStartDateChange = value => {
@@ -34,7 +43,7 @@ class CreateTermModal extends React.Component {
     this.props.closeModal();
   };
 
-  checkShortNameUnique = (rule, value, callback) => {
+  checkSchoolNameUnique = (rule, value, callback) => {
     const sameSchoolNameRow = this.props.dataSource.filter(item => item.name === value);
     if (sameSchoolNameRow.length <= 0) {
       callback();
@@ -67,7 +76,7 @@ class CreateTermModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
-    const { startDate, endDate } = this.state;
+    const { startDate, endDate, defaultSchoolName } = this.state;
     const isOverlap = startDate.valueOf() >= endDate.valueOf() ? true : false;
 
     return (
@@ -94,8 +103,9 @@ class CreateTermModal extends React.Component {
                     required: true,
                     message: "Please input School Year Name"
                   },
-                  { validator: this.checkShortNameUnique }
-                ]
+                  { validator: this.checkSchoolNameUnique }
+                ],
+                initialValue: defaultSchoolName
               })(<Input placeholder="Enter School Year Name" />)}
             </ModalFormItem>
           </Col>

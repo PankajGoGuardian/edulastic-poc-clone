@@ -6,6 +6,7 @@ import ReactQuill, { Quill } from "react-quill";
 import PropTypes from "prop-types";
 // eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from "react-click-outside";
+import { fileApi } from "@edulastic/api";
 import MathModal from "./MathModal";
 
 const Embed = Quill.import("blots/block/embed");
@@ -441,6 +442,43 @@ class CustomQuillComponent extends React.Component {
   }
 }
 
+function handleImage() {
+  const input = document.createElement("input");
+
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "image/*");
+  input.click();
+
+  input.onchange = async () => {
+    const file = input.files[0];
+    const formData = new FormData();
+
+    formData.append("image", file);
+
+    // Save current cursor state
+    const range = this.quill.getSelection(true);
+
+    // Insert temporary loading placeholder image
+    this.quill.insertEmbed(range.index, "image", `placeholder.gif`);
+
+    // Move cursor to right side of image (easier to continue typing)
+    this.quill.setSelection(range.index + 1);
+
+    fileApi
+      .upload({ file })
+      .then(res => {
+        // Remove placeholder image
+        this.quill.deleteText(range.index, 1);
+
+        // Insert uploaded image
+        this.quill.insertEmbed(range.index, "image", res.fileUri);
+      })
+      .catch(err => {
+        console.warn("There was en error with image upload", err);
+      });
+  };
+}
+
 /*
  * Quill modules to attach to editor
  * See http://quilljs.com/docs/modules/ for complete options
@@ -451,7 +489,8 @@ CustomQuillComponent.modules = toolbarId => ({
     handlers: {
       formula,
       insertStar,
-      insertPara
+      insertPara,
+      image: handleImage
     }
   }
 });

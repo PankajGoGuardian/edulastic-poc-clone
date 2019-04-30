@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -37,10 +37,12 @@ const AssessmentContainer = ({
   questionsById,
   answers,
   answersById,
-  loading
+  loading,
+  preview
 }) => {
-  const { qid = 0 } = match.params;
-  const currentItem = Number(qid);
+  const qid = preview ? 0 : match.params.qid || 0;
+  const [currentItem, setCurrentItem] = useState(Number(qid));
+
   gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
@@ -51,10 +53,16 @@ const AssessmentContainer = ({
   }, []);
 
   const lastTime = useRef(Date.now());
+
   useEffect(() => {
     lastTime.current = Date.now();
   }, [currentItem]);
+
   const gotoQuestion = index => {
+    setCurrentItem(index);
+
+    if (preview) return;
+
     const timeSpent = Date.now() - lastTime.current;
     history.push(`${url}/qid/${index}`);
     saveUser(currentItem, timeSpent);
@@ -65,7 +73,7 @@ const AssessmentContainer = ({
     if (!isLast()) {
       gotoQuestion(Number(currentItem) + 1);
     }
-    if (isLast()) {
+    if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
       saveUser(currentItem, timeSpent);
       history.push("/student/test-summary");
@@ -102,7 +110,8 @@ const AssessmentContainer = ({
     evaluate,
     view,
     finishTest,
-    history
+    history,
+    previewPlayer: preview
   };
 
   if (loading) {

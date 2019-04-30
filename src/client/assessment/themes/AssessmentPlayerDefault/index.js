@@ -129,6 +129,9 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   openSubmitConfirmation = () => {
+    if (this.props.previewPlayer) {
+      return;
+    }
     this.setState({ isSubmitConfirmationVisible: true });
   };
 
@@ -233,7 +236,8 @@ class AssessmentPlayerDefault extends React.Component {
       evaluation,
       windowWidth,
       questions,
-      settings
+      settings,
+      previewPlayer
     } = this.props;
     const {
       testItemState,
@@ -258,6 +262,7 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
+
     return (
       <ThemeProvider theme={theme}>
         <Container>
@@ -289,16 +294,20 @@ class AssessmentPlayerDefault extends React.Component {
             onClose={() => this.closeToolbarModal()}
             checkanswer={() => this.changeTabItemState("check")}
           />
-          <SavePauseModalMobile
-            isVisible={isSavePauseModalVisible}
-            onClose={this.closeSavePauseModal}
-            onExitClick={this.openSubmitConfirmation}
-          />
-          <SubmitConfirmation
-            isVisible={isSubmitConfirmationVisible}
-            onClose={() => this.closeSubmitConfirmation()}
-            finishTest={this.finishTest}
-          />
+          {!previewPlayer && (
+            <SavePauseModalMobile
+              isVisible={isSavePauseModalVisible}
+              onClose={this.closeSavePauseModal}
+              onExitClick={this.openSubmitConfirmation}
+            />
+          )}
+          {!previewPlayer && (
+            <SubmitConfirmation
+              isVisible={isSubmitConfirmationVisible}
+              onClose={() => this.closeSubmitConfirmation()}
+              finishTest={this.finishTest}
+            />
+          )}
           <Affix>
             <Header>
               <HeaderLeftMenu>
@@ -373,7 +382,7 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
-                    {windowWidth >= MAX_MOBILE_WIDTH && (
+                    {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}
                   </FlexContainer>

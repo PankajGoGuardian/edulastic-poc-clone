@@ -40,7 +40,7 @@ function* loadTest({ payload }) {
       payload: true
     });
 
-    const { testActivityId, testId } = payload;
+    const { testActivityId, testId, preview = false } = payload;
     yield put({
       type: SET_TEST_ID,
       payload: {
@@ -49,8 +49,8 @@ function* loadTest({ payload }) {
     });
 
     const groupId = yield select(getCurrentGroup);
-    // if testActivityId is passed, need to load previous responses as well!
-    const getTestActivity = testActivityId ? call(testActivityApi.getById, testActivityId, groupId) : false;
+    // if !preivew, need to load previous responses as well!
+    const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const [test, testActivity] = yield all([
       call(testsApi.getById, testId, {
         validation: true,
@@ -66,20 +66,11 @@ function* loadTest({ payload }) {
 
     let { testItems } = test;
 
-    const { testActivity: activity, questionActivities = [] } = testActivity;
-    // if questions are shuffled !!!
-    if (activity.shuffleQuestions) {
-      const itemsByKey = _keyBy(testItems, "_id");
-      testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
-    }
     const settings = {
-      calcType: activity.calcType || testContants.calculatorTypes.NONE
+      calcType:
+        (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE
     };
-    let shuffles;
-    if (activity.shuffleAnswers) {
-      [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
-      yield put(setShuffledOptions(shuffles));
-    }
+
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -92,9 +83,21 @@ function* loadTest({ payload }) {
     });
 
     // if testActivity is present.
-    if (testActivity) {
+    if (!preview) {
       let allAnswers = {};
       const userWork = {};
+      const { testActivity: activity, questionActivities = [] } = testActivity;
+      // if questions are shuffled !!!
+      if (activity.shuffleQuestions) {
+        const itemsByKey = _keyBy(testItems, "_id");
+        testItems = (activity.shuffledTestItems || []).map(id => itemsByKey[id]).filter(item => !!item);
+      }
+
+      let shuffles;
+      if (activity.shuffleAnswers) {
+        [testItems, shuffles] = ShuffleChoices(testItems, questionActivities);
+        yield put(setShuffledOptions(shuffles));
+      }
 
       yield put({
         type: SET_TEST_ACTIVITY_ID,

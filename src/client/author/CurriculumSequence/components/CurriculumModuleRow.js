@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Button, Menu, Dropdown, Icon } from "antd";
+import { Button, Menu, Dropdown, Icon, Modal } from "antd";
 import {
   mobileWidth,
   lightBlue,
@@ -24,6 +24,7 @@ import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
 import { matchAssigned, getNumberOfAssigned } from "../util";
 
+import AssessmentPlayer from "../../../assessment";
 /**
  * @typedef {object} Props
  * @property {import('./CurriculumSequence').Module} module
@@ -47,6 +48,11 @@ const NOT_ASSIGNED = "ASSIGN";
 
 /** @extends Component<Props> */
 class ModuleRow extends Component {
+  state = {
+    showModal: false,
+    selectedTest: ""
+  };
+
   /**
    * @param {import('./CurriculumSequence').Module} module
    */
@@ -54,6 +60,19 @@ class ModuleRow extends Component {
     const { setSelectedItemsForAssign } = this.props;
     const moduleItemsIds = module.data.map(item => item.testId);
     setSelectedItemsForAssign(moduleItemsIds);
+  };
+
+  viewTest = testId => {
+    this.setState({
+      showModal: true,
+      selectedTest: testId
+    });
+  };
+
+  closeModal = () => {
+    this.setState({
+      showModal: false
+    });
   };
 
   render() {
@@ -68,174 +87,174 @@ class ModuleRow extends Component {
       removeItemFromUnit,
       removeUnit
     } = this.props;
-    const { completed, name, id } = module;
-    let { data } = module;
-    const { assignModule } = this;
+    const { completed, name, id, data = [] } = module;
 
-    // module.data should exists and default to empty array
-    if (!data) {
-      data = [];
-    }
+    const { assignModule } = this;
 
     const totalAssigned = data.length;
     const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.testId));
     const [whichModule, moduleName] = name.split(":");
-
+    const { showModal, selectedTest } = this.state;
     return (
-      <ModuleWrapper data-cy="curriculumModuleRow" key={`${data.length}-${module.id}`} padding={padding}>
-        <Container>
-          <Module>
-            <ModuleHeader
-              collapsed={collapsed}
-              padding="17px 25px 16px 27px"
-              borderRadius={collapsed ? "5px" : "unset"}
-              boxShadow={collapsed ? "0 3px 7px 0 rgba(0, 0, 0, 0.1)" : "unset"}
-            >
-              <ModuleInfo>
-                <CustomIcon marginRight="25" marginLeft={7} onClick={() => onCollapseExpand(id)}>
-                  {!collapsed ? (
-                    <Icon type="up" style={{ color: "#707070" }} />
-                  ) : (
-                    <Icon type="down" style={{ color: "#707070" }} />
-                  )}
-                </CustomIcon>
-                <ModuleTitleAssignedWrapper>
-                  <ModuleTitleWrapper>
-                    <ModuleTitlePrefix>
-                      {whichModule}
-                      <Icon
-                        type="close-circle"
-                        data-cy="removeUnit"
-                        style={{ visibility: "hidden" }}
-                        onClick={() => removeUnit(module.id)}
-                      />
-                    </ModuleTitlePrefix>
-                    <ModuleTitle>{moduleName}</ModuleTitle>
-                  </ModuleTitleWrapper>
+      <React.Fragment>
+        <Modal visible={showModal} onCancel={this.closeModal} width="100%" height="100%">
+          <AssessmentPlayer testId={selectedTest} preview />
+        </Modal>
+        <ModuleWrapper data-cy="curriculumModuleRow" key={`${data.length}-${module.id}`} padding={padding}>
+          <Container>
+            <Module>
+              <ModuleHeader
+                collapsed={collapsed}
+                padding="17px 25px 16px 27px"
+                borderRadius={collapsed ? "5px" : "unset"}
+                boxShadow={collapsed ? "0 3px 7px 0 rgba(0, 0, 0, 0.1)" : "unset"}
+              >
+                <ModuleInfo>
+                  <CustomIcon marginRight="25" marginLeft={7} onClick={() => onCollapseExpand(id)}>
+                    {!collapsed ? (
+                      <Icon type="up" style={{ color: "#707070" }} />
+                    ) : (
+                      <Icon type="down" style={{ color: "#707070" }} />
+                    )}
+                  </CustomIcon>
+                  <ModuleTitleAssignedWrapper>
+                    <ModuleTitleWrapper>
+                      <ModuleTitlePrefix>
+                        {whichModule}
+                        <Icon
+                          type="close-circle"
+                          data-cy="removeUnit"
+                          style={{ visibility: "hidden" }}
+                          onClick={() => removeUnit(module.id)}
+                        />
+                      </ModuleTitlePrefix>
+                      <ModuleTitle>{moduleName}</ModuleTitle>
+                    </ModuleTitleWrapper>
 
-                  {completed && (
-                    <React.Fragment>
-                      <ModuleCompleted>
-                        <ModuleCompletedLabel>MODULE COMPLETED</ModuleCompletedLabel>
-                        <ModuleCompletedIcon>
-                          <CustomIcon>
-                            <IconVerified color={greenThird} />
-                          </CustomIcon>
-                        </ModuleCompletedIcon>
-                      </ModuleCompleted>
-                    </React.Fragment>
-                  )}
-                  {!completed && (
-                    <ModulesWrapper>
-                      <ModulesAssigned>
-                        Assigned
-                        <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
-                        of
-                        <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
-                      </ModulesAssigned>
-                      <AssignModuleButton>
-                        <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                          ASSIGN MODULE
-                        </Button>
-                      </AssignModuleButton>
-                    </ModulesWrapper>
-                  )}
-                </ModuleTitleAssignedWrapper>
-              </ModuleInfo>
-            </ModuleHeader>
-            {!collapsed && (
-              // eslint-disable-next-line
-              <div>
-                {data.map(moduleData => {
-                  const moreMenu = (
-                    <Menu data-cy="moduleItemMoreMenu">
-                      <Menu.Item
-                        data-cy="moduleItemMoreMenuItem"
-                        onClick={() =>
-                          removeItemFromUnit({
-                            moduleId: module.id,
-                            itemId: moduleData.id
-                          })
-                        }
+                    {completed && (
+                      <React.Fragment>
+                        <ModuleCompleted>
+                          <ModuleCompletedLabel>MODULE COMPLETED</ModuleCompletedLabel>
+                          <ModuleCompletedIcon>
+                            <CustomIcon>
+                              <IconVerified color={greenThird} />
+                            </CustomIcon>
+                          </ModuleCompletedIcon>
+                        </ModuleCompleted>
+                      </React.Fragment>
+                    )}
+                    {!completed && (
+                      <ModulesWrapper>
+                        <ModulesAssigned>
+                          Assigned
+                          <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
+                          of
+                          <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
+                        </ModulesAssigned>
+                        <AssignModuleButton>
+                          <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
+                            ASSIGN MODULE
+                          </Button>
+                        </AssignModuleButton>
+                      </ModulesWrapper>
+                    )}
+                  </ModuleTitleAssignedWrapper>
+                </ModuleInfo>
+              </ModuleHeader>
+              {!collapsed && (
+                // eslint-disable-next-line
+                <div>
+                  {data.map(moduleData => {
+                    const moreMenu = (
+                      <Menu data-cy="moduleItemMoreMenu">
+                        <Menu.Item
+                          data-cy="moduleItemMoreMenuItem"
+                          onClick={() =>
+                            removeItemFromUnit({
+                              moduleId: module.id,
+                              itemId: moduleData.id
+                            })
+                          }
+                        >
+                          Remove
+                        </Menu.Item>
+                      </Menu>
+                    );
+
+                    const isAssigned = matchAssigned(assigned, moduleData.testId).length > 0;
+
+                    return (
+                      <Assignment
+                        data-cy="moduleAssignment"
+                        key={`${moduleData.id}-${moduleData.assigned}`}
+                        padding="14px 30px 14px 50px"
+                        borderRadius="unset"
+                        boxShadow="unset"
                       >
-                        Remove
-                      </Menu.Item>
-                    </Menu>
-                  );
-
-                  const isAssigned = matchAssigned(assigned, moduleData.testId).length > 0;
-
-                  return (
-                    <Assignment
-                      data-cy="moduleAssignment"
-                      key={`${moduleData.id}-${moduleData.assigned}`}
-                      padding="14px 30px 14px 50px"
-                      borderRadius="unset"
-                      boxShadow="unset"
-                    >
-                      <ModuleFocused />
-                      <AssignmentInnerWrapper>
-                        <AssignmentContent expanded={isContentExpanded}>
-                          {/* <Checkbox
+                        <ModuleFocused />
+                        <AssignmentInnerWrapper>
+                          <AssignmentContent expanded={isContentExpanded}>
+                            {/* <Checkbox
                             onChange={() => toggleUnitItem(moduleData.id)}
                             checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
                             className="module-checkbox"
                           /> */}
-                          <CustomIcon marginLeft={16}>
-                            <Icon type="right" style={{ color: "#707070" }} />
-                          </CustomIcon>
-                          <ModuleDataName>{moduleData.name}</ModuleDataName>
-                        </AssignmentContent>
-                        <AssignmentIconsWrapper expanded={isContentExpanded}>
-                          <ModuleAssignedUnit>
-                            {moduleData.assigned && !moduleData.completed && (
-                              <CustomIcon>
-                                <img src={assessmentRed} alt="Module item is assigned" />
-                              </CustomIcon>
-                            )}
-                            {moduleData.completed && (
-                              <CustomIcon>
-                                <img src={assessmentGreen} alt="Module item is completed" />
-                              </CustomIcon>
-                            )}
-                          </ModuleAssignedUnit>
-                          <AssignmentIconsHolder>
-                            <AssignmentIcon>
-                              <CustomIcon>
-                                <IconVisualization color="#1774F0" />
-                              </CustomIcon>
-                            </AssignmentIcon>
-                            <AssignmentButton assigned={isAssigned}>
-                              <Button
-                                data-cy="assignButton"
-                                onClick={() => setSelectedItemsForAssign(moduleData.testId)}
-                              >
-                                {isAssigned ? (
-                                  <IconCheckSmall color={white} />
-                                ) : (
-                                  <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
-                                )}
-                                {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                              </Button>
-                            </AssignmentButton>
-                            <AssignmentIcon>
-                              <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                                  <IconMoreVertical color="#1774F0" />
+                            <CustomIcon marginLeft={16}>
+                              <Icon type="right" style={{ color: "#707070" }} />
+                            </CustomIcon>
+                            <ModuleDataName>{moduleData.name}</ModuleDataName>
+                          </AssignmentContent>
+                          <AssignmentIconsWrapper expanded={isContentExpanded}>
+                            <ModuleAssignedUnit>
+                              {moduleData.assigned && !moduleData.completed && (
+                                <CustomIcon>
+                                  <img src={assessmentRed} alt="Module item is assigned" />
                                 </CustomIcon>
-                              </Dropdown>
-                            </AssignmentIcon>
-                          </AssignmentIconsHolder>
-                        </AssignmentIconsWrapper>
-                      </AssignmentInnerWrapper>
-                    </Assignment>
-                  );
-                })}
-              </div>
-            )}
-          </Module>
-        </Container>
-      </ModuleWrapper>
+                              )}
+                              {moduleData.completed && (
+                                <CustomIcon>
+                                  <img src={assessmentGreen} alt="Module item is completed" />
+                                </CustomIcon>
+                              )}
+                            </ModuleAssignedUnit>
+                            <AssignmentIconsHolder>
+                              <AssignmentIcon>
+                                <CustomIcon>
+                                  <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.testId)} />
+                                </CustomIcon>
+                              </AssignmentIcon>
+                              <AssignmentButton assigned={isAssigned}>
+                                <Button
+                                  data-cy="assignButton"
+                                  onClick={() => setSelectedItemsForAssign(moduleData.testId)}
+                                >
+                                  {isAssigned ? (
+                                    <IconCheckSmall color={white} />
+                                  ) : (
+                                    <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
+                                  )}
+                                  {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                                </Button>
+                              </AssignmentButton>
+                              <AssignmentIcon>
+                                <Dropdown overlay={moreMenu} trigger={["click"]}>
+                                  <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                                    <IconMoreVertical color="#1774F0" />
+                                  </CustomIcon>
+                                </Dropdown>
+                              </AssignmentIcon>
+                            </AssignmentIconsHolder>
+                          </AssignmentIconsWrapper>
+                        </AssignmentInnerWrapper>
+                      </Assignment>
+                    );
+                  })}
+                </div>
+              )}
+            </Module>
+          </Container>
+        </ModuleWrapper>
+      </React.Fragment>
     );
   }
 }

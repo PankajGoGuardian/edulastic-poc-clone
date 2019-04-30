@@ -7,11 +7,17 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import ThemeContainer from "./themes/index";
 import { loadTestAction } from "./actions/test";
 
-const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
+const AssessmentPlayer = ({ defaultAP, loadTest, match, preview = false, testId }) => {
   useEffect(() => {
-    const { id: testId, utaId: testActivityId } = match.params;
-    loadTest({ testId, testActivityId });
+    testId = preview ? testId : match.params.id;
+    const { utaId: testActivityId } = match.params;
+
+    loadTest({ testId, testActivityId, preview });
   }, []);
+
+  if (preview) {
+    return <ThemeContainer defaultAP preview />;
+  }
 
   return (
     <Switch>
@@ -23,10 +29,15 @@ const AssessmentPlayer = ({ defaultAP, loadTest, match }) => {
 AssessmentPlayer.propTypes = {
   defaultAP: PropTypes.any.isRequired,
   loadTest: PropTypes.func.isRequired,
-  match: PropTypes.any.isRequired
+  match: PropTypes.any.isRequired,
+  preview: PropTypes.any,
+  testId: PropTypes.string
 };
 
-AssessmentPlayer.defaultProps = {};
+AssessmentPlayer.defaultProps = {
+  preview: false,
+  testId: ""
+};
 
 // export component
 const enhance = compose(

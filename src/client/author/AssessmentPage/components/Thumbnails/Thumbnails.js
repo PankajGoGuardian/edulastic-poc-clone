@@ -1,10 +1,19 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Dropdown, Menu } from "antd";
 
 import { IconGraphRightArrow } from "@edulastic/icons";
 
 import ThumbnailsItem from "../ThumbnailsItem/ThumbnailsItem";
 import { ThumbnailsWrapper, ReuploadButtonWrapper, ReuploadButton, ThumbnailsList, MinimizeButton } from "./styled";
+
+const menu = (onReupload, onAddBlank, onDeleteBlank) => (
+  <Menu>
+    <Menu.Item onClick={onAddBlank}>Add Blank Page</Menu.Item>
+    <Menu.Item onClick={onDeleteBlank}>Delete Blank Page</Menu.Item>
+    <Menu.Item onClick={onReupload}>Reupload PDF</Menu.Item>
+  </Menu>
+);
 
 const Thumbnails = ({ list, onPageChange, url, onReupload, review }) => {
   const [minimized, setMinimized] = React.useState(false);
@@ -29,7 +38,9 @@ const Thumbnails = ({ list, onPageChange, url, onReupload, review }) => {
       </ThumbnailsList>
       {!review && (
         <ReuploadButtonWrapper>
-          <ReuploadButton onClick={onReupload}>Reupload PDF</ReuploadButton>
+          <Dropdown overlay={menu(onReupload, () => {}, () => {})}>
+            <ReuploadButton>Manage document</ReuploadButton>
+          </Dropdown>
         </ReuploadButtonWrapper>
       )}
     </ThumbnailsWrapper>

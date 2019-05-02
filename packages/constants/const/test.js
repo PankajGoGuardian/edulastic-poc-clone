@@ -96,7 +96,7 @@ module.exports = {
     PARTIAL_CREDIT: "Partial Credit"
   },
   accessibilities: {
-    SHOW_COLOUR_SHCEME: "Show Colour Shceme",
+    SHOW_COLOUR_SHCEME: "Show Colour Scheme",
     SHOW_FONT_SIZE: "Show Font Size",
     SHOW_ZOOM: "Show Zoom"
   }

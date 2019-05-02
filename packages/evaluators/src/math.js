@@ -87,7 +87,7 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
       for (let correct of corrects) {
         const data = {
           input: userResponse.replace(/\\ /g, " "),
-          expected: correct ? correct.replace(/\\ /g, " ") : ":",
+          expected: correct ? correct.replace(/\\ /g, " ") : "",
           checks
         };
         const { result } = await evaluate(data);

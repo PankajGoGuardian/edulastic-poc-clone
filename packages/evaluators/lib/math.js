@@ -150,7 +150,7 @@ var exactMatchEvaluator =
 
                 case 10:
                   if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context.next = 52;
+                    _context.next = 53;
                     break;
                   }
 
@@ -165,71 +165,72 @@ var exactMatchEvaluator =
 
                 case 19:
                   if ((_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done)) {
-                    _context.next = 32;
+                    _context.next = 33;
                     break;
                   }
 
                   correct = _step2.value;
                   data = {
                     input: userResponse.replace(/\\ /g, " "),
-                    expected: correct ? correct.replace(/\\ /g, " ") : ":",
+                    expected: correct ? correct.replace(/\\ /g, " ") : "",
                     checks: checks
                   };
-                  _context.next = 24;
+                  console.log("data: ", data);
+                  _context.next = 25;
                   return evaluate(data);
 
-                case 24:
+                case 25:
                   _ref2 = _context.sent;
                   result = _ref2.result;
 
                   if (!(result === "true")) {
-                    _context.next = 29;
+                    _context.next = 30;
                     break;
                   }
 
                   valid = true;
-                  return _context.abrupt("break", 32);
+                  return _context.abrupt("break", 33);
 
-                case 29:
+                case 30:
                   _iteratorNormalCompletion2 = true;
                   _context.next = 19;
                   break;
 
-                case 32:
-                  _context.next = 38;
+                case 33:
+                  _context.next = 39;
                   break;
 
-                case 34:
-                  _context.prev = 34;
+                case 35:
+                  _context.prev = 35;
                   _context.t0 = _context["catch"](17);
                   _didIteratorError2 = true;
                   _iteratorError2 = _context.t0;
 
-                case 38:
-                  _context.prev = 38;
+                case 39:
                   _context.prev = 39;
+                  _context.prev = 40;
 
                   if (!_iteratorNormalCompletion2 && _iterator2["return"] != null) {
                     _iterator2["return"]();
                   }
 
-                case 41:
-                  _context.prev = 41;
+                case 42:
+                  _context.prev = 42;
 
                   if (!_didIteratorError2) {
-                    _context.next = 44;
+                    _context.next = 45;
                     break;
                   }
 
                   throw _iteratorError2;
 
-                case 44:
-                  return _context.finish(41);
-
                 case 45:
-                  return _context.finish(38);
+                  return _context.finish(42);
 
                 case 46:
+                  return _context.finish(39);
+
+                case 47:
                   if (valid) {
                     score = Math.max(answer.score, score);
                   }
@@ -237,63 +238,63 @@ var exactMatchEvaluator =
                   maxScore = Math.max(answer.score, maxScore);
                   evaluation = [].concat((0, _toConsumableArray2["default"])(evaluation), [valid]);
 
-                case 49:
+                case 50:
                   _iteratorNormalCompletion = true;
                   _context.next = 10;
                   break;
 
-                case 52:
-                  _context.next = 58;
+                case 53:
+                  _context.next = 59;
                   break;
 
-                case 54:
-                  _context.prev = 54;
+                case 55:
+                  _context.prev = 55;
                   _context.t1 = _context["catch"](8);
                   _didIteratorError = true;
                   _iteratorError = _context.t1;
 
-                case 58:
-                  _context.prev = 58;
+                case 59:
                   _context.prev = 59;
+                  _context.prev = 60;
 
                   if (!_iteratorNormalCompletion && _iterator["return"] != null) {
                     _iterator["return"]();
                   }
 
-                case 61:
-                  _context.prev = 61;
+                case 62:
+                  _context.prev = 62;
 
                   if (!_didIteratorError) {
-                    _context.next = 64;
+                    _context.next = 65;
                     break;
                   }
 
                   throw _iteratorError;
 
-                case 64:
-                  return _context.finish(61);
-
                 case 65:
-                  return _context.finish(58);
+                  return _context.finish(62);
 
                 case 66:
-                  _context.next = 71;
+                  return _context.finish(59);
+
+                case 67:
+                  _context.next = 72;
                   break;
 
-                case 68:
-                  _context.prev = 68;
+                case 69:
+                  _context.prev = 69;
                   _context.t2 = _context["catch"](3);
                   console.log(_context.t2);
 
-                case 71:
-                  _context.prev = 71;
+                case 72:
+                  _context.prev = 72;
                   return _context.abrupt("return", {
                     score: score,
                     maxScore: maxScore,
                     evaluation: evaluation
                   });
 
-                case 74:
+                case 75:
                 case "end":
                   return _context.stop();
               }
@@ -301,7 +302,7 @@ var exactMatchEvaluator =
           },
           _callee,
           null,
-          [[3, 68, 71, 74], [8, 54, 58, 66], [17, 34, 38, 46], [39, , 41, 45], [59, , 61, 65]]
+          [[3, 69, 72, 75], [8, 55, 59, 67], [17, 35, 39, 47], [40, , 42, 46], [60, , 62, 66]]
         );
       })
     );

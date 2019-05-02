@@ -1,15 +1,17 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withRouter } from "react-router-dom";
 import { Dropdown, Checkbox } from "antd";
+import { isEmpty } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
 import { FlexContainer } from "@edulastic/common";
-
+import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
+import { getAssignmentsSummary } from "../../../src/selectors/assignments";
 import ActionMenu from "../ActionMenu/ActionMenu";
 
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
@@ -18,6 +20,13 @@ class AdvancedTable extends Component {
   state = {
     enableRowClick: true
   };
+
+  componentDidMount() {
+    const { loadAssignmentsSummary, assignmentsSummary, districtId } = this.props;
+    if (isEmpty(assignmentsSummary)) {
+      loadAssignmentsSummary({ districtId });
+    }
+  }
 
   enableRowClick = () => this.setState({ enableRowClick: true });
 
@@ -149,6 +158,7 @@ class AdvancedTable extends Component {
 
 AdvancedTable.propTypes = {
   assignmentsSummary: PropTypes.array.isRequired,
+  loadAssignmentsSummary: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   onSelectRow: PropTypes.func,
@@ -163,7 +173,15 @@ AdvancedTable.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assignmentCard")
+  withNamespaces("assignmentCard"),
+  connect(
+    state => ({
+      assignmentsSummary: getAssignmentsSummary(state)
+    }),
+    {
+      loadAssignmentsSummary: receiveAssignmentsSummaryAction
+    }
+  )
 );
 
 export default enhance(AdvancedTable);

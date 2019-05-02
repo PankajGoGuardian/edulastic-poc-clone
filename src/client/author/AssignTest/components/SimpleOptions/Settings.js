@@ -1,6 +1,8 @@
 /* eslint-disable max-len */
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { get } from "lodash";
 import { Col, Radio, Select, Row, Icon, Checkbox } from "antd";
 import { test } from "@edulastic/constants";
 import {
@@ -22,85 +24,57 @@ const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_A
 const { calculatorKeys, calculators, releaseGradeTypes } = test;
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 
-const columns = [
-  {
-    title: "Performance Bands",
-    dataIndex: "name",
-    width: "35%",
-    key: "name"
-  },
-  {
-    title: "ABOVE OR AT STANDARD",
-    dataIndex: "standard",
-    width: "25%",
-    key: "standard",
-    render: () => <Checkbox />
-  },
-  {
-    title: "FROM",
-    dataIndex: "from",
-    width: "15%",
-    key: "from",
-    render: text => <span>{`${text}%`}</span>
-  },
-  {
-    title: "TO",
-    width: "25%",
-    key: "to",
-    dataIndex: "to",
-    className: "action-wrapper",
-    render: text => (
-      <div>
-        <Icon type="minus-circle" />
-        {`${text}%`}
-        <Icon type="plus-circle" />
-      </div>
-    )
-  }
-];
-const tdata = [
-  {
-    key: "1",
-    name: "Advanced",
-    standard: 32,
-    from: 100,
-    to: 100
-  },
-  {
-    key: "2",
-    name: "Mastery",
-    standard: 42,
-    from: 93,
-    to: 70
-  },
-  {
-    key: "3",
-    name: "Basic",
-    standard: 32,
-    from: 80,
-    to: 90
-  },
-  {
-    key: "4",
-    name: "Approaching Basic",
-    standard: 32,
-    from: 80,
-    to: 90
-  },
-  {
-    key: "5",
-    name: "Unsatisfactory",
-    standard: 32,
-    from: 80,
-    to: 90
-  }
-];
-
-const Settings = ({ testSettings, assignmentSettings, updateAssignmentSettings, isAdvanced, changeField }) => {
+const Settings = ({
+  testSettings,
+  assignmentSettings,
+  updateAssignmentSettings,
+  isAdvanced,
+  changeField,
+  performanceBandData
+}) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
   const [type, setEvaluationType] = useState(0);
   const [showPassword, togglePasswordField] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
+
+  const { performanceBand = [] } = performanceBandData;
+
+  const columns = [
+    {
+      title: "Performance Bands",
+      dataIndex: "name",
+      width: "35%",
+      key: "name"
+    },
+    {
+      title: "ABOVE OR AT STANDARD",
+      dataIndex: "aboveOrAtStandard",
+      width: "25%",
+      key: "aboveOrAtStandard",
+      render: value => <Checkbox checked={value} />
+    },
+    {
+      title: "FROM",
+      dataIndex: "from",
+      width: "15%",
+      key: "from",
+      render: text => <span>{`${text}%`}</span>
+    },
+    {
+      title: "TO",
+      width: "25%",
+      key: "to",
+      dataIndex: "to",
+      className: "action-wrapper",
+      render: text => (
+        <div>
+          <Icon type="minus-circle" />
+          {`${text}%`}
+          <Icon type="plus-circle" />
+        </div>
+      )
+    }
+  ];
 
   const overRideSettings = (key, value) => {
     const newSettingsState = {
@@ -336,10 +310,15 @@ const Settings = ({ testSettings, assignmentSettings, updateAssignmentSettings, 
       </StyledDiv>
 
       <StyledDiv>
-        <StyledTable columns={columns} dataSource={tdata} pagination={false} isAdvanced={isAdvanced} />
+        <StyledTable columns={columns} dataSource={performanceBand} pagination={false} isAdvanced={isAdvanced} />
       </StyledDiv>
     </SettingsWrapper>
   );
 };
 
-export default Settings;
+export default connect(
+  state => ({
+    performanceBandData: get(state, ["performanceBandReducer", "data"], [])
+  }),
+  null
+)(Settings);

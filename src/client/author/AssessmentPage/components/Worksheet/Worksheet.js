@@ -106,17 +106,27 @@ class Worksheet extends React.Component {
     const { currentPage } = this.state;
     const { pageStructure, setTestData } = this.props;
 
-    if (currentPage in pageStructure) {
-      const updatedPageStructure = { ...pageStructure };
+    if (currentPage === 1) return;
 
-      delete updatedPageStructure[currentPage];
+    const updatedPageStructure = { ...pageStructure };
 
-      this.handleChangePage(currentPage - 1);
+    delete updatedPageStructure[currentPage];
 
-      setTestData({
-        pageStructure: updatedPageStructure
-      });
-    }
+    const updatePageNumbers = (total, pageNumber, index) => ({
+      ...total,
+      [index + 2]: {
+        ...updatedPageStructure[pageNumber],
+        pageNo: index + 2
+      }
+    });
+
+    const updatedPageNumbers = Object.keys(updatedPageStructure).reduce(updatePageNumbers, {});
+
+    this.handleChangePage(currentPage - 1);
+
+    setTestData({
+      pageStructure: updatedPageNumbers
+    });
   };
 
   handleReupload = () => {

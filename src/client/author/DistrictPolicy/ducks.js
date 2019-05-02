@@ -29,66 +29,30 @@ const initialState = {
   updateError: null
 };
 
-const receiveDistrictPolicyRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveDistrictPolicySuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receiveDistrictPolicyError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updateDistrictPolicyRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updateDistrictPolicySuccess = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  data: payload
-});
-
-const updateDistrictPolicyError = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  updateError: payload.error
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_DISTRICT_POLICY_REQUEST]: receiveDistrictPolicyRequest,
-  [RECEIVE_DISTRICT_POLICY_SUCCESS]: receiveDistrictPolicySuccess,
-  [RECEIVE_DISTRICT_POLICY_ERROR]: receiveDistrictPolicyError,
-  [UPDATE_DISTRICT_POLICY_REQUEST]: updateDistrictPolicyRequest,
-  [UPDATE_DISTRICT_POLICY_SUCCESS]: updateDistrictPolicySuccess,
-  [UPDATE_DISTRICT_POLICY_ERROR]: updateDistrictPolicyError
+  [RECEIVE_DISTRICT_POLICY_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.data = payload;
+  },
+  [RECEIVE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_DISTRICT_POLICY_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
+    state.updating = false;
+    state.update = payload;
+  },
+  [UPDATE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
+    state.updating = false;
+    state.updateError = payload.error;
+  }
 });
-
-// selectors
-const stateDistrictPolicySelector = state => state.districtPolicyReducer;
-
-export const getDistrictPolicySelector = createSelector(
-  stateDistrictPolicySelector,
-  state => state.data
-);
-
-export const getDistrictPolicyLoadingSelector = createSelector(
-  stateDistrictPolicySelector,
-  state => state.loading
-);
-
-export const getDistrictPolicyUpdatingSelector = createSelector(
-  stateDistrictPolicySelector,
-  state => state.updating
-);
 
 // saga
 function* receiveDistrictPolicySaga({ payload }) {

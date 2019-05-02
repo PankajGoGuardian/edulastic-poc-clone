@@ -62,6 +62,10 @@ class DistrictPolicyForm extends React.Component {
       allowDomainForStudent: {
         value: this.props.districtPolicy.allowedDomainForStudents.toString(),
         ...validURL(this.props.districtPolicy.allowedDomainForStudents.toString())
+      },
+      allowDomainForSchool: {
+        value: this.props.districtPolicy.allowedDomainsForDistrict.toString(),
+        ...validURL(this.props.districtPolicy.allowedDomainsForDistrict.toString())
       }
     };
   }
@@ -145,6 +149,15 @@ class DistrictPolicyForm extends React.Component {
     });
   };
 
+  handleTagSchoolChange = e => {
+    this.setState({
+      allowDomainForSchool: {
+        ...validURL(e.target.value),
+        value: e.target.value
+      }
+    });
+  };
+
   thirdpartyIntegration = e => {
     const { districtPolicy: policyData } = this.state;
     if (e.target.value == 1) {
@@ -162,7 +175,13 @@ class DistrictPolicyForm extends React.Component {
   };
 
   onSave = () => {
-    const { districtPolicy: policyData, optionalStatus, allowDomainForStudent, allowDomainForTeacher } = this.state;
+    const {
+      districtPolicy: policyData,
+      optionalStatus,
+      allowDomainForStudent,
+      allowDomainForTeacher,
+      allowDomainForSchool
+    } = this.state;
 
     if (
       !policyData.userNameAndPassword &&
@@ -183,8 +202,9 @@ class DistrictPolicyForm extends React.Component {
       cleverSignOn: policyData.cleverSignOn,
       teacherSignUp: policyData.teacherSignUp,
       studentSignUp: policyData.studentSignUp,
-      allowedDomainForTeachers: allowDomainForStudent.value,
-      allowedDomainForStudents: allowDomainForTeacher.value
+      allowedDomainForTeachers: allowDomainForStudent.value.split(/[\s,]+/),
+      allowedDomainForStudents: allowDomainForTeacher.value.split(/[\s,]+/),
+      allowedDomainsForDistrict: allowDomainForSchool.value.split(/[\s,]+/)
     };
 
     if (optionalStatus.thirdPartyValue) {
@@ -200,7 +220,13 @@ class DistrictPolicyForm extends React.Component {
   };
 
   render() {
-    const { districtPolicy, thirdPartyValue, allowDomainForStudent, allowDomainForTeacher } = this.state;
+    const {
+      districtPolicy,
+      thirdPartyValue,
+      allowDomainForStudent,
+      allowDomainForTeacher,
+      allowDomainForSchool
+    } = this.state;
 
     return (
       <StyledFormDiv>
@@ -277,6 +303,16 @@ class DistrictPolicyForm extends React.Component {
             </StyledLabel>
             <StyledFormItem validateStatus={allowDomainForStudent.validateStatus} help={allowDomainForStudent.errorMsg}>
               <Input defaultValue={districtPolicy.allowedDomainForStudents} onChange={this.handleTagStudentChange} />
+            </StyledFormItem>
+          </StyledRow>
+          <StyledRow>
+            <StyledLabel>
+              Domain for
+              <br />
+              recommending Schools:
+            </StyledLabel>
+            <StyledFormItem validateStatus={allowDomainForSchool.validateStatus} help={allowDomainForSchool.errorMsg}>
+              <Input defaultValue={districtPolicy.allowedDomainsForDistrict} onChange={this.handleTagSchoolChange} />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>

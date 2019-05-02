@@ -2,9 +2,10 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
+
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import DistrictPolicyForm from "../DistrictPolicyForm/DistrictPolicyForm";
-
 import { DistrictPolicyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
 // actions
@@ -35,14 +36,14 @@ class DistrictPolicy extends Component {
   };
 
   render() {
-    const { districtPolicy, loading, history } = this.props;
-
+    const { districtPolicy, loading, updating, history } = this.props;
+    const showSpin = loading || updating;
     return (
       <DistrictPolicyDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={loading ? "true" : "false"}>
-            {loading && (
+          <StyledLayout showSpin={loading ? "true" : "false"}>
+            {showSpin && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
@@ -60,8 +61,9 @@ class DistrictPolicy extends Component {
 const enhance = compose(
   connect(
     state => ({
-      districtPolicy: getDistrictPolicySelector(state),
-      loading: getDistrictPolicyLoadingSelector(state),
+      districtPolicy: get(state, ["districtPolicyReducer", "data"], []),
+      loading: get(state, ["districtPolicyReducer", "loading"], []),
+      updating: get(state, ["districtPolicyReducer", "updating"], []),
       userOrgId: getUserOrgId(state)
     }),
     {

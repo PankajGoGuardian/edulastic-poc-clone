@@ -16,6 +16,15 @@ class AddCourseModal extends React.Component {
     this.props.closeModal();
   };
 
+  checkNameUnique = (rule, value, callback) => {
+    const sameNameRow = this.props.dataSource.filter(item => item.name === value);
+    if (sameNameRow.length <= 0) {
+      callback();
+      return;
+    }
+    callback("Course name should be unique.");
+  };
+
   render() {
     const { modalVisible } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -40,7 +49,8 @@ class AddCourseModal extends React.Component {
                   {
                     required: true,
                     message: "Please input course name"
-                  }
+                  },
+                  { validator: this.checkNameUnique }
                 ]
               })(<Input placeholder="Course name" />)}
             </ModalFormItem>

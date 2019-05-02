@@ -136,7 +136,6 @@ class CoursesTable extends React.Component {
   };
 
   showAddCourseModal = () => {
-    debugger;
     this.setState({
       addCourseModalVisible: true
     });
@@ -228,7 +227,8 @@ class CoursesTable extends React.Component {
   updateCourse = updatedCourseData => {
     const { updateCourse } = this.props;
     const { dataSource, editCourseKey } = this.state;
-    updateCourse({ courseId: dataSource[editCourseKey]._id, data: updatedCourseData });
+    const selectedSourceKey = dataSource.filter(item => item.key == editCourseKey);
+    updateCourse({ courseId: selectedSourceKey[0]._id, data: updatedCourseData });
 
     this.setState({
       editCourseModalVisible: false
@@ -336,14 +336,18 @@ class CoursesTable extends React.Component {
             modalVisible={editCourseModalVisible}
             saveCourse={this.updateCourse}
             closeModal={this.closeEditCourseModal}
+            dataSource={dataSource}
+          />
+        )}
+        {addCourseModalVisible && (
+          <AddCourseModal
+            modalVisible={addCourseModalVisible}
+            addCourse={this.addCourse}
+            closeModal={this.closeAddCourseModal}
+            dataSource={dataSource}
           />
         )}
 
-        <AddCourseModal
-          modalVisible={addCourseModalVisible}
-          addCourse={this.addCourse}
-          closeModal={this.closeAddCourseModal}
-        />
         <StyledUploadCSVDiv>
           <input ref={input => (this.inputElement = input)} type="file" onChange={this.handleCSVChange} accept=".csv" />
         </StyledUploadCSVDiv>

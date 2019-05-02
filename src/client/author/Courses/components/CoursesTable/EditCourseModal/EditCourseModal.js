@@ -16,6 +16,16 @@ class EditCourseModal extends React.Component {
     this.props.closeModal();
   };
 
+  checkNameUnique = (rule, value, callback) => {
+    const dataSource = this.props.dataSource.filter(item => item.key != this.props.courseData.key);
+    const sameNameRow = dataSource.filter(item => item.name === value);
+    if (sameNameRow.length <= 0) {
+      callback();
+      return;
+    }
+    callback("Course name should be unique.");
+  };
+
   render() {
     const { modalVisible, courseData } = this.props;
     const { getFieldDecorator } = this.props.form;
@@ -40,7 +50,8 @@ class EditCourseModal extends React.Component {
                   {
                     required: true,
                     message: "Please input course name"
-                  }
+                  },
+                  { validator: this.checkNameUnique }
                 ],
                 initialValue: courseData.name
               })(<Input placeholder="Course name" />)}

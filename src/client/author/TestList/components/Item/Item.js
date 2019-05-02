@@ -79,7 +79,9 @@ class Item extends Component {
       item,
       authorName,
       owner,
-      testItemId
+      testItemId,
+      likes = analytics ? analytics[0].likes : "0",
+      usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
 
@@ -131,11 +133,11 @@ class Item extends Component {
             </CardIdWrapper>
             <ShareIcon>
               <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-              {analytics && <IconText>{analytics.usage} 0</IconText>}
+              <IconText>{usage}</IconText>
             </ShareIcon>
             <LikeIcon>
               <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-              {analytics && <IconText>{analytics.likes} 0</IconText>}
+              <IconText>{likes}</IconText>
             </LikeIcon>
           </Footer>
         </Container>

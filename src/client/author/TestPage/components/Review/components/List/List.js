@@ -128,12 +128,12 @@ const List = SortableContainer(
           <SortableItem
             key={i}
             metaInfoData={{
-              id: testItems[i].id,
-              by: "Kevin Hart",
-              shared: "9578 (1)",
-              likes: 9,
-              types: types[testItems[i].id],
-              standards: standards[testItems[i].id]
+              id: testItems[i]._id,
+              by: testItems[i].authors[0].name,
+              shared: "0",
+              likes: "0",
+              types: types[testItems[i]._id],
+              standards: standards[testItems[i]._id]
             }}
             index={i}
             indx={i}

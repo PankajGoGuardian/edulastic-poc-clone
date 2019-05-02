@@ -118,11 +118,16 @@ class DistrictProfileForm extends React.Component {
                     },
                     {
                       max: 10,
-                      message: "District Short Name must be less than 10 letters or equal!"
+                      message: (
+                        <p>
+                          District Short Name must be less <br />
+                          than 10 letters or equal!
+                        </p>
+                      )
                     }
                   ],
                   initialValue: districtProfile.shortName
-                })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
+                })(<StyledInput onChange={this.handleChangeShortName} suffix={<Icon type="edit" theme="twoTone" />} />)}
               </FormItem>
               <Popover
                 trigger="click"

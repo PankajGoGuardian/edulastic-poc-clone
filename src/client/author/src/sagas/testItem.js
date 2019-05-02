@@ -68,7 +68,7 @@ function* updateTestItemSaga({ payload }) {
 function* evaluateAnswers() {
   try {
     const oldAnswers = yield select(state => state.answers);
-    const id = yield select(state => state.question.entity.data.id);
+    const id = yield select(state => _get(state, "question.entity.data.id", null));
 
     if (!oldAnswers[id]) {
       yield put({

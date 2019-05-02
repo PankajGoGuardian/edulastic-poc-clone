@@ -1,6 +1,7 @@
 import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { withRouter } from "react-router-dom";
 import { get, isUndefined, toNumber, isNaN } from "lodash";
 import { Avatar, Card, Button, Input, message } from "antd";
 import { connect } from "react-redux";
@@ -131,8 +132,10 @@ class FeedbackRight extends Component {
   };
 
   focusScoreInput() {
+    const { match } = this.props;
+    const { path } = match;
     const { current } = this.scoreInput;
-    if (current) {
+    if (path.search("expressgrader") !== -1 && current) {
       current.focus();
     }
   }
@@ -203,7 +206,8 @@ FeedbackRight.propTypes = {
   }).isRequired,
   user: PropTypes.object.isRequired,
   studentName: PropTypes.string,
-  loadFeedbackResponses: PropTypes.func.isRequired
+  loadFeedbackResponses: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired
 };
 
 FeedbackRight.defaultProps = {
@@ -211,6 +215,7 @@ FeedbackRight.defaultProps = {
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   withNamespaces("header"),
   connect(

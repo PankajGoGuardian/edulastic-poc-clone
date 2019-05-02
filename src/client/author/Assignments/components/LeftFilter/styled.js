@@ -1,7 +1,21 @@
 import styled, { keyframes } from "styled-components";
-import { Modal } from "antd";
-import { blue, fadedBlue, lightGreySecondary, mainTextColor } from "@edulastic/colors";
+import { Modal, Menu } from "antd";
+import {
+  blue,
+  fadedBlue,
+  fadedGrey,
+  mainBgColor,
+  lightGreySecondary,
+  mainTextColor,
+  textColor,
+  black,
+  title,
+  white
+} from "@edulastic/colors";
 import { Button } from "@edulastic/common";
+import { IconPencilEdit } from "@edulastic/icons";
+
+const filterWidth = "250px";
 
 const width = keyframes`
   from {
@@ -9,7 +23,7 @@ const width = keyframes`
   }
 
   to {
-    width: 240px;
+    width: ${filterWidth};
   }
 `;
 
@@ -76,7 +90,7 @@ export const StyledBoldText = styled.p`
   font-size: 12px;
   margin: 15px 0px 10px 0px;
   text-align: left;
-  width: 200px;
+  width: ${filterWidth};
 `;
 
 export const NewFolderButton = styled(Button)`
@@ -95,9 +109,55 @@ export const FolderButton = styled(NewFolderButton)`
   min-width: 100%;
   justify-content: flex-start;
   margin-top: 10px;
+  color: ${({ active }) => (active ? black : textColor)};
 
   svg {
     margin-right: 15px;
+  }
+`;
+
+export const FolderListItem = styled.div`
+  min-height: 28px;
+  min-width: 140px;
+  margin-top: 5px;
+  padding: 2px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 2px;
+  background-color: ${({ active }) => (active ? fadedGrey : mainBgColor)};
+  color: ${({ active }) => (active ? black : title)};
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 11px;
+  user-select: none;
+  cursor: pointer;
+`;
+
+export const FolderListItemTitle = styled.div`
+  width: calc(100% - 22px);
+  display: flex;
+  align-items: center;
+  svg {
+    margin-right: 15px;
+  }
+  span {
+    width: 100%;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    display: block;
+    position: relative;
+  }
+`;
+
+export const MoreButton = styled.div`
+  min-width: 20px;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  svg {
+    fill: ${({ active }) => (active ? black : title)};
   }
 `;
 
@@ -133,4 +193,26 @@ export const ModalTitle = styled.div`
   font-size: 24px;
   font-weight: bold;
   color: ${mainTextColor};
+`;
+
+export const StyledMenu = styled(Menu)`
+  min-width: 180px;
+
+  .ant-dropdown-menu-item {
+    display: flex;
+    align-items: center;
+    &:hover {
+      background-color: ${blue};
+      color: ${white};
+
+      svg {
+        fill: ${white};
+      }
+    }
+  }
+`;
+
+export const StyledIconPencilEdit = styled(IconPencilEdit)`
+  margin-right: 8px;
+  fill: ${title};
 `;

@@ -192,3 +192,23 @@ export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_SUCCESS = "[reports] get rep
 export const GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR = "[reports] get reports assessment summary error";
 
 // -----|-----|-----|----- REPORTS ENDED -----|-----|-----|----- //
+
+// -----|-----|-----|----- FOLDERS BEGIN -----|-----|-----|----- //
+
+export const RECEIVE_FOLDER_REQUEST = "[folder] get folders request";
+export const RECEIVE_FOLDER_SUCCESS = "[folder] get folders success";
+export const RECEIVE_FOLDER_ERROR = "[folder] get folders error";
+
+export const RECEIVE_FOLDER_CREATE_REQUEST = "[folder] create folder request";
+export const RECEIVE_FOLDER_CREATE_SUCCESS = "[folder] create folder success";
+export const RECEIVE_FOLDER_CREATE_ERROR = "[folder] create folder error";
+
+export const ADD_MOVE_FOLDER_REQUEST = "[folder] move content to folder request";
+export const ADD_MOVE_FOLDER_SUCCESS = "[folder] move content to folder success";
+export const ADD_MOVE_FOLDER_ERROR = "[folder] move content to folder error";
+
+export const DELETE_FOLDER_REQUEST = "[folder] delete a folder request";
+export const DELETE_FOLDER_SUCCESS = "[folder] delete a folder success";
+export const DELETE_FOLDER_ERROR = "[folder] delete a folder error";
+
+// -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //

@@ -342,11 +342,16 @@ export const ActionsWrapper = styled.div`
 export const GreyFont = styled.div`
   color: grey;
   font-size: 14px;
+
+  position: relative;
+  left: ${({ left }) => left || 0}px;
+
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   width: 100%;
   max-width: 150px;
+
 `;
 
 export const ExpandedTable = styled(Table)`

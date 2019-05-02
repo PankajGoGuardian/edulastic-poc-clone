@@ -78,6 +78,13 @@ class TableList extends Component {
   expandedRowRender = parentData => {
     const columns = [
       {
+        title: <Checkbox />,
+        dataIndex: "checkbox",
+        width: "5%",
+        className: "select-row",
+        render: () => <GreyFont style={{ display: "block" }} />
+      },
+      {
         dataIndex: "name",
         width: "22%",
         render: () => <GreyFont style={{ width: "253px", display: "block" }} />
@@ -110,12 +117,12 @@ class TableList extends Component {
       {
         dataIndex: "submitted",
         width: "16%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => <GreyFont left={-6}>{text}</GreyFont>
       },
       {
         dataIndex: "graded",
         width: "14%",
-        render: text => <GreyFont>{text}</GreyFont>
+        render: text => <GreyFont left={-5}>{text}</GreyFont>
       },
       {
         dataIndex: "action",
@@ -219,7 +226,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "15%",
-        render: text => <div> {text} </div>
+        render: text => <GreyFont> {text} </GreyFont>
       },
       {
         title: "Status",
@@ -227,7 +234,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "12%",
-        render: () => <div>{t("common.assigned")} </div>
+        render: () => <GreyFont>{t("common.assigned")} </GreyFont>
       },
       {
         title: "Submitted",
@@ -235,7 +242,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "16%",
-        render: text => <div> {text} </div>
+        render: text => <GreyFont> {text} </GreyFont>
       },
       {
         title: "Graded",
@@ -243,7 +250,7 @@ class TableList extends Component {
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "14%",
-        render: text => <div> {text} </div>
+        render: text => <GreyFont> {text} </GreyFont>
       },
       {
         title: renderFilter(),

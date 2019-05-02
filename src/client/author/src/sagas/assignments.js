@@ -1,7 +1,7 @@
 import { takeEvery, takeLatest, call, put, all } from "redux-saga/effects";
 import { assignmentApi } from "@edulastic/api";
 import { message } from "antd";
-import { omit } from "lodash";
+import { omit, get, set, unset } from "lodash";
 
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
@@ -38,8 +38,10 @@ function* receiveAssignmentClassList({ payload = {} }) {
 
 function* receiveAssignmentsSummary({ payload = {} }) {
   try {
-    const { districtId = {} } = payload;
-    const entities = yield call(assignmentApi.fetchAssignmentsSummary, districtId);
+    const { districtId = "", filters = {} } = payload;
+    set(filters, "Subject", get(filters, "subject"));
+    unset(filters, "subject");
+    const entities = yield call(assignmentApi.fetchAssignmentsSummary, { districtId, filters });
     yield put({
       type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
       payload: { entities }

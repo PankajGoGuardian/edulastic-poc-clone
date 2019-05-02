@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 import { Dropdown } from "antd";
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -31,11 +31,13 @@ class AssignmentAdvanced extends Component {
   componentDidMount() {
     const { match } = this.props;
     const { districtId, testId } = match.params;
-    const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary } = this.props;
-    if (!assignmentsSummary.length) {
+    const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary, classList } = this.props;
+    if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId });
     }
-    loadAssignmentsClassList({ districtId, testId });
+    if (isEmpty(classList)) {
+      loadAssignmentsClassList({ districtId, testId });
+    }
   }
 
   handleCreate = () => {};
@@ -52,7 +54,7 @@ class AssignmentAdvanced extends Component {
           <span>{assingment.inProgress || 0}</span>In Progress
         </Breadcrumb>
         <Breadcrumb color={greenThird}>
-          <span>{assingment.submitted || 0}</span>Submitted
+          <span>{assingment.inGrading || 0}</span>Submitted
         </Breadcrumb>
         <Breadcrumb color={blue}>
           <span>{assingment.graded || 0}</span>Graded

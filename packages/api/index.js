@@ -28,3 +28,4 @@ export { default as schoolApi } from "./src/school";
 export { default as countryApi } from "./src/country";
 export { default as adminApi } from "./src/admin";
 export { default as courseApi } from "./src/course";
+export { default as folderApi } from "./src/folder";

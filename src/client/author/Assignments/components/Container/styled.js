@@ -11,6 +11,16 @@ export const Container = styled.div`
   height: 100%;
   overflow: auto;
   margin-top: 30px;
+
+  .scrollbar-container {
+    overflow: auto !important;
+    height: calc(100vh - 150px);
+
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
   @media (max-width: ${mobileWidth}) {
     padding: 0 26px 45px 26px;
   }

@@ -1,19 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Select, Input } from "antd";
-import { get } from "lodash";
+import { Select, Input, Menu, Dropdown, Icon } from "antd";
+import { get, pickBy, identity, orderBy } from "lodash";
 import {
   IconFolderNew,
   IconFolderAll,
   IconFolderActive,
   IconFolderDeactive,
   IconFolderMove,
-  IconDuplicate
+  IconDuplicate,
+  IconMoreVertical
 } from "@edulastic/icons";
 
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { receiveAssignmentsAction } from "../../../src/actions/assignments";
+import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../../../src/actions/assignments";
+import {
+  receiveCreateFolderAction,
+  receiveAddMoveFolderAction,
+  receiveDeleteFolderAction
+} from "../../../src/actions/folder";
+import { getDistrictIdSelector } from "../../../src/selectors/assignments";
+import { getFoldersSelector } from "../../../src/selectors/folder";
 import {
   FilterContainer,
   StyledBoldText,
@@ -22,18 +30,21 @@ import {
   FolderActionModal,
   ModalFooterButton,
   ModalTitle,
-  FolderActionButton
+  FolderActionButton,
+  FolderListItem,
+  FolderListItemTitle,
+  MoreButton,
+  StyledMenu,
+  StyledIconPencilEdit
 } from "./styled";
 
-const { allGrades, allSubjects, testType } = selectsData;
+const { allGrades, allSubjects, testTypes } = selectsData;
 
-const filterState = {
-  grades: [],
-  subject: "",
-  termId: ""
-};
 class LeftFilter extends React.Component {
-  state = { visibleModal: {} };
+  state = {
+    visibleModal: {},
+    newFolderName: ""
+  };
 
   showModal = name => {
     const { visibleModal } = this.state;
@@ -45,14 +56,47 @@ class LeftFilter extends React.Component {
     });
   };
 
-  createFolder = e => {
-    console.log(e);
+  createFolder = () => {
+    const { newFolderName } = this.state;
+    const { createFolderRequest } = this.props;
+    if (createFolderRequest) {
+      createFolderRequest({ folderName: newFolderName });
+    }
     this.setState({
-      visibleModal: false
+      visibleModal: false,
+      newFolderName: ""
     });
   };
 
-  moveFolder = () => {};
+  removeFolder = id => {
+    const { deleteFolder } = this.props;
+    if (deleteFolder) {
+      deleteFolder({ folderId: id });
+    }
+  };
+
+  moveFolder = () => {
+    const {
+      selectedRows,
+      addMoveToFolderRequest,
+      filterState: { folderId }
+    } = this.props;
+    const { moveFolderId } = this.state;
+
+    const params = selectedRows.map(row => {
+      const param = {
+        _id: row.testId,
+        contentType: "TEST",
+        sourceFolderId: folderId
+      };
+      return pickBy(param, identity);
+    });
+
+    if (addMoveToFolderRequest) {
+      addMoveToFolderRequest({ folderId: moveFolderId, params });
+    }
+    this.hideModal("moveFolder");
+  };
 
   hideModal = name => {
     const { visibleModal } = this.state;
@@ -60,35 +104,95 @@ class LeftFilter extends React.Component {
       visibleModal: {
         ...visibleModal,
         [name]: false
-      }
+      },
+      newFolderName: ""
     });
   };
 
   handleChange = key => value => {
-    const { loadAssignments, onSetFilter, filterState } = this.props;
+    const {
+      loadAssignments,
+      onSetFilter,
+      filterState,
+      isAdvancedView,
+      districtId,
+      loadAssignmentsSummary
+    } = this.props;
     const filters = { ...filterState, [key]: value };
-    loadAssignments({ filters });
-    onSetFilter(filters);
+    const { visibleModal } = this.state;
+    if (!visibleModal.moveFolder) {
+      if (!isAdvancedView) {
+        loadAssignments({ filters });
+      } else {
+        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity) });
+      }
+      onSetFilter(filters);
+    } else {
+      this.setState({ moveFolderId: value });
+    }
   };
 
-  renderFolders = () => (
-    <>
-      <FolderButton onClick={() => {}} shadow="none" icon={<IconFolderAll />} variant="transparent">
-        ALL ASSIGMENTS
-      </FolderButton>
-      <FolderButton onClick={() => {}} shadow="none" icon={<IconFolderActive />} variant="transparent">
-        SPRING ASSIGMENTS
-      </FolderButton>
-      <FolderButton onClick={() => {}} shadow="none" icon={<IconFolderDeactive />} variant="transparent">
-        WINTER ASSIGMENTS
-      </FolderButton>
-    </>
-  );
+  handleChangeNewFolderName = e => this.setState({ newFolderName: e.target.value });
+
+  renderFolders = () => {
+    const {
+      folders,
+      filterState: { folderId }
+    } = this.props;
+
+    const { moveFolderId, visibleModal } = this.state;
+
+    const menu = id => (
+      <StyledMenu>
+        <Menu.Item key="1">
+          <StyledIconPencilEdit width={14} height={14} />
+          <span>Rename</span>
+        </Menu.Item>
+        <Menu.Divider />
+        <Menu.Item key="2" onClick={() => this.removeFolder(id)}>
+          <Icon type="close" /> <span>Delete</span>
+        </Menu.Item>
+      </StyledMenu>
+    );
+
+    return (
+      <>
+        {!visibleModal.moveFolder && (
+          <FolderButton
+            onClick={() => this.handleChange("folderId")("")}
+            active={!folderId}
+            shadow="none"
+            icon={<IconFolderAll />}
+            variant="transparent"
+          >
+            ALL ASSIGMENTS
+          </FolderButton>
+        )}
+        {orderBy(folders, ["updatedAt"], ["desc"]).map((folder, index) => {
+          const isActive = visibleModal.moveFolder ? folder._id === moveFolderId : folder._id === folderId;
+          return (
+            <FolderListItem key={index} active={isActive}>
+              <FolderListItemTitle onClick={() => this.handleChange("folderId")(folder._id)}>
+                {isActive ? <IconFolderActive /> : <IconFolderDeactive />}
+                <span>{folder.folderName}</span>
+              </FolderListItemTitle>
+              <Dropdown overlay={menu(folder._id)} trigger={["click"]} placement="bottomRight">
+                <MoreButton active={isActive}>
+                  <IconMoreVertical />
+                </MoreButton>
+              </Dropdown>
+            </FolderListItem>
+          );
+        })}
+      </>
+    );
+  };
 
   render() {
-    const { termsData, selectedRows, filterState } = this.props;
-    const { visibleModal } = this.state;
-    const { subject, grades, termId } = filterState;
+    const { termsData, selectedRows, filterState, isAdvancedView } = this.props;
+    const { visibleModal, newFolderName } = this.state;
+    const { subject, grades, termId, testType } = filterState;
+
     return (
       <FilterContainer>
         <FolderActionModal
@@ -104,7 +208,7 @@ class LeftFilter extends React.Component {
             </ModalFooterButton>
           ]}
         >
-          <Input placeholder="Name this folder" />
+          <Input placeholder="Name this folder" value={newFolderName} onChange={this.handleChangeNewFolderName} />
         </FolderActionModal>
 
         <FolderActionModal
@@ -166,8 +270,14 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
-            <Select mode="default" placeholder="All">
-              {testType.map(({ value, text }) => (
+            <Select
+              mode="default"
+              placeholder="All"
+              disabled={!isAdvancedView}
+              value={testType}
+              onChange={this.handleChange("testType")}
+            >
+              {testTypes.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}
                 </Select.Option>
@@ -191,20 +301,39 @@ class LeftFilter extends React.Component {
 }
 
 LeftFilter.propTypes = {
+  loadAssignments: PropTypes.func.isRequired,
+  loadAssignmentsSummary: PropTypes.func.isRequired,
+  createFolderRequest: PropTypes.func.isRequired,
+  addMoveToFolderRequest: PropTypes.func.isRequired,
+  deleteFolder: PropTypes.func.isRequired,
+  districtId: PropTypes.string.isRequired,
+  onSetFilter: PropTypes.func.isRequired,
+  folders: PropTypes.array,
   termsData: PropTypes.array,
-  selectedRows: PropTypes.array
+  selectedRows: PropTypes.array,
+  isAdvancedView: PropTypes.bool,
+  filterState: PropTypes.object
 };
 
 LeftFilter.defaultProps = {
+  filterState: {},
   termsData: [],
-  selectedRows: []
+  selectedRows: [],
+  folders: [],
+  isAdvancedView: false
 };
 
 export default connect(
   state => ({
+    districtId: getDistrictIdSelector(state),
+    folders: getFoldersSelector(state),
     termsData: get(state, "user.user.orgData.terms", [])
   }),
   {
-    loadAssignments: receiveAssignmentsAction
+    loadAssignments: receiveAssignmentsAction,
+    loadAssignmentsSummary: receiveAssignmentsSummaryAction,
+    createFolderRequest: receiveCreateFolderAction,
+    addMoveToFolderRequest: receiveAddMoveFolderAction,
+    deleteFolder: receiveDeleteFolderAction
   }
 )(LeftFilter);

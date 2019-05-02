@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { remove, clone } from "lodash";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -17,6 +18,8 @@ import {
   updateReleaseScoreSettingsAction,
   toggleReleaseScoreSettingsAction
 } from "../../../src/actions/assignments";
+import { receiveFolderAction } from "../../../src/actions/folder";
+
 import {
   getAssignmentsSummary,
   getAssignmentsByTestSelector,
@@ -46,21 +49,26 @@ import {
 } from "./styled";
 
 const { releaseGradeLabels } = test;
+
+const initialFilterState = {
+  grades: [],
+  subject: "",
+  termId: "",
+  testType: "",
+  folderId: ""
+};
 class Assignments extends Component {
   state = {
     showFilter: false,
     isAdvancedView: false,
     selectedRows: [],
-    filterState: {
-      grades: [],
-      subject: "",
-      termId: ""
-    }
+    filterState: initialFilterState
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders } = this.props;
     loadAssignments();
+    loadFolders();
     loadAssignmentsSummary({ districtId });
   }
 
@@ -89,7 +97,7 @@ class Assignments extends Component {
   };
 
   SwitchView = checked => {
-    this.setState({ isAdvancedView: checked, selectedRows: [] });
+    this.setState({ isAdvancedView: checked, selectedRows: [], filterState: initialFilterState });
   };
 
   renderFilter = () => {
@@ -152,11 +160,14 @@ class Assignments extends Component {
               {window.innerWidth >= tabletWidth && (
                 <>
                   {(isAdvancedView || showFilter) && (
-                    <LeftFilter
-                      selectedRows={selectedRows}
-                      onSetFilter={this.setFilterState}
-                      filterState={filterState}
-                    />
+                    <PerfectScrollbar option={{ suppressScrollX: true }}>
+                      <LeftFilter
+                        selectedRows={selectedRows}
+                        onSetFilter={this.setFilterState}
+                        filterState={filterState}
+                        isAdvancedView={isAdvancedView}
+                      />
+                    </PerfectScrollbar>
                   )}
                   <TableWrapper>
                     {!isAdvancedView && (
@@ -215,6 +226,7 @@ class Assignments extends Component {
 Assignments.propTypes = {
   assignmentsSummary: PropTypes.array,
   loadAssignmentsSummary: PropTypes.func.isRequired,
+  loadFolders: PropTypes.func.isRequired,
   assignmentsByTestId: PropTypes.object.isRequired,
   loadAssignments: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -248,6 +260,7 @@ const enhance = compose(
     }),
     {
       loadAssignments: receiveAssignmentsAction,
+      loadFolders: receiveFolderAction,
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,

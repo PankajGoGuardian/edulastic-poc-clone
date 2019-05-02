@@ -61,11 +61,12 @@ const closePolicy = [
   { value: "Close Manually by Admin", text: "Close Manually by Admin" }
 ];
 
-const testType = [
-  { value: "All", text: "All" },
-  { value: "Common", text: "Common" },
-  { value: "Assessments", text: "Assessments" },
-  { value: "Teacher Assessments", text: "Teacher Assessments" }
+const testTypes = [
+  { value: "", text: "All" },
+  { value: "common", text: "Common" },
+  { value: "assessment", text: "Assessments" },
+  { value: "practice", text: "Practice" },
+  { value: "teacherAssessment", text: "Teacher Assessments" }
 ];
 
 export default {
@@ -77,5 +78,5 @@ export default {
   allAuthorDifficulty,
   openPolicy,
   closePolicy,
-  testType
+  testTypes
 };

@@ -96,7 +96,7 @@ class AdvancedTable extends Component {
       },
       {
         title: "Submitted",
-        dataIndex: "submitted",
+        dataIndex: "inGrading",
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "16%",

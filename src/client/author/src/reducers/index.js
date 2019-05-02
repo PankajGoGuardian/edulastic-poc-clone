@@ -43,6 +43,7 @@ import { districtAdminReducer } from "../../DistrictAdmin";
 import { schoolAdminReducer } from "../../SchoolAdmin";
 import { coursesReducer } from "../../Courses";
 import { classesReducer } from "../../Classes";
+import folder from "./folder";
 import { interestedStandardsReducer } from "../../InterestedStandards";
 
 const authorReducers = {
@@ -91,6 +92,7 @@ const authorReducers = {
   schoolAdminReducer,
   coursesReducer,
   classesReducer,
+  folder,
   interestedStandardsReducer
 };
 

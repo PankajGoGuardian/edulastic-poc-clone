@@ -126,8 +126,6 @@ export const RightSide = styled.div`
 
     span {
       color: ${newBlue};
-      margin-left: 12px;
-      margin-right: 31px;
       font-size: 11px;
       text-transform: uppercase;
     }

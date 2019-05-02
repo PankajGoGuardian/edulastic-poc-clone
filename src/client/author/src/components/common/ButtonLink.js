@@ -35,7 +35,7 @@ const ButtonLink = ({ onClick, color, icon, children, uppercase, style, active }
   <Container onClick={onClick} type="button" uppercase={uppercase} style={style} {...getColors({ color, active })}>
     {icon && children && <Icon>{icon}</Icon>}
     {icon && !children && icon}
-    <Text>{children}</Text>
+    {children && <Text>{children}</Text>}
   </Container>
 );
 

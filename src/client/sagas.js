@@ -10,6 +10,7 @@ import {
 import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
 import { CurriculumSequenceSaga } from "./author/CurriculumSequence";
+import { sagas as adminSagas } from "./admin/ducks";
 
 export default function*() {
   yield all([
@@ -20,6 +21,7 @@ export default function*() {
     testActivityReportSaga(),
     ...authorSagas,
     ...assessmentSagas,
+    ...adminSagas,
     CurriculumSequenceSaga()
   ]);
 }

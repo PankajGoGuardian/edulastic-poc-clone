@@ -4,7 +4,7 @@
 
 Bundle size can effect the performance of app. Hence, precaution should be taken to keep the bundle size to minimum. Go frugal on external modules. Also:
 
-- Take advantage of bundler's super power's 💪- like treek shaking 🌴. Instead of importing the entire library, import only what is required. ✂️
+- Take advantage of bundler's super power's 💪- like [tree shaking](https://webpack.js.org/guides/tree-shaking/) 🌴. Instead of importing the entire library, import only what is required. ✂️
 
   eg:- `import { omit } from 'lodash'`
 

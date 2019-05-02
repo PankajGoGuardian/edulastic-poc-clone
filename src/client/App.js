@@ -34,6 +34,8 @@ const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student
 
 const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
 
+const Admin = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/app"));
+
 const Loading = () => (
   <div>
     <Spin />
@@ -86,7 +88,8 @@ class App extends Component {
             <Redirect exact path="/" to={defaultRoute} />
             <Route path="/author" component={Author} />
             <Route path="/home" component={Dashboard} />
-
+            <Route path="/admin" component={Admin} />
+           
             <Route path="/Signup" component={TeacherSignup} />
             <Route path="/Login" component={Login} />
             <Route path="/GetStarted" component={GetStarted} />

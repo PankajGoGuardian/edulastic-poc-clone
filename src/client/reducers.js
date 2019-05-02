@@ -6,11 +6,13 @@ import studentReducers from "./student/reducers";
 import curriculumSequenceReducers from "./author/CurriculumSequence/ducks";
 import tutorial from "./tutorials/tutorialReducer";
 import { LOGOUT } from "./student/Login/ducks";
+import adminReducers from "./admin/reducers";
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
   ...authorReducers,
   ...studentReducers,
+  ...adminReducers,
   tutorial,
   curriculumSequence: curriculumSequenceReducers
 });

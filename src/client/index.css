@@ -1140,6 +1140,17 @@ span.token.active-word {
   color: #1fe3a1; */
 }
 
+/* for accessibility */
+.isKeyboardUser:focus,
+.isKeyboardUser a:focus,
+.isKeyboardUser button:focus,
+.isKeyboardUser input:focus,
+.isKeyboardUser input[type="checkbox"]:focus + label,
+.isKeyboardUser input[type="radio"]:focus + span,
+.isKeyboardUser select:focus {
+  outline: 1px dashed #000;
+  outline-offset: 4px;
+}
 .mq-math-mode .mq-supsub.mq-sup-only {
   margin-bottom: 1em;
 }

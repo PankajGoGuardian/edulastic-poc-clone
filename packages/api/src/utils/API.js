@@ -1,5 +1,6 @@
 //@ts-check
 import axios from "axios";
+import { message } from "antd";
 import config from "../config";
 import { getAccessToken } from "./Storage";
 
@@ -33,6 +34,8 @@ export default class API {
             window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
             window.location.href = "/login";
           }
+        } else {
+          message.error(data.message);
         }
       }
     );

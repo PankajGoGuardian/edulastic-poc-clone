@@ -1,3 +1,4 @@
+import * as TokenStorage from "./src/utils/Storage";
 export { default as itemsApi } from "./src/items";
 export { default as questionsApi } from "./src/questions";
 export { default as assessmentApi } from "./src/assessment";
@@ -20,6 +21,7 @@ export { default as evaluateApi } from "./src/evaluate";
 export { default as userApi } from "./src/user";
 export { default as curriculumSequencesApi } from "./src/curriculumSequence";
 export { default as API } from "./src/utils/API";
+export { TokenStorage };
 export { default as googleApi } from "./src/google";
 export { default as settingsApi } from "./src/settings";
 export { default as schoolApi } from "./src/school";

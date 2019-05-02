@@ -2,7 +2,7 @@ import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { pick, last } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
-import { authApi, userApi } from "@edulastic/api";
+import { authApi, userApi, TokenStorage } from "@edulastic/api";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 
@@ -29,8 +29,9 @@ export const changeClassAction = createAction(CHANGE_CLASS);
 function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload);
-    localStorage.setItem("access_token", result.token);
     const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData"]);
+    TokenStorage.storeAccessToken(result.token, user._id, user.role);
+    TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
     if (redirectUrl) {
@@ -76,7 +77,7 @@ function* signup({ payload }) {
 export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
-    if (!localStorage.access_token) {
+    if (!TokenStorage.getAccessToken()) {
       yield put(push("/Login"));
       return;
     }
@@ -94,7 +95,7 @@ export function* fetchUser() {
 
 function* logout() {
   try {
-    delete localStorage.access_token;
+    localStorage.clear();
     yield put({ type: "RESET" });
     yield put(push("/Login"));
   } catch (e) {

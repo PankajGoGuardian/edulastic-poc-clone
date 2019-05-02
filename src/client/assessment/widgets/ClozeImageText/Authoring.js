@@ -44,6 +44,7 @@ import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
 
 import SortableList from "../../components/SortableList";
+import { TokenStorage } from "@edulastic/api";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -198,7 +199,7 @@ class Authoring extends Component {
       action: `${API_CONFIG.api}file/upload`,
       headers: {
         "X-Requested-With": null,
-        authorization: localStorage.getItem("access_token")
+        authorization: TokenStorage.getAccessToken()
       },
       className: "drag-full-parent"
     };

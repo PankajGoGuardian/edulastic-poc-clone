@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { withRouter, Link } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { last } from "lodash";
 import { Row, Col } from "antd";
+import { TokenStorage } from "@edulastic/api";
 
 //  components
 import AssessmentDetails from "./AssessmentDetail";
@@ -20,7 +21,7 @@ import Attempt from "./Attempt";
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
 
 const SafeBrowserButton = ({ testId, testType, assignmentId, testActivityId, btnName }) => {
-  const token = window.localStorage.access_token;
+  const token = TokenStorage.getAccessToken();
   let url = `${process.env.POI_APP_API_URI.replace("http", "seb").replace(
     "https",
     "seb"

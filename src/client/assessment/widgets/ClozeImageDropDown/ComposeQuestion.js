@@ -42,6 +42,7 @@ import { IconDrawResize } from "./styled/IconDrawResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
+import { TokenStorage } from "@edulastic/api";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -175,7 +176,7 @@ class ComposeQuestion extends Component {
       action: `${API_CONFIG.api}file/upload`,
       headers: {
         "X-Requested-With": null,
-        authorization: localStorage.getItem("access_token")
+        authorization: TokenStorage.getAccessToken()
       },
       className: "drag-full-parent"
     };

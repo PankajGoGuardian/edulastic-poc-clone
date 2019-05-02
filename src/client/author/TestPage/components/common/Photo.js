@@ -7,6 +7,7 @@ import { Upload, message } from "antd";
 import { blue, white } from "@edulastic/colors";
 import { API_CONFIG } from "@edulastic/api";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
+import { TokenStorage } from "@edulastic/api";
 
 const defaultImage = "https://fakeimg.pl/1000x300/";
 
@@ -69,7 +70,7 @@ class Photo extends React.Component {
       beforeUpload,
       headers: {
         "X-Requested-With": null,
-        authorization: localStorage.getItem("access_token")
+        authorization: TokenStorage.getAccessToken()
       }
     };
     return (

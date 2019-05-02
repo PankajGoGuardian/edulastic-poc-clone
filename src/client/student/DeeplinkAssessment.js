@@ -11,10 +11,6 @@ const DeepLink = ({ bootstrap, match }) => {
   //alert("rendering deeplink 1");
   useEffect(() => {
     const { testType, assignmentId, testActivityId, testId } = match.params;
-    let query = queryString.parse(location.search);
-    if (query.token) {
-      window.localStorage.access_token = query.token;
-    }
     //alert("rendering deeplink inside effect");
 
     bootstrap({ testType, assignmentId, testActivityId, testId });

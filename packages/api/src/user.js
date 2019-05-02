@@ -14,6 +14,23 @@ const getUser = () =>
     })
     .then(result => result.data.result);
 
+const getProxyUser = params =>
+  api
+    .callApi({
+      url: `${prefix}/proxy`,
+      params,
+      method: "get"
+    })
+    .then(result => result.data);
+
+const getSwitchedToken = role =>
+  api
+    .callApi({
+      url: `${prefix}/token/role/${role}`,
+      method: "get"
+    })
+    .then(result => result.data);
+
 const fetchUsers = data =>
   api
     .callApi({
@@ -54,5 +71,7 @@ export default {
   fetchUsers,
   createUser,
   updateUser,
-  deleteUser
+  deleteUser,
+  getProxyUser,
+  getSwitchedToken
 };

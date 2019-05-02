@@ -1,6 +1,7 @@
+//@ts-check
 import axios from "axios";
 import config from "../config";
-import Storage from "./Storage";
+import { getAccessToken } from "./Storage";
 
 const getCurrentPath = () => {
   const location = window.location;
@@ -10,7 +11,6 @@ const getCurrentPath = () => {
 export default class API {
   constructor(baseURL = config.api) {
     this.baseURL = baseURL;
-    this.storage = new Storage();
 
     this.instance = axios.create({
       baseURL: this.baseURL,
@@ -19,7 +19,7 @@ export default class API {
       }
     });
     this.instance.interceptors.request.use(config => {
-      let token = this.storage.token;
+      let token = getAccessToken();
       if (token) {
         config.headers["Authorization"] = token;
       }

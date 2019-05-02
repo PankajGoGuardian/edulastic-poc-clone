@@ -8,8 +8,11 @@ import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
 import { test } from "@edulastic/constants";
+import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
+import queryString from "query-string";
+import { proxyUser } from "./author/authUtils";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -37,6 +40,14 @@ const Loading = () => (
   </div>
 );
 
+const query = queryString.parse(window.location.search);
+if (query.token && query.userId && query.role) {
+  TokenStorage.storeAccessToken(query.token, query.userId, query.role);
+  TokenStorage.selectAccessToken(query.userId, query.role);
+} else if (query.userId && query.role) {
+  TokenStorage.selectAccessToken(query.userId, query.role);
+}
+
 class App extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -53,10 +64,11 @@ class App extends Component {
 
   render() {
     const { user, tutorial } = this.props;
-    if (user.authenticating && localStorage.access_token) {
+    if (user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
     let defaultRoute = "/home/assignments";
+    console.log("login render user", user);
     if (user && user.isAuthenticated) {
       if (user.user.role === "teacher") {
         defaultRoute = "/author/assignments";

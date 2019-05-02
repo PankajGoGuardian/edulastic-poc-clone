@@ -1,25 +1,17 @@
-export default class Storage {
-  constructor(tokenName = 'access_token') {
-    this.tokenName = tokenName;
-  }
+// @ts-check
 
-  get token() {
-    let token = null;
+const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
 
-    try {
-      token = localStorage.getItem(this.tokenName);
-    } catch (err) {
-      console.error(err);
-    }
+export function storeAccessToken(token, userId, role) {
+  const key = tokenKey(userId, role);
+  window.localStorage.setItem(key, token);
+}
 
-    return token;
-  }
+export function selectAccessToken(userId, role) {
+  window.sessionStorage.tokenKey = tokenKey(userId, role);
+}
 
-  set token(token) {
-    try {
-      localStorage.setItem(this.tokenName, token);
-    } catch (err) {
-      console.error(err);
-    }
-  }
+export function getAccessToken() {
+  const tokenKey = window.sessionStorage.tokenKey;
+  return window.localStorage.getItem(tokenKey);
 }

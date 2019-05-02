@@ -31,6 +31,7 @@ import { IconUpload } from "./styled/IconUpload";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { Widget } from "../../styled/Widget";
+import { TokenStorage } from "@edulastic/api";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -179,7 +180,7 @@ class ComposeQuestion extends Component {
       action: `${API_CONFIG.api}file/upload`,
       headers: {
         "X-Requested-With": null,
-        authorization: localStorage.getItem("access_token")
+        authorization: TokenStorage.getAccessToken()
       }
     };
     return (

@@ -1,7 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
+import { connect } from "react-redux";
 import { questionType as questionTypes } from "@edulastic/constants";
+import { getAvailableCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { Container, Item, ItemBody, ItemHeader, MainFilterItems } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
@@ -9,10 +11,10 @@ class Search extends Component {
   render() {
     const {
       search: { grades, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
-      curriculums,
       onSearchFieldChange,
       curriculumStandards,
-      onStandardSearch
+      onStandardSearch,
+      filteredCurriculums
     } = this.props;
     const isStandardsDisabled = !curriculumId;
     const standardsPlaceholder = isStandardsDisabled
@@ -65,13 +67,16 @@ class Search extends Component {
                 <Select.Option key="" value="">
                   All Curriculums
                 </Select.Option>
-                {curriculums.map(
-                  el =>
-                    (!subject || el.subject === subject) && (
-                      <Select.Option key={el._id} value={el._id}>
-                        {el.curriculum}
-                      </Select.Option>
-                    )
+                {filteredCurriculums.map(el =>
+                  el.name ? (
+                    <Select.Option key={el._id} value={el._id}>
+                      {el.name}
+                    </Select.Option>
+                  ) : (
+                    <Select.Option key={el._id} value={el._id}>
+                      {el.curriculum}
+                    </Select.Option>
+                  )
                 )}
               </Select>
             </ItemBody>
@@ -170,4 +175,9 @@ Search.propTypes = {
   onStandardSearch: PropTypes.func.isRequired
 };
 
-export default Search;
+export default connect(
+  (state, { search = {} }) => ({
+    filteredCurriculums: getAvailableCurriculumsSelector(state, search)
+  }),
+  {}
+)(Search);

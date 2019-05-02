@@ -134,19 +134,31 @@ class Contaier extends Component {
 
   handleSearchFieldChange = fieldName => value => {
     const { search } = this.state;
+    let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
+      return;
+    } else if (fieldName === "subject") {
+      const { clearDictStandards } = this.props;
+      clearDictStandards();
+      updatedKeys = {
+        ...search,
+        [fieldName]: value,
+        curriculumId: "",
+        standardIds: []
+      };
     } else {
-      this.setState(
-        {
-          search: {
-            ...search,
-            [fieldName]: value
-          }
-        },
-        this.handleSearch
-      );
+      updatedKeys = {
+        ...search,
+        [fieldName]: value
+      };
     }
+    this.setState(
+      {
+        search: updatedKeys
+      },
+      this.handleSearch
+    );
   };
 
   handleCreate = async () => {
@@ -249,7 +261,6 @@ class Contaier extends Component {
             onLabelSearch={this.handleLabelSearch}
             windowWidth={windowWidth}
             search={search}
-            curriculums={curriculums}
             getCurriculumStandards={getCurriculumStandards}
             curriculumStandards={curriculumStandards}
             items={filterMenuItems}

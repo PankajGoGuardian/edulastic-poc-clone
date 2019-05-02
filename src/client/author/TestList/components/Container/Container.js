@@ -45,11 +45,8 @@ import {
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
 
-import TestFilters from "../../../src/components/common/TestFilters";
-import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
-// import SortBar from "../SortBar/SortBar";
 import ListHeader from "../../../src/components/common/ListHeader";
-import filterData from "./FilterData";
+import TestListFilters from "./TestListFilters";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -94,7 +91,6 @@ class TestList extends Component {
         subject: PropTypes.string.isRequired
       })
     ).isRequired,
-    curriculumStandards: PropTypes.array.isRequired,
     getCurriculums: PropTypes.func.isRequired,
     getCurriculumStandards: PropTypes.func.isRequired,
     clearDictStandards: PropTypes.func.isRequired,
@@ -202,17 +198,26 @@ class TestList extends Component {
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
     const { receiveTests, clearDictStandards, history, limit, page } = this.props;
-
+    let updatedKeys = {};
     if (name === "curriculumId" && !value.length) {
       clearDictStandards();
     }
-
+    if (name === "subject") {
+      updatedKeys = {
+        ...search,
+        [name]: value,
+        curriculumId: ""
+      };
+      clearDictStandards();
+    } else {
+      updatedKeys = {
+        ...search,
+        [name]: value
+      };
+    }
     this.setState(
       {
-        search: {
-          ...search,
-          [name]: value
-        }
+        search: updatedKeys
       },
       () => {
         const { search: updatedSearch } = this.state;
@@ -325,52 +330,6 @@ class TestList extends Component {
 
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
-  getFilters(filters) {
-    const { curriculums, curriculumStandards = { elo: [], tlo: [] } } = this.props;
-    const {
-      search: { curriculumId, subject }
-    } = this.state;
-    const formattedCuriculums = curriculums
-      .filter(curriculum => curriculum.subject === subject || !subject)
-      .map(item => ({
-        value: item._id,
-        text: item.curriculum
-      }));
-
-    const formattedStandards = (curriculumStandards.elo || []).map(item => ({
-      value: item._id,
-      text: `${item.identifier} : ${item.description}`
-    }));
-
-    const standardsPlaceholder = !curriculumId.length
-      ? "Available with Curriculum"
-      : 'Type to Search, for example "k.cc"';
-
-    return [
-      ...filters,
-      {
-        size: "large",
-        title: "Curriculum",
-        onChange: "curriculumId",
-        data: [{ value: "", text: "All Curriculum" }, ...formattedCuriculums],
-        optionFilterProp: "children",
-        filterOption: this.searchCurriculum,
-        showSearch: true
-      },
-      {
-        onSearch: this.handleStandardSearch,
-        size: "large",
-        mode: "multiple",
-        placeholder: standardsPlaceholder,
-        title: "Standards",
-        filterOption: false,
-        disabled: !curriculumId.length,
-        onChange: "standardIds",
-        data: formattedStandards
-      }
-    ];
-  }
-
   renderCardContent = () => {
     const { loading, tests, windowWidth, history, match, userId } = this.props;
     const { blockStyle } = this.state;
@@ -442,7 +401,6 @@ class TestList extends Component {
     const { searchString } = search;
 
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
-    const filters = this.getFilters(filterData);
     return (
       <>
         <ListHeader
@@ -483,9 +441,15 @@ class TestList extends Component {
           </MobileFilter>
           <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
-              <TestFilters clearFilter={this.handleClearFilter} state={search} filterData={filters}>
-                <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} search={search} />
-              </TestFilters>
+              <TestListFilters
+                search={search}
+                handleLabelSearch={this.handleLabelSearch}
+                onChange={this.handleFiltersChange}
+                clearFilter={this.handleClearFilter}
+                searchCurriculum={this.searchCurriculum}
+                handleStandardSearch={this.handleStandardSearch}
+                filterMenuItems={filterMenuItems}
+              />
             </SearchModalContainer>
           </Modal>
           <FlexContainer>
@@ -500,14 +464,15 @@ class TestList extends Component {
                         size="large"
                         value={searchString}
                       />
-                      <TestFilters
-                        clearFilter={this.handleClearFilter}
-                        state={search}
-                        filterData={filters}
+                      <TestListFilters
+                        search={search}
+                        handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
-                      >
-                        <TestFiltersNav items={filterMenuItems} onSelect={this.handleLabelSearch} search={search} />
-                      </TestFilters>
+                        clearFilter={this.handleClearFilter}
+                        searchCurriculum={this.searchCurriculum}
+                        handleStandardSearch={this.handleStandardSearch}
+                        filterMenuItems={filterMenuItems}
+                      />
                     </ScrollBox>
                   </PerfectScrollbar>
                 </ScrollbarWrapper>
@@ -518,7 +483,6 @@ class TestList extends Component {
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
                 </PaginationInfo>
-                {/* <SortBar onStyleChange={this.handleStyleChange} activeStyle={blockStyle} /> */}
               </FlexContainer>
               <CardContainer type={blockStyle}>
                 {this.renderCardContent()}
@@ -550,7 +514,6 @@ const enhance = compose(
       count: getTestsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
-      curriculumStandards: getStandardsListSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),

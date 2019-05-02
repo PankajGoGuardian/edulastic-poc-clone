@@ -5,9 +5,35 @@ const Option = Select.Option;
 import { StyledModal, ModalFormItem } from "./styled";
 
 class CreateSchoolAdminModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      firstName: "",
+      lastName: "",
+      firstNameValStatus: "success",
+      firstNameValMsg: "",
+      lastNameValStatus: "success",
+      lastNameValMsg: ""
+    };
+  }
+
   onCreateSchoolAdmin = () => {
+    const { firstName, lastName } = this.state;
+    if (firstName.length == 0)
+      this.setState({ firstNameValStatus: "error", firstNameValMsg: "Please input First name." });
+    if (lastName.length == 0) this.setState({ lastNameValStatus: "error", lastNameValMsg: "Please input Last name." });
+
     this.props.form.validateFields((err, row) => {
       if (!err) {
+        if (firstName.length == 0 || lastName.length == 0) return;
+        const dataSource = [...this.props.dataSource];
+        const sameShortNameRow = dataSource.filter(item => item.firstName === firstName && item.lastName === lastName);
+        if (sameShortNameRow.length > 0) {
+          return;
+        }
+        row.firstName = firstName;
+        row.lastName = lastName;
+
         this.props.createSchoolAdmin(row);
       }
     });
@@ -16,6 +42,37 @@ class CreateSchoolAdminModal extends React.Component {
   onCloseModal = () => {
     this.props.closeModal();
   };
+
+  changeFirstName = e => {
+    this.setState({ firstName: e.target.value });
+    this.setNameValidateStatus(e.target.value, this.state.lastName);
+  };
+
+  changeLastName = e => {
+    this.setState({ lastName: e.target.value });
+    this.setNameValidateStatus(this.state.firstName, e.target.value);
+  };
+
+  setNameValidateStatus(firstName, lastName) {
+    if (firstName.length == 0)
+      this.setState({ firstNameValStatus: "error", firstNameValMsg: "Please input First Name." });
+    else this.setState({ firstNameValStatus: "success", firstNameValMsg: "" });
+
+    if (lastName.length == 0) this.setState({ lastNameValStatus: "error", lastNameValMsg: "Please input Last Name." });
+    else this.setState({ lastNameValStatus: "success", lastNameValMsg: "" });
+
+    const dataSource = [...this.props.dataSource];
+    const sameShortNameRow = dataSource.filter(item => item.firstName === firstName && item.lastName === lastName);
+    if (sameShortNameRow.length > 0) {
+      this.setState({
+        firstNameValStatus: "error",
+        firstNameValMsg: "User already exists.",
+        lastNameValStatus: "error",
+        lastNameValMsg: ""
+      });
+      return;
+    }
+  }
 
   render() {
     const { schoolsData } = this.props;
@@ -48,27 +105,21 @@ class CreateSchoolAdminModal extends React.Component {
       >
         <Row>
           <Col span={12}>
-            <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input First Name"
-                  }
-                ]
-              })(<Input placeholder="Enter First Name" />)}
+            <ModalFormItem
+              label="First Name"
+              validateStatus={this.state.firstNameValStatus}
+              help={this.state.firstNameValMsg}
+            >
+              <Input placeholder="Enter First Name" onChange={this.changeFirstName} />
             </ModalFormItem>
           </Col>
           <Col span={12}>
-            <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input Last Name"
-                  }
-                ]
-              })(<Input placeholder="Enter Last Name" />)}
+            <ModalFormItem
+              label="Last Name"
+              validateStatus={this.state.lastNameValStatus}
+              help={this.state.lastNameValMsg}
+            >
+              <Input placeholder="Enter Last Name" onChange={this.changeLastName} />
             </ModalFormItem>
           </Col>
         </Row>

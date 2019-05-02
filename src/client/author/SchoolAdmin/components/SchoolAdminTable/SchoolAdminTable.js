@@ -328,12 +328,15 @@ class SchoolAdminTable extends React.Component {
           <Button type="primary" onClick={this.showCreateSchoolAdminModal}>
             + Add School Admin
           </Button>
-          <CreateSchoolAdminModal
-            modalVisible={createSchoolAdminModalVisible}
-            createSchoolAdmin={this.createSchoolAdmin}
-            closeModal={this.closeCreateSchoolAdminModal}
-            schoolsData={schoolsData}
-          />
+          {createSchoolAdminModalVisible && (
+            <CreateSchoolAdminModal
+              modalVisible={createSchoolAdminModalVisible}
+              createSchoolAdmin={this.createSchoolAdmin}
+              closeModal={this.closeCreateSchoolAdminModal}
+              schoolsData={schoolsData}
+              dataSource={dataSource}
+            />
+          )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
 
           <StyledActionDropDown overlay={actionMenu}>

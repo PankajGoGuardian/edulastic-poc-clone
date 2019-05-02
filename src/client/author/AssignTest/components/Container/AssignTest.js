@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { isEmpty, isEqual } from "lodash";
+import { isEmpty, isEqual, get } from "lodash";
 import * as moment from "moment";
 import {
   fetchGroupsAction,
@@ -9,12 +9,15 @@ import {
   fetchGroupMembersAction,
   getStudentsSelector
 } from "../../../sharedDucks/groups";
+import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
+
 import {
   fetchAssignmentsAction,
   saveAssignmentAction,
   getAssignmentsSelector,
   getTestEntitySelector
 } from "../../duck";
+import { getUserOrgId } from "../../../src/selectors/user";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
@@ -46,13 +49,25 @@ class AssignTest extends React.Component {
   };
 
   componentDidMount() {
-    const { fetchGroups, fetchAssignments, group, assignments, match } = this.props;
+    const {
+      fetchGroups,
+      fetchAssignments,
+      group,
+      assignments,
+      match,
+      fetchPerformanceBand,
+      userOrgId,
+      performanceBandData
+    } = this.props;
     const { testId } = match.params;
     if (isEmpty(group)) {
       fetchGroups();
     }
     if (isEmpty(assignments) && testId) {
       fetchAssignments(testId);
+    }
+    if (isEmpty(performanceBandData)) {
+      fetchPerformanceBand({ orgId: userOrgId });
     }
   }
 
@@ -138,13 +153,16 @@ export default connect(
     group: getGroupsSelector(state),
     assignments: getAssignmentsSelector(state),
     students: getStudentsSelector(state),
-    testSettings: getTestEntitySelector(state)
+    testSettings: getTestEntitySelector(state),
+    userOrgId: getUserOrgId(state),
+    performanceBandData: get(state, ["performanceBandReducer", "data"], [])
   }),
   {
     fetchGroups: fetchGroupsAction,
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
-    saveAssignment: saveAssignmentAction
+    saveAssignment: saveAssignmentAction,
+    fetchPerformanceBand: receivePerformanceBandAction
   }
 )(AssignTest);
 
@@ -157,5 +175,8 @@ AssignTest.propTypes = {
   students: PropTypes.array.isRequired,
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
-  saveAssignment: PropTypes.func.isRequired
+  saveAssignment: PropTypes.func.isRequired,
+  fetchPerformanceBand: PropTypes.func.isRequired,
+  userOrgId: PropTypes.string.isRequired,
+  performanceBandData: PropTypes.object.isRequired
 };

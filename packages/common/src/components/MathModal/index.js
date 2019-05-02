@@ -20,6 +20,12 @@ const MathModal = ({ value, symbols, numberPad, showResponse, show, onSave, onCl
     setLatex(newLatex);
   };
 
+  const onKeyDown = evt => {
+    if (evt.which === 13) {
+      onSave(latex);
+    }
+  };
+
   return (
     <Modal visible={show} title="Edit Math" maskClosable={false} onOk={() => onSave(latex)} onCancel={() => onClose()}>
       <MathInput
@@ -30,6 +36,7 @@ const MathModal = ({ value, symbols, numberPad, showResponse, show, onSave, onCl
         showResponse={showResponse}
         value={latex}
         onInput={newLatex => onInput(newLatex)}
+        onKeyDown={evt => onKeyDown(evt)}
       />
     </Modal>
   );

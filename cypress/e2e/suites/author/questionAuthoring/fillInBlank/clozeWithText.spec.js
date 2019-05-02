@@ -28,17 +28,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > Create basic question and validate.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > [clz_txt_s1] : user create question with default option and save", () => {
@@ -120,10 +116,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
 
   context(" > Scoring Block test", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     afterEach(() => {

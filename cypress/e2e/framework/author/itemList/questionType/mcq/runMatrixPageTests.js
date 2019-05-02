@@ -7,20 +7,16 @@ const runMatrixPageTests = queData => {
   const editItem = new EditItemPage();
   const question = new ChoiceMatrixPage();
   const itemList = new ItemListPage();
-  let testItemId;
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
     it("[Tc_318] => edit question text", () => {
       question
@@ -111,9 +107,9 @@ const runMatrixPageTests = queData => {
 
   context("Layout", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {
@@ -244,20 +240,9 @@ const runMatrixPageTests = queData => {
 
       question.checkTableTitle(text);
     });
-    it("should be able to change stem width if inline style selected", () => {
-      const width = 200;
-
-      question
-        .getStemWidth()
-        .should("be.visible")
-        .type(`{selectall}${width}`, { force: true })
-        .should("have.value", `${width}`);
-
-      question.selectMatrixStyle("Inline");
-      question.checkTableColumnWidth(0, width);
-    });
     it("should be able to change stem width if table style selected", () => {
       const width = 200;
+      question.selectMatrixStyle("Table");
 
       question
         .getStemWidth()
@@ -265,7 +250,18 @@ const runMatrixPageTests = queData => {
         .type(`{selectall}${width}`, { force: true })
         .should("have.value", `${width}`);
 
-      question.selectMatrixStyle("Table");
+      question.checkTableColumnWidth(0, width);
+    });
+    it("should be able to change stem width if inline style selected", () => {
+      const width = 200;
+      question.selectMatrixStyle("Inline");
+
+      question
+        .getStemWidth()
+        .should("be.visible")
+        .type(`{selectall}${width}`, { force: true })
+        .should("have.value", `${width}`);
+
       question.checkTableColumnWidth(0, width);
     });
     it("should be able to change stem width if table style selected and Numerical Stem numeration selected", () => {
@@ -395,9 +391,9 @@ const runMatrixPageTests = queData => {
 
   context("Scoring Block test", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     afterEach(() => {
@@ -547,9 +543,9 @@ const runMatrixPageTests = queData => {
 
   context("[sanity-test] => create basic question and validate", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
     it("[choice_std_s1] => create basic question and save", () => {
       // question

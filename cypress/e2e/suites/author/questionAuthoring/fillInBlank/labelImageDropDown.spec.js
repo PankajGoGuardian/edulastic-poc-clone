@@ -31,17 +31,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > [Tc_384]:Tc_2 => Upload image", () => {
@@ -256,11 +252,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.header.save();
       // edit
       editItem.getEditButton().click();
@@ -478,6 +472,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   context(" > Delete the question after creation", () => {
     context(" > [Tc_395]:Tc_1 => Delete option", () => {
+      before("create dummy que to delete", () => {
+        editItem.createNewItem();
+        // add new question
+        editItem.chooseQuestion(queData.group, queData.queType);
+        question.header.save();
+      });
+
       it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()

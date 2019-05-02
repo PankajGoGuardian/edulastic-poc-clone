@@ -13,6 +13,7 @@ class EditItemPage {
         .click();
       cy.wait("@saveItem");
     };
+    this.itemList = new ItemListPage();
   }
 
   clickAdvancedOptionsButton() {
@@ -72,12 +73,10 @@ class EditItemPage {
   }
 
   addNew() {
-    // this is a temperary work around to unblock the tests
-    // TODO:confirm the work flow and fix all tests
-    /* cy.contains("Add New")
+    cy.contains("Add New")
       .should("be.visible")
       .click();
- */
+
     return this;
   }
 
@@ -126,6 +125,11 @@ class EditItemPage {
     cy.wait("@getItem");
   }
 
+  createNewItem = () => {
+    cy.visit("/author/items");
+    this.itemList.clickOnCreate();
+  };
+
   deleteAllQuestion() {
     cy.get("#react-app").then(() => {
       if (Cypress.$('button[title="Delete"]').length >= 1) {
@@ -134,7 +138,7 @@ class EditItemPage {
             .eq(0)
             .click();
         });
-        this.header.save();
+        // this.header.save();
       }
     });
   }

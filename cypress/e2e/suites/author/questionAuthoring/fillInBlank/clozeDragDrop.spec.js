@@ -26,17 +26,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_2 => Enter the text/inputs to Template Markup", () => {
@@ -282,11 +278,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
   context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_8 => Enter the text/inputs to Template Markup", () => {
@@ -490,10 +484,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Dra
 
   context(" > Scoring block tests", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     afterEach(() => {

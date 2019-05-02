@@ -389,22 +389,16 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
   const ruleArguments = question.argumentMethods;
   let previewItems;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     context(" > Math Cloze type question with one Response box", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        itemList.clickOnCreate();
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
 
       context(" > TC_553 => Enter question text in Compose Question text box", () => {
@@ -1056,10 +1050,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
     // TODO Math Cloze type question with TWO Response boxes
     context(" > Math Cloze type question with two Response boxes", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
 
       context(" > TC_567 => equivSymbolic method", () => {

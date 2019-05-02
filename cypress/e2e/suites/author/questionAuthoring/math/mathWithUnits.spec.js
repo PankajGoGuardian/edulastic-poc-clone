@@ -240,21 +240,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" ty
   const ruleArguments = question.argumentMethods;
   let previewItems;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
       Cypress.on("uncaught:exception", () => false);
     });
 
@@ -787,10 +781,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" ty
 
     context(" > TC_552 => Validate different evaluation methods", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
       beforeEach("Change to equivSyntax method", () => {
         preview.header.edit();
@@ -859,10 +853,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math units" ty
 
     context(" > TC_534 => Preview Items", () => {
       before("Handel uncaught exception", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
       it(" > Click on preview", () => {
         question.setValue(queData.answer.value);

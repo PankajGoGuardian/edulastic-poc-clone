@@ -21,15 +21,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Sort List" typ
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_98 => List", () => {
@@ -198,9 +196,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Sort List" typ
 
   context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_103 => List", () => {
@@ -300,8 +298,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Sort List" typ
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {

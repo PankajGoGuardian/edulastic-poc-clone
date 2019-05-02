@@ -253,23 +253,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   const preview = new PreviewItemPage();
   let previewItems;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      Cypress.on("uncaught:exception", (err, runnable) => false);
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_429 => Enter question text in Compose Question text box", () => {
@@ -697,11 +689,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context(" > Edit the Math formula created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
 
       //create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_414 => Testing different answer methods", () => {
@@ -803,10 +794,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context(" > Testing equivSyntax methods", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
 
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
     beforeEach("Change to equivSyntax method", () => {
       preview.header.edit();

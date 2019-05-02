@@ -32,15 +32,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {
@@ -256,9 +254,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_57 => Enter the column and row", () => {
@@ -531,9 +529,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context(" > Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_65 => Enter the column and row", () => {
@@ -760,9 +758,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
   context(" > Delete the question after creation", () => {
     context(" > Tc_71 => Delete option", () => {
       before(() => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.createNewItem();
+        // add new question
+        editItem.chooseQuestion(queData.group, queData.queType);
         editItem.header.save();
       });
 
@@ -782,9 +780,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context(" > Scoring block tests", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     afterEach(() => {

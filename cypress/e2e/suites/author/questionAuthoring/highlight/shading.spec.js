@@ -19,13 +19,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
     const editItem = new EditItemPage();
     const itemList = new ItemListPage();
     let preview;
-    let testItemId;
 
     before(() => {
       cy.login();
-      itemList.clickOnCreate().then(id => {
-        testItemId = id;
-      });
     });
 
     const RED = "rgb(238, 22, 88)";
@@ -35,10 +31,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context(" > Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        itemList.clickOnCreate();
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
 
       it(" > [shad_s1] : user create question with default option and save", () => {
@@ -160,10 +155,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context(" > Advanced Options", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
 
       beforeEach(() => {
@@ -419,10 +414,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context(" > Scoring block test", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
 
       afterEach(() => {

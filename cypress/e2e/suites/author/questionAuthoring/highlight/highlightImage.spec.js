@@ -21,21 +21,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
   const itemList = new ItemListPage();
   let preview;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_238 => Image upload area", () => {
@@ -163,10 +157,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
+
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {
@@ -264,11 +258,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
   context(" > Edit the question created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
 
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.header.save();
       // edit
       editItem.getEditButton().click();

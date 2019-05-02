@@ -22,22 +22,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
   const text = "testtext";
   const formates = question.formates;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > [Tc_284]:test => Enter question text", () => {
@@ -278,11 +271,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.header.save();
       // edit
       editItem.getEditButton().click();
@@ -522,11 +513,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "True or false"
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
+      editItem.createNewItem();
       // add new question
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
 
       question
         .getQuestionEditor()

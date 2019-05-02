@@ -25,19 +25,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      console.log("testItemId : ", testItemId);
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > [Tc_250]:test => Enter question text", () => {
@@ -286,7 +280,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     });
 
     it(" > [Tc_256]:test => Preview Item", () => {
-      // editItem.header.save(); //TODO-remove this line
       const preview = editItem.header.preview();
 
       preview
@@ -322,11 +315,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.header.save();
       // edit
       editItem.getEditButton().click();
@@ -613,11 +604,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
+      editItem.createNewItem();
       // add new question
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
 
       question
         .getQuestionEditor()
@@ -947,11 +936,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Multiple choic
 
   context(" > Scoring Block testing", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
+      editItem.createNewItem();
       // add new question
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
 
       question
         .getQuestionEditor()

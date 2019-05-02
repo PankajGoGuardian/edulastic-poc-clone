@@ -291,21 +291,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
   const [fraction, numrator, denominator] = [".mq-fraction", ".mq-numerator", ".mq-denominator"];
   const preview = new PreviewItemPage();
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > Tc_443 => Enter question text in Compose Question text box", () => {
@@ -526,10 +520,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math formula" 
 
   context(" > Validate different evaluation methods", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
+
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.clearAnswerValueInput(4);
       question.getTemplateInput().type("{del}".repeat(4), { force: true });
       question.getComposeQuestionTextBox().click();

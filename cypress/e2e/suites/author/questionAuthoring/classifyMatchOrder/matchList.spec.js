@@ -31,15 +31,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_74 => List", () => {
@@ -229,9 +227,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   context(" > Edit the questin created", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_81 => List", () => {
@@ -374,6 +372,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   context(" > Delete the question after creation", () => {
     context(" > TC_84 => Delete option", () => {
+      before("visit items page and select question type", () => {
+        editItem.createNewItem();
+        // add new question
+        editItem.chooseQuestion(queData.group, queData.queType);
+        question.header.save();
+      });
+
       it(" > Click on delete button in Item Details page", () => {
         editItem
           .getDelButton()
@@ -386,8 +391,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {
@@ -563,9 +569,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
 
   context(" > Scoring block test", () => {
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // add new question
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     afterEach(() => {
@@ -574,13 +580,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Match list" ty
       preview.getClear().click();
 
       question.header.edit();
-
-      // editItem.showAdvancedOptions(); // UI toggle has been removed
     });
 
     it(" > Test score with max score", () => {
-      // editItem.showAdvancedOptions(); // UI toggle has been removed
-
       question
         .getMaxScore()
         .clear()

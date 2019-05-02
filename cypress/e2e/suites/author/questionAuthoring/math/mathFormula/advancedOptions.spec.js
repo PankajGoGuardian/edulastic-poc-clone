@@ -12,22 +12,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Extras on "Math formul
   const editItem = new EditItemPage();
   const itemList = new ItemListPage();
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     describe(" > Extras", () => {

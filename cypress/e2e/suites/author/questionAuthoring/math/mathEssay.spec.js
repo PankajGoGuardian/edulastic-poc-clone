@@ -26,21 +26,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
   const preview = new PreviewItemPage();
   let previewItems;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
     context(" > TC_476 => Enter question text in Compose Question text box", () => {
       it(" > Write text in textbox", () => {
@@ -202,10 +196,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Essay" ty
 
     context(" > TC_413 => Preview Items", () => {
       before("visit items page and select question type", () => {
-        editItem.getItemWithId(testItemId);
-        editItem.deleteAllQuestion();
+        editItem.createNewItem();
+
         // create new que and select type
-        editItem.addNew().chooseQuestion(queData.group, queData.queType);
+        editItem.chooseQuestion(queData.group, queData.queType);
       });
       it(" > Click on preview", () => {
         previewItems = editItem.header.preview();

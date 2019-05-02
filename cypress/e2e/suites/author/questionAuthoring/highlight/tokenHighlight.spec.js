@@ -39,21 +39,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
   const ACTIVE = "rgb(31, 227, 161)";
   const ACTIVEWORD = "active-word";
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      itemList.clickOnCreate();
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > [Tc_210] : Enter question text in Compose Question text box", () => {
@@ -315,10 +309,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Token highligh
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
+      editItem.createNewItem();
+
       // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     beforeEach(() => {

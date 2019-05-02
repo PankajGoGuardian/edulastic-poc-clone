@@ -1,6 +1,6 @@
 /// <reference types="Cypress" />
-import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import EditItemPage from "../../../../framework/author/itemList/itemDetail/editPage.js";
+import ItemListPage from "../../../../framework/author/itemList/itemListPage.js";
 import MCQMultiplePage from "../../../../framework/author/itemList/questionType/mcq/mcqMultiplePage.js";
 import FileHelper from "../../../../framework/util/fileHelper";
 
@@ -24,22 +24,15 @@ describe(`${FileHelper.getSpecName(
   const text = "testtext";
   const formates = question.formates;
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      itemList.clickOnCreate();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > [Tc_301]:test => Enter question text", () => {
@@ -331,11 +324,9 @@ describe(`${FileHelper.getSpecName(
     };
 
     before("delete old question and create dummy que to edit", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // create new que and select type
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
       question.header.save();
       // edit
       editItem.getEditButton().click();
@@ -548,7 +539,7 @@ describe(`${FileHelper.getSpecName(
       // check default style
       cy.contains("label", "Style")
         .next()
-        .find('[data-cy="selectStyle"]')
+        .find('[data-cy="styleSelect"]')
         .should("have.value", "block");
 
       // label type
@@ -618,11 +609,9 @@ describe(`${FileHelper.getSpecName(
 
   context(" > [sanity]:test => Create question using different options and validate", () => {
     before("visit items list page and select question type", () => {
-      editItem.getItemWithId(testItemId);
-      editItem.deleteAllQuestion();
-
-      // add new question
-      editItem.addNew().chooseQuestion(queData.group, queData.queType);
+      editItem.createNewItem();
+      // select que type
+      editItem.chooseQuestion(queData.group, queData.queType);
 
       question
         .getQuestionEditor()

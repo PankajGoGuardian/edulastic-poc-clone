@@ -38,22 +38,15 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
   const header = new Header();
   const itemList = new ItemListPage();
 
-  let testItemId;
-
   before(() => {
     cy.login();
-    itemList.clickOnCreate().then(id => {
-      testItemId = id;
-    });
   });
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      editItemPage.getItemWithId(testItemId);
-      editItemPage.deleteAllQuestion();
-
+      itemList.clickOnCreate();
       // create new que and select type
-      editItemPage.addNew().chooseQuestion(queData.group, queData.queType);
+      editItemPage.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > Edit question text", () => {

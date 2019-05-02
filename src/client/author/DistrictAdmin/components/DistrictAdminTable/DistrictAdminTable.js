@@ -300,12 +300,15 @@ class DistrictAdminTable extends React.Component {
           <Button type="primary" onClick={this.showCreateDistrictAdminModal}>
             + Create District Admin
           </Button>
-          <CreateDistrictAdminModal
-            modalVisible={createDistrictAdminModalVisible}
-            createDistrictAdmin={this.createDistrictAdmin}
-            closeModal={this.closeCreateDistrictAdminModal}
-            schoolsData={schoolsData}
-          />
+          {createDistrictAdminModalVisible && (
+            <CreateDistrictAdminModal
+              modalVisible={createDistrictAdminModalVisible}
+              createDistrictAdmin={this.createDistrictAdmin}
+              closeModal={this.closeCreateDistrictAdminModal}
+              schoolsData={schoolsData}
+              dataSource={dataSource}
+            />
+          )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
 
           <StyledActionDropDown overlay={actionMenu}>

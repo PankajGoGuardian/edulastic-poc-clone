@@ -41,12 +41,13 @@ import {
 export default class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
+    assign: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
-    item: PropTypes.func.isRequired
+    item: PropTypes.object.isRequired
   };
 
   render() {
-    const { isShow, close, item } = this.props;
+    const { isShow, close, item, assign } = this.props;
     const { title, description, tags, grades, subjects, analytics, testItems } = item;
 
     return (
@@ -91,7 +92,9 @@ export default class ViewModal extends React.Component {
           <ModalColumn>
             <ButtonContainer>
               <Button>TEST DETAILS</Button>
-              <Button bgColor={blue}>ASSIGN</Button>
+              <Button bgColor={blue} onClick={assign}>
+                ASSIGN
+              </Button>
             </ButtonContainer>
             <SummaryContainer>
               <SummaryTitle>Summary</SummaryTitle>

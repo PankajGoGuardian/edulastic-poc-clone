@@ -44,7 +44,7 @@ export const receiveTeacherListAction = createAction(RECEIVE_TEACHERLIST_REQUEST
 export const receiveTeacherListSuccessAction = createAction(RECEIVE_TEACHERLIST_SUCCESS);
 export const receiveTeacherListErrorAction = createAction(RECEIVE_TEACHERLIST_ERROR);
 
-//selectors
+// selectors
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
   stateClassSelector,
@@ -93,7 +93,7 @@ export const getClassListSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},
@@ -259,8 +259,8 @@ export const reducer = createReducer(initialState, {
 function* receiveClassListSaga({ payload }) {
   try {
     const classList = yield call(groupApi.getGroups, payload);
-    const successMessage = "Receive Classes is successed!";
-    yield call(message.success, successMessage);
+    // const successMessage = "Receive Classes is successed!";
+    // yield call(message.success, successMessage);
     yield put(receiveClassListSuccessAction(classList.data));
   } catch (err) {
     const errorMessage = "Receive Classes is failing!";

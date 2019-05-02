@@ -1,12 +1,12 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { newBlue, white, mobileWidth, greenDark } from "@edulastic/colors";
+import { newBlue, white, mobileWidth, greenDark, black } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
 const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange, data_cy, type }) => {
   const inputTab = (
-    <EditableTab onClick={onClick}>
+    <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
       <IconPencilEdit color={greenDark} width={16} height={16} />
     </EditableTab>
@@ -16,13 +16,9 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
       <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
   );
-  const labelBar = (
-    <span data-cy={data_cy || null} onClick={onClick}>
-      {label}
-    </span>
-  );
+  const labelBar = <span data-cy={data_cy || null}>{label}</span>;
   return (
-    <Container active={active} style={style} type={type}>
+    <Container active={active} style={style} type={type} onClick={onClick}>
       {editable ? inputTab : labelBar}
       {close && closeButton}
     </Container>
@@ -59,7 +55,7 @@ Tab.defaultProps = {
 export default Tab;
 
 const Container = styled.div`
-  color: ${({ active }) => (active ? white : "#7C848E")};
+  color: ${({ active }) => (active ? black : "#7C848E")};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
   background: ${({ active }) => (active ? newBlue : white)};

@@ -28,7 +28,7 @@ class Container extends Component {
     windowWidth: PropTypes.number.isRequired
   };
 
-  handleTabChange = tabIndex => () => {
+  handleTabChange = tabIndex => {
     this.setState({
       tabIndex
     });
@@ -90,7 +90,7 @@ class Container extends Component {
       >
         {row.tabs && row.tabs.length > 0 && windowWidth > MAX_MOBILE_WIDTH && (
           <TabContainer>
-            <Tabs value={tabIndex} onChange={this.handleTabChange}>
+            <Tabs value={tabIndex} onChange={ind => this.handleTabChange(ind)}>
               {row.tabs.map((tab, key) => (
                 <Tabs.Tab
                   key={key}

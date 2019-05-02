@@ -382,7 +382,7 @@ class CustomQuillComponent extends React.Component {
 
   render() {
     const { active, quillVal, quillKey, showMath, selLatex, modules } = this.state;
-    const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly } = this.props;
+    const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly, tabIndex } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
       "7",
@@ -417,12 +417,14 @@ class CustomQuillComponent extends React.Component {
           maxWidth={style.width ? style.width : "initial"}
         />
         <ReactQuill
+          tabIndex={tabIndex || 1}
           ref={el => (this.quillRef = el)}
           key={`math${quillKey}`}
           readOnly={readOnly}
           modules={modules}
           onChange={this.handleChange}
           onFocus={this.onFocus}
+          onBlur={this.hideToolbar}
           onKeyDown={this.onKeyDownHandler}
           onChangeSelection={this.onChangeSelection}
           placeholder={placeholder}
@@ -484,6 +486,7 @@ function handleImage() {
  * See http://quilljs.com/docs/modules/ for complete options
  */
 CustomQuillComponent.modules = toolbarId => ({
+  keyboard: { bindings: { tab: false } },
   toolbar: {
     container: `#${toolbarId}`,
     handlers: {

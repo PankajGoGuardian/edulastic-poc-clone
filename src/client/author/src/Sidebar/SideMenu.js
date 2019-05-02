@@ -17,8 +17,8 @@ import {
   IconBarChart,
   IconManage,
   IconQuestion,
-  IconItemList,
-  IconTestList,
+  IconItemLibrary,
+  IconTestBank,
   IconCurriculumSequence,
   IconSettings
 } from "@edulastic/icons";
@@ -54,12 +54,12 @@ const menuItems = [
   },
   {
     label: "Item Library",
-    icon: IconItemList,
+    icon: IconItemLibrary,
     path: "author/items"
   },
   {
     label: "Test Library",
-    icon: IconTestList,
+    icon: IconTestBank,
     path: "author/tests"
   },
   {

@@ -140,3 +140,5 @@ export { default as IconManageDistrict } from "./src/IconManageDistrict";
 export { default as IconSaveNew } from "./src/IconSaveNew";
 export { default as IconDescription } from "./src/IconDescription";
 export { default as IconHash } from "./src/IconHash";
+export { default as IconTestBank } from "./src/IconTestBank";
+export { default as IconItemLibrary } from "./src/IconItemLibrary";

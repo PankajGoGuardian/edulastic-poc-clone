@@ -99,7 +99,7 @@ class ChoicesForResponse extends Component {
     const { t, item, index } = this.props;
 
     return (
-      <Widget>
+      <Widget data-cy={`choice-response-${index}`}>
         <Subtitle>{`${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`}</Subtitle>
         <SortableList
           items={item.options[index] || []}

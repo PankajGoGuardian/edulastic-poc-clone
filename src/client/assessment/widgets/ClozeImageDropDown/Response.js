@@ -103,7 +103,7 @@ class Response extends Component {
     const { t, item, index, option } = this.props;
 
     return (
-      <Widget>
+      <Widget data-cy={`choice-response-${index}`}>
         <Subtitle style={{ paddingTop: index > 0 ? "30px" : "0px" }}>
           {t("component.cloze.imageDropDown.response")} {index + 1}
         </Subtitle>

@@ -153,9 +153,8 @@ class MCQStandardPage {
 
   selectChoicesStyle(option) {
     const selectOp = `[data-cy="${this.styleOptions[option]}"]`;
-    this.getStyleOption()
-      .click()
-      .find(selectOp)
+    this.getStyleOption().click();
+    cy.get(selectOp)
       .should("be.visible")
       .click();
 

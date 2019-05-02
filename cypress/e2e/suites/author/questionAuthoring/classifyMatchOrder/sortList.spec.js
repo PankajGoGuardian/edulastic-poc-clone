@@ -181,7 +181,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Sort List" typ
           });
       });
 
-      it(" > Click on Clear", () => {
+      it(" > Click on Clear after show answer", () => {
         preview
           .getClear()
           .click()

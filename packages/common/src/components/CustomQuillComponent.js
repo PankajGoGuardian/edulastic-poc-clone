@@ -323,7 +323,6 @@ class CustomQuillComponent extends React.Component {
     const { showMath } = this.state;
     if (!range) return;
     if (showMath) return;
-    console.log("onChangeSelection: ", range);
 
     const leaf = this.quillRef.getEditor().getLeaf(range.index);
     if (range.length > 1) {

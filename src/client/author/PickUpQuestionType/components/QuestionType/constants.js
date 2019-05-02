@@ -65,7 +65,8 @@ import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.sv
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
 //Video&Passages
-import VPVideoPlayer from "../../../src/assets/video-and-passages/videoplayer.png";
+import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
+import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
 
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
@@ -1544,6 +1545,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "video-passages",
+      cardImage: VPPassage,
       data: {
         title: "Passage",
         type: questionType.PASSAGE,

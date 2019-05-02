@@ -29,10 +29,10 @@ import {
   createCourseAction,
   updateCourseAction,
   deactivateCourseAction,
-  uploadCSVSuccessAction,
   setSearchNameAction,
   setFiltersAction,
-  setShowActiveCourseAction
+  setShowActiveCourseAction,
+  uploadCSVAction
 } from "../../ducks";
 
 import { getCourseListSelector } from "../../ducks";
@@ -371,7 +371,7 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
       setShowActiveCourse: setShowActiveCourseAction,
-      uploadCSVCourse: uploadCSVSuccessAction
+      uploadCSVCourse: uploadCSVAction
     }
   )
 );

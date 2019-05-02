@@ -41,7 +41,7 @@ const deactivateCourse = data =>
     })
     .then(result => result.data.result);
 
-const uploadcCSV = ({ file }) => {
+const uploadcCSV = file => {
   const formData = new FormData();
   formData.append("file", file);
 

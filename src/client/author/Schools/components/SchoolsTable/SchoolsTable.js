@@ -122,7 +122,6 @@ class SchoolsTable extends React.Component {
 
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.created._id !== prevState.created._id) {
-      debugger;
       const { dataSource } = prevState;
       const newSchool = {
         key: dataSource.length,
@@ -379,11 +378,15 @@ class SchoolsTable extends React.Component {
           <Button type="primary" onClick={this.showCreateSchoolModal}>
             + Create School
           </Button>
-          <CreateSchoolModal
-            modalVisible={createSchoolModalVisible}
-            createSchool={this.createSchool}
-            closeModal={this.closeCreateSchoolModal}
-          />
+          {createSchoolModalVisible && (
+            <CreateSchoolModal
+              modalVisible={createSchoolModalVisible}
+              createSchool={this.createSchool}
+              closeModal={this.closeCreateSchoolModal}
+              dataSource={dataSource}
+            />
+          )}
+
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
           <StyledSelectStatus defaultValue="" onChange={this.changeActionMode}>
             <Option value="">Actions</Option>

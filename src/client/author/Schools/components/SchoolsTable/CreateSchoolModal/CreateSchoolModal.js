@@ -33,6 +33,15 @@ class CreateSchoolModal extends React.Component {
     this.props.closeModal();
   };
 
+  checkSchoolNameUnique = (rule, value, callback) => {
+    const sameSchoolNameRow = this.props.dataSource.filter(item => item.name === value);
+    if (sameSchoolNameRow.length <= 0) {
+      callback();
+      return;
+    }
+    callback("School name should be unique.");
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, form } = this.props;
@@ -59,7 +68,8 @@ class CreateSchoolModal extends React.Component {
                   {
                     required: true,
                     message: "Please input school name"
-                  }
+                  },
+                  { validator: this.checkSchoolNameUnique }
                 ]
               })(<Input placeholder="Enter School Name" />)}
             </ModalFormItem>

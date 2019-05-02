@@ -182,7 +182,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
 
       <StyledRow gutter={32}>
         <Col span={12}>
-          <Checkbox checked={item.is_math} onChange={e => handleChange("is_math", e.target.checked)}>
+          <Checkbox checked={item.is_math} onChange={e => handleChange("is_math", e.target.checked)} tabIndex={1}>
             <b>{t("component.passage.containsMathematics")}</b>
           </Checkbox>
         </Col>
@@ -190,6 +190,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
           <Checkbox
             checked={item.paginated_content}
             onChange={e => handleChange("paginated_content", e.target.checked)}
+            tabIndex={1}
           >
             <b>{t("component.passage.enablePaginatedContent")}</b>
           </Checkbox>
@@ -205,6 +206,7 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
               value={item.math_renderer}
               style={{ width: "100%" }}
               onChange={value => handleChange("math_renderer", value)}
+              tabIndex={1}
             >
               {rendererOptions.map(({ value: val, label }) => (
                 <Select.Option key={val} value={val}>

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Table, Input, Popconfirm, Form, Icon, Checkbox } from "antd";
+import { Table, Input, Form, Icon, Checkbox, Button, message } from "antd";
 
 import {
   StyledTableContainer,
@@ -8,9 +8,10 @@ import {
   StyledProP,
   StyledIcon,
   StyledBottomDiv,
-  StyledAddButton,
   StyledSaveButton,
-  StyledDivCenter
+  StyledDivCenter,
+  StyledEnableContainer,
+  SaveAlert
 } from "./styled";
 
 const FormItem = Form.Item;
@@ -49,32 +50,120 @@ class EditableCell extends React.Component {
     });
   };
 
+  saveToValue = e => {
+    const { record, handleSave } = this.props;
+    this.form.validateFields((error, values) => {
+      if (error && error[e.currentTarget.id]) {
+        return;
+      }
+      handleSave({ ...record, ...values });
+    });
+  };
+
+  handleChangePro = e => {
+    if (isNaN(e.target.value)) {
+      return;
+    }
+  };
+
+  checkPrice = (rule, value, callback) => {
+    if (!isNaN(value)) {
+      if (parseInt(value) > 100 || parseInt(value) < 0) callback("Please input value between 0 and 100");
+      else callback();
+      return;
+    }
+    callback("Please input value between 0 and 100");
+  };
+
+  changeBandName = e => {
+    if (e.target.value.length > 150) e.target.value = e.target.value.slice(0, 150);
+  };
+
+  checkBandNameUnique = (rule, value, callback) => {
+    const { record } = this.props;
+    const dataSource = this.props.dataSource.filter(item => item.key != record.key);
+
+    const sameNameBand = dataSource.filter(item => item.name === value);
+    if (sameNameBand.length > 0) callback("Performance Band name should be unique.");
+    else {
+      callback();
+      return;
+    }
+  };
+
   render() {
     const { editing } = this.state;
-    const { editable, dataIndex, title, record, index, handleSave, ...restProps } = this.props;
+    const { editable, dataIndex, title, record, index, handleSave, toggleEditToValue, ...restProps } = this.props;
     return (
       <td {...restProps}>
         {editable ? (
           <EditableContext.Consumer>
             {form => {
               this.form = form;
-              return editing ? (
-                <FormItem style={{ margin: 0 }}>
-                  {form.getFieldDecorator(dataIndex, {
-                    rules: [
-                      {
-                        required: true,
-                        message: `${title} is required.`
-                      }
-                    ],
-                    initialValue: record[dataIndex]
-                  })(<Input ref={node => (this.input = node)} onPressEnter={this.save} onBlur={this.save} />)}
-                </FormItem>
-              ) : (
-                <div className="editable-cell-value-wrap" style={{ paddingRight: 24 }} onClick={this.toggleEdit}>
-                  {restProps.children}
-                </div>
-              );
+              if (dataIndex === "to") {
+                return toggleEditToValue ? (
+                  <StyledEnableContainer>
+                    <StyledButton>
+                      <StyledIcon type="minus" />
+                    </StyledButton>
+                    <FormItem style={{ margin: 0 }}>
+                      {form.getFieldDecorator(dataIndex, {
+                        rules: [
+                          {
+                            required: true,
+                            message: `${title} is required.`
+                          },
+                          { validator: this.checkPrice }
+                        ],
+                        initialValue: parseInt(record[dataIndex])
+                      })(
+                        <Input
+                          onChange={this.handleChangePro}
+                          ref={node => (this.toValueInput = node)}
+                          onPressEnter={this.saveToValue}
+                          onBlur={this.saveToValue}
+                          autoFocus
+                        />
+                      )}
+                    </FormItem>
+                    <StyledButton>
+                      <StyledIcon type="plus" />
+                    </StyledButton>
+                  </StyledEnableContainer>
+                ) : (
+                  <div className="editable-cell-value-wrap">{restProps.children}</div>
+                );
+              } else {
+                return editing ? (
+                  <React.Fragment>
+                    {dataIndex === "name" && (
+                      <FormItem style={{ margin: 0 }}>
+                        {form.getFieldDecorator(dataIndex, {
+                          rules: [
+                            {
+                              required: true,
+                              message: `${title} is required.`
+                            },
+                            { validator: this.checkBandNameUnique }
+                          ],
+                          initialValue: record[dataIndex]
+                        })(
+                          <Input
+                            ref={node => (this.input = node)}
+                            onPressEnter={this.save}
+                            onBlur={this.save}
+                            onChange={this.changeBandName}
+                          />
+                        )}
+                      </FormItem>
+                    )}
+                  </React.Fragment>
+                ) : (
+                  <div className="editable-cell-value-wrap" onClick={this.toggleEdit}>
+                    {restProps.children}
+                  </div>
+                );
+              }
             }}
           </EditableContext.Consumer>
         ) : (
@@ -137,6 +226,7 @@ class PerformanceBandTable extends React.Component {
         title: "To",
         dataIndex: "to",
         width: "20%",
+        editable: true,
         render: (text, record) => {
           return (
             <StyledColFromTo>
@@ -174,18 +264,43 @@ class PerformanceBandTable extends React.Component {
 
     this.state = {
       dataSource: performanceBand,
-      count: performanceBand.length
+      count: performanceBand.length,
+      editingKey: -1,
+      isChangeState: false
     };
   }
 
   onClickFromTo = (e, key, keyName, value) => {
-    const dataSource = this.state.dataSource;
-    dataSource.map(row => {
-      if (row.key === key) row[keyName] += value;
-      if (row[keyName] > 100) row[keyName] = 100;
-      if (row[keyName] < 0) row[keyName] = 0;
+    const dataSource = [...this.state.dataSource];
+
+    if (key == 0 && keyName === "from") return;
+    if (key == dataSource.length - 1 && keyName === "to") return;
+
+    if (keyName === "from") {
+      if (
+        dataSource[key].from + value == dataSource[key].to ||
+        dataSource[key].from + value == dataSource[key - 1].from
+      ) {
+        return;
+      } else {
+        dataSource[key].from += value;
+        dataSource[key - 1].to += value;
+      }
+    }
+
+    if (keyName === "to") {
+      if (dataSource[key].to + value == dataSource[key].from || dataSource[key].to + value == dataSource[key + 1].to) {
+        return;
+      } else {
+        dataSource[key].to += value;
+        dataSource[key + 1].from += value;
+      }
+    }
+
+    this.setState({
+      dataSource: dataSource,
+      isChangeState: true
     });
-    this.setState({ dataSource: dataSource });
   };
 
   changeAbove = (e, key) => {
@@ -197,26 +312,39 @@ class PerformanceBandTable extends React.Component {
 
   handleDelete = (e, key) => {
     const dataSource = [...this.state.dataSource];
-
+    if (dataSource.length <= 2) {
+      message.error("Performance Band should at least 2.");
+      return;
+    }
     if (dataSource[0].key === key) dataSource[1].from = 100;
     else if (dataSource[dataSource.length - 1].key === key) dataSource[dataSource.length - 2].to = 0;
 
-    this.setState({ dataSource: dataSource.filter(item => item.key !== key) });
+    dataSource[key + 1].from = dataSource[key].from;
+
+    this.setState({
+      dataSource: dataSource.filter(item => item.key !== key),
+      isChangeState: true
+    });
   };
 
   handleAdd = () => {
     const { count, dataSource } = this.state;
+    const performanceBandName = "Performance Band" + dataSource.length;
     const newData = {
       key: count,
-      name: `New`,
+      name: performanceBandName,
       aboveOrAtStandard: true,
-      from: 50,
-      to: 100
+      from: 0,
+      to: 0
     };
+
+    dataSource[dataSource.length - 1].to = dataSource[dataSource.length - 1].from - 1;
 
     this.setState({
       dataSource: [...dataSource, newData],
-      count: count + 1
+      count: count + 1,
+      editingKey: dataSource[dataSource.length - 1].key,
+      isChangeState: true
     });
   };
 
@@ -228,7 +356,13 @@ class PerformanceBandTable extends React.Component {
       ...item,
       ...row
     });
-    this.setState({ dataSource: newData });
+    newData[newData.length - 1].from = newData[newData.length - 2].to;
+
+    this.setState({
+      dataSource: newData,
+      editingKey: -1,
+      isChangeState: true
+    });
   };
 
   updatePerformanceBand = () => {
@@ -242,10 +376,13 @@ class PerformanceBandTable extends React.Component {
       });
     });
     this.props.updatePerformanceBand(dataSource);
+    this.setState({ isChangeState: false });
   };
 
+  isToValueEditing = record => record.key === this.state.editingKey;
+
   render() {
-    const { dataSource } = this.state;
+    const { dataSource, editingKey, isChangeState } = this.state;
     const components = {
       body: {
         row: EditableFormRow,
@@ -263,16 +400,31 @@ class PerformanceBandTable extends React.Component {
           editable: col.editable,
           dataIndex: col.dataIndex,
           title: col.title,
-          handleSave: this.handleSave
+          handleSave: this.handleSave,
+          toggleEditToValue: this.isToValueEditing(record),
+          dataSource: dataSource
         })
       };
     });
+
+    const isAddDisable =
+      (dataSource[dataSource.length - 1].to == 0 && dataSource[dataSource.length - 1].from == 0) ||
+      editingKey != -1 ||
+      dataSource.length >= 10
+        ? true
+        : false;
+
     return (
       <StyledTableContainer>
         <Table components={components} rowClassName={() => "editable-row"} dataSource={dataSource} columns={columns} />
         <StyledBottomDiv>
-          <StyledSaveButton onClick={this.updatePerformanceBand}>Save</StyledSaveButton>
-          <StyledAddButton onClick={this.handleAdd}>+ Add Band</StyledAddButton>
+          {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
+          <StyledSaveButton type="primary" onClick={this.updatePerformanceBand} disabled={!isChangeState}>
+            Save
+          </StyledSaveButton>
+          <Button type="primary" shape="round" onClick={this.handleAdd} ghost disabled={isAddDisable}>
+            + Add Band
+          </Button>
         </StyledBottomDiv>
       </StyledTableContainer>
     );

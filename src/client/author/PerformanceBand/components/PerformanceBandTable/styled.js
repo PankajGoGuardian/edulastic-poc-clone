@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Row, Col, Icon } from "antd";
+import { Button, Row, Col, Icon, Input } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -10,11 +10,7 @@ export const StyledTableContainer = styled.div`
   }
 
   .ant-table-thead > tr > th {
-    text-align: center !important;
-  }
-
-  .ant-table-tbody > tr > td {
-    border: none !important;
+    text-align: center;
   }
 `;
 
@@ -34,26 +30,8 @@ export const StyledBottomDiv = styled.div`
   margin-top: 20px;
 `;
 
-export const StyledAddButton = styled(Button)`
-  border-radius: 16px;
-  border: 2px solid #409aff;
-  color: #409aff;
-  &:hover {
-    background-color: #409aff;
-    color: #fff;
-  }
-`;
-
 export const StyledSaveButton = styled(Button)`
   margin-right: 20px;
-  background-color: #409aff;
-  border: 2px solid #409aff;
-  color: #fff;
-
-  &:hover {
-    background-color: #fff;
-    color: #409aff;
-  }
 `;
 
 export const StyledColFromTo = styled.div`
@@ -71,12 +49,13 @@ export const StyledButton = styled.a`
 `;
 
 export const StyledProP = styled.p`
-  margin-left: 20px;
-  margin-right: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
   pointer-events: none;
   user-select: none;
   text-align: center;
   line-height: 32px;
+  width: 60px;
 `;
 
 export const StyledIcon = styled(Icon)`
@@ -86,4 +65,28 @@ export const StyledIcon = styled(Icon)`
 
 export const StyledDivCenter = styled.div`
   text-align: center;
+`;
+
+export const StyledEnableContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+
+  .ant-input {
+    width: 80px;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .ant-form-item-children {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+`;
+
+export const SaveAlert = styled.p`
+  color: #f9ac59;
+  text-align: right;
+  margin-right: 20px;
+  line-height: 32px;
 `;

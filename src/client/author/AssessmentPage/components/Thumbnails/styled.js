@@ -22,8 +22,9 @@ export const ThumbnailsList = styled.div`
 
 export const ReuploadButtonWrapper = styled.div`
   position: fixed;
+  left: 100px;
   bottom: 0;
-  padding: 15px 0;
+  padding: 15px 27px;
   background: #ebebeb;
 `;
 

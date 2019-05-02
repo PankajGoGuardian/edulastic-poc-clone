@@ -15,7 +15,16 @@ const menu = (onReupload, onAddBlank, onDeleteBlank) => (
   </Menu>
 );
 
-const Thumbnails = ({ list, onPageChange, url, onReupload, review }) => {
+const Thumbnails = ({
+  list,
+  url,
+  onPageChange,
+  onReupload,
+  onAddBlankPage,
+  onDeleteBlankPage,
+  review,
+  currentPage
+}) => {
   const [minimized, setMinimized] = React.useState(false);
 
   const toggleMinimized = () => {
@@ -33,12 +42,12 @@ const Thumbnails = ({ list, onPageChange, url, onReupload, review }) => {
       )}
       <ThumbnailsList>
         {list.map((item, key) => (
-          <ThumbnailsItem key={key} page={key + 1} onClick={onChangePage(key)} url={url} />
+          <ThumbnailsItem key={key} page={key + 1} onClick={onChangePage(key)} url={url} current={currentPage} />
         ))}
       </ThumbnailsList>
       {!review && (
         <ReuploadButtonWrapper>
-          <Dropdown overlay={menu(onReupload, () => {}, () => {})}>
+          <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteBlankPage)}>
             <ReuploadButton>Manage document</ReuploadButton>
           </Dropdown>
         </ReuploadButtonWrapper>
@@ -51,6 +60,9 @@ Thumbnails.propTypes = {
   list: PropTypes.array.isRequired,
   onPageChange: PropTypes.func.isRequired,
   onReupload: PropTypes.func.isRequired,
+  onAddBlankPage: PropTypes.func.isRequired,
+  onDeleteBlankPage: PropTypes.func.isRequired,
+  currentPage: PropTypes.number.isRequired,
   url: PropTypes.string,
   review: PropTypes.bool
 };

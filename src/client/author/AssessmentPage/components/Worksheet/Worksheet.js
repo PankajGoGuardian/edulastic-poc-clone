@@ -14,24 +14,35 @@ import { WorksheetWrapper } from "./styled";
 
 const defaultPreview = 1;
 
+const createPage = (pageNumber, url) => ({
+  [pageNumber]: {
+    URL: url ? "main" : "blank",
+    pageNo: pageNumber,
+    rotate: 0,
+    annotationIds: []
+  }
+});
+
 class Worksheet extends React.Component {
   static propTypes = {
     docUrl: PropTypes.string.isRequired,
-    annotations: PropTypes.array,
     setTestData: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
-    review: PropTypes.bool,
-    noCheck: PropTypes.bool,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
-    answersById: PropTypes.object.isRequired
+    answersById: PropTypes.object.isRequired,
+    pageStructure: PropTypes.object,
+    review: PropTypes.bool,
+    noCheck: PropTypes.bool,
+    annotations: PropTypes.array
   };
 
   static defaultProps = {
     review: false,
     annotations: [],
-    noCheck: false
+    noCheck: false,
+    pageStructure: {}
   };
 
   state = {
@@ -74,6 +85,40 @@ class Worksheet extends React.Component {
     setTestData(updatedAssessment);
   };
 
+  handleAddBlankPage = () => {
+    const { pageStructure, setTestData } = this.props;
+
+    const blankPageNumber = Object.keys(pageStructure).length + 2;
+
+    const newBlankPage = createPage(blankPageNumber);
+
+    const updatedAssessment = {
+      pageStructure: {
+        ...pageStructure,
+        ...newBlankPage
+      }
+    };
+
+    setTestData(updatedAssessment);
+  };
+
+  handleDeleteBlankPage = () => {
+    const { currentPage } = this.state;
+    const { pageStructure, setTestData } = this.props;
+
+    if (currentPage in pageStructure) {
+      const updatedPageStructure = { ...pageStructure };
+
+      delete updatedPageStructure[currentPage];
+
+      this.handleChangePage(currentPage - 1);
+
+      setTestData({
+        pageStructure: updatedPageStructure
+      });
+    }
+  };
+
   handleReupload = () => {
     const {
       match: {
@@ -86,9 +131,10 @@ class Worksheet extends React.Component {
 
   render() {
     const { currentPage, totalPages } = this.state;
-    const { docUrl, annotations, review, noCheck, questions, questionsById, answersById } = this.props;
+    const { docUrl, annotations, review, noCheck, questions, questionsById, answersById, pageStructure } = this.props;
 
-    const thumbnails = new Array(totalPages).fill(defaultPreview);
+    const blankPagesAmount = Object.keys(pageStructure).length + 1;
+    const thumbnails = new Array(docUrl ? totalPages : blankPagesAmount).fill(defaultPreview);
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
 
     return (
@@ -96,9 +142,12 @@ class Worksheet extends React.Component {
         {(review ? totalPages > 1 : true) && (
           <Thumbnails
             list={thumbnails}
+            currentPage={currentPage}
             url={docUrl}
             onReupload={this.handleReupload}
             onPageChange={this.handleChangePage}
+            onAddBlankPage={this.handleAddBlankPage}
+            onDeleteBlankPage={this.handleDeleteBlankPage}
             review={review}
           />
         )}

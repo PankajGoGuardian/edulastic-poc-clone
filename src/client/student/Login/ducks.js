@@ -37,8 +37,11 @@ function* login({ payload }) {
     if (redirectUrl) {
       localStorage.removeItem("loginRedirectUrl");
       yield put(push(redirectUrl));
-    } else if (user.role === roleuser.STUDENT) yield put(push("/home/assignments"));
-    else yield put(push("/author/items"));
+    } else if (user.role === roleuser.STUDENT) {
+      yield put(push("/home/assignments"));
+    } else if (user.role === roleuser.ADMIN) {
+      yield put(push("/admin"));
+    } else yield put(push("/author/items"));
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";

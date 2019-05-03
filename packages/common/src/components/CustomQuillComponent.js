@@ -252,6 +252,13 @@ class CustomQuillComponent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    const containers = document.getElementsByClassName("ql-container");
+    Array.from(containers).forEach(el => {
+      el.removeAttribute("tabindex");
+    });
+  }
+
   showToolbar = () => {
     this.setState({ active: true });
   };

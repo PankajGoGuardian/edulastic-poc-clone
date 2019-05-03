@@ -188,7 +188,7 @@ class SchoolsTable extends React.Component {
   };
 
   changeFilterValue = value => {
-    this.setState({ changeFilterValue: value });
+    this.setState({ filtersValue: value });
   };
 
   changeFilterText = e => {
@@ -372,6 +372,9 @@ class SchoolsTable extends React.Component {
 
     const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
 
+    const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+    const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "";
+
     return (
       <StyledTableContainer>
         <StyledControlDiv>
@@ -411,8 +414,13 @@ class SchoolsTable extends React.Component {
             <Option value="equals">Equals</Option>
             <Option value="contains">Contains</Option>
           </StyledFilterSelect>
-          <StyledFilterInput placeholder="Enter text" onChange={this.changeFilterText} value={filterStr} />
-          <StyledFilterButton type="primary" onClick={this.addFilter}>
+          <StyledFilterInput
+            placeholder="Enter text"
+            onChange={this.changeFilterText}
+            value={filterStr}
+            disabled={isFilterTextDisable}
+          />
+          <StyledFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
             + Add Filter
           </StyledFilterButton>
           {filterAdded && (

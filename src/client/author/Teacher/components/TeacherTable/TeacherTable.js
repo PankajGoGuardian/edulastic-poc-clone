@@ -319,6 +319,9 @@ class TeacherTable extends React.Component {
       </Menu>
     );
 
+    const isFilterTextDisable = filters.column === "" || filters.value === "";
+    const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
+
     return (
       <StyledTableContainer>
         <StyledControlDiv>
@@ -350,8 +353,13 @@ class TeacherTable extends React.Component {
             <Option value="equals">Equals</Option>
             <Option value="contains">Contains</Option>
           </StyledFilterSelect>
-          <StyledFilterInput placeholder="Enter text" onChange={this.changeFilterText} value={filters.text} />
-          <StyledAddFilterButton type="primary" onClick={this.addFilter}>
+          <StyledFilterInput
+            placeholder="Enter text"
+            onChange={this.changeFilterText}
+            value={filters.text}
+            disabled={isFilterTextDisable}
+          />
+          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
             + Add Filter
           </StyledAddFilterButton>
           {filterAdded && (

@@ -5,20 +5,22 @@ export const RoundDiv = styled.div`
   display: flex;
   flex-direction: column;
   width: calc(25% - 20px);
-  margin: 0px 0px 20px 0px;
+  margin: 0px 10px 20px 10px;
   background-color: #f8f8fb;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.3s ease;
+  min-height: 270px;
 
   @media (max-width: 2048px) {
-    width: calc(33.3333% - 12px);
-    margin: 0px 0px 20px 0px;
+    width: calc(33.3333% - 20px);
+    margin: 0px 10px 20px 10px;
   }
   @media (max-width: 1460px) {
-    width: calc(33.3333% - 12px);
+    width: calc(33.3333% - 20px);
+    min-height: 240px;
   }
   @media (max-width: 1024px) {
     width: calc(50% - 20px);
@@ -49,17 +51,18 @@ export const Header = styled.div`
 
 export const Content = styled.div`
   width: calc(100% + 3px);
-  flex: 1 1 auto;
-  padding: 11px -1px 0px -1px;
+  padding: 11px 20px 20px;
   user-select: none;
   position: relative;
   cursor: pointer;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  margin: auto 0;
 `;
 
 export const StyledPreviewImage = styled.img`
   width: 100%;
-  height: 100%;
   user-select: none;
   pointer-events: none;
   object-fit: contain;

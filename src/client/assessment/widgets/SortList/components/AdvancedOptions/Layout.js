@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { Row, Col } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
@@ -11,6 +12,19 @@ import { Layout } from "../../../../containers/WidgetOptions/components";
 import { Widget } from "../../../../styled/Widget";
 
 class LayoutWrapper extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
   render() {
     const { onUiChange, item } = this.props;
     const fontsize = get(item, "ui_style.fontsize");
@@ -45,8 +59,16 @@ class LayoutWrapper extends Component {
 }
 
 LayoutWrapper.propTypes = {
+  t: PropTypes.func.isRequired,
   onUiChange: PropTypes.func.isRequired,
-  item: PropTypes.func.isRequired
+  item: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+LayoutWrapper.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(LayoutWrapper);

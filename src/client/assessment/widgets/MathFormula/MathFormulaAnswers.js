@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 
@@ -9,6 +9,7 @@ import CorrectAnswers from "../../components/CorrectAnswers";
 
 import MathFormulaAnswer from "./components/MathFormulaAnswer";
 import { updateVariables } from "../../utils/variables";
+import { CorrectAnswerContainer } from "../../styled/CorrectAnswerContainer";
 
 import { latexKeys } from "./constants";
 
@@ -17,13 +18,10 @@ const { methods } = math;
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
-  value: "",
-  options: {
-    significantDecimalPlaces: 10
-  }
+  value: ""
 };
 
-const MathFormulaAnswers = ({ item, setQuestionData }) => {
+const MathFormulaAnswers = ({ item, setQuestionData, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleAddAnswer = () => {
@@ -68,6 +66,9 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
         updateVariables(draft, latexKeys);
       })
     );
+    if (correctTab >= 1) {
+      setCorrectTab(correctTab - 1);
+    }
   };
 
   const handleChangeCorrectMethod = ({ index, prop, value }) => {
@@ -144,20 +145,20 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
       onAdd={handleAddAnswer}
       validation={item.validation}
       onCloseTab={handleCloseTab}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
     >
-      <Fragment>
+      <CorrectAnswerContainer>
         {correctTab === 0 && (
-          <div>
-            <MathFormulaWithPoints
-              item={item}
-              onChange={handleChangeCorrectMethod}
-              onAdd={handleAddCorrectMethod}
-              onDelete={handleDeleteCorrectMethod}
-              answer={item.validation.valid_response.value}
-              points={item.validation.valid_response.score}
-              onChangePoints={points => handleChangeCorrectPoints(points)}
-            />
-          </div>
+          <MathFormulaWithPoints
+            item={item}
+            onChange={handleChangeCorrectMethod}
+            onAdd={handleAddCorrectMethod}
+            onDelete={handleDeleteCorrectMethod}
+            answer={item.validation.valid_response.value}
+            points={item.validation.valid_response.score}
+            onChangePoints={points => handleChangeCorrectPoints(points)}
+          />
         )}
         {item.validation.alt_responses &&
           !!item.validation.alt_responses.length &&
@@ -178,14 +179,21 @@ const MathFormulaAnswers = ({ item, setQuestionData }) => {
             }
             return null;
           })}
-      </Fragment>
+      </CorrectAnswerContainer>
     </CorrectAnswers>
   );
 };
 
 MathFormulaAnswers.propTypes = {
   item: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+MathFormulaAnswers.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default MathFormulaAnswers;

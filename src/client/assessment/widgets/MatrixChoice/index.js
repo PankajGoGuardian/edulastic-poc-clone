@@ -8,7 +8,6 @@ import { withRouter } from "react-router-dom";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { desktopWidth } from "@edulastic/colors";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { replaceVariables, updateVariables } from "../../utils/variables";
@@ -24,14 +23,7 @@ import Answers from "./Answers";
 
 const EmptyWrapper = styled.div``;
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 const MatrixChoice = ({
   view,

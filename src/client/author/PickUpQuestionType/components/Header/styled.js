@@ -12,13 +12,13 @@ export const Container = styled.div`
   justify-content: space-between;
   margin-bottom: 70px;
   background: ${newBlue};
-  padding: 0px 45px;
+  padding: 25px 45px 0;
   height: 96px;
   z-index: 10;
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 30px;
-    padding: 0 26px;
+    padding: 25px 26px 0;
   }
 `;
 

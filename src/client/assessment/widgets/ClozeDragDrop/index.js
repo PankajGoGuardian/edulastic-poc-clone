@@ -21,19 +21,11 @@ import Display from "./Display";
 import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
-import { desktopWidth } from "@edulastic/colors";
 import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeDragDrop extends Component {
   getRenderData = () => {

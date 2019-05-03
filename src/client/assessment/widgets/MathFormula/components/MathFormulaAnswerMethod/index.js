@@ -91,7 +91,7 @@ const clearOptions = (method, options) => {
   }
 };
 
-const MathFormulaAnswerMethod = ({ onChange, index, onDelete, method, value, aria_label, options, item, t }) => {
+const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label, options, item, t }) => {
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 

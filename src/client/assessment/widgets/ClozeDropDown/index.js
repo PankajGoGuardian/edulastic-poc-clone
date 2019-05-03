@@ -7,7 +7,6 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { desktopWidth } from "@edulastic/colors";
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -26,14 +25,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 
 const EmptyWrapper = styled.div``;
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeDropDown extends Component {
   getRenderData = () => {

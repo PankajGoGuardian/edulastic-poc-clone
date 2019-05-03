@@ -8,7 +8,6 @@ import produce from "immer";
 
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { desktopWidth } from "@edulastic/colors";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -23,16 +22,8 @@ import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
 import { Widget } from "../../styled/Widget";
-import styled from "styled-components";
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageDropDown extends Component {
   state = {

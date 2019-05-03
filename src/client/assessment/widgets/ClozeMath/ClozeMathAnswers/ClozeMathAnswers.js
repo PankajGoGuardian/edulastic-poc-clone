@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import { math } from "@edulastic/constants";
@@ -6,19 +6,17 @@ import { math } from "@edulastic/constants";
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
 import withPoints from "../../../components/HOC/withPoints";
+import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
 
 const { methods } = math;
 
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
-  value: "",
-  options: {
-    significantDecimalPlaces: 10
-  }
+  value: ""
 };
 
-const ClozeMathAnswers = ({ item, setQuestionData }) => {
+const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const _addAnswer = () => {
@@ -52,6 +50,9 @@ const ClozeMathAnswers = ({ item, setQuestionData }) => {
     const newItem = cloneDeep(item);
     newItem.validation.alt_responses.splice(tabIndex, 1);
     setQuestionData(newItem);
+    if (correctTab >= 1) {
+      setCorrectTab(correctTab - 1);
+    }
   };
 
   const _changeCorrectMethod = ({ methodValueIndex, methodIndex, prop, value }) => {
@@ -97,20 +98,20 @@ const ClozeMathAnswers = ({ item, setQuestionData }) => {
       onAdd={_addAnswer}
       validation={item.validation}
       onCloseTab={handleCloseTab}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
     >
-      <Fragment>
+      <CorrectAnswerContainer>
         {correctTab === 0 && (
-          <div>
-            <MathFormulaWithPoints
-              item={item}
-              onChange={_changeCorrectMethod}
-              onAdd={_addCorrectMethod}
-              onDelete={_deleteCorrectMethod}
-              answer={item.validation.valid_response.value}
-              points={item.validation.valid_response.score}
-              onChangePoints={_changeCorrectPoints}
-            />
-          </div>
+          <MathFormulaWithPoints
+            item={item}
+            onChange={_changeCorrectMethod}
+            onAdd={_addCorrectMethod}
+            onDelete={_deleteCorrectMethod}
+            answer={item.validation.valid_response.value}
+            points={item.validation.valid_response.score}
+            onChangePoints={_changeCorrectPoints}
+          />
         )}
         {item.validation.alt_responses &&
           !!item.validation.alt_responses.length &&
@@ -131,14 +132,21 @@ const ClozeMathAnswers = ({ item, setQuestionData }) => {
             }
             return null;
           })}
-      </Fragment>
+      </CorrectAnswerContainer>
     </CorrectAnswers>
   );
 };
 
 ClozeMathAnswers.propTypes = {
   item: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+ClozeMathAnswers.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default ClozeMathAnswers;

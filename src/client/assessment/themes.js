@@ -436,7 +436,7 @@ export const themes = {
         inputColor: "#fff",
         inputCorrectColor: "#e1fbf2",
         inputIncorrectColor: "#fce0e8",
-        iconTrashColor: "#4aac8b", // greenDark
+        iconTrashColor: "#1774F0", // newBlue
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
         iconCheckColor: "#1fe3a1", // green

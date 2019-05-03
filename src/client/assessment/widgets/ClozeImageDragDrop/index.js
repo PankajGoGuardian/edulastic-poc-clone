@@ -25,14 +25,7 @@ import Authoring from "./Authoring";
 
 const EmptyWrapper = styled.div``;
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageDragDrop extends Component {
   state = {

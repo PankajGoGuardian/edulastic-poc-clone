@@ -497,7 +497,8 @@
       "setcorrectanswers": "Set Correct Answer(s)",
       "correct": "Correct",
       "alternate": "Alternate",
-      "points": "Points"
+      "points": "Points",
+      "alternativeAnswer": "Alternative Answer"
     },
     "graphing": {
       "question": {
@@ -631,7 +632,8 @@
       "addNewMethod": "Add new method",
       "exactMatch": "Exact match",
       "template": "Template",
-      "thousandsSeparator": "Thousands separator"
+      "thousandsSeparator": "Thousands separator",
+      "composequestion": "Compose Question"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

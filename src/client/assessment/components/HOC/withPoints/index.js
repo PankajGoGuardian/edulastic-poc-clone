@@ -8,7 +8,7 @@ import { Container } from "./styled/Container";
 
 export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, ...props }) => (
-    <div>
+    <React.Fragment>
       <Container>
         <Input
           type="number"
@@ -21,7 +21,7 @@ export default WrappedComponent => {
         <span style={{ textTransform: "uppercase", marginLeft: 25 }}>{t("component.correctanswers.points")}</span>
       </Container>
       <WrappedComponent {...props} />
-    </div>
+    </React.Fragment>
   );
 
   hocComponent.propTypes = {

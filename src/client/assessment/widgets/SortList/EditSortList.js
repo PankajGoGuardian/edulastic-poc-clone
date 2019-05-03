@@ -7,82 +7,24 @@ import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
 
-import withAddButton from "../../components/HOC/withAddButton";
 import withPoints from "../../components/HOC/withPoints";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 
 import AdvancedOptions from "./components/AdvancedOptions";
-
-const List = withAddButton(QuillSortableList);
+import ComposeQuestion from "./ComposeQuestion";
+import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(QuillSortableList);
 
-const EditSortList = ({ item, setQuestionData, t }) => {
+const EditSortList = ({ item, setQuestionData, t, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
 
   const handleUiStyleChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
         draft.ui_style[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleAdd = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.source.push("");
-        draft.validation.valid_response.value.push(draft.source.length - 1);
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value.push(draft.source.length - 1);
-        });
-      })
-    );
-  };
-
-  const handleRemove = index => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.source.splice(index, 1);
-        draft.validation.valid_response.value.splice(
-          draft.validation.valid_response.value.indexOf(draft.source.length),
-          1
-        );
-        draft.validation.alt_responses.forEach(ite => {
-          ite.value.splice(ite.value.indexOf(draft.source.length), 1);
-        });
-
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleSortEnd = ({ oldIndex, newIndex }) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.source = arrayMove(item.source, oldIndex, newIndex);
-      })
-    );
-  };
-
-  const handleChange = (index, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.source[index] = value;
         updateVariables(draft);
       })
     );
@@ -166,27 +108,18 @@ const EditSortList = ({ item, setQuestionData, t }) => {
   return (
     <Fragment>
       <Paper padding="0px" boxShadow="none">
-        <Widget>
-          <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
-          <QuestionTextArea
-            placeholder={t("component.sortList.enterQuestion")}
-            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-            value={item.stimulus}
-          />
-        </Widget>
-        <Widget>
-          <Subtitle>{t("component.sortList.list")}</Subtitle>
-          <List
-            items={item.source}
-            onAdd={handleAdd}
-            firstFocus={item.firstMount}
-            onSortEnd={handleSortEnd}
-            onChange={handleChange}
-            onRemove={handleRemove}
-            useDragHandle
-            columns={1}
-          />
-        </Widget>
+        <ComposeQuestion
+          item={item}
+          setQuestionData={setQuestionData}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+        <ListComponent
+          item={item}
+          setQuestionData={setQuestionData}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
         <Widget>
           <CorrectAnswers
             onTabChange={setCorrectTab}
@@ -196,10 +129,17 @@ const EditSortList = ({ item, setQuestionData, t }) => {
             validation={item.validation}
             options={renderOptions()}
             onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
           />
         </Widget>
       </Paper>
-      <AdvancedOptions item={item} onUiChange={handleUiStyleChange} />
+      <AdvancedOptions
+        item={item}
+        onUiChange={handleUiStyleChange}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
     </Fragment>
   );
 };
@@ -207,7 +147,14 @@ const EditSortList = ({ item, setQuestionData, t }) => {
 EditSortList.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+EditSortList.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(EditSortList);

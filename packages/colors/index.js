@@ -71,6 +71,8 @@ export const btnColor = "#bed8fa";
 
 export const title = "#434B5D";
 
+export const tabGrey = "#7C848E";
+
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
 

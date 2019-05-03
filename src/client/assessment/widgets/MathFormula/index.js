@@ -5,14 +5,14 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
 
-import { MathInput, Paper } from "@edulastic/common";
+import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
 import { latexKeys } from "./constants";
@@ -20,6 +20,8 @@ import { latexKeys } from "./constants";
 import MathFormulaAnswers from "./MathFormulaAnswers";
 import MathFormulaOptions from "./components/MathFormulaOptions";
 import MathFormulaPreview from "./MathFormulaPreview";
+import ComposeQuestion from "./ComposeQuestion";
+import Template from "./Template";
 
 const EmptyWrapper = styled.div``;
 
@@ -33,7 +35,8 @@ const MathFormula = ({
   saveAnswer,
   smallSize,
   userAnswer,
-  t
+  fillSections,
+  cleanSections
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -46,15 +49,6 @@ const MathFormula = ({
     );
   };
 
-  const handleUpdateTemplate = val => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.template = val;
-        updateVariables(draft, latexKeys);
-      })
-    );
-  };
-
   const itemForPreview = useMemo(() => replaceVariables(item, latexKeys), [item]);
   const studentTemplate =
     itemForPreview.template && itemForPreview.template.replace(/\\embed\{response\}/g, "\\MathQuillMathField{}");
@@ -62,26 +56,27 @@ const MathFormula = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <Fragment>
-          <Paper style={{ marginBottom: 30 }}>
-            <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
-            <QuestionTextArea
-              placeholder={t("component.math.enterQuestion")}
-              onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-              value={item.stimulus}
+        <ContentArea>
+          <ComposeQuestion
+            item={item}
+            setQuestionData={setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+          <Template
+            item={item}
+            setQuestionData={setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+          <Widget>
+            <MathFormulaAnswers
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
             />
-            <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
-            <MathInput
-              showResponse
-              symbols={item.symbols}
-              numberPad={item.numberPad}
-              value={item.template}
-              onInput={latex => {
-                handleUpdateTemplate(latex);
-              }}
-            />
-            <MathFormulaAnswers item={item} setQuestionData={setQuestionData} />
-          </Paper>
+          </Widget>
           <MathFormulaOptions
             onChange={handleItemChangeChange}
             uiStyle={item.ui_style}
@@ -91,8 +86,10 @@ const MathFormula = ({
             stimulusReview={item.stimulus_review}
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
           />
-        </Fragment>
+        </ContentArea>
       )}
       {view === PREVIEW && (
         <Wrapper style={{ height: "100%", overflow: "visible" }}>
@@ -104,6 +101,8 @@ const MathFormula = ({
             evaluation={evaluation}
             smallSize={smallSize}
             userAnswer={userAnswer}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
           />
         </Wrapper>
       )}
@@ -121,7 +120,8 @@ MathFormula.propTypes = {
   evaluation: PropTypes.any.isRequired,
   userAnswer: PropTypes.any,
   smallSize: PropTypes.bool,
-  t: PropTypes.func.isRequired
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 MathFormula.defaultProps = {
@@ -129,7 +129,9 @@ MathFormula.defaultProps = {
   testItem: false,
   item: {},
   userAnswer: null,
-  smallSize: false
+  smallSize: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

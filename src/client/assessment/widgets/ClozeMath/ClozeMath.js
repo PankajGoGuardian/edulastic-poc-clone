@@ -1,6 +1,6 @@
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { Paper, CustomQuillComponent, Subtitle } from "@edulastic/common";
+import { Paper } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -12,40 +12,29 @@ import ClozeMathPreview from "./ClozeMathPreview";
 import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
-import QuestionTextArea from "../../components/QuestionTextArea";
+import { ContentArea } from "../../styled/ContentArea";
+import { Widget } from "../../styled/Widget";
 
-const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkAnswer, evaluation, userAnswer }) => {
+import ComposeQuestion from "./ComposeQuestion";
+import Template from "./Template";
+
+const ClozeMath = ({
+  view,
+  previewTab,
+  item,
+  setQuestionData,
+  saveAnswer,
+  checkAnswer,
+  evaluation,
+  userAnswer,
+  fillSections,
+  cleanSections
+}) => {
   const [template, setTemplate] = useState("");
 
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
-    });
-
-    setQuestionData(newItem);
-  };
-
-  const _reduceResponseButtons = (responseIndexes = [], value) =>
-    responseIndexes.map(nextIndex => {
-      const response = value.find((_, i) => nextIndex === i + 1);
-      return response || [];
-    });
-
-  const _updateTemplate = (val, responseIndexes) => {
-    const newItem = produce(item, draft => {
-      draft.template = val;
-
-      draft.validation.valid_response.value = _reduceResponseButtons(
-        responseIndexes,
-        draft.validation.valid_response.value
-      );
-
-      if (Array.isArray(draft.validation.alt_responses)) {
-        draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-          res.value = _reduceResponseButtons(responseIndexes, res.value);
-          return res;
-        });
-      }
     });
 
     setQuestionData(newItem);
@@ -68,26 +57,28 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
   return (
     <Fragment>
       {view === EDIT && (
-        <Fragment>
-          <Paper style={{ marginBottom: 30 }} data-cy="question-area">
-            <Subtitle>Compose question</Subtitle>
-            <QuestionTextArea
-              inputId="stimulusInput"
-              placeholder="Enter question"
-              onChange={stimulus => _itemChange("stimulus", stimulus)}
-              value={item.stimulus}
+        <ContentArea data-cy="question-area">
+          <ComposeQuestion
+            item={item}
+            setQuestionData={setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+          <Template
+            item={item}
+            setQuestionData={setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+          <Widget>
+            <ClozeMathAnswers
+              id="answers"
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
             />
-            <Subtitle data-cy="template">Template</Subtitle>
-            <CustomQuillComponent
-              inputId="templateInput"
-              toolbarId="template"
-              onChange={_updateTemplate}
-              showResponseBtn
-              value={item.template}
-              data-cy="templateBox"
-            />
-            <ClozeMathAnswers id="answers" item={item} setQuestionData={setQuestionData} />
-          </Paper>
+          </Widget>
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.ui_style}
@@ -97,8 +88,10 @@ const ClozeMath = ({ view, previewTab, item, setQuestionData, saveAnswer, checkA
             stimulusReview={item.stimulus_review}
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
           />
-        </Fragment>
+        </ContentArea>
       )}
       {view === PREVIEW && (
         <Paper style={{ height: "100%", overflow: "visible" }}>
@@ -125,14 +118,18 @@ ClozeMath.propTypes = {
   userAnswer: PropTypes.array,
   evaluation: PropTypes.array,
   previewTab: PropTypes.string,
-  item: PropTypes.object
+  item: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 ClozeMath.defaultProps = {
   previewTab: CLEAR,
   userAnswer: [],
   item: {},
-  evaluation: []
+  evaluation: [],
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

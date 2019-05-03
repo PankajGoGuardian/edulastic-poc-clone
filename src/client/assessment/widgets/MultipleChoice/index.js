@@ -10,7 +10,6 @@ import produce from "immer";
 
 import { PaddingDiv, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { desktopWidth } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
@@ -24,14 +23,7 @@ import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 const Divider = styled.div`
   padding: 10px 0;

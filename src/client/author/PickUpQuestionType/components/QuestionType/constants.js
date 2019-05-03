@@ -64,7 +64,7 @@ import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.s
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
-//Video&Passages
+// Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
 
@@ -1583,7 +1583,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFormula,
       stimulus: "",
       data: {
-        title: "Math formula",
+        title: "Expression",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.MATH,
@@ -1595,8 +1595,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: ""
               }
@@ -1629,69 +1628,8 @@ export const getCards = onSelectQuestionType => {
           "="
         ],
         symbols: ["units_si", "units_us", "qwerty"],
-        template: ""
-      },
-      onSelectQuestionType
-    },
-    {
-      type: "math",
-      cardImage: MTClozeMath,
-      stimulus: "",
-      data: {
-        title: "Cloze Math",
-        stimulus: "<p>[This is the stem.]</p>",
-        template:
-          '<p>Risus</p> <span class="response-btn" contenteditable="false">&nbsp;<span class="index">1</span><span class="text">Response</span>&nbsp;</span>, <p>et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et. Nunc diam enim, porta sed eros vitae.</p>',
-        type: questionType.CLOZE_MATH,
-        response_container: {
-          template: ""
-        },
-        ui_style: {
-          type: "floating-keyboard"
-        },
-        validation: {
-          scoring_type: "exactMatch",
-          valid_response: {
-            score: 1,
-            value: [
-              [
-                {
-                  method: "equivSymbolic",
-                  value: "",
-                  options: {
-                    inverseResult: false,
-                    decimalPlaces: 10
-                  }
-                }
-              ]
-            ]
-          }
-        },
-        is_math: true,
-        response_containers: [],
-        symbols: ["basic", "qwerty"],
-        numberPad: [
-          "7",
-          "8",
-          "9",
-          "\\div",
-          "4",
-          "5",
-          "6",
-          "\\times",
-          "1",
-          "2",
-          "3",
-          "-",
-          "0",
-          ".",
-          ",",
-          "+",
-          "left_move",
-          "right_move",
-          "Backspace",
-          "="
-        ]
+        template: EMBED_RESPONSE,
+        templateDisplay: false
       },
       onSelectQuestionType
     },
@@ -1700,10 +1638,11 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFractions,
       stimulus: "",
       data: {
-        title: "Math with fractions",
+        title: "Numeric",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
-        template: `\\frac{${EMBED_RESPONSE}}{${EMBED_RESPONSE}}`,
+        template: EMBED_RESPONSE,
+        templateDisplay: false,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1713,8 +1652,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: "\\frac{x}{x}"
               }
@@ -1755,10 +1693,11 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFillInBlanks,
       stimulus: "",
       data: {
-        title: "Math – fill in the blanks",
+        title: "Fill in the blanks",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
-        template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} =`,
+        template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
+        templateDisplay: true,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1768,8 +1707,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: "x+y"
               }
@@ -1810,7 +1748,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "Math with text",
+        title: "Equations & Inequalities",
         is_math: true,
         response_containers: [
           {
@@ -1819,7 +1757,8 @@ export const getCards = onSelectQuestionType => {
         ],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.MATH,
-        template: `${EMBED_RESPONSE}\\text{q ft}`,
+        template: EMBED_RESPONSE,
+        templateDisplay: false,
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -1828,8 +1767,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: "\\text{s}\\text{q ft}"
               }
@@ -1870,10 +1808,11 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTMatrices,
       stimulus: "",
       data: {
-        title: "Math with matrices",
+        title: "Matrices",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
+        templateDisplay: true,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1883,8 +1822,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: ""
               }
@@ -1925,10 +1863,11 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTUnits,
       stimulus: "",
       data: {
-        title: "Math with units",
+        title: "Units",
         is_math: true,
         stimulus: "<p>[This is the stem.]</p>",
-        template: `${EMBED_RESPONSE}=1m`,
+        template: `${EMBED_RESPONSE} = 1m`,
+        templateDisplay: true,
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1938,8 +1877,7 @@ export const getCards = onSelectQuestionType => {
               {
                 method: "equivSymbolic",
                 options: {
-                  inverseResult: false,
-                  significantDecimalPlaces: 10
+                  inverseResult: false
                 },
                 value: "100cm=1m"
               }
@@ -1993,6 +1931,68 @@ export const getCards = onSelectQuestionType => {
           "="
         ],
         symbols: ["units_si", "units_us", "qwerty"]
+      },
+      onSelectQuestionType
+    },
+    {
+      type: "math",
+      cardImage: MTClozeMath,
+      stimulus: "",
+      data: {
+        title: "Multipart Inline",
+        stimulus: "<p>[This is the stem.]</p>",
+        template: EMBED_RESPONSE,
+        templateDisplay: true,
+        type: questionType.CLOZE_MATH,
+        response_container: {
+          template: ""
+        },
+        ui_style: {
+          type: "floating-keyboard"
+        },
+        validation: {
+          scoring_type: "exactMatch",
+          valid_response: {
+            score: 1,
+            value: [
+              [
+                {
+                  method: "equivSymbolic",
+                  value: "",
+                  options: {
+                    inverseResult: false,
+                    decimalPlaces: 10
+                  }
+                }
+              ]
+            ]
+          }
+        },
+        is_math: true,
+        response_containers: [],
+        symbols: ["basic", "qwerty"],
+        numberPad: [
+          "7",
+          "8",
+          "9",
+          "\\div",
+          "4",
+          "5",
+          "6",
+          "\\times",
+          "1",
+          "2",
+          "3",
+          "-",
+          "0",
+          ".",
+          ",",
+          "+",
+          "left_move",
+          "right_move",
+          "Backspace",
+          "="
+        ]
       },
       onSelectQuestionType
     },

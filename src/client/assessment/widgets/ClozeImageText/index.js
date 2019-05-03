@@ -23,15 +23,7 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import { Widget } from "../../styled/Widget";
-
-const ContentArea = styled.div`
-  max-width: 76.7%;
-  margin-left: auto;
-
-  @media (max-width: ${desktopWidth}) {
-    max-width: 100%;
-  }
-`;
+import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageText extends Component {
   state = {
@@ -152,6 +144,7 @@ class ClozeImageText extends Component {
     } = this.props;
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
     const Wrapper = testItem ? React.Fragment : Paper;

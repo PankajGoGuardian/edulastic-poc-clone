@@ -7,13 +7,19 @@ import { replaceVariables } from "../../utils/variables";
 import EditClassification from "./EditClassification";
 import ClassificationPreview from "./ClassificationPreview";
 
+import { ContentArea } from "../../styled/ContentArea";
+
 const Classification = props => {
   const { view, item } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
     <Fragment>
-      {view === EDIT && <EditClassification {...props} />}
+      {view === EDIT && (
+        <ContentArea>
+          <EditClassification {...props} />
+        </ContentArea>
+      )}
       {view === PREVIEW && <ClassificationPreview {...props} item={itemForPreview} />}
     </Fragment>
   );

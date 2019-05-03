@@ -11,7 +11,8 @@ import {
   desktopWidth,
   tabletWidth,
   greenThird,
-  extraDesktopWidth
+  extraDesktopWidth,
+  mainBgColor
 } from "@edulastic/colors";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
 import {
@@ -97,9 +98,15 @@ class ModuleRow extends Component {
     const { showModal, selectedTest } = this.state;
     return (
       <React.Fragment>
-        <Modal visible={showModal} onCancel={this.closeModal} width="100%" height="100%">
+        <ModalWrapper
+          footer={null}
+          visible={showModal}
+          onCancel={this.closeModal}
+          width="calc(100% - 30px)"
+          height="calc(100% - 30px)"
+        >
           <AssessmentPlayer testId={selectedTest} preview />
-        </Modal>
+        </ModalWrapper>
         <ModuleWrapper data-cy="curriculumModuleRow" key={`${data.length}-${module.id}`} padding={padding}>
           <Container>
             <Module>
@@ -271,6 +278,31 @@ ModuleRow.propTypes = {
   assigned: PropTypes.array.isRequired,
   removeUnit: PropTypes.func.isRequired
 };
+
+const ModalWrapper = styled(Modal)`
+  top: 20px;
+  padding: 0;
+  overflow: hidden;
+  .ant-modal-content {
+    background: ${mainBgColor};
+    .ant-modal-close-icon {
+      color: ${white};
+    }
+    .ant-modal-body {
+      padding: 0px;
+      min-height: 100px;
+      text-align: center;
+      main {
+        padding: 60px 0px 0px;
+        height: calc(100vh - 40px);
+        & > section {
+          padding: 0px;
+          min-height: calc(100vh - 100px);
+        }
+      }
+    }
+  }
+`;
 
 const CustomIcon = styled.span`
   cursor: pointer;

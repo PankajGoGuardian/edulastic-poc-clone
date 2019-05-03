@@ -63,7 +63,7 @@ const menuItems = [
     path: "author/tests"
   },
   {
-    label: "Admin",
+    label: "Manage District",
     icon: IconSettings,
     path: "author/districtprofile"
   }

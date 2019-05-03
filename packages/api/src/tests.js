@@ -85,6 +85,14 @@ const deleteSharedUser = ({ testId, sharedId, sharedWith }) =>
     })
     .then(result => result.data.result);
 
+const getPublicTest = testId =>
+  api
+    .callApi({
+      url: `public/test/${testId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
@@ -93,5 +101,6 @@ export default {
   shareTest,
   publishTest,
   getSharedUsersList,
-  deleteSharedUser
+  deleteSharedUser,
+  getPublicTest
 };

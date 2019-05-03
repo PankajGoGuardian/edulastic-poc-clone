@@ -1,4 +1,6 @@
 import React, { Component, Suspense, lazy } from "react";
+import { get } from "lodash";
+import queryString from "query-string";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
@@ -11,8 +13,8 @@ import { test } from "@edulastic/constants";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
-import queryString from "query-string";
-import { get } from "lodash";
+import { proxyUser } from "./author/authUtils";
+import DemoPlayer from "./student/DemoPlayer";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -53,7 +55,9 @@ if (query.token && query.userId && query.role) {
 class App extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
-    tutorial: PropTypes.object
+    tutorial: PropTypes.object,
+    location: PropTypes.object.isRequired,
+    fetchUser: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -61,26 +65,36 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.props.fetchUser();
+    const { fetchUser, location } = this.props;
+    const publicPath = location.pathname.split("/").includes("public");
+
+    if (!publicPath) {
+      fetchUser();
+    }
   }
 
   render() {
-    const { user, tutorial } = this.props;
+    const { user, tutorial, location } = this.props;
     if (user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
+
     let defaultRoute = "/home/assignments";
 
-    if (user && user.isAuthenticated) {
-      const role = get(user, ["user", "role"]);
-      if (role === "teacher") {
-        defaultRoute = "/author/assignments";
-      } else if (role === "edulastic-admin") {
-        defaultRoute = "/admin";
+    const publicPath = location.pathname.split("/").includes("public");
+
+    if (!publicPath) {
+      if (user && user.isAuthenticated) {
+        const role = get(user, ["user", "role"]);
+        if (role === "teacher") {
+          defaultRoute = "/author/assignments";
+        } else if (role === "edulastic-admin") {
+          defaultRoute = "/admin";
+        }
+        //TODO: handle the rest of the role routes (district-admin,school-admin)
+      } else {
+        defaultRoute = "/Login";
       }
-      //TODO: handle the rest of the role routes (district-admin,school-admin)
-    } else {
-      defaultRoute = "/Login";
     }
 
     // signup routes hidden till org reference is not done
@@ -105,6 +119,7 @@ class App extends Component {
             <Route path="/student/test-summary" component={TestAttemptReview} />
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
+            <Route path="/public/test/:id" render={() => <DemoPlayer />} />
           </Switch>
         </Suspense>
       </div>

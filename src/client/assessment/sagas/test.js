@@ -40,7 +40,7 @@ function* loadTest({ payload }) {
       payload: true
     });
 
-    const { testActivityId, testId, preview = false } = payload;
+    const { testActivityId, testId, preview = false, demo = false } = payload;
     yield put({
       type: SET_TEST_ID,
       payload: {
@@ -51,15 +51,10 @@ function* loadTest({ payload }) {
     const groupId = yield select(getCurrentGroup);
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
-    const [test, testActivity] = yield all([
-      call(testsApi.getById, testId, {
-        validation: true,
-        data: true,
-        groupId,
-        testActivityId
-      }),
-      getTestActivity
-    ]);
+    const testRequest = !demo
+      ? call(testsApi.getById, testId, { validation: true, data: true, groupId, testActivityId })
+      : call(testsApi.getPublicTest, testId);
+    const [test, testActivity] = yield all([testRequest, getTestActivity]);
 
     const questions = getQuestions(test.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));

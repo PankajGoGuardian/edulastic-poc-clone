@@ -7,12 +7,12 @@ import { Switch, Route, withRouter } from "react-router-dom";
 import ThemeContainer from "./themes/index";
 import { loadTestAction } from "./actions/test";
 
-const AssessmentPlayer = ({ defaultAP, loadTest, match, preview = false, testId }) => {
+const AssessmentPlayer = ({ defaultAP, loadTest, match, preview = false, testId, demo }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
     const { utaId: testActivityId } = match.params;
 
-    loadTest({ testId, testActivityId, preview });
+    loadTest({ testId, testActivityId, preview, demo });
   }, []);
 
   if (preview) {

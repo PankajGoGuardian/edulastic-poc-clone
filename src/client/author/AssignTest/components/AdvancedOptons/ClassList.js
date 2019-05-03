@@ -5,6 +5,8 @@ import { connect } from "react-redux";
 import { get, curry, isEmpty, find, remove } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
+import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
+
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
@@ -20,8 +22,10 @@ const convertTableData = row => ({
 
 class ClassList extends React.Component {
   static propTypes = {
+    loadSchoolsData: PropTypes.func.isRequired,
     loadClassListData: PropTypes.func.isRequired,
     userOrgId: PropTypes.string.isRequired,
+    schools: PropTypes.array.isRequired,
     classList: PropTypes.array.isRequired,
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired
@@ -38,9 +42,12 @@ class ClassList extends React.Component {
   };
 
   componentDidMount() {
-    const { classList } = this.props;
+    const { classList, schools, loadSchoolsData, userOrgId } = this.props;
     if (isEmpty(classList)) {
       this.loadClassList();
+    }
+    if (isEmpty(schools)) {
+      loadSchoolsData({ body: { districtId: userOrgId } });
     }
   }
 
@@ -72,7 +79,7 @@ class ClassList extends React.Component {
   };
 
   render() {
-    const { classList, selectedClasses } = this.props;
+    const { classList, selectedClasses, schools } = this.props;
     const { searchTerms } = this.state;
     const tableData = classList.map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
@@ -123,15 +130,12 @@ class ClassList extends React.Component {
         <ClassListFilter>
           <StyledRowLabel>
             School
-            <Select placeholder="All School">
-              {allGrades.map(
-                ({ value, text, isContentGrade }) =>
-                  !isContentGrade && (
-                    <Select.Option key={value} value={value}>
-                      {text}
-                    </Select.Option>
-                  )
-              )}
+            <Select mode="multiple" placeholder="All School" onChange={changeField("institutionIds")}>
+              {schools.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
             </Select>
           </StyledRowLabel>
 
@@ -195,9 +199,11 @@ export default connect(
   state => ({
     termsData: get(state, "user.user.orgData.terms", []),
     classList: get(state, "classesReducer.data"),
-    userOrgId: getUserOrgId(state)
+    userOrgId: getUserOrgId(state),
+    schools: getSchoolsSelector(state)
   }),
   {
-    loadClassListData: receiveClassListAction
+    loadClassListData: receiveClassListAction,
+    loadSchoolsData: receiveSchoolsAction
   }
 )(ClassList);

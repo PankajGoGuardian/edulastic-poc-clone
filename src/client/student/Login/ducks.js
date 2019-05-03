@@ -30,7 +30,7 @@ function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload);
     const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData"]);
-    TokenStorage.storeAccessToken(result.token, user._id, user.role);
+    TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
     const redirectUrl = localStorage.getItem("loginRedirectUrl");

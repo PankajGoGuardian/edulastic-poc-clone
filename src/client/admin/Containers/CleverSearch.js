@@ -21,7 +21,7 @@ function CleverSearch(props) {
     });
   };
   return (
-    <MainDiv>
+    <>
       <h2>Search and Update District</h2>
       <FirstDiv>
         <TextInput
@@ -43,7 +43,7 @@ function CleverSearch(props) {
         </div>
       </FirstDiv>
       <SearchDistrictTable data={props.tableData} updateClever={props.updateClever} />
-    </MainDiv>
+    </>
   );
 }
 

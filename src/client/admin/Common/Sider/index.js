@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const { Sider } = Layout;
 
-export default function CustomSider({ initialCollapseState = true, children }) {
+export default function CustomSider({ initialCollapseState = false, children }) {
   const [collapse, setcollapsibility] = useState(initialCollapseState);
 
   return (

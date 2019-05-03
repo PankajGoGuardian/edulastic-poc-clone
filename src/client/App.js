@@ -12,7 +12,7 @@ import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
 import queryString from "query-string";
-import { proxyUser } from "./author/authUtils";
+import { get } from "lodash";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -70,11 +70,15 @@ class App extends Component {
       return <Loading />;
     }
     let defaultRoute = "/home/assignments";
-    console.log("login render user", user);
+
     if (user && user.isAuthenticated) {
-      if (user.user.role === "teacher") {
+      const role = get(user, ["user", "role"]);
+      if (role === "teacher") {
         defaultRoute = "/author/assignments";
+      } else if (role === "edulastic-admin") {
+        defaultRoute = "/admin";
       }
+      //TODO: handle the rest of the role routes (district-admin,school-admin)
     } else {
       defaultRoute = "/Login";
     }
@@ -89,7 +93,7 @@ class App extends Component {
             <Route path="/author" component={Author} />
             <Route path="/home" component={Dashboard} />
             <Route path="/admin" component={Admin} />
-           
+
             <Route path="/Signup" component={TeacherSignup} />
             <Route path="/Login" component={Login} />
             <Route path="/GetStarted" component={GetStarted} />

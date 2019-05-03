@@ -79,7 +79,7 @@ class App extends Component {
       return <Loading />;
     }
 
-    let defaultRoute = "/home/assignments";
+    let defaultRoute = "/author/assignments";
 
     const publicPath = location.pathname.split("/").includes("public");
 
@@ -90,6 +90,10 @@ class App extends Component {
           defaultRoute = "/author/assignments";
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
+        } else if (role === "student") {
+          defaultRoute = "/home/assignments";
+        } else if (role === "district-admin" || role === "school-admin") {
+          defaultRoute = "/author/assignments";
         }
         //TODO: handle the rest of the role routes (district-admin,school-admin)
       } else {

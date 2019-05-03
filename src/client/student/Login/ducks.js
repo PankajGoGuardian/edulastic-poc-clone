@@ -41,7 +41,7 @@ function* login({ payload }) {
       yield put(push("/home/assignments"));
     } else if (user.role === roleuser.ADMIN) {
       yield put(push("/admin"));
-    } else yield put(push("/author/items"));
+    } else yield put(push("/author/assignments"));
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";

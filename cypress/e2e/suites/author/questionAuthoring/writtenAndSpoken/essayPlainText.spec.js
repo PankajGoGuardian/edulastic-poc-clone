@@ -26,7 +26,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Essay with pla
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // create new que and select type
       editItem.chooseQuestion(queData.group, queData.queType);
     });

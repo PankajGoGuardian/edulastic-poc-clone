@@ -32,7 +32,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Cloze with Tex
 
   context(" > Create basic question and validate.", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
     });

@@ -31,7 +31,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Shading" type 
 
     context(" > Create basic question and validate.", () => {
       before("visit items page and select question type", () => {
-        itemList.clickOnCreate();
+        editItem.createNewItem();
         // create new que and select type
         editItem.chooseQuestion(queData.group, queData.queType);
       });

@@ -66,11 +66,13 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.route("GET", "**assignments**").as("assignment");
   login.fillLoginForm(postData.email, postData.password);
   login.onClickSignin().then(() => {
+    cy.wait("@assignment");
+    /* 
     if (role === "teacher") {
       cy.wait("@apiLoad");
     } else {
       cy.wait("@assignment");
-    }
+    } */
   });
 });
 

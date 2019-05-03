@@ -32,14 +32,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > [Tc_398]:Tc_2 => Upload image", () => {
       it(" > Upload image to server", () => {
-        cy.fixture("testImages/sample.jpg").then(logo => {
+        /*   cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
               // update uploaded image link to store
@@ -52,7 +52,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               cy.get('[data-cy="drag-drop-image-panel"] img').should("have.attr", "src", imageUrl);
             });
           });
-        });
+        }); */
 
         // test with local image
         // const testImageUrl = 'https://edureact-dev.s3.amazonaws.com/1551154644960_blob';
@@ -62,6 +62,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         //   .its('store')
         //   .invoke('dispatch', { type: '[author questions] update questions', payload: currentQuestion });
         // cy.get('[data-cy="drag-drop-image-panel"] img').should('have.attr', 'src', testImageUrl);
+
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+          question
+            .getDropZoneImageContainer()
+            .find("img")
+            .should("have.attr", "src");
+        });
       });
 
       it(" > Width(px)", () => {
@@ -223,7 +230,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
 
     context(" > [Tc_403]:Tc_2 => Upload image", () => {
       it(" > Upload image to server", () => {
-        cy.fixture("testImages/sample.jpg").then(logo => {
+        /*  cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
               // update uploaded image link to store
@@ -236,6 +243,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               cy.get('[data-cy="drag-drop-image-panel"] img').should("have.attr", "src", imageUrl);
             });
           });
+        }); */
+
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+          question
+            .getDropZoneImageContainer()
+            .find("img")
+            .should("have.attr", "src");
         });
 
         // test with local image

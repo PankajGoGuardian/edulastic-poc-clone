@@ -396,7 +396,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
   context(" > User creates question", () => {
     context(" > Math Cloze type question with one Response box", () => {
       before("visit items page and select question type", () => {
-        itemList.clickOnCreate();
+        editItem.createNewItem();
         // create new que and select type
         editItem.chooseQuestion(queData.group, queData.queType);
       });

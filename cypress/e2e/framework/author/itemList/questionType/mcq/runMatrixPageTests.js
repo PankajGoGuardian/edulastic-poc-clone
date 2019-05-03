@@ -14,7 +14,7 @@ const runMatrixPageTests = queData => {
 
   context("User creates question", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // select que type
       editItem.chooseQuestion(queData.group, queData.queType);
     });

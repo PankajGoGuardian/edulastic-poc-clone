@@ -65,7 +65,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
   };
 
   const question = new GraphingStandardPage();
-  const editItemPage = new EditItemPage();
+  const editItem = new EditItemPage();
   const previewItemPage = new PreviewItemPage();
   const header = new Header();
   const itemList = new ItemListPage();
@@ -76,9 +76,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // create new que and select type
-      editItemPage.chooseQuestion(queData.group, queData.queType);
+      editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     it(" > Edit question text", () => {

@@ -27,14 +27,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
   context(" > User creates question.", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // create new que and select type
       editItem.chooseQuestion(queData.group, queData.queType);
     });
 
     context(" > TC_238 => Image upload area", () => {
       it(" > Upload image to server", () => {
-        cy.fixture("testImages/sample.jpg").then(logo => {
+        /*   cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
               // update uploaded image link to store
@@ -50,6 +50,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
                 .should("have.attr", "src", imageUrl);
             });
           });
+        }); */
+
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+          question
+            .getDropZoneImageContainer()
+            .find("img")
+            .should("have.attr", "src");
         });
 
         // test with local image
@@ -269,7 +276,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
 
     context(" > TC_243 => Image upload area", () => {
       it(" > Upload image to server", () => {
-        cy.fixture("testImages/sample.jpg").then(logo => {
+        /*  cy.fixture("testImages/sample.jpg").then(logo => {
           Cypress.Blob.base64StringToBlob(logo, "image/jpg").then(blob => {
             cy.uploadImage(blob).then(result => {
               // update uploaded image link to store
@@ -285,6 +292,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Highlight Imag
                 .should("have.attr", "src", imageUrl);
             });
           });
+        }); */
+
+        cy.uploadFile("testImages/sample.jpg", "input[type=file]").then(() => {
+          question
+            .getDropZoneImageContainer()
+            .find("img")
+            .should("have.attr", "src");
         });
 
         // test with local image

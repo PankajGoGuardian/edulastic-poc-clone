@@ -109,6 +109,8 @@ class LabelImageStandardPage {
 
   // upload image
 
+  getDropZoneImageContainer = () => cy.get('[data-cy="drag-drop-image-panel"]');
+
   changeImageWidth(width) {
     cy.get('[data-cy="image-width-input"]')
       .click()
@@ -229,14 +231,8 @@ class LabelImageStandardPage {
 
   checkAndDeleteAlternates = () =>
     cy
-      .contains("div", "Set Correct Answer(s)")
-      .next()
-      .children()
-      .first()
-      .children()
-      .first()
-      .next()
-      .contains("Alternate 1")
+      .get('[data-cy="tabs"]')
+      .contains("Alternate")
       .should("be.visible")
       .next()
       .children()

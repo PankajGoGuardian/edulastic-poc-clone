@@ -1,10 +1,11 @@
 /// <reference types="Cypress"/>
 
 import uuidv4 from "uuid/v4";
+import { getAccessToken } from "../../packages/api/src/utils/Storage";
 
 const BASE_URL = Cypress.config("API_URL");
 const fixtureFolderPath = "cypress/fixtures";
-const deleteTestDataFile = "toDelete/testData.json";
+const deleteTestDataFile = `${fixtureFolderPath}/toDelete/testData.json`;
 
 Cypress.Commands.add("createTestData", () => {
   let studentsAttemptJson;
@@ -125,9 +126,20 @@ Cypress.Commands.add("deleteItem", item => {
   });
 });
 
+Cypress.Commands.add("saveItemDetailToDelete", itemId => {
+  cy.readFile(`${deleteTestDataFile}`).then(json => {
+    if (!json.testItems) json.testItems = [];
+    const item = {
+      _id: itemId,
+      authToken: getAccessToken()
+    };
+    json.testItems.push(item);
+    cy.writeFile(`${deleteTestDataFile}`, json);
+  });
+});
+
 Cypress.Commands.add("deleteTestData", () => {
-  const fileFullPath = `${fixtureFolderPath}/${deleteTestDataFile}`;
-  cy.task("readFileContent", fileFullPath).then(fileContent => {
+  cy.task("readFileContent", deleteTestDataFile).then(fileContent => {
     let testData;
     if (fileContent !== null) {
       testData = JSON.parse(fileContent);
@@ -143,7 +155,7 @@ Cypress.Commands.add("deleteTestData", () => {
 
       // TODO : add other collections API
     } else testData = {};
-    cy.writeFile(fileFullPath, testData).then(json => {
+    cy.writeFile(deleteTestDataFile, testData).then(json => {
       expect(Object.keys(json).length).to.equal(0);
     });
   });

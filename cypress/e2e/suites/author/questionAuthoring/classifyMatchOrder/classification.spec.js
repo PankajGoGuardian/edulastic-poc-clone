@@ -36,7 +36,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Classification
 
   context(" > Advanced Options", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
     });

@@ -1,0 +1,9 @@
+{
+  "mcqStd": {
+    "default": {
+      "quetext": "This is mcqStd question",
+      "choices": ["correct-1", "wrong-1", "wrong-2", "wrong-3"],
+      "setAns": { "correct": ["correct-1"], "points": 1 }
+    }
+  }
+}

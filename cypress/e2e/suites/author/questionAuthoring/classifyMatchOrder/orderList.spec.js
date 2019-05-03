@@ -35,7 +35,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "OrderList" typ
 
   context(" > User creates question", () => {
     before("visit items page and select question type", () => {
-      itemList.clickOnCreate();
+      editItem.createNewItem();
       // add new question
       editItem.chooseQuestion(queData.group, queData.queType);
     });

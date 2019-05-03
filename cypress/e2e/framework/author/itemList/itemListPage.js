@@ -1,11 +1,7 @@
 import promisify from "cypress-promise";
-import { getAccessToken } from "../../../../../packages/api/src/utils/Storage";
 
 class ItemListPage {
-  clickOnCreate = async () => {
-    const fileWritePath = "cypress/fixtures";
-    const fixtureFile = "toDelete/testData.json";
-
+  clickOnCreate = () => {
     cy.server();
     cy.route("POST", "**/testitem**").as("saveItem");
     cy.route("GET", "**/testitem/**").as("reload");
@@ -13,22 +9,15 @@ class ItemListPage {
     cy.contains("Create")
       .should("be.visible")
       .click();
-
-    cy.wait("@saveItem");
-
-    const xhr = await promisify(cy.wait("@reload"));
-    expect(xhr.status).to.eq(200);
-    const itemId = xhr.response.body.result._id;
-    cy.log("New Item Created : ", itemId);
-    console.log("Item created with _id : ", itemId);
-
-    cy.readFile(`${fileWritePath}/${fixtureFile}`).then(json => {
-      if (!json.testItems) json.testItems = [];
-      const item = { _id: itemId, authToken: getAccessToken() };
-      json.testItems.push(item);
-      cy.writeFile(`${fileWritePath}/${fixtureFile}`, json);
+    cy.wait("@saveItem").then(xhr => assert(xhr.status === 200, "Creating item failed"));
+    // const xhr = await promisify(cy.wait("@reload"));
+    cy.wait("@reload").then(xhr => {
+      assert(xhr.status === 200, "GET item failed,writing item details failed");
+      const itemId = xhr.response.body.result._id;
+      console.log("Item created with _id : ", itemId);
+      cy.saveItemDetailToDelete(itemId);
     });
-    return itemId;
+    // return itemId;
   };
 }
 

@@ -40,6 +40,8 @@ import {
 } from "./styled";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
+console.log("setquestionac", setQuestionAction);
+
 class Container extends Component {
   state = {
     currentQuestion: "multiple-choice",
@@ -49,7 +51,8 @@ class Container extends Component {
 
   // when a particular question type is picked, populate the "authorQuestions" collection
   selectQuestionType = data => {
-    const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit } = this.props;
+    //FIXME: Weird! connect not working properly. setQuestion not available as a prop
+    const { setQuestion = () => {}, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit } = this.props;
     const question = {
       id: uuid(),
       ...data

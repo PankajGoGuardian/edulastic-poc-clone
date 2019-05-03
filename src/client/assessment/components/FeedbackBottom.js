@@ -5,6 +5,7 @@ import { Input } from "antd";
 
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -24,14 +25,9 @@ class FeedbackBottom extends Component {
     let score = 0;
     let maxScore = 1;
     if (activity) {
-      const {
-        feedback: { text: _feedback },
-        score: _score,
-        maxScore: _maxScore
-      } = activity;
-      feedback = _feedback || "";
-      score = _score || 0;
-      maxScore = _maxScore || 1;
+      feedback = get(activity, "feedback.text", "");
+      score = get(activity, "feedback.score", 0);
+      maxScore = get(activity, "feedback.maxScore", 1);
     }
     this.state = {
       score,
@@ -111,8 +107,8 @@ class FeedbackBottom extends Component {
 FeedbackBottom.propTypes = {
   widget: PropTypes.shape({ evaluation: PropTypes.object }).isRequired,
   loadFeedbackResponses: PropTypes.func.isRequired,
-  user: PropTypes.object.isRequired,
-  testItemId: PropTypes.string.isRequired
+  user: PropTypes.object.isRequired
+  // testItemId: PropTypes.string.isRequired
 };
 
 const enhance = compose(

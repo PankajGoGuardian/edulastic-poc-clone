@@ -152,8 +152,12 @@ export const getQuestionsSelectorForReview = state => {
   const testItems = get(state, "tests.entity.testItems", []);
   return testItems.reduce((acc, item) => {
     const questions = get(item, "data.questions", []);
+    const resources = get(item, "data.resources", []);
     for (const question of questions) {
       acc[question.id] = question;
+    }
+    for (const resource of resources) {
+      acc[resource.id] = resource;
     }
     return acc;
   }, {});

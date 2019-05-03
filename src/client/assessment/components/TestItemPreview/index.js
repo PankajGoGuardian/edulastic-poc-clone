@@ -51,9 +51,11 @@ class TestItemPreview extends Component {
     const { cols, preview, style, windowWidth, showFeedback, questions, index } = this.props;
 
     let questionCount = 0;
-    cols.forEach(({ widgets }) => {
-      questionCount += widgets.length;
-    });
+    cols
+      .filter(item => item.widgets.length > 0)
+      .forEach(({ widgets }) => {
+        questionCount += widgets.length;
+      });
     if (questionCount === 0) {
       return null;
     }

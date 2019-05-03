@@ -9,7 +9,7 @@ import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from ".
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import { setTestDataAction, getTestEntitySelector } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
-import { history } from "../../configureStore";
+import { push } from "connected-react-router";
 import {
   UPDATE_QUESTION,
   SET_FIRST_MOUNT,
@@ -266,8 +266,9 @@ function* saveQuestionSaga({ payload: modalItemId }) {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
+    const locationState = yield select(state => state.router.location.state);
     let currentQuestionIds = getQuestionIds(itemDetail);
-    const { rowIndex, tabIndex } = history.location.state || { rowIndex: 0, tabIndex: 1 };
+    const { rowIndex, tabIndex } = locationState || { rowIndex: 0, tabIndex: 1 };
     const { id } = question;
     const entity = {
       ...question,
@@ -338,14 +339,16 @@ function* saveQuestionSaga({ payload: modalItemId }) {
     }
 
     if (itemDetail) {
-      yield call(history.push, {
-        pathname: `/author/items/${item._id}/item-detail`,
-        state: {
-          backText: "Back to item library",
-          backUrl: "/author/items",
-          itemDetail: false
-        }
-      });
+      yield put(
+        push({
+          pathname: `/author/items/${item._id}/item-detail`,
+          state: {
+            backText: "Back to item library",
+            backUrl: "/author/items",
+            itemDetail: false
+          }
+        })
+      );
     }
   } catch (err) {
     console.error(err);
@@ -432,17 +435,19 @@ function* calculateFormulaSaga() {
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex } = payload;
-    const { pathname } = history.location.pathname;
+    const pathname = yield select(state => state.router.location.pathname);
 
     yield put(changeCurrentQuestionAction(data.reference));
-    yield call(history.push, {
-      pathname: "/author/questions/edit",
-      state: {
-        backText: "question edit",
-        backUrl: pathname,
-        rowIndex
-      }
-    });
+    yield put(
+      push({
+        pathname: "/author/questions/edit",
+        state: {
+          backText: "question edit",
+          backUrl: pathname,
+          rowIndex
+        }
+      })
+    );
     const alignments = yield select(getAlignmentFromQuestionSelector);
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {

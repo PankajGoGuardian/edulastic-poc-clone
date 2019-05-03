@@ -1,25 +1,31 @@
 import React, { Component } from "react";
 import * as moment from "moment";
-import { Form, Input, Row, Col, Button } from "antd";
+import { Form, Input, Row, Col, Button, Modal } from "antd";
 
-import { StyledModal, ModalFormItem, StyledDatePicker } from "./styled";
+import { ModalFormItem, StyledDatePicker } from "./styled";
 
 class CreateTermModal extends React.Component {
   constructor(props) {
     super(props);
 
-    const defaultSchoolName = this.getValidateSchoolYearname();
-    this.state = {
-      startDate: moment(new Date(), "DD MMM YYYY"),
-      endDate: moment(new Date(), "DD MMM YYYY").add(1, "years"),
-      defaultSchoolName
-    };
-  }
+    let dataSource = [...this.props.dataSource];
+    let startDate, endDate, defaultSchoolYear;
 
-  getValidateSchoolYearname() {
-    const currentYear = new Date().getFullYear();
-    let defaultSchoolName = currentYear + "-" + (currentYear + 1).toString().substring(2, 4);
-    return defaultSchoolName;
+    if (dataSource.length > 0) {
+      startDate = moment(dataSource[0].endDate).add(1, "days");
+      endDate = moment(dataSource[0].endDate).add(1, "years");
+      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+    } else {
+      startDate = moment(new Date()).add(1, "days");
+      endDate = moment(new Date()).add(1, "years");
+      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+    }
+
+    this.state = {
+      startDate,
+      endDate,
+      defaultSchoolYear
+    };
   }
 
   handleStartDateChange = value => {
@@ -52,17 +58,6 @@ class CreateTermModal extends React.Component {
     callback("School name should be unique.");
   };
 
-  disableStartDate = startValue => {
-    const toDayDate = moment(new Date(), "DD MMM YYYY");
-    toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 });
-
-    const { endDate } = this.state;
-
-    if (startValue.valueOf() < toDayDate.valueOf) return true;
-    if (startValue.valueOf() > endDate) return true;
-    return false;
-  };
-
   disableEndDate = endValue => {
     const { startDate } = this.state;
     const toDayDate = moment(new Date(), "DD MMM YYYY");
@@ -76,11 +71,10 @@ class CreateTermModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
-    const { startDate, endDate, defaultSchoolName } = this.state;
-    const isOverlap = startDate.valueOf() >= endDate.valueOf() ? true : false;
+    const { startDate, endDate, defaultSchoolYear } = this.state;
 
     return (
-      <StyledModal
+      <Modal
         visible={modalVisible}
         title="Create School Year"
         onOk={this.onCreateTerm}
@@ -105,28 +99,17 @@ class CreateTermModal extends React.Component {
                   },
                   { validator: this.checkSchoolNameUnique }
                 ],
-                initialValue: defaultSchoolName
+                initialValue: defaultSchoolYear
               })(<Input placeholder="Enter School Year Name" />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem
-              label="Start Date"
-              validateStatus={isOverlap ? "error" : ""}
-              help={isOverlap ? "Start date should not overlap end date for school year" : ""}
-            >
+            <ModalFormItem label="Start Date">
               {getFieldDecorator("startDate", {
-                rules: [{ required: true, message: "Please Select Start Date" }],
                 initialValue: startDate
-              })(
-                <StyledDatePicker
-                  format={"DD MMM YYYY"}
-                  onChange={this.handleStartDateChange}
-                  disabledDate={this.disableStartDate}
-                />
-              )}
+              })(<StyledDatePicker format={"DD MMM YYYY"} disabled={true} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -146,7 +129,7 @@ class CreateTermModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledModal>
+      </Modal>
     );
   }
 }

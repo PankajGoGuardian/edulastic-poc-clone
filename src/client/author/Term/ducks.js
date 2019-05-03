@@ -87,7 +87,7 @@ export const reducer = createReducer(initialState, {
         _id: payload[i]._id
       });
     }
-    state.data = receivedTerm;
+    state.data = state.data = receivedTerm.sort((a, b) => b.startDate - a.startDate);
   },
   [RECEIVE_TERM_ERROR]: (state, { payload }) => {
     state.loading = false;

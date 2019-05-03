@@ -95,7 +95,7 @@ class TermTable extends React.Component {
                 <Icon type="edit" theme="twoTone" />
               </StyledButton>
               <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledDeleteButton disiable={deleteDisabled}>
+                <StyledDeleteButton disabled={deleteDisabled}>
                   <Icon type="delete" />
                 </StyledDeleteButton>
               </Popconfirm>

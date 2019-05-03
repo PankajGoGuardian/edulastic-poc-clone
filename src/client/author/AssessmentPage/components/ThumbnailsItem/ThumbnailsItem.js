@@ -4,8 +4,8 @@ import { Document, Page } from "react-pdf";
 
 import { ThumbnailsItemWrapper, PageNumber, PagePreview } from "./styled";
 
-const ThumbnailsItem = ({ page, onClick, url, current }) => (
-  <ThumbnailsItemWrapper onClick={onClick} active={current === page}>
+const ThumbnailsItem = ({ page, index, onClick, url, current }) => (
+  <ThumbnailsItemWrapper onClick={onClick} active={current === index}>
     <PagePreview>
       {url && (
         <Document file={url} renderMode="canvas">
@@ -13,7 +13,7 @@ const ThumbnailsItem = ({ page, onClick, url, current }) => (
         </Document>
       )}
     </PagePreview>
-    <PageNumber>{page}</PageNumber>
+    <PageNumber>{index + 1}</PageNumber>
   </ThumbnailsItemWrapper>
 );
 

@@ -15,23 +15,14 @@ const menu = (onReupload, onAddBlank, onDeleteBlank) => (
   </Menu>
 );
 
-const Thumbnails = ({
-  list,
-  url,
-  onPageChange,
-  onReupload,
-  onAddBlankPage,
-  onDeleteBlankPage,
-  review,
-  currentPage
-}) => {
+const Thumbnails = ({ list, onPageChange, onReupload, onAddBlankPage, onDeleteBlankPage, review, currentPage }) => {
   const [minimized, setMinimized] = React.useState(false);
 
   const toggleMinimized = () => {
     setMinimized(!minimized);
   };
 
-  const onChangePage = key => () => onPageChange(key + 1);
+  const onChangePage = page => () => onPageChange(page);
 
   return (
     <ThumbnailsWrapper review={review} minimized={minimized}>
@@ -42,7 +33,14 @@ const Thumbnails = ({
       )}
       <ThumbnailsList>
         {list.map((item, key) => (
-          <ThumbnailsItem key={key} page={key + 1} onClick={onChangePage(key)} url={url} current={currentPage} />
+          <ThumbnailsItem
+            key={key}
+            index={key}
+            page={item.pageNo}
+            onClick={onChangePage(key)}
+            url={item.URL !== "blank" && item.URL}
+            current={currentPage}
+          />
         ))}
       </ThumbnailsList>
       {!review && (
@@ -63,12 +61,10 @@ Thumbnails.propTypes = {
   onAddBlankPage: PropTypes.func.isRequired,
   onDeleteBlankPage: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
-  url: PropTypes.string,
   review: PropTypes.bool
 };
 
 Thumbnails.defaultProps = {
-  url: undefined,
   review: false
 };
 

@@ -12,15 +12,14 @@ import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
 import { WorksheetWrapper } from "./styled";
 
-const defaultPreview = 1;
+const defaultPage = {
+  URL: "blank",
+  pageNo: 1
+};
 
 const createPage = (pageNumber, url) => ({
-  [pageNumber]: {
-    URL: url ? "main" : "blank",
-    pageNo: pageNumber,
-    rotate: 0,
-    annotationIds: []
-  }
+  URL: url ? url : "blank",
+  pageNo: pageNumber
 });
 
 class Worksheet extends React.Component {
@@ -42,11 +41,11 @@ class Worksheet extends React.Component {
     review: false,
     annotations: [],
     noCheck: false,
-    pageStructure: {}
+    pageStructure: []
   };
 
   state = {
-    currentPage: 1,
+    currentPage: 0,
     totalPages: 1
   };
 
@@ -88,15 +87,11 @@ class Worksheet extends React.Component {
   handleAddBlankPage = () => {
     const { pageStructure, setTestData } = this.props;
 
-    const blankPageNumber = Object.keys(pageStructure).length + 2;
-
+    const blankPageNumber = Object.keys(pageStructure).length + 1;
     const newBlankPage = createPage(blankPageNumber);
 
     const updatedAssessment = {
-      pageStructure: {
-        ...pageStructure,
-        ...newBlankPage
-      }
+      pageStructure: [...pageStructure, newBlankPage]
     };
 
     setTestData(updatedAssessment);
@@ -104,29 +99,38 @@ class Worksheet extends React.Component {
 
   handleDeleteBlankPage = () => {
     const { currentPage } = this.state;
-    const { pageStructure, setTestData } = this.props;
+    const { pageStructure, setTestData, annotations } = this.props;
 
-    if (currentPage === 1) return;
+    if (currentPage === 0) return;
 
-    const updatedPageStructure = { ...pageStructure };
+    const page = pageStructure[currentPage];
 
-    delete updatedPageStructure[currentPage];
+    if (page && page.URL === "blank") {
+      const updatedPageStructure = [...pageStructure];
 
-    const updatePageNumbers = (total, pageNumber, index) => ({
-      ...total,
-      [index + 2]: {
-        ...updatedPageStructure[pageNumber],
-        pageNo: index + 2
-      }
-    });
+      updatedPageStructure.splice(currentPage, 1);
 
-    const updatedPageNumbers = Object.keys(updatedPageStructure).reduce(updatePageNumbers, {});
+      const annotationIndex = annotations.findIndex(annotation => annotation.page === currentPage + 1);
 
-    this.handleChangePage(currentPage - 1);
+      const updatedAnnotations = [...annotations];
 
-    setTestData({
-      pageStructure: updatedPageNumbers
-    });
+      updatedAnnotations.splice(annotationIndex, 1);
+
+      const updatedAssessment = {
+        pageStructure: updatedPageStructure.map((item, index) => {
+          if (item.URL !== "blank") return item;
+
+          return {
+            ...item,
+            pageNo: index + 1
+          };
+        }),
+        annotations: updatedAnnotations
+      };
+
+      this.handleChangePage(currentPage - 1);
+      setTestData(updatedAssessment);
+    }
   };
 
   handleReupload = () => {
@@ -140,20 +144,19 @@ class Worksheet extends React.Component {
   };
 
   render() {
-    const { currentPage, totalPages } = this.state;
+    const { currentPage } = this.state;
     const { docUrl, annotations, review, noCheck, questions, questionsById, answersById, pageStructure } = this.props;
 
-    const blankPagesAmount = Object.keys(pageStructure).length + 1;
-    const thumbnails = new Array(docUrl ? totalPages : blankPagesAmount).fill(defaultPreview);
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
+
+    const selectedPage = pageStructure[currentPage] || defaultPage;
 
     return (
       <WorksheetWrapper>
-        {(review ? totalPages > 1 : true) && (
+        {(review ? pageStructure.length > 1 : true) && (
           <Thumbnails
-            list={thumbnails}
+            list={pageStructure}
             currentPage={currentPage}
-            url={docUrl}
             onReupload={this.handleReupload}
             onPageChange={this.handleChangePage}
             onAddBlankPage={this.handleAddBlankPage}
@@ -163,8 +166,8 @@ class Worksheet extends React.Component {
         )}
         {shouldRenderDocument && (
           <PDFPreview
-            url={docUrl}
-            page={currentPage}
+            page={selectedPage}
+            currentPage={currentPage + 1}
             annotations={annotations}
             onDocumentLoad={this.handleDocumentLoad}
             onDropAnnotation={this.handleAddAnnotation}

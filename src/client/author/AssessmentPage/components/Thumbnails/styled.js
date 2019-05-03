@@ -9,7 +9,7 @@ export const ThumbnailsWrapper = styled.div`
   height: calc(100vh - 62px);
   overflow-y: scroll;
   padding: 30px 28px;
-  padding-right: ${({ review }) => (review ? "60px" : "28px")};
+  padding-right: ${({ review }) => (review ? "64px" : "28px")};
   padding-bottom: 0;
   background: #ebebeb;
   margin-left: ${({ minimized }) => (minimized ? "-183px" : 0)};
@@ -43,7 +43,7 @@ export const ReuploadButton = styled(Button)`
 export const MinimizeButton = styled.div`
   position: fixed;
   top: 100px;
-  left: ${({ minimized }) => (minimized ? "43px" : "198px")};
+  left: ${({ minimized }) => (minimized ? "143px" : "328px")};
   width: 32px;
   height: 32px;
   padding: 9px;

@@ -27,19 +27,19 @@ const getNumberStyles = (x, y) => ({
   left: `${x}px`
 });
 
-const PDFPreview = ({ url, page, annotations, onDocumentLoad, onDropAnnotation }) => (
+const PDFPreview = ({ page, currentPage, annotations, onDocumentLoad, onDropAnnotation }) => (
   <PDFPreviewWrapper>
-    <Droppable types={["question"]} onDrop={handleDrop(page, onDropAnnotation)}>
+    <Droppable types={["question"]} onDrop={handleDrop(currentPage, onDropAnnotation)}>
       <Preview>
-        {url && (
-          <Document file={url} onLoadSuccess={onDocumentLoad}>
-            <Page pageNumber={page} renderTextLayer={false} />
+        {page.URL !== "blank" && (
+          <Document file={page.URL} onLoadSuccess={onDocumentLoad}>
+            <Page pageNumber={page.pageNo} renderTextLayer={false} />
           </Document>
         )}
       </Preview>
     </Droppable>
     {annotations
-      .filter(item => item.toolbarMode === "question" && item.page === page)
+      .filter(item => item.toolbarMode === "question" && item.page === currentPage)
       .map(({ uuid, qIndex, x, y }) => (
         <QuestionNumber style={getNumberStyles(x, y)} key={uuid}>
           {qIndex}
@@ -50,7 +50,8 @@ const PDFPreview = ({ url, page, annotations, onDocumentLoad, onDropAnnotation }
 
 PDFPreview.propTypes = {
   url: PropTypes.string,
-  page: PropTypes.number.isRequired,
+  page: PropTypes.object.isRequired,
+  currentPage: PropTypes.number.isRequired,
   annotations: PropTypes.array,
   onDocumentLoad: PropTypes.func.isRequired,
   onDropAnnotation: PropTypes.func.isRequired

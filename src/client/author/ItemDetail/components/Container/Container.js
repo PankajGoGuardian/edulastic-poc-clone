@@ -26,7 +26,8 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector,
   clearRedirectTestAction,
-  setRedirectTestAction
+  setRedirectTestAction,
+  stateSelector
 } from "../../ducks";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
@@ -67,7 +68,7 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t } = this.props;
+    const { getItemDetailById, match, rows, history, t, loading } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
 
@@ -75,7 +76,7 @@ class Container extends Component {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
-    if (rows.length === 0 || rows[0].widgets.length === 0) {
+    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0)) {
       history.replace({
         pathname: `/author/items/${match.params.id}/pickup-questiontype`,
         state: {
@@ -495,6 +496,7 @@ const enhance = compose(
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
       item: getItemDetailSelector(state),
+      loading: stateSelector(state).loading,
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
       questions: getQuestionsSelector(state),

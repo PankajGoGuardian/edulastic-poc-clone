@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { newBlue, white, mobileWidth, greenDark, black } from "@edulastic/colors";
+import { newBlue, white, mobileWidth, greenDark, black, lightGrey } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
 const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange, data_cy, type }) => {
@@ -58,18 +58,18 @@ const Container = styled.div`
   color: ${({ active }) => (active ? black : "#7C848E")};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  background: ${({ active }) => (active ? newBlue : white)};
+  background: ${white};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
   min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
   text-align: center;
-  border-radius: 4px;
+  border-bottom: 3px solid;
+  border-color: ${({ active }) => (active ? newBlue : lightGrey)};
 
   span {
-    font-size: 11px;
-    text-transform: uppercase;
+    font-size: 14px;
     font-weight: 600;
-    color: ${({ active }) => (active ? white : "#7C848E")};
+    color: ${({ active }) => (active ? newBlue : "#7C848E")};
   }
   @media (max-width: ${mobileWidth}) {
     width: 50%;

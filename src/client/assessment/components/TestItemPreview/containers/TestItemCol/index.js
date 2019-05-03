@@ -92,7 +92,7 @@ class TestItemCol extends Component {
                 style={{
                   width: "50%",
                   textAlign: "center",
-                  padding: "30px 20px 15px"
+                  padding: "20px 15px"
                 }}
                 {...restProps}
               />

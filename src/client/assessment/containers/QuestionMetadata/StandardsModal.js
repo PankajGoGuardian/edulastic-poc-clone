@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Button, Row, Col, Select, Checkbox, Spin } from "antd";
 import { Paper, FlexContainer } from "@edulastic/common";
 import { connect } from "react-redux";
-import { getAvailableCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
 import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
 import { StyledModal } from "./styled/StyledModal";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
@@ -25,7 +25,7 @@ const StandardsModal = ({
   curriculumStandardsTLO,
   getCurriculumStandards,
   curriculumStandardsLoading,
-  filteredCurriculums,
+  formattedCuriculums,
   editAlignment,
   alignmentIndex,
   clearStandards
@@ -37,7 +37,6 @@ const StandardsModal = ({
     grades
   });
   const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : "");
-
   useMemo(() => {
     if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id);
   }, [curriculumStandardsTLO]);
@@ -108,17 +107,11 @@ const StandardsModal = ({
                 value={state.standard.curriculum}
                 onChange={handleChangeStandard}
               >
-                {filteredCurriculums.map(({ curriculum, name, _id }) =>
-                  name ? (
-                    <Select.Option key={_id} value={name}>
-                      {name}
-                    </Select.Option>
-                  ) : (
-                    <Select.Option key={_id} value={curriculum}>
-                      {curriculum}
-                    </Select.Option>
-                  )
-                )}
+                {formattedCuriculums.map(({ value, text, disabled }) => (
+                  <Select.Option key={value} value={text} disabled={disabled}>
+                    {text}
+                  </Select.Option>
+                ))}
               </Select>
             </ItemBody>
           </Col>
@@ -193,7 +186,7 @@ StandardsModal.propTypes = {
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
   grades: PropTypes.array,
-  filteredCurriculums: PropTypes.array
+  formattedCuriculums: PropTypes.array
 };
 
 StandardsModal.defaultProps = {
@@ -205,7 +198,7 @@ StandardsModal.defaultProps = {
 
 export default connect(
   (state, props) => ({
-    filteredCurriculums: getAvailableCurriculumsSelector(state, props)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, props)
   }),
   {
     clearStandards: clearDictStandardsAction

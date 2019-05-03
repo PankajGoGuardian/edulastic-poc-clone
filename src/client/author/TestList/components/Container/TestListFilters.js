@@ -5,7 +5,7 @@ import { blue, secondaryTextColor, titleColor, lightGreySecondary } from "@edula
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
-import { getStandardsListSelector, getAvailableCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
 
@@ -14,7 +14,7 @@ const TestListFilters = ({
   search,
   clearFilter,
   handleLabelSearch,
-  filteredCurriculums,
+  formattedCuriculums,
   curriculumStandards,
   searchCurriculum,
   handleStandardSearch,
@@ -22,11 +22,6 @@ const TestListFilters = ({
 }) => {
   const getFilters = () => {
     const { curriculumId } = search;
-    const formattedCuriculums = filteredCurriculums.map(item => ({
-      value: item._id,
-      text: item.curriculum || item.name
-    }));
-
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
       text: `${item.identifier} : ${item.description}`
@@ -84,8 +79,8 @@ const TestListFilters = ({
             onChange={value => onChange(filterItem.onChange, value)}
             disabled={filterItem.disabled}
           >
-            {filterItem.data.map(({ value, text }, index1) => (
-              <Select.Option value={value} key={index1}>
+            {filterItem.data.map(({ value, text, disabled }, index1) => (
+              <Select.Option value={value} key={index1} disabled={disabled}>
                 {text}
               </Select.Option>
             ))}
@@ -113,7 +108,7 @@ TestListFilters.defaultProps = {
 export default connect(
   (state, { search = {} }) => ({
     curriculumStandards: getStandardsListSelector(state),
-    filteredCurriculums: getAvailableCurriculumsSelector(state, search)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}
 )(TestListFilters);

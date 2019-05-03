@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Select } from "antd";
 import { connect } from "react-redux";
 import { questionType as questionTypes } from "@edulastic/constants";
-import { getAvailableCurriculumsSelector } from "../../../src/selectors/dictionaries";
+import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { Container, Item, ItemBody, ItemHeader, MainFilterItems } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
@@ -14,13 +14,12 @@ class Search extends Component {
       onSearchFieldChange,
       curriculumStandards,
       onStandardSearch,
-      filteredCurriculums
+      formattedCuriculums
     } = this.props;
     const isStandardsDisabled = !curriculumId;
     const standardsPlaceholder = isStandardsDisabled
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
-
     return (
       <MainFilterItems>
         <Container>
@@ -67,17 +66,11 @@ class Search extends Component {
                 <Select.Option key="" value="">
                   All Curriculums
                 </Select.Option>
-                {filteredCurriculums.map(el =>
-                  el.name ? (
-                    <Select.Option key={el._id} value={el._id}>
-                      {el.name}
-                    </Select.Option>
-                  ) : (
-                    <Select.Option key={el._id} value={el._id}>
-                      {el.curriculum}
-                    </Select.Option>
-                  )
-                )}
+                {formattedCuriculums.map(el => (
+                  <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                    {el.text}
+                  </Select.Option>
+                ))}
               </Select>
             </ItemBody>
           </Item>
@@ -177,7 +170,7 @@ Search.propTypes = {
 
 export default connect(
   (state, { search = {} }) => ({
-    filteredCurriculums: getAvailableCurriculumsSelector(state, search)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}
 )(Search);

@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select, Checkbox } from "antd";
+import { Select } from "antd";
 import { connect } from "react-redux";
-import { get, curry, isEmpty, find, remove } from "lodash";
+import { get, curry, isEmpty, remove } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
@@ -85,22 +85,20 @@ class ClassList extends React.Component {
   };
 
   render() {
-    const { classList, selectedClasses, schools, courseList } = this.props;
+    const { classList, schools, courseList, selectClass } = this.props;
     const { searchTerms } = this.state;
     const tableData = classList.map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
 
-    const columns = [
-      {
-        title: <Checkbox />,
-        width: "10%",
-        dataIndex: "standard",
-        key: "standard",
-        render: (_, row) => {
-          const checked = find(selectedClasses, item => row.key === item);
-          return <Checkbox checked={!!checked} onChange={e => this.selectClass(row.key, e.target.checked)} />;
+    const rowSelection = {
+      onChange: selectedRowKeys => {
+        if (selectClass) {
+          selectClass("class", selectedRowKeys);
         }
-      },
+      }
+    };
+
+    const columns = [
       {
         title: "CLASS NAME",
         sorter: true,
@@ -192,7 +190,12 @@ class ClassList extends React.Component {
           </StyledRowLabel>
         </ClassListFilter>
 
-        <StyledTable columns={columns} dataSource={tableData} pagination={{ pageSize: 7 }} />
+        <StyledTable
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={tableData}
+          pagination={{ pageSize: 7 }}
+        />
       </ClassListContainer>
     );
   }

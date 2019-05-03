@@ -9,22 +9,22 @@ class CreateTermModal extends React.Component {
     super(props);
 
     let dataSource = [...this.props.dataSource];
-    let startDate, endDate, defaultSchoolName;
+    let startDate, endDate, defaultSchoolYear;
 
     if (dataSource.length > 0) {
       startDate = moment(dataSource[0].endDate).add(1, "days");
       endDate = moment(dataSource[0].endDate).add(1, "years");
-      defaultSchoolName = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
     } else {
       startDate = moment(new Date()).add(1, "days");
       endDate = moment(new Date()).add(1, "years");
-      defaultSchoolName = startDate.format("YYYY") + "-" + endDate.format("YYYY");
+      defaultSchoolYear = startDate.format("YYYY") + "-" + endDate.format("YYYY");
     }
 
     this.state = {
       startDate,
       endDate,
-      defaultSchoolName
+      defaultSchoolYear
     };
   }
 
@@ -71,7 +71,7 @@ class CreateTermModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
-    const { startDate, endDate, defaultSchoolName } = this.state;
+    const { startDate, endDate, defaultSchoolYear } = this.state;
 
     return (
       <Modal
@@ -99,7 +99,7 @@ class CreateTermModal extends React.Component {
                   },
                   { validator: this.checkSchoolNameUnique }
                 ],
-                initialValue: defaultSchoolName
+                initialValue: defaultSchoolYear
               })(<Input placeholder="Enter School Year Name" />)}
             </ModalFormItem>
           </Col>

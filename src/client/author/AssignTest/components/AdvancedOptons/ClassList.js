@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { connect } from "react-redux";
-import { get, curry, isEmpty, remove } from "lodash";
+import { get, curry, isEmpty, remove, lowerCase } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
@@ -171,7 +171,7 @@ class ClassList extends React.Component {
               onChange={changeField("subjects")}
             >
               {allSubjects.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
+                <Select.Option key={value} value={lowerCase(value)}>
                   {text}
                 </Select.Option>
               ))}

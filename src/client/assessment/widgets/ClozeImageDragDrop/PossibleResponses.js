@@ -98,7 +98,7 @@ class PossibleResponses extends Component {
     const { t, item } = this.props;
 
     return (
-      <Widget>
+      <Widget data-cy="possibleResponses">
         <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
         <SortableList
           dirty={item.firstMount}

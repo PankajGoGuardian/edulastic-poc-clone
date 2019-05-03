@@ -187,17 +187,12 @@ class LabelImageStandardPage {
   deleteChoiceByIndex(index) {
     const selector = `[data-cy=choice_prefix_${index}]`;
     cy.get(selector)
-      .children()
-      .last()
+      .find('[data-cy="deleteButton"]')
       .click();
     return this;
   }
 
-  getAllChoices = () =>
-    cy
-      .contains("div", "Possible responses")
-      .next()
-      .find("input");
+  getAllChoices = () => cy.get('[data-cy="possibleResponses"]').find("input");
 
   addNewChoice() {
     cy.get('[data-cy="add-new-ch"]')
@@ -331,8 +326,7 @@ class LabelImageStandardPage {
       .get(selector)
       .children()
       .find(`[data-cy=choice_prefix_${choiceIndex}]`)
-      .children()
-      .last()
+      .find('[data-cy="deleteButton"]')
       .click();
   };
 

@@ -175,7 +175,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
         question
           .getChoiceByIndex(queData.choices.length)
           .click()
-          .should("have.value", "");
+          .clear()
+          .type(queData.formattext)
+          .should("have.value", queData.formattext);
         question.deleteChoiceByIndex(queData.choices.length);
       });
     });

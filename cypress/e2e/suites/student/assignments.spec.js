@@ -24,7 +24,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test Assignment Page`,
     });
   });
 
-  context.skip(" > Assignment attempt and stats", () => {
+  context(" > Assignment attempt and stats", () => {
     before(() => {
       cy.deleteAllAssignments();
       cy.assignAssignment(TestTypes.default);

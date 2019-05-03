@@ -129,7 +129,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
           .addNewChoiceOnResponse(0)
           .getChoiceByIndexRes(0, 2)
           .click()
-          .should("have.value", "");
+          .clear()
+          .type(queData.formattext)
+          .should("have.value", queData.formattext);
       });
 
       for (let i = 0; i < 3; i++) {
@@ -244,7 +246,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Label Image wi
               .should("be.visible")
               .next()
               .contains("span", queData.choices[0])
-              .should("be.visible");
+              .should("exist");
           });
       });
 

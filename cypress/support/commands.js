@@ -302,6 +302,8 @@ Cypress.Commands.add("uploadFile", (fileName, selector) =>
       .fixture(fileName, "base64")
       .then(Cypress.Blob.base64StringToBlob)
       .then(blob => {
+        cy.server();
+        cy.route("POST", "**/file/**").as("fileUpload");
         const el = subject[0];
         const testFile = new File([blob], fileName, {
           type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -309,7 +311,7 @@ Cypress.Commands.add("uploadFile", (fileName, selector) =>
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(testFile);
         el.files = dataTransfer.files;
-        return subject;
+        return cy.wait("@fileUpload").then(() => subject);
       })
   )
 );

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { Card } from "antd";
-import { white } from "@edulastic/colors";
+import { white, mobileWidth } from "@edulastic/colors";
 
-import { mobileWidth, CustomTooltip } from "./CustomTooltip";
+import { CustomTooltip } from "./CustomTooltip";
 
 export const MainDiv = styled.div`
   width: 100%;

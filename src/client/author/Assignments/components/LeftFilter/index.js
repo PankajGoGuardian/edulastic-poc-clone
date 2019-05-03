@@ -9,7 +9,7 @@ import {
   IconFolderActive,
   IconFolderDeactive,
   IconFolderMove,
-  IconDuplicate,
+  // IconDuplicate,
   IconMoreVertical
 } from "@edulastic/icons";
 
@@ -233,9 +233,9 @@ class LeftFilter extends React.Component {
             <FolderActionButton onClick={() => this.showModal("moveFolder")} color="primary" icon={<IconFolderMove />}>
               Move
             </FolderActionButton>
-            <FolderActionButton color="secondary" icon={<IconDuplicate />} onClick={() => {}}>
+            {/* <FolderActionButton color="secondary" icon={<IconDuplicate />} onClick={() => {}}>
               DUPLICATE
-            </FolderActionButton>
+            </FolderActionButton> */}
           </>
         ) : (
           <>

@@ -1,8 +1,6 @@
 import styled from "styled-components";
 import { Modal, Form, DatePicker } from "antd";
 
-export const StyledModal = styled(Modal)``;
-
 export const ModalFormItem = styled(Form.Item)`
   display: flex;
   .ant-form-item-label {

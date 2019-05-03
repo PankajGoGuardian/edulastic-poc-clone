@@ -1,4 +1,5 @@
 import promisify from "cypress-promise";
+import { getAccessToken } from "../../../../../packages/api/src/utils/Storage";
 
 class ItemListPage {
   clickOnCreate = async () => {
@@ -23,7 +24,7 @@ class ItemListPage {
 
     cy.readFile(`${fileWritePath}/${fixtureFile}`).then(json => {
       if (!json.testItems) json.testItems = [];
-      const item = { _id: itemId, authToken: window.localStorage.getItem("access_token") };
+      const item = { _id: itemId, authToken: getAccessToken() };
       json.testItems.push(item);
       cy.writeFile(`${fileWritePath}/${fixtureFile}`, json);
     });

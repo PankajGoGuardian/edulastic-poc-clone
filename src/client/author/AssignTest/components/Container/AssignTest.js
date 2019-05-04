@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { isEmpty, isEqual, get } from "lodash";
 import * as moment from "moment";
+import { message } from "antd";
 import {
   fetchGroupsAction,
   getGroupsSelector,
@@ -45,7 +46,8 @@ const initAssignment = {
 
 class AssignTest extends React.Component {
   state = {
-    isAdvancedView: true
+    isAdvancedView: true,
+    assignment: initAssignment
   };
 
   componentDidMount() {
@@ -85,6 +87,8 @@ class AssignTest extends React.Component {
     if (saveAssignment && !isEmpty(assignment.class)) {
       this.setState({ assignment: initAssignment });
       saveAssignment(assignment);
+    } else {
+      message.error("Please Select classes!");
     }
   };
 

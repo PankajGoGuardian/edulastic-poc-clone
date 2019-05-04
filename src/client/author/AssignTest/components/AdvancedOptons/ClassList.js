@@ -1,10 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select, Checkbox } from "antd";
+import { Select } from "antd";
 import { connect } from "react-redux";
-import { get, curry, isEmpty, find, remove } from "lodash";
+import { get, curry, isEmpty, remove, lowerCase } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
+import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
+import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
+
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
@@ -20,8 +23,12 @@ const convertTableData = row => ({
 
 class ClassList extends React.Component {
   static propTypes = {
+    loadCourseListData: PropTypes.func.isRequired,
+    loadSchoolsData: PropTypes.func.isRequired,
     loadClassListData: PropTypes.func.isRequired,
     userOrgId: PropTypes.string.isRequired,
+    schools: PropTypes.array.isRequired,
+    courseList: PropTypes.array.isRequired,
     classList: PropTypes.array.isRequired,
     selectedClasses: PropTypes.array.isRequired,
     selectClass: PropTypes.func.isRequired
@@ -38,9 +45,15 @@ class ClassList extends React.Component {
   };
 
   componentDidMount() {
-    const { classList } = this.props;
+    const { classList, schools, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
     if (isEmpty(classList)) {
       this.loadClassList();
+    }
+    if (isEmpty(schools)) {
+      loadSchoolsData({ body: { districtId: userOrgId } });
+    }
+    if (isEmpty(courseList)) {
+      loadCourseListData({ districtId: userOrgId });
     }
   }
 
@@ -72,22 +85,20 @@ class ClassList extends React.Component {
   };
 
   render() {
-    const { classList, selectedClasses } = this.props;
+    const { classList, schools, courseList, selectClass } = this.props;
     const { searchTerms } = this.state;
     const tableData = classList.map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
 
-    const columns = [
-      {
-        title: <Checkbox />,
-        width: "10%",
-        dataIndex: "standard",
-        key: "standard",
-        render: (_, row) => {
-          const checked = find(selectedClasses, item => row.key === item);
-          return <Checkbox checked={!!checked} onChange={e => this.selectClass(row.key, e.target.checked)} />;
+    const rowSelection = {
+      onChange: selectedRowKeys => {
+        if (selectClass) {
+          selectClass("class", selectedRowKeys);
         }
-      },
+      }
+    };
+
+    const columns = [
       {
         title: "CLASS NAME",
         sorter: true,
@@ -123,15 +134,12 @@ class ClassList extends React.Component {
         <ClassListFilter>
           <StyledRowLabel>
             School
-            <Select placeholder="All School">
-              {allGrades.map(
-                ({ value, text, isContentGrade }) =>
-                  !isContentGrade && (
-                    <Select.Option key={value} value={value}>
-                      {text}
-                    </Select.Option>
-                  )
-              )}
+            <Select mode="multiple" placeholder="All School" onChange={changeField("institutionIds")}>
+              {schools.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
             </Select>
           </StyledRowLabel>
 
@@ -163,7 +171,7 @@ class ClassList extends React.Component {
               onChange={changeField("subjects")}
             >
               {allSubjects.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
+                <Select.Option key={value} value={lowerCase(value)}>
                   {text}
                 </Select.Option>
               ))}
@@ -172,20 +180,22 @@ class ClassList extends React.Component {
 
           <StyledRowLabel>
             Course
-            <Select placeholder="All Course">
-              {allGrades.map(
-                ({ value, text, isContentGrade }) =>
-                  !isContentGrade && (
-                    <Select.Option key={value} value={value}>
-                      {text}
-                    </Select.Option>
-                  )
-              )}
+            <Select mode="multiple" placeholder="All Course" onChange={changeField("courseIds")}>
+              {courseList.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
             </Select>
           </StyledRowLabel>
         </ClassListFilter>
 
-        <StyledTable columns={columns} dataSource={tableData} pagination={{ pageSize: 7 }} />
+        <StyledTable
+          rowSelection={rowSelection}
+          columns={columns}
+          dataSource={tableData}
+          pagination={{ pageSize: 7 }}
+        />
       </ClassListContainer>
     );
   }
@@ -195,9 +205,13 @@ export default connect(
   state => ({
     termsData: get(state, "user.user.orgData.terms", []),
     classList: get(state, "classesReducer.data"),
-    userOrgId: getUserOrgId(state)
+    userOrgId: getUserOrgId(state),
+    schools: getSchoolsSelector(state),
+    courseList: getCourseListSelector(state)
   }),
   {
-    loadClassListData: receiveClassListAction
+    loadClassListData: receiveClassListAction,
+    loadSchoolsData: receiveSchoolsAction,
+    loadCourseListData: receiveCourseListAction
   }
 )(ClassList);

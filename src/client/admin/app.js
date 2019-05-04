@@ -2,7 +2,7 @@ import React from "react";
 import { Layout, Menu, Icon } from "antd";
 import { Route, Switch } from "react-router-dom";
 import Sider from "./Common/Sider";
-import { LogoCompact, Logo, Button, MainDiv } from "./Common/StyledComponents";
+import { MainDiv, LogoCompact, Logo, Button } from "./Common/StyledComponents";
 import CleverSearch from "./Containers/CleverSearch";
 import ProxyUser from "./Components/ProxyUser";
 

@@ -18,7 +18,8 @@ import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../..
 import {
   receiveCreateFolderAction,
   receiveAddMoveFolderAction,
-  receiveDeleteFolderAction
+  receiveDeleteFolderAction,
+  receiveRenameFolderAction
 } from "../../../src/actions/folder";
 import { getDistrictIdSelector } from "../../../src/selectors/assignments";
 import { getFoldersSelector } from "../../../src/selectors/folder";
@@ -43,7 +44,8 @@ const { allGrades, allSubjects, testTypes } = selectsData;
 class LeftFilter extends React.Component {
   state = {
     visibleModal: {},
-    newFolderName: ""
+    folderName: "",
+    selectedFolder: null
   };
 
   showModal = name => {
@@ -56,15 +58,27 @@ class LeftFilter extends React.Component {
     });
   };
 
-  createFolder = () => {
-    const { newFolderName } = this.state;
-    const { createFolderRequest } = this.props;
-    if (createFolderRequest) {
-      createFolderRequest({ folderName: newFolderName });
+  showRenameModal = folderId => {
+    this.setState({ selectedFolder: folderId }, () => this.showModal("newFolder"));
+  };
+
+  createUpdateFolder = () => {
+    const { folderName, selectedFolder } = this.state;
+    if (selectedFolder) {
+      const { renameFolder } = this.props;
+      if (renameFolder) {
+        renameFolder({ folderId: selectedFolder, folderName });
+      }
+    } else {
+      const { createFolderRequest } = this.props;
+      if (createFolderRequest) {
+        createFolderRequest({ folderName });
+      }
     }
     this.setState({
       visibleModal: false,
-      newFolderName: ""
+      folderName: "",
+      selectedFolder: ""
     });
   };
 
@@ -105,7 +119,8 @@ class LeftFilter extends React.Component {
         ...visibleModal,
         [name]: false
       },
-      newFolderName: ""
+      folderName: "",
+      selectedFolder: null
     });
   };
 
@@ -132,7 +147,7 @@ class LeftFilter extends React.Component {
     }
   };
 
-  handleChangeNewFolderName = e => this.setState({ newFolderName: e.target.value });
+  handleChangeNewFolderName = e => this.setState({ folderName: e.target.value });
 
   renderFolders = () => {
     const {
@@ -144,7 +159,7 @@ class LeftFilter extends React.Component {
 
     const menu = id => (
       <StyledMenu>
-        <Menu.Item key="1">
+        <Menu.Item key="1" onClick={() => this.showRenameModal(id)}>
           <StyledIconPencilEdit width={14} height={14} />
           <span>Rename</span>
         </Menu.Item>
@@ -190,25 +205,31 @@ class LeftFilter extends React.Component {
 
   render() {
     const { termsData, selectedRows, filterState, isAdvancedView } = this.props;
-    const { visibleModal, newFolderName } = this.state;
+    const { visibleModal, folderName, selectedFolder } = this.state;
     const { subject, grades, termId, testType } = filterState;
 
     return (
       <FilterContainer>
         <FolderActionModal
-          title={<ModalTitle>Create a New Folder</ModalTitle>}
+          title={<ModalTitle>{selectedFolder ? "Rename Folder" : "Create a New Folder"}</ModalTitle>}
           visible={visibleModal.newFolder}
           onCancel={() => this.hideModal("newFolder")}
           footer={[
             <ModalFooterButton key="back" variant="create" onClick={() => this.hideModal("newFolder")}>
               Cancel
             </ModalFooterButton>,
-            <ModalFooterButton key="submit" color="primary" variant="create" onClick={this.createFolder}>
-              Create
+            <ModalFooterButton
+              key="submit"
+              color="primary"
+              variant="create"
+              disabled={!folderName}
+              onClick={this.createUpdateFolder}
+            >
+              {selectedFolder ? "Update" : "Create"}
             </ModalFooterButton>
           ]}
         >
-          <Input placeholder="Name this folder" value={newFolderName} onChange={this.handleChangeNewFolderName} />
+          <Input placeholder="Name this folder" value={folderName} onChange={this.handleChangeNewFolderName} />
         </FolderActionModal>
 
         <FolderActionModal
@@ -305,6 +326,7 @@ LeftFilter.propTypes = {
   loadAssignmentsSummary: PropTypes.func.isRequired,
   createFolderRequest: PropTypes.func.isRequired,
   addMoveToFolderRequest: PropTypes.func.isRequired,
+  renameFolder: PropTypes.func.isRequired,
   deleteFolder: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onSetFilter: PropTypes.func.isRequired,
@@ -334,6 +356,7 @@ export default connect(
     loadAssignmentsSummary: receiveAssignmentsSummaryAction,
     createFolderRequest: receiveCreateFolderAction,
     addMoveToFolderRequest: receiveAddMoveFolderAction,
-    deleteFolder: receiveDeleteFolderAction
+    deleteFolder: receiveDeleteFolderAction,
+    renameFolder: receiveRenameFolderAction
   }
 )(LeftFilter);

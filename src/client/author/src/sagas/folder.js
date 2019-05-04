@@ -1,5 +1,6 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { folderApi } from "@edulastic/api";
+import { get } from "lodash";
 import { message } from "antd";
 import {
   RECEIVE_FOLDER_REQUEST,
@@ -13,7 +14,10 @@ import {
   ADD_MOVE_FOLDER_ERROR,
   DELETE_FOLDER_REQUEST,
   DELETE_FOLDER_SUCCESS,
-  DELETE_FOLDER_ERROR
+  DELETE_FOLDER_ERROR,
+  RENAME_FOLDER_REQUEST,
+  RENAME_FOLDER_SUCCESS,
+  RENAME_FOLDER_ERROR
 } from "../constants/actions";
 
 function* receiveGetFoldersRequest() {
@@ -89,11 +93,30 @@ function* receiveDeleteFolderRequest({ payload }) {
   }
 }
 
+function* receiveRenameFolderRequest({ payload }) {
+  try {
+    const { folderId, folderName } = payload;
+    const success = yield call(folderApi.renameFolder, { folderId, data: { folderName } });
+    yield put({
+      type: RENAME_FOLDER_SUCCESS,
+      payload: get(success, "data.result", null)
+    });
+  } catch (error) {
+    const errorMessage = "Rename folder failing";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: RENAME_FOLDER_ERROR,
+      payload: { error }
+    });
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_FOLDER_REQUEST, receiveGetFoldersRequest),
     yield takeEvery(RECEIVE_FOLDER_CREATE_REQUEST, receiveCreateFolderRequest),
     yield takeEvery(ADD_MOVE_FOLDER_REQUEST, receiveAddMoveFolderRequest),
-    yield takeEvery(DELETE_FOLDER_REQUEST, receiveDeleteFolderRequest)
+    yield takeEvery(DELETE_FOLDER_REQUEST, receiveDeleteFolderRequest),
+    yield takeEvery(RENAME_FOLDER_REQUEST, receiveRenameFolderRequest)
   ]);
 }

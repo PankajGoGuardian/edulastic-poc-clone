@@ -211,4 +211,8 @@ export const DELETE_FOLDER_REQUEST = "[folder] delete a folder request";
 export const DELETE_FOLDER_SUCCESS = "[folder] delete a folder success";
 export const DELETE_FOLDER_ERROR = "[folder] delete a folder error";
 
+export const RENAME_FOLDER_REQUEST = "[folder] rename folder request";
+export const RENAME_FOLDER_SUCCESS = "[folder] rename folder success";
+export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
+
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //

@@ -1,4 +1,4 @@
-import { clone, remove } from "lodash";
+import { clone, remove, findIndex } from "lodash";
 import {
   RECEIVE_FOLDER_REQUEST,
   RECEIVE_FOLDER_SUCCESS,
@@ -7,7 +7,9 @@ import {
   RECEIVE_FOLDER_CREATE_SUCCESS,
   RECEIVE_FOLDER_CREATE_ERROR,
   DELETE_FOLDER_SUCCESS,
-  DELETE_FOLDER_ERROR
+  DELETE_FOLDER_ERROR,
+  RENAME_FOLDER_SUCCESS,
+  RENAME_FOLDER_ERROR
 } from "../constants/actions";
 
 const initialState = {
@@ -67,6 +69,25 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     }
     case DELETE_FOLDER_ERROR:
+      return {
+        ...state,
+        error: payload.error
+      };
+    case RENAME_FOLDER_SUCCESS: {
+      if (payload) {
+        const { entities } = state;
+        const index = findIndex(entities, entity => entity._id === payload._id);
+        if (index !== -1) {
+          entities.splice(index, 1, payload);
+        }
+        return {
+          ...state,
+          entities: clone(entities)
+        };
+      }
+      return state;
+    }
+    case RENAME_FOLDER_ERROR:
       return {
         ...state,
         error: payload.error

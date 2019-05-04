@@ -33,9 +33,17 @@ const addMoveContent = ({ folderId, data }) =>
     data
   });
 
+const renameFolder = ({ folderId, data }) =>
+  api.callApi({
+    url: `${prefix}/${folderId}`,
+    method: "put",
+    data
+  });
+
 export default {
   fetchFolders,
   createFolder,
   deleteFolder,
+  renameFolder,
   addMoveContent
 };

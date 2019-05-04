@@ -18,7 +18,6 @@ import {
   getAssignmentsSelector,
   getTestEntitySelector
 } from "../../duck";
-import { receiveTeacherListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 
 import ListHeader from "../../../src/components/common/ListHeader";
@@ -60,9 +59,7 @@ class AssignTest extends React.Component {
       match,
       fetchPerformanceBand,
       userOrgId,
-      performanceBandData,
-      teacherList,
-      fetchTeacherList
+      performanceBandData
     } = this.props;
     const { testId } = match.params;
     if (isEmpty(group)) {
@@ -73,14 +70,6 @@ class AssignTest extends React.Component {
     }
     if (isEmpty(performanceBandData)) {
       fetchPerformanceBand({ orgId: userOrgId });
-    }
-    if (isEmpty(teacherList)) {
-      fetchTeacherList({
-        type: "DISTRICT",
-        search: {
-          role: "teacher"
-        }
-      });
     }
   }
 
@@ -170,16 +159,14 @@ export default connect(
     students: getStudentsSelector(state),
     testSettings: getTestEntitySelector(state),
     userOrgId: getUserOrgId(state),
-    performanceBandData: get(state, ["performanceBandReducer", "data"], []),
-    teacherList: get(state, ["classesReducer", "teacherList"], [])
+    performanceBandData: get(state, ["performanceBandReducer", "data"], [])
   }),
   {
     fetchGroups: fetchGroupsAction,
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
-    fetchPerformanceBand: receivePerformanceBandAction,
-    fetchTeacherList: receiveTeacherListAction
+    fetchPerformanceBand: receivePerformanceBandAction
   }
 )(AssignTest);
 
@@ -191,9 +178,7 @@ AssignTest.propTypes = {
   group: PropTypes.array.isRequired,
   students: PropTypes.array.isRequired,
   testSettings: PropTypes.object.isRequired,
-  teacherList: PropTypes.array.isRequired,
   assignments: PropTypes.array.isRequired,
-  fetchTeacherList: PropTypes.func.isRequired,
   saveAssignment: PropTypes.func.isRequired,
   fetchPerformanceBand: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,

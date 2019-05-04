@@ -55,12 +55,14 @@ const HeaderBar = ({
         <ButtonLink onClick={handleMoveTo} color="primary" icon={<IconMoveTo color={blue} width={12} height={12} />}>
           {windowWidth > 468 && <span>Move to</span>}
         </ButtonLink>
+        {showPrompt && (
+          <Prompt style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }} onSuccess={handleSuccess} />
+        )}
       </ActionButton>
       <ActionButton style={{ marginLeft: 0 }}>
         <ButtonLink onClick={onCollapse} color="primary" icon={<IconCollapse color={blue} width={12} height={12} />}>
           {windowWidth > 468 && <span>{setCollapse ? "Expand Rows" : "Collapse Rows"}</span>}
         </ButtonLink>
-        {showPrompt && <Prompt style={{ position: "absolute", left: 0, top: 25 }} onSuccess={handleSuccess} />}
       </ActionButton>
     </Container>
   );

@@ -2,26 +2,43 @@ import React, { useState, memo } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Radio } from "antd";
-import SearchDistrictTable from "../Components/SearchDistrictTable";
-import { MainDiv, TextInput, FirstDiv } from "../Components/styled";
+import SearchDistrictTable from "../SearchDistrictTable";
+import MergeSyncTable from "../MergeSyncTable";
+import { MainDiv, TextInput, FirstDiv } from "../Common/StyledComponents";
 import { radioButtondata } from "../Data";
-import { fetchTableData, updateClever, getTableData } from "../ducks";
+import { fetchTableData, updateClever, getTableData, deleteDistrictId } from "../SearchDistrictTable/ducks";
+import {
+  searchExistingDataApi,
+  getMergeData,
+  applyDeltaSyncChanges,
+  syncSchools,
+  applyClassNamesSync
+} from "../MergeSyncTable/ducks";
 
 const { Group: RadioGroup } = Radio;
 
 function CleverSearch(props) {
+  const {
+    fetchTableData,
+    tableData,
+    updateClever,
+    deleteDistrictId,
+    searchExistingDataApi,
+    mergeData,
+    applyDeltaSyncChanges,
+    syncSchools,
+    applyClassNamesSync
+  } = props;
   const [input, setInput] = useState("");
   const [radioInput, setRadioInput] = useState(radioButtondata[0].id);
 
   const searchData = function() {
-    props.fetchTableData({
-      search: {
-        [radioInput]: input
-      }
+    fetchTableData({
+      [radioInput]: input
     });
   };
   return (
-    <>
+    <MainDiv>
       <h2>Search and Update District</h2>
       <FirstDiv>
         <TextInput
@@ -42,23 +59,34 @@ function CleverSearch(props) {
           </RadioGroup>
         </div>
       </FirstDiv>
-      <SearchDistrictTable data={props.tableData} updateClever={props.updateClever} />
-    </>
+      <SearchDistrictTable data={tableData} updateClever={updateClever} deleteDistrictId={deleteDistrictId} />
+      <MergeSyncTable
+        searchExistingDataApi={searchExistingDataApi}
+        mergeData={mergeData}
+        applyDeltaSyncChanges={applyDeltaSyncChanges}
+        syncSchools={syncSchools}
+        applyClassNamesSync={applyClassNamesSync}
+      />
+    </MainDiv>
   );
 }
 
 const mapStateToProps = state => ({
-  tableData: getTableData(state)
+  tableData: getTableData(state),
+  mergeData: getMergeData(state)
 });
-
-const actionCreators = {
-  fetchTableData,
-  updateClever
-};
 
 const withConnect = connect(
   mapStateToProps,
-  actionCreators
+  {
+    fetchTableData,
+    updateClever,
+    searchExistingDataApi,
+    applyDeltaSyncChanges,
+    syncSchools,
+    applyClassNamesSync,
+    deleteDistrictId
+  }
 );
 
 export default compose(

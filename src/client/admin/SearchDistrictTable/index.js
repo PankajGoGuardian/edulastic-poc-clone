@@ -1,18 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Table, Input, Popconfirm } from "antd";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
-import { Button } from "../Common/Styled-Components";
+import { Button } from "../Common/StyledComponents";
 import { IconCaretDown } from "@edulastic/icons";
 import ErrorBoundary from "../Common/ErrorBoundary";
+import { DISTRICT_STATUS } from "../Data";
 
 const { Column } = Table;
 
-const EditableAction = ({ onEditClick, districtName }) => (
+const EditableAction = ({ onEditClick, districtName, onDeleteClick }) => (
   <>
     <Button aria-label="Edit" noStyle onClick={onEditClick}>
       <IconPencilEdit />
     </Button>
-    <Popconfirm title={`Are you sure you want to delete ${districtName}?`} okText="Delete">
+    <Popconfirm title={`Are you sure you want to delete ${districtName}?`} okText="Delete" onConfirm={onDeleteClick}>
       <Button aria-label={`Delete ${districtName}`} noStyle>
         <IconTrash />
       </Button>
@@ -33,18 +34,28 @@ const NonEditableAction = ({ onSaveConfirm, onCancelSave }) => (
   </>
 );
 
-const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter }, ref) =>
-  edit ? <Input defaultValue={cleverId} onPressEnter={onInputPressEnter} ref={ref} /> : cleverId
-);
+const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter }, ref) => {
+  useEffect(() => {
+    if (ref.current) {
+      // as soon as edit button is clicked, the input element is focused for better accessibility
+      ref.current.input.focus();
+    }
+  }, [edit]);
+  return edit ? <Input defaultValue={cleverId} onPressEnter={onInputPressEnter} ref={ref} /> : cleverId;
+});
 
-export default function SearchDistrictTable({ data, updateClever }) {
+export default function SearchDistrictTable({ data, updateClever, deleteDistrictId }) {
   const [editCell, setEditCell] = useState();
   // here ref is used for the editable text input, since we keep it as an uncontrolled component
   const textInput = React.createRef();
 
   function renderActions(text, record, index) {
     return editCell !== record._id ? (
-      <EditableAction onEditClick={() => setEditCell(record._id)} districtName={record._source.name} />
+      <EditableAction
+        onEditClick={() => setEditCell(record._id)}
+        districtName={record._source.name}
+        onDeleteClick={() => deleteDistrictId(record._id)}
+      />
     ) : (
       <NonEditableAction onSaveConfirm={() => updateCleverId(record._id)} onCancelSave={setEditCell} />
     );
@@ -80,8 +91,18 @@ export default function SearchDistrictTable({ data, updateClever }) {
       <Column title="District Id" dataIndex="_id" key="districtId" />
       <Column title="District Name" dataIndex="_source.name" key="districtName" />
       <Column render={renderCleverCell} title="Clever Id" dataIndex="_source.cleverId" key="cleverId" />
-      <Column title="Created Date" dataIndex="_source.createdAt" key="createdDate" />
-      <Column title="Sync Status" dataIndex="_source.lastSync" key="syncStatus" />
+      <Column
+        title="Created Date"
+        dataIndex="_source.createdAt"
+        key="createdDate"
+        render={timeStamp => new Date(timeStamp).toLocaleDateString()}
+      />
+      <Column
+        title="Sync Status"
+        dataIndex="_source.status"
+        key="syncStatus"
+        render={status => DISTRICT_STATUS[status]}
+      />
       <Column
         title="Users"
         dataIndex="users"

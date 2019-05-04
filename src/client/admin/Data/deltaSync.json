@@ -1,0 +1,26 @@
+[
+  {
+    "label": "Student Merge Enabled Delta",
+    "id": "studentEnabledDelta"
+  },
+  {
+    "label": "Student Merge Enabled Full",
+    "id": "studentEnabledFull"
+  },
+  {
+    "label": "Student Merge Attribute",
+    "id": "studentAttr"
+  },
+  {
+    "label": "Teacher Merge Enabled Delta",
+    "id": "teacherEnabledDelta"
+  },
+  {
+    "label": "Teacher Merge Enabled Full",
+    "id": "teacherEnabledFull"
+  },
+  {
+    "label": "Teacher Merge Attribute",
+    "id": "teacherAttr"
+  }
+]

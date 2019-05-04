@@ -10,7 +10,7 @@ import {
 import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
 import { CurriculumSequenceSaga } from "./author/CurriculumSequence";
-import { sagas as adminSagas } from "./admin/ducks";
+import { default as adminSagas } from "./admin/sagas";
 
 export default function*() {
   yield all([

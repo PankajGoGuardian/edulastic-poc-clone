@@ -1,5 +1,8 @@
 import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
+import { Input } from "antd";
+
+const { Search } = Input;
 
 export const Logo = styled(IconHeader)`
   width: 119px;
@@ -33,4 +36,21 @@ export const FlexDiv = styled.div`
 
 export const FlexColumn = styled(FlexDiv)`
   flex-direction: column;
+`;
+
+export const MainDiv = styled.div`
+  padding: 15px;
+`;
+
+export const TextInput = styled(Search)`
+  margin-right: 10px;
+  ${({ circular }) =>
+    circular &&
+    `input {
+    border-radius: 20px;
+  }`}
+`;
+
+export const FirstDiv = styled(FlexDiv)`
+  margin-bottom: 10px;
 `;

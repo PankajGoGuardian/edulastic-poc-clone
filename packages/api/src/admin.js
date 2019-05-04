@@ -6,16 +6,70 @@ const prefix = "/clever/";
 const searchUpdateDistrict = params =>
   api
     .callApi({
-      url: `${prefix}search`,
+      url: `districts`,
       method: "get",
       params
     })
     .then(({ data }) => data);
 
-const updateDistrictCleverId = data =>
+const updateDistrictCleverId = ({ districtId, cleverId }) =>
   api
     .callApi({
-      url: `${prefix}update-clever`,
+      url: `districts/${districtId}/clever-id`,
+      method: "put",
+      data: { cleverId }
+    })
+    .then(({ data }) => data);
+
+const fetchDeleteDistrictId = districtId =>
+  api
+    .callApi({
+      url: `districts/${districtId}`,
+      method: "delete"
+    })
+    .then(({ data }) => data);
+
+const fetchExistingDataMergeClever = ({ cleverDistrict, cleverId }) =>
+  api
+    .callApi({
+      url: `${prefix}clever-district/${cleverDistrict}`,
+      method: "get",
+      params: { cleverId }
+    })
+    .then(({ data }) => data);
+
+const applyDeltaSyncApi = data =>
+  api
+    .callApi({
+      url: `${prefix}update-delta-sync-info`,
+      method: "post",
+      data
+    })
+    .then(({ data }) => data);
+
+const selectedSchoolSyncApi = ({ cleverId, schoolCleverIds }) =>
+  api
+    .callApi({
+      url: `${prefix}districts/${cleverId}/schools-sync`,
+      method: "post",
+      data: {
+        schoolCleverIds
+      }
+    })
+    .then(({ data }) => data);
+
+const completeDistrictSync = ({ cleverId }) =>
+  api
+    .callApi({
+      url: `${prefix}district/${cleverId}`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
+const fetchClassNamesSyncApi = data =>
+  api
+    .callApi({
+      url: `${prefix}class-name-pattern`,
       method: "post",
       data
     })
@@ -23,5 +77,11 @@ const updateDistrictCleverId = data =>
 
 export default {
   searchUpdateDistrict,
-  updateDistrictCleverId
+  updateDistrictCleverId,
+  fetchExistingDataMergeClever,
+  applyDeltaSyncApi,
+  selectedSchoolSyncApi,
+  completeDistrictSync,
+  fetchClassNamesSyncApi,
+  fetchDeleteDistrictId
 };

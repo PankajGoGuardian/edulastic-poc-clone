@@ -9,7 +9,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math with matr
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
-    queType: "Math with matrices",
+    queType: "Matrices",
     extlink: "www.testdomain.com",
     testText: "testtext",
     formula: "s=ar^2",

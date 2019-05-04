@@ -10,7 +10,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math – fill 
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
-    queType: "Math – fill in the blanks",
+    queType: "Fill in the blanks",
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",

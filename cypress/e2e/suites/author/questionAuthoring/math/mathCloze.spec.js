@@ -10,7 +10,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Math Cloze" ty
   const queData = {
     mockString: "10-5+8-4",
     group: "Math",
-    queType: "Cloze Math",
+    queType: "Multipart Inline",
     extlink: "www.testdomain.com",
     testtext: "testtext",
     formula: "s=ar^2",

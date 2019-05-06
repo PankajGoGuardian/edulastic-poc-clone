@@ -141,7 +141,7 @@ class Container extends React.Component {
   renderContent() {
     const {
       currentTab,
-      assessment: { docUrl, annotations },
+      assessment: { docUrl, annotations, pageStructure },
       questions,
       questionsById
     } = this.props;
@@ -150,7 +150,8 @@ class Container extends React.Component {
       docUrl,
       annotations,
       questions,
-      questionsById
+      questionsById,
+      pageStructure
     };
 
     switch (currentTab) {

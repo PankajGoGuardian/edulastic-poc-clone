@@ -11,6 +11,7 @@ import { Label } from "../../../../styled/WidgetOptions/Label";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "../ThousandsSeparators";
+import { AdditionalToggle, AdditionalContainer } from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
@@ -91,7 +92,20 @@ const clearOptions = (method, options) => {
   }
 };
 
-const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label, options, item, t }) => {
+const MathFormulaAnswerMethod = ({
+  onChange,
+  onDelete,
+  method,
+  value,
+  aria_label,
+  options,
+  item,
+  index,
+  showAdditionals,
+  handleChangeAdditionals,
+  clearAdditionals,
+  t
+}) => {
   useEffect(() => {
     const newOptions = clearOptions(method, { ...options });
 
@@ -134,14 +148,14 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
     onChange("options", newOptions);
   };
 
-  const handleChangeThousandsSeparator = ({ val, index }) => {
+  const handleChangeThousandsSeparator = ({ val, ind }) => {
     let newSetThousandsSeparator = [""];
 
     if (options.setThousandsSeparator && options.setThousandsSeparator.length) {
       newSetThousandsSeparator = [...options.setThousandsSeparator];
     }
 
-    newSetThousandsSeparator[index] = val;
+    newSetThousandsSeparator[ind] = val;
     handleChangeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
 
@@ -153,9 +167,9 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
     handleChangeOptions("setThousandsSeparator", [...newSeparators, ""]);
   };
 
-  const handleDeleteThousandsSeparator = index => {
+  const handleDeleteThousandsSeparator = ind => {
     const newSetThousandsSeparator = [...options.setThousandsSeparator];
-    newSetThousandsSeparator.splice(index, 1);
+    newSetThousandsSeparator.splice(ind, 1);
     handleChangeOptions("setThousandsSeparator", newSetThousandsSeparator);
   };
 
@@ -192,15 +206,29 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow>
-        <Col span={12}>
-          <Label>{t("component.math.method")}</Label>
+      <StyledRow gutter={32}>
+        <Col span={index === 0 ? 12 : 11}>
+          <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
+          <MathInput
+            symbols={item.symbols}
+            numberPad={item.numberPad}
+            value={value}
+            onInput={val => {
+              onChange("value", val);
+            }}
+          />
+        </Col>
+        <Col span={index === 0 ? 12 : 11}>
+          <Label>{t("component.math.compareUsing")}</Label>
           <Select
             data-cy="method-selection-dropdown"
             size="large"
             value={method}
-            style={{ width: "100%" }}
-            onChange={val => onChange("method", val)}
+            style={{ width: "100%", height: 42 }}
+            onChange={val => {
+              onChange("method", val);
+              clearAdditionals();
+            }}
           >
             {methods.map(val => (
               <Select.Option data-cy={`method-selection-dropdown-list-${val}`} key={val} value={val}>
@@ -209,9 +237,11 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
             ))}
           </Select>
         </Col>
-        <Col span={2} push={10}>
-          {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
-        </Col>
+        {index > 0 ? (
+          <Col span={2} style={{ paddingTop: 37 }}>
+            {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
+          </Col>
+        ) : null}
       </StyledRow>
 
       {methodsConst.IS_FACTORISED === method && (
@@ -235,314 +265,322 @@ const MathFormulaAnswerMethod = ({ onChange, onDelete, method, value, aria_label
         </StyledRow>
       )}
 
-      {[
-        methodsConst.EQUIV_SYMBOLIC,
-        methodsConst.EQUIV_LITERAL,
-        methodsConst.EQUIV_VALUE,
-        methodsConst.IS_UNIT,
-        methodsConst.STRING_MATCH
-      ].includes(method) && (
-        <Fragment>
-          <StyledRow gutter={32}>
-            <Col span={12}>
-              <Label data-cy="answer-math-input">{t("component.math.value")}</Label>
-              <MathInput
-                symbols={item.symbols}
-                numberPad={item.numberPad}
-                value={value}
-                onInput={val => {
-                  onChange("value", val);
-                }}
-              />
-            </Col>
-            <Col span={12}>
-              <Label>{t("component.math.ariaLabel")}</Label>
-              <Input.TextArea
-                data-cy="answer-aria-label"
-                size="large"
-                value={aria_label}
-                onChange={e => onChange("aria_label", e.target.value)}
-              />
-            </Col>
-          </StyledRow>
-          {methodsConst.IS_UNIT === method && (
+      <AdditionalToggle
+        active={showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0}
+        onClick={() =>
+          showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0
+            ? handleChangeAdditionals(`${method}_${index}`, "pop")
+            : handleChangeAdditionals(`${method}_${index}`, "push")
+        }
+      >
+        Additional Checks
+      </AdditionalToggle>
+
+      {showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0 ? (
+        <AdditionalContainer>
+          {[
+            methodsConst.EQUIV_SYMBOLIC,
+            methodsConst.EQUIV_LITERAL,
+            methodsConst.EQUIV_VALUE,
+            methodsConst.IS_UNIT,
+            methodsConst.STRING_MATCH
+          ].includes(method) && (
+            <Fragment>
+              <StyledRow gutter={32}>
+                <Col span={12}>
+                  <Label>{t("component.math.ariaLabel")}</Label>
+                  <Input.TextArea
+                    data-cy="answer-aria-label"
+                    size="large"
+                    value={aria_label}
+                    onChange={e => onChange("aria_label", e.target.value)}
+                  />
+                </Col>
+              </StyledRow>
+              {methodsConst.IS_UNIT === method && (
+                <StyledRow gutter={32}>
+                  <Col span={12}>
+                    <Label>{t("component.math.allowedUnits")}</Label>
+                    <Input
+                      size="large"
+                      value={options.allowedUnits}
+                      onChange={e => handleChangeOptions("allowedUnits", e.target.value)}
+                      data-cy="answer-allowed-units"
+                    />
+                  </Col>
+                </StyledRow>
+              )}
+            </Fragment>
+          )}
+
+          {method === methodsConst.STRING_MATCH && (
             <StyledRow gutter={32}>
               <Col span={12}>
-                <Label>{t("component.math.allowedUnits")}</Label>
-                <Input
-                  size="large"
-                  value={options.allowedUnits}
-                  onChange={e => handleChangeOptions("allowedUnits", e.target.value)}
-                  data-cy="answer-allowed-units"
-                />
+                <Checkbox
+                  data-cy="answer-ignore-leading-and-trailing-spaces"
+                  checked={options.ignoreLeadingAndTrailingSpaces}
+                  onChange={e => handleChangeOptions("ignoreLeadingAndTrailingSpaces", e.target.checked)}
+                >
+                  {t("component.math.ignoreLeadingAndTrailingSpaces")}
+                </Checkbox>
+              </Col>
+              <Col span={12}>
+                <Checkbox
+                  data-cy="answer-treat-multipleSpacesAsOne"
+                  checked={options.treatMultipleSpacesAsOne}
+                  onChange={e => handleChangeOptions("treatMultipleSpacesAsOne", e.target.checked)}
+                >
+                  {t("component.math.treatMultipleSpacesAsOne")}
+                </Checkbox>
               </Col>
             </StyledRow>
           )}
-        </Fragment>
-      )}
 
-      {method === methodsConst.STRING_MATCH && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Checkbox
-              data-cy="answer-ignore-leading-and-trailing-spaces"
-              checked={options.ignoreLeadingAndTrailingSpaces}
-              onChange={e => handleChangeOptions("ignoreLeadingAndTrailingSpaces", e.target.checked)}
-            >
-              {t("component.math.ignoreLeadingAndTrailingSpaces")}
-            </Checkbox>
-          </Col>
-          <Col span={12}>
-            <Checkbox
-              data-cy="answer-treat-multipleSpacesAsOne"
-              checked={options.treatMultipleSpacesAsOne}
-              onChange={e => handleChangeOptions("treatMultipleSpacesAsOne", e.target.checked)}
-            >
-              {t("component.math.treatMultipleSpacesAsOne")}
-            </Checkbox>
-          </Col>
-        </StyledRow>
-      )}
-
-      {method === methodsConst.EQUIV_SYNTAX && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Label>{t("component.math.rule")}</Label>
-            <Select
-              data-cy="answer-rule-dropdown"
-              size="large"
-              value={options.syntax || ""}
-              style={{ width: "100%" }}
-              onChange={val => {
-                handleChangeRule(val);
-              }}
-            >
-              {syntaxes.map(({ value: val, label }) => (
-                <Select.Option key={val} value={val} data-cy={`answer-rule-dropdown-${val}`}>
-                  {label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-          {syntaxesConst.DECIMAL === options.syntax && (
-            <Col span={12}>
-              <Label>{t("component.math.argument")}</Label>
-              <Input
-                size="large"
-                type="number"
-                value={options.argument}
-                onChange={e => handleChangeOptions("argument", +e.target.value)}
-                data-cy="answer-rule-argument-input"
-              />
-            </Col>
-          )}
-          {syntaxesConst.STANDARD_FORM === options.syntax && (
-            <Col span={12}>
-              <Label>{t("component.math.argument")}</Label>
-              <Select
-                size="large"
-                value={options.argument || ""}
-                style={{ width: "100%" }}
-                onChange={val => handleChangeOptions("argument", val)}
-                data-cy="answer-rule-argument-select"
-              >
-                {["linear", "quadratic"].map(val => (
-                  <Select.Option key={val} value={val} data-cy={`answer-argument-dropdown-${val}`}>
-                    {val}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-          )}
-        </StyledRow>
-      )}
-
-      {method === methodsConst.EQUIV_LITERAL && (
-        <Fragment>
-          <StyledRow gutter={32}>
-            <Col span={12}>
-              <Checkbox
-                data-cy="answer-ignore-order"
-                checked={options.ignoreOrder}
-                onChange={e => handleChangeOptions("ignoreOrder", e.target.checked)}
-              >
-                {t("component.math.ignoreOrder")}
-              </Checkbox>
-            </Col>
-            <Col span={12}>
-              <Checkbox
-                data-cy="answer-allow-interval"
-                checked={options.allowInterval}
-                onChange={e => handleChangeOptions("allowInterval", e.target.checked)}
-              >
-                {t("component.math.allowInterval")}
-              </Checkbox>
-            </Col>
-          </StyledRow>
-
-          <StyledRow gutter={32}>
-            <Col span={12}>
-              <Checkbox
-                data-cy="answer-ignore-trailing-zeros"
-                checked={options.ignoreTrailingZeros}
-                onChange={e => handleChangeOptions("ignoreTrailingZeros", e.target.checked)}
-              >
-                {t("component.math.ignoreTrailingZeros")}
-              </Checkbox>
-            </Col>
-          </StyledRow>
-
-          <StyledRow gutter={32}>
-            <Col span={12}>
-              <Checkbox
-                data-cy="answer-ignore-coefficient-of-one"
-                checked={options.ignoreCoefficientOfOne}
-                onChange={e => handleChangeOptions("ignoreCoefficientOfOne", e.target.checked)}
-              >
-                {t("component.math.ignoreCoefficientOfOne")}
-              </Checkbox>
-            </Col>
-          </StyledRow>
-        </Fragment>
-      )}
-
-      {[
-        methodsConst.EQUIV_LITERAL,
-        methodsConst.IS_SIMPLIFIED,
-        methodsConst.EQUIV_VALUE,
-        methodsConst.IS_FACTORISED
-      ].includes(method) && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Checkbox
-              data-cy="answer-inverse-result"
-              checked={options.inverseResult}
-              onChange={e => handleChangeOptions("inverseResult", e.target.checked)}
-            >
-              {t("component.math.inverseResult")}
-            </Checkbox>
-          </Col>
-        </StyledRow>
-      )}
-
-      {[
-        methodsConst.EQUIV_SYMBOLIC,
-        methodsConst.EQUIV_VALUE,
-        methodsConst.IS_TRUE,
-        methodsConst.EQUIV_SYNTAX
-      ].includes(method) && (
-        <StyledRow gutter={32}>
-          {method !== methodsConst.EQUIV_SYNTAX && (
-            <Col span={12}>
-              <FlexContainer>
-                <Input
-                  data-cy="answer-significant-decimal-places"
-                  style={{ width: "30%" }}
+          {method === methodsConst.EQUIV_SYNTAX && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Label>{t("component.math.rule")}</Label>
+                <Select
+                  data-cy="answer-rule-dropdown"
                   size="large"
-                  type="number"
-                  value={options.significantDecimalPlaces}
-                  onChange={e => handleChangeOptions("significantDecimalPlaces", e.target.value)}
-                />
-                <Label>{t("component.math.significantDecimalPlaces")}</Label>
-              </FlexContainer>
-            </Col>
+                  value={options.syntax || ""}
+                  style={{ width: "100%" }}
+                  onChange={val => {
+                    handleChangeRule(val);
+                  }}
+                >
+                  {syntaxes.map(({ value: val, label }) => (
+                    <Select.Option key={val} value={val} data-cy={`answer-rule-dropdown-${val}`}>
+                      {label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+              {syntaxesConst.DECIMAL === options.syntax && (
+                <Col span={12}>
+                  <Label>{t("component.math.argument")}</Label>
+                  <Input
+                    size="large"
+                    type="number"
+                    value={options.argument}
+                    onChange={e => handleChangeOptions("argument", +e.target.value)}
+                    data-cy="answer-rule-argument-input"
+                  />
+                </Col>
+              )}
+              {syntaxesConst.STANDARD_FORM === options.syntax && (
+                <Col span={12}>
+                  <Label>{t("component.math.argument")}</Label>
+                  <Select
+                    size="large"
+                    value={options.argument || ""}
+                    style={{ width: "100%" }}
+                    onChange={val => handleChangeOptions("argument", val)}
+                    data-cy="answer-rule-argument-select"
+                  >
+                    {["linear", "quadratic"].map(val => (
+                      <Select.Option key={val} value={val} data-cy={`answer-argument-dropdown-${val}`}>
+                        {val}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+              )}
+            </StyledRow>
           )}
-          {method !== methodsConst.IS_TRUE && (
-            <Col span={12}>
-              <Checkbox
-                checked={options.ignoreText}
-                onChange={e => handleChangeOptions("ignoreText", e.target.checked)}
-                data-cy="answer-ignore-text-checkbox"
-              >
-                {t("component.math.ignoreText")}
-              </Checkbox>
-            </Col>
-          )}
-        </StyledRow>
-      )}
 
-      {[methodsConst.EQUIV_SYMBOLIC, methodsConst.EQUIV_VALUE].includes(method) && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Checkbox
-              checked={options.compareSides}
-              onChange={e => handleChangeOptions("compareSides", e.target.checked)}
-              data-cy="answer-compare-sides"
-            >
-              {t("component.math.compareSides")}
-            </Checkbox>
-          </Col>
-          {method === methodsConst.EQUIV_SYMBOLIC && (
-            <Col span={12}>
-              <Checkbox
-                checked={options.allowEulersNumber}
-                onChange={e => handleChangeOptions("allowEulersNumber", e.target.checked)}
-                data-cy="answer-treat-eas-eulers-number"
-              >
-                {t("component.math.treatEAsEulersNumber")}
-              </Checkbox>
-            </Col>
-          )}
-        </StyledRow>
-      )}
+          {method === methodsConst.EQUIV_LITERAL && (
+            <Fragment>
+              <StyledRow gutter={32}>
+                <Col span={12}>
+                  <Checkbox
+                    data-cy="answer-ignore-order"
+                    checked={options.ignoreOrder}
+                    onChange={e => handleChangeOptions("ignoreOrder", e.target.checked)}
+                  >
+                    {t("component.math.ignoreOrder")}
+                  </Checkbox>
+                </Col>
+                <Col span={12}>
+                  <Checkbox
+                    data-cy="answer-allow-interval"
+                    checked={options.allowInterval}
+                    onChange={e => handleChangeOptions("allowInterval", e.target.checked)}
+                  >
+                    {t("component.math.allowInterval")}
+                  </Checkbox>
+                </Col>
+              </StyledRow>
 
-      {method === methodsConst.EQUIV_VALUE && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <FlexContainer>
-              <Input
-                data-cy="answer-tolerance"
-                style={{ width: "30%" }}
-                size="large"
-                value={options.tolerance}
-                onChange={e => handleChangeOptions("tolerance", e.target.value)}
+              <StyledRow gutter={32}>
+                <Col span={12}>
+                  <Checkbox
+                    data-cy="answer-ignore-trailing-zeros"
+                    checked={options.ignoreTrailingZeros}
+                    onChange={e => handleChangeOptions("ignoreTrailingZeros", e.target.checked)}
+                  >
+                    {t("component.math.ignoreTrailingZeros")}
+                  </Checkbox>
+                </Col>
+              </StyledRow>
+
+              <StyledRow gutter={32}>
+                <Col span={12}>
+                  <Checkbox
+                    data-cy="answer-ignore-coefficient-of-one"
+                    checked={options.ignoreCoefficientOfOne}
+                    onChange={e => handleChangeOptions("ignoreCoefficientOfOne", e.target.checked)}
+                  >
+                    {t("component.math.ignoreCoefficientOfOne")}
+                  </Checkbox>
+                </Col>
+              </StyledRow>
+            </Fragment>
+          )}
+
+          {[
+            methodsConst.EQUIV_LITERAL,
+            methodsConst.IS_SIMPLIFIED,
+            methodsConst.EQUIV_VALUE,
+            methodsConst.IS_FACTORISED
+          ].includes(method) && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Checkbox
+                  data-cy="answer-inverse-result"
+                  checked={options.inverseResult}
+                  onChange={e => handleChangeOptions("inverseResult", e.target.checked)}
+                >
+                  {t("component.math.inverseResult")}
+                </Checkbox>
+              </Col>
+            </StyledRow>
+          )}
+
+          {[
+            methodsConst.EQUIV_SYMBOLIC,
+            methodsConst.EQUIV_VALUE,
+            methodsConst.IS_TRUE,
+            methodsConst.EQUIV_SYNTAX
+          ].includes(method) && (
+            <StyledRow gutter={32}>
+              {method !== methodsConst.EQUIV_SYNTAX && (
+                <Col span={12}>
+                  <FlexContainer>
+                    <Input
+                      data-cy="answer-significant-decimal-places"
+                      style={{ width: "30%" }}
+                      size="large"
+                      type="number"
+                      value={options.significantDecimalPlaces}
+                      onChange={e => handleChangeOptions("significantDecimalPlaces", e.target.value)}
+                    />
+                    <Label>{t("component.math.significantDecimalPlaces")}</Label>
+                  </FlexContainer>
+                </Col>
+              )}
+              {method !== methodsConst.IS_TRUE && (
+                <Col span={12}>
+                  <Checkbox
+                    checked={options.ignoreText}
+                    onChange={e => handleChangeOptions("ignoreText", e.target.checked)}
+                    data-cy="answer-ignore-text-checkbox"
+                  >
+                    {t("component.math.ignoreText")}
+                  </Checkbox>
+                </Col>
+              )}
+            </StyledRow>
+          )}
+
+          {[methodsConst.EQUIV_SYMBOLIC, methodsConst.EQUIV_VALUE].includes(method) && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Checkbox
+                  checked={options.compareSides}
+                  onChange={e => handleChangeOptions("compareSides", e.target.checked)}
+                  data-cy="answer-compare-sides"
+                >
+                  {t("component.math.compareSides")}
+                </Checkbox>
+              </Col>
+              {method === methodsConst.EQUIV_SYMBOLIC && (
+                <Col span={12}>
+                  <Checkbox
+                    checked={options.allowEulersNumber}
+                    onChange={e => handleChangeOptions("allowEulersNumber", e.target.checked)}
+                    data-cy="answer-treat-eas-eulers-number"
+                  >
+                    {t("component.math.treatEAsEulersNumber")}
+                  </Checkbox>
+                </Col>
+              )}
+            </StyledRow>
+          )}
+
+          {method === methodsConst.EQUIV_VALUE && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <FlexContainer>
+                  <Input
+                    data-cy="answer-tolerance"
+                    style={{ width: "30%" }}
+                    size="large"
+                    value={options.tolerance}
+                    onChange={e => handleChangeOptions("tolerance", e.target.value)}
+                  />
+                  <Label>{t("component.math.tolerance")}</Label>
+                </FlexContainer>
+              </Col>
+            </StyledRow>
+          )}
+
+          {![methodsConst.STRING_MATCH, methodsConst.EQUIV_SYNTAX].includes(method) && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Checkbox
+                  data-cy="answer-allow-thousands-separator"
+                  checked={options.allowThousandsSeparator}
+                  onChange={e => handleChangeOptions("allowThousandsSeparator", e.target.checked)}
+                >
+                  {t("component.math.allowDecimalMarks")}
+                </Checkbox>
+              </Col>
+            </StyledRow>
+          )}
+
+          {options.allowThousandsSeparator && (
+            <StyledRow gutter={32}>
+              <Col span={12}>
+                <Label>{t("component.math.decimalSeparator")}</Label>
+                <Select
+                  size="large"
+                  value={options.setDecimalSeparator || decimalSeparators[0].value}
+                  style={{ width: "100%" }}
+                  onChange={val => handleChangeOptions("setDecimalSeparator", val)}
+                  data-cy="answer-set-decimal-separator-dropdown"
+                >
+                  {decimalSeparators.map(({ value: val, label }) => (
+                    <Select.Option
+                      data-cy={`answer-set-decimal-separator-dropdown-list-${label}`}
+                      key={val}
+                      value={val}
+                    >
+                      {label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+              <ThousandsSeparators
+                separators={options.setThousandsSeparator}
+                onChange={handleChangeThousandsSeparator}
+                onAdd={handleAddThousandsSeparator}
+                onDelete={handleDeleteThousandsSeparator}
               />
-              <Label>{t("component.math.tolerance")}</Label>
-            </FlexContainer>
-          </Col>
-        </StyledRow>
-      )}
-
-      {![methodsConst.STRING_MATCH, methodsConst.EQUIV_SYNTAX].includes(method) && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Checkbox
-              data-cy="answer-allow-thousands-separator"
-              checked={options.allowThousandsSeparator}
-              onChange={e => handleChangeOptions("allowThousandsSeparator", e.target.checked)}
-            >
-              {t("component.math.allowDecimalMarks")}
-            </Checkbox>
-          </Col>
-        </StyledRow>
-      )}
-
-      {options.allowThousandsSeparator && (
-        <StyledRow gutter={32}>
-          <Col span={12}>
-            <Label>{t("component.math.decimalSeparator")}</Label>
-            <Select
-              size="large"
-              value={options.setDecimalSeparator || decimalSeparators[0].value}
-              style={{ width: "100%" }}
-              onChange={val => handleChangeOptions("setDecimalSeparator", val)}
-              data-cy="answer-set-decimal-separator-dropdown"
-            >
-              {decimalSeparators.map(({ value: val, label }) => (
-                <Select.Option data-cy={`answer-set-decimal-separator-dropdown-list-${label}`} key={val} value={val}>
-                  {label}
-                </Select.Option>
-              ))}
-            </Select>
-          </Col>
-          <ThousandsSeparators
-            separators={options.setThousandsSeparator}
-            onChange={handleChangeThousandsSeparator}
-            onAdd={handleAddThousandsSeparator}
-            onDelete={handleDeleteThousandsSeparator}
-          />
-        </StyledRow>
-      )}
+            </StyledRow>
+          )}
+        </AdditionalContainer>
+      ) : null}
     </Container>
   );
 };
@@ -555,7 +593,11 @@ MathFormulaAnswerMethod.propTypes = {
   value: PropTypes.string,
   method: PropTypes.string,
   aria_label: PropTypes.string,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+  showAdditionals: PropTypes.object,
+  handleChangeAdditionals: PropTypes.func,
+  clearAdditionals: PropTypes.func
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -563,7 +605,10 @@ MathFormulaAnswerMethod.defaultProps = {
   value: "",
   method: "",
   options: {},
-  onDelete: undefined
+  onDelete: undefined,
+  showAdditionals: [],
+  handleChangeAdditionals: () => {},
+  clearAdditionals: () => {}
 };
 
 export default withNamespaces("assessment")(MathFormulaAnswerMethod);

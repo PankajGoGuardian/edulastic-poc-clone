@@ -211,7 +211,7 @@ class CustomQuillComponent extends React.Component {
     style: {
       minHeight: 134,
       background: "#fff",
-      padding: "18px 23px",
+      padding: "13px 20px",
       border: `1px solid #E1E1E1`,
       borderRadius: "4px"
     }

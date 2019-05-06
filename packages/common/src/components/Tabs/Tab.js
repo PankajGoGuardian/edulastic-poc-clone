@@ -63,7 +63,8 @@ const Container = styled.div`
   color: ${({ active }) => (active ? white : tabGrey)};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  background: ${white};
+  text-transform: uppercase;
+  background: ${({ active }) => (active ? newBlue : white)};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
   min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
@@ -79,7 +80,7 @@ const Container = styled.div`
   }
 
   span {
-    font-size: 14px;
+    font-size: 11px;
     font-weight: 600;
     margin: auto;
     color: ${({ active }) => (active ? white : tabGrey)};

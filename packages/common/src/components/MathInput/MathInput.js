@@ -63,7 +63,7 @@ class MathInput extends React.PureComponent {
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
     mathField.write(value);
-    mathField.focus();
+    // mathField.focus();
 
     this.setState(
       () => ({ mathField }),

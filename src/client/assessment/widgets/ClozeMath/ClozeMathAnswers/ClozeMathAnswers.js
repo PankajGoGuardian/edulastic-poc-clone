@@ -13,7 +13,8 @@ const { methods } = math;
 const MathFormulaWithPoints = withPoints(MathFormulaAnswer);
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
-  value: ""
+  value: "",
+  options: {}
 };
 
 const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }) => {
@@ -27,7 +28,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     }
     newItem.validation.alt_responses.push({
       score: 1,
-      value: new Array(newItem.validation.valid_response.value.length).fill([])
+      value: [[initialMethod]]
     });
 
     setQuestionData(newItem);

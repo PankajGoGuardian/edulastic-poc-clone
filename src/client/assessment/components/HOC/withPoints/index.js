@@ -5,6 +5,7 @@ import { Input } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Container } from "./styled/Container";
+import { PointsText } from "./styled/PointsText";
 
 export default WrappedComponent => {
   const hocComponent = ({ points, onChangePoints, t, ...props }) => (
@@ -15,10 +16,10 @@ export default WrappedComponent => {
           data-cy="points"
           value={points}
           onChange={e => onChangePoints(+e.target.value)}
-          style={{ width: 105 }}
+          style={{ width: 140, textAlign: "center", fontSize: 14 }}
           size="large"
         />
-        <span style={{ textTransform: "uppercase", marginLeft: 25 }}>{t("component.correctanswers.points")}</span>
+        <PointsText>{t("component.correctanswers.points")}</PointsText>
       </Container>
       <WrappedComponent {...props} />
     </React.Fragment>

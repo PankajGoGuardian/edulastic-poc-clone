@@ -11,4 +11,5 @@ export const Label = styled.label`
   color: ${props => props.theme.widgetOptions.labelColor};
   margin-bottom: 10px;
   display: block;
+  text-transform: uppercase;
 `;

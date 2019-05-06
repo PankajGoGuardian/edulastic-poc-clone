@@ -1,8 +1,20 @@
 import styled from "styled-components";
+import { white, inputBgGrey, newBlue, sectionBorder } from "@edulastic/colors";
 
 export const CorrectAnswerContainer = styled.div`
-  background: rgb(255, 255, 255);
-  padding: 18px 23px;
-  border: 1px solid rgb(225, 225, 225);
+  background: ${white};
+  padding: 13px 20px;
+  border: 1px solid ${sectionBorder};
   border-radius: 4px;
+
+  input,
+  .ant-input,
+  .input__math,
+  .ant-select-selection {
+    background-color: ${inputBgGrey};
+  }
+
+  .ant-select-arrow .ant-select-arrow-icon {
+    color: ${newBlue};
+  }
 `;

@@ -633,7 +633,10 @@
       "exactMatch": "Exact match",
       "template": "Template",
       "thousandsSeparator": "Thousands separator",
-      "composequestion": "Compose Question"
+      "composequestion": "Compose Question",
+      "compareUsing": "Compare Using",
+      "expectedAnswer": "Expected Answer",
+      "addComparison": "Add Comparison"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

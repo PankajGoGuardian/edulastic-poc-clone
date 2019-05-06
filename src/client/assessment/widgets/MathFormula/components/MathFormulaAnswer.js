@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import { EduButton } from "@edulastic/common";
@@ -6,29 +6,68 @@ import { withNamespaces } from "@edulastic/localization";
 
 import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
 
-const MathFormulaAnswer = ({ answer, onChange, onAdd, onDelete, item, t }) => {
-  const handleChangeMethod = index => (prop, val) => {
-    onChange({ index, prop, value: val });
+class MathFormulaAnswer extends Component {
+  state = {
+    showAdditionals: []
   };
 
-  return (
-    <Fragment>
-      {answer.map((method, i) => (
-        <MathFormulaAnswerMethod
-          onDelete={() => onDelete(i)}
-          key={i}
-          item={item}
-          index={i}
-          onChange={handleChangeMethod(i)}
-          {...method}
-        />
-      ))}
-      <EduButton onClick={onAdd} type="primary" size="large" data-cy="add-new-method">
-        {t("component.math.addNewMethod")}
-      </EduButton>
-    </Fragment>
-  );
-};
+  render() {
+    const { answer, onChange, onAdd, onDelete, item, t } = this.props;
+
+    const { showAdditionals } = this.state;
+
+    const handleChangeMethod = index => (prop, val) => {
+      onChange({ index, prop, value: val });
+    };
+
+    const handleChangeAdditionals = (method, direction) => {
+      const methods = showAdditionals;
+
+      switch (direction) {
+        case "pop":
+          methods.splice(methods.findIndex(el => el === method));
+          break;
+        case "push":
+        default:
+          methods.push(method);
+          break;
+      }
+
+      this.setState({
+        showAdditionals: methods
+      });
+    };
+
+    const clearAdditionals = () => {
+      this.setState({
+        showAdditionals: []
+      });
+    };
+
+    return (
+      <div>
+        {answer.map((method, i) => (
+          <MathFormulaAnswerMethod
+            onDelete={() => onDelete(i)}
+            key={i}
+            item={item}
+            index={i}
+            onChange={handleChangeMethod(i)}
+            showAdditionals={showAdditionals}
+            handleChangeAdditionals={handleChangeAdditionals}
+            clearAdditionals={clearAdditionals}
+            {...method}
+          />
+        ))}
+        {showAdditionals.length === 0 ? (
+          <EduButton onClick={onAdd} type="primary" size="large" data-cy="add-new-method">
+            {t("component.math.addComparison")}
+          </EduButton>
+        ) : null}
+      </div>
+    );
+  }
+}
 
 MathFormulaAnswer.propTypes = {
   answer: PropTypes.array.isRequired,

@@ -49,6 +49,8 @@ class TestItemPreview extends Component {
 
   render() {
     const { cols, preview, style, windowWidth, showFeedback, questions, index } = this.props;
+    console.log("cols is", cols);
+    console.log("questions is", questions);
 
     let questionCount = 0;
     cols

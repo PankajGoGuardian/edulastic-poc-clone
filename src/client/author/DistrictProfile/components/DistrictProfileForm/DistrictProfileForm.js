@@ -49,7 +49,7 @@ class DistrictProfileForm extends React.Component {
 
   handleChangeShortName = e => {
     this.setState({
-      districtUrl: "http://edulastic-poc.snapwiz.net/district/" + e.target.value
+      districtUrl: `${window.location.origin}/district/${e.target.value}`
     });
   };
 

@@ -13,7 +13,6 @@ import { test } from "@edulastic/constants";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
-import { proxyUser } from "./author/authUtils";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 
 const { ASSESSMENT, PRACTICE } = test.type;
@@ -95,7 +94,7 @@ class App extends Component {
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
         }
-        //TODO: handle the rest of the role routes (district-admin,school-admin)
+        // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else {
         defaultRoute = "/Login";
       }

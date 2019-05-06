@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Select, Input, Menu, Dropdown, Icon } from "antd";
-import { get, pickBy, identity, orderBy } from "lodash";
+import { Select, Input, Menu, Dropdown, Icon, message } from "antd";
+import { get, pickBy, identity, orderBy, lowerCase, find } from "lodash";
 import {
   IconFolderNew,
   IconFolderAll,
@@ -63,7 +63,14 @@ class LeftFilter extends React.Component {
   };
 
   createUpdateFolder = () => {
+    const { folders } = this.props;
     const { folderName, selectedFolder } = this.state;
+    const isExist = find(folders, folder => lowerCase(folder.folderName) === lowerCase(folderName));
+
+    if (isExist) {
+      return message.error("The folder name is already used.");
+    }
+
     if (selectedFolder) {
       const { renameFolder } = this.props;
       if (renameFolder) {

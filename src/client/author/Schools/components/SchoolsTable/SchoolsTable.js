@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Form, Icon, Select, message, Button, Table } from "antd";
+import { Popconfirm, Form, Icon, Select, message, Button } from "antd";
 const Option = Select.Option;
 
 import {
@@ -14,7 +14,8 @@ import {
   StyledFilterInput,
   StyledFilterButton,
   StyledSchoolSearch,
-  StyledSelectStatus
+  StyledSelectStatus,
+  StyledTable
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -102,6 +103,7 @@ class SchoolsTable extends React.Component {
       },
       {
         dataIndex: "operation",
+        width: "94px",
         render: (text, record) => {
           return (
             <React.Fragment>
@@ -428,7 +430,7 @@ class SchoolsTable extends React.Component {
             </StyledFilterButton>
           )}
         </StyledControlDiv>
-        <Table
+        <StyledTable
           rowSelection={rowSelection}
           dataSource={dataSource}
           columns={columns}

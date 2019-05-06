@@ -19,6 +19,7 @@ const module = "authorTestAssignments";
 const currentSelector = state => state[module].current;
 
 export const testsSelector = state => state.tests;
+export const testListSelector = state => state.testList;
 
 export const getAssignmentsSelector = state => state[module].assignments;
 export const getCurrentAssignmentSelector = createSelector(
@@ -43,4 +44,9 @@ export const getCurrentAssignmentSelector = createSelector(
 export const getTestEntitySelector = createSelector(
   testsSelector,
   state => state.entity
+);
+
+export const getTestsSelector = createSelector(
+  testListSelector,
+  state => state.entities
 );

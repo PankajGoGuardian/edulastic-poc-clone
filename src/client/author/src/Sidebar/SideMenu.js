@@ -207,7 +207,7 @@ class SideMenu extends Component {
                     <MenuItem
                       key={index.toString()}
                       onClick={this.toggleMenu}
-                      visible={menu.label === "Admin" && userRole !== "district-admin" ? false : true}
+                      visible={menu.label === "Manage District" && userRole !== "district-admin" ? false : true}
                     >
                       <MenuIcon />
                       {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}

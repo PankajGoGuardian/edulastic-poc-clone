@@ -400,7 +400,7 @@ class MainSetting extends Component {
                   <Title>Performance Bands</Title>
                 </Col>
                 <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                  <NormalText>Above or At Standardss</NormalText>
+                  <NormalText>Above or At Standard</NormalText>
                 </Col>
                 <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
                   <NormalText>From</NormalText>

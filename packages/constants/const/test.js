@@ -9,8 +9,8 @@ module.exports = {
     { id: "release-scores", title: "Release Scores Automatically" },
     { id: "require-safe-exame-browser", title: "Require Safe Exame Browser" },
     { id: "show-questions", title: "Release Answers with Grades" },
-    { id: "suffle-question", title: "Suffle Question" },
-    { id: "show-answer-choice", title: "Show Answer Choice" },
+    { id: "suffle-question", title: "Shuffle Questions" },
+    { id: "show-answer-choice", title: "Shuffle Answer Choice" },
     { id: "show-calculator", title: "Show Calculator" },
     { id: "answer-on-paper", title: "Answer on Paper" },
     { id: "require-password", title: "Require Password" },
@@ -96,7 +96,7 @@ module.exports = {
     PARTIAL_CREDIT: "Partial Credit"
   },
   accessibilities: {
-    SHOW_COLOUR_SHCEME: "Show Colour Scheme",
+    SHOW_COLOUR_SHCEME: "Show Color Scheme",
     SHOW_FONT_SIZE: "Show Font Size",
     SHOW_ZOOM: "Show Zoom"
   }

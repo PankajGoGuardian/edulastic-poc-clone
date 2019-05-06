@@ -167,7 +167,6 @@ export const BandsText = styled.span`
 export const NormalText = styled.span`
   font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
   color: ${cardTitleColor};
 `;
 

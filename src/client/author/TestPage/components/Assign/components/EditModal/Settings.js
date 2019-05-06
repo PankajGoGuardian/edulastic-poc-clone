@@ -127,7 +127,7 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       {/* Shuffle Question */}
       <StyledRowSettings gutter={16}>
         <Col span={8}>
-          <RowTitle>Shuffle Question</RowTitle>
+          <RowTitle>Shuffle Questions</RowTitle>
         </Col>
         <Col span={16}>
           <AlignSwitchRight

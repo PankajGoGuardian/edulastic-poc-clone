@@ -47,21 +47,21 @@ const Settings = ({
       key: "name"
     },
     {
-      title: "ABOVE OR AT STANDARD",
+      title: "Above or At Standard",
       dataIndex: "aboveOrAtStandard",
       width: "25%",
       key: "aboveOrAtStandard",
       render: value => <Checkbox checked={value} />
     },
     {
-      title: "FROM",
+      title: "From",
       dataIndex: "from",
       width: "15%",
       key: "from",
       render: text => <span>{`${text}%`}</span>
     },
     {
-      title: "TO",
+      title: "To",
       width: "25%",
       key: "to",
       dataIndex: "to",
@@ -159,7 +159,7 @@ const Settings = ({
         {/* Mark as done */}
         {!isAdvanced && <SpaceDiv />}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>MARK AS DONE</Col>
+          <Col span={8}>Mark as Done</Col>
           <Col span={16}>
             <AlignRight onChange={updateMarkAsDone} value={isAutomatic}>
               <Radio value={0}>Automatically</Radio>
@@ -171,7 +171,7 @@ const Settings = ({
 
         {/* Release score */}
         <StyledRowSelect gutter={16}>
-          <Col span={10}>RELEASE SCORES</Col>
+          <Col span={10}>Release Scores</Col>
           <Col span={14}>
             <StyledSelect
               data-cy="selectRelaseScore"
@@ -192,7 +192,7 @@ const Settings = ({
 
         {/* Require Safe Exam Browser */}
         <StyledRowSettings gutter={16}>
-          <Col span={16}>REQUIRE SAFE EXAM BROWSER</Col>
+          <Col span={16}>Require Safe Exam Browser</Col>
           <Col span={8}>
             <AlignSwitchRight
               defaultChecked={safeBrowser}
@@ -215,7 +215,7 @@ const Settings = ({
 
         {/* show questions */}
         <StyledRowSettings gutter={16}>
-          <Col span={12}>SHOW QUESTIONS TO STUDENTS AFTER SUBMISSION</Col>
+          <Col span={12}>Show Questions to Students After Submission</Col>
           <Col span={12}>
             <AlignSwitchRight
               defaultChecked={showQuestionsAfterSubmission}
@@ -228,7 +228,7 @@ const Settings = ({
 
         {/* Shuffle Question */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>SHUFFLE QUESTION</Col>
+          <Col span={8}>Shuffle Questions</Col>
           <Col span={16}>
             <AlignSwitchRight
               size="small"
@@ -241,7 +241,7 @@ const Settings = ({
 
         {/* Shuffle Answer Choice */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>SHUFFLE ANSWER CHOICE</Col>
+          <Col span={8}>Shuffle Answer Choice</Col>
           <Col span={16}>
             <AlignSwitchRight
               size="small"
@@ -254,7 +254,7 @@ const Settings = ({
 
         {/* Show Calculator */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>SHOW CALCULATOR</Col>
+          <Col span={8}>Show Calculator</Col>
           <Col span={16}>
             <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
               {calculatorKeys.map(item => (
@@ -269,7 +269,7 @@ const Settings = ({
 
         {/* Answer on Paper */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>ANSWER ON PAPER</Col>
+          <Col span={8}>Answer on Paper</Col>
           <Col span={16}>
             <AlignSwitchRight
               size="small"
@@ -282,7 +282,7 @@ const Settings = ({
 
         {/* Require Password */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>REQUIRE PASSWORD</Col>
+          <Col span={8}>Require Password</Col>
           <Col span={16}>
             <AlignSwitchRight
               defaultChecked
@@ -295,7 +295,7 @@ const Settings = ({
 
         {/* Evaluation Method */}
         <StyledRowSettings gutter={16}>
-          <Col span={6}>EVALUATION METHOD</Col>
+          <Col span={6}>Evaluation Method</Col>
           <Col span={18}>
             <AlignRight onChange={evalMethod} value={type}>
               {evaluationtypes.map((item, index) => (

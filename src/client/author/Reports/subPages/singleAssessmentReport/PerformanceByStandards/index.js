@@ -41,17 +41,7 @@ const MasteryLevels = ({ scaleInfo }) => (
 
 const PAGE_SIZE = 15;
 
-const PerformanceByStandards = ({
-  loading,
-  report,
-  getPerformanceByStandards,
-  getAssignmentsRequestAction,
-  match,
-  assignments,
-  history,
-  location,
-  settings
-}) => {
+const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, assignments, settings }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(compareByMode.CLASS);
@@ -83,26 +73,13 @@ const PerformanceByStandards = ({
   };
 
   useEffect(() => {
-    if (!isEmpty(assignments)) {
-      if (match.params.testId) {
-        const q = {
-          testId: match.params.testId
-        };
-        q.requestFilters = { ...settings.requestFilters };
-        getPerformanceByStandards(q);
-      } else {
-        const tests = [...get(assignments, "data.result.tests", [])];
-        tests.sort((a, b) => b.updatedDate - a.updatedDate);
-
-        const q = { testId: tests[0]._id };
-        q.requestFilters = { ...settings.requestFilters };
-        history.push(location.pathname + q.testId);
-        getPerformanceByStandards(q);
-      }
-    } else {
-      getAssignmentsRequestAction();
+    if (settings.selectedTest && settings.selectedTest.key) {
+      let q = {};
+      q.testId = settings.selectedTest.key;
+      q.requestFilters = { ...settings.requestFilters };
+      getPerformanceByStandards(q);
     }
-  }, [assignments, settings]);
+  }, [settings]);
 
   const setSelectedData = ({ skillInfo, defaultStandardId, standardsMap }) => {
     const selectedData = skillInfo.reduce(

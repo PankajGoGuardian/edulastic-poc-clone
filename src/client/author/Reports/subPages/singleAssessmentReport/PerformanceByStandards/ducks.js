@@ -26,7 +26,7 @@ export const defaultReport = {
 
 const initialState = {
   report: defaultReport,
-  loading: true,
+  loading: false,
   error: undefined
 };
 

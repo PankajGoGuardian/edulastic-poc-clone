@@ -1,9 +1,11 @@
 /* eslint-disable class-methods-use-this */
 import Header from "./header";
 import ItemListPage from "../itemListPage";
+import TeacherSideBar from "../../SideBarPage";
 
 class EditItemPage {
   constructor() {
+    this.sideBar = new TeacherSideBar();
     this.header = new Header();
     this.header.save = () => {
       cy.server();
@@ -126,7 +128,7 @@ class EditItemPage {
   }
 
   createNewItem = () => {
-    cy.visit("/author/items");
+    this.sideBar.clickOnItemLibrary();
     this.itemList.clickOnCreate();
   };
 

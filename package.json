@@ -57,6 +57,7 @@
     "mqtt": "^2.18.8",
     "normalizr": "^3.3.0",
     "overlay-pslg": "^1.0.0",
+    "pdfjs-dist": "^2.0.943",
     "prop-types": "^15.6.2",
     "query-string": "^6.3.0",
     "rc-color-picker": "^1.2.6",

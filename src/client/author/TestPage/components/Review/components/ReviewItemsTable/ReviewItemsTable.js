@@ -39,7 +39,7 @@ const ItemsTable = ({ items, types, standards }) => {
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {
-      main.stimulus = item.data.questions[0].data.stimulus;
+      main.stimulus = item.data.questions[0].stimulus;
     }
 
     return {

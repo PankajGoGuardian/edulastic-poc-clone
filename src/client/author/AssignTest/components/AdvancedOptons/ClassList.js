@@ -1,12 +1,15 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
 import { connect } from "react-redux";
+import { Select } from "antd";
 import { get, curry, isEmpty, remove, lowerCase, find } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
+import { getTestsSelector } from "../../../TestList/ducks";
 
 import { ClassListFilter, StyledRowLabel, StyledTable, ClassListContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
@@ -37,18 +40,27 @@ class ClassList extends React.Component {
     courseList: PropTypes.array.isRequired,
     classList: PropTypes.array.isRequired,
     selectedClasses: PropTypes.array.isRequired,
-    selectClass: PropTypes.func.isRequired
+    selectClass: PropTypes.func.isRequired,
+    tests: PropTypes.func.isRequired,
+    match: PropTypes.object.isRequired
   };
 
-  state = {
-    searchTerms: {
-      institutionIds: [],
-      codes: [],
-      subjects: [],
-      grades: [],
-      active: 1
-    }
-  };
+  constructor(props) {
+    super(props);
+    const { match, tests } = props;
+    const { testId } = match.params;
+    const { grades = [], subjects = [] } = find(tests, item => item._id === testId) || {};
+
+    this.state = {
+      searchTerms: {
+        institutionIds: [],
+        codes: [],
+        subjects,
+        grades,
+        active: 1
+      }
+    };
+  }
 
   componentDidMount() {
     const { classList, schools, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
@@ -211,17 +223,23 @@ class ClassList extends React.Component {
   }
 }
 
-export default connect(
-  state => ({
-    termsData: get(state, "user.user.orgData.terms", []),
-    classList: get(state, "classesReducer.data"),
-    userOrgId: getUserOrgId(state),
-    schools: getSchoolsSelector(state),
-    courseList: getCourseListSelector(state)
-  }),
-  {
-    loadClassListData: receiveClassListAction,
-    loadSchoolsData: receiveSchoolsAction,
-    loadCourseListData: receiveCourseListAction
-  }
-)(ClassList);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      termsData: get(state, "user.user.orgData.terms", []),
+      classList: get(state, "classesReducer.data"),
+      userOrgId: getUserOrgId(state),
+      schools: getSchoolsSelector(state),
+      courseList: getCourseListSelector(state),
+      tests: getTestsSelector(state)
+    }),
+    {
+      loadClassListData: receiveClassListAction,
+      loadSchoolsData: receiveSchoolsAction,
+      loadCourseListData: receiveCourseListAction
+    }
+  )
+);
+
+export default enhance(ClassList);

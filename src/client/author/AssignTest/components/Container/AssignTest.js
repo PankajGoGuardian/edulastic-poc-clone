@@ -16,8 +16,7 @@ import {
   fetchAssignmentsAction,
   saveAssignmentAction,
   getAssignmentsSelector,
-  getTestEntitySelector,
-  getTestsSelector
+  getTestEntitySelector
 } from "../../duck";
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -107,8 +106,7 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView } = this.state;
-    const { group, fetchStudents, students, testSettings, tests } = this.props;
-    console.log(tests);
+    const { group, fetchStudents, students, testSettings } = this.props;
 
     return (
       <div>
@@ -156,7 +154,6 @@ class AssignTest extends React.Component {
 
 export default connect(
   state => ({
-    tests: getTestsSelector(state),
     group: getGroupsSelector(state),
     assignments: getAssignmentsSelector(state),
     students: getStudentsSelector(state),
@@ -174,7 +171,6 @@ export default connect(
 )(AssignTest);
 
 AssignTest.propTypes = {
-  tests: PropTypes.array.isRequired,
   match: PropTypes.object.isRequired,
   fetchStudents: PropTypes.func.isRequired,
   fetchGroups: PropTypes.func.isRequired,

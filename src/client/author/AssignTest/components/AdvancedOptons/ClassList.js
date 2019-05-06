@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { connect } from "react-redux";
-import { get, curry, isEmpty, remove, lowerCase } from "lodash";
+import { get, curry, isEmpty, remove, lowerCase, find } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
@@ -13,10 +13,16 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 
 const { allGrades, allSubjects } = selectsData;
 
+const findTeacherName = row => {
+  const { owners, primaryTeacherId } = row;
+  const teacher = find(owners, owner => owner.id === primaryTeacherId);
+  return teacher ? teacher.name : "";
+};
+
 const convertTableData = row => ({
   key: row._id,
   className: row.name,
-  teacher: row.teacherName,
+  teacher: findTeacherName(row),
   subject: row.subject,
   grades: row.grade
 });

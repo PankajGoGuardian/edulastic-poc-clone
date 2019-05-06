@@ -4,6 +4,7 @@ import { Col, Radio } from "antd";
 import { AlignRight, AlignSwitchRight, StyledRowSettings, SettingsWrapper, MaxAttemptIInput, Password } from "./styled";
 //selectors
 import { test } from "@edulastic/constants";
+import styled from "styled-components";
 const { releaseGradeTypes, calculatorKeys, calculators } = test;
 const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -52,7 +53,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
     <SettingsWrapper>
       {/* Mark as done */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>MARK AS DONE</Col>
+        <Col span={8}>
+          <RowTitle>Mark as Done</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignRight onChange={updateMarkAsDone} value={isAutomatic}>
             <Radio value={0}>Automatically</Radio>
@@ -64,7 +67,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Release score */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>RELEASE SCORES AUTOMATICALLY</Col>
+        <Col span={8}>
+          <RowTitle>Release Scores Automatically</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignRight value={releaseScore} onChange={e => overRideSettings("releaseScore", e.target.value)}>
             {releaseGradeKeys.map(item => (
@@ -78,7 +83,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
       {/* Release score */}
       {/* Maximum attempt */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>MAXIMUM ATTEMPTS ALLOWED</Col>
+        <Col span={8}>
+          <RowTitle>Maximum Attempts Allowed</RowTitle>
+        </Col>
         <Col span={16}>
           <MaxAttemptIInput
             type="number"
@@ -93,7 +100,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Require Safe Exam Browser */}
       <StyledRowSettings gutter={16}>
-        <Col span={16}>REQUIRE SAFE EXAM BROWSER</Col>
+        <Col span={16}>
+          <RowTitle>Require Safe Exam Browser</RowTitle>
+        </Col>
         <Col span={8}>
           <AlignSwitchRight defaultChecked={safeBrowser} onChange={value => overRideSettings("safeBrowser", value)} />
           {safeBrowser && (
@@ -117,7 +126,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Shuffle Question */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>SHUFFLE QUESTION</Col>
+        <Col span={8}>
+          <RowTitle>Shuffle Question</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={shuffleQuestions}
@@ -129,7 +140,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Shuffle Answer Choice */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>SHUFFLE ANSWER CHOICE</Col>
+        <Col span={8}>
+          <RowTitle>Shuffle Answer Choice</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={shuffleAnswers}
@@ -141,7 +154,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Show Calculator */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>SHOW CALCULATOR</Col>
+        <Col span={8}>
+          <RowTitle>Show Calculator</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignRight value={calcType} onChange={e => overRideSettings("calcType", e.target.value)}>
             {calculatorKeys.map(item => (
@@ -156,7 +171,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Answer on Paper */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>ANSWER ON PAPER</Col>
+        <Col span={8}>
+          <RowTitle>Answer on Paper</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignSwitchRight
             defaultChecked={answerOnPaper}
@@ -168,7 +185,9 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Require Password */}
       <StyledRowSettings gutter={16}>
-        <Col span={8}>REQUIRE PASSWORD</Col>
+        <Col span={8}>
+          <RowTitle>Require Password</RowTitle>
+        </Col>
         <Col span={16}>
           <AlignSwitchRight defaultChecked />
         </Col>
@@ -177,8 +196,10 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 
       {/* Evaluation Method */}
       <StyledRowSettings gutter={16} islast={true}>
-        <Col span={6}>EVALUATION METHOD</Col>
-        <Col span={18}>
+        <Col span={8}>
+          <RowTitle>Evaluation Method</RowTitle>
+        </Col>
+        <Col span={16}>
           <AlignRight onChange={evalMethod} value={type}>
             {evaluationtypes.map((item, index) => (
               <Radio value={index} key={index}>
@@ -194,3 +215,8 @@ const Settings = ({ onUpdateMaxAttempts, testSettings, assignmentSettings, updat
 };
 
 export default Settings;
+
+const RowTitle = styled.h4`
+  font-weight: 600;
+  margin: 0px;
+`;

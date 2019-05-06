@@ -101,31 +101,35 @@ class ClassList extends React.Component {
     const columns = [
       {
         title: "CLASS NAME",
-        sorter: true,
         width: "25%",
         dataIndex: "className",
-        key: "className"
+        key: "className",
+        sorter: (a, b) => a.className > b.className,
+        sortDirections: ["descend", "ascend"]
       },
       {
         title: "TEACHER",
-        sorter: true,
         width: "25%",
         dataIndex: "teacher",
-        key: "teacher"
+        key: "teacher",
+        sorter: (a, b) => a.teacher > b.teacher,
+        sortDirections: ["descend", "ascend"]
       },
       {
         title: "SUBJECT",
         width: "25%",
-        sorter: true,
         key: "subject",
-        dataIndex: "subject"
+        dataIndex: "subject",
+        sorter: (a, b) => a.subject > b.subject,
+        sortDirections: ["descend", "ascend"]
       },
       {
         title: "GRADE",
         width: "15%",
-        sorter: true,
         key: "grades",
-        dataIndex: "grades"
+        dataIndex: "grades",
+        sorter: (a, b) => a.grades > b.grades,
+        sortDirections: ["descend", "ascend"]
       }
     ];
 

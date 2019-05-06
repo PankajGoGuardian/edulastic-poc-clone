@@ -43,7 +43,9 @@ class StandardSetsModal extends React.Component {
     const { selSubject, searchStr } = this.state;
 
     let filteredStandardList = standardList.filter(item => item.subject === selSubject || selSubject === "");
-    filteredStandardList = filteredStandardList.filter(item => item.curriculum.indexOf(searchStr) != -1);
+    filteredStandardList = filteredStandardList.filter(
+      item => item.curriculum.toLowerCase().indexOf(searchStr.toLowerCase()) != -1
+    );
     const standardsSetNames = filteredStandardList.map(row => {
       return row.curriculum;
     });

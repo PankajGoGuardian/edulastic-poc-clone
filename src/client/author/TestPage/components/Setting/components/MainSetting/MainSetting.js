@@ -307,7 +307,7 @@ class MainSetting extends Component {
             </Block>
 
             <Block id="suffle-question" smallSize={isSmallSize}>
-              <Title>Shuffle Question</Title>
+              <Title>Shuffle Questions</Title>
               <Body smallSize={isSmallSize}>
                 <Switch defaultChecked={shuffleQuestions} onChange={this.updateTestData("shuffleQuestions")} />
                 <Description>
@@ -400,7 +400,7 @@ class MainSetting extends Component {
                   <Title>Performance Bands</Title>
                 </Col>
                 <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                  <NormalText>Above or at Standard</NormalText>
+                  <NormalText>Above or At Standardss</NormalText>
                 </Col>
                 <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
                   <NormalText>From</NormalText>

@@ -3,6 +3,8 @@ import { createSelector } from "reselect";
 import { message } from "antd";
 import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
+import pdfjs from "pdfjs-dist";
+import { get } from "lodash";
 
 import { fileApi, testsApi, testItemsApi } from "@edulastic/api";
 
@@ -60,9 +62,18 @@ const defaultTestItem = {
   ]
 };
 
+const defaultPageStructure = [
+  {
+    URL: "blank",
+    pageNo: 1
+  }
+];
+
 function* createAssessmentSaga({ payload }) {
   let fileURI = "";
   let testItem;
+  let amountOfPDFPages = 0;
+  let pageStructure = [];
 
   try {
     if (payload.file) {
@@ -90,8 +101,34 @@ function* createAssessmentSaga({ payload }) {
   }
 
   try {
+    if (fileURI) {
+      const pdfLoadingTask = pdfjs.getDocument(fileURI);
+
+      const { numPages } = yield pdfLoadingTask.promise;
+      amountOfPDFPages = numPages;
+
+      pageStructure = new Array(amountOfPDFPages)
+        .fill({
+          URL: fileURI
+        })
+        .map((page, index) => ({
+          ...page,
+          pageNo: index + 1
+        }));
+    }
+
     if (payload.assessmentId) {
       const assessment = yield select(getTestEntitySelector);
+
+      const assessmentPageStructure = get(assessment, "pageStructure", [])
+        .filter(page => page.URL === "blank") // delete old pdf
+        .concat(pageStructure)
+        .map((page, index) => ({
+          ...page,
+          _id: undefined
+        }));
+
+      const newPageStructure = assessmentPageStructure.length ? assessmentPageStructure : defaultPageStructure;
 
       const updatedAssessment = {
         ...assessment,
@@ -99,7 +136,8 @@ function* createAssessmentSaga({ payload }) {
         annotations: [],
         updatedDate: undefined,
         createdDate: undefined,
-        assignments: undefined
+        assignments: undefined,
+        pageStructure: newPageStructure
       };
 
       const updatePayload = {
@@ -109,7 +147,7 @@ function* createAssessmentSaga({ payload }) {
 
       yield call(testsApi.update, updatePayload);
 
-      yield put(setTestDataAction({ docUrl: fileURI }));
+      yield put(setTestDataAction({ docUrl: fileURI, pageStructure: newPageStructure }));
       yield put(createAssessmentSuccessAction());
       yield put(push(`/author/assessments/${assessment._id}`));
     } else {
@@ -127,7 +165,8 @@ function* createAssessmentSaga({ payload }) {
         testItems: [testItem._id],
         docUrl: fileURI,
         releaseScore: "DONT_RELEASE",
-        assignments: undefined
+        assignments: undefined,
+        pageStructure: pageStructure.length ? pageStructure : defaultPageStructure
       };
 
       const assessment = yield call(testsApi.create, newAssessment);

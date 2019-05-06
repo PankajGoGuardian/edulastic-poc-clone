@@ -4,7 +4,7 @@ import { test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit } from "lodash";
+import { keyBy as _keyBy, omit, get } from "lodash";
 import { testsApi, assignmentApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
@@ -348,6 +348,13 @@ function* updateTestSaga({ payload }) {
     delete payload.data.createdDate;
     delete payload.data.assignments;
     delete payload.data.authors;
+
+    const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
+      ...page,
+      _id: undefined
+    }));
+
+    payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
 
     const entity = yield call(testsApi.update, payload);
 

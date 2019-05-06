@@ -318,8 +318,7 @@ class PerformanceBandTable extends React.Component {
     }
     if (dataSource[0].key === key) dataSource[1].from = 100;
     else if (dataSource[dataSource.length - 1].key === key) dataSource[dataSource.length - 2].to = 0;
-
-    dataSource[key + 1].from = dataSource[key].from;
+    else dataSource[key + 1].from = dataSource[key].from;
 
     this.setState({
       dataSource: dataSource.filter(item => item.key !== key),

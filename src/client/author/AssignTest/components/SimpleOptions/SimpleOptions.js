@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Icon } from "antd";
+import { Col, Icon, message } from "antd";
 import { curry } from "lodash";
 import produce from "immer";
 import ClassSelector from "./ClassSelector";
@@ -35,6 +35,13 @@ class SimpleOptions extends React.Component {
 
   onChange = (field, value) => {
     const { assignment } = this.state;
+    if (field === "endDate") {
+      const { startDate } = assignment;
+      const diff = startDate.diff(value);
+      if (diff > 0) {
+        return message.error("Close date should be less than Open date!");
+      }
+    }
     const nextAssignment = produce(assignment, state => {
       state[field] = value;
     });

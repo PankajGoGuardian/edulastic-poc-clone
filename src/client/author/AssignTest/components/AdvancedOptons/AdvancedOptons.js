@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import { curry } from "lodash";
-import { Col, Icon } from "antd";
+import { Col, Icon, message } from "antd";
 import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
@@ -30,6 +30,13 @@ class AdvancedOptons extends React.Component {
 
   onChange = (field, value) => {
     const { assignment } = this.state;
+    if (field === "endDate") {
+      const { startDate } = assignment;
+      const diff = startDate.diff(value);
+      if (diff > 0) {
+        return message.error("Close date should be less than Open date!");
+      }
+    }
     const nextAssignment = produce(assignment, state => {
       state[field] = value;
     });

@@ -195,6 +195,7 @@ class Review extends PureComponent {
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
               <HeaderBar
                 onSelectAll={this.handleSelectAll}
+                itemTotal={test.testItems.length}
                 selectedItems={selected}
                 onRemoveSelected={this.handleRemoveSelected}
                 onCollapse={this.handleCollapse}

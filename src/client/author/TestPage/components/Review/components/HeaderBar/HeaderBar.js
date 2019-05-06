@@ -13,6 +13,7 @@ const HeaderBar = ({
   onSelectAll,
   onRemoveSelected,
   onCollapse,
+  itemTotal,
   selectedItems,
   onMoveTo,
   windowWidth,
@@ -22,7 +23,7 @@ const HeaderBar = ({
 
   const handleSuccess = position => {
     const post = position - 1;
-    if (selectedItems.length < post) {
+    if (post > itemTotal - 1) {
       message.info("Value cannot be more than total questions count");
     } else if (post < 0) {
       message.info("Value cannot be less than total questions count");
@@ -73,6 +74,7 @@ HeaderBar.propTypes = {
   onMoveTo: PropTypes.func.isRequired,
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
+  itemTotal: PropTypes.number.isRequired,
   selectedItems: PropTypes.array.isRequired,
   windowWidth: PropTypes.number.isRequired,
   setCollapse: PropTypes.bool.isRequired

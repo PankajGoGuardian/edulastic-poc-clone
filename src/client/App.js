@@ -75,13 +75,13 @@ class App extends Component {
 
   render() {
     const { user, tutorial, location } = this.props;
-    if (user.authenticating && TokenStorage.getAccessToken()) {
+
+    const publicPath = location.pathname.split("/").includes("public");
+    if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
 
     let defaultRoute = "/author/assignments";
-
-    const publicPath = location.pathname.split("/").includes("public");
 
     if (!publicPath) {
       if (user && user.isAuthenticated) {

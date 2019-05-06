@@ -204,7 +204,7 @@ class SchoolsTable extends React.Component {
     if (filtersColumn !== "") {
       possibleFilterKey.push(filtersColumn);
     } else {
-      possibleFilterKey = ["name", "city", "sectionsCount", "state", "studentsCount", "teachersCount", "zip"];
+      possibleFilterKey = ["name", "city", "sectionsCount", "studentsCount", "teachersCount", "zip"];
     }
 
     const filterSource = dataSource.filter(row => {
@@ -404,7 +404,6 @@ class SchoolsTable extends React.Component {
             <Option value="city">City</Option>
             <Option value="state">State</Option>
             <Option value="zip">Zip</Option>
-            <Option value="status">Status</Option>
             <Option value="teacher">Teacher</Option>
             <Option value="student">Student</Option>
             <Option value="section">Section</Option>

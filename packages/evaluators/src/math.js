@@ -2,7 +2,9 @@ import axios from "axios";
 import { omitBy } from "lodash";
 import { ScoringType } from "./const/scoring";
 
-const url = "https://edulastic-poc.snapwiz.net/math-api/evaluate";
+const url = `${
+  window && window.location ? window.location.protocol : "https:"
+}//edulastic-poc.snapwiz.net/math-api/evaluate`;
 
 const evaluate = data =>
   axios

@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { mobileWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
-  width: ${({ width }) => width};
+  width: ${({ width }) => (width ? `${width}!important` : "auto")};
   display: flex;
   flex-direction: column;
   border-right-color: ${props => props.theme.testItemPreview.itemColBorderColor};

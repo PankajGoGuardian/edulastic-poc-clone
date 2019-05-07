@@ -60,15 +60,16 @@ class EditableCell extends React.Component {
     });
   };
 
-  handleChangePro = e => {
-    if (isNaN(e.target.value)) {
-      return;
-    }
-  };
-
   checkPrice = (rule, value, callback) => {
+    const { dataSource, record } = this.props;
     if (!isNaN(value)) {
-      if (parseInt(value) > 100 || parseInt(value) < 0) callback("Please input value between 0 and 100");
+      const sameRow = dataSource.filter(item => item.key === record.key);
+      const sameDownRow = dataSource.filter(item => item.key === record.key + 1);
+
+      if (sameRow[0].from < parseInt(value)) callback(`To value should be less than ${sameRow[0].from}`);
+      else if (sameDownRow[0].to + 1 > parseInt(value))
+        callback(`To value shouldn't be less than ${sameDownRow[0].to}`);
+      else if (parseInt(value) > 100 || parseInt(value) < 0) callback("Please input value between 0 and 100");
       else callback();
       return;
     }
@@ -103,9 +104,6 @@ class EditableCell extends React.Component {
               if (dataIndex === "to") {
                 return toggleEditToValue ? (
                   <StyledEnableContainer>
-                    <StyledButton>
-                      <StyledIcon type="minus" />
-                    </StyledButton>
                     <FormItem style={{ margin: 0 }}>
                       {form.getFieldDecorator(dataIndex, {
                         rules: [
@@ -118,7 +116,6 @@ class EditableCell extends React.Component {
                         initialValue: parseInt(record[dataIndex])
                       })(
                         <Input
-                          onChange={this.handleChangePro}
                           ref={node => (this.toValueInput = node)}
                           onPressEnter={this.saveToValue}
                           onBlur={this.saveToValue}
@@ -126,9 +123,6 @@ class EditableCell extends React.Component {
                         />
                       )}
                     </FormItem>
-                    <StyledButton>
-                      <StyledIcon type="plus" />
-                    </StyledButton>
                   </StyledEnableContainer>
                 ) : (
                   <div className="editable-cell-value-wrap">{restProps.children}</div>

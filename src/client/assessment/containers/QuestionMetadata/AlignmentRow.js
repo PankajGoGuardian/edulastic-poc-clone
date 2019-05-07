@@ -4,7 +4,7 @@ import { Row, Col, Select } from "antd";
 import { pick as _pick, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
-import { getAvailableCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
+import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
 import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
 import BrowseButton from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
@@ -27,12 +27,11 @@ const AlignmentRow = ({
   curriculumStandardsLoading,
   editAlignment,
   createUniqGradeAndSubjects,
-  filteredCurriculums,
+  formattedCuriculums,
   clearStandards
 }) => {
   const { subject, curriculumId, curriculum, grades, standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
-
   const setSubject = val => {
     editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
     clearStandards();
@@ -70,7 +69,7 @@ const AlignmentRow = ({
     let { subject } = alignment;
     if (!subject) {
       const curriculumFromStandard = (option.props.obj || {}).curriculumId
-        ? filteredCurriculums.find(curriculum => curriculum._id === option.props.obj.curriculumId)
+        ? formattedCuriculums.find(curriculum => curriculum.value === option.props.obj.curriculumId)
         : {};
       subject = curriculumFromStandard.subject;
     }
@@ -92,7 +91,7 @@ const AlignmentRow = ({
     let { subject } = data;
     if (!subject) {
       const curriculumFromStandard = data.standard.id
-        ? filteredCurriculums.find(curriculum => curriculum._id === data.standard.id)
+        ? formattedCuriculums.find(curriculum => curriculum.value === data.standard.id)
         : {};
       subject = curriculumFromStandard.subject;
     }
@@ -173,17 +172,11 @@ const AlignmentRow = ({
                       value={curriculum}
                       onChange={handleChangeStandard}
                     >
-                      {filteredCurriculums.map(({ curriculum, name, _id }) =>
-                        name ? (
-                          <Select.Option key={_id} value={name}>
-                            {name}
-                          </Select.Option>
-                        ) : (
-                          <Select.Option key={_id} value={curriculum}>
-                            {curriculum}
-                          </Select.Option>
-                        )
-                      )}
+                      {formattedCuriculums.map(({ value, text, disabled }) => (
+                        <Select.Option key={value} value={text} disabled={disabled}>
+                          {text}
+                        </Select.Option>
+                      ))}
                     </Select>
                   </ItemBody>
                   <ItemBody>
@@ -268,7 +261,7 @@ AlignmentRow.propTypes = {
 
 export default connect(
   (state, props) => ({
-    filteredCurriculums: getAvailableCurriculumsSelector(state, props.alignment)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment)
   }),
   {
     clearStandards: clearDictStandardsAction

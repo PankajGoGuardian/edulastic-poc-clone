@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import { uniqBy, groupBy } from "lodash";
 import { getInterestedCurriculumsSelector } from "../selectors/user";
 
 export const stateSelector = state => state.dictionaries;
@@ -11,17 +12,38 @@ export const getCurriculumsListSelector = createSelector(
   state => state.curriculums
 );
 
-export const getAvailableCurriculumsSelector = (state, props) => {
+export const getFormattedCurriculumsSelector = (state, props) => {
   const { subject = "" } = props;
-  const curriculums = getCurriculumsListSelector(state);
   const interestedCurriculums = getInterestedCurriculumsSelector(state);
-  if (!interestedCurriculums.length) return curriculums.filter(c => (!subject ? true : c.subject === subject));
-  if (subject) {
-    let availCurriculums = interestedCurriculums.filter(item => item.subject === subject);
-    availCurriculums = availCurriculums.length ? availCurriculums : curriculums.filter(c => c.subject === subject);
-    return availCurriculums;
+  const interestedCurriculumsBySubject = interestedCurriculums.filter(item =>
+    !subject ? true : item.subject === subject
+  );
+  const allCurriculums = getCurriculumsListSelector(state);
+  const allCurriculumsBySubject = allCurriculums.filter(item => (!subject ? true : item.subject === subject));
+  const interestedCurriculumByOrgType = groupBy(interestedCurriculumsBySubject, curriculum => curriculum.orgType);
+  // return if teacher has selected curriculums
+  if (interestedCurriculumByOrgType.teacher) {
+    return interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }));
   }
-  return interestedCurriculums;
+  // break line only if interested curriculums are selected by admins and create uniq curriculums
+  const uniqCurriculums = interestedCurriculumsBySubject.length
+    ? uniqBy(
+        [
+          ...interestedCurriculumsBySubject,
+          { _id: "----------", name: "----------", disabled: true },
+          ...allCurriculumsBySubject
+        ],
+        "_id"
+      )
+    : allCurriculumsBySubject;
+
+  const mapCurriculumsByPropertyNameId = uniqCurriculums.map(item => ({
+    value: item._id,
+    text: item.name || item.curriculum,
+    disabled: item.disabled || false
+  }));
+
+  return mapCurriculumsByPropertyNameId;
 };
 
 export const getDictionariesAlignmentsSelector = createSelector(

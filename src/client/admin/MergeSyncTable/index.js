@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Button, Tabs } from "antd";
 import { TextInput, FirstDiv } from "../Common/StyledComponents";
 import { DeltaSync, ClassNamePattern, Sync } from "./Tabs";
+import MergeCleverIdsTable from "./MergeCleverIdsTable";
 
 const TabPane = Tabs.TabPane;
 
@@ -12,7 +13,9 @@ export default function MergeSyncTable({
   syncSchools,
   applyClassNamesSync
 }) {
-  const { rosterSyncConfig = {}, schools, district = {} } = mergeData;
+  const {
+    data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
+  } = mergeData;
   const [districtInput, setDistrictInput] = useState("");
   const [cleverIdInput, setCleverIdInput] = useState("");
 
@@ -43,31 +46,33 @@ export default function MergeSyncTable({
           Search
         </Button>
       </FirstDiv>
-      <Tabs type="card" animated={true} defaultActiveKey={"sync"}>
-        <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
-          Content of Tab Pane 1
-        </TabPane>
-        <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
-          <DeltaSync rosterSyncConfig={rosterSyncConfig} applyDeltaSyncChanges={applyDeltaSyncChanges} />
-        </TabPane>
-        <TabPane tab="Subject Standard Mapping" key="subjectStdMapping">
-          Content of Tab Pane 2
-        </TabPane>
-        <TabPane tab="Class Name Pattern" key="classNamePattern">
-          <ClassNamePattern
-            orgId={rosterSyncConfig.orgId}
-            orgType={rosterSyncConfig.orgType}
-            applyClassNamesSync={applyClassNamesSync}
-            classNamePattern={rosterSyncConfig.classNamePattern}
-          />
-        </TabPane>
-        <TabPane tab="Sync" key="sync">
-          <Sync schools={schools} cleverId={district.cleverId} syncSchools={syncSchools} />
-        </TabPane>
-        <TabPane tab="Logs" key="logs">
-          Content of Tab Pane 3
-        </TabPane>
-      </Tabs>
+      {mergeData.data && (
+        <Tabs type="card" animated={true} defaultActiveKey={"mergeCleverIds"}>
+          <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
+            <MergeCleverIdsTable clvrCounts={cleverCountsInfo} eduCounts={edulasticCountsInfo} />
+          </TabPane>
+          <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
+            <DeltaSync rosterSyncConfig={rosterSyncConfig} applyDeltaSyncChanges={applyDeltaSyncChanges} />
+          </TabPane>
+          <TabPane tab="Subject Standard Mapping" key="subjectStdMapping">
+            Content of Tab Pane 2
+          </TabPane>
+          <TabPane tab="Class Name Pattern" key="classNamePattern">
+            <ClassNamePattern
+              orgId={rosterSyncConfig.orgId}
+              orgType={rosterSyncConfig.orgType}
+              applyClassNamesSync={applyClassNamesSync}
+              classNamePattern={rosterSyncConfig.classNamePattern}
+            />
+          </TabPane>
+          <TabPane tab="Sync" key="sync">
+            <Sync schools={schools} cleverId={district.cleverId} syncSchools={syncSchools} />
+          </TabPane>
+          <TabPane tab="Logs" key="logs">
+            Content of Tab Pane 3
+          </TabPane>
+        </Tabs>
+      )}
     </div>
   );
 }

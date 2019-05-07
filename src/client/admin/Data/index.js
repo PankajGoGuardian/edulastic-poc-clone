@@ -22,10 +22,19 @@ export const deltaSyncConfig = {
   teacherMergeAttribute: "Teacher Merge Attribute"
 };
 
-export const CLASS_NAME_PATTERN = {
-  0: "DEFAULT",
-  1: "CNAME_TLNAME_PERIOD",
-  2: "CNAME_TLNAME_TERM"
-};
+export const CLASS_NAME_PATTERN_CONFIG = ["DEFAULT", "CNAME_TLNAME_PERIOD", "CNAME_TLNAME_TERM"];
 
 export const DISTRICT_STATUS = ["Inactive", "Active"];
+
+export const DISTRICT_SYNC_STATUS = {
+  "1": "Not Configured",
+  "2": "Approved",
+  "3": "Setup Initiated",
+  "4": "Merge Inprogress",
+  "5": "Merge Completed",
+  "6": "Delta Params Completed",
+  "7": "Subject Mapping Completed",
+  "8": "Setup Completed",
+  "9": "Initial Sync",
+  "10": "Full Sync"
+};

@@ -17,6 +17,7 @@ function DeltaSync(props) {
     form: { getFieldDecorator }
   } = props;
   const { orgId, orgType } = rosterSyncConfig;
+
   useEffect(() => {
     props.form.setFieldsValue({
       studentDeltaMergeEnabled: rosterSyncConfig["studentDeltaMergeEnabled"],
@@ -24,7 +25,12 @@ function DeltaSync(props) {
       teacherDeltaMergeEnabled: rosterSyncConfig["teacherDeltaMergeEnabled"],
       teacherFullMergeEnabled: rosterSyncConfig["teacherFullMergeEnabled"]
     });
-  }, [rosterSyncConfig]);
+  }, [
+    rosterSyncConfig["studentDeltaMergeEnabled"],
+    rosterSyncConfig["studentFullMergeEnabled"],
+    rosterSyncConfig["teacherDeltaMergeEnabled"],
+    rosterSyncConfig["teacherFullMergeEnabled"]
+  ]);
 
   function handleSubmit(evt) {
     const data = {
@@ -58,7 +64,7 @@ function DeltaSync(props) {
             valuePropName: "checked"
           })(<Checkbox>{deltaSyncConfig["teacherFullMergeEnabled"]}</Checkbox>)}
         </Form.Item>
-        <CancelApplyActions onApplyAction="" applySubmit />
+        <CancelApplyActions applySubmit />
       </Form>
     </Column>
   );

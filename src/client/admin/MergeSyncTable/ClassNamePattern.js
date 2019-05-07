@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import CancelApplyActions from "./CancelApplyActions";
-import { CLASS_NAME_PATTERN } from "../Data";
+import { CLASS_NAME_PATTERN_CONFIG } from "../Data";
 
 const Option = Select.Option;
 
 export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, classNamePattern }) {
-  const [selectState, setSelectState] = useState(CLASS_NAME_PATTERN[classNamePattern]);
+  const [selectState, setSelectState] = useState(CLASS_NAME_PATTERN_CONFIG[classNamePattern]);
 
   const handleApplyClick = () =>
     applyClassNamesSync({
@@ -14,10 +14,6 @@ export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, 
       orgType,
       classNamePattern: selectState
     });
-
-  useEffect(() => {
-    setSelectState(CLASS_NAME_PATTERN[classNamePattern]);
-  }, [classNamePattern]);
 
   return (
     <>

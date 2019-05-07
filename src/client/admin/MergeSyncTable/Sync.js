@@ -10,7 +10,7 @@ export default function Sync({ schools, cleverId, syncSchools }) {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const reSyncSchools = () => {
     syncSchools({
-      radioInput,
+      selectedSyncOption: radioInput,
       cleverId,
       schoolCleverIds: selectedRowKeys
     });

@@ -1,8 +1,8 @@
 import React from "react";
 import { Layout, Menu, Icon } from "antd";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, Redirect } from "react-router-dom";
 import Sider from "./Common/Sider";
-import { MainDiv, LogoCompact, Logo, Button } from "./Common/StyledComponents";
+import { LogoCompact, Logo, Button, MainDiv } from "./Common/StyledComponents";
 import CleverSearch from "./Containers/CleverSearch";
 import ProxyUser from "./Components/ProxyUser";
 
@@ -21,7 +21,7 @@ export default function Admin({ match, history }) {
               >
                 {state ? <LogoCompact /> : <Logo />}
               </Button>
-              <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
+              <Menu theme="light" defaultSelectedKeys={["search"]} mode="inline">
                 {siderMenuData.map(item => (
                   <Menu.Item
                     onClick={() => {
@@ -43,8 +43,9 @@ export default function Admin({ match, history }) {
       </Sider>
       <MainDiv>
         <Switch>
-          <Route path={`${match.url}/search`} component={CleverSearch} />
-          <Route path={`${match.url}/proxyUser`} component={ProxyUser} />
+          <Redirect exact path={match.path} to={`${match.path}/search`} />
+          <Route path={`${match.path}/search`} component={CleverSearch} />
+          <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
         </Switch>
       </MainDiv>
     </Layout>
@@ -54,13 +55,13 @@ export default function Admin({ match, history }) {
 export const siderMenuData = [
   {
     icon: "pie-chart",
-    id: "pie-chart",
+    id: "search",
     label: "clever search",
     href: "/admin/search"
   },
   {
     icon: "team",
-    id: "team",
+    id: "proxyUser",
     label: "proxy",
     href: "/admin/proxyUser"
   }

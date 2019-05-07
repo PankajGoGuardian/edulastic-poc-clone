@@ -21,7 +21,7 @@ const updateDistrictCleverId = ({ districtId, cleverId }) =>
     })
     .then(({ data }) => data);
 
-const fetchDeleteDistrictId = districtId =>
+const deleteDistrictApi = districtId =>
   api
     .callApi({
       url: `districts/${districtId}`,
@@ -83,5 +83,5 @@ export default {
   selectedSchoolSyncApi,
   completeDistrictSync,
   fetchClassNamesSyncApi,
-  fetchDeleteDistrictId
+  deleteDistrictApi
 };

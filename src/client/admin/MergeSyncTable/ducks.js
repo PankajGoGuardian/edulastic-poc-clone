@@ -22,7 +22,7 @@ export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC);
 const initialState = {};
 
 const fetchExistingDataReducer = createReducer(initialState, {
-  [FETCH_EXISTING_DATA_SUCCESS]: (_, action) => action.payload.data
+  [FETCH_EXISTING_DATA_SUCCESS]: (_, action) => action.payload
 });
 
 // SELECTORS
@@ -48,6 +48,7 @@ function* fetchExistingData({ payload }) {
     yield put(fetchExistingDataSuccess(item));
   } catch (err) {
     console.error(err);
+    message.error(err.message);
   }
 }
 
@@ -64,7 +65,7 @@ function* fetchApplyDeltaSync({ payload }) {
 
 function* fetchSchoolsSync({ payload }) {
   try {
-    if (payload.radioInput === "syncSelectedSchools") {
+    if (payload.selectedSyncOption === "syncSelectedSchools") {
       const item = yield call(selectedSchoolSyncApi, payload);
     } else {
       const item = yield call(completeDistrictSync, payload);

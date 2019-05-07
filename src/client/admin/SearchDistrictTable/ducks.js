@@ -51,7 +51,7 @@ export const getTableData = createSelector(
 const {
   searchUpdateDistrict: searchUpdateDistrictApi,
   updateDistrictCleverId: updateDistrictCleverIdApi,
-  fetchDeleteDistrictId: fetchDeleteDistrictIdApi
+  deleteDistrictApi
 } = adminApi;
 
 function* updateCleverRequest({ payload }) {
@@ -75,7 +75,7 @@ function* fetchTableDataGenerator({ payload }) {
 
 function* fetchDeleteDistrictIdRequest({ payload }) {
   try {
-    const item = yield call(fetchDeleteDistrictIdApi, payload);
+    const item = yield call(deleteDistrictApi, payload);
     if (item.data.success) {
       message.success(`${item.data.districtId} successfully deleted`);
       yield put(deleteDistrictIdSuccess(item.data));

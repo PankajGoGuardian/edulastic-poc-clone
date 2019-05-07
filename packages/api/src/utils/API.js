@@ -34,8 +34,6 @@ export default class API {
             window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
             window.location.href = "/login";
           }
-        } else {
-          message.error(data.message);
         }
       }
     );

@@ -14,6 +14,7 @@ import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
+import CheckKeyboardUser from "./CheckKeyboardUser";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
 
 const { ASSESSMENT, PRACTICE } = test.type;
@@ -127,6 +128,7 @@ class App extends Component {
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
           </Switch>
         </Suspense>
+        <CheckKeyboardUser />
       </div>
     );
   }

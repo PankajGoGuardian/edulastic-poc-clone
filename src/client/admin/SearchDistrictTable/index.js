@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Popconfirm } from "antd";
+import { Table, Input, Popconfirm, Spin } from "antd";
 import { IconPencilEdit, IconTrash } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
 import { IconCaretDown } from "@edulastic/icons";
 import ErrorBoundary from "../Common/ErrorBoundary";
-import { DISTRICT_STATUS } from "../Data";
+import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS } from "../Data";
 
 const { Column } = Table;
 
@@ -33,6 +33,22 @@ const NonEditableAction = ({ onSaveConfirm, onCancelSave }) => (
     </Button>
   </>
 );
+
+function UserCount({ record: { _id } }) {
+  const [state, setState] = useState(false);
+
+  return (
+    <>
+      {!state ? (
+        <Button aria-label="View users" onClick={() => setState(val => !val)} noStyle>
+          <IconCaretDown />
+        </Button>
+      ) : (
+        "Loading Users..."
+      )}
+    </>
+  );
+}
 
 const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter }, ref) => {
   useEffect(() => {
@@ -97,23 +113,18 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         key="createdDate"
         render={timeStamp => new Date(timeStamp).toLocaleDateString()}
       />
+      <Column title="Status" dataIndex="_source.status" key="status" render={status => DISTRICT_STATUS[status]} />
       <Column
         title="Sync Status"
-        dataIndex="_source.status"
+        dataIndex="_source.cleverSyncStatus"
         key="syncStatus"
-        render={status => DISTRICT_STATUS[status]}
+        render={syncStatus => DISTRICT_SYNC_STATUS[syncStatus]}
       />
       <Column
         title="Users"
         dataIndex="users"
         key="users"
-        render={(text, record, index) => (
-          <>
-            <Button aria-label="See users" noStyle>
-              <IconCaretDown />
-            </Button>
-          </>
-        )}
+        render={(text, record, index) => <UserCount record={record} />}
       />
       <Column title="Actions" dataIndex="actions" key="actions" render={renderActions} />
     </Table>

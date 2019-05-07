@@ -1,20 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import produce from "immer";
 import { withNamespaces } from "react-i18next";
 
-import { MathInput } from "@edulastic/common";
+import { CustomQuillComponent } from "@edulastic/common";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
-import { updateVariables } from "../../utils/variables";
-import { latexKeys } from "../MathFormula/constants";
 
 class Template extends Component {
   componentDidMount = () => {
@@ -33,26 +31,41 @@ class Template extends Component {
   render() {
     const { t, item, setQuestionData } = this.props;
 
-    const handleUpdateTemplate = val => {
-      setQuestionData(
-        produce(item, draft => {
-          draft.template = val;
-          updateVariables(draft, latexKeys);
-        })
-      );
+    const _reduceResponseButtons = (responseIndexes = [], value) =>
+      responseIndexes.map(nextIndex => {
+        const response = value.find((_, i) => nextIndex === i + 1);
+        return response || [];
+      });
+
+    const _updateTemplate = (val, responseIndexes) => {
+      const newItem = produce(item, draft => {
+        draft.template = val;
+
+        draft.validation.valid_response.value = _reduceResponseButtons(
+          responseIndexes,
+          draft.validation.valid_response.value
+        );
+
+        if (Array.isArray(draft.validation.alt_responses)) {
+          draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
+            res.value = _reduceResponseButtons(responseIndexes, res.value);
+            return res;
+          });
+        }
+      });
+
+      setQuestionData(newItem);
     };
 
     return (
       <Widget>
         <Subtitle data-cy="template">{t("component.math.template")}</Subtitle>
-        <MathInput
-          showResponse
-          symbols={item.symbols}
-          numberPad={item.numberPad}
+        <CustomQuillComponent
+          inputId="templateInput"
+          toolbarId="template"
+          onChange={_updateTemplate}
+          showResponseBtn
           value={item.template}
-          onInput={latex => {
-            handleUpdateTemplate(latex);
-          }}
           data-cy="templateBox"
         />
       </Widget>

@@ -1941,7 +1941,8 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Multipart Inline",
         stimulus: "<p>[This is the stem.]</p>",
-        template: EMBED_RESPONSE,
+        template:
+          '<p>Risus</p> <span class="response-btn" contenteditable="false">&nbsp;<span class="index">1</span><span class="text">Response</span>&nbsp;</span>, <p>et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et. Nunc diam enim, porta sed eros vitae.</p>',
         templateDisplay: true,
         type: questionType.CLOZE_MATH,
         response_container: {

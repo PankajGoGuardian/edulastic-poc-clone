@@ -31,13 +31,11 @@ class AssignmentAdvanced extends Component {
   componentDidMount() {
     const { match } = this.props;
     const { districtId, testId } = match.params;
-    const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary, classList } = this.props;
+    const { loadAssignmentsClassList, loadAssignmentsSummary, assignmentsSummary } = this.props;
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId });
     }
-    if (isEmpty(classList)) {
-      loadAssignmentsClassList({ districtId, testId });
-    }
+    loadAssignmentsClassList({ districtId, testId });
   }
 
   handleCreate = () => {};

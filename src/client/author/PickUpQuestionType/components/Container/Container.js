@@ -41,8 +41,6 @@ import {
 
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
-console.log("setquestionac", setQuestionAction);
-
 class Container extends Component {
   state = {
     currentQuestion: "multiple-choice",
@@ -52,8 +50,8 @@ class Container extends Component {
 
   // when a particular question type is picked, populate the "authorQuestions" collection
   selectQuestionType = data => {
-    //FIXME: Weird! connect not working properly. setQuestion not available as a prop
-    //TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
+    // FIXME: Weird! connect not working properly. setQuestion not available as a prop
+    // TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
     const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit } = this.props;
 
     const question = {

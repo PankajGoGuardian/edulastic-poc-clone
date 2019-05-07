@@ -75,9 +75,8 @@ export const withMathFormula = WrappedComponent => {
         const MQ = window.MathQuill.getInterface(2);
         try {
           setMathField(MQ.StaticMath(mathFieldRef.current));
-        } catch (e) {
-          console.warn("setMathField Error", e.message, e.stack);
-        }
+          // eslint-disable-next-line no-empty
+        } catch (e) {}
       }
     };
 

@@ -352,7 +352,6 @@ class CoursesTable extends React.Component {
             modalVisible={addCourseModalVisible}
             addCourse={this.addCourse}
             closeModal={this.closeAddCourseModal}
-            dataSource={dataSource}
           />
         )}
 

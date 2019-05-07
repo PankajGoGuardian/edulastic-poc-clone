@@ -1,5 +1,8 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Button, Modal } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { get } from "lodash";
 
 import { ModalFormItem } from "./styled";
 
@@ -76,4 +79,11 @@ class AddCourseModal extends React.Component {
 }
 
 const AddCourseModalForm = Form.create()(AddCourseModal);
-export default AddCourseModalForm;
+
+const enhance = compose(
+  connect(state => ({
+    dataSource: get(state, ["coursesReducer", "data"], [])
+  }))
+);
+
+export default enhance(AddCourseModalForm);

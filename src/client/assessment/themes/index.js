@@ -50,13 +50,14 @@ const AssessmentContainer = ({
   // start assessment
   useEffect(() => {
     startAssessment();
-  }, []);
+  }, [qid]);
 
   const lastTime = useRef(Date.now());
 
   useEffect(() => {
     lastTime.current = Date.now();
-  }, [currentItem]);
+    setCurrentItem(Number(qid));
+  }, [qid]);
 
   const gotoQuestion = index => {
     setCurrentItem(index);

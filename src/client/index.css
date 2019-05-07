@@ -1154,3 +1154,7 @@ span.token.active-word {
 .mq-math-mode .mq-supsub.mq-sup-only {
   margin-bottom: 1em;
 }
+
+.mq-math-mode sup.mq-nthroot {
+  margin-top: 0.5em;
+}

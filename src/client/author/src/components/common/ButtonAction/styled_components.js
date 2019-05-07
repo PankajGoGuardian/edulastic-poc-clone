@@ -24,7 +24,7 @@ export const PreviewBar = styled.div`
     background: transparent;
     height: 45px;
     padding: 0 10px;
-    margin-left: 10px;
+    margin-left: 5px;
     border: 0;
     background: #fff;
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);

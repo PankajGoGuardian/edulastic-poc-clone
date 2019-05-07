@@ -77,7 +77,7 @@ class ButtonBar extends Component {
             <Menu
               mode="horizontal"
               selectedKeys={[current]}
-              style={{ marginLeft: 80, marginRight: 80, justifyContent: "center" }}
+              style={{ marginLeft: 10, marginRight: 10, justifyContent: "center" }}
             >
               <MenuItem
                 data-cy="editButton"

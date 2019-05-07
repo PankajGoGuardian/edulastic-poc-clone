@@ -122,7 +122,7 @@ export const RightSide = styled.div`
     width: 137px;
     height: 45px;
     background: #fff;
-    margin-left: 10px;
+    margin-left: 5px;
 
     span {
       color: ${newBlue};
@@ -143,7 +143,7 @@ export const MenuItem = styled.li`
   border-radius: 4px;
   border: none;
   background-color: #277df1;
-  margin-right: 12px;
+  margin-right: 5px;
   font-size: 13px;
   font-weight: 600;
   font-style: normal;

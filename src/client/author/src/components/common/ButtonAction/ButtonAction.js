@@ -96,9 +96,7 @@ class ButtonAction extends Component {
                     color="primary"
                     icon={<IconCheck color={attempts >= allowedAttempts ? darkGrey : newBlue} width={16} height={16} />}
                     style={{ color: attempts >= allowedAttempts ? darkGrey : newBlue }}
-                  >
-                    {t("component.questioneditor.buttonbar.checkanswer")}
-                  </ButtonLink>
+                  />
                 </Button>
               )}
               <Button
@@ -111,9 +109,7 @@ class ButtonAction extends Component {
                   color="primary"
                   style={{ color: newBlue }}
                   icon={<IconEye color={newBlue} hoverColor={darkBlue} width={16} height={16} />}
-                >
-                  {t("component.questioneditor.buttonbar.showanswers")}
-                </ButtonLink>
+                />
               </Button>
               <Button
                 htmlType="button"
@@ -129,9 +125,7 @@ class ButtonAction extends Component {
                   active={previewTab === "clear"}
                   style={{ color: newBlue }}
                   icon={<IconEraseText color={newBlue} width={16} height={16} />}
-                >
-                  {t("component.questioneditor.buttonbar.clear")}
-                </ButtonLink>
+                />
               </Button>
             </PreviewBar>
           )}

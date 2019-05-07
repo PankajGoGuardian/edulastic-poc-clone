@@ -40,7 +40,7 @@ const HeaderContainer = styled.div`
 
 const Container = styled.div`
   height: 96px;
-  padding: 0px 45px;
+  padding: 0px 20px;
   background: ${newBlue};
   display: flex;
   justify-content: space-between;

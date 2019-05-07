@@ -56,29 +56,18 @@ const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswe
     setActive("");
   }, [source, userAnswer]);
 
-  const getFromFlag = flag => {
-    if (flag === "items") {
-      return items;
-    }
-    if (flag === "selected") {
-      return selected;
-    }
-  };
-
   const onDrop = (itemCurrent, itemTo, flag) => {
-    const newObj = produce(getFromFlag(flag), draft => {
+    const { items: newItems, selected: newSelected } = produce({ items, selected }, draft => {
       let tmp = [];
-      if (flag === "items") {
-        [tmp] = draft.splice(itemCurrent.index, 1, getFromFlag(itemTo.flag)[itemTo.index]);
-      }
-      draft[itemTo.index] = tmp;
+
+      [tmp] = draft[flag].splice(itemCurrent.index, 1, draft[itemTo.flag][itemTo.index]);
+      draft[itemTo.flag][itemTo.index] = tmp;
     });
-    if (flag === "items") {
-      setItems(newObj);
-    } else if (flag === "selected") {
-      setSelected(newObj);
-      saveAnswer(newObj.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
-    }
+
+    setItems(newItems);
+    setSelected(newSelected);
+
+    saveAnswer(newSelected.map(currentAns => (currentAns ? source.indexOf(currentAns) : null)));
   };
 
   const setActiveItem = activeItem => {

@@ -36,7 +36,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_PERFORMANCE_BAND_ERROR]: (state, { payload }) => {
     state.loading = false;
-    stable.error = payload.error;
+    state.error = payload.error;
   },
   [UPDATE_PERFORMANCE_BAND_REQUEST]: state => {
     state.updating = true;
@@ -59,7 +59,7 @@ function* receivePerformanceBandSaga({ payload }) {
   } catch (err) {
     const errorMessage = "Receive PerformanceBand is failing";
     yield call(message.error, errorMessage);
-    yield put(receivePerformanceBandError({ error: errorMessage }));
+    yield put(receivePerformanceBandErrorAction({ error: errorMessage }));
   }
 }
 

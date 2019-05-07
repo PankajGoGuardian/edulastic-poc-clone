@@ -54,7 +54,7 @@ class ClassesTable extends React.Component {
       selectedRowKeys: [],
       addClassModalVisible: false,
       editClassModalVisible: false,
-      editClassKey: -1,
+      editClassKey: "undefined",
       filters: {
         column: "",
         value: "",
@@ -147,7 +147,7 @@ class ClassesTable extends React.Component {
     const data = [...this.state.dataSource];
     const { userOrgId } = this.props;
 
-    const selectedClass = data.filter(item => item.key == key);
+    const selectedClass = data.filter(item => item.key === key);
 
     const { deleteClass } = this.props;
     deleteClass([{ groupId: selectedClass[0]._id, districtId: userOrgId }]);
@@ -223,6 +223,9 @@ class ClassesTable extends React.Component {
   addClass = addClassData => {
     const { userOrgId, createClass } = this.props;
     addClassData.districtId = userOrgId;
+    addClassData.parent = {
+      id: userOrgId
+    };
     createClass(addClassData);
     this.setState({ addClassModalVisible: false });
   };
@@ -277,7 +280,7 @@ class ClassesTable extends React.Component {
     };
 
     const { schoolsData, teacherList } = this.props;
-    const selectedClass = dataSource.filter(item => item.key == editClassKey);
+    const selectedClass = dataSource.filter(item => item.key === editClassKey);
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
@@ -333,7 +336,7 @@ class ClassesTable extends React.Component {
           )}
         </StyledControlDiv>
         <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
-        {editClassModalVisible && editClassKey >= 0 && (
+        {editClassModalVisible && editClassKey !== "undefined" && (
           <EditClassModal
             selClassData={selectedClass[0]}
             modalVisible={editClassModalVisible}

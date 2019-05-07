@@ -123,25 +123,16 @@ export const reducer = createReducer(initialState, {
     for (let i = 0; i < payload.length; i++) {
       let classData = {};
       classData = payload[i];
-      classData.key = i;
+      classData.key = payload[i]._id;
       if (classData.hasOwnProperty("_source")) {
         const source = classData._source;
         Object.keys(source).map((key, value) => {
           classData[key] = source[key];
         });
       }
-      if (state.teacherList.length !== undefined) {
-        const teacherData = state.teacherList.filter(item => item._id === classData._source.primaryTeacherId);
-        if (teacherData.length > 0) classData.teacherName = teacherData[0].firstName + " " + teacherData[0].lastName;
-        else classData.teacherName = "";
-      } else {
-        classData.teacherName = "";
-      }
-
       delete classData._source;
       classList.push(classData);
     }
-
     state.loading = false;
     state.data = classList;
   },
@@ -172,16 +163,7 @@ export const reducer = createReducer(initialState, {
     state.creating = true;
   },
   [CREATE_CLASS_SUCCESS]: (state, { payload }) => {
-    const createdStudent = {
-      key: state.data.length,
-      _id: payload._id,
-      firstName: payload.firstName,
-      lastName: payload.lastName,
-      role: payload.role,
-      email: payload.email,
-      institutionIds: payload.institutionIds
-    };
-
+    const createdStudent = { key: payload._id, ...payload };
     state.creating = false;
     state.create = createdStudent;
     state.data = [createdStudent, ...state.data];
@@ -259,8 +241,6 @@ export const reducer = createReducer(initialState, {
 function* receiveClassListSaga({ payload }) {
   try {
     const classList = yield call(groupApi.getGroups, payload);
-    // const successMessage = "Receive Classes is successed!";
-    // yield call(message.success, successMessage);
     yield put(receiveClassListSuccessAction(classList.data));
   } catch (err) {
     const errorMessage = "Receive Classes is failing!";

@@ -6,21 +6,14 @@ import { ModalFormItem } from "./styled";
 
 class AddClassModal extends React.Component {
   onAddClass = () => {
-    this.props.form.validateFields((err, row) => {
+    this.props.form.validateFields((err, user) => {
       if (!err) {
         const createClassData = {
-          name: row.name,
+          name: user.name,
           type: "class",
-          owners: [
-            {
-              id: row.teacher
-            }
-          ],
-          parent: {
-            id: row.teacher
-          },
-          institutionId: row.institutionId,
-          subject: row.subject
+          owners: user.teacher,
+          institutionId: user.institutionId,
+          subject: user.subject
         };
 
         this.props.addClass(createClassData);
@@ -48,7 +41,8 @@ class AddClassModal extends React.Component {
     const teacherOptions = [];
     if (teacherList.length !== undefined) {
       teacherList.map(row => {
-        teacherOptions.push(<Option value={row._id}>{row.firstName + " " + row.lastName}</Option>);
+        const name = `${row.firstName || ""}${row.lastName || ""}`;
+        teacherOptions.push(<Option value={row._id}>{name}</Option>);
       });
     }
 
@@ -111,7 +105,11 @@ class AddClassModal extends React.Component {
                     message: "Please select teacher"
                   }
                 ]
-              })(<Select placeholder="Search by Username">{teacherOptions}</Select>)}
+              })(
+                <Select mode="multiple" placeholder="Search by Username">
+                  {teacherOptions}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

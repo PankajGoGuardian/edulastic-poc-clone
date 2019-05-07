@@ -20,7 +20,7 @@ export const StyledTable = styled(Table)`
   .ant-table-row {
     &: hover {
       a {
-        display: inline;
+        opacity: 100;
       }
     }
   }
@@ -44,7 +44,7 @@ export const StyledFilterButton = styled(Button)`
 `;
 
 export const StyledTableButton = styled.a`
-  display: none;
+  opacity: 0;
   margin-right: 20px;
   font-size: 20px;
   &:last-child {

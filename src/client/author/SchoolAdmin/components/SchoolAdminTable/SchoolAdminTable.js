@@ -337,7 +337,6 @@ class SchoolAdminTable extends React.Component {
               createSchoolAdmin={this.createSchoolAdmin}
               closeModal={this.closeCreateSchoolAdminModal}
               schoolsData={schoolsData}
-              dataSource={dataSource}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />

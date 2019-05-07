@@ -426,7 +426,7 @@ class MainSetting extends Component {
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>
                 <Body smallSize={isSmallSize}>
-                  <RadioGroup onChange={this.enableHandler} value={enable}>
+                  <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                     <Radio style={{ display: "block", marginBottom: "24px" }} value={true}>
                       Enable
                     </Radio>
@@ -435,10 +435,6 @@ class MainSetting extends Component {
                     </Radio>
                   </RadioGroup>
                   <Row gutter={28}>
-                    <Col span={12}>
-                      <InputTitle>Activity Title</InputTitle>
-                      <ActivityInput placeholder="Title of activity" />
-                    </Col>
                     <Col span={12}>
                       <InputTitle>Activity Title</InputTitle>
                       <ActivityInput placeholder="Title of activity" />
@@ -456,7 +452,7 @@ class MainSetting extends Component {
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
                       </Col>
                       <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                           <Radio value={true}>Enable</Radio>
                           <Radio value={false}>Disable</Radio>
                         </RadioGroup>
@@ -491,7 +487,7 @@ class MainSetting extends Component {
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
                       </Col>
                       <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} value={enable}>
+                        <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                           <Radio value={true}>Enable</Radio>
                           <Radio value={false}>Disable</Radio>
                         </RadioGroup>
@@ -511,7 +507,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -532,7 +528,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -546,7 +542,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -560,7 +556,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} value={enable}>
+                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>

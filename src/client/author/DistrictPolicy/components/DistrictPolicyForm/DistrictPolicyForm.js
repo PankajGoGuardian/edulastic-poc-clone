@@ -3,33 +3,18 @@ import PropTypes from "prop-types";
 import { Form, Checkbox, Radio, message, Input } from "antd";
 const RadioGroup = Radio.Group;
 
-import {
-  StyledFormDiv,
-  StyledRow,
-  StyledLabel,
-  StyledElementDiv,
-  SaveButton,
-  StyledFormItem,
-  StyledInput
-} from "./styled";
+import { StyledFormDiv, StyledRow, StyledLabel, StyledElementDiv, SaveButton, StyledFormItem } from "./styled";
 
 function validURL(value) {
   if (value.length == 0)
     return {
-      validateStatus: "error",
-      errorMsg: "Enter allowed domain(s), example - gmail.com, edulastic.com"
+      validateStatus: "success",
+      errorMsg: ""
     };
-  var pattern = new RegExp(
-    "^(https?:\\/\\/)?" + // protocol
-    "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|" + // domain name
-    "((\\d{1,3}\\.){3}\\d{1,3}))" + // OR ip (v4) address
-    "(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*" + // port and path
-    "(\\?[;&a-z\\d%_.~+=-]*)?" + // query string
-      "(\\#[-a-z\\d_]*)?$",
-    "i"
-  ); // fragment locator
+
+  var pattern = new RegExp(/^[a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|COM|ORG|NET|MIL|EDU)$/i);
+
   const spiltArray = value.split(/[\s,]+/);
-  console.log(spiltArray);
   for (let i = 0; i < spiltArray.length; i++) {
     if (!pattern.test(spiltArray[i]) && spiltArray[i].length != 0) {
       return {
@@ -190,6 +175,14 @@ class DistrictPolicyForm extends React.Component {
       !policyData.googleSignOn
     ) {
       message.error("Please select 1 or more sign-on policies");
+      return;
+    }
+
+    if (
+      allowDomainForStudent.validateStatus === "error" ||
+      allowDomainForTeacher.validateStatus === "error" ||
+      allowDomainForSchool.validateStatus === "error"
+    ) {
       return;
     }
 

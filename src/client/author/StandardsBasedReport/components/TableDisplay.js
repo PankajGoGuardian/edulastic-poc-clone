@@ -1,10 +1,12 @@
+//@ts-check
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { sumBy } from "lodash";
+import { sumBy, sum, groupBy, round, mapValues, values } from "lodash";
 import PropTypes from "prop-types";
 
 import DetailedDisplay from "./DetailedDisplay";
+import { getStandardWisePerformanceMemoized } from "../Transformer";
 
 import { getAdditionalDataSelector, getTestActivitySelector } from "../../ClassBoard/ducks";
 
@@ -42,7 +44,7 @@ class TableDisplay extends Component {
   isMobile = () => window.innerWidth < 480;
 
   filteredData = data => {
-    const { testActivity } = this.props;
+    const { testActivities: testActivity } = this.props;
     const studentData = testActivity.filter(std =>
       std.questionActivities.filter(
         questionActivity => data.qIds.filter(qId => questionActivity._id === qId).length > 0
@@ -51,12 +53,9 @@ class TableDisplay extends Component {
     return studentData;
   };
 
-  getPerfomancePercentage = data => {
-    const studentData = this.filteredData(data);
-    const totalMaxScore = sumBy(studentData, std => std.maxScore);
-    const totalScore = sumBy(studentData, std => std.score);
-    const perfomancePercentage = parseFloat(((totalScore / totalMaxScore) * 100).toFixed(0));
-    return perfomancePercentage;
+  getPerfomancePercentage = std => {
+    const performances = values(getStandardWisePerformanceMemoized(this.props.testActivities, std));
+    return (sum(performances) / performances.length) * 100;
   };
 
   getMasterySummary = data => {
@@ -116,13 +115,15 @@ class TableDisplay extends Component {
 
     const data = standards.map((std, index) => {
       const perfomancePercentage = this.getPerfomancePercentage(std);
-      const masterySummaryPercentage = this.getMasterySummary(std);
-
       return {
         key: index + 1,
         standard: <p className="first-data">{std.identifier}</p>,
-        question: `Q${index + 1}`, // std.qIds ? std.qIds[0] : "",
-        masterySummary: masterySummaryPercentage,
+        question: std.qIds
+          .map(qid => this.props.qids.indexOf(qid))
+          .filter(x => x > -1)
+          .map(x => `Q${x + 1}`)
+          .join(","),
+        masterySummary: perfomancePercentage,
         performanceSummary: perfomancePercentage,
         icon:
           selectedRow === index + 1 ? (
@@ -192,14 +193,7 @@ class TableDisplay extends Component {
   }
 }
 
-const enhance = compose(
-  connect(state => ({
-    testActivity: getTestActivitySelector(state),
-    additionalData: getAdditionalDataSelector(state)
-  }))
-);
-
-export default enhance(TableDisplay);
+export default TableDisplay;
 
 TableDisplay.propTypes = {
   /* eslint-disable react/require-default-props */

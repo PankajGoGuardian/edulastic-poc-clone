@@ -1,3 +1,4 @@
+//@ts-check
 import React, { Component } from "react";
 import { Icon } from "antd";
 import { connect } from "react-redux";
@@ -5,6 +6,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 
 import { getTestActivitySelector, getAdditionalDataSelector } from "../../ClassBoard/ducks";
+import { getStandardWisePerformanceDetailMemoized } from "../Transformer";
 import {
   DetailCard,
   DetailCardHeader,
@@ -60,23 +62,26 @@ const columns = [
 class DetailedDisplay extends Component {
   filterData = () => {
     const { testActivity, data } = this.props;
-    const studentData = testActivity.filter(std =>
-      std.questionActivities.filter(
+    const studentData = testActivity.filter(std => {
+      if (std.status != "submitted") {
+        return false;
+      }
+      return std.questionActivities.filter(
         questionActivity => data.qIds.filter(qId => questionActivity._id === qId).length > 0
-      )
-    );
+      );
+    });
     return studentData;
   };
 
   displayData = () => {
     const { additionalData } = this.props;
-    const filteredData = this.filterData();
     const assignmentMasteryArray = additionalData.assignmentMastery;
     assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold);
+    const scoreStudentWise = getStandardWisePerformanceDetailMemoized(this.props.testActivity, this.props.data);
 
-    return filteredData.map((std, index) => {
-      const score = std.score ? std.score : 0;
-      const perfomancePercentage = parseFloat(((score / std.maxScore) * 100).toFixed(0));
+    return Object.keys(scoreStudentWise).map((studentId, index) => {
+      const score = scoreStudentWise[studentId] ? scoreStudentWise[studentId].score : 0;
+      const perfomancePercentage = score * 100;
 
       // TODO need to update `mastery'
       let mastery = {
@@ -94,9 +99,9 @@ class DetailedDisplay extends Component {
 
       return {
         key: index + 1,
-        student: std.studentName,
+        student: scoreStudentWise[studentId].studentName,
         mastery,
-        performance: `${std.score ? std.score : 0}/${std.maxScore}@(${perfomancePercentage}%)`
+        performance: `${score}/${scoreStudentWise[studentId].maxScore}@(${perfomancePercentage}%)`
       };
     });
   };

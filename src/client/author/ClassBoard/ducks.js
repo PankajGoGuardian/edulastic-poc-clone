@@ -2,7 +2,7 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { classBoardApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
-import { values as _values, get } from "lodash";
+import { values as _values, get, keyBy } from "lodash";
 
 import { setShowScoreAction } from "../src/actions/classBoard";
 
@@ -231,3 +231,27 @@ export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
   }
   return studentTestActivity.algoVariableSetIds;
 };
+
+const getAllQids = (testItemIds, testItemsDataKeyed) => {
+  let qids = [];
+  for (let testItemId of testItemIds) {
+    let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
+    qids = [...qids, ...questions.map(x => x.id)];
+  }
+  return qids;
+};
+
+export const getQIdsSelector = createSelector(
+  stateTestActivitySelector,
+  state => {
+    console.log("qid state", state);
+    const testItemIds = get(state, "data.test.testItems", []);
+    const testItemsData = get(state, "data.testItemsData", []);
+    if (testItemIds.length === 0 && testItemsData.length === 0) {
+      return [];
+    }
+    const testItemsDataKeyed = keyBy(testItemsData, "_id");
+    const qIds = getAllQids(testItemIds, testItemsDataKeyed);
+    return qIds;
+  }
+);

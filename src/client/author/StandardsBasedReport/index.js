@@ -9,7 +9,7 @@ import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
 
 import TableDisplay from "./components/TableDisplay";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
-import { getTestActivitySelector, getAdditionalDataSelector } from "../ClassBoard/ducks";
+import { getTestActivitySelector, getAdditionalDataSelector, getQIdsSelector } from "../ClassBoard/ducks";
 import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
 
 class StandardsBasedReport extends Component {
@@ -61,7 +61,7 @@ class StandardsBasedReport extends Component {
         </StyledFlexContainer>
 
         <DivWrapper>
-          <TableDisplay testActivity={testActivity} />
+          <TableDisplay testActivities={testActivity} additionalData={additionalData} qids={this.props.testQIds} />
         </DivWrapper>
       </React.Fragment>
     );
@@ -72,7 +72,8 @@ const enhance = compose(
   connect(
     state => ({
       testActivity: getTestActivitySelector(state),
-      additionalData: getAdditionalDataSelector(state)
+      additionalData: getAdditionalDataSelector(state),
+      testQIds: getQIdsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction

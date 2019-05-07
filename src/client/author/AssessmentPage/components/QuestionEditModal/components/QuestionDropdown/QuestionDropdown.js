@@ -2,7 +2,9 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Select, InputNumber, Button } from "antd";
 import { arrayMove } from "react-sortable-hoc";
+import { ThemeProvider } from "styled-components";
 
+import { themes } from "../../../../../../assessment/themes";
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import SortableList from "../../../../../../assessment/components/SortableList";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
@@ -123,32 +125,34 @@ export default class QuestionDropdown extends React.Component {
     } = validation;
 
     return (
-      <QuestionFormWrapper>
-        <FormGroup>
-          <FormLabel>Choices</FormLabel>
-          <SortableList
-            items={this.currentOptions}
-            onSortEnd={this.handleSortEnd}
-            dirty
-            useDragHandle
-            onRemove={this.handleRemove}
-            onChange={this.handleOptionChange}
-          />
-          <Button onClick={this.handleAdd}>Add choice</Button>
-        </FormGroup>
-        <FormGroup>
-          <FormLabel>Correct Answer</FormLabel>
-          <Select value={value[0]} onChange={this.handleValueChange} style={{ marginRight: "20px" }}>
-            {this.currentOptions.map((option, key) => (
-              <Select.Option key={key} value={option}>
-                {option}
-              </Select.Option>
-            ))}
-          </Select>
-          <InputNumber value={score} onChange={this.handleScoreChange} />
-          <Points>Points</Points>
-        </FormGroup>
-      </QuestionFormWrapper>
+      <ThemeProvider theme={themes.default}>
+        <QuestionFormWrapper>
+          <FormGroup>
+            <FormLabel>Choices</FormLabel>
+            <SortableList
+              items={this.currentOptions}
+              onSortEnd={this.handleSortEnd}
+              dirty
+              useDragHandle
+              onRemove={this.handleRemove}
+              onChange={this.handleOptionChange}
+            />
+            <Button onClick={this.handleAdd}>Add choice</Button>
+          </FormGroup>
+          <FormGroup>
+            <FormLabel>Correct Answer</FormLabel>
+            <Select value={value[0]} onChange={this.handleValueChange} style={{ marginRight: "20px" }}>
+              {this.currentOptions.map((option, key) => (
+                <Select.Option key={key} value={option}>
+                  {option}
+                </Select.Option>
+              ))}
+            </Select>
+            <InputNumber value={score} onChange={this.handleScoreChange} />
+            <Points>Points</Points>
+          </FormGroup>
+        </QuestionFormWrapper>
+      </ThemeProvider>
     );
   }
 }

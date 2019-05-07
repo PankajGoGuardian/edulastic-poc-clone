@@ -15,8 +15,10 @@ const iconStyles = {
   marginBottom: "20px"
 };
 
+const handleDrop = event => event.preventDefault();
+
 const CreateBlank = ({ onCreate }) => (
-  <CreateBlankContainer childMarginRight="0">
+  <CreateBlankContainer childMarginRight="0" onDrop={handleDrop}>
     <IconBookmark style={iconStyles} />
     <PaperTitle>Answer Only Assessment</PaperTitle>
     <Description>Want to create an assessment with no content?</Description>

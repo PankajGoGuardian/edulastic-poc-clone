@@ -12,9 +12,9 @@ const DropArea = ({ onUpload, onCreateBlank }) => (
     <UploadDragger name="file" onChange={onUpload} accept=".pdf">
       <FlexContainer childMarginRight="0" style={{ height: "100%" }}>
         <CreateUpload />
-        <CreateBlank onCreate={onCreateBlank} />
       </FlexContainer>
     </UploadDragger>
+    <CreateBlank onCreate={onCreateBlank} />
   </DropAreaContainer>
 );
 

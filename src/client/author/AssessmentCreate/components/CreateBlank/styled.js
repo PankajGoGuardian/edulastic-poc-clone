@@ -16,7 +16,10 @@ export const CreateBlankContainer = styled(FlexContainer)`
   align-items: center;
   flex-direction: column;
   width: 50%;
-  height: 60%;
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
 
   .ant-btn {
     width: 225px;

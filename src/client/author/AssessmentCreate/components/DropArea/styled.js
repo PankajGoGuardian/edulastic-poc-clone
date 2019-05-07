@@ -7,6 +7,7 @@ import { grey } from "@edulastic/colors";
 const { Dragger } = Upload;
 
 export const DropAreaContainer = styled(Paper)`
+  position: relative;
   margin: 34px 43px 0 46px;
   border-radius: 4px;
 `;

@@ -328,11 +328,13 @@ class TeacherTable extends React.Component {
           <Button type="primary" onClick={this.showInviteTeacherModal}>
             + Invite Multiple Teachers
           </Button>
-          <InviteMultipleTeacherModal
-            modalVisible={inviteTeacherModalVisible}
-            inviteTeachers={this.sendInviteTeacher}
-            closeModal={this.closeInviteTeacherModal}
-          />
+          {inviteTeacherModalVisible && (
+            <InviteMultipleTeacherModal
+              modalVisible={inviteTeacherModalVisible}
+              inviteTeachers={this.sendInviteTeacher}
+              closeModal={this.closeInviteTeacherModal}
+            />
+          )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
 
           <StyledActionDropDown overlay={actionMenu}>
@@ -377,13 +379,14 @@ class TeacherTable extends React.Component {
             closeModal={this.closeEditTeacherModal}
           />
         )}
-
-        <AddTeacherModal
-          modalVisible={addTeacherModalVisible}
-          addTeacher={this.addTeacher}
-          closeModal={this.closeAddTeacherModal}
-          schoolsData={schoolsData}
-        />
+        {addTeacherModalVisible && (
+          <AddTeacherModal
+            modalVisible={addTeacherModalVisible}
+            addTeacher={this.addTeacher}
+            closeModal={this.closeAddTeacherModal}
+            schoolsData={schoolsData}
+          />
+        )}
       </StyledTableContainer>
     );
   }

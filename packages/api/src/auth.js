@@ -27,8 +27,18 @@ const getGoogleAuth = () =>
     method: "post"
   });
 
+const checkUserExist = data =>
+  api
+    .callApi({
+      url: `${prefix}/user/exist`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   login,
   signup,
-  getGoogleAuth
+  getGoogleAuth,
+  checkUserExist
 };

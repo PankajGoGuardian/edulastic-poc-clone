@@ -1,4 +1,6 @@
-import promisify from "cypress-promise";
+import MCQStandardPage from "./questionType/mcq/mcqStandardPage";
+import EditItemPage from "./itemDetail/editPage";
+import { questionTypeKey as queTypes } from "../../constants/questionTypes";
 
 class ItemListPage {
   clickOnCreate = () => {
@@ -18,6 +20,26 @@ class ItemListPage {
       cy.saveItemDetailToDelete(itemId);
     });
     // return itemId;
+  };
+
+  createItem = itemKey => {
+    const editItem = new EditItemPage();
+    cy.fixture("questionAuthoring").then(itemData => {
+      const [queType, queKey] = itemKey.split(".");
+      let question;
+      if (itemData[queType][queKey]) {
+        switch (queType) {
+          case queTypes.MULTIPLE_CHOICE_STANDARD:
+            question = new MCQStandardPage();
+            question.createQuestion();
+            break;
+
+          default:
+            break;
+        }
+        editItem.header.publish();
+      }
+    });
   };
 }
 

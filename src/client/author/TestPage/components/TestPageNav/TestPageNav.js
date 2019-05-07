@@ -7,7 +7,7 @@ function TestPageNav({ onChange, current, buttons }) {
   return (
     <Container>
       {buttons.map(({ value, text, icon }) => (
-        <Link key={value} active={(current === value).toString()} onClick={onChange(value)}>
+        <Link data-cy={value} key={value} active={(current === value).toString()} onClick={onChange(value)}>
           <FlexContainer>
             {icon}
             <div>{text}</div>

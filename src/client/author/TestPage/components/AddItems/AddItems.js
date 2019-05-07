@@ -240,7 +240,7 @@ class AddItems extends PureComponent {
             <ItemsTableContainer>
               <ItemsMenu>
                 <QuestionsFound>{count} questions found</QuestionsFound>
-                <StyledButton type="secondary" size="large" onClick={this.handleCreateNewItem}>
+                <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={this.handleCreateNewItem}>
                   <IconPlusCircle color="#1774F0" width={15} height={15} />
                   <span>Create new Item</span>
                 </StyledButton>

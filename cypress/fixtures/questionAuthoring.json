@@ -1,7 +1,7 @@
 {
   "MCQ_STD": {
     "default": {
-      "quetext": "This is MCQ_STD question",
+      "quetext": "This is MCQ_STD.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" }

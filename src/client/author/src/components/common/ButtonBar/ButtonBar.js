@@ -114,7 +114,11 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
-                {showPublishButton && itemStatus === "draft" && <Button onClick={onPublishTestItem}>Publish</Button>}
+                {showPublishButton && itemStatus === "draft" && (
+                  <Button data-cy="publish" onClick={onPublishTestItem}>
+                    Publish
+                  </Button>
+                )}
                 {(showPublishButton || showPublishButton === undefined) && (
                   <Button data-cy="saveButton" onClick={onSave}>
                     <HeadIcon>
@@ -124,7 +128,7 @@ class ButtonBar extends Component {
                   </Button>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
-                  <Button style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+                  <Button data-cy="edit" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
                     Edit
                   </Button>
                 )}

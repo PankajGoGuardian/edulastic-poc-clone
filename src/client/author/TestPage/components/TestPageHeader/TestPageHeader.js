@@ -69,27 +69,27 @@ const TestPageHeader = ({
       <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
       <FlexContainer justifyContent="space-between">
-        <EduButton style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
+        <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
           <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
         </EduButton>
         {showShareButton && (
-          <EduButton style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+          <EduButton data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
             <IconShare color="#1774F0" />
           </EduButton>
         )}
-        <EduButton style={{ width: 42, padding: 0 }} disabled={creating} size="large" onClick={onSave}>
+        <EduButton data-cy="save" style={{ width: 42, padding: 0 }} disabled={creating} size="large" onClick={onSave}>
           <IconDiskette color="#1774F0" />
         </EduButton>
-        <EduButton style={{ width: 120 }} size="large" onClick={onAssign}>
+        <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
           Assign
         </EduButton>
         {showPublishButton && testStatus === "draft" && (
-          <EduButton style={{ width: 120 }} size="large" onClick={onPublish}>
+          <EduButton data-cy="publish" style={{ width: 120 }} size="large" onClick={onPublish}>
             Publish
           </EduButton>
         )}
         {!showPublishButton && (
-          <EduButton style={{ width: 120 }} size="large" onClick={onEnableEdit}>
+          <EduButton data-cy="edit" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
             Edit
           </EduButton>
         )}

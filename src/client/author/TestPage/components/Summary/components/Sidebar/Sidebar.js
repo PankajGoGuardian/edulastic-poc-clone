@@ -32,7 +32,7 @@ const Sidebar = ({
       <MainTitle>Assessment Name</MainTitle>
       <SummaryInput
         value={title}
-        data-cy="inputTest"
+        data-cy="testname"
         onChange={e => onChangeField("title", e.target.value)}
         size="large"
         placeholder="Enter an assessment name"
@@ -40,6 +40,7 @@ const Sidebar = ({
 
       <MainTitle>Grade</MainTitle>
       <SummarySelect
+        data-cy="gradeSelect"
         mode="multiple"
         size="large"
         style={{ width: "100%" }}
@@ -56,6 +57,7 @@ const Sidebar = ({
 
       <MainTitle>Subject</MainTitle>
       <SummarySelect
+        data-cy="subjectSelect"
         mode="multiple"
         size="large"
         style={{ width: "100%" }}
@@ -72,6 +74,7 @@ const Sidebar = ({
 
       <MainTitle>Tags</MainTitle>
       <SummarySelect
+        data-cy="tagsSelect"
         mode="multiple"
         size="large"
         style={{ marginBottom: 0 }}

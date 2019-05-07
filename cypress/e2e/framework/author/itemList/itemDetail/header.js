@@ -38,6 +38,10 @@ class Header {
 
     return new EditItemPage();
   }
+
+  publish = () => cy.get('[data-cy="publish"]').click();
+
+  edit = () => cy.get('[data-cy="edit"]').click();
 }
 
 export default Header;

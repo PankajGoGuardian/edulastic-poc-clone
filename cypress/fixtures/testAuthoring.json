@@ -1,0 +1,8 @@
+{
+  "default": {
+    "name": "Default Test Automation",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.default"]
+  }
+}

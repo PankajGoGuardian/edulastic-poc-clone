@@ -126,6 +126,22 @@ Cypress.Commands.add("deleteItem", item => {
   });
 });
 
+Cypress.Commands.add("deleteTest", test => {
+  cy.request({
+    url: `${BASE_URL}/test/${test._id}`,
+    method: "DELETE",
+    headers: {
+      Authorization: test.authToken
+    },
+    failOnStatusCode: false
+  }).then(({ status }) => {
+    if (status !== 403) {
+      expect(status).to.eq(200);
+      console.log("test deleted with _id :", test._id);
+    } else console.log("API forbidden for test ", JSON.stringify(test));
+  });
+});
+
 Cypress.Commands.add("saveItemDetailToDelete", itemId => {
   cy.readFile(`${deleteTestDataFile}`).then(json => {
     if (!json.testItems) json.testItems = [];
@@ -134,6 +150,18 @@ Cypress.Commands.add("saveItemDetailToDelete", itemId => {
       authToken: getAccessToken()
     };
     json.testItems.push(item);
+    cy.writeFile(`${deleteTestDataFile}`, json);
+  });
+});
+
+Cypress.Commands.add("saveTestDetailToDelete", testId => {
+  cy.readFile(`${deleteTestDataFile}`).then(json => {
+    if (!json.tests) json.tests = [];
+    const test = {
+      _id: testId,
+      authToken: getAccessToken()
+    };
+    json.tests.push(test);
     cy.writeFile(`${deleteTestDataFile}`, json);
   });
 });
@@ -153,6 +181,13 @@ Cypress.Commands.add("deleteTestData", () => {
         delete testData.testItems;
       }
 
+      // delete tests
+      if (testData.tests && testData.tests.length > 0) {
+        testData.tests.forEach(test => {
+          cy.deleteTest(test);
+        });
+        delete testData.tests;
+      }
       // TODO : add other collections API
     } else testData = {};
     cy.writeFile(deleteTestDataFile, testData).then(json => {

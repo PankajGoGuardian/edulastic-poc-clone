@@ -99,6 +99,14 @@ const publishTestItem = id =>
     })
     .then(result => result.data.result);
 
+const getByV1Id = id =>
+  api
+    .callApi({
+      url: `${prefix}/v1/${id}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
@@ -107,5 +115,6 @@ export default {
   update,
   evaluation,
   duplicateTestItem,
-  publishTestItem
+  publishTestItem,
+  getByV1Id
 };

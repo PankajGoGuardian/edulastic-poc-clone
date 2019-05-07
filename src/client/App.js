@@ -14,6 +14,7 @@ import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
+import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -123,6 +124,7 @@ class App extends Component {
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
+            <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
           </Switch>
         </Suspense>
       </div>

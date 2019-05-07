@@ -3,7 +3,8 @@ import {
   UPDATE_TEST_ITEM_REQUEST,
   CHECK_ANSWER,
   SHOW_ANSWER,
-  TOGGLE_CREATE_ITEM_MODAL
+  TOGGLE_CREATE_ITEM_MODAL,
+  ADD_ITEM_EVALUATION
 } from "../constants/actions";
 
 export const createTestItemAction = (data, showModal = false) => ({
@@ -33,3 +34,10 @@ export const toggleCreateItemModalAction = ({ modalVisible, itemId }) => ({
   type: TOGGLE_CREATE_ITEM_MODAL,
   payload: { modalVisible, itemId }
 });
+
+export const addItemEvaluationAction = data => {
+  return {
+    type: ADD_ITEM_EVALUATION,
+    payload: data
+  };
+};

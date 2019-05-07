@@ -88,10 +88,10 @@ export const SaveButton = styled(Button)`
   }
 `;
 
-export const StyledUrlButton = styled.a`
-  line-height: 40px;
-  margin-left: 20px;
-  color: #1890ff;
+export const StyledUrlButton = styled(Button)`
+  margin-top: 5px;
+  border: none;
+  box-shadow: none;
 `;
 
 export const StyledPopoverContent = styled.div`

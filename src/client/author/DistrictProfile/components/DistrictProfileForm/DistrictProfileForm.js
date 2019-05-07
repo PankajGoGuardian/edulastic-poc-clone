@@ -135,7 +135,9 @@ class DistrictProfileForm extends React.Component {
                 content={popoverContent}
                 onVisibleChange={this.handleVisibleChange}
               >
-                <StyledUrlButton>(District Url)</StyledUrlButton>
+                <StyledUrlButton type="primary" ghost>
+                  (District Url)
+                </StyledUrlButton>
               </Popover>
             </StyledRow>
             <StyledRow>

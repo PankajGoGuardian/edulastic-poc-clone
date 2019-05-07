@@ -1,4 +1,5 @@
 import evaluators from "./evaluators";
+import { replaceVariables } from "../../../assessment/utils/variables";
 
 export const evaluateItem = async (answers, validations) => {
   const answerIds = Object.keys(answers);
@@ -10,7 +11,7 @@ export const evaluateItem = async (answers, validations) => {
   for (const id of answerIds) {
     const answer = answers[id];
     if (validations && validations[id]) {
-      const validation = validations[id];
+      const validation = replaceVariables(validations[id]);
       const evaluator = evaluators[validation.type];
 
       if (!evaluator) {

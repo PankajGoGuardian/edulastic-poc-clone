@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
-import { isArray, isNull, isBoolean, get as _get } from "lodash";
+import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { evaluateItem } from "../utils/evalution";
 import createShowAnswerData from "../utils/showAnswer";

@@ -88,7 +88,7 @@ class Variables extends Component {
           if (!variable.set) {
             return "";
           }
-          const values = variable.set.split(",").filter(val => !!val);
+          const values = variable.set.split(",").filter(val => !!val.trim());
           if (values.length > 0) {
             return values[Math.floor(Math.random() * values.length)];
           }

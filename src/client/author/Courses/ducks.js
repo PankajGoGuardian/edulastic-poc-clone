@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { courseApi } from "@edulastic/api";
 import { message } from "antd";
+import { groupBy } from "lodash";
 
 const RECEIVE_COURSE_REQUEST = "[course] receive data request";
 const RECEIVE_COURSE_SUCCESS = "[course] receive data success";
@@ -23,6 +24,7 @@ const UPLOAD_COURSE_CSV_ERROR = "[course] upload CSV error";
 const SET_COURSE_SEARCHNAME = "[course] set search name";
 const SET_COURSE_SETFILTERS = "[course] set filters";
 const SET_COURSE_SHOWACTIVE = "[course] set show active";
+const SET_COURSE_SELECT_ROW_KEY = "[course] set selected row keys";
 
 export const receiveCourseListAction = createAction(RECEIVE_COURSE_REQUEST);
 export const receiveCourseListSuccessAction = createAction(RECEIVE_COURSE_SUCCESS);
@@ -43,6 +45,9 @@ export const uploadCSVErrorAction = createAction(UPLOAD_COURSE_CSV_ERROR);
 export const setSearchNameAction = createAction(SET_COURSE_SEARCHNAME);
 export const setFiltersAction = createAction(SET_COURSE_SETFILTERS);
 export const setShowActiveCourseAction = createAction(SET_COURSE_SHOWACTIVE);
+
+export const setSelectedRowKeysAction = createAction(SET_COURSE_SELECT_ROW_KEY);
+
 //selectors
 const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
@@ -115,7 +120,8 @@ const initialState = {
   filtersColumn: "",
   filtersValue: "",
   filtersText: "",
-  showActiveCourse: true
+  showActiveCourse: true,
+  selectedRowKeys: []
 };
 
 export const reducer = createReducer(initialState, {
@@ -124,8 +130,8 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_COURSE_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    payload.map((row, index) => {
-      row.key = index;
+    payload.map(row => {
+      row.key = row._id;
     });
     state.data = payload;
   },
@@ -158,7 +164,7 @@ export const reducer = createReducer(initialState, {
   [CREATE_COURSE_SUCCESS]: (state, { payload }) => {
     state.creating = false;
     state.create = payload;
-    payload.key = state.data.length;
+    payload.key = payload._id;
     state.data = [payload, ...state.data];
   },
   [CREATE_COURSE_ERROR]: (state, { payload }) => {
@@ -171,13 +177,15 @@ export const reducer = createReducer(initialState, {
   [DEACTIVATE_COURSE_SUCCESS]: (state, { payload }) => {
     state.delete = payload;
     state.deleting = false;
-    state.data = state.data.filter(course => {
-      let nMatchCount = 0;
-      payload.map(row => {
-        if (row.id === course._id) nMatchCount++;
-      });
-      if (nMatchCount == 0) return course;
-    });
+    const newData = [...state.data];
+    const payloadIds = groupBy(payload, "id");
+    for (let row of newData) {
+      if (payloadIds[row._id]) {
+        row.active = 0;
+      }
+    }
+    state.selectedRowKeys = [];
+    state.data = newData;
   },
   [DEACTIVATE_COURSE_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -204,6 +212,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_COURSE_SHOWACTIVE]: (state, { payload }) => {
     state.showActiveCourse = payload;
+  },
+  [SET_COURSE_SELECT_ROW_KEY]: (state, { payload }) => {
+    state.selectedRowKeys = [...payload];
   }
 });
 

@@ -35,7 +35,7 @@ import {
   uploadCSVAction
 } from "../../ducks";
 
-import { getCourseListSelector } from "../../ducks";
+import { getCourseListSelector, setSelectedRowKeysAction } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 
 function compareByAlph(a, b) {
@@ -53,7 +53,6 @@ class CoursesTable extends React.Component {
     super(props);
     this.state = {
       dataSource: [],
-      selectedRowKeys: [],
       addCourseModalVisible: false,
       editCourseModalVisible: false,
       editCourseKey: -1,
@@ -105,11 +104,13 @@ class CoursesTable extends React.Component {
   static getDerivedStateFromProps(nextProps, prevState) {
     if (nextProps.courseList.length === undefined) {
       return {
-        dataSource: []
+        dataSource: [],
+        selectedRowKeys: []
       };
     } else {
       return {
-        dataSource: nextProps.courseList
+        dataSource: nextProps.courseList,
+        selectedRowKeys: nextProps.selectedRowKeys
       };
     }
   }
@@ -132,7 +133,7 @@ class CoursesTable extends React.Component {
   };
 
   onSelectChange = selectedRowKeys => {
-    this.setState({ selectedRowKeys });
+    this.props.setSelectedRowKeys(selectedRowKeys);
   };
 
   showAddCourseModal = () => {
@@ -199,7 +200,7 @@ class CoursesTable extends React.Component {
 
         const selectedCourse = [];
         for (let i = 0; i < selectedRowKeys.length; i++) {
-          const checkedRow = data.filter(item => (item.key = selectedRowKeys[i]));
+          const checkedRow = data.filter(item => item.key === selectedRowKeys[i]);
           if (checkedRow.length > 0) selectedCourse.push({ id: checkedRow[0]._id });
         }
         const { deactivateCourse } = this.props;
@@ -368,7 +369,8 @@ const enhance = compose(
     state => ({
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
-      showActiveCourse: get(state, ["coursesReducer", "showActiveCourse"], false)
+      showActiveCourse: get(state, ["coursesReducer", "showActiveCourse"], false),
+      selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], [])
     }),
     {
       createCourse: createCourseAction,
@@ -378,7 +380,8 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
       setShowActiveCourse: setShowActiveCourseAction,
-      uploadCSVCourse: uploadCSVAction
+      uploadCSVCourse: uploadCSVAction,
+      setSelectedRowKeys: setSelectedRowKeysAction
     }
   )
 );
@@ -396,5 +399,6 @@ CoursesTable.propTypes = {
   setFilters: PropTypes.func.isRequired,
   uploadCSVCourse: PropTypes.func.isRequired,
   setShowActiveCourse: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired
+  userOrgId: PropTypes.string.isRequired,
+  setSelectedRowKeys: PropTypes.func.isRequired
 };

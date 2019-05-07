@@ -121,12 +121,12 @@ class InterestedStandards extends Component {
     const showSpin = loading || updating || saving;
 
     const { standardSetsModalVisible } = this.state;
-
-    // show list start
+    let isDisableSaveBtn = true;
     const subjectArray = ["Mathematics", "ELA", "Science", "Social Studies", "Other Subjects"];
     let selectedStandards = [],
       standardsList = [];
     if (interestedStaData != null && interestedStaData.hasOwnProperty("curriculums")) {
+      isDisableSaveBtn = interestedStaData.curriculums.length == 0 ? true : false;
       for (let i = 0; i < subjectArray.length; i++) {
         const filtedSubject = interestedStaData.curriculums.filter(item => item.subject === subjectArray[i]);
         if (filtedSubject.length > 0) {
@@ -175,7 +175,7 @@ class InterestedStandards extends Component {
                 </Button>
               </Col>
               <Col span={12}>
-                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
+                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards} disabled={isDisableSaveBtn}>
                   Save
                 </StyledSaveButton>
               </Col>

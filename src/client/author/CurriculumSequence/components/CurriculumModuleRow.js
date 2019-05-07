@@ -104,6 +104,7 @@ class ModuleRow extends Component {
           onCancel={this.closeModal}
           width="calc(100% - 30px)"
           height="calc(100% - 30px)"
+          destroyOnClose={true}
         >
           <AssessmentPlayer testId={selectedTest} preview />
         </ModalWrapper>

@@ -1,35 +1,35 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 // actions
 import { fetchGroupsAction, getGroupsSelector } from "../../sharedDucks/groups";
 import { setModalAction, syncClassAction } from "../ducks";
 // components
-import Header from "./Header";
-import ClassList from "./ClassList";
-import ClassSelectModal from "./ClassSelectModal";
 
-const ManageClass = ({ fetchGroups, setModal, groups, isModalVisible, googleCourseList, syncClass }) => {
+import ClassCreate from "./ClassCreate";
+import ClassListContainer from "./ClassListContainer";
+
+const ManageClass = ({ fetchGroups, ...restProps }) => {
   useEffect(() => {
     fetchGroups();
   }, []);
 
-  const closeModal = () => setModal(false);
-  const selectedGroups = groups.filter(i => !!i.code).map(i => i.code);
+  const [view, setView] = useState("list");
 
-  return (
-    <React.Fragment>
-      <Header />
-      <ClassSelectModal
-        visible={isModalVisible}
-        close={closeModal}
-        groups={googleCourseList}
-        syncClass={syncClass}
-        selectedGroups={selectedGroups}
-      />
-      <ClassList groups={groups} />
-    </React.Fragment>
-  );
+  const updateView = v => {
+    setView(v);
+  };
+
+  const renderView = () => {
+    switch (view) {
+      case "create":
+        return <ClassCreate cancelCreate={() => updateView("list")} />;
+      default:
+        return <ClassListContainer {...restProps} onCreate={() => updateView("create")} />;
+    }
+  };
+
+  return renderView();
 };
 
 ManageClass.propTypes = {

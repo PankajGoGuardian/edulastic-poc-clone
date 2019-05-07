@@ -4,10 +4,10 @@ import { connect } from "react-redux";
 import { white } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
 // components
+import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import { Title, IconManageClass, CreateClassButton, SyncButtons, CreateIcon, ButtonsWrapper } from "./styled";
-import HeaderWrapper from "../../src/mainContent/headerWrapper";
 // ducks
-import { fetchClassListAction } from "../ducks";
+import { fetchClassListAction } from "../../ducks";
 
 const scopes = [
   "https://www.googleapis.com/auth/classroom.courses",
@@ -22,7 +22,7 @@ const scopes = [
   "https://www.googleapis.com/auth/userinfo.profile"
 ].join(" ");
 
-const Header = ({ fetchClassList }) => {
+const Header = ({ fetchClassList, onCreate }) => {
   const handleLoginSucess = data => {
     fetchClassList(data);
   };
@@ -47,7 +47,7 @@ const Header = ({ fetchClassList }) => {
           prompt="consent"
           responseType="code"
         />
-        <CreateClassButton>
+        <CreateClassButton onClick={onCreate}>
           <CreateIcon color={white} /> Create Class{" "}
         </CreateClassButton>
       </ButtonsWrapper>
@@ -56,7 +56,12 @@ const Header = ({ fetchClassList }) => {
 };
 
 Header.propTypes = {
-  fetchClassList: PropTypes.func.isRequired
+  fetchClassList: PropTypes.func.isRequired,
+  onCreate: PropTypes.func
+};
+
+Header.defaultProps = {
+  onCreate: () => null
 };
 
 export default connect(

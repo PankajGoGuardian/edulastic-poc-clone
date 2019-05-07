@@ -1,5 +1,6 @@
 import React from "react";
 import { Row, Col, Radio, Select } from "antd";
+import styled from "styled-components";
 import { CommonText, RowWrapper, ContentWrapper } from "./styled";
 import { ActivityInput, Title, InputTitle, Body, Block, RadioWrapper, RadioGroup } from "../MainSetting/styled";
 
@@ -73,18 +74,24 @@ const renderBodyContent = () => {
           <CommonText>{element.label}</CommonText>
         </Col>
         <Col span={8}>
-          <RadioGroup value={1}>
+          <RadioGroup defaultValue={1}>
             <Radio value={1}>Enable</Radio>
             <Radio value={2}>Disable</Radio>
           </RadioGroup>
         </Col>
         <Col span={8}>
           {element.type === "select" && (
-            <Select defaultValue={element.defaultValue}>
-              {element.selectOptions.map(option => (
-                <Select.Option value={option.value}>{option.text}</Select.Option>
-              ))}
-            </Select>
+            <SelectWrapper optionCount={element.selectOptions.length} id="select-area">
+              <Select
+                defaultValue={element.defaultValue}
+                dropdownClassName={element.selectOptions.length === 1 ? "ant-select-dropdown-hidden" : ""}
+                getPopupContainer={() => document.getElementById("select-area")}
+              >
+                {element.selectOptions.map(option => (
+                  <Select.Option value={option.value}>{option.text}</Select.Option>
+                ))}
+              </Select>
+            </SelectWrapper>
           )}
           {element.type === "input" && <ActivityInput placeholder={element.placeholder} />}
         </Col>
@@ -121,3 +128,9 @@ const UiTime = () => (
 );
 
 export default UiTime;
+
+const SelectWrapper = styled.div`
+  .ant-select-arrow {
+    display: ${props => (props.optionCount === 1 ? "none" : "inline-block")};
+  }
+`;

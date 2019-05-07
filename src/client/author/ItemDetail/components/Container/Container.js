@@ -68,7 +68,7 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading } = this.props;
+    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
 
@@ -76,7 +76,7 @@ class Container extends Component {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
-    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0)) {
+    if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
       history.replace({
         pathname: `/author/items/${match.params.id}/pickup-questiontype`,
         state: {
@@ -475,7 +475,8 @@ Container.propTypes = {
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
   navigateToPickupQuestionType: PropTypes.func,
-  toggleSideBar: PropTypes.func.isRequired
+  toggleSideBar: PropTypes.func.isRequired,
+  redirectOnEmptyItem: PropTypes.bool
 };
 
 Container.defaultProps = {
@@ -485,7 +486,8 @@ Container.defaultProps = {
   item: {},
   modalItemId: undefined,
   onModalClose: () => {},
-  navigateToPickupQuestionType: () => {}
+  navigateToPickupQuestionType: () => {},
+  redirectOnEmptyItem: true
 };
 
 const enhance = compose(

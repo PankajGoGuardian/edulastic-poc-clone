@@ -225,7 +225,7 @@ class Container extends PureComponent {
     };
 
     newTest.testItems = testItems || [];
-    newTest.scoring.testItems = testItems.map(item => {
+    newTest.scoring.testItems = (testItems || []).map(item => {
       const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
       if (!foundItem) {
         return {

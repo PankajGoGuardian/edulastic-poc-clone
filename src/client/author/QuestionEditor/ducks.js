@@ -324,7 +324,7 @@ function* saveQuestionSaga({ payload: modalItemId }) {
     if (modalItemId) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
-      const nextTestItems = [...testItems.data, itemDetail._id];
+      const nextTestItems = [...(testItems.data ? testItems.data : testItems), itemDetail._id];
 
       yield put(setTestItemsAction(nextTestItems));
 

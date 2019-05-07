@@ -81,7 +81,7 @@ const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion }) =>
 
     switch (currentTab) {
       case createTestItemModalTabs.ITEM_DETAIL:
-        return <ConnectedItemDetail {...tabProps} />;
+        return <ConnectedItemDetail {...tabProps} redirectOnEmptyItem={false} />;
       case createTestItemModalTabs.PICKUP_QUESTION_TYPE:
         return <ConnectedPickUpQuestionType {...tabProps} />;
       case createTestItemModalTabs.QUESTION_EDIT:

@@ -1,24 +1,46 @@
-import API from './utils/API';
+import axios from "axios";
+import API from "./utils/API";
 
 const api = new API();
-const prefix = '/file';
+const prefix = "/file";
 
 const upload = ({ file }) => {
   const formData = new FormData();
-  formData.append('file', file);
+  formData.append("file", file);
 
   return api
     .callApi({
       url: `${prefix}/upload`,
-      method: 'post',
+      method: "post",
       data: formData,
       headers: {
-        'Content-Type': 'multipart/form-data'
+        "Content-Type": "multipart/form-data"
       }
     })
     .then(result => result.data.result);
 };
 
+const getSignedUrl = filename =>
+  api
+    .callApi({
+      url: `${prefix}/signed-url`,
+      method: "get",
+      params: {
+        filename
+      }
+    })
+    .then(result => result.data.result);
+
+const uploadBySignedUrl = (url, data) =>
+  axios({
+    method: "post",
+    url,
+    data,
+    config: { headers: { "Content-Type": "multipart/form-data" } }
+  });
+
 export default {
-  upload
+  upload,
+  getSignedUrl,
+  uploadBySignedUrl
 };

@@ -3,47 +3,25 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
-import { Upload, message } from "antd";
+import { Upload } from "antd";
 import { blue, white } from "@edulastic/colors";
-import { API_CONFIG } from "@edulastic/api";
+import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
-import { TokenStorage } from "@edulastic/api";
 
 const defaultImage = "https://fakeimg.pl/1000x300/";
-
-function getBase64(img, callback) {
-  const reader = new FileReader();
-  reader.addEventListener("load", () => callback(reader.result));
-  reader.readAsDataURL(img);
-}
-
-function beforeUpload(file) {
-  const isJPG = file.type === "image/jpeg";
-  if (!isJPG) {
-    message.error("You can only upload JPG file!");
-  }
-  const isLt2M = file.size / 1024 / 1024 < 2;
-  if (!isLt2M) {
-    message.error("Image must smaller than 2MB!");
-  }
-  return isJPG && isLt2M;
-}
 
 class Photo extends React.Component {
   state = {};
 
-  handleChange = info => {
-    if (info.file.status === "uploading") {
-      return;
-    }
-    if (info.file.status === "done") {
-      const { uploadTestImage } = this.props;
-      getBase64(info.file.originFileObj, imageUrl => {
-        uploadTestImage(info.file.response.result.fileUri);
-        this.setState({
-          imageUrl
-        });
+  handleChange = async info => {
+    try {
+      const { file } = info;
+      const imageUrl = await uploadToS3(file);
+      this.setState({
+        imageUrl
       });
+    } catch (e) {
+      console.log(e);
     }
   };
 
@@ -60,22 +38,15 @@ class Photo extends React.Component {
     );
 
     const { imageUrl } = this.state;
-    const uploadProps = {
-      name: "file",
-      listType: "picture-card",
-      className: "avatar-uploader",
-      showUploadList: false,
-      action: `${API_CONFIG.api}/file/upload`,
-      onChange: this.handleChange,
-      beforeUpload,
-      headers: {
-        "X-Requested-With": null,
-        authorization: TokenStorage.getAccessToken()
-      }
+
+    const props = {
+      beforeUpload: () => false,
+      onChange: this.handleChange
     };
+
     return (
       <UploadWrapper>
-        <Upload {...uploadProps}>
+        <Upload {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
               {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}

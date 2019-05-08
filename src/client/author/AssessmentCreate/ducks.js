@@ -6,8 +6,8 @@ import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
 import { get } from "lodash";
 
-import { fileApi, testsApi, testItemsApi } from "@edulastic/api";
-
+import { testsApi, testItemsApi } from "@edulastic/api";
+import { aws } from "@edulastic/constants";
 import { uploadToS3 } from "../src/utils/upload";
 import { initialTestState, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
 import { getUserSelector } from "../src/selectors/user";
@@ -78,7 +78,7 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
-      fileURI = yield call(uploadToS3, payload.file);
+      fileURI = yield call(uploadToS3, payload.file, aws.s3Folder.DOCS);
     }
   } catch (error) {
     const errorMessage = "Upload PDF is failing";

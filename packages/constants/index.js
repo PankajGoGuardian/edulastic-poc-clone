@@ -15,6 +15,7 @@ const variableTypes = require("./const/variableTypes");
 const testActivity = require("./const/testActivity");
 const tutorials = require("./tutorials");
 const videoTypes = require("./const/videoTypes");
+const aws = require("./const/aws");
 
 module.exports = {
   questionType,
@@ -33,5 +34,6 @@ module.exports = {
   test,
   testActivity,
   tutorials,
-  videoTypes
+  videoTypes,
+  aws
 };

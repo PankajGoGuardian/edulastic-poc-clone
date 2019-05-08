@@ -20,13 +20,14 @@ const upload = ({ file }) => {
     .then(result => result.data.result);
 };
 
-const getSignedUrl = filename =>
+const getSignedUrl = (filename, folder) =>
   api
     .callApi({
       url: `${prefix}/signed-url`,
       method: "get",
       params: {
-        filename
+        filename,
+        folder
       }
     })
     .then(result => result.data.result);

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
+import { aws } from "@edulastic/constants";
 import { Upload } from "antd";
 import { blue, white } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
@@ -16,7 +17,8 @@ class Photo extends React.Component {
   handleChange = async info => {
     try {
       const { file } = info;
-      const imageUrl = await uploadToS3(file);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+
       this.setState({
         imageUrl
       });

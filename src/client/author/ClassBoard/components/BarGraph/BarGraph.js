@@ -1,26 +1,14 @@
 /* eslint-disable react/prop-types */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { maxBy, head, get, groupBy } from "lodash";
-import { Row, Col } from "antd";
+import { get, groupBy } from "lodash";
 import { ticks } from "d3-array";
-import {
-  white,
-  pointColor,
-  dropZoneTitleColor,
-  secondaryTextColor,
-  green,
-  yellow1,
-  notStarted,
-  darkGrey,
-  incorrect,
-  blue
-} from "@edulastic/colors";
+import { white, pointColor, dropZoneTitleColor, secondaryTextColor, green, incorrect, blue } from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 
-const RectangleBar = ({ fill, x, y, width, height, dataKey, payload, incorrectAttemps }) => {
+const RectangleBar = ({ fill, x, y, width, height, dataKey, incorrectAttemps }) => {
   let radius = [5, 5, 0, 0];
   if (dataKey === "correctAttemps" && incorrectAttemps !== 0) {
     radius = null;
@@ -29,6 +17,7 @@ const RectangleBar = ({ fill, x, y, width, height, dataKey, payload, incorrectAt
   return <Rectangle x={x} y={y} width={width} height={height} fill={fill} radius={radius} />;
 };
 
+// eslint-disable-next-line no-unused-vars
 const CustomizedTick = ({ payload, x, y, left, index, maxValue, pointValue }) => {
   const isPoint = payload.value % pointValue === 0;
   const x2 = left ? x + 10 : x - 10;
@@ -51,7 +40,7 @@ export default class BarGraph extends Component {
 
   constructor(props) {
     super(props);
-    let page = props.pageSize || 10;
+    let page = props.pageSize || 20;
     if (this.isMobile()) {
       page = 5;
     }
@@ -61,7 +50,7 @@ export default class BarGraph extends Component {
     // Later it should be removed if it has no use case.
 
     this.state = {
-      page: page,
+      page,
       chartData: [],
       renderData: [],
       maxAttemps: 0,
@@ -74,8 +63,8 @@ export default class BarGraph extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { gradebook, children } = props;
-    const itemsSummary = gradebook.itemsSummary;
+    const { gradebook } = props;
+    const { itemsSummary } = gradebook;
 
     let chartData = [];
 
@@ -90,7 +79,7 @@ export default class BarGraph extends Component {
           maxTimeSpent = item.avgTimeSpent;
         }
         return {
-          name: "Q" + (index + 1),
+          name: `Q${index + 1}`,
           totalAttemps: item.attemptsNum,
           correctAttemps: item.correctNum,
           incorrectAttemps: item.wrongNum,
@@ -99,78 +88,75 @@ export default class BarGraph extends Component {
       });
     }
 
-    if (chartData.length != state.chartData.length) {
+    if (chartData.length !== state.chartData.length) {
       const renderData = chartData.slice(0, state.page);
       return {
         page: state.page,
-        chartData: chartData,
-        renderData: renderData,
-        maxAttemps: maxAttemps,
-        maxTimeSpent: maxTimeSpent,
+        chartData,
+        renderData,
+        maxAttemps,
+        maxTimeSpent,
         pagination: {
           startIndex: 0,
           endIndex: state.page - 1
         }
       };
-    } else {
-      const renderData = chartData.slice(state.pagination.startIndex, state.pagination.startIndex + state.page);
-      return {
-        page: state.page,
-        chartData: chartData,
-        renderData: renderData,
-        maxAttemps: maxAttemps,
-        maxTimeSpent: maxTimeSpent,
-        pagination: {
-          startIndex: state.pagination.startIndex,
-          endIndex: state.pagination.startIndex + state.page - 1
-        }
-      };
     }
+    const renderData = chartData.slice(state.pagination.startIndex, state.pagination.startIndex + state.page);
+    return {
+      page: state.page,
+      chartData,
+      renderData,
+      maxAttemps,
+      maxTimeSpent,
+      pagination: {
+        startIndex: state.pagination.startIndex,
+        endIndex: state.pagination.startIndex + state.page - 1
+      }
+    };
   }
 
   scrollLeft = () => {
+    const { pagination, page } = this.state;
     let diff;
-    if (this.state.pagination.startIndex > 0) {
-      if (this.state.pagination.startIndex >= this.state.page) {
-        diff = this.state.page;
+    if (pagination.startIndex > 0) {
+      if (pagination.startIndex >= page) {
+        diff = page;
       } else {
-        diff = this.state.pagination.startIndex;
+        diff = pagination.startIndex;
       }
-      this.setState(state => {
-        return {
-          ...state,
-          pagination: {
-            startIndex: state.pagination.startIndex - diff,
-            endIndex: state.pagination.endIndex - diff
-          }
-        };
-      });
+      this.setState(state => ({
+        ...state,
+        pagination: {
+          startIndex: state.pagination.startIndex - diff,
+          endIndex: state.pagination.endIndex - diff
+        }
+      }));
     }
   };
 
   scrollRight = () => {
+    const { pagination, page, chartData } = this.state;
     let diff;
-    if (this.state.pagination.endIndex < this.state.chartData.length - 1) {
-      if (this.state.chartData.length - 1 - this.state.pagination.endIndex >= this.state.page) {
-        diff = this.state.page;
+    if (pagination.endIndex < chartData.length - 1) {
+      if (chartData.length - 1 - pagination.endIndex >= page) {
+        diff = page;
       } else {
-        diff = this.state.chartData.length - 1 - this.state.pagination.endIndex;
+        diff = chartData.length - 1 - pagination.endIndex;
       }
 
-      this.setState(state => {
-        return {
-          ...state,
-          pagination: {
-            startIndex: state.pagination.startIndex + diff,
-            endIndex: state.pagination.endIndex + diff
-          }
-        };
-      });
+      this.setState(state => ({
+        ...state,
+        pagination: {
+          startIndex: state.pagination.startIndex + diff,
+          endIndex: state.pagination.endIndex + diff
+        }
+      }));
     }
   };
 
   static propTypes = {
-    gradebook: PropTypes.object.isRequired,
+    // gradebook: PropTypes.object.isRequired,
     onClickHandler: PropTypes.func.isRequired,
     children: PropTypes.node
   };
@@ -199,33 +185,35 @@ export default class BarGraph extends Component {
   }
 
   render() {
+    const { children } = this.props;
+    const { pagination, chartData, renderData, maxAttemps, maxTimeSpent } = this.state;
     return (
       <MainDiv className="studentBarChart">
-        {this.props.children}
+        {children}
         <StyledChartNavButton
           type="primary"
           shape="circle"
           icon="caret-left"
-          size={"large"}
+          size="large"
           className="navigator navigator-left"
           onClick={this.scrollLeft}
           style={{
-            visibility: this.state.pagination.startIndex == 0 ? "hidden" : "visible"
+            visibility: pagination.startIndex === 0 ? "hidden" : "visible"
           }}
         />
         <StyledChartNavButton
           type="primary"
           shape="circle"
           icon="caret-right"
-          size={"large"}
+          size="large"
           className="navigator navigator-right"
           onClick={this.scrollRight}
           style={{
-            visibility: this.state.chartData.length <= this.state.pagination.endIndex + 1 ? "hidden" : "visible"
+            visibility: chartData.length <= pagination.endIndex + 1 ? "hidden" : "visible"
           }}
         />
         <ResponsiveContainer width="100%" height={240}>
-          <ComposedChart barGap={1} barSize={36} data={this.state.renderData}>
+          <ComposedChart barGap={1} barSize={36} data={renderData}>
             <XAxis
               dataKey="name"
               tickSize={0}
@@ -234,14 +222,14 @@ export default class BarGraph extends Component {
               padding={{ left: 20, right: 20 }}
             />
             <YAxis
-              domain={[0, this.state.maxAttemps + Math.ceil((10 / 100) * this.state.maxAttemps)]}
+              domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}
               yAxisId="left"
               allowDecimals={false}
               label={{ value: "ATTEMPTS", angle: -90, fill: dropZoneTitleColor, fontSize: "10px" }}
             />
             <YAxis
               yAxisId="right"
-              domain={[0, this.state.maxTimeSpent + Math.ceil((10 / 100) * this.state.maxTimeSpent)]}
+              domain={[0, maxTimeSpent + Math.ceil((10 / 100) * maxTimeSpent)]}
               allowDecimals={false}
               label={{
                 value: "AVG TIME (SECONDS)",
@@ -250,7 +238,7 @@ export default class BarGraph extends Component {
                 fontSize: "10px"
               }}
               orientation="right"
-              ticks={ticks(0, this.state.maxTimeSpent + 10000, 10)}
+              ticks={ticks(0, maxTimeSpent + 10000, 10)}
               tickFormatter={val => Math.round(val / 1000)}
             />
             <Bar

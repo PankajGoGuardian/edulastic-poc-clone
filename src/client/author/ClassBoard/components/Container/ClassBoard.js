@@ -342,7 +342,7 @@ class ClassBoard extends Component {
           <React.Fragment>
             <StudentGrapContainer>
               <StyledCard bordered={false} paddingTop={15}>
-                <BarGraph gradebook={gradebook} studentview={true} studentResponse={qActivityByStudent}>
+                <BarGraph gradebook={gradebook} studentview studentResponse={qActivityByStudent}>
                   <StudentSelect
                     students={studentItems}
                     selectedStudent={selectedStudentId}

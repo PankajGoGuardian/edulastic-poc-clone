@@ -50,7 +50,7 @@ const AssessmentContainer = ({
   // start assessment
   useEffect(() => {
     startAssessment();
-  }, [qid]);
+  }, []);
 
   const lastTime = useRef(Date.now());
 

@@ -36,7 +36,12 @@ const defaultQuestionValue = {
 };
 
 const defaultQuestionOptions = {
-  [MULTIPLE_CHOICE]: [],
+  [MULTIPLE_CHOICE]: [
+    { label: "A", value: 1 },
+    { label: "B", value: 2 },
+    { label: "C", value: 3 },
+    { label: "D", value: 4 }
+  ],
   [CLOZE_DROP_DOWN]: {
     0: ["A", "B"]
   }
@@ -189,6 +194,8 @@ class Questions extends React.Component {
 
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
+
+    this.handleOpenEditModal(questionIndex - 1)();
   };
 
   handleAddSection = () => {

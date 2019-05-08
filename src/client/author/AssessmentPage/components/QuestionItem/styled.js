@@ -28,6 +28,8 @@ export const QuestionNumber = styled.span`
   height: 40px;
   text-align: center;
   padding-top: 6px;
+  transition: all 300ms;
+  cursor: ${({ dragging }) => (dragging ? "grabbing" : "grab")};
 `;
 
 export const QuestionForm = styled.div`

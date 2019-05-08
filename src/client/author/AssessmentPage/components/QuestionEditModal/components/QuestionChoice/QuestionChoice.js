@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Input, Checkbox, InputNumber } from "antd";
-
-import { IconPencilEdit } from "@edulastic/icons";
+import { throttle } from "lodash";
 
 import { EXACT_MATCH } from "../../../../../../assessment/constants/constantsForQuestions";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
@@ -12,8 +11,7 @@ const { Group: CheckboxGroup } = Checkbox;
 const defaultState = {
   optionsValue: "",
   correctAnswers: [],
-  score: 1,
-  optionsDisabled: true
+  score: 1
 };
 
 export default class QuestionChoice extends React.Component {
@@ -50,9 +48,11 @@ export default class QuestionChoice extends React.Component {
   };
 
   handleSetOptions = ({ target: { value } }) => {
+    this.setState({ optionsValue: value });
+
     const { onUpdate } = this.props;
 
-    const options = value.split(" ");
+    const options = value.trim().split(" ");
 
     const data = {
       options: options.map((option, index) => ({
@@ -62,11 +62,9 @@ export default class QuestionChoice extends React.Component {
     };
 
     onUpdate(data);
-
-    this.handleToggleOptionsDisabled();
   };
 
-  handleChangeOptions = ({ target: { value } }) => this.setState({ optionsValue: value });
+  // handleChangeOptions = ({ target: { value } }) => this.setState({ optionsValue: value });
 
   handleSetCorrectAnswers = checked => {
     const { score } = this.state;
@@ -115,19 +113,8 @@ export default class QuestionChoice extends React.Component {
     });
   };
 
-  handleToggleOptionsDisabled = () =>
-    this.setState(({ optionsDisabled }) => ({
-      optionsDisabled: !optionsDisabled
-    }));
-
-  renderEditButton = () => (
-    <div onClick={this.handleToggleOptionsDisabled}>
-      <IconPencilEdit />
-    </div>
-  );
-
   render() {
-    const { optionsValue, optionsDisabled, correctAnswers, score } = this.state;
+    const { optionsValue, correctAnswers, score } = this.state;
     const {
       question: { options }
     } = this.props;
@@ -136,13 +123,7 @@ export default class QuestionChoice extends React.Component {
       <QuestionFormWrapper>
         <FormGroup>
           <FormLabel>Options</FormLabel>
-          <Input
-            value={optionsValue}
-            onChange={this.handleChangeOptions}
-            onPressEnter={this.handleSetOptions}
-            disabled={optionsDisabled}
-            addonAfter={this.renderEditButton()}
-          />
+          <Input value={optionsValue} onChange={throttle(this.handleSetOptions, 2000)} autoFocus />
         </FormGroup>
         <FormGroup>
           <FormLabel>Correct Answers</FormLabel>

@@ -1,8 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Input, Select, InputNumber } from "antd";
-
-import { IconPencilEdit } from "@edulastic/icons";
+import { throttle } from "lodash";
 
 import { EXACT_MATCH, CONTAINS } from "../../../../../../assessment/constants/constantsForQuestions";
 import { QuestionFormWrapper, FormGroup, FormLabel, Points } from "../../common/QuestionForm";
@@ -16,7 +15,6 @@ export default class QuestionText extends React.Component {
   state = {
     answer: "",
     score: 1,
-    answerDisabled: true,
     allow: EXACT_MATCH
   };
 
@@ -47,8 +45,6 @@ export default class QuestionText extends React.Component {
     });
   };
 
-  handleAnswerChange = ({ target: { value } }) => this.setState({ answer: value });
-
   handleSetAnswer = ({ target: { value } }) => {
     const { score, allow } = this.state;
     const { onUpdate } = this.props;
@@ -67,7 +63,6 @@ export default class QuestionText extends React.Component {
       };
 
       onUpdate(data);
-      this.handleToggleAnswerDisabled();
     });
   };
 
@@ -113,30 +108,13 @@ export default class QuestionText extends React.Component {
     });
   };
 
-  handleToggleAnswerDisabled = () =>
-    this.setState(({ answerDisabled }) => ({
-      answerDisabled: !answerDisabled
-    }));
-
-  renderEditButton = () => (
-    <div onClick={this.handleToggleAnswerDisabled}>
-      <IconPencilEdit />
-    </div>
-  );
-
   render() {
-    const { answer, answerDisabled, score, allow } = this.state;
+    const { answer, score, allow } = this.state;
     return (
       <QuestionFormWrapper>
         <FormGroup>
           <FormLabel>Correct Answer</FormLabel>
-          <Input
-            value={answer}
-            onChange={this.handleAnswerChange}
-            onPressEnter={this.handleSetAnswer}
-            disabled={answerDisabled}
-            addonAfter={this.renderEditButton()}
-          />
+          <Input value={answer} onChange={throttle(this.handleSetAnswer, 2000)} autoFocus />
         </FormGroup>
         <FormGroup>
           <FormLabel>Allow</FormLabel>

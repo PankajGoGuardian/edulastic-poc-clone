@@ -64,7 +64,8 @@ class Container extends PureComponent {
     user: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
     clearSelectedItems: PropTypes.func.isRequired,
-    saveCurrentEditingTestId: PropTypes.func.isRequired
+    saveCurrentEditingTestId: PropTypes.func.isRequired,
+    history: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -123,6 +124,14 @@ class Container extends PureComponent {
     this.setState({
       current: value
     });
+  };
+
+  handleAssign = () => {
+    const { history, match } = this.props;
+    const { id } = match.params;
+    if (id) {
+      history.push(`/author/assignments/${id}`);
+    }
   };
 
   handleAddItems = testItems => {
@@ -328,7 +337,7 @@ class Container extends PureComponent {
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange("source")}
-          onAssign={this.handleNavChange("assign")}
+          onAssign={this.handleAssign}
         />
         <Content>{this.renderContent()}</Content>
       </>

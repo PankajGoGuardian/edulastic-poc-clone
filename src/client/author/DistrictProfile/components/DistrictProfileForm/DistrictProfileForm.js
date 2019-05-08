@@ -3,6 +3,9 @@ import PropTypes from "prop-types";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
 import ImageUpload from "../../../Shared/Components/ImageUpload/ImageUpload";
+import EditableNameLabel from "../EditableNameLabel/EditableNameLabel";
+import EditableLabel from "../EditableLabel/EditableLabel";
+
 import { Form, Icon, Popover } from "antd";
 const FormItem = Form.Item;
 
@@ -10,20 +13,16 @@ import {
   StyledFormDiv,
   StyledDivBg,
   StyledDivMain,
-  StyledLabel,
   StyledRow,
   StyledRowLogo,
   StyledRowAnn,
-  StyledLabelSH,
-  StyledInputB,
+  StyledLabel,
   StyledTextArea,
-  StyledInput,
   SaveButton,
   StyledUrlButton,
   StyledPopoverContent,
   PopoverCloseButton,
-  StyledDistrictUrl,
-  StyledFormItem
+  StyledDistrictUrl
 } from "./styled";
 
 class DistrictProfileForm extends React.Component {
@@ -34,22 +33,23 @@ class DistrictProfileForm extends React.Component {
       pageBackground: this.props.districtProfile.pageBackground,
       districtUrl: "http://edulastic-poc.snapwiz.net/district/" + this.props.districtProfile.shortName,
       popoverVisible: false,
-      nameWidth: this.props.districtProfile.name.length * 9.5
+      name: this.props.districtProfile.name,
+      shortName: this.props.districtProfile.shortName,
+      city: this.props.districtProfile.city,
+      state: this.props.districtProfile.state,
+      zip: this.props.districtProfile.zip,
+      nces: this.props.districtProfile.nces,
+      editing: false
     };
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
+  handleSubmit = () => {
+    const saveData = { ...this.state };
+    if (saveData.editing) return;
     this.props.form.validateFields((err, values) => {
       if (!err) {
-        this.props.saveDistrictProfile(Object.assign(this.props.districtProfile, values, this.state));
+        this.props.saveDistrictProfile(Object.assign(this.props.districtProfile, values, saveData));
       }
-    });
-  };
-
-  handleChangeShortName = e => {
-    this.setState({
-      districtUrl: `${window.location.origin}/district/${e.target.value}`
     });
   };
 
@@ -62,16 +62,36 @@ class DistrictProfileForm extends React.Component {
     else if (keyName === "logo") this.setState({ logo: imgSrc });
   };
 
-  changeProfileName = e => {
-    this.setState({
-      nameWidth: e.target.value.length * 9.5
-    });
+  updateProfileName = newName => {
+    this.setState({ name: newName, editing: false });
+  };
+
+  updateProfileValue = (valueName, value) => {
+    if (valueName === "District Short Name") {
+      this.setState({
+        shortName: value,
+        districtUrl: `${window.location.origin}/district/${value}`,
+        editing: false
+      });
+    } else if (valueName === "City") {
+      this.setState({ city: value, editing: false });
+    } else if (valueName === "State") {
+      this.setState({ state: value, editing: false });
+    } else if (valueName === "Zip") {
+      this.setState({ zip: value, editing: false });
+    } else if (valueName === "NCES Code") {
+      this.setState({ nces: value, editing: false });
+    }
+  };
+
+  setEditing = value => {
+    this.setState({ editing: value });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
     const { districtProfile } = this.props;
-    const { districtUrl, popoverVisible, nameWidth } = this.state;
+    const { districtUrl, popoverVisible, editing } = this.state;
 
     const popoverContent = (
       <React.Fragment>
@@ -88,7 +108,7 @@ class DistrictProfileForm extends React.Component {
     );
     return (
       <StyledFormDiv>
-        <Form onSubmit={this.handleSubmit}>
+        <Form>
           <StyledDivBg>
             <ImageUpload
               imgSrc={districtProfile.pageBackground}
@@ -100,35 +120,21 @@ class DistrictProfileForm extends React.Component {
           </StyledDivBg>
           <StyledDivMain>
             <StyledRow>
-              <StyledFormItem widthSize={nameWidth}>
-                {getFieldDecorator("name", {
-                  rules: [{ required: true, message: "Please input your name!" }],
-                  initialValue: districtProfile.name
-                })(<StyledInputB suffix={<Icon type="edit" theme="twoTone" />} onChange={this.changeProfileName} />)}
-              </StyledFormItem>
+              <EditableNameLabel
+                value={districtProfile.name}
+                setProfileName={this.updateProfileName}
+                updateEditing={this.setEditing}
+              />
             </StyledRow>
             <StyledRow>
-              <StyledLabel>District Short Name:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("shortName", {
-                  rules: [
-                    {
-                      required: true,
-                      message: "Please input your District Short Name!"
-                    },
-                    {
-                      max: 10,
-                      message: (
-                        <p>
-                          District Short Name must be less <br />
-                          than 10 letters or equal!
-                        </p>
-                      )
-                    }
-                  ],
-                  initialValue: districtProfile.shortName
-                })(<StyledInput onChange={this.handleChangeShortName} suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+              <EditableLabel
+                value={districtProfile.shortName}
+                valueName={"District Short Name"}
+                maxLength={10}
+                requiredStatus={true}
+                setProfileValue={this.updateProfileValue}
+                updateEditing={this.setEditing}
+              />
               <Popover
                 trigger="click"
                 visible={popoverVisible}
@@ -141,43 +147,47 @@ class DistrictProfileForm extends React.Component {
               </Popover>
             </StyledRow>
             <StyledRow>
-              <StyledLabel>City:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("city", {
-                  rules: [{ required: true, message: "Please input your City!" }],
-                  initialValue: districtProfile.city
-                })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+              <EditableLabel
+                value={districtProfile.city}
+                valueName={"City"}
+                maxLength={40}
+                requiredStatus={true}
+                setProfileValue={this.updateProfileValue}
+                updateEditing={this.setEditing}
+              />
             </StyledRow>
             <StyledRow>
-              <StyledLabel>State:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("state", {
-                  rules: [{ required: true, message: "Please input your State!" }],
-                  initialValue: districtProfile.state
-                })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+              <EditableLabel
+                value={districtProfile.state}
+                valueName={"State"}
+                maxLength={40}
+                requiredStatus={true}
+                setProfileValue={this.updateProfileValue}
+                updateEditing={this.setEditing}
+              />
             </StyledRow>
             <StyledRow>
-              <StyledLabel>Zip:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("zip", {
-                  rules: [{ required: true, message: "Please input your Zip!" }],
-                  initialValue: districtProfile.zip
-                })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+              <EditableLabel
+                value={districtProfile.zip}
+                valueName={"Zip"}
+                maxLength={20}
+                requiredStatus={true}
+                setProfileValue={this.updateProfileValue}
+                updateEditing={this.setEditing}
+              />
             </StyledRow>
             <StyledRow>
-              <StyledLabel>NCES Code:</StyledLabel>
-              <FormItem>
-                {getFieldDecorator("nces", {
-                  rules: [{ required: true, message: "Please input your NCES Code!" }],
-                  initialValue: districtProfile.nces
-                })(<StyledInput suffix={<Icon type="edit" theme="twoTone" />} />)}
-              </FormItem>
+              <EditableLabel
+                value={districtProfile.nces}
+                valueName={"NCES Code"}
+                maxLength={100}
+                requiredStatus={false}
+                setProfileValue={this.updateProfileValue}
+                updateEditing={this.setEditing}
+              />
             </StyledRow>
             <StyledRowLogo>
-              <StyledLabelSH>District Logo:</StyledLabelSH>
+              <StyledLabel>District Logo:</StyledLabel>
               <ImageUpload
                 width={"150px"}
                 height={"80px"}
@@ -187,7 +197,7 @@ class DistrictProfileForm extends React.Component {
               />
             </StyledRowLogo>
             <StyledRowAnn>
-              <StyledLabelSH>District Announcement:</StyledLabelSH>
+              <StyledLabel>District Announcement:</StyledLabel>
               <FormItem>
                 {getFieldDecorator("announcement", {
                   initialValue: districtProfile.announcement
@@ -195,7 +205,9 @@ class DistrictProfileForm extends React.Component {
               </FormItem>
             </StyledRowAnn>
             <StyledRow>
-              <SaveButton htmlType="submit">Save</SaveButton>
+              <SaveButton type="primary" onClick={this.handleSubmit} disabled={editing}>
+                Save
+              </SaveButton>
             </StyledRow>
           </StyledDivMain>
         </Form>

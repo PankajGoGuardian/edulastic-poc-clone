@@ -26,47 +26,29 @@ const initialState = {
   updateError: null
 };
 
-const receiveDistrictProfileRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveDistrictProfileSuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receiveDistrictProfileError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updateDistrictProfile = state => ({
-  ...state,
-  updating: true
-});
-
-const updateDistrictProfileSuccess = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  data: payload
-});
-
-const updateDistrictProfileError = (state, { payload }) => ({
-  ...state,
-  updating: false,
-  updateError: payload.error
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_DISTRICT_PROFILE_REQUEST]: receiveDistrictProfileRequest,
-  [RECEIVE_DISTRICT_PROFILE_SUCCESS]: receiveDistrictProfileSuccess,
-  [RECEIVE_DISTRICT_PROFILE_ERROR]: receiveDistrictProfileError,
-  [UPDATE_DISTRICT_PROFILE_REQUEST]: updateDistrictProfile,
-  [UPDATE_DISTRICT_PROFILE_SUCCESS]: updateDistrictProfileSuccess,
-  [UPDATE_DISTRICT_PROFILE_ERROR]: updateDistrictProfileError
+  [RECEIVE_DISTRICT_PROFILE_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_DISTRICT_PROFILE_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.data = payload;
+  },
+  [RECEIVE_DISTRICT_PROFILE_ERROR]: (state, { payload }) => {
+    state.loading = false;
+    state.error = payload.error;
+  },
+  [UPDATE_DISTRICT_PROFILE_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_DISTRICT_PROFILE_SUCCESS]: (state, { payload }) => {
+    state.updating = false;
+    state.update = payload;
+  },
+  [UPDATE_DISTRICT_PROFILE_ERROR]: state => {
+    state.updating = false;
+    state.updateError = payload.error;
+  }
 });
 
 function* receiveDistrictProfileSaga({ payload }) {
@@ -97,20 +79,3 @@ export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_DISTRICT_PROFILE_REQUEST, receiveDistrictProfileSaga)]);
   yield all([yield takeEvery(UPDATE_DISTRICT_PROFILE_REQUEST, updateDictrictProfileSaga)]);
 }
-
-export const stateDistrictProfileSelector = state => state.districtProfileReducer;
-
-export const getDistrictProfileSelector = createSelector(
-  stateDistrictProfileSelector,
-  state => state.data
-);
-
-export const getDistrictProfieUpdatingSelector = createSelector(
-  stateDistrictProfileSelector,
-  state => state.updating
-);
-
-export const getDistrictProfieLoadingSelector = createSelector(
-  stateDistrictProfileSelector,
-  state => state.loading
-);

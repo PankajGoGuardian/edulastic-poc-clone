@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import DistrictProfileForm from "../DistrictProfileForm/DistrictProfileForm";
@@ -10,14 +11,6 @@ import { DistrictProfileDiv, StyledContent, StyledLayout, SpinContainer, StyledS
 
 // actions
 import { receiveDistrictProfileAction, updateDistrictProfileAction } from "../../ducks";
-
-// selectors
-import {
-  getDistrictProfileSelector,
-  getDistrictProfieLoadingSelector,
-  getDistrictProfieUpdatingSelector
-} from "../../ducks";
-
 import { getUserOrgId } from "../../../src/selectors/user";
 
 const title = "Manage District";
@@ -81,10 +74,10 @@ class DistrictProfile extends Component {
 const enhance = compose(
   connect(
     state => ({
-      districtProfile: getDistrictProfileSelector(state),
+      districtProfile: get(state, ["districtProfileReducer", "data"], {}),
       userOrgId: getUserOrgId(state),
-      updating: getDistrictProfieUpdatingSelector(state),
-      loading: getDistrictProfieLoadingSelector(state)
+      updating: get(state, ["districtProfileReducer", "updating"], false),
+      loading: get(state, ["districtProfileReducer", "loading"], false)
     }),
     {
       loadDistrictProfile: receiveDistrictProfileAction,

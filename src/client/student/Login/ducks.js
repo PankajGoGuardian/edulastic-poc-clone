@@ -92,7 +92,7 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    yield put(push("lLogin"));
+    yield put(push("/login"));
   }
 }
 

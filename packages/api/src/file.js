@@ -31,12 +31,15 @@ const getSignedUrl = filename =>
     })
     .then(result => result.data.result);
 
-const uploadBySignedUrl = (url, data) =>
+const uploadBySignedUrl = (url, data, progressCallback) =>
   axios({
     method: "post",
     url,
     data,
-    config: { headers: { "Content-Type": "multipart/form-data" } }
+    config: {
+      headers: { "Content-Type": "multipart/form-data" }
+    },
+    onUploadProgress: progressCallback
   });
 
 export default {

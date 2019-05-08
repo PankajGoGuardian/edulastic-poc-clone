@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { isEmpty, isEqual, get } from "lodash";
+import { isEmpty, get } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
 import {
@@ -73,14 +73,6 @@ class AssignTest extends React.Component {
     }
   }
 
-  shouldComponentUpdate(_, { assignment: nextAssignment }) {
-    const { assignment: preAssignment } = this.state;
-    if (isEqual(preAssignment, nextAssignment)) {
-      return true;
-    }
-    return false;
-  }
-
   handleAssign = () => {
     const { assignment } = this.state;
     const { saveAssignment } = this.props;
@@ -105,7 +97,7 @@ class AssignTest extends React.Component {
   updateAssignment = assignment => this.setState({ assignment });
 
   render() {
-    const { isAdvancedView } = this.state;
+    const { isAdvancedView, assignment } = this.state;
     const { group, fetchStudents, students, testSettings } = this.props;
 
     return (
@@ -131,16 +123,12 @@ class AssignTest extends React.Component {
           </FullFlexContainer>
 
           {isAdvancedView ? (
-            <AdvancedOptons
-              initData={initAssignment}
-              updateOptions={this.updateAssignment}
-              testSettings={testSettings}
-            />
+            <AdvancedOptons data={assignment} updateOptions={this.updateAssignment} testSettings={testSettings} />
           ) : (
             <SimpleOptions
               group={group}
               students={students}
-              initData={initAssignment}
+              data={assignment}
               fetchStudents={fetchStudents}
               testSettings={testSettings}
               updateOptions={this.updateAssignment}

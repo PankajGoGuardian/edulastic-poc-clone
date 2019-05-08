@@ -10,7 +10,7 @@ import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelect
 
 class AdvancedOptons extends React.Component {
   static propTypes = {
-    initData: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
     testSettings: PropTypes.object.isRequired,
     updateOptions: PropTypes.func.isRequired
   };
@@ -19,7 +19,7 @@ class AdvancedOptons extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      assignment: props.initData
+      assignment: props.data
     };
   }
 
@@ -54,7 +54,7 @@ class AdvancedOptons extends React.Component {
   };
 
   render() {
-    const { testSettings } = this.props;
+    const { testSettings, data } = this.props;
     const { showSettings, assignment } = this.state;
     const changeField = curry(this.onChange);
 
@@ -95,7 +95,7 @@ class AdvancedOptons extends React.Component {
             </p>
           </ClassSelectorLabel>
 
-          <ClassList selectedClasses={assignment.class} selectClass={changeField} />
+          <ClassList selectedClasses={data.class} selectClass={changeField} />
         </InitOptions>
       </OptionConationer>
     );

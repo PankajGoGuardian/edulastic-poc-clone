@@ -55,7 +55,7 @@ class ClassList extends React.Component {
       searchTerms: {
         institutionIds: [],
         codes: [],
-        subjects,
+        subjects: subjects.map(subject => lowerCase(subject)),
         grades,
         active: 1
       }
@@ -103,12 +103,13 @@ class ClassList extends React.Component {
   };
 
   render() {
-    const { classList, schools, courseList, selectClass } = this.props;
+    const { classList, schools, courseList, selectClass, selectedClasses } = this.props;
     const { searchTerms } = this.state;
     const tableData = classList.map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
 
     const rowSelection = {
+      selectedRowKeys: selectedClasses,
       onChange: selectedRowKeys => {
         if (selectClass) {
           selectClass("class", selectedRowKeys);

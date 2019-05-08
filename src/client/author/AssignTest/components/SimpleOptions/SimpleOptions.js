@@ -13,7 +13,7 @@ import { getListOfStudents } from "../../utils";
 class SimpleOptions extends React.Component {
   static propTypes = {
     group: PropTypes.array.isRequired,
-    initData: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
     students: PropTypes.array.isRequired,
     testSettings: PropTypes.object.isRequired,
     fetchStudents: PropTypes.func.isRequired,
@@ -24,7 +24,7 @@ class SimpleOptions extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      assignment: props.initData
+      assignment: props.data
     };
   }
 

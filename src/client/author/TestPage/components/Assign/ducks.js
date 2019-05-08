@@ -1,5 +1,6 @@
 import * as moment from "moment";
 import { omit, keyBy } from "lodash";
+import { message } from "antd";
 import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { assignmentApi, testsApi } from "@edulastic/api";
@@ -7,8 +8,9 @@ import { all, call, put, takeEvery, select } from "redux-saga/effects";
 import { replace } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { generateClassData, formatAssignment } from "./utils";
-import { getStudentsSelector, getGroupsSelector } from "../../../sharedDucks/groups";
+import { getStudentsSelector } from "../../../sharedDucks/groups";
 import { getUserNameSelector, getCurrentTerm } from "../../../src/selectors/user";
+import { getClassListSelector } from "../../../Classes/ducks";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -82,7 +84,7 @@ export const getCurrentAssignmentSelector = createSelector(
   getAssignmentsSelector,
   (current, assignments) => {
     if (current && current !== "new") {
-      let assignment = assignments.filter(item => item._id == current)[0];
+      const assignment = assignments.filter(item => item._id === current)[0];
       return assignment;
     }
     return {
@@ -100,7 +102,7 @@ export const getCurrentAssignmentSelector = createSelector(
 function* saveAssignment({ payload }) {
   try {
     const studentsList = yield select(getStudentsSelector);
-    const allGroups = yield select(getGroupsSelector);
+    const allGroups = yield select(getClassListSelector);
     let testId = yield select(getTestIdSelector);
     const termId = yield select(getCurrentTerm);
 
@@ -171,7 +173,8 @@ function* saveAssignment({ payload }) {
       ? yield call(assignmentApi.update, payload._id, { ...data, updateTestActivities })
       : yield call(assignmentApi.create, { assignments: [data], assignedBy });
     const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
-
+    const successMessage = "Assign test is successed!";
+    yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
   } catch (err) {
     console.error(err);

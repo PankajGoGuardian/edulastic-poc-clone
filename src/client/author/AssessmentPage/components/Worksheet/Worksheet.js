@@ -4,7 +4,7 @@ import uuid from "uuid/v4";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
@@ -12,12 +12,20 @@ import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
 import { WorksheetWrapper } from "./styled";
 
+const swap = (array, i, j) => {
+  const copy = array.slice();
+  [copy[i], copy[j]] = [copy[j], copy[i]];
+  return copy;
+};
+
 const defaultPage = {
   URL: "blank",
-  pageNo: 1
+  pageNo: 1,
+  rotate: 0
 };
 
 const createPage = (pageNumber, url) => ({
+  ...defaultPage,
   URL: url ? url : "blank",
   pageNo: pageNumber
 });
@@ -84,33 +92,57 @@ class Worksheet extends React.Component {
     setTestData(updatedAssessment);
   };
 
-  handleAddBlankPage = () => {
-    const { pageStructure, setTestData } = this.props;
+  handleAppendBlankPage = () => {
+    const { pageStructure } = this.props;
 
-    const blankPageNumber = Object.keys(pageStructure).length + 1;
-    const newBlankPage = createPage(blankPageNumber);
-
-    const updatedAssessment = {
-      pageStructure: [...pageStructure, newBlankPage]
-    };
-
-    setTestData(updatedAssessment);
+    const lastPageIndex = pageStructure.length - 1;
+    this.addBlankPage(lastPageIndex);
   };
 
-  handleDeleteBlankPage = () => {
+  handleInsertBlankPage = index => () => {
+    this.addBlankPage(index);
+  };
+
+  addBlankPage = index => {
+    const { pageStructure, setTestData } = this.props;
+
+    if (index < 0 || index >= pageStructure.length) return;
+
+    const pageNumber = index + 1;
+    const blankPage = createPage(pageNumber);
+
+    const updatedPageStructure = [...pageStructure];
+
+    updatedPageStructure.splice(pageNumber, 0, blankPage);
+
+    setTestData({
+      pageStructure: updatedPageStructure
+    });
+    this.handleChangePage(pageNumber);
+  };
+
+  handleDeleteSelectedBlankPage = () => {
     const { currentPage } = this.state;
+    this.deleteBlankPage(currentPage);
+  };
+
+  handleDeletePage = pageNumber => () => {
+    this.deleteBlankPage(pageNumber);
+  };
+
+  deleteBlankPage = pageNumber => {
     const { pageStructure, setTestData, annotations } = this.props;
 
-    if (currentPage === 0) return;
+    if (pageStructure.length < 2) return;
 
-    const page = pageStructure[currentPage];
+    const page = pageStructure[pageNumber];
 
     if (page && page.URL === "blank") {
       const updatedPageStructure = [...pageStructure];
 
-      updatedPageStructure.splice(currentPage, 1);
+      updatedPageStructure.splice(pageNumber, 1);
 
-      const annotationIndex = annotations.findIndex(annotation => annotation.page === currentPage + 1);
+      const annotationIndex = annotations.findIndex(annotation => annotation.page === pageNumber + 1);
 
       const updatedAnnotations = [...annotations];
 
@@ -128,9 +160,59 @@ class Worksheet extends React.Component {
         annotations: updatedAnnotations
       };
 
-      this.handleChangePage(currentPage - 1);
+      this.handleChangePage(pageNumber - 1);
       setTestData(updatedAssessment);
     }
+  };
+
+  handleMovePageUp = pageIndex => () => {
+    if (pageIndex === 0) return;
+
+    const nextIndex = pageIndex - 1;
+    const { pageStructure, setTestData } = this.props;
+
+    const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
+
+    setTestData({
+      pageStructure: updatedPageStructure
+    });
+    this.handleChangePage(nextIndex);
+  };
+
+  handleMovePageDown = pageIndex => () => {
+    const { pageStructure, setTestData } = this.props;
+
+    if (pageIndex === pageStructure.length - 1) return;
+
+    const nextIndex = pageIndex + 1;
+
+    const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex);
+
+    setTestData({
+      pageStructure: updatedPageStructure
+    });
+    this.handleChangePage(nextIndex);
+  };
+
+  handleRotate = pageIndex => direction => () => {
+    const { pageStructure, setTestData } = this.props;
+
+    if (!pageStructure[pageIndex]) return;
+
+    const page = { ...pageStructure[pageIndex] };
+
+    const angle = direction === "clockwise" ? 90 : -90;
+    const rotate = get(page, "rotate", 0) + angle;
+
+    page.rotate = Math.abs(rotate) === 360 ? 0 : rotate;
+
+    const updatedPageStructure = [...pageStructure];
+
+    updatedPageStructure.splice(pageIndex, 1, page);
+
+    setTestData({
+      pageStructure: updatedPageStructure
+    });
   };
 
   handleReupload = () => {
@@ -159,8 +241,13 @@ class Worksheet extends React.Component {
             currentPage={currentPage}
             onReupload={this.handleReupload}
             onPageChange={this.handleChangePage}
-            onAddBlankPage={this.handleAddBlankPage}
-            onDeleteBlankPage={this.handleDeleteBlankPage}
+            onAddBlankPage={this.handleAppendBlankPage}
+            onDeletePage={this.handleDeletePage}
+            onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+            onMovePageUp={this.handleMovePageUp}
+            onMovePageDown={this.handleMovePageDown}
+            onInsertBlankPage={this.handleInsertBlankPage}
+            onRotate={this.handleRotate}
             review={review}
           />
         )}

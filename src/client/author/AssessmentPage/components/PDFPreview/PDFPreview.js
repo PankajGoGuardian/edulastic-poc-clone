@@ -32,7 +32,7 @@ const PDFPreview = ({ page, currentPage, annotations, onDocumentLoad, onDropAnno
     <Droppable types={["question"]} onDrop={handleDrop(currentPage, onDropAnnotation)}>
       <Preview>
         {page.URL !== "blank" && (
-          <Document file={page.URL} onLoadSuccess={onDocumentLoad}>
+          <Document file={page.URL} rotate={page.rotate || 0} onLoadSuccess={onDocumentLoad}>
             <Page pageNumber={page.pageNo} renderTextLayer={false} />
           </Document>
         )}

@@ -8,16 +8,17 @@ export const ThumbnailsItemWrapper = styled.div`
   border-radius: 10px;
   box-shadow: ${props => (props.active ? `0 0 0 4px ${mainBlueColor}` : "none")};
   overflow: hidden;
+  background: ${white};
 `;
 
 export const PagePreview = styled.div`
   height: 149px;
-  background: ${white};
   overflow: hidden;
+  padding: 10px;
+  transform: ${props => `rotate(${props.rotate}deg)`};
 
   .react-pdf__Page {
     position: relative;
-    width: 158px;
 
     canvas {
       width: 100% !important;

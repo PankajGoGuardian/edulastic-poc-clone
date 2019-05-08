@@ -15,7 +15,20 @@ const menu = (onReupload, onAddBlank, onDeleteBlank) => (
   </Menu>
 );
 
-const Thumbnails = ({ list, onPageChange, onReupload, onAddBlankPage, onDeleteBlankPage, review, currentPage }) => {
+const Thumbnails = ({
+  list,
+  onPageChange,
+  onReupload,
+  onAddBlankPage,
+  onDeleteSelectedBlankPage,
+  onDeletePage,
+  onMovePageUp,
+  onMovePageDown,
+  onInsertBlankPage,
+  onRotate,
+  review,
+  currentPage
+}) => {
   const [minimized, setMinimized] = React.useState(false);
 
   const toggleMinimized = () => {
@@ -38,14 +51,21 @@ const Thumbnails = ({ list, onPageChange, onReupload, onAddBlankPage, onDeleteBl
             index={key}
             page={item.pageNo}
             onClick={onChangePage(key)}
+            onDelete={onDeletePage(key)}
+            onMoveUp={onMovePageUp(key)}
+            onMoveDown={onMovePageDown(key)}
+            onInsertBlankPage={onInsertBlankPage(key)}
+            onRotate={onRotate(key)}
             url={item.URL !== "blank" && item.URL}
             current={currentPage}
+            total={list.length}
+            rotate={item.rotate}
           />
         ))}
       </ThumbnailsList>
       {!review && (
         <ReuploadButtonWrapper>
-          <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteBlankPage)}>
+          <Dropdown overlay={menu(onReupload, onAddBlankPage, onDeleteSelectedBlankPage)}>
             <ReuploadButton>Manage document</ReuploadButton>
           </Dropdown>
         </ReuploadButtonWrapper>
@@ -59,7 +79,12 @@ Thumbnails.propTypes = {
   onPageChange: PropTypes.func.isRequired,
   onReupload: PropTypes.func.isRequired,
   onAddBlankPage: PropTypes.func.isRequired,
-  onDeleteBlankPage: PropTypes.func.isRequired,
+  onDeletePage: PropTypes.func.isRequired,
+  onDeleteSelectedBlankPage: PropTypes.func.isRequired,
+  onMovePageUp: PropTypes.func.isRequired,
+  onMovePageDown: PropTypes.func.isRequired,
+  onInsertBlankPage: PropTypes.func.isRequired,
+  onRotate: PropTypes.func.isRequired,
   currentPage: PropTypes.number.isRequired,
   review: PropTypes.bool
 };

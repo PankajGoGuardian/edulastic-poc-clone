@@ -8,6 +8,7 @@ import { get } from "lodash";
 
 import { fileApi, testsApi, testItemsApi } from "@edulastic/api";
 
+import { uploadToS3 } from "../src/utils/upload";
 import { initialTestState, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
 import { getUserSelector } from "../src/selectors/user";
 
@@ -77,8 +78,7 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
-      const { fileUri } = yield call(fileApi.upload, { file: payload.file });
-      fileURI = fileUri;
+      fileURI = yield call(uploadToS3, payload.file);
     }
   } catch (error) {
     const errorMessage = "Upload PDF is failing";

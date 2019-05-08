@@ -13,7 +13,7 @@ import { createClassAction } from "../../ducks";
 // selectors
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
-import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
+import { receiveSearchCourseAction } from "../../../Courses/ducks";
 
 // componentes
 import Header from "./Header";
@@ -46,15 +46,14 @@ class ClassCreate extends React.Component {
   };
 
   componentDidMount() {
-    const { curriculums, getCurriculums, userOrgData, loadCourseListData, courseList } = this.props;
-    const { districtId } = userOrgData;
+    const { curriculums, getCurriculums, loadCourseListData, courseList } = this.props;
 
     if (isEmpty(curriculums)) {
       getCurriculums();
     }
 
     if (isEmpty(courseList)) {
-      loadCourseListData({ districtId });
+      loadCourseListData({ searchText: "Edulastic" });
     }
   }
 
@@ -93,7 +92,7 @@ class ClassCreate extends React.Component {
   render() {
     const { curriculums, form, courseList, userOrgData, cancelCreate } = this.props;
     const { getFieldDecorator } = form;
-    const { defaultSchool } = userOrgData;
+    const { defaultSchool, schools } = userOrgData;
 
     return (
       <Form onSubmit={this.handleSubmit}>
@@ -112,6 +111,7 @@ class ClassCreate extends React.Component {
                 getFieldDecorator={getFieldDecorator}
                 schoolsData={defaultSchool}
                 courseList={courseList}
+                schoolList={schools}
               />
             </RightContainer>
           </FlexContainer>
@@ -128,14 +128,14 @@ const enhance = compose(
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
-      courseList: getCourseListSelector(state),
+      courseList: get(state, "coursesReducer.searchResult"),
       userOrgData: getUserOrgData(state),
       userId: get(state, "user.user._id")
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       createClass: createClassAction,
-      loadCourseListData: receiveCourseListAction
+      loadCourseListData: receiveSearchCourseAction
     }
   )
 );

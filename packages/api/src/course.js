@@ -14,6 +14,15 @@ const fetchCourse = ({ districtId }) =>
     })
     .then(result => result.data.result);
 
+const searchCourse = data =>
+  api
+    .callApi({
+      url: `search/courses`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 const saveCourse = data =>
   api
     .callApi({
@@ -59,6 +68,7 @@ const uploadcCSV = file => {
 
 export default {
   fetchCourse,
+  searchCourse,
   saveCourse,
   editCourse,
   deactivateCourse,

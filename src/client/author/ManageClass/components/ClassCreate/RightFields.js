@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { filter, isArray } from "lodash";
+import { filter, isArray, isEmpty } from "lodash";
 
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
@@ -13,14 +13,14 @@ const { allGrades, allSubjects } = selectsData;
 const startDate = moment();
 const endDate = moment(); // .add("days", 7);
 
-const RightFields = ({ curriculums, schoolsData, courseList, ...restProps }) => {
+const RightFields = ({ curriculums, schoolsData, courseList, schoolList, ...restProps }) => {
   const [subject, setSubject] = useState("");
 
   const updateSubject = e => {
     setSubject(e);
   };
 
-  const isDropdown = isArray(schoolsData);
+  const isDropdown = isArray(schoolList) && !isEmpty(schoolList);
 
   const standardSets = filter(curriculums, el => el.subject === subject);
 
@@ -83,17 +83,15 @@ const RightFields = ({ curriculums, schoolsData, courseList, ...restProps }) => 
           ))}
         </Select>
       </FieldLabel>
-
       <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue="">
         <Select placeholder="Select Course">
           {courseList.map(el => (
             <Select.Option key={el._id} value={el._id}>
-              {el.name}
+              {`${el.name} - ${el.number}`}
             </Select.Option>
           ))}
         </Select>
       </FieldLabel>
-
       {!isDropdown && (
         <FieldLabel {...restProps} fiedlName="institutionId" initialValue={schoolsData}>
           <input type="hidden" />
@@ -103,7 +101,7 @@ const RightFields = ({ curriculums, schoolsData, courseList, ...restProps }) => 
       {isDropdown && (
         <FieldLabel label="School" {...restProps} fiedlName="institutionId">
           <Select placeholder="Select School">
-            {schoolsData.map(el => (
+            {schoolList.map(el => (
               <Select.Option key={el._id} value={el._id}>
                 {el.name}
               </Select.Option>
@@ -126,7 +124,12 @@ RightFields.propTypes = {
   ).isRequired,
   schoolsData: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   courseList: PropTypes.array.isRequired,
+  schoolList: PropTypes.array,
   getFieldDecorator: PropTypes.func.isRequired
+};
+
+RightFields.defaultProps = {
+  schoolList: []
 };
 
 export default RightFields;

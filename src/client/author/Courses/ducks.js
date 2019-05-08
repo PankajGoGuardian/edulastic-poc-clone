@@ -26,6 +26,10 @@ const SET_COURSE_SETFILTERS = "[course] set filters";
 const SET_COURSE_SHOWACTIVE = "[course] set show active";
 const SET_COURSE_SELECT_ROW_KEY = "[course] set selected row keys";
 
+const SEARCH_COURSE_REQUEST = "[course] search request received";
+const SEARCH_COURSE_SUCCESS = "[course] search request success";
+const SEARCH_COURSE_ERROR = "[course] search request ERROR";
+
 export const receiveCourseListAction = createAction(RECEIVE_COURSE_REQUEST);
 export const receiveCourseListSuccessAction = createAction(RECEIVE_COURSE_SUCCESS);
 export const receiveCourseListErrorAction = createAction(RECEIVE_COURSE_ERROR);
@@ -48,7 +52,9 @@ export const setShowActiveCourseAction = createAction(SET_COURSE_SHOWACTIVE);
 
 export const setSelectedRowKeysAction = createAction(SET_COURSE_SELECT_ROW_KEY);
 
-//selectors
+export const receiveSearchCourseAction = createAction(SEARCH_COURSE_REQUEST);
+
+// selectors
 const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
   stateCourseSelector,
@@ -78,24 +84,22 @@ export const getCourseListSelector = createSelector(
       const filterSource = searchByNameData.filter(row => {
         if (state.filtersText === "") {
           return row;
-        } else {
-          if (state.filtersValue === "equals") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key] === state.filtersText) return row;
-            });
-            if (equalKeys.length > 0) return row;
-          } else if (state.filtersValue === "contains" || state.filtersValue === "") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
-            });
-            if (equalKeys.length > 0) return row;
-          }
+        }
+        if (state.filtersValue === "equals") {
+          const equalKeys = possibleFilterKey.filter(key => {
+            if (row[key] === state.filtersText) return row;
+          });
+          if (equalKeys.length > 0) return row;
+        } else if (state.filtersValue === "contains" || state.filtersValue === "") {
+          const equalKeys = possibleFilterKey.filter(key => {
+            if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
+          });
+          if (equalKeys.length > 0) return row;
         }
       });
       return filterSource;
-    } else {
-      return state.data;
     }
+    return state.data;
   }
 );
 
@@ -121,7 +125,9 @@ const initialState = {
   filtersValue: "",
   filtersText: "",
   showActiveCourse: true,
-  selectedRowKeys: []
+  selectedRowKeys: [],
+  searchResult: [],
+  searching: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -149,7 +155,8 @@ export const reducer = createReducer(initialState, {
           ...payload
         };
         return { ...course, ...newData };
-      } else return course;
+      }
+      return course;
     });
 
     (state.update = payload), (state.updating = false), (state.data = courseData);
@@ -179,7 +186,7 @@ export const reducer = createReducer(initialState, {
     state.deleting = false;
     const newData = [...state.data];
     const payloadIds = groupBy(payload, "id");
-    for (let row of newData) {
+    for (const row of newData) {
       if (payloadIds[row._id]) {
         row.active = 0;
       }
@@ -215,6 +222,17 @@ export const reducer = createReducer(initialState, {
   },
   [SET_COURSE_SELECT_ROW_KEY]: (state, { payload }) => {
     state.selectedRowKeys = [...payload];
+  },
+  [SEARCH_COURSE_REQUEST]: state => {
+    state.searching = true;
+  },
+  [SEARCH_COURSE_SUCCESS]: (state, { payload }) => {
+    state.searching = false;
+    state.searchResult = payload;
+  },
+  [SEARCH_COURSE_ERROR]: (state, { payload }) => {
+    state.searching = false;
+    state.error = payload;
   }
 });
 
@@ -283,10 +301,28 @@ function* uploadCourseCSVSaga({ payload }) {
   }
 }
 
+function* receiveSearchCourseSaga({ payload }) {
+  try {
+    const course = yield call(courseApi.searchCourse, payload);
+    yield put({
+      type: SEARCH_COURSE_SUCCESS,
+      payload: course
+    });
+  } catch (error) {
+    const errorMessage = "Receive Course is failing!";
+    yield call(message.error, errorMessage);
+    yield put({
+      type: SEARCH_COURSE_ERROR,
+      payload: error
+    });
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_COURSE_REQUEST, receiveCourseListSaga)]);
   yield all([yield takeEvery(UPDATE_COURSE_REQUEST, updateCourseSaga)]);
   yield all([yield takeEvery(CREATE_COURSE_REQUEST, createCourseSaga)]);
   yield all([yield takeEvery(DEACTIVATE_COURSE_REQUEST, deactivateCourseSaga)]);
   yield all([yield takeEvery(UPLOAD_COURSE_CSV_REQUEST, uploadCourseCSVSaga)]);
+  yield all([yield takeEvery(SEARCH_COURSE_REQUEST, receiveSearchCourseSaga)]);
 }

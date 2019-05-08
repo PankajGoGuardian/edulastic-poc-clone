@@ -18,7 +18,7 @@ const ClassList = ({ groups }) => {
     { title: "Subject" },
     { title: "Tags" },
     { title: "Students" },
-    { title: "Assigments" }
+    { title: "Assignments" }
   ];
 
   return (

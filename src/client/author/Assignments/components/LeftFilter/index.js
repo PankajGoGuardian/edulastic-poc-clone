@@ -187,7 +187,7 @@ class LeftFilter extends React.Component {
             icon={<IconFolderAll />}
             variant="transparent"
           >
-            ALL ASSIGMENTS
+            ALL ASSIGNMENTS
           </FolderButton>
         )}
         {orderBy(folders, ["updatedAt"], ["desc"]).map((folder, index) => {

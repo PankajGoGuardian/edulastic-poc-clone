@@ -26,6 +26,7 @@ class EditTeacherModal extends React.Component {
         title="Edit School Admin"
         onOk={this.onSaveTeacher}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         width="800px"
         footer={[
           <Button key="back" onClick={this.onCloseModal}>

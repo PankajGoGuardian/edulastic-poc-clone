@@ -25,6 +25,7 @@ class EditSchoolModal extends React.Component {
         title={<ModalTtile>Edit School</ModalTtile>}
         onOk={this.onUpdateSchool}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <StyledButton key="submit" onClick={this.onUpdateSchool}>
             Update School >

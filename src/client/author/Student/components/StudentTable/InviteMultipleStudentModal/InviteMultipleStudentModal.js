@@ -46,6 +46,7 @@ class InviteMultipleStudentModal extends React.Component {
         title={"Bulk Add Students"}
         onOk={this.onInviteStudents}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onInviteStudents}>
             Add Students

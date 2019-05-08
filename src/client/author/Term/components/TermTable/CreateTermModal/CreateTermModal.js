@@ -79,6 +79,7 @@ class CreateTermModal extends React.Component {
         title="Create School Year"
         onOk={this.onCreateTerm}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button key="back" onClick={this.onCloseModal}>
             No, Cancel

@@ -112,6 +112,7 @@ class CreateDistrictAdminModal extends React.Component {
         title="Create District Admin"
         onOk={this.onCreateDistrictAdmin}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button key="back" onClick={this.onCloseModal}>
             No, Cancel

@@ -39,6 +39,7 @@ class InviteMultipleTeacherModal extends React.Component {
         title={"Bulk Add Teacher"}
         onOk={this.onInviateTeachers}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onInviateTeachers}>
             Add Teachers

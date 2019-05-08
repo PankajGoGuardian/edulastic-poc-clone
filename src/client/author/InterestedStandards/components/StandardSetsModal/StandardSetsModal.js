@@ -65,6 +65,7 @@ class StandardSetsModal extends React.Component {
         title="My Standard Sets"
         onOk={this.onConfirm}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onConfirm}>
             Confirm

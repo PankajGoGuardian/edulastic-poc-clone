@@ -112,6 +112,7 @@ class AddTeacherModal extends React.Component {
         title="Create Teacher"
         onOk={this.onAddTeacher}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button key="back" onClick={this.onCloseModal}>
             No, Cancel

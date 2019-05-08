@@ -36,6 +36,7 @@ class EditCourseModal extends React.Component {
         title="Edit Course"
         onOk={this.onSaveCourse}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onSaveCourse}>
             Save Course >

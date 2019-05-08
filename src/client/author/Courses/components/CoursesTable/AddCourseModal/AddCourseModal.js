@@ -38,6 +38,7 @@ class AddCourseModal extends React.Component {
         title="Add Course"
         onOk={this.onAddCourse}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onAddCourse}>
             Add Course >

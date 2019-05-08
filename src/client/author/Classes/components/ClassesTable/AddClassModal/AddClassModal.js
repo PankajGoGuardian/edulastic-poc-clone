@@ -53,6 +53,7 @@ class AddClassModal extends React.Component {
         title="Add Class"
         onOk={this.onAddClass}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onAddClass}>
             Add Class >

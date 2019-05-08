@@ -27,6 +27,7 @@ class EditStudentModal extends React.Component {
         onOk={this.onSaveStudent}
         onCancel={this.onCloseModal}
         width="800px"
+        maskClosable={false}
         footer={[
           <Button key="back" onClick={this.onCloseModal}>
             No, Cancel

@@ -88,6 +88,7 @@ class EditTermModal extends React.Component {
         title="Edit School Year"
         onOk={this.onSaveTerm}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <Button key="back" onClick={this.onCloseModal}>
             No, Cancel

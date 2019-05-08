@@ -53,6 +53,7 @@ class CreateSchoolModal extends React.Component {
         title={<ModalTtile>Create New School</ModalTtile>}
         onOk={this.onCreateSchool}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         footer={[
           <StyledButton key="submit" onClick={this.onCreateSchool}>
             Create New School >

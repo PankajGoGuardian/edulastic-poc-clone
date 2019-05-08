@@ -26,6 +26,7 @@ class EditDistrictAdminModal extends React.Component {
         title="Edit District Admin"
         onOk={this.onSaveDistrictAdmin}
         onCancel={this.onCloseModal}
+        maskClosable={false}
         width="800px"
         footer={[
           <Button key="back" onClick={this.onCloseModal}>

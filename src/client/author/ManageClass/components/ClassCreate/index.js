@@ -46,14 +46,15 @@ class ClassCreate extends React.Component {
   };
 
   componentDidMount() {
-    const { curriculums, getCurriculums, loadCourseListData, courseList } = this.props;
+    const { curriculums, getCurriculums, loadCourseListData, courseList, userOrgData } = this.props;
+    const { districtId } = userOrgData;
 
     if (isEmpty(curriculums)) {
       getCurriculums();
     }
 
     if (isEmpty(courseList)) {
-      loadCourseListData({ searchText: "Edulastic" });
+      loadCourseListData({ searchText: "Edulastic", districtId });
     }
   }
 

@@ -69,7 +69,7 @@ function* signup({ payload }) {
       role
     };
     yield call(authApi.signup, obj);
-    yield put(push("/Login"));
+    yield put(push("/login"));
   } catch (err) {
     console.error(err);
     const errorMessage = "Email already exist";
@@ -81,7 +81,7 @@ export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      yield put(push("/Login"));
+      yield put(push("/login"));
       return;
     }
     const user = yield call(userApi.getUser);
@@ -92,7 +92,7 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    yield put(push("/Login"));
+    yield put(push("/login"));
   }
 }
 
@@ -100,7 +100,7 @@ function* logout() {
   try {
     localStorage.clear();
     yield put({ type: "RESET" });
-    yield put(push("/Login"));
+    yield put(push("/login"));
   } catch (e) {
     console.log(e);
   }

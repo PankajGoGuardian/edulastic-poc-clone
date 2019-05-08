@@ -12,10 +12,10 @@ const getSchools = ({ body }) =>
     })
     .then(result => result.data.data);
 
-const updateSchool = ({ body }) =>
+const updateSchool = ({ id, body }) =>
   api
     .callApi({
-      url: `${prefix}/`,
+      url: `${prefix}/${id}`,
       method: "put",
       data: body
     })

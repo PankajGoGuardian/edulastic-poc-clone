@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import SchoolsTable from "../SchoolsTable/SchoolsTable";
@@ -13,13 +14,7 @@ import { receiveSchoolsAction } from "../../ducks";
 
 // selectors
 import { getUserOrgId } from "../../../src/selectors/user";
-import {
-  getSchoolsSelector,
-  getSchoolsLoadingSelector,
-  getSchoolUpdatingSelector,
-  getSchoolCreatingSelector,
-  getSchoolDeletingSelector
-} from "../../ducks";
+import { getSchoolsSelector } from "../../ducks";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "Schools", subMenu: "" };
@@ -61,10 +56,10 @@ const enhance = compose(
     state => ({
       schoolsData: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
-      loading: getSchoolsLoadingSelector(state),
-      updating: getSchoolUpdatingSelector(state),
-      creating: getSchoolCreatingSelector(state),
-      deleting: getSchoolDeletingSelector(state)
+      loading: get(state, ["schoolsReducer", "loading"], false),
+      updating: get(state, ["schoolsReducer", "updating"], false),
+      creating: get(state, ["schoolsReducer", "creating"], false),
+      deleting: get(state, ["schoolsReducer", "deleting"], false)
     }),
     {
       loadSchoolsData: receiveSchoolsAction

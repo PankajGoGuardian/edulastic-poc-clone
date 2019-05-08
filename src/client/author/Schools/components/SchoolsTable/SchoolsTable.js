@@ -50,7 +50,7 @@ class SchoolsTable extends React.Component {
       selectedRowKeys: [],
       createSchoolModalVisible: false,
       editSchoolModaVisible: false,
-      editSchoolKey: -1,
+      editSchoolKey: "",
       filtersColumn: "",
       filtersValue: "",
       filterStr: "",
@@ -126,7 +126,7 @@ class SchoolsTable extends React.Component {
     if (nextProps.created._id !== prevState.created._id) {
       const { dataSource } = prevState;
       const newSchool = {
-        key: dataSource.length,
+        key: nextProps.create._id,
         ...nextProps.created
       };
       return {
@@ -138,8 +138,8 @@ class SchoolsTable extends React.Component {
 
   initialDataSrouce = data => {
     const dataSource = [];
-    data.map((row, index) => {
-      row.key = index;
+    data.map(row => {
+      row.key = row._id;
       row.name = row.name;
       row.city = row.hasOwnProperty("city") && row.city != null ? row.city : "";
       row.state = row.hasOwnProperty("state") && row.state != null ? row.state : "";
@@ -331,7 +331,7 @@ class SchoolsTable extends React.Component {
       }
     };
     const { updateSchool } = this.props;
-    updateSchool({ body: updateData });
+    updateSchool({ id: newData[index]._id, body: updateData });
   };
 
   closeEditSchoolModal = () => {
@@ -438,7 +438,7 @@ class SchoolsTable extends React.Component {
             onChange: this.cancel
           }}
         />
-        {editSchoolModaVisible && editSchoolKey >= 0 && (
+        {editSchoolModaVisible && editSchoolKey !== "" && (
           <EditSchoolModal
             schoolData={editSchoolData[0]}
             modalVisible={editSchoolModaVisible}

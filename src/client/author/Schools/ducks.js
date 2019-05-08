@@ -37,29 +37,9 @@ export const getSchoolsSelector = createSelector(
   state => state.data
 );
 
-export const getSchoolsLoadingSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.loading
-);
-
-export const getSchoolUpdatingSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.updating
-);
-
 export const getCreatedSchoolSelector = createSelector(
   stateSchoolsSelector,
   state => state.create
-);
-
-export const getSchoolCreatingSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.creating
-);
-
-export const getSchoolDeletingSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.deleting
 );
 
 // reducers

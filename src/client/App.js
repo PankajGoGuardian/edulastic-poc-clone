@@ -23,7 +23,7 @@ const AssessmentPlayer = lazy(() => import(/* webpackChunkName: "assessmentPlaye
 const TeacherSignup = lazy(() =>
   import(/* webpackChunkName: "teacherSignup" */ "./student/Signup/components/TeacherContainer")
 );
-const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login/components"));
+const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "./Auth"));
 const GetStarted = lazy(() =>
   import(/* webpackChunkName: "getStarted" */ "./student/Signup/components/GetStartedContainer")
 );
@@ -98,7 +98,7 @@ class App extends Component {
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else {
-        defaultRoute = "/Login";
+        defaultRoute = "/login";
       }
     }
 
@@ -114,7 +114,7 @@ class App extends Component {
             <Route path="/admin" component={Admin} />
 
             <Route path="/Signup" component={TeacherSignup} />
-            <Route path="/Login" component={Login} />
+            <Route path="/login" component={Auth} />
             <Route path="/GetStarted" component={GetStarted} />
             <Route path="/AdminSignup" component={AdminSignup} />
             <Route path="/StudentSignup" component={StudentSignup} />

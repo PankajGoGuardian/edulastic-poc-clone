@@ -15,6 +15,7 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
       onChange("specificStudents", false);
     }
   };
+
   return (
     <React.Fragment>
       <StyledRadioGropRow gutter={16}>
@@ -39,6 +40,7 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
                 style={{ width: "100%" }}
                 mode="multiple"
                 onChange={updateStudents}
+                filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 value={studentNames}
               >
                 {students.map(({ _id, firstName, lastName }) => (

@@ -9,6 +9,7 @@ import { connect } from "react-redux";
 import { Button, Icon, Input } from "antd";
 import "react-quill/dist/quill.snow.css";
 import { withTheme } from "styled-components";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
@@ -94,7 +95,7 @@ class TemplateMarkup extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index] = e.target.value;
+        draft.options[index].label = e.target.value;
         updateVariables(draft);
       })
     );
@@ -194,9 +195,8 @@ class TemplateMarkup extends Component {
 
   addNewGroupOption = index => {
     const { groupResponses } = this.state;
-    const { t } = this.props;
     const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options.push(t("component.cloze.dragDrop.newChoice"));
+    newGroupResponses[index].options.push({ value: uuid(), label: "" });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -208,8 +208,9 @@ class TemplateMarkup extends Component {
 
   editGroupOptions = (index, itemIndex, e) => {
     const { groupResponses } = this.state;
+
     const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options[itemIndex] = e.target.value;
+    newGroupResponses[index].options[itemIndex].label = e.target.value;
     this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
@@ -266,7 +267,7 @@ class TemplateMarkup extends Component {
           <PaddingDiv>
             <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
             <SortableList
-              items={item.options}
+              items={item.options.map(option => option.label)}
               dirty={!!item.templateMarkUp}
               onSortEnd={this.onSortEnd}
               useDragHandle
@@ -316,7 +317,7 @@ class TemplateMarkup extends Component {
                   <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
                   <SortableList
                     dirty={!!item.templateMarkUp}
-                    items={group.options}
+                    items={group.options.map(option => option.label)}
                     onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
                     useDragHandle
                     onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}

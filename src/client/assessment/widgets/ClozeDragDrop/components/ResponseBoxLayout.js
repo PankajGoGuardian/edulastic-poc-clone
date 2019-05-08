@@ -45,13 +45,13 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                       }}
                     >
                       {!dragHandler && (
-                        <Draggable onDrop={onDrop} data={`${option}_${index}`}>
-                          <div dangerouslySetInnerHTML={{ __html: option || "" }} />
+                        <Draggable onDrop={onDrop} data={`${option.value}_${index}`}>
+                          <div dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                         </Draggable>
                       )}
                       {dragHandler && (
                         <React.Fragment>
-                          <Draggable onDrop={onDrop} data={`${option}_${index}`}>
+                          <Draggable onDrop={onDrop} data={`${option.value}_${index}`}>
                             <i
                               className="fa fa-arrows-alt"
                               style={{
@@ -59,7 +59,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                               }}
                             />
 
-                            <span dangerouslySetInnerHTML={{ __html: option || "" }} />
+                            <span dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                           </Draggable>
                         </React.Fragment>
                       )}
@@ -74,7 +74,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
         responses.map((option, index) => (
           <div
             id={`response-item-${index}`}
-            key={index}
+            key={option.value}
             className="draggable_box"
             style={{
               fontSize: smallSize ? theme.widgets.clozeDragDrop.draggableBoxSmallFontSize : fontSize,
@@ -84,20 +84,20 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
             }}
           >
             {!dragHandler && (
-              <Draggable onDrop={onDrop} data={option}>
-                <div dangerouslySetInnerHTML={{ __html: option || "" }} />
+              <Draggable onDrop={onDrop} data={option.value}>
+                <div dangerouslySetInnerHTML={{ __html: option.label || "" }} />
               </Draggable>
             )}
             {dragHandler && (
               <React.Fragment>
-                <Draggable onDrop={onDrop} data={option}>
+                <Draggable onDrop={onDrop} data={option.value}>
                   <i
                     className="fa fa-arrows-alt"
                     style={{
                       fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
                     }}
                   />
-                  <span dangerouslySetInnerHTML={{ __html: option || "" }} />
+                  <span dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                 </Draggable>
               </React.Fragment>
             )}

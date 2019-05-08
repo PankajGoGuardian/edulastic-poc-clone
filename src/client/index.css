@@ -489,7 +489,6 @@ input[type="checkbox"] {
   align-items: center;
   margin: 3px 8px;
   border-radius: 5px;
-  text-transform: uppercase;
 }
 
 .draggable_box_transparent {

@@ -13,6 +13,7 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
+import _ from "lodash";
 
 class CorrectAnswers extends Component {
   constructor(props) {
@@ -29,6 +30,20 @@ class CorrectAnswers extends Component {
 
     fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
   };
+
+  componentDidUpdate(prevProps) {
+    if (!_.isEqual(this.props.options, prevProps.options)) {
+      const oldValue = this.props.validation.valid_response.value;
+      const diff = _.difference(prevProps.options, this.props.options);
+      if (oldValue.some(el => diff.includes(el))) {
+        const index = prevProps.options.indexOf(diff[0]);
+        const valueIndex = oldValue.indexOf(diff[0]);
+        const newAnswers = _.cloneDeep(oldValue);
+        newAnswers[valueIndex] = this.props.options[index];
+        this.updateCorrectValidationAnswers(newAnswers);
+      }
+    }
+  }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;

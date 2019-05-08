@@ -74,6 +74,8 @@ export const getCards = onSelectQuestionType => {
   // use it for ids of MCQ
   const uuids = [uuid(), uuid(), uuid()];
 
+  const uuidsForFill = [uuid(), uuid(), uuid()];
+
   return [
     {
       type: "charts",
@@ -969,7 +971,11 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drag & Drop",
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "",
-        options: ["WHISPERED", "HOLMES", "INTRUDER"],
+        options: [
+          { value: uuidsForFill[0], label: "WHISPERED" },
+          { value: uuidsForFill[1], label: "HOLMES" },
+          { value: uuidsForFill[2], label: "INTRUDER" }
+        ],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

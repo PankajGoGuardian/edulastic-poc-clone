@@ -2,6 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
+import uuid from "uuid/v4";
 
 import { InstructorStimulus, WithMathFormula } from "@edulastic/common";
 
@@ -67,7 +68,7 @@ class ClozeDragDropDisplay extends Component {
 
   onDrop = (data, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
-    const { onChange: changeAnswers, hasGroupResponses, userSelections, configureOptions } = this.props;
+    const { onChange: changeAnswers, hasGroupResponses, userSelections, configureOptions, options } = this.props;
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const newResponses = cloneDeep(possibleResponses);
 
@@ -84,9 +85,12 @@ class ClozeDragDropDisplay extends Component {
           newAnswers[index] = temp;
         } else {
           for (let i = 0; i < newResponses[groupIndex].options.length; i++) {
-            if (newResponses[groupIndex].options[i] === groupData) {
+            if (newResponses[groupIndex].options[i].value === groupData) {
               if (userSelections && userSelections[index] !== null && typeof userSelections[index] === "object") {
-                newResponses[userSelections[index].group].options.push(userSelections[index].data);
+                newResponses[userSelections[index].group].options.push({
+                  value: uuid(),
+                  label: userSelections[index].data
+                });
               }
               newResponses[groupIndex].options.splice(i, 1);
               break;
@@ -106,9 +110,9 @@ class ClozeDragDropDisplay extends Component {
           newAnswers[sourceIndex] = newAnswers[index];
           newAnswers[index] = temp;
         } else {
-          newAnswers[index] = sourceData;
+          newAnswers[index] = options.find(option => option.value === sourceData).value;
           for (let i = 0; i < newResponses.length; i++) {
-            if (newResponses[i] === sourceData) {
+            if (newResponses[i].value === sourceData) {
               newResponses.splice(i, 1);
               break;
             }
@@ -139,8 +143,10 @@ class ClozeDragDropDisplay extends Component {
         newAnswers[sourceIndex] = newAnswers[index];
         newAnswers[index] = temp;
       }
-      newAnswers[index] = value;
+      newAnswers[index] = options.find(option => option.value === value).value;
+      newResponses.splice(newResponses.indexOf(resp => resp.value === value), 1);
     }
+
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
   };
@@ -166,12 +172,13 @@ class ClozeDragDropDisplay extends Component {
 
     let possibleResps = [];
     possibleResps = cloneDeep(options);
+
     if (!isDuplicated) {
       if (hasGroupResponses) {
         userSelections.forEach(userSelection => {
           if (userSelection !== null && typeof userSelection === "object") {
             for (let i = 0; i < possibleResps[userSelection.group].options.length; i++) {
-              if (possibleResps[userSelection.group].options[i] === userSelection.data) {
+              if (possibleResps[userSelection.group].options[i].value === userSelection.data) {
                 possibleResps[userSelection.group].options.splice(i, 1);
                 break;
               }
@@ -181,7 +188,7 @@ class ClozeDragDropDisplay extends Component {
       } else {
         for (let j = 0; j < userSelections.length; j++) {
           for (let i = 0; i < possibleResps.length; i++) {
-            if (possibleResps[i] === userSelections[j]) {
+            if (possibleResps[i].value === userSelections[j]) {
               possibleResps.splice(i, 1);
               break;
             }
@@ -190,6 +197,34 @@ class ClozeDragDropDisplay extends Component {
       }
     }
     return possibleResps;
+  };
+
+  getLabel = dropTargetIndex => {
+    const { options } = this.props;
+    const { userAnswers } = this.state;
+    if (userAnswers[dropTargetIndex]) {
+      const foundedItem = options.find(option => option.value === userAnswers[dropTargetIndex]);
+      if (foundedItem) {
+        return foundedItem.label;
+      }
+    }
+  };
+
+  getLabelForGroup = dropTargetIndex => {
+    const { options } = this.props;
+    const { userAnswers } = this.state;
+
+    if (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data) {
+      const foundedGroup = options.find(option =>
+        option.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data)
+      );
+      if (foundedGroup) {
+        const foundItem = foundedGroup.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data);
+        if (foundItem) {
+          return foundItem.label;
+        }
+      }
+    }
   };
 
   render() {
@@ -208,10 +243,13 @@ class ClozeDragDropDisplay extends Component {
       item,
       theme
     } = this.props;
+
     const { templateParts, userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
+
     let responseIndex = 0;
     let responses = cloneDeep(possibleResponses);
+
     if (preview && shuffleOptions) {
       if (hasGroupResponses) {
         responses = this.shuffleGroup(possibleResponses);
@@ -240,6 +278,7 @@ class ClozeDragDropDisplay extends Component {
         {templateParts.map((templatePart, index) => {
           if (templatePart.indexOf('class="response-btn"') !== -1) {
             const dropTargetIndex = responseIndex;
+
             responseIndex++;
             const btnStyle = {
               width: 0,
@@ -284,9 +323,13 @@ class ClozeDragDropDisplay extends Component {
                     <Draggable
                       className="content"
                       onDrop={this.onDrop}
-                      data={`${userAnswers[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
+                      data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
                     >
-                      <div dangerouslySetInnerHTML={{ __html: userAnswers[dropTargetIndex] || "" }} />
+                      <div
+                        dangerouslySetInnerHTML={{
+                          __html: this.getLabel(dropTargetIndex) || ""
+                        }}
+                      />
                     </Draggable>
                     &nbsp;
                   </ResponseContainer>
@@ -296,13 +339,12 @@ class ClozeDragDropDisplay extends Component {
                     <Draggable
                       className="content"
                       onDrop={this.onDrop}
-                      data={`${userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data}_${userAnswers[
-                        dropTargetIndex
-                      ] && userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                      data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
+                        userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
                     >
                       <div
                         dangerouslySetInnerHTML={{
-                          __html: (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data) || ""
+                          __html: this.getLabelForGroup(dropTargetIndex) || ""
                         }}
                       />
                     </Draggable>

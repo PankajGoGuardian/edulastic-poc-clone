@@ -23,9 +23,9 @@ import Options from "./components/Options";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
 
-const EmptyWrapper = styled.div``;
-
 import { ContentArea } from "../../styled/ContentArea";
+
+const EmptyWrapper = styled.div``;
 
 class ClozeDragDrop extends Component {
   getRenderData = () => {
@@ -115,6 +115,7 @@ class ClozeDragDrop extends Component {
       t,
       testItem,
       evaluation,
+      // eslint-disable-next-line no-unused-vars
       theme,
       fillSections,
       cleanSections

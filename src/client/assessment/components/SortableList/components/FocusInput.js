@@ -27,7 +27,7 @@ class FocusInput extends Component {
   }
 
   onFocus(evt) {
-    const { dirty } = this.state;
+    const { dirty, value } = this.state;
     const { onChange, onFocus } = this.props;
     if (!dirty) {
       this.setState({

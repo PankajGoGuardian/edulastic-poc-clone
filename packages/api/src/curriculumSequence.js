@@ -26,12 +26,14 @@ const updateCurriculumSequence = (id, curriculumSequence) => {
   return api.callApi(options).then(res => res.data.result);
 };
 
-const searchCurriculumSequences = ({ publisher, type = "guide" }) => {
+const searchCurriculumSequences = ({ search, limit, page }) => {
   const options = {
     method: "post",
     url: "/curriculum-sequence/search/",
     data: {
-      search: { publisher, type }
+      page,
+      limit,
+      search
     }
   };
 

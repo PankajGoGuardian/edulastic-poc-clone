@@ -48,8 +48,12 @@ class Item extends Component {
   };
 
   moveToItem = () => {
-    const { history, item } = this.props;
-    history.push(`/author/tests/${item._id}`);
+    const { history, item, isPlaylist } = this.props;
+    if (isPlaylist) {
+      history.push(`/author/playlists/${item._id}`);
+    } else {
+      history.push(`/author/tests/${item._id}`);
+    }
   };
 
   duplicate = async () => {
@@ -80,19 +84,38 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags, analytics },
+      item: { title, tags, analytics, _source, _id },
       item,
       authorName,
       owner,
+      isPlaylist,
       testItemId,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
-
+    let csTags = new Set();
+    if (_source) {
+      _source.modules &&
+        _source.modules.forEach(mod => {
+          mod.data &&
+            mod.data.forEach(o => {
+              if (o.standards) {
+                csTags.add(o.standards);
+              }
+            });
+        });
+    }
+    csTags = Array.from(csTags);
     return (
       <>
-        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} assign={this.assignTest} />
+        <ViewModal
+          isShow={isOpenModal}
+          close={this.closeModal}
+          item={item}
+          assign={this.assignTest}
+          isPlaylist={isPlaylist}
+        />
         <Container
           title={
             <Header>
@@ -114,16 +137,17 @@ class Item extends Component {
           <Inner>
             <Question>
               <StyledLink title={title} onClick={this.moveToItem}>
-                {title}
+                {isPlaylist ? _source.publisher : title}
               </StyledLink>
             </Question>
-            <CardDescription>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin congue metus ut pulvinar. Sed
-              in nunc sollicitudin, sodales odio non, lobortis tellus
+            <CardDescription onClick={isPlaylist ? this.moveToItem : ""}>
+              {isPlaylist
+                ? item._source.description
+                : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin congue metus ut pulvinar. Sed in nunc sollicitudin, sodales odio non, lobortis tellus"}
             </CardDescription>
-            <Tags tags={tags} />
+            <Tags tags={isPlaylist ? csTags : tags} />
           </Inner>
-          <ViewButton onClick={this.openModal}>VIEW</ViewButton>
+          {!isPlaylist && <ViewButton onClick={this.openModal}>VIEW</ViewButton>}
           <Footer>
             {authorName && (
               <Author>

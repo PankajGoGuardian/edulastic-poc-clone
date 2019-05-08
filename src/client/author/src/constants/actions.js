@@ -216,3 +216,7 @@ export const RENAME_FOLDER_SUCCESS = "[folder] rename folder success";
 export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
 
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
+
+//playlist
+export const UPDATE_PLAYLISTS_SUCCESS = "[playlists] update success";
+export const CREATE_PLAYLISTS_SUCCESS = "[playlists] create success";

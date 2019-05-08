@@ -44,6 +44,7 @@ const SchoolAdmin = lazy(() => import("../SchoolAdmin"));
 const Courses = lazy(() => import("../Courses"));
 const Classes = lazy(() => import("../Classes"));
 const InterestedStandards = lazy(() => import("../InterestedStandards"));
+const PlayList = lazy(() => import("../Playlist"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -90,7 +91,62 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/items/filter/:filterType`} component={ItemList} />
               <Route exact path={`${match.url}/items/:id/item-detail`} component={ItemDetail} />
               <Route exact path={`${match.url}/items/:id/item-detail/test/:testId`} component={ItemDetail} />
-              <Route exact path="/author/playlist" component={CurriculumContainer} />
+              <Route
+                exact
+                path={`${match.url}/playlists`}
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlayList {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route exact path={`${match.url}/playlists/view`} component={CurriculumContainer} />
+              <Route
+                exact
+                path={`${match.url}/playlists/filter/:filterType`}
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlayList {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exacts
+                path="/author/playlists/create"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlayList {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/playlists/:id"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <CurriculumContainer {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/playlists/:id/editAssigned"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlayList {...props} editAssigned />
+                  </Suspense>
+                )}
+              />
+
+              <Route
+                exact
+                path="/author/playlists/limit/:limit/page/:page/:filter?"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlayList {...props} />
+                  </Suspense>
+                )}
+              />
               <Route exact path="/author/add-item" component={ItemAdd} />
               <Route
                 exact

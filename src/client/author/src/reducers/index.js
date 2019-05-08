@@ -45,6 +45,7 @@ import { coursesReducer } from "../../Courses";
 import { classesReducer } from "../../Classes";
 import folder from "./folder";
 import { interestedStandardsReducer } from "../../InterestedStandards";
+import { playlist } from "../../Playlist";
 
 const authorReducers = {
   authorUi,
@@ -93,6 +94,7 @@ const authorReducers = {
   coursesReducer,
   classesReducer,
   folder,
+  playlist,
   interestedStandardsReducer
 };
 

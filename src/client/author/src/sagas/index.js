@@ -36,6 +36,7 @@ import { coursesSaga } from "../../Courses";
 import { classesSaga } from "../../Classes";
 import folderSaga from "./folder";
 import { interestedStandardsSaga } from "../../InterestedStandards";
+import { playlistSaga } from "../../Playlist";
 
 const authorSagas = [
   itemsSaga(),
@@ -75,6 +76,7 @@ const authorSagas = [
   coursesSaga(),
   classesSaga(),
   folderSaga(),
+  playlistSaga(),
   interestedStandardsSaga()
 ];
 

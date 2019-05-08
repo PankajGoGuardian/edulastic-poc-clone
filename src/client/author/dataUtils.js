@@ -17,3 +17,12 @@ export const getTestItemAuthorName = item => {
   }
   return authors[0].name;
 };
+
+export const getPlaylistAuthorName = item => {
+  const {
+    _source: {
+      createdBy: { firstName, lastName }
+    }
+  } = item;
+  return `${firstName} ${lastName}`;
+};

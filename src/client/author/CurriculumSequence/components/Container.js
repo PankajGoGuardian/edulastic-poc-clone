@@ -85,8 +85,11 @@ class CurriculumContainer extends Component {
     // default curriculumSequences for the user(and grade)
     // What we would need is an API to set it on the user and get it with the user object
     // Also - only 6ath grade has both content and guides mapped to testIds
-    const { getAllCurriculumSequences } = this.props;
-    getAllCurriculumSequences(["5ca5ff6d323a535eb1f4fbd3", "5ca529138bd1f8b64c49aa46"]);
+
+    const { match, getAllCurriculumSequences } = this.props;
+    if (match.params.id) {
+      getAllCurriculumSequences([match.params.id]);
+    }
   }
 
   /** @param {String} publisher */

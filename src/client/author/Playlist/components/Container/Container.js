@@ -25,28 +25,24 @@ import {
   PaginationWrapper,
   AffixWrapper,
   StyleChangeWrapper
-} from "./styled";
+} from "../../../TestList/components/Container/styled";
 
-import CardWrapper from "../CardWrapper/CardWrapper";
+import CardWrapper from "../../../TestList/components/CardWrapper/CardWrapper";
 import {
-  receiveTestsAction,
-  getTestsSelector,
-  getTestsLoadingSelector,
-  getTestsCountSelector,
-  getTestsLimitSelector,
-  getTestsPageSelector
+  receivePlaylistsAction,
+  getPlaylistsSelector,
+  getPlaylistsLoadingSelector,
+  getPlaylistsCountSelector,
+  getPlaylistsLimitSelector,
+  getPlaylistsPageSelector
 } from "../../ducks";
+
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
-import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
-import {
-  clearDictStandardsAction,
-  getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction
-} from "../../../src/actions/dictionaries";
 
 import ListHeader from "../../../src/components/common/ListHeader";
-import TestListFilters from "./TestListFilters";
+// import { CompositeDisposable } from "rx-core";
+import TestListFilters from "../../../TestList/components/Container/TestListFilters";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -58,22 +54,18 @@ const filterMenuItems = [
 ];
 
 export const getClearSearchState = () => ({
-  subject: "",
-  questionType: "",
-  depthOfKnowledge: "",
-  authorDifficulty: "",
-  curriculumId: "",
   grades: [],
-  standardIds: [],
-  tags: [],
+  subject: "",
   filter: filterMenuItems[0].filter,
-  searchString: ""
+  searchString: "",
+  type: "",
+  publisher: ""
 });
 
 class TestList extends Component {
   static propTypes = {
     tests: PropTypes.array.isRequired,
-    receiveTests: PropTypes.func.isRequired,
+    receivePlaylists: PropTypes.func.isRequired,
     creating: PropTypes.bool.isRequired,
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -91,8 +83,6 @@ class TestList extends Component {
         subject: PropTypes.string.isRequired
       })
     ).isRequired,
-    getCurriculums: PropTypes.func.isRequired,
-    getCurriculumStandards: PropTypes.func.isRequired,
     clearDictStandards: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
@@ -113,20 +103,17 @@ class TestList extends Component {
 
   componentDidMount() {
     const {
-      receiveTests,
-      curriculums,
-      getCurriculums,
+      receivePlaylists,
       limit,
       location,
       match: { params = {} }
     } = this.props;
+
     const { search } = this.state;
     const parsedQueryData = qs.parse(location.search);
-    if (!curriculums.length) {
-      getCurriculums();
-    }
     const { filterType } = params;
     if (filterType) {
+      console.log("filter", filterType);
       const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
       this.setState(prevState => ({
@@ -135,7 +122,7 @@ class TestList extends Component {
           filter
         }
       }));
-      receiveTests({
+      receivePlaylists({
         page: 1,
         limit,
         search: {
@@ -146,21 +133,20 @@ class TestList extends Component {
     } else if (Object.entries(parsedQueryData).length > 0) {
       this.setFilterParams(parsedQueryData, params);
     } else if (params.page && params.limit) {
-      receiveTests({
+      receivePlaylists({
         page: Number(params.page),
         limit: Number(params.limit),
         search
       });
     } else {
-      receiveTests({ page: 1, limit, search });
+      receivePlaylists({ page: 1, limit, search });
     }
   }
 
   searchTest = debounce(() => {
-    const { receiveTests, limit } = this.props;
+    const { receivePlaylists, limit } = this.props;
     const { search } = this.state;
-
-    receiveTests({
+    receivePlaylists({
       page: 1,
       limit,
       search
@@ -184,63 +170,40 @@ class TestList extends Component {
     );
   };
 
-  handleStandardSearch = searchStr => {
-    const { getCurriculumStandards } = this.props;
-    this.setState({ standardQuery: searchStr });
-    const {
-      search: { grades, curriculumId }
-    } = this.state;
-    if (curriculumId && searchStr.length >= 2) {
-      getCurriculumStandards(curriculumId, grades, searchStr);
-    }
-  };
-
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page } = this.props;
+    const { receivePlaylists, history, limit, page } = this.props;
     let updatedKeys = {};
-    if (name === "curriculumId" && !value.length) {
-      clearDictStandards();
-    }
-    if (name === "subject") {
-      updatedKeys = {
-        ...search,
-        [name]: value,
-        curriculumId: ""
-      };
-      clearDictStandards();
-    } else {
-      updatedKeys = {
-        ...search,
-        [name]: value
-      };
-    }
+
+    updatedKeys = {
+      ...search,
+      [name]: value
+    };
     this.setState(
       {
         search: updatedKeys
       },
       () => {
         const { search: updatedSearch } = this.state;
-        receiveTests({ search: updatedSearch, page: 1, limit });
-
-        history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+        receivePlaylists({ search: updatedSearch, page: 1, limit });
+        history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
       }
     );
   };
 
   handleCreate = () => {
     const { history, clearSelectedItems, clearTestData } = this.props;
-    history.push("/author/tests/create");
+    history.push("/author/playlists/create");
     clearTestData();
     clearSelectedItems();
   };
 
   handlePaginationChange = page => {
-    const { receiveTests, limit, history } = this.props;
+    const { receivePlaylists, limit, history } = this.props;
     const { search } = this.state;
 
-    receiveTests({ page, limit, search });
-    history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+    receivePlaylists({ page, limit, search });
+    history.push(`/author/playlists/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
   };
 
   handleStyleChange = blockStyle => {
@@ -258,10 +221,10 @@ class TestList extends Component {
   };
 
   resetFilter = () => {
-    const { receiveTests, limit, history } = this.props;
+    const { receivePlaylists, limit, history } = this.props;
     const { search } = this.state;
-    receiveTests({ page: 1, limit, search });
-    history.push(`/author/tests`);
+    receivePlaylists({ page: 1, limit, search });
+    history.push(`/author/playlists`);
   };
 
   handleClearFilter = () => {
@@ -292,8 +255,7 @@ class TestList extends Component {
 
   setFilterParams(parsedQueryData) {
     const {
-      getCurriculumStandards,
-      receiveTests,
+      receivePlaylists,
       match: { params = {} }
     } = this.props;
     const { search } = this.state;
@@ -313,13 +275,11 @@ class TestList extends Component {
       },
       () => {
         const {
-          search: { curriculumId, grade },
+          search: { grade },
           search: updatedSearch
         } = this.state;
-        if (curriculumId.length && parsedQueryData.standardQuery.length >= 2) {
-          getCurriculumStandards(curriculumId, grade, parsedQueryData.standardQuery);
-        }
-        receiveTests({
+
+        receivePlaylists({
           page: Number(params.page),
           limit: Number(params.limit),
           search: updatedSearch
@@ -331,40 +291,23 @@ class TestList extends Component {
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId } = this.props;
+    const { loading, windowWidth, history, match, playlist } = this.props;
     const { blockStyle } = this.state;
-
     if (loading) {
       return <Spin size="large" />;
     }
-
-    if (blockStyle === "tile") {
-      return (
-        <Row gutter={24} type="flex">
-          {tests.map((item, index) => (
-            <CardWrapper
-              item={item}
-              key={index}
-              owner={item.authors.find(x => x._id === userId)}
-              blockStyle="tile"
-              windowWidth={windowWidth}
-              history={history}
-              match={match}
-            />
-          ))}
-        </Row>
-      );
-    }
-
     return (
-      <Row>
-        {tests.map((item, index) => (
+      <Row gutter={24} type="flex">
+        {playlist.map((item, index) => (
           <CardWrapper
-            key={index}
-            owner={item.authors.find(x => x._id === userId)}
             item={item}
+            key={0}
+            // owner={item.authors.find(x => x._id === userId)}
+            blockStyle={blockStyle === "tile" ? blockStyle : ""}
+            windowWidth={windowWidth}
             history={history}
             match={match}
+            isPlaylist={true}
           />
         ))}
       </Row>
@@ -375,16 +318,16 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receiveTests, limit } = this.props;
+    const { history, receivePlaylists, limit } = this.props;
     const { search } = this.state;
-    history.push(`/author/tests/filter/${filterType}`);
+    history.push(`/author/playlists/filter/${filterType}`);
     this.setState(prevState => ({
       search: {
         ...prevState.search,
         filter
       }
     }));
-    receiveTests({
+    receivePlaylists({
       page: 1,
       limit,
       search: {
@@ -406,8 +349,8 @@ class TestList extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           creating={creating}
-          title="Test Library"
-          btnTitle="New Assessment"
+          title="Play List Library"
+          btnTitle="New Playlist"
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile
@@ -442,6 +385,7 @@ class TestList extends Component {
           <Modal open={isShowFilter} onClose={this.closeSearchModal}>
             <SearchModalContainer>
               <TestListFilters
+                isPlaylist={true}
                 search={search}
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
@@ -465,6 +409,7 @@ class TestList extends Component {
                         value={searchString}
                       />
                       <TestListFilters
+                        isPlaylist={true}
                         search={search}
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
@@ -507,22 +452,17 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      tests: getTestsSelector(state),
-      loading: getTestsLoadingSelector(state),
-      page: getTestsPageSelector(state),
-      limit: getTestsLimitSelector(state),
-      count: getTestsCountSelector(state),
+      playlist: getPlaylistsSelector(state),
+      loading: getPlaylistsLoadingSelector(state),
+      page: getPlaylistsPageSelector(state),
+      limit: getPlaylistsLimitSelector(state),
+      count: getPlaylistsCountSelector(state),
       creating: getTestsCreatingSelector(state),
-      curriculums: getCurriculumsListSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),
     {
-      getCurriculums: getDictCurriculumsAction,
-      getCurriculumStandards: getDictStandardsForCurriculumAction,
-      receiveTests: receiveTestsAction,
-      clearDictStandards: clearDictStandardsAction,
-      clearSelectedItems: clearSelectedItemsAction,
+      receivePlaylists: receivePlaylistsAction,
       clearTestData: clearTestDataAction
     }
   )

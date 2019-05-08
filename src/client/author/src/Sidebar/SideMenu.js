@@ -33,9 +33,9 @@ const menuItems = [
     icon: IconClockDashboard
   },
   {
-    label: "PlayList",
+    label: "PlayList Library",
     icon: IconCurriculumSequence,
-    path: "author/playlist"
+    path: "author/playlists"
   },
   {
     label: "Assignments",

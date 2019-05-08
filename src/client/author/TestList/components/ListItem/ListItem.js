@@ -77,20 +77,40 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics, tags },
+      item: { title, analytics, tags, _source },
       item,
       authorName,
       owner = false,
       testItemId,
+      isPlaylist,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
+    let csTags = new Set();
+    if (_source) {
+      _source.modules &&
+        _source.modules.forEach(mod => {
+          mod.data &&
+            mod.data.forEach(o => {
+              if (o.standards) {
+                csTags.add(o.standards);
+              }
+            });
+        });
+    }
+    csTags = Array.from(csTags);
 
     return (
       <>
-        <ViewModal isShow={isOpenModal} close={this.closeModal} item={item} assign={this.assignTest} />
-        <Container>
+        <ViewModal
+          isShow={isOpenModal}
+          close={this.closeModal}
+          item={item}
+          assign={this.assignTest}
+          isPlaylist={isPlaylist}
+        />
+        <Container onClick={isPlaylist ? this.moveToItem : ""}>
           <ContentWrapper>
             <Col span={18}>
               <ListCard
@@ -114,25 +134,27 @@ class ListItem extends Component {
               <Inner>
                 <div>
                   <StyledLink title={title} onClick={this.moveToItem}>
-                    {title}
+                    {isPlaylist ? _source.publisher : title}
                   </StyledLink>
                 </div>
-                <Description>
-                  {
-                    "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."
-                  }
+                <Description onClick={isPlaylist ? this.moveToItem : ""}>
+                  {isPlaylist
+                    ? _source.description
+                    : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."}
                 </Description>
               </Inner>
             </Col>
 
-            <ViewButtonWrapper span={6}>
-              <TypeContainer />
-              <ViewButton onClick={this.openModal}>VIEW</ViewButton>
-            </ViewButtonWrapper>
+            {!isPlaylist && (
+              <ViewButtonWrapper span={6}>
+                <TypeContainer />
+                <ViewButton onClick={this.openModal}>VIEW</ViewButton>
+              </ViewButtonWrapper>
+            )}
 
             <Footer span={24}>
               <TagsWrapper span={12}>
-                <Tags tags={tags} />
+                <Tags tags={isPlaylist ? csTags : tags} />
               </TagsWrapper>
 
               <ItemInformation span={12}>

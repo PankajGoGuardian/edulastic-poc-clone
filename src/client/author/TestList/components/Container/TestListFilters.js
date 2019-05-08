@@ -10,6 +10,7 @@ import TestFiltersNav from "../../../src/components/common/TestFilters/TestFilte
 import filterData from "./FilterData";
 
 const TestListFilters = ({
+  isPlaylist,
   onChange,
   search,
   clearFilter,
@@ -21,6 +22,21 @@ const TestListFilters = ({
   filterMenuItems
 }) => {
   const getFilters = () => {
+    if (isPlaylist) {
+      const filterTitles = ["Grades", "Subject"];
+      const filterData1 = filterData.filter(o => filterTitles.includes(o.title));
+      return [
+        ...filterData1,
+        {
+          title: "Collections",
+          size: "large",
+          data: [],
+          mode: "multiple",
+          onChange: "publisher"
+        }
+      ];
+    }
+
     const { curriculumId } = search;
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,

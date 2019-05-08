@@ -24,6 +24,7 @@ import { IndexBox } from "./styled/IndexBox";
 import TableRow from "./components/TableRow";
 import { getStyles } from "./utils";
 import { getFontSize, getDirection } from "../../utils/helpers";
+import { TableWrapper } from "./styled/TableWrapper";
 
 const ClassificationPreview = ({
   view,
@@ -227,46 +228,47 @@ const ClassificationPreview = ({
       {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
-        <table style={{ width: "100%", flexGrow: 2 }}>
-          <thead>
-            {rowHeader && (
+        <TableWrapper>
+          <table style={{ width: "100%", flexGrow: 2 }}>
+            <thead>
+              {rowHeader && (
+                <tr>
+                  <th data-cy="rowHeader" colSpan={2} dangerouslySetInnerHTML={{ __html: rowHeader }} />
+                </tr>
+              )}
               <tr>
-                <th data-cy="rowHeader" colSpan={2} dangerouslySetInnerHTML={{ __html: rowHeader }} />
+                {rowTitles.length > 0 && <th />}
+                {colTitles.slice(0, colCount).map((ite, ind) => (
+                  <th key={ind}>
+                    <CenteredText dangerouslySetInnerHTML={{ __html: ite }} />
+                  </th>
+                ))}
               </tr>
-            )}
-            <tr>
-              {rowTitles.length > 0 && <th />}
-              {colTitles.slice(0, colCount).map((ite, ind) => (
-                <th key={ind}>
-                  <CenteredText dangerouslySetInnerHTML={{ __html: ite }} />
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {boxes.map(
-              (n, ind) =>
-                arrayOfRows.has(ind) && (
-                  <TableRow
-                    key={ind}
-                    startIndex={ind}
-                    width={get(item, "ui_style.row_titles_width", "100%")}
-                    height={get(item, "ui_style.row_min_height", "150px")}
-                    colCount={colCount}
-                    arrayOfRows={arrayOfRows}
-                    rowTitles={rowTitles}
-                    drop={drop}
-                    answers={answers}
-                    validArray={valRespArr}
-                    preview={preview}
-                    possible_responses={possible_responses}
-                    onDrop={onDrop}
-                  />
-                )
-            )}
-          </tbody>
-        </table>
-
+            </thead>
+            <tbody>
+              {boxes.map(
+                (n, ind) =>
+                  arrayOfRows.has(ind) && (
+                    <TableRow
+                      key={ind}
+                      startIndex={ind}
+                      width={get(item, "ui_style.row_titles_width", "100%")}
+                      height={get(item, "ui_style.row_min_height", "150px")}
+                      colCount={colCount}
+                      arrayOfRows={arrayOfRows}
+                      rowTitles={rowTitles}
+                      drop={drop}
+                      answers={answers}
+                      validArray={valRespArr}
+                      preview={preview}
+                      possible_responses={possible_responses}
+                      onDrop={onDrop}
+                    />
+                  )
+              )}
+            </tbody>
+          </table>
+        </TableWrapper>
         {dragItems.length > 0 && (
           <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
             <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>

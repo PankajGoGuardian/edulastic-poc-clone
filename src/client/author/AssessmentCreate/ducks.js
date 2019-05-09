@@ -78,7 +78,7 @@ function* createAssessmentSaga({ payload }) {
 
   try {
     if (payload.file) {
-      fileURI = yield call(uploadToS3, payload.file, aws.s3Folder.DOCS);
+      fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS);
     }
   } catch (error) {
     const errorMessage = "Upload PDF is failing";

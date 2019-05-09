@@ -74,7 +74,7 @@ export default class DisneyCardContainer extends Component {
         return studentName.substring(0, 2).toUpperCase();
       }
 
-      return (`${firstLetter}` + `${secondLetter}`).toUpperCase();
+      return `${firstLetter}${secondLetter}`.toUpperCase();
     }
   };
 
@@ -169,7 +169,7 @@ export default class DisneyCardContainer extends Component {
               <PerfomanceSection>
                 <StyledFlexDiv>
                   <StyledParaSS>
-                    {correctAnswers} / {questions}
+                    {student.score || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   <StyledParaSSS>{stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}</StyledParaSSS>
                 </StyledFlexDiv>

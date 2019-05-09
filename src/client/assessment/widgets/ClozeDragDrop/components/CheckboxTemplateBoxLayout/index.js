@@ -23,7 +23,6 @@ const CheckboxTemplateBoxLayout = ({
   responseBtnStyle,
   fontSize,
   userSelections,
-  options,
   stemNumeration,
   evaluation,
   onDropHandler
@@ -177,7 +176,6 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
   showAnswer: PropTypes.bool,
-  options: PropTypes.any.isRequired,
   onDropHandler: PropTypes.func
 };
 

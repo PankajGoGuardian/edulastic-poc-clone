@@ -20,12 +20,17 @@ class StandardsProficiencyEditableCell extends React.Component {
   };
 
   checkShortNameUnique = (rule, value, callback) => {
+    if (value.length > 2) {
+      callback("Short name should not be greater than 2 characters");
+      return;
+    }
     const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
     const sameShortNameRow = dataSource.filter(item => item.shortName === value);
     if (sameShortNameRow.length <= 0) {
       callback();
       return;
     }
+
     callback("Short name should be unique.");
   };
 

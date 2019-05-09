@@ -32,14 +32,14 @@ const createPage = (pageNumber, url) => ({
 
 class Worksheet extends React.Component {
   static propTypes = {
-    docUrl: PropTypes.string.isRequired,
+    docUrl: PropTypes.string,
     setTestData: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     questions: PropTypes.array.isRequired,
     questionsById: PropTypes.object.isRequired,
-    answersById: PropTypes.object.isRequired,
-    pageStructure: PropTypes.object,
+    answersById: PropTypes.object,
+    pageStructure: PropTypes.array,
     review: PropTypes.bool,
     noCheck: PropTypes.bool,
     annotations: PropTypes.array
@@ -49,7 +49,9 @@ class Worksheet extends React.Component {
     review: false,
     annotations: [],
     noCheck: false,
-    pageStructure: []
+    pageStructure: [],
+    answersById: {},
+    docUrl: ""
   };
 
   state = {

@@ -70,7 +70,7 @@ ThumbnailsItem.propTypes = {
   page: PropTypes.number.isRequired,
   current: PropTypes.number.isRequired,
   total: PropTypes.number.isRequired,
-  url: PropTypes.string,
+  url: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   rotate: PropTypes.number,
   onClick: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,

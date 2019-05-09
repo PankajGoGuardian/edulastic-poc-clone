@@ -22,6 +22,7 @@ import { getItemDetailSelector } from "../../../src/selectors/itemDetail";
 import { getViewSelector } from "../../../src/selectors/view";
 import Header from "../Header/Header";
 import Worksheet from "../Worksheet/Worksheet";
+import Description from "../Description/Description";
 
 const tabs = {
   DESCRIPTION: "description",
@@ -115,6 +116,7 @@ class Container extends React.Component {
     const updatedTestItem = {
       ...currentTestItem,
       authors: undefined,
+      public: undefined,
       data: {
         ...currentTestItem.data,
         questions,
@@ -139,12 +141,9 @@ class Container extends React.Component {
   };
 
   renderContent() {
-    const {
-      currentTab,
-      assessment: { docUrl, annotations, pageStructure },
-      questions,
-      questionsById
-    } = this.props;
+    const { currentTab, assessment, questions, questionsById, setTestData } = this.props;
+
+    const { docUrl, annotations, pageStructure } = assessment;
 
     const props = {
       docUrl,
@@ -155,6 +154,8 @@ class Container extends React.Component {
     };
 
     switch (currentTab) {
+      case tabs.DESCRIPTION:
+        return <Description setData={setTestData} assessment={assessment} />;
       case tabs.WORKSHEET:
         return <Worksheet key="worksheet" {...props} />;
       case tabs.REVIEW:

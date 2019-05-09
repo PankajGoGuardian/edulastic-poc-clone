@@ -1,4 +1,5 @@
-import { keyBy, groupBy, mapValues } from "lodash";
+//@ts-check
+import { keyBy, groupBy, get } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
 
@@ -30,10 +31,11 @@ const getMaxScoreFromQuestion = question => {
  */
 export const getMaxScoreOfQid = (qid, testItemsData) => {
   for (let testItem of testItemsData) {
-    let questions = DotProp.get(testItem, ["data", "questions"], []);
-    let questionNeeded = questions.find(x => x.qid === qid);
+    let questions = get(testItem, ["data", "questions"], []);
+    let questionNeeded = questions.find(x => x.id === qid);
+
     if (questionNeeded) {
-      return getMaxScoreFromQuestion(question);
+      return getMaxScoreFromQuestion(questionNeeded);
     }
   }
   console.warn("no such qid for maxScore", qid);
@@ -125,13 +127,14 @@ export const transformGradeBookResponse = ({
           return { _id, notStarted: true };
         }
         const { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
+        const questionMaxScore = getMaxScoreOfQid(_id, testItemsData);
         return {
           _id,
           skipped,
           correct,
           partialCorrect,
           score,
-          maxScore: testMaxScore,
+          maxScore: questionMaxScore,
           timeSpent
         };
       });

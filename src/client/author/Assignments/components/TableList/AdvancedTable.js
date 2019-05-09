@@ -5,7 +5,7 @@ import { compose } from "redux";
 
 import { withRouter } from "react-router-dom";
 import { Dropdown, Checkbox } from "antd";
-import { isEmpty } from "lodash";
+import { isEmpty, get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -18,15 +18,39 @@ import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, Te
 
 class AdvancedTable extends Component {
   state = {
-    enableRowClick: true
+    enableRowClick: true,
+    perPage: 20,
+    pageNo: 1,
+    current: 1
   };
 
+  static getDerivedStateFromProps(nextProps, preState) {
+    const { assignmentsSummary, loadAssignmentsSummary, districtId, filtering, filters } = nextProps;
+    const { perPage, pageNo } = preState;
+    if (assignmentsSummary.length === perPage && pageNo === 1) {
+      loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: pageNo + 1 } });
+      return { pageNo: pageNo + 1 };
+    }
+
+    if (filtering) {
+      return { pageNo: 1, current: 1 };
+    }
+
+    return {};
+  }
+
   componentDidMount() {
-    const { loadAssignmentsSummary, assignmentsSummary, districtId } = this.props;
+    const { assignmentsSummary } = this.props;
     if (isEmpty(assignmentsSummary)) {
-      loadAssignmentsSummary({ districtId });
+      this.fetchSummary();
     }
   }
+
+  fetchSummary = () => {
+    const { loadAssignmentsSummary, districtId, filters } = this.props;
+    const { pageNo } = this.state;
+    loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo } });
+  };
 
   enableRowClick = () => this.setState({ enableRowClick: true });
 
@@ -40,9 +64,17 @@ class AdvancedTable extends Component {
     }
   };
 
+  handlePagination = (page, pageSize) => {
+    const { assignmentsSummary } = this.props;
+    if (page * pageSize >= assignmentsSummary.length) {
+      this.setState(preState => ({ pageNo: preState.pageNo + 1 }), this.fetchSummary);
+    }
+    this.setState({ current: page });
+  };
+
   render() {
     const { onSelectRow, assignmentsSummary, history, onOpenReleaseScoreSettings } = this.props;
-
+    const { perPage, current } = this.state;
     const columns = [
       {
         title: <Checkbox />,
@@ -81,7 +113,7 @@ class AdvancedTable extends Component {
       },
       {
         title: "Classes",
-        dataIndex: "assigned",
+        dataIndex: "total",
         sortDirections: ["descend", "ascend"],
         sorter: true,
         width: "11%",
@@ -150,6 +182,11 @@ class AdvancedTable extends Component {
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)
           })}
+          pagination={{
+            pageSize: perPage,
+            onChange: this.handlePagination,
+            current
+          }}
         />
       </Container>
     );
@@ -161,6 +198,7 @@ AdvancedTable.propTypes = {
   loadAssignmentsSummary: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
+  filters: PropTypes.object.isRequired,
   onSelectRow: PropTypes.func,
   history: PropTypes.object
 };
@@ -176,7 +214,8 @@ const enhance = compose(
   withNamespaces("assignmentCard"),
   connect(
     state => ({
-      assignmentsSummary: getAssignmentsSummary(state)
+      assignmentsSummary: getAssignmentsSummary(state),
+      filtering: get(state, "author_assignments.filtering")
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction

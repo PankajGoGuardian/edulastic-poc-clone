@@ -140,13 +140,14 @@ class LeftFilter extends React.Component {
       districtId,
       loadAssignmentsSummary
     } = this.props;
-    const filters = { ...filterState, [key]: value };
+    let filters = { ...filterState, [key]: value };
     const { visibleModal } = this.state;
     if (!visibleModal.moveFolder) {
       if (!isAdvancedView) {
         loadAssignments({ filters });
       } else {
-        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity) });
+        filters = { ...filters, pageNo: 1 };
+        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
       }
       onSetFilter(filters);
     } else {

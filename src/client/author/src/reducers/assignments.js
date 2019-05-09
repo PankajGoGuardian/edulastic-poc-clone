@@ -1,3 +1,4 @@
+import { concat } from "lodash";
 import {
   RECEIVE_ASSIGNMENTS_REQUEST,
   RECEIVE_ASSIGNMENTS_SUCCESS,
@@ -23,7 +24,8 @@ const initialState = {
   loading: false,
   creating: false,
   toggleReleaseGradeSettings: false,
-  currentAssignment: {}
+  currentAssignment: {},
+  filtering: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -40,13 +42,16 @@ const reducer = (state = initialState, { type, payload }) => {
       return { ...state, loading: false, error: payload.error };
 
     case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
-      return { ...state, loading: true, summaryEntities: [] };
-    case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS:
+      return { ...state, loading: true, filtering: payload.filtering };
+    case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS: {
+      const { entities = [], filtering } = payload;
       return {
         ...state,
         loading: false,
-        summaryEntities: payload.entities
+        summaryEntities: filtering ? entities : concat(state.summaryEntities, entities),
+        filtering: false
       };
+    }
     case RECEIVE_ASSIGNMENTS_SUMMARY_ERROR:
       return { ...state, loading: false, error: payload.error };
     case RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST:

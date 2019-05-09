@@ -69,7 +69,7 @@ class Assignments extends Component {
     const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders } = this.props;
     loadAssignments();
     loadFolders();
-    loadAssignmentsSummary({ districtId });
+    loadAssignmentsSummary({ districtId, filters: { pageNo: 1 } });
   }
 
   setFilterState = filterState => {
@@ -186,6 +186,7 @@ class Assignments extends Component {
                           assignmentsSummary={assignmentsSummary}
                           onSelectRow={this.onSelectRow}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
+                          filters={filterState}
                         />
                       ) : (
                         <TableList

@@ -88,6 +88,7 @@
       "responseMinimumWidth": "Response minimum width (px)",
       "transparentBackground": "Transparent background",
       "responseContainer": "Response container",
+      "response": "Response",
       "textBlocks": "Text Blocks",
       "addTextBlock": "Add new text block",
       "addResponseContainer": "Add new response container",

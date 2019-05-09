@@ -8,6 +8,7 @@ import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
+import { ResponseIndex } from "./styled/ResponseIndex";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "../ThousandsSeparators";
@@ -104,6 +105,7 @@ const MathFormulaAnswerMethod = ({
   showAdditionals,
   handleChangeAdditionals,
   clearAdditionals,
+  answerIndex,
   t
 }) => {
   useEffect(() => {
@@ -206,6 +208,7 @@ const MathFormulaAnswerMethod = ({
 
   return (
     <Container data-cy="math-formula-answer">
+      {answerIndex !== -1 && <ResponseIndex>{`${t("component.options.response")} ${index + 1}`}</ResponseIndex>}
       <StyledRow gutter={32}>
         <Col span={index === 0 ? 12 : 11}>
           <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
@@ -597,7 +600,8 @@ MathFormulaAnswerMethod.propTypes = {
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
   handleChangeAdditionals: PropTypes.func,
-  clearAdditionals: PropTypes.func
+  clearAdditionals: PropTypes.func,
+  answerIndex: PropTypes.number
 };
 
 MathFormulaAnswerMethod.defaultProps = {
@@ -607,6 +611,7 @@ MathFormulaAnswerMethod.defaultProps = {
   options: {},
   onDelete: undefined,
   showAdditionals: [],
+  answerIndex: -1,
   handleChangeAdditionals: () => {},
   clearAdditionals: () => {}
 };

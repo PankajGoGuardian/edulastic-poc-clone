@@ -55,6 +55,7 @@ class ClozeMathAnswer extends Component {
                   key={methodIndex}
                   item={item}
                   index={methodIndex}
+                  answerIndex={methodIndex}
                   onChange={_changeMethod(i, methodIndex)}
                   showAdditionals={showAdditionals}
                   handleChangeAdditionals={handleChangeAdditionals}

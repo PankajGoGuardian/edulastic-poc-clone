@@ -6,6 +6,7 @@ import { Paper, Select, WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
+import { ContentArea } from "../../styled/ContentArea";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
 import AxisSegmentsOptions from "./Authoring/AxisSegmentsOptions";
@@ -252,7 +253,8 @@ class Graph extends Component {
       changePreviewTab,
       evaluation,
       fillSections,
-      cleanSections
+      cleanSections,
+      isSidebarCollapsed
     } = this.props;
     const { graphType, extra_options } = item;
     const OptionsComponent = this.getOptionsComponent();
@@ -264,7 +266,7 @@ class Graph extends Component {
       <React.Fragment>
         {view === "edit" && (
           <React.Fragment>
-            <div style={{ paddingLeft: "280px" }}>
+            <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
               <OptionsComponent
                 graphData={item}
                 canvas={item.canvas}
@@ -305,7 +307,7 @@ class Graph extends Component {
                 </React.Fragment>
               </QuestionSection>
               <MoreOptionsComponent {...this.getMoreOptionsProps()} />
-            </div>
+            </ContentArea>
           </React.Fragment>
         )}
         {view === "preview" && smallSize === false && item && (
@@ -388,7 +390,8 @@ Graph.propTypes = {
   changePreviewTab: PropTypes.func,
   evaluation: PropTypes.any,
   cleanSections: PropTypes.func.isRequired,
-  fillSections: PropTypes.func.isRequired
+  fillSections: PropTypes.func.isRequired,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 Graph.defaultProps = {
@@ -403,10 +406,8 @@ Graph.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

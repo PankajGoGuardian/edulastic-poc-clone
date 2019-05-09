@@ -36,7 +36,8 @@ const MathFormula = ({
   smallSize,
   userAnswer,
   fillSections,
-  cleanSections
+  cleanSections,
+  isSidebarCollapsed
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -56,7 +57,7 @@ const MathFormula = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea>
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion
             item={item}
             setQuestionData={setQuestionData}
@@ -121,7 +122,8 @@ MathFormula.propTypes = {
   userAnswer: PropTypes.any,
   smallSize: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 MathFormula.defaultProps = {
@@ -137,7 +139,7 @@ MathFormula.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    null,
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction

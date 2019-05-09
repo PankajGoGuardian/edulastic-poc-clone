@@ -32,7 +32,8 @@ const FormulaEssay = ({
   smallSize,
   userAnswer,
   fillSections,
-  cleanSections
+  cleanSections,
+  isSidebarCollapsed
 }) => {
   const [lines, setLines] = useState([
     { text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }
@@ -60,7 +61,7 @@ const FormulaEssay = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <ContentArea>
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion
             item={item}
             setQuestionData={setQuestionData}
@@ -109,7 +110,8 @@ FormulaEssay.propTypes = {
   smallSize: PropTypes.bool,
   userAnswer: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 FormulaEssay.defaultProps = {
@@ -125,7 +127,7 @@ FormulaEssay.defaultProps = {
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    null,
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction

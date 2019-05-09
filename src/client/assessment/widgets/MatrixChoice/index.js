@@ -20,10 +20,9 @@ import ComposeQuestion from "./ComposeQuestion";
 import MultipleChoiceOptions from "./MultipleChoiceOptions";
 import Steams from "./Steams";
 import Answers from "./Answers";
+import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
-
-import { ContentArea } from "../../styled/ContentArea";
 
 const MatrixChoice = ({
   view,
@@ -36,7 +35,9 @@ const MatrixChoice = ({
   smallSize,
   checkAnswer,
   fillSections,
-  cleanSections
+  cleanSections,
+  isSidebarCollapsed,
+  advancedAreOpen
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
   const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -76,7 +77,7 @@ const MatrixChoice = ({
   return (
     <Fragment>
       {view === "edit" && (
-        <ContentArea>
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <Fragment>
             <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
               <ComposeQuestion
@@ -164,7 +165,9 @@ MatrixChoice.propTypes = {
   testItem: PropTypes.bool,
   item: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 MatrixChoice.defaultProps = {
@@ -181,7 +184,7 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    null,
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
     {
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction

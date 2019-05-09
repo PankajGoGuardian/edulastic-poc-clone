@@ -22,10 +22,9 @@ import Display from "./Display";
 import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
+import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
-
-import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeDropDown extends Component {
   getRenderData = () => {
@@ -107,7 +106,8 @@ class ClozeDropDown extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      theme
+      isSidebarCollapsed,
+      advancedAreOpen
     } = this.props;
 
     const {
@@ -126,7 +126,7 @@ class ClozeDropDown extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea>
+          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
@@ -212,7 +212,9 @@ ClozeDropDown.propTypes = {
   evaluation: PropTypes.any.isRequired,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 ClozeDropDown.defaultProps = {
@@ -233,10 +235,8 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

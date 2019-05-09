@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
 import { newBlue, desktopWidth } from "@edulastic/colors";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 class QuestionMenu extends Component {
   state = {
@@ -96,38 +97,40 @@ class QuestionMenu extends Component {
     const { advancedAreOpen, activeTab } = this.state;
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
-        <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen}>
-          {main &&
-            main.map((option, index) => (
-              <Option
-                key={index}
-                onClick={() => this.handleScroll(option, index)}
-                className={index === activeTab && "active"}
-              >
-                {option.label}
-              </Option>
-            ))}
-        </MainOptions>
-        {advanced.length > 0 && (
-          <Fragment>
-            <AdvancedOptionsHeader onClick={this.handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
-              <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
-            </AdvancedOptionsHeader>
-            {advancedAreOpen && (
-              <AdvancedOptions>
-                {advanced.map((option, index) => (
-                  <Option
-                    key={index}
-                    onClick={() => this.handleScroll(option, main.length + index)}
-                    className={main.length + index === activeTab && "active"}
-                  >
-                    {option.label}
-                  </Option>
-                ))}
-              </AdvancedOptions>
-            )}
-          </Fragment>
-        )}
+        <ScrollbarContainer>
+          <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen}>
+            {main &&
+              main.map((option, index) => (
+                <Option
+                  key={index}
+                  onClick={() => this.handleScroll(option, index)}
+                  className={index === activeTab && "active"}
+                >
+                  {option.label}
+                </Option>
+              ))}
+          </MainOptions>
+          {advanced.length > 0 && (
+            <Fragment>
+              <AdvancedOptionsHeader onClick={this.handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
+                <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
+              </AdvancedOptionsHeader>
+              {advancedAreOpen && (
+                <AdvancedOptions>
+                  {advanced.map((option, index) => (
+                    <Option
+                      key={index}
+                      onClick={() => this.handleScroll(option, main.length + index)}
+                      className={main.length + index === activeTab && "active"}
+                    >
+                      {option.label}
+                    </Option>
+                  ))}
+                </AdvancedOptions>
+              )}
+            </Fragment>
+          )}
+        </ScrollbarContainer>
       </Menu>
     );
   }
@@ -151,15 +154,20 @@ export default connect(({ authorUi }) => ({
 
 const Menu = styled.div`
   position: fixed;
-  left: ${props => (props.isSidebarCollapsed ? "185px" : "325px")};
+  left: ${props => (props.isSidebarCollapsed ? "160px" : "255px")};
   top: 150px;
-  width: 280px;
-  padding: 56px 0 0 27px;
-  margin-right: 40px;
+  width: 230px;
+  padding: 40px 0 0;
 
   @media (max-width: ${desktopWidth}) {
     display: none;
   }
+`;
+
+const ScrollbarContainer = styled(PerfectScrollbar)`
+  padding-top: 10px;
+  padding-left: 10px;
+  max-height: calc(100vh - 255px);
 `;
 
 const MainOptions = styled.ul`
@@ -189,7 +197,7 @@ const MainOptions = styled.ul`
 const Option = styled.li`
   cursor: pointer;
   font-size: 14px;
-  padding-left: 35px;
+  padding-left: 25px;
   font-weight: 600;
   font-style: normal;
   font-stretch: normal;
@@ -226,7 +234,7 @@ const AdvancedOptionsHeader = styled.div`
   display: inline-flex;
   justify-content: space-between;
   align-items: center;
-  margin: 101px 0 65px;
+  margin: 50px 0px;
   position: relative;
 
   &:before {

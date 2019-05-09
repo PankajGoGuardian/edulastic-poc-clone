@@ -9,6 +9,7 @@ import produce from "immer";
 
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { ContentArea } from "../../styled/ContentArea";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -22,8 +23,6 @@ import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
-
-import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
 
@@ -118,7 +117,9 @@ class ClozeDragDrop extends Component {
       // eslint-disable-next-line no-unused-vars
       theme,
       fillSections,
-      cleanSections
+      cleanSections,
+      isSidebarCollapsed,
+      advancedAreOpen
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
@@ -128,7 +129,7 @@ class ClozeDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea>
+          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
@@ -273,7 +274,9 @@ ClozeDragDrop.propTypes = {
   evaluation: PropTypes.any.isRequired,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 ClozeDragDrop.defaultProps = {
@@ -294,10 +297,8 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

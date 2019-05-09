@@ -22,10 +22,9 @@ import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
+import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
-
-import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageDragDrop extends Component {
   state = {
@@ -132,7 +131,8 @@ class ClozeImageDragDrop extends Component {
       evaluation,
       theme,
       fillSections,
-      cleanSections
+      cleanSections,
+      isSidebarCollapsed
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
@@ -142,7 +142,7 @@ class ClozeImageDragDrop extends Component {
     return (
       <div>
         {view === "edit" && (
-          <ContentArea>
+          <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
@@ -327,7 +327,8 @@ ClozeImageDragDrop.propTypes = {
   evaluation: PropTypes.any,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 ClozeImageDragDrop.defaultProps = {
@@ -349,10 +350,8 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

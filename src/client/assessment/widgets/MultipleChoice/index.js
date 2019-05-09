@@ -20,10 +20,9 @@ import CorrectAnswers from "./CorrectAnswers";
 import { replaceVariables, replaceValues } from "../../utils/variables";
 
 import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
-
-import { ContentArea } from "../../styled/ContentArea";
 
 const Divider = styled.div`
   padding: 10px 0;
@@ -172,6 +171,8 @@ class MultipleChoice extends Component {
       evaluation,
       fillSections,
       cleanSections,
+      isSidebarCollapsed,
+      advancedAreOpen,
       ...restProps
     } = this.props;
     const { shuffledOptions } = this.state;
@@ -190,7 +191,7 @@ class MultipleChoice extends Component {
       <React.Fragment>
         <PaddingDiv>
           {view === EDIT && (
-            <ContentArea>
+            <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
               <React.Fragment>
                 <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
                   <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
@@ -308,7 +309,9 @@ MultipleChoice.propTypes = {
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 MultipleChoice.defaultProps = {
@@ -329,10 +332,8 @@ const enhance = compose(
   withRouter,
   withNamespaces("assessment"),
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

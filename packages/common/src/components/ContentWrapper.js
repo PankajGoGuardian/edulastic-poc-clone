@@ -7,7 +7,7 @@ const ContentWrapper = styled.div`
   overflow: inherit;
   left: 0;
   right: 0;
-  padding: 0px 45px 45px;
+  padding: 0px 30px 30px;
   overflow: visible;
   @media (max-width: ${mobileWidth}) {
     padding: 0px 25px;

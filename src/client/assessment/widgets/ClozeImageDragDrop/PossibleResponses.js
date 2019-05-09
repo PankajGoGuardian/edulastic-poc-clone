@@ -14,6 +14,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
+import QuillSortableList from "../../components/QuillSortableList/index";
 import SortableList from "../../components/SortableList/index";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Subtitle } from "../../styled/Subtitle";
@@ -75,11 +76,11 @@ class PossibleResponses extends Component {
     );
   };
 
-  editOptions = (index, e) => {
+  editOptions = (index, value) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index] = e.target.value;
+        draft.options[index] = value;
         updateVariables(draft);
       })
     );
@@ -100,8 +101,15 @@ class PossibleResponses extends Component {
     return (
       <Widget data-cy="possibleResponses">
         <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
-        <SortableList
+        {/* <SortableList
           dirty={item.firstMount}
+          items={item.options}
+          onSortEnd={this.onSortEnd}
+          useDragHandle
+          onRemove={this.remove}
+          onChange={this.editOptions}
+        /> */}
+        <QuillSortableList
           items={item.options}
           onSortEnd={this.onSortEnd}
           useDragHandle

@@ -362,6 +362,7 @@ class ClozeDragDropDisplay extends Component {
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
         templateParts={templateParts}
+        options={options}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         stemNumeration={stemnumeration}

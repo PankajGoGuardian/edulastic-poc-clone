@@ -106,7 +106,7 @@ const CheckboxTemplateBoxLayout = ({
                         item={answer}
                         onDrop={onDropHandler}
                       >
-                        {answer}
+                        {<div dangerouslySetInnerHTML={{ __html: answer }} />}
                       </DragItem>
                     ))}
                 </div>

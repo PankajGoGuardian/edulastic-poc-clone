@@ -17,7 +17,7 @@ import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import SortableList from "../../components/SortableList/index";
+import QuillSortableList from "../../components/QuillSortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Widget } from "../../styled/Widget";
@@ -91,21 +91,21 @@ class TemplateMarkup extends Component {
     );
   };
 
-  editOptions = (index, e) => {
+  editOptions = (index, value) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index].label = e.target.value;
+        draft.options[index].label = value;
         updateVariables(draft);
       })
     );
   };
 
   addNewChoiceBtn = () => {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options.push(t("component.cloze.dragDrop.newChoice"));
+        draft.options.push({ value: uuid(), label: "" });
       })
     );
   };
@@ -266,9 +266,8 @@ class TemplateMarkup extends Component {
         {!hasGroupResponses && (
           <PaddingDiv>
             <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
-            <SortableList
-              items={item.options.map(option => option.label)}
-              dirty={!!item.templateMarkUp}
+            <QuillSortableList
+              items={item.options.map(o => o.label)}
               onSortEnd={this.onSortEnd}
               useDragHandle
               onRemove={this.remove}
@@ -315,9 +314,8 @@ class TemplateMarkup extends Component {
                 </div>
                 <PaddingDiv top={20} bottom={10}>
                   <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
-                  <SortableList
-                    dirty={!!item.templateMarkUp}
-                    items={group.options.map(option => option.label)}
+                  <QuillSortableList
+                    items={group.options.map(o => o.label)}
                     onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
                     useDragHandle
                     onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}

@@ -47,7 +47,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
                 background: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerBgColor
               }}
             >
-              {result && result.join(", ")}
+              {<div dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />}
             </span>
           </div>
         ))}

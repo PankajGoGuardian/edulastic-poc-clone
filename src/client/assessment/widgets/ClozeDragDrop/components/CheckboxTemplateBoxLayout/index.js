@@ -17,6 +17,7 @@ const MathSpan = WithMathFormula(styled.span`
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
   templateParts,
+  options,
   hasGroupResponses,
   responsecontainerindividuals,
   responseBtnStyle,
@@ -30,16 +31,13 @@ const CheckboxTemplateBoxLayout = ({
   let responseIndex = 0;
 
   const getLabel = dropTargetIndex => {
-    if (userSelections[dropTargetIndex]) {
+    let formulaLabel = "";
+    if (!hasGroupResponses && userSelections[dropTargetIndex]) {
       const foundedItem = options.find(option => option.value === userSelections[dropTargetIndex]);
       if (foundedItem) {
-        return foundedItem.label;
+        formulaLabel = foundedItem.label;
       }
-    }
-  };
-
-  const getLabelForGroup = dropTargetIndex => {
-    if (userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data) {
+    } else if (userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data) {
       const foundedGroup = options.find(option =>
         option.options.find(inOption => inOption.value === userSelections[dropTargetIndex].data)
       );
@@ -48,10 +46,17 @@ const CheckboxTemplateBoxLayout = ({
           inOption => inOption.value === userSelections[dropTargetIndex].data
         );
         if (foundItem) {
-          return foundItem.label;
+          formulaLabel = foundItem.label;
         }
       }
     }
+    return (
+      <div
+        dangerouslySetInnerHTML={{
+          __html: formulaLabel
+        }}
+      />
+    );
   };
 
   return (
@@ -98,7 +103,7 @@ const CheckboxTemplateBoxLayout = ({
                   style={btnStyle}
                 >
                   &nbsp;<span className="index">{indexStr}</span>
-                  <span className="text">{getLabelForGroup(dropTargetIndex)}</span>
+                  <span className="text">{getLabel(dropTargetIndex)}</span>
                   &nbsp;
                   <IconWrapper>
                     {className === "right" && <RightIcon />}
@@ -129,7 +134,7 @@ const CheckboxTemplateBoxLayout = ({
                   >
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                       &nbsp;<span className="index">{indexStr}</span>
-                      <span className="text">{getLabelForGroup(dropTargetIndex)}</span>
+                      <span className="text">{getLabel(dropTargetIndex)}</span>
                       &nbsp;
                       <IconWrapper>
                         {className === "right" && <RightIcon />}
@@ -165,6 +170,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   responsecontainerindividuals: PropTypes.array,
   fontSize: PropTypes.string,
   templateParts: PropTypes.array,
+  options: PropTypes.array,
   responseBtnStyle: PropTypes.object,
   hasGroupResponses: PropTypes.bool,
   userSelections: PropTypes.array,
@@ -179,6 +185,7 @@ CheckboxTemplateBoxLayout.defaultProps = {
   responsecontainerindividuals: [],
   fontSize: "13px",
   templateParts: [],
+  options: [],
   responseBtnStyle: {},
   hasGroupResponses: false,
   userSelections: [],

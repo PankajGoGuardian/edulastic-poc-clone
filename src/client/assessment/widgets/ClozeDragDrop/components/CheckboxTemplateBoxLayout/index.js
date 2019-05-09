@@ -22,11 +22,37 @@ const CheckboxTemplateBoxLayout = ({
   responseBtnStyle,
   fontSize,
   userSelections,
+  options,
   stemNumeration,
   evaluation,
   onDropHandler
 }) => {
   let responseIndex = 0;
+
+  const getLabel = dropTargetIndex => {
+    if (userSelections[dropTargetIndex]) {
+      const foundedItem = options.find(option => option.value === userSelections[dropTargetIndex]);
+      if (foundedItem) {
+        return foundedItem.label;
+      }
+    }
+  };
+
+  const getLabelForGroup = dropTargetIndex => {
+    if (userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data) {
+      const foundedGroup = options.find(option =>
+        option.options.find(inOption => inOption.value === userSelections[dropTargetIndex].data)
+      );
+      if (foundedGroup) {
+        const foundItem = foundedGroup.options.find(
+          inOption => inOption.value === userSelections[dropTargetIndex].data
+        );
+        if (foundItem) {
+          return foundItem.label;
+        }
+      }
+    }
+  };
 
   return (
     <div className="template_box" style={{ fontSize, padding: 20 }}>
@@ -72,9 +98,7 @@ const CheckboxTemplateBoxLayout = ({
                   style={btnStyle}
                 >
                   &nbsp;<span className="index">{indexStr}</span>
-                  <span className="text">
-                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
-                  </span>
+                  <span className="text">{getLabelForGroup(dropTargetIndex)}</span>
                   &nbsp;
                   <IconWrapper>
                     {className === "right" && <RightIcon />}
@@ -88,7 +112,7 @@ const CheckboxTemplateBoxLayout = ({
                   style={btnStyle}
                 >
                   &nbsp;<span className="index">{indexStr}</span>
-                  <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                  <span className="text">{getLabel(dropTargetIndex)}</span>
                   &nbsp;
                   <IconWrapper>
                     {className === "right" && <RightIcon />}
@@ -100,15 +124,12 @@ const CheckboxTemplateBoxLayout = ({
                 {!showAnswer && hasGroupResponses && (
                   <Draggable
                     onDrop={onDropHandler}
-                    data={`${userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}_${userSelections[
-                      dropTargetIndex
-                    ] && userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                    data={`${getLabelForGroup(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
+                      userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
                   >
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                       &nbsp;<span className="index">{indexStr}</span>
-                      <span className="text">
-                        {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
-                      </span>
+                      <span className="text">{getLabelForGroup(dropTargetIndex)}</span>
                       &nbsp;
                       <IconWrapper>
                         {className === "right" && <RightIcon />}
@@ -118,13 +139,10 @@ const CheckboxTemplateBoxLayout = ({
                   </Draggable>
                 )}
                 {!showAnswer && !hasGroupResponses && (
-                  <Draggable
-                    onDrop={onDropHandler}
-                    data={`${userSelections[dropTargetIndex]}_${dropTargetIndex}_fromResp`}
-                  >
+                  <Draggable onDrop={onDropHandler} data={`${getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}>
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>
                       &nbsp;<span className="index">{indexStr}</span>
-                      <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                      <span className="text">{getLabel(dropTargetIndex)}</span>
                       &nbsp;
                       <IconWrapper>
                         {className === "right" && <RightIcon />}
@@ -153,6 +171,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
   showAnswer: PropTypes.bool,
+  options: PropTypes.any.isRequired,
   onDropHandler: PropTypes.func
 };
 

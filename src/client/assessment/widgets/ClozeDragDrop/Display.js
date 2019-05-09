@@ -367,6 +367,7 @@ class ClozeDragDropDisplay extends Component {
         stemNumeration={stemnumeration}
         hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
+        options={options}
         showAnswer={showAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}

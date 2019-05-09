@@ -19,6 +19,24 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
   } else {
     results = userAnswers;
   }
+
+  const getLabel = value => {
+    if (hasGroupResponses) {
+      const Group = groupResponses.find(group => group.options.find(option => option.value === value));
+      if (Group) {
+        const Item = Group.options.find(option => option.value === value);
+        if (Item) {
+          return Item.label;
+        }
+      }
+    } else {
+      const Item = groupResponses.find(option => option.value === value);
+      if (Item) {
+        return Item.label;
+      }
+    }
+  };
+
   return (
     <StyledCorrectAnswerbox fontSize={fontSize}>
       <CorrectAnswerTitle>{t("component.cloze.correctAnswer")}</CorrectAnswerTitle>
@@ -30,7 +48,7 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer">
                   &nbsp;<span className="index">{index + 1}</span>
-                  <span className="text">{value}</span>&nbsp;
+                  <span className="text">{getLabel(value)}</span>&nbsp;
                 </div>
               ))}
             </div>
@@ -39,7 +57,7 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
               &nbsp;<span className="index">{index + 1}</span>
-              <span className="text">{result}</span>&nbsp;
+              <span className="text">{getLabel(result)}</span>&nbsp;
             </div>
           ))}
       </div>

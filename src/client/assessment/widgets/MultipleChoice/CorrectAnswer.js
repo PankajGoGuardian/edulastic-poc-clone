@@ -28,6 +28,22 @@ class CorrectAnswer extends Component {
     };
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    const { multipleResponses } = this.props;
+
+    // Update user selection to last selected choice when multiple_response
+    // changes to false, this won't cause re-render, instead it will show up
+    // with the next update
+    if (
+      prevProps.multipleResponses !== multipleResponses &&
+      prevState.userSelections !== 1 &&
+      prevState.userSelections !== 0 &&
+      !multipleResponses
+    ) {
+      this.handleMultiSelect(prevState.userSelections.pop());
+    }
+  }
+
   updateScore = e => {
     const { onUpdatePoints } = this.props;
     if (e.target.value < 0) e.target.value = 0;

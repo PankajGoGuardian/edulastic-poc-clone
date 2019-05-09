@@ -81,13 +81,14 @@ function formula() {
     this.quill.insertText(cursorPosition, " ", "");
     this.quill.insertEmbed(cursorPosition + 1, "MathInput", "");
     this.quill.setSelection(cursorPosition + 2);
+    this.quill.inserted = 2;
   } else {
     // This is the case when the MathFormula is required to be added at the middle of a line
     // In this case react-quill works really fine for embed blot
     // So we are not gonna add space before the MathFormula so that you can enter text there.
     this.quill.insertEmbed(cursorPosition, "MathInput", "");
-    this.quill.setSelection(cursorPosition, 1);
     this.quill.setSelection(cursorPosition + 1);
+    this.quill.inserted = 1;
   }
 }
 
@@ -200,7 +201,8 @@ class CustomQuillComponent extends React.Component {
     onChange: PropTypes.func,
     clearOnFirstFocus: PropTypes.bool,
     readOnly: PropTypes.bool,
-    style: PropTypes.object
+    style: PropTypes.object,
+    tabIndex: PropTypes.number
   };
 
   static defaultProps = {
@@ -214,7 +216,8 @@ class CustomQuillComponent extends React.Component {
       padding: "13px 20px",
       border: `1px solid #E1E1E1`,
       borderRadius: "4px"
-    }
+    },
+    tabIndex: 0
   };
 
   constructor(props) {
@@ -374,10 +377,17 @@ class CustomQuillComponent extends React.Component {
 
   onCloseModal = () => {
     const { selLatex, curMathRange } = this.state;
+    const quillEditor = this.quillRef.getEditor();
     if (selLatex === "" && curMathRange) {
-      this.quillRef.getEditor().deleteText(curMathRange.index, 1);
+      if (quillEditor.inserted === 1) {
+        quillEditor.deleteText(curMathRange.index, 1);
+      } else if (quillEditor.inserted === 2) {
+        quillEditor.deleteText(curMathRange.index, 1);
+        quillEditor.deleteText(curMathRange.index - 2, 2);
+      }
+      quillEditor.inserted = 0;
     } else {
-      this.quillRef.getEditor().setSelection(curMathRange.index + 1);
+      quillEditor.setSelection(curMathRange.index + 1);
     }
     this.setState({
       selLatex: "",

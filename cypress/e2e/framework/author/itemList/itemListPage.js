@@ -37,7 +37,7 @@ class ItemListPage {
           default:
             break;
         }
-        editItem.header.publish();
+        editItem.header.clickOnPublishItem();
       }
     });
   };

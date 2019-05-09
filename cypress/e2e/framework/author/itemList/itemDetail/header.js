@@ -39,9 +39,9 @@ class Header {
     return new EditItemPage();
   }
 
-  publish = () => cy.get('[data-cy="publish"]').click();
+  clickOnPublishItem = () => cy.get('[data-cy="publishItem"]').click();
 
-  edit = () => cy.get('[data-cy="edit"]').click();
+  clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
 }
 
 export default Header;

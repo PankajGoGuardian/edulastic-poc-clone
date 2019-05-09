@@ -45,13 +45,11 @@ class StandardsProficiencyEditableCell extends React.Component {
     if (!isnum) {
       callback("Please input number.");
     } else {
-      if (parseInt(value) < 0 || parseInt(value) > 99) {
-        callback("Please input number between 0 and 99.");
+      if (parseInt(value) < 0 || parseInt(value) > 100) {
+        callback("Please input number between 0 and 100.");
       } else {
         if (record.score === dataSource.length) {
-          if (parseInt(value) === 100) {
-            callback(`Value should be less then 100.`);
-          } else if (parseInt(value) <= dataSource[1].threshold)
+          if (parseInt(value) <= dataSource[1].threshold)
             callback(`Value should not be less then ${dataSource[1].threshold}.`);
           else {
             callback();

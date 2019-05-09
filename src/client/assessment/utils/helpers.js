@@ -19,7 +19,7 @@ export const getFontSize = (fontSize, withRem = false) => {
 
 export const getStylesFromUiStyleToCssStyle = ui_style => {
   const cssStyles = {};
-  Object.keys(ui_style).forEach(item => {
+  Object.keys(ui_style || {}).forEach(item => {
     const value = ui_style[item];
     switch (item) {
       case "fontsize":

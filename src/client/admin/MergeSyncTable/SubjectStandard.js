@@ -14,7 +14,10 @@ export default function SubjectStandard({
   updateCleverSubjectAction,
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
-  addSubjectStandardRowAction
+  addSubjectStandardRowAction,
+  orgId,
+  orgType,
+  updateSubjectStdMapAction
 }) {
   const { rows, cleverSubjectStandardMap, curriculum } = subStandardMapping;
 
@@ -99,7 +102,15 @@ export default function SubjectStandard({
           render={renderEdulasticStandardSet}
         />
       </Table>
-      <CancelApplyActions onApplyAction={() => {}} />
+      <CancelApplyActions
+        onApplyAction={() =>
+          updateSubjectStdMapAction({
+            orgId,
+            orgType,
+            cleverSubjectStandardMap
+          })
+        }
+      />
     </>
   );
 }

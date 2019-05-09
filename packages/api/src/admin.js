@@ -107,6 +107,15 @@ const uploadCSVtoClever = ({ districtId, mergeType, file }) => {
     .then(({ data }) => data.result);
 };
 
+const updateSubjectStandardApi = data =>
+  api
+    .callApi({
+      url: `${prefix}update-subject-mapping`,
+      method: "post",
+      data
+    })
+    .then(({ data }) => data);
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -118,5 +127,6 @@ export default {
   deleteDistrictApi,
   enableDisableSyncApi,
   fetchCurriculumDataApi,
-  uploadCSVtoClever
+  uploadCSVtoClever,
+  updateSubjectStandardApi
 };

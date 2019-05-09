@@ -51,7 +51,7 @@ const MergeCleverIdsTable = ({ eduCounts, clvrCounts, uploadCSVtoClever, distric
     }
   };
 
-  const handleUpload = async (info, mergeType) => {
+  const handleUpload = (info, mergeType) => {
     try {
       const { file } = info;
       uploadCSVtoClever({

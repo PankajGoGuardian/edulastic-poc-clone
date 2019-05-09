@@ -16,6 +16,7 @@ export const UPDATE_EDULASTIC_SUBJECT_ACTION = "[admin] UPDATE_EDULASTIC_SUBJECT
 export const UPDATE_EDULASTIC_STANDARD_ACTION = "[admin] UPDATE_EDULASTIC_STANDARD_ACTION";
 export const ADD_SUBJECT_STANDARD_ROW_ACTION = "[admin] ADD_SUBJECT_STANDARD_ROW_ACTION";
 export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
+export const UPDATE_SUBJECT_STANDARD_MAP = "[admin] UPDATE_SUBJECT_STANDARD_MAP";
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
@@ -33,6 +34,7 @@ export const updateCleverSubjectAction = createAction(UPDATE_CLEVER_SUBJECT_ACTI
 export const updateEdulasticSubjectAction = createAction(UPDATE_EDULASTIC_SUBJECT_ACTION);
 export const updateEdulasticStandardAction = createAction(UPDATE_EDULASTIC_STANDARD_ACTION);
 export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW_ACTION);
+export const updateSubjectStdMapAction = createAction(UPDATE_SUBJECT_STANDARD_MAP);
 
 export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
 
@@ -124,7 +126,8 @@ const {
   fetchClassNamesSyncApi,
   enableDisableSyncApi,
   fetchCurriculumDataApi,
-  uploadCSVtoClever
+  uploadCSVtoClever,
+  updateSubjectStandardApi
 } = adminApi;
 
 function* fetchExistingData({ payload }) {
@@ -215,6 +218,17 @@ function* uploadCSVtoCleverSaga({ payload }) {
   }
 }
 
+function* updateSubjectStandardSaga({ payload }) {
+  try {
+    const item = yield call(updateSubjectStandardApi, payload);
+    if (item.data) {
+      message.success("Subject Standard Mapping Successfully completed!");
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
@@ -223,7 +237,8 @@ export function* watcherSaga() {
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
-    yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga)
+    yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga),
+    yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga)
   ]);
 }
 

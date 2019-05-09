@@ -17,7 +17,8 @@ import {
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
-  uploadCSVtoCleverAction
+  uploadCSVtoCleverAction,
+  updateSubjectStdMapAction
 } from "./ducks";
 
 const SyncTypes = [
@@ -114,13 +115,13 @@ function MergeSyncTable({
   updateEdulasticSubjectAction,
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
-  uploadCSVtoClever
+  uploadCSVtoClever,
+  updateSubjectStdMapAction
 }) {
-
   const {
     data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
-  } = mergeData;
-  
+  } = searchData;
+
   return (
     <div>
       <h2>Merge and Initialize Sync</h2>
@@ -136,7 +137,7 @@ function MergeSyncTable({
           />
           <Tabs type="card" animated={true} defaultActiveKey={"subjectStdMapping"}>
             <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
-               <MergeCleverIdsTable
+              <MergeCleverIdsTable
                 clvrCounts={cleverCountsInfo}
                 eduCounts={edulasticCountsInfo}
                 uploadCSVtoClever={uploadCSVtoClever}
@@ -149,12 +150,15 @@ function MergeSyncTable({
             </TabPane>
             <TabPane tab="Subject Standard Mapping" key="subjectStdMapping" forceRender>
               <SubjectStandard
+                orgId={rosterSyncConfig.orgId}
+                orgType={rosterSyncConfig.orgType}
                 subStandardMapping={subStandardMapping}
                 fetchCurriculumDataAction={fetchCurriculumDataAction}
                 updateCleverSubjectAction={updateCleverSubjectAction}
                 updateEdulasticSubjectAction={updateEdulasticSubjectAction}
                 updateEdulasticStandardAction={updateEdulasticStandardAction}
                 addSubjectStandardRowAction={addSubjectStandardRowAction}
+                updateSubjectStdMapAction={updateSubjectStdMapAction}
               />
             </TabPane>
             <TabPane tab="Class Name Pattern" key="classNamePattern">
@@ -196,7 +200,8 @@ const withConnect = connect(
     updateEdulasticSubjectAction,
     updateEdulasticStandardAction,
     addSubjectStandardRowAction,
-    uploadCSVtoClever: uploadCSVtoCleverAction
+    uploadCSVtoClever: uploadCSVtoCleverAction,
+    updateSubjectStdMapAction
   }
 );
 

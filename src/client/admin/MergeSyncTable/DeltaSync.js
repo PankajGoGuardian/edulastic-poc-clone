@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { Form, Checkbox } from "antd";
+import { Form, Checkbox, Select } from "antd";
 import styled from "styled-components";
 import { deltaSyncConfig } from "../Data";
 import { FlexColumn } from "../Common/StyledComponents";
 import CancelApplyActions from "./CancelApplyActions";
 
+const { Option } = Select;
 const Column = styled(FlexColumn)`
   > label {
     margin-left: 8px;
@@ -22,15 +23,19 @@ function DeltaSync(props) {
     props.form.setFieldsValue({
       studentDeltaMergeEnabled: rosterSyncConfig["studentDeltaMergeEnabled"],
       studentFullMergeEnabled: rosterSyncConfig["studentFullMergeEnabled"],
+      studentMergeAttribute: rosterSyncConfig["studentMergeAttribute"],
       teacherDeltaMergeEnabled: rosterSyncConfig["teacherDeltaMergeEnabled"],
-      teacherFullMergeEnabled: rosterSyncConfig["teacherFullMergeEnabled"]
+      teacherFullMergeEnabled: rosterSyncConfig["teacherFullMergeEnabled"],
+      teacherMergeAttribute: rosterSyncConfig["teacherMergeAttribute"]
     });
   }, [
     rosterSyncConfig["studentDeltaMergeEnabled"],
     rosterSyncConfig["studentFullMergeEnabled"],
+    rosterSyncConfig["studentMergeAttribute"],
     rosterSyncConfig["teacherDeltaMergeEnabled"],
-    rosterSyncConfig["teacherFullMergeEnabled"]
-  ]);
+    rosterSyncConfig["teacherFullMergeEnabled"],
+    rosterSyncConfig["teacherMergeAttribute"]
+  ]); // this effect should run only if these 6 properties in rosterSyncConfig change
 
   function handleSubmit(evt) {
     const data = {
@@ -41,9 +46,15 @@ function DeltaSync(props) {
     props.applyDeltaSyncChanges(data);
     evt.preventDefault();
   }
+
+  const formItemLayout = {
+    labelCol: { span: 5 },
+    labelAlign: "left"
+  };
+
   return (
     <Column>
-      <Form onSubmit={handleSubmit}>
+      <Form onSubmit={handleSubmit} {...formItemLayout}>
         <Form.Item>
           {getFieldDecorator("studentDeltaMergeEnabled", {
             valuePropName: "checked"
@@ -54,6 +65,15 @@ function DeltaSync(props) {
             valuePropName: "checked"
           })(<Checkbox>{deltaSyncConfig["studentFullMergeEnabled"]}</Checkbox>)}
         </Form.Item>
+        <Form.Item label={deltaSyncConfig["studentMergeAttribute"]}>
+          {getFieldDecorator("studentMergeAttribute", {})(
+            <Select style={{ width: 120 }}>
+              <Option value="name">Name</Option>
+              <Option value="email">E-Mail</Option>
+              <Option value="both">Both</Option>
+            </Select>
+          )}
+        </Form.Item>
         <Form.Item>
           {getFieldDecorator("teacherDeltaMergeEnabled", {
             valuePropName: "checked"
@@ -63,6 +83,15 @@ function DeltaSync(props) {
           {getFieldDecorator("teacherFullMergeEnabled", {
             valuePropName: "checked"
           })(<Checkbox>{deltaSyncConfig["teacherFullMergeEnabled"]}</Checkbox>)}
+        </Form.Item>
+        <Form.Item label={deltaSyncConfig["teacherMergeAttribute"]}>
+          {getFieldDecorator("teacherMergeAttribute", {})(
+            <Select style={{ width: 120 }}>
+              <Option value="name">Name</Option>
+              <Option value="email">E-Mail</Option>
+              <Option value="both">Both</Option>
+            </Select>
+          )}
         </Form.Item>
         <CancelApplyActions applySubmit />
       </Form>

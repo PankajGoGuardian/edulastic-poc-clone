@@ -1,17 +1,27 @@
-export const radioButtondata = [
-  {
-    id: "cleverid",
-    label: "Clever id"
-  },
-  {
-    id: "id",
-    label: "District Id"
-  },
-  {
-    id: "name",
-    label: "District Name"
+export const radioButtondata = {
+  CLEVER_ID: "cleverid",
+  DISTRICT_ID: "id",
+  DISTRICT_NAME_ID: "name",
+  get list() {
+    return [
+      {
+        id: this.CLEVER_ID,
+        label: "Clever id",
+        message: "Please enter valid Clever ID"
+      },
+      {
+        id: this.DISTRICT_ID,
+        label: "District Id",
+        message: "Please enter valid District ID"
+      },
+      {
+        id: this.DISTRICT_NAME_ID,
+        label: "District Name",
+        message: "Please enter valid district name"
+      }
+    ];
   }
-];
+};
 
 export const deltaSyncConfig = {
   studentDeltaMergeEnabled: "Student Merge Enabled Delta",
@@ -38,3 +48,19 @@ export const DISTRICT_SYNC_STATUS = {
   "9": "Initial Sync",
   "10": "Full Sync"
 };
+
+export const LIST_CLEVER_SUBJECTS = [
+  "english/language arts",
+  "math",
+  "science",
+  "social studies",
+  "language",
+  "homeroom/advisory",
+  "interventions/online learning",
+  "technology and engineering",
+  "PE and health",
+  "arts and music",
+  "other"
+];
+
+export const LIST_EDULASTIC_SUBJECTS = ["Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];

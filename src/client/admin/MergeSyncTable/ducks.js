@@ -9,9 +9,16 @@ export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
 export const APPLY_DELTA_SYNC_CHANGES = "[admin] APPLY_DELTA_SYNC_CHANGES";
 export const SYNC_SCHOOLS = "[admin] SYNC_SCHOOLS";
 export const APPLY_CLASSNAMES_SYNC = "[admin] APPLY_CLASSNAMES_SYNC";
+export const ENABLE_DISABLE_SYNC_ACTION = "[admin] ENABLE_DISABLE_SYNC_ACTION";
+export const FETCH_CURRICULUM_DATA_ACTION = "[admin] FETCH_CURRICULUM_DATA_ACTION";
+export const UPDATE_CLEVER_SUBJECT_ACTION = "[admin] UPDATE_CLEVER_SUBJECT_ACTION";
+export const UPDATE_EDULASTIC_SUBJECT_ACTION = "[admin] UPDATE_EDULASTIC_SUBJECT_ACTION";
+export const UPDATE_EDULASTIC_STANDARD_ACTION = "[admin] UPDATE_EDULASTIC_STANDARD_ACTION";
+export const ADD_SUBJECT_STANDARD_ROW_ACTION = "[admin] ADD_SUBJECT_STANDARD_ROW_ACTION";
 export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
+export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API);
@@ -19,20 +26,93 @@ export const fetchExistingDataSuccess = createAction(FETCH_EXISTING_DATA_SUCCESS
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES);
 export const syncSchools = createAction(SYNC_SCHOOLS);
 export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC);
+export const enableDisableSyncAction = createAction(ENABLE_DISABLE_SYNC_ACTION);
+export const fetchCurriculumDataAction = createAction(FETCH_CURRICULUM_DATA_ACTION);
+export const fetchCurriculumDataSuccess = createAction(FETCH_CURRICULUM_DATA_SUCCESS);
+export const updateCleverSubjectAction = createAction(UPDATE_CLEVER_SUBJECT_ACTION);
+export const updateEdulasticSubjectAction = createAction(UPDATE_EDULASTIC_SUBJECT_ACTION);
+export const updateEdulasticStandardAction = createAction(UPDATE_EDULASTIC_STANDARD_ACTION);
+export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW_ACTION);
+
 export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
+
 // REDUCERS
-const initialState = {};
+
+const initialState = {
+  searchData: {},
+  subStandardMapping: {
+    rows: [],
+    cleverSubjectStandardMap: {},
+    curriculum: {}
+  }
+};
 
 const fetchExistingDataReducer = createReducer(initialState, {
-  [FETCH_EXISTING_DATA_SUCCESS]: (_, action) => action.payload
+  [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
+    const {
+      rosterSyncConfig: { cleverSubjectStandardMap }
+    } = payload.data;
+
+    state.searchData = payload;
+    state.subStandardMapping.cleverSubjectStandardMap = cleverSubjectStandardMap;
+    state.subStandardMapping.rows = Object.keys(cleverSubjectStandardMap).map(key => ({ subject: key }));
+  },
+  [FETCH_CURRICULUM_DATA_SUCCESS]: (state, { payload }) => {
+    const obj = payload.result.reduce((accumulator, currentValue) => {
+      const { subject } = currentValue;
+      if (accumulator[subject]) {
+        accumulator[subject].list.push(currentValue.curriculum);
+      } else {
+        accumulator[subject] = {};
+        accumulator[subject].list = [currentValue.curriculum];
+      }
+      return accumulator;
+    }, {});
+
+    state.subStandardMapping.curriculum = obj;
+  },
+  [UPDATE_CLEVER_SUBJECT_ACTION]: (state, { payload: { index, value, prevValue } }) => {
+    const {
+      subStandardMapping: { rows, cleverSubjectStandardMap }
+    } = state;
+    rows[index].subject = value;
+    cleverSubjectStandardMap[value] = {
+      subject: "",
+      standard: ""
+    };
+    delete cleverSubjectStandardMap[prevValue];
+  },
+  [UPDATE_EDULASTIC_SUBJECT_ACTION]: (state, { payload: { subject, value } }) => {
+    const {
+      subStandardMapping: { cleverSubjectStandardMap }
+    } = state;
+    cleverSubjectStandardMap[subject].subject = value;
+  },
+  [UPDATE_EDULASTIC_STANDARD_ACTION]: (state, { payload: { subject, value } }) => {
+    const {
+      subStandardMapping: { cleverSubjectStandardMap }
+    } = state;
+    cleverSubjectStandardMap[subject].standard = value;
+  },
+  [ADD_SUBJECT_STANDARD_ROW_ACTION]: (state, _) => {
+    const {
+      subStandardMapping: { rows }
+    } = state;
+    rows.push({ subject: "" });
+  }
 });
 
 // SELECTORS
 const adminStateSelector = state => state.admin;
 
-export const getMergeData = createSelector(
+export const getSearchData = createSelector(
   adminStateSelector,
-  ({ mergeData }) => mergeData
+  ({ mergeData }) => mergeData.searchData
+);
+
+export const getSubStandardMapping = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.subStandardMapping
 );
 
 // SAGAS
@@ -42,6 +122,8 @@ const {
   selectedSchoolSyncApi,
   completeDistrictSync,
   fetchClassNamesSyncApi,
+  enableDisableSyncApi,
+  fetchCurriculumDataApi,
   uploadCSVtoClever
 } = adminApi;
 
@@ -88,6 +170,28 @@ function* fetchClassNamesSync({ payload }) {
   }
 }
 
+function* fetchEnableDisableSync({ payload }) {
+  try {
+    const item = yield call(enableDisableSyncApi, payload);
+    if (item.success) {
+      message.success(item.message);
+    } else {
+      message.error(item.message);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* fetchCurriculumData({ payload }) {
+  try {
+    const item = yield call(fetchCurriculumDataApi, payload);
+    yield put(fetchCurriculumDataSuccess(item));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 function* uploadCSVtoCleverSaga({ payload }) {
   try {
     const response = yield call(uploadCSVtoClever, payload);
@@ -108,7 +212,6 @@ function* uploadCSVtoCleverSaga({ payload }) {
     return message.error(response);
   } catch (err) {
     message.error("Uploading failed");
-    console.error(err);
   }
 }
 
@@ -118,6 +221,8 @@ export function* watcherSaga() {
     yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
     yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
+    yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
+    yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
     yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga)
   ]);
 }

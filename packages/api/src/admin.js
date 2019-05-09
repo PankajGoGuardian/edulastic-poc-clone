@@ -75,6 +75,25 @@ const fetchClassNamesSyncApi = data =>
     })
     .then(({ data }) => data);
 
+const enableDisableSyncApi = ({ syncEnabled, districtId }) =>
+  api
+    .callApi({
+      url: `${prefix}district/${districtId}/clever-sync-status`,
+      method: "put",
+      data: {
+        syncEnabled
+      }
+    })
+    .then(({ data }) => data);
+
+const fetchCurriculumDataApi = () =>
+  api
+    .callApi({
+      url: `/curriculum`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
 const uploadCSVtoClever = ({ districtId, mergeType, file }) => {
   const formData = new FormData();
   formData.append("file", file);
@@ -97,5 +116,7 @@ export default {
   completeDistrictSync,
   fetchClassNamesSyncApi,
   deleteDistrictApi,
+  enableDisableSyncApi,
+  fetchCurriculumDataApi,
   uploadCSVtoClever
 };

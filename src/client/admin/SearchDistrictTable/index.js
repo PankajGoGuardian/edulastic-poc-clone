@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Popconfirm, Spin } from "antd";
-import { IconPencilEdit, IconTrash } from "@edulastic/icons";
+import { Table, Input, Popconfirm } from "antd";
+import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
-import { IconCaretDown } from "@edulastic/icons";
 import ErrorBoundary from "../Common/ErrorBoundary";
 import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS } from "../Data";
 
@@ -77,12 +76,12 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
     );
   }
 
-  function updateCleverId(id) {
+  function updateCleverId(districtId) {
     // here a ref is used to access value of the input field
     // here editCell is set so that all fields become uneditable
     setEditCell();
     updateClever({
-      districtId: id,
+      districtId,
       cleverId: textInput.current.state.value
     });
   }

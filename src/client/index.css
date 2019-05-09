@@ -1150,10 +1150,16 @@ span.token.active-word {
   outline: 1px dashed #000;
   outline-offset: 4px;
 }
+
+.mq-root-block,
+.mq-math-mode .mq-root-block {
+  margin-bottom: 0.2em;
+}
+
 .mq-math-mode .mq-supsub.mq-sup-only {
   margin-bottom: 1em;
 }
 
 .mq-math-mode sup.mq-nthroot {
-  margin-top: 0.5em;
+  margin-top: 0.3em;
 }

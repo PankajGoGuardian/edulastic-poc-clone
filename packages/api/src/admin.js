@@ -75,6 +75,19 @@ const fetchClassNamesSyncApi = data =>
     })
     .then(({ data }) => data);
 
+const uploadCSVtoClever = ({ districtId, mergeType, file }) => {
+  const formData = new FormData();
+  formData.append("file", file);
+  return api
+    .callApi({
+      url: `${prefix}merge/${districtId}?mergeType=${mergeType}`,
+      method: "post",
+      data: formData,
+      headers: { "Content-Type": "multipart/form-data" }
+    })
+    .then(({ data }) => data.result);
+};
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -83,5 +96,6 @@ export default {
   selectedSchoolSyncApi,
   completeDistrictSync,
   fetchClassNamesSyncApi,
-  deleteDistrictApi
+  deleteDistrictApi,
+  uploadCSVtoClever
 };

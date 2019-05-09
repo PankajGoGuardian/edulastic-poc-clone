@@ -11,7 +11,8 @@ export default function MergeSyncTable({
   mergeData,
   applyDeltaSyncChanges,
   syncSchools,
-  applyClassNamesSync
+  applyClassNamesSync,
+  uploadCSVtoClever
 }) {
   const {
     data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
@@ -49,7 +50,13 @@ export default function MergeSyncTable({
       {mergeData.data && (
         <Tabs type="card" animated={true} defaultActiveKey={"mergeCleverIds"}>
           <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
-            <MergeCleverIdsTable clvrCounts={cleverCountsInfo} eduCounts={edulasticCountsInfo} />
+            <MergeCleverIdsTable
+              clvrCounts={cleverCountsInfo}
+              eduCounts={edulasticCountsInfo}
+              uploadCSVtoClever={uploadCSVtoClever}
+              districtId={districtInput}
+              cleverId={cleverIdInput}
+            />
           </TabPane>
           <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
             <DeltaSync rosterSyncConfig={rosterSyncConfig} applyDeltaSyncChanges={applyDeltaSyncChanges} />

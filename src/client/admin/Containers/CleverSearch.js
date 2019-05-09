@@ -12,7 +12,8 @@ import {
   getMergeData,
   applyDeltaSyncChanges,
   syncSchools,
-  applyClassNamesSync
+  applyClassNamesSync,
+  uploadCSVtoCleverAction
 } from "../MergeSyncTable/ducks";
 
 const { Group: RadioGroup } = Radio;
@@ -27,7 +28,8 @@ function CleverSearch(props) {
     mergeData,
     applyDeltaSyncChanges,
     syncSchools,
-    applyClassNamesSync
+    applyClassNamesSync,
+    uploadCSVtoCleverAction
   } = props;
   const [input, setInput] = useState("");
   const [radioInput, setRadioInput] = useState(radioButtondata[0].id);
@@ -66,6 +68,7 @@ function CleverSearch(props) {
         applyDeltaSyncChanges={applyDeltaSyncChanges}
         syncSchools={syncSchools}
         applyClassNamesSync={applyClassNamesSync}
+        uploadCSVtoClever={uploadCSVtoCleverAction}
       />
     </MainDiv>
   );
@@ -85,7 +88,8 @@ const withConnect = connect(
     applyDeltaSyncChanges,
     syncSchools,
     applyClassNamesSync,
-    deleteDistrictId
+    deleteDistrictId,
+    uploadCSVtoCleverAction
   }
 );
 

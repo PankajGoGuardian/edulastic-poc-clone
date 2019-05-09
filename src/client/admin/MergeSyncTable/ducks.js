@@ -9,6 +9,7 @@ export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
 export const APPLY_DELTA_SYNC_CHANGES = "[admin] APPLY_DELTA_SYNC_CHANGES";
 export const SYNC_SCHOOLS = "[admin] SYNC_SCHOOLS";
 export const APPLY_CLASSNAMES_SYNC = "[admin] APPLY_CLASSNAMES_SYNC";
+export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 
@@ -18,6 +19,7 @@ export const fetchExistingDataSuccess = createAction(FETCH_EXISTING_DATA_SUCCESS
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES);
 export const syncSchools = createAction(SYNC_SCHOOLS);
 export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC);
+export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
 // REDUCERS
 const initialState = {};
 
@@ -39,7 +41,8 @@ const {
   applyDeltaSyncApi,
   selectedSchoolSyncApi,
   completeDistrictSync,
-  fetchClassNamesSyncApi
+  fetchClassNamesSyncApi,
+  uploadCSVtoClever
 } = adminApi;
 
 function* fetchExistingData({ payload }) {
@@ -85,12 +88,37 @@ function* fetchClassNamesSync({ payload }) {
   }
 }
 
+function* uploadCSVtoCleverSaga({ payload }) {
+  try {
+    const response = yield call(uploadCSVtoClever, payload);
+    if (Array.isArray(response)) {
+      const { status = "", message: responseMsg = "" } = response[0] || {};
+      if (status !== "success") {
+        return message.error(responseMsg);
+      }
+      const { cleverId, districtId: cleverDistrict } = payload;
+      yield put(
+        searchExistingDataApi({
+          cleverDistrict,
+          cleverId
+        })
+      );
+      return message.success(responseMsg);
+    }
+    return message.error(response);
+  } catch (err) {
+    message.error("Uploading failed");
+    console.error(err);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
     yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
     yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
-    yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync)
+    yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
+    yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga)
   ]);
 }
 

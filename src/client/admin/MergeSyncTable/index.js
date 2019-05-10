@@ -7,6 +7,7 @@ import { DeltaSync, ClassNamePattern, Sync, SubjectStandard } from "./Tabs";
 import {
   searchExistingDataApi,
   getSearchData,
+  mergeResponseSelector,
   applyDeltaSyncChanges,
   syncSchools,
   applyClassNamesSync,
@@ -18,7 +19,8 @@ import {
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
   uploadCSVtoCleverAction,
-  updateSubjectStdMapAction
+  updateSubjectStdMapAction,
+  closeMergeResponseAction
 } from "./ducks";
 
 const SyncTypes = [
@@ -116,7 +118,9 @@ function MergeSyncTable({
   updateEdulasticStandardAction,
   addSubjectStandardRowAction,
   uploadCSVtoClever,
-  updateSubjectStdMapAction
+  updateSubjectStdMapAction,
+  mergeResponse,
+  closeMergeResponse
 }) {
   const {
     data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
@@ -143,6 +147,8 @@ function MergeSyncTable({
                 uploadCSVtoClever={uploadCSVtoClever}
                 districtId={district._id}
                 cleverId={district.cleverId}
+                mergeResponse={mergeResponse}
+                closeMergeResponse={closeMergeResponse}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
@@ -184,7 +190,8 @@ function MergeSyncTable({
 
 const mapStateToProps = state => ({
   searchData: getSearchData(state),
-  subStandardMapping: getSubStandardMapping(state)
+  subStandardMapping: getSubStandardMapping(state),
+  mergeResponse: mergeResponseSelector(state)
 });
 
 const withConnect = connect(
@@ -201,6 +208,7 @@ const withConnect = connect(
     updateEdulasticStandardAction,
     addSubjectStandardRowAction,
     uploadCSVtoClever: uploadCSVtoCleverAction,
+    closeMergeResponse: closeMergeResponseAction,
     updateSubjectStdMapAction
   }
 );

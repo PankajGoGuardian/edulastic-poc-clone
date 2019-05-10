@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Table, Button, Upload, Icon, message } from "antd";
+import React from "react";
+import { CSVLink } from "react-csv";
+import { Table, Button, Upload, Icon, message, Modal } from "antd";
 
 const { Column } = Table;
 
@@ -32,23 +33,22 @@ const mapCountAsType = {
   }
 };
 
-const MergeCleverIdsTable = ({ eduCounts, clvrCounts, uploadCSVtoClever, districtId, cleverId }) => {
-  const [uploading, setUploading] = useState(false);
-
+const MergeCleverIdsTable = ({
+  eduCounts,
+  clvrCounts,
+  uploadCSVtoClever,
+  districtId,
+  cleverId,
+  mergeResponse,
+  closeMergeResponse
+}) => {
+  const { data: mergeResponseData, showData: showMergeResponseData } = mergeResponse;
   const beforeUpload = file => {
     const isCSV = file.type === "text/csv";
     if (!isCSV) {
       message.error("You can only upload CSV file!");
     }
     return isCSV;
-  };
-
-  const onChange = info => {
-    if (info.file.status === "uploading") {
-      setUploading(true);
-    } else {
-      setUploading(false);
-    }
   };
 
   const handleUpload = (info, mergeType) => {
@@ -66,7 +66,6 @@ const MergeCleverIdsTable = ({ eduCounts, clvrCounts, uploadCSVtoClever, distric
   };
 
   const props = {
-    onChange,
     beforeUpload,
     accept: ".csv",
     multiple: false,
@@ -82,26 +81,62 @@ const MergeCleverIdsTable = ({ eduCounts, clvrCounts, uploadCSVtoClever, distric
     isEmpty: !eduCounts[item] && !clvrCounts[item],
     isMatching: eduCounts[item] === clvrCounts[item]
   }));
-
+  const headers = [
+    { label: "Edulastic Id", key: "edulasticId" },
+    { label: "Clever Id", key: "cleverId" },
+    { label: "Status", key: "status" }
+  ];
   return (
-    <Table rowKey={record => record.key} dataSource={dataSource} pagination={false}>
-      <Column title="Fields" dataIndex="fieldName" key="fieldName" />
-      <Column title="Edulastic Count" dataIndex="eduCount" key="eduCount" />
-      <Column title="Clever Count" dataIndex="clvrCount" key="clvrCount" />
-      <Column
-        title="Actions"
-        dataIndex="isEmpty"
-        key="btnName"
-        render={(_, { type }) => (
-          <Upload aria-label="Upload" {...props} customRequest={info => handleUpload(info, type)} disabled={uploading}>
-            <Button loading={uploading}>
-              <Icon type="upload" /> Upload
-            </Button>
-            {" *.csv"}
-          </Upload>
-        )}
-      />
-    </Table>
+    <>
+      <Modal
+        title="Clever Id Merge report"
+        visible={showMergeResponseData}
+        destroyOnClose={false}
+        maskClosable={false}
+        onCancel={closeMergeResponse}
+        footer={[
+          <Button key="back" onClick={closeMergeResponse}>
+            Cancel
+          </Button>,
+          <Button key="submit" type="primary">
+            <CSVLink
+              data={mergeResponseData}
+              filename={"merge_report.csv"}
+              seperator={","}
+              headers={headers}
+              target="_blank"
+            >
+              Download
+            </CSVLink>
+          </Button>
+        ]}
+        width={"80%"}
+      >
+        <Table rowKey={record => record.cleverId} dataSource={mergeResponseData} pagination={false}>
+          <Column title="Edulastic Id" dataIndex="edulasticId" key="edulasticId" />
+          <Column title="Clever Id" dataIndex="cleverId" key="cleverId" />
+          <Column title="Status" dataIndex="status" key="status" />
+        </Table>
+      </Modal>
+      <Table rowKey={record => record.key} dataSource={dataSource} pagination={false}>
+        <Column title="Fields" dataIndex="fieldName" key="fieldName" />
+        <Column title="Edulastic Count" dataIndex="eduCount" key="eduCount" />
+        <Column title="Clever Count" dataIndex="clvrCount" key="clvrCount" />
+        <Column
+          title="Actions"
+          dataIndex="isEmpty"
+          key="btnName"
+          render={(_, { type }) => (
+            <Upload aria-label="Upload" {...props} customRequest={info => handleUpload(info, type)}>
+              <Button>
+                <Icon type="upload" /> Upload
+              </Button>
+              {" *.csv"}
+            </Upload>
+          )}
+        />
+      </Table>
+    </>
   );
 };
 

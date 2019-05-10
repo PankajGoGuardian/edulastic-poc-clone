@@ -20,6 +20,8 @@ export const UPDATE_SUBJECT_STANDARD_MAP = "[admin] UPDATE_SUBJECT_STANDARD_MAP"
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
+export const RECEIVE_MERGED_CLEVER_ID = "[admin] merge clever ids to edulastic";
+export const CLOSE_MERGE_RESPONSE_TABLE = "[admin] close merge response table";
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API);
@@ -37,6 +39,8 @@ export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW
 export const updateSubjectStdMapAction = createAction(UPDATE_SUBJECT_STANDARD_MAP);
 
 export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
+export const receiveMergeCleverIdsAction = createAction(RECEIVE_MERGED_CLEVER_ID);
+export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE);
 
 // REDUCERS
 
@@ -46,6 +50,10 @@ const initialState = {
     rows: [],
     cleverSubjectStandardMap: {},
     curriculum: {}
+  },
+  mergeResponse: {
+    data: [],
+    showData: false
   }
 };
 
@@ -101,6 +109,18 @@ const fetchExistingDataReducer = createReducer(initialState, {
       subStandardMapping: { rows }
     } = state;
     rows.push({ subject: "" });
+  },
+  [RECEIVE_MERGED_CLEVER_ID]: (state, { payload }) => {
+    state.mergeResponse = {
+      data: payload,
+      showData: true
+    };
+  },
+  [CLOSE_MERGE_RESPONSE_TABLE]: state => {
+    state.mergeResponse = {
+      data: [],
+      showData: false
+    };
   }
 });
 
@@ -115,6 +135,11 @@ export const getSearchData = createSelector(
 export const getSubStandardMapping = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.subStandardMapping
+);
+
+export const mergeResponseSelector = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.mergeResponse
 );
 
 // SAGAS
@@ -198,21 +223,19 @@ function* fetchCurriculumData({ payload }) {
 function* uploadCSVtoCleverSaga({ payload }) {
   try {
     const response = yield call(uploadCSVtoClever, payload);
-    if (Array.isArray(response)) {
-      const { status = "", message: responseMsg = "" } = response[0] || {};
-      if (status !== "success") {
-        return message.error(responseMsg);
-      }
-      const { cleverId, districtId: cleverDistrict } = payload;
-      yield put(
-        searchExistingDataApi({
-          cleverDistrict,
-          cleverId
-        })
-      );
-      return message.success(responseMsg);
+    const { status = "", message: responseMsg = "", data = [] } = response || {};
+    if (status !== "success") {
+      return message.error(responseMsg);
     }
-    return message.error(response);
+    message.success(responseMsg);
+    const { cleverId, districtId: cleverDistrict } = payload;
+    yield put(receiveMergeCleverIdsAction(data));
+    yield put(
+      searchExistingDataApi({
+        cleverDistrict,
+        cleverId
+      })
+    );
   } catch (err) {
     message.error("Uploading failed");
   }

@@ -14,7 +14,7 @@ const ShortText = props => {
   return (
     <Fragment>
       {view === EDIT && <EditShortText {...props} />}
-      {view === PREVIEW && <ShortTextPreview {...props} item={itemForPreview} />}
+      {view === PREVIEW && <ShortTextPreview key={itemForPreview.id} {...props} item={itemForPreview} />}
     </Fragment>
   );
 };

@@ -17,7 +17,7 @@ const EssayPlainText = props => {
   return (
     <Fragment>
       {view === EDIT && <EditEssayPlainText {...props} />}
-      {view === PREVIEW && <EssayPlainTextPreview {...props} item={itemForPreview} />}
+      {view === PREVIEW && <EssayPlainTextPreview key={itemForPreview.id} {...props} item={itemForPreview} />}
     </Fragment>
   );
 };

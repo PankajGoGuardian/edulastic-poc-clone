@@ -87,6 +87,7 @@ const FormulaEssay = ({
       {view === PREVIEW && (
         <Wrapper style={{ height: "100%" }}>
           <FormulaEssayPreview
+            key={itemForPreview.id}
             lines={lines}
             setLines={handleSetLines}
             resetLines={resetLines}

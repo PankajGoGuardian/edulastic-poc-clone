@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
+import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq, isEmpty } from "lodash";
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
@@ -219,7 +219,7 @@ class Container extends PureComponent {
   };
 
   handleSave = async () => {
-    const { selectedRows, user, test, updateTest, createTest, itemsSubjectAndGrade } = this.props;
+    const { selectedRows, user, test, updateTest, createTest, itemsSubjectAndGrade, editAssigned } = this.props;
     const testItems = selectedRows.data;
     const newTest = cloneDeep(test);
 
@@ -246,16 +246,32 @@ class Container extends PureComponent {
     });
 
     if (test._id) {
-      if (this.props.editAssigned) {
+      if (editAssigned) {
         newTest.versioned = true;
-        delete newTest["authors"];
-        createTest(newTest);
+        delete newTest.authors;
+        if (this.validateTest(newTest)) {
+          createTest(newTest);
+        }
       } else {
         updateTest(test._id, newTest);
       }
     } else {
       createTest(newTest);
     }
+  };
+
+  validateTest = test => {
+    const { subjects, grades } = test;
+
+    if (isEmpty(grades)) {
+      message.error("Grade field cannot be empty");
+      return false;
+    }
+    if (isEmpty(subjects)) {
+      message.error("Subject field cannot be empty");
+      return false;
+    }
+    return true;
   };
 
   onShareModalChange = () => {

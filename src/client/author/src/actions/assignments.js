@@ -4,7 +4,8 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST,
   FETCH_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_RELEASE_SCORE_SETTINGS,
-  TOGGLE_RELEASE_GRADE_SETTINGS
+  TOGGLE_RELEASE_GRADE_SETTINGS,
+  ADVANCED_ASSIGNMENT_VIEW
 } from "../constants/actions";
 
 export const receiveAssignmentsAction = payload => ({
@@ -35,4 +36,8 @@ export const receiveAssignmentClassList = payload => ({
 export const toggleReleaseScoreSettingsAction = payload => ({
   type: TOGGLE_RELEASE_GRADE_SETTINGS,
   payload
+});
+
+export const toggleAssignmentViewAction = () => ({
+  type: ADVANCED_ASSIGNMENT_VIEW
 });

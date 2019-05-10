@@ -58,3 +58,8 @@ export const getDistrictIdSelector = createSelector(
   userSelector,
   state => state.user.orgData.districtId
 );
+
+export const getAssignmentViewSelector = createSelector(
+  stateSelector,
+  state => state.isAdvancedView
+);

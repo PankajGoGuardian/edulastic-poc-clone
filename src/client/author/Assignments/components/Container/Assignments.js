@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { remove, clone } from "lodash";
+import { remove, clone, isEmpty } from "lodash";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
@@ -16,7 +16,8 @@ import {
   receiveAssignmentsSummaryAction,
   receiveAssignmentByIdAction,
   updateReleaseScoreSettingsAction,
-  toggleReleaseScoreSettingsAction
+  toggleReleaseScoreSettingsAction,
+  toggleAssignmentViewAction
 } from "../../../src/actions/assignments";
 import { receiveFolderAction } from "../../../src/actions/folder";
 
@@ -26,7 +27,8 @@ import {
   getTestsSelector,
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector,
-  getDistrictIdSelector
+  getDistrictIdSelector,
+  getAssignmentViewSelector
 } from "../../../src/selectors/assignments";
 
 import FilterBar from "../FilterBar/FilterBar";
@@ -60,16 +62,17 @@ const initialFilterState = {
 class Assignments extends Component {
   state = {
     showFilter: false,
-    isAdvancedView: false,
     selectedRows: [],
     filterState: initialFilterState
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders } = this.props;
+    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, assignmentsSummary } = this.props;
     loadAssignments();
     loadFolders();
-    loadAssignmentsSummary({ districtId, filters: { pageNo: 1 } });
+    if (isEmpty(assignmentsSummary)) {
+      loadAssignmentsSummary({ districtId, filters: { pageNo: 1 } });
+    }
   }
 
   setFilterState = filterState => {
@@ -96,8 +99,9 @@ class Assignments extends Component {
     }
   };
 
-  SwitchView = checked => {
-    this.setState({ isAdvancedView: checked, selectedRows: [], filterState: initialFilterState });
+  SwitchView = () => {
+    const { toggleAssignmentView } = this.props;
+    this.setState({ selectedRows: [], filterState: initialFilterState }, toggleAssignmentView);
   };
 
   renderFilter = () => {
@@ -109,7 +113,7 @@ class Assignments extends Component {
     <SwitchWrapper>
       <SwitchWrapper>
         <SwitchLabel>TEACHER</SwitchLabel>
-        <ViewSwitch size="small" onChange={this.SwitchView} />
+        <ViewSwitch checked={isAdvancedView} size="small" onChange={this.SwitchView} />
         <SwitchLabel>ADVANCED</SwitchLabel>
       </SwitchWrapper>
       <TestButton onClick={() => {}} color="secondary" variant="test" shadow="none">
@@ -140,9 +144,10 @@ class Assignments extends Component {
       isShowReleaseSettingsPopup,
       toggleReleaseGradePopUp,
       assignmentsSummary,
-      districtId
+      districtId,
+      isAdvancedView
     } = this.props;
-    const { showFilter, isAdvancedView, selectedRows, filterState } = this.state;
+    const { showFilter, selectedRows, filterState } = this.state;
     const tabletWidth = 768;
 
     return (
@@ -240,7 +245,9 @@ Assignments.propTypes = {
   toggleReleaseGradePopUp: PropTypes.func.isRequired,
   tests: PropTypes.array.isRequired,
   isShowReleaseSettingsPopup: PropTypes.bool.isRequired,
-  districtId: PropTypes.string.isRequired
+  districtId: PropTypes.string.isRequired,
+  toggleAssignmentView: PropTypes.func.isRequired,
+  isAdvancedView: PropTypes.bool.isRequired
 };
 
 Assignments.defaultProps = {
@@ -257,7 +264,8 @@ const enhance = compose(
       tests: getTestsSelector(state),
       currentEditableAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
-      districtId: getDistrictIdSelector(state)
+      districtId: getDistrictIdSelector(state),
+      isAdvancedView: getAssignmentViewSelector(state)
     }),
     {
       loadAssignments: receiveAssignmentsAction,
@@ -265,7 +273,8 @@ const enhance = compose(
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,
-      toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction
+      toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
+      toggleAssignmentView: toggleAssignmentViewAction
     }
   )
 );

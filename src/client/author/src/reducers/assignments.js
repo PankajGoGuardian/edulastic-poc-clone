@@ -10,7 +10,8 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
   RECEIVE_ASSIGNMENTS_ERROR,
   UPDATE_CURRENT_EDITING_ASSIGNMENT,
-  TOGGLE_RELEASE_GRADE_SETTINGS
+  TOGGLE_RELEASE_GRADE_SETTINGS,
+  ADVANCED_ASSIGNMENT_VIEW
 } from "../constants/actions";
 
 const initialState = {
@@ -25,7 +26,8 @@ const initialState = {
   creating: false,
   toggleReleaseGradeSettings: false,
   currentAssignment: {},
-  filtering: false
+  filtering: false,
+  isAdvancedView: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -73,6 +75,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         toggleReleaseGradeSettings: payload
+      };
+    case ADVANCED_ASSIGNMENT_VIEW:
+      return {
+        ...state,
+        isAdvancedView: !state.isAdvancedView
       };
     default:
       return state;

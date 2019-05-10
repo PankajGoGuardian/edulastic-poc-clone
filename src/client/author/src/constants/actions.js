@@ -163,6 +163,8 @@ export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current ass
 export const UPDATE_RELEASE_SCORE_SETTINGS = "[assignments] update assignment settings";
 export const TOGGLE_RELEASE_GRADE_SETTINGS = "[assignments show release grade settings]";
 
+export const ADVANCED_ASSIGNMENT_VIEW = "[assignments] change view";
+
 export const RECEIVE_CLASS_QUESTION_REQUEST = "[answers] receive list request";
 export const RECEIVE_CLASS_QUESTION_SUCCESS = "[answers] receive list success";
 export const RECEIVE_CLASS_QUESTION_ERROR = "[answers] receive list error";
@@ -217,6 +219,6 @@ export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
 
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
 
-//playlist
+// playlist
 export const UPDATE_PLAYLISTS_SUCCESS = "[playlists] update success";
 export const CREATE_PLAYLISTS_SUCCESS = "[playlists] create success";

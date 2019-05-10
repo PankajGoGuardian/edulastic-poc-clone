@@ -43,13 +43,6 @@ const MergeCleverIdsTable = ({
   closeMergeResponse
 }) => {
   const { data: mergeResponseData, showData: showMergeResponseData } = mergeResponse;
-  const beforeUpload = file => {
-    const isCSV = file.type === "text/csv";
-    if (!isCSV) {
-      message.error("You can only upload CSV file!");
-    }
-    return isCSV;
-  };
 
   const handleUpload = (info, mergeType) => {
     try {
@@ -66,7 +59,6 @@ const MergeCleverIdsTable = ({
   };
 
   const props = {
-    beforeUpload,
     accept: ".csv",
     multiple: false,
     showUploadList: false

@@ -3,17 +3,8 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
-import { head, get } from "lodash";
-import {
-  green,
-  dropZoneTitleColor,
-  greyGraphstroke,
-  barGrapColor1,
-  barGrapColor2,
-  incorrect,
-  pCorrect,
-  graded
-} from "@edulastic/colors";
+import { head, get, isEmpty, round, sumBy } from "lodash";
+import { green, dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded } from "@edulastic/colors";
 
 import {
   StyledFlexContainer,
@@ -36,7 +27,17 @@ import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../Class
 const CustomTooltip = ({ label = "", payload }) => {
   const firstItem = head(payload) || {};
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
-  return <TooltipContainer title={label}>{`Time(seconds): ${(timeSpent / 1000).toFixed(1) || 0}`}</TooltipContainer>;
+  return <TooltipContainer title={label}>{`Time(seconds): ${timeSpent || 0}`}</TooltipContainer>;
+};
+
+CustomTooltip.propTypes = {
+  label: PropTypes.string,
+  payload: PropTypes.object
+};
+
+CustomTooltip.defaultProps = {
+  label: "",
+  payload: {}
 };
 
 class QuestionViewContainer extends Component {
@@ -53,12 +54,18 @@ class QuestionViewContainer extends Component {
   }
 
   isMobile = () => window.innerWidth < 480;
-  calcTimeSpent = (student = {}) => {
-    const {
-      question: { id: qId }
-    } = this.props;
-    const { timeSpent = 0 } = student.questionActivities.find(({ _id }) => _id === qId);
-    return timeSpent;
+
+  // calcTimeSpent = (student = {}) => {
+  //   const {
+  //     question: { id: qId }
+  //   } = this.props;
+  //   const { timeSpent = 0 } = student.questionActivities.find(({ _id }) => _id === qId);
+  //   return round(timeSpent / 1000, 2);
+  // };
+
+  calcTimeSpentAsSec = (activities = []) => {
+    const totalSpent = sumBy(activities, ({ timeSpent }) => timeSpent || 0);
+    return round(totalSpent / activities.length / 1000, 2);
   };
 
   render() {
@@ -82,19 +89,56 @@ class QuestionViewContainer extends Component {
     });
     const isMobile = this.isMobile();
     let data = [];
-    if (testActivity.length > 0) {
-      testActivity.map(student => {
-        if (student.status === "submitted") {
-          data.push({
-            name: student.studentName,
-            score: student.score ? student.score : 0,
-            time: 0,
-            maxscore: student.maxScore,
-            avgTimeSpent: this.calcTimeSpent(student)
+    // if (testActivity.length > 0) {
+    //   testActivity.map(student => {
+    //     if (student.status === "submitted") {
+    //       data.push({
+    //         name: student.studentName,
+    //         score: student.score ? student.score : 0,
+    //         time: 0,
+    //         maxscore: student.maxScore,
+    //         avgTimeSpent: this.calcTimeSpent(student),
+    //         attempts: student.questionActivities.length
+    //       });
+    //     }
+    //     return "";
+    //   });
+    // }
+
+    if (!isEmpty(testActivity)) {
+      data = testActivity
+        .filter(student => student.status === "submitted")
+        .map(st => {
+          const stData = {
+            name: st.studentName,
+            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities),
+            attempts: st.questionActivities.length,
+            correct: 0,
+            wrong: 0,
+            pCorrect: 0,
+            skipped: 0,
+            manuallyGraded: 0
+          };
+          st.questionActivities.map(({ correct, partialCorrect, skipped, manuallyGraded }) => {
+            if (correct) {
+              stData.correct += 1;
+            } else if (skipped) {
+              stData.skipped += 1;
+            } else if (!skipped && !correct) {
+              stData.wrong += 1;
+            }
+
+            if (partialCorrect) {
+              stData.pCorrect += 1;
+            }
+
+            if (manuallyGraded) {
+              stData.manuallyGraded += 1;
+            }
+            return null;
           });
-        }
-        return "";
-      });
+          return stData;
+        });
     }
 
     if (isMobile) {
@@ -134,19 +178,17 @@ class QuestionViewContainer extends Component {
               <ComposedChart barGap={1} barSize={36} data={data}>
                 <XAxis dataKey="name" axisLine={false} tickSize={0} />
                 <YAxis
-                  dataKey="score"
+                  dataKey="attempts"
                   yAxisId={0}
-                  tickCount={4}
                   allowDecimals={false}
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
-                  label={{ value: "PERFORMANCE", angle: -90, fill: greyGraphstroke }}
+                  label={{ value: "ATTEMPTS", angle: -90, fill: greyGraphstroke }}
                   stroke={greyGraphstroke}
                 />
                 <YAxis
-                  dataKey="time"
+                  dataKey="avgTimeSpent"
                   yAxisId={1}
-                  tickCount={4}
                   allowDecimals={false}
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
@@ -158,8 +200,11 @@ class QuestionViewContainer extends Component {
                   orientation="right"
                   stroke={greyGraphstroke}
                 />
-                <Bar stackId="a" dataKey="score" fill={barGrapColor1} onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="time" fill={barGrapColor2} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="correct" fill={green} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="wrong" fill={incorrect} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="pCorrect" fill={pCorrect} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="skipped" fill={dropZoneTitleColor} onClick={this.onClickChart} />
+                <Bar stackId="a" dataKey="manuallyGraded" fill={graded} onClick={this.onClickChart} />
                 <Tooltip content={<CustomTooltip />} cursor={false} />
               </ComposedChart>
             </ResponsiveContainer>

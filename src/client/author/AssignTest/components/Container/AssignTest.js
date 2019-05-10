@@ -46,7 +46,7 @@ const initAssignment = {
 
 class AssignTest extends React.Component {
   state = {
-    isAdvancedView: true,
+    isAdvancedView: false,
     assignment: initAssignment
   };
 

@@ -3,7 +3,7 @@ import { omitBy } from "lodash";
 import { ScoringType } from "./const/scoring";
 
 const url = `${
-  typeof window === "undefined" ? "https" : window.location.protocol
+  typeof window === "undefined" ? "https:" : window.location.protocol
 }//edulastic-poc.snapwiz.net/math-api/evaluate`;
 
 const evaluate = data =>

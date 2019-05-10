@@ -22,7 +22,7 @@ var _axios = _interopRequireDefault(require("axios"));
 var _scoring = require("./const/scoring");
 
 var url = "".concat(
-  typeof window === "undefined" ? "https" : window.location.protocol,
+  typeof window === "undefined" ? "https:" : window.location.protocol,
   "//edulastic-poc.snapwiz.net/math-api/evaluate"
 );
 

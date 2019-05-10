@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import { Popconfirm, Form, Icon, Select, message, Button } from "antd";
 const Option = Select.Option;
@@ -15,17 +16,24 @@ import {
   StyledFilterButton,
   StyledSchoolSearch,
   StyledSelectStatus,
-  StyledTable
+  StyledTable,
+  StyledPagination
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 
 // actions
-import { createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
+import {
+  receiveSchoolsAction,
+  createSchoolsAction,
+  updateSchoolsAction,
+  deleteSchoolsAction,
+  setSearchByNameValueAction
+} from "../../ducks";
 
-// selectors
-import { getCreatedSchoolSelector } from "../../ducks";
+import { getSchoolsSelector } from "../../ducks";
+import { getUserOrgId } from "../../../src/selectors/user";
 
 function compareByAlph(a, b) {
   if (a > b) {
@@ -41,10 +49,7 @@ class SchoolsTable extends React.Component {
   constructor(props) {
     super(props);
 
-    const schoolsData = this.initialDataSrouce(this.props.schoolsData);
-
     this.state = {
-      dataSource: schoolsData,
       editingKey: "",
       isAdding: false,
       selectedRowKeys: [],
@@ -55,7 +60,7 @@ class SchoolsTable extends React.Component {
       filtersValue: "",
       filterStr: "",
       filterAdded: false,
-      created: props.created
+      currentPage: 1
     };
 
     this.columns = [
@@ -82,6 +87,17 @@ class SchoolsTable extends React.Component {
         dataIndex: "zip",
         editable: true,
         sorter: (a, b) => compareByAlph(a.zip, b.zip)
+      },
+      {
+        title: "Status",
+        dataIndex: "status",
+        editable: true,
+        sorter: (a, b) => compareByAlph(a.status, b.status),
+        render: (text, record) => {
+          return (
+            <React.Fragment>{record.status == 0 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
+          );
+        }
       },
       {
         title: "Teacher",
@@ -122,37 +138,15 @@ class SchoolsTable extends React.Component {
     ];
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.created._id !== prevState.created._id) {
-      const { dataSource } = prevState;
-      const newSchool = {
-        key: nextProps.create._id,
-        ...nextProps.created
-      };
-      return {
-        dataSource: [newSchool, ...dataSource],
-        created: nextProps.created
-      };
-    } else return null;
+  componentDidMount() {
+    const { loadSchoolsData, userOrgId } = this.props;
+    loadSchoolsData({ districtId: userOrgId, limit: 10, page: 1 });
   }
 
-  initialDataSrouce = data => {
-    const dataSource = [];
-    data.map(row => {
-      row.key = row._id;
-      row.name = row.name;
-      row.city = row.hasOwnProperty("city") && row.city != null ? row.city : "";
-      row.state = row.hasOwnProperty("state") && row.state != null ? row.state : "";
-      row.zip = row.hasOwnProperty("zip") && row.zip != null ? row.zip : "";
-      row.country = row.hasOwnProperty("country") && row.country != null ? row.country : "";
-      row.state = row.hasOwnProperty("state") && row.state != null ? row.state : "";
-      row.teachersCount = row.hasOwnProperty("teachersCount") && row.teachersCount != null ? row.teachersCount : 0;
-      row.studentsCount = row.hasOwnProperty("studentsCount") && row.studentsCount != null ? row.studentsCount : 0;
-      row.sectionsCount = row.hasOwnProperty("sectionsCount") && row.sectionsCount != null ? row.sectionsCount : 0;
-      dataSource.push(row);
-    });
-    return dataSource;
-  };
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.schoolList.length === undefined) return { dataSource: [] };
+    else return { dataSource: nextProps.schoolList };
+  }
 
   onEditSchool = key => {
     this.setState({
@@ -198,45 +192,38 @@ class SchoolsTable extends React.Component {
   };
 
   addFilter = e => {
+    const { loadSchoolsData, userOrgId } = this.props;
     const { filtersColumn, filtersValue, filterStr } = this.state;
-    const dataSource = this.initialDataSrouce(this.props.schoolsData);
+    let searchValue = {};
+    searchValue[filtersColumn] = { type: filtersValue, value: filterStr };
 
-    let possibleFilterKey = [];
-
-    if (filtersColumn !== "") {
-      possibleFilterKey.push(filtersColumn);
-    } else {
-      possibleFilterKey = ["name", "city", "sectionsCount", "studentsCount", "teachersCount", "zip"];
-    }
-
-    const filterSource = dataSource.filter(row => {
-      if (filterStr === "") {
-        return row;
-      } else {
-        if (filtersValue === "equals") {
-          const equalKeys = possibleFilterKey.filter(key => row[key] === filterStr);
-          if (equalKeys.length > 0) return row;
-        } else if (filtersValue === "contains" || filtersValue === "") {
-          const equalKeys = possibleFilterKey.filter(key => row[key].toString().indexOf(filterStr) !== -1);
-          if (equalKeys.length > 0) return row;
-        }
-      }
+    loadSchoolsData({
+      districtId: userOrgId,
+      limit: 10,
+      page: 1,
+      search: searchValue
     });
 
     this.setState({
-      dataSource: filterSource,
-      filterAdded: true
+      filterAdded: true,
+      currentPage: 1
     });
   };
 
   removeFilter = e => {
-    const dataSource = this.initialDataSrouce(this.props.schoolsData);
     this.setState({
       filtersColumn: "",
       filtersValue: "",
       filterStr: "",
       filterAdded: false,
-      dataSource: dataSource
+      currentPage: 1
+    });
+
+    const { loadSchoolsData, userOrgId } = this.props;
+    loadSchoolsData({
+      districtId: userOrgId,
+      limit: 10,
+      page: 1
     });
   };
 
@@ -340,12 +327,28 @@ class SchoolsTable extends React.Component {
     });
   };
 
-  searchByName = e => {
-    const dataSource = this.initialDataSrouce(this.props.schoolsData);
-    const filterSource = dataSource.filter(row => row.name.indexOf(e) != -1);
-    this.setState({
-      dataSource: filterSource
-    });
+  searchByName = value => {
+    const { setSearchByName } = this.props;
+    setSearchByName(value);
+  };
+
+  changePagination = pageNumber => {
+    this.setState({ currentPage: pageNumber });
+    const { loadSchoolsData, userOrgId } = this.props;
+    const { filterAdded, filtersColumn, filtersValue, filterStr } = this.state;
+    if (filterAdded) {
+      let searchValue = {};
+      searchValue[filtersColumn] = { type: filtersValue, value: filterStr };
+
+      loadSchoolsData({
+        districtId: userOrgId,
+        limit: 10,
+        page: pageNumber,
+        search: searchValue
+      });
+    } else {
+      loadSchoolsData({ districtId: userOrgId, limit: 10, page: pageNumber });
+    }
   };
 
   render() {
@@ -364,7 +367,8 @@ class SchoolsTable extends React.Component {
       filtersColumn,
       filtersValue,
       filterStr,
-      filterAdded
+      filterAdded,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -376,6 +380,8 @@ class SchoolsTable extends React.Component {
 
     const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
     const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "";
+
+    const totalSchoolsCount = Math.ceil(this.props.totalSchoolsCount);
 
     return (
       <StyledTableContainer>
@@ -400,28 +406,36 @@ class SchoolsTable extends React.Component {
           </StyledSelectStatus>
         </StyledControlDiv>
         <StyledControlDiv>
-          <StyledFilterSelect placeholder="Select a column" onChange={this.changeFilterColumn} value={filtersColumn}>
+          <StyledFilterSelect
+            placeholder="Select a column"
+            onChange={this.changeFilterColumn}
+            value={filtersColumn}
+            disabled={filterAdded}
+          >
             <Option value="">Select a column</Option>
             <Option value="name">Name</Option>
             <Option value="city">City</Option>
             <Option value="state">State</Option>
             <Option value="zip">Zip</Option>
-            <Option value="teacher">Teacher</Option>
-            <Option value="student">Student</Option>
-            <Option value="section">Section</Option>
+            <Option value="status">Status</Option>
           </StyledFilterSelect>
-          <StyledFilterSelect placeholder="Select a value" onChange={this.changeFilterValue} value={filtersValue}>
+          <StyledFilterSelect
+            placeholder="Select a value"
+            onChange={this.changeFilterValue}
+            value={filtersValue}
+            disabled={filterAdded}
+          >
             <Option value="">Select a value</Option>
-            <Option value="equals">Equals</Option>
-            <Option value="contains">Contains</Option>
+            <Option value="eq">Equals</Option>
+            <Option value="cont">Contains</Option>
           </StyledFilterSelect>
           <StyledFilterInput
             placeholder="Enter text"
             onChange={this.changeFilterText}
             value={filterStr}
-            disabled={isFilterTextDisable}
+            disabled={isFilterTextDisable || filterAdded}
           />
-          <StyledFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
+          <StyledFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable || filterAdded}>
             + Add Filter
           </StyledFilterButton>
           {filterAdded && (
@@ -430,14 +444,14 @@ class SchoolsTable extends React.Component {
             </StyledFilterButton>
           )}
         </StyledControlDiv>
-        <StyledTable
-          rowSelection={rowSelection}
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{
-            onChange: this.cancel
-          }}
+        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          total={totalSchoolsCount}
+          onChange={this.changePagination}
         />
+
         {editSchoolModaVisible && editSchoolKey !== "" && (
           <EditSchoolModal
             schoolData={editSchoolData[0]}
@@ -455,12 +469,16 @@ const EditableSchoolsTable = Form.create()(SchoolsTable);
 const enhance = compose(
   connect(
     state => ({
-      created: getCreatedSchoolSelector(state)
+      schoolList: getSchoolsSelector(state),
+      userOrgId: getUserOrgId(state),
+      totalSchoolsCount: get(state, ["schoolsReducer", "totalSchools"], 0)
     }),
     {
+      loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
-      deleteSchool: deleteSchoolsAction
+      deleteSchool: deleteSchoolsAction,
+      setSearchByName: setSearchByNameValueAction
     }
   )
 );
@@ -468,6 +486,7 @@ const enhance = compose(
 export default enhance(EditableSchoolsTable);
 
 SchoolsTable.propTypes = {
+  loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,
   createSchool: PropTypes.func.isRequired,
   deleteSchool: PropTypes.func.isRequired,

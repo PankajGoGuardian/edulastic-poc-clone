@@ -21,7 +21,7 @@ class CountrySelect extends React.Component {
     const { getFieldDecorator } = this.props.form;
     const options = [];
     Object.entries(countryList).map(([key, value]) => {
-      if (value.indexOf(this.state.value) >= 0) {
+      if (value.toLowerCase().indexOf(this.state.value.toLowerCase()) >= 0) {
         options.push(<Option value={key}>{value}</Option>);
       }
     });

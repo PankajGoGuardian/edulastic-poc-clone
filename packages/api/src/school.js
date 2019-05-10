@@ -3,14 +3,14 @@ import API from "./utils/API";
 const api = new API();
 const prefix = "/school";
 
-const getSchools = ({ body }) =>
+const getSchools = data =>
   api
     .callApi({
       url: `${prefix}/search`,
       method: "post",
-      data: body
+      data
     })
-    .then(result => result.data.data);
+    .then(result => result.data);
 
 const updateSchool = ({ id, body }) =>
   api

@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { schoolApi } from "@edulastic/api";
 import { message } from "antd";
+import { get } from "lodash";
 
 const RECEIVE_SCHOOLS_REQUEST = "[school] receive data request";
 const RECEIVE_SCHOOLS_SUCCESS = "[school] receive data success";
@@ -17,6 +18,10 @@ const DELETE_SCHOOLS_REQUEST = "[school] delete data request";
 const DELETE_SCHOOLS_SUCCESS = "[school] delete data success";
 const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 
+const SET_SEARCHNAME_VALUE = "[school] set serch by name value";
+
+const SET_SCHOOLLIST_TOTALCOUNT = "[school] set list total count";
+
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
 export const receiveSchoolsSuccessAction = createAction(RECEIVE_SCHOOLS_SUCCESS);
 export const receiveSchoolsErrorAction = createAction(RECEIVE_SCHOOLS_ERROR);
@@ -30,16 +35,22 @@ export const deleteSchoolsAction = createAction(DELETE_SCHOOLS_REQUEST);
 export const deleteSchoolsSuccessAction = createAction(DELETE_SCHOOLS_SUCCESS);
 export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 
+export const setSearchByNameValueAction = createAction(SET_SEARCHNAME_VALUE);
+
+export const receiveSchoolsCountAction = createAction(SET_SCHOOLLIST_TOTALCOUNT);
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
   stateSchoolsSelector,
-  state => state.data
-);
-
-export const getCreatedSchoolSelector = createSelector(
-  stateSchoolsSelector,
-  state => state.create
+  state => {
+    if (state.searchByName.length == 0) return state.data;
+    else {
+      return state.data.filter(item => {
+        const nameValue = item.name.toLowerCase();
+        return nameValue.indexOf(state.searchByName.toLowerCase()) != -1;
+      });
+    }
+  }
 );
 
 // reducers
@@ -55,7 +66,9 @@ const initialState = {
   createError: null,
   delete: null,
   deleting: false,
-  deleteError: null
+  deleteError: null,
+  searchByName: "",
+  totalSchools: 0
 };
 
 export const reducer = createReducer(initialState, {
@@ -78,6 +91,16 @@ export const reducer = createReducer(initialState, {
         });
       }
       delete school._source;
+      school.key = school._id;
+      school.city = get(school, ["city"], "");
+      school.state = get(school, ["state"], "");
+      school.zip = get(school, ["zip"], "");
+      school.country = get(school, ["country"], "");
+      school.state = get(school, ["state"], "");
+      school.teachersCount = get(school, ["teachersCount"], 0);
+      school.studentsCount = get(school, ["studentsCount"], 0);
+      school.sectionsCount = get(school, ["sectionsCount"], 0);
+      school.status = get(school, ["status"], 1);
       schoolsData.push(school);
     });
 
@@ -125,7 +148,8 @@ export const reducer = createReducer(initialState, {
       zip: payload.location.zip,
       teachersCount: 0,
       studentsCount: 0,
-      sectionsCount: 0
+      sectionsCount: 0,
+      status: payload.hasOwnProperty("status") && payload.status != null ? payload.status : 1
     };
 
     state.creating = false;
@@ -153,6 +177,12 @@ export const reducer = createReducer(initialState, {
   [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.deleting = false;
     state.deleteError = payload.error;
+  },
+  [SET_SEARCHNAME_VALUE]: (state, { payload }) => {
+    state.searchByName = payload;
+  },
+  [SET_SCHOOLLIST_TOTALCOUNT]: (state, { payload }) => {
+    state.totalSchools = payload;
   }
 });
 
@@ -162,7 +192,8 @@ function* receiveSchoolsSaga({ payload }) {
     const schools = yield call(schoolApi.getSchools, payload);
     const successMessage = "Receive Schools is successed!";
     yield call(message.success, successMessage);
-    yield put(receiveSchoolsSuccessAction(schools));
+    yield put(receiveSchoolsSuccessAction(schools.data));
+    yield put(receiveSchoolsCountAction(schools.totalSchools));
   } catch (err) {
     const errorMessage = "Receive Schools is failing!";
     yield call(message.error, errorMessage);

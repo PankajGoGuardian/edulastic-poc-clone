@@ -24,6 +24,7 @@ import {
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
 import { matchAssigned, getNumberOfAssigned } from "../util";
+import Tags from "../../src/components/common/Tags";
 
 import AssessmentPlayer from "../../../assessment";
 /**
@@ -86,6 +87,7 @@ class ModuleRow extends Component {
       setSelectedItemsForAssign,
       module,
       removeItemFromUnit,
+      hideEditOptions,
       removeUnit
     } = this.props;
     const { completed, name, id, data = [] } = module;
@@ -129,17 +131,19 @@ class ModuleRow extends Component {
                     <ModuleTitleWrapper>
                       <ModuleTitlePrefix>
                         {whichModule}
-                        <Icon
-                          type="close-circle"
-                          data-cy="removeUnit"
-                          style={{ visibility: "hidden" }}
-                          onClick={() => removeUnit(module.id)}
-                        />
+                        {!hideEditOptions && (
+                          <Icon
+                            type="close-circle"
+                            data-cy="removeUnit"
+                            style={{ visibility: "hidden" }}
+                            onClick={() => removeUnit(module.id)}
+                          />
+                        )}
                       </ModuleTitlePrefix>
                       <ModuleTitle>{moduleName}</ModuleTitle>
                     </ModuleTitleWrapper>
 
-                    {completed && (
+                    {completed && !hideEditOptions && (
                       <React.Fragment>
                         <ModuleCompleted>
                           <ModuleCompletedLabel>MODULE COMPLETED</ModuleCompletedLabel>
@@ -151,7 +155,7 @@ class ModuleRow extends Component {
                         </ModuleCompleted>
                       </React.Fragment>
                     )}
-                    {!completed && (
+                    {!completed && !hideEditOptions && (
                       <ModulesWrapper>
                         <ModulesAssigned>
                           Assigned
@@ -213,44 +217,51 @@ class ModuleRow extends Component {
                             <ModuleDataName>{moduleData.name}</ModuleDataName>
                           </AssignmentContent>
                           <AssignmentIconsWrapper expanded={isContentExpanded}>
-                            <ModuleAssignedUnit>
-                              {moduleData.assigned && !moduleData.completed && (
-                                <CustomIcon>
-                                  <img src={assessmentRed} alt="Module item is assigned" />
-                                </CustomIcon>
-                              )}
-                              {moduleData.completed && (
-                                <CustomIcon>
-                                  <img src={assessmentGreen} alt="Module item is completed" />
-                                </CustomIcon>
-                              )}
-                            </ModuleAssignedUnit>
+                            {!hideEditOptions && (
+                              <ModuleAssignedUnit>
+                                {moduleData.assigned && !moduleData.completed && (
+                                  <CustomIcon>
+                                    <img src={assessmentRed} alt="Module item is assigned" />
+                                  </CustomIcon>
+                                )}
+                                {moduleData.completed && (
+                                  <CustomIcon>
+                                    <img src={assessmentGreen} alt="Module item is completed" />
+                                  </CustomIcon>
+                                )}
+                              </ModuleAssignedUnit>
+                            )}
+                            <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>
                                   <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.testId)} />
                                 </CustomIcon>
                               </AssignmentIcon>
-                              <AssignmentButton assigned={isAssigned}>
-                                <Button
-                                  data-cy="assignButton"
-                                  onClick={() => setSelectedItemsForAssign(moduleData.testId)}
-                                >
-                                  {isAssigned ? (
-                                    <IconCheckSmall color={white} />
-                                  ) : (
-                                    <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
-                                  )}
-                                  {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
-                                </Button>
-                              </AssignmentButton>
-                              <AssignmentIcon>
-                                <Dropdown overlay={moreMenu} trigger={["click"]}>
-                                  <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                                    <IconMoreVertical color="#1774F0" />
-                                  </CustomIcon>
-                                </Dropdown>
-                              </AssignmentIcon>
+                              {!hideEditOptions && (
+                                <AssignmentButton assigned={isAssigned}>
+                                  <Button
+                                    data-cy="assignButton"
+                                    onClick={() => setSelectedItemsForAssign(moduleData.testId)}
+                                  >
+                                    {isAssigned ? (
+                                      <IconCheckSmall color={white} />
+                                    ) : (
+                                      <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
+                                    )}
+                                    {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                                  </Button>
+                                </AssignmentButton>
+                              )}
+                              {!hideEditOptions && (
+                                <AssignmentIcon>
+                                  <Dropdown overlay={moreMenu} trigger={["click"]}>
+                                    <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                                      <IconMoreVertical color="#1774F0" />
+                                    </CustomIcon>
+                                  </Dropdown>
+                                </AssignmentIcon>
+                              )}
                             </AssignmentIconsHolder>
                           </AssignmentIconsWrapper>
                         </AssignmentInnerWrapper>

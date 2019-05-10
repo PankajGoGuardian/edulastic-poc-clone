@@ -7,13 +7,29 @@ import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/const
 
 // types
 export const RECEIVE_PLAYLIST_REQUEST = "[playlists] receive list request";
+export const RECEIVE_PUBLISHER_REQUEST = "[publishers] receive list request";
 export const RECEIVE_PLAYLISTS_SUCCESS = "[playlists] receive list success";
+export const RECEIVE_PUBLISHERS_SUCCESS = "[publishers] receive list success";
 export const RECEIVE_PLAYLISTS_ERROR = "[playlists] receive list error";
 
 // actions
 export const receivePlaylistsAction = createAction(RECEIVE_PLAYLIST_REQUEST);
+export const receivePublishersAction = createAction(RECEIVE_PUBLISHER_REQUEST);
+
 export const receivePlaylistSuccessAction = createAction(RECEIVE_PLAYLISTS_SUCCESS);
+export const receivePublishersSuccessAction = createAction(RECEIVE_PUBLISHERS_SUCCESS);
+
 export const receivePlaylistErrorAction = createAction(RECEIVE_PLAYLISTS_ERROR);
+
+function* receivePublishersSaga() {
+  try {
+    const result = yield call(curriculumSequencesApi.searchDistinctPublishers);
+    yield put(receivePublishersSuccessAction(result));
+  } catch (err) {
+    const errorMessage = "Receive publishers is failing";
+    yield call(message.error, errorMessage);
+  }
+}
 
 function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } }) {
   try {
@@ -39,7 +55,10 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 }
 
 export function* watcherSaga() {
-  yield all([yield takeEvery(RECEIVE_PLAYLIST_REQUEST, receivePlaylistsSaga)]);
+  yield all([
+    yield takeEvery(RECEIVE_PLAYLIST_REQUEST, receivePlaylistsSaga),
+    yield takeEvery(RECEIVE_PUBLISHER_REQUEST, receivePublishersSaga)
+  ]);
 }
 
 // reducer
@@ -49,6 +68,7 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
+  publishers: [],
   loading: false
 };
 
@@ -72,6 +92,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entities: [payload.entity, ...state.entities]
+      };
+    case RECEIVE_PUBLISHERS_SUCCESS:
+      return {
+        ...state,
+        publishers: payload
       };
     default:
       return state;
@@ -100,4 +125,9 @@ export const getPlaylistsLimitSelector = createSelector(
 export const getPlaylistsCountSelector = createSelector(
   stateSelector,
   state => state.count
+);
+
+export const getCollectionsSelector = createSelector(
+  stateSelector,
+  state => state.publishers
 );

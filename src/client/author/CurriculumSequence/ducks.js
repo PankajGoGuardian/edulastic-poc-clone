@@ -140,20 +140,24 @@ function* makeApiRequest(idsForFetch = []) {
     const items = flatten(unflattenedItems);
 
     // Normalize data
-    const curriculumSequenceSchema = new schema.Entity("curriculumSequenceList", {}, { idAttribute: "_id" });
-    const userListSchema = [curriculumSequenceSchema];
+    if (idsForFetch.length > 1) {
+      const curriculumSequenceSchema = new schema.Entity("curriculumSequenceList", {}, { idAttribute: "_id" });
+      const userListSchema = [curriculumSequenceSchema];
 
-    const {
-      result: allCurriculumSequences,
-      entities: { curriculumSequenceList: curriculumSequenceListObject }
-    } = normalize(items, userListSchema);
+      const {
+        result: allCurriculumSequences,
+        entities: { curriculumSequenceList: curriculumSequenceListObject }
+      } = normalize(items, userListSchema);
 
-    yield put(
-      updateCurriculumSequenceList({
-        allCurriculumSequences,
-        curriculumSequenceListObject
-      })
-    );
+      yield put(
+        updateCurriculumSequenceList({
+          allCurriculumSequences,
+          curriculumSequenceListObject
+        })
+      );
+    } else {
+      yield put(updateCurriculumSequenceAction(items));
+    }
   } catch (error) {
     message.warning(`We're sorry, seems to be a problem contacting the server, try again in a few minutes`);
   }
@@ -799,11 +803,10 @@ const updateCurriculumSequenceReducer = (state, { payload }) => {
   const curriculumSequence = payload;
   const id = curriculumSequence._id;
 
-  state.byId[id] = curriculumSequence;
-
-  if (curriculumSequence.type === "guide") {
-    state.destinationCurriculumSequence = curriculumSequence;
-  }
+  state.byId[id] = curriculumSequence[0] || curriculumSequence;
+  // if (curriculumSequence.type === "guide") {
+  state.destinationCurriculumSequence = curriculumSequence[0] || curriculumSequence;
+  // }
 };
 
 /**

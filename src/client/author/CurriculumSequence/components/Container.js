@@ -148,6 +148,16 @@ class CurriculumContainer extends Component {
     toggleAddContent();
   };
 
+  handleUseThis = () => {
+    const {
+      history,
+      match: {
+        params: { id }
+      }
+    } = this.props;
+    history.push(`/author/playlists/${id}/customize`);
+  };
+
   getSourceDestinationCurriculum = () => {
     let sourceCurriculumSequence;
     let destinationCurriculumSequence;
@@ -179,6 +189,7 @@ class CurriculumContainer extends Component {
       onBeginDrag,
       savePublisher,
       changePublisher,
+      handleUseThis,
       collapseExpandModule
     } = this;
 
@@ -186,7 +197,7 @@ class CurriculumContainer extends Component {
 
     const { destinationCurriculumSequence } = this.props;
 
-    if (!sourceCurriculumSequence || !destinationCurriculumSequence) return null;
+    // if (!sourceCurriculumSequence || !destinationCurriculumSequence) return null;
 
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
 
@@ -205,6 +216,7 @@ class CurriculumContainer extends Component {
         windowWidth={windowWidth}
         onDrop={onDrop}
         onBeginDrag={onBeginDrag}
+        onUseThisClick={handleUseThis}
       />
     );
   }

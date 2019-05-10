@@ -28,7 +28,8 @@ import {
   IconBook,
   IconPlus,
   IconMoveTo,
-  IconCollapse
+  IconCollapse,
+  IconPencilEdit
 } from "@edulastic/icons";
 import Curriculum from "./Curriculum";
 import SelectContent from "./SelectContent";
@@ -119,6 +120,7 @@ import AddUnitModalBody from "./AddUnitModalBody";
  * @property {function} onBeginDrag
  * @property {function} onPublisherChange
  * @property {function} onPublisherSave
+ * @property {function} onUseThisClick
  * @property {CurriculumSearchResult[]} curriculumGuides
  * @property {string} publisher
  * @property {string} guide
@@ -155,7 +157,8 @@ class CurriculumSequence extends Component {
       closePolicy: "Automatically on Due Date",
       class: [],
       specificStudents: false
-    }
+    },
+    hideEditOptions: true
   };
 
   componentDidMount() {
@@ -176,13 +179,21 @@ class CurriculumSequence extends Component {
     saveCurriculumSequence();
   };
 
+  handleUseThisClick = evt => {
+    const { onUseThisClick } = this.props;
+    this.setState({ hideEditOptions: false });
+    onUseThisClick();
+  };
+
   handleAddUnitOpen = () => {
     const { newUnit } = { ...this.state };
     const { destinationCurriculumSequence } = this.props;
 
     newUnit.id = uniqueId();
     newUnit.data = [];
-    [newUnit.afterUnitId] = destinationCurriculumSequence.modules.map(module => module.id);
+    [newUnit.afterUnitId] = destinationCurriculumSequence
+      ? destinationCurriculumSequence.modules.map(module => module.id)
+      : [];
 
     this.setState(prevState => ({ addUnit: !prevState.addUnit, newUnit }));
   };
@@ -235,7 +246,7 @@ class CurriculumSequence extends Component {
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange } = this;
-    const { addUnit, addCustomContent, curriculumGuide, newUnit } = this.state;
+    const { addUnit, addCustomContent, curriculumGuide, newUnit, hideEditOptions } = this.state;
     const {
       expandedModules,
       onCollapseExpand,
@@ -259,13 +270,15 @@ class CurriculumSequence extends Component {
       dataForAssign
     } = this.props;
 
-    const { handleSaveClick } = this;
+    const { handleSaveClick, handleUseThisClick } = this;
 
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map(module => ({
-      value: module.id,
-      label: module.name
-    }));
+    const options1 = destinationCurriculumSequence.modules
+      ? destinationCurriculumSequence.modules.map(module => ({
+          value: module.id,
+          label: module.name
+        }))
+      : [];
 
     // TODO: change options2 to something more meaningful
     const options2 = [{ value: "Lesson", label: "Lesson" }, { value: "Lesson 2", label: "Lesson 2" }];
@@ -276,13 +289,15 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title } = destinationCurriculumSequence;
+    const { title, description } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
     // Module progress
-    const totalModules = destinationCurriculumSequence.modules.length;
-    const modulesCompleted = destinationCurriculumSequence.modules.filter(m => m.completed === true).length;
+    const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
+    const modulesCompleted = destinationCurriculumSequence.modules
+      ? destinationCurriculumSequence.modules.filter(m => m.completed === true).length
+      : 0;
     const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
 
     return (
@@ -400,7 +415,7 @@ class CurriculumSequence extends Component {
         <TopBar>
           <CurriculumHeader justifyContent="space-between">
             <HeaderTitle>
-              {title}
+              {publisher}
               <Icon
                 style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
                 type={curriculumGuide ? "up" : "down"}
@@ -408,16 +423,29 @@ class CurriculumSequence extends Component {
               />
             </HeaderTitle>
             <CurriculumHeaderButtons>
-              <ShareButtonStyle>
-                <Button type="default">
-                  <ShareButtonIcon color={greenThird} width={20} height={20} />
-                  <ShareButtonText>SHARE</ShareButtonText>
+              {!hideEditOptions && (
+                <ShareButtonStyle>
+                  <Button type="default">
+                    <ShareButtonIcon color={greenThird} width={20} height={20} />
+                    <ShareButtonText>SHARE</ShareButtonText>
+                  </Button>
+                </ShareButtonStyle>
+              )}
+              <SaveButtonStyle>
+                <Button
+                  data-cy="saveCurriculumSequence"
+                  onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
+                >
+                  {/* <IconPencilEdit color={greenThird} width={20} height={20} /> */}
+                  <SaveButtonText>{"Customize"}</SaveButtonText>
                 </Button>
-              </ShareButtonStyle>
+              </SaveButtonStyle>
               <SaveButtonStyle windowWidth={windowWidth}>
-                <Button data-cy="saveCurriculumSequence" onClick={handleSaveClick}>
-                  <SaveButtonIcon color={greenThird} width={20} height={20} />
-                  <SaveButtonText>{windowWidth > desktopWidthValue ? "Save Changes" : "Save"}</SaveButtonText>
+                <Button
+                  data-cy="saveCurriculumSequence"
+                  onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
+                >
+                  <SaveButtonText>{"Use This"}</SaveButtonText>
                 </Button>
               </SaveButtonStyle>
             </CurriculumHeaderButtons>
@@ -427,11 +455,8 @@ class CurriculumSequence extends Component {
           <SubTopBarContainer active={isContentExpanded}>
             <CurriculumSubHeaderRow marginBottom="36px">
               <SubHeaderTitleContainer>
-                <SubHeaderTitle>Grade 2 Math Pacing Guide</SubHeaderTitle>
-                <SubHeaderDescription>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget tellus velit. Sed at tortor accumsan
-                  odio molestie congue.
-                </SubHeaderDescription>
+                <SubHeaderTitle>{title}</SubHeaderTitle>
+                <SubHeaderDescription>{description}</SubHeaderDescription>
               </SubHeaderTitleContainer>
               <SunHeaderInfo>
                 <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
@@ -444,40 +469,42 @@ class CurriculumSequence extends Component {
                 </SunHeaderInfoCard>
               </SunHeaderInfo>
             </CurriculumSubHeaderRow>
-            <CurriculumSubHeaderRow>
-              <ModuleProgressWrapper>
-                <ModuleProgressLabel>
-                  <ModuleProgressText>Module Progress</ModuleProgressText>
-                  <ModuleProgressValuesWrapper>
-                    <ModuleProgressValues>
-                      {modulesCompleted}/{totalModules}
-                    </ModuleProgressValues>
-                    <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
-                  </ModuleProgressValuesWrapper>
-                </ModuleProgressLabel>
-                <ModuleProgress modules={destinationCurriculumSequence.modules} />
-              </ModuleProgressWrapper>
-              <SubheaderActions active={isContentExpanded}>
-                <AddUnitSubHeaderButtonStyle>
-                  <Button data-cy="openAddUnit" block onClick={this.handleAddUnitOpen}>
-                    <IconPlus color="#1774F0" />
-                    <ButtonText>Add Unit</ButtonText>
-                  </Button>
-                </AddUnitSubHeaderButtonStyle>
-                <SelectContentSubHeaderButtonStyle block active={isContentExpanded}>
-                  <Button data-cy="openAddContent" onClick={this.handleSelectContent}>
-                    <IconMoveTo color="#1774F0" />
-                    <ButtonText>Select Content</ButtonText>
-                  </Button>
-                </SelectContentSubHeaderButtonStyle>
-                <AddCustomContentSubHeaderButtonStyle>
-                  <Button data-cy="openAddCustomContentButton" block onClick={this.handleAddCustomContent}>
-                    <IconCollapse color="#1774F0" />
-                    <ButtonText>Add Custom Content</ButtonText>
-                  </Button>
-                </AddCustomContentSubHeaderButtonStyle>
-              </SubheaderActions>
-            </CurriculumSubHeaderRow>
+            {!hideEditOptions && (
+              <CurriculumSubHeaderRow>
+                <ModuleProgressWrapper>
+                  <ModuleProgressLabel>
+                    <ModuleProgressText>Module Progress</ModuleProgressText>
+                    <ModuleProgressValuesWrapper>
+                      <ModuleProgressValues>
+                        {modulesCompleted}/{totalModules}
+                      </ModuleProgressValues>
+                      <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
+                    </ModuleProgressValuesWrapper>
+                  </ModuleProgressLabel>
+                  <ModuleProgress modules={destinationCurriculumSequence.modules} />
+                </ModuleProgressWrapper>
+                {/* <SubheaderActions active={isContentExpanded}> 
+                  <AddUnitSubHeaderButtonStyle>
+                    <Button data-cy="openAddUnit" block onClick={this.handleAddUnitOpen}>
+                      <IconPlus color="#1774F0" />
+                      <ButtonText>Add Unit</ButtonText>
+                    </Button>
+                  </AddUnitSubHeaderButtonStyle>
+                  <SelectContentSubHeaderButtonStyle block active={isContentExpanded}>
+                    <Button data-cy="openAddContent" onClick={this.handleSelectContent}>
+                      <IconMoveTo color="#1774F0" />
+                      <ButtonText>Select Content</ButtonText>
+                    </Button>
+                  </SelectContentSubHeaderButtonStyle>
+                  <AddCustomContentSubHeaderButtonStyle>
+                    <Button data-cy="openAddCustomContentButton" block onClick={this.handleAddCustomContent}>
+                      <IconCollapse color="#1774F0" />
+                      <ButtonText>Add Custom Content</ButtonText>
+                    </Button>
+                  </AddCustomContentSubHeaderButtonStyle>
+            </SubheaderActions> */}
+              </CurriculumSubHeaderRow>
+            )}
           </SubTopBarContainer>
         </SubTopBar>
         <Wrapper active={isContentExpanded}>
@@ -489,6 +516,7 @@ class CurriculumSequence extends Component {
               expandedModules={expandedModules}
               onCollapseExpand={onCollapseExpand}
               onDrop={onDrop}
+              hideEditOptions={hideEditOptions}
             />
           )}
           {isSelectContent && (
@@ -549,9 +577,7 @@ CurriculumSequence.defaultProps = {
 
 const ModuleProgress = ({ modules }) => (
   <ModuleProgressBars>
-    {modules.map((m, index) => (
-      <ModuleProgressBar completed={m.completed} key={index} />
-    ))}
+    {modules && modules.map((m, index) => <ModuleProgressBar completed={m.completed} key={index} />)}
   </ModuleProgressBars>
 );
 ModuleProgress.propTypes = {

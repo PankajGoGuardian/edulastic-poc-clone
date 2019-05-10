@@ -2,11 +2,20 @@ import API from "./utils/API";
 
 const api = new API();
 
-const getCurriculumSequences = id => {
+const getPlaylists = id => {
   return api
     .callApi({
       method: "get",
-      url: `/curriculum-sequence/${id}`
+      url: `/playlists/${id}`
+    })
+    .then(result => result.data.result);
+};
+
+const searchDistinctPublishers = () => {
+  return api
+    .callApi({
+      method: "get",
+      url: `/playlists/search/distinct-publisher`
     })
     .then(result => result.data.result);
 };
@@ -19,7 +28,7 @@ const updateCurriculumSequence = (id, curriculumSequence) => {
 
   const options = {
     method: "put",
-    url: `/curriculum-sequence/${id}`,
+    url: `/playlists/${id}`,
     data: _curriculumSequence
   };
 
@@ -29,7 +38,7 @@ const updateCurriculumSequence = (id, curriculumSequence) => {
 const searchCurriculumSequences = ({ search, limit, page }) => {
   const options = {
     method: "post",
-    url: "/curriculum-sequence/search/",
+    url: "/playlists/search/",
     data: {
       page,
       limit,
@@ -41,7 +50,8 @@ const searchCurriculumSequences = ({ search, limit, page }) => {
 };
 
 export default {
-  getCurriculums: getCurriculumSequences,
+  getCurriculums: getPlaylists,
   updateCurriculumSequence,
+  searchDistinctPublishers,
   searchCurriculumSequences
 };

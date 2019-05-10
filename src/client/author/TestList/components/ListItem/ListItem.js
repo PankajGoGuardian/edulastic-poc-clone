@@ -87,19 +87,6 @@ class ListItem extends Component {
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
-    let csTags = new Set();
-    if (_source) {
-      _source.modules &&
-        _source.modules.forEach(mod => {
-          mod.data &&
-            mod.data.forEach(o => {
-              if (o.standards) {
-                csTags.add(o.standards);
-              }
-            });
-        });
-    }
-    csTags = Array.from(csTags);
 
     return (
       <>
@@ -153,9 +140,7 @@ class ListItem extends Component {
             )}
 
             <Footer span={24}>
-              <TagsWrapper span={12}>
-                <Tags tags={isPlaylist ? csTags : tags} />
-              </TagsWrapper>
+              <TagsWrapper span={12}>{!isPlaylist && <Tags tags={tags} />}</TagsWrapper>
 
               <ItemInformation span={12}>
                 <ContentWrapper>

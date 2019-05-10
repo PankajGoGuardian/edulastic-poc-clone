@@ -94,19 +94,6 @@ class Item extends Component {
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
-    let csTags = new Set();
-    if (_source) {
-      _source.modules &&
-        _source.modules.forEach(mod => {
-          mod.data &&
-            mod.data.forEach(o => {
-              if (o.standards) {
-                csTags.add(o.standards);
-              }
-            });
-        });
-    }
-    csTags = Array.from(csTags);
     return (
       <>
         <ViewModal
@@ -145,7 +132,7 @@ class Item extends Component {
                 ? item._source.description
                 : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin congue metus ut pulvinar. Sed in nunc sollicitudin, sodales odio non, lobortis tellus"}
             </CardDescription>
-            <Tags tags={isPlaylist ? csTags : tags} />
+            {!isPlaylist && <Tags tags={tags} />}
           </Inner>
           {!isPlaylist && <ViewButton onClick={this.openModal}>VIEW</ViewButton>}
           <Footer>

@@ -10,6 +10,7 @@ import { theme } from "../theme";
  * @property {import('./CurriculumSequence').CurriculumSequenceType} curriculum
  * @property {function} onCollapseExpand
  * @property {string[]} expandedModules
+ * @property {boolean} hideEditOptions
  */
 
 /** @extends Component<CurriculumProps> */
@@ -21,23 +22,28 @@ class Curriculum extends Component {
 
   render() {
     const {
-      curriculum: { modules }
+      curriculum: { modules },
+      hideEditOptions,
+      expandedModules,
+      onCollapseExpand,
+      padding
     } = this.props;
-    const { expandedModules, onCollapseExpand, padding } = this.props;
 
     return (
       <ModuleWrapper>
-        {modules.map((moduleItem, index) => (
-          <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
-            <CurriculumModuleRow
-              collapsed={expandedModules.indexOf(moduleItem.id) === -1}
-              onCollapseExpand={onCollapseExpand}
-              key={moduleItem.id}
-              module={moduleItem}
-              padding={padding}
-            />
-          </DropContainer>
-        ))}
+        {modules &&
+          modules.map((moduleItem, index) => (
+            <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
+              <CurriculumModuleRow
+                collapsed={expandedModules.indexOf(moduleItem.id) === -1}
+                onCollapseExpand={onCollapseExpand}
+                key={moduleItem.id}
+                module={moduleItem}
+                padding={padding}
+                hideEditOptions={hideEditOptions}
+              />
+            </DropContainer>
+          ))}
       </ModuleWrapper>
     );
   }

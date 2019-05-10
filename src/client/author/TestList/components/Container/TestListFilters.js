@@ -8,6 +8,7 @@ import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
+import { getCollectionsSelector } from "../../../Playlist/ducks";
 
 const TestListFilters = ({
   isPlaylist,
@@ -17,6 +18,7 @@ const TestListFilters = ({
   handleLabelSearch,
   formattedCuriculums,
   curriculumStandards,
+  collections,
   searchCurriculum,
   handleStandardSearch,
   filterMenuItems
@@ -29,9 +31,9 @@ const TestListFilters = ({
         ...filterData1,
         {
           title: "Collections",
+          placeholder: "Select Collection",
           size: "large",
-          data: [],
-          mode: "multiple",
+          data: collections.map(o => ({ value: o, text: o })),
           onChange: "publisher"
         }
       ];
@@ -90,7 +92,7 @@ const TestListFilters = ({
             placeholder={filterItem.placeholder}
             filterOption={filterItem.filterOption}
             optionFilterProp={filterItem.optionFilterProp}
-            defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0].text}
+            defaultValue={filterItem.mode === "multiple" ? undefined : filterItem.data[0] && filterItem.data[0].text}
             value={search[filterItem.onChange]}
             onChange={value => onChange(filterItem.onChange, value)}
             disabled={filterItem.disabled}
@@ -124,6 +126,7 @@ TestListFilters.defaultProps = {
 export default connect(
   (state, { search = {} }) => ({
     curriculumStandards: getStandardsListSelector(state),
+    collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}

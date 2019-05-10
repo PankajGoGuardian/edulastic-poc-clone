@@ -34,7 +34,8 @@ import {
   getPlaylistsLoadingSelector,
   getPlaylistsCountSelector,
   getPlaylistsLimitSelector,
-  getPlaylistsPageSelector
+  getPlaylistsPageSelector,
+  receivePublishersAction
 } from "../../ducks";
 
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
@@ -66,6 +67,7 @@ class TestList extends Component {
   static propTypes = {
     tests: PropTypes.array.isRequired,
     receivePlaylists: PropTypes.func.isRequired,
+    receivePublishers: PropTypes.func.isRequired,
     creating: PropTypes.bool.isRequired,
     page: PropTypes.number.isRequired,
     limit: PropTypes.number.isRequired,
@@ -104,6 +106,7 @@ class TestList extends Component {
   componentDidMount() {
     const {
       receivePlaylists,
+      receivePublishers,
       limit,
       location,
       match: { params = {} }
@@ -112,8 +115,8 @@ class TestList extends Component {
     const { search } = this.state;
     const parsedQueryData = qs.parse(location.search);
     const { filterType } = params;
+    receivePublishers();
     if (filterType) {
-      console.log("filter", filterType);
       const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
       this.setState(prevState => ({
@@ -463,6 +466,7 @@ const enhance = compose(
     }),
     {
       receivePlaylists: receivePlaylistsAction,
+      receivePublishers: receivePublishersAction,
       clearTestData: clearTestDataAction
     }
   )

@@ -65,11 +65,11 @@ class Container extends React.Component {
     this.setState({ method });
   };
 
-  handleUploadPDF = debounce(({ file: { originFileObj } }) => {
+  handleUploadPDF = debounce(({ file }) => {
     const { location, createAssessment } = this.props;
     const { assessmentId } = qs.parse(location.search);
 
-    createAssessment({ file: originFileObj, assessmentId });
+    createAssessment({ file, assessmentId });
   }, 1000);
 
   handleCreateBlankAssessment = event => {

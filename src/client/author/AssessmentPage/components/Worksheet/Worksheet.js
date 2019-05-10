@@ -55,16 +55,11 @@ class Worksheet extends React.Component {
   };
 
   state = {
-    currentPage: 0,
-    totalPages: 1
+    currentPage: 0
   };
 
   handleChangePage = nextPage => {
     this.setState({ currentPage: nextPage });
-  };
-
-  handleDocumentLoad = ({ numPages }) => {
-    this.setState({ totalPages: numPages });
   };
 
   handleAddAnnotation = question => {
@@ -258,7 +253,6 @@ class Worksheet extends React.Component {
             page={selectedPage}
             currentPage={currentPage + 1}
             annotations={annotations}
-            onDocumentLoad={this.handleDocumentLoad}
             onDropAnnotation={this.handleAddAnnotation}
           />
         )}

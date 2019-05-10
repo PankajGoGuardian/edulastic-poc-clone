@@ -17,7 +17,7 @@ export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, 
 
   return (
     <>
-      <h2>Edulastic Class Names</h2>
+      <h3>Edulastic Class Names</h3>
       <Select value={selectState} style={{ width: "350px" }} onChange={value => setSelectState(value)}>
         <Option value="DEFAULT">Default Clever Names</Option>
         <Option value="CNAME_TLNAME_PERIOD">Course Name - Teacher LastName - Period</Option>

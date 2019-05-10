@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { Select } from "antd";
-import { Table } from '../Common/StyledComponents';
+import { Table } from "../Common/StyledComponents";
 import { LIST_CLEVER_SUBJECTS, LIST_EDULASTIC_SUBJECTS } from "../Data";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
@@ -38,7 +38,7 @@ export default function SubjectStandard({
     const { [edulasticSubject]: edulasticSubjects = { list: [] } } = curriculum;
     return (
       <Select
-        style={{width: "100%"}}
+        style={{ width: "100%" }}
         value={edulasticStandard}
         onChange={value => updateEdulasticStandardAction({ subject: item.subject, value })}
       >
@@ -59,7 +59,7 @@ export default function SubjectStandard({
 
     return (
       <Select
-        style={{width: "100%"}}
+        style={{ width: "100%" }}
         value={edulasticSubject}
         onChange={value => updateEdulasticSubjectAction({ subject: item.subject, value })}
       >
@@ -75,12 +75,17 @@ export default function SubjectStandard({
   function renderCleverSubject(item, _, index) {
     return (
       <Select
-        style={{width: "100%"}}
+        style={{ width: "100%" }}
         value={item.subject}
         onChange={value => updateCleverSubjectAction({ index, value, prevValue: item.subject })}
       >
         {LIST_CLEVER_SUBJECTS.map(subject => (
-          <Option title={subject} key={subject} value={subject} disabled={cleverSubjectStandardMap[subject] ? true : false}>
+          <Option
+            title={subject}
+            key={subject}
+            value={subject}
+            disabled={cleverSubjectStandardMap[subject] ? true : false}
+          >
             {subject}
           </Option>
         ))}
@@ -90,20 +95,22 @@ export default function SubjectStandard({
 
   return (
     <>
-      <Table rowKey={record => record.subject} dataSource={rows} pagination={false}>
+      <Table bordered rowKey={record => record.subject} dataSource={rows} pagination={false}>
         <Column title="Clever Subject" key="cleverSubject" render={renderCleverSubject} />
         <Column title="Edulastic Subject" key="edulasticSubject" render={renderEdulasticSubject} />
+        <Column title="Edulastic Standard Set" key="edulasticStandardSet" render={renderEdulasticStandardSet} />
         <Column
-          title={() => (
-            <>
-              <span>Edulastic Standard Set</span>
-              <Button aria-label="Add a Row" onClick={addSubjectStandardRowAction} noStyle>
-                <IconAddItems />
-              </Button>
-            </>
+          title={
+            <Button title="Add a row" aria-label="Add a Row" onClick={addSubjectStandardRowAction} noStyle>
+              <IconAddItems />
+            </Button>
+          }
+          key="addDeleteRow"
+          render={item => (
+            <Button title={`Delete ${item.subject}`} aria-label={`Delete ${item.subject}`} noStyle>
+              <IconTrash />
+            </Button>
           )}
-          key="edulasticStandardSet"
-          render={renderEdulasticStandardSet}
         />
       </Table>
       <CancelApplyActions

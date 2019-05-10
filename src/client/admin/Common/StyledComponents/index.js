@@ -41,10 +41,7 @@ export const MainDiv = styled.div`
 `;
 
 export const FirstDiv = styled(FlexDiv)`
-  margin-bottom: 10px;
-  ${({ justifyContentSpaceBetween }) => `
-    justify-content: space-between;
-  `}
+  margin: 15px;
 `;
 
 export const Table = styled(AntdTable)`
@@ -52,4 +49,17 @@ export const Table = styled(AntdTable)`
     table-layout: fixed;
     word-break: break-all;
   }
+`;
+
+export const H2 = styled.h2`
+  background-color: #1ab394;
+  border-color: #1ab394;
+  color: #fff;
+  padding: 15px;
+`;
+
+export const OuterDiv = styled.div`
+  border: 1px solid #1ab394;
+  background: #fff;
+  margin-bottom: 20px;
 `;

@@ -38,6 +38,7 @@ export default function Sync({ schools, cleverId, syncSchools }) {
       </Button>
       <div>
         <Table
+          style={{ marginTop: "15px" }}
           rowKey={record => record.id}
           dataSource={schools}
           pagination={false}

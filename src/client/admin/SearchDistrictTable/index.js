@@ -115,7 +115,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
   }
 
   return (
-    <Table rowKey={record => record._id} dataSource={data} pagination={false}>
+    <Table rowKey={record => record._id} dataSource={data} pagination={false} bordered>
       <Column title="District Id" dataIndex="_id" key="districtId" />
       <Column title="District Name" dataIndex="_source.name" key="districtName" />
       <Column render={renderCleverCell} title="Clever Id" dataIndex="_source.cleverId" key="cleverId" />

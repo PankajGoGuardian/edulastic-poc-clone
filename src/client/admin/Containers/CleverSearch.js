@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Radio, Form, Input, Icon } from "antd";
 import SearchDistrictTable from "../SearchDistrictTable";
 import MergeSyncTable from "../MergeSyncTable";
-import { MainDiv, FirstDiv, Button } from "../Common/StyledComponents";
+import { MainDiv, FirstDiv, Button, H2, OuterDiv } from "../Common/StyledComponents";
 import { radioButtondata } from "../Data";
 import { fetchTableData, updateClever, getTableData, deleteDistrictId } from "../SearchDistrictTable/ducks";
 
@@ -73,11 +73,13 @@ function CleverSearch(props) {
 
   return (
     <MainDiv>
-      <h2>Search and Update District</h2>
-      <FirstDiv>
-        <WrappedForm fetchTableData={fetchTableData} />
-      </FirstDiv>
-      <SearchDistrictTable data={tableData} updateClever={updateClever} deleteDistrictId={deleteDistrictId} />
+      <OuterDiv>
+        <H2>Search and Update District</H2>
+        <FirstDiv>
+          <WrappedForm fetchTableData={fetchTableData} />
+        </FirstDiv>
+        <SearchDistrictTable data={tableData} updateClever={updateClever} deleteDistrictId={deleteDistrictId} />
+      </OuterDiv>
       <MergeSyncTable />
     </MainDiv>
   );

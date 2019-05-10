@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button } from "antd";
+import { Button, Icon } from "antd";
 import { Table } from "../Common/StyledComponents";
 
 const { Column } = Table;
@@ -10,12 +10,19 @@ export default function Logs({ logs, fetchLogsDataAction, districtId }) {
   }, []);
   return (
     <>
-      <Button onClick={() => fetchLogsDataAction(districtId)}>Refresh Logs</Button>
+      <Button
+        onClick={() => fetchLogsDataAction(districtId)}
+        aria-label="Refresh Logs"
+        title="Refresh Logs"
+        style={{ marginBottom: "10px" }}
+      >
+        <Icon type="reload" />
+      </Button>
       <Table
         rowKey={record => record._id}
         dataSource={logs}
         pagination={{
-          position: "top",
+          position: "both",
           pageSize: 10
         }}
         loading={!logs.length}

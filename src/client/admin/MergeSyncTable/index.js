@@ -1,8 +1,9 @@
 import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { Button, Tabs, Form, Input } from "antd";
-import { FirstDiv, FlexDiv } from "../Common/StyledComponents";
+import styled from "styled-components";
+import { Button, Tabs as AntdTabs, Form, Input } from "antd";
+import { FirstDiv, FlexDiv, H2, OuterDiv } from "../Common/StyledComponents";
 import { DeltaSync, ClassNamePattern, Sync, SubjectStandard, Logs } from "./Tabs";
 import {
   searchExistingDataApi,
@@ -24,27 +25,53 @@ import {
   closeMergeResponseAction
 } from "./ducks";
 
+const Tabs = styled(AntdTabs)`
+  padding: 15px;
+`;
+
 const SyncTypes = [
   {
     label: "Enable Sync",
-    value: true
+    value: true,
+    style: {
+      background: "#E38A25",
+      color: "#fff",
+      marginRight: "15px"
+    }
   },
   {
     label: "Disable Sync",
-    value: false
+    value: false,
+    style: {
+      background: "#f3f3f4",
+      marginRight: "15px"
+    }
   }
 ];
+
+const DistrictNameDiv = styled(FlexDiv)`
+  padding: 15px;
+  align-items: center;
+  background: #bdbfc1;
+`;
+
+const DistrictSpan = styled.span`
+  font-weight: bolder;
+  font-size: 16px;
+  margin-right: 15px;
+`;
 
 import MergeCleverIdsTable from "./MergeCleverIdsTable";
 
 const TabPane = Tabs.TabPane;
 const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }) => {
   return (
-    <FirstDiv justifyContentSpaceBetween>
-      <h2>{districtName}</h2>
+    <DistrictNameDiv justifyContentSpaceBetween>
+      <DistrictSpan>{districtName}</DistrictSpan>
       <FlexDiv>
         {SyncTypes.map(item => (
           <Button
+            style={item.style}
             key={item.label}
             onClick={() =>
               enableDisableSyncAction({
@@ -57,7 +84,7 @@ const SyncEnableDisable = ({ districtName, districtId, enableDisableSyncAction }
           </Button>
         ))}
       </FlexDiv>
-    </FirstDiv>
+    </DistrictNameDiv>
   );
 };
 const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
@@ -129,8 +156,8 @@ function MergeSyncTable({
   } = searchData;
 
   return (
-    <div>
-      <h2>Merge and Initialize Sync</h2>
+    <OuterDiv>
+      <H2>Merge and Initialize Sync</H2>
       <FirstDiv>
         <MergeInitializeSyncForm searchExistingDataApi={searchExistingDataApi} />
       </FirstDiv>
@@ -190,7 +217,7 @@ function MergeSyncTable({
           </Tabs>
         </>
       )}
-    </div>
+    </OuterDiv>
   );
 }
 

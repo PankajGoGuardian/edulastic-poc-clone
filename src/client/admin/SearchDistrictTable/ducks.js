@@ -59,6 +59,8 @@ function* updateCleverRequest({ payload }) {
     const item = yield call(updateDistrictCleverIdApi, payload);
     if (item.data.success) {
       yield put(cleverIdUpdateAction(item.data));
+    } else {
+      message.error(item.data.message, 5);
     }
   } catch (err) {
     console.error(err);

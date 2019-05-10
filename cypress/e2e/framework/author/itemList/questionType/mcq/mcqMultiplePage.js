@@ -3,10 +3,6 @@ import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class MCQMultiplePage extends MCQStandardPage {
-  constructor() {
-    super();
-  }
-
   // default question
   createQuestion(queKey = "default", queIndex = 0) {
     const item = new EditItemPage();

@@ -4,6 +4,7 @@ import { questionTypeKey as queTypes } from "../../constants/questionTypes";
 import MCQMultiplePage from "./questionType/mcq/mcqMultiplePage";
 import MCQTrueFalsePage from "./questionType/mcq/mcqTrueFalsePage";
 import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
+import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
 
 class ItemListPage {
   clickOnCreate = () => {
@@ -48,10 +49,23 @@ class ItemListPage {
             question = new MCQBlockLayoutPage();
             break;
 
+          case queTypes.CHOICE_MATRIX_STANDARD:
+          case queTypes.CHOICE_MATRIX_LABEL:
+          case queTypes.CHOICE_MATRIX_INLINE:
+            question = new ChoiceMatrixStandardPage();
+            break;
+
           default:
             break;
         }
-        question.createQuestion();
+        if (
+          [queTypes.CHOICE_MATRIX_STANDARD, queTypes.CHOICE_MATRIX_LABEL, queTypes.CHOICE_MATRIX_INLINE].indexOf(
+            queType
+          ) > -1
+        ) {
+          question.createQuestion(queType);
+        } else question.createQuestion();
+
         editItem.header.clickOnPublishItem();
       }
     });

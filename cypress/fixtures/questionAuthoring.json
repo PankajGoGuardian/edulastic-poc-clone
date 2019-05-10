@@ -22,5 +22,103 @@
       "setAns": { "correct": "right", "points": 2 },
       "attemptData": { "right": "right", "wrong": "wrong" }
     }
+  },
+  "MCQ_BLOCK": {
+    "default": {
+      "quetext": "This is MCQ_BLOCK.default question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
+      "setAns": { "correct": ["right-1"], "points": 2 },
+      "attemptData": { "right": ["right-1"], "wrong": "wrong-1" }
+    }
+  },
+  "CHOICE_STD": {
+    "default": {
+      "quetext": "This is CHOICE_STD.default question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "steams": ["true", "false"],
+      "setAns": {
+        "correct": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "points": 2
+      },
+      "attemptData": {
+        "right": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "wrong": {
+          "right-1": "false",
+          "wrong-1": "true",
+          "wrong-2": "false",
+          "right-2": "false"
+        }
+      }
+    }
+  },
+  "CHOICE_INLINE": {
+    "default": {
+      "quetext": "This is CHOICE_INLINE.default question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "steams": ["true", "false"],
+      "setAns": {
+        "correct": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "points": 2
+      },
+      "attemptData": {
+        "right": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "wrong": {
+          "right-1": "false",
+          "wrong-1": "true",
+          "wrong-2": "false",
+          "right-2": "false"
+        }
+      }
+    }
+  },
+  "CHOICE_LABEL": {
+    "default": {
+      "quetext": "This is CHOICE_LABEL.default question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "steams": ["true", "false"],
+      "setAns": {
+        "correct": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "points": 2
+      },
+      "attemptData": {
+        "right": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "wrong": {
+          "right-1": "false",
+          "wrong-1": "true",
+          "wrong-2": "false",
+          "right-2": "false"
+        }
+      }
+    }
   }
 }

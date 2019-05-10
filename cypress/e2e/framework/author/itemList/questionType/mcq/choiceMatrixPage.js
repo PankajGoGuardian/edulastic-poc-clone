@@ -1,6 +1,8 @@
 /* eslint-disable class-methods-use-this */
 import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
+import EditItemPage from "../../itemDetail/editPage";
+import { questionType, questionGroup, questionTypeKey } from "../../../../constants/questionTypes";
 
 class ChoiceMatrixStandardPage {
   constructor() {
@@ -421,6 +423,85 @@ class ChoiceMatrixStandardPage {
 
   getDividersCheckbox() {
     return Helpers.getElement("dividersCheckbox");
+  }
+
+  createQuestion(queType, queKey = "default", queIndex = 0) {
+    const item = new EditItemPage();
+    item.createNewItem();
+    item.chooseQuestion(questionGroup.MCQ, questionType[queType]);
+    cy.fixture("questionAuthoring").then(authoringData => {
+      const { quetext, choices, setAns, steams } = authoringData[queType][queKey];
+
+      if (quetext) {
+        const text = `Q${queIndex + 1} - ${quetext}`;
+        this.getQuestionEditor()
+          .clear()
+          .type(text);
+      }
+
+      if (choices) {
+        const choicesCount = choices.length;
+        this.getallChoices().then(allChoices => {
+          const defaultChoiceCount = allChoices.length;
+          let choiceDiff = defaultChoiceCount - choicesCount;
+          while (choiceDiff > 0) {
+            this.deleteChoiceByIndex(0);
+            choiceDiff -= 1;
+          }
+          while (choiceDiff < 0) {
+            this.addNewChoice();
+            choiceDiff += 1;
+          }
+          choices.forEach((choice, index) => {
+            this.getChoiceByIndex(index)
+              .clear()
+              .type(choice);
+          });
+        });
+      }
+
+      if (steams) {
+        const steamsCount = steams.length;
+        this.getallSteam().then(allSteams => {
+          const defaultSteamCount = allSteams.length;
+          let steamDiff = defaultSteamCount - steamsCount;
+          while (steamDiff > 0) {
+            this.deleteSteamByIndex(0);
+            steamDiff -= 1;
+          }
+          while (steamDiff < 0) {
+            this.addNewSteam();
+            steamDiff += 1;
+          }
+          steams.forEach((steam, index) => {
+            this.getSteamByIndex(index)
+              .clear()
+              .type(steam);
+          });
+        });
+      }
+
+      if (setAns) {
+        const { correct, points } = setAns;
+        this.getPoints()
+          .clear()
+          .type(`{rightarrow}${points}`);
+
+        Object.keys(correct).forEach(chKey => {
+          this.getCorrectAnsTableRow()
+            .contains(chKey)
+            .closest("tr")
+            .then(ele => {
+              cy.wrap(ele)
+                .find("input")
+                .eq(steams.indexOf(correct[chKey]))
+                .click();
+            });
+        });
+      }
+
+      this.header.save();
+    });
   }
 }
 

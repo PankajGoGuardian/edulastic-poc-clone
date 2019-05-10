@@ -75,6 +75,7 @@ class Display extends Component {
       uiStyle: { fontsize },
       showDashedBorder,
       backgroundColor,
+      item,
       theme
     } = this.props;
     const { userAnswers } = this.state;
@@ -188,14 +189,15 @@ class Display extends Component {
         uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
-        userSelections={userAnswers}
-        evaluation={evaluation}
+        userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
+        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
       <CorrectAnswerBoxLayout
         fontSize={fontSize}
+        cleanValue
         groupResponses={newOptions}
         userAnswers={validation.valid_response && validation.valid_response.value}
       />
@@ -232,6 +234,7 @@ Display.propTypes = {
   backgroundColor: PropTypes.string,
   imagescale: PropTypes.bool,
   uiStyle: PropTypes.object,
+  item: PropTypes.any.isRequired,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,

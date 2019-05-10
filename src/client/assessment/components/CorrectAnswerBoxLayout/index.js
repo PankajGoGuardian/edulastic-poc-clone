@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 
-const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, groupResponses, t }) => {
+const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, cleanValue, groupResponses, t }) => {
   let results;
   if (hasGroupResponses) {
     results = {};
@@ -49,7 +49,8 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer">
                   &nbsp;<span className="index">{index + 1}</span>
-                  <span className="text">{Array.isArray(groupResponses) ? getLabel(value) : value}</span>&nbsp;
+                  <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}</span>
+                  &nbsp;
                 </div>
               ))}
             </div>
@@ -58,7 +59,8 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
               &nbsp;<span className="index">{index + 1}</span>
-              <span className="text">{Array.isArray(groupResponses) ? getLabel(result) : result}</span>&nbsp;
+              <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(result) : result}</span>
+              &nbsp;
             </div>
           ))}
       </div>
@@ -71,14 +73,16 @@ CorrectAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
   groupResponses: PropTypes.array,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  cleanValue: PropTypes.bool
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
   hasGroupResponses: false,
   groupResponses: [],
   fontSize: "13px",
-  userAnswers: []
+  userAnswers: [],
+  cleanValue: false
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

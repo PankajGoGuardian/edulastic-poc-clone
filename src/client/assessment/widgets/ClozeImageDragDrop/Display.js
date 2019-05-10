@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep } from "lodash";
-import styled, { withTheme } from "styled-components";
+import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan } from "@edulastic/common";
 import DropContainer from "./components/DropContainer";

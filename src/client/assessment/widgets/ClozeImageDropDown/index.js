@@ -255,6 +255,7 @@ class ClozeImageDropDown extends Component {
                 shuffleOptions,
                 transparentResponses
               }}
+              item={item}
               options={previewDisplayOptions}
               imageAlterText={item.imageAlterText}
               imagescale={imagescale}

@@ -17,9 +17,6 @@ const DELETE_CLASS_REQUEST = "[class] delete data request";
 const DELETE_CLASS_SUCCESS = "[class] delete data success";
 const DELETE_CLASS_ERROR = "[class] delete data error";
 
-const SET_CLASS_SEARCHNAME = "[class] set search name";
-const SET_CLASS_SETFILTERS = "[class] set filters";
-
 const RECEIVE_TEACHERLIST_REQUEST = "[teacher] receive data request";
 const RECEIVE_TEACHERLIST_SUCCESS = "[teacher] receive data success";
 const RECEIVE_TEACHERLIST_ERROR = "[teacher] receive data error";
@@ -37,9 +34,6 @@ export const deleteClassAction = createAction(DELETE_CLASS_REQUEST);
 export const deleteClassSuccessAction = createAction(DELETE_CLASS_SUCCESS);
 export const deleteClassErrorAction = createAction(DELETE_CLASS_ERROR);
 
-export const setSearchNameAction = createAction(SET_CLASS_SEARCHNAME);
-export const setFiltersAction = createAction(SET_CLASS_SETFILTERS);
-
 export const receiveTeacherListAction = createAction(RECEIVE_TEACHERLIST_REQUEST);
 export const receiveTeacherListSuccessAction = createAction(RECEIVE_TEACHERLIST_SUCCESS);
 export const receiveTeacherListErrorAction = createAction(RECEIVE_TEACHERLIST_ERROR);
@@ -49,45 +43,7 @@ const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
   stateClassSelector,
   state => {
-    if (state.data.length > 0) {
-      let searchByNameData = [];
-      if (state.searchName.length > 0) {
-        searchByNameData = state.data.filter(row => row.name === state.searchName);
-      } else {
-        searchByNameData = state.data;
-      }
-
-      let possibleFilterKey = [];
-
-      if (state.filtersColumn !== "") {
-        possibleFilterKey.push(state.filtersColumn);
-      } else {
-        possibleFilterKey = ["name", "code", "teacherName"];
-      }
-
-      const filterSource = searchByNameData.filter(row => {
-        if (state.filtersText === "") {
-          return row;
-        } else {
-          if (state.filtersValue === "equals") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key] === state.filtersText) return row;
-            });
-            if (equalKeys.length > 0) return row;
-          } else if (state.filtersValue === "contains" || state.filtersValue === "") {
-            const equalKeys = possibleFilterKey.filter(key => {
-              if (row[key] !== undefined) {
-                if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
-              }
-            });
-            if (equalKeys.length > 0) return row;
-          }
-        }
-      });
-      return filterSource;
-    } else {
-      return state.data;
-    }
+    return state.data;
   }
 );
 
@@ -105,10 +61,6 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  searchName: "",
-  filtersColumn: "",
-  filtersValue: "",
-  filtersText: "",
   teacherLoading: false,
   teacherList: {},
   teacherError: ""
@@ -190,14 +142,6 @@ export const reducer = createReducer(initialState, {
     state.deleting = false;
     state.deleteError = payload.error;
   },
-  [SET_CLASS_SEARCHNAME]: (state, { payload }) => {
-    state.searchName = payload;
-  },
-  [SET_CLASS_SETFILTERS]: (state, { payload }) => {
-    state.filtersColumn = payload.column;
-    state.filtersValue = payload.value;
-    state.filtersText = payload.text;
-  },
   [RECEIVE_TEACHERLIST_REQUEST]: state => {
     state.teacherLoading = true;
   },
@@ -216,18 +160,6 @@ export const reducer = createReducer(initialState, {
       delete teacherData._source;
       teachersList.push(teacherData);
     }
-
-    if (state.data.length !== undefined) {
-      const classList = [];
-      state.data.map(classData => {
-        const teacherData = teachersList.filter(item => item._id === classData.primaryTeacherId);
-        if (teacherData.length > 0) classData.teacherName = teacherData[0].firstName + " " + teacherData[0].lastName;
-        else classData.teacherName = "";
-        classList.push(classData);
-      });
-      state.data = classList;
-    }
-
     state.teacherLoading = false;
     state.teacherList = teachersList;
   },

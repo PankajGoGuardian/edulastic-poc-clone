@@ -12,7 +12,7 @@ class EditClassModal extends React.Component {
         const saveClassData = {
           name: row.name,
           type: "class",
-          owners: selClassData.owners,
+          owners: row.teacher,
           parent: selClassData.parent,
           districtId: selClassData.districtId,
           institutionId: row.institutionId,
@@ -30,6 +30,11 @@ class EditClassModal extends React.Component {
 
   render() {
     const { schoolsData, teacherList, modalVisible, selClassData } = this.props;
+    const ownersData = [];
+    selClassData.owners.map(row => {
+      ownersData.push(row.id);
+    });
+
     const schoolsOptions = [];
     if (schoolsData.length !== undefined) {
       schoolsData.map((row, index) => {
@@ -131,8 +136,12 @@ class EditClassModal extends React.Component {
                     message: "Please select teacher"
                   }
                 ],
-                initialValue: selClassData.primaryTeacherId
-              })(<Select placeholder="Search by Username">{teacherOptions}</Select>)}
+                initialValue: ownersData
+              })(
+                <Select mode="multiple" placeholder="Search by Username">
+                  {teacherOptions}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

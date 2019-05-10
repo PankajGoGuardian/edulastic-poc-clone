@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown } from "antd";
+import { Button, Table, Select, Input, Dropdown, Pagination } from "antd";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
@@ -33,6 +33,7 @@ export const StyledTable = styled(Table)``;
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
+  visibility: ${props => (props ? "hidden" : "visible")};
 `;
 
 export const StyledTableButton = styled.a`
@@ -45,7 +46,7 @@ export const StyledFilterInput = styled(Input)`
   width: 300px;
 `;
 
-export const StyledSchoolSearch = styled(Search)`
+export const StyledSearch = styled(Search)`
   margin-left: 20px;
   width: 465px;
 `;
@@ -56,4 +57,17 @@ export const StyledActionDropDown = styled(Dropdown)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const TeacherSpan = styled.span`
+  margin-right: 10px;
+
+  &:not(:last-child):after {
+    content: ",";
+  }
+`;
+
+export const StyledPagination = styled(Pagination)`
+  margin-top: 15px;
+  align-self: flex-end;
 `;

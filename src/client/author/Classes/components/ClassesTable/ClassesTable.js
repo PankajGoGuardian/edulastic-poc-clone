@@ -15,8 +15,10 @@ import {
   StyledTableButton,
   StyledFilterInput,
   StyledAddFilterButton,
-  StyledSchoolSearch,
-  StyledActionDropDown
+  StyledSearch,
+  StyledActionDropDown,
+  TeacherSpan,
+  StyledPagination
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
@@ -27,9 +29,7 @@ import {
   createClassAction,
   updateClassAction,
   deleteClassAction,
-  receiveTeacherListAction,
-  setSearchNameAction,
-  setFiltersAction
+  receiveTeacherListAction
 } from "../../ducks";
 
 import { getClassListSelector } from "../../ducks";
@@ -60,8 +60,10 @@ class ClassesTable extends React.Component {
         value: "",
         text: ""
       },
-      filterAdded: false
+      filterAdded: false,
+      currentPage: 1
     };
+
     this.columns = [
       {
         title: "Class Name",
@@ -79,7 +81,14 @@ class ClassesTable extends React.Component {
         title: "Teacher",
         dataIndex: "teacherName",
         editable: true,
-        sorter: (a, b) => compareByAlph(a.code, b.code)
+        sorter: (a, b) => compareByAlph(a.code, b.code),
+        render: (text, record) => {
+          const teachers = [];
+          record.owners.map(row => {
+            teachers.push(<TeacherSpan>{row.name}</TeacherSpan>);
+          });
+          return <React.Fragment>{teachers}</React.Fragment>;
+        }
       },
       {
         dataIndex: "operation",
@@ -106,6 +115,8 @@ class ClassesTable extends React.Component {
 
     loadClassListData({
       districtId: userOrgId,
+      page: 1,
+      limit: 10,
       search: {
         institutionIds: [],
         codes: [],
@@ -166,6 +177,7 @@ class ClassesTable extends React.Component {
   changeFilterColumn = value => {
     const filtersData = this.state.filters;
     filtersData.column = value;
+    filtersData.text = "";
     this.setState({ filters: filtersData });
   };
 
@@ -181,11 +193,36 @@ class ClassesTable extends React.Component {
     this.setState({ filters: filtersData });
   };
 
+  changeSelectFilterText = value => {
+    const filtersData = this.state.filters;
+    filtersData.text = value;
+    this.setState({ filters: filtersData });
+  };
+
   addFilter = e => {
     const { filters } = this.state;
-    const { setFilters } = this.props;
-    this.setState({ filterAdded: true });
-    setFilters(filters);
+    const { loadClassListData, userOrgId } = this.props;
+    this.setState({ filterAdded: true, currentPage: 1 });
+
+    let search = {
+      institutionIds: [],
+      codes: [],
+      subjects: [],
+      grades: [],
+      active: 1
+    };
+    if (filters.column === "codes") {
+      search[filters.column].push({ type: filters.value, value: filters.text });
+    } else {
+      search[filters.column].push(filters.text);
+    }
+
+    loadClassListData({
+      districtId: userOrgId,
+      page: 1,
+      limit: 10,
+      search
+    });
   };
 
   removeFilter = e => {
@@ -197,10 +234,23 @@ class ClassesTable extends React.Component {
 
     this.setState({
       filters: filtersData,
-      filterAdded: false
+      filterAdded: false,
+      currentPage: 1
     });
-    const { setFilters } = this.props;
-    setFilters(filtersData);
+
+    const { loadClassListData } = this.props;
+    loadClassListData({
+      districtId: userOrgId,
+      page: 1,
+      limit: 10,
+      search: {
+        institutionIds: [],
+        codes: [],
+        subjects: [],
+        grades: [],
+        active: 1
+      }
+    });
   };
 
   changeActionMode = e => {
@@ -239,7 +289,9 @@ class ClassesTable extends React.Component {
   updateClass = updatedClassData => {
     const { updateClass } = this.props;
     const { dataSource, editClassKey } = this.state;
-    updateClass({ groupId: dataSource[editClassKey]._id, body: updatedClassData });
+    const sameRow = dataSource.filter(item => item.key === editClassKey);
+
+    updateClass({ groupId: sameRow[0]._id, body: updatedClassData });
 
     this.setState({
       editClassModalVisible: false
@@ -253,8 +305,32 @@ class ClassesTable extends React.Component {
   };
 
   searchByName = e => {
-    const { setSearchName } = this.props;
-    setSearchName(e);
+    // const { setSearchName } = this.props;
+    // setSearchName(e);
+  };
+
+  changePagination = pageNumber => {
+    this.setState({ currentPage: pageNumber });
+    const { filterAdded, filters } = this.state;
+    const { loadClassListData, userOrgId } = this.props;
+
+    let search = {
+      institutionIds: [],
+      codes: [],
+      subjects: [],
+      grades: [],
+      active: 1
+    };
+
+    if (filterAdded) {
+      this.setState({ filterAdded: true, currentPage: 1 });
+      if (filters.column === "codes") {
+        search[filters.column].push({ type: filters.value, value: filters.text });
+      } else {
+        search[filters.column].push(filters.text);
+      }
+    }
+    loadClassListData({ districtId: userOrgId, limit: 10, page: pageNumber, search });
   };
 
   render() {
@@ -271,7 +347,8 @@ class ClassesTable extends React.Component {
       editClassModalVisible,
       editClassKey,
       filters,
-      filterAdded
+      filterAdded,
+      currentPage
     } = this.state;
 
     const rowSelection = {
@@ -293,6 +370,25 @@ class ClassesTable extends React.Component {
     const isFilterTextDisable = filters.column === "" || filters.value === "";
     const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
 
+    let SearchValueOptions = [];
+    if (filters.column === "institutionIds") {
+      for (let i = 0; i < schoolsData.length; i++) {
+        SearchValueOptions.push(<Option value={schoolsData[i]._id}>{schoolsData[i].name}</Option>);
+      }
+    } else if (filters.column === "grades") {
+      SearchValueOptions.push(<Option value={"0"}>KinderGarten</Option>);
+      for (let i = 1; i < 12; i++) {
+        SearchValueOptions.push(<Option value={i.toString()}>Grade {i}</Option>);
+      }
+      SearchValueOptions.push(<Option value="other">Other</Option>);
+    } else if (filters.column === "subjects") {
+      SearchValueOptions.push(<Option value="Mathematics">Mathematics</Option>);
+      SearchValueOptions.push(<Option value="ELA">ELA</Option>);
+      SearchValueOptions.push(<Option value="Science">Science</Option>);
+      SearchValueOptions.push(<Option value="Social Studies">Social Studies</Option>);
+      SearchValueOptions.push(<Option value="Other Subjects">Other Subjects</Option>);
+    }
+
     return (
       <StyledTableContainer>
         <StyledControlDiv>
@@ -300,7 +396,7 @@ class ClassesTable extends React.Component {
             + Create Class
           </Button>
 
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
+          <StyledSearch placeholder="Search by name" onSearch={this.searchByName} />
 
           <StyledActionDropDown overlay={actionMenu}>
             <Button>
@@ -309,33 +405,52 @@ class ClassesTable extends React.Component {
           </StyledActionDropDown>
         </StyledControlDiv>
         <StyledControlDiv>
-          <StyledFilterSelect placeholder="Select a column" onChange={this.changeFilterColumn} value={filters.column}>
+          <StyledFilterSelect
+            placeholder="Select a column"
+            onChange={this.changeFilterColumn}
+            value={filters.column}
+            disabled={filterAdded}
+          >
             <Option value="">Select a column</Option>
             <Option value="name">Class Name</Option>
-            <Option value="code">Class Code</Option>
-            <Option value="teacherName">Teacher</Option>
+            <Option value="codes">Class Code</Option>
+            <Option value="institutionIds">School</Option>
+            <Option value="subjects">Subject</Option>
+            <Option value="grades">Grade</Option>
           </StyledFilterSelect>
-          <StyledFilterSelect placeholder="Select a value" onChange={this.changeFilterValue} value={filters.value}>
+          <StyledFilterSelect
+            placeholder="Select a value"
+            onChange={this.changeFilterValue}
+            value={filters.value}
+            disabled={filterAdded}
+          >
             <Option value="">Select a value</Option>
             <Option value="equals">Equals</Option>
-            <Option value="contains">Contains</Option>
+            <Option value="contain">Contains</Option>
           </StyledFilterSelect>
-          <StyledFilterInput
-            placeholder="Enter text"
-            onChange={this.changeFilterText}
-            value={filters.text}
-            disabled={isFilterTextDisable}
-          />
-          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
+          {(filters.column === "codes" || filters.column === "name" || filters.column === "") && (
+            <StyledFilterInput
+              placeholder="Enter text"
+              onChange={this.changeFilterText}
+              value={filters.text}
+              disabled={isFilterTextDisable}
+            />
+          )}
+          {(filters.column === "institutionIds" || filters.column === "grades" || filters.column === "subjects") && (
+            <StyledFilterSelect onChange={this.changeSelectFilterText} disabled={isFilterTextDisable || filterAdded}>
+              {SearchValueOptions}
+            </StyledFilterSelect>
+          )}
+          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable || filterAdded}>
             + Add Filter
           </StyledAddFilterButton>
-          {filterAdded && (
-            <StyledAddFilterButton type="primary" onClick={this.removeFilter}>
-              - Remove Filter
-            </StyledAddFilterButton>
-          )}
+          <StyledAddFilterButton type="primary" onClick={this.removeFilter} isVisible={filterAdded}>
+            - Remove Filter
+          </StyledAddFilterButton>
         </StyledControlDiv>
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
+        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledPagination defaultCurrent={1} current={currentPage} total={100} onChange={this.changePagination} />
+
         {editClassModalVisible && editClassKey !== "undefined" && (
           <EditClassModal
             selClassData={selectedClass[0]}
@@ -372,8 +487,6 @@ const enhance = compose(
       updateClass: updateClassAction,
       deleteClass: deleteClassAction,
       loadClassListData: receiveClassListAction,
-      setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
       loadSchoolsData: receiveSchoolsAction,
       loadTeacherList: receiveTeacherListAction
     }
@@ -388,8 +501,6 @@ ClassesTable.propTypes = {
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,
   deleteClass: PropTypes.func.isRequired,
-  setSearchName: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
   schoolsData: PropTypes.object.isRequired

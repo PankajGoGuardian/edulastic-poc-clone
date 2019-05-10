@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { Radio, Button, Table } from "antd";
-import SyncTableData from "../Data/syncTableData.json";
+import { Radio, Button } from "antd";
+import { Table } from "../Common/StyledComponents";
 
 const { Group: RadioGroup } = Radio;
 const { Column } = Table;

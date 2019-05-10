@@ -1,6 +1,7 @@
 import React from "react";
 import { CSVLink } from "react-csv";
-import { Table, Button, Upload, Icon, message, Modal } from "antd";
+import { Button, Upload, Icon, message, Modal } from "antd";
+import { Table } from "../Common/StyledComponents";
 
 const { Column } = Table;
 

@@ -1,5 +1,6 @@
 import { IconHeader, IconLogoCompact } from "@edulastic/icons";
 import styled from "styled-components";
+import { Table as AntdTable } from "antd";
 
 export const Logo = styled(IconHeader)`
   width: 119px;
@@ -44,4 +45,11 @@ export const FirstDiv = styled(FlexDiv)`
   ${({ justifyContentSpaceBetween }) => `
     justify-content: space-between;
   `}
+`;
+
+export const Table = styled(AntdTable)`
+  .ant-table table {
+    table-layout: fixed;
+    word-break: break-all;
+  }
 `;

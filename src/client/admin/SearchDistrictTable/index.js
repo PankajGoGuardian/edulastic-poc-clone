@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Table, Input, Popconfirm } from "antd";
+import { Input, Popconfirm } from "antd";
+import { Table } from "../Common/StyledComponents";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
 import ErrorBoundary from "../Common/ErrorBoundary";

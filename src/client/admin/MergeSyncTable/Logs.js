@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
-import { Table, Button } from "antd";
+import { Button } from "antd";
+import { Table } from "../Common/StyledComponents";
 
 const { Column } = Table;
 
@@ -10,19 +11,25 @@ export default function Logs({ logs, fetchLogsDataAction, districtId }) {
   return (
     <>
       <Button onClick={() => fetchLogsDataAction(districtId)}>Refresh Logs</Button>
-      <Table rowKey={record => record._id} dataSource={logs} pagination={false} loading={!logs.length}>
-        <Column title="ID" dataIndex="_id" key="_id" width={20} />
-        <Column title="District ID" dataIndex="districtId" key="districtId" width={20} />
-        <Column title="Info" dataIndex="info" key="info" width={50} />
-        <Column title="Message" dataIndex="message" key="message" width={20} />
+      <Table
+        rowKey={record => record._id}
+        dataSource={logs}
+        pagination={{
+          position: "top",
+          pageSize: 10
+        }}
+        loading={!logs.length}
+      >
+        <Column title="ID" dataIndex="_id" key="_id" />
+        <Column title="District ID" dataIndex="districtId" key="districtId" />
+        <Column title="Info" dataIndex="info" key="info" />
+        <Column title="Message" dataIndex="message" key="message" />
         <Column
           title="Created Date"
           dataIndex="createdAt"
           key="createdAt"
-          width={20}
           render={timeStamp => new Date(timeStamp).toLocaleDateString()}
         />
-        <Column title="__v" dataIndex="__v" key="__v" />
       </Table>
     </>
   );

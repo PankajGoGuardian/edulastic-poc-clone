@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
-import { Table, Select } from "antd";
+import { Select } from "antd";
+import { Table } from '../Common/StyledComponents';
 import { LIST_CLEVER_SUBJECTS, LIST_EDULASTIC_SUBJECTS } from "../Data";
-import { IconAddItems } from "@edulastic/icons";
+import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
 import CancelApplyActions from "./CancelApplyActions";
 
@@ -37,11 +38,12 @@ export default function SubjectStandard({
     const { [edulasticSubject]: edulasticSubjects = { list: [] } } = curriculum;
     return (
       <Select
+        style={{width: "100%"}}
         value={edulasticStandard}
         onChange={value => updateEdulasticStandardAction({ subject: item.subject, value })}
       >
         {edulasticSubjects.list.map(curriculumItem => (
-          <Option key={curriculumItem} value={curriculumItem}>
+          <Option title={curriculumItem} key={curriculumItem} value={curriculumItem}>
             {curriculumItem}
           </Option>
         ))}
@@ -57,11 +59,12 @@ export default function SubjectStandard({
 
     return (
       <Select
+        style={{width: "100%"}}
         value={edulasticSubject}
         onChange={value => updateEdulasticSubjectAction({ subject: item.subject, value })}
       >
         {LIST_EDULASTIC_SUBJECTS.map(subject => (
-          <Option key={subject} value={subject}>
+          <Option title={subject} key={subject} value={subject}>
             {subject}
           </Option>
         ))}
@@ -72,11 +75,12 @@ export default function SubjectStandard({
   function renderCleverSubject(item, _, index) {
     return (
       <Select
+        style={{width: "100%"}}
         value={item.subject}
         onChange={value => updateCleverSubjectAction({ index, value, prevValue: item.subject })}
       >
         {LIST_CLEVER_SUBJECTS.map(subject => (
-          <Option key={subject} value={subject} disabled={cleverSubjectStandardMap[subject] ? true : false}>
+          <Option title={subject} key={subject} value={subject} disabled={cleverSubjectStandardMap[subject] ? true : false}>
             {subject}
           </Option>
         ))}

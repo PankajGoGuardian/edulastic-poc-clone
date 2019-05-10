@@ -185,6 +185,8 @@ class StandardsProficiencyTable extends React.Component {
       row.score += 1;
     });
 
+    data[data.length - 1].threshold = data[data.length - 2].threshold > 10 ? data[data.length - 2].threshold - 10 : 0;
+
     this.setState({
       data: [...data, newData],
       editingKey: data.length,
@@ -202,6 +204,7 @@ class StandardsProficiencyTable extends React.Component {
     const newData = data.filter(item => item.key !== key);
     newData.map((row, nIndex) => {
       row.score = newData.length - nIndex;
+      if (newData.length - 1 == nIndex) row.threshold = 0;
     });
     this.setState({
       data: newData,
@@ -312,9 +315,7 @@ class StandardsProficiencyTable extends React.Component {
             dataSource={data}
             columns={columns}
             rowClassName="editable-row"
-            pagination={{
-              onChange: this.cancel
-            }}
+            pagination={false}
           />
         </EditableContext.Provider>
         <StyledAddButton type="primary" shape="round" onClick={this.handleAdd} ghost>

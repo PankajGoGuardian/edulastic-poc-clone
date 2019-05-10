@@ -151,7 +151,7 @@ class TemplateMarkup extends Component {
 
   addGroup = () => {
     const { groupResponses } = this.state;
-    groupResponses.push({ title: "", options: [] });
+    groupResponses.push({ title: "", options: [{ value: uuid(), label: "" }] });
     const newGroupResponses = groupResponses.slice();
     this.setState({ groupResponses: newGroupResponses });
 
@@ -159,6 +159,7 @@ class TemplateMarkup extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.groupResponses = newGroupResponses;
+        updateVariables(draft);
       })
     );
   };
@@ -202,15 +203,16 @@ class TemplateMarkup extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.groupResponses = newGroupResponses;
+        updateVariables(draft);
       })
     );
   };
 
-  editGroupOptions = (index, itemIndex, e) => {
+  editGroupOptions = (index, itemIndex, val) => {
     const { groupResponses } = this.state;
 
     const newGroupResponses = groupResponses.slice();
-    newGroupResponses[index].options[itemIndex].label = e.target.value;
+    newGroupResponses[index].options[itemIndex].label = val;
     this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
@@ -314,13 +316,16 @@ class TemplateMarkup extends Component {
                 </div>
                 <PaddingDiv top={20} bottom={10}>
                   <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
-                  <QuillSortableList
-                    items={group.options.map(o => o.label)}
-                    onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
-                    useDragHandle
-                    onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
-                    onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
-                  />
+                  {group.options.length > 0 && (
+                    <QuillSortableList
+                      prefix={`group_${index}`}
+                      items={group.options.map(o => o.label)}
+                      onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
+                      useDragHandle
+                      onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
+                      onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}
+                    />
+                  )}
                   <PaddingDiv top={10} bottom={10}>
                     <AddNewChoiceBtn onClick={() => this.addNewGroupOption(index)}>
                       {t("component.cloze.dragDrop.addnewchoice")}

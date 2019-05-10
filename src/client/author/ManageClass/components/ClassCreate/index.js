@@ -36,7 +36,8 @@ class ClassCreate extends React.Component {
     userId: PropTypes.string.isRequired,
     userOrgData: PropTypes.object.isRequired,
     createClass: PropTypes.func.isRequired,
-    loadCourseListData: PropTypes.func.isRequired,
+    searchCourseList: PropTypes.func.isRequired,
+    isSearching: PropTypes.bool.isRequired,
     courseList: PropTypes.array.isRequired,
     cancelCreate: PropTypes.func
   };
@@ -46,15 +47,10 @@ class ClassCreate extends React.Component {
   };
 
   componentDidMount() {
-    const { curriculums, getCurriculums, loadCourseListData, courseList, userOrgData } = this.props;
-    const { districtId } = userOrgData;
+    const { curriculums, getCurriculums } = this.props;
 
     if (isEmpty(curriculums)) {
       getCurriculums();
-    }
-
-    if (isEmpty(courseList)) {
-      loadCourseListData({ searchText: "Edulastic", districtId });
     }
   }
 
@@ -90,8 +86,17 @@ class ClassCreate extends React.Component {
     });
   };
 
+  searchCourse = keyword => {
+    console.log(keyword);
+    if (keyword) {
+      const { searchCourseList, userOrgData } = this.props;
+      const { districtId } = userOrgData;
+      searchCourseList({ searchText: keyword, districtId });
+    }
+  };
+
   render() {
-    const { curriculums, form, courseList, userOrgData, cancelCreate } = this.props;
+    const { curriculums, form, courseList, userOrgData, cancelCreate, isSearching } = this.props;
     const { getFieldDecorator } = form;
     const { defaultSchool, schools } = userOrgData;
 
@@ -113,6 +118,8 @@ class ClassCreate extends React.Component {
                 schoolsData={defaultSchool}
                 courseList={courseList}
                 schoolList={schools}
+                searchCourse={this.searchCourse}
+                isSearching={isSearching}
               />
             </RightContainer>
           </FlexContainer>
@@ -130,13 +137,14 @@ const enhance = compose(
     state => ({
       curriculums: getCurriculumsListSelector(state),
       courseList: get(state, "coursesReducer.searchResult"),
+      isSearching: get(state, "coursesReducer.searching"),
       userOrgData: getUserOrgData(state),
       userId: get(state, "user.user._id")
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       createClass: createClassAction,
-      loadCourseListData: receiveSearchCourseAction
+      searchCourseList: receiveSearchCourseAction
     }
   )
 );

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { filter, isArray, isEmpty } from "lodash";
+import { filter, isArray, isEmpty, debounce } from "lodash";
 
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
@@ -13,12 +13,15 @@ const { allGrades, allSubjects } = selectsData;
 const startDate = moment();
 const endDate = moment(); // .add("days", 7);
 
-const RightFields = ({ curriculums, schoolsData, courseList, schoolList, ...restProps }) => {
+// eslint-disable-next-line max-len
+const RightFields = ({ curriculums, schoolsData, courseList, schoolList, searchCourse, isSearching, ...restProps }) => {
   const [subject, setSubject] = useState("");
 
   const updateSubject = e => {
     setSubject(e);
   };
+
+  const handleSearch = debounce(keyword => searchCourse(keyword), 500);
 
   const isDropdown = isArray(schoolList) && !isEmpty(schoolList);
 
@@ -83,15 +86,24 @@ const RightFields = ({ curriculums, schoolsData, courseList, schoolList, ...rest
           ))}
         </Select>
       </FieldLabel>
-      <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue="">
-        <Select placeholder="Select Course">
+
+      <FieldLabel label="Course" {...restProps} fiedlName="courseId">
+        <Select
+          placeholder="Select Course"
+          showSearch
+          defaultActiveFirstOption={false}
+          showArrow={false}
+          filterOption={false}
+          onSearch={handleSearch}
+          notFoundContent={null}
+          loading={isSearching}
+        >
           {courseList.map(el => (
-            <Select.Option key={el._id} value={el._id}>
-              {`${el.name} - ${el.number}`}
-            </Select.Option>
+            <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number}`}</Select.Option>
           ))}
         </Select>
       </FieldLabel>
+
       {!isDropdown && (
         <FieldLabel {...restProps} fiedlName="institutionId" initialValue={schoolsData}>
           <input type="hidden" />
@@ -125,6 +137,8 @@ RightFields.propTypes = {
   schoolsData: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   courseList: PropTypes.array.isRequired,
   schoolList: PropTypes.array,
+  searchCourse: PropTypes.func.isRequired,
+  isSearching: PropTypes.bool.isRequired,
   getFieldDecorator: PropTypes.func.isRequired
 };
 

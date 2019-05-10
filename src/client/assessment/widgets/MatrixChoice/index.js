@@ -83,6 +83,7 @@ const MatrixChoice = ({
               <ComposeQuestion
                 setQuestionData={setQuestionData}
                 fillSections={fillSections}
+                item={item}
                 cleanSections={cleanSections}
               />
               <MultipleChoiceOptions

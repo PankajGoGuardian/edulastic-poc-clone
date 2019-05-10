@@ -63,7 +63,6 @@ const Container = styled.div`
   color: ${({ active }) => (active ? white : tabGrey)};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  text-transform: uppercase;
   background: ${({ active }) => (active ? newBlue : white)};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
@@ -103,6 +102,7 @@ const Input = styled.input`
   width: 100%;
   text-align: center;
   outline: none;
+  background: transparent;
 `;
 
 const EditableTab = styled.div`

@@ -135,11 +135,8 @@ export const TableData = styled(Table)`
       padding: 8px 0;
       font-weight: 600;
 
-      &:first-child {
-        padding-left: 26px;
-      }
-      &.select-row {
-        padding: 0px;
+      &.ant-table-selection-column {
+        padding: 8px;
       }
     }
   }
@@ -351,7 +348,6 @@ export const GreyFont = styled.div`
   text-overflow: ellipsis;
   width: 100%;
   max-width: 150px;
-
 `;
 
 export const ExpandedTable = styled(Table)`

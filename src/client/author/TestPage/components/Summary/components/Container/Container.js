@@ -56,7 +56,12 @@ const Summary = ({
         </Button>
       </SecondHeader>
       <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
-        <SummaryHeader createdBy={test.createdBy} windowWidth={windowWidth} />
+        <SummaryHeader
+          createdBy={test.createdBy}
+          thumbnail={test.thumbnail}
+          windowWidth={windowWidth}
+          onChangeField={handleChangeField}
+        />
         <Row gutter={32}>
           <Col span={windowWidth > 993 ? 12 : 24}>
             <Sidebar

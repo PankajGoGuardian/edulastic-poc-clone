@@ -6,11 +6,16 @@ import { FlexContainer } from "@edulastic/common";
 import { Photo } from "../../../common";
 import { Container, Avatar, AvatarContainer, CreatedByTitle, CreatedByValue } from "./styled";
 
-const SummaryHeader = ({ createdBy, windowWidth }) => {
+const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail }) => {
   const avatar = createdBy && createdBy.firstName ? createdBy.firstName[0] : "E";
   return (
     <Container>
-      <Photo height={windowWidth > 993 ? 240 : 100} windowWidth={windowWidth} />
+      <Photo
+        height={windowWidth > 993 ? 240 : 100}
+        windowWidth={windowWidth}
+        onChangeField={onChangeField}
+        url={thumbnail}
+      />
       <AvatarContainer>
         <FlexContainer alignItems="center">
           <Avatar>{avatar}</Avatar>
@@ -28,9 +33,11 @@ const SummaryHeader = ({ createdBy, windowWidth }) => {
 
 SummaryHeader.propTypes = {
   createdBy: PropTypes.shape({
-    firstName: PropTypes.array
+    firstName: PropTypes.string
   }).isRequired,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  onChangeField: PropTypes.func.isRequired,
+  thumbnail: PropTypes.string.isRequired
 };
 
 export default SummaryHeader;

@@ -127,13 +127,8 @@ class Assignments extends Component {
     this.setState({ showFilter: !showFilter });
   };
 
-  onSelectRow = (selected, checked) => {
-    const { selectedRows } = this.state;
-    remove(selectedRows, r => r.testId === selected.testId);
-    if (checked) {
-      selectedRows.push(selected);
-    }
-    this.setState({ selectedRows: clone(selectedRows) });
+  onSelectRow = selected => {
+    this.setState({ selectedRows: selected });
   };
 
   render() {

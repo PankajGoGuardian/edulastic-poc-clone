@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 
 import { withRouter } from "react-router-dom";
-import { Dropdown, Checkbox } from "antd";
+import { Dropdown } from "antd";
 import { isEmpty, get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
@@ -76,17 +76,6 @@ class AdvancedTable extends Component {
     const { onSelectRow, assignmentsSummary, history, onOpenReleaseScoreSettings } = this.props;
     const { perPage, current } = this.state;
     const columns = [
-      {
-        title: <Checkbox />,
-        dataIndex: "checkbox",
-        width: "5%",
-        className: "select-row",
-        render: (_, row) => <Checkbox onChange={e => onSelectRow(row, e.target.checked)} />,
-        onCell: () => ({
-          onMouseEnter: this.disableRowClick,
-          onMouseLeave: this.enableRowClick
-        })
-      },
       {
         title: "ASSESSMENT NAME",
         dataIndex: "title",
@@ -173,11 +162,21 @@ class AdvancedTable extends Component {
       }
     ];
 
+    const rowSelection = {
+      // selectedRowKeys: selectedClasses,
+      onChange: (_, rows) => {
+        if (onSelectRow) {
+          onSelectRow(rows);
+        }
+      }
+    };
+
     return (
       <Container>
         <TableData
           columns={columns}
           rowKey="testId"
+          rowSelection={rowSelection}
           dataSource={assignmentsSummary}
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)

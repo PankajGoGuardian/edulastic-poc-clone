@@ -18,21 +18,25 @@ class Photo extends React.Component {
     try {
       const { file } = info;
       const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const { onChangeField } = this.props;
 
-      this.setState({
-        imageUrl
-      });
+      this.setState(
+        {
+          imageUrl
+        },
+        () => onChangeField("thumbnail", imageUrl)
+      );
     } catch (e) {
       console.log(e);
     }
   };
 
   render() {
-    const { height, windowWidth } = this.props;
+    const { height, windowWidth, url } = this.props;
 
     const uploadButton = (
       <Container height={height}>
-        <Image src={defaultImage} alt="Test" />
+        <Image src={url || defaultImage} alt="Test" />
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
@@ -66,12 +70,14 @@ class Photo extends React.Component {
 Photo.propTypes = {
   url: PropTypes.string,
   height: PropTypes.number,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  onChangeField: PropTypes.func
 };
 
 Photo.defaultProps = {
   url: defaultImage,
-  height: 240
+  height: 240,
+  onChangeField: () => null
 };
 
 export default connect(

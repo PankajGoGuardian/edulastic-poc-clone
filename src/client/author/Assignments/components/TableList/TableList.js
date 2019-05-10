@@ -173,17 +173,6 @@ class TableList extends Component {
     const { details } = this.state;
     const columns = [
       {
-        title: <Checkbox />,
-        dataIndex: "checkbox",
-        width: "5%",
-        className: "select-row",
-        render: (_, row) => <Checkbox onChange={e => onSelectRow(row, e.target.checked)} />,
-        onCell: () => ({
-          onMouseEnter: () => this.enableExtend(),
-          onMouseLeave: () => this.disableExtend()
-        })
-      },
-      {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
@@ -277,10 +266,20 @@ class TableList extends Component {
 
     const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
 
+    const rowSelection = {
+      // selectedRowKeys: selectedClasses,
+      onChange: (_, rows) => {
+        if (onSelectRow) {
+          onSelectRow(rows);
+        }
+      }
+    };
+
     return (
       <Container>
         <TableData
           columns={columns}
+          rowSelection={rowSelection}
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={this.expandedRowRender}

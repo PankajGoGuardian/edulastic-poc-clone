@@ -135,7 +135,9 @@ class ClozeImageDragDrop extends Component {
       isSidebarCollapsed
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
-    const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
+    const { showDraghandle, shuffleOptions, transparentResponses } = this.state;
+
+    const duplicatedResponses = item.duplicated_responses || false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 

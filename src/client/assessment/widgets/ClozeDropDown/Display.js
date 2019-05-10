@@ -109,7 +109,6 @@ class ClozeDropDownDisplay extends Component {
     if (preview && shuffleOptions) {
       responses = this.shuffleGroup(responses);
     }
-
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
@@ -202,8 +201,8 @@ class ClozeDropDownDisplay extends Component {
         stemNumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
-        userSelections={userAnswers}
-        evaluation={evaluation}
+        userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
+        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

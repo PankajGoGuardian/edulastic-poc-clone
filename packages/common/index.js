@@ -17,6 +17,7 @@ export { default as MathKeyboard } from "./src/components/MathKeyboard";
 export { default as MathInput } from "./src/components/MathInput";
 export { default as StaticMath } from "./src/components/MathInput/StaticMath";
 export { default as MathFormulaDisplay } from "./src/components/MathFormulaDisplay";
+export { default as MathSpan } from "./src/components/MathSpan";
 export { default as Stimulus } from "./src/components/Stimulus";
 export { default as InstructorStimulus } from "./src/components/InstructorStimulus";
 export { default as Subtitle } from "./src/components/Subtitle";

@@ -1,10 +1,10 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep } from "lodash";
-import styled, { withTheme } from "styled-components";
+import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
-import { InstructorStimulus, WithMathFormula } from "@edulastic/common";
+import { InstructorStimulus, MathSpan } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import { QuestionHeader } from "../../styled/QuestionHeader";
@@ -20,9 +20,6 @@ import { getFontSize } from "../../utils/helpers";
 const defaultTemplateMarkup =
   '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
-const MathSpan = WithMathFormula(styled.span`
-  user-select: none;
-`);
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
@@ -325,11 +322,7 @@ class ClozeDragDropDisplay extends Component {
                       onDrop={this.onDrop}
                       data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
                     >
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: this.getLabel(dropTargetIndex) || ""
-                        }}
-                      />
+                      <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
                     </Draggable>
                     &nbsp;
                   </ResponseContainer>
@@ -342,11 +335,7 @@ class ClozeDragDropDisplay extends Component {
                       data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
                         userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
                     >
-                      <div
-                        dangerouslySetInnerHTML={{
-                          __html: this.getLabelForGroup(dropTargetIndex) || ""
-                        }}
-                      />
+                      <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
                     </Draggable>
                     &nbsp;
                   </ResponseContainer>
@@ -368,7 +357,6 @@ class ClozeDragDropDisplay extends Component {
         stemNumeration={stemnumeration}
         hasGroupResponses={hasGroupResponses}
         fontSize={fontSize}
-        options={options}
         showAnswer={showAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}

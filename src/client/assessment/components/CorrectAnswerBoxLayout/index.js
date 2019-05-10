@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
@@ -26,13 +27,13 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
       if (Group) {
         const Item = Group.options.find(option => option.value === value);
         if (Item) {
-          return Item.label;
+          return <MathSpan dangerouslySetInnerHTML={{ __html: Item.label }} />;
         }
       }
     } else {
       const Item = groupResponses.find(option => option.value === value);
       if (Item) {
-        return Item.label;
+        return <MathSpan dangerouslySetInnerHTML={{ __html: Item.label }} />;
       }
     }
   };

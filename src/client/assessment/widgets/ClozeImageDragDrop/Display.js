@@ -1,9 +1,9 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep, flattenDeep } from "lodash";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
-import { InstructorStimulus } from "@edulastic/common";
+import { InstructorStimulus, MathSpan } from "@edulastic/common";
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
 
@@ -255,7 +255,7 @@ class Display extends Component {
                         }}
                         onDrop={this.onDrop}
                       >
-                        <div dangerouslySetInnerHTML={{ __html: answer || "" }} />
+                        <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
                       </DragItem>
                     ))}
                 </div>

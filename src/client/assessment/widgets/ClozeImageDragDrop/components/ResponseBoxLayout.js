@@ -4,6 +4,8 @@ import { withTheme } from "styled-components";
 import { DropTarget } from "react-dnd";
 import { compose } from "redux";
 
+import { MathSpan } from "@edulastic/common";
+
 import DragItem from "./DragItem";
 
 const specTarget = {
@@ -42,14 +44,14 @@ const ResponseBoxLayout = ({
         >
           {!dragHandler && (
             <DragItem index={index} onDrop={onDrop} item={option} data={option}>
-              <div dangerouslySetInnerHTML={{ __html: option || "" }} />
+              <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
             </DragItem>
           )}
           {dragHandler && (
             <React.Fragment>
               <DragItem index={index} onDrop={onDrop} item={option} data={option}>
                 <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
-                <span dangerouslySetInnerHTML={{ __html: option || "" }} />
+                <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
               </DragItem>
             </React.Fragment>
           )}

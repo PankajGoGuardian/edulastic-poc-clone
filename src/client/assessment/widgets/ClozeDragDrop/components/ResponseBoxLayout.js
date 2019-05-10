@@ -2,6 +2,8 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
+import { MathSpan } from "@edulastic/common";
+
 import Draggable from "./Draggable";
 
 const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, dragHandler, onDrop, theme }) => {
@@ -19,7 +21,6 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
       document.body.removeEventListener("dragover", handleMove);
     };
   }, []);
-
   return (
     <div
       className="responses_box"
@@ -46,7 +47,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                     >
                       {!dragHandler && (
                         <Draggable onDrop={onDrop} data={`${option.value}_${index}`}>
-                          <div dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+                          <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                         </Draggable>
                       )}
                       {dragHandler && (
@@ -58,8 +59,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                                 fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
                               }}
                             />
-
-                            <span dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+                            <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                           </Draggable>
                         </React.Fragment>
                       )}
@@ -85,7 +85,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
           >
             {!dragHandler && (
               <Draggable onDrop={onDrop} data={option.value}>
-                <div dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+                <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
               </Draggable>
             )}
             {dragHandler && (
@@ -97,7 +97,7 @@ const ResponseBoxLayout = ({ smallSize, hasGroupResponses, responses, fontSize, 
                       fontSize: theme.widgets.clozeDragDrop.draggableIconFontSize
                     }}
                   />
-                  <span dangerouslySetInnerHTML={{ __html: option.label || "" }} />
+                  <MathSpan dangerouslySetInnerHTML={{ __html: option.label || "" }} />
                 </Draggable>
               </React.Fragment>
             )}

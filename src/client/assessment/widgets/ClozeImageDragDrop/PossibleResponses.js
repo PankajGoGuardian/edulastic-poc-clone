@@ -15,7 +15,6 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import QuillSortableList from "../../components/QuillSortableList/index";
-import SortableList from "../../components/SortableList/index";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
@@ -101,14 +100,6 @@ class PossibleResponses extends Component {
     return (
       <Widget data-cy="possibleResponses">
         <Subtitle>{t("component.cloze.imageDragDrop.possibleresponses")}</Subtitle>
-        {/* <SortableList
-          dirty={item.firstMount}
-          items={item.options}
-          onSortEnd={this.onSortEnd}
-          useDragHandle
-          onRemove={this.remove}
-          onChange={this.editOptions}
-        /> */}
         <QuillSortableList
           items={item.options}
           onSortEnd={this.onSortEnd}

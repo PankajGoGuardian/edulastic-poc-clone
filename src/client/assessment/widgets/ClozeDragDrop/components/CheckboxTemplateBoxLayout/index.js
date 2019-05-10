@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { WithMathFormula } from "@edulastic/common";
-import styled from "styled-components";
+import { MathSpan } from "@edulastic/common";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import { IconWrapper } from "./styled/IconWrapper";
@@ -9,10 +8,6 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
-
-const MathSpan = WithMathFormula(styled.span`
-  user-select: none;
-`);
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -49,13 +44,7 @@ const CheckboxTemplateBoxLayout = ({
         }
       }
     }
-    return (
-      <div
-        dangerouslySetInnerHTML={{
-          __html: formulaLabel
-        }}
-      />
-    );
+    return <MathSpan dangerouslySetInnerHTML={{ __html: formulaLabel }} />;
   };
 
   return (
@@ -128,7 +117,7 @@ const CheckboxTemplateBoxLayout = ({
                 {!showAnswer && hasGroupResponses && (
                   <Draggable
                     onDrop={onDropHandler}
-                    data={`${getLabelForGroup(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
+                    data={`${getLabel(dropTargetIndex)}_${userSelections[dropTargetIndex] &&
                       userSelections[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
                   >
                     <div className={`response-btn check-answer ${className}`} style={btnStyle}>

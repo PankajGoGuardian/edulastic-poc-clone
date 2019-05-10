@@ -2,6 +2,8 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
+import { MathSpan } from "@edulastic/common";
+
 import DropContainer from "../DropContainer";
 import DragItem from "../DragItem";
 
@@ -106,7 +108,9 @@ const CheckboxTemplateBoxLayout = ({
                         item={answer}
                         onDrop={onDropHandler}
                       >
-                        {<div dangerouslySetInnerHTML={{ __html: answer }} />}
+                        <div>
+                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
+                        </div>
                       </DragItem>
                     ))}
                 </div>
@@ -138,7 +142,9 @@ const CheckboxTemplateBoxLayout = ({
                           display: "inline-block"
                         }}
                       >
-                        {answer}
+                        <div>
+                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
+                        </div>
                       </div>
                     ))}
                 </div>

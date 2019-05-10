@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
+import { MathSpan } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
@@ -47,7 +48,7 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
                 background: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerBgColor
               }}
             >
-              {<div dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />}
+              <MathSpan dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />
             </span>
           </div>
         ))}

@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { Button, Tabs, Form, Input } from "antd";
 import { FirstDiv, FlexDiv } from "../Common/StyledComponents";
-import { DeltaSync, ClassNamePattern, Sync, SubjectStandard } from "./Tabs";
+import { DeltaSync, ClassNamePattern, Sync, SubjectStandard, Logs } from "./Tabs";
 import {
   searchExistingDataApi,
   getSearchData,
@@ -20,6 +20,7 @@ import {
   addSubjectStandardRowAction,
   uploadCSVtoCleverAction,
   updateSubjectStdMapAction,
+  fetchLogsDataAction,
   closeMergeResponseAction
 } from "./ducks";
 
@@ -119,6 +120,7 @@ function MergeSyncTable({
   addSubjectStandardRowAction,
   uploadCSVtoClever,
   updateSubjectStdMapAction,
+  fetchLogsDataAction,
   mergeResponse,
   closeMergeResponse
 }) {
@@ -179,7 +181,11 @@ function MergeSyncTable({
               <Sync schools={schools} cleverId={district.cleverId} syncSchools={syncSchools} />
             </TabPane>
             <TabPane tab="Logs" key="logs">
-              Content of Tab Pane 3
+              <Logs
+                logs={subStandardMapping.logs}
+                fetchLogsDataAction={fetchLogsDataAction}
+                districtId={district._id}
+              />
             </TabPane>
           </Tabs>
         </>
@@ -208,6 +214,8 @@ const withConnect = connect(
     updateEdulasticStandardAction,
     addSubjectStandardRowAction,
     uploadCSVtoClever: uploadCSVtoCleverAction,
+    updateSubjectStdMapAction,
+    fetchLogsDataAction,
     closeMergeResponse: closeMergeResponseAction,
     updateSubjectStdMapAction
   }

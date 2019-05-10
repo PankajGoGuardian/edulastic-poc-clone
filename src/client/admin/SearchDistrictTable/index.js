@@ -49,14 +49,25 @@ function UserCount({ record: { _id } }) {
   );
 }
 
-const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter }, ref) => {
+const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter, onCancel }, ref) => {
   useEffect(() => {
     if (ref.current) {
       // as soon as edit button is clicked, the input element is focused for better accessibility
       ref.current.input.focus();
     }
   }, [edit]);
-  return edit ? <Input defaultValue={cleverId} onPressEnter={onInputPressEnter} ref={ref} /> : cleverId;
+  return edit ? (
+    <Input
+      defaultValue={cleverId}
+      onPressEnter={onInputPressEnter}
+      ref={ref}
+      onKeyUp={evt => {
+        if (evt.key === "Escape") onCancel();
+      }}
+    />
+  ) : (
+    cleverId
+  );
 });
 
 export default function SearchDistrictTable({ data, updateClever, deleteDistrictId }) {
@@ -96,6 +107,7 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
           cleverId={cleverId}
           onInputPressEnter={() => updateCleverId(record._id)}
           ref={textInput}
+          onCancel={setEditCell}
         />
       </ErrorBoundary>
     );

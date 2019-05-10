@@ -116,6 +116,14 @@ const updateSubjectStandardApi = data =>
     })
     .then(({ data }) => data);
 
+const logsDataApi = districtId =>
+  api
+    .callApi({
+      url: `${prefix}district/${districtId}/clever-log`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -128,5 +136,6 @@ export default {
   enableDisableSyncApi,
   fetchCurriculumDataApi,
   uploadCSVtoClever,
-  updateSubjectStandardApi
+  updateSubjectStandardApi,
+  logsDataApi
 };

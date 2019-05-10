@@ -17,9 +17,11 @@ export const UPDATE_EDULASTIC_STANDARD_ACTION = "[admin] UPDATE_EDULASTIC_STANDA
 export const ADD_SUBJECT_STANDARD_ROW_ACTION = "[admin] ADD_SUBJECT_STANDARD_ROW_ACTION";
 export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
 export const UPDATE_SUBJECT_STANDARD_MAP = "[admin] UPDATE_SUBJECT_STANDARD_MAP";
+export const FETCH_LOGS_DATA = "[admin] FETCH_LOGS_DATA";
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
+export const LOGS_DATA_SUCCESS = "[admin] LOGS_DATA_SUCCESS";
 export const RECEIVE_MERGED_CLEVER_ID = "[admin] merge clever ids to edulastic";
 export const CLOSE_MERGE_RESPONSE_TABLE = "[admin] close merge response table";
 
@@ -37,6 +39,8 @@ export const updateEdulasticSubjectAction = createAction(UPDATE_EDULASTIC_SUBJEC
 export const updateEdulasticStandardAction = createAction(UPDATE_EDULASTIC_STANDARD_ACTION);
 export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW_ACTION);
 export const updateSubjectStdMapAction = createAction(UPDATE_SUBJECT_STANDARD_MAP);
+export const fetchLogsDataAction = createAction(FETCH_LOGS_DATA);
+export const logsDataSuccessAction = createAction(LOGS_DATA_SUCCESS);
 
 export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
 export const receiveMergeCleverIdsAction = createAction(RECEIVE_MERGED_CLEVER_ID);
@@ -49,7 +53,8 @@ const initialState = {
   subStandardMapping: {
     rows: [],
     cleverSubjectStandardMap: {},
-    curriculum: {}
+    curriculum: {},
+    logs: []
   },
   mergeResponse: {
     data: [],
@@ -110,6 +115,9 @@ const fetchExistingDataReducer = createReducer(initialState, {
     } = state;
     rows.push({ subject: "" });
   },
+  [LOGS_DATA_SUCCESS]: (state, { payload }) => {
+    state.subStandardMapping.logs = payload.result;
+  },
   [RECEIVE_MERGED_CLEVER_ID]: (state, { payload }) => {
     state.mergeResponse = {
       data: payload,
@@ -152,7 +160,8 @@ const {
   enableDisableSyncApi,
   fetchCurriculumDataApi,
   uploadCSVtoClever,
-  updateSubjectStandardApi
+  updateSubjectStandardApi,
+  logsDataApi
 } = adminApi;
 
 function* fetchExistingData({ payload }) {
@@ -252,6 +261,15 @@ function* updateSubjectStandardSaga({ payload }) {
   }
 }
 
+function* fetchLogsData({ payload }) {
+  try {
+    const item = yield call(logsDataApi, payload);
+    yield put(logsDataSuccessAction(item));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
@@ -261,7 +279,8 @@ export function* watcherSaga() {
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
     yield takeEvery(UPLOAD_CSV_TO_CLEVER, uploadCSVtoCleverSaga),
-    yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga)
+    yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
+    yield takeEvery(FETCH_LOGS_DATA, fetchLogsData)
   ]);
 }
 

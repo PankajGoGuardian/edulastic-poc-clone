@@ -29,16 +29,16 @@ const MathFormulaPreview = ({
 
   const onUserResponse = latexv => {
     if (isStatic) {
-      saveAnswer(studentRef.current.getLatex());
+      saveAnswer(latexv);
       return;
     }
     setLatex(latexv);
     saveAnswer(latexv);
   };
 
-  const onBlur = () => {
-    if (studentRef.current) {
-      saveAnswer(studentRef.current.getLatex());
+  const onBlur = latexv => {
+    if (isStatic) {
+      saveAnswer(latexv);
     }
   };
 

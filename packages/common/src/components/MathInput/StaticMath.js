@@ -1,29 +1,19 @@
-import React, { PureComponent, forwardRef, useRef, useImperativeHandle } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
 import { MathKeyboard } from "@edulastic/common";
 
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 
-class StaticMath extends PureComponent {
-  state = {
-    MQ: null,
-    mathField: null,
-    innerField: null,
-    showKeyboard: false
-  };
+const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerValues }) => {
+  const [mathField, setMathField] = useState(null);
+  const [innerField, setInnerField] = useState(null);
+  const [showKeyboard, setShowKeyboard] = useState(false);
 
-  containerRef = React.createRef();
+  const containerRef = useRef(null);
+  const mathFieldRef = useRef(null);
 
-  mathFieldRef = React.createRef();
-
-  componentWillUnmount() {
-    // make sure you remove the listener when the component is destroyed
-    document.removeEventListener("click", this.handleClick, false);
-  }
-
-  handleClick(e) {
+  const handleClick = e => {
     if (
       e.target.nodeName === "svg" ||
       e.target.nodeName === "path" ||
@@ -31,49 +21,16 @@ class StaticMath extends PureComponent {
     ) {
       return;
     }
-    if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
-      this.setState({ showKeyboard: false });
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
+      setShowKeyboard(false);
     }
-  }
+  };
 
-  componentDidMount() {
-    const { latex, innerValues } = this.props;
-    const MQ = window.MathQuill.getInterface(2);
-
-    const mathField = MQ.StaticMath(this.mathFieldRef.current);
-
-    this.setState(
-      {
-        mathField,
-        MQ
-      },
-      () => {
-        this.setLatex(latex);
-        this.setInnerFieldValues(innerValues);
-      }
-    );
-
-    document.addEventListener("click", this.handleClick.bind(this), false);
-  }
-
-  componentDidUpdate(prevProps) {
-    const { latex, innerValues } = this.props;
-    if (prevProps.latex !== latex) {
-      this.setLatex(latex);
-      this.setInnerFieldValues(innerValues);
-      return;
-    }
-    if (!isEqual(innerValues, prevProps.innerValues)) {
-      this.setInnerFieldValues(innerValues);
-    }
-  }
-
-  setInnerFieldsFocuses = () => {
-    const { mathField, MQ } = this.state;
-
+  const setInnerFieldsFocuses = () => {
     if (!mathField || !mathField.innerFields || !mathField.innerFields.length) {
       return;
     }
+    const MQ = window.MathQuill.getInterface(2);
 
     const goTo = fieldIndex => {
       const nextField = mathField.innerFields[fieldIndex];
@@ -90,17 +47,17 @@ class StaticMath extends PureComponent {
 
       field.config({
         handlers: {
-          upOutOf(innerField) {
-            goTo(getIndex(innerField.el().id) - 1);
+          upOutOf(pInnerField) {
+            goTo(getIndex(pInnerField.el().id) - 1);
           },
-          downOutOf(innerField) {
-            goTo(getIndex(innerField.el().id) + 1);
+          downOutOf(pInnerField) {
+            goTo(getIndex(pInnerField.el().id) + 1);
           },
-          moveOutOf: (dir, innerField) => {
+          moveOutOf: (dir, pInnerField) => {
             if (dir === MQ.L) {
-              goTo(getIndex(innerField.el().id) - 1);
+              goTo(getIndex(pInnerField.el().id) - 1);
             } else if (dir === MQ.R) {
-              goTo(getIndex(innerField.el().id) + 1);
+              goTo(getIndex(pInnerField.el().id) + 1);
             }
           }
         }
@@ -108,30 +65,40 @@ class StaticMath extends PureComponent {
     });
   };
 
-  setLatex = latex => {
-    const { mathField } = this.state;
-    const { onInput } = this.props;
-
+  const getLatex = () => {
     if (!mathField) return;
-    mathField.latex(latex);
+    return mathField.latex();
+  };
+
+  const onFocus = newInnerField => {
+    setInnerField(newInnerField);
+    setShowKeyboard(true);
+  };
+
+  const onKeyboardClose = () => {
+    setShowKeyboard(false);
+  };
+
+  const setLatex = newLatex => {
+    if (!mathField) return;
+    mathField.latex(newLatex);
 
     for (let i = 0; i < mathField.innerFields.length; i++) {
       mathField.innerFields[i].el().id = `inner-${i}`;
       mathField.innerFields[i].el().addEventListener("click", () => {
-        this.onFocus(mathField.innerFields[i]);
+        onFocus(mathField.innerFields[i]);
       });
       mathField.innerFields[i].el().addEventListener("keydown", () => {
         setTimeout(() => {
-          onInput(this.getLatex());
+          onInput(getLatex());
         }, 0);
       });
     }
 
-    this.setInnerFieldsFocuses();
+    setInnerFieldsFocuses();
   };
 
-  setInnerFieldValues = values => {
-    const { mathField } = this.state;
+  const setInnerFieldValues = values => {
     if (!mathField || !mathField.innerFields) return;
     for (let i = 0; i < mathField.innerFields.length; i++) {
       if (!mathField.innerFields[i]) continue;
@@ -141,17 +108,7 @@ class StaticMath extends PureComponent {
     }
   };
 
-  getLatex = () => {
-    const { mathField } = this.state;
-
-    if (!mathField) return;
-    return mathField.latex();
-  };
-
-  onInput = (key, command = "cmd") => {
-    const { innerField } = this.state;
-    const { onInput } = this.props;
-
+  const onInputKeyboard = (key, command = "cmd") => {
     if (!innerField) return;
 
     if (key === "left_move") {
@@ -175,45 +132,62 @@ class StaticMath extends PureComponent {
     }
     innerField.focus();
 
-    onInput(this.getLatex());
+    onInput(getLatex());
   };
 
-  onFocus(innerField) {
-    this.setState({
-      innerField,
-      showKeyboard: true
-    });
-  }
-
-  onClose = () => {
-    this.setState({ showKeyboard: false });
+  const onBlurInput = () => {
+    onBlur(getLatex());
   };
 
-  render() {
-    const { showKeyboard } = this.state;
-    const { style, onBlur, symbols, numberPad } = this.props;
-    return (
-      <MathInputStyles minWidth={style.minWidth}>
-        <div ref={this.containerRef} className="input" onBlur={onBlur}>
-          <div className="input__math" style={style} data-cy="answer-math-input-style">
-            <span className="input__math__field" ref={this.mathFieldRef} data-cy="answer-math-input-field" />
-          </div>
-          <div className="input__keyboard">
-            {showKeyboard && (
-              <MathKeyboard
-                symbols={symbols}
-                numberPad={numberPad}
-                onInput={this.onInput}
-                showResponse={false}
-                onClose={this.onClose}
-              />
-            )}
-          </div>
+  useEffect(() => {
+    document.addEventListener("click", handleClick, false);
+
+    return function cleanup() {
+      document.removeEventListener("click", handleClick, false);
+    };
+  });
+
+  useEffect(() => {
+    const MQ = window.MathQuill.getInterface(2);
+    if (mathFieldRef.current) {
+      setMathField(MQ.StaticMath(mathFieldRef.current));
+      setTimeout(() => {
+        setLatex(latex);
+        setInnerFieldValues(innerValues);
+      });
+    }
+  }, [mathFieldRef.current]);
+
+  useEffect(() => {
+    setLatex(latex);
+    setInnerFieldValues(innerValues);
+  }, [latex]);
+
+  useEffect(() => {
+    setInnerFieldValues(innerValues);
+  }, [innerValues]);
+
+  return (
+    <MathInputStyles minWidth={style.minWidth}>
+      <div ref={containerRef} className="input" onBlur={onBlurInput}>
+        <div className="input__math" style={style} data-cy="answer-math-input-style">
+          <span className="input__math__field" ref={mathFieldRef} data-cy="answer-math-input-field" />
         </div>
-      </MathInputStyles>
-    );
-  }
-}
+        <div className="input__keyboard">
+          {showKeyboard && (
+            <MathKeyboard
+              symbols={symbols}
+              numberPad={numberPad}
+              onInput={onInputKeyboard}
+              showResponse={false}
+              onClose={onKeyboardClose}
+            />
+          )}
+        </div>
+      </div>
+    </MathInputStyles>
+  );
+};
 
 StaticMath.propTypes = {
   style: PropTypes.object,
@@ -230,25 +204,17 @@ StaticMath.defaultProps = {
   innerValues: []
 };
 
-// export default StaticMath;
+const StaticMathWithResources = props => (
+  <WithResources
+    resources={[
+      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+    ]}
+    fallBack={<span />}
+  >
+    <StaticMath {...props} />
+  </WithResources>
+);
 
-const StaticMathWithResources = (props, ref) => {
-  const mathRef = useRef();
-  useImperativeHandle(ref, () => ({
-    getLatex: () => mathRef.current.getLatex()
-  }));
-  return (
-    <WithResources
-      resources={[
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
-      ]}
-      fallBack={<span />}
-    >
-      <StaticMath ref={mathRef} {...props} />
-    </WithResources>
-  );
-};
-
-export default forwardRef(StaticMathWithResources);
+export default StaticMathWithResources;

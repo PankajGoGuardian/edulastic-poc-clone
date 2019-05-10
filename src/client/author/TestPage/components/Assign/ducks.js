@@ -8,9 +8,8 @@ import { all, call, put, takeEvery, select } from "redux-saga/effects";
 import { replace } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { generateClassData, formatAssignment } from "./utils";
-import { getStudentsSelector } from "../../../sharedDucks/groups";
-import { getUserNameSelector, getCurrentTerm } from "../../../src/selectors/user";
-import { getClassListSelector } from "../../../Classes/ducks";
+import { getStudentsSelector, getGroupsSelector } from "../../../sharedDucks/groups";
+import { getUserNameSelector } from "../../../src/selectors/user";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -102,10 +101,8 @@ export const getCurrentAssignmentSelector = createSelector(
 function* saveAssignment({ payload }) {
   try {
     const studentsList = yield select(getStudentsSelector);
-    const allGroups = yield select(getClassListSelector);
+    const allGroups = yield select(getGroupsSelector);
     let testId = yield select(getTestIdSelector);
-    const termId = yield select(getCurrentTerm);
-
     if (!testId) {
       const test = yield select(getTestSelector);
       const entity = yield call(testsApi.create, test);
@@ -132,6 +129,7 @@ function* saveAssignment({ payload }) {
       return;
     }
 
+    const termId = classData[0].termId;
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 

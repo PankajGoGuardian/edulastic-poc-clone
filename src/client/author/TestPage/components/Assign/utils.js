@@ -24,10 +24,11 @@ export const generateClassData = (
   if (!specificStudents) {
     return classes.map(_id => ({
       _id,
-      name: (groupsData[_id] && groupsData[_id].name) || "",
+      name: get(groupsData, `${_id}.name`, ""),
       assignedCount: get(groupsData, `${_id}.studentCount`, 0),
-      grade: get(groupsData, `${_id}.grade`, ""), // groupsData[_id].grade,
-      subject: get(groupsData, `${_id}.subject`, "") // groupsData[_id].subject
+      grade: get(groupsData, `${_id}.grade`, ""),
+      subject: get(groupsData, `${_id}.subject`, ""),
+      termId: get(groupsData, `${_id}.termId`, "")
     }));
   }
 
@@ -41,11 +42,12 @@ export const generateClassData = (
         const tempStudents = uniq((groupedByClass[classId] || []).map(item => item._id));
         return {
           _id: classId,
-          name: (groupsData[classId] && groupsData[classId].name) || "",
+          name: groupsData[classId].name,
           students: tempStudents,
           assignedCount: tempStudents.length,
           grade: groupsData[classId].grade,
-          subject: groupsData[classId].subject
+          subject: groupsData[classId].subject,
+          termId: groupsData[classId].termId
         };
       })
       // remove classes without students

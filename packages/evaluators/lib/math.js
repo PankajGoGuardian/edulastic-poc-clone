@@ -15,8 +15,6 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
-var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
-
 var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
 
 var _axios = _interopRequireDefault(require("axios"));
@@ -24,11 +22,7 @@ var _axios = _interopRequireDefault(require("axios"));
 var _scoring = require("./const/scoring");
 
 var url = "".concat(
-  (typeof window === "undefined"
-  ? "undefined"
-  : (0, _typeof2["default"])(window))
-    ? window.location.protocol
-    : "https:",
+  typeof window === "undefined" ? "https" : window.location.protocol,
   "//edulastic-poc.snapwiz.net/math-api/evaluate"
 );
 

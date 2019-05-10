@@ -62,7 +62,3 @@ export const StyledActionDropDown = styled(Dropdown)`
 export const StyledActiveCheckbox = styled(Checkbox)`
   margin-left: auto;
 `;
-
-export const StyledUploadCSVDiv = styled.div`
-  display: none !important;
-`;

@@ -66,11 +66,21 @@ const uploadcCSV = file => {
     .then(result => result.data.result);
 };
 
+const saveBulkCourse = data =>
+  api
+    .callApi({
+      url: `${prefix}/saveBulkCourses`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   fetchCourse,
   searchCourse,
   saveCourse,
   editCourse,
   deactivateCourse,
-  uploadcCSV
+  uploadcCSV,
+  saveBulkCourse
 };

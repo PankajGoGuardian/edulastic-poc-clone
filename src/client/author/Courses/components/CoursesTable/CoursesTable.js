@@ -9,6 +9,7 @@ const Option = Select.Option;
 
 import AddCourseModal from "./AddCourseModal/AddCourseModal";
 import EditCourseModal from "./EditCourseModal/EditCourseModal";
+import UploadCourseModal from "./UploadCourseModal";
 
 import {
   StyledTableContainer,
@@ -20,8 +21,7 @@ import {
   StyledAddFilterButton,
   StyledSchoolSearch,
   StyledActionDropDown,
-  StyledActiveCheckbox,
-  StyledUploadCSVDiv
+  StyledActiveCheckbox
 } from "./styled";
 
 import {
@@ -31,8 +31,7 @@ import {
   deactivateCourseAction,
   setSearchNameAction,
   setFiltersAction,
-  setShowActiveCourseAction,
-  uploadCSVAction
+  setShowActiveCourseAction
 } from "../../ducks";
 
 import { getCourseListSelector, setSelectedRowKeysAction } from "../../ducks";
@@ -55,6 +54,7 @@ class CoursesTable extends React.Component {
       dataSource: [],
       addCourseModalVisible: false,
       editCourseModalVisible: false,
+      uploadCourseModalVisible: false,
       editCourseKey: -1,
       filters: {
         column: "",
@@ -185,7 +185,7 @@ class CoursesTable extends React.Component {
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
     if (e.key === "upload csv") {
-      this.inputElement.click();
+      this.setState({ uploadCourseModalVisible: true });
     } else if (e.key === "edit course") {
       if (selectedRowKeys.length == 0) {
         message.error("Please select course to edit.");
@@ -252,10 +252,8 @@ class CoursesTable extends React.Component {
     setShowActiveCourse(e.target.checked);
   };
 
-  handleCSVChange = event => {
-    const file = event.target.files[0];
-    const { uploadCSVCourse } = this.props;
-    uploadCSVCourse(file);
+  closeUploadCourseModal = () => {
+    this.setState({ uploadCourseModalVisible: false });
   };
 
   render() {
@@ -270,6 +268,7 @@ class CoursesTable extends React.Component {
       selectedRowKeys,
       addCourseModalVisible,
       editCourseModalVisible,
+      uploadCourseModalVisible,
       editCourseKey,
       filters,
       filterAdded
@@ -355,10 +354,9 @@ class CoursesTable extends React.Component {
             closeModal={this.closeAddCourseModal}
           />
         )}
-
-        <StyledUploadCSVDiv>
-          <input ref={input => (this.inputElement = input)} type="file" onChange={this.handleCSVChange} accept=".csv" />
-        </StyledUploadCSVDiv>
+        {uploadCourseModalVisible && (
+          <UploadCourseModal modalVisible={uploadCourseModalVisible} closeModal={this.closeUploadCourseModal} />
+        )}
       </StyledTableContainer>
     );
   }
@@ -380,7 +378,6 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
       setShowActiveCourse: setShowActiveCourseAction,
-      uploadCSVCourse: uploadCSVAction,
       setSelectedRowKeys: setSelectedRowKeysAction
     }
   )

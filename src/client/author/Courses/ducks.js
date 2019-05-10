@@ -30,6 +30,14 @@ const SEARCH_COURSE_REQUEST = "[course] search request received";
 const SEARCH_COURSE_SUCCESS = "[course] search request success";
 const SEARCH_COURSE_ERROR = "[course] search request ERROR";
 
+const REMOVE_UPLOADED_COURSE = "[course] remove selected course of uploaded";
+
+const SAVE_BULK_COURSE_REQUEST = "[course] save bulk course request";
+const SAVE_BULK_COURSE_SUCCESS = "[course] save bulk course success";
+const SAVE_BULK_COURSE_ERROR = "[course] save bulk course error";
+
+const SET_UPDATEMODAL_PAGE_STATUS = "[course] set update modal page status";
+
 export const receiveCourseListAction = createAction(RECEIVE_COURSE_REQUEST);
 export const receiveCourseListSuccessAction = createAction(RECEIVE_COURSE_SUCCESS);
 export const receiveCourseListErrorAction = createAction(RECEIVE_COURSE_ERROR);
@@ -54,6 +62,13 @@ export const setSelectedRowKeysAction = createAction(SET_COURSE_SELECT_ROW_KEY);
 
 export const receiveSearchCourseAction = createAction(SEARCH_COURSE_REQUEST);
 
+export const removeCourseOfUploadedAction = createAction(REMOVE_UPLOADED_COURSE);
+
+export const saveBulkCourseRequestAction = createAction(SAVE_BULK_COURSE_REQUEST);
+export const saveBulkCourseSuccessAction = createAction(SAVE_BULK_COURSE_SUCCESS);
+export const saveBulkCourseErrorAction = createAction(SAVE_BULK_COURSE_ERROR);
+
+export const setUpdateModalPageStatusAction = createAction(SET_UPDATEMODAL_PAGE_STATUS);
 // selectors
 const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
@@ -127,7 +142,10 @@ const initialState = {
   showActiveCourse: true,
   selectedRowKeys: [],
   searchResult: [],
-  searching: false
+  searching: false,
+  uploadModalPageStatus: "normal",
+  saveingBulkCourse: false,
+  saveBulkCourseError: {}
 };
 
 export const reducer = createReducer(initialState, {
@@ -200,14 +218,20 @@ export const reducer = createReducer(initialState, {
   },
   [UPLOAD_COURSE_CSV_REQUEST]: state => {
     state.uploadingCSV = true;
+    state.uploadModalPageStatus = "uploading";
   },
   [UPLOAD_COURSE_CSV_SUCCESS]: (state, { payload }) => {
     state.uploadingCSV = false;
+    payload.map(row => {
+      row.key = row.courseNo;
+    });
     state.uploadCSV = payload;
+    state.uploadModalPageStatus = "uploaded";
   },
   [UPLOAD_COURSE_CSV_ERROR]: (state, { payload }) => {
     state.uploadingCSV = false;
     state.uploadCSVError = payload.error;
+    state.uploadModalPageStatus = "normal";
   },
   [SET_COURSE_SEARCHNAME]: (state, { payload }) => {
     state.searchName = payload;
@@ -233,6 +257,23 @@ export const reducer = createReducer(initialState, {
   [SEARCH_COURSE_ERROR]: (state, { payload }) => {
     state.searching = false;
     state.error = payload;
+  },
+  [REMOVE_UPLOADED_COURSE]: (state, { payload }) => {
+    state.uploadCSV = state.uploadCSV.filter(row => row.courseNo !== payload);
+  },
+  [SAVE_BULK_COURSE_REQUEST]: state => {
+    state.saveingBulkCourse = true;
+  },
+  [SAVE_BULK_COURSE_SUCCESS]: (state, { payload }) => {
+    state.saveingBulkCourse = false;
+    state.uploadModalPageStatus = "bulk-success";
+  },
+  [SAVE_BULK_COURSE_ERROR]: (state, { payload }) => {
+    state.saveingBulkCourse = false;
+    state.saveBulkCourseError = payload.error;
+  },
+  [SET_UPDATEMODAL_PAGE_STATUS]: (state, { payload }) => {
+    state.uploadModalPageStatus = payload;
   }
 });
 
@@ -318,6 +359,19 @@ function* receiveSearchCourseSaga({ payload }) {
   }
 }
 
+function* saveBulkCourse({ payload }) {
+  try {
+    const saveBulkCourse = yield call(courseApi.saveBulkCourse, payload);
+    const successMessage = "Save Bulk CourseSuccessfully!";
+    yield call(message.success, successMessage);
+    yield put(saveBulkCourseSuccessAction(saveBulkCourse));
+  } catch (err) {
+    const errorMessage = "Saving Bulk Course failing";
+    yield call(message.error, errorMessage);
+    yield put(saveBulkCourseErrorAction({ deleteError: errorMessage }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_COURSE_REQUEST, receiveCourseListSaga)]);
   yield all([yield takeEvery(UPDATE_COURSE_REQUEST, updateCourseSaga)]);
@@ -325,4 +379,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(DEACTIVATE_COURSE_REQUEST, deactivateCourseSaga)]);
   yield all([yield takeEvery(UPLOAD_COURSE_CSV_REQUEST, uploadCourseCSVSaga)]);
   yield all([yield takeEvery(SEARCH_COURSE_REQUEST, receiveSearchCourseSaga)]);
+  yield all([yield takeEvery(SAVE_BULK_COURSE_REQUEST, saveBulkCourse)]);
 }

@@ -278,7 +278,7 @@ class MCQStandardPage {
   getCancel = () => cy.contains("Cancel").should("be.visible");
 
   // default question
-  createQuestion(queKey = "default") {
+  createQuestion(queKey = "default", queIndex = 0) {
     const item = new EditPage();
     item.createNewItem();
     item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_STD);
@@ -286,9 +286,10 @@ class MCQStandardPage {
       const { quetext, choices, setAns } = authoringData.MCQ_STD[queKey];
 
       if (quetext) {
+        const text = `Q${queIndex + 1} - ${quetext}`;
         this.getQuestionEditor()
           .clear()
-          .type(quetext);
+          .type(text);
       }
 
       if (choices) {

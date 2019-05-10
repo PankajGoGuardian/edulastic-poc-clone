@@ -6,5 +6,21 @@
       "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" }
     }
+  },
+  "MCQ_MULTI": {
+    "default": {
+      "quetext": "This is MCQ_MULTI.default question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "setAns": { "correct": ["right-1", "right-2"], "points": 2 },
+      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" }
+    }
+  },
+  "MCQ_TF": {
+    "default": {
+      "quetext": "This is MCQ_TF.default question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" }
+    }
   }
 }

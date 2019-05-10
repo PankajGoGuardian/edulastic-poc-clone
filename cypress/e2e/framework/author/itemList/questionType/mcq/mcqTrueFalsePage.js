@@ -1,11 +1,57 @@
 import MCQStandardPage from "./mcqStandardPage";
+import EditItemPage from "../../itemDetail/editPage";
+import { questionType, questionGroup } from "../../../../constants/questionTypes";
 
 class MCQTrueFalsePage extends MCQStandardPage {
+  // default question
+  createQuestion(queKey = "default", queIndex = 0) {
+    const item = new EditItemPage();
+    item.createNewItem();
+    item.chooseQuestion(questionGroup.MCQ, questionType.MCQ_TF);
+    cy.fixture("questionAuthoring").then(authoringData => {
+      const { quetext, choices, setAns } = authoringData.MCQ_TF[queKey];
 
-    constructor(){
-        super();
-    }
+      if (quetext) {
+        const text = `Q${queIndex + 1} - ${quetext}`;
+        this.getQuestionEditor()
+          .clear()
+          .type(text);
+      }
 
+      if (choices) {
+        const choicesCount = choices.length;
+        this.getAllChoices().then(allChoices => {
+          const defaultChoiceCount = allChoices.length;
+          let choiceDiff = defaultChoiceCount - choicesCount;
+          while (choiceDiff > 0) {
+            this.deleteChoiceByIndex(0);
+            choiceDiff -= 1;
+          }
+          while (choiceDiff < 0) {
+            this.addNewChoice();
+            choiceDiff += 1;
+          }
+          choices.forEach((choice, index) => {
+            this.getChoiceByIndex(index)
+              .clear()
+              .type(choice);
+          });
+        });
+      }
+
+      if (setAns) {
+        const { correct, points } = setAns;
+        this.getPoints()
+          .clear()
+          .type(points);
+        this.getAllAnsChoicesLabel()
+          .contains(correct)
+          .click();
+      }
+
+      this.header.save();
+    });
+  }
 }
 
 export default MCQTrueFalsePage;

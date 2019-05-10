@@ -1,6 +1,9 @@
 import MCQStandardPage from "./questionType/mcq/mcqStandardPage";
 import EditItemPage from "./itemDetail/editPage";
 import { questionTypeKey as queTypes } from "../../constants/questionTypes";
+import MCQMultiplePage from "./questionType/mcq/mcqMultiplePage";
+import MCQTrueFalsePage from "./questionType/mcq/mcqTrueFalsePage";
+import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 
 class ItemListPage {
   clickOnCreate = () => {
@@ -31,12 +34,24 @@ class ItemListPage {
         switch (queType) {
           case queTypes.MULTIPLE_CHOICE_STANDARD:
             question = new MCQStandardPage();
-            question.createQuestion();
+            break;
+
+          case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+            question = new MCQMultiplePage();
+            break;
+
+          case queTypes.TRUE_FALSE:
+            question = new MCQTrueFalsePage();
+            break;
+
+          case queTypes.MULTIPLE_CHOICE_BLOCK:
+            question = new MCQBlockLayoutPage();
             break;
 
           default:
             break;
         }
+        question.createQuestion();
         editItem.header.clickOnPublishItem();
       }
     });

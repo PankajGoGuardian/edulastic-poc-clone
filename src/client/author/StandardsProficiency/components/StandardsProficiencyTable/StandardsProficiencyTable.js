@@ -48,8 +48,8 @@ class StandardsProficiencyTable extends React.Component {
       isAdding: false,
       isChangeState: false,
       calcType: calcType,
-      calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 0,
-      calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 0
+      calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 65,
+      calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 5
     };
 
     this.columns = [

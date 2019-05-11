@@ -66,8 +66,6 @@ function* receivePerformanceBandSaga({ payload }) {
 function* updatePerformanceBandSaga({ payload }) {
   try {
     const updatePerformanceBand = yield call(settingsApi.updatePerformanceBand, payload);
-    const successMessage = "PerformanceBand Saved Successfully!";
-    yield call(message.success, successMessage);
     yield put(updatePerformanceBandSuccessAction(updatePerformanceBand));
   } catch (err) {
     const errorMessage = "Update PerformanceBand is failing";

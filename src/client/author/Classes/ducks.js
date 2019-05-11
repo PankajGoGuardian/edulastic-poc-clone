@@ -185,8 +185,6 @@ function* updateClassSaga({ payload }) {
   try {
     const updateClassData = yield call(groupApi.editGroup, payload);
     yield put(updateClassSuccessAction(updateClassData));
-    const successMessage = "Update Class is successed!";
-    yield call(message.success, successMessage);
   } catch (err) {
     const errorMessage = "Update Class is failing";
     yield call(message.error, errorMessage);
@@ -197,8 +195,6 @@ function* updateClassSaga({ payload }) {
 function* createClassSaga({ payload }) {
   try {
     const createClass = yield call(groupApi.createGroup, payload);
-    const successMessage = "Create Class is successed!";
-    yield call(message.success, successMessage);
     yield put(createClassSuccessAction(createClass));
   } catch (err) {
     const errorMessage = "Create Class is failing";
@@ -212,8 +208,6 @@ function* deleteClassSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(groupApi.deleteGroup, payload[i]);
     }
-    const successMessage = "Class Deleted Successfully!";
-    yield call(message.success, successMessage);
     yield put(deleteClassSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Class is failing";
@@ -225,8 +219,6 @@ function* deleteClassSaga({ payload }) {
 function* receiveTeachersListSaga({ payload }) {
   try {
     const teachersList = yield call(userApi.fetchUsers, payload);
-    const successMessage = "Receive Teachers is successed!";
-    yield call(message.success, successMessage);
     yield put(receiveTeacherListSuccessAction(teachersList.data));
   } catch (err) {
     const errorMessage = "Receive Teachers is failing!";

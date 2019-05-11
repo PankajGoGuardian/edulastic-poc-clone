@@ -68,8 +68,6 @@ function* receiveStandardsProficiencySaga({ payload }) {
 function* updateStandardsProficiencySaga({ payload }) {
   try {
     const updateStandardsProficiency = yield call(settingsApi.updateStandardsProficiency, payload);
-    const successMessage = "StandardsProficiency Saved Successfully!";
-    yield call(message.success, successMessage);
     yield put(updateStandardsProficiencySuccessAction(updateStandardsProficiency));
   } catch (err) {
     const errorMessage = "Update StandardsProficiency is failing";

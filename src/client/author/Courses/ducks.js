@@ -281,8 +281,6 @@ export const reducer = createReducer(initialState, {
 function* receiveCourseListSaga({ payload }) {
   try {
     const course = yield call(courseApi.fetchCourse, payload);
-    const successMessage = "Receive Courses is successed!";
-    yield call(message.success, successMessage);
     yield put(receiveCourseListSuccessAction(course));
   } catch (err) {
     const errorMessage = "Receive Course is failing!";
@@ -295,8 +293,6 @@ function* updateCourseSaga({ payload }) {
   try {
     const updateCourse = yield call(courseApi.editCourse, payload);
     yield put(updateCourseSuccessAction(updateCourse));
-    const successMessage = "Update Course is successed!";
-    yield call(message.success, successMessage);
   } catch (err) {
     const errorMessage = "Update Course is failing";
     yield call(message.error, errorMessage);
@@ -307,8 +303,6 @@ function* updateCourseSaga({ payload }) {
 function* createCourseSaga({ payload }) {
   try {
     const saveCourse = yield call(courseApi.saveCourse, payload);
-    const successMessage = "Save Course is successed!";
-    yield call(message.success, successMessage);
     yield put(createCourseSuccessAction(saveCourse));
   } catch (err) {
     const errorMessage = "Create Course is failing";
@@ -320,8 +314,6 @@ function* createCourseSaga({ payload }) {
 function* deactivateCourseSaga({ payload }) {
   try {
     yield call(courseApi.deactivateCourse, payload);
-    const successMessage = "Deactivate Course Successfully!";
-    yield call(message.success, successMessage);
     yield put(deactivateCourseSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Deactivate course is failing";
@@ -332,8 +324,6 @@ function* deactivateCourseSaga({ payload }) {
 function* uploadCourseCSVSaga({ payload }) {
   try {
     const uploadCSV = yield call(courseApi.uploadcCSV, payload);
-    const successMessage = "CSV Uploaded Successfully!";
-    yield call(message.success, successMessage);
     yield put(uploadCSVSuccessAction(uploadCSV));
   } catch (err) {
     const errorMessage = "CSV uploading is failing";
@@ -362,8 +352,6 @@ function* receiveSearchCourseSaga({ payload }) {
 function* saveBulkCourse({ payload }) {
   try {
     const saveBulkCourse = yield call(courseApi.saveBulkCourse, payload);
-    const successMessage = "Save Bulk CourseSuccessfully!";
-    yield call(message.success, successMessage);
     yield put(saveBulkCourseSuccessAction(saveBulkCourse));
   } catch (err) {
     const errorMessage = "Saving Bulk Course failing";

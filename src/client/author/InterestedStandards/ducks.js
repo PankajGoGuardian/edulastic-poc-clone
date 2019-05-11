@@ -86,8 +86,6 @@ export const reducer = createReducer(initialState, {
 function* receiveInterestedStandardsSaga({ payload }) {
   try {
     const interestedStandards = yield call(settingsApi.getInterestedStandards, payload);
-    const successMessage = "Loading Settings Successfully.";
-    yield call(message.success, successMessage);
     yield put(receiveInterestedStandardsSuccessAction(interestedStandards));
   } catch (err) {
     const errorMessage = "Receive Interested Standards is failing";
@@ -99,8 +97,6 @@ function* receiveInterestedStandardsSaga({ payload }) {
 function* updateInterestedStandardsSaga({ payload }) {
   try {
     const updateInterestedStandards = yield call(settingsApi.updateInterestedStandards, payload);
-    const successMessage = "Update succeeded";
-    yield call(message.success, successMessage);
     yield put(updateInterestedStandardsSuccessAction(updateInterestedStandards));
   } catch (err) {
     const errorMessage = "Update Interested Standards is failing";
@@ -112,8 +108,6 @@ function* updateInterestedStandardsSaga({ payload }) {
 function* saveInterestedStandardsSaga({ payload }) {
   try {
     const saveInterestedStandards = yield call(settingsApi.saveInterestedStandards, payload);
-    const successMessage = "Save succeeded";
-    yield call(message.success, successMessage);
     yield put(saveInterestedStandardsSuccessAction(saveInterestedStandards));
   } catch (err) {
     const errorMessage = "Save Interested Standards is failing";

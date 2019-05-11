@@ -150,8 +150,6 @@ function* createTermSaga({ payload }) {
   try {
     const createTerm = yield call(settingsApi.createTerm, { body: payload.body });
     const key = payload.key;
-    const successMessage = "Term Created Successfully!";
-    yield call(message.success, successMessage);
     yield put(createTermSuccessAction({ data: createTerm, key: key }));
   } catch (err) {
     const errorMessage = "Create Term is failing";
@@ -163,8 +161,6 @@ function* createTermSaga({ payload }) {
 function* updateTermSaga({ payload }) {
   try {
     const updateTerm = yield call(settingsApi.updateTerm, payload);
-    const successMessage = "Term Saved Successfully!";
-    yield call(message.success, successMessage);
     yield put(updateTermSuccessAction(updateTerm));
   } catch (err) {
     const errorMessage = "Update Term is failing";
@@ -176,8 +172,6 @@ function* updateTermSaga({ payload }) {
 function* deleteTermSaga({ payload }) {
   try {
     const deleteTerm = yield call(settingsApi.deleteTerm, payload);
-    const successMessage = "Term Deleted Successfully!";
-    yield call(message.success, successMessage);
     yield put(deleteTermSuccessAction(payload.body.termId));
   } catch (err) {
     const errorMessage = "Delete Term is failing";

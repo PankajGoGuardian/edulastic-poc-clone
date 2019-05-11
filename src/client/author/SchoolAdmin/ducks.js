@@ -220,8 +220,6 @@ export const reducer = createReducer(initialState, {
 function* receiveSchoolAdminSaga({ payload }) {
   try {
     const schoolAdmin = yield call(userApi.fetchUsers, payload);
-    const successMessage = "Receive SchoolAdmins is successed!";
-    yield call(message.success, successMessage);
     yield put(receiveSchoolAdminSuccessAction(schoolAdmin.data));
   } catch (err) {
     const errorMessage = "Receive SchoolAdmins is failing!";
@@ -234,8 +232,6 @@ function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
-    const successMessage = "Update SchoolAdmin is successed!";
-    yield call(message.success, successMessage);
   } catch (err) {
     const errorMessage = "Update SchoolAdmin is failing";
     yield call(message.error, errorMessage);
@@ -246,8 +242,6 @@ function* updateSchoolAdminSaga({ payload }) {
 function* createSchoolAdminSaga({ payload }) {
   try {
     const createSchoolAdmin = yield call(userApi.createUser, payload);
-    const successMessage = "Create SchoolAdmin is successed!";
-    yield call(message.success, successMessage);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";
@@ -261,8 +255,6 @@ function* deleteSchoolAdminSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
-    const successMessage = "SchoolAdmin Deleted Successfully!";
-    yield call(message.success, successMessage);
     yield put(deleteSchoolAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";

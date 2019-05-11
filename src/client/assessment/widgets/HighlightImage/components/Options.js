@@ -36,7 +36,7 @@ const Options = ({ item, setQuestionData }) => {
   };
 
   return (
-    <WidgetOptions showScoring={false}>
+    <WidgetOptions showVariables={false} showScoring={false}>
       <Layout>
         <Row gutter={36}>
           <Col md={12}>

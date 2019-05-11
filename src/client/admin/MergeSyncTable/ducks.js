@@ -18,6 +18,7 @@ export const ADD_SUBJECT_STANDARD_ROW_ACTION = "[admin] ADD_SUBJECT_STANDARD_ROW
 export const UPLOAD_CSV_TO_CLEVER = "[admin] uploading csv file to clever";
 export const UPDATE_SUBJECT_STANDARD_MAP = "[admin] UPDATE_SUBJECT_STANDARD_MAP";
 export const FETCH_LOGS_DATA = "[admin] FETCH_LOGS_DATA";
+export const DELETE_SUBJECT_STANDARD_ROW = "[admin] DELETE_SUBJECT_STANDARD_ROW";
 
 export const FETCH_EXISTING_DATA_SUCCESS = "[admin] FETCH_EXISTING_DATA_SUCCESS";
 export const FETCH_CURRICULUM_DATA_SUCCESS = "[admin] FETCH_CURRICULUM_DATA_SUCCESS";
@@ -41,6 +42,7 @@ export const addSubjectStandardRowAction = createAction(ADD_SUBJECT_STANDARD_ROW
 export const updateSubjectStdMapAction = createAction(UPDATE_SUBJECT_STANDARD_MAP);
 export const fetchLogsDataAction = createAction(FETCH_LOGS_DATA);
 export const logsDataSuccessAction = createAction(LOGS_DATA_SUCCESS);
+export const deleteSubjectStdMapAction = createAction(DELETE_SUBJECT_STANDARD_ROW);
 
 export const uploadCSVtoCleverAction = createAction(UPLOAD_CSV_TO_CLEVER);
 export const receiveMergeCleverIdsAction = createAction(RECEIVE_MERGED_CLEVER_ID);
@@ -114,6 +116,13 @@ const fetchExistingDataReducer = createReducer(initialState, {
       subStandardMapping: { rows }
     } = state;
     rows.push({ subject: "" });
+  },
+  [DELETE_SUBJECT_STANDARD_ROW]: (state, { payload: { index, subject } }) => {
+    const {
+      subStandardMapping: { rows, cleverSubjectStandardMap }
+    } = state;
+    rows.splice(index, 1);
+    delete cleverSubjectStandardMap[subject];
   },
   [LOGS_DATA_SUCCESS]: (state, { payload }) => {
     state.subStandardMapping.logs = payload.result;

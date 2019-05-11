@@ -7,7 +7,7 @@ const { Column } = Table;
 export default function Logs({ logs, fetchLogsDataAction, districtId }) {
   useEffect(() => {
     fetchLogsDataAction(districtId);
-  }, []);
+  }, [districtId]);
   return (
     <>
       <Button

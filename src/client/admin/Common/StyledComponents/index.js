@@ -47,7 +47,7 @@ export const FirstDiv = styled(FlexDiv)`
 export const Table = styled(AntdTable)`
   .ant-table table {
     table-layout: fixed;
-    word-break: break-all;
+    word-break: break-word;
   }
 `;
 

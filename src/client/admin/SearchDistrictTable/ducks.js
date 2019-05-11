@@ -8,19 +8,25 @@ import { message } from "antd";
 export const CLEVER_TABLE_DATA = "[admin] CLEVER_TABLE_DATA";
 export const UPDATE_CLEVER = "[admin] UPDATE_CLEVER";
 export const DELETE_DISTRICT_ID = "[admin] DELETE_DISTRICT_ID";
+export const GET_USERS_DATA = "[admin] GET_USERS_DATA";
+export const SET_USERS_LOADING = "[admin] SET_USERS_LOADING";
 
 export const TABLE_DATA_SUCCESS = "[admin] TABLE_DATA_SUCCESS";
 export const CLEVER_ID_UPDATE_SUCCESS = "[admin] CLEVER_ID_UPDATE_SUCCESS";
 export const DELETE_DISTRICT_ID_SUCCESS = "[admin] DELETE_DISTRICT_ID_SUCCESS";
+export const GET_USERS_DATA_SUCCESS = "[admin] GET_USERS_DATA_SUCCESS";
 
 // ACTION CREATORS
 export const fetchTableData = createAction(CLEVER_TABLE_DATA);
 export const updateClever = createAction(UPDATE_CLEVER);
 export const deleteDistrictId = createAction(DELETE_DISTRICT_ID);
+export const getUsersDataAction = createAction(GET_USERS_DATA);
+export const setUsersLoadingAction = createAction(SET_USERS_LOADING);
 
 export const cleverIdUpdateAction = createAction(CLEVER_ID_UPDATE_SUCCESS);
 export const tableDataSuccessAction = createAction(TABLE_DATA_SUCCESS);
 export const deleteDistrictIdSuccess = createAction(DELETE_DISTRICT_ID_SUCCESS);
+export const getUsersDataSuccess = createAction(GET_USERS_DATA_SUCCESS);
 
 // REDUCERS
 const initialState = [];
@@ -36,6 +42,15 @@ const tableDataReducer = createReducer(initialState, {
   [DELETE_DISTRICT_ID_SUCCESS]: (state, { payload }) => {
     const recordIndex = state.findIndex(item => item._id === payload.districtId);
     state[recordIndex]._source.status = 0;
+  },
+  [GET_USERS_DATA_SUCCESS]: (state, { payload: { index, ...rest } }) => {
+    state[index].users.data = rest;
+    state[index].users.loading = false;
+  },
+  [SET_USERS_LOADING]: (state, { payload: index }) => {
+    state[index].users = {
+      loading: true
+    };
   }
 });
 
@@ -51,7 +66,8 @@ export const getTableData = createSelector(
 const {
   searchUpdateDistrict: searchUpdateDistrictApi,
   updateDistrictCleverId: updateDistrictCleverIdApi,
-  deleteDistrictApi
+  deleteDistrictApi,
+  getUsersDataApi
 } = adminApi;
 
 function* updateCleverRequest({ payload }) {
@@ -87,11 +103,22 @@ function* fetchDeleteDistrictIdRequest({ payload }) {
   }
 }
 
+function* getUsersDataSaga({ payload: { districtId, index } }) {
+  try {
+    yield put(setUsersLoadingAction(index));
+    const item = yield call(getUsersDataApi, districtId);
+    yield put(getUsersDataSuccess({ ...item.data, index }));
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(CLEVER_TABLE_DATA, fetchTableDataGenerator),
     yield takeEvery(UPDATE_CLEVER, updateCleverRequest),
-    yield takeEvery(DELETE_DISTRICT_ID, fetchDeleteDistrictIdRequest)
+    yield takeEvery(DELETE_DISTRICT_ID, fetchDeleteDistrictIdRequest),
+    yield takeEvery(GET_USERS_DATA, getUsersDataSaga)
   ]);
 }
 

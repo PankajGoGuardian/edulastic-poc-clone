@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Input, Popconfirm } from "antd";
-import { Table } from "../Common/StyledComponents";
+import { Input, Popconfirm, Spin } from "antd";
+import { Table, Button, FlexColumn } from "../Common/StyledComponents";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
-import { Button } from "../Common/StyledComponents";
 import ErrorBoundary from "../Common/ErrorBoundary";
-import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS } from "../Data";
+import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType } from "../Data";
 
 const { Column } = Table;
 
@@ -34,19 +33,21 @@ const NonEditableAction = ({ onSaveConfirm, onCancelSave }) => (
   </>
 );
 
-function UserCount({ record: { _id } }) {
-  const [state, setState] = useState(false);
-
-  return (
-    <>
-      {!state ? (
-        <Button aria-label="View users" onClick={() => setState(val => !val)} noStyle>
-          <IconCaretDown />
-        </Button>
-      ) : (
-        "Loading Users..."
-      )}
-    </>
+function UserCount({ users, getUsersDataAction, districtId, index }) {
+  return users.loading ? (
+    <Spin />
+  ) : users.data ? (
+    <FlexColumn>
+      {Object.keys(users.data).map(key => (
+        <span>
+          {mapCountAsType[key].name} : {users.data[key]}
+        </span>
+      ))}
+    </FlexColumn>
+  ) : (
+    <Button aria-label="View users" onClick={() => getUsersDataAction({ districtId, index })} noStyle>
+      <IconCaretDown />
+    </Button>
   );
 }
 
@@ -71,7 +72,7 @@ const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter, onCa
   );
 });
 
-export default function SearchDistrictTable({ data, updateClever, deleteDistrictId }) {
+export default function SearchDistrictTable({ data, updateClever, deleteDistrictId, getUsersDataAction }) {
   const [editCell, setEditCell] = useState();
   // here ref is used for the editable text input, since we keep it as an uncontrolled component
   const textInput = React.createRef();
@@ -136,7 +137,9 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         title="Users"
         dataIndex="users"
         key="users"
-        render={(text, record, index) => <UserCount record={record} />}
+        render={(users = {}, record, index) => (
+          <UserCount users={users} getUsersDataAction={getUsersDataAction} districtId={record._id} index={index} />
+        )}
       />
       <Column title="Actions" dataIndex="actions" key="actions" render={renderActions} />
     </Table>

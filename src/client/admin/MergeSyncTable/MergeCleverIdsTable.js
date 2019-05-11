@@ -2,37 +2,10 @@ import React from "react";
 import { CSVLink } from "react-csv";
 import { Button, Upload, Icon, message, Modal } from "antd";
 import { Table } from "../Common/StyledComponents";
-
+import { mapCountAsType } from "../Data";
 const { Column } = Table;
 
 const orgTypesCount = ["schoolCount", "groupCount", "saCount", "teacherCount", "studentCount", "daCount"];
-
-const mapCountAsType = {
-  schoolCount: {
-    name: "Schools",
-    type: "sch"
-  },
-  groupCount: {
-    name: "Classes",
-    type: "cls"
-  },
-  saCount: {
-    name: "School Admins",
-    type: "sa"
-  },
-  teacherCount: {
-    name: "Teachers",
-    type: "tch"
-  },
-  studentCount: {
-    name: "Students",
-    type: "stu"
-  },
-  daCount: {
-    name: "District Admins",
-    type: "da"
-  }
-};
 
 const MergeCleverIdsTable = ({
   eduCounts,

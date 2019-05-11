@@ -64,3 +64,30 @@ export const LIST_CLEVER_SUBJECTS = [
 ];
 
 export const LIST_EDULASTIC_SUBJECTS = ["Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];
+
+export const mapCountAsType = {
+  schoolCount: {
+    name: "Schools",
+    type: "sch"
+  },
+  groupCount: {
+    name: "Classes",
+    type: "cls"
+  },
+  saCount: {
+    name: "School Admins",
+    type: "sa"
+  },
+  teacherCount: {
+    name: "Teachers",
+    type: "tch"
+  },
+  studentCount: {
+    name: "Students",
+    type: "stu"
+  },
+  daCount: {
+    name: "District Admins",
+    type: "da"
+  }
+};

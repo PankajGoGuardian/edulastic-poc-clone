@@ -22,7 +22,8 @@ import {
   uploadCSVtoCleverAction,
   updateSubjectStdMapAction,
   fetchLogsDataAction,
-  closeMergeResponseAction
+  closeMergeResponseAction,
+  deleteSubjectStdMapAction
 } from "./ducks";
 
 const Tabs = styled(AntdTabs)`
@@ -53,12 +54,12 @@ const DistrictNameDiv = styled(FlexDiv)`
   padding: 15px;
   align-items: center;
   background: #bdbfc1;
+  justify-content: space-between;
 `;
 
 const DistrictSpan = styled.span`
   font-weight: bolder;
-  font-size: 16px;
-  margin-right: 15px;
+  font-size: 20px;
 `;
 
 import MergeCleverIdsTable from "./MergeCleverIdsTable";
@@ -109,7 +110,7 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
                 pattern: /^[0-9a-fA-F]{24}$/
               }
             ],
-            initialValue: "5cc813ac0a56e42e306f8f66"
+            initialValue: ""
           })(<Input placeholder="District Id" style={{ width: 300 }} />)}
         </Form.Item>
         <Form.Item>
@@ -119,7 +120,7 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
                 message: "Please enter valid Clever ID"
               }
             ],
-            initialValue: "54699a3eb05657a931000005"
+            initialValue: ""
           })(<Input placeholder="Clever Id" style={{ width: 300 }} />)}
         </Form.Item>
         <Form.Item>
@@ -149,7 +150,8 @@ function MergeSyncTable({
   updateSubjectStdMapAction,
   fetchLogsDataAction,
   mergeResponse,
-  closeMergeResponse
+  closeMergeResponse,
+  deleteSubjectStdMapAction
 }) {
   const {
     data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
@@ -168,7 +170,7 @@ function MergeSyncTable({
             districtId={district._id}
             enableDisableSyncAction={enableDisableSyncAction}
           />
-          <Tabs type="card" animated={true} defaultActiveKey={"subjectStdMapping"}>
+          <Tabs type="card" animated={true} defaultActiveKey={"mergeCleverIds"}>
             <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
               <MergeCleverIdsTable
                 clvrCounts={cleverCountsInfo}
@@ -194,6 +196,7 @@ function MergeSyncTable({
                 updateEdulasticStandardAction={updateEdulasticStandardAction}
                 addSubjectStandardRowAction={addSubjectStandardRowAction}
                 updateSubjectStdMapAction={updateSubjectStdMapAction}
+                deleteSubjectStdMapAction={deleteSubjectStdMapAction}
               />
             </TabPane>
             <TabPane tab="Class Name Pattern" key="classNamePattern">
@@ -244,7 +247,8 @@ const withConnect = connect(
     updateSubjectStdMapAction,
     fetchLogsDataAction,
     closeMergeResponse: closeMergeResponseAction,
-    updateSubjectStdMapAction
+    updateSubjectStdMapAction,
+    deleteSubjectStdMapAction
   }
 );
 

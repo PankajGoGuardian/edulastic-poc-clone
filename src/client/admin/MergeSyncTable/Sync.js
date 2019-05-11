@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Radio, Button } from "antd";
 import { Table } from "../Common/StyledComponents";
 
@@ -15,6 +15,11 @@ export default function Sync({ schools, cleverId, syncSchools }) {
       schoolCleverIds: selectedRowKeys
     });
   };
+
+  useEffect(() => {
+    setSelectedRowKeys([]);
+  }, [cleverId]);
+
   const rowSelection = {
     selectedRowKeys,
     onChange: (selectedRowKeys, selectedRows) => {

@@ -124,6 +124,14 @@ const logsDataApi = districtId =>
     })
     .then(({ data }) => data);
 
+const getUsersDataApi = districtId =>
+  api
+    .callApi({
+      url: `${prefix}districtstats/${districtId}/`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -137,5 +145,6 @@ export default {
   fetchCurriculumDataApi,
   uploadCSVtoClever,
   updateSubjectStandardApi,
-  logsDataApi
+  logsDataApi,
+  getUsersDataApi
 };

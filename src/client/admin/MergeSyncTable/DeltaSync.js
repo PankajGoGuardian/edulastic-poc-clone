@@ -19,7 +19,7 @@ function DeltaSync(props) {
   } = props;
   const { orgId, orgType } = rosterSyncConfig;
 
-  useEffect(() => {
+  const setValueBackToDefault = () => {
     props.form.setFieldsValue({
       studentDeltaMergeEnabled: rosterSyncConfig["studentDeltaMergeEnabled"],
       studentFullMergeEnabled: rosterSyncConfig["studentFullMergeEnabled"],
@@ -28,6 +28,9 @@ function DeltaSync(props) {
       teacherFullMergeEnabled: rosterSyncConfig["teacherFullMergeEnabled"],
       teacherMergeAttribute: rosterSyncConfig["teacherMergeAttribute"]
     });
+  };
+  useEffect(() => {
+    setValueBackToDefault();
   }, [
     rosterSyncConfig["studentDeltaMergeEnabled"],
     rosterSyncConfig["studentFullMergeEnabled"],
@@ -93,7 +96,7 @@ function DeltaSync(props) {
             </Select>
           )}
         </Form.Item>
-        <CancelApplyActions applySubmit />
+        <CancelApplyActions applySubmit onCancelAction={setValueBackToDefault} />
       </Form>
     </Column>
   );

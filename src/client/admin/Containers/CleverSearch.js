@@ -7,7 +7,13 @@ import SearchDistrictTable from "../SearchDistrictTable";
 import MergeSyncTable from "../MergeSyncTable";
 import { MainDiv, FirstDiv, Button, H2, OuterDiv } from "../Common/StyledComponents";
 import { radioButtondata } from "../Data";
-import { fetchTableData, updateClever, getTableData, deleteDistrictId } from "../SearchDistrictTable/ducks";
+import {
+  fetchTableData,
+  updateClever,
+  getTableData,
+  deleteDistrictId,
+  getUsersDataAction
+} from "../SearchDistrictTable/ducks";
 
 const { Group: RadioGroup } = Radio;
 
@@ -35,7 +41,7 @@ const WrappedForm = Form.create({ name: "validate_other" })(function searchUpdat
     <Form onSubmit={searchData} layout="inline">
       <Form.Item>
         {getFieldDecorator("searchDistrict", {
-          initialValue: "demo"
+          initialValue: ""
         })(<CircularInput placeholder="Search..." style={{ width: 300 }} />)}
         <Button
           icon="search"
@@ -53,7 +59,7 @@ const WrappedForm = Form.create({ name: "validate_other" })(function searchUpdat
       </Form.Item>
       <Form.Item>
         {getFieldDecorator("radioInput", {
-          initialValue: radioButtondata.list[2].id
+          initialValue: radioButtondata.list[0].id
         })(
           <RadioGroup name="searchOptions">
             {radioButtondata.list.map(item => (
@@ -69,7 +75,7 @@ const WrappedForm = Form.create({ name: "validate_other" })(function searchUpdat
 });
 
 function CleverSearch(props) {
-  const { fetchTableData, tableData, updateClever, deleteDistrictId } = props;
+  const { fetchTableData, tableData, updateClever, deleteDistrictId, getUsersDataAction } = props;
 
   return (
     <MainDiv>
@@ -78,7 +84,12 @@ function CleverSearch(props) {
         <FirstDiv>
           <WrappedForm fetchTableData={fetchTableData} />
         </FirstDiv>
-        <SearchDistrictTable data={tableData} updateClever={updateClever} deleteDistrictId={deleteDistrictId} />
+        <SearchDistrictTable
+          data={tableData}
+          updateClever={updateClever}
+          deleteDistrictId={deleteDistrictId}
+          getUsersDataAction={getUsersDataAction}
+        />
       </OuterDiv>
       <MergeSyncTable />
     </MainDiv>
@@ -94,7 +105,8 @@ const withConnect = connect(
   {
     fetchTableData,
     updateClever,
-    deleteDistrictId
+    deleteDistrictId,
+    getUsersDataAction
   }
 );
 

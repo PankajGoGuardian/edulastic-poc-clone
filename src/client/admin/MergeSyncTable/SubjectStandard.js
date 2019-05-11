@@ -18,7 +18,8 @@ export default function SubjectStandard({
   addSubjectStandardRowAction,
   orgId,
   orgType,
-  updateSubjectStdMapAction
+  updateSubjectStdMapAction,
+  deleteSubjectStdMapAction
 }) {
   const { rows, cleverSubjectStandardMap, curriculum } = subStandardMapping;
 
@@ -106,8 +107,13 @@ export default function SubjectStandard({
             </Button>
           }
           key="addDeleteRow"
-          render={item => (
-            <Button title={`Delete ${item.subject}`} aria-label={`Delete ${item.subject}`} noStyle>
+          render={(item, _, index) => (
+            <Button
+              title={`Delete ${item.subject}`}
+              aria-label={`Delete ${item.subject}`}
+              onClick={() => deleteSubjectStdMapAction({ ...item, index })}
+              noStyle
+            >
               <IconTrash />
             </Button>
           )}

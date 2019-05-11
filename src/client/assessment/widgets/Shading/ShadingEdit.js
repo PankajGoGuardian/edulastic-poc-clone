@@ -8,7 +8,7 @@ import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import { Paper } from "@edulastic/common";
 
-import { EDIT } from "../../constants/constantsForQuestions";
+import { EDIT, BY_COUNT_METHOD } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -93,11 +93,13 @@ const ShadingEdit = ({ item, setQuestionData, t, theme, saveAnswer }) => {
       produce(item, draft => {
         if (method) {
           if (correctTab === 0) {
+            const val = ans === BY_COUNT_METHOD ? [1] : [];
             draft.validation.valid_response.value.method = ans;
-            draft.validation.valid_response.value.value = [];
+            draft.validation.valid_response.value.value = val;
           } else {
+            const val = ans === BY_COUNT_METHOD ? [1] : [];
             draft.validation.alt_responses[correctTab - 1].value.method = ans;
-            draft.validation.alt_responses[correctTab - 1].value.value = [];
+            draft.validation.alt_responses[correctTab - 1].value.value = val;
           }
         } else if (correctTab === 0) {
           draft.validation.valid_response.value.value = [...ans];

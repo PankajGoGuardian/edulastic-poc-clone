@@ -175,8 +175,8 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
               size="large"
               type="number"
               style={{ marginTop: 40, width: 320 }}
-              value={Array.isArray(userAnswer[0]) ? 0 : userAnswer[0]}
-              onChange={e => saveAnswer([+e.target.value])}
+              value={Array.isArray(userAnswer[0]) ? 1 : userAnswer[0]}
+              onChange={e => saveAnswer([e.target.value > 0 ? +e.target.value : 1])}
             />
           )
         )}

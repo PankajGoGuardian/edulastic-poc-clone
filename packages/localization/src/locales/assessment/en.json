@@ -452,6 +452,7 @@
       "imageText": {
         "composequestion": "Compose Question",
         "response": "Response",
+        "deleteImageButtonText": "Delete Image",
         "thisisstem": "[This is the stem.]",
         "widthpx": "Width (px)",
         "imagealtertext": "Image alternative text",

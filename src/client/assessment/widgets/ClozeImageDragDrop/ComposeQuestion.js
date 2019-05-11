@@ -11,9 +11,9 @@ import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from "a
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 
-import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
+import { PaddingDiv, CustomQuillComponent, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { API_CONFIG } from "@edulastic/api";
+import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -31,7 +31,6 @@ import { IconUpload } from "./styled/IconUpload";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { Widget } from "../../styled/Widget";
-import { TokenStorage } from "@edulastic/api";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -168,7 +167,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme } = this.props;
+    const { t, item, theme, setQuestionData } = this.props;
 
     const { maxRespCount, responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
@@ -177,7 +176,7 @@ class ComposeQuestion extends Component {
 
     const draggerProps = {
       name: "file",
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       headers: {
         "X-Requested-With": null,
         authorization: TokenStorage.getAccessToken()
@@ -364,6 +363,17 @@ class ComposeQuestion extends Component {
                 {t("component.cloze.imageDragDrop.editAriaLabels")}
               </Checkbox>
             </PaddingDiv>
+            {item.imageUrl && (
+              <EduButton
+                type="primary"
+                style={{ marginTop: 20, marginBottom: 20 }}
+                onClick={() => {
+                  setQuestionData({ ...item, imageUrl: "" });
+                }}
+              >
+                {t("component.cloze.imageText.deleteImageButtonText")}
+              </EduButton>
+            )}
           </FlexView>
         </FlexContainer>
         <PaddingDiv>

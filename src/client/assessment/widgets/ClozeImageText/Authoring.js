@@ -11,8 +11,8 @@ import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 
-import { API_CONFIG } from "@edulastic/api";
-import { PaddingDiv } from "@edulastic/common";
+import { API_CONFIG, TokenStorage } from "@edulastic/api";
+import { PaddingDiv, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
@@ -44,7 +44,6 @@ import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
 
 import SortableList from "../../components/SortableList";
-import { TokenStorage } from "@edulastic/api";
 
 const { Option } = Select;
 const { Dragger } = Upload;
@@ -188,7 +187,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme } = this.props;
+    const { t, item, theme, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -196,7 +195,7 @@ class Authoring extends Component {
 
     const draggerProps = {
       name: "file",
-      action: `${API_CONFIG.api}file/upload`,
+      action: `${API_CONFIG.api}/file/upload`,
       headers: {
         "X-Requested-With": null,
         authorization: TokenStorage.getAccessToken()
@@ -345,6 +344,17 @@ class Authoring extends Component {
                     {t("component.cloze.imageText.editAriaLabels")}
                   </Checkbox>
                 </CheckContainer>
+                {item.imageUrl && (
+                  <EduButton
+                    type="primary"
+                    style={{ marginTop: 20, marginBottom: 20 }}
+                    onClick={() => {
+                      setQuestionData({ ...item, imageUrl: "" });
+                    }}
+                  >
+                    {t("component.cloze.imageText.deleteImageButtonText")}
+                  </EduButton>
+                )}
               </ImageFlexView>
             </FlexContainer>
             <PaddingDiv>

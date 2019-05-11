@@ -71,7 +71,7 @@ const Options = ({ item, t, changeItem, changeUIStyle, setQuestionData, saveAnsw
           <Col md={12}>
             <MaxSelectionOption
               onChange={val => {
-                changeItem("max_selection", +val);
+                changeItem("max_selection", val > 0 ? +val : 0);
                 saveAnswer([]);
               }}
               value={item.max_selection}

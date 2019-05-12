@@ -77,7 +77,7 @@ class MathKeyboard extends React.PureComponent {
 
     return symbols.map(symbol => {
       if (typeof symbol === "string") {
-        return math.symbols.find(opt => opt.value === symbol);
+        return math.symbols.find(opt => opt.value === symbol) || { value: "", label: "" };
       }
 
       if (isObject(symbol)) {

@@ -73,7 +73,14 @@ class AdvancedTable extends Component {
   };
 
   render() {
-    const { onSelectRow, assignmentsSummary, history, onOpenReleaseScoreSettings, folderData } = this.props;
+    const {
+      onSelectRow,
+      assignmentsSummary,
+      history,
+      onOpenReleaseScoreSettings,
+      selectedRows,
+      folderData
+    } = this.props;
     const { perPage, current } = this.state;
     const columns = [
       {
@@ -163,7 +170,7 @@ class AdvancedTable extends Component {
     ];
 
     const rowSelection = {
-      // selectedRowKeys: selectedClasses,
+      selectedRowKeys: selectedRows.map(({ key }) => key),
       onChange: (_, rows) => {
         if (onSelectRow) {
           onSelectRow(rows);
@@ -214,6 +221,7 @@ AdvancedTable.propTypes = {
   onOpenReleaseScoreSettings: PropTypes.func,
   filters: PropTypes.object.isRequired,
   onSelectRow: PropTypes.func,
+  selectedRows: PropTypes.array.isRequired,
   history: PropTypes.object
 };
 

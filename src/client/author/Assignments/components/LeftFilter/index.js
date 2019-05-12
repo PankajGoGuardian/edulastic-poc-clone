@@ -16,6 +16,7 @@ import {
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../../../src/actions/assignments";
 import {
+  receiveFolderAction,
   receiveCreateFolderAction,
   receiveAddMoveFolderAction,
   receiveDeleteFolderAction,
@@ -103,8 +104,7 @@ class LeftFilter extends React.Component {
       selectedRows,
       addMoveToFolderRequest,
       folderData: { _id: folderId },
-      folders,
-      setFolder,
+      loadFolders,
       clearSelectedRow
     } = this.props;
     const { moveFolderId } = this.state;
@@ -118,11 +118,9 @@ class LeftFilter extends React.Component {
       return pickBy(param, identity);
     });
 
-    const folder = find(folders, ({ _id }) => _id === moveFolderId);
-
     if (addMoveToFolderRequest) {
       addMoveToFolderRequest({ folderId: moveFolderId, params });
-      setFolder(folder);
+      loadFolders();
       clearSelectedRow();
       this.setState({ moveFolderId: "" });
     }
@@ -358,6 +356,7 @@ LeftFilter.propTypes = {
   deleteFolder: PropTypes.func.isRequired,
   setFolder: PropTypes.func.isRequired,
   clearFolder: PropTypes.func.isRequired,
+  loadFolders: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onSetFilter: PropTypes.func.isRequired,
   folderData: PropTypes.object.isRequired,
@@ -392,6 +391,7 @@ export default connect(
     deleteFolder: receiveDeleteFolderAction,
     renameFolder: receiveRenameFolderAction,
     setFolder: setFolderAction,
+    loadFolders: receiveFolderAction,
     clearFolder: clearFolderAction
   }
 )(LeftFilter);

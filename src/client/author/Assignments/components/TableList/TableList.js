@@ -170,6 +170,7 @@ class TableList extends Component {
       renderFilter,
       t,
       onSelectRow,
+      selectedRows,
       folderData
     } = this.props;
     const { details } = this.state;
@@ -269,7 +270,7 @@ class TableList extends Component {
     const getAssignmentsByTestId = Id => assignmentsByTestId[Id].filter(item => !item.redirect);
 
     const rowSelection = {
-      // selectedRowKeys: selectedClasses,
+      selectedRowKeys: selectedRows.map(({ key }) => key),
       onChange: (_, rows) => {
         if (onSelectRow) {
           onSelectRow(rows);
@@ -314,6 +315,7 @@ TableList.propTypes = {
   onOpenReleaseScoreSettings: PropTypes.func,
   folderData: PropTypes.object.isRequired,
   onSelectRow: PropTypes.func,
+  selectedRows: PropTypes.array.isRequired,
   renderFilter: PropTypes.func,
   history: PropTypes.object,
   tests: PropTypes.array

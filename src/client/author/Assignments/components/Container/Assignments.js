@@ -212,6 +212,7 @@ class Assignments extends Component {
                           districtId={districtId}
                           assignmentsSummary={assignmentsSummary}
                           onSelectRow={this.onSelectRow}
+                          selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
                         />
@@ -220,6 +221,7 @@ class Assignments extends Component {
                           assignmentsByTestId={assignmentsByTestId}
                           tests={tests}
                           onSelectRow={this.onSelectRow}
+                          selectedRows={selectedRows}
                           // renderFilter={this.renderFilter}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                         />

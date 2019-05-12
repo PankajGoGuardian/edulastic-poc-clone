@@ -68,7 +68,7 @@ function* receiveAddMoveFolderRequest({ payload }) {
     const errorMessage = "Add or Move content to folder failing";
     yield call(message.error, errorMessage);
     yield put({
-      type: DELETE_FOLDER_ERROR,
+      type: ADD_MOVE_FOLDER_ERROR,
       payload: { error: errorMessage }
     });
   }
@@ -87,7 +87,7 @@ function* receiveDeleteFolderRequest({ payload }) {
   } catch (err) {
     const errorMessage = "Delete a folder failing";
     yield put({
-      type: ADD_MOVE_FOLDER_ERROR,
+      type: DELETE_FOLDER_ERROR,
       payload: { error: errorMessage }
     });
   }

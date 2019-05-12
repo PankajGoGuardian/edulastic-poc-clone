@@ -29,7 +29,6 @@ const TableRow = ({
     columnContainerStyle: {
       display: "flex",
       flexWrap: "wrap",
-      padding: "70px 50px",
       width,
       minHeight: height,
       borderRadius: 4,

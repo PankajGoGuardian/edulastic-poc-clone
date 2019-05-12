@@ -76,7 +76,7 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
       >
         <FlexContainer
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="center"
           style={{
             width: "100%",
             fontWeight: theme.widgets.classification.dragItemFontWeight

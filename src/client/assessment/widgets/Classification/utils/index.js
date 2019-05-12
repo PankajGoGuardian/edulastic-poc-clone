@@ -8,8 +8,6 @@ export const getStyles = (isDragging, backgroundColor, borderColor, styles = {})
   borderRadius: 5,
   border: `1px solid ${borderColor}`,
   backgroundColor,
-  paddingRight: 40,
   cursor: "pointer",
-  paddingLeft: 40,
   ...styles
 });

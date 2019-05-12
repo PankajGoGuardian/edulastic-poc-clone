@@ -217,6 +217,8 @@ export const RENAME_FOLDER_REQUEST = "[folder] rename folder request";
 export const RENAME_FOLDER_SUCCESS = "[folder] rename folder success";
 export const RENAME_FOLDER_ERROR = "[folder] rename folder error";
 
+export const SET_FOLDER = "[folder] set folder";
+export const CLEAR_FOLDER = "[folder] clear folder";
 // -----|-----|-----|----- FOLDERS ENDED -----|-----|-----|----- //
 
 // playlist

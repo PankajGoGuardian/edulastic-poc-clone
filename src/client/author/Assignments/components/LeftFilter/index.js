@@ -19,10 +19,12 @@ import {
   receiveCreateFolderAction,
   receiveAddMoveFolderAction,
   receiveDeleteFolderAction,
-  receiveRenameFolderAction
+  receiveRenameFolderAction,
+  setFolderAction,
+  clearFolderAction
 } from "../../../src/actions/folder";
 import { getDistrictIdSelector } from "../../../src/selectors/assignments";
-import { getFoldersSelector } from "../../../src/selectors/folder";
+import { getFoldersSelector, getFolderSelector } from "../../../src/selectors/folder";
 import {
   FilterContainer,
   StyledBoldText,
@@ -100,7 +102,10 @@ class LeftFilter extends React.Component {
     const {
       selectedRows,
       addMoveToFolderRequest,
-      filterState: { folderId }
+      folderData: { _id: folderId },
+      folders,
+      setFolder,
+      clearSelectedRow
     } = this.props;
     const { moveFolderId } = this.state;
 
@@ -113,8 +118,13 @@ class LeftFilter extends React.Component {
       return pickBy(param, identity);
     });
 
+    const folder = find(folders, ({ _id }) => _id === moveFolderId);
+
     if (addMoveToFolderRequest) {
       addMoveToFolderRequest({ folderId: moveFolderId, params });
+      setFolder(folder);
+      clearSelectedRow();
+      this.setState({ moveFolderId: "" });
     }
     this.hideModal("moveFolder");
   };
@@ -141,17 +151,27 @@ class LeftFilter extends React.Component {
       loadAssignmentsSummary
     } = this.props;
     let filters = { ...filterState, [key]: value };
-    const { visibleModal } = this.state;
-    if (!visibleModal.moveFolder) {
-      if (!isAdvancedView) {
-        loadAssignments({ filters });
-      } else {
-        filters = { ...filters, pageNo: 1 };
-        loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
-      }
-      onSetFilter(filters);
+
+    if (!isAdvancedView) {
+      loadAssignments({ filters });
     } else {
-      this.setState({ moveFolderId: value });
+      filters = { ...filters, pageNo: 1 };
+      loadAssignmentsSummary({ districtId, filters: pickBy(filters, identity), filtering: true });
+    }
+    onSetFilter(filters);
+  };
+
+  handleSelectFolder = folder => {
+    const { setFolder, clearFolder } = this.props;
+    const { visibleModal } = this.state;
+
+    if (visibleModal.moveFolder) {
+      const { _id } = folder;
+      this.setState({ moveFolderId: _id });
+    } else if (folder) {
+      setFolder(folder);
+    } else {
+      clearFolder();
     }
   };
 
@@ -160,7 +180,7 @@ class LeftFilter extends React.Component {
   renderFolders = () => {
     const {
       folders,
-      filterState: { folderId }
+      folderData: { _id: folderId }
     } = this.props;
 
     const { moveFolderId, visibleModal } = this.state;
@@ -182,7 +202,7 @@ class LeftFilter extends React.Component {
       <>
         {!visibleModal.moveFolder && (
           <FolderButton
-            onClick={() => this.handleChange("folderId")("")}
+            onClick={() => this.handleSelectFolder(null)}
             active={!folderId}
             shadow="none"
             icon={<IconFolderAll />}
@@ -195,7 +215,7 @@ class LeftFilter extends React.Component {
           const isActive = visibleModal.moveFolder ? folder._id === moveFolderId : folder._id === folderId;
           return (
             <FolderListItem key={index} active={isActive}>
-              <FolderListItemTitle onClick={() => this.handleChange("folderId")(folder._id)}>
+              <FolderListItemTitle onClick={() => this.handleSelectFolder(folder)}>
                 {isActive ? <IconFolderActive /> : <IconFolderDeactive />}
                 <span>{folder.folderName}</span>
               </FolderListItemTitle>
@@ -336,8 +356,12 @@ LeftFilter.propTypes = {
   addMoveToFolderRequest: PropTypes.func.isRequired,
   renameFolder: PropTypes.func.isRequired,
   deleteFolder: PropTypes.func.isRequired,
+  setFolder: PropTypes.func.isRequired,
+  clearFolder: PropTypes.func.isRequired,
   districtId: PropTypes.string.isRequired,
   onSetFilter: PropTypes.func.isRequired,
+  folderData: PropTypes.object.isRequired,
+  clearSelectedRow: PropTypes.func.isRequired,
   folders: PropTypes.array,
   termsData: PropTypes.array,
   selectedRows: PropTypes.array,
@@ -357,7 +381,8 @@ export default connect(
   state => ({
     districtId: getDistrictIdSelector(state),
     folders: getFoldersSelector(state),
-    termsData: get(state, "user.user.orgData.terms", [])
+    termsData: get(state, "user.user.orgData.terms", []),
+    folderData: getFolderSelector(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,
@@ -365,6 +390,8 @@ export default connect(
     createFolderRequest: receiveCreateFolderAction,
     addMoveToFolderRequest: receiveAddMoveFolderAction,
     deleteFolder: receiveDeleteFolderAction,
-    renameFolder: receiveRenameFolderAction
+    renameFolder: receiveRenameFolderAction,
+    setFolder: setFolderAction,
+    clearFolder: clearFolderAction
   }
 )(LeftFilter);

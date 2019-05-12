@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { remove, clone, isEmpty } from "lodash";
+import { get, find, isEmpty } from "lodash";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 import { withWindowSizes, FlexContainer } from "@edulastic/common";
@@ -63,16 +63,41 @@ class Assignments extends Component {
   state = {
     showFilter: false,
     selectedRows: [],
-    filterState: initialFilterState
+    filterState: initialFilterState,
+    defaultFilters: {}
   };
 
   componentDidMount() {
-    const { loadAssignments, loadAssignmentsSummary, districtId, loadFolders, assignmentsSummary } = this.props;
-    loadAssignments();
+    const {
+      loadAssignments,
+      loadAssignmentsSummary,
+      districtId,
+      loadFolders,
+      assignmentsSummary,
+      orgData
+    } = this.props;
+    const { terms, defaultTermId } = orgData;
+    const { filterState } = this.state;
+
+    let filters = {};
+    if (defaultTermId) {
+      const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
+      filters = { termId: defaultTerm._id || "" };
+    }
+
+    loadAssignments({ filters });
+
     loadFolders();
     if (isEmpty(assignmentsSummary)) {
-      loadAssignmentsSummary({ districtId, filters: { pageNo: 1 } });
+      loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 } });
     }
+
+    const newFilterState = {
+      ...filterState,
+      ...filters
+    };
+
+    this.setState({ filterState: newFilterState, defaultFilters: newFilterState });
   }
 
   setFilterState = filterState => {
@@ -101,7 +126,8 @@ class Assignments extends Component {
 
   SwitchView = () => {
     const { toggleAssignmentView } = this.props;
-    this.setState({ selectedRows: [], filterState: initialFilterState }, toggleAssignmentView);
+    const { defaultFilters } = this.state;
+    this.setState({ selectedRows: [], filterState: defaultFilters }, toggleAssignmentView);
   };
 
   renderFilter = () => {
@@ -166,6 +192,7 @@ class Assignments extends Component {
                         onSetFilter={this.setFilterState}
                         filterState={filterState}
                         isAdvancedView={isAdvancedView}
+                        clearSelectedRow={() => this.onSelectRow([])}
                       />
                     </PerfectScrollbar>
                   )}
@@ -192,7 +219,6 @@ class Assignments extends Component {
                         <TableList
                           assignmentsByTestId={assignmentsByTestId}
                           tests={tests}
-                          assignmentsSummary={assignmentsSummary}
                           onSelectRow={this.onSelectRow}
                           // renderFilter={this.renderFilter}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
@@ -242,7 +268,8 @@ Assignments.propTypes = {
   isShowReleaseSettingsPopup: PropTypes.bool.isRequired,
   districtId: PropTypes.string.isRequired,
   toggleAssignmentView: PropTypes.func.isRequired,
-  isAdvancedView: PropTypes.bool.isRequired
+  isAdvancedView: PropTypes.bool.isRequired,
+  orgData: PropTypes.object.isRequired
 };
 
 Assignments.defaultProps = {
@@ -260,7 +287,8 @@ const enhance = compose(
       currentEditableAssignment: getCurrentAssignmentSelector(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       districtId: getDistrictIdSelector(state),
-      isAdvancedView: getAssignmentViewSelector(state)
+      isAdvancedView: getAssignmentViewSelector(state),
+      orgData: get(state, "user.user.orgData", {})
     }),
     {
       loadAssignments: receiveAssignmentsAction,

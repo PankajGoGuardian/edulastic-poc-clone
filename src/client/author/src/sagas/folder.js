@@ -57,12 +57,12 @@ function* receiveCreateFolderRequest({ payload }) {
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [] } = payload;
-    const success = yield call(folderApi.addMoveContent, { folderId, data: { content: params } });
+    const result = yield call(folderApi.addMoveContent, { folderId, data: { content: params } });
     const successMsg = "Successfully Added or Moved content to folder";
     yield call(message.success, successMsg);
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
-      payload: success
+      payload: result.data
     });
   } catch (error) {
     const errorMessage = "Add or Move content to folder failing";

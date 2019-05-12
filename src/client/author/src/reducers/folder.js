@@ -9,14 +9,18 @@ import {
   DELETE_FOLDER_SUCCESS,
   DELETE_FOLDER_ERROR,
   RENAME_FOLDER_SUCCESS,
-  RENAME_FOLDER_ERROR
+  RENAME_FOLDER_ERROR,
+  ADD_MOVE_FOLDER_SUCCESS,
+  SET_FOLDER,
+  CLEAR_FOLDER
 } from "../constants/actions";
 
 const initialState = {
   entities: [],
   error: null,
   loading: false,
-  creating: false
+  creating: false,
+  entity: {}
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -58,7 +62,21 @@ const reducer = (state = initialState, { type, payload }) => {
         creating: false,
         error: payload.error
       };
-
+    case ADD_MOVE_FOLDER_SUCCESS: {
+      if (payload) {
+        const { _id } = payload.result;
+        const { entities } = state;
+        const index = findIndex(entities, entity => entity._id === _id);
+        if (index !== -1) {
+          entities.splice(index, 1, payload.result);
+        }
+        return {
+          ...state,
+          entities: clone(entities)
+        };
+      }
+      return state;
+    }
     case DELETE_FOLDER_SUCCESS: {
       const { folderId } = payload;
       const { entities } = state;
@@ -91,6 +109,17 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         error: payload.error
+      };
+    case SET_FOLDER:
+      return {
+        ...state,
+        entity: payload
+      };
+
+    case CLEAR_FOLDER:
+      return {
+        ...state,
+        entity: {}
       };
     default:
       return state;

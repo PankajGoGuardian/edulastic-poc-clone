@@ -3,7 +3,9 @@ import {
   RECEIVE_FOLDER_CREATE_REQUEST,
   ADD_MOVE_FOLDER_REQUEST,
   DELETE_FOLDER_REQUEST,
-  RENAME_FOLDER_REQUEST
+  RENAME_FOLDER_REQUEST,
+  SET_FOLDER,
+  CLEAR_FOLDER
 } from "../constants/actions";
 
 export const receiveFolderAction = () => ({
@@ -28,4 +30,13 @@ export const receiveDeleteFolderAction = payload => ({
 export const receiveRenameFolderAction = payload => ({
   type: RENAME_FOLDER_REQUEST,
   payload
+});
+
+export const setFolderAction = payload => ({
+  type: SET_FOLDER,
+  payload
+});
+
+export const clearFolderAction = () => ({
+  type: CLEAR_FOLDER
 });

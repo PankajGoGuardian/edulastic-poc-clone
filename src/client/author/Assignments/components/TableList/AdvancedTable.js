@@ -2,16 +2,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-
+import { find, isEmpty, get } from "lodash";
 import { withRouter } from "react-router-dom";
 import { Dropdown } from "antd";
-import { isEmpty, get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
 import { FlexContainer } from "@edulastic/common";
 import { receiveAssignmentsSummaryAction } from "../../../src/actions/assignments";
 import { getAssignmentsSummary } from "../../../src/selectors/assignments";
+import { getFolderSelector } from "../../../src/selectors/folder";
 import ActionMenu from "../ActionMenu/ActionMenu";
 
 import { Container, TableData, AssignmentTD, BtnAction, ActionDiv, TitleCase, TestThumbnail } from "./styled";
@@ -73,7 +73,7 @@ class AdvancedTable extends Component {
   };
 
   render() {
-    const { onSelectRow, assignmentsSummary, history, onOpenReleaseScoreSettings } = this.props;
+    const { onSelectRow, assignmentsSummary, history, onOpenReleaseScoreSettings, folderData } = this.props;
     const { perPage, current } = this.state;
     const columns = [
       {
@@ -171,13 +171,27 @@ class AdvancedTable extends Component {
       }
     };
 
+    let data = assignmentsSummary;
+    if (!isEmpty(folderData)) {
+      const { content } = folderData;
+
+      const tempData = [];
+      content.forEach(({ _id }) => {
+        const temp = find(data, ({ testId }) => testId === _id);
+        if (temp) {
+          tempData.push(temp);
+        }
+      });
+      data = tempData;
+    }
+
     return (
       <Container>
         <TableData
           columns={columns}
           rowKey="testId"
           rowSelection={rowSelection}
-          dataSource={assignmentsSummary}
+          dataSource={data}
           onRow={row => ({
             onClick: () => this.goToAdvancedView(row)
           })}
@@ -195,6 +209,7 @@ class AdvancedTable extends Component {
 AdvancedTable.propTypes = {
   assignmentsSummary: PropTypes.array.isRequired,
   loadAssignmentsSummary: PropTypes.func.isRequired,
+  folderData: PropTypes.object.isRequired,
   districtId: PropTypes.string.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
   filters: PropTypes.object.isRequired,
@@ -214,7 +229,8 @@ const enhance = compose(
   connect(
     state => ({
       assignmentsSummary: getAssignmentsSummary(state),
-      filtering: get(state, "author_assignments.filtering")
+      filtering: get(state, "author_assignments.filtering"),
+      folderData: getFolderSelector(state)
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction

@@ -1,8 +1,8 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 import { compose } from "redux";
-
+import { isEmpty, find } from "lodash";
 import { Link, withRouter } from "react-router-dom";
 import { Dropdown, Checkbox, Tooltip } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -15,6 +15,7 @@ import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
 import ActionMenu from "../ActionMenu/ActionMenu";
+import { getFolderSelector } from "../../../src/selectors/folder";
 
 import {
   Container,
@@ -168,7 +169,8 @@ class TableList extends Component {
       history,
       renderFilter,
       t,
-      onSelectRow
+      onSelectRow,
+      folderData
     } = this.props;
     const { details } = this.state;
     const columns = [
@@ -275,6 +277,21 @@ class TableList extends Component {
       }
     };
 
+    let data = tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i));
+
+    if (!isEmpty(folderData)) {
+      const { content } = folderData;
+
+      const tempData = [];
+      content.forEach(({ _id }) => {
+        const temp = find(data, ({ testId }) => testId === _id);
+        if (temp) {
+          tempData.push(temp);
+        }
+      });
+      data = tempData;
+    }
+
     return (
       <Container>
         <TableData
@@ -283,7 +300,7 @@ class TableList extends Component {
           expandIconAsCell={false}
           expandIconColumnIndex={-1}
           expandedRowRender={this.expandedRowRender}
-          dataSource={tests.map((testItem, i) => convertTableData(testItem, getAssignmentsByTestId(testItem._id), i))}
+          dataSource={data}
           expandRowByClick={details}
           defaultExpandedRowKeys={["0", "1", "2"]}
         />
@@ -295,6 +312,7 @@ class TableList extends Component {
 TableList.propTypes = {
   assignmentsByTestId: PropTypes.object.isRequired,
   onOpenReleaseScoreSettings: PropTypes.func,
+  folderData: PropTypes.object.isRequired,
   onSelectRow: PropTypes.func,
   renderFilter: PropTypes.func,
   history: PropTypes.object,
@@ -311,7 +329,13 @@ TableList.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  withNamespaces("assignmentCard")
+  withNamespaces("assignmentCard"),
+  connect(
+    state => ({
+      folderData: getFolderSelector(state)
+    }),
+    {}
+  )
 );
 
 export default enhance(TableList);

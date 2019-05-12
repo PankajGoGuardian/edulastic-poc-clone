@@ -68,7 +68,7 @@ class ClassList extends React.Component {
       this.loadClassList();
     }
     if (isEmpty(schools)) {
-      loadSchoolsData({ body: { districtId: userOrgId } });
+      loadSchoolsData({ districtId: userOrgId });
     }
     if (isEmpty(courseList)) {
       loadCourseListData({ districtId: userOrgId });

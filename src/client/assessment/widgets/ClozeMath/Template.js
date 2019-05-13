@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
 
+import { math } from "@edulastic/constants";
 import { CustomQuillComponent } from "@edulastic/common";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
@@ -13,6 +14,14 @@ import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
+
+const { methods } = math;
+
+const initialMethod = {
+  method: methods.EQUIV_SYMBOLIC,
+  value: "",
+  options: {}
+};
 
 class Template extends Component {
   componentDidMount = () => {
@@ -52,6 +61,13 @@ class Template extends Component {
             return res;
           });
         }
+      });
+
+      newItem.validation.valid_response.value.map(res => {
+        if (res && !res.length) {
+          res.push(initialMethod);
+        }
+        return res;
       });
 
       setQuestionData(newItem);

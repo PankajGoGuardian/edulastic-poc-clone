@@ -1945,7 +1945,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTClozeMath,
       stimulus: "",
       data: {
-        title: "Multipart Inline",
+        title: "Expression Multipart",
         stimulus: "<p>[This is the stem.]</p>",
         template:
           '<p>Risus</p> <span class="response-btn" contenteditable="false">&nbsp;<span class="index">1</span><span class="text">Response</span>&nbsp;</span>, <p>et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et. Nunc diam enim, porta sed eros vitae.</p>',

@@ -1,82 +1,142 @@
 const methods = {
-  EQUIV_SYMBOLIC: 'equivSymbolic',
-  EQUIV_LITERAL: 'equivLiteral',
-  EQUIV_VALUE: 'equivValue',
-  IS_SIMPLIFIED: 'isSimplified',
-  IS_FACTORISED: 'isFactorised',
-  IS_EXPANDED: 'isExpanded',
-  IS_UNIT: 'isUnit',
-  IS_TRUE: 'isTrue',
-  STRING_MATCH: 'stringMatch',
-  EQUIV_SYNTAX: 'equivSyntax'
+  EQUIV_SYMBOLIC: "equivSymbolic",
+  EQUIV_LITERAL: "equivLiteral",
+  EQUIV_VALUE: "equivValue",
+  IS_SIMPLIFIED: "isSimplified",
+  IS_FACTORISED: "isFactorised",
+  IS_EXPANDED: "isExpanded",
+  IS_TRUE: "isTrue",
+  STRING_MATCH: "stringMatch",
+  EQUIV_SYNTAX: "equivSyntax"
 };
 
 const fields = {
-  INTEGER: 'integer',
-  REAL: 'real',
-  COMPLEX: 'complex'
+  INTEGER: "integer",
+  REAL: "real",
+  COMPLEX: "complex"
 };
 
 const decimalSeparators = {
-  DOT: '.',
-  COMMA: ','
+  DOT: ".",
+  COMMA: ","
 };
 
 const syntaxes = {
-  DECIMAL: 'isDecimal',
-  SIMPLE_FRACTION: 'isSimpleFraction',
-  MIXED_FRACTION: 'isMixedFraction',
-  EXPONENT: 'isExponent',
-  STANDARD_FORM: 'isStandardForm',
-  SLOPE_INTERCEPT_FORM: 'isSlopeInterceptForm',
-  POINT_SLOPE_FORM: 'isPointSlopeForm'
+  DECIMAL: "isDecimal",
+  SIMPLE_FRACTION: "isSimpleFraction",
+  MIXED_FRACTION: "isMixedFraction",
+  EXPONENT: "isExponent",
+  STANDARD_FORM: "isStandardForm",
+  SLOPE_INTERCEPT_FORM: "isSlopeInterceptForm",
+  POINT_SLOPE_FORM: "isPointSlopeForm"
 };
 
 const mathInputTypes = {
-  CLEAR: 'clear',
-  WRONG: 'wrong',
-  SUCCESS: 'success'
+  CLEAR: "clear",
+  WRONG: "wrong",
+  SUCCESS: "success"
 };
 
 const symbols = [
-  { value: 'all', label: 'All symbols' },
-  { value: 'qwerty', label: 'Keyboard' },
-  { value: 'basic', label: 'Basic' },
-  { value: 'basic_junior', label: 'Basic Junior' },
-  { value: 'algebra', label: 'Algebra' },
-  { value: 'comparison', label: 'Comparison' },
-  { value: 'geometry', label: 'Geometry' },
-  { value: 'matrices', label: 'Matrices' },
-  { value: 'trigonometry', label: 'Trigonometry' },
-  { value: 'sets', label: 'Sets' },
-  { value: 'units_si', label: 'Units (SI)' },
-  { value: 'units_us', label: 'Units (US Customary)' },
-  { value: 'greek', label: 'Greek letters' },
-  { value: 'chemistry', label: 'Chemistry' },
-  { value: 'grouping', label: 'Grouping Symbols' },
-  { value: 'calculus', label: 'Calculus' },
-  { value: 'misc', label: 'Miscellaneous' },
-  { value: 'discrete', label: 'Discrete' },
-  { value: 'general', label: 'General' }
+  { value: "all", label: "All symbols" },
+  { value: "qwerty", label: "Keyboard" },
+  { value: "basic", label: "Basic" },
+  { value: "basic_junior", label: "Basic Junior" },
+  { value: "algebra", label: "Algebra" },
+  { value: "comparison", label: "Comparison" },
+  { value: "geometry", label: "Geometry" },
+  { value: "matrices", label: "Matrices" },
+  { value: "trigonometry", label: "Trigonometry" },
+  { value: "sets", label: "Sets" },
+  { value: "units_si", label: "Units (SI)" },
+  { value: "units_us", label: "Units (US Customary)" },
+  { value: "greek", label: "Greek letters" },
+  { value: "chemistry", label: "Chemistry" },
+  { value: "grouping", label: "Grouping Symbols" },
+  { value: "calculus", label: "Calculus" },
+  { value: "misc", label: "Miscellaneous" },
+  { value: "discrete", label: "Discrete" },
+  { value: "general", label: "General" }
 ];
 
-const modes = [{ value: 'text', label: 'Text' }, { value: 'math', label: 'Math' }];
+const modes = [{ value: "text", label: "Text" }, { value: "math", label: "Math" }];
 
 const mathRenderOptions = [
-  { value: '', label: '' },
-  { value: 'mathjax', label: 'MathJax (response inputs rendered with MathQuill)' },
-  { value: 'mathquill', label: 'MathQuill' }
+  { value: "", label: "" },
+  { value: "mathjax", label: "MathJax (response inputs rendered with MathQuill)" },
+  { value: "mathquill", label: "MathQuill" }
 ];
 
 const templateFontScaleOption = [
-  { value: 'normal', label: 'Normal (100%)' },
-  { value: 'boosted', label: 'Boosted (150%)' }
+  { value: "normal", label: "Normal (100%)" },
+  { value: "boosted", label: "Boosted (150%)" }
 ];
 
-const EMBED_RESPONSE = '\\embed{response}';
+const EMBED_RESPONSE = "\\embed{response}";
+
+const methodOptions = {
+  [methods.EQUIV_SYMBOLIC]: [
+    "ariaLabel",
+    "allowEulersNumber",
+    "isFactorised",
+    "isExpanded",
+    "ignoreOrder",
+    "ignoreCoefficientOfOne",
+    "allowInterval",
+    "ignoreLeadingAndTrailingSpaces",
+    "treatMultipleSpacesAsOne",
+    "allowThousandsSeparator",
+    "setDecimalSeparator",
+    "setThousandsSeparator",
+    "compareSides"
+  ],
+  [methods.EQUIV_LITERAL]: [
+    "ariaLabel",
+    "ignoreTrailingZeros",
+    "allowThousandsSeparator",
+    "setDecimalSeparator",
+    "setThousandsSeparator",
+    "ignoreOrder",
+    "ignoreCoefficientOfOne",
+    "allowInterval"
+  ],
+  [methods.EQUIV_VALUE]: [
+    "ariaLabel",
+    "inverseResult",
+    "isMixedFraction",
+    "isSimpleFraction",
+    "ignoreTrailingZeros",
+    "ignoreText",
+    "tolerance",
+    "allowedUnits",
+    "allowThousandsSeparator",
+    "setThousandsSeparator",
+    "significantDecimalPlaces",
+    "ignoreAlphabeticCharacters",
+    "compareSides"
+  ],
+  [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],
+  [methods.IS_SIMPLIFIED]: ["allowThousandsSeparator", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
+  [methods.IS_FACTORISED]: [
+    "allowThousandsSeparator",
+    "setDecimalSeparator",
+    "setThousandsSeparator",
+    "inverseResult",
+    "field"
+  ],
+  [methods.IS_EXPANDED]: [
+    "allowThousandsSeparator",
+    "setDecimalSeparator",
+    "setThousandsSeparator",
+    "significantDecimalPlaces"
+  ],
+  [methods.IS_TRUE]: ["allowThousandsSeparator", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
+};
 
 module.exports = {
   methods,
+  methodOptions,
   fields,
   decimalSeparators,
   syntaxes,

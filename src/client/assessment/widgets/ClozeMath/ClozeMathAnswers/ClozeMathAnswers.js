@@ -26,6 +26,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     if (!newItem.validation.alt_responses) {
       newItem.validation.alt_responses = [];
     }
+
     newItem.validation.alt_responses.push({
       score: 1,
       value: [[initialMethod]]

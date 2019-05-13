@@ -1,10 +1,12 @@
-import React, { Component, Fragment } from "react";
+import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
-import { withNamespaces } from "react-i18next";
+import { Collapse } from "antd";
 
-import { EduButton } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
 
 import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
+
+const { Panel } = Collapse;
 
 class ClozeMathAnswer extends Component {
   state = {
@@ -45,16 +47,16 @@ class ClozeMathAnswer extends Component {
     };
 
     return (
-      <div>
-        {answer.map((responseValue, i) => (
-          <Fragment>
-            {responseValue.length &&
-              responseValue.map((method, methodIndex) => (
+      <Fragment>
+        <Collapse defaultActiveKey={["0"]} onChange={() => {}}>
+          {answer.map((responseValue, i) => (
+            <Panel header={`Response ${i + 1}`} key={`${i}`}>
+              {responseValue.map((method, methodIndex) => (
                 <MathFormulaAnswerMethod
-                  onDelete={() => onDelete({ i, methodValueIndex: i })}
+                  onDelete={() => onDelete({ methodIndex, methodValueIndex: i })}
                   key={methodIndex}
                   item={item}
-                  index={methodIndex}
+                  index={methodIndex + i}
                   answerIndex={methodIndex}
                   onChange={_changeMethod(i, methodIndex)}
                   showAdditionals={showAdditionals}
@@ -63,25 +65,21 @@ class ClozeMathAnswer extends Component {
                   {...method}
                 />
               ))}
-            {showAdditionals.length === 0 ? (
-              <EduButton onClick={() => onAdd(i)} type="primary" size="large" data-cy="add-new-method">
-                {t("component.math.addComparison")}
-              </EduButton>
-            ) : null}
-          </Fragment>
-        ))}
-      </div>
+            </Panel>
+          ))}
+        </Collapse>
+      </Fragment>
     );
   }
 }
 
 ClozeMathAnswer.propTypes = {
   answer: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   onDelete: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  item: PropTypes.object.isRequired
 };
 
 export default withNamespaces("assessment")(ClozeMathAnswer);

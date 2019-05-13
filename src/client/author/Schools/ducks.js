@@ -19,8 +19,7 @@ const DELETE_SCHOOLS_SUCCESS = "[school] delete data success";
 const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 
 const SET_SEARCHNAME_VALUE = "[school] set serch by name value";
-
-const SET_SCHOOLLIST_TOTALCOUNT = "[school] set list total count";
+const SET_SCHOOL_FILTERS_DATA = "[school] set filters data";
 
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
 export const receiveSchoolsSuccessAction = createAction(RECEIVE_SCHOOLS_SUCCESS);
@@ -36,20 +35,65 @@ export const deleteSchoolsSuccessAction = createAction(DELETE_SCHOOLS_SUCCESS);
 export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 
 export const setSearchByNameValueAction = createAction(SET_SEARCHNAME_VALUE);
+export const setSchoolFiltersDataAction = createAction(SET_SCHOOL_FILTERS_DATA);
 
-export const receiveSchoolsCountAction = createAction(SET_SCHOOLLIST_TOTALCOUNT);
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
   stateSchoolsSelector,
   state => {
-    if (state.searchByName.length == 0) return state.data;
+    let searchedSchoolList = [];
+    if (state.searchByName.length == 0) searchedSchoolList = [...state.data];
     else {
-      return state.data.filter(item => {
+      searchedSchoolList = state.data.filter(item => {
         const nameValue = item.name.toLowerCase();
         return nameValue.indexOf(state.searchByName.toLowerCase()) != -1;
       });
     }
+
+    const filtersData = state.filtersData;
+    const filteredSchoolList = [];
+    for (let i = 0; i < searchedSchoolList.length; i++) {
+      let isMatched = true;
+      for (let j = 0; j < filtersData.length; j++) {
+        if (
+          filtersData[j].filtersColumn.length == 0 ||
+          filtersData[j].filtersValue.length == 0 ||
+          filtersData[j].filterStr.length == 0
+        ) {
+          continue;
+        }
+
+        if (filtersData[j].filtersValue === "eq") {
+          if (
+            searchedSchoolList[i][filtersData[j].filtersColumn] == null ||
+            (searchedSchoolList[i][filtersData[j].filtersColumn].toString().toLowerCase() !==
+              filtersData[j].filterStr.toLowerCase() &&
+              filtersData[j].filterStr.length != 0)
+          ) {
+            isMatched = false;
+            break;
+          }
+        } else if (filtersData[j].filtersValue === "cont") {
+          if (
+            searchedSchoolList[i][filtersData[j].filtersColumn] == null ||
+            (searchedSchoolList[i][filtersData[j].filtersColumn]
+              .toString()
+              .toLowerCase()
+              .indexOf(filtersData[j].filterStr.toLowerCase()) < 0 &&
+              filtersData[j].filterStr.length != 0)
+          ) {
+            isMatched = false;
+            break;
+          }
+        }
+      }
+      if (isMatched) {
+        filteredSchoolList.push(searchedSchoolList[i]);
+      }
+    }
+
+    return filteredSchoolList;
   }
 );
 
@@ -68,7 +112,14 @@ const initialState = {
   deleting: false,
   deleteError: null,
   searchByName: "",
-  totalSchools: 0
+  filtersData: [
+    {
+      filtersColumn: "",
+      filtersValue: "",
+      filterStr: "",
+      filterAdded: false
+    }
+  ]
 };
 
 export const reducer = createReducer(initialState, {
@@ -83,7 +134,6 @@ export const reducer = createReducer(initialState, {
 
       school["districtId"] = row._source.districtId;
       school.name = row._source.name;
-
       if (row._source.hasOwnProperty("location")) {
         const location = row._source.location;
         Object.keys(location).map((key, value) => {
@@ -96,7 +146,6 @@ export const reducer = createReducer(initialState, {
       school.state = get(school, ["state"], "");
       school.zip = get(school, ["zip"], "");
       school.country = get(school, ["country"], "");
-      school.state = get(school, ["state"], "");
       school.teachersCount = get(school, ["teachersCount"], 0);
       school.studentsCount = get(school, ["studentsCount"], 0);
       school.sectionsCount = get(school, ["sectionsCount"], 0);
@@ -107,6 +156,7 @@ export const reducer = createReducer(initialState, {
     state.loading = false;
     state.data = schoolsData;
   },
+
   [RECEIVE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.loading = false;
     state.error = payload.error;
@@ -149,7 +199,7 @@ export const reducer = createReducer(initialState, {
       teachersCount: 0,
       studentsCount: 0,
       sectionsCount: 0,
-      status: payload.hasOwnProperty("status") && payload.status != null ? payload.status : 1
+      status: get(payload, ["status"], 1)
     };
 
     state.creating = false;
@@ -180,14 +230,9 @@ export const reducer = createReducer(initialState, {
   },
   [SET_SEARCHNAME_VALUE]: (state, { payload }) => {
     state.searchByName = payload;
-    const searchedRow = state.data.filter(item => {
-      const nameValue = item.name.toLowerCase();
-      return nameValue.indexOf(payload.toLowerCase()) != -1;
-    });
-    state.totalSchools = searchedRow.length;
   },
-  [SET_SCHOOLLIST_TOTALCOUNT]: (state, { payload }) => {
-    state.totalSchools = payload;
+  [SET_SCHOOL_FILTERS_DATA]: (state, { payload }) => {
+    state.filtersData = [...payload];
   }
 });
 
@@ -196,7 +241,6 @@ function* receiveSchoolsSaga({ payload }) {
   try {
     const schools = yield call(schoolApi.getSchools, payload);
     yield put(receiveSchoolsSuccessAction(schools.data));
-    yield put(receiveSchoolsCountAction(schools.totalSchools));
   } catch (err) {
     const errorMessage = "Receive Schools is failing!";
     yield call(message.error, errorMessage);

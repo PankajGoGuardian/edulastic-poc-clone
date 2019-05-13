@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Pagination } from "antd";
+import { Button, Table, Select, Input } from "antd";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
@@ -57,7 +57,7 @@ export const StyledFilterInput = styled(Input)`
   width: 300px;
 `;
 
-export const StyledSchoolSearch = styled(Search)`
+export const StyledSchoolSearch = styled(Input)`
   margin-left: 20px;
   width: 465px;
 `;
@@ -65,9 +65,4 @@ export const StyledSchoolSearch = styled(Search)`
 export const StyledSelectStatus = styled(Select)`
   margin-left: auto;
   width: 200px;
-`;
-
-export const StyledPagination = styled(Pagination)`
-  margin-top: 15px;
-  align-self: flex-end;
 `;

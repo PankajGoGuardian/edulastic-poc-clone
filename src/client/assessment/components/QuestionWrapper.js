@@ -46,6 +46,7 @@ import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
+import { get } from "lodash";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -156,6 +157,7 @@ class QuestionWrapper extends Component {
       windowWidth,
       ...restProps
     } = this.props;
+    const userAnswer = get(data, "activity.userResponse", null);
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
@@ -178,6 +180,7 @@ class QuestionWrapper extends Component {
                 {...restProps}
                 setQuestionData={setQuestionData}
                 item={data}
+                userAnswer={userAnswer}
                 view={view}
                 changePreviewTab={changePreviewTab}
                 qIndex={qIndex}

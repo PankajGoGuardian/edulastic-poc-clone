@@ -344,10 +344,10 @@ class Graph extends Component {
         )}
         {view === "preview" && smallSize === false && item && (
           <Wrapper>
-            {extra_options.instructor_stimulus && (
+            {extra_options && extra_options.instructor_stimulus && (
               <InstructorStimulus>{extra_options.instructor_stimulus}</InstructorStimulus>
             )}
-            {previewTab === "check" && (
+            {previewTab === "check" && item.canvas && item.ui_style && (
               <GraphDisplay
                 checkAnswer
                 graphData={item}
@@ -358,7 +358,7 @@ class Graph extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === "show" && (
+            {previewTab === "show" && item.canvas && item.ui_style && (
               <GraphDisplay
                 showAnswer
                 graphData={item}
@@ -369,7 +369,7 @@ class Graph extends Component {
                 evaluation={evaluation}
               />
             )}
-            {previewTab === "clear" && (
+            {previewTab === "clear" && item.canvas && item.ui_style && (
               <GraphDisplay
                 clearAnswer
                 graphData={item}

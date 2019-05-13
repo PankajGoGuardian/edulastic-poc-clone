@@ -4,25 +4,33 @@ import styled from "styled-components";
 import { connect } from "react-redux";
 import { IconPhotoCamera } from "@edulastic/icons";
 import { aws } from "@edulastic/constants";
-import { Upload } from "antd";
-import { blue, white } from "@edulastic/colors";
+import { Upload, Spin, message } from "antd";
+import { blue, white, greyishDarker2 } from "@edulastic/colors";
 import { uploadToS3 } from "../../../src/utils/upload";
 import { uploadTestImageAction } from "../../../src/actions/uploadTestImage";
 
 const defaultImage = "https://fakeimg.pl/1000x300/";
 
 class Photo extends React.Component {
-  state = {};
+  state = {
+    loading: false
+  };
 
   handleChange = async info => {
     try {
+      this.setState({ loading: true });
       const { file } = info;
+      if (!file.type.match(/image/g)) {
+        message.error("Please upload files in image format");
+        this.setState({ loading: false });
+        return;
+      }
       const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
       const { onChangeField } = this.props;
-
       this.setState(
         {
-          imageUrl
+          imageUrl,
+          loading: false
         },
         () => onChangeField("thumbnail", imageUrl)
       );
@@ -43,11 +51,14 @@ class Photo extends React.Component {
       </Container>
     );
 
-    const { imageUrl } = this.state;
+    const { imageUrl, loading } = this.state;
 
     const props = {
       beforeUpload: () => false,
-      onChange: this.handleChange
+      onChange: this.handleChange,
+      accept: "image/*",
+      multiple: false,
+      showUploadList: false
     };
 
     return (
@@ -55,7 +66,13 @@ class Photo extends React.Component {
         <Upload {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
-              {imageUrl ? <Image src={imageUrl} windowWidth={windowWidth} alt="test" /> : uploadButton}
+              {loading ? (
+                <ImageLoading />
+              ) : imageUrl ? (
+                <Image src={imageUrl} windowWidth={windowWidth} alt="test" />
+              ) : (
+                uploadButton
+              )}
             </ImageContainer>
             <Camera>
               <IconPhotoCamera color={white} width="20px" />
@@ -102,6 +119,14 @@ const UploadWrapper = styled.div`
   .ant-upload {
     padding: 0 !important;
   }
+`;
+
+const ImageLoading = styled(Spin)`
+  background: ${greyishDarker2};
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const Image = styled.img`

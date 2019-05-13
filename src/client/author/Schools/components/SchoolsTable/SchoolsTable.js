@@ -265,7 +265,7 @@ class SchoolsTable extends React.Component {
   createSchool = newSchoolData => {
     const newData = {
       name: newSchoolData.name,
-      districtId: this.props.districtId,
+      districtId: this.props.userOrgId,
       location: {
         address: newSchoolData.address,
         city: newSchoolData.city,

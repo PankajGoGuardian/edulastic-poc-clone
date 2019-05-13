@@ -11,7 +11,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 const { allGrades, allSubjects } = selectsData;
 
 const startDate = moment();
-const endDate = moment(); // .add("days", 7);
+const endDate = moment().add("years", 1);
 
 // eslint-disable-next-line max-len
 const RightFields = ({ curriculums, schoolsData, courseList, schoolList, searchCourse, isSearching, ...restProps }) => {

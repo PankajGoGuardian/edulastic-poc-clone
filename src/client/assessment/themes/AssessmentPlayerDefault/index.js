@@ -67,7 +67,8 @@ class AssessmentPlayerDefault extends React.Component {
       history: props.scratchPad ? [props.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
       currentTab: 0,
       calculateMode: `${this.props.settings.calcType}_DESMOS`,
-      changeMode: 0
+      changeMode: 0,
+      tool: 0
     };
   }
 
@@ -102,11 +103,15 @@ class AssessmentPlayerDefault extends React.Component {
       return {
         history: nextProps.scratchPad ? [nextProps.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
         currentTab: 0,
-        cloneCurrentItem: nextProps.currentItem
+        cloneCurrentItem: nextProps.currentItem,
+        tool: nextProps.scratchPad ? 5 : 0, // 5 is scratch pad
+        scratchPadMode: !!nextProps.scratchPad
       };
     }
     return null;
   }
+
+  changeTool = val => this.setState({ tool: val });
 
   changeTabItemState = value => {
     const { checkAnswer, changePreview } = this.props;
@@ -222,23 +227,27 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
+  
   render() {
     const {
       theme,
       items,
       isFirst,
       isLast,
-      moveToNext,
-      moveToPrev,
-      gotoQuestion,
       currentItem,
       itemRows,
       evaluation,
       windowWidth,
       questions,
+      moveToNext,
+      moveToPrev,
+      gotoQuestion,
       settings,
-      previewPlayer
+      previewPlayer,
+      scratchPad
     } = this.props;
+
+   
     const {
       testItemState,
       isToolbarModalVisible,
@@ -253,7 +262,8 @@ class AssessmentPlayerDefault extends React.Component {
       lineWidth,
       fillColor,
       changeMode,
-      calculateMode
+      calculateMode,
+      tool
     } = this.state;
     const calcBrands = ["DESMOS", "GEOGEBRASCIENTIFIC"];
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
@@ -379,6 +389,8 @@ class AssessmentPlayerDefault extends React.Component {
                         changeCaculateMode={this.handleModeCaculate}
                         settings={settings}
                         calcBrands={calcBrands}
+                        tool={tool}
+                        changeTool={this.changeTool}
                       />
                     )}
                     {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}

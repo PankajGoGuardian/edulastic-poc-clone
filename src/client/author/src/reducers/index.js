@@ -10,6 +10,7 @@ import { reportAssessmentSummaryReducer } from "../../Reports/subPages/singleAss
 import { reportResponseFrequencyReducer } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportPeerPerformanceReducer } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
 import { reportPerformanceByStandardsReducer } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
+import { reportStandardsGradebookReducer } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
 import author_classboard_gradebook from "./gradeBook";
 import author_classboard_testActivity from "./testActivity";
 import authorGroups from "../../sharedDucks/groups";
@@ -65,6 +66,7 @@ const authorReducers = {
   reportAssessmentSummaryReducer,
   reportResponseFrequencyReducer,
   reportPeerPerformanceReducer,
+  reportStandardsGradebookReducer,
   authorTestAssignments: testAssignmentsReducer,
   author_classboard_gradebook,
   author_classboard_testActivity,

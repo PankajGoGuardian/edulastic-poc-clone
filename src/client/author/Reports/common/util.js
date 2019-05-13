@@ -48,3 +48,19 @@ export const getDropDownTestIds = arr => {
 
   return _arr;
 };
+
+export const getLoc = path => {
+  let url = path;
+  if (url.length > 16) {
+    let _url = url.substring(16);
+    let tempIndex = _url.indexOf("/");
+    let loc;
+    if (tempIndex != -1) {
+      loc = _url.substring(0, tempIndex);
+    } else {
+      loc = _url.substring(0);
+    }
+    return loc;
+  }
+  return false;
+};

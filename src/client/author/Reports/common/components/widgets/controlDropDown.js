@@ -33,7 +33,7 @@ const ControlDropDown = ({
   selectCB,
   data,
   comData,
-  trigger = "hover"
+  trigger = ["hover"]
 }) => {
   const [selected, setSelected] = useState(by);
 
@@ -115,6 +115,8 @@ const StyledDiv = styled.div`
 `;
 
 const StyledControlDropDown = styled(ControlDropDown)`
+  max-height: 250px;
+  overflow: auto;
   .ant-dropdown-menu-item-disabled {
     font-weight: 900;
     color: ${black};

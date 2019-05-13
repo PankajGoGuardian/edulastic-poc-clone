@@ -85,7 +85,29 @@ const fetchPerformanceByStandard = params => {
 
 const fetchSARFilterData = params => {
   return api.callApi({
-    url: `/report/filter/single-assessment`
+    url: `/report/filter/single-assessment?termId=5ccac8b0be259500320f41b7`
+  });
+};
+
+const fetchStandardsGradebookReport = params => {
+  return api.callApi({
+    url: `/report/standards-gradeBook`,
+    params: params
+  });
+};
+
+const fetchStandardMasteryFilter = params => {
+  return api.callApi({
+    url: `/report/filter/standard-mastery`,
+    params: params
+  });
+};
+
+const fetchStandardMasteryBrowseStandards = params => {
+  return api.callApi({
+    url: `/search/browseStandards`,
+    data: params,
+    method: "POST"
   });
 };
 
@@ -99,5 +121,8 @@ export default {
   fetchAssessmentSummaryReport,
   fetchPeerPerformanceReport,
   fetchPerformanceByStandard,
-  fetchSARFilterData
+  fetchSARFilterData,
+  fetchStandardsGradebookReport,
+  fetchStandardMasteryFilter,
+  fetchStandardMasteryBrowseStandards
 };

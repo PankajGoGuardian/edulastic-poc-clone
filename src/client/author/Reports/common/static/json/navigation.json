@@ -51,6 +51,32 @@
         }
       ],
       "group": "singleAssessmentReport"
+    },
+    "standards-performance-summary": {
+      "title": "Standards Performance Summary",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "STANDARDS PERFORMANCE SUMMARY"
+        }
+      ],
+      "group": "standardsMasteryReport"
+    },
+    "standards-gradebook": {
+      "title": "Standards Gradebook",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "STANDARDS GRADEBOOK"
+        }
+      ],
+      "group": "standardsMasteryReport"
     }
   },
   "navigation": {
@@ -84,6 +110,18 @@
         "key": "performance-by-students",
         "title": "Performance by Students",
         "location": "/author/reports/"
+      }
+    ],
+    "standardsMasteryReport": [
+      {
+        "key": "standards-performance-summary",
+        "title": "Standards Performance Summary",
+        "location": "/author/reports/standards-performance-summary"
+      },
+      {
+        "key": "standards-gradebook",
+        "title": "Standards Gradebook",
+        "location": "/author/reports/standards-gradebook"
       }
     ]
   }

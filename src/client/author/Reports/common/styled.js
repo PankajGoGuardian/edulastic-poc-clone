@@ -161,7 +161,11 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   padding: 5px;
   font-size: 12px;
   font-weight: 600;
-  white-space: pre;
+  white-space: pre-wrap;
+
+  .tooltip-key {
+    font-weight: 900;
+  }
 `;
 
 export const Capitalized = styled.span`

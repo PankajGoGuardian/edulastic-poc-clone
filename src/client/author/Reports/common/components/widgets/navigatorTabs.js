@@ -16,7 +16,7 @@ const Tab = ({ className, tabData, isLast, selectedTab }) => {
           {tabData.title}
         </StyledSpan>
       </StyledLink>
-      {!isLast ? <div class="navigator-tab-divider" /> : null}
+      {!isLast ? <div className="navigator-tab-divider" /> : null}
     </Col>
   );
 };

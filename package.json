@@ -61,6 +61,7 @@
     "overlay-pslg": "^1.0.0",
     "pdfjs-dist": "2.1.266",
     "prop-types": "^15.6.2",
+    "qs": "^6.7.0",
     "query-string": "^6.3.0",
     "rc-color-picker": "^1.2.6",
     "react": "^16.8.6",

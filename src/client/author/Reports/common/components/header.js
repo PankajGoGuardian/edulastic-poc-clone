@@ -46,17 +46,17 @@ export const CustomizedHeaderWrapper = ({
       </HeaderTitle>
       <StyledCol>
         {onShareClickCB ? (
-          <StyledButton shape="round" size="medium" icon="share-alt" onClick={_onShareClickCB}>
+          <StyledButton shape="round" size="default" icon="share-alt" onClick={_onShareClickCB}>
             Share
           </StyledButton>
         ) : null}
         {onPrintClickCB ? (
-          <StyledButton shape="round" size="medium" icon="printer" onClick={_onPrintClickCB}>
+          <StyledButton shape="round" size="default" icon="printer" onClick={_onPrintClickCB}>
             Print
           </StyledButton>
         ) : null}
         {onDownloadCSVClickCB ? (
-          <StyledButton type="primary" shape="round" size="medium" icon="download" onClick={_onDownloadCSVClickCB}>
+          <StyledButton type="primary" shape="round" size="default" icon="download" onClick={_onDownloadCSVClickCB}>
             Download CSV
           </StyledButton>
         ) : null}
@@ -64,7 +64,7 @@ export const CustomizedHeaderWrapper = ({
           <StyledButton
             type={refineButtonActive ? "default" : "primary"}
             shape="round"
-            size="medium"
+            size="default"
             icon="filter"
             onClick={_onRefineResultsCB}
           >

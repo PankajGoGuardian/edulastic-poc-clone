@@ -121,13 +121,13 @@ const AutocompleteDropDown = ({
   const onChange = value => {
     if (textChangeStatusRef.current !== true) {
       autoRef.current.blur();
-      textChangeStatusRef.current = false;
     }
   };
 
   const onFocus = () => {
     setText("");
     setDropDownData(data);
+    textChangeStatusRef.current = true;
   };
 
   const dataSource = buildDropDownData(dropDownData);

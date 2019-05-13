@@ -13,7 +13,7 @@ const links = [
   {
     key: "standardsGradebook",
     title: "Standards Gradebook",
-    location: "/author/reports"
+    location: "/author/reports/standards-gradebook"
   }
 ];
 

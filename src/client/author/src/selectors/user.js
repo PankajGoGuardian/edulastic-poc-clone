@@ -1,5 +1,6 @@
 import { get as _get } from "lodash";
 import { createSelector } from "reselect";
+import { getSchoolsSelector as getDistrictSchoolsSelector } from "../../Schools/ducks";
 
 export const stateSelector = state => state.user;
 
@@ -56,4 +57,16 @@ export const getUserOrgId = createSelector(
 export const getUserOrgData = createSelector(
   stateSelector,
   state => _get(state, "user.orgData")
+);
+
+export const getUserSchoolsListSelector = createSelector(
+  getOrgDataSelector,
+  state => state.schools
+);
+
+export const getSchoolsByUserRoleSelector = createSelector(
+  getUserRole,
+  getUserSchoolsListSelector,
+  getDistrictSchoolsSelector,
+  (role, userSchools, districtSchools) => (role === "teacher" ? userSchools : districtSchools)
 );

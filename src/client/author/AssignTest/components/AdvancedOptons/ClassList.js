@@ -6,8 +6,8 @@ import { connect } from "react-redux";
 import { Select } from "antd";
 import { get, curry, isEmpty, remove, lowerCase, find } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
-import { getUserOrgId } from "../../../src/selectors/user";
-import { getSchoolsSelector, receiveSchoolsAction } from "../../../Schools/ducks";
+import { getUserOrgId, getSchoolsByUserRoleSelector } from "../../../src/selectors/user";
+import { receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
 import { getTestsSelector } from "../../../TestList/ducks";
 
@@ -231,7 +231,7 @@ const enhance = compose(
       termsData: get(state, "user.user.orgData.terms", []),
       classList: get(state, "classesReducer.data"),
       userOrgId: getUserOrgId(state),
-      schools: getSchoolsSelector(state),
+      schools: getSchoolsByUserRoleSelector(state),
       courseList: getCourseListSelector(state),
       tests: getTestsSelector(state)
     }),

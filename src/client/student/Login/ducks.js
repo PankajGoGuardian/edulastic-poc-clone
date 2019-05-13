@@ -77,16 +77,10 @@ function* signup({ payload }) {
   }
 }
 
-const getCurrentPath = () => {
-  const location = window.location;
-  return `${location.pathname}${location.search}${location.hash}`;
-};
-
 export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      localStorage.setItem("loginRedirectUrl", getCurrentPath());
       yield put(push("/login"));
       return;
     }
@@ -98,7 +92,6 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
     yield put(push("/login"));
   }
 }

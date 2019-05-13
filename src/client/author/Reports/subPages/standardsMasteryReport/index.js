@@ -11,8 +11,6 @@ import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
 
-import { getLoc } from "../../common/util";
-
 export const StandardsMasteryReportContainer = props => {
   const [gradebookSettings, setGradebookSettings] = useState({
     selectedTest: { key: "", title: "" },
@@ -49,50 +47,29 @@ export const StandardsMasteryReportContainer = props => {
 
   // IMPORTANT: This needs to be implemented properly when we know what all parameters the other tabs require cuz the parameters are not same for
   // all the tabs
-  const computeChartNavigationLinks = (sel, filt) => {
-    if (navigation.locToData[getLoc(props.location.pathname)]) {
-      let str = "?";
+  const computeChartNavigationLinks = filt => {
+    if (navigation.locToData[props.loc]) {
       let arr = Object.keys(filt);
+      let obj = {};
       arr.map((item, index) => {
         let val = filt[item] === "" ? "All" : filt[item];
-        if (index === arr.length - 1) {
-          str = str + item + "=" + val;
-        } else {
-          str = str + item + "=" + val + "&";
-        }
+        obj[item] = val;
       });
-      return next(navigation.navigation[navigation.locToData[getLoc(props.location.pathname)].group], arr => {
-        getNavigationTabLinks(arr, sel.key + str);
+      return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
+        getNavigationTabLinks(arr, "?" + qs.stringify(obj));
       });
     } else {
       return [];
     }
   };
 
-  computedChartNavigatorLinks = computeChartNavigationLinks(
-    gradebookSettings.selectedTest,
-    gradebookSettings.requestFilters
-  );
-
-  const headerSettings = useMemo(() => {
-    let loc = getLoc(props.location.pathname);
-    if (loc) {
-      return {
-        loc: loc,
-        group: navigation.locToData[loc].group,
-        title: navigation.locToData[loc].title,
-        breadcrumbData: navigation.locToData[loc].breadcrumb
-      };
-    } else {
-      return { title: "Reports" };
-    }
-  });
+  computedChartNavigatorLinks = computeChartNavigationLinks(gradebookSettings.requestFilters);
 
   const onStandardsGradebookGoClick = _settings => {
     let obj = {};
     let arr = Object.keys(_settings.filters);
     arr.map((item, index) => {
-      if (!Array.isArray(_settings.filters[item]) && _settings.filters[item].substring(0, 3) === "All") {
+      if (_settings.filters[item] === "All") {
         obj[item] = "";
       } else {
         obj[item] = _settings.filters[item];
@@ -108,18 +85,19 @@ export const StandardsMasteryReportContainer = props => {
 
   return (
     <>
-      {headerSettings.loc === "standards-gradebook" ? (
+      {props.loc === "standards-gradebook" ? (
         <StandardsGradebookFilters
           onGoClick={onStandardsGradebookGoClick}
-          loc={headerSettings.loc}
+          loc={props.loc}
           history={props.history}
           location={props.location}
           match={props.match}
           style={props.showFilter ? { display: "block" } : { display: "none" }}
         />
       ) : null}
-      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={headerSettings.loc} />
+      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
       <Route
+        exact
         path={`/author/reports/standards-gradebook`}
         render={_props => <StandardsGradebook {..._props} settings={gradebookSettings} />}
       />

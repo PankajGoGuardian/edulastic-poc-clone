@@ -18,8 +18,6 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 
 import navigation from "./common/static/json/navigation.json";
 
-import { getLoc } from "./common/util";
-
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
 
@@ -44,7 +42,7 @@ const Container = props => {
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
   const headerSettings = useMemo(() => {
-    let loc = getLoc(props.location.pathname);
+    let loc = props.match.params.reportType;
     if (loc) {
       return {
         loc: loc,
@@ -71,26 +69,36 @@ const Container = props => {
         onDownloadCSVClickCB={headerSettings.onDownloadCSVClickCB}
         onRefineResultsCB={headerSettings.onRefineResultsCB}
       />
-      <Route exact path={props.match.path} component={Reports} />
+      {!props.match.params.reportType ? <Route exact path={props.match.path} component={Reports} /> : null}
       <Route
-        path={`${props.match.path}assessment-summary/test/`}
-        render={_props => <SingleAssessmentReportContainer {..._props} showFilter={showFilter} />}
+        path={`/author/reports/assessment-summary/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
       />
       <Route
-        path={`${props.match.path}peer-performance/test/`}
-        render={_props => <SingleAssessmentReportContainer {..._props} showFilter={showFilter} />}
+        path={`/author/reports/peer-performance/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
       />
       <Route
-        path={`${props.match.path}response-frequency/test/`}
-        render={_props => <SingleAssessmentReportContainer {..._props} showFilter={showFilter} />}
+        path={`/author/reports/response-frequency/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
       />
       <Route
-        path={`${props.match.path}performance-by-standards/test/`}
-        render={_props => <SingleAssessmentReportContainer {..._props} showFilter={showFilter} />}
+        path={`/author/reports/performance-by-standards/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
       />
       <Route
-        path={`${props.match.path}standards-gradebook`}
-        render={_props => <StandardsMasteryReportContainer {..._props} showFilter={showFilter} />}
+        path={`/author/reports/standards-gradebook`}
+        render={_props => (
+          <StandardsMasteryReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
       />
     </div>
   );

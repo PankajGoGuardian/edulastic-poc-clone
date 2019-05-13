@@ -1,8 +1,7 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { compose } from "redux";
-import { connect } from "react-redux";
-import { Route, Switch } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route } from "react-router-dom";
 import next from "immer";
+import qs from "qs";
 
 import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
@@ -14,8 +13,6 @@ import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
-
-import { getLoc } from "../../common/util";
 
 export const SingleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -33,18 +30,14 @@ export const SingleAssessmentReportContainer = props => {
   });
 
   useEffect(() => {
-    let loc = getLoc(props.location.pathname);
-    if (loc && settings.selectedTest.key) {
-      let str = "?";
+    if (settings.selectedTest.key) {
       let arr = Object.keys(settings.requestFilters);
+      let obj = {};
       arr.map((item, index) => {
-        if (settings.requestFilters[item] === "") {
-          str = str + item + "=" + "All" + (index === arr.length - 1 ? "" : "&");
-        } else {
-          str = str + item + "=" + settings.requestFilters[item] + (index === arr.length - 1 ? "" : "&");
-        }
+        let val = settings.requestFilters[item] === "" ? "All" : settings.requestFilters[item];
+        obj[item] = val;
       });
-      let path = settings.selectedTest.key + str;
+      let path = settings.selectedTest.key + "?" + qs.stringify(obj);
       props.history.push(path);
     }
   }, [settings]);
@@ -52,19 +45,15 @@ export const SingleAssessmentReportContainer = props => {
   let computedChartNavigatorLinks;
 
   const computeChartNavigationLinks = (sel, filt) => {
-    if (navigation.locToData[getLoc(props.location.pathname)]) {
-      let str = "?";
+    if (navigation.locToData[props.loc]) {
       let arr = Object.keys(filt);
+      let obj = {};
       arr.map((item, index) => {
         let val = filt[item] === "" ? "All" : filt[item];
-        if (index === arr.length - 1) {
-          str = str + item + "=" + val;
-        } else {
-          str = str + item + "=" + val + "&";
-        }
+        obj[item] = val;
       });
-      return next(navigation.navigation[navigation.locToData[getLoc(props.location.pathname)].group], arr => {
-        getNavigationTabLinks(arr, sel.key + str);
+      return next(navigation.navigation[navigation.locToData[props.loc].group], arr => {
+        getNavigationTabLinks(arr, sel.key + "?" + qs.stringify(obj));
       });
     } else {
       return [];
@@ -74,16 +63,12 @@ export const SingleAssessmentReportContainer = props => {
   computedChartNavigatorLinks = computeChartNavigationLinks(settings.selectedTest, settings.requestFilters);
 
   const onGoClick = _settings => {
-    let loc = getLoc(props.location.pathname);
-    if (loc && _settings.selectedTest.key) {
+    if (_settings.selectedTest.key) {
       let obj = {};
       let arr = Object.keys(_settings.filters);
       arr.map((item, index) => {
-        if (_settings.filters[item].substring(0, 3) === "All") {
-          obj[item] = "";
-        } else {
-          obj[item] = _settings.filters[item];
-        }
+        let val = _settings.filters[item] === "All" ? "" : _settings.filters[item];
+        obj[item] = val;
       });
 
       setSettings({
@@ -93,31 +78,17 @@ export const SingleAssessmentReportContainer = props => {
     }
   };
 
-  const headerSettings = useMemo(() => {
-    let loc = getLoc(props.location.pathname);
-    if (loc) {
-      return {
-        loc: loc,
-        group: navigation.locToData[loc].group,
-        title: navigation.locToData[loc].title,
-        breadcrumbData: navigation.locToData[loc].breadcrumb
-      };
-    } else {
-      return { title: "Reports" };
-    }
-  });
-
   return (
     <>
       <SingleAssessmentReportFilters
         onGoClick={onGoClick}
-        loc={headerSettings.loc}
+        loc={props.loc}
         history={props.history}
         location={props.location}
         match={props.match}
         style={props.showFilter ? { display: "block" } : { display: "none" }}
       />
-      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={headerSettings.loc} />
+      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
       <Route
         exact
         path={`/author/reports/assessment-summary/test/:testId?`}

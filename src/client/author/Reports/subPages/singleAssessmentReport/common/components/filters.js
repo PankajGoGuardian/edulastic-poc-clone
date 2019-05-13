@@ -22,6 +22,7 @@ import { getUserRole } from "../../../../../src/selectors/user";
 import { getUser } from "../../../../../src/selectors/user";
 
 import staticDropDownData from "../static/staticDropDownData";
+import school from "@edulastic/api/src/school";
 
 const getTestIdFromURL = url => {
   if (url.length > 16) {
@@ -51,10 +52,6 @@ const SingleAssessmentReportFilters = ({
 }) => {
   const [prevSARFilterData, setPrevSARFilterData] = useState(null);
 
-  useEffect(() => {
-    getSARFilterDataRequestAction();
-  }, []);
-
   const getTitleByTestId = testId => {
     let arr = get(SARFilterData, "data.result.testData", []);
     let item = arr.find(o => o.testId === testId);
@@ -75,6 +72,13 @@ const SingleAssessmentReportFilters = ({
     }
     return schoolYear;
   });
+
+  useEffect(() => {
+    let q = {
+      termId: schoolYear.length ? schoolYear[0].key : ""
+    };
+    getSARFilterDataRequestAction(q);
+  }, []);
 
   let processedTestIds;
   let dropDownData;

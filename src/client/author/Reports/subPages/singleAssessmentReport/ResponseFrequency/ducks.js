@@ -37,7 +37,8 @@ export const getReportsResponseFrequencyLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  responseFrequency: {}
+  responseFrequency: {},
+  loading: true
 };
 
 export const reportResponseFrequencyReducer = createReducer(initialState, {

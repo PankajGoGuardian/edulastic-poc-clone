@@ -38,7 +38,8 @@ export const getReportsPeerPerformanceLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  peerPerformance: {}
+  peerPerformance: {},
+  loading: true
 };
 
 export const reportPeerPerformanceReducer = createReducer(initialState, {

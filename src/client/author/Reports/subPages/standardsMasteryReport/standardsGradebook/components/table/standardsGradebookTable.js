@@ -56,12 +56,11 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
   const getFilteredTableData = () => {
     return next(tableData, arr => {
       arr.map((item, index) => {
-        let tempArr = [];
-        item.standardsInfo.map((_item, index) => {
+        let tempArr = item.standardsInfo.filter((_item, index) => {
           if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
-            tempArr.push({
+            return {
               ..._item
-            });
+            };
           }
         });
         item.standardsInfo = tempArr;
@@ -145,7 +144,16 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
   };
 
   const getColumnsData = () => {
-    let arr = [
+    const extraColsNeeded = filteredTableData.length && filteredTableData[0].standardsInfo.length;
+    let result = [
+      {
+        title: idToName[tableDdFilters.compareBy],
+        dataIndex: tableDdFilters.compareBy,
+        key: tableDdFilters.compareBy,
+        render: (data, record) => {
+          return record.compareByLabel;
+        }
+      },
       {
         title: "Overall",
         dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
@@ -154,30 +162,20 @@ export const StandardsGradebookTable = ({ denormalizedData, masteryScale, chartF
       }
     ];
 
-    let _arr = [];
-    if (filteredTableData.length) {
-      let temp = filteredTableData[0].standardsInfo;
-      arr.unshift({
-        title: idToName[tableDdFilters.compareBy],
-        dataIndex: tableDdFilters.compareBy,
-        key: tableDdFilters.compareBy,
-        render: (data, record) => {
-          return record.compareByLabel;
-        }
-      });
-
-      _arr = temp.map((item, index) => {
-        return {
+    if (extraColsNeeded) {
+      result = [
+        ...result,
+        ...filteredTableData[0].standardsInfo.map((item, index) => ({
           title: item.standardName,
           dataIndex: item.standardId,
           key: item.standardId,
           width: 150,
           render: renderStandardIdColumns(index, tableDdFilters.compareBy, tableDdFilters.analyseBy)
-        };
-      });
+        }))
+      ];
     }
-    arr = arr.concat(_arr);
-    return arr;
+
+    return result;
   };
 
   const columnsData = getColumnsData();

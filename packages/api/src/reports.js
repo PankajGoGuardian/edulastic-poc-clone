@@ -85,7 +85,8 @@ const fetchPerformanceByStandard = params => {
 
 const fetchSARFilterData = params => {
   return api.callApi({
-    url: `/report/filter/single-assessment?termId=5ccac8b0be259500320f41b7`
+    url: `/report/filter/single-assessment`,
+    params
   });
 };
 

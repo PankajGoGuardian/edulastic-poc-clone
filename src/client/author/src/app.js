@@ -227,7 +227,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
               <Route exact path="/author/questions/create" component={QuestionEditor} />
               <Route exact path="/author/questions/edit" component={QuestionEditor} />
-              <Route path="/author/reports/" component={Reports} />
+              <Route path="/author/reports/:reportType?" component={Reports} />
               <Route exact path="/author/districtprofile" component={DistrictProfile} />
               <Route exact path="/author/settings/testsettings" component={TestSetting} />
               <Route exact path="/author/settings/term" component={Term} />

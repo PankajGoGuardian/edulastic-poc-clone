@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { Row, Col, Button } from "antd";
-import { get, isEmpty, keyBy } from "lodash";
+import { get, isEmpty, keyBy, uniqBy } from "lodash";
 import qs from "qs";
 
 import { AutocompleteDropDown } from "../../../../common/components/widgets/autocompleteDropDown";
@@ -91,13 +91,7 @@ const StandardsGradebookFilters = ({
     let _domains = [{ key: "All", title: "All Domains" }];
     let arr = [];
     if (tempArr.length) {
-      let uniqueMap = {};
-      tempArr = tempArr.filter((item, index) => {
-        if (!uniqueMap[item.tloId]) {
-          uniqueMap[item.tloId] = true;
-          return true;
-        }
-      });
+      tempArr = uniqBy(tempArr.filter(item => item.tloId), "tloId");
       arr = tempArr.map((item, index) => {
         return { key: item.tloId, title: item.tloIdentifier };
       });
@@ -110,8 +104,7 @@ const StandardsGradebookFilters = ({
     const domainIdsKeys = keyBy(search.domainIds);
     let urlDomainId = _domains.filter((item, index) => domainIdsKeys[item.key]);
     if (!urlDomainId.length) {
-      urlDomainId = [..._domains];
-      if (urlDomainId.length > 1) urlDomainId.shift();
+      urlDomainId = _domains.filter((item, index) => index > 0);
     }
 
     let _filters = {
@@ -139,16 +132,15 @@ const StandardsGradebookFilters = ({
 
     let tempArr = get(standardsGradebookFilters, "result.testData", []);
     let arr = [{ key: "All", title: "All Assessments" }];
-    let uniqueMap = [];
-    for (let item of tempArr) {
-      if (!uniqueMap[item.testId]) {
-        uniqueMap[item.testId] = true;
-        arr.push({
-          key: item.testId,
-          title: item.testName
-        });
-      }
-    }
+    tempArr = uniqBy(tempArr.filter(item => item.testId), "testId");
+    tempArr = tempArr.map((item, index) => {
+      return {
+        key: item.testId,
+        title: item.testName
+      };
+    });
+    arr = arr.concat(tempArr);
+
     let _testIds = arr;
     setTestIds(_testIds);
 
@@ -257,8 +249,8 @@ const StandardsGradebookFilters = ({
   };
   const updateDomainDropDownCB = selected => {
     if (selected.key === "All") {
-      let tempArr = domains.map((item, index) => item.key);
-      tempArr.shift();
+      let tempArr = domains.filter((item, index) => index > 0);
+      tempArr = tempArr.map(item => item.key);
       let obj = {
         ...filters,
         domainIds: tempArr
@@ -273,6 +265,7 @@ const StandardsGradebookFilters = ({
     }
   };
 
+  // IMPORTANT: To be implemented later
   // const updateClassSectionDropDownCB = selected => {
   //   let obj = {
   //     ...filters,
@@ -343,6 +336,7 @@ const StandardsGradebookFilters = ({
             data={domains}
           />
         </Col>
+        {/* // IMPORTANT: To be implemented later */}
         {/* <Col xs={12} sm={12} md={8} lg={4} xl={4}>
           <AutocompleteDropDown
             prefix="Class Section"

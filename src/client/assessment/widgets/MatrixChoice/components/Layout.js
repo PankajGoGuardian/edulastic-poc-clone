@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
-import { Select, Col, Input, Checkbox } from "antd";
+import { Select, Input, Checkbox } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
@@ -11,6 +11,7 @@ import { CustomQuillComponent } from "@edulastic/common";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
 
@@ -59,8 +60,8 @@ class Layout extends Component {
       <Widget>
         <Subtitle>{t("component.options.layout")}</Subtitle>
 
-        <Row gutter={36}>
-          <Col md={12} style={{ marginBottom: 15 }}>
+        <Row gutter={60}>
+          <Col md={12}>
             <Label>{t("component.matrix.matrixStyle")}</Label>
             <Select
               size="large"
@@ -77,7 +78,7 @@ class Layout extends Component {
             </Select>
           </Col>
           {uiStyle.type === "table" && (
-            <Col md={12} style={{ marginBottom: 15 }}>
+            <Col md={12}>
               <Label>{t("component.options.stemNumeration")}</Label>
               <Select
                 size="large"
@@ -96,8 +97,8 @@ class Layout extends Component {
           )}
         </Row>
 
-        <Row gutter={36}>
-          <Col md={12} style={{ marginBottom: 15 }}>
+        <Row gutter={60}>
+          <Col md={12}>
             <Label data-cy="stemColumnTitle">{t("component.options.stemColumnTitle")}</Label>
             <CustomQuillComponent
               toolbarId="stemColumnTitle"
@@ -107,7 +108,7 @@ class Layout extends Component {
               value={uiStyle.stem_title || ""}
             />
           </Col>
-          <Col md={12} style={{ marginBottom: 15 }}>
+          <Col md={12}>
             <Label data-cy="optionRowTitle">{t("component.options.optionRowTitle")}</Label>
             <CustomQuillComponent
               toolbarId="optionRowTitle"
@@ -119,8 +120,8 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={36}>
-          <Col md={12} style={{ marginBottom: 15 }}>
+        <Row gutter={60}>
+          <Col md={12}>
             <Label>{t("component.options.stemWidth")}</Label>
             <Input
               data-cy="stemWidth"
@@ -131,7 +132,7 @@ class Layout extends Component {
               value={uiStyle.stem_width}
             />
           </Col>
-          <Col md={12} style={{ marginBottom: 15 }}>
+          <Col md={12}>
             <Label>{t("component.options.optionWidth")}</Label>
             <Input
               data-cy="optionWidth"
@@ -144,11 +145,11 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={36}>
-          <Col md={12} style={{ marginBottom: 15 }}>
+        <Row gutter={60}>
+          <Col md={12}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
-          <Col md={12} style={{ marginBottom: 15 }}>
+          <Col md={12}>
             <Checkbox
               data-cy="dividersCheckbox"
               size="large"

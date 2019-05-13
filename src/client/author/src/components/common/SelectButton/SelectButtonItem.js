@@ -40,5 +40,5 @@ const Container = styled.div`
 `;
 
 const Icon = styled.span`
-  margin-right: 15px;
+  margin-right: 5px;
 `;

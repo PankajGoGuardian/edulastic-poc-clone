@@ -193,7 +193,7 @@ class MultipleChoice extends Component {
           {view === EDIT && (
             <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
               <React.Fragment>
-                <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
+                <Paper padding="0px" boxShadow="none" style={{ marginBottom: 25 }}>
                   <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
                   <Widget>
                     <CorrectAnswers

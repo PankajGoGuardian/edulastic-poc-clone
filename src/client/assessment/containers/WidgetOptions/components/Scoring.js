@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep, get } from "lodash";
 import { Input, Checkbox, Select } from "antd";
+import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { rounding, evaluationType } from "@edulastic/constants";
@@ -80,8 +81,21 @@ class Scoring extends Component {
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
         {!isSection && <Subtitle>{t("component.options.scoring")}</Subtitle>}
 
+        <Row>
+          <Col md={12}>
+            <Checkbox
+              data-cy="autoscoreChk"
+              checked={automarkable}
+              onChange={e => handleChangeValidation("automarkable", e.target.checked)}
+              size="large"
+            >
+              {t("component.options.automarkable")}
+            </Checkbox>
+          </Col>
+        </Row>
+
         {automarkable && (
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <Checkbox
                 data-cy="unscoredChk"
@@ -108,7 +122,7 @@ class Scoring extends Component {
           </Row>
         )}
         {automarkable && (
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <Checkbox
                 data-cy="checkAnswerButton"
@@ -135,19 +149,8 @@ class Scoring extends Component {
           </Row>
         )}
 
-        <Row gutter={36}>
-          <Col md={12}>
-            <Checkbox
-              data-cy="autoscoreChk"
-              checked={automarkable}
-              onChange={e => handleChangeValidation("automarkable", e.target.checked)}
-              size="large"
-            >
-              {t("component.options.automarkable")}
-            </Checkbox>
-          </Col>
-
-          {automarkable && !showSelect && (
+        {automarkable && !showSelect && (
+          <Row gutter={60}>
             <Col md={12}>
               <FormGroup>
                 <Input
@@ -162,14 +165,16 @@ class Scoring extends Component {
                 <Label>{t("component.options.minScore")}</Label>
               </FormGroup>
             </Col>
-          )}
-        </Row>
+          </Row>
+        )}
 
         {automarkable && showSelect && (
-          <Row gutter={36}>
-            <Col md={12}>
+          <Row gutter={60}>
+            <Col md={24} style={{ margin: 0 }}>
               <Label>{t("component.options.scoringType")}</Label>
-              <Select
+            </Col>
+            <Col md={12}>
+              <SelectWrapper
                 size="large"
                 data-cy="scoringType"
                 value={questionData.validation.scoring_type}
@@ -180,7 +185,7 @@ class Scoring extends Component {
                     {label}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectWrapper>
             </Col>
 
             <Col md={12}>
@@ -201,7 +206,7 @@ class Scoring extends Component {
             {questionData.validation.scoring_type === evaluationType.PARTIAL_MATCH && (
               <Col md={12}>
                 <Label>{t("component.options.rounding")}</Label>
-                <Select
+                <SelectWrapper
                   size="large"
                   value={questionData.validation.rounding}
                   onChange={value => handleChangeValidation("rounding", value)}
@@ -211,14 +216,14 @@ class Scoring extends Component {
                       {label}
                     </Select.Option>
                   ))}
-                </Select>
+                </SelectWrapper>
               </Col>
             )}
           </Row>
         )}
 
         {!automarkable && (
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <FormGroup>
                 <Input
@@ -270,3 +275,7 @@ const enhance = compose(
 );
 
 export default enhance(Scoring);
+
+const SelectWrapper = styled(Select)`
+  width: 100%;
+`;

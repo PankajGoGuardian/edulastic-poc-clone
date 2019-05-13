@@ -9,6 +9,7 @@ import { withTheme } from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
 import { white } from "@edulastic/colors";
 import { CustomQuillComponent } from "@edulastic/common";
+import { ExtraWrapper } from "./styled/style";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { Widget } from "../../styled/Widget";
@@ -49,84 +50,85 @@ class Extras extends Component {
     };
 
     return (
-      <Widget>
-        {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
-        {!isSection && <Subtitle>{t("component.options.extras")}</Subtitle>}
+      <ExtraWrapper>
+        <Widget>
+          {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
+          {!isSection && <Subtitle>{t("component.options.extras")}</Subtitle>}
 
-        <Row gutter={36}>
-          <Col md={12}>
-            <Label data-cy="acknowledgements">{t("component.options.acknowledgements")}</Label>
-            <CustomQuillComponent
-              toolbarId="acknowledgements"
-              style={inputStyle}
-              onChange={value => _change("metadata.acknowledgements", value)}
-              showResponseBtn={false}
-              value={get(item, "metadata.acknowledgements", "")}
-            />
-          </Col>
+          <Row gutter={60}>
+            <Col md={12}>
+              <Label data-cy="acknowledgements">{t("component.options.acknowledgements")}</Label>
+              <CustomQuillComponent
+                toolbarId="acknowledgements"
+                style={inputStyle}
+                onChange={value => _change("metadata.acknowledgements", value)}
+                showResponseBtn={false}
+                value={get(item, "metadata.acknowledgements", "")}
+              />
+            </Col>
 
-          <Col md={12}>
-            <Label data-cy="distractor_rationale">{t("component.options.distractorRationale")}</Label>
-            <CustomQuillComponent
-              toolbarId="distractor_rationale"
-              style={inputStyle}
-              onChange={value => _change("metadata.distractor_rationale", value)}
-              showResponseBtn={false}
-              value={get(item, "metadata.distractor_rationale", "")}
-            />
-          </Col>
-        </Row>
+            <Col md={12}>
+              <Label data-cy="distractor_rationale">{t("component.options.distractorRationale")}</Label>
+              <CustomQuillComponent
+                toolbarId="distractor_rationale"
+                style={inputStyle}
+                onChange={value => _change("metadata.distractor_rationale", value)}
+                showResponseBtn={false}
+                value={get(item, "metadata.distractor_rationale", "")}
+              />
+            </Col>
+          </Row>
 
-        <Row gutter={36}>
-          <Col md={12}>
-            <Label data-cy="rubric_reference">{t("component.options.rubricreference")}</Label>
-            <CustomQuillComponent
-              toolbarId="rubric_reference"
-              style={inputStyle}
-              onChange={value => _change("metadata.rubric_reference", value)}
-              showResponseBtn={false}
-              value={get(item, "metadata.rubric_reference", "")}
-            />
-          </Col>
+          <Row gutter={60}>
+            <Col md={12}>
+              <Label data-cy="rubric_reference">{t("component.options.rubricreference")}</Label>
+              <CustomQuillComponent
+                toolbarId="rubric_reference"
+                style={inputStyle}
+                onChange={value => _change("metadata.rubric_reference", value)}
+                showResponseBtn={false}
+                value={get(item, "metadata.rubric_reference", "")}
+              />
+            </Col>
 
-          <Col md={12}>
-            <Label data-cy="stimulus_review">{t("component.options.stimulusreviewonly")}</Label>
-            <CustomQuillComponent
-              toolbarId="stimulus_review"
-              style={inputStyle}
-              onChange={value => _change("stimulus_review", value)}
-              showResponseBtn={false}
-              value={get(item, "stimulus_review", "")}
-            />
-          </Col>
-        </Row>
+            <Col md={12}>
+              <Label data-cy="stimulus_review">{t("component.options.stimulusreviewonly")}</Label>
+              <CustomQuillComponent
+                toolbarId="stimulus_review"
+                style={inputStyle}
+                onChange={value => _change("stimulus_review", value)}
+                showResponseBtn={false}
+                value={get(item, "stimulus_review", "")}
+              />
+            </Col>
+          </Row>
 
-        <Row gutter={36}>
-          <Col md={12}>
-            <Label data-cy="instructor_stimulus">{t("component.options.instructorStimulus")}</Label>
-            <CustomQuillComponent
-              toolbarId="instructor_stimulus"
-              style={inputStyle}
-              onChange={value => _change("instructor_stimulus", value)}
-              showResponseBtn={false}
-              value={get(item, "instructor_stimulus", "")}
-            />
-          </Col>
+          <Row gutter={60}>
+            <Col md={12}>
+              <Label data-cy="instructor_stimulus">{t("component.options.instructorStimulus")}</Label>
+              <CustomQuillComponent
+                toolbarId="instructor_stimulus"
+                style={inputStyle}
+                onChange={value => _change("instructor_stimulus", value)}
+                showResponseBtn={false}
+                value={get(item, "instructor_stimulus", "")}
+              />
+            </Col>
 
-          <Col md={12}>
-            <Label data-cy="sample_answer">{t("component.options.sampleAnswer")}</Label>
-            <CustomQuillComponent
-              toolbarId="sample_answer"
-              style={inputStyle}
-              onChange={value => _change("metadata.sample_answer", value)}
-              showResponseBtn={false}
-              value={get(item, "metadata.sample_answer", "")}
-            />
-          </Col>
-        </Row>
-
+            <Col md={12}>
+              <Label data-cy="sample_answer">{t("component.options.sampleAnswer")}</Label>
+              <CustomQuillComponent
+                toolbarId="sample_answer"
+                style={inputStyle}
+                onChange={value => _change("metadata.sample_answer", value)}
+                showResponseBtn={false}
+                value={get(item, "metadata.sample_answer", "")}
+              />
+            </Col>
+          </Row>
+        </Widget>
         {children}
-      </Widget>
+      </ExtraWrapper>
     );
   }
 }

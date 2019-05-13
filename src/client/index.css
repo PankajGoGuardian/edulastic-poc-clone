@@ -923,6 +923,11 @@ p {
   display: inherit !important;
 }
 
+#stimulus.toolbars .ql-formats,
+.toolbars.ql-toolbar.ql-snow .ql-formats {
+  margin: 3px 5px;
+}
+
 #mainQuill .ql-formats {
   background: transparent !important;
   position: relative;

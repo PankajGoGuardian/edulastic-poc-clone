@@ -11,6 +11,8 @@ import withAddButton from "../../components/HOC/withAddButton";
 import { change, remove, add, sort } from "./helpers";
 import { StyledRow } from "./styled/StyledRow";
 import QuillSortableList from "../../components/QuillSortableList";
+import { Widget } from "../../styled/Widget";
+import { Subtitle } from "../../styled/Subtitle";
 
 const SortableListWithAddButton = withAddButton(QuillSortableList);
 
@@ -23,25 +25,25 @@ const Hints = ({ t, item, setQuestionData }) => {
   const _sort = sort({ item, setQuestionData, prop });
 
   return (
-    <Fragment>
-      <StyledRow gutter={36}>
-        <Col md={24}>{t("component.options.hint")}</Col>
-      </StyledRow>
-      <StyledRow gutter={36}>
-        <Col data-cy="hintsList" md={24}>
-          <SortableListWithAddButton
-            buttonText={t("component.options.add")}
-            useDragHandle
-            items={get(item, `metadata.${prop}`, [])}
-            onSortEnd={_sort}
-            prefix="hints"
-            onAdd={_add}
-            onRemove={_remove}
-            onChange={(index, value) => _change(`metadata.${prop}[${index}]`, value)}
-          />
-        </Col>
-      </StyledRow>
-    </Fragment>
+    <Widget>
+      <Fragment>
+        <Subtitle>{t("component.options.hint")}</Subtitle>
+        <StyledRow gutter={60}>
+          <Col data-cy="hintsList" md={24}>
+            <SortableListWithAddButton
+              buttonText={t("component.options.add")}
+              useDragHandle
+              items={get(item, `metadata.${prop}`, [])}
+              onSortEnd={_sort}
+              prefix="hints"
+              onAdd={_add}
+              onRemove={_remove}
+              onChange={(index, value) => _change(`metadata.${prop}[${index}]`, value)}
+            />
+          </Col>
+        </StyledRow>
+      </Fragment>
+    </Widget>
   );
 };
 

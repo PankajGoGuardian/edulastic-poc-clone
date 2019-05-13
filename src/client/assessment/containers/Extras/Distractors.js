@@ -12,6 +12,8 @@ import withAddButton from "../../components/HOC/withAddButton";
 
 import { change, remove, add, sort } from "./helpers";
 import { StyledRow } from "./styled/StyledRow";
+import { Widget } from "../../styled/Widget";
+import { Subtitle } from "../../styled/Subtitle";
 
 const SortableListWithAddButton = withAddButton(SortableList);
 
@@ -24,26 +26,26 @@ const Distractors = ({ t, setQuestionData, item }) => {
   const _sort = sort({ item, setQuestionData, prop });
 
   return (
-    <Fragment>
-      <StyledRow gutter={36}>
-        <Col md={24}>{t("component.options.distractorRationalePerResponse")}</Col>
-      </StyledRow>
-      <StyledRow gutter={36}>
-        <Col data-cy="distractorList" md={24}>
-          <SortableListWithAddButton
-            buttonText={t("component.options.add")}
-            useDragHandle
-            label={t("component.options.distractor")}
-            items={get(item, `metadata.${prop}`, [])}
-            onSortEnd={_sort}
-            prefix="distractors"
-            onAdd={_add}
-            onRemove={_remove}
-            onChange={(index, e) => _change(`metadata.${prop}[${index}]`, e.target.value)}
-          />
-        </Col>
-      </StyledRow>
-    </Fragment>
+    <Widget>
+      <Fragment>
+        <Subtitle>{t("component.options.distractorTitle")}</Subtitle>
+        <StyledRow gutter={60}>
+          <Col data-cy="distractorList" md={24}>
+            <SortableListWithAddButton
+              buttonText={t("component.options.add")}
+              useDragHandle
+              label={t("component.options.distractor")}
+              items={get(item, `metadata.${prop}`, [])}
+              onSortEnd={_sort}
+              prefix="distractors"
+              onAdd={_add}
+              onRemove={_remove}
+              onChange={(index, e) => _change(`metadata.${prop}[${index}]`, e.target.value)}
+            />
+          </Col>
+        </StyledRow>
+      </Fragment>
+    </Widget>
   );
 };
 

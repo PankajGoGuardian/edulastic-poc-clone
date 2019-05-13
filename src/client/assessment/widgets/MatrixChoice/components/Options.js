@@ -7,7 +7,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { evaluationType } from "@edulastic/constants";
 
 import WidgetOptions from "../../../containers/WidgetOptions";
-import { Block } from "../../../styled/WidgetOptions/Block";
 import Extras from "../../../containers/Extras";
 
 import Layout from "./Layout";
@@ -17,13 +16,11 @@ const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, ev
 function Options({ onChange, uiStyle, fillSections, cleanSections }) {
   return (
     <WidgetOptions fillSections={fillSections} cleanSections={cleanSections} scoringTypes={scoringTypes}>
-      <Block>
-        <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
-        <Extras fillSections={fillSections} cleanSections={cleanSections}>
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
-      </Block>
+      <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
+      <Extras fillSections={fillSections} cleanSections={cleanSections}>
+        <Extras.Distractors />
+        <Extras.Hints />
+      </Extras>
     </WidgetOptions>
   );
 }

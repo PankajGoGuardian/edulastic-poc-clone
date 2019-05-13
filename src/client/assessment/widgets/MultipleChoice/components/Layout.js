@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Select } from "antd";
+import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { TextField } from "@edulastic/common";
@@ -87,14 +88,13 @@ class Layout extends Component {
       <Widget>
         <Subtitle>{t("component.options.layout")}</Subtitle>
 
-        <Row>
-          <Col md={6}>
+        <Row gutter={60}>
+          <Col md={12}>
             <Label>{t("component.options.style")}</Label>
-            <Select
+            <SelectWrapper
               data-cy="styleSelect"
               size="large"
               id="select"
-              style={{ width: "80%" }}
               onChange={val => changeUiStyle("type", val)}
               value={uiStyle.type}
             >
@@ -103,9 +103,9 @@ class Layout extends Component {
                   {label}
                 </Select.Option>
               ))}
-            </Select>
+            </SelectWrapper>
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <Label>{t("component.options.columns")}</Label>
             <TextField
               type="number"
@@ -118,23 +118,22 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row>
-          <Col md={6}>
+        <Row gutter={60}>
+          <Col md={12}>
             <OrientationSelect onChange={val => changeUiStyle("orientation", val)} value={uiStyle.orientation} />
           </Col>
-          <Col md={6}>
+          <Col md={12}>
             <FontSizeSelect onChange={fontsize => changeUiStyle("fontsize", fontsize)} value={uiStyle.fontsize} />
           </Col>
         </Row>
 
         {uiStyle.type === "block" && (
-          <Row>
-            <Col md={6}>
+          <Row gutter={60}>
+            <Col md={12}>
               <Label>{t("component.options.labelType")}</Label>
-              <Select
+              <SelectWrapper
                 size="large"
                 data-cy="labelTypeSelect"
-                style={{ width: "80%" }}
                 onChange={val => changeUiStyle("choice_label", val)}
                 value={uiStyle.choice_label}
               >
@@ -143,7 +142,7 @@ class Layout extends Component {
                     {label}
                   </Select.Option>
                 ))}
-              </Select>
+              </SelectWrapper>
             </Col>
           </Row>
         )}
@@ -159,3 +158,7 @@ const enhance = compose(
 );
 
 export default enhance(Layout);
+
+const SelectWrapper = styled(Select)`
+  width: 100%;
+`;

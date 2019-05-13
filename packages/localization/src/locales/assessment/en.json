@@ -99,6 +99,7 @@
       "sampleAnswer": "Sample answer",
       "distractorRationale": "Distractor rationale",
       "distractorRationalePerResponse": "Distractor rationale per response",
+      "distractorTitle": "Distractor",
       "hint": "Hint",
       "draganddrop": "DRAG & DROP",
       "multiline": "Multiple line",

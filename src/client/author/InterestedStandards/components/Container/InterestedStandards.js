@@ -175,7 +175,7 @@ class InterestedStandards extends Component {
                 </Button>
               </Col>
               <Col span={12}>
-                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards} disabled={isDisableSaveBtn}>
+                <StyledSaveButton type="primary" onClick={this.saveInterestedStandards}>
                   Save
                 </StyledSaveButton>
               </Col>

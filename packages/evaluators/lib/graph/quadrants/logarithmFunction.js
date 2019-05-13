@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _fractionDigits = require("./constants/fractionDigits");
+var _constants = require("./constants");
 
 var LogarithmFunction =
   /*#__PURE__*/
@@ -30,7 +30,7 @@ var LogarithmFunction =
         value: function getBC() {
           var b = this.endY - this.startY;
           var c = this.endX - this.startX >= 0 ? this.endX - this.startX : 1 / (this.startX - this.endX);
-          return (b / c).toFixed(_fractionDigits.FractionDigits);
+          return (b / c).toFixed(_constants.FractionDigits);
         }
       }
     ]);

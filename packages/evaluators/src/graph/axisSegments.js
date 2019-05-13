@@ -1,5 +1,5 @@
 import { ScoringType } from "../const/scoring";
-import { AxisSegmentsShapeTypes } from "./constants/axisSegmentsShapeTypes";
+import { AxisSegmentsShapeTypes } from "./constants";
 
 const shapesAreEqual = (shape1, shape2) => {
   if (shape1.type !== shape2.type) {

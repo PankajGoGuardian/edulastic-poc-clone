@@ -1,4 +1,4 @@
-import { FractionDigits } from './constants/fractionDigits';
+import { FractionDigits } from "./constants";
 
 class LineFunction {
   constructor(points) {
@@ -10,7 +10,7 @@ class LineFunction {
 
   getKoefA() {
     if (this.x1 === this.x2) {
-      return 'NaN';
+      return "NaN";
     }
 
     const koefA = (this.y2 - this.y1) / (this.x2 - this.x1);
@@ -19,7 +19,7 @@ class LineFunction {
 
   getKoefB() {
     if (this.x1 === this.x2) {
-      return 'NaN';
+      return "NaN";
     }
 
     const koefB = (this.y2 * this.x1 - this.y1 * this.x2) / (this.x1 - this.x2);

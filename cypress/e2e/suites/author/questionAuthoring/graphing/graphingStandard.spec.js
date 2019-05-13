@@ -257,8 +257,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
         });
       });
     });
-    // Fixme: edit layout causes browser to hang and test execution stucks.
-    it.skip("Edit layout", () => {
+
+    it("Edit layout", () => {
       question
         .getLayoutWidth()
         .clear()
@@ -623,8 +623,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Graphing" type
     it(" > Edit controls", () => {
       question.getControlsContainer().within(() => {
         question.clickOnAddToolButton();
-        question.selectControlOption(2, "Reset");
       });
+      question.selectControlOption(2, "Reset");
 
       question.getCorrectAnswerGraphContainer().within(() => {
         question.getGraphTools().within(() => {

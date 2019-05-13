@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _fractionDigits = require("./constants/fractionDigits");
+var _constants = require("./constants");
 
 var PolynomFunction =
   /*#__PURE__*/
@@ -39,7 +39,7 @@ var PolynomFunction =
             result += this.points[i].y * li;
           }
 
-          return result.toFixed(_fractionDigits.FractionDigits);
+          return result.toFixed(_constants.FractionDigits);
         }
       }
     ]);

@@ -1,4 +1,4 @@
-import { GraphTypes } from "./constants/graphTypes";
+import { GraphTypes } from "./constants";
 import quadrantsEvaluator from "./quadrants";
 import axisLabelsEvaluator from "./axisLabels";
 import axisSegmentsEvaluator from "./axisSegments";

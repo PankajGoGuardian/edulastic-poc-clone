@@ -23,6 +23,10 @@
   padding: 5px 10px !important;
 }
 
+.ql-snow .ql-tooltip.ql-flip {
+  top: 45px !important;
+}
+
 .graph-shape-label .ql-tooltip,
 .graph-shape-label .ql-tooltip.ql-flip {
   position: absolute;

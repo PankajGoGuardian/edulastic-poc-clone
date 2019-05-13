@@ -9,11 +9,11 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _shapeTypes = require("./constants/shapeTypes");
+var _constants = require("./constants");
 
 var _compareShapes = _interopRequireDefault(require("./compareShapes"));
 
-var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShapes) {
+var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShapes, ignoreLabels) {
   var result = {
     commonResult: false,
     details: []
@@ -22,7 +22,11 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
   var trueShapes = trueAnswerValue.filter(function(item) {
     return !item.subElement;
   });
-  var compareShapes = new _compareShapes["default"](trueAnswerValue, userResponse);
+  var compareShapes = new _compareShapes["default"](
+    trueAnswerValue,
+    userResponse,
+    ignoreLabels !== _constants.IgnoreLabels.NO
+  );
   userResponse
     .filter(function(elem) {
       return !elem.subElement;
@@ -69,12 +73,12 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
     return result;
   } // compare by slope
 
-  if (ignoreRepeatedShapes && ignoreRepeatedShapes === "yes") {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_SLOPE) {
     result.commonResult = true;
     return result;
   } // compare by points
 
-  if (ignoreRepeatedShapes && ignoreRepeatedShapes === "strict") {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === _constants.IgnoreRepeatedShapes.COMPARE_BY_POINTS) {
     result.commonResult = true;
 
     var _loop = function _loop(i) {
@@ -87,11 +91,11 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
       if (
         sameShapes.length > 1 &&
-        sameShapesType !== _shapeTypes.ShapeTypes.POINT &&
-        sameShapesType !== _shapeTypes.ShapeTypes.SEGMENT &&
-        sameShapesType !== _shapeTypes.ShapeTypes.VECTOR &&
-        sameShapesType !== _shapeTypes.ShapeTypes.POLYGON &&
-        sameShapesType !== _shapeTypes.ShapeTypes.POLYNOM
+        sameShapesType !== _constants.ShapeTypes.POINT &&
+        sameShapesType !== _constants.ShapeTypes.SEGMENT &&
+        sameShapesType !== _constants.ShapeTypes.VECTOR &&
+        sameShapesType !== _constants.ShapeTypes.POLYGON &&
+        sameShapesType !== _constants.ShapeTypes.POLYNOM
       ) {
         var allowedSubElementsIds = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;
@@ -124,12 +128,12 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
               break;
 
-            case _shapeTypes.ShapeTypes.PARABOLA:
-            case _shapeTypes.ShapeTypes.SINE:
-            case _shapeTypes.ShapeTypes.TANGENT:
-            case _shapeTypes.ShapeTypes.SECANT:
-            case _shapeTypes.ShapeTypes.LINE:
-            case _shapeTypes.ShapeTypes.RAY:
+            case _constants.ShapeTypes.PARABOLA:
+            case _constants.ShapeTypes.SINE:
+            case _constants.ShapeTypes.TANGENT:
+            case _constants.ShapeTypes.SECANT:
+            case _constants.ShapeTypes.LINE:
+            case _constants.ShapeTypes.RAY:
             default:
               if (
                 !compareShapes.compare(checkableShape.subElementsIds.startPoint, allowedSubElementsIds.startPoint)
@@ -182,7 +186,8 @@ var evaluator = function evaluator(_ref) {
     validation = _ref.validation;
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
-    ignore_repeated_shapes = validation.ignore_repeated_shapes;
+    ignore_repeated_shapes = validation.ignore_repeated_shapes,
+    ignore_labels = validation.ignore_labels;
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
@@ -194,7 +199,7 @@ var evaluator = function evaluator(_ref) {
 
   var result = {};
   answers.forEach(function(answer, index) {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes);
+    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignore_labels);
 
     if (result.commonResult) {
       score = Math.max(answer.score, score);

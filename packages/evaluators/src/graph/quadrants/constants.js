@@ -1,3 +1,5 @@
+export const FractionDigits = 4;
+
 export const ShapeTypes = {
   POINT: "point",
   LINE: "line",
@@ -15,4 +17,15 @@ export const ShapeTypes = {
   EXPONENT: "exponent",
   LOGARITHM: "logarithm",
   POLYNOM: "polynom"
+};
+
+export const IgnoreRepeatedShapes = {
+  NO: "no",
+  COMPARE_BY_SLOPE: "yes",
+  COMPARE_BY_POINTS: "strict"
+};
+
+export const IgnoreLabels = {
+  NO: "no",
+  YES: "yes"
 };

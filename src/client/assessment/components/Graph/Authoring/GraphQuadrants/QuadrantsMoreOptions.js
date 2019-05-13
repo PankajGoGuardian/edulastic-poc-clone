@@ -2,7 +2,8 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox, Select } from "@edulastic/common";
+import { Checkbox } from "@edulastic/common";
+import { Select } from "antd";
 
 import Extras from "../../../../containers/Extras";
 import {
@@ -145,11 +146,18 @@ class QuadrantsMoreOptions extends Component {
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.layoutoptions.stemNumeration")}</MoreOptionsLabel>
                   <Select
-                    style={{ width: "77%", marginTop: "11px" }}
+                    size="large"
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
                     onChange={val => this.handleSelect("currentStemNum", val)}
-                    options={stemNumerationList}
                     value={currentStemNum}
-                  />
+                    data-cy="stemNumeration"
+                  >
+                    {stemNumerationList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
 
@@ -185,11 +193,18 @@ class QuadrantsMoreOptions extends Component {
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.layoutoptions.fontSize")}</MoreOptionsLabel>
                   <Select
-                    style={{ width: "77%", marginTop: "11px" }}
+                    size="large"
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
                     onChange={val => this.handleSelect("currentFontSize", val)}
-                    options={fontSizeList}
                     value={currentFontSize}
-                  />
+                    data-cy="fontSize"
+                  >
+                    {fontSizeList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {option.label}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
             </MoreOptionsColumnContainer>
@@ -537,6 +552,11 @@ QuadrantsMoreOptions.propTypes = {
   setControls: PropTypes.func.isRequired,
   setAnnotation: PropTypes.func.isRequired,
   setValidation: PropTypes.func.isRequired
+};
+
+QuadrantsMoreOptions.defaultProps = {
+  fontSizeList: [],
+  stemNumerationList: []
 };
 
 const enhance = compose(withNamespaces("assessment"));

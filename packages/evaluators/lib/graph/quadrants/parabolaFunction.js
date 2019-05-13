@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _fractionDigits = require("./constants/fractionDigits");
+var _constants = require("./constants");
 
 var ParabolaFunction =
   /*#__PURE__*/
@@ -29,7 +29,7 @@ var ParabolaFunction =
         key: "getKoefA",
         value: function getKoefA() {
           return ((this.endY - this.startY) / ((this.endX - this.startX) * (this.endX - this.startX))).toFixed(
-            _fractionDigits.FractionDigits
+            _constants.FractionDigits
           );
         }
       },

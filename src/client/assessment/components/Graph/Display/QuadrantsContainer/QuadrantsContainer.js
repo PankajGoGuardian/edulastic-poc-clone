@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
@@ -191,7 +191,7 @@ const getCompareResult = evaluation => {
   return evaluation.evaluation[0];
 };
 
-class GraphContainer extends Component {
+class GraphContainer extends PureComponent {
   constructor(props) {
     super(props);
 

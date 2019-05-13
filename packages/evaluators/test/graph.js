@@ -1,6 +1,6 @@
 import test from "ava";
 import { graph as evaluator } from "../src/index";
-import { IgnoreRepeatedShapes } from "../src/graph/quadrants/constants/ignoreRepeatedShapes";
+import { IgnoreRepeatedShapes, IgnoreLabels } from "../src/graph/quadrants/constants";
 import { ScoringType } from "../src/const/scoring";
 
 import {
@@ -155,6 +155,38 @@ test("#GraphPoint: there are not all points", async t => {
   // check
   t.is(result.evaluation[0].commonResult, false);
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_1").result, true);
+});
+
+test("#GraphPoint: check 1 true point {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Point),
+    userResponse: clone(trueAnswerWith1Point.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.userResponse[0].label = "point A";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_1").result, true);
+});
+
+test("#GraphPoint: check 1 error point {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Point),
+    userResponse: clone(trueAnswerWith1Point.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.userResponse[0].label = "point B";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_1").result, false);
 });
 
 // Line ============================================================================================
@@ -361,6 +393,46 @@ test("#GraphLine: EV-315", async t => {
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_9").result, true);
 });
 
+test("#GraphLine: check 1 true line {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Line),
+    userResponse: clone(trueAnswerWith1Line.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "line AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "line AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphLine: check 1 error line {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Line),
+    userResponse: clone(trueAnswerWith1Line.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "line AB";
+  eObj.userResponse[0].label = "point C";
+  eObj.userResponse[1].label = "point D";
+  eObj.userResponse[2].label = "line CD";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
+});
+
 // Ray =============================================================================================
 
 test("#GraphRay: check 1 true ray {ignoreRepeatedShapes = NO}", async t => {
@@ -550,6 +622,46 @@ test("#GraphRay: there are not all rays", async t => {
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
 });
 
+test("#GraphRay: check 1 true ray {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Ray),
+    userResponse: clone(trueAnswerWith1Ray.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "ray AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "ray AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphRay: check 1 error ray {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Ray),
+    userResponse: clone(trueAnswerWith1Ray.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "ray AB";
+  eObj.userResponse[0].label = "point C";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "ray AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
+});
+
 // Segment =========================================================================================
 
 test("#GraphSegment: check 1 true segment {ignoreRepeatedShapes = NO}", async t => {
@@ -737,6 +849,46 @@ test("#GraphSegment: there are not all segments", async t => {
   // check
   t.is(result.evaluation[0].commonResult, false);
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphSegment: check 1 true segment {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Segment),
+    userResponse: clone(trueAnswerWith1Segment.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "segment AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "segment AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphSegment: check 1 error segment {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Segment),
+    userResponse: clone(trueAnswerWith1Segment.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "segment AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point C";
+  eObj.userResponse[2].label = "segment AC";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
 });
 
 // Vector ==========================================================================================
@@ -939,6 +1091,45 @@ test("#GraphVector: there are not all vectors", async t => {
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
 });
 
+test("#GraphVector: check 1 true vector {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Vector),
+    userResponse: clone(trueAnswerWith1Vector.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "vector AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "vector AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphVector: check 1 error vector {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Vector),
+    userResponse: clone(trueAnswerWith1Vector.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "vector AB";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "vector AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
+});
+
 // Circle ==========================================================================================
 
 test("#GraphCircle: check 1 true circle {ignoreRepeatedShapes = NO}", async t => {
@@ -1126,6 +1317,45 @@ test("#GraphCircle: there are not all circles", async t => {
   // check
   t.is(result.evaluation[0].commonResult, false);
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphCircle: check 1 true circle {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Circle),
+    userResponse: clone(trueAnswerWith1Circle.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "circle AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "circle AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphCircle: check 1 error circle {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Circle),
+    userResponse: clone(trueAnswerWith1Circle.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "circle AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[2].label = "circle AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
 });
 
 // Parabola ========================================================================================
@@ -1317,6 +1547,46 @@ test("#GraphParabola: there are not all parabolas", async t => {
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
 });
 
+test("#GraphParabola: check 1 true parabola {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Parabola),
+    userResponse: clone(trueAnswerWith1Parabola.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "parabola AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "parabola AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphParabola: check 1 error parabola {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Parabola),
+    userResponse: clone(trueAnswerWith1Parabola.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "parabola AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "parabola BA";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
+});
+
 // Sine ============================================================================================
 
 test("#GraphSine: check 1 true sine {ignoreRepeatedShapes = NO}", async t => {
@@ -1504,6 +1774,46 @@ test("#GraphSine: there are not all sines", async t => {
   // check
   t.is(result.evaluation[0].commonResult, false);
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphSine: check 1 true sine {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Sine),
+    userResponse: clone(trueAnswerWith1Sine.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "sine AB";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "sine AB";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphSine: check 1 error sine {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Sine),
+    userResponse: clone(trueAnswerWith1Sine.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "sine AB";
+  eObj.userResponse[0].label = "point D";
+  eObj.userResponse[1].label = "point C";
+  eObj.userResponse[2].label = "sine CD";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
 });
 
 // Polygon =========================================================================================
@@ -1695,6 +2005,54 @@ test("#GraphPolygon: there are not all polygons", async t => {
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
 });
 
+test("#GraphPolygon: check 1 true polygon {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Polygon),
+    userResponse: clone(trueAnswerWith1Polygon.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "point C";
+  eObj.validation.valid_response.value[3].label = "point D";
+  eObj.validation.valid_response.value[4].label = "polygon ABCD";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "point C";
+  eObj.userResponse[3].label = "point D";
+  eObj.userResponse[4].label = "polygon ABCD";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, true);
+});
+
+test("#GraphPolygon: check 1 error polygon {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Polygon),
+    userResponse: clone(trueAnswerWith1Polygon.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "point C";
+  eObj.validation.valid_response.value[3].label = "point D";
+  eObj.validation.valid_response.value[4].label = "polygon ABCD";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point C";
+  eObj.userResponse[2].label = "point B";
+  eObj.userResponse[3].label = "point D";
+  eObj.userResponse[4].label = "polygon ABCD";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_3").result, false);
+});
+
 // Ellipse =========================================================================================
 
 test("#GraphEllipse: check 1 true ellipse {ignoreRepeatedShapes = NO}", async t => {
@@ -1882,6 +2240,50 @@ test("#GraphEllipse: there are not all ellipses", async t => {
   // check
   t.is(result.evaluation[0].commonResult, false);
   t.is(result.evaluation[0].details.find(item => item.id === "lrn_4").result, true);
+});
+
+test("#GraphEllipse: check 1 true ellipse {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Ellipse),
+    userResponse: clone(trueAnswerWith1Ellipse.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "point C";
+  eObj.validation.valid_response.value[3].label = "ellipse ABC";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point B";
+  eObj.userResponse[2].label = "point C";
+  eObj.userResponse[3].label = "ellipse ABC";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, true);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_4").result, true);
+});
+
+test("#GraphEllipse: check 1 error ellipse {ignoreLabels = NO}", async t => {
+  // prepare data
+  const eObj = {
+    validation: clone(trueAnswerWith1Ellipse),
+    userResponse: clone(trueAnswerWith1Ellipse.valid_response.value)
+  };
+  eObj.validation.ignore_labels = IgnoreLabels.NO;
+  eObj.validation.valid_response.value[0].label = "point A";
+  eObj.validation.valid_response.value[1].label = "point B";
+  eObj.validation.valid_response.value[2].label = "point C";
+  eObj.validation.valid_response.value[3].label = "ellipse ABC";
+  eObj.userResponse[0].label = "point A";
+  eObj.userResponse[1].label = "point C";
+  eObj.userResponse[2].label = "point B";
+  eObj.userResponse[3].label = "ellipse ABC";
+  // action
+  const result = evaluator(eObj);
+  // check
+  t.is(result.evaluation[0].commonResult, false);
+  t.is(result.evaluation[0].details.find(item => item.id === "lrn_4").result, false);
 });
 
 // Hyperbola =======================================================================================

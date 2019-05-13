@@ -1,5 +1,4 @@
-import { ShapeTypes } from "./constants/shapeTypes";
-import { FractionDigits } from "./constants/fractionDigits";
+import { ShapeTypes, FractionDigits } from "./constants";
 import LineFunction from "./lineFunction";
 import ParabolaFunction from "./parabolaFunction";
 import EllipseFunction from "./ellipseFunction";
@@ -8,10 +7,25 @@ import ExponentFunction from "./exponentFunction";
 import LogarithmFunction from "./logarithmFunction";
 import PolynomFunction from "./polynomFunction";
 
+const labelsAreEqual = (label1, label2) => {
+  let text1 = typeof label1 === "string" ? label1 : "";
+  let text2 = typeof label2 === "string" ? label2 : "";
+  text1 = text1
+    .replace(/<(.|\n)*?>/g, "")
+    .trim()
+    .toLowerCase();
+  text2 = text2
+    .replace(/<(.|\n)*?>/g, "")
+    .trim()
+    .toLowerCase();
+  return text1 === text2;
+};
+
 class CompareShapes {
-  constructor(trueAnswerValue, testAnswer) {
+  constructor(trueAnswerValue, testAnswer, ignoreLabels) {
     this.trueAnswerValue = trueAnswerValue;
     this.testAnswer = testAnswer;
+    this.ignoreLabels = ignoreLabels;
   }
 
   compare(testId, trueId) {
@@ -27,7 +41,7 @@ class CompareShapes {
 
     switch (testShape.type) {
       case ShapeTypes.POINT:
-        return CompareShapes.comparePoints(testShape, trueShape);
+        return this.comparePoints(testShape, trueShape);
       case ShapeTypes.LINE:
         return this.compareLines(testShape, trueShape);
       case ShapeTypes.RAY:
@@ -43,7 +57,7 @@ class CompareShapes {
       case ShapeTypes.SINE:
       case ShapeTypes.TANGENT:
       case ShapeTypes.SECANT:
-        return this.compareSines(testShape, trueShape);
+        return this.compareTrigonometrics(testShape, trueShape);
       case ShapeTypes.POLYGON:
         return this.comparePolygons(testShape, trueShape);
       case ShapeTypes.ELLIPSE:
@@ -64,8 +78,12 @@ class CompareShapes {
     }
   }
 
-  static comparePoints(testPoint, truePoint) {
-    if (testPoint.x === truePoint.x && testPoint.y === truePoint.y) {
+  comparePoints(testPoint, truePoint) {
+    if (
+      testPoint.x === truePoint.x &&
+      testPoint.y === truePoint.y &&
+      (this.ignoreLabels || labelsAreEqual(testPoint.label, truePoint.label))
+    ) {
       return {
         id: testPoint.id,
         relatedId: truePoint.id,
@@ -79,217 +97,290 @@ class CompareShapes {
     };
   }
 
-  compareLines(testLine, trueLine) {
-    const testLinePoints = {
-      x1: +this.testAnswer.find(item => item.id === testLine.subElementsIds.startPoint).x,
-      y1: +this.testAnswer.find(item => item.id === testLine.subElementsIds.startPoint).y,
-      x2: +this.testAnswer.find(item => item.id === testLine.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testLine.subElementsIds.endPoint).y
+  compareLines(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueLinePoints = {
-      x1: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.startPoint).x,
-      y1: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.startPoint).y,
-      x2: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueLine.subElementsIds.endPoint).y
-    };
-
-    const testLineFunc = new LineFunction(testLinePoints);
-    const trueLineFunc = new LineFunction(trueLinePoints);
-
-    if (testLineFunc.getKoefA() === trueLineFunc.getKoefA() && testLineFunc.getKoefB() === trueLineFunc.getKoefB()) {
-      return {
-        id: testLine.id,
-        relatedId: trueLine.id,
-        result: true
-      };
-    }
-
-    return {
-      id: testLine.id,
+    const negativeResult = {
+      id: testShape.id,
       result: false
     };
-  }
 
-  compareRays(testRay, trueRay) {
-    const testRayPoints = {
-      x1: +this.testAnswer.find(item => item.id === testRay.subElementsIds.startPoint).x,
-      y1: +this.testAnswer.find(item => item.id === testRay.subElementsIds.startPoint).y,
-      x2: +this.testAnswer.find(item => item.id === testRay.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testRay.subElementsIds.endPoint).y
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        ((this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+          this.comparePoints(testShapePointEnd, trueShapePointEnd).result) ||
+          (this.comparePoints(testShapePointStart, trueShapePointEnd).result &&
+            this.comparePoints(testShapePointEnd, trueShapePointStart).result))
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      x1: +testShapePointStart.x,
+      y1: +testShapePointStart.y,
+      x2: +testShapePointEnd.x,
+      y2: +testShapePointEnd.y
     };
 
-    const trueRayPoints = {
-      x1: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.startPoint).x,
-      y1: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.startPoint).y,
-      x2: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueRay.subElementsIds.endPoint).y
+    const trueShapePoints = {
+      x1: +trueShapePointStart.x,
+      y1: +trueShapePointStart.y,
+      x2: +trueShapePointEnd.x,
+      y2: +trueShapePointEnd.y
+    };
+
+    const testShapeFunc = new LineFunction(testShapePoints);
+    const trueShapeFunc = new LineFunction(trueShapePoints);
+
+    if (
+      testShapeFunc.getKoefA() === trueShapeFunc.getKoefA() &&
+      testShapeFunc.getKoefB() === trueShapeFunc.getKoefB()
+    ) {
+      return positiveResult;
+    }
+    return negativeResult;
+  }
+
+  compareRays(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
+    };
+
+    const negativeResult = {
+      id: testShape.id,
+      result: false
+    };
+
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      x1: +testShapePointStart.x,
+      y1: +testShapePointStart.y,
+      x2: +testShapePointEnd.x,
+      y2: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      x1: +trueShapePointStart.x,
+      y1: +trueShapePointStart.y,
+      x2: +trueShapePointEnd.x,
+      y2: +trueShapePointEnd.y
     };
 
     const testRayParams = {
-      deltaX: testRayPoints.x2 - testRayPoints.x1,
-      deltaY: testRayPoints.y2 - testRayPoints.y1
+      deltaX: testShapePoints.x2 - testShapePoints.x1,
+      deltaY: testShapePoints.y2 - testShapePoints.y1
     };
     testRayParams.koef =
       testRayParams.deltaX === 0 ? "NaN" : (testRayParams.deltaY / testRayParams.deltaX).toFixed(FractionDigits);
 
     const trueRayParams = {
-      deltaX: trueRayPoints.x2 - trueRayPoints.x1,
-      deltaY: trueRayPoints.y2 - trueRayPoints.y1
+      deltaX: trueShapePoints.x2 - trueShapePoints.x1,
+      deltaY: trueShapePoints.y2 - trueShapePoints.y1
     };
     trueRayParams.koef =
       trueRayParams.deltaX === 0 ? "NaN" : (trueRayParams.deltaY / trueRayParams.deltaX).toFixed(FractionDigits);
 
     if (
-      testRayPoints.x1 === trueRayPoints.x1 &&
-      testRayPoints.y1 === trueRayPoints.y1 &&
+      testShapePoints.x1 === trueShapePoints.x1 &&
+      testShapePoints.y1 === trueShapePoints.y1 &&
       testRayParams.koef === trueRayParams.koef &&
       Math.sign(testRayParams.deltaX) === Math.sign(trueRayParams.deltaX) &&
       Math.sign(testRayParams.deltaY) === Math.sign(trueRayParams.deltaY)
     ) {
-      return {
-        id: testRay.id,
-        relatedId: trueRay.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testRay.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareSegments(testSegment, trueSegment) {
-    const testSegmentPoints = {
-      x1: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.startPoint).x,
-      y1: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.startPoint).y,
-      x2: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testSegment.subElementsIds.endPoint).y
-    };
+  compareSegments(testShape, trueShape) {
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
 
-    const trueSegmentPoints = {
-      x1: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.startPoint).x,
-      y1: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.startPoint).y,
-      x2: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueSegment.subElementsIds.endPoint).y
-    };
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
 
     if (
-      (testSegmentPoints.x1 === trueSegmentPoints.x1 &&
-        testSegmentPoints.y1 === trueSegmentPoints.y1 &&
-        testSegmentPoints.x2 === trueSegmentPoints.x2 &&
-        testSegmentPoints.y2 === trueSegmentPoints.y2) ||
-      (testSegmentPoints.x1 === trueSegmentPoints.x2 &&
-        testSegmentPoints.y1 === trueSegmentPoints.y2 &&
-        testSegmentPoints.x2 === trueSegmentPoints.x1 &&
-        testSegmentPoints.y2 === trueSegmentPoints.y1)
+      labelsAreEqual(testShape.label, trueShape.label) &&
+      ((this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result) ||
+        (this.comparePoints(testShapePointStart, trueShapePointEnd).result &&
+          this.comparePoints(testShapePointEnd, trueShapePointStart).result))
     ) {
       return {
-        id: testSegment.id,
-        relatedId: trueSegment.id,
+        id: testShape.id,
+        relatedId: trueShape.id,
         result: true
       };
     }
 
     return {
-      id: testSegment.id,
+      id: testShape.id,
       result: false
     };
   }
 
-  compareVectors(testVector, trueVector) {
-    const testVectorPoints = {
-      x1: +this.testAnswer.find(item => item.id === testVector.subElementsIds.startPoint).x,
-      y1: +this.testAnswer.find(item => item.id === testVector.subElementsIds.startPoint).y,
-      x2: +this.testAnswer.find(item => item.id === testVector.subElementsIds.endPoint).x,
-      y2: +this.testAnswer.find(item => item.id === testVector.subElementsIds.endPoint).y
-    };
+  compareVectors(testShape, trueShape) {
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
 
-    const trueVectorPoints = {
-      x1: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.startPoint).x,
-      y1: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.startPoint).y,
-      x2: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.endPoint).x,
-      y2: +this.trueAnswerValue.find(item => item.id === trueVector.subElementsIds.endPoint).y
-    };
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
 
     if (
-      testVectorPoints.x1 === trueVectorPoints.x1 &&
-      testVectorPoints.y1 === trueVectorPoints.y1 &&
-      testVectorPoints.x2 === trueVectorPoints.x2 &&
-      testVectorPoints.y2 === trueVectorPoints.y2
+      labelsAreEqual(testShape.label, trueShape.label) &&
+      this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+      this.comparePoints(testShapePointEnd, trueShapePointEnd).result
     ) {
       return {
-        id: testVector.id,
-        relatedId: trueVector.id,
+        id: testShape.id,
+        relatedId: trueShape.id,
         result: true
       };
     }
 
     return {
-      id: testVector.id,
+      id: testShape.id,
       result: false
     };
   }
 
-  compareCircles(testCircle, trueCircle) {
-    const testCirclePoints = {
-      startX: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.startPoint).x,
-      startY: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.startPoint).y,
-      endX: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testCircle.subElementsIds.endPoint).y
+  compareCircles(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueCirclePoints = {
-      startX: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.startPoint).x,
-      startY: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.startPoint).y,
-      endX: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueCircle.subElementsIds.endPoint).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    let deltaX = testCirclePoints.startX - testCirclePoints.endX;
-    let deltaY = testCirclePoints.startY - testCirclePoints.endY;
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      startX: +testShapePointStart.x,
+      startY: +testShapePointStart.y,
+      endX: +testShapePointEnd.x,
+      endY: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      startX: +trueShapePointStart.x,
+      startY: +trueShapePointStart.y,
+      endX: +trueShapePointEnd.x,
+      endY: +trueShapePointEnd.y
+    };
+
+    let deltaX = testShapePoints.startX - testShapePoints.endX;
+    let deltaY = testShapePoints.startY - testShapePoints.endY;
     const testCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(FractionDigits);
 
-    deltaX = trueCirclePoints.startX - trueCirclePoints.endX;
-    deltaY = trueCirclePoints.startY - trueCirclePoints.endY;
+    deltaX = trueShapePoints.startX - trueShapePoints.endX;
+    deltaY = trueShapePoints.startY - trueShapePoints.endY;
     const trueCircleRadius = Math.sqrt(deltaX * deltaX + deltaY * deltaY).toFixed(FractionDigits);
 
     if (
-      testCirclePoints.startX === trueCirclePoints.startX &&
-      testCirclePoints.startY === trueCirclePoints.startY &&
+      testShapePoints.startX === trueShapePoints.startX &&
+      testShapePoints.startY === trueShapePoints.startY &&
       testCircleRadius === trueCircleRadius
     ) {
-      return {
-        id: testCircle.id,
-        relatedId: trueCircle.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testCircle.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareParabolas(testParabola, trueParabola) {
-    const testParabolaPoints = {
-      startX: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.startPoint).x,
-      startY: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.startPoint).y,
-      endX: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testParabola.subElementsIds.endPoint).y
+  compareParabolas(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueParabolaPoints = {
-      startX: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.startPoint).x,
-      startY: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.startPoint).y,
-      endX: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueParabola.subElementsIds.endPoint).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    const testFunc = new ParabolaFunction(testParabolaPoints);
-    const trueFunc = new ParabolaFunction(trueParabolaPoints);
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      startX: +testShapePointStart.x,
+      startY: +testShapePointStart.y,
+      endX: +testShapePointEnd.x,
+      endY: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      startX: +trueShapePointStart.x,
+      startY: +trueShapePointStart.y,
+      endX: +trueShapePointEnd.x,
+      endY: +trueShapePointEnd.y
+    };
+
+    const testFunc = new ParabolaFunction(testShapePoints);
+    const trueFunc = new ParabolaFunction(trueShapePoints);
 
     if (
       testParabolaPoints.startX === trueParabolaPoints.startX &&
@@ -297,48 +388,70 @@ class CompareShapes {
       testFunc.getKoefA() === trueFunc.getKoefA() &&
       testFunc.getDirection() === trueFunc.getDirection()
     ) {
-      return {
-        id: testParabola.id,
-        relatedId: trueParabola.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testParabola.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareSines(testSine, trueSine) {
-    const testSinePoints = {
-      startX: +this.testAnswer.find(item => item.id === testSine.subElementsIds.startPoint).x,
-      startY: +this.testAnswer.find(item => item.id === testSine.subElementsIds.startPoint).y,
-      endX: +this.testAnswer.find(item => item.id === testSine.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testSine.subElementsIds.endPoint).y
+  compareTrigonometrics(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueSinePoints = {
-      startX: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.startPoint).x,
-      startY: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.startPoint).y,
-      endX: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueSine.subElementsIds.endPoint).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
+    };
+
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        ((this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+          this.comparePoints(testShapePointEnd, trueShapePointEnd).result) ||
+          (this.comparePoints(testShapePointStart, trueShapePointEnd).result &&
+            this.comparePoints(testShapePointEnd, trueShapePointStart).result))
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      startX: +testShapePointStart.x,
+      startY: +testShapePointStart.y,
+      endX: +testShapePointEnd.x,
+      endY: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      startX: +trueShapePointStart.x,
+      startY: +trueShapePointStart.y,
+      endX: +trueShapePointEnd.x,
+      endY: +trueShapePointEnd.y
     };
 
     // amplitudes
-    const testAmpl = Math.abs(testSinePoints.endY - testSinePoints.startY);
-    const trueAmpl = Math.abs(trueSinePoints.endY - trueSinePoints.startY);
+    const testAmpl = Math.abs(testShapePoints.endY - testShapePoints.startY);
+    const trueAmpl = Math.abs(trueShapePoints.endY - trueShapePoints.startY);
     // center lines
-    const testCenterLine = testSinePoints.startY;
-    const trueCenterLine = trueSinePoints.startY;
+    const testCenterLine = testShapePoints.startY;
+    const trueCenterLine = trueShapePoints.startY;
     // periods
-    const testPeriod = (testSinePoints.endX - testSinePoints.startX) * 4;
-    const truePeriod = (trueSinePoints.endX - trueSinePoints.startX) * 4;
+    const testPeriod = (testShapePoints.endX - testShapePoints.startX) * 4;
+    const truePeriod = (trueShapePoints.endX - trueShapePoints.startX) * 4;
     // offsets
     const testNormalX =
-      testSinePoints.endY < testSinePoints.startY ? testSinePoints.startX + testPeriod / 2 : testSinePoints.startX;
+      testShapePoints.endY < testShapePoints.startY ? testShapePoints.startX + testPeriod / 2 : testShapePoints.startX;
     const trueNormalX =
-      trueSinePoints.endY < trueSinePoints.startY ? trueSinePoints.startX + truePeriod / 2 : trueSinePoints.startX;
+      trueShapePoints.endY < trueShapePoints.startY ? trueShapePoints.startX + truePeriod / 2 : trueShapePoints.startX;
     let testOffset = testNormalX % testPeriod;
     if (testOffset < 0) {
       testOffset += testPeriod;
@@ -354,46 +467,36 @@ class CompareShapes {
       testPeriod === truePeriod &&
       testOffset === trueOffset
     ) {
-      return {
-        id: testSine.id,
-        relatedId: trueSine.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testSine.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  comparePolygons(testPolygon, truePolygon) {
+  comparePolygons(testShape, trueShape) {
     const negativeResult = {
-      id: testPolygon.id,
+      id: testShape.id,
       result: false
     };
 
     const positiveResult = {
-      id: testPolygon.id,
-      relatedId: truePolygon.id,
+      id: testShape.id,
+      relatedId: trueShape.id,
       result: true
     };
 
     let testPolygonPoints = [];
-    Object.getOwnPropertyNames(testPolygon.subElementsIds).forEach(value => {
-      const pointId = testPolygon.subElementsIds[value];
+    Object.getOwnPropertyNames(testShape.subElementsIds).forEach(value => {
+      const pointId = testShape.subElementsIds[value];
       const point = this.testAnswer.find(item => item.id === pointId);
-      testPolygonPoints.push({ x: point.x, y: point.y });
+      testPolygonPoints.push({ x: point.x, y: point.y, label: point.label });
     });
-    testPolygonPoints.pop();
 
     const truePolygonPoints = [];
-    Object.getOwnPropertyNames(truePolygon.subElementsIds).forEach(value => {
-      const pointId = truePolygon.subElementsIds[value];
+    Object.getOwnPropertyNames(trueShape.subElementsIds).forEach(value => {
+      const pointId = trueShape.subElementsIds[value];
       const point = this.trueAnswerValue.find(item => item.id === pointId);
-      truePolygonPoints.push({ x: point.x, y: point.y });
+      truePolygonPoints.push({ x: point.x, y: point.y, label: point.label });
     });
-    truePolygonPoints.pop();
 
     if (testPolygonPoints.length !== truePolygonPoints.length) {
       return negativeResult;
@@ -402,7 +505,11 @@ class CompareShapes {
     // find first equal point
     let startIndex = -1;
     for (let i = 0; i < testPolygonPoints.length; i++) {
-      if (testPolygonPoints[i].x === truePolygonPoints[0].x && testPolygonPoints[i].y === truePolygonPoints[0].y) {
+      if (
+        testPolygonPoints[i].x === truePolygonPoints[0].x &&
+        testPolygonPoints[i].y === truePolygonPoints[0].y &&
+        (this.ignoreLabels || labelsAreEqual(testPolygonPoints[i].label, truePolygonPoints[0].label))
+      ) {
         startIndex = i;
         break;
       }
@@ -419,11 +526,18 @@ class CompareShapes {
     // check direct order
     let equalCount = 0;
     for (let i = 0; i < testPolygonPoints.length; i++) {
-      if (testPolygonPoints[i].x === truePolygonPoints[i].x && testPolygonPoints[i].y === truePolygonPoints[i].y) {
+      if (
+        testPolygonPoints[i].x === truePolygonPoints[i].x &&
+        testPolygonPoints[i].y === truePolygonPoints[i].y &&
+        (this.ignoreLabels || labelsAreEqual(testPolygonPoints[i].label, truePolygonPoints[i].label))
+      ) {
         equalCount++;
       }
     }
-    if (equalCount === truePolygonPoints.length) {
+    if (
+      equalCount === truePolygonPoints.length &&
+      (this.ignoreLabels || labelsAreEqual(testShape.label, trueShape.label))
+    ) {
       return positiveResult;
     }
 
@@ -434,130 +548,215 @@ class CompareShapes {
 
     equalCount = 0;
     for (let i = 0; i < testPolygonPoints.length; i++) {
-      if (testPolygonPoints[i].x === truePolygonPoints[i].x && testPolygonPoints[i].y === truePolygonPoints[i].y) {
+      if (
+        testPolygonPoints[i].x === truePolygonPoints[i].x &&
+        testPolygonPoints[i].y === truePolygonPoints[i].y &&
+        (this.ignoreLabels || labelsAreEqual(testPolygonPoints[i].label, truePolygonPoints[i].label))
+      ) {
         equalCount++;
       }
     }
-    if (equalCount === truePolygonPoints.length) {
+    if (
+      equalCount === truePolygonPoints.length &&
+      (this.ignoreLabels || labelsAreEqual(testShape.label, trueShape.label))
+    ) {
       return positiveResult;
     }
 
     return negativeResult;
   }
 
-  compareEllipses(testEllipse, trueEllipse) {
-    const testEllipsePoints = {
-      focusPoint1X: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[0]).x,
-      focusPoint1Y: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[0]).y,
-      focusPoint2X: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[1]).x,
-      focusPoint2Y: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[1]).y,
-      linePointX: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[2]).x,
-      linePointY: +this.testAnswer.find(item => item.id === testEllipse.subElementsIds[2]).y
+  compareEllipses(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueEllipsePoints = {
-      focusPoint1X: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[0]).x,
-      focusPoint1Y: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[0]).y,
-      focusPoint2X: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[1]).x,
-      focusPoint2Y: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[1]).y,
-      linePointX: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[2]).x,
-      linePointY: +this.trueAnswerValue.find(item => item.id === trueEllipse.subElementsIds[2]).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    const testFunc = new EllipseFunction(testEllipsePoints);
-    const trueFunc = new EllipseFunction(trueEllipsePoints);
+    const testShapeFocusPoint1 = this.testAnswer.find(item => item.id === testShape.subElementsIds[0]);
+    const testShapeFocusPoint2 = this.testAnswer.find(item => item.id === testShape.subElementsIds[1]);
+    const testShapeLinePoint = this.testAnswer.find(item => item.id === testShape.subElementsIds[2]);
+
+    const trueShapeFocusPoint1 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[0]);
+    const trueShapeFocusPoint2 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[1]);
+    const trueShapeLinePoint = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[2]);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapeLinePoint, trueShapeLinePoint).result &&
+        ((this.comparePoints(testShapeFocusPoint1, trueShapeFocusPoint1).result &&
+          this.comparePoints(testShapeFocusPoint2, trueShapeFocusPoint2).result) ||
+          (this.comparePoints(testShapeFocusPoint1, trueShapeFocusPoint2).result &&
+            this.comparePoints(testShapeFocusPoint2, trueShapeFocusPoint1).result))
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      focusPoint1X: +testShapeFocusPoint1.x,
+      focusPoint1Y: +testShapeFocusPoint1.y,
+      focusPoint2X: +testShapeFocusPoint2.x,
+      focusPoint2Y: +testShapeFocusPoint2.y,
+      linePointX: +testShapeLinePoint.x,
+      linePointY: +testShapeLinePoint.y
+    };
+
+    const trueShapePoints = {
+      focusPoint1X: +trueShapeFocusPoint1.x,
+      focusPoint1Y: +trueShapeFocusPoint1.y,
+      focusPoint2X: +trueShapeFocusPoint2.x,
+      focusPoint2Y: +trueShapeFocusPoint2.y,
+      linePointX: +trueShapeLinePoint.x,
+      linePointY: +trueShapeLinePoint.y
+    };
+
+    const testFunc = new EllipseFunction(testShapePoints);
+    const trueFunc = new EllipseFunction(trueShapePoints);
 
     const focusPointsAreMatched =
-      (testEllipsePoints.focusPoint1X === trueEllipsePoints.focusPoint1X &&
-        testEllipsePoints.focusPoint1Y === trueEllipsePoints.focusPoint1Y &&
-        testEllipsePoints.focusPoint2X === trueEllipsePoints.focusPoint2X &&
-        testEllipsePoints.focusPoint2Y === trueEllipsePoints.focusPoint2Y) ||
-      (testEllipsePoints.focusPoint1X === trueEllipsePoints.focusPoint2X &&
-        testEllipsePoints.focusPoint1Y === trueEllipsePoints.focusPoint2Y &&
-        testEllipsePoints.focusPoint2X === trueEllipsePoints.focusPoint1X &&
-        testEllipsePoints.focusPoint2Y === trueEllipsePoints.focusPoint1Y);
+      (testShapePoints.focusPoint1X === trueShapePoints.focusPoint1X &&
+        testShapePoints.focusPoint1Y === trueShapePoints.focusPoint1Y &&
+        testShapePoints.focusPoint2X === trueShapePoints.focusPoint2X &&
+        testShapePoints.focusPoint2Y === trueShapePoints.focusPoint2Y) ||
+      (testShapePoints.focusPoint1X === trueShapePoints.focusPoint2X &&
+        testShapePoints.focusPoint1Y === trueShapePoints.focusPoint2Y &&
+        testShapePoints.focusPoint2X === trueShapePoints.focusPoint1X &&
+        testShapePoints.focusPoint2Y === trueShapePoints.focusPoint1Y);
 
     if (focusPointsAreMatched && testFunc.getR1R2Sum() === trueFunc.getR1R2Sum()) {
-      return {
-        id: testEllipse.id,
-        relatedId: trueEllipse.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testEllipse.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareHyperbolas(testHyperbola, trueHyperbola) {
-    const testHyperbolaPoints = {
-      focusPoint1X: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[0]).x,
-      focusPoint1Y: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[0]).y,
-      focusPoint2X: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[1]).x,
-      focusPoint2Y: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[1]).y,
-      linePointX: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[2]).x,
-      linePointY: +this.testAnswer.find(item => item.id === testHyperbola.subElementsIds[2]).y
+  compareHyperbolas(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueHyperbolaPoints = {
-      focusPoint1X: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[0]).x,
-      focusPoint1Y: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[0]).y,
-      focusPoint2X: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[1]).x,
-      focusPoint2Y: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[1]).y,
-      linePointX: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[2]).x,
-      linePointY: +this.trueAnswerValue.find(item => item.id === trueHyperbola.subElementsIds[2]).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    const testFunc = new HyperbolaFunction(testHyperbolaPoints);
-    const trueFunc = new HyperbolaFunction(trueHyperbolaPoints);
+    const testShapeFocusPoint1 = this.testAnswer.find(item => item.id === testShape.subElementsIds[0]);
+    const testShapeFocusPoint2 = this.testAnswer.find(item => item.id === testShape.subElementsIds[1]);
+    const testShapeLinePoint = this.testAnswer.find(item => item.id === testShape.subElementsIds[2]);
+
+    const trueShapeFocusPoint1 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[0]);
+    const trueShapeFocusPoint2 = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[1]);
+    const trueShapeLinePoint = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds[2]);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapeLinePoint, trueShapeLinePoint).result &&
+        ((this.comparePoints(testShapeFocusPoint1, trueShapeFocusPoint1).result &&
+          this.comparePoints(testShapeFocusPoint2, trueShapeFocusPoint2).result) ||
+          (this.comparePoints(testShapeFocusPoint1, trueShapeFocusPoint2).result &&
+            this.comparePoints(testShapeFocusPoint2, trueShapeFocusPoint1).result))
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      focusPoint1X: +testShapeFocusPoint1.x,
+      focusPoint1Y: +testShapeFocusPoint1.y,
+      focusPoint2X: +testShapeFocusPoint2.x,
+      focusPoint2Y: +testShapeFocusPoint2.y,
+      linePointX: +testShapeLinePoint.x,
+      linePointY: +testShapeLinePoint.y
+    };
+
+    const trueShapePoints = {
+      focusPoint1X: +trueShapeFocusPoint1.x,
+      focusPoint1Y: +trueShapeFocusPoint1.y,
+      focusPoint2X: +trueShapeFocusPoint2.x,
+      focusPoint2Y: +trueShapeFocusPoint2.y,
+      linePointX: +trueShapeLinePoint.x,
+      linePointY: +trueShapeLinePoint.y
+    };
+
+    const testFunc = new HyperbolaFunction(testShapePoints);
+    const trueFunc = new HyperbolaFunction(trueShapePoints);
 
     const focusPointsAreMatched =
-      (testHyperbolaPoints.focusPoint1X === trueHyperbolaPoints.focusPoint1X &&
-        testHyperbolaPoints.focusPoint1Y === trueHyperbolaPoints.focusPoint1Y &&
-        testHyperbolaPoints.focusPoint2X === trueHyperbolaPoints.focusPoint2X &&
-        testHyperbolaPoints.focusPoint2Y === trueHyperbolaPoints.focusPoint2Y) ||
-      (testHyperbolaPoints.focusPoint1X === trueHyperbolaPoints.focusPoint2X &&
-        testHyperbolaPoints.focusPoint1Y === trueHyperbolaPoints.focusPoint2Y &&
-        testHyperbolaPoints.focusPoint2X === trueHyperbolaPoints.focusPoint1X &&
-        testHyperbolaPoints.focusPoint2Y === trueHyperbolaPoints.focusPoint1Y);
+      (testShapePoints.focusPoint1X === trueShapePoints.focusPoint1X &&
+        testShapePoints.focusPoint1Y === trueShapePoints.focusPoint1Y &&
+        testShapePoints.focusPoint2X === trueShapePoints.focusPoint2X &&
+        testShapePoints.focusPoint2Y === trueShapePoints.focusPoint2Y) ||
+      (testShapePoints.focusPoint1X === trueShapePoints.focusPoint2X &&
+        testShapePoints.focusPoint1Y === trueShapePoints.focusPoint2Y &&
+        testShapePoints.focusPoint2X === trueShapePoints.focusPoint1X &&
+        testShapePoints.focusPoint2Y === trueShapePoints.focusPoint1Y);
 
     if (focusPointsAreMatched && testFunc.getR1R2Diff() === trueFunc.getR1R2Diff()) {
-      return {
-        id: testHyperbola.id,
-        relatedId: trueHyperbola.id,
-        result: true
-      };
+      return positiveResult;
     }
-
-    return {
-      id: testHyperbola.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareExponents(testExponent, trueExponent) {
-    const testExponentPoints = {
-      startX: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.startPoint).x,
-      startY: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.startPoint).y,
-      endX: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testExponent.subElementsIds.endPoint).y
+  compareExponents(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueExponentPoints = {
-      startX: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.startPoint).x,
-      startY: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.startPoint).y,
-      endX: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueExponent.subElementsIds.endPoint).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    const testFunc = new ExponentFunction(testExponentPoints);
-    const trueFunc = new ExponentFunction(trueExponentPoints);
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      startX: +testShapePointStart.x,
+      startY: +testShapePointStart.y,
+      endX: +testShapePointEnd.x,
+      endY: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      startX: +trueShapePointStart.x,
+      startY: +trueShapePointStart.y,
+      endX: +trueShapePointEnd.x,
+      endY: +trueShapePointEnd.y
+    };
+
+    const testFunc = new ExponentFunction(testShapePoints);
+    const trueFunc = new ExponentFunction(trueShapePoints);
 
     if (
-      testExponentPoints.startX === trueExponentPoints.startX &&
-      testExponentPoints.startY === trueExponentPoints.startY &&
+      testShapePoints.startX === trueShapePoints.startX &&
+      testShapePoints.startY === trueShapePoints.startY &&
       testFunc.getBC() === trueFunc.getBC()
     ) {
       return {
@@ -566,34 +765,58 @@ class CompareShapes {
         result: true
       };
     }
-
-    return {
-      id: testExponent.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  compareLogarithms(testLogarithm, trueLogarithm) {
-    const testLogarithmPoints = {
-      startX: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.startPoint).x,
-      startY: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.startPoint).y,
-      endX: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.endPoint).x,
-      endY: +this.testAnswer.find(item => item.id === testLogarithm.subElementsIds.endPoint).y
+  compareLogarithms(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
     };
 
-    const trueLogarithmPoints = {
-      startX: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.startPoint).x,
-      startY: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.startPoint).y,
-      endX: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.endPoint).x,
-      endY: +this.trueAnswerValue.find(item => item.id === trueLogarithm.subElementsIds.endPoint).y
+    const negativeResult = {
+      id: testShape.id,
+      result: false
     };
 
-    const testFunc = new LogarithmFunction(testLogarithmPoints);
-    const trueFunc = new LogarithmFunction(trueLogarithmPoints);
+    const testShapePointStart = this.testAnswer.find(item => item.id === testShape.subElementsIds.startPoint);
+    const testShapePointEnd = this.testAnswer.find(item => item.id === testShape.subElementsIds.endPoint);
+
+    const trueShapePointStart = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.startPoint);
+    const trueShapePointEnd = this.trueAnswerValue.find(item => item.id === trueShape.subElementsIds.endPoint);
+
+    if (!this.ignoreLabels) {
+      if (
+        labelsAreEqual(testShape.label, trueShape.label) &&
+        this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+        this.comparePoints(testShapePointEnd, trueShapePointEnd).result
+      ) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testShapePoints = {
+      startX: +testShapePointStart.x,
+      startY: +testShapePointStart.y,
+      endX: +testShapePointEnd.x,
+      endY: +testShapePointEnd.y
+    };
+
+    const trueShapePoints = {
+      startX: +trueShapePointStart.x,
+      startY: +trueShapePointStart.y,
+      endX: +trueShapePointEnd.x,
+      endY: +trueShapePointEnd.y
+    };
+
+    const testFunc = new LogarithmFunction(testShapePoints);
+    const trueFunc = new LogarithmFunction(trueShapePoints);
 
     if (
-      testLogarithmPoints.startX === trueLogarithmPoints.startX &&
-      testLogarithmPoints.startY === trueLogarithmPoints.startY &&
+      testShapePoints.startX === trueShapePoints.startX &&
+      testShapePoints.startY === trueShapePoints.startY &&
       testFunc.getBC() === trueFunc.getBC()
     ) {
       return {
@@ -602,44 +825,68 @@ class CompareShapes {
         result: true
       };
     }
-
-    return {
-      id: testLogarithm.id,
-      result: false
-    };
+    return negativeResult;
   }
 
-  comparePolynoms(testPolynom, truePolynom) {
-    const testPolynomPoints = [];
-    Object.getOwnPropertyNames(testPolynom.subElementsIds).forEach(value => {
-      const pointId = testPolynom.subElementsIds[value];
+  comparePolynoms(testShape, trueShape) {
+    const positiveResult = {
+      id: testShape.id,
+      relatedId: trueShape.id,
+      result: true
+    };
+
+    const negativeResult = {
+      id: testShape.id,
+      result: false
+    };
+
+    const testShapePoints = [];
+    Object.getOwnPropertyNames(testShape.subElementsIds).forEach(value => {
+      const pointId = testShape.subElementsIds[value];
       const point = this.testAnswer.find(item => item.id === pointId);
-      testPolynomPoints.push({ x: point.x, y: point.y });
+      testShapePoints.push({ x: point.x, y: point.y, label: point.label });
     });
 
-    const truePolynomPoints = [];
-    Object.getOwnPropertyNames(truePolynom.subElementsIds).forEach(value => {
-      const pointId = truePolynom.subElementsIds[value];
+    const trueShapePoints = [];
+    Object.getOwnPropertyNames(trueShape.subElementsIds).forEach(value => {
+      const pointId = trueShape.subElementsIds[value];
       const point = this.trueAnswerValue.find(item => item.id === pointId);
-      truePolynomPoints.push({ x: point.x, y: point.y });
+      trueShapePoints.push({ x: point.x, y: point.y, label: point.label });
     });
 
-    const testFunc = new PolynomFunction(testPolynomPoints);
-    const trueFunc = new PolynomFunction(truePolynomPoints);
+    if (!this.ignoreLabels) {
+      if (testShapePoints.length !== trueShapePoints.length) {
+        return negativeResult;
+      }
 
-    const allX = testPolynomPoints.map(point => point.x).concat(truePolynomPoints.map(point => point.x));
+      let equalCount = 0;
+      testShapePoints.forEach(testPoint => {
+        equalCount += trueShapePoints.filter(
+          truePoint =>
+            testPoint.x === truePoint.x &&
+            testPoint.y === truePoint.y &&
+            labelsAreEqual(testPoint.label, truePoint.label)
+        ).length;
+      });
+
+      if (equalCount === trueShapePoints.length && labelsAreEqual(testShape.label, trueShape.label)) {
+        return positiveResult;
+      }
+      return negativeResult;
+    }
+
+    const testFunc = new PolynomFunction(testShapePoints);
+    const trueFunc = new PolynomFunction(trueShapePoints);
+
+    const allX = testShapePoints.map(point => point.x).concat(trueShapePoints.map(point => point.x));
     const xMin = Math.min(...allX) - 0.5;
     const xMax = Math.max(...allX) + 0.5;
 
     let x = xMin;
     while (x <= xMax) {
       if (testFunc.getYbyX(x) !== trueFunc.getYbyX(x)) {
-        return {
-          id: testPolynom.id,
-          result: false
-        };
+        return negativeResult;
       }
-
       x += 0.1;
     }
 

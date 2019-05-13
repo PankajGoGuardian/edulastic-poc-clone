@@ -352,7 +352,7 @@ export const updateNumberline = (numberline, settings) => {
     });
   }
   if ("fontSize" in settings) {
-    numberline.ticks[0].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
+    numberline.ticks[1].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
   }
 };
 

@@ -1,6 +1,5 @@
-import { IgnoreRepeatedShapes } from "../../src/graph/quadrants/constants/ignoreRepeatedShapes";
-import { ShapeTypes } from "../../src/graph/quadrants/constants/shapeTypes";
-import { AxisSegmentsShapeTypes } from "../../src/graph/constants/axisSegmentsShapeTypes";
+import { AxisSegmentsShapeTypes } from "../../src/graph/constants";
+import { IgnoreRepeatedShapes, ShapeTypes } from "../../src/graph/quadrants/constants";
 
 // Point ===========================================================================================
 
@@ -876,8 +875,7 @@ export const trueAnswerWith1Polygon = {
           0: "lrn_1",
           1: "lrn_2",
           2: "lrn_21",
-          3: "lrn_22",
-          4: "lrn_1"
+          3: "lrn_22"
         }
       }
     ]
@@ -891,8 +889,7 @@ export const truePolygonWithOtherOrderedPoints = {
     0: "lrn_2",
     1: "lrn_1",
     2: "lrn_22",
-    3: "lrn_21",
-    4: "lrn_2"
+    3: "lrn_21"
   }
 };
 
@@ -932,8 +929,7 @@ export const secondTruePolygon = [
       0: "lrn_11",
       1: "lrn_12",
       2: "lrn_31",
-      3: "lrn_32",
-      4: "lrn_11"
+      3: "lrn_32"
     }
   }
 ];
@@ -982,8 +978,7 @@ export const errorPolygon = [
       1: "lrn_8",
       2: "lrn_41",
       3: "lrn_42",
-      4: "lrn_43",
-      5: "lrn_7"
+      4: "lrn_43"
     }
   }
 ];

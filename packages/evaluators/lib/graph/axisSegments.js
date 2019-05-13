@@ -11,7 +11,7 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _scoring = require("../const/scoring");
 
-var _axisSegmentsShapeTypes = require("./constants/axisSegmentsShapeTypes");
+var _constants = require("./constants");
 
 var shapesAreEqual = function shapesAreEqual(shape1, shape2) {
   if (shape1.type !== shape2.type) {
@@ -19,19 +19,19 @@ var shapesAreEqual = function shapesAreEqual(shape1, shape2) {
   }
 
   switch (shape1.type) {
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENTS_POINT:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
+    case _constants.AxisSegmentsShapeTypes.SEGMENTS_POINT:
+    case _constants.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION:
+    case _constants.AxisSegmentsShapeTypes.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
       return shape1.point1 === shape2.point1;
 
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+    case _constants.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION:
+    case _constants.AxisSegmentsShapeTypes.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
       return shape1.point2 === shape2.point2;
 
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_INCLUDED:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_LEFT_POINT_HOLLOW:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_RIGHT_POINT_HOLLOW:
-    case _axisSegmentsShapeTypes.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_HOLLOW:
+    case _constants.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_INCLUDED:
+    case _constants.AxisSegmentsShapeTypes.SEGMENT_LEFT_POINT_HOLLOW:
+    case _constants.AxisSegmentsShapeTypes.SEGMENT_RIGHT_POINT_HOLLOW:
+    case _constants.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_HOLLOW:
       return shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2;
 
     default:

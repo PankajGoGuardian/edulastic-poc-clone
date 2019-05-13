@@ -44,7 +44,15 @@ class Scoring extends Component {
         newData.validation = {};
       }
 
-      newData.validation[param] = value;
+      if (
+        (param === "max_score" || param === "penalty" || param === "min_score_if_attempted" || param === "") &&
+        value < 0
+      ) {
+        newData.validation[param] = 0;
+      } else {
+        newData.validation[param] = value;
+      }
+
       setQuestionData(newData);
     };
 
@@ -52,7 +60,11 @@ class Scoring extends Component {
       const newData = cloneDeep(questionData);
 
       if (["instant_feedback", "feedback_attempts"].includes(param)) {
-        newData[param] = value;
+        if (param === "feedback_attempts" && value < 0) {
+          newData[param] = 0;
+        } else {
+          newData[param] = value;
+        }
       }
 
       newData.validation[param] = value;

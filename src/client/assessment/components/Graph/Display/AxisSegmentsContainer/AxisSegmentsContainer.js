@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 import PropTypes from "prop-types";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
@@ -168,7 +168,7 @@ const getCompareResult = evaluation => {
   return evaluation.evaluation[0];
 };
 
-class AxisSegmentsContainer extends Component {
+class AxisSegmentsContainer extends PureComponent {
   constructor(props) {
     super(props);
 

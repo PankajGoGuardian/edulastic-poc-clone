@@ -2,8 +2,10 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Checkbox, Select } from "@edulastic/common";
+import { Checkbox } from "@edulastic/common";
+import { Select } from "antd";
 
+import { RENDERING_BASE } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
 import {
   MoreOptionsContainer,
@@ -17,17 +19,18 @@ import {
   MoreOptionsColumn
 } from "../../common/styled_components";
 
-import FontSizeDropdown from "../AxisLabelsLayoutSettings/FontSizeDropdown";
-import RenderingBaseDropdown from "../AxisLabelsLayoutSettings/RenderingBaseDropdown";
 import { QuestionSection, ScoreSettings, SegmentsToolsSettings } from "..";
 
 class AxisSegmentsMoreOptions extends Component {
   state = {
     layout: "horizontal",
     minWidth: "550px",
-    // renderingBase: "lineMinValue",
-    // labelDisplaySpecPoints: "",
-    currentRenderingBaseItem: {}
+    currentRenderingBaseItem: {
+      id: RENDERING_BASE.LINE_MINIMUM_VALUE,
+      value: "Line minimum value",
+      label: "Line minimum value",
+      selected: true
+    }
   };
 
   scoringTypes = [
@@ -114,11 +117,8 @@ class AxisSegmentsMoreOptions extends Component {
   };
 
   changeRenderingBase = e => {
-    const { setNumberline, numberlineAxis } = this.props;
-
-    const { renderingBaseList } = this.props;
-    const { value } = e.target;
-    const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === value.toLowerCase());
+    const { setNumberline, numberlineAxis, renderingBaseList } = this.props;
+    const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === e.toLowerCase());
 
     if (findItem) {
       findItem.selected = true;
@@ -165,11 +165,17 @@ class AxisSegmentsMoreOptions extends Component {
                     <MoreOptionsRow>
                       <MoreOptionsLabel>{t("component.options.orientation")}</MoreOptionsLabel>
                       <Select
-                        style={{ width: "80%" }}
+                        style={{ width: "77%", height: "40px", marginTop: "11px" }}
                         onChange={val => this.handleSelect("layout", val)}
                         options={orientationList}
                         value={layout}
-                      />
+                      >
+                        {orientationList.map(option => (
+                          <Select.Option data-cy={option.value} key={option.value}>
+                            {option.label}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </MoreOptionsRow>
                   </Col>
                   <Col md={6} style={{ paddingLeft: 20 }}>
@@ -270,12 +276,18 @@ class AxisSegmentsMoreOptions extends Component {
                     </MoreOptionsRow>
                     <MoreOptionsRow>
                       <MoreOptionsLabel>{t("component.graphing.layoutoptions.fontSize")}</MoreOptionsLabel>
-                      <FontSizeDropdown
-                        t={t}
-                        fontSizeList={fontSizeList}
-                        currentItem={this.getFontSizeItem()}
-                        onChangeFontSize={this.changeFontSize}
-                      />
+                      <Select
+                        data-cy="fontSize"
+                        style={{ width: "77%", height: "40px", marginTop: "11px" }}
+                        onChange={this.changeFontSize}
+                        value={this.getFontSizeItem().label}
+                      >
+                        {fontSizeList.map(option => (
+                          <Select.Option data-cy={option.id} key={option.value}>
+                            {t(option.label)}
+                          </Select.Option>
+                        ))}
+                      </Select>
                     </MoreOptionsRow>
                   </Col>
                 </Row>
@@ -347,12 +359,17 @@ class AxisSegmentsMoreOptions extends Component {
               <MoreOptionsColumn>
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.ticksoptions.renderingbase")}</MoreOptionsLabel>
-                  <RenderingBaseDropdown
-                    t={t}
-                    renderingBaseList={renderingBaseList}
-                    currentItem={currentRenderingBaseItem}
-                    onChangeRenderingBase={this.changeRenderingBase}
-                  />
+                  <Select
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
+                    onChange={this.changeRenderingBase}
+                    value={currentRenderingBaseItem.value}
+                  >
+                    {renderingBaseList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
             </MoreOptionsColumnContainer>

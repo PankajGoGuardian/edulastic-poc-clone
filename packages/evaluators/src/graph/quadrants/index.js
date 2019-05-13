@@ -1,7 +1,7 @@
-import { ShapeTypes } from "./constants/shapeTypes";
+import { IgnoreLabels, IgnoreRepeatedShapes, ShapeTypes } from "./constants";
 import CompareShapes from "./compareShapes";
 
-const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
+const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) => {
   const result = {
     commonResult: false,
     details: []
@@ -10,7 +10,7 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
   const trueAnswerValue = answer.value;
   const trueShapes = trueAnswerValue.filter(item => !item.subElement);
 
-  const compareShapes = new CompareShapes(trueAnswerValue, userResponse);
+  const compareShapes = new CompareShapes(trueAnswerValue, userResponse, ignoreLabels !== IgnoreLabels.NO);
 
   userResponse
     .filter(elem => !elem.subElement)
@@ -49,13 +49,13 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
   }
 
   // compare by slope
-  if (ignoreRepeatedShapes && ignoreRepeatedShapes === "yes") {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === IgnoreRepeatedShapes.COMPARE_BY_SLOPE) {
     result.commonResult = true;
     return result;
   }
 
   // compare by points
-  if (ignoreRepeatedShapes && ignoreRepeatedShapes === "strict") {
+  if (ignoreRepeatedShapes && ignoreRepeatedShapes === IgnoreRepeatedShapes.COMPARE_BY_POINTS) {
     result.commonResult = true;
 
     for (let i = 0; i < relatedIds.length; i++) {
@@ -132,7 +132,7 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes) => {
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, ignore_repeated_shapes } = validation;
+  const { valid_response, alt_responses, ignore_repeated_shapes, ignore_labels } = validation;
 
   let score = 0;
   let maxScore = 1;
@@ -147,7 +147,7 @@ const evaluator = ({ userResponse, validation }) => {
   let result = {};
 
   answers.forEach((answer, index) => {
-    result = checkAnswer(answer, userResponse, ignore_repeated_shapes);
+    result = checkAnswer(answer, userResponse, ignore_repeated_shapes, ignore_labels);
     if (result.commonResult) {
       score = Math.max(answer.score, score);
     }

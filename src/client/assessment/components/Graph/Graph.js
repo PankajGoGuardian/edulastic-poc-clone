@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { Paper, Select, WithResources } from "@edulastic/common";
+import { Paper } from "@edulastic/common";
+import { Select } from "antd";
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
@@ -43,8 +44,9 @@ const getIgnoreRepeatedShapesOptions = () => [
   { value: "strict", label: "Compare by points" }
 ];
 
+const getIgnoreLabelsOptions = () => [{ value: "no", label: "No" }, { value: "yes", label: "Yes" }];
+
 const getFontSizeList = () => [
-  { value: "", label: "" },
   { value: "small", label: "Small" },
   { value: "normal", label: "Normal" },
   { value: "large", label: "Large" },
@@ -53,7 +55,6 @@ const getFontSizeList = () => [
 ];
 
 const getStemNumerationList = () => [
-  { value: "", label: "" },
   { value: "numerical", label: "Numerical" },
   { value: "uppercase_alphabet", label: "Uppercase alphabet" },
   { value: "lowercase_alphabet", label: "Lowercase alphabet" }
@@ -242,6 +243,13 @@ class Graph extends Component {
     setQuestionData({ ...newItem });
   };
 
+  handleSelectIgnoreLabels = value => {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+    newItem.validation.ignore_labels = value;
+    setQuestionData({ ...newItem });
+  };
+
   render() {
     const {
       view,
@@ -291,17 +299,41 @@ class Graph extends Component {
                   {(graphType === "quadrants" || graphType === "firstQuadrant") && (
                     <React.Fragment>
                       <Select
+                        data-cy="ignoreRepeatedShapes"
                         style={{
                           width: "auto",
-                          marginTop: "11px",
-                          marginRight: "10px",
+                          margin: "11px 10px 0 0",
                           borderRadius: "10px"
                         }}
                         onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
                         options={getIgnoreRepeatedShapesOptions()}
                         value={item.validation.ignore_repeated_shapes}
-                      />{" "}
+                      >
+                        {getIgnoreRepeatedShapesOptions().map(option => (
+                          <Select.Option data-cy={option.value} key={option.value}>
+                            {option.label}
+                          </Select.Option>
+                        ))}
+                      </Select>{" "}
                       Ignore repeated shapes
+                      <Select
+                        data-cy="ignoreLabels"
+                        style={{
+                          width: "auto",
+                          margin: "11px 10px 0 25px",
+                          borderRadius: "10px"
+                        }}
+                        onChange={val => this.handleSelectIgnoreLabels(val)}
+                        options={getIgnoreLabelsOptions()}
+                        value={item.validation.ignore_labels || "yes"}
+                      >
+                        {getIgnoreLabelsOptions().map(option => (
+                          <Select.Option data-cy={option.value} key={option.value}>
+                            {option.label}
+                          </Select.Option>
+                        ))}
+                      </Select>{" "}
+                      Ignore labels
                     </React.Fragment>
                   )}
                 </React.Fragment>

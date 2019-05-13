@@ -2840,6 +2840,21 @@ canvas@^2.4.1:
     nan "^2.12.1"
     node-pre-gyp "^0.11.0"
 
+canvas@1.3.x:
+  version "1.3.16"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-1.3.16.tgz#7ebde8c54d098fb59b9b598f94c908f6e939147d"
+  integrity sha1-fr3oxU0Jj7Wbm1mPlMkI9uk5FH0=
+  dependencies:
+    nan "^2.3.2"
+
+canvas@^2.4.1:
+  version "2.4.1"
+  resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.4.1.tgz#d3b40efc7c281006ca0ff9cc854aaa8b82abec7a"
+  integrity sha512-SaFomFqDuuuSTScTHQ7nXc5ea71Ieb8ctvwXjR7vzLsBMfp3euTv2xsTY70zIoC5r4sSQZYXv6tiHiORJ4y1vg==
+  dependencies:
+    nan "^2.12.1"
+    node-pre-gyp "^0.11.0"
+
 capture-exit@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/capture-exit/-/capture-exit-1.2.0.tgz#1c5fcc489fd0ab00d4f1ac7ae1072e3173fbab6f"
@@ -9252,6 +9267,8 @@ node-pre-gyp@^0.12.0:
     semver "^5.3.0"
     tar "^4"
 
+
+
 node-releases@^1.1.17:
   version "1.1.17"
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.17.tgz#71ea4631f0a97d5cd4f65f7d04ecf9072eac711a"
@@ -12365,6 +12382,11 @@ require-precompiled@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/require-precompiled/-/require-precompiled-0.1.0.tgz#5a1b52eb70ebed43eb982e974c85ab59571e56fa"
   integrity sha1-WhtS63Dr7UPrmC6XTIWrWVceVvo=
+
+requirejs@2.3.x:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.6.tgz#e5093d9601c2829251258c0b9445d4d19fa9e7c9"
+  integrity sha512-ipEzlWQe6RK3jkzikgCupiTbTvm4S0/CAU5GlgptkN5SO6F3u0UD0K18wy6ErDqiCyP4J4YYe1HuAShvsxePLg==
 
 requirejs@2.3.x:
   version "2.3.6"

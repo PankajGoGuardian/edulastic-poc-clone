@@ -6,6 +6,11 @@ class GraphingStandardPage {
       "Compare by points": "strict"
     };
 
+    this.ignoreLabelsOption = {
+      No: "no",
+      Yes: "yes"
+    };
+
     this.stemNumerationOption = {
       Numerical: "numerical",
       "Uppercase alphabet": "uppercase_alphabet",
@@ -23,10 +28,42 @@ class GraphingStandardPage {
     this.controls = {
       Undo: "undo",
       Redo: "redo",
-      Reset: "reset"
+      Reset: "reset",
+      Delete: "delete"
+    };
+
+    this.segmentTools = {
+      Point: "segments_point",
+      Segment: "segment_both_point_included",
+      "Segment with both hollow points": "segment_both_points_hollow",
+      "Segment with left hollow point": "segment_left_point_hollow",
+      "Segment with right hollow point": "segment_right_point_hollow",
+      "Left ray": "ray_left_direction",
+      "Right ray": "ray_right_direction",
+      "Left ray with hollow point": "ray_left_direction_right_hollow",
+      "Right ray with hollow point": "ray_right_direction_left_hollow"
+    };
+
+    this.graphTools = {
+      Point: "point",
+      Line: "line",
+      Ray: "ray",
+      Segment: "segment",
+      Vector: "vector",
+      Circle: "circle",
+      Ellipse: "ellipse",
+      Parabola: "parabola",
+      Sine: "sine",
+      Tangent: "tangent",
+      Secant: "secant",
+      Exponent: "exponent",
+      Polynom: "polynom",
+      Logarithm: "logarithm",
+      Hyperbola: "hyperbola",
+      Polygon: "polygon",
+      Label: "label"
     };
   }
-
   // elements ---------------------------------------------------------------
 
   getCorrectAnswersContainer() {
@@ -84,7 +121,7 @@ class GraphingStandardPage {
   getGroupTools(groupName) {
     return this.getToolsContainer()
       .contains("div", groupName)
-      .find('[data-cy="selectStyle"]');
+      .find('[data-cy="graphToolSelect"]');
   }
 
   getGroupDeleteButton(groupName) {
@@ -96,17 +133,10 @@ class GraphingStandardPage {
   getToolDeleteButton(groupName, index) {
     return this.getToolsContainer()
       .contains("div", groupName)
-      .find('[data-cy="selectStyle"]')
+      .find('[data-cy="graphToolSelect"]')
       .eq(index)
       .parent()
       .next();
-  }
-
-  getToolSelect(groupName, index) {
-    return this.getToolsContainer()
-      .contains("div", groupName)
-      .find('select[data-cy="selectStyle"]')
-      .eq(index);
   }
 
   getLayoutWidth() {
@@ -354,7 +384,26 @@ class GraphingStandardPage {
   }
 
   selectTool(groupName, index, option) {
-    this.getToolSelect(groupName, index).select(option);
+    this.getToolsContainer()
+      .contains("div", groupName)
+      .find('[data-cy="graphToolSelect"]')
+      .eq(index)
+      .click();
+
+    const selectOp = `[data-cy="${this.graphTools[option]}"]`;
+
+    cy.get(selectOp)
+      .scrollIntoView()
+      .should("be.visible")
+      .click();
+
+    this.getToolsContainer()
+      .contains("div", groupName)
+      .find('[data-cy="graphToolSelect"]')
+      .eq(index)
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 
@@ -381,9 +430,36 @@ class GraphingStandardPage {
   }
 
   selectIgnoreRepeatedShapesOption(option) {
-    this.getCorrectAnswersContainer()
-      .find('[data-cy="selectStyle"]')
-      .select(option);
+    const selectOp = `[data-cy="${this.ignoreRepeatedShapesOption[option]}"]`;
+    cy.get('[data-cy="ignoreRepeatedShapes"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="ignoreRepeatedShapes"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
+    return this;
+  }
+
+  selectIgnoreLabelsOption(option) {
+    const selectOp = `[data-cy="${this.ignoreLabelsOption[option]}"]`;
+    cy.get('[data-cy="ignoreLabels"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="ignoreLabels"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 
@@ -398,18 +474,36 @@ class GraphingStandardPage {
   }
 
   selectStemNumerationOption(option) {
-    cy.contains("div", "Stem numeration (review only)")
-      .parent()
-      .find('[data-cy="selectStyle"]')
-      .select(option);
+    const selectOp = `[data-cy="${this.stemNumerationOption[option]}"]`;
+    cy.get('[data-cy="stemNumeration"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="stemNumeration"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 
   selectFontSizeOption(option) {
-    cy.contains("div", "Font Size")
-      .parent()
-      .find('[data-cy="selectStyle"]')
-      .select(option);
+    const selectOp = `[data-cy="${this.fontSizeOption[option]}"]`;
+    cy.get('[data-cy="fontSize"]')
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="fontSize"]')
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 
@@ -449,7 +543,7 @@ class GraphingStandardPage {
   }
 
   clickOnControlDeleteButton(index) {
-    cy.get('[data-cy="selectStyle"]')
+    cy.get('[data-cy="controlSelect"]')
       .eq(index)
       .parent()
       .next()
@@ -459,9 +553,21 @@ class GraphingStandardPage {
   }
 
   selectControlOption(index, option) {
-    cy.get('[data-cy="selectStyle"]')
+    const selectOp = `[data-cy="${this.controls[option]}"]`;
+    cy.get('[data-cy="controlSelect"]')
       .eq(index)
-      .select(option);
+      .should("be.visible")
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="controlSelect"]')
+      .eq(index)
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 

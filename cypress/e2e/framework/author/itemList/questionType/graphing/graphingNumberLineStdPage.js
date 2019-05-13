@@ -190,19 +190,28 @@ class GraphingNumberLineStandardPage extends GraphingStandardPage {
   }
 
   selectToolOnToolbar(index, option) {
-    this.getToolbarContainer()
-      .find('select[data-cy="selectStyle"]')
+    const selectOp = `[data-cy="${this.segmentTools[option]}"]`;
+    cy.get('[data-cy="segmentTool"]')
       .eq(index)
       .should("be.visible")
-      .select(option);
+      .click();
+
+    cy.get(selectOp)
+      .should("be.visible")
+      .click();
+
+    cy.get('[data-cy="segmentTool"]')
+      .eq(index)
+      .find(".ant-select-selection-selected-value")
+      .should("contain", option);
+
     return this;
   }
 
   clickOnDeleteToolOnToolbar(index) {
     this.getToolbarContainer()
-      .find('select[data-cy="selectStyle"]')
+      .find(".ant-select")
       .eq(index)
-      .parent()
       .next()
       .click();
     return this;

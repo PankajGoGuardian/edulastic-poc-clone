@@ -139,8 +139,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
         .should("have.length", 1);
     });
 
-    // Fixme: edit layout causes browser to hang and test execution stucks.
-    it.skip("Edit layout", () => {
+    it("Edit layout", () => {
       question
         .getLayoutWidth()
         .clear()

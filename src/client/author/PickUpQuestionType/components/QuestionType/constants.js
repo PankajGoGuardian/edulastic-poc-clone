@@ -1250,7 +1250,8 @@ export const getCards = onSelectQuestionType => {
           checkAttempts: 2,
           minScore: 1,
           checkAnswerButton: true,
-          alt_responses: []
+          alt_responses: [],
+          ignore_labels: "yes"
         },
         extra_options: {
           rubric_reference: "",
@@ -1406,7 +1407,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          ignore_labels: "yes"
         }
       },
       onSelectQuestionType

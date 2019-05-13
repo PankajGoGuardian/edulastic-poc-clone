@@ -3,7 +3,9 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { Select } from "antd";
 
+import { RENDERING_BASE, FRACTIONS_FORMAT } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
 import {
   MoreOptionsContainer,
@@ -15,15 +17,22 @@ import {
   MoreOptionsColumnContainer
 } from "../../common/styled_components";
 
-import FontSizeDropdown from "./FontSizeDropdown";
-import FractionsFormatDropdown from "./FractionsFormatDropdown";
-import RenderingBaseDropdown from "./RenderingBaseDropdown";
 import { QuestionSection, ScoreSettings } from "..";
 
 class AxisLabelsMoreOptions extends Component {
   state = {
-    currentFractionItem: {},
-    currentRenderingBaseItem: {}
+    currentFractionItem: {
+      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
+      value: "Not normalized and mixed fractions",
+      label: "Not normalized and mixed fractions",
+      selected: true
+    },
+    currentRenderingBaseItem: {
+      id: RENDERING_BASE.LINE_MINIMUM_VALUE,
+      value: "Line minimum value",
+      label: "Line minimum value",
+      selected: true
+    }
   };
 
   scoringTypes = [
@@ -100,12 +109,9 @@ class AxisLabelsMoreOptions extends Component {
   };
 
   changeFractionsFormat = e => {
-    const { setNumberline, graphData } = this.props;
+    const { setNumberline, graphData, fractionsFormatList } = this.props;
     const { numberlineAxis } = graphData;
-
-    const { fractionsFormatList } = this.props;
-    const { value } = e.target;
-    const findItem = fractionsFormatList.find(fractionItem => fractionItem.value.toLowerCase() === value.toLowerCase());
+    const findItem = fractionsFormatList.find(fractionItem => fractionItem.value.toLowerCase() === e.toLowerCase());
 
     if (findItem) {
       findItem.selected = true;
@@ -119,12 +125,9 @@ class AxisLabelsMoreOptions extends Component {
   };
 
   changeRenderingBase = e => {
-    const { setNumberline, graphData } = this.props;
+    const { setNumberline, graphData, renderingBaseList } = this.props;
     const { numberlineAxis } = graphData;
-
-    const { renderingBaseList } = this.props;
-    const { value } = e.target;
-    const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === value.toLowerCase());
+    const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === e.toLowerCase());
 
     if (findItem) {
       findItem.selected = true;
@@ -220,12 +223,18 @@ class AxisLabelsMoreOptions extends Component {
 
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.layoutoptions.fontSize")}</MoreOptionsLabel>
-                  <FontSizeDropdown
-                    t={t}
-                    fontSizeList={fontSizeList}
-                    currentItem={this.getFontSizeItem()}
-                    onChangeFontSize={this.changeFontSize}
-                  />
+                  <Select
+                    data-cy="fontSize"
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
+                    onChange={this.changeFontSize}
+                    value={this.getFontSizeItem().label}
+                  >
+                    {fontSizeList.map(option => (
+                      <Select.Option data-cy={option.id} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
 
@@ -310,13 +319,17 @@ class AxisLabelsMoreOptions extends Component {
                 </MoreOptionsRow>
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.ticksoptions.fractionsformat")}</MoreOptionsLabel>
-
-                  <FractionsFormatDropdown
-                    t={t}
-                    fractionsFormatList={fractionsFormatList}
-                    currentItem={currentFractionItem}
-                    onChangeFractionsFormat={this.changeFractionsFormat}
-                  />
+                  <Select
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
+                    onChange={this.changeFractionsFormat}
+                    value={currentFractionItem.label}
+                  >
+                    {fractionsFormatList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
 
@@ -334,13 +347,17 @@ class AxisLabelsMoreOptions extends Component {
 
                 <MoreOptionsRow>
                   <MoreOptionsLabel>{t("component.graphing.ticksoptions.renderingbase")}</MoreOptionsLabel>
-
-                  <RenderingBaseDropdown
-                    t={t}
-                    renderingBaseList={renderingBaseList}
-                    currentItem={currentRenderingBaseItem}
-                    onChangeRenderingBase={this.changeRenderingBase}
-                  />
+                  <Select
+                    style={{ width: "77%", height: "40px", marginTop: "11px" }}
+                    onChange={this.changeRenderingBase}
+                    value={currentRenderingBaseItem.label}
+                  >
+                    {renderingBaseList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
                 </MoreOptionsRow>
               </MoreOptionsColumn>
             </MoreOptionsColumnContainer>

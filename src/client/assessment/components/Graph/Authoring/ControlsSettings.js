@@ -2,7 +2,8 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { Button, Select } from "@edulastic/common";
+import { Button } from "@edulastic/common";
+import { Select } from "antd";
 import {
   MoreOptionsContainer,
   MoreOptionsRow,
@@ -176,7 +177,19 @@ const Tool = props => {
   return (
     <React.Fragment>
       <SelectWrapper>
-        <Select style={{ width: selectWidth || "70%" }} onChange={onSelectChange} options={options} value={value} />
+        <Select
+          data-cy="controlSelect"
+          style={{ width: selectWidth || "70%", height: "40px" }}
+          onChange={onSelectChange}
+          options={options}
+          value={value}
+        >
+          {options.map(option => (
+            <Select.Option data-cy={option.value} key={option.value}>
+              {option.label}
+            </Select.Option>
+          ))}
+        </Select>
 
         {/* {isNeedToShowDeleteButton() && ( */}
         <DeleteButton

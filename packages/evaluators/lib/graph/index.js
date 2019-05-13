@@ -7,7 +7,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _graphTypes = require("./constants/graphTypes");
+var _constants = require("./constants");
 
 var _quadrants = _interopRequireDefault(require("./quadrants"));
 
@@ -22,20 +22,20 @@ var evaluator = function evaluator(_ref) {
   var graphType = validation.graphType;
 
   switch (graphType) {
-    case _graphTypes.GraphTypes.AXIS_LABELS:
+    case _constants.GraphTypes.AXIS_LABELS:
       return (0, _axisLabels["default"])({
         userResponse: userResponse,
         validation: validation
       });
 
-    case _graphTypes.GraphTypes.AXIS_SEGMENTS:
+    case _constants.GraphTypes.AXIS_SEGMENTS:
       return (0, _axisSegments["default"])({
         userResponse: userResponse,
         validation: validation
       });
 
-    case _graphTypes.GraphTypes.QUADRANTS:
-    case _graphTypes.GraphTypes.FIRST_QUADRANT:
+    case _constants.GraphTypes.QUADRANTS:
+    case _constants.GraphTypes.FIRST_QUADRANT:
     default:
       return (0, _quadrants["default"])({
         userResponse: userResponse,

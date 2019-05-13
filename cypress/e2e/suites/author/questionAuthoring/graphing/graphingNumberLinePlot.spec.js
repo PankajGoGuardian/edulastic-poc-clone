@@ -99,8 +99,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Author "Number line wi
       question.getTitleOnBoard().should("be.contain", queData.title);
     });
 
-    // Fixme: edit layout causes browser to hang and test execution stucks.
-    it.skip("Edit layout", () => {
+    it("Edit layout", () => {
       // todo: changing the width causes the page to hang
       // question
       //   .getLayoutWidth()

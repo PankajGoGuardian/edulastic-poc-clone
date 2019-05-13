@@ -120,7 +120,7 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
     newCoords = [];
     newCoords[0] = getClosestTick(segmentPoints[0], ticks);
     newCoords[1] = getClosestTick(segmentPoints[1], ticks);
-
+    console.log(newCoords);
     if (newCoords) {
       segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], 0]);
       segment.point2.setPosition(JXG.COORDS_BY_USER, [newCoords[1], 0]);

@@ -53,16 +53,19 @@ const AxisLabelsOptions = ({
     {
       id: FRACTIONS_FORMAT.NOT_NORMALIZED,
       value: "Not normalized and mixed fractions",
+      label: "Not normalized and mixed fractions",
       selected: true
     },
     {
       id: FRACTIONS_FORMAT.NORMALIZED,
       value: "Normalized and mixed fractions",
+      label: "Normalized and mixed fractions",
       selected: false
     },
     {
       id: FRACTIONS_FORMAT.IMPROPER,
       value: "Improper fractions",
+      label: "Improper fractions",
       selected: false
     }
   ];
@@ -71,11 +74,13 @@ const AxisLabelsOptions = ({
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
       value: "Line minimum value",
+      label: "Line minimum value",
       selected: true
     },
     {
       id: RENDERING_BASE.ZERO_BASED,
       value: "Zero",
+      label: "Zero",
       selected: false
     }
   ];

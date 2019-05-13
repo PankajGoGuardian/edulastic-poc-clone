@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _fractionDigits = require("./constants/fractionDigits");
+var _constants = require("./constants");
 
 var EllipseFunction =
   /*#__PURE__*/
@@ -38,7 +38,7 @@ var EllipseFunction =
             (this.focusPoint2X - this.linePointX) * (this.focusPoint2X - this.linePointX) +
               (this.focusPoint2Y - this.linePointY) * (this.focusPoint2Y - this.linePointY)
           );
-          return (r1 + r2).toFixed(_fractionDigits.FractionDigits);
+          return (r1 + r2).toFixed(_constants.FractionDigits);
         }
       }
     ]);

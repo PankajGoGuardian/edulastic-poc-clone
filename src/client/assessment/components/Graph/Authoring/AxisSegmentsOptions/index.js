@@ -60,11 +60,13 @@ const AxisSegmentsOptions = ({
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
       value: "Line minimum value",
+      label: "Line minimum value",
       selected: true
     },
     {
       id: RENDERING_BASE.ZERO_BASED,
       value: "Zero",
+      label: "Zero",
       selected: false
     }
   ];

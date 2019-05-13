@@ -1,4 +1,4 @@
-import { FractionDigits } from "./constants/fractionDigits";
+import { FractionDigits } from "./constants";
 
 class ExponentFunction {
   constructor(points) {

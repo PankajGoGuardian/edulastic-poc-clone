@@ -11,7 +11,7 @@ var _classCallCheck2 = _interopRequireDefault(require("@babel/runtime/helpers/cl
 
 var _createClass2 = _interopRequireDefault(require("@babel/runtime/helpers/createClass"));
 
-var _fractionDigits = require("./constants/fractionDigits");
+var _constants = require("./constants");
 
 var LineFunction =
   /*#__PURE__*/
@@ -33,7 +33,7 @@ var LineFunction =
           }
 
           var koefA = (this.y2 - this.y1) / (this.x2 - this.x1);
-          return koefA.toFixed(_fractionDigits.FractionDigits);
+          return koefA.toFixed(_constants.FractionDigits);
         }
       },
       {
@@ -44,7 +44,7 @@ var LineFunction =
           }
 
           var koefB = (this.y2 * this.x1 - this.y1 * this.x2) / (this.x1 - this.x2);
-          return koefB.toFixed(_fractionDigits.FractionDigits);
+          return koefB.toFixed(_constants.FractionDigits);
         }
       }
     ]);

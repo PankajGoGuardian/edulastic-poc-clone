@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Select } from "antd";
 import { Table } from "../Common/StyledComponents";
-import { LIST_CLEVER_SUBJECTS, LIST_EDULASTIC_SUBJECTS } from "../Data";
+import { LIST_CLEVER_SUBJECTS } from "../Data";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
 import CancelApplyActions from "./CancelApplyActions";
@@ -64,7 +64,7 @@ export default function SubjectStandard({
         value={edulasticSubject}
         onChange={value => updateEdulasticSubjectAction({ subject: item.subject, value })}
       >
-        {LIST_EDULASTIC_SUBJECTS.map(subject => (
+        {Object.keys(curriculum).map(subject => (
           <Option title={subject} key={subject} value={subject}>
             {subject}
           </Option>

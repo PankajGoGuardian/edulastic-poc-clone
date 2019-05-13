@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Radio, Form, Input, Icon } from "antd";
 import SearchDistrictTable from "../SearchDistrictTable";
 import MergeSyncTable from "../MergeSyncTable";
-import { MainDiv, FirstDiv, Button, H2, OuterDiv } from "../Common/StyledComponents";
+import { FirstDiv, Button, H2, OuterDiv } from "../Common/StyledComponents";
 import { radioButtondata } from "../Data";
 import {
   fetchTableData,

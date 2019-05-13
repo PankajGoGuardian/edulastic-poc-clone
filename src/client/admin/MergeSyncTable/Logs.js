@@ -35,7 +35,7 @@ export default function Logs({ logs, fetchLogsDataAction, districtId }) {
           title="Created Date"
           dataIndex="createdAt"
           key="createdAt"
-          render={timeStamp => new Date(timeStamp).toLocaleDateString()}
+          render={timeStamp => new Date(timeStamp).toLocaleString()}
         />
       </Table>
     </>

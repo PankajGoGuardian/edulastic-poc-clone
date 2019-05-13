@@ -9,18 +9,21 @@ const { Column } = Table;
 
 export const DISABLED_DISTRICT_SYNC_STATUS = [9, 10];
 
-const EditableAction = ({ onEditClick, districtName, onDeleteClick, disabled }) => (
-  <>
-    <Button aria-label="Edit" noStyle onClick={onEditClick} disabled={disabled}>
-      <IconPencilEdit />
-    </Button>
-    <Popconfirm title={`Are you sure you want to delete ${districtName}?`} okText="Delete" onConfirm={onDeleteClick}>
-      <Button aria-label={`Delete ${districtName}`} disabled={disabled} noStyle>
-        <IconTrash />
+const EditableAction = ({ onEditClick, districtName, onDeleteClick, disabled }) => {
+  const editTitle = `Edit ${disabled ? "disabled for" : ""} ${districtName}'s clever ID`;
+  return (
+    <>
+      <Button aria-label="Edit" noStyle onClick={onEditClick} disabled={disabled} title={editTitle}>
+        <IconPencilEdit />
       </Button>
-    </Popconfirm>
-  </>
-);
+      <Popconfirm title={`Are you sure you want to delete ${districtName}?`} okText="Delete" onConfirm={onDeleteClick}>
+        <Button aria-label={`Delete ${districtName}`} disabled={disabled} noStyle>
+          <IconTrash />
+        </Button>
+      </Popconfirm>
+    </>
+  );
+};
 
 const NonEditableAction = ({ onSaveConfirm, onCancelSave }) => (
   <>

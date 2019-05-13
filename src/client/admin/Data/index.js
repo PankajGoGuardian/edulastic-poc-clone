@@ -63,8 +63,6 @@ export const LIST_CLEVER_SUBJECTS = [
   "other"
 ];
 
-export const LIST_EDULASTIC_SUBJECTS = ["Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];
-
 export const mapCountAsType = {
   schoolCount: {
     name: "Schools",

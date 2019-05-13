@@ -206,8 +206,11 @@ function* fetchSchoolsSync({ payload }) {
     } else {
       item = yield call(completeDistrictSync, payload);
     }
-    const messageKey = item.success ? "success" : "error";
-    message[messageKey](item.message);
+    const {
+      result: { success, message: infoMessage }
+    } = item;
+    const messageKey = success ? "success" : "error";
+    message[messageKey](infoMessage);
   } catch (err) {
     console.error(err);
   }

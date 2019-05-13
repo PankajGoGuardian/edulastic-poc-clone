@@ -7,6 +7,8 @@ const LogoutButton = styled(Button)`
   position: fixed;
   right: 20px;
   top: 20px;
+  border: 1px solid #1ab394;
+  z-index: 100;
   span {
     margin-left: 5px;
   }

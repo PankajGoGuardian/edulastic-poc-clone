@@ -59,6 +59,7 @@ const getQuestionIds = item => {
 function* saveUserResponse({ payload }) {
   try {
     const ts = payload.timeSpent || 0;
+    const { autoSave } = payload;
     const itemIndex = payload.itemId;
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
@@ -94,7 +95,7 @@ function* saveUserResponse({ payload }) {
     };
     if (userWork) activity.userWork = userWork;
 
-    yield call(testItemActivityApi.create, activity);
+    yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {
     console.log(err);
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -17,6 +17,26 @@ import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/an
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
+import useInterval from "@use-it/interval";
+
+const shouldAutoSave = itemRows => {
+  if (!itemRows) {
+    return false;
+  }
+  const autoSavableTypes = {
+    essayRichText: 1,
+    essayPlainText: 1,
+    formulaEssay: 1
+  };
+  for (let row of itemRows) {
+    for (let widget of row.widgets || []) {
+      if (widget.widgetType === "question" && autoSavableTypes[widget.type]) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
 
 const AssessmentContainer = ({
   view,
@@ -27,7 +47,7 @@ const AssessmentContainer = ({
   history,
   changePreview,
   startAssessment,
-  saveUserResponse: saveUser,
+  saveUserResponse: saveUserAnswer,
   evaluateAnswer: evaluate,
   match,
   url,
@@ -66,7 +86,7 @@ const AssessmentContainer = ({
 
     const timeSpent = Date.now() - lastTime.current;
     history.push(`${url}/qid/${index}`);
-    saveUser(currentItem, timeSpent);
+    saveUserAnswer(currentItem, timeSpent);
     changePreview("clear");
   };
 
@@ -76,19 +96,19 @@ const AssessmentContainer = ({
     }
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      saveUser(currentItem, timeSpent);
+      saveUserAnswer(currentItem, timeSpent);
       history.push("/student/test-summary");
     }
   };
 
   const saveProgress = () => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUser(currentItem, timeSpent);
+    saveUserAnswer(currentItem, timeSpent);
   };
 
   const gotoSummary = () => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUser(currentItem, timeSpent);
+    saveUserAnswer(currentItem, timeSpent);
     history.push("/student/test-summary");
   };
 
@@ -97,6 +117,14 @@ const AssessmentContainer = ({
   };
 
   const itemRows = items[currentItem] && items[currentItem].rows;
+
+  const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows]);
+
+  useInterval(() => {
+    if (autoSave) {
+      saveUserAnswer(currentItem, Date.now() - lastTime.current, true);
+    }
+  }, 1000 * 30);
 
   const props = {
     items,

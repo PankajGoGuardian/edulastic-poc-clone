@@ -1,14 +1,18 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Layout, Menu, Icon } from "antd";
 import { Route, Switch, Redirect } from "react-router-dom";
 import Sider from "./Common/Sider";
 import { LogoCompact, Logo, Button, MainDiv } from "./Common/StyledComponents";
 import CleverSearch from "./Containers/CleverSearch";
 import ProxyUser from "./Components/ProxyUser";
+import { logoutAction } from "../author/src/actions/auth";
+import Logout from "./Common/Logout";
 
-export default function Admin({ match, history }) {
+function Admin({ match, history, logoutAction }) {
   return (
     <Layout style={{ minHeight: "100vh" }}>
+      <Logout logoutAction={logoutAction} />
       <Sider role="navigation">
         {([state, toggleState]) => {
           return (
@@ -51,6 +55,15 @@ export default function Admin({ match, history }) {
     </Layout>
   );
 }
+
+const withConnect = connect(
+  null,
+  {
+    logoutAction
+  }
+)(Admin);
+
+export default withConnect;
 
 export const siderMenuData = [
   {

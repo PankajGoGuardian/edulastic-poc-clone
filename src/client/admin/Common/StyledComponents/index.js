@@ -26,6 +26,7 @@ export const Button = styled.button`
     border:0;
     border-radius:0
   `}
+  opacity: ${props => (props.disabled ? "0.2" : "1")}
 `;
 
 export const FlexDiv = styled.div`

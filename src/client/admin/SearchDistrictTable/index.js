@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Popconfirm, Spin } from "antd";
+import { Input, Popconfirm, Spin, message } from "antd";
 import { Table, Button, FlexColumn } from "../Common/StyledComponents";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import ErrorBoundary from "../Common/ErrorBoundary";
@@ -7,13 +7,15 @@ import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType } from "../Data";
 
 const { Column } = Table;
 
-const EditableAction = ({ onEditClick, districtName, onDeleteClick }) => (
+export const DISABLED_DISTRICT_SYNC_STATUS = [9, 10];
+
+const EditableAction = ({ onEditClick, districtName, onDeleteClick, disabled }) => (
   <>
-    <Button aria-label="Edit" noStyle onClick={onEditClick}>
+    <Button aria-label="Edit" noStyle onClick={onEditClick} disabled={disabled}>
       <IconPencilEdit />
     </Button>
     <Popconfirm title={`Are you sure you want to delete ${districtName}?`} okText="Delete" onConfirm={onDeleteClick}>
-      <Button aria-label={`Delete ${districtName}`} noStyle>
+      <Button aria-label={`Delete ${districtName}`} disabled={disabled} noStyle>
         <IconTrash />
       </Button>
     </Popconfirm>
@@ -39,7 +41,7 @@ function UserCount({ users, getUsersDataAction, districtId, index }) {
   ) : users.data ? (
     <FlexColumn>
       {Object.keys(users.data).map(key => (
-        <span>
+        <span key={key}>
           {mapCountAsType[key].name} : {users.data[key]}
         </span>
       ))}
@@ -51,18 +53,21 @@ function UserCount({ users, getUsersDataAction, districtId, index }) {
   );
 }
 
-const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter, onCancel }, ref) => {
+const EditableCell = ({ edit, cleverId, onInputPressEnter, onCancel, editValue, setEditValue }) => {
+  // here ref is used for the editable text input, since we keep it as an uncontrolled component
+  const textInput = React.createRef();
   useEffect(() => {
-    if (ref.current) {
+    if (textInput.current) {
       // as soon as edit button is clicked, the input element is focused for better accessibility
-      ref.current.input.focus();
+      textInput.current.input.focus();
     }
   }, [edit]);
   return edit ? (
     <Input
-      defaultValue={cleverId}
+      value={editValue}
       onPressEnter={onInputPressEnter}
-      ref={ref}
+      ref={textInput}
+      onChange={evt => setEditValue(evt.target.value)}
       onKeyUp={evt => {
         if (evt.key === "Escape") onCancel();
       }}
@@ -70,19 +75,23 @@ const EditableCell = React.forwardRef(({ edit, cleverId, onInputPressEnter, onCa
   ) : (
     cleverId
   );
-});
+};
 
 export default function SearchDistrictTable({ data, updateClever, deleteDistrictId, getUsersDataAction }) {
   const [editCell, setEditCell] = useState();
-  // here ref is used for the editable text input, since we keep it as an uncontrolled component
-  const textInput = React.createRef();
+  const [editValue, setEditValue] = useState("");
+  const idRegex = RegExp(/^[0-9a-fA-F]{24}$/);
 
   function renderActions(text, record, index) {
     return editCell !== record._id ? (
       <EditableAction
-        onEditClick={() => setEditCell(record._id)}
+        onEditClick={() => {
+          setEditCell(record._id);
+          setEditValue(record._source.cleverId);
+        }}
         districtName={record._source.name}
         onDeleteClick={() => deleteDistrictId(record._id)}
+        disabled={DISABLED_DISTRICT_SYNC_STATUS.indexOf(record._source.cleverSyncStatus) !== -1}
       />
     ) : (
       <NonEditableAction onSaveConfirm={() => updateCleverId(record._id)} onCancelSave={setEditCell} />
@@ -92,11 +101,15 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
   function updateCleverId(districtId) {
     // here a ref is used to access value of the input field
     // here editCell is set so that all fields become uneditable
-    setEditCell();
-    updateClever({
-      districtId,
-      cleverId: textInput.current.state.value
-    });
+    if (idRegex.test(editValue)) {
+      setEditCell();
+      updateClever({
+        districtId,
+        cleverId: editValue
+      });
+    } else {
+      message.error("Please enter valid Clever ID");
+    }
   }
 
   function renderCleverCell(text, record, index) {
@@ -107,8 +120,9 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
         <EditableCell
           edit={edit}
           cleverId={cleverId}
+          editValue={editValue}
+          setEditValue={setEditValue}
           onInputPressEnter={() => updateCleverId(record._id)}
-          ref={textInput}
           onCancel={setEditCell}
         />
       </ErrorBoundary>

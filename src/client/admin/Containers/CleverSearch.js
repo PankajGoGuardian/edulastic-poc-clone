@@ -78,7 +78,7 @@ function CleverSearch(props) {
   const { fetchTableData, tableData, updateClever, deleteDistrictId, getUsersDataAction } = props;
 
   return (
-    <MainDiv>
+    <div>
       <OuterDiv>
         <H2>Search and Update District</H2>
         <FirstDiv>
@@ -92,7 +92,7 @@ function CleverSearch(props) {
         />
       </OuterDiv>
       <MergeSyncTable />
-    </MainDiv>
+    </div>
   );
 }
 

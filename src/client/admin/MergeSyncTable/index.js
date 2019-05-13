@@ -117,7 +117,8 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
           {getFieldDecorator("cleverId", {
             rules: [
               {
-                message: "Please enter valid Clever ID"
+                message: "Please enter valid Clever ID",
+                pattern: /^[0-9a-fA-F]{24}$/
               }
             ],
             initialValue: ""

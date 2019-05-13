@@ -176,7 +176,11 @@ const {
 function* fetchExistingData({ payload }) {
   try {
     const item = yield call(fetchExistingDataApi, payload);
-    yield put(fetchExistingDataSuccess(item));
+    if (item.message) {
+      message.error(item.message);
+    } else {
+      yield put(fetchExistingDataSuccess(item));
+    }
   } catch (err) {
     console.error(err);
     message.error(err.message);
@@ -195,13 +199,15 @@ function* fetchApplyDeltaSync({ payload }) {
 }
 
 function* fetchSchoolsSync({ payload }) {
+  var item;
   try {
     if (payload.selectedSyncOption === "syncSelectedSchools") {
-      const item = yield call(selectedSchoolSyncApi, payload);
+      item = yield call(selectedSchoolSyncApi, payload);
     } else {
-      const item = yield call(completeDistrictSync, payload);
+      item = yield call(completeDistrictSync, payload);
     }
-    message.success("Sync in progress");
+    const messageKey = item.success ? "success" : "error";
+    message[messageKey](item.message);
   } catch (err) {
     console.error(err);
   }

@@ -18,8 +18,8 @@ import {
   StyledTable,
   StyledTableButton,
   StyledFilterInput,
-  StyledAddFilterButton,
-  StyledSchoolSearch,
+  StyledFilterButton,
+  StyledNameSearch,
   StyledActionDropDown,
   StyledActiveCheckbox
 } from "./styled";
@@ -55,13 +55,7 @@ class CoursesTable extends React.Component {
       addCourseModalVisible: false,
       editCourseModalVisible: false,
       uploadCourseModalVisible: false,
-      editCourseKey: -1,
-      filters: {
-        column: "",
-        value: "",
-        text: ""
-      },
-      filterAdded: false
+      editCourseKey: -1
     };
     this.columns = [
       {
@@ -98,7 +92,7 @@ class CoursesTable extends React.Component {
 
   componentDidMount() {
     const { userOrgId, loadCourseListData } = this.props;
-    loadCourseListData({ districtId: userOrgId });
+    loadCourseListData({ districtId: userOrgId, page: 1, limit: 100 });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -142,45 +136,56 @@ class CoursesTable extends React.Component {
     });
   };
 
-  changeFilterColumn = value => {
-    const filtersData = this.state.filters;
-    filtersData.column = value;
-    this.setState({ filters: filtersData });
+  changeFilterColumn = (value, key) => {
+    const { filtersData } = this.props;
+    filtersData[key].filtersColumn = value;
+    this.updateFilter(filtersData);
   };
 
-  changeFilterValue = value => {
-    const filtersData = this.state.filters;
-    filtersData.value = value;
-    this.setState({ filters: filtersData });
+  changeFilterValue = (value, key) => {
+    const { filtersData } = this.props;
+    filtersData[key].filtersValue = value;
+    this.updateFilter(filtersData);
   };
 
-  changeFilterText = e => {
-    const filtersData = this.state.filters;
-    filtersData.text = e.target.value;
-    this.setState({ filters: filtersData });
+  changeFilterText = (e, key) => {
+    const { filtersData } = this.props;
+    filtersData[key].filterStr = e.target.value;
+    this.updateFilter(filtersData);
   };
 
-  addFilter = e => {
-    const { filters } = this.state;
-    const { setFilters } = this.props;
-    this.setState({ filterAdded: true });
-    setFilters(filters);
-  };
-
-  removeFilter = e => {
-    const filtersData = {
-      column: "",
-      value: "",
-      text: ""
-    };
-
-    this.setState({
-      filters: filtersData,
+  addFilter = (e, key) => {
+    const { filtersData } = this.props;
+    if (filtersData.length >= 3) return;
+    filtersData[key].filterAdded = true;
+    filtersData.push({
+      filtersColumn: "",
+      filtersValue: "",
+      filterStr: "",
       filterAdded: false
     });
-    const { setFilters } = this.props;
-    setFilters(filtersData);
+    this.updateFilter(filtersData);
   };
+
+  removeFilter = (e, key) => {
+    const { filtersData } = this.props;
+    let newFiltersData = [];
+    if (filtersData.length === 1) {
+      newFiltersData.push({
+        filterAdded: false,
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: ""
+      });
+    } else {
+      newFiltersData = filtersData.filter((item, index) => index != key);
+    }
+    this.updateFilter(newFiltersData);
+  };
+
+  updateFilter(newFilterData) {
+    this.props.setFiltersData(newFilterData);
+  }
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
@@ -244,7 +249,7 @@ class CoursesTable extends React.Component {
 
   searchByName = e => {
     const { setSearchName } = this.props;
-    setSearchName(e);
+    setSearchName(e.target.value);
   };
 
   changeShowActiveCourse = e => {
@@ -269,10 +274,10 @@ class CoursesTable extends React.Component {
       addCourseModalVisible,
       editCourseModalVisible,
       uploadCourseModalVisible,
-      editCourseKey,
-      filters,
-      filterAdded
+      editCourseKey
     } = this.state;
+
+    const { filtersData } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -291,8 +296,55 @@ class CoursesTable extends React.Component {
       </Menu>
     );
 
-    const isFilterTextDisable = filters.column === "" || filters.value === "";
-    const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
+    const SearchRows = [];
+    for (let i = 0; i < filtersData.length; i++) {
+      const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
+      const isAddFilterDisable =
+        filtersData[i].filtersColumn === "" ||
+        filtersData[i].filtersValue === "" ||
+        filtersData[i].filterStr === "" ||
+        i < filtersData.length - 1 ||
+        filtersData.length == 3;
+
+      SearchRows.push(
+        <StyledControlDiv>
+          <StyledFilterSelect
+            placeholder="Select a column"
+            onChange={e => this.changeFilterColumn(e, i)}
+            defaultValue={filtersData[i].filtersColumn}
+            value={filtersData[i].filtersColumn}
+          >
+            <Option value="">Select a column</Option>
+            <Option value="number">Course Number</Option>
+          </StyledFilterSelect>
+
+          <StyledFilterSelect
+            placeholder="Select a value"
+            onChange={e => this.changeFilterValue(e, i)}
+            value={filtersData[i].filtersValue}
+          >
+            <Option value="">Select a value</Option>
+            <Option value="eq">Equals</Option>
+            <Option value="cont">Contains</Option>
+          </StyledFilterSelect>
+
+          <StyledFilterInput
+            placeholder="Enter text"
+            onChange={e => this.changeFilterText(e, i)}
+            disabled={isFilterTextDisable}
+            value={filtersData[i].filterStr}
+          />
+          {i < 2 && (
+            <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
+              + Add Filter
+            </StyledFilterButton>
+          )}
+          <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+            - Remove Filter
+          </StyledFilterButton>
+        </StyledControlDiv>
+      );
+    }
 
     return (
       <StyledTableContainer>
@@ -301,7 +353,7 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
+          <StyledNameSearch placeholder="Search by name" onChange={this.searchByName} />
           <StyledActiveCheckbox defaultChecked={showActiveCourse} onChange={this.changeShowActiveCourse}>
             Show active courses only
           </StyledActiveCheckbox>
@@ -311,33 +363,13 @@ class CoursesTable extends React.Component {
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        <StyledControlDiv>
-          <StyledFilterSelect placeholder="Select a column" onChange={this.changeFilterColumn} value={filters.column}>
-            <Option value="">Select a column</Option>
-            <Option value="name">Course Name</Option>
-            <Option value="code">Course Number</Option>
-          </StyledFilterSelect>
-          <StyledFilterSelect placeholder="Select a value" onChange={this.changeFilterValue} value={filters.value}>
-            <Option value="">Select a value</Option>
-            <Option value="equals">Equals</Option>
-            <Option value="contains">Contains</Option>
-          </StyledFilterSelect>
-          <StyledFilterInput
-            placeholder="Enter text"
-            onChange={this.changeFilterText}
-            value={filters.text}
-            disabled={isFilterTextDisable}
-          />
-          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
-            + Add Filter
-          </StyledAddFilterButton>
-          {filterAdded && (
-            <StyledAddFilterButton type="primary" onClick={this.removeFilter}>
-              - Remove Filter
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
+        {SearchRows}
+        <StyledTable
+          rowSelection={rowSelection}
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{ pageSize: 20 }}
+        />
         {editCourseModalVisible && editCourseKey >= 0 && (
           <EditCourseModal
             courseData={selectedCourse[0]}
@@ -368,7 +400,8 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
       showActiveCourse: get(state, ["coursesReducer", "showActiveCourse"], false),
-      selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], [])
+      selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
+      filtersData: get(state, ["coursesReducer", "filtersData"], [])
     }),
     {
       createCourse: createCourseAction,
@@ -376,7 +409,7 @@ const enhance = compose(
       deactivateCourse: deactivateCourseAction,
       loadCourseListData: receiveCourseListAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
+      setFiltersData: setFiltersAction,
       setShowActiveCourse: setShowActiveCourseAction,
       setSelectedRowKeys: setSelectedRowKeysAction
     }
@@ -393,7 +426,7 @@ CoursesTable.propTypes = {
   updateCourse: PropTypes.func.isRequired,
   deactivateCourse: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
+  setFiltersData: PropTypes.func.isRequired,
   uploadCSVCourse: PropTypes.func.isRequired,
   setShowActiveCourse: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,

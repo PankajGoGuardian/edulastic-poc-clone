@@ -22,7 +22,7 @@ const UPLOAD_COURSE_CSV_SUCCESS = "[course] upload CSV success";
 const UPLOAD_COURSE_CSV_ERROR = "[course] upload CSV error";
 
 const SET_COURSE_SEARCHNAME = "[course] set search name";
-const SET_COURSE_SETFILTERS = "[course] set filters";
+const SET_COURSE_FILTERS = "[course] set filters";
 const SET_COURSE_SHOWACTIVE = "[course] set show active";
 const SET_COURSE_SELECT_ROW_KEY = "[course] set selected row keys";
 
@@ -55,7 +55,7 @@ export const uploadCSVSuccessAction = createAction(UPLOAD_COURSE_CSV_SUCCESS);
 export const uploadCSVErrorAction = createAction(UPLOAD_COURSE_CSV_ERROR);
 
 export const setSearchNameAction = createAction(SET_COURSE_SEARCHNAME);
-export const setFiltersAction = createAction(SET_COURSE_SETFILTERS);
+export const setFiltersAction = createAction(SET_COURSE_FILTERS);
 export const setShowActiveCourseAction = createAction(SET_COURSE_SHOWACTIVE);
 
 export const setSelectedRowKeysAction = createAction(SET_COURSE_SELECT_ROW_KEY);
@@ -74,47 +74,61 @@ const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
   stateCourseSelector,
   state => {
-    if (state.data.length > 0) {
-      let courseList = [];
-      if (state.showActiveCourse) courseList = state.data.filter(row => row.active == 1);
-      else courseList = state.data;
-
-      let searchByNameData = [];
-      if (state.searchName.length > 0) {
-        searchByNameData = courseList.filter(row => {
-          if (row.name === state.searchName) return row;
-        });
-      } else {
-        searchByNameData = courseList;
-      }
-
-      let possibleFilterKey = [];
-
-      if (state.filtersColumn !== "") {
-        possibleFilterKey.push(state.filtersColumn);
-      } else {
-        possibleFilterKey = ["name", "number"];
-      }
-
-      const filterSource = searchByNameData.filter(row => {
-        if (state.filtersText === "") {
-          return row;
-        }
-        if (state.filtersValue === "equals") {
-          const equalKeys = possibleFilterKey.filter(key => {
-            if (row[key] === state.filtersText) return row;
-          });
-          if (equalKeys.length > 0) return row;
-        } else if (state.filtersValue === "contains" || state.filtersValue === "") {
-          const equalKeys = possibleFilterKey.filter(key => {
-            if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
-          });
-          if (equalKeys.length > 0) return row;
-        }
+    let searchedList = [];
+    if (state.searchName.length == 0) searchedList = [...state.data];
+    else {
+      searchedList = state.data.filter(item => {
+        const nameValue = item.name.toLowerCase();
+        return nameValue.indexOf(state.searchName.toLowerCase()) != -1;
       });
-      return filterSource;
     }
-    return state.data;
+
+    if (state.showActiveCourse) {
+      searchedList = searchedList.filter(item => item.active == 1);
+    }
+
+    const filtersData = state.filtersData;
+    const filteredList = [];
+    for (let i = 0; i < searchedList.length; i++) {
+      let isMatched = true;
+      for (let j = 0; j < filtersData.length; j++) {
+        if (
+          filtersData[j].filtersColumn.length == 0 ||
+          filtersData[j].filtersValue.length == 0 ||
+          filtersData[j].filterStr.length == 0
+        ) {
+          continue;
+        }
+
+        if (filtersData[j].filtersValue === "eq") {
+          if (
+            searchedList[i][filtersData[j].filtersColumn] == null ||
+            (searchedList[i][filtersData[j].filtersColumn].toString().toLowerCase() !==
+              filtersData[j].filterStr.toLowerCase() &&
+              filtersData[j].filterStr.length != 0)
+          ) {
+            isMatched = false;
+            break;
+          }
+        } else if (filtersData[j].filtersValue === "cont") {
+          if (
+            searchedList[i][filtersData[j].filtersColumn] == null ||
+            (searchedList[i][filtersData[j].filtersColumn]
+              .toString()
+              .toLowerCase()
+              .indexOf(filtersData[j].filterStr.toLowerCase()) < 0 &&
+              filtersData[j].filterStr.length != 0)
+          ) {
+            isMatched = false;
+            break;
+          }
+        }
+      }
+      if (isMatched) {
+        filteredList.push(searchedList[i]);
+      }
+    }
+    return filteredList;
   }
 );
 
@@ -136,9 +150,14 @@ const initialState = {
   uploadingCSV: false,
   uploadCSVError: null,
   searchName: "",
-  filtersColumn: "",
-  filtersValue: "",
-  filtersText: "",
+  filtersData: [
+    {
+      filtersColumn: "",
+      filtersValue: "",
+      filterStr: "",
+      filterAdded: false
+    }
+  ],
   showActiveCourse: true,
   selectedRowKeys: [],
   searchResult: [],
@@ -236,10 +255,8 @@ export const reducer = createReducer(initialState, {
   [SET_COURSE_SEARCHNAME]: (state, { payload }) => {
     state.searchName = payload;
   },
-  [SET_COURSE_SETFILTERS]: (state, { payload }) => {
-    state.filtersColumn = payload.column;
-    state.filtersValue = payload.value;
-    state.filtersText = payload.text;
+  [SET_COURSE_FILTERS]: (state, { payload }) => {
+    state.filtersData = [...payload];
   },
   [SET_COURSE_SHOWACTIVE]: (state, { payload }) => {
     state.showActiveCourse = payload;

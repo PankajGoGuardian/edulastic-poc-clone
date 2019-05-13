@@ -32,7 +32,7 @@ export const StyledFilterSelect = styled(Select)`
 
 export const StyledTable = styled(Table)``;
 
-export const StyledAddFilterButton = styled(Button)`
+export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
 `;
 
@@ -46,7 +46,7 @@ export const StyledFilterInput = styled(Input)`
   width: 300px;
 `;
 
-export const StyledSchoolSearch = styled(Search)`
+export const StyledNameSearch = styled(Input)`
   margin-left: 20px;
   width: 465px;
 `;

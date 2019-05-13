@@ -180,6 +180,11 @@ export const reducer = createReducer(initialState, {
   },
   [SET_SEARCHNAME_VALUE]: (state, { payload }) => {
     state.searchByName = payload;
+    const searchedRow = state.data.filter(item => {
+      const nameValue = item.name.toLowerCase();
+      return nameValue.indexOf(payload.toLowerCase()) != -1;
+    });
+    state.totalSchools = searchedRow.length;
   },
   [SET_SCHOOLLIST_TOTALCOUNT]: (state, { payload }) => {
     state.totalSchools = payload;

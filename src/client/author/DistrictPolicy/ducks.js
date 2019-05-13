@@ -46,7 +46,7 @@ export const reducer = createReducer(initialState, {
   },
   [UPDATE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.updating = false;
-    state.update = payload;
+    state.data = payload;
   },
   [UPDATE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
     state.updating = false;

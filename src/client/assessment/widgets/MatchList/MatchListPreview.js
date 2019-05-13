@@ -21,16 +21,17 @@ import DragItem from "./components/DragItem";
 import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
+import { AnswerItem } from "./styled/AnswerItem";
 import { getFontSize, getDirection } from "../../utils/helpers";
 
 const styles = {
   dropContainerStyle: smallSize => ({
-    width: "100%",
     borderRadius: 4,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    height: smallSize ? 26 : 44,
+    minHeight: smallSize ? 26 : 44,
+    maxWidth: "50%",
     padding: 0
   }),
   listItemContainerStyle: { width: "100%", marginBottom: 6, marginTop: 6 },
@@ -143,7 +144,6 @@ const MatchListPreview = ({
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
     border: `1px solid ${theme.widgets.matchList.dragItemBorderColor}`,
-    height: 40,
     padding: preview ? 0 : "0 40px",
     cursor: "pointer",
     borderRadius: 4,
@@ -184,7 +184,7 @@ const MatchListPreview = ({
       <div data-cy="previewWrapper" style={wrapperStyle}>
         <FlexContainer style={{ flexGrow: 10 }} flexDirection="column" alignItems="flex-start">
           {list.map((ite, i) => (
-            <FlexContainer
+            <AnswerItem
               key={i}
               style={styles.listItemContainerStyle}
               alignItems="center"
@@ -211,7 +211,7 @@ const MatchListPreview = ({
                   getStyles={getStyles}
                 />
               </DropContainer>
-            </FlexContainer>
+            </AnswerItem>
           ))}
         </FlexContainer>
 

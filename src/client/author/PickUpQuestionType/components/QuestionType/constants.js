@@ -1044,6 +1044,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
         stimulus: "",
+        imageWidth: 600,
         options: ["Country A", "Country B", "Country C"],
         validation: {
           scoring_type: EXACT_MATCH,

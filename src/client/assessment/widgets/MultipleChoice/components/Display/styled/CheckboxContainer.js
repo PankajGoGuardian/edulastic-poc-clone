@@ -7,7 +7,7 @@ const params = {
   padding: 0,
   marginRight: 13,
   fontSize: "14px",
-  fontWeight: 700,
+  fontWeight: 500,
   backgroundCheck: "#F8F8F8",
   borderColorCheck: "#E6E6E6",
   borderWidthCheck: 0

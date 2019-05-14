@@ -1,9 +1,11 @@
 import ReportsPage from "./reportsPage";
 import MathEditor from "./mathEditor";
+import { questionTypeKey as questionType } from "../constants/questionTypes";
 
 class StudentTestPage {
   constructor() {
     this.mathEditor = new MathEditor();
+    this.attemptType = { RIGHT: "right", WRONG: "wrong" };
   }
 
   checkAnsValidateAsWrong = () => {
@@ -530,5 +532,21 @@ class StudentTestPage {
   typeFractionDenominatorWithKeyboard = answer => this.mathEditor.typeFractionDenominatorWithVirtualKeyboard(answer);
 
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
+
+  attemptQuestion = (attemptQueType, attemptType, attemptData) => {
+    const { right, wrong } = attemptData;
+    switch (attemptQueType) {
+      case questionType.MULTIPLE_CHOICE_STANDARD:
+        if (attemptType === this.attemptType.RIGHT) {
+          this.checkHighLightByAnswer(right);
+        } else if (attemptType === this.attemptType.WRONG) {
+          this.checkHighLightByAnswer(wrong);
+        }
+        break;
+
+      default:
+        break;
+    }
+  };
 }
 export default StudentTestPage;

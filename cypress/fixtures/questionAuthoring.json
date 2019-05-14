@@ -3,7 +3,7 @@
     "default": {
       "quetext": "This is MCQ_STD.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
-      "setAns": { "correct": "right-1", "points": 2 },
+      "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" }
     }
   },
@@ -11,7 +11,7 @@
     "default": {
       "quetext": "This is MCQ_MULTI.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2 },
+      "setAns": { "correct": ["right-1", "right-2"], "points": 1 },
       "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" }
     }
   },
@@ -19,7 +19,7 @@
     "default": {
       "quetext": "This is MCQ_TF.default question",
       "choices": ["right", "wrong"],
-      "setAns": { "correct": "right", "points": 2 },
+      "setAns": { "correct": "right", "points": 1 },
       "attemptData": { "right": "right", "wrong": "wrong" }
     }
   },
@@ -27,7 +27,7 @@
     "default": {
       "quetext": "This is MCQ_BLOCK.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
-      "setAns": { "correct": ["right-1"], "points": 2 },
+      "setAns": { "correct": ["right-1"], "points": 1 },
       "attemptData": { "right": ["right-1"], "wrong": "wrong-1" }
     }
   },
@@ -43,7 +43,7 @@
           "wrong-2": "false",
           "right-2": "true"
         },
-        "points": 2
+        "points": 1
       },
       "attemptData": {
         "right": {
@@ -73,7 +73,7 @@
           "wrong-2": "false",
           "right-2": "true"
         },
-        "points": 2
+        "points": 1
       },
       "attemptData": {
         "right": {
@@ -103,7 +103,7 @@
           "wrong-2": "false",
           "right-2": "true"
         },
-        "points": 2
+        "points": 1
       },
       "attemptData": {
         "right": {

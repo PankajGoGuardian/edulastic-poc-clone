@@ -64,28 +64,35 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.server();
   cy.route("GET", "**curriculum**").as("apiLoad");
   cy.route("GET", "**assignments**").as("assignment");
+  cy.route("POST", "**/auth/**").as("auth");
   login.fillLoginForm(postData.email, postData.password);
-  login.onClickSignin().then(() => {
-    cy.wait("@assignment");
-    /* 
-    if (role === "teacher") {
-      cy.wait("@apiLoad");
-    } else {
-      cy.wait("@assignment");
-    } */
-  });
+  login.onClickSignin();
+  cy.wait("@auth");
+  // .then(() => {
+  // TODO: wierd login issue redirects doesn't happens automatically
+  if (role === "teacher") {
+    cy.visit("/author/assignments");
+  } else {
+    cy.visit("/home/assignments");
+  }
+  cy.wait("@assignment");
 });
 
 Cypress.Commands.add(
   "assignAssignment",
-  (testId = "", startDt = new Date(), dueDt = new Date(new Date().setDate(startDt.getDate() + 1))) => {
+  (
+    testId = "",
+    startDt = new Date(),
+    dueDt = new Date(new Date().setDate(startDt.getDate() + 1)),
+    assignmentKey = "default"
+  ) => {
     cy.request({
       url: `${BASE_URL}/auth/login`,
       method: "POST",
       body: DEFAULT_USERS.teacher
     }).then(({ body }) => {
       cy.fixture("assignments").then(asgns => {
-        const postData = asgns.default;
+        const postData = asgns[assignmentKey];
         postData.assignments[0].testId = testId.valueOf();
         postData.assignments[0].startDate = startDt.valueOf();
         postData.assignments[0].endDate = dueDt.valueOf();
@@ -105,13 +112,13 @@ Cypress.Commands.add(
   }
 );
 
-Cypress.Commands.add("deleteAllAssignments", () => {
+Cypress.Commands.add("deleteAllAssignments", (student, teacher) => {
   const asgnIds = [];
 
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: DEFAULT_USERS.student
+    body: student ? { email: student, password: "snapwiz" } : DEFAULT_USERS.student
   }).then(({ body }) => {
     cy.request({
       url: `${BASE_URL}/assignments`,
@@ -131,7 +138,7 @@ Cypress.Commands.add("deleteAllAssignments", () => {
   cy.request({
     url: `${BASE_URL}/auth/login`,
     method: "POST",
-    body: DEFAULT_USERS.teacher
+    body: teacher ? { email: teacher, password: "snapwiz" } : DEFAULT_USERS.teacher
   }).then(({ body }) => {
     asgnIds.forEach(asgnId => {
       cy.request({

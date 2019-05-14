@@ -18,5 +18,27 @@
       }
     ],
     "assignedBy": "auto"
+  },
+  "LCB1": {
+    "assignments": [
+      {
+        "openPolicy": "Automatically on Start Date",
+        "closePolicy": "Automatically on Due Date",
+        "class": [
+          {
+            "_id": "5ccae64a7b99153441dd7e66",
+            "name": "Test LCB 01",
+            "assignedCount": 6,
+            "grade": "",
+            "subject": "Mathematics",
+            "termId": "5ccc1543cf1b2f5bb2635cf0"
+          }
+        ],
+        "specificStudents": false,
+        "testId": "5cd9385f163c8a4fea055823",
+        "termId": "5ccc1543cf1b2f5bb2635cf0"
+      }
+    ],
+    "assignedBy": "auto.lcb.tea01"
   }
 }

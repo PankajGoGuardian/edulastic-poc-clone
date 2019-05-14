@@ -128,9 +128,11 @@ export default class DisneyCardContainer extends Component {
             <PaginationInfoF>
               <CircularDiv>{this.getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
-                <StyledParaF>{student.studentName ? student.studentName : "-"}</StyledParaF>
+                <StyledParaF data-cy="studentName">{student.studentName ? student.studentName : "-"}</StyledParaF>
                 {student.present ? (
-                  <StyledParaS color={status.color}>{status.status}</StyledParaS>
+                  <StyledParaS data-cy="studentStatus" color={status.color}>
+                    {status.status}
+                  </StyledParaS>
                 ) : (
                   <StyledColorParaS>ABSENT</StyledColorParaS>
                 )}
@@ -168,13 +170,15 @@ export default class DisneyCardContainer extends Component {
               <StyledParaFF>Performance</StyledParaFF>
               <PerfomanceSection>
                 <StyledFlexDiv>
-                  <StyledParaSS>
+                  <StyledParaSS data-cy="studentScore">
                     {student.score || 0} / {student.maxScore || 0}
                   </StyledParaSS>
-                  <StyledParaSSS>{stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}</StyledParaSSS>
+                  <StyledParaSSS data-cy="studentPerformance">
+                    {stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}
+                  </StyledParaSSS>
                 </StyledFlexDiv>
                 {student.testActivityId && (
-                  <PagInfo onClick={e => viewResponses(e, student.studentId)}>
+                  <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
                     {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                     VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>
                     {/* </Link> */}
@@ -182,7 +186,7 @@ export default class DisneyCardContainer extends Component {
                 )}
               </PerfomanceSection>
             </PaginationInfoS>
-            <PaginationInfoT>
+            <PaginationInfoT data-cy="questions">
               {student.questionActivities.map((questionAct, questionIndex) => {
                 if (questionAct.correct) {
                   return <SquareColorDivGreen key={questionIndex} />;

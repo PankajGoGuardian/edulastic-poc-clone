@@ -54,7 +54,7 @@ export default class Graph extends Component {
             />
             <GraphDescription>average score %</GraphDescription>
           </StyledProgressDiv>
-          <GraphInfo>
+          <GraphInfo data-cy="submittedSummary">
             {gradebook.submittedNumber} out of {gradebook.total} Submitted
             {/* <p>({gradebook.total - gradebook.submittedNumber} Absent)</p> */}
           </GraphInfo>

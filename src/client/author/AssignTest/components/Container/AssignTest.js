@@ -11,6 +11,7 @@ import {
   getStudentsSelector
 } from "../../../sharedDucks/groups";
 import { receivePerformanceBandAction } from "../../../PerformanceBand/ducks";
+import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
 
 import {
   fetchAssignmentsAction,
@@ -52,6 +53,7 @@ class AssignTest extends React.Component {
 
   componentDidMount() {
     const {
+      fetchTestByID,
       fetchGroups,
       fetchAssignments,
       group,
@@ -70,6 +72,9 @@ class AssignTest extends React.Component {
     }
     if (isEmpty(performanceBandData)) {
       fetchPerformanceBand({ orgId: userOrgId });
+    }
+    if (testId) {
+      fetchTestByID(testId);
     }
   }
 
@@ -98,7 +103,8 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, assignment } = this.state;
-    const { group, fetchStudents, students, testSettings } = this.props;
+    const { group, fetchStudents, students, testSettings, testItem } = this.props;
+    const { title } = testItem;
 
     return (
       <div>
@@ -112,8 +118,7 @@ class AssignTest extends React.Component {
         <Container>
           <FullFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt; <AnchorLink to="/author/tests">TEST LIBRARY</AnchorLink> /{" "}
-              <AnchorLink to="/author/assessments/create">NEW ASSESSMENTS</AnchorLink> / <Anchor>TEST NAME</Anchor>
+              &lt; <AnchorLink to="/author/tests">TEST LIBRARY</AnchorLink> / <Anchor>{title}</Anchor>
             </PaginationInfo>
             <SwitchWrapper>
               <SwitchLabel>SIMPLE</SwitchLabel>
@@ -147,14 +152,16 @@ export default connect(
     students: getStudentsSelector(state),
     testSettings: getTestEntitySelector(state),
     userOrgId: getUserOrgId(state),
-    performanceBandData: get(state, ["performanceBandReducer", "data"], [])
+    performanceBandData: get(state, ["performanceBandReducer", "data"], []),
+    testItem: getTestSelector(state)
   }),
   {
     fetchGroups: fetchGroupsAction,
     fetchStudents: fetchGroupMembersAction,
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
-    fetchPerformanceBand: receivePerformanceBandAction
+    fetchPerformanceBand: receivePerformanceBandAction,
+    fetchTestByID: receiveTestByIdAction
   }
 )(AssignTest);
 
@@ -170,5 +177,7 @@ AssignTest.propTypes = {
   saveAssignment: PropTypes.func.isRequired,
   fetchPerformanceBand: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
-  performanceBandData: PropTypes.object.isRequired
+  performanceBandData: PropTypes.object.isRequired,
+  testItem: PropTypes.object.isRequired,
+  fetchTestByID: PropTypes.func.isRequired
 };

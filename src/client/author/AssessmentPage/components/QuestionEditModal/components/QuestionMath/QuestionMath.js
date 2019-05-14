@@ -91,7 +91,7 @@ export default class QuestionMath extends React.Component {
             <MathFormulaAnswerMethod onChange={this.handleAnswerChange} item={question} {...value} />
           </FormGroup>
           <FormGroup>
-            <InputNumber value={score} onChange={this.handleScoreChange} />
+            <InputNumber min={0} value={score} onChange={this.handleScoreChange} />
             <Points>Points</Points>
           </FormGroup>
         </QuestionFormWrapper>

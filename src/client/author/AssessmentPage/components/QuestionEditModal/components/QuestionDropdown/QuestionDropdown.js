@@ -148,7 +148,7 @@ export default class QuestionDropdown extends React.Component {
                 </Select.Option>
               ))}
             </Select>
-            <InputNumber value={score} onChange={this.handleScoreChange} />
+            <InputNumber min={0} value={score} onChange={this.handleScoreChange} />
             <Points>Points</Points>
           </FormGroup>
         </QuestionFormWrapper>

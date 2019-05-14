@@ -3,7 +3,7 @@ import { withRouter } from "react-router";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Spin } from "antd";
+import { Spin, message } from "antd";
 
 import { white } from "@edulastic/colors";
 import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
@@ -107,6 +107,12 @@ class Container extends React.Component {
       updateItemDetailById,
       updateTest
     } = this.props;
+
+    if (!assessmentQuestions.length) {
+      message.warning("At least one question has to be created before saving assessment");
+      return;
+    }
+
     const [testItem] = assessment.testItems;
     const testItemId = typeof testItem === "object" ? testItem._id : testItem;
 

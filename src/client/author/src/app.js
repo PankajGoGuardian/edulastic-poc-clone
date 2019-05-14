@@ -271,7 +271,7 @@ const MainContainer = styled.div`
     top: 0;
     right: 0;
     left: ${props => (props.isCollapsed ? "100px" : "240px")};
-    z-index: 1001;
+    z-index: 1000;
   }
   @media (max-width: ${tabletWidth}) {
     padding-left: 0px;

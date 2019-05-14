@@ -128,7 +128,7 @@ export default class QuestionChoice extends React.Component {
         <FormGroup>
           <FormLabel>Correct Answers</FormLabel>
           <CheckboxGroup options={options} value={correctAnswers} onChange={this.handleSetCorrectAnswers} />
-          <InputNumber value={score} onChange={this.handleSetScore} />
+          <InputNumber min={0} value={score} onChange={this.handleSetScore} />
           <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>

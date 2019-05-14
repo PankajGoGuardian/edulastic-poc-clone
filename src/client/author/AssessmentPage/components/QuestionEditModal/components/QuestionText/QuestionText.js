@@ -124,7 +124,7 @@ export default class QuestionText extends React.Component {
           </Select>
         </FormGroup>
         <FormGroup>
-          <InputNumber value={score} onChange={this.handleScoreChange} />
+          <InputNumber min={0} value={score} onChange={this.handleScoreChange} />
           <Points>Points</Points>
         </FormGroup>
       </QuestionFormWrapper>

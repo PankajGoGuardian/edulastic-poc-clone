@@ -1016,6 +1016,7 @@ span.token.active-word {
 .ant-select-dropdown-menu-item {
   display: flex;
   align-items: center;
+  white-space: normal;
 }
 
 .template_box .ant-select-selection {

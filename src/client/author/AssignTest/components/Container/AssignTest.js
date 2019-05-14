@@ -80,7 +80,7 @@ class AssignTest extends React.Component {
       this.setState({ assignment: initAssignment });
       saveAssignment(assignment);
     } else {
-      message.error("Please Select classes!");
+      message.error("Please select at least one class to assign.");
     }
   };
 

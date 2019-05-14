@@ -1050,6 +1050,10 @@ span.token.active-word {
   padding: 0 !important;
 }
 
+.input__math__field.mq-math-mode {
+  font-weight: bold;
+}
+
 .mq-math-mode.success .mq-editable-field,
 .mq-math-mode.wrong .mq-editable-field,
 .mq-math-mode.check .mq-editable-field {

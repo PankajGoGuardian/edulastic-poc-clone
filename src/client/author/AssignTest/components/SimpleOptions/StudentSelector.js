@@ -8,23 +8,16 @@ const RadioGroup = Radio.Group;
 
 const StudentsSelector = ({ specificStudents, students, updateStudents, onChange, studentNames }) => {
   const changeRadioGrop = e => {
-    const { value, checked } = e.target;
-    if (value === 3) {
-      onChange("specificStudents", checked);
-    } else {
-      onChange("specificStudents", false);
-    }
+    const { value } = e.target;
+    onChange("specificStudents", value);
   };
-
   return (
     <React.Fragment>
       <StyledRadioGropRow gutter={16}>
         <Col span={24}>
-          {/* value={specificStudents ? 3 : 1} */}
-          <RadioGroup onChange={changeRadioGrop}>
-            <Radio value={1}>Entire Class</Radio>
-            {/* <Radio value={2}>Absent Students</Radio> */}
-            <Radio value={3}>Specific Student</Radio>
+          <RadioGroup onChange={changeRadioGrop} value={specificStudents}>
+            <Radio value={false}>Entire Class</Radio>
+            <Radio value={true}>Specific Student</Radio>
           </RadioGroup>
         </Col>
       </StyledRadioGropRow>

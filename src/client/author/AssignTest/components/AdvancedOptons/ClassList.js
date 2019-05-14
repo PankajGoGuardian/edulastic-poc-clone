@@ -112,7 +112,7 @@ class ClassList extends React.Component {
       selectedRowKeys: selectedClasses,
       onChange: selectedRowKeys => {
         if (selectClass) {
-          selectClass("class", selectedRowKeys);
+          selectClass("class", selectedRowKeys, classList);
         }
       }
     };

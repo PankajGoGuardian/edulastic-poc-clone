@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { isEmpty, get } from "lodash";
+import { isEmpty, get, keyBy } from "lodash";
 import * as moment from "moment";
 import { message } from "antd";
 import {
@@ -82,7 +82,6 @@ class AssignTest extends React.Component {
     const { assignment } = this.state;
     const { saveAssignment } = this.props;
     if (saveAssignment && !isEmpty(assignment.class)) {
-      this.setState({ assignment: initAssignment });
       saveAssignment(assignment);
     } else {
       message.error("Please select at least one class to assign.");
@@ -100,6 +99,30 @@ class AssignTest extends React.Component {
   );
 
   updateAssignment = assignment => this.setState({ assignment });
+
+  onClassFieldChange = (value, group) => {
+    const { assignment } = this.state;
+    const groupById = keyBy(group, "_id");
+    const classData = value.map(_id => ({
+      _id,
+      name: get(groupById, `${_id}.name`, ""),
+      assignedCount: get(groupById, `${_id}.studentCount`, 0),
+      grade: get(groupById, `${_id}.grade`, ""),
+      subject: get(groupById, `${_id}.subject`, "")
+    }));
+
+    let termId = "";
+    if (assignment.termId) {
+      termId = assignment.termId;
+    } else if (value.length) {
+      const [initialClassId] = value;
+      termId = groupById[initialClassId].termId;
+    }
+    return {
+      classData,
+      termId
+    };
+  };
 
   render() {
     const { isAdvancedView, assignment } = this.state;
@@ -128,15 +151,21 @@ class AssignTest extends React.Component {
           </FullFlexContainer>
 
           {isAdvancedView ? (
-            <AdvancedOptons data={assignment} updateOptions={this.updateAssignment} testSettings={testSettings} />
+            <AdvancedOptons
+              assignment={assignment}
+              updateOptions={this.updateAssignment}
+              testSettings={testSettings}
+              onClassFieldChange={this.onClassFieldChange}
+            />
           ) : (
             <SimpleOptions
               group={group}
               students={students}
-              data={assignment}
+              assignment={assignment}
               fetchStudents={fetchStudents}
               testSettings={testSettings}
               updateOptions={this.updateAssignment}
+              onClassFieldChange={this.onClassFieldChange}
             />
           )}
         </Container>

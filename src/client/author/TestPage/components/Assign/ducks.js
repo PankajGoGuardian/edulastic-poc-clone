@@ -7,8 +7,7 @@ import { assignmentApi, testsApi } from "@edulastic/api";
 import { all, call, put, takeEvery, select } from "redux-saga/effects";
 import { replace } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
-import { generateClassData, formatAssignment } from "./utils";
-import { getStudentsSelector, getGroupsSelector } from "../../../sharedDucks/groups";
+import { formatAssignment } from "./utils";
 import { getUserNameSelector } from "../../../src/selectors/user";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
@@ -100,8 +99,6 @@ export const getCurrentAssignmentSelector = createSelector(
 
 function* saveAssignment({ payload }) {
   try {
-    const studentsList = yield select(getStudentsSelector);
-    const allGroups = yield select(getGroupsSelector);
     let testId = yield select(getTestIdSelector);
     if (!testId) {
       const test = yield select(getTestSelector);
@@ -115,21 +112,11 @@ function* saveAssignment({ payload }) {
       });
       yield put(replace(`/author/tests/${entity._id}`));
     }
-
-    let classData = generateClassData(
-      payload.class,
-      payload.students,
-      studentsList,
-      payload.specificStudents,
-      keyBy(allGroups, "_id")
-    );
     const assignedBy = yield select(getUserNameSelector);
     // if no class is selected dont bother sending a request.
-    if (!classData.length) {
+    if (!payload.class.length) {
       return;
     }
-
-    const termId = classData[0].termId;
     const startDate = payload.startDate && moment(payload.startDate).valueOf();
     const endDate = payload.endDate && moment(payload.endDate).valueOf();
 
@@ -142,7 +129,7 @@ function* saveAssignment({ payload }) {
 
       if (currentData.releaseScore === payload.releaseScore) {
         const { scoreReleasedClasses: releasedClasses, googleAssignmentIds } = currentData;
-        classData = classData.map(item => {
+        payload.class = payload.class.map(item => {
           if (releasedClasses.includes(item._id)) {
             item.releaseScore = "SCORE_ONLY";
           }
@@ -159,11 +146,9 @@ function* saveAssignment({ payload }) {
     const data = omit(
       {
         ...payload,
-        class: classData,
         startDate,
         endDate,
-        testId,
-        termId
+        testId
       },
       ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
     );

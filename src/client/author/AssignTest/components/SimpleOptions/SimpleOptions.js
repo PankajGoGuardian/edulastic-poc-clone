@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Col, Icon, message } from "antd";
-import { curry } from "lodash";
+import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
@@ -13,7 +13,7 @@ import { getListOfStudents } from "../../utils";
 class SimpleOptions extends React.Component {
   static propTypes = {
     group: PropTypes.array.isRequired,
-    data: PropTypes.object.isRequired,
+    assignment: PropTypes.object.isRequired,
     students: PropTypes.array.isRequired,
     testSettings: PropTypes.object.isRequired,
     fetchStudents: PropTypes.func.isRequired,
@@ -24,7 +24,8 @@ class SimpleOptions extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      assignment: props.data
+      classIds: [],
+      studentList: []
     };
   }
 
@@ -34,7 +35,18 @@ class SimpleOptions extends React.Component {
   };
 
   onChange = (field, value) => {
-    const { assignment } = this.state;
+    const { onClassFieldChange, group, assignment, updateOptions } = this.props;
+    if (field === "class") {
+      this.setState({ classIds: value }, () => {
+        const { classData, termId } = onClassFieldChange(value, group);
+        const nextAssignment = produce(assignment, state => {
+          state["class"] = classData;
+          if (termId) state.termId = termId;
+        });
+        updateOptions(nextAssignment);
+      });
+      return;
+    }
     if (field === "endDate") {
       const { startDate } = assignment;
       const diff = startDate.diff(value);
@@ -45,39 +57,52 @@ class SimpleOptions extends React.Component {
     const nextAssignment = produce(assignment, state => {
       state[field] = value;
     });
-    this.updateAssignment(nextAssignment);
+    updateOptions(nextAssignment);
   };
 
-  updateStudents = studentList => this.onChange("students", studentList);
-
-  updateAssignment = nextAssignment => {
-    const { updateOptions } = this.props;
-    if (updateOptions) {
+  updateStudents = studentList => {
+    const { group, students, assignment, updateOptions } = this.props;
+    const groupById = keyBy(group, "_id");
+    const studentById = keyBy(students, "_id");
+    const selectedStudentsById = studentList.map(_id => studentById[_id]);
+    const studentsByGroupId = groupBy(selectedStudentsById, "groupId");
+    const classData = assignment.class.map(item => {
+      const { _id } = item;
+      if (!studentsByGroupId[_id]) return item;
+      return {
+        _id,
+        name: get(groupById, `${_id}.name`, ""),
+        assignedCount: studentsByGroupId[_id].length,
+        students: studentsByGroupId[_id].map(item => item._id),
+        grade: get(groupById, `${_id}.grade`, ""),
+        subject: get(groupById, `${_id}.subject`, ""),
+        termId: get(groupById, `${_id}.termId`, "")
+      };
+    });
+    this.setState({ studentList }, () => {
+      const nextAssignment = produce(assignment, state => {
+        state.class = classData;
+      });
       updateOptions(nextAssignment);
-    }
-    this.setState({ assignment: nextAssignment });
+    });
   };
 
   render() {
-    const { showSettings, assignment } = this.state;
-    const { group, fetchStudents, students, testSettings } = this.props;
+    const { showSettings, classIds, studentList } = this.state;
+    const { group, fetchStudents, students, testSettings, assignment } = this.props;
     const changeField = curry(this.onChange);
-    const studentOfSelectedClass = getListOfStudents(students, assignment.class);
-    const setList = studentOfSelectedClass.map(item => item._id);
-    const selectedStudents = assignment.students && assignment.students.filter(id => setList.includes(id));
-
+    const studentOfSelectedClass = getListOfStudents(students, classIds);
     return (
       <OptionConationer>
         <InitOptions>
           <ClassSelector
             onChange={changeField("class")}
             fetchStudents={fetchStudents}
-            selectedGroups={assignment.class}
+            selectedGroups={classIds}
             group={group}
           />
-
           <StudentSelector
-            studentNames={selectedStudents}
+            studentNames={studentList}
             students={studentOfSelectedClass}
             updateStudents={this.updateStudents}
             onChange={this.onChange}
@@ -98,7 +123,7 @@ class SimpleOptions extends React.Component {
           {showSettings && (
             <Settings
               assignmentSettings={assignment}
-              updateAssignmentSettings={this.updateAssignment}
+              updateAssignmentSettings={updateOptions}
               changeField={changeField}
               testSettings={testSettings}
             />

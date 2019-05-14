@@ -71,7 +71,7 @@ export const formatAssignment = assignment => {
     if (item.googleId) {
       googleAssignmentIds[item._id] = item.googleId;
     }
-    return item._id;
+    return item;
   });
 
   return {

@@ -10,7 +10,7 @@ import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelect
 
 class AdvancedOptons extends React.Component {
   static propTypes = {
-    data: PropTypes.object.isRequired,
+    assignment: PropTypes.object.isRequired,
     testSettings: PropTypes.object.isRequired,
     updateOptions: PropTypes.func.isRequired
   };
@@ -19,7 +19,7 @@ class AdvancedOptons extends React.Component {
     super(props);
     this.state = {
       showSettings: false,
-      assignment: props.data
+      classIds: []
     };
   }
 
@@ -28,8 +28,19 @@ class AdvancedOptons extends React.Component {
     this.setState({ showSettings: !showSettings });
   };
 
-  onChange = (field, value) => {
-    const { assignment } = this.state;
+  onChange = (field, value, groups) => {
+    const { onClassFieldChange, assignment, updateOptions } = this.props;
+    if (field === "class") {
+      this.setState({ classIds: value }, () => {
+        const { classData, termId } = onClassFieldChange(value, groups);
+        const nextAssignment = produce(assignment, state => {
+          state["class"] = classData;
+          if (termId) state.termId = termId;
+        });
+        updateOptions(nextAssignment);
+      });
+      return;
+    }
     if (field === "endDate") {
       const { startDate } = assignment;
       const diff = startDate.diff(value);
@@ -40,22 +51,14 @@ class AdvancedOptons extends React.Component {
     const nextAssignment = produce(assignment, state => {
       state[field] = value;
     });
-    this.updateAssignment(nextAssignment);
+    updateOptions(nextAssignment);
   };
 
   updateStudents = studentList => this.onChange("students", studentList);
 
-  updateAssignment = nextAssignment => {
-    const { updateOptions } = this.props;
-    if (updateOptions) {
-      updateOptions(nextAssignment);
-    }
-    this.setState({ assignment: nextAssignment });
-  };
-
   render() {
-    const { testSettings, data } = this.props;
-    const { showSettings, assignment } = this.state;
+    const { testSettings, assignment } = this.props;
+    const { showSettings, classIds } = this.state;
     const changeField = curry(this.onChange);
 
     return (
@@ -80,7 +83,7 @@ class AdvancedOptons extends React.Component {
           {showSettings && (
             <Settings
               assignmentSettings={assignment}
-              updateAssignmentSettings={this.updateAssignment}
+              updateAssignmentSettings={updateOptions}
               changeField={changeField}
               testSettings={testSettings}
               isAdvanced
@@ -95,7 +98,7 @@ class AdvancedOptons extends React.Component {
             </p>
           </ClassSelectorLabel>
 
-          <ClassList selectedClasses={data.class} selectClass={changeField} />
+          <ClassList selectedClasses={classIds} selectClass={changeField} />
         </InitOptions>
       </OptionConationer>
     );

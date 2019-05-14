@@ -67,7 +67,7 @@ export const CheckboxContainer = styled.div`
         display: ${props.smallSize ? "block" : "flex"};
         align-items: center;
         justify-content: center;
-        border-radius: 50%;
+        border-radius: ${props.multipleResponse ? "0" : "50%"};
         background-color: ${params.backgroundCheck};
         border: ${params.borderWidthCheck}px solid ${params.borderColorCheck};
         -webkit-transition: all 0.6s;

@@ -186,6 +186,7 @@ class MultipleChoice extends Component {
     } = this.getRenderData();
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
+    // const multi_response = this.props.item.multiple_responses;
 
     return (
       <React.Fragment>
@@ -251,6 +252,7 @@ class MultipleChoice extends Component {
                   evaluation={evaluation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  multipleResponse={multipleResponses}
                   {...restProps}
                 />
               )}
@@ -268,6 +270,7 @@ class MultipleChoice extends Component {
                   validation={item.validation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  multipleResponse={multipleResponses}
                   {...restProps}
                 />
               )}
@@ -284,6 +287,7 @@ class MultipleChoice extends Component {
                   onChange={this.handleAddAnswer}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
+                  multipleResponse={multipleResponses}
                   {...restProps}
                 />
               )}

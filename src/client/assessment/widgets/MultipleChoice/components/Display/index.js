@@ -13,21 +13,25 @@ const Display = ({
   instructorStimulus,
   index,
   styleType,
+  multipleResponse,
   ...restProps
-}) => (
-  <div>
-    <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-    <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
-    <Options
-      view={view}
-      smallSize={smallSize}
-      question={question}
-      uiStyle={uiStyle}
-      styleType={styleType}
-      {...restProps}
-    />
-  </div>
-);
+}) => {
+  return (
+    <div>
+      <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+      <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
+      <Options
+        view={view}
+        smallSize={smallSize}
+        question={question}
+        uiStyle={uiStyle}
+        styleType={styleType}
+        multipleResponse={multipleResponse}
+        {...restProps}
+      />
+    </div>
+  );
+};
 
 Display.propTypes = {
   options: PropTypes.array,
@@ -43,7 +47,8 @@ Display.propTypes = {
   view: PropTypes.string.isRequired,
   qIndex: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
-  styleType: PropTypes.string
+  styleType: PropTypes.string,
+  multipleResponse: PropTypes.bool
 };
 
 Display.defaultProps = {

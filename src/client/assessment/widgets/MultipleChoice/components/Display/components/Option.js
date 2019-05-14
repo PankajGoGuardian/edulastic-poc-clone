@@ -25,7 +25,8 @@ const Option = props => {
     correct = [],
     checkAnswer,
     validation,
-    styleType
+    styleType,
+    multipleResponse
   } = props;
   const [className, setClassName] = useState("");
   const isSelected = userSelections.includes(item.value);
@@ -87,7 +88,7 @@ const Option = props => {
   };
 
   const container = (
-    <CheckboxContainer smallSize={smallSize} styleType={styleType}>
+    <CheckboxContainer smallSize={smallSize} styleType={styleType} multipleResponse={multipleResponse}>
       <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
       <span
         style={{
@@ -165,7 +166,8 @@ Option.propTypes = {
   validation: PropTypes.any.isRequired,
   uiStyle: PropTypes.object.isRequired,
   correct: PropTypes.any.isRequired,
-  styleType: PropTypes.string
+  styleType: PropTypes.string,
+  multipleResponse: PropTypes.bool
 };
 
 Option.defaultProps = {

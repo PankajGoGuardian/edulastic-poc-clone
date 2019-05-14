@@ -633,7 +633,7 @@ class AxisSegmentsContainer extends PureComponent {
           <SegmentsTools
             tool={selectedTool}
             toolbar={tools}
-            elementsNumber={elements.length}
+            elementsNumber={(elements || []).length}
             getIconByToolName={this.getIconByToolName}
             onSelect={this.onSelectTool}
             fontSize={layout.fontSize}

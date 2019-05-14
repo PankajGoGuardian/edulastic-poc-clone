@@ -150,6 +150,9 @@ const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAns
 
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
 
+  const renderImage = () =>
+    file ? <img src={file} alt={altText} width={width} height={height} /> : <div style={{ width, height }} />;
+
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -189,7 +192,7 @@ const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAns
         </AdaptiveButtonList>
       </Container>
       <CanvasContainer>
-        <img src={file} alt={altText} width={width} height={height} />
+        {renderImage()}
         <canvas
           onMouseDown={onCanvasMouseDown}
           onMouseUp={onCanvasMouseUp}

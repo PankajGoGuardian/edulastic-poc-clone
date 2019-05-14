@@ -48,40 +48,11 @@ const update = ({ id, data: test }) => {
     .then(result => result.data.result);
 };
 
-const shareTest = ({ data, testId }) =>
-  api
-    .callApi({
-      url: `${prefix}/${testId}/sharing`,
-      method: "post",
-      data
-    })
-    .then(result => result.data.result);
-
 const publishTest = testId =>
   api
     .callApi({
       url: `${prefix}/${testId}/publish`,
       method: "put"
-    })
-    .then(result => result.data.result);
-
-const getSharedUsersList = testId =>
-  api
-    .callApi({
-      url: `${prefix}/${testId}/sharing`,
-      method: "get"
-    })
-    .then(result => result.data.result);
-
-const deleteSharedUser = ({ testId, sharedId, sharedWith }) =>
-  api
-    .callApi({
-      url: `${prefix}/${testId}/sharing`,
-      method: "delete",
-      data: {
-        sharedId,
-        sharedWith
-      }
     })
     .then(result => result.data.result);
 
@@ -98,9 +69,6 @@ export default {
   getById,
   create,
   update,
-  shareTest,
   publishTest,
-  getSharedUsersList,
-  deleteSharedUser,
   getPublicTest
 };

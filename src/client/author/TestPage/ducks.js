@@ -5,7 +5,7 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
-import { testsApi, assignmentApi } from "@edulastic/api";
+import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
 
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
@@ -389,8 +389,8 @@ function* updateRegradeDataSaga({ payload }) {
 
 function* shareTestSaga({ payload }) {
   try {
-    yield call(testsApi.shareTest, payload);
-    yield put(receiveSharedWithListAction(payload.testId));
+    yield call(contentSharingApi.shareContent, payload);
+    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: "TEST" }));
     yield call(message.success, "Successfully shared");
   } catch (e) {
     const errorMessage = "Sharing failed";
@@ -417,7 +417,7 @@ function* publishTestSaga({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(testsApi.getSharedUsersList, payload);
+    const result = yield call(contentSharingApi.getSharedUsersList, payload);
     const coAuthors = result.map(({ permission, sharedWith, sharedType, _id }) => ({
       permission,
       sharedWith,
@@ -433,8 +433,8 @@ function* receiveSharedWithListSaga({ payload }) {
 
 function* deleteSharedUserSaga({ payload }) {
   try {
-    const authors = yield call(testsApi.deleteSharedUser, payload);
-    yield put(receiveSharedWithListAction(payload.testId));
+    const authors = yield call(contentSharingApi.deleteSharedUser, payload);
+    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: "TEST" }));
   } catch (e) {
     const errorMessage = "delete shared user is failing";
     yield call(message.error, errorMessage);

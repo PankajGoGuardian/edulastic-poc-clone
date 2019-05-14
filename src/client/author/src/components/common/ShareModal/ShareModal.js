@@ -64,7 +64,7 @@ class ShareModal extends React.Component {
   componentDidMount() {
     const { getSharedUsers, match } = this.props;
     const testId = match.params.id;
-    if (testId) getSharedUsers(testId);
+    if (testId) getSharedUsers({ contentId: testId, contentType: "TEST" });
   }
 
   radioHandler = e => {
@@ -83,7 +83,7 @@ class ShareModal extends React.Component {
   removeHandler = data => {
     const { deleteShared, testId } = this.props;
     const { sharedId, _userId: sharedWith } = data;
-    deleteShared({ testId, sharedId, sharedWith });
+    deleteShared({ contentId: testId, sharedId, sharedWith });
   };
 
   permissionHandler = value => {
@@ -163,9 +163,10 @@ class ShareModal extends React.Component {
     const data = {
       ...person,
       sharedType,
-      permission
+      permission,
+      contentType: "TEST"
     };
-    shareTest({ data, testId });
+    shareTest({ data, contentId: testId });
   };
 
   render() {

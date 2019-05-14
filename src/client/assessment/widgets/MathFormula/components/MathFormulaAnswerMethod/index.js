@@ -52,15 +52,8 @@ const MathFormulaAnswerMethod = ({
       [prop]: val
     };
 
-    if (prop === "allowThousandsSeparator") {
-      if (!val) {
-        delete newOptions.setThousandsSeparator;
-        delete newOptions.setDecimalSeparator;
-        delete newOptions.allowThousandsSeparator;
-      } else {
-        newOptions.setThousandsSeparator = [","];
-        newOptions.setDecimalSeparator = ".";
-      }
+    if (!val) {
+      delete newOptions[prop];
     }
 
     onChange("options", newOptions);
@@ -80,6 +73,10 @@ const MathFormulaAnswerMethod = ({
   };
 
   const handleChangeThousandsSeparator = ({ val, ind }) => {
+    if (!val) {
+      changeOptions("setThousandsSeparator", null);
+      return;
+    }
     let newSetThousandsSeparator = [""];
 
     if (options.setThousandsSeparator && options.setThousandsSeparator.length) {
@@ -109,17 +106,19 @@ const MathFormulaAnswerMethod = ({
   return (
     <Container data-cy="math-formula-answer">
       <StyledRow gutter={32}>
-        <Col span={index === 0 ? 12 : 11}>
-          <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
-          <MathInput
-            symbols={item.symbols}
-            numberPad={item.numberPad}
-            value={value}
-            onInput={val => {
-              onChange("value", val);
-            }}
-          />
-        </Col>
+        {!methodOptions.includes("noExpeced") && (
+          <Col span={index === 0 ? 12 : 11}>
+            <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
+            <MathInput
+              symbols={item.symbols}
+              numberPad={item.numberPad}
+              value={value}
+              onInput={val => {
+                onChange("value", val);
+              }}
+            />
+          </Col>
+        )}
         <Col span={index === 0 ? 12 : 11}>
           <Label>{t("component.math.compareUsing")}</Label>
           <Select
@@ -359,19 +358,17 @@ const MathFormulaAnswerMethod = ({
             </StyledRow>
           )}
 
-          {methodOptions.includes("allowThousandsSeparator") && (
+          {(methodOptions.includes("setThousandsSeparator") || methodOptions.includes("setDecimalSeparator")) && (
             <StyledRow gutter={32}>
-              {methodOptions.includes("allowThousandsSeparator") && (
+              {methodOptions.includes("setThousandsSeparator") && (
                 <ThousandsSeparators
-                  options={options}
                   separators={options.setThousandsSeparator}
-                  onChangeCheck={changeOptions}
                   onChange={handleChangeThousandsSeparator}
                   onAdd={handleAddThousandsSeparator}
                   onDelete={handleDeleteThousandsSeparator}
                 />
               )}
-              {methodOptions.includes("allowDecimalMarks") && (
+              {methodOptions.includes("setDecimalSeparator") && (
                 <Col span={12}>
                   <DecimalSeparator options={options} onChange={changeOptions} />
                 </Col>
@@ -379,20 +376,21 @@ const MathFormulaAnswerMethod = ({
             </StyledRow>
           )}
 
-          {methodOptions.includes("rule") && (
-            <Rule
-              syntax={options.syntax}
-              argument={options.argument}
-              onChange={changeOptions}
-              handleChangeRule={handleChangeRule}
-            />
-          )}
-
-          {methodOptions.includes("ariaLabel") && (
+          {(methodOptions.includes("ariaLabel") || methodOptions.includes("rule")) && (
             <StyledRow gutter={32}>
-              <Col span={12}>
-                <AriaLabel value={aria_label} onChange={onChange} />
-              </Col>
+              {methodOptions.includes("ariaLabel") && (
+                <Col span={12}>
+                  <AriaLabel value={aria_label} onChange={onChange} />
+                </Col>
+              )}
+              {methodOptions.includes("rule") && (
+                <Rule
+                  syntax={options.syntax}
+                  argument={options.argument}
+                  onChange={changeOptions}
+                  handleChangeRule={handleChangeRule}
+                />
+              )}
             </StyledRow>
           )}
         </AdditionalContainer>

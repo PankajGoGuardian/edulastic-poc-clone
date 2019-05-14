@@ -71,8 +71,6 @@ var getChecks = function getChecks(validation) {
         } else {
           return acc;
         }
-      } else if (key === "allowThousandsSeparator") {
-        return acc;
       } else if (key === "setDecimalSeparator") {
         acc += "".concat(key, "='").concat(fieldVal, "'");
       } else if (key === "allowedUnits") {

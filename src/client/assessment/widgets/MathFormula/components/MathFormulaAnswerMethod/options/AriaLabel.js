@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Checkbox, Input } from "antd";
 
@@ -7,12 +7,24 @@ import { withNamespaces } from "@edulastic/localization";
 
 const AriaLabelPure = ({ value, onChange, t }) => {
   const [allowAriaLabel, setAllowAriaLabel] = useState(false);
+
+  useEffect(() => {
+    if (value) {
+      setAllowAriaLabel(true);
+    }
+  }, [value]);
+
   return (
     <FlexContainer flexDirection="column" alignItems="flex-start">
       <Checkbox
         data-cy="answer-allow-aria-label"
         checked={allowAriaLabel}
-        onChange={e => setAllowAriaLabel(e.target.checked)}
+        onChange={e => {
+          setAllowAriaLabel(e.target.checked);
+          if (!e.target.checked) {
+            onChange("aria_label", null);
+          }
+        }}
       >
         {t("component.math.ariaLabel")}
       </Checkbox>

@@ -42,8 +42,6 @@ const getChecks = validation => {
         } else {
           return acc;
         }
-      } else if (key === "allowThousandsSeparator") {
-        return acc;
       } else if (key === "setDecimalSeparator") {
         acc += `${key}='${fieldVal}'`;
       } else if (key === "allowedUnits") {

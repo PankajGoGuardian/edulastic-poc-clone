@@ -85,7 +85,6 @@ const methodOptions = {
     "allowInterval",
     "ignoreLeadingAndTrailingSpaces",
     "treatMultipleSpacesAsOne",
-    "allowThousandsSeparator",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "compareSides"
@@ -93,7 +92,6 @@ const methodOptions = {
   [methods.EQUIV_LITERAL]: [
     "ariaLabel",
     "ignoreTrailingZeros",
-    "allowThousandsSeparator",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "ignoreOrder",
@@ -109,28 +107,16 @@ const methodOptions = {
     "ignoreText",
     "tolerance",
     "allowedUnits",
-    "allowThousandsSeparator",
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
     "compareSides"
   ],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],
-  [methods.IS_SIMPLIFIED]: ["allowThousandsSeparator", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
-  [methods.IS_FACTORISED]: [
-    "allowThousandsSeparator",
-    "setDecimalSeparator",
-    "setThousandsSeparator",
-    "inverseResult",
-    "field"
-  ],
-  [methods.IS_EXPANDED]: [
-    "allowThousandsSeparator",
-    "setDecimalSeparator",
-    "setThousandsSeparator",
-    "significantDecimalPlaces"
-  ],
-  [methods.IS_TRUE]: ["allowThousandsSeparator", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.IS_SIMPLIFIED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult"],
+  [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
+  [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
+  [methods.IS_TRUE]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
 };
 

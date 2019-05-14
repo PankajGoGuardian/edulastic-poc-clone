@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Select } from "antd";
 import { get } from "lodash";
 
-import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, InstructorStimulus, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { IconUndo, IconRedo, IconEraseText } from "@edulastic/icons";
 
@@ -19,19 +19,20 @@ import { getFontSize } from "../../utils/helpers";
 
 const { Option } = Select;
 
-const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAnswer, t }) => {
+const HighlightImagePreview = ({ view, item = {}, windowWidth, smallSize, saveAnswer, userAnswer, t }) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
+  const canvasContainerRef = useRef(null);
 
   const { image, line_color = [] } = item;
 
   const [currentColor, setCurrentColor] = useState(line_color[0]);
 
-  const width = image ? image.width : "auto";
-  const height = image ? image.height : 470;
+  const [width, setWidth] = useState(image ? image.width : "auto");
+  const [height, setHeight] = useState(image ? image.height : 470);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
@@ -65,6 +66,22 @@ const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAns
       setCtx(context);
     }
   };
+
+  useEffect(() => {
+    if (canvasContainerRef) {
+      if (image && image.width) {
+        if (image.width >= canvasContainerRef.current.clientWidth) {
+          setWidth("100%");
+          setHeight("auto");
+        } else {
+          setHeight(image.height);
+          setWidth(image.width);
+        }
+      } else {
+        setWidth("auto");
+      }
+    }
+  }, [windowWidth]);
 
   useEffect(() => {
     if (canvas) {
@@ -191,15 +208,18 @@ const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAns
           </Button>
         </AdaptiveButtonList>
       </Container>
-      <CanvasContainer>
-        {renderImage()}
-        <canvas
-          onMouseDown={onCanvasMouseDown}
-          onMouseUp={onCanvasMouseUp}
-          onMouseMove={onCanvasMouseMove}
-          ref={canvas}
-        />
-      </CanvasContainer>
+
+      <div ref={canvasContainerRef}>
+        <CanvasContainer>
+          {renderImage()}
+          <canvas
+            onMouseDown={onCanvasMouseDown}
+            onMouseUp={onCanvasMouseUp}
+            onMouseMove={onCanvasMouseMove}
+            ref={canvas}
+          />
+        </CanvasContainer>
+      </div>
     </Paper>
   );
 };
@@ -207,6 +227,7 @@ const HighlightImagePreview = ({ view, item = {}, smallSize, saveAnswer, userAns
 HighlightImagePreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,
+  windowWidth: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
@@ -217,4 +238,4 @@ HighlightImagePreview.defaultProps = {
   smallSize: false
 };
 
-export default withNamespaces("assessment")(HighlightImagePreview);
+export default withWindowSizes(withNamespaces("assessment")(HighlightImagePreview));

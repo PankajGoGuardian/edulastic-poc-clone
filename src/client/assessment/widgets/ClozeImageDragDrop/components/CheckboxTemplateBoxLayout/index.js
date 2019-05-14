@@ -20,9 +20,8 @@ const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
   responseContainers,
-  imageUrl,
+  image,
   imageWidth,
-  imageAlterText,
   responsecontainerindividuals,
   responseBtnStyle,
   fontSize,
@@ -45,7 +44,7 @@ const CheckboxTemplateBoxLayout = ({
         maxWidth: "100%"
       }}
     >
-      <img src={imageUrl} width="100%" style={{ userSelect: "none", pointerEvents: "none" }} alt={imageAlterText} />
+      {image}
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
@@ -175,9 +174,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   evaluation: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
-  imageUrl: PropTypes.string.isRequired,
+  image: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
-  imageAlterText: PropTypes.string.isRequired,
   imageWidth: PropTypes.number.isRequired,
   theme: PropTypes.object.isRequired
 };

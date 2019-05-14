@@ -4,6 +4,7 @@ import { cloneDeep, flattenDeep } from "lodash";
 import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan } from "@edulastic/common";
+import { white } from "@edulastic/colors";
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
 
@@ -148,6 +149,27 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const renderImage = () =>
+      imageUrl ? (
+        <img
+          src={imageUrl || defaultImageURL}
+          width="100%"
+          style={{ userSelect: "none", pointerEvents: "none" }}
+          alt={imageAlterText}
+          title={imageTitle}
+        />
+      ) : (
+        <div
+          style={{
+            background: white,
+            width: uiStyle.widthpx || "100%",
+            height: uiStyle.widthpx || 400,
+            userSelect: "none",
+            pointerEvents: "none"
+          }}
+        />
+      );
+
     const drop = data => data;
 
     const previewTemplateBoxLayout = (
@@ -168,13 +190,7 @@ class Display extends Component {
             margin: "auto"
           }}
         >
-          <img
-            src={imageUrl || defaultImageURL}
-            width="100%"
-            style={{ userSelect: "none", pointerEvents: "none" }}
-            alt={imageAlterText}
-            title={imageTitle}
-          />
+          {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
             const btnStyle = {
@@ -267,9 +283,8 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
-        imageUrl={imageUrl || defaultImageURL}
-        imageWidth={imageWidth}
-        imageAlterText={imageAlterText}
+        image={renderImage()}
+        imageWidth
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}

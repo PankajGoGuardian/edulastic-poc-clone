@@ -1,18 +1,63 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { ChromePicker } from "react-color";
 
 import { MainTitle } from "../Sidebar/styled";
-import { SummaryTextArea } from "../../common/SummaryForm";
+import { SummaryTextArea, SummaryDiv, ColorBox, SummaryButton } from "../../common/SummaryForm";
+import { Col } from "antd";
+import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
+import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
 
-const Description = ({ windowWidth, description, onChangeField }) => (
+const Description = ({
+  windowWidth,
+  description,
+  onChangeField,
+  textColor,
+  backgroundColor,
+  onChangeColor,
+  isPlaylist,
+  isTextColorPickerVisible,
+  isBackgroundColorPickerVisible
+}) => (
   <Container windowWidth={windowWidth}>
+    {isPlaylist && (
+      <Col span={windowWidth > 993 ? 12 : 24}>
+        <MainTitle>Text Color</MainTitle>
+        <SummaryDiv>
+          <ColorBox data-cy="image-text-box-color-picker" background={textColor} />
+          <SummaryButton onClick={() => onChangeColor("isTextColorPickerVisible", true)}>CHOOSE</SummaryButton>
+          {isTextColorPickerVisible && (
+            <ColorPickerContainer data-cy="image-text-box-color-panel">
+              <ColorPickerWrapper onClick={() => onChangeColor("isTextColorPickerVisible", false)} />
+              <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("textColor", color.hex)} />
+            </ColorPickerContainer>
+          )}
+        </SummaryDiv>
+      </Col>
+    )}
+    {isPlaylist && (
+      <Col span={windowWidth > 993 ? 12 : 24}>
+        <MainTitle>Background Color</MainTitle>
+        <SummaryDiv>
+          <ColorBox data-cy="image-text-box-color-picker" background={backgroundColor} />
+          <SummaryButton onClick={() => onChangeColor("isBackgroundColorPickerVisible", true)}>CHOOSE</SummaryButton>
+          {isBackgroundColorPickerVisible && (
+            <ColorPickerContainer data-cy="image-text-box-color-panel">
+              <ColorPickerWrapper onClick={() => onChangeColor("isBackgroundColorPickerVisible", false)} />
+              <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("backgroundColor", color.hex)} />
+            </ColorPickerContainer>
+          )}
+        </SummaryDiv>
+      </Col>
+    )}
     <MainTitle>Description</MainTitle>
     <SummaryTextArea
       value={description}
       onChange={e => onChangeField("description", e.target.value)}
       size="large"
       placeholder="Enter a description"
+      isplaylist={isPlaylist}
     />
   </Container>
 );

@@ -104,7 +104,7 @@ export const reducer = (state = initialState, { type, payload }) => {
 };
 
 // selectors
-export const stateSelector = state => state.playlist;
+export const stateSelector = state => state.playlists;
 
 export const getPlaylistsSelector = createSelector(
   stateSelector,

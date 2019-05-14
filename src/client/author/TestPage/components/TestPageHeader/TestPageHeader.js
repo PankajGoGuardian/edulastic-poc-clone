@@ -42,6 +42,28 @@ export const navButtons = [
     text: "Settings"
   }
 ];
+export const playlistNavButtons = [
+  {
+    icon: <IconDescription color={white} width={16} height={16} />,
+    value: "summary",
+    text: "Summary"
+  },
+  {
+    icon: <IconAddItems color={white} width={16} height={16} />,
+    value: "addTests",
+    text: "Add Tests"
+  },
+  {
+    icon: <IconReview color={white} width={24} height={24} />,
+    value: "review",
+    text: "Review"
+  },
+  {
+    icon: <IconSettings color={white} width={16} height={16} />,
+    value: "settings",
+    text: "Settings"
+  }
+];
 // TODO mobile look
 const TestPageHeader = ({
   onChangeNav,
@@ -58,15 +80,16 @@ const TestPageHeader = ({
   showShareButton,
   testStatus,
   onShowSource,
+  isPlaylist,
   onAssign
-}) =>
-  windowWidth > 993 ? (
+}) => {
+  return windowWidth > 993 ? (
     <HeaderWrapper>
       <Title>
         {title} <TestStatus>{testStatus}</TestStatus>
       </Title>
 
-      <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+      <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />
 
       <FlexContainer justifyContent="space-between">
         <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
@@ -125,10 +148,11 @@ const TestPageHeader = ({
             </EduButton>
           </FlexContainer>
         </FlexContainer>
-        <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+        <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />
       </FlexContainer>
     </Container>
   );
+};
 
 TestPageHeader.propTypes = {
   onChangeNav: PropTypes.func.isRequired,

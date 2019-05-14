@@ -26,7 +26,13 @@ const Summary = ({
   onShowSource,
   windowWidth,
   itemsSubjectAndGrade,
+  isPlaylist,
   onChangeGrade,
+  backgroundColor,
+  textColor,
+  isTextColorPickerVisible,
+  isBackgroundColorPickerVisible,
+  onChangeColor,
   onChangeSubjects
 }) => {
   const handleChangeField = (field, value) => {
@@ -43,12 +49,22 @@ const Summary = ({
       to: ""
     }
   ];
+  const playlistBreadcrumbData = [
+    {
+      title: "PLAY LIST",
+      to: "/author/playlists"
+    },
+    {
+      title: "REVIEW",
+      to: ""
+    }
+  ];
   const grades = _uniq([...test.grades, ...itemsSubjectAndGrade.grades]);
   const subjects = _uniq([...test.subjects, ...itemsSubjectAndGrade.subjects]);
   return (
     <Container>
       <SecondHeader>
-        <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
+        <Breadcrumb data={isPlaylist ? playlistBreadcrumbData : breadcrumbData} style={{ position: "unset" }} />
         <Button>
           <ButtonLink onClick={onShowSource} color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
             {t("component.questioneditor.buttonbar.source")}
@@ -73,13 +89,24 @@ const Summary = ({
               onChangeField={handleChangeField}
               windowWidth={windowWidth}
               grades={grades}
+              isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
             />
           </Col>
           <Col span={windowWidth > 993 ? 12 : 24}>
-            <Description windowWidth={windowWidth} description={test.description} onChangeField={handleChangeField} />
+            <Description
+              textColor={textColor}
+              backgroundColor={backgroundColor}
+              windowWidth={windowWidth}
+              isPlaylist={isPlaylist}
+              description={test.description}
+              onChangeField={handleChangeField}
+              onChangeColor={onChangeColor}
+              isTextColorPickerVisible={isTextColorPickerVisible}
+              isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
+            />
           </Col>
         </Row>
       </Paper>
@@ -87,6 +114,9 @@ const Summary = ({
   );
 };
 
+Summary.defaultProps = {
+  test: {}
+};
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
@@ -96,7 +126,14 @@ Summary.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   itemsSubjectAndGrade: PropTypes.object.isRequired,
   onChangeGrade: PropTypes.func.isRequired,
-  onChangeSubjects: PropTypes.func.isRequired
+  isPlaylist: PropTypes.bool,
+  onChangeSubjects: PropTypes.func.isRequired,
+  textColor: PropTypes.string.isRequired,
+  backgroundColor: PropTypes.string.isRequired,
+  isBackgroundColorPickerVisible: PropTypes.bool,
+  isTextColorPickerVisible: PropTypes.bool,
+  isTextColorPickerVisible: PropTypes.bool,
+  onChangeColor: PropTypes.func
 };
 
 const enhance = compose(

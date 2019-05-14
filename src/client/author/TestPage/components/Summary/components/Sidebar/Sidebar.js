@@ -24,18 +24,19 @@ const Sidebar = ({
   tags,
   analytics,
   grades,
+  isPlaylist,
   onChangeGrade,
   windowWidth
 }) => (
   <FlexContainer flexDirection="column">
     <Block>
-      <MainTitle>Assessment Name</MainTitle>
+      <MainTitle>{isPlaylist ? "Play List Name" : "Assessment Name"}</MainTitle>
       <SummaryInput
         value={title}
         data-cy="testname"
         onChange={e => onChangeField("title", e.target.value)}
         size="large"
-        placeholder="Enter an assessment name"
+        placeholder={isPlaylist ? `Enter a playlist name` : `Enter an assessment name`}
       />
 
       <MainTitle>Grade</MainTitle>

@@ -45,6 +45,7 @@ const Courses = lazy(() => import("../Courses"));
 const Classes = lazy(() => import("../Classes"));
 const InterestedStandards = lazy(() => import("../InterestedStandards"));
 const PlayList = lazy(() => import("../Playlist"));
+const PlaylistPage = lazy(() => import("../PlaylistPage"));
 
 // eslint-disable-next-line react/prop-types
 const Author = ({ match, history, isSidebarCollapsed }) => {
@@ -115,7 +116,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 path="/author/playlists/create"
                 render={props => (
                   <Suspense fallback={<Progress />}>
-                    <PlayList {...props} />
+                    <PlaylistPage {...props} />
                   </Suspense>
                 )}
               />

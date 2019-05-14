@@ -294,14 +294,14 @@ class TestList extends Component {
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, windowWidth, history, match, playlist } = this.props;
+    const { loading, windowWidth, history, match, playlists } = this.props;
     const { blockStyle } = this.state;
     if (loading) {
       return <Spin size="large" />;
     }
     return (
       <Row gutter={24} type="flex">
-        {playlist.map((item, index) => (
+        {playlists.map((item, index) => (
           <CardWrapper
             item={item}
             key={0}
@@ -455,7 +455,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      playlist: getPlaylistsSelector(state),
+      playlists: getPlaylistsSelector(state),
       loading: getPlaylistsLoadingSelector(state),
       page: getPlaylistsPageSelector(state),
       limit: getPlaylistsLimitSelector(state),

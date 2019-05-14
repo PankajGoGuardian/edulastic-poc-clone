@@ -440,7 +440,6 @@ class CustomQuillComponent extends React.Component {
           modules={modules}
           onChange={this.handleChange}
           onFocus={this.onFocus}
-          onBlur={this.hideToolbar}
           onKeyDown={this.onKeyDownHandler}
           onChangeSelection={this.onChangeSelection}
           placeholder={placeholder}

@@ -6,10 +6,12 @@ const StudentResponse = ({ testActivity }) => (
   <Fragment>
     <StyledFlexContainer>
       <ResponseCard>
-        <ResponseCardTitle>Student Response</ResponseCardTitle>
-        {testActivity.map((student, index) => (
-          <CircularDiv key={index}>{student.studentName.toUpperCase().substr(0, 2)}</CircularDiv>
-        ))}
+        <ResponseCardTitle>Student Responses</ResponseCardTitle>
+        {testActivity
+          .filter(({ status }) => status === "submitted")
+          .map((student, index) => (
+            <CircularDiv key={index}>{student.studentName.toUpperCase().substr(0, 2)}</CircularDiv>
+          ))}
       </ResponseCard>
     </StyledFlexContainer>
   </Fragment>

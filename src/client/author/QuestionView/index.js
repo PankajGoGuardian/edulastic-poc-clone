@@ -2,9 +2,18 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
+import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import { green, dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded } from "@edulastic/colors";
+import {
+  green,
+  dropZoneTitleColor,
+  greyGraphstroke,
+  incorrect,
+  pCorrect,
+  graded,
+  blue,
+  white
+} from "@edulastic/colors";
 
 import {
   StyledFlexContainer,
@@ -176,14 +185,14 @@ class QuestionViewContainer extends Component {
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>
               <ComposedChart barGap={1} barSize={36} data={data}>
-                <XAxis dataKey="name" axisLine={false} tickSize={0} />
+                <XAxis dataKey="name" tickSize={0} />
                 <YAxis
                   dataKey="attempts"
                   yAxisId={0}
                   allowDecimals={false}
                   tick={{ strokeWidth: 0, fill: greyGraphstroke }}
                   tickSize={6}
-                  label={{ value: "ATTEMPTS", angle: -90, fill: greyGraphstroke }}
+                  label={{ value: "Scoring points", angle: -90, fill: greyGraphstroke }}
                   stroke={greyGraphstroke}
                 />
                 <YAxis
@@ -205,6 +214,13 @@ class QuestionViewContainer extends Component {
                 <Bar stackId="a" dataKey="pCorrect" fill={pCorrect} onClick={this.onClickChart} />
                 <Bar stackId="a" dataKey="skipped" fill={dropZoneTitleColor} onClick={this.onClickChart} />
                 <Bar stackId="a" dataKey="manuallyGraded" fill={graded} onClick={this.onClickChart} />
+                <Line
+                  dataKey="avgTimeSpent"
+                  stroke={blue}
+                  strokeWidth="3"
+                  type="monotone"
+                  dot={{ stroke: white, strokeWidth: 6, fill: white }}
+                />
                 <Tooltip content={<CustomTooltip />} cursor={false} />
               </ComposedChart>
             </ResponsiveContainer>

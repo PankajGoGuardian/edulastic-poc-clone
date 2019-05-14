@@ -12,7 +12,7 @@ function validURL(value) {
       errorMsg: ""
     };
 
-  var pattern = new RegExp(/^[a-zA-Z0-9\-\.]+\.(com|org|net|mil|edu|COM|ORG|NET|MIL|EDU)$/i);
+  var pattern = new RegExp(/^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/);
 
   const spiltArray = value.split(/[\s,]+/);
   for (let i = 0; i < spiltArray.length; i++) {

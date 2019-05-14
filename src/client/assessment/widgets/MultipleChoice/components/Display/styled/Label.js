@@ -11,7 +11,7 @@ export const Label = styled.label`
   border-left: ${props =>
     props.styleType === "primary" ? "0" : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`};
   background-color: ${props => (props.styleType === "primary" ? "#fff" : props.color)};
-  max-width: ${props => (props.styleType === "primary" ? "none" : "320px")};
+  max-width: "100%";
   border-radius: ${props => (props.styleType === "primary" ? "4px" : "0px 10px 10px 0px")};
   height: ${props => (props.styleType === "primary" ? "40px" : "auto")};
   box-shadow: ${props => (props.styleType === "primary" ? "0 2px 5px 0 rgba(0, 0, 0, 0.07)" : "none")};
@@ -38,6 +38,7 @@ export const Label = styled.label`
     border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelRightBorderColor};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    min-width: 100%;
   }
   &.right:hover {
     border-color: transparent;
@@ -47,6 +48,7 @@ export const Label = styled.label`
     border-left: solid 3px ${props => props.theme.widgets.multipleChoice.labelWrongBorderColor};
     border-top-right-radius: 8px;
     border-bottom-right-radius: 8px;
+    min-width: 100%; 
   }
   &.preview {
     cursor: initial;

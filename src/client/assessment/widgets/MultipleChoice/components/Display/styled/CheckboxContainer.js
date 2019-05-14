@@ -40,6 +40,7 @@ export const CheckboxContainer = styled.div`
       border-radius: 50%;
       box-sizing: border-box;
       margin-right: ${params.marginRight}px;
+      align-self: flex-start;
       
       + div {
         font-size: 14px;
@@ -98,3 +99,5 @@ export const CheckboxContainer = styled.div`
     `;
   }}
 `;
+
+CheckboxContainer.displayName = "MCQCheckboxContainer";

@@ -11,6 +11,7 @@ import QuestionChoice from "./components/QuestionChoice/QuestionChoice";
 import QuestionText from "./components/QuestionText/QuestionText";
 import QuestionDropdown from "./components/QuestionDropdown/QuestionDropdown";
 import QuestionMath from "./components/QuestionMath/QuestionMath";
+import StandardSet from "./common/StandardSet/StandardSet";
 
 const questionTypeTitles = {
   [MULTIPLE_CHOICE]: "Multiple Choice",
@@ -68,7 +69,7 @@ export default class QuestionEditModal extends React.Component {
   };
 
   render() {
-    const { visible, onClose, question, index, onCurrentChange } = this.props;
+    const { visible, onClose, question, index, onCurrentChange, onUpdate } = this.props;
 
     if (!question) {
       return null;
@@ -84,6 +85,7 @@ export default class QuestionEditModal extends React.Component {
             <ModalTitle>{questionTypeTitles[type]}</ModalTitle>
           </ModalHeader>
           {this.renderForm(type)}
+          <StandardSet alignment={question.alignment} onUpdate={onUpdate} />
           <ModalFooter>
             <Button onClick={onCurrentChange(index - 1)}>Previous</Button>
             <Button onClick={onCurrentChange(index + 1)}>Next</Button>

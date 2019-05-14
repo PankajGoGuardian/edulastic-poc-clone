@@ -99,6 +99,7 @@ const createQuestion = (type, index) => ({
   multiple_responses: false,
   stimulus: "",
   smallSize: true,
+  alignment: [],
   ...(type === MULTIPLE_CHOICE ? multipleChoiceData : {}),
   ...(type === MATH ? mathData : {})
 });

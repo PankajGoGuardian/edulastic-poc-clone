@@ -148,9 +148,9 @@ const AlignmentRow = ({
         />
       )}
       <Row gutter={36}>
-        <Col md={21}>
+        <Col md={20}>
           <Row gutter={1}>
-            <Col md={6}>
+            <Col md={7}>
               <CustomTreeSelect title={`${subject}-${curriculum}-${grades}`} style={{ marginTop: 11 }}>
                 <Fragment>
                   <ItemBody>
@@ -192,7 +192,7 @@ const AlignmentRow = ({
                 </Fragment>
               </CustomTreeSelect>
             </Col>
-            <Col md={18}>
+            <Col md={17}>
               <ItemBody>
                 <Select
                   mode="multiple"
@@ -230,7 +230,7 @@ const AlignmentRow = ({
             </Col>
           </Row>
         </Col>
-        <Col md={3}>
+        <Col md={4}>
           <ItemBody>
             <FlexContainer>
               <BrowseButton

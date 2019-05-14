@@ -382,7 +382,7 @@ function* receiveItemSaga({ payload }) {
       type: CLEAR_DICT_ALIGNMENTS
     });
 
-    if (payload.params.addItem) {
+    if (get(payload, "params.addItem", false)) {
       yield put(addItemsQuestionAction(questions));
     } else {
       yield put(loadQuestionsAction(questions));

@@ -23,7 +23,7 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
           {/* value={specificStudents ? 3 : 1} */}
           <RadioGroup onChange={changeRadioGrop}>
             <Radio value={1}>Entire Class</Radio>
-            <Radio value={2}>Absent Students</Radio>
+            {/* <Radio value={2}>Absent Students</Radio> */}
             <Radio value={3}>Specific Student</Radio>
           </RadioGroup>
         </Col>

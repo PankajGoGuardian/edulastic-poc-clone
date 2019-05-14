@@ -127,10 +127,12 @@ class Container extends PureComponent {
   };
 
   handleAssign = () => {
-    const { history, match } = this.props;
-    const { id } = match.params;
-    if (id) {
-      history.push(`/author/assignments/${id}`);
+    const { test, history, match } = this.props;
+    if (this.validateTest(test)) {
+      const { id } = match.params;
+      if (id) {
+        history.push(`/author/assignments/${id}`);
+      }
     }
   };
 

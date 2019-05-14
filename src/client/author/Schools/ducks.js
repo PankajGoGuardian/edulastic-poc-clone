@@ -20,6 +20,7 @@ const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 
 const SET_SEARCHNAME_VALUE = "[school] set serch by name value";
 const SET_SCHOOL_FILTERS_DATA = "[school] set filters data";
+const SET_SCHOOL_SORT_INFO = "[school] set sort info";
 
 const SET_SCHOOLSACTION_STATUS_ACTION = "[school] set action status";
 
@@ -38,9 +39,8 @@ export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 
 export const setSearchByNameValueAction = createAction(SET_SEARCHNAME_VALUE);
 export const setSchoolFiltersDataAction = createAction(SET_SCHOOL_FILTERS_DATA);
-
 export const setSchoolActionStatusAction = createAction(SET_SCHOOLSACTION_STATUS_ACTION);
-
+export const setSchoolsSortInfoAction = createAction(SET_SCHOOL_SORT_INFO);
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
@@ -56,7 +56,7 @@ export const getSchoolsSelector = createSelector(
     }
 
     const filtersData = state.filtersData;
-    const filteredSchoolList = [];
+    let filteredSchoolList = [];
     for (let i = 0; i < searchedSchoolList.length; i++) {
       let isMatched = true;
       for (let j = 0; j < filtersData.length; j++) {
@@ -97,6 +97,35 @@ export const getSchoolsSelector = createSelector(
       }
     }
 
+    if (state.sortedInfo.order === "ascend") {
+      filteredSchoolList = filteredSchoolList.sort((a, b) => {
+        if (
+          a[state.sortedInfo.columnKey].toString().toLowerCase() >
+          b[state.sortedInfo.columnKey].toString().toLowerCase()
+        ) {
+          return 1;
+        } else if (
+          a[state.sortedInfo.columnKey].toString().toLowerCase() <
+          b[state.sortedInfo.columnKey].toString().toLowerCase()
+        ) {
+          return -1;
+        } else return 0;
+      });
+    } else if (state.sortedInfo.order === "descend") {
+      filteredSchoolList = filteredSchoolList.sort((a, b) => {
+        if (
+          b[state.sortedInfo.columnKey].toString().toLowerCase() >
+          a[state.sortedInfo.columnKey].toString().toLowerCase()
+        ) {
+          return 1;
+        } else if (
+          b[state.sortedInfo.columnKey].toString().toLowerCase() <
+          a[state.sortedInfo.columnKey].toString().toLowerCase()
+        ) {
+          return -1;
+        } else return 0;
+      });
+    }
     return filteredSchoolList;
   }
 );
@@ -124,7 +153,11 @@ const initialState = {
       filterAdded: false
     }
   ],
-  selectedAction: ""
+  selectedAction: "",
+  sortedInfo: {
+    columnKey: "name",
+    order: "ascend"
+  }
 };
 
 export const reducer = createReducer(initialState, {
@@ -189,10 +222,12 @@ export const reducer = createReducer(initialState, {
     state.update = payload;
     state.updating = false;
     state.data = schoolsData;
+    state.selectedAction = "";
   },
   [UPDATE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.updating = false;
     state.updateError = payload.error;
+    state.selectedAction = "";
   },
   [CREATE_SCHOOLS_REQUEST]: state => {
     state.creating = true;
@@ -249,6 +284,26 @@ export const reducer = createReducer(initialState, {
   },
   [SET_SCHOOLSACTION_STATUS_ACTION]: (state, { payload }) => {
     state.selectedAction = payload;
+  },
+  [SET_SCHOOL_SORT_INFO]: (state, { payload }) => {
+    if (state.sortedInfo.columnKey === payload) {
+      if (state.sortedInfo.order === "descend") {
+        state.sortedInfo = {
+          columnKey: payload,
+          order: "ascend"
+        };
+      } else {
+        state.sortedInfo = {
+          columnKey: payload,
+          order: "descend"
+        };
+      }
+    } else {
+      state.sortedInfo = {
+        columnKey: payload,
+        order: "ascend"
+      };
+    }
   }
 });
 

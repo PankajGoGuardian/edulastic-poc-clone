@@ -16,7 +16,10 @@ import {
   StyledFilterButton,
   StyledSchoolSearch,
   StyledSelectStatus,
-  StyledTable
+  StyledTable,
+  StyledHeaderColumn,
+  StyledSortIconDiv,
+  StyledSortIcon
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -30,7 +33,8 @@ import {
   deleteSchoolsAction,
   setSearchByNameValueAction,
   setSchoolFiltersDataAction,
-  setSchoolActionStatusAction
+  setSchoolActionStatusAction,
+  setSchoolsSortInfoAction
 } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
@@ -58,80 +62,6 @@ class SchoolsTable extends React.Component {
       editSchoolModaVisible: false,
       editSchoolKey: ""
     };
-
-    this.columns = [
-      {
-        title: "Name",
-        dataIndex: "name",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.name, b.name)
-      },
-      {
-        title: "City",
-        dataIndex: "city",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.city, b.city)
-      },
-      {
-        title: "State",
-        dataIndex: "state",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.state, b.state)
-      },
-      {
-        title: "Zip",
-        dataIndex: "zip",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.zip, b.zip)
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.status, b.status),
-        render: (text, record) => {
-          return (
-            <React.Fragment>{record.status == 0 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
-          );
-        }
-      },
-      {
-        title: "Teacher",
-        dataIndex: "teachersCount",
-        editable: true,
-        sorter: (a, b) => a.teacher - b.teacher
-      },
-      {
-        title: "Student",
-        dataIndex: "studentsCount",
-        editable: true,
-        sorter: (a, b) => a.student - b.student
-      },
-      {
-        title: "Section",
-        dataIndex: "sectionsCount",
-        editable: true,
-        sorter: (a, b) => a.section - b.section
-      },
-      {
-        dataIndex: "operation",
-        width: "94px",
-        render: (text, record) => {
-          return (
-            <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditSchool(record.key)}>
-                <Icon type="edit" theme="twoTone" />
-              </StyledTableButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledTableButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledTableButton>
-              </Popconfirm>
-            </React.Fragment>
-          );
-        }
-      }
-    ];
   }
 
   componentDidMount() {
@@ -143,6 +73,21 @@ class SchoolsTable extends React.Component {
     if (nextProps.schoolList.length === undefined) return { dataSource: [] };
     else return { dataSource: nextProps.schoolList };
   }
+
+  compareByAlph(a, b) {
+    if (a.toString().toLowerCase() > b.toString().toLowerCase()) {
+      return -1;
+    }
+    if (a.toString().toLowerCase() < b.toString().toLowerCase()) {
+      return 1;
+    }
+    return 0;
+  }
+
+  onHeaderCell = colName => {
+    const { setSortInfo } = this.props;
+    setSortInfo(colName);
+  };
 
   onEditSchool = key => {
     this.setState({
@@ -235,8 +180,9 @@ class SchoolsTable extends React.Component {
   changeActionMode = value => {
     const { selectedRowKeys } = this.state;
     const { setActionStatus } = this.props;
-
-    if (value === "edit school") {
+    if (value === "") {
+      setActionStatus("");
+    } else if (value === "edit school") {
       if (selectedRowKeys.length == 0) {
         setActionStatus("");
         message.error("Please select school to edit.");
@@ -344,15 +290,249 @@ class SchoolsTable extends React.Component {
   };
 
   render() {
-    const columns = this.columns.map(col => {
+    const { dataSource, selectedRowKeys, createSchoolModalVisible, editSchoolModaVisible, editSchoolKey } = this.state;
+
+    const { filtersData, sortedInfo, selectedAction } = this.props;
+
+    const columnsInfo = [
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Name</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "name",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("name");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>City</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "city",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("city");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>State</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "state",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("state");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Zip</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "zip",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("zip");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Status</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "status",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("status");
+            }
+          };
+        },
+        render: (text, record) => {
+          return (
+            <React.Fragment>{record.status == 0 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
+          );
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Teacher</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "teachersCount",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("teachersCount");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Student</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "studentsCount",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("studentsCount");
+            }
+          };
+        }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Section</p>
+            <StyledSortIconDiv>
+              <StyledSortIcon
+                type="caret-up"
+                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "descend"}
+              />
+              <StyledSortIcon
+                type="caret-down"
+                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "ascend"}
+              />
+            </StyledSortIconDiv>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "sectionsCount",
+        editable: true,
+        onHeaderCell: column => {
+          return {
+            onClick: () => {
+              this.onHeaderCell("sectionsCount");
+            }
+          };
+        }
+      },
+      {
+        dataIndex: "operation",
+        width: "94px",
+        render: (text, record) => {
+          return (
+            <React.Fragment>
+              <StyledTableButton onClick={() => this.onEditSchool(record.key)}>
+                <Icon type="edit" theme="twoTone" />
+              </StyledTableButton>
+              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
+                <StyledTableButton>
+                  <Icon type="delete" theme="twoTone" />
+                </StyledTableButton>
+              </Popconfirm>
+            </React.Fragment>
+          );
+        }
+      }
+    ];
+
+    const columns = columnsInfo.map(col => {
       return {
         ...col
       };
     });
-
-    const { dataSource, selectedRowKeys, createSchoolModalVisible, editSchoolModaVisible, editSchoolKey } = this.state;
-
-    const { filtersData, selectedAction } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -477,7 +657,8 @@ const enhance = compose(
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
       filtersData: get(state, ["schoolsReducer", "filtersData"], []),
-      selectedAction: get(state, ["schoolsReducer", "selectedAction"], "")
+      selectedAction: get(state, ["schoolsReducer", "selectedAction"], ""),
+      sortedInfo: get(state, ["schoolsReducer", "sortedInfo"])
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -486,7 +667,8 @@ const enhance = compose(
       deleteSchool: deleteSchoolsAction,
       setSearchByName: setSearchByNameValueAction,
       setFiltersData: setSchoolFiltersDataAction,
-      setActionStatus: setSchoolActionStatusAction
+      setActionStatus: setSchoolActionStatusAction,
+      setSortInfo: setSchoolsSortInfoAction
     }
   )
 );

@@ -13,8 +13,10 @@ export const Label = styled.label`
   background-color: ${props => (props.styleType === "primary" ? "#fff" : props.color)};
   max-width: "100%";
   border-radius: ${props => (props.styleType === "primary" ? "4px" : "0px 10px 10px 0px")};
-  height: ${props => (props.styleType === "primary" ? "40px" : "auto")};
+  min-height: ${props => (props.styleType === "primary" ? "40px" : "auto")};
   box-shadow: ${props => (props.styleType === "primary" ? "0 2px 5px 0 rgba(0, 0, 0, 0.07)" : "none")};
+  display: flex;
+  align-items: center;
   /* margin: ${props => (props.setAnswers ? "5px 0" : "10px 0")}; */
   /* width: ${props => props.width || "100%"}; */
 

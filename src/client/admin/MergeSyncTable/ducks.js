@@ -127,9 +127,10 @@ const fetchExistingDataReducer = createReducer(initialState, {
   [LOGS_DATA_SUCCESS]: (state, { payload }) => {
     state.subStandardMapping.logs = payload.result;
   },
-  [RECEIVE_MERGED_CLEVER_ID]: (state, { payload }) => {
+  [RECEIVE_MERGED_CLEVER_ID]: (state, { payload: { data, mergeType } }) => {
     state.mergeResponse = {
-      data: payload,
+      data,
+      mergeType,
       showData: true
     };
   },
@@ -199,7 +200,7 @@ function* fetchApplyDeltaSync({ payload }) {
 }
 
 function* fetchSchoolsSync({ payload }) {
-  var item;
+  let item;
   try {
     if (payload.selectedSyncOption === "syncSelectedSchools") {
       item = yield call(selectedSchoolSyncApi, payload);
@@ -255,8 +256,8 @@ function* uploadCSVtoCleverSaga({ payload }) {
       return message.error(responseMsg);
     }
     message.success(responseMsg);
-    const { cleverId, districtId: cleverDistrict } = payload;
-    yield put(receiveMergeCleverIdsAction(data));
+    const { cleverId, districtId: cleverDistrict, mergeType } = payload;
+    yield put(receiveMergeCleverIdsAction({ data, mergeType }));
     yield put(
       searchExistingDataApi({
         cleverDistrict,

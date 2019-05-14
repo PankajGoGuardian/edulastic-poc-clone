@@ -16,7 +16,7 @@ const MergeCleverIdsTable = ({
   mergeResponse,
   closeMergeResponse
 }) => {
-  const { data: mergeResponseData, showData: showMergeResponseData } = mergeResponse;
+  const { data: mergeResponseData, showData: showMergeResponseData, mergeType: downloadMergeType } = mergeResponse;
 
   const handleUpload = (info, mergeType) => {
     try {
@@ -67,8 +67,8 @@ const MergeCleverIdsTable = ({
           <Button key="submit" type="primary">
             <CSVLink
               data={mergeResponseData}
-              filename={"merge_report.csv"}
-              seperator={","}
+              filename={`${downloadMergeType}_match_result_${districtId}.csv`}
+              seperator=","
               headers={headers}
               target="_blank"
             >
@@ -76,7 +76,7 @@ const MergeCleverIdsTable = ({
             </CSVLink>
           </Button>
         ]}
-        width={"80%"}
+        width="80%"
       >
         <Table rowKey={record => record.cleverId} dataSource={mergeResponseData} pagination={false}>
           <Column title="Edulastic Id" dataIndex="edulasticId" key="edulasticId" />

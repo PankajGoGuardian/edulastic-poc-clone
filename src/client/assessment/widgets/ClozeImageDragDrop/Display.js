@@ -29,7 +29,7 @@ class Display extends Component {
       userAnswers[index] = userSelection;
       return 0;
     });
-    const possibleResponses = this.getInitialResponses(props.options);
+    const possibleResponses = this.getInitialResponses(props);
 
     this.state = {
       userAnswers,
@@ -38,9 +38,8 @@ class Display extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    const { options } = nextProps;
     if (this.state !== undefined) {
-      const possibleResponses = this.getInitialResponses(options);
+      const possibleResponses = this.getInitialResponses(nextProps);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses
@@ -91,16 +90,8 @@ class Display extends Component {
       return arr;
     });
 
-  getInitialResponses = options => {
-    const { configureOptions, userSelections: userSelectionsProp } = this.props;
+  getInitialResponses = ({ options, userSelections, configureOptions }) => {
     const { duplicatedResponses: isDuplicated } = configureOptions;
-    let userSelections = [];
-    if (this.state !== undefined) {
-      const { userAnswers } = this.state;
-      userSelections = userAnswers;
-    } else {
-      userSelections = userSelectionsProp;
-    }
 
     let possibleResps = [];
     possibleResps = cloneDeep(options);
@@ -140,6 +131,7 @@ class Display extends Component {
       instructorStimulus,
       theme
     } = this.props;
+
     const { userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
@@ -288,6 +280,7 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
+
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}

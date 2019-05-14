@@ -10,6 +10,7 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
+import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
@@ -109,10 +110,18 @@ class ComposeQuestion extends Component {
 
   onItemPropChange = (prop, value) => {
     const { item, setQuestionData } = this.props;
+
     setQuestionData(
-      produce(item, draft => {
-        draft[prop] = value;
-        updateVariables(draft);
+      produce(item, newItem => {
+        if (prop === "responses") {
+          if (newItem.options.length > value.length) {
+            newItem.options.pop();
+          } else if (value.length > newItem.options.length) {
+            newItem.options.push(["", ""]);
+          }
+        }
+        newItem[prop] = value;
+        updateVariables(newItem);
       })
     );
   };

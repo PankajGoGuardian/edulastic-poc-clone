@@ -130,7 +130,7 @@ class MultipleChoiceOptions extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index] = {
-          value: index,
+          value: item.options[index].value,
           label: value
         };
         updateVariables(draft);

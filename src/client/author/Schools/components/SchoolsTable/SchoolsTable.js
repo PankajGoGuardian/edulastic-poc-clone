@@ -29,17 +29,18 @@ import {
   updateSchoolsAction,
   deleteSchoolsAction,
   setSearchByNameValueAction,
-  setSchoolFiltersDataAction
+  setSchoolFiltersDataAction,
+  setSchoolActionStatusAction
 } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 
 function compareByAlph(a, b) {
-  if (a > b) {
+  if (a.toString().toLowerCase() > b.toString().toLowerCase()) {
     return -1;
   }
-  if (a < b) {
+  if (a.toString().toLowerCase() < b.toString().toLowerCase()) {
     return 1;
   }
   return 0;
@@ -139,8 +140,8 @@ class SchoolsTable extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.schoolList.length === undefined) return { dataSource: [], filtersData: nextProps.filtersData };
-    else return { dataSource: nextProps.schoolList, filtersData: nextProps.filtersData };
+    if (nextProps.schoolList.length === undefined) return { dataSource: [] };
+    else return { dataSource: nextProps.schoolList };
   }
 
   onEditSchool = key => {
@@ -233,16 +234,22 @@ class SchoolsTable extends React.Component {
 
   changeActionMode = value => {
     const { selectedRowKeys } = this.state;
+    const { setActionStatus } = this.props;
+
     if (value === "edit school") {
       if (selectedRowKeys.length == 0) {
+        setActionStatus("");
         message.error("Please select school to edit.");
       } else if (selectedRowKeys.length == 1) {
+        setActionStatus("edit school");
         this.onEditSchool(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
+        setActionStatus("");
         message.error("Please select single school to edit.");
       }
     } else if (value === "deactivate school") {
       if (selectedRowKeys.length > 0) {
+        setActionStatus("deactivate school");
         const data = [...this.state.dataSource];
         this.setState({
           dataSource: data.filter(item => {
@@ -252,11 +259,12 @@ class SchoolsTable extends React.Component {
 
         const selectedSchoolsData = [];
         selectedRowKeys.map(value => {
-          selectedSchoolsData.push({ schoolId: data[value]._id, orgId: data[value].districtId });
+          selectedSchoolsData.push({ schoolId: value, orgId: this.props.userOrgId });
         });
         const { deleteSchool } = this.props;
         deleteSchool(selectedSchoolsData);
       } else {
+        setActionStatus("");
         message.error("Please select schools to delete.");
       }
     }
@@ -265,7 +273,7 @@ class SchoolsTable extends React.Component {
   createSchool = newSchoolData => {
     const newData = {
       name: newSchoolData.name,
-      districtId: this.props.userOrgId,
+      districtId: this.props.districtId,
       location: {
         address: newSchoolData.address,
         city: newSchoolData.city,
@@ -326,9 +334,8 @@ class SchoolsTable extends React.Component {
   };
 
   closeEditSchoolModal = () => {
-    this.setState({
-      editSchoolModaVisible: false
-    });
+    this.props.setActionStatus("");
+    this.setState({ editSchoolModaVisible: false });
   };
 
   searchByName = e => {
@@ -345,7 +352,7 @@ class SchoolsTable extends React.Component {
 
     const { dataSource, selectedRowKeys, createSchoolModalVisible, editSchoolModaVisible, editSchoolKey } = this.state;
 
-    const { filtersData } = this.props;
+    const { filtersData, selectedAction } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -373,6 +380,7 @@ class SchoolsTable extends React.Component {
             value={filtersData[i].filtersColumn}
           >
             <Option value="">Select a column</Option>
+            <Option value="address">Address</Option>
             <Option value="city">City</Option>
             <Option value="state">State</Option>
             <Option value="zip">Zip</Option>
@@ -435,7 +443,7 @@ class SchoolsTable extends React.Component {
           )}
 
           <StyledSchoolSearch placeholder="Search by name" onChange={this.searchByName} />
-          <StyledSelectStatus defaultValue="" onChange={this.changeActionMode}>
+          <StyledSelectStatus defaultValue="" onChange={this.changeActionMode} value={selectedAction}>
             <Option value="">Actions</Option>
             <Option value="edit school">Edit School</Option>
             <Option value="deactivate school">Deactivate School</Option>
@@ -468,7 +476,8 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
-      filtersData: get(state, ["schoolsReducer", "filtersData"], [])
+      filtersData: get(state, ["schoolsReducer", "filtersData"], []),
+      selectedAction: get(state, ["schoolsReducer", "selectedAction"], "")
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -476,7 +485,8 @@ const enhance = compose(
       updateSchool: updateSchoolsAction,
       deleteSchool: deleteSchoolsAction,
       setSearchByName: setSearchByNameValueAction,
-      setFiltersData: setSchoolFiltersDataAction
+      setFiltersData: setSchoolFiltersDataAction,
+      setActionStatus: setSchoolActionStatusAction
     }
   )
 );

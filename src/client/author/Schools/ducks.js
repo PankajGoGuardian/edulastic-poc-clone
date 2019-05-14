@@ -21,6 +21,8 @@ const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 const SET_SEARCHNAME_VALUE = "[school] set serch by name value";
 const SET_SCHOOL_FILTERS_DATA = "[school] set filters data";
 
+const SET_SCHOOLSACTION_STATUS_ACTION = "[school] set action status";
+
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
 export const receiveSchoolsSuccessAction = createAction(RECEIVE_SCHOOLS_SUCCESS);
 export const receiveSchoolsErrorAction = createAction(RECEIVE_SCHOOLS_ERROR);
@@ -36,6 +38,8 @@ export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 
 export const setSearchByNameValueAction = createAction(SET_SEARCHNAME_VALUE);
 export const setSchoolFiltersDataAction = createAction(SET_SCHOOL_FILTERS_DATA);
+
+export const setSchoolActionStatusAction = createAction(SET_SCHOOLSACTION_STATUS_ACTION);
 
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
@@ -119,7 +123,8 @@ const initialState = {
       filterStr: "",
       filterAdded: false
     }
-  ]
+  ],
+  selectedAction: ""
 };
 
 export const reducer = createReducer(initialState, {
@@ -142,14 +147,20 @@ export const reducer = createReducer(initialState, {
       }
       delete school._source;
       school.key = school._id;
-      school.city = get(school, ["city"], "");
-      school.state = get(school, ["state"], "");
-      school.zip = get(school, ["zip"], "");
-      school.country = get(school, ["country"], "");
-      school.teachersCount = get(school, ["teachersCount"], 0);
-      school.studentsCount = get(school, ["studentsCount"], 0);
-      school.sectionsCount = get(school, ["sectionsCount"], 0);
+      school.city = get(school, "city", "");
+      if (school.city == null) school.city = "";
+      school.state = get(school, "state", "");
+      if (school.state == null) school.state = "";
+      school.zip = get(school, "zip", "");
+      if (school.zip == null) school.zip = "";
+      school.country = get(school, "country", "");
+      if (school.country == null) school.country = "";
+      school.teachersCount = get(school, "teachersCount", 0);
+      school.studentsCount = get(school, "studentsCount", 0);
+      school.sectionsCount = get(school, "sectionsCount", 0);
       school.status = get(school, ["status"], 1);
+      school.address = get(school, "address", "");
+      if (school.address == null) school.address = "";
       schoolsData.push(school);
     });
 
@@ -223,16 +234,21 @@ export const reducer = createReducer(initialState, {
       });
       if (nMatchCount == 0) return school;
     });
+    state.selectedAction = "";
   },
   [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.deleting = false;
     state.deleteError = payload.error;
+    state.selectedAction = "";
   },
   [SET_SEARCHNAME_VALUE]: (state, { payload }) => {
     state.searchByName = payload;
   },
   [SET_SCHOOL_FILTERS_DATA]: (state, { payload }) => {
     state.filtersData = [...payload];
+  },
+  [SET_SCHOOLSACTION_STATUS_ACTION]: (state, { payload }) => {
+    state.selectedAction = payload;
   }
 });
 

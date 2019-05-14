@@ -40,21 +40,31 @@ export const QuestionForm = styled.div`
 `;
 
 export const EditButton = styled.span`
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 8px 15px;
-  cursor: pointer;
-
-  &:hover {
-    opacity: 0.7;
-  }
+  padding-left: 0;
+  width: 50px;
+  height: 32px;
 
   svg {
     fill: ${greenDark};
     width: 13px;
     height: 13px;
+    cursor: pointer;
 
     &:hover {
       fill: ${greenDark};
+      opacity: 0.7;
+    }
+
+    &:last-child {
+      fill: ${secondaryTextColor};
+
+      &:hover {
+        fill: ${secondaryTextColor};
+      }
     }
   }
 `;

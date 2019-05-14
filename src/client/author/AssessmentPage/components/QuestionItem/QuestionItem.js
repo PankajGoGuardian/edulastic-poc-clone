@@ -4,7 +4,7 @@ import { Draggable } from "react-drag-and-drop";
 import { isArray, isUndefined, isNull } from "lodash";
 
 import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
-import { IconPencilEdit, IconCheck, IconClose } from "@edulastic/icons";
+import { IconPencilEdit, IconCheck, IconClose, IconTrash } from "@edulastic/icons";
 
 import withAnswerSave from "../../../../assessment/components/HOC/withAnswerSave";
 import FormChoice from "./components/FormChoice/FormChoice";
@@ -29,6 +29,7 @@ class QuestionItem extends React.Component {
     data: PropTypes.object.isRequired,
     onCreateOptions: PropTypes.func.isRequired,
     onOpenEdit: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     saveAnswer: PropTypes.func.isRequired,
     evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.bool]),
     userAnswer: PropTypes.any,
@@ -140,10 +141,11 @@ class QuestionItem extends React.Component {
   };
 
   renderEditButton = () => {
-    const { onOpenEdit } = this.props;
+    const { onOpenEdit, onDelete } = this.props;
     return (
-      <EditButton onClick={onOpenEdit}>
-        <IconPencilEdit />
+      <EditButton>
+        <IconPencilEdit onClick={onOpenEdit} />
+        <IconTrash onClick={onDelete} />
       </EditButton>
     );
   };

@@ -5,7 +5,7 @@ import { mainBlueColor, white } from "@edulastic/colors";
 
 export const QuestionsWrapper = styled.div`
   position: relative;
-  min-width: 288px;
+  min-width: 300px;
   height: calc(100vh - 62px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
   padding: 30px 0;

@@ -12,7 +12,7 @@ import { getPreviewSelector, getViewSelector } from "../../../src/selectors/view
 import { checkAnswerAction } from "../../../src/actions/testItem";
 import { changePreviewAction } from "../../../src/actions/view";
 import { EXACT_MATCH } from "../../../../assessment/constants/constantsForQuestions";
-import { addQuestionAction, updateQuestionAction } from "../../../sharedDucks/questions";
+import { addQuestionAction, updateQuestionAction, deleteQuestionAction } from "../../../sharedDucks/questions";
 import AddQuestion from "../AddQuestion/AddQuestion";
 import QuestionItem from "../QuestionItem/QuestionItem";
 import QuestionEditModal from "../QuestionEditModal/QuestionEditModal";
@@ -160,6 +160,7 @@ class Questions extends React.Component {
     questionsById: PropTypes.object,
     addQuestion: PropTypes.func.isRequired,
     updateQuestion: PropTypes.func.isRequired,
+    deleteQuestion: PropTypes.func.isRequired,
     checkAnswer: PropTypes.func.isRequired,
     changePreview: PropTypes.func.isRequired,
     previewMode: PropTypes.string.isRequired,
@@ -197,6 +198,11 @@ class Questions extends React.Component {
     addQuestion(question);
 
     this.handleOpenEditModal(questionIndex - 1)();
+  };
+
+  handleDeleteQuestion = questionId => () => {
+    const { deleteQuestion } = this.props;
+    deleteQuestion(questionId);
   };
 
   handleAddSection = () => {
@@ -316,6 +322,7 @@ class Questions extends React.Component {
                   data={question}
                   onCreateOptions={this.handleCreateOptions}
                   onOpenEdit={this.handleOpenEditModal(i)}
+                  onDelete={this.handleDeleteQuestion(question.id)}
                   previewMode={previewMode}
                   viewMode={viewMode}
                   answer={answersById[question.id]}
@@ -358,6 +365,7 @@ const enhance = compose(
     {
       addQuestion: addQuestionAction,
       updateQuestion: updateQuestionAction,
+      deleteQuestion: deleteQuestionAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction
     }

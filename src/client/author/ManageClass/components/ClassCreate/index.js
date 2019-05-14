@@ -115,7 +115,7 @@ class ClassCreate extends React.Component {
               <RightFields
                 curriculums={curriculums}
                 getFieldDecorator={getFieldDecorator}
-                schoolsData={defaultSchool}
+                defaultSchool={defaultSchool}
                 courseList={courseList}
                 schoolList={schools}
                 searchCourse={this.searchCourse}

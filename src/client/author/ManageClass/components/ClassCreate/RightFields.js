@@ -14,7 +14,15 @@ const startDate = moment();
 const endDate = moment().add("years", 1);
 
 // eslint-disable-next-line max-len
-const RightFields = ({ curriculums, schoolsData, courseList, schoolList, searchCourse, isSearching, ...restProps }) => {
+const RightFields = ({
+  curriculums,
+  defaultSchool,
+  courseList,
+  schoolList,
+  searchCourse,
+  isSearching,
+  ...restProps
+}) => {
   const [subject, setSubject] = useState("");
 
   const updateSubject = e => {
@@ -23,7 +31,13 @@ const RightFields = ({ curriculums, schoolsData, courseList, schoolList, searchC
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
 
-  const isDropdown = isArray(schoolList) && !isEmpty(schoolList);
+  let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
+
+  if (isDropdown) {
+    if (schoolList.length === 1) {
+      isDropdown = schoolList[0]._id !== defaultSchool;
+    }
+  }
 
   const standardSets = filter(curriculums, el => el.subject === subject);
 
@@ -105,7 +119,7 @@ const RightFields = ({ curriculums, schoolsData, courseList, schoolList, searchC
       </FieldLabel>
 
       {!isDropdown && (
-        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={schoolsData}>
+        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
           <input type="hidden" />
         </FieldLabel>
       )}
@@ -134,7 +148,7 @@ RightFields.propTypes = {
       subject: PropTypes.string.isRequired
     })
   ).isRequired,
-  schoolsData: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  defaultSchool: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
   courseList: PropTypes.array.isRequired,
   schoolList: PropTypes.array,
   searchCourse: PropTypes.func.isRequired,

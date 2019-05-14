@@ -177,7 +177,7 @@ class AssessmentPlayerDefault extends React.Component {
 
   handleModeCaculate = calculateMode => {
     this.setState({
-      calculateMode: calculateMode,
+      calculateMode,
       scratchPadMode: false
     });
   };
@@ -227,7 +227,6 @@ class AssessmentPlayerDefault extends React.Component {
     }
   };
 
-  
   render() {
     const {
       theme,
@@ -247,7 +246,6 @@ class AssessmentPlayerDefault extends React.Component {
       scratchPad
     } = this.props;
 
-   
     const {
       testItemState,
       isToolbarModalVisible,
@@ -272,7 +270,6 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
-
     return (
       <ThemeProvider theme={theme}>
         <Container>

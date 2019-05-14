@@ -641,7 +641,8 @@ const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, sa
           top: 62,
           left: 0,
           display: scratchPadMode ? "block" : "none",
-          zIndex: mouseClicked || dragStart || activeMode !== "" ? 1000 : 0
+          pointerEvents: activeMode === "" ? "none" : "all",
+          zIndex: mouseClicked || dragStart || activeMode === "" ? 100000 : 10000
         }}
       >
         {figures.length > 0 &&

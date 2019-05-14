@@ -194,10 +194,9 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  bottom: 20px;
-  left: 20px;
+  top: 62px;
   background: ${mainBlueColor};
-  z-index: 10000;
+  z-index: 100001;
   border-radius: 4px;
   padding: 10px 0;
 `;

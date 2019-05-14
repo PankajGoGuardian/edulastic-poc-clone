@@ -10,6 +10,7 @@ export const withMathFormula = WrappedComponent => {
     opacity: 0;
   `;
   const StyledWrappedComponent = styled(WrappedComponent)`
+    display: block;
     p {
       display: inline;
     }
@@ -106,6 +107,7 @@ export const withMathFormula = WrappedComponent => {
       setNewInnerHtml(nNewInnerHtml);
     }, [dangerouslySetInnerHTML, mathField, window.MathQuill]);
 
+    console.log("props passed", props);
     return (
       <WithResources
         resources={[

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { compose } from "redux";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import produce from "immer";
 import { arrayMove } from "react-sortable-hoc";
@@ -13,7 +14,6 @@ import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 import { updateVariables } from "../../utils/variables";
-import connect from "react-redux/es/connect/connect";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
@@ -48,6 +48,12 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.splice(index, 1);
+          draft.validation.valid_response.value.splice(index, 1);
+
+          draft.validation.alt_responses = draft.validation.alt_responses.map(ans => {
+            ans.value.splice(index, 1);
+            return ans;
+          });
         })
       );
     };
@@ -65,6 +71,12 @@ class MultipleChoiceOptions extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.stems.push("");
+          draft.validation.valid_response.value.push(null);
+
+          draft.validation.alt_responses = draft.validation.alt_responses.map(ans => {
+            ans.value.push(null);
+            return ans;
+          });
         })
       );
     };

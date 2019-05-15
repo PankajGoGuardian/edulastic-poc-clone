@@ -1,2 +1,2 @@
-export { default } from "./AddTest";
-export { watcherSaga as testsAddTestsSaga, reducer as playlistsAddTests } from "./ducks";
+export { default } from "./AddTests";
+export { watcherSaga as playlistsAddTestsSaga, default as playlistsAddTests } from "./ducks";

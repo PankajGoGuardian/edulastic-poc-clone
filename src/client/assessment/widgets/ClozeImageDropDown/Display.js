@@ -4,7 +4,6 @@ import { shuffle } from "lodash";
 import { withTheme } from "styled-components";
 
 import MapImage from "../../assets/map.svg";
-import CardMapImage from "../../assets/map-card.svg";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -15,7 +14,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
-import { getFontSize, topAndLeftRatio, calculateRatio } from "../../utils/helpers";
+import { getFontSize, topAndLeftRatio, calculateRatio, fromStringToNumberPx } from "../../utils/helpers";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -105,11 +104,21 @@ class Display extends Component {
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;
               const btnStyle = {
-                widthpx: topAndLeftRatio(responseContainer.width, imagescale, fontsize, smallSize),
-                width: topAndLeftRatio(responseContainer.width, imagescale, fontsize, smallSize),
+                widthpx: topAndLeftRatio(
+                  fromStringToNumberPx(responseContainer.width),
+                  imagescale,
+                  fontsize,
+                  smallSize
+                ),
+                width: topAndLeftRatio(fromStringToNumberPx(responseContainer.width), imagescale, fontsize, smallSize),
                 top: topAndLeftRatio(responseContainer.top, imagescale, fontsize, smallSize),
                 left: topAndLeftRatio(responseContainer.left, imagescale, fontsize, smallSize),
-                height: topAndLeftRatio(responseContainer.height, imagescale, fontsize, smallSize),
+                height: topAndLeftRatio(
+                  fromStringToNumberPx(responseContainer.height),
+                  imagescale,
+                  fontsize,
+                  smallSize
+                ),
                 border: showDashedBorder
                   ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
                   : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,

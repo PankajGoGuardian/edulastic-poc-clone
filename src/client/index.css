@@ -753,8 +753,6 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   border-radius: 5px;
-  min-width: 100px;
-  min-height: 30px;
   z-index: 100;
 }
 
@@ -855,12 +853,6 @@ input[type="checkbox"] {
 
 .ant-select-selection__rendered {
   display: block !important;
-}
-
-.ant-select,
-.ant-input,
-.ant-input-number {
-  min-width: 100px;
 }
 
 .template_box.dropdown-small,

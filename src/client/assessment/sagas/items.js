@@ -66,7 +66,7 @@ function* saveUserResponse({ payload }) {
     const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
     const shuffledOptions = yield select(state => state.shuffledOptions);
     const currentItem = items.length && items[itemIndex];
-    console.log(currentItem);
+
     const questions = getQuestionIds(currentItem);
     const itemAnswers = {};
     const shuffles = {};
@@ -81,7 +81,7 @@ function* saveUserResponse({ payload }) {
 
     const testItemId = currentItem._id;
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    const userWork = yield select(({ userWork }) => userWork[testItemId]);
+    const userWork = yield select(({ userWork }) => userWork.present[testItemId]);
     const groupId = yield select(getCurrentGroup);
 
     const activity = {

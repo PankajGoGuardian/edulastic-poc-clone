@@ -1131,23 +1131,6 @@ span.token.active-word {
   border: 1px solid #e1e1e1;
 }
 
-.mq-math-mode.wrong:after {
-  /* position: absolute;
-  right: 5px;
-  top: calc(50% - 10px);
-  content: "\274C";
-  font-size: 20px;
-  color: #DD2E44; */
-}
-.mq-math-mode.success:after {
-  /* position: absolute;
-  right: 5px;
-  top: calc(50% - 8px);
-  content: "\2714";
-  font-size: 16px;
-  color: #1fe3a1; */
-}
-
 /* for accessibility */
 .isKeyboardUser:focus,
 .isKeyboardUser a:focus,
@@ -1163,6 +1146,7 @@ span.token.active-word {
 .mq-root-block,
 .mq-math-mode .mq-root-block {
   margin-bottom: 0.2em;
+  min-width: 210px;
 }
 
 .mq-math-mode .mq-supsub.mq-sup-only {

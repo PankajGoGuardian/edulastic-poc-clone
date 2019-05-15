@@ -53,9 +53,9 @@ const TestListFilters = ({
       ...filterData,
       {
         size: "large",
-        title: "Curriculum",
+        title: "Standard set",
         onChange: "curriculumId",
-        data: [{ value: "", text: "All Curriculum" }, ...formattedCuriculums],
+        data: [{ value: "", text: "All Standard set" }, ...formattedCuriculums],
         optionFilterProp: "children",
         filterOption: searchCurriculum,
         showSearch: true

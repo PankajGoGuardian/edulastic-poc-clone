@@ -20,6 +20,7 @@ const modalStyles = {
 export default class AddBulkModal extends React.Component {
   static propTypes = {
     visible: PropTypes.bool.isRequired,
+    minAvailableQuestionIndex: PropTypes.number.isRequired,
     onApply: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired
   };
@@ -29,6 +30,14 @@ export default class AddBulkModal extends React.Component {
     type: MULTIPLE_CHOICE,
     startingIndex: 1
   };
+
+  componentWillMount() {
+    const { minAvailableQuestionIndex } = this.props;
+
+    this.setState({
+      startingIndex: minAvailableQuestionIndex
+    });
+  }
 
   handleChange = field => value =>
     this.setState({
@@ -43,7 +52,8 @@ export default class AddBulkModal extends React.Component {
 
   render() {
     const { number, type, startingIndex } = this.state;
-    const { onCancel, visible } = this.props;
+    const { onCancel, visible, minAvailableQuestionIndex } = this.props;
+
     return (
       <Modal open={visible} onClose={onCancel} styles={modalStyles} center>
         <ModalWrapper>
@@ -68,7 +78,11 @@ export default class AddBulkModal extends React.Component {
             </FormInline>
             <FormGroup>
               <FormLabel>Starting Index</FormLabel>
-              <StartingIndexInput value={startingIndex} onChange={this.handleChange("startingIndex")} />
+              <StartingIndexInput
+                value={startingIndex}
+                min={minAvailableQuestionIndex}
+                onChange={this.handleChange("startingIndex")}
+              />
             </FormGroup>
           </QuestionFormWrapper>
           <ModalFooter>

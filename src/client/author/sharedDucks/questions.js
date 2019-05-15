@@ -5,7 +5,8 @@ import {
   groupBy as _groupBy,
   intersection as _intersection,
   cloneDeep as _cloneDeep,
-  get
+  get,
+  sortBy
 } from "lodash";
 
 // actions types
@@ -52,8 +53,29 @@ const addQuestions = (state, { payload }) => {
 const deleteQuestion = (state, { payload }) => {
   const newState = _cloneDeep(state);
 
-  delete newState.byId[payload];
-  state.byId = { ...newState.byId };
+  const questions = sortBy(_values(newState.byId), ["qIndex"]);
+  const questionIndex = questions.findIndex(q => q.id === payload);
+
+  const updatedQuestions = questions.map((question, index) =>
+    index < questionIndex
+      ? question
+      : {
+          ...question,
+          qIndex: question.qIndex - 1
+        }
+  );
+
+  updatedQuestions.splice(questionIndex, 1);
+
+  const byId = updatedQuestions.reduce(
+    (total, question) => ({
+      ...total,
+      [question.id]: question
+    }),
+    {}
+  );
+
+  state.byId = { ...byId };
 };
 
 // update question by id

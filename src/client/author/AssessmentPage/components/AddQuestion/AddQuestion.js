@@ -23,7 +23,7 @@ class AddQuestion extends React.Component {
 
     for (let i = 0; i < number; i++) {
       const index = startingIndex + i;
-      onAddQuestion(type, index)();
+      onAddQuestion(type, index, startingIndex)();
     }
 
     this.toggleBulkModal();
@@ -31,7 +31,7 @@ class AddQuestion extends React.Component {
 
   render() {
     const { bulkModalVisible } = this.state;
-    const { onAddQuestion, onAddSection } = this.props;
+    const { onAddQuestion, onAddSection, minAvailableQuestionIndex } = this.props;
     return (
       <AddQuestionWrapper>
         <ContentWrapper>
@@ -53,7 +53,12 @@ class AddQuestion extends React.Component {
             <AddButton onClick={this.toggleBulkModal}>Add Bulk</AddButton>
             <AddButton onClick={onAddSection}>Add Section</AddButton>
           </QuestionTypes>
-          <AddBulkModal visible={bulkModalVisible} onCancel={this.toggleBulkModal} onApply={this.handleApply} />
+          <AddBulkModal
+            visible={bulkModalVisible}
+            onCancel={this.toggleBulkModal}
+            onApply={this.handleApply}
+            minAvailableQuestionIndex={minAvailableQuestionIndex}
+          />
         </ContentWrapper>
       </AddQuestionWrapper>
     );
@@ -61,6 +66,7 @@ class AddQuestion extends React.Component {
 }
 
 AddQuestion.propTypes = {
+  minAvailableQuestionIndex: PropTypes.number.isRequired,
   onAddQuestion: PropTypes.func.isRequired,
   onAddSection: PropTypes.func.isRequired
 };

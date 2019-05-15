@@ -77,8 +77,8 @@ class Container extends PureComponent {
   state = {
     current: "summary",
     showModal: false,
-    textColor: "#ff0000",
-    backgroundColor: "#ff0000",
+    textColor: "#ffffff",
+    backgroundColor: "#0000ff",
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
@@ -138,25 +138,6 @@ class Container extends PureComponent {
     }
   };
 
-  handleAddItems = testItems => {
-    const { test, setData } = this.props;
-    const newTest = cloneDeep(test);
-
-    newTest.testItems = testItems;
-
-    newTest.scoring.testItems = testItems.map(item => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
-      if (!foundItem) {
-        return {
-          id: item ? item._id : uuidv4(),
-          points: 0
-        };
-      }
-      return foundItem;
-    });
-    setData(newTest);
-  };
-
   handleChangeGrade = grades => {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, grades });
@@ -205,14 +186,7 @@ class Container extends PureComponent {
     _uniq(selectedTests);
     switch (current) {
       case "addItems":
-        return (
-          <AddTests
-            onAddItems={this.handleAddItems}
-            selectedItems={selectedTests}
-            current={current}
-            onSaveTestId={this.handleSaveTestId}
-          />
-        );
+        return <AddTests selectedItems={selectedTests} current={current} onSaveTestId={this.handleSaveTestId} />;
       case "summary":
         return (
           <Summary

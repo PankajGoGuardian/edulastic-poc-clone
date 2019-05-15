@@ -7,7 +7,7 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 
-function Preview({ item, index }) {
+function Preview({ item, qIndex }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
@@ -22,7 +22,7 @@ function Preview({ item, index }) {
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}
-        index={index}
+        qIndex={qIndex}
       />
     </StyledFlexContainer>
   );
@@ -30,7 +30,7 @@ function Preview({ item, index }) {
 
 Preview.propTypes = {
   item: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired
+  qIndex: PropTypes.number.isRequired
 };
 
 class ClassQuestions extends Component {
@@ -54,12 +54,10 @@ class ClassQuestions extends Component {
       }
       const questions = data.questions.map(question => {
         const { id } = question;
-        let qIndex = 0;
         let qActivities = questionActivities.filter(({ qid }) => qid === id);
         qActivities = qActivities.map(q => {
           const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
           if (userQuestion) {
-            q.qIndex = ++qIndex;
             q.timespent = userQuestion.timespent;
             q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
           }
@@ -79,7 +77,8 @@ class ClassQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
-    return testItems.map((item, index) => <Preview key={index} item={item} index={index} />);
+    const { qIndex } = this.props;
+    return testItems.map((item, index) => <Preview key={index} item={item} qIndex={qIndex || index} />);
   }
 }
 
@@ -88,5 +87,9 @@ export default ClassQuestions;
 ClassQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,
   questionActivities: PropTypes.array.isRequired,
-  currentStudent: PropTypes.object.isRequired
+  currentStudent: PropTypes.object.isRequired,
+  qIndex: PropTypes.number
+};
+ClassQuestions.defaultProps = {
+  qIndex: null
 };

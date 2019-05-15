@@ -11,8 +11,9 @@ import BlockContainer from "./styled/BlockContainer";
 import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, previewTab }) => {
+const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, previewTab, showQuestionNumber, qIndex }) => {
   const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const maxWidth = get(item, "max_width", 900);
@@ -69,6 +70,13 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
         <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       )}
 
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && (
+          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        )}
+      </QuestionTitleWrapper>
+
       {!smallSize ? (
         <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
           <Svg data-cy="answer-container" width={+width} height={+height}>
@@ -124,13 +132,17 @@ HotspotPreview.propTypes = {
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
-  userAnswer: PropTypes.array
+  userAnswer: PropTypes.array,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 HotspotPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
-  userAnswer: []
+  userAnswer: [],
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withNamespaces("assessment")(HotspotPreview);

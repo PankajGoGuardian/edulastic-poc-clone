@@ -8,6 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
 
+import { get } from "lodash";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -46,7 +47,6 @@ import FeedbackRight from "./FeedbackRight";
 import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
-import { get } from "lodash";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -161,10 +161,11 @@ class QuestionWrapper extends Component {
     const { main, advanced, activeTab } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
-    let userAnswerProps = {};
+    const userAnswerProps = {};
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
     }
+    console.log(qIndex, "===>", type);
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
@@ -188,6 +189,7 @@ class QuestionWrapper extends Component {
                 qIndex={qIndex}
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}
+                showQuestionNumber={showFeedback}
                 {...userAnswerProps}
               />
             </div>

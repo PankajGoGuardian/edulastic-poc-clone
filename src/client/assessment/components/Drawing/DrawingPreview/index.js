@@ -11,7 +11,7 @@ import { PREVIEW } from "../../../constants/constantsForQuestions";
 
 const { Option } = Select;
 
-const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t }) => {
+const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t, showQuestionNumber, qIndex }) => {
   const [history, setHistory] = useState([]);
   const [historyTab, setHistoryTab] = useState(0);
   const [mouseDown, setMouseDown] = useState(false);
@@ -27,7 +27,10 @@ const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t }) =>
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
 
       <Container style={{ maxWidth: "100%" }} width={`${+width}px`} justifyContent="space-between">
         {line_color.length > 1 && (
@@ -111,4 +114,13 @@ const Button = styled.div`
 const Text = styled.div`
   font-size: 14px;
   font-weight: 600;
+`;
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
 `;

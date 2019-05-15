@@ -14,7 +14,7 @@ import { ContentArea } from "../../styled/ContentArea";
 const Classification = props => {
   const { view, item, isSidebarCollapsed } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-
+  console.log(props);
   return (
     <Fragment>
       {view === EDIT && (

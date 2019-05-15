@@ -16,10 +16,21 @@ import { Text } from "./styled/Text";
 import { CanvasContainer } from "./styled/CanvasContainer";
 import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
 import { getFontSize } from "../../utils/helpers";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const { Option } = Select;
 
-const HighlightImagePreview = ({ view, item = {}, windowWidth, smallSize, saveAnswer, userAnswer, t }) => {
+const HighlightImagePreview = ({
+  view,
+  item = {},
+  windowWidth,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  t,
+  showQuestionNumber,
+  qIndex
+}) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
   const [history, setHistory] = useState([]);
@@ -173,8 +184,11 @@ const HighlightImagePreview = ({ view, item = {}, windowWidth, smallSize, saveAn
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
 
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
       <Container style={{ maxWidth: "100%" }} width={`${+width}px`} justifyContent="space-between">
         {line_color.length > 1 && (
           <StyledSelect value={currentColor} onChange={setCurrentColor}>
@@ -231,10 +245,14 @@ HighlightImagePreview.propTypes = {
   view: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 HighlightImagePreview.defaultProps = {
+  showQuestionNumber: false,
+  qIndex: null,
   smallSize: false
 };
 

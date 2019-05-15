@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { InstructorStimulus, Stimulus } from "@edulastic/common";
 
 import Options from "./components/Options";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/Label";
 
 const Display = ({
   qIndex,
@@ -14,24 +15,26 @@ const Display = ({
   index,
   styleType,
   multipleResponse,
+  showQuestionNumber,
   ...restProps
-}) => {
-  return (
-    <div>
-      <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+}) => (
+  <div>
+    <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+    <QuestionTitleWrapper>
+      {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
       <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
-      <Options
-        view={view}
-        smallSize={smallSize}
-        question={question}
-        uiStyle={uiStyle}
-        styleType={styleType}
-        multipleResponse={multipleResponse}
-        {...restProps}
-      />
-    </div>
-  );
-};
+    </QuestionTitleWrapper>
+    <Options
+      view={view}
+      smallSize={smallSize}
+      question={question}
+      uiStyle={uiStyle}
+      styleType={styleType}
+      multipleResponse={multipleResponse}
+      {...restProps}
+    />
+  </div>
+);
 
 Display.propTypes = {
   options: PropTypes.array,
@@ -48,7 +51,8 @@ Display.propTypes = {
   qIndex: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
   styleType: PropTypes.string,
-  multipleResponse: PropTypes.bool
+  multipleResponse: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -67,6 +71,7 @@ Display.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  showQuestionNumber: false,
   styleType: "default"
 };
 

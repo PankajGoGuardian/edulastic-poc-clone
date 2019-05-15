@@ -7,7 +7,7 @@ import { withTheme } from "styled-components";
 import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { AdaptiveSelect } from "./styled/AdaptiveSelect";
-
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import {
   PREVIEW,
   BY_LOCATION_METHOD,
@@ -25,7 +25,19 @@ import { getFontSize } from "../../utils/helpers";
 
 const { Option } = Select;
 
-const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method, t, previewTab, theme }) => {
+const ShadingPreview = ({
+  view,
+  item,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  method,
+  t,
+  previewTab,
+  theme,
+  qIndex,
+  showQuestionNumber
+}) => {
   const { canvas, validation } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
 
@@ -115,9 +127,13 @@ const ShadingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, method,
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
-      {view === PREVIEW && !smallSize && (
-        <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-      )}
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && (
+          <Stimulus data-cy="stimulus" dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        )}
+      </QuestionTitleWrapper>
+
       <FlexContainer alignItems="flex-start" flexDirection="column">
         {view === EDIT && (
           <Fragment>
@@ -194,14 +210,18 @@ ShadingPreview.propTypes = {
   method: PropTypes.string,
   previewTab: PropTypes.string,
   t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  qIndex: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool
 };
 
 ShadingPreview.defaultProps = {
   smallSize: false,
   userAnswer: null,
   previewTab: CLEAR,
-  method: ""
+  method: "",
+  qIndex: null,
+  showQuestionNumber: false
 };
 
 const enhance = compose(

@@ -31,7 +31,7 @@ class Question extends Component {
   }
 
   render() {
-    const { record, studentQuestion, testItems = [] } = this.props;
+    const { record, studentQuestion, testItems = [], qIndex } = this.props;
     const currentStudent = {
       studentName: ""
     };
@@ -48,6 +48,7 @@ class Question extends Component {
         currentStudent={currentStudent}
         questionActivities={studentQuestion ? [studentQuestion] : []}
         classResponse={{ testItems: selectedItems }}
+        qIndex={qIndex}
       />
     );
   }
@@ -71,7 +72,8 @@ Question.propTypes = {
   testItems: PropTypes.array.isRequired,
   loadStudentQuestionResponses: PropTypes.func.isRequired,
   assignmentClassId: PropTypes.object,
-  studentQuestion: PropTypes.object
+  studentQuestion: PropTypes.object,
+  qIndex: PropTypes.number
 };
 
 export default enhance(Question);

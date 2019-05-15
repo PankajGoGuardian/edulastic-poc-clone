@@ -83,7 +83,8 @@ class QuestionViewContainer extends Component {
       classResponse: { testItems, ...others },
       question,
       classQuestion,
-      children
+      children,
+      qIndex
     } = this.props;
     const { loading } = this.state;
 
@@ -236,6 +237,7 @@ class QuestionViewContainer extends Component {
             return (
               <ClassQuestions
                 key={index}
+                qIndex={qIndex}
                 currentStudent={student}
                 classResponse={{ testItems: filterdItems, ...others }}
                 questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
@@ -265,9 +267,11 @@ QuestionViewContainer.propTypes = {
   question: PropTypes.object.isRequired,
   testActivity: PropTypes.array.isRequired,
   classQuestion: PropTypes.array,
-  children: PropTypes.node
+  children: PropTypes.node,
+  qIndex: PropTypes.number
 };
 QuestionViewContainer.defaultProps = {
   classQuestion: [],
-  children: null
+  children: null,
+  qIndex: null
 };

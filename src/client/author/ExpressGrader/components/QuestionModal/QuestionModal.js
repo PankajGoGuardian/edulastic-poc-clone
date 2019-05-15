@@ -151,7 +151,7 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <React.Fragment>
             <QuestionWrapper>
-              <Question record={question} />
+              <Question record={question} qIndex={colIndex} />
             </QuestionWrapper>
             <BottomNavigationWrapper>
               <BottomNavigation

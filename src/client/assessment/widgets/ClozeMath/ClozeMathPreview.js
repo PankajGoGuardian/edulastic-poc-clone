@@ -20,7 +20,16 @@ const TemplateBox = styled.div`
   }
 `;
 
-const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evaluation }) => {
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
+const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evaluation, showQuestionNumber, qIndex }) => {
   const wrappedRef = useRef();
   const mathFieldRef = useRef();
   const [showKeyboard, setShowKeyboard] = useState(false);
@@ -345,7 +354,10 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
       }}
     >
       <div ref={wrappedRef}>
-        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+        </QuestionTitleWrapper>
         <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
         {type === SHOW && <AnswerBox answers={_getAnswers()} />}
         {showKeyboard && (
@@ -367,7 +379,14 @@ ClozeMathPreview.propTypes = {
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.array.isRequired,
-  evaluation: PropTypes.array.isRequired
+  evaluation: PropTypes.array.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
+};
+
+ClozeMathPreview.defaultProps = {
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withCheckAnswerButton(ClozeMathPreview);

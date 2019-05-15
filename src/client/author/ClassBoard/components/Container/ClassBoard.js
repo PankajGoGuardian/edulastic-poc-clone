@@ -369,6 +369,7 @@ class ClassBoard extends Component {
               classResponse={classResponse}
               testActivity={testActivity}
               question={questions[selectedQuestion]}
+              qIndex={selectedQuestion}
             >
               <ClassSelect
                 classid="DI"

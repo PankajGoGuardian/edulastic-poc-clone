@@ -29,7 +29,8 @@ const ClozeMath = ({
   userAnswer,
   fillSections,
   cleanSections,
-  isSidebarCollapsed
+  isSidebarCollapsed,
+  ...restProps
 }) => {
   const [template, setTemplate] = useState("");
 
@@ -104,6 +105,7 @@ const ClozeMath = ({
             check={checkAnswer}
             userAnswer={userAnswer}
             evaluation={evaluation}
+            {...restProps}
           />
         </Paper>
       )}

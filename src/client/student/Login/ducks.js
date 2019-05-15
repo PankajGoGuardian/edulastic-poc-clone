@@ -34,7 +34,9 @@ function* login({ payload }) {
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
-    if (redirectUrl) {
+
+    const isAuthUrl = /signup|login/gi.test(redirectUrl);
+    if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem("loginRedirectUrl");
       yield put(push(redirectUrl));
     } else if (user.role === roleuser.STUDENT) {

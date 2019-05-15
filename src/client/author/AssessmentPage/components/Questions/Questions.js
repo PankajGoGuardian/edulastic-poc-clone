@@ -312,7 +312,12 @@ class Questions extends React.Component {
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
-                <Section section={question} handleUpdate={this.handleUpdateSection} />
+                <Section
+                  section={question}
+                  viewMode={viewMode}
+                  onUpdate={this.handleUpdateSection}
+                  onDelete={this.handleDeleteQuestion(question.id)}
+                />
               ) : (
                 <QuestionItem
                   key={question.id}

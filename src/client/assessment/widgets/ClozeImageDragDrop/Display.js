@@ -126,7 +126,6 @@ class Display extends Component {
       responseContainers,
       imageAlterText,
       imageTitle,
-      imageWidth,
       showDashedBorder,
       backgroundColor,
       instructorStimulus,
@@ -152,8 +151,7 @@ class Display extends Component {
     const renderImage = () =>
       imageUrl ? (
         <img
-          src={imageUrl || defaultImageURL}
-          width="100%"
+          src={imageUrl || ""}
           style={{ userSelect: "none", pointerEvents: "none" }}
           alt={imageAlterText}
           title={imageTitle}
@@ -176,6 +174,8 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
+          width: "auto",
+          margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
           overflowY: smallSize && "hidden"
         }}
@@ -186,8 +186,7 @@ class Display extends Component {
             position: "relative",
             top: 0,
             left: 0,
-            width: smallSize ? "100%" : imageWidth,
-            margin: "auto"
+            width: "auto"
           }}
         >
           {renderImage()}

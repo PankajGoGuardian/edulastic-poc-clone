@@ -5,8 +5,8 @@ export const ImageContainer = styled.div`
   position: relative;
   top: 0px;
   left: 0px;
-  min-height: 400px;
+  min-height: ${props => (props.imageUrl ? "100%" : "400px")};
   padding: 0px;
-  width: ${props => (props.width ? `${props.width}px` : "100%")};
+  width: ${props => (props.width ? `${props.width}px` : props.imageUrl ? "auto" : "100%")};
   height: 100%;
 `;

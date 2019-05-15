@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Popconfirm, Form, Icon, Select, message, Button } from "antd";
+import { Form, Icon, Select, message, Button } from "antd";
 const Option = Select.Option;
 
 import {
@@ -19,7 +19,8 @@ import {
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
-  StyledSortIcon
+  StyledSortIcon,
+  StyledPagination
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
@@ -31,24 +32,11 @@ import {
   createSchoolsAction,
   updateSchoolsAction,
   deleteSchoolsAction,
-  setSearchByNameValueAction,
-  setSchoolFiltersDataAction,
-  setSchoolActionStatusAction,
-  setSchoolsSortInfoAction
+  setSchoolActionStatusAction
 } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
-
-function compareByAlph(a, b) {
-  if (a.toString().toLowerCase() > b.toString().toLowerCase()) {
-    return -1;
-  }
-  if (a.toString().toLowerCase() < b.toString().toLowerCase()) {
-    return 1;
-  }
-  return 0;
-}
 
 class SchoolsTable extends React.Component {
   constructor(props) {
@@ -60,13 +48,33 @@ class SchoolsTable extends React.Component {
       selectedRowKeys: [],
       createSchoolModalVisible: false,
       editSchoolModaVisible: false,
-      editSchoolKey: ""
+      editSchoolKey: "",
+      searchByName: "",
+      filtersData: [
+        {
+          filtersColumn: "",
+          filtersValue: "",
+          filterStr: "",
+          filterAdded: false
+        }
+      ],
+      sortedInfo: {
+        columnKey: "name",
+        order: "asc"
+      },
+      currentPage: 1
     };
   }
 
   componentDidMount() {
     const { loadSchoolsData, userOrgId } = this.props;
-    loadSchoolsData({ districtId: userOrgId, limit: 100, page: 1 });
+    loadSchoolsData({
+      districtId: userOrgId,
+      limit: 25,
+      page: 1,
+      sortField: "name",
+      order: "asc"
+    });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -74,19 +82,20 @@ class SchoolsTable extends React.Component {
     else return { dataSource: nextProps.schoolList };
   }
 
-  compareByAlph(a, b) {
-    if (a.toString().toLowerCase() > b.toString().toLowerCase()) {
-      return -1;
-    }
-    if (a.toString().toLowerCase() < b.toString().toLowerCase()) {
-      return 1;
-    }
-    return 0;
-  }
-
   onHeaderCell = colName => {
-    const { setSortInfo } = this.props;
-    setSortInfo(colName);
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    if (sortedInfo.columnKey === colName) {
+      if (sortedInfo.order === "asc") {
+        sortedInfo.order = "desc";
+      } else if (sortedInfo.order === "desc") {
+        sortedInfo.order = "asc";
+      }
+    } else {
+      sortedInfo.columnKey = colName;
+      sortedInfo.order = "asc";
+    }
+    this.setState({ sortedInfo });
+    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   onEditSchool = key => {
@@ -121,44 +130,47 @@ class SchoolsTable extends React.Component {
   };
 
   changeFilterColumn = (value, key) => {
-    const { filtersData } = this.props;
+    const filtersData = [...this.state.filtersData];
     filtersData[key].filtersColumn = value;
-    this.updateFilter(filtersData);
+    if (value === "status") filtersData[key].filtersValue = "eq";
+    this.setState({ filtersData });
   };
 
   changeFilterValue = (value, key) => {
-    const { filtersData } = this.props;
+    const filtersData = [...this.state.filtersData];
     filtersData[key].filtersValue = value;
-    this.updateFilter(filtersData);
+    this.setState({ filtersData });
   };
 
   changeFilterText = (e, key) => {
-    const { filtersData } = this.props;
+    const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = e.target.value;
-    this.updateFilter(filtersData);
+    this.setState({ filtersData });
   };
 
   changeStatusValue = (value, key) => {
-    const { filtersData } = this.props;
+    const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = value;
-    this.updateFilter(filtersData);
+    this.setState({ filtersData });
   };
 
   addFilter = (e, key) => {
-    const { filtersData } = this.props;
-    if (filtersData.length >= 3) return;
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     filtersData[key].filterAdded = true;
-    filtersData.push({
-      filtersColumn: "",
-      filtersValue: "",
-      filterStr: "",
-      filterAdded: false
-    });
-    this.updateFilter(filtersData);
+    if (filtersData.length < 3) {
+      filtersData[key].filterAdded = true;
+      filtersData.push({
+        filtersColumn: "",
+        filtersValue: "",
+        filterStr: "",
+        filterAdded: false
+      });
+    }
+    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   removeFilter = (e, key) => {
-    const { filtersData } = this.props;
+    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     let newFiltersData = [];
     if (filtersData.length === 1) {
       newFiltersData.push({
@@ -170,16 +182,14 @@ class SchoolsTable extends React.Component {
     } else {
       newFiltersData = filtersData.filter((item, index) => index != key);
     }
-    this.updateFilter(newFiltersData);
+    this.setState({ filtersData: newFiltersData });
+    this.loadFilteredSchoolList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
-
-  updateFilter(newFilterData) {
-    this.props.setFiltersData(newFilterData);
-  }
 
   changeActionMode = value => {
     const { selectedRowKeys } = this.state;
     const { setActionStatus } = this.props;
+
     if (value === "") {
       setActionStatus("");
     } else if (value === "edit school") {
@@ -219,7 +229,7 @@ class SchoolsTable extends React.Component {
   createSchool = newSchoolData => {
     const newData = {
       name: newSchoolData.name,
-      districtId: this.props.districtId,
+      districtId: this.props.userOrgId,
       location: {
         address: newSchoolData.address,
         city: newSchoolData.city,
@@ -244,18 +254,6 @@ class SchoolsTable extends React.Component {
   updateSchool = updatedSchoolData => {
     const newData = [...this.state.dataSource];
     const index = newData.findIndex(item => updatedSchoolData.key === item.key);
-    delete updateSchoolsAction.key;
-    if (index > -1) {
-      const item = newData[index];
-      newData.splice(index, 1, {
-        ...item,
-        ...updatedSchoolData
-      });
-      this.setState({ dataSource: newData, editingKey: "" });
-    } else {
-      newData.push(updatedSchoolData);
-      this.setState({ dataSource: newData, editingKey: "" });
-    }
 
     this.setState({
       isAdding: false,
@@ -265,7 +263,7 @@ class SchoolsTable extends React.Component {
 
     const updateData = {
       _id: newData[index]._id,
-      name: newData[index].name,
+      name: updatedSchoolData.name,
       districtId: newData[index].districtId,
       location: {
         address: updatedSchoolData.address,
@@ -275,8 +273,8 @@ class SchoolsTable extends React.Component {
         zip: updatedSchoolData.zip
       }
     };
-    const { updateSchool } = this.props;
-    updateSchool({ id: newData[index]._id, body: updateData });
+
+    this.props.updateSchool({ id: newData[index]._id, body: updateData });
   };
 
   closeEditSchoolModal = () => {
@@ -284,15 +282,54 @@ class SchoolsTable extends React.Component {
     this.setState({ editSchoolModaVisible: false });
   };
 
-  searchByName = e => {
-    const { setSearchByName } = this.props;
-    setSearchByName(e.target.value);
+  handleSearchName = e => {
+    const { filtersData, sortedInfo, currentPage } = this.state;
+    this.setState({ searchByName: e });
+    this.loadFilteredSchoolList(filtersData, sortedInfo, e, currentPage);
   };
 
-  render() {
-    const { dataSource, selectedRowKeys, createSchoolModalVisible, editSchoolModaVisible, editSchoolKey } = this.state;
+  changePagination = pageNumber => {
+    const { filtersData, sortedInfo, searchByName } = this.state;
+    this.setState({ currentPage: pageNumber });
+    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, pageNumber);
+  };
 
-    const { filtersData, sortedInfo, selectedAction } = this.props;
+  loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage) {
+    const { loadSchoolsData, userOrgId } = this.props;
+    let search = {};
+
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: searchByName };
+    }
+
+    for (let i = 0; i < filtersData.length; i++) {
+      if (filtersData[i].filterAdded) {
+        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      }
+    }
+
+    loadSchoolsData({
+      districtId: userOrgId,
+      limit: 25,
+      page: currentPage,
+      sortField: sortedInfo.columnKey,
+      order: sortedInfo.order,
+      search
+    });
+  }
+
+  render() {
+    const {
+      dataSource,
+      selectedRowKeys,
+      createSchoolModalVisible,
+      editSchoolModaVisible,
+      editSchoolKey,
+      filtersData,
+      sortedInfo,
+      currentPage
+    } = this.state;
+    const { selectedAction, userOrgId, totalSchoolsCount } = this.props;
 
     const columnsInfo = [
       {
@@ -302,11 +339,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "descend"}
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "ascend"}
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -328,11 +365,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "descend"}
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "ascend"}
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -354,11 +391,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "descend"}
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "ascend"}
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -380,11 +417,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "descend"}
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "ascend"}
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -406,11 +443,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "descend"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "ascend"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -431,21 +468,7 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: (
-          <StyledHeaderColumn>
-            <p>Teacher</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "descend"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "teachersCount" && sortedInfo.order === "ascend"}
-              />
-            </StyledSortIconDiv>
-          </StyledHeaderColumn>
-        ),
+        title: "Teacher",
         dataIndex: "teachersCount",
         editable: true,
         onHeaderCell: column => {
@@ -457,21 +480,7 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: (
-          <StyledHeaderColumn>
-            <p>Student</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "descend"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "studentsCount" && sortedInfo.order === "ascend"}
-              />
-            </StyledSortIconDiv>
-          </StyledHeaderColumn>
-        ),
+        title: "Student",
         dataIndex: "studentsCount",
         editable: true,
         onHeaderCell: column => {
@@ -483,21 +492,7 @@ class SchoolsTable extends React.Component {
         }
       },
       {
-        title: (
-          <StyledHeaderColumn>
-            <p>Section</p>
-            <StyledSortIconDiv>
-              <StyledSortIcon
-                type="caret-up"
-                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "descend"}
-              />
-              <StyledSortIcon
-                type="caret-down"
-                colorValue={sortedInfo.columnKey === "sectionsCount" && sortedInfo.order === "ascend"}
-              />
-            </StyledSortIconDiv>
-          </StyledHeaderColumn>
-        ),
+        title: "Section",
         dataIndex: "sectionsCount",
         editable: true,
         onHeaderCell: column => {
@@ -517,11 +512,9 @@ class SchoolsTable extends React.Component {
               <StyledTableButton onClick={() => this.onEditSchool(record.key)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledTableButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledTableButton>
-              </Popconfirm>
+              <StyledTableButton onClick={() => this.handleDelete(record.key)}>
+                <Icon type="delete" theme="twoTone" />
+              </StyledTableButton>
             </React.Fragment>
           );
         }
@@ -545,11 +538,16 @@ class SchoolsTable extends React.Component {
     for (let i = 0; i < filtersData.length; i++) {
       const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
       const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" ||
-        filtersData[i].filtersValue === "" ||
-        filtersData[i].filterStr === "" ||
-        i < filtersData.length - 1 ||
-        filtersData.length == 3;
+        filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
+
+      const optValues = [];
+      if (filtersData[i].filtersColumn === "status") {
+        optValues.push(<Option value="eq">Equals</Option>);
+      } else {
+        optValues.push(<Option value="">Select a value</Option>);
+        optValues.push(<Option value="eq">Equals</Option>);
+        optValues.push(<Option value="cont">Contains</Option>);
+      }
 
       SearchRows.push(
         <StyledControlDiv>
@@ -572,9 +570,7 @@ class SchoolsTable extends React.Component {
             onChange={e => this.changeFilterValue(e, i)}
             value={filtersData[i].filtersValue}
           >
-            <Option value="">Select a value</Option>
-            <Option value="eq">Equals</Option>
-            <Option value="cont">Contains</Option>
+            {optValues}
           </StyledFilterSelect>
           {filtersData[i].filtersColumn !== "status" ? (
             <StyledFilterInput
@@ -594,11 +590,10 @@ class SchoolsTable extends React.Component {
               <Option value="1">All</Option>
             </StyledFilterSelect>
           )}
-          {i < 2 && (
-            <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
-              + Add Filter
-            </StyledFilterButton>
-          )}
+
+          <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
+            + Add Filter
+          </StyledFilterButton>
 
           <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
             - Remove Filter
@@ -619,10 +614,11 @@ class SchoolsTable extends React.Component {
               createSchool={this.createSchool}
               closeModal={this.closeCreateSchoolModal}
               dataSource={dataSource}
+              userOrgId={userOrgId}
             />
           )}
 
-          <StyledSchoolSearch placeholder="Search by name" onChange={this.searchByName} />
+          <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
           <StyledSelectStatus defaultValue="" onChange={this.changeActionMode} value={selectedAction}>
             <Option value="">Actions</Option>
             <Option value="edit school">Edit School</Option>
@@ -630,11 +626,13 @@ class SchoolsTable extends React.Component {
           </StyledSelectStatus>
         </StyledControlDiv>
         {SearchRows}
-        <StyledTable
-          rowSelection={rowSelection}
-          dataSource={dataSource}
-          columns={columns}
-          pagination={{ pageSize: 20 }}
+        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
+        <StyledPagination
+          current={currentPage}
+          defaultCurrent={1}
+          pageSize={25}
+          total={totalSchoolsCount}
+          onChange={this.changePagination}
         />
 
         {editSchoolModaVisible && editSchoolKey !== "" && (
@@ -643,6 +641,7 @@ class SchoolsTable extends React.Component {
             modalVisible={editSchoolModaVisible}
             updateSchool={this.updateSchool}
             closeModal={this.closeEditSchoolModal}
+            userOrgId={userOrgId}
           />
         )}
       </StyledTableContainer>
@@ -656,19 +655,15 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
-      filtersData: get(state, ["schoolsReducer", "filtersData"], []),
       selectedAction: get(state, ["schoolsReducer", "selectedAction"], ""),
-      sortedInfo: get(state, ["schoolsReducer", "sortedInfo"])
+      totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
       deleteSchool: deleteSchoolsAction,
-      setSearchByName: setSearchByNameValueAction,
-      setFiltersData: setSchoolFiltersDataAction,
-      setActionStatus: setSchoolActionStatusAction,
-      setSortInfo: setSchoolsSortInfoAction
+      setActionStatus: setSchoolActionStatusAction
     }
   )
 );
@@ -676,9 +671,12 @@ const enhance = compose(
 export default enhance(EditableSchoolsTable);
 
 SchoolsTable.propTypes = {
+  schoolList: PropTypes.object.isRequired,
+  userOrgId: PropTypes.string.isRequired,
+  selectedAction: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,
   createSchool: PropTypes.func.isRequired,
   deleteSchool: PropTypes.func.isRequired,
-  schoolsData: PropTypes.object.isRequired
+  setActionStatus: PropTypes.func.isRequired
 };

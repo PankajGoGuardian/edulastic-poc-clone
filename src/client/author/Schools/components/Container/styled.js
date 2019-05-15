@@ -33,7 +33,7 @@ export const SpinContainer = styled.div`
 `;
 
 export const StyledSpin = styled(Spin)`
-  position: absolute;
+  position: fixed;
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);

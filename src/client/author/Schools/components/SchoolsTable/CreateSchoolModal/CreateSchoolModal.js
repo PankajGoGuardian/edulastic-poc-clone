@@ -1,78 +1,132 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col } from "antd";
-import { StyledCreateSchoolModal, ModalTtile, StyledButton, StyledDescription, ModalFormItem } from "./styled";
+import { Modal, Form, Input, Row, Col, Button, Select } from "antd";
+import { StyledDescription, ModalFormItem, StyledSelect, StyledSpinContainer, StyledSpin } from "./styled";
+const Option = Select.Option;
 
-// countryAPI
-import { countryApi } from "@edulastic/api";
-import CountrySelect from "../../../../Shared/Components/CountrySelect/CountrySelect";
+import { countryApi, schoolApi } from "@edulastic/api";
 
 class CreateSchoolModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      countryList: []
+      countryList: [],
+      name: "",
+      nameValidateStatus: "success",
+      nameValidateMsg: "",
+      showSpin: false,
+      countryValue: "",
+      checkSchoolExist: { totalSchools: 0, data: [] }
     };
+    this.onCreateSchool = this.onCreateSchool.bind(this);
   }
 
   async componentDidMount() {
+    this.setState({ showSpin: true });
     const returnedCountryList = await countryApi.getCountries();
     this.setState({
-      countryList: returnedCountryList
+      countryList: returnedCountryList,
+      showSpin: false
     });
   }
 
-  onCreateSchool = () => {
+  async onCreateSchool() {
+    const { name, nameValidateStatus } = this.state;
+    let checkSchoolExist = { ...this.state.checkSchoolExist };
+
+    if (nameValidateStatus === "success" && name.length > 0) {
+      checkSchoolExist = await schoolApi.getSchools({
+        districtId: this.props.userOrgId,
+        search: {
+          name: {
+            type: "eq",
+            value: name
+          }
+        }
+      });
+      this.setState({ showSpin: false, checkSchoolExist });
+
+      if (checkSchoolExist.totalSchools > 0) {
+        this.setState({
+          nameValidateStatus: "error",
+          nameValidateMsg: "School name already exists"
+        });
+      }
+    } else {
+      if (name.length == 0) {
+        this.setState({
+          nameValidateStatus: "error",
+          nameValidateMsg: "Please input school name"
+        });
+      }
+    }
+
     this.props.form.validateFields((err, row) => {
       if (!err) {
+        if (checkSchoolExist.totalSchools > 0) return;
+        row.name = name;
         this.props.createSchool(row);
       }
     });
-  };
+  }
 
   onCloseModal = () => {
     this.props.closeModal();
   };
 
-  checkSchoolNameUnique = (rule, value, callback) => {
-    const sameSchoolNameRow = this.props.dataSource.filter(item => item.name === value);
-    if (sameSchoolNameRow.length <= 0) {
-      callback();
-      return;
+  changeSchoolName = e => {
+    if (e.target.value.length == 0) {
+      this.setState({
+        name: e.target.value,
+        nameValidateStatus: "error",
+        nameValidateMsg: "Please input school name",
+        checkSchoolExist: { totalSchools: 0, data: [] }
+      });
+    } else {
+      this.setState({
+        name: e.target.value,
+        nameValidateStatus: "success",
+        nameValidateMsg: "",
+        checkSchoolExist: { totalSchools: 0, data: [] }
+      });
     }
-    callback("School name should be unique.");
+  };
+
+  handleSearch = value => {
+    this.setState({
+      countryValue: value
+    });
   };
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, form } = this.props;
-    const { countryList } = this.state;
+    const { modalVisible } = this.props;
+    const { countryList, nameValidateStatus, nameValidateMsg, showSpin, countryValue } = this.state;
+
+    const CountryOptions = [];
+    Object.entries(countryList).map(([key, value]) => {
+      if (value.toLowerCase().indexOf(countryValue.toLowerCase()) >= 0) {
+        CountryOptions.push(<Option value={key}>{value}</Option>);
+      }
+    });
 
     return (
-      <StyledCreateSchoolModal
+      <Modal
         visible={modalVisible}
-        title={<ModalTtile>Create New School</ModalTtile>}
+        title={"Create New School"}
         onOk={this.onCreateSchool}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <StyledButton key="submit" onClick={this.onCreateSchool}>
+          <Button key="submit" type="primary" onClick={this.onCreateSchool} disabled={showSpin}>
             Create New School >
-          </StyledButton>
+          </Button>
         ]}
       >
         <StyledDescription>Please fill the details below to add new school.</StyledDescription>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name">
-              {getFieldDecorator("name", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input school name"
-                  },
-                  { validator: this.checkSchoolNameUnique }
-                ]
-              })(<Input placeholder="Enter School Name" />)}
+            <ModalFormItem label="Name" validateStatus={nameValidateStatus} help={nameValidateMsg} required={true}>
+              <Input placeholder="Enter School Name" onChange={this.changeSchoolName} />
             </ModalFormItem>
           </Col>
         </Row>
@@ -105,7 +159,7 @@ class CreateSchoolModal extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col span={12}>
+          <Col span={11}>
             <ModalFormItem label="Zip">
               {getFieldDecorator("zip", {
                 rules: [
@@ -117,7 +171,7 @@ class CreateSchoolModal extends React.Component {
               })(<Input placeholder="Enter Zip Code" />)}
             </ModalFormItem>
           </Col>
-          <Col span={12}>
+          <Col span={11} offset={2}>
             <ModalFormItem label="State">
               {getFieldDecorator("state", {
                 rules: [
@@ -133,11 +187,29 @@ class CreateSchoolModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Country">
-              <CountrySelect form={form} countryList={countryList} />
+              {getFieldDecorator("country", {
+                rules: [{ required: true, message: "Please select Country" }]
+              })(
+                <StyledSelect
+                  showSearch
+                  placeholder="Select Country"
+                  onSearch={this.handleSearch}
+                  showArrow={false}
+                  filterOption={false}
+                  notFoundContent={null}
+                >
+                  {CountryOptions}
+                </StyledSelect>
+              )}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledCreateSchoolModal>
+        {showSpin && (
+          <StyledSpinContainer>
+            <StyledSpin size="large" />
+          </StyledSpinContainer>
+        )}
+      </Modal>
     );
   }
 }

@@ -37,7 +37,8 @@ const MathFormula = ({
   userAnswer,
   fillSections,
   cleanSections,
-  isSidebarCollapsed
+  isSidebarCollapsed,
+  ...restProps
 }) => {
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -104,6 +105,7 @@ const MathFormula = ({
             userAnswer={userAnswer}
             fillSections={fillSections}
             cleanSections={cleanSections}
+            {...restProps}
           />
         </Wrapper>
       )}

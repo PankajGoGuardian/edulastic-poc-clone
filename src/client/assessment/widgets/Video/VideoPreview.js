@@ -13,45 +13,47 @@ import Fullscreen from "./styled/Fullscreen";
 import MuteUnmute from "./styled/MuteUnmute";
 import SeekBar from "./styled/SeekBar";
 import Volume from "./styled/Volume";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const { CurrentTime, Duration } = controls;
 
-const VideoPreview = ({ item }) => {
-  return (
-    <div>
+const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
+  <div>
+    <QuestionTitleWrapper>
+      {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
-      {item.summary && <Label>{item.summary}</Label>}
-      {item && item.ui_style && (
-        <Media>
-          {({ isFullscreen, playPause }) => (
-            <div className="media">
-              <div className={"media-player" + (isFullscreen ? " media-player--fullscreen" : "")} tabIndex="0">
-                <Player
-                  poster={item.ui_style.posterImage}
-                  src={item.sourceURL}
-                  style={item.ui_style}
-                  onClick={playPause}
-                />
-              </div>
-              {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
-                <FlexContainer style={{ width: item.ui_style.width }}>
-                  <PlayPause />
-                  <SeekBar style={{ width: item.ui_style.width - 338 }} />
-                  <div>
-                    <CurrentTime /> / <Duration />
-                  </div>
-                  <MuteUnmute />
-                  <Volume />
-                  <Fullscreen />
-                </FlexContainer>
-              )}
+    </QuestionTitleWrapper>
+    {item.summary && <Label>{item.summary}</Label>}
+    {item && item.ui_style && (
+      <Media>
+        {({ isFullscreen, playPause }) => (
+          <div className="media">
+            <div className={`media-player${isFullscreen ? " media-player--fullscreen" : ""}`} tabIndex="0">
+              <Player
+                poster={item.ui_style.posterImage}
+                src={item.sourceURL}
+                style={item.ui_style}
+                onClick={playPause}
+              />
             </div>
-          )}
-        </Media>
-      )}
-    </div>
-  );
-};
+            {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
+              <FlexContainer style={{ width: item.ui_style.width }}>
+                <PlayPause />
+                <SeekBar style={{ width: item.ui_style.width - 338 }} />
+                <div>
+                  <CurrentTime /> / <Duration />
+                </div>
+                <MuteUnmute />
+                <Volume />
+                <Fullscreen />
+              </FlexContainer>
+            )}
+          </div>
+        )}
+      </Media>
+    )}
+  </div>
+);
 
 VideoPreview.propTypes = {
   item: PropTypes.shape({
@@ -62,8 +64,6 @@ VideoPreview.propTypes = {
     type: PropTypes.string.isRequired,
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
-    heading: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
     ui_style: PropTypes.shape({
       width: PropTypes.number.isRequired,
@@ -72,7 +72,13 @@ VideoPreview.propTypes = {
       captionURL: PropTypes.string.isRequired,
       hideControls: PropTypes.bool.isRequired
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
+};
+VideoPreview.defaultProps = {
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default VideoPreview;

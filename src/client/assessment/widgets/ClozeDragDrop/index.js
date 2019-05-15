@@ -119,7 +119,8 @@ class ClozeDragDrop extends Component {
       fillSections,
       cleanSections,
       isSidebarCollapsed,
-      advancedAreOpen
+      advancedAreOpen,
+      ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
@@ -231,6 +232,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
+                {...restProps}
               />
             )}
             {previewTab === "clear" && (

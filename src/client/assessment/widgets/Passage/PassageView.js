@@ -6,10 +6,11 @@ import ReactQuill from "react-quill";
 
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const ContentsTitle = Heading;
 
-const PassageView = ({ item, preview }) => {
+const PassageView = ({ item, preview, showQuestionNumber, qIndex }) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -26,7 +27,10 @@ const PassageView = ({ item, preview }) => {
       {item.instructor_stimulus && (
         <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
       )}
-      {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
+      </QuestionTitleWrapper>
       {item.contentsTitle && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
       <div
         id="myToolbar"
@@ -73,11 +77,15 @@ const PassageView = ({ item, preview }) => {
 
 PassageView.propTypes = {
   item: PropTypes.object.isRequired,
-  preview: PropTypes.bool
+  preview: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 PassageView.defaultProps = {
-  preview: false
+  preview: false,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 PassageView.modules = {

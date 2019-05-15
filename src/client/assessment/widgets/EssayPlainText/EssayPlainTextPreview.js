@@ -14,10 +14,21 @@ import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 
 import { ToolbarItem } from "./styled/ToolbarItem";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/helpers";
 import Character from "./components/Character";
 
-const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
+const EssayPlainTextPreview = ({
+  view,
+  saveAnswer,
+  t,
+  item,
+  smallSize,
+  userAnswer,
+  theme,
+  showQuestionNumber,
+  qIndex
+}) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
 
   const [wordCount, setWordCount] = useState(text.split(" ").filter(i => !!i).length);
@@ -108,7 +119,11 @@ const EssayPlainTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswe
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
 
       <Toolbar borderRadiusOnlyTop style={{ borderBottom: 0 }}>
         <FlexContainer childMarginRight={0} alignItems="stretch" justifyContent="space-between">

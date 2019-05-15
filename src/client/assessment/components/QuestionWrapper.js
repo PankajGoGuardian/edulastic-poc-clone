@@ -165,7 +165,7 @@ class QuestionWrapper extends Component {
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
     }
-    console.log(qIndex, "===>", type);
+
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">

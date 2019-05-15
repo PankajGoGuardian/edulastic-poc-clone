@@ -15,6 +15,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import { Pointer } from "../../styled/Pointer";
@@ -81,7 +82,9 @@ class Display extends Component {
       showDashedBorder,
       backgroundColor,
       theme,
-      item
+      item,
+      showQuestionNumber,
+      qIndex
     } = this.props;
 
     const { userAnswers } = this.state;
@@ -176,7 +179,10 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize}>
-        <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <TemplateBoxContainer>
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>
@@ -203,7 +209,9 @@ Display.propTypes = {
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
   theme: PropTypes.object.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 Display.defaultProps = {
@@ -226,7 +234,9 @@ Display.defaultProps = {
     width: 0,
     height: 0,
     wordwrap: false
-  }
+  },
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withTheme(Display);

@@ -17,7 +17,7 @@ import VideoPreview from "./VideoPreview";
 
 const EmptyWrapper = styled.div``;
 
-const Video = ({ item, view, smallSize, setQuestionData, t }) => {
+const Video = ({ item, view, smallSize, setQuestionData, t, ...restProps }) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
@@ -32,7 +32,7 @@ const Video = ({ item, view, smallSize, setQuestionData, t }) => {
   if ((view = "preview"))
     return (
       <Wrapper>
-        <VideoPreview item={itemForPreview} />
+        <VideoPreview item={itemForPreview} {...restProps} />
       </Wrapper>
     );
 };

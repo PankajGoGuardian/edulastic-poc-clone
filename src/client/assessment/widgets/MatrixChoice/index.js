@@ -37,7 +37,8 @@ const MatrixChoice = ({
   fillSections,
   cleanSections,
   isSidebarCollapsed,
-  advancedAreOpen
+  advancedAreOpen,
+  ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
   const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -135,6 +136,7 @@ const MatrixChoice = ({
               item={itemForPreview}
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
+              {...restProps}
             />
           )}
 

@@ -16,8 +16,20 @@ import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
 import { Addon } from "./styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 import { InputWrapper } from "./styled/InputWrapper";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, userAnswer, theme }) => {
+const ShortTextPreview = ({
+  view,
+  saveAnswer,
+  t,
+  item,
+  previewTab,
+  smallSize,
+  userAnswer,
+  theme,
+  showQuestionNumber,
+  qIndex
+}) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
   const [showCharacterMap, setShowCharacterMap] = useState(false);
   const [selection, setSelection] = useState(null);
@@ -97,7 +109,11 @@ const ShortTextPreview = ({ view, saveAnswer, t, item, previewTab, smallSize, us
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
 
       {smallSize && (
         <SmallContainer>
@@ -151,12 +167,16 @@ ShortTextPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 ShortTextPreview.defaultProps = {
   previewTab: CLEAR,
-  smallSize: false
+  smallSize: false,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

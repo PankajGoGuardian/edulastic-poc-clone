@@ -107,7 +107,8 @@ class ClozeDropDown extends Component {
       fillSections,
       cleanSections,
       isSidebarCollapsed,
-      advancedAreOpen
+      advancedAreOpen,
+      ...restProps
     } = this.props;
 
     const {
@@ -190,6 +191,7 @@ class ClozeDropDown extends Component {
               onChange={this.handleAddAnswer}
               evaluation={evaluation}
               instructorStimulus={instructorStimulus}
+              {...restProps}
             />
           </Wrapper>
         )}

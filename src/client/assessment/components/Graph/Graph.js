@@ -262,7 +262,8 @@ class Graph extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      isSidebarCollapsed
+      isSidebarCollapsed,
+      ...restProps
     } = this.props;
     const { graphType, extra_options } = item;
     const OptionsComponent = this.getOptionsComponent();
@@ -356,6 +357,7 @@ class Graph extends Component {
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
                 evaluation={evaluation}
+                {...restProps}
               />
             )}
             {previewTab === "show" && item.canvas && item.ui_style && (
@@ -367,6 +369,7 @@ class Graph extends Component {
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 evaluation={evaluation}
+                {...restProps}
               />
             )}
             {previewTab === "clear" && item.canvas && item.ui_style && (
@@ -377,6 +380,7 @@ class Graph extends Component {
                 elements={userAnswer}
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
+                {...restProps}
               />
             )}
           </Wrapper>

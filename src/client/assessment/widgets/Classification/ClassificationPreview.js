@@ -399,7 +399,7 @@ ClassificationPreview.propTypes = {
   userAnswer: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
-  qIndex: PropTypes.number.isRequired,
+  qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool
 };
 
@@ -407,7 +407,8 @@ ClassificationPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   editCorrectAnswers: [],
-  showQuestionNumber: false
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

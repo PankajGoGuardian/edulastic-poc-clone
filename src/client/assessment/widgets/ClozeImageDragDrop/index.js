@@ -132,7 +132,8 @@ class ClozeImageDragDrop extends Component {
       theme,
       fillSections,
       cleanSections,
-      isSidebarCollapsed
+      isSidebarCollapsed,
+      ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { showDraghandle, shuffleOptions, transparentResponses } = this.state;
@@ -276,6 +277,7 @@ class ClozeImageDragDrop extends Component {
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
+                {...restProps}
               />
             )}
             {previewTab === "clear" && (

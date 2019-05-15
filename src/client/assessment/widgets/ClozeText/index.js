@@ -99,7 +99,7 @@ class ClozeText extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme } = this.props;
+    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme, ...restProps } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
     const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -174,6 +174,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                {...restProps}
               />
             )}
             {previewTab === "clear" && (

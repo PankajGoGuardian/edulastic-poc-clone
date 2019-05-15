@@ -59,8 +59,8 @@ class ClassQuestions extends Component {
           const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
           if (userQuestion) {
             q.timespent = userQuestion.timespent;
-            q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
           }
+          q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
           return { ...q };
         });
         if (qActivities.length > 0) {

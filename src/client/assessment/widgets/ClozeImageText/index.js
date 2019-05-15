@@ -141,7 +141,8 @@ class ClozeImageText extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      isSidebarCollapsed
+      isSidebarCollapsed,
+      ...restProps
     } = this.props;
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
@@ -247,6 +248,7 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
+                {...restProps}
               />
             )}
             {previewTab === "clear" && (

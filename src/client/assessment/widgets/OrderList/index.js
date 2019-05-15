@@ -29,6 +29,15 @@ import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
 const List = withAddButton(QuillSortableList);
 const OptionsList = withPoints(QuillSortableList);
 
@@ -43,7 +52,8 @@ const OrderList = ({
   evaluation,
   t,
   setQuestionData,
-  saveAnswer
+  saveAnswer,
+  showQuestionNumber
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
   useEffect(() => {
@@ -250,11 +260,15 @@ const OrderList = ({
       {view === PREVIEW && (
         <Wrapper>
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
-          <QuestionHeader
-            qIndex={qIndex}
-            smallSize={smallSize}
-            dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
-          />
+
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            <QuestionHeader
+              qIndex={qIndex}
+              smallSize={smallSize}
+              dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
+            />
+          </QuestionTitleWrapper>
 
           {previewTab === CHECK && (
             <OrderListReport

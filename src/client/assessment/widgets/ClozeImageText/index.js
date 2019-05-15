@@ -182,14 +182,6 @@ class ClozeImageText extends Component {
                       fillSections={fillSections}
                       cleanSections={cleanSections}
                     />
-                    <CorrectAnswerOptions>
-                      <Checkbox
-                        className="additional-options"
-                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                        label={t("component.cloze.imageText.shuffleoptions")}
-                        checked={shuffleOptions}
-                      />
-                    </CorrectAnswerOptions>
                   </Widget>
                 </div>
               </EditorContainer>

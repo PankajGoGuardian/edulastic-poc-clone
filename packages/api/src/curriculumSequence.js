@@ -15,7 +15,7 @@ const searchDistinctPublishers = () => {
   return api
     .callApi({
       method: "get",
-      url: `/playlists/search/distinct-collection`
+      url: `/playlists/search/collection`
     })
     .then(result => result.data.result);
 };

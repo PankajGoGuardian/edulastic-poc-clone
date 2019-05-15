@@ -47,6 +47,7 @@ import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
 import { get } from "lodash";
+import "../styles/ql-indents.scss";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};

@@ -71,7 +71,7 @@ const initialState = {
   }
 };
 
-export const reducer = (state = initialState, { type, payload }) => {
+const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case RECEIVE_TESTS_REQUEST:
       return { ...state, loading: true };
@@ -169,3 +169,5 @@ export const getItemsSubjectAndGradeSelector = createSelector(
   stateTestItemsSelector,
   state => state.itemsSubjectAndGrade
 );
+
+export default reducer;

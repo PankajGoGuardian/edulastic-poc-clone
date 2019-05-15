@@ -60,7 +60,7 @@ export const getClearSearchState = () => ({
   filter: filterMenuItems[0].filter,
   searchString: "",
   type: "",
-  publisher: ""
+  collectionName: ""
 });
 
 class TestList extends Component {

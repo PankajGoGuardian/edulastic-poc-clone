@@ -55,7 +55,7 @@ const Summary = ({
       to: "/author/playlists"
     },
     {
-      title: "REVIEW",
+      title: "SUMMARY",
       to: ""
     }
   ];
@@ -65,11 +65,17 @@ const Summary = ({
     <Container>
       <SecondHeader>
         <Breadcrumb data={isPlaylist ? playlistBreadcrumbData : breadcrumbData} style={{ position: "unset" }} />
-        <Button>
-          <ButtonLink onClick={onShowSource} color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
-            {t("component.questioneditor.buttonbar.source")}
-          </ButtonLink>
-        </Button>
+        {!isPlaylist && (
+          <Button>
+            <ButtonLink
+              onClick={onShowSource}
+              color="primary"
+              icon={<IconSource color={blue} width={16} height={16} />}
+            >
+              {t("component.questioneditor.buttonbar.source")}
+            </ButtonLink>
+          </Button>
+        )}
       </SecondHeader>
       <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
         <SummaryHeader

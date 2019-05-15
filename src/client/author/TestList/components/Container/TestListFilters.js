@@ -34,7 +34,7 @@ const TestListFilters = ({
           placeholder: "Select Collection",
           size: "large",
           data: collections.map(o => ({ value: o, text: o })),
-          onChange: "publisher"
+          onChange: "collectionName"
         }
       ];
     }

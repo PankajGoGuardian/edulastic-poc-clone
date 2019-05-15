@@ -53,7 +53,7 @@ const MatrixChoice = ({
 
   let answer = userAnswer;
 
-  if (!userAnswer) {
+  if (!userAnswer && item && item.stems) {
     answer = {
       value: item.stems.map(() => null)
     };

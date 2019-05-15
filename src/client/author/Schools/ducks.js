@@ -18,10 +18,6 @@ const DELETE_SCHOOLS_REQUEST = "[school] delete data request";
 const DELETE_SCHOOLS_SUCCESS = "[school] delete data success";
 const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 
-const SET_SEARCHNAME_VALUE = "[school] set serch by name value";
-const SET_SCHOOL_FILTERS_DATA = "[school] set filters data";
-const SET_SCHOOL_SORT_INFO = "[school] set sort info";
-
 const SET_SCHOOLSACTION_STATUS_ACTION = "[school] set action status";
 
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
@@ -37,96 +33,14 @@ export const deleteSchoolsAction = createAction(DELETE_SCHOOLS_REQUEST);
 export const deleteSchoolsSuccessAction = createAction(DELETE_SCHOOLS_SUCCESS);
 export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 
-export const setSearchByNameValueAction = createAction(SET_SEARCHNAME_VALUE);
-export const setSchoolFiltersDataAction = createAction(SET_SCHOOL_FILTERS_DATA);
 export const setSchoolActionStatusAction = createAction(SET_SCHOOLSACTION_STATUS_ACTION);
-export const setSchoolsSortInfoAction = createAction(SET_SCHOOL_SORT_INFO);
+
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
   stateSchoolsSelector,
   state => {
-    let searchedSchoolList = [];
-    if (state.searchByName.length == 0) searchedSchoolList = [...state.data];
-    else {
-      searchedSchoolList = state.data.filter(item => {
-        const nameValue = item.name.toLowerCase();
-        return nameValue.indexOf(state.searchByName.toLowerCase()) != -1;
-      });
-    }
-
-    const filtersData = state.filtersData;
-    let filteredSchoolList = [];
-    for (let i = 0; i < searchedSchoolList.length; i++) {
-      let isMatched = true;
-      for (let j = 0; j < filtersData.length; j++) {
-        if (
-          filtersData[j].filtersColumn.length == 0 ||
-          filtersData[j].filtersValue.length == 0 ||
-          filtersData[j].filterStr.length == 0
-        ) {
-          continue;
-        }
-
-        if (filtersData[j].filtersValue === "eq") {
-          if (
-            searchedSchoolList[i][filtersData[j].filtersColumn] == null ||
-            (searchedSchoolList[i][filtersData[j].filtersColumn].toString().toLowerCase() !==
-              filtersData[j].filterStr.toLowerCase() &&
-              filtersData[j].filterStr.length != 0)
-          ) {
-            isMatched = false;
-            break;
-          }
-        } else if (filtersData[j].filtersValue === "cont") {
-          if (
-            searchedSchoolList[i][filtersData[j].filtersColumn] == null ||
-            (searchedSchoolList[i][filtersData[j].filtersColumn]
-              .toString()
-              .toLowerCase()
-              .indexOf(filtersData[j].filterStr.toLowerCase()) < 0 &&
-              filtersData[j].filterStr.length != 0)
-          ) {
-            isMatched = false;
-            break;
-          }
-        }
-      }
-      if (isMatched) {
-        filteredSchoolList.push(searchedSchoolList[i]);
-      }
-    }
-
-    if (state.sortedInfo.order === "ascend") {
-      filteredSchoolList = filteredSchoolList.sort((a, b) => {
-        if (
-          a[state.sortedInfo.columnKey].toString().toLowerCase() >
-          b[state.sortedInfo.columnKey].toString().toLowerCase()
-        ) {
-          return 1;
-        } else if (
-          a[state.sortedInfo.columnKey].toString().toLowerCase() <
-          b[state.sortedInfo.columnKey].toString().toLowerCase()
-        ) {
-          return -1;
-        } else return 0;
-      });
-    } else if (state.sortedInfo.order === "descend") {
-      filteredSchoolList = filteredSchoolList.sort((a, b) => {
-        if (
-          b[state.sortedInfo.columnKey].toString().toLowerCase() >
-          a[state.sortedInfo.columnKey].toString().toLowerCase()
-        ) {
-          return 1;
-        } else if (
-          b[state.sortedInfo.columnKey].toString().toLowerCase() <
-          a[state.sortedInfo.columnKey].toString().toLowerCase()
-        ) {
-          return -1;
-        } else return 0;
-      });
-    }
-    return filteredSchoolList;
+    return state.data;
   }
 );
 
@@ -144,20 +58,8 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  searchByName: "",
-  filtersData: [
-    {
-      filtersColumn: "",
-      filtersValue: "",
-      filterStr: "",
-      filterAdded: false
-    }
-  ],
   selectedAction: "",
-  sortedInfo: {
-    columnKey: "name",
-    order: "ascend"
-  }
+  totalSchoolCount: 0
 };
 
 export const reducer = createReducer(initialState, {
@@ -166,7 +68,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_SCHOOLS_SUCCESS]: (state, { payload }) => {
     const schoolsData = [];
-    payload.map(row => {
+    payload.data.map(row => {
       let school = {};
       school = row;
 
@@ -199,6 +101,7 @@ export const reducer = createReducer(initialState, {
 
     state.loading = false;
     state.data = schoolsData;
+    state.totalSchoolCount = payload.totalSchools;
   },
 
   [RECEIVE_SCHOOLS_ERROR]: (state, { payload }) => {
@@ -244,13 +147,12 @@ export const reducer = createReducer(initialState, {
       zip: payload.location.zip,
       teachersCount: 0,
       studentsCount: 0,
-      sectionsCount: 0,
-      status: get(payload, ["status"], 1)
+      sectionsCount: 0
     };
 
     state.creating = false;
     state.create = createdSchoolData;
-    state.data = [createdSchoolData, ...state.data];
+    state.data = [createdSchoolData, ...state.data].slice(0, 25);
   },
   [CREATE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -275,35 +177,6 @@ export const reducer = createReducer(initialState, {
     state.deleting = false;
     state.deleteError = payload.error;
     state.selectedAction = "";
-  },
-  [SET_SEARCHNAME_VALUE]: (state, { payload }) => {
-    state.searchByName = payload;
-  },
-  [SET_SCHOOL_FILTERS_DATA]: (state, { payload }) => {
-    state.filtersData = [...payload];
-  },
-  [SET_SCHOOLSACTION_STATUS_ACTION]: (state, { payload }) => {
-    state.selectedAction = payload;
-  },
-  [SET_SCHOOL_SORT_INFO]: (state, { payload }) => {
-    if (state.sortedInfo.columnKey === payload) {
-      if (state.sortedInfo.order === "descend") {
-        state.sortedInfo = {
-          columnKey: payload,
-          order: "ascend"
-        };
-      } else {
-        state.sortedInfo = {
-          columnKey: payload,
-          order: "descend"
-        };
-      }
-    } else {
-      state.sortedInfo = {
-        columnKey: payload,
-        order: "ascend"
-      };
-    }
   }
 });
 
@@ -311,7 +184,7 @@ export const reducer = createReducer(initialState, {
 function* receiveSchoolsSaga({ payload }) {
   try {
     const schools = yield call(schoolApi.getSchools, payload);
-    yield put(receiveSchoolsSuccessAction(schools.data));
+    yield put(receiveSchoolsSuccessAction(schools));
   } catch (err) {
     const errorMessage = "Receive Schools is failing!";
     yield call(message.error, errorMessage);

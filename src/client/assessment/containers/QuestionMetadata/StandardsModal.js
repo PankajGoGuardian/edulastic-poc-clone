@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import { Button, Row, Col, Select, Checkbox, Spin } from "antd";
 import { Paper, FlexContainer } from "@edulastic/common";
@@ -60,8 +60,6 @@ const StandardsModal = ({
       standard: { ...prevState.standard, curriculum: "" }
     }));
     getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
-    editAlignment(alignmentIndex, { subject: val, curriculum: "" });
-    clearStandards();
   };
 
   const handleChangeStandard = (curriculum, event) => {
@@ -71,11 +69,11 @@ const StandardsModal = ({
   };
 
   const handleChangeGrades = val => {
-    setState({ ...state, grades: val, eloStandards: [] });
+    setState({ ...state, grades: val });
     getCurriculumStandards({ id: state.standard.id, grades: val, searchStr: "" });
   };
 
-  const handleCheckELO = c => e => {
+  const handleCheckELO = c => {
     if (!state.eloStandards.some(item => item._id === c._id))
       setState({ ...state, eloStandards: [...state.eloStandards, c] });
     else setState({ ...state, eloStandards: [...state.eloStandards].filter(elo => elo._id !== c._id) });
@@ -99,7 +97,7 @@ const StandardsModal = ({
           </Col>
           <Col md={8}>
             <ItemBody>
-              <div className="select-label">{t("component.options.curriculum")}</div>
+              <div className="select-label">{t("component.options.standardSet")}</div>
               <Select
                 style={{ width: "100%" }}
                 showSearch
@@ -156,7 +154,7 @@ const StandardsModal = ({
                   {filteredELO.map(c => (
                     <FlexContainer key={c._id} alignItems="flex-start" style={{ marginBottom: 15 }}>
                       <Checkbox
-                        onChange={handleCheckELO(c)}
+                        onChange={() => handleCheckELO(c)}
                         checked={state.eloStandards.some(item => item._id === c._id)}
                       />
                       <div>

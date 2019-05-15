@@ -31,24 +31,25 @@ class ComposeQuestion extends Component {
     cleanSections();
   }
 
-  render() {
-    const { item, t, setQuestionData } = this.props;
+  onChangeQuestion = stimulus => {
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.stimulus = stimulus;
+        updateVariables(draft);
+      })
+    );
+  };
 
-    const handleItemChangeChange = (prop, uiStyle) => {
-      setQuestionData(
-        produce(item, draft => {
-          draft[prop] = uiStyle;
-          updateVariables(draft);
-        })
-      );
-    };
+  render() {
+    const { item, t } = this.props;
 
     return (
       <Widget>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
         <QuestionTextArea
           placeholder={t("component.matrix.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+          onChange={this.onChangeQuestion}
           value={item.stimulus ? item.stimulus : ""}
         />
       </Widget>

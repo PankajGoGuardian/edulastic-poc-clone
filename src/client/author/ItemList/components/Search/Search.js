@@ -52,7 +52,7 @@ class Search extends Component {
             </ItemBody>
           </Item>
           <Item>
-            <ItemHeader>Curriculum</ItemHeader>
+            <ItemHeader>Standard set</ItemHeader>
             <ItemBody>
               <Select
                 showSearch
@@ -61,10 +61,10 @@ class Search extends Component {
                 onSelect={onSearchFieldChange("curriculumId")}
                 filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
                 value={curriculumId}
-                defaultValue="All Curriculums"
+                defaultValue=""
               >
                 <Select.Option key="" value="">
-                  All Curriculums
+                  All Standard set
                 </Select.Option>
                 {formattedCuriculums.map(el => (
                   <Select.Option key={el.value} value={el.value} disabled={el.disabled}>

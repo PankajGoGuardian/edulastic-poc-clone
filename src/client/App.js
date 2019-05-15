@@ -2,7 +2,7 @@ import React, { Component, Suspense, lazy } from "react";
 import { get } from "lodash";
 import queryString from "query-string";
 import PropTypes from "prop-types";
-import { Switch, Route, Redirect, withRouter } from "react-router-dom";
+import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { DragDropContext } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
@@ -38,6 +38,7 @@ const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student
 const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
 
 const Admin = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/app"));
+const RedirectToTest = lazy(() => import(/* webpackChunkName: "RedirecToTest" */ "./author/RedirectToTest"));
 
 const Loading = () => (
   <div>
@@ -52,6 +53,8 @@ if (query.token && query.userId && query.role) {
 } else if (query.userId && query.role) {
   TokenStorage.selectAccessToken(query.userId, query.role);
 }
+
+const testRedirectRoutes = ["/demo/assessmentPreview", "/d/ap"];
 
 class App extends Component {
   static propTypes = {
@@ -75,7 +78,12 @@ class App extends Component {
   }
 
   render() {
-    const { user, tutorial, location } = this.props;
+    const { user, tutorial, location, history } = this.props;
+
+    if (location.hash.includes("#renderResource/close/")) {
+      const v1Id = location.hash.split("/")[2];
+      history.push(`/d/ap?eAId=${v1Id}`);
+    }
 
     const publicPath = location.pathname.split("/").includes("public");
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
@@ -126,6 +134,9 @@ class App extends Component {
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            {testRedirectRoutes.map(route => (
+              <Route path={route} component={RedirectToTest} />
+            ))}
           </Switch>
         </Suspense>
         <CheckKeyboardUser />

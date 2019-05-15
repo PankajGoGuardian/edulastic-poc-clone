@@ -1,3 +1,4 @@
+import undoable from "redux-undo";
 import { SAVE_SCRATCH_PAD, LOAD_SCRATCH_PAD } from "../constants/actions";
 
 const initialState = {};
@@ -18,4 +19,7 @@ const userWork = (state = initialState, { type, payload }) => {
   }
 };
 
-export default userWork;
+// make it a undoable reducer
+export default undoable(userWork, {
+  limit: 10
+});

@@ -2,6 +2,8 @@ require("dotenv").config();
 const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
+const webpack = require("webpack");
+
 console.log("port", port);
 let config = {
   entry: "./src/client/index.js",
@@ -21,6 +23,7 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
+    chain.plugin("BannerPlugin").use(new webpack.BannerPlugin({ banner: new Date().toString() }));
   }
 };
 if (process.env.PUBLIC_URL) {

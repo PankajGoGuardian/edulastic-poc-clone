@@ -1044,7 +1044,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
         stimulus: "",
-        imageWidth: 600,
+        imageWidth: 0,
         options: ["Country A", "Country B", "Country C"],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1074,6 +1074,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_DROP_DOWN,
         firstMount: true,
         stimulus: "",
+        imageWidth: 0,
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1088,7 +1089,6 @@ export const getCards = onSelectQuestionType => {
           { top: 100, left: 120, width: 220, height: 40 },
           { top: 220, left: 200, width: 200, height: 40 }
         ],
-        imageWidth: 600,
         stimulusReviewonly: "",
         instructorStimulus: "",
         rubricReference: "",
@@ -1107,6 +1107,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "",
         options: [],
+        imageWidth: 0,
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1120,7 +1121,6 @@ export const getCards = onSelectQuestionType => {
           { top: 100, left: 120, width: 220, height: 40 },
           { top: 220, left: 200, width: 200, height: 40 }
         ],
-        imageWidth: 600,
         stimulusReviewonly: "",
         instructorStimulus: "",
         rubricReference: "",

@@ -85,7 +85,7 @@ const DropArea = ({ updateData, item }) => {
         cursor: "crosshair",
         top: 0,
         left: 0,
-        width: item.imageWidth || 600
+        width: item.imageWidth || "100%"
       }}
       onClick={_addNew}
     >

@@ -164,7 +164,7 @@ const AlignmentRow = ({
                     </Select>
                   </ItemBody>
                   <ItemBody>
-                    <div className="select-label">{t("component.options.curriculum")}</div>
+                    <div className="select-label">{t("component.options.standardSet")}</div>
                     <Select
                       style={{ width: "100%" }}
                       showSearch

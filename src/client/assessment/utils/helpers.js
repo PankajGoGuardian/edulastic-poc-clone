@@ -26,14 +26,14 @@ export const getStylesFromUiStyleToCssStyle = ui_style => {
         cssStyles.fontSize = getFontSize(value, true);
         break;
       case "min_width":
-        cssStyles.minWidth = value + "px";
+        cssStyles.minWidth = `${value}px`;
         break;
       case "transparent_background":
         if (value) cssStyles.background = "transparent";
         break;
       case "response_font_scale":
         if (value === "boosted") {
-          if (ui_style.fontsize) cssStyles.fontScale = parseFloat(getFontSize(ui_style.fontsize, true)) * 1.5 + "rem";
+          if (ui_style.fontsize) cssStyles.fontScale = `${parseFloat(getFontSize(ui_style.fontsize, true)) * 1.5}rem`;
           else cssStyles.fontScale = "1.5rem";
         }
         break;
@@ -48,6 +48,7 @@ export const getStylesFromUiStyleToCssStyle = ui_style => {
   return cssStyles;
 };
 
+export const fromStringToNumberPx = value => (typeof value === "string" ? +value.slice(0, -2) : value);
 export const topAndLeftRatio = (styleNumber, imagescale, fontsize, smallSize) => {
   const getValueWithRatio = newRatio => (smallSize ? styleNumber / 2 : styleNumber * newRatio);
 

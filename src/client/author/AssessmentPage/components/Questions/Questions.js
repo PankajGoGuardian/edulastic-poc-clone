@@ -3,7 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
 import PropTypes from "prop-types";
-import { sortBy } from "lodash";
+import { sortBy, maxBy } from "lodash";
 
 import { SHORT_TEXT, MULTIPLE_CHOICE, CLOZE_DROP_DOWN, MATH } from "@edulastic/constants/const/questionType";
 import { methods } from "@edulastic/constants/const/math";
@@ -120,7 +120,7 @@ const updateQuesionData = (question, data) => ({
 });
 
 const updateMultipleChoice = optionsValue => {
-  const options = optionsValue.split(" ");
+  const options = optionsValue.split("");
   return {
     options: options.map((option, index) => ({
       label: option,
@@ -167,7 +167,8 @@ class Questions extends React.Component {
     viewMode: PropTypes.string.isRequired,
     noCheck: PropTypes.bool,
     answersById: PropTypes.object,
-    centered: PropTypes.bool
+    centered: PropTypes.bool,
+    highlighted: PropTypes.string
   };
 
   static defaultProps = {
@@ -175,14 +176,15 @@ class Questions extends React.Component {
     questionsById: {},
     noCheck: false,
     answersById: {},
-    centered: false
+    centered: false,
+    highlighted: undefined
   };
 
   state = {
     currentEditQuestionIndex: -1
   };
 
-  handleAddQuestion = (type, index) => () => {
+  handleAddQuestion = (type, index, modalQuestionId) => () => {
     const { addQuestion, list } = this.props;
     const questions = list.filter(q => q.type !== "sectionLabel");
 
@@ -197,7 +199,9 @@ class Questions extends React.Component {
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
 
-    this.handleOpenEditModal(questionIndex - 1)();
+    const questionIdToOpen = modalQuestionId || questionIndex;
+
+    this.handleOpenEditModal(questionIdToOpen)();
   };
 
   handleDeleteQuestion = questionId => () => {
@@ -285,10 +289,6 @@ class Questions extends React.Component {
 
   get currentQuestion() {
     const { currentEditQuestionIndex } = this.state;
-    const { list } = this.props;
-
-    const questions = list.filter(q => q.type !== "sectionLabel");
-
     return this.questionList[currentEditQuestionIndex];
   }
 
@@ -304,9 +304,11 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, centered } = this.props;
+    const { previewMode, viewMode, noCheck, answersById, centered, highlighted, list } = this.props;
 
     const review = viewMode === "review";
+
+    const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
 
     return (
       <>
@@ -314,7 +316,12 @@ class Questions extends React.Component {
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
-                <Section section={question} handleUpdate={this.handleUpdateSection} />
+                <Section
+                  section={question}
+                  viewMode={viewMode}
+                  onUpdate={this.handleUpdateSection}
+                  onDelete={this.handleDeleteQuestion(question.id)}
+                />
               ) : (
                 <QuestionItem
                   key={question.id}
@@ -327,11 +334,18 @@ class Questions extends React.Component {
                   viewMode={viewMode}
                   answer={answersById[question.id]}
                   centered={centered}
+                  highlighted={highlighted === question.id}
                 />
               )
             )}
           </div>
-          {!review && <AddQuestion onAddQuestion={this.handleAddQuestion} onAddSection={this.handleAddSection} />}
+          {!review && (
+            <AddQuestion
+              onAddQuestion={this.handleAddQuestion}
+              onAddSection={this.handleAddSection}
+              minAvailableQuestionIndex={minAvailableQuestionIndex}
+            />
+          )}
           {review && !noCheck && (
             <AnswerActionsWrapper>
               <AnswerAction active={previewMode === "check"} onClick={this.handleCheckAnswer}>

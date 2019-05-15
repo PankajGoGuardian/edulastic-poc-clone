@@ -32,6 +32,12 @@ const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, sa
       if (active && !history.figures[active]) {
         setActive(null);
       }
+    } else {
+      setPoints([]);
+      setPathes([]);
+      setFigures([]);
+      setTexts([]);
+      setActive(null);
     }
   }, [history]);
 

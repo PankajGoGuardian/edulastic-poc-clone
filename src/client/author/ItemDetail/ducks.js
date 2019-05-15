@@ -372,6 +372,11 @@ function* receiveItemSaga({ payload }) {
     const resources = (data.data && data.data.resources) || [];
     questions = [...questions, ...resources];
     questions = _keyBy(questions, "id");
+    if (get(payload, "params.addItem", false)) {
+      yield put(addItemsQuestionAction(questions));
+    } else {
+      yield put(loadQuestionsAction(questions));
+    }
     const item = _omit(data, "data");
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
@@ -381,12 +386,6 @@ function* receiveItemSaga({ payload }) {
     yield put({
       type: CLEAR_DICT_ALIGNMENTS
     });
-
-    if (get(payload, "params.addItem", false)) {
-      yield put(addItemsQuestionAction(questions));
-    } else {
-      yield put(loadQuestionsAction(questions));
-    }
   } catch (err) {
     console.log("err is", err);
     const errorMessage = "Receive item by id is failing";

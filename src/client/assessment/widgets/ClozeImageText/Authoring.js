@@ -296,7 +296,7 @@ class Authoring extends Component {
                 </PointerContainer>
               </ControlBar>
               <ImageFlexView size={1}>
-                <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth || 600}>
+                <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
                   {item.imageUrl && (
                     <React.Fragment>
                       <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />

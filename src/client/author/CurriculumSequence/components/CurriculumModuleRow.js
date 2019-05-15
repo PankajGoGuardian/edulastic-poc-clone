@@ -90,13 +90,13 @@ class ModuleRow extends Component {
       hideEditOptions,
       removeUnit
     } = this.props;
-    const { completed, name, id, data = [] } = module;
+    const { completed, title, id, data = [] } = module;
 
     const { assignModule } = this;
 
     const totalAssigned = data.length;
     const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.testId));
-    const [whichModule, moduleName] = name.split(":");
+    const [whichModule, moduleName] = title ? title.split(":") : [];
     const { showModal, selectedTest } = this.state;
     return (
       <React.Fragment>
@@ -214,7 +214,7 @@ class ModuleRow extends Component {
                             <CustomIcon marginLeft={16}>
                               <Icon type="right" style={{ color: "#707070" }} />
                             </CustomIcon>
-                            <ModuleDataName>{moduleData.name}</ModuleDataName>
+                            <ModuleDataName>{moduleData.testTitle}</ModuleDataName>
                           </AssignmentContent>
                           <AssignmentIconsWrapper expanded={isContentExpanded}>
                             {!hideEditOptions && (

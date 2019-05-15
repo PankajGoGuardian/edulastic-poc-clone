@@ -101,7 +101,7 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox fontSize={fontSize}>
         <StyledPreviewContainer data-cy="image-text-answer-board" width={width}>
-          <StyledPreviewImage src={imageUrl || MapImage} alt={imageAlterText} />
+          <StyledPreviewImage src={imageUrl || ""} alt={imageAlterText} />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
             const btnStyle = {

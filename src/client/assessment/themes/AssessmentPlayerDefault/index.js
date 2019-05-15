@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Affix } from "antd";
-import { last } from "lodash";
+import { ActionCreators } from "redux-undo";
 import { withWindowSizes } from "@edulastic/common";
 import { IconSend } from "@edulastic/icons";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
@@ -68,7 +68,8 @@ class AssessmentPlayerDefault extends React.Component {
       currentTab: 0,
       calculateMode: `${this.props.settings.calcType}_DESMOS`,
       changeMode: 0,
-      tool: 0
+      tool: 0,
+      history: 0
     };
   }
 
@@ -88,28 +89,14 @@ class AssessmentPlayerDefault extends React.Component {
     changePreview: PropTypes.func.isRequired,
     history: PropTypes.func.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    questions: PropTypes.object.isRequired
+    questions: PropTypes.object.isRequired,
+    undoScratchPad: PropTypes.func.isRequired,
+    redoScratchPad: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     theme: defaultTheme
   };
-
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.currentItem !== prevState.cloneCurrentItem) {
-      nextProps.saveScratchPad({
-        [nextProps.items[prevState.cloneCurrentItem]._id]: prevState.history[prevState.currentTab]
-      });
-      return {
-        history: nextProps.scratchPad ? [nextProps.scratchPad] : [{ points: [], pathes: [], figures: [], texts: [] }],
-        currentTab: 0,
-        cloneCurrentItem: nextProps.currentItem,
-        tool: nextProps.scratchPad ? 5 : 0, // 5 is scratch pad
-        scratchPadMode: !!nextProps.scratchPad
-      };
-    }
-    return null;
-  }
 
   changeTool = val => this.setState({ tool: val });
 
@@ -201,31 +188,49 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   saveHistory = data => {
-    const { history, currentTab } = this.state;
     const { saveScratchPad, items, currentItem } = this.props;
-    const newHist = history.slice(0, currentTab + 1);
+    this.setState(({ history }) => ({ history: history + 1 }));
 
-    newHist.push(data);
-
-    this.setState({ history: newHist, currentTab: currentTab + 1 });
     saveScratchPad({
-      [items[currentItem]._id]: last(history)
+      [items[currentItem]._id]: data
     });
   };
 
   handleUndo = () => {
-    const { currentTab } = this.state;
-    if (currentTab > 0) {
-      this.setState({ currentTab: currentTab - 1 });
+    const { undoScratchPad } = this.props;
+    const { history } = this.state;
+    if (history > 0) {
+      this.setState(
+        state => ({ history: state.history - 1 }),
+        () => {
+          undoScratchPad();
+        }
+      );
     }
   };
 
   handleRedo = () => {
-    const { history, currentTab } = this.state;
-    if (currentTab < history.length - 1) {
-      this.setState({ currentTab: currentTab + 1 });
-    }
+    const { redoScratchPad } = this.props;
+
+    this.setState(
+      state => ({ history: state.history + 1 }),
+      () => {
+        redoScratchPad();
+      }
+    );
   };
+
+  static getDerivedStateFromProps(next, prevState) {
+    if (next.currentItem !== prevState.cloneCurrentItem) {
+      const tool = next.scratchPad ? 5 : 0;
+      return { tool, cloneCurrentItem: next.currentItem, history: 0, activeMode: "" };
+    }
+
+    if (next.scratchPad && prevState.tool !== 5) {
+      return { tool: 5, history: 0, activeMode: "" };
+    }
+    return null;
+  }
 
   render() {
     const {
@@ -251,12 +256,10 @@ class AssessmentPlayerDefault extends React.Component {
       isToolbarModalVisible,
       isSubmitConfirmationVisible,
       isSavePauseModalVisible,
-      scratchPadMode,
+
       activeMode,
       currentColor,
       deleteMode,
-      history,
-      currentTab,
       lineWidth,
       fillColor,
       changeMode,
@@ -270,18 +273,20 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
+
+    const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
         <Container>
           <SvgDraw
             activeMode={activeMode}
-            scratchPadMode={scratchPadMode}
+            scratchPadMode={tool === 5}
             lineColor={currentColor}
             deleteMode={deleteMode}
             lineWidth={lineWidth}
             fillColor={fillColor}
             saveHistory={this.saveHistory}
-            history={history[currentTab]}
+            history={scratchPad}
           />
           {scratchPadMode && (
             <Tools
@@ -432,14 +437,16 @@ const enhance = compose(
       preview: state.view.preview,
       questions: state.assessmentplayerQuestions.byId,
       scratchPad: ownProps.items[ownProps.currentItem]
-        ? state.userWork[ownProps.items[ownProps.currentItem]._id] || null
+        ? state.userWork.present[ownProps.items[ownProps.currentItem]._id] || null
         : null,
       settings: state.test.settings
     }),
     {
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
-      saveScratchPad: saveScratchPadAction
+      saveScratchPad: saveScratchPadAction,
+      undoScratchPad: ActionCreators.undo,
+      redoScratchPad: ActionCreators.redo
     }
   )
 );

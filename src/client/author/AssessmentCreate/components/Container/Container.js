@@ -98,7 +98,11 @@ class Container extends React.Component {
         {creating && <Spin />}
         {!method && <CreationOptions onUploadPDF={this.handleSetMethod(creationMethods.PDF)} />}
         {method === creationMethods.PDF && (
-          <DropArea onUpload={this.handleUploadPDF} onCreateBlank={this.handleCreateBlankAssessment} />
+          <DropArea
+            loading={creating}
+            onUpload={this.handleUploadPDF}
+            onCreateBlank={this.handleCreateBlankAssessment}
+          />
         )}
       </>
     );

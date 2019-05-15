@@ -1,5 +1,7 @@
-import API from "./utils/API";
 import { omit } from "lodash";
+
+import API from "./utils/API";
+
 const api = new API();
 const prefix = "/test";
 const prefixElasticSearch = "/search/tests";
@@ -64,11 +66,20 @@ const getPublicTest = testId =>
     })
     .then(result => result.data.result);
 
+const getByV1Id = v1Id =>
+  api
+    .callApi({
+      url: `test/v1Id/${v1Id}/id`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 export default {
   getAll,
   getById,
   create,
   update,
   publishTest,
-  getPublicTest
+  getPublicTest,
+  getByV1Id
 };

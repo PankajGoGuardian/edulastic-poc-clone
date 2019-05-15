@@ -65,7 +65,7 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
-function* evaluateAnswers() {
+function* evaluateAnswers(action) {
   try {
     const oldAnswers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", null));
@@ -79,11 +79,9 @@ function* evaluateAnswers() {
         }
       });
     }
-
     const answers = yield select(state => state.answers);
     const validations = yield select(getQuestionsSelector);
     const { evaluation, score, maxScore } = yield evaluateItem(answers, validations);
-
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -93,7 +91,9 @@ function* evaluateAnswers() {
     message.config({
       maxCount: 1
     });
-    message.success(`score: ${score}/${maxScore}`);
+    if (action.hasOwnProperty("payload") && action.payload.mode !== "show") {
+      message.success(`score: ${score}/${maxScore}`);
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Answer Evaluation Failed";
@@ -103,6 +103,7 @@ function* evaluateAnswers() {
 
 function* showAnswers() {
   try {
+    yield put({ type: CHECK_ANSWER, payload: { mode: "show" } }); // validate the results first then show it
     const answers = yield select(state => state.answers);
     const validations = yield select(getQuestionsSelector);
     const { evaluation } = createShowAnswerData(validations, answers);

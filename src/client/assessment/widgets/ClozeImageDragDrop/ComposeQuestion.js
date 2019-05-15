@@ -207,7 +207,7 @@ class ComposeQuestion extends Component {
           <div style={{ alignItems: "center" }}>
             <InputNumber
               data-cy="image-width-input"
-              defaultValue={imageWidth || 600}
+              defaultValue={imageWidth}
               onChange={val => this.onItemPropChange("imageWidth", val)}
             />
 
@@ -325,7 +325,7 @@ class ComposeQuestion extends Component {
               overflowY: "hidden"
             }}
           >
-            <ImageContainer data-cy="drag-drop-image-panel" width={imageWidth}>
+            <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
               {item.imageUrl && (
                 <React.Fragment>
                   <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />

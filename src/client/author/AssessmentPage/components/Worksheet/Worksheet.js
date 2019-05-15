@@ -55,8 +55,14 @@ class Worksheet extends React.Component {
   };
 
   state = {
-    currentPage: 0
+    currentPage: 0,
+    highlightedQuestion: undefined
   };
+
+  handleHighlightQuestion = questionId =>
+    this.setState({
+      highlightedQuestion: questionId
+    });
 
   handleChangePage = nextPage => {
     this.setState({ currentPage: nextPage });
@@ -223,7 +229,7 @@ class Worksheet extends React.Component {
   };
 
   render() {
-    const { currentPage } = this.state;
+    const { currentPage, highlightedQuestion } = this.state;
     const { docUrl, annotations, review, noCheck, questions, questionsById, answersById, pageStructure } = this.props;
 
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
@@ -254,6 +260,7 @@ class Worksheet extends React.Component {
             currentPage={currentPage + 1}
             annotations={annotations}
             onDropAnnotation={this.handleAddAnnotation}
+            onHighlightQuestion={this.handleHighlightQuestion}
           />
         )}
         <Questions
@@ -262,6 +269,7 @@ class Worksheet extends React.Component {
           questionsById={questionsById}
           answersById={answersById}
           centered={!shouldRenderDocument}
+          highlighted={highlightedQuestion}
         />
       </WorksheetWrapper>
     );

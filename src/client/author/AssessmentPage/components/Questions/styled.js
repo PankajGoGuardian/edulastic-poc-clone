@@ -8,8 +8,7 @@ export const QuestionsWrapper = styled.div`
   min-width: 300px;
   height: calc(100vh - 62px);
   margin: ${({ centered }) => (centered ? "0 auto" : "unset")};
-  padding: 30px 0;
-  padding-bottom: 170px;
+  padding: 30px 0 170px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;

@@ -120,7 +120,7 @@ const updateQuesionData = (question, data) => ({
 });
 
 const updateMultipleChoice = optionsValue => {
-  const options = optionsValue.split(" ");
+  const options = optionsValue.split("");
   return {
     options: options.map((option, index) => ({
       label: option,
@@ -167,7 +167,8 @@ class Questions extends React.Component {
     viewMode: PropTypes.string.isRequired,
     noCheck: PropTypes.bool,
     answersById: PropTypes.object,
-    centered: PropTypes.bool
+    centered: PropTypes.bool,
+    highlighted: PropTypes.string
   };
 
   static defaultProps = {
@@ -175,7 +176,8 @@ class Questions extends React.Component {
     questionsById: {},
     noCheck: false,
     answersById: {},
-    centered: false
+    centered: false,
+    highlighted: undefined
   };
 
   state = {
@@ -285,10 +287,6 @@ class Questions extends React.Component {
 
   get currentQuestion() {
     const { currentEditQuestionIndex } = this.state;
-    const { list } = this.props;
-
-    const questions = list.filter(q => q.type !== "sectionLabel");
-
     return this.questionList[currentEditQuestionIndex];
   }
 
@@ -304,7 +302,7 @@ class Questions extends React.Component {
 
   render() {
     const { currentEditQuestionIndex } = this.state;
-    const { previewMode, viewMode, noCheck, answersById, centered } = this.props;
+    const { previewMode, viewMode, noCheck, answersById, centered, highlighted } = this.props;
 
     const review = viewMode === "review";
 
@@ -327,6 +325,7 @@ class Questions extends React.Component {
                   viewMode={viewMode}
                   answer={answersById[question.id]}
                   centered={centered}
+                  highlighted={highlighted === question.id}
                 />
               )
             )}

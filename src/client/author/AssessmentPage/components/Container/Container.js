@@ -4,6 +4,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
+import { isEmpty, get } from "lodash";
 
 import { white } from "@edulastic/colors";
 import { IconSelected, IconAddItems, IconReview, IconSettings } from "@edulastic/icons";
@@ -108,8 +109,7 @@ class Container extends React.Component {
       updateTest
     } = this.props;
 
-    if (!assessmentQuestions.length) {
-      message.warning("At least one question has to be created before saving assessment");
+    if (!this.validateQuestions(assessmentQuestions)) {
       return;
     }
 
@@ -144,6 +144,30 @@ class Container extends React.Component {
 
     updateTest(assessment._id, newAssessment, true);
     updateItemDetailById(testItemId, updatedTestItem, true);
+  };
+
+  validateQuestions = questions => {
+    if (!questions.length) {
+      message.warning("At least one question has to be created before saving assessment");
+      return false;
+    }
+
+    const correctAnswerPicked = questions.every(question => {
+      const validationValue = get(question, "validation.valid_response.value");
+
+      if (question.type === "math") {
+        return validationValue.every(value => !isEmpty(value.value));
+      }
+
+      return !isEmpty(validationValue);
+    });
+
+    if (!correctAnswerPicked) {
+      message.warning("Correct answers have to be chosen for every question");
+      return false;
+    }
+
+    return true;
   };
 
   renderContent() {

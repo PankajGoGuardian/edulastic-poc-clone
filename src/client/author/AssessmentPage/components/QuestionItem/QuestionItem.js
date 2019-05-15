@@ -35,6 +35,7 @@ class QuestionItem extends React.Component {
     userAnswer: PropTypes.any,
     previewMode: PropTypes.string.isRequired,
     viewMode: PropTypes.string.isRequired,
+    highlighted: PropTypes.bool.isRequired,
     answer: PropTypes.oneOfType([PropTypes.array, PropTypes.string]),
     centered: PropTypes.bool
   };
@@ -169,13 +170,14 @@ class QuestionItem extends React.Component {
       index,
       viewMode,
       previewMode,
-      centered
+      centered,
+      highlighted
     } = this.props;
 
     const review = viewMode === "review";
 
     return (
-      <QuestionItemWrapper centered={centered}>
+      <QuestionItemWrapper centered={centered} highlighted={highlighted}>
         <AnswerForm>
           <Draggable
             type="question"

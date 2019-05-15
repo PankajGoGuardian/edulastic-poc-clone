@@ -41,7 +41,7 @@ export default class QuestionChoice extends React.Component {
     const { valid_response } = validation;
 
     this.setState({
-      optionsValue: options.map(o => o.label).join(" "),
+      optionsValue: options.map(o => o.label).join(""),
       score: valid_response.score,
       correctAnswers: valid_response.value
     });
@@ -52,7 +52,7 @@ export default class QuestionChoice extends React.Component {
 
     const { onUpdate } = this.props;
 
-    const options = value.trim().split(" ");
+    const options = value.trim().split("");
 
     const data = {
       options: options.map((option, index) => ({
@@ -63,8 +63,6 @@ export default class QuestionChoice extends React.Component {
 
     onUpdate(data);
   };
-
-  // handleChangeOptions = ({ target: { value } }) => this.setState({ optionsValue: value });
 
   handleSetCorrectAnswers = checked => {
     const { score } = this.state;

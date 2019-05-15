@@ -89,7 +89,7 @@ class SimpleOptions extends React.Component {
 
   render() {
     const { showSettings, classIds, studentList } = this.state;
-    const { group, fetchStudents, students, testSettings, assignment } = this.props;
+    const { group, fetchStudents, students, testSettings, assignment, updateOptions } = this.props;
     const changeField = curry(this.onChange);
     const studentOfSelectedClass = getListOfStudents(students, classIds);
     return (

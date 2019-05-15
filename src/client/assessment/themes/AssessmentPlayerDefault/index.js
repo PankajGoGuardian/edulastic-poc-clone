@@ -220,10 +220,14 @@ class AssessmentPlayerDefault extends React.Component {
     );
   };
 
-  static getDerivedStateFromProps(next, prev) {
-    if (next.currentItem !== prev.cloneCurrentItem) {
+  static getDerivedStateFromProps(next, prevState) {
+    if (next.currentItem !== prevState.cloneCurrentItem) {
       const tool = next.scratchPad ? 5 : 0;
-      return { tool, cloneCurrentItem: next.currentItem, history: 0 };
+      return { tool, cloneCurrentItem: next.currentItem, history: 0, activeMode: "" };
+    }
+
+    if (next.scratchPad && prevState.tool !== 5) {
+      return { tool: 5, history: 0, activeMode: "" };
     }
     return null;
   }

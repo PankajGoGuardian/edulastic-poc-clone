@@ -80,7 +80,7 @@ function* loadTest({ payload }) {
     // if testActivity is present.
     if (!preview) {
       let allAnswers = {};
-      const userWork = {};
+
       const { testActivity: activity, questionActivities = [] } = testActivity;
       // if questions are shuffled !!!
       if (activity.shuffleQuestions) {
@@ -101,15 +101,26 @@ function* loadTest({ payload }) {
 
       let lastAttemptedQuestion = questionActivities[0] || {};
 
+      const scratchPadData = {};
       questionActivities.forEach(item => {
         allAnswers = {
           ...allAnswers,
           [item.qid]: item.userResponse
         };
+        if (item.scratchPad) {
+          scratchPadData[item.testItemId] = item.scratchPad;
+        }
         if (item.updatedAt > lastAttemptedQuestion.updatedAt) {
           lastAttemptedQuestion = item;
         }
       });
+
+      if (Object.keys(scratchPadData).length) {
+        yield put({
+          type: LOAD_SCRATCH_PAD,
+          payload: scratchPadData
+        });
+      }
 
       // get currentItem index;
       let lastAttendedQuestion = 0;
@@ -125,11 +136,6 @@ function* loadTest({ payload }) {
       yield put({
         type: LOAD_ANSWERS,
         payload: allAnswers
-      });
-
-      yield put({
-        type: LOAD_SCRATCH_PAD,
-        payload: userWork
       });
 
       // only load from previous attempted if resuming from assignments page

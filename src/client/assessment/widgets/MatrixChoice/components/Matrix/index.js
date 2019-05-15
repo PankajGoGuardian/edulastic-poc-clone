@@ -64,6 +64,11 @@ const validatedAnswers = (answers, responses, matrix, type) => {
 const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type, smallSize, theme }) => {
   let correctAnswersMatrix;
 
+  // We expect stems to be an array, otherwise don't render
+  if (!stems || !Array.isArray(stems)) {
+    return null;
+  }
+
   if (response && validation && type !== "clear") {
     const responses = getResponses(validation);
     const matrix = stems.map(() => options.map(() => false));

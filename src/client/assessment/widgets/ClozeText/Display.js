@@ -109,7 +109,6 @@ class ClozeTextDisplay extends Component {
       widthpx: widthpx !== 0 ? widthpx : "100px",
       heightpx: heightpx !== 0 ? heightpx : "35px"
     };
-
     let maxLineHeight = smallSize ? 50 : 40;
     const previewTemplateBoxLayout = (
       <div
@@ -206,6 +205,7 @@ class ClozeTextDisplay extends Component {
         fontSize={fontSize}
         groupResponses={options}
         userAnswers={validation.valid_response && validation.valid_response.value}
+        altAnswers={validation.hasOwnProperty("alt_responses") && validation.alt_responses}
       />
     ) : (
       <div />

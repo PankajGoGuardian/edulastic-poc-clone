@@ -26,7 +26,7 @@ const shouldAutoSave = itemRows => {
   const autoSavableTypes = {
     essayRichText: 1,
     essayPlainText: 1,
-    formulaEssay: 1
+    formulaessay: 1
   };
   for (let row of itemRows) {
     for (let widget of row.widgets || []) {

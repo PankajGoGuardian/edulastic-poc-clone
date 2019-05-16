@@ -22,6 +22,7 @@ import { history } from "../../../configureStore";
 import { getQuestionsSelector } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
 import { toggleCreateItemModalAction } from "../actions/testItem";
+import { CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 function* createTestItemSaga({ payload: { data, showModal } }) {
   try {
@@ -91,7 +92,8 @@ function* evaluateAnswers(action) {
     message.config({
       maxCount: 1
     });
-    if (action.hasOwnProperty("payload") && action.payload.mode !== "show") {
+    const previewMode = yield select(state => _get(state, "view.preview", null));
+    if (previewMode === CHECK) {
       message.success(`score: ${score}/${maxScore}`);
     }
   } catch (err) {

@@ -29,7 +29,7 @@ export const changeClassAction = createAction(CHANGE_CLASS);
 function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload);
-    const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData"]);
+    const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData", "features"]);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
@@ -179,6 +179,11 @@ export const getCurrentSchool = createSelector(
 export const getUserRole = createSelector(
   ["user.user.role"],
   r => r
+);
+
+export const getUserFeatures = createSelector(
+  ["user.user.features"],
+  features => features
 );
 
 const routeSelector = state => state.router.location.pathname;

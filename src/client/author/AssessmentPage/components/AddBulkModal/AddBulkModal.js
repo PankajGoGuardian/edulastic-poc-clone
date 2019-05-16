@@ -31,14 +31,6 @@ export default class AddBulkModal extends React.Component {
     startingIndex: 1
   };
 
-  componentWillMount() {
-    const { minAvailableQuestionIndex } = this.props;
-
-    this.setState({
-      startingIndex: minAvailableQuestionIndex
-    });
-  }
-
   handleChange = field => value =>
     this.setState({
       [field]: value
@@ -46,8 +38,11 @@ export default class AddBulkModal extends React.Component {
 
   handleApply = () => {
     const { number, type, startingIndex } = this.state;
-    const { onApply } = this.props;
-    onApply({ number, type, startingIndex });
+    const { onApply, minAvailableQuestionIndex } = this.props;
+
+    const firstQuestionIndex = Math.max(startingIndex, minAvailableQuestionIndex);
+
+    onApply({ number, type, startingIndex: firstQuestionIndex });
   };
 
   render() {

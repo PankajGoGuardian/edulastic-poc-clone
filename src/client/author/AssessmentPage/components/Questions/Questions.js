@@ -184,6 +184,19 @@ class Questions extends React.Component {
     currentEditQuestionIndex: -1
   };
 
+  componentDidUpdate(prevProps) {
+    const { highlighted } = this.props;
+    const { highlighted: prevHighlighted } = prevProps;
+
+    if (highlighted && highlighted !== prevHighlighted) {
+      const questionNode = document.getElementById(highlighted);
+
+      if (questionNode) {
+        questionNode.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }
+
   handleAddQuestion = (type, index, modalQuestionId) => () => {
     const { addQuestion, list } = this.props;
     const questions = list.filter(q => q.type !== "sectionLabel");
@@ -199,7 +212,7 @@ class Questions extends React.Component {
     const question = createQuestion(type, questionIndex);
     addQuestion(question);
 
-    const questionIdToOpen = modalQuestionId || questionIndex;
+    const questionIdToOpen = modalQuestionId - 1 || questions.length;
 
     this.handleOpenEditModal(questionIdToOpen)();
   };

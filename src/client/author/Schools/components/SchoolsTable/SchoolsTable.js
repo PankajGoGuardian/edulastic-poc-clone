@@ -591,7 +591,11 @@ class SchoolsTable extends React.Component {
             </StyledFilterSelect>
           )}
 
-          <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
+          <StyledFilterButton
+            type="primary"
+            onClick={e => this.addFilter(e, i)}
+            disabled={isAddFilterDisable || filtersData[i].filterAdded}
+          >
             + Add Filter
           </StyledFilterButton>
 

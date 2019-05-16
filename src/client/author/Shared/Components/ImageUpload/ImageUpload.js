@@ -1,5 +1,13 @@
 import React, { Component } from "react";
-import { StyledUploadContainer, StyledUpload, StyledP, StyledImg, StyledIcon, StyledPP } from "./styled";
+import {
+  StyledUploadContainer,
+  StyledUpload,
+  StyledP,
+  StyledImg,
+  StyledIcon,
+  StyledChangeLog,
+  StyledPRequired
+} from "./styled";
 import { message } from "antd";
 import { fileApi } from "@edulastic/api";
 
@@ -7,7 +15,7 @@ class ImageUpload extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      file: this.props.imgSrc
+      visibleRequired: false
     };
     this.handleChange = this.handleChange.bind(this);
   }
@@ -18,7 +26,7 @@ class ImageUpload extends Component {
       message.error("Image must smaller then 2MB!");
     } else {
       const { fileUri } = await fileApi.upload({ file });
-      this.setState({ file: fileUri });
+      this.setState({ file: fileUri, visibleRequired: false });
       const { keyName } = this.props;
       this.props.updateImgUrl(fileUri, keyName);
     }
@@ -28,25 +36,34 @@ class ImageUpload extends Component {
     this.inputElement.click();
   };
 
+  setRequiredStatus = () => {
+    const { imgSrc } = this.props;
+    if (imgSrc == null || imgSrc.length == 0) {
+      this.setState({ visibleRequired: true });
+    }
+  };
+
   render() {
-    const { width, height } = this.props;
+    const { visibleRequired, imgSrc } = this.state;
+    const { width, height, labelStr } = this.props;
 
     return (
       <StyledUploadContainer>
-        <StyledUpload isVisible={this.state.file === null} onClick={this.clickFileOpen} width={width} height={height}>
+        <StyledUpload isVisible={imgSrc === null} onClick={this.clickFileOpen} width={width} height={height}>
           <StyledIcon type="plus" />
-          <StyledP>Upload</StyledP>
           <input
             ref={input => (this.inputElement = input)}
             type="file"
             onChange={this.handleChange}
             accept=".jpg, .png"
           />
-          <StyledImg src={this.state.file} />
+          <StyledImg src={this.props.imgSrc} />
         </StyledUpload>
-        <StyledPP isVisible={this.state.file !== null} onClick={this.clickFileOpen}>
-          Change District page background
-        </StyledPP>
+        {visibleRequired ? (
+          <StyledPRequired>Please select {labelStr}</StyledPRequired>
+        ) : (
+          <StyledChangeLog onClick={this.clickFileOpen}>Change District {labelStr}</StyledChangeLog>
+        )}
       </StyledUploadContainer>
     );
   }

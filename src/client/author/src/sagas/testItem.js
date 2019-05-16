@@ -71,6 +71,15 @@ function* evaluateAnswers(action) {
     const oldAnswers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", null));
 
+    // Merge answered and unanswered question because
+    // evaluateItem should be aware of all questions and not only those that user answered
+    const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
+    let answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, questionId) => {
+      acc[questionId] = [];
+      return acc;
+    }, {});
+    answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
+
     if (!oldAnswers[id]) {
       yield put({
         type: SET_ANSWER,
@@ -80,9 +89,8 @@ function* evaluateAnswers(action) {
         }
       });
     }
-    const answers = yield select(state => state.answers);
     const validations = yield select(getQuestionsSelector);
-    const { evaluation, score, maxScore } = yield evaluateItem(answers, validations);
+    const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

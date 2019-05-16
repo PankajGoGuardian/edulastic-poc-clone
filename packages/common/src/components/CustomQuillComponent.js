@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import enhanceWithClickOutside from "react-click-outside";
 import { fileApi } from "@edulastic/api";
 import MathModal from "./MathModal";
+import MathInputCmp from "./QuillMathEmbed";
 
 const Embed = Quill.import("blots/block/embed");
 
@@ -25,39 +26,6 @@ ResponseCmp.tagName = "p";
 ResponseCmp.className = "response-btn";
 Quill.register(ResponseCmp, true);
 
-class MathInputCmp extends Embed {
-  state = {
-    mathField: null
-  };
-
-  static create() {
-    const node = super.create();
-    node.setAttribute("contenteditable", false);
-    node.innerHTML = '&nbsp;<span class="input__math__field"></span>&nbsp;';
-    return node;
-  }
-
-  static value(domNode) {
-    return domNode.getAttribute("data-latex");
-  }
-
-  constructor(domNode, value) {
-    super(domNode, value);
-    const MQ = window.MathQuill.getInterface(2);
-    const mathField = MQ.StaticMath(domNode.childNodes[1]);
-    mathField.latex(value);
-    this.state = {
-      mathField
-    };
-  }
-
-  value() {
-    return this.state.mathField.latex();
-  }
-}
-MathInputCmp.blotName = "MathInput";
-MathInputCmp.tagName = "span";
-MathInputCmp.className = "input__math";
 Quill.register(MathInputCmp, true);
 
 /*

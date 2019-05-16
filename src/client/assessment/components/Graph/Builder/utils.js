@@ -237,10 +237,29 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points) => {
+export const handleSnap = (line, points, board) => {
   line.on("up", () => {
-    const setCoords = JXG.COORDS_BY_USER;
-    points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
+    if (line.dragged) {
+      const setCoords = JXG.COORDS_BY_USER;
+      points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
+      board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+    }
+  });
+  line.on("drag", () => {
+    line.dragged = true;
+    board.dragged = true;
+  });
+
+  points.forEach(point => {
+    point.on("up", () => {
+      if (point.dragged) {
+        board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+      }
+    });
+    point.on("drag", () => {
+      point.dragged = true;
+      board.dragged = true;
+    });
   });
 };
 
@@ -336,8 +355,9 @@ export function updateAxe(line, parameters, axe) {
   if ("drawZero" in parameters) {
     line.ticks[0].setAttribute({ drawZero: parameters.drawZero });
   }
-  if ("visible" in parameters) {
-    line.setAttribute({ visible: parameters.visible });
+  if ("showAxis" in parameters) {
+    line.setAttribute({ visible: parameters.showAxis });
+    line.ticks[0].setAttribute({ visible: parameters.showAxis });
   }
 }
 
@@ -357,9 +377,15 @@ export const updateNumberline = (numberline, settings) => {
 };
 
 export function updateGrid(grids, parameters) {
-  if (grids[0]) {
-    grids[0].setAttribute(parameters);
+  const grid = grids[0];
+  if (!grid) {
+    return;
   }
+  grid.setAttribute({
+    gridX: parameters.gridX,
+    gridY: parameters.gridY,
+    visible: parameters.showGrid
+  });
 }
 
 /**
@@ -381,7 +407,7 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
     const { id, type, points } = element;
-    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
+    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK || type === CONSTANT.TOOLS.ANNOTATION) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -426,7 +452,7 @@ export function flat2nestedConfig(config) {
           colors: element.colors || null,
           label: element.label
         };
-        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK) {
+        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK || type === CONSTANT.TOOLS.ANNOTATION) {
           acc[id].x = element.x;
           acc[id].y = element.y;
         } else {

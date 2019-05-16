@@ -92,7 +92,7 @@ var exactMatchEvaluator = function exactMatchEvaluator(userResponse, answers) {
   };
 };
 
-var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator(userResponse, answers) {
+var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator(userResponse, answers, penaltyPoints) {
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
@@ -105,9 +105,10 @@ var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator
     var trueShapesCount = answerResult.details.filter(function(item) {
       return item.result;
     }).length;
+    var penaltyScore = (answerResult.details.length - trueShapesCount) * penaltyPoints;
     var allIsTrue = trueShapesCount === answerResult.details.length;
     answerResult.result = answer.value.length === userResponse.length && allIsTrue;
-    answerResult.score = answer.score * trueShapesCount;
+    answerResult.score = answer.score * trueShapesCount - penaltyScore;
     score = Math.max(answerResult.score, score);
     maxScore = Math.max(answer.score * answer.value.length, maxScore);
     evaluation[index] = answerResult;
@@ -119,7 +120,7 @@ var partialMatchPerResponseEvaluator = function partialMatchPerResponseEvaluator
   };
 };
 
-var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers, roundingIsNone) {
+var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers, roundingIsNone, penaltyPoints) {
   var score = 0;
   var maxScore = 1;
   var evaluation = {};
@@ -132,12 +133,14 @@ var partialMatchEvaluator = function partialMatchEvaluator(userResponse, answers
     var trueShapesCount = answerResult.details.filter(function(item) {
       return item.result;
     }).length;
+    var penaltyScore = (answerResult.details.length - trueShapesCount) * penaltyPoints;
     var allIsTrue = trueShapesCount === answerResult.details.length;
     answerResult.result = answer.value.length === userResponse.length && allIsTrue;
     var pointsPerOneShape = answer.value.length ? answer.score / answer.value.length : 0;
     answerResult.score = roundingIsNone
       ? pointsPerOneShape * trueShapesCount
       : Math.floor(pointsPerOneShape * trueShapesCount);
+    answerResult.score = answerResult.score - penaltyScore;
     score = Math.max(answerResult.score, score);
     maxScore = Math.max(answer.score, maxScore);
     evaluation[index] = answerResult;
@@ -155,7 +158,8 @@ var evaluator = function evaluator(_ref) {
   var valid_response = validation.valid_response,
     alt_responses = validation.alt_responses,
     scoring_type = validation.scoring_type,
-    rounding = validation.rounding;
+    rounding = validation.rounding,
+    penaltyPoints = validation.penaltyPoints;
   var answers = [valid_response];
 
   if (alt_responses) {
@@ -166,10 +170,10 @@ var evaluator = function evaluator(_ref) {
 
   switch (scoring_type) {
     case _scoring.ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, answers, roundingIsNone);
+      return partialMatchEvaluator(userResponse, answers, roundingIsNone, penaltyPoints);
 
     case _scoring.ScoringType.PARTIAL_MATCH_V2:
-      return partialMatchPerResponseEvaluator(userResponse, answers);
+      return partialMatchPerResponseEvaluator(userResponse, answers, penaltyPoints);
 
     case _scoring.ScoringType.EXACT_MATCH:
     default:

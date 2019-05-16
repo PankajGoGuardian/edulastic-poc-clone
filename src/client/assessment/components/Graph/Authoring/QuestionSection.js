@@ -5,9 +5,16 @@ import styled from "styled-components";
 
 class QuestionSection extends Component {
   componentDidMount() {
-    const { fillSections, section, label } = this.props;
+    const { fillSections, section, label, deskHeight } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    fillSections(section, label, node.offsetTop);
+    fillSections(
+      section,
+      label,
+      node.offsetTop,
+      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
+      deskHeight ? true : false,
+      deskHeight
+    );
   }
 
   componentWillUnmount() {
@@ -16,7 +23,7 @@ class QuestionSection extends Component {
 
   render() {
     const { children, marginLast } = this.props;
-    return <Section marginLast={marginLast}>{children}</Section>
+    return <Section marginLast={marginLast}>{children}</Section>;
   }
 }
 

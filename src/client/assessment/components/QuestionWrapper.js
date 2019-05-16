@@ -130,9 +130,9 @@ class QuestionWrapper extends Component {
     activeTab: 0
   };
 
-  fillSections = (section, label, offset) => {
+  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight) => {
     this.setState(state => ({
-      [section]: state[section].concat({ label, offset })
+      [section]: state[section].concat({ label, offset, offsetBottom, haveDesk, deskHeight })
     }));
   };
 

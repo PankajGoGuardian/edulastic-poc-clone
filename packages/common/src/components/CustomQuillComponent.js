@@ -104,9 +104,9 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
   const getTopStyle = () =>
     document.getElementById(id)
       ? document.getElementById(id).offsetHeight
-        ? -document.getElementById(id).offsetHeight - 2
-        : -76
-      : -76;
+        ? -document.getElementById(id).offsetHeight - 48
+        : -120
+      : -120;
 
   return (
     <div

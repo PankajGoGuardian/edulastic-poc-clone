@@ -20,7 +20,7 @@ function onHandler() {
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
         label: getLabelParameters(JXG.OBJECT_TYPE_CONIC)
       });
-      handleSnap(newLine, points.filter(point => point.elType === "point"));
+      handleSnap(newLine, points.filter(point => point.elType === "point"), board);
       if (newLine) {
         points = [];
         return newLine;

@@ -264,7 +264,7 @@ class Graph extends Component {
       cleanSections,
       isSidebarCollapsed
     } = this.props;
-    const { graphType, extra_options } = item;
+    const { graphType, extra_options, ui_style } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -287,6 +287,8 @@ class Graph extends Component {
                 label="SET CORRECT ANSWER"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
+                deskHeight={ui_style.layout_height}
+                a
               >
                 <React.Fragment>
                   <CorrectAnswers

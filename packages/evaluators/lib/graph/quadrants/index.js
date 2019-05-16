@@ -107,9 +107,9 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
           });
 
           switch (checkableShape.type) {
-            case _shapeTypes.ShapeTypes.CIRCLE:
-            case _shapeTypes.ShapeTypes.EXPONENT:
-            case _shapeTypes.ShapeTypes.LOGARITHM:
+            case _constants.ShapeTypes.CIRCLE:
+            case _constants.ShapeTypes.EXPONENT:
+            case _constants.ShapeTypes.LOGARITHM:
               if (
                 !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
               ) {
@@ -119,8 +119,8 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
               break;
 
-            case _shapeTypes.ShapeTypes.ELLIPSE:
-            case _shapeTypes.ShapeTypes.HYPERBOLA:
+            case _constants.ShapeTypes.ELLIPSE:
+            case _constants.ShapeTypes.HYPERBOLA:
               if (!compareShapes.compare(checkableShape.subElementsIds[2], allowedSubElementsIds[2]).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;

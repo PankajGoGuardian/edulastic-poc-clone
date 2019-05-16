@@ -570,7 +570,9 @@
         "draw_label": "Draw labels",
         "min_arrow": "Min arrow",
         "max_arrow": "Max arrow",
-        "comma_in_label": "Comma in label"
+        "comma_in_label": "Comma in label",
+        "show_axis": "Show axis",
+        "show_grid": "Show grid"
       },
       "background_options": {
         "background_image": "Background image",

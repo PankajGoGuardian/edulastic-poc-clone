@@ -23,7 +23,7 @@ export function removeBusyTicks(segments, ticks) {
   return ticks;
 }
 
-const handlePointDrag = (point, board, ticksDistance, axis) => {
+const handlePointDrag = (point, board, axis) => {
   point.on("drag", () => {
     const currentPosition = point.X();
 
@@ -41,13 +41,16 @@ const handlePointDrag = (point, board, ticksDistance, axis) => {
 
     let ticks = getSpecialTicks(axis);
     ticks = removeBusyTicks(segments, ticks);
-    let newXCoord = getClosestTick(currentPosition, ticks);
+    const newXCoord = getClosestTick(currentPosition, ticks);
     point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+  });
 };
 
-const handleStackedPointDrag = (point, axis, yPosition) => {
+const handleStackedPointDrag = (point, axis, yPosition, board) => {
   point.on("drag", () => {
     const currentPosition = point.X();
 
@@ -59,6 +62,9 @@ const handleStackedPointDrag = (point, axis, yPosition) => {
     } else if (currentPosition < xMin) {
       point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
+  });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
@@ -100,6 +106,14 @@ const drawPoint = (board, coord, fixed, colors, yPosition) =>
   board.$board.create("point", [coord, yPosition || 0], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.default[CONSTANT.TOOLS.POINT],
+    highlightStrokeColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.POINT].highlightStrokeColor
+        : Colors["default"][CONSTANT.TOOLS.POINT].highlightStrokeColor,
+    highlightFillColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.POINT].highlightFillColor
+        : Colors["default"][CONSTANT.TOOLS.POINT].highlightFillColor,
     ...colors,
     fixed,
     snapSizeX: null,
@@ -107,13 +121,11 @@ const drawPoint = (board, coord, fixed, colors, yPosition) =>
   });
 
 const loadPoint = (board, element, stackResponses) => {
-  const ticksDistance = board.numberlineAxis.ticks[0].getAttribute("ticksDistance");
-
   if (!stackResponses) {
     const point = drawPoint(board, element.point1, false, element.colors);
     point.segmentType = "segments_point";
     previousPointsPositions.push({ id: point.id, position: point.X() });
-    handlePointDrag(point, board, ticksDistance, board.numberlineAxis);
+    handlePointDrag(point, board, board.numberlineAxis);
 
     return point;
   } else {
@@ -124,14 +136,13 @@ const loadPoint = (board, element, stackResponses) => {
     point.setPosition(JXG.COORDS_BY_USER, [point.X(), element.y]);
     board.$board.on("move", () => point.moveTo([point.X(), element.y]));
 
-    handleStackedPointDrag(point, board.numberlineAxis, element.y);
+    handleStackedPointDrag(point, board.numberlineAxis, element.y, board);
 
     return point;
   }
 };
 
-const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
-  const ticksDistance = board.numberlineAxis.ticks[0].getAttribute("ticksDistance");
+const onHandler = (stackResponses, stackResponsesSpacing, tool) => (board, coord) => {
   const segments = board.elements.filter(element => element.elType === "segment" || element.elType === "point");
 
   const ticks = getSpecialTicks(board.numberlineAxis);
@@ -146,26 +157,24 @@ const onHandler = (stackResponses, stackResponsesSpacing) => (board, coord) => {
       checkForPointRenderPosition(board.numberlineAxis, roundedCoord) &&
       checkForElementsOnPoint(segments, roundedCoord)
     ) {
-      const point = drawPoint(board, roundedCoord, false, null);
+      const point = drawPoint(board, roundedCoord, false, null, null, tool);
       point.segmentType = "segments_point";
       previousPointsPositions.push({ id: point.id, position: point.X() });
-      handlePointDrag(point, board, ticksDistance, board.numberlineAxis);
-
-      // snapPoint(point, board);
+      handlePointDrag(point, board, board.numberlineAxis);
 
       return point;
     }
   } else if (checkForPointRenderPosition(board.numberlineAxis, roundedCoord)) {
     const calcedYPosition = findAvailableStackedSegmentPosition(board, segments, stackResponsesSpacing);
 
-    const point = drawPoint(board, roundedCoord, false, null, calcedYPosition);
+    const point = drawPoint(board, roundedCoord, false, null, calcedYPosition, tool);
     point.segmentType = "segments_point";
 
     point.setAttribute({ snapSizeY: 0.05 });
     point.setPosition(JXG.COORDS_BY_USER, [point.X(), calcedYPosition]);
     board.$board.on("move", () => point.moveTo([point.X(), calcedYPosition]));
 
-    handleStackedPointDrag(point, board.numberlineAxis, calcedYPosition);
+    handleStackedPointDrag(point, board.numberlineAxis, calcedYPosition, board);
 
     return point;
   }

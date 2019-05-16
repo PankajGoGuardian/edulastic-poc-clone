@@ -1,4 +1,4 @@
-import { SET_ANSWER } from "../constants/actions";
+import { SET_ANSWER, REMOVE_ANSWERS } from "../constants/actions";
 
 export const setUserAnswerAction = (questionId, data) => ({
   type: SET_ANSWER,
@@ -7,3 +7,5 @@ export const setUserAnswerAction = (questionId, data) => ({
     data
   }
 });
+
+export const removeUserAnswerAction = () => ({ type: REMOVE_ANSWERS });

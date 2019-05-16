@@ -221,6 +221,7 @@ class Container extends Component {
 
   handleSave = () => {
     const { updateItemDetailById, match, item } = this.props;
+    console.log(match.params.id, item, match.params.testId);
     updateItemDetailById(match.params.id, item, match.params.testId);
   };
 

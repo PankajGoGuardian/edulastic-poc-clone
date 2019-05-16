@@ -190,6 +190,8 @@ class GraphDisplay extends Component {
       id
     } = graphData;
 
+    const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
+
     const xRatio = parseFloat(canvas.x_ratio) > 0 ? parseFloat(canvas.x_ratio) : 1;
     const yRatio = parseFloat(canvas.y_ratio) > 0 ? parseFloat(canvas.y_ratio) : 1;
 
@@ -221,7 +223,8 @@ class GraphDisplay extends Component {
         drawLabels: ui_style.xDrawLabel,
         maxArrow: ui_style.xMaxArrow,
         minArrow: ui_style.xMinArrow,
-        commaInLabel: ui_style.xCommaInLabel
+        commaInLabel: ui_style.xCommaInLabel,
+        showAxis: xShowAxis
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance) * yRatio,
@@ -230,11 +233,13 @@ class GraphDisplay extends Component {
         drawLabels: ui_style.yDrawLabel,
         maxArrow: ui_style.yMaxArrow,
         minArrow: ui_style.yMinArrow,
-        commaInLabel: ui_style.yCommaInLabel
+        commaInLabel: ui_style.yCommaInLabel,
+        showAxis: yShowAxis
       },
       gridParams: {
         gridX: safeParseFloat(ui_style.xDistance) * xRatio,
-        gridY: safeParseFloat(ui_style.yDistance) * yRatio
+        gridY: safeParseFloat(ui_style.yDistance) * yRatio,
+        showGrid
       },
       bgImgOptions: {
         urlImg: background_image.src,
@@ -322,8 +327,7 @@ class GraphDisplay extends Component {
         minArrow: ui_style.xMinArrow,
         commaInLabel: ui_style.xCommaInLabel,
         strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
-        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false,
-        visible: ui_style.xVisible === undefined ? true : ui_style.xVisible
+        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance),
@@ -333,13 +337,12 @@ class GraphDisplay extends Component {
         maxArrow: ui_style.yMaxArrow,
         minArrow: ui_style.yMinArrow,
         commaInLabel: ui_style.yCommaInLabel,
-        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0,
-        visible: ui_style.yVisible === undefined ? true : ui_style.yVisible
+        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0
       },
       gridParams: {
         gridY: safeParseFloat(ui_style.yDistance),
         gridX: safeParseFloat(ui_style.xDistance),
-        visible: ui_style.gridVisible === undefined ? true : ui_style.yVisible
+        showGrid: false
       },
       evaluation,
       tools: toolbar ? toolbar.tools : [],
@@ -423,8 +426,7 @@ class GraphDisplay extends Component {
         minArrow: ui_style.xMinArrow,
         commaInLabel: ui_style.xCommaInLabel,
         strokeColor: ui_style.xStrokeColor ? ui_style.xStrokeColor : "#00b0ff",
-        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false,
-        visible: ui_style.xVisible === undefined ? true : ui_style.xVisible
+        tickEndings: ui_style.xTickEndings ? ui_style.xTickEndings : false
       },
       yAxesParameters: {
         ticksDistance: safeParseFloat(ui_style.yTickDistance),
@@ -434,13 +436,12 @@ class GraphDisplay extends Component {
         maxArrow: ui_style.yMaxArrow,
         minArrow: ui_style.yMinArrow,
         commaInLabel: ui_style.yCommaInLabel,
-        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0,
-        visible: ui_style.yVisible === undefined ? true : ui_style.yVisible
+        minorTicks: ui_style.yMinorTicks ? ui_style.yMinorTicks : 0
       },
       gridParams: {
         gridY: safeParseFloat(ui_style.yDistance),
         gridX: safeParseFloat(ui_style.xDistance),
-        visible: ui_style.gridVisible === undefined ? true : ui_style.yVisible
+        showGrid: false
       },
       list,
       graphType,
@@ -456,7 +457,7 @@ class GraphDisplay extends Component {
   };
 
   render() {
-    const { graphData, smallSize, showAnswer, checkAnswer, clearAnswer, qIndex } = this.props;
+    const { graphData, smallSize, qIndex } = this.props;
     const { stimulus } = graphData;
     const { graphIsValid } = this.state;
 
@@ -472,9 +473,6 @@ class GraphDisplay extends Component {
               dangerouslySetInnerHTML={{ __html: stimulus }}
               data-cy="questionHeader"
             />
-            {showAnswer ? "showAnswer" : null}
-            {checkAnswer ? "checkAnswer" : null}
-            {clearAnswer ? "clearAnswer" : null}
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (

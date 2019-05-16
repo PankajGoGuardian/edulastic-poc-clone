@@ -383,8 +383,8 @@ class CompareShapes {
     const trueFunc = new ParabolaFunction(trueShapePoints);
 
     if (
-      testParabolaPoints.startX === trueParabolaPoints.startX &&
-      testParabolaPoints.startY === trueParabolaPoints.startY &&
+      testShapePoints.startX === trueShapePoints.startX &&
+      testShapePoints.startY === trueShapePoints.startY &&
       testFunc.getKoefA() === trueFunc.getKoefA() &&
       testFunc.getDirection() === trueFunc.getDirection()
     ) {
@@ -760,8 +760,8 @@ class CompareShapes {
       testFunc.getBC() === trueFunc.getBC()
     ) {
       return {
-        id: testExponent.id,
-        relatedId: trueExponent.id,
+        id: testShape.id,
+        relatedId: trueShape.id,
         result: true
       };
     }
@@ -820,8 +820,8 @@ class CompareShapes {
       testFunc.getBC() === trueFunc.getBC()
     ) {
       return {
-        id: testLogarithm.id,
-        relatedId: trueLogarithm.id,
+        id: testShape.id,
+        relatedId: trueShape.id,
         result: true
       };
     }
@@ -891,8 +891,8 @@ class CompareShapes {
     }
 
     return {
-      id: testPolynom.id,
-      relatedId: truePolynom.id,
+      id: testShape.id,
+      relatedId: trueShape.id,
       result: true
     };
   }

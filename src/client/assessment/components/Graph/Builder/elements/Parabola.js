@@ -59,7 +59,7 @@ function renderElement(board, points, params) {
   points[1].on("drag", updateCoords);
 
   newLine.type = jxgType;
-  handleSnap(newLine, points);
+  handleSnap(newLine, points, board);
 
   if (newLine) {
     newLine.addParents(...points, focus, dirPoint1, dirPoint2);

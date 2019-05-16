@@ -23,3 +23,4 @@ export { default as Sin } from "./Sin";
 export { default as Tangent } from "./Tangent";
 export { default as Title } from "./Title";
 export { default as Vector } from "./Vector";
+export { default as Annotation } from "./Annotation";

@@ -18,6 +18,7 @@ export const TOOLS = {
   HYPERBOLA: "hyperbola",
   ELLIPSE: "ellipse",
   LABEL: "label",
+  ANNOTATION: "annotation",
   MARK: "mark",
   SEGMENTS_POINT: "segments_point",
   SEGMENT_BOTH_POINT_INCLUDED: "segment_both_point_included",

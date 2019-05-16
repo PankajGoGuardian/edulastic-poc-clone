@@ -56,7 +56,7 @@ function onHandler() {
         label: getLabelParameters(jxgType)
       });
       newPolynom.type = jxgType;
-      handleSnap(newPolynom, points);
+      handleSnap(newPolynom, points, board);
 
       if (newPolynom) {
         newPolynom.addParents(points);

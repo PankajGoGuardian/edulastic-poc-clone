@@ -29,7 +29,10 @@ class ControlsSettings extends Component {
     const { controlbar, onChange } = this.props;
     const newTools = [...controlbar.controls];
     const areToolsArray = Array.isArray(controlbar.controls[groupIndex]);
-    const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
+    // const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
+    const defaultOption = this.controls.filter(
+      (control, index) => !controlbar.controls.some(elem => elem === control.value)
+    )[0].value;
 
     if (controlbar.controls.length <= 3) {
       if (groupIndex !== undefined && areToolsArray) {
@@ -101,6 +104,9 @@ class ControlsSettings extends Component {
   renderSingleToolsInDefaultGroup = () => {
     const { controlbar } = this.props;
     const countOfSingleTools = controlbar.controls.filter(t => !Array.isArray(t)).length;
+    const filteredTools = this.controls.filter(
+      (control, index) => !controlbar.controls.some(elem => elem === control.value)
+    );
 
     return (
       <Col paddingRight="2.5em" md={6} marginBottom={20}>
@@ -110,7 +116,7 @@ class ControlsSettings extends Component {
               <ToolSelect>
                 <Tool
                   value={tool}
-                  options={this.controls}
+                  options={filteredTools}
                   selectWidth="100%"
                   index={i}
                   countOfSingleTools={countOfSingleTools}
@@ -122,7 +128,7 @@ class ControlsSettings extends Component {
           ) : null
         )}
 
-        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
+        {countOfSingleTools < 4 && <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>}
       </Col>
     );
   };
@@ -155,20 +161,7 @@ const enhance = compose(withNamespaces("assessment"));
 export default enhance(ControlsSettings);
 
 const Tool = props => {
-  const {
-    // countOfSingleTools,
-    options,
-    // isGroup,
-    groupIndex,
-    value,
-    onChange,
-    selectWidth,
-    index,
-    onDelete,
-    deleteToolStyles
-  } = props;
-
-  // const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
+  const { options, groupIndex, value, onChange, selectWidth, index, onDelete, deleteToolStyles } = props;
 
   const onSelectChange = val => {
     onChange(index, val, groupIndex);
@@ -191,23 +184,19 @@ const Tool = props => {
           ))}
         </Select>
 
-        {/* {isNeedToShowDeleteButton() && ( */}
         <DeleteButton
           onDelete={() => {
             onDelete(index, groupIndex);
           }}
           deleteToolStyles={deleteToolStyles}
         />
-        {/* )} */}
       </SelectWrapper>
     </React.Fragment>
   );
 };
 
 Tool.propTypes = {
-  // countOfSingleTools: PropTypes.number.isRequired,
   options: PropTypes.array.isRequired,
-  // isGroup: PropTypes.bool,
   groupIndex: PropTypes.number,
   value: PropTypes.any.isRequired,
   onChange: PropTypes.func.isRequired,

@@ -1387,6 +1387,7 @@ export const axisLabelsObj1 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1418,6 +1419,7 @@ export const axisLabelsObj2 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1449,6 +1451,7 @@ export const axisLabelsObj3 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1507,6 +1510,7 @@ export const axisLabelsObj4 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1565,6 +1569,7 @@ export const axisLabelsObj5 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1623,6 +1628,7 @@ export const axisLabelsObj6 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisLabels",
     valid_response: {
       score: 5,
@@ -1684,6 +1690,7 @@ export const axisSegmentsObj1 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,
@@ -1717,6 +1724,7 @@ export const axisSegmentsObj2 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,
@@ -1750,6 +1758,7 @@ export const axisSegmentsObj3 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,
@@ -1812,6 +1821,7 @@ export const axisSegmentsObj4 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,
@@ -1874,6 +1884,7 @@ export const axisSegmentsObj5 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,
@@ -1936,6 +1947,7 @@ export const axisSegmentsObj6 = {
     }
   ],
   validation: {
+    penaltyPoints: 0,
     graphType: "axisSegments",
     valid_response: {
       score: 5,

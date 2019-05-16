@@ -100,7 +100,10 @@ class QuadrantsMoreOptions extends Component {
       layout_margin,
       layout_snapto,
       xAxisLabel,
-      yAxisLabel
+      yAxisLabel,
+      xShowAxis = true,
+      yShowAxis = true,
+      showGrid = true
     } = ui_style;
 
     return (
@@ -158,6 +161,14 @@ class QuadrantsMoreOptions extends Component {
                       </Select.Option>
                     ))}
                   </Select>
+                </MoreOptionsRow>
+                <MoreOptionsRow style={{ marginTop: "16px" }}>
+                  <Checkbox
+                    label={t("component.graphing.grid_options.show_grid")}
+                    name="showGrid"
+                    onChange={() => this.handleCheckbox("showGrid", showGrid)}
+                    checked={showGrid}
+                  />
                 </MoreOptionsRow>
               </MoreOptionsColumn>
 
@@ -243,7 +254,14 @@ class QuadrantsMoreOptions extends Component {
                     {t("component.graphing.grid_options.tick_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
-
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
+                  <Checkbox
+                    label={t("component.graphing.grid_options.show_axis")}
+                    name="xShowAxis"
+                    onChange={() => this.handleCheckbox("xShowAxis", xShowAxis)}
+                    checked={xShowAxis}
+                  />
+                </MoreOptionsRow>
                 <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
                     label={t("component.graphing.grid_options.show_axis_label")}
@@ -335,6 +353,14 @@ class QuadrantsMoreOptions extends Component {
                     {t("component.graphing.grid_options.tick_distance")}
                   </MoreOptionsLabel>
                 </MoreOptionsRowInline>
+                <MoreOptionsRow style={{ marginTop: "40px" }}>
+                  <Checkbox
+                    label={t("component.graphing.grid_options.show_axis")}
+                    name="yShowAxis"
+                    onChange={() => this.handleCheckbox("yShowAxis", yShowAxis)}
+                    checked={yShowAxis}
+                  />
+                </MoreOptionsRow>
                 <MoreOptionsRow style={{ marginTop: "40px" }}>
                   <Checkbox
                     label={t("component.graphing.grid_options.show_axis_label")}
@@ -508,6 +534,7 @@ class QuadrantsMoreOptions extends Component {
           label="BACKGROUND SHAPES"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          deskHeight={graphData.ui_style.layout_height}
         >
           <MoreOptionsContainer>
             <MoreOptionsSubHeading>{t("component.graphing.background_shapes")}</MoreOptionsSubHeading>

@@ -77,9 +77,12 @@ const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
     point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+  });
 };
 
-const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
+const handleStackedSegmentPointDrag = (point, axis, yPosition, board) => {
   point.on("drag", () => {
     const currentPosition = point.X();
 
@@ -91,6 +94,9 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
     } else if (currentPosition < xMin) {
       point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
+  });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
@@ -122,10 +128,19 @@ const checkForElementsOnVector = (segments, coord, xMin, xMax, vectorDirection) 
 // Draw segment point with proper settings
 const drawPoint = (board, coord, ticksDistance, point, fixed, colors, yPosition) => {
   const styles = point ? { ...Colors.default[CONSTANT.TOOLS.POINT] } : { ...Colors.special[CONSTANT.TOOLS.POINT] };
+  const highlightPointType = point ? CONSTANT.TOOLS.POINT : CONSTANT.TOOLS.SEGMENTS_POINT;
 
   return board.$board.create("point", [ticksDistance ? coord + ticksDistance : coord, yPosition || 0], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...styles,
+    highlightStrokeColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][highlightPointType].highlightStrokeColor
+        : Colors["default"][highlightPointType].highlightStrokeColor,
+    highlightFillColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][highlightPointType].highlightFillColor
+        : Colors["default"][highlightPointType].highlightFillColor,
     ...colors,
     fixed,
     snapToGrid: false
@@ -158,6 +173,14 @@ const drawVectorLine = (board, visiblePoint, invisiblePoint, vectorDirection, co
     straightlast: false,
     fixed: true,
     ...Colors.default[CONSTANT.TOOLS.LINE],
+    highlightStrokeColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightStrokeColor
+        : Colors["default"][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+    highlightFillColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightFillColor
+        : Colors["default"][CONSTANT.TOOLS.LINE].highlightFillColor,
     ...colors
   });
 };
@@ -205,7 +228,7 @@ const loadVector = (board, element, pointIncluded, vectorDirection, segmentType,
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
     invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), element.y]);
 
-    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, element.y);
+    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, element.y, board);
 
     return vector;
   }
@@ -232,7 +255,6 @@ const drawVector = (
   }
 
   ticks = ticks.sort((a, b) => a - b);
-  // const nextTick = ticks[ticks.indexOf(coord) + 1];
 
   if (!stackResponses) {
     if (checkForElementsOnVector(segments, coord, xMin, xMax, vectorDirection)) {
@@ -267,7 +289,7 @@ const drawVector = (
     invisiblePoint.setAttribute({ snapSizeY: 0.05 });
     invisiblePoint.setPosition(JXG.COORDS_BY_USER, [invisiblePoint.X(), calcedYPosition]);
 
-    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, calcedYPosition);
+    handleStackedSegmentPointDrag(visiblePoint, board.numberlineAxis, calcedYPosition, board);
 
     return vector;
   }

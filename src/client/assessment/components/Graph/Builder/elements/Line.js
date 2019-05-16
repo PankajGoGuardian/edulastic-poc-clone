@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import { Point } from ".";
-import { getLineTypeByProp, getPropsByLineType } from "../utils";
+import { getLineTypeByProp, getPropsByLineType, handleSnap } from "../utils";
 import { Colors, CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 
@@ -23,6 +23,8 @@ function onLineHandler(type) {
         ...Colors.default[CONSTANT.TOOLS.LINE],
         label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
       });
+
+      handleSnap(newLine, points, board);
       if (newLine) {
         points = [];
         return newLine;

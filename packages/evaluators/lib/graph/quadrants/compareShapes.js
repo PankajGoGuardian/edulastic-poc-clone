@@ -516,10 +516,11 @@ var CompareShapes =
 
           if (!this.ignoreLabels) {
             if (
-              testParabolaPoints.startX === trueParabolaPoints.startX &&
-              testParabolaPoints.startY === trueParabolaPoints.startY &&
-              testFunc.getKoefA() === trueFunc.getKoefA() &&
-              testFunc.getDirection() === trueFunc.getDirection()
+              labelsAreEqual(testShape.label, trueShape.label) &&
+              ((this.comparePoints(testShapePointStart, trueShapePointStart).result &&
+                this.comparePoints(testShapePointEnd, trueShapePointEnd).result) ||
+                (this.comparePoints(testShapePointStart, trueShapePointEnd).result &&
+                  this.comparePoints(testShapePointEnd, trueShapePointStart).result))
             ) {
               return positiveResult;
             }
@@ -885,11 +886,7 @@ var CompareShapes =
               this.comparePoints(testShapePointStart, trueShapePointStart).result &&
               this.comparePoints(testShapePointEnd, trueShapePointEnd).result
             ) {
-              return {
-                id: testExponent.id,
-                relatedId: trueExponent.id,
-                result: true
-              };
+              return positiveResult;
             }
 
             return negativeResult;
@@ -915,7 +912,11 @@ var CompareShapes =
             testShapePoints.startY === trueShapePoints.startY &&
             testFunc.getBC() === trueFunc.getBC()
           ) {
-            return positiveResult;
+            return {
+              id: testShape.id,
+              relatedId: trueShape.id,
+              result: true
+            };
           }
 
           return negativeResult;
@@ -952,11 +953,7 @@ var CompareShapes =
               this.comparePoints(testShapePointStart, trueShapePointStart).result &&
               this.comparePoints(testShapePointEnd, trueShapePointEnd).result
             ) {
-              return {
-                id: testLogarithm.id,
-                relatedId: trueLogarithm.id,
-                result: true
-              };
+              return positiveResult;
             }
 
             return negativeResult;
@@ -982,7 +979,11 @@ var CompareShapes =
             testShapePoints.startY === trueShapePoints.startY &&
             testFunc.getBC() === trueFunc.getBC()
           ) {
-            return positiveResult;
+            return {
+              id: testShape.id,
+              relatedId: trueShape.id,
+              result: true
+            };
           }
 
           return negativeResult;
@@ -1036,11 +1037,22 @@ var CompareShapes =
               return negativeResult;
             }
 
-            return {
-              id: testPolynom.id,
-              relatedId: truePolynom.id,
-              result: true
-            };
+            var equalCount = 0;
+            testShapePoints.forEach(function(testPoint) {
+              equalCount += trueShapePoints.filter(function(truePoint) {
+                return (
+                  testPoint.x === truePoint.x &&
+                  testPoint.y === truePoint.y &&
+                  labelsAreEqual(testPoint.label, truePoint.label)
+                );
+              }).length;
+            });
+
+            if (equalCount === trueShapePoints.length && labelsAreEqual(testShape.label, trueShape.label)) {
+              return positiveResult;
+            }
+
+            return negativeResult;
           }
 
           var testFunc = new _polynomFunction["default"](testShapePoints);
@@ -1066,7 +1078,11 @@ var CompareShapes =
             x += 0.1;
           }
 
-          return positiveResult;
+          return {
+            id: testShape.id,
+            relatedId: trueShape.id,
+            result: true
+          };
         }
       }
     ]);

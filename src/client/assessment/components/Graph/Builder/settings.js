@@ -68,7 +68,9 @@ const axesParameters = {
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#drawZero
    */
-  drawZero: true
+  drawZero: true,
+
+  showAxis: true
 };
 
 const gridParameters = {
@@ -81,7 +83,9 @@ const gridParameters = {
    * special grid options
    * @see https://jsxgraph.org/docs/symbols/src/src_options.js.html
    */
-  gridY: 1
+  gridY: 1,
+
+  showGrid: true
 };
 
 const bgObjectParameters = {
@@ -112,7 +116,7 @@ const textParameters = {
   highlightCssClass: "mark"
 };
 
-const getLabelPositionParameters = elementType => {
+export const getLabelPositionParameters = elementType => {
   switch (elementType) {
     case JXG.OBJECT_TYPE_POINT:
       return {
@@ -148,6 +152,13 @@ const getLabelPositionParameters = elementType => {
         offset: [0, -10],
         anchorX: "middle",
         anchorY: "middle"
+      };
+    case 99:
+      return {
+        position: "lft",
+        offset: [10, 10],
+        anchorX: "left",
+        anchorY: "top"
       };
     default:
       return {

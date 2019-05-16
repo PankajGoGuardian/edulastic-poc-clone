@@ -70,7 +70,7 @@ export const reducer = createReducer(initialState, {
     const schoolsData = [];
     payload.data.map(row => {
       let school = {};
-      school = row;
+      school = { ...row };
 
       school["districtId"] = row._source.districtId;
       school.name = row._source.name;
@@ -80,7 +80,6 @@ export const reducer = createReducer(initialState, {
           school[key] = location[key];
         });
       }
-      delete school._source;
       school.key = school._id;
       school.city = get(school, "city", "");
       if (school.city == null) school.city = "";
@@ -93,9 +92,10 @@ export const reducer = createReducer(initialState, {
       school.teachersCount = get(school, "teachersCount", 0);
       school.studentsCount = get(school, "studentsCount", 0);
       school.sectionsCount = get(school, "sectionsCount", 0);
-      school.status = get(school, ["status"], 1);
+      school.status = get(school, ["_source", "status"], 0);
       school.address = get(school, "address", "");
       if (school.address == null) school.address = "";
+      delete school._source;
       schoolsData.push(school);
     });
 
@@ -147,7 +147,8 @@ export const reducer = createReducer(initialState, {
       zip: payload.location.zip,
       teachersCount: 0,
       studentsCount: 0,
-      sectionsCount: 0
+      sectionsCount: 0,
+      status: payload.status
     };
 
     state.creating = false;

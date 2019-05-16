@@ -463,7 +463,7 @@ class SchoolsTable extends React.Component {
         },
         render: (text, record) => {
           return (
-            <React.Fragment>{record.status == 0 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
+            <React.Fragment>{record.status == 1 ? <span>Approved</span> : <span>Not Approved</span>}</React.Fragment>
           );
         }
       },
@@ -586,8 +586,9 @@ class SchoolsTable extends React.Component {
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
             >
-              <Option value="0">Approved</Option>
-              <Option value="1">All</Option>
+              <Option value="">Select a value</Option>
+              <Option value="1">Approved</Option>
+              <Option value="0">Not Approved</Option>
             </StyledFilterSelect>
           )}
 

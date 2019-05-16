@@ -33,12 +33,14 @@ const ClassListModal = ({ visible, close, groups, syncClass, selectedGroups }) =
       setSelectedRows(rows);
     },
     getCheckboxProps: record => ({
+      // eslint-disable-next-line max-len
       disabled: selectedGroups.includes(record.enrollmentCode), // Column configuration not to be checked
       name: record.name
     })
   };
 
   const addGroups = () => {
+    // eslint-disable-next-line max-len
     const selected = groups.filter((_, index) => selectedRows.includes(index)).map(item => item.enrollmentCode);
     syncClass(selected);
   };
@@ -53,7 +55,7 @@ const ClassListModal = ({ visible, close, groups, syncClass, selectedGroups }) =
 
 ClassListModal.propTypes = {
   visible: PropTypes.bool.isRequired,
-  selectedGroups: PropTypes.bool.isRequired,
+  selectedGroups: PropTypes.array.isRequired,
   groups: PropTypes.array.isRequired,
   close: PropTypes.func.isRequired,
   syncClass: PropTypes.func.isRequired

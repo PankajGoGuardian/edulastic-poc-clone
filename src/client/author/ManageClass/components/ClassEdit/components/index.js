@@ -1,6 +1,6 @@
 import React from "react";
-import PropTypes from "prop-types";
 import * as moment from "moment";
+import PropTypes from "prop-types";
 import { Form } from "antd";
 import { Field, Optional } from "./styled";
 
@@ -9,19 +9,10 @@ export const FieldLabel = ({
   optional,
   children,
   getFieldDecorator,
+  getFieldValue,
   fiedlName,
-  initialValue,
-  getFieldValue
+  initialValue
 }) => {
-  const checkStartDate = (rule, value, callback) => {
-    const diff = moment().diff(value, "days");
-    if (diff > 0) {
-      callback(rule.message);
-    } else {
-      callback();
-    }
-  };
-
   const checkEndDate = (rule, value, callback) => {
     const startDate = getFieldValue("startDate");
     const diff = moment(startDate).diff(value, "days");
@@ -37,7 +28,7 @@ export const FieldLabel = ({
       { required: true, message: "Please enter a valid class name" },
       { max: 256, message: "Must less than 256 characters!" }
     ],
-    startDate: [{ validator: checkStartDate, message: "Should be later than the today!" }],
+    startDate: [],
     endDate: [{ validator: checkEndDate, message: "Should be later than the Start date" }],
     subject: [{ required: true, message: "Please select a subject." }],
     grade: [{ required: true, message: "Please select a Grade." }],

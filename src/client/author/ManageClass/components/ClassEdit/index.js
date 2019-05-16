@@ -9,7 +9,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { createClassAction } from "../../ducks";
+import { updateClassAction } from "../../ducks";
 // selectors
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
@@ -21,7 +21,7 @@ import LeftFields from "./LeftFields";
 import RightFields from "./RightFields";
 import { Container, FormTitle, LeftContainer, RightContainer } from "./styled";
 
-class ClassCreate extends React.Component {
+class ClassEdit extends React.Component {
   static propTypes = {
     getCurriculums: PropTypes.func.isRequired,
     curriculums: PropTypes.arrayOf(
@@ -34,22 +34,27 @@ class ClassCreate extends React.Component {
     ).isRequired,
     form: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired,
+    selctedClass: PropTypes.object.isRequired,
     userOrgData: PropTypes.object.isRequired,
-    createClass: PropTypes.func.isRequired,
+    updateClass: PropTypes.func.isRequired,
     searchCourseList: PropTypes.func.isRequired,
-    creating: PropTypes.bool.isRequired,
     isSearching: PropTypes.bool.isRequired,
-    error: PropTypes.any,
     courseList: PropTypes.array.isRequired,
-    changeView: PropTypes.func
+    changeView: PropTypes.func,
+    updating: PropTypes.bool.isRequired
   };
 
   state = {};
 
   static defaultProps = {
-    changeView: () => null,
-    error: null
+    changeView: () => null
   };
+
+  componentDidUpdate({ updating, changeView }, { submitted }) {
+    if (updating && submitted) {
+      changeView("details");
+    }
+  }
 
   componentDidMount() {
     const { curriculums, getCurriculums } = this.props;
@@ -59,20 +64,15 @@ class ClassCreate extends React.Component {
     }
   }
 
-  componentDidUpdate({ creating, changeView, error }, { submitted }) {
-    if (!creating && submitted && isEmpty(error)) {
-      changeView("details");
-    }
-  }
-
   handleSubmit = e => {
     e.preventDefault();
     const { form, userId, userOrgData } = this.props;
     const { districtId } = userOrgData;
     form.validateFields((err, values) => {
       if (!err) {
-        const { createClass, curriculums } = this.props;
+        const { updateClass, curriculums, selctedClass } = this.props;
         const { standardSets, endDate, startDate } = values;
+        const { _id: classId } = selctedClass;
 
         const updatedStandardsSets = standardSets.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -94,7 +94,7 @@ class ClassCreate extends React.Component {
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
-        createClass(values);
+        updateClass({ params: values, classId });
       }
     });
   };
@@ -118,30 +118,53 @@ class ClassCreate extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, userOrgData, changeView, isSearching, creating } = this.props;
+    const { curriculums, form, courseList, changeView, isSearching, selctedClass, updating } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
-    const { defaultSchool, schools } = userOrgData;
+
+    const {
+      thumbnail = "",
+      tags = [],
+      name,
+      startDate,
+      endDate,
+      grade,
+      subject,
+      standardSets,
+      course,
+      institutionId
+    } = selctedClass;
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => changeView("list")} />
-        <Spin spinning={creating}>
+        <Header onCancel={() => changeView("details")} />
+        <Spin spinning={updating}>
           <Container>
             <Divider orientation="left">
               <FormTitle>Class Details</FormTitle>
             </Divider>
             <FlexContainer alignItems="baseline">
               <LeftContainer>
-                <LeftFields getFieldDecorator={getFieldDecorator} getFieldValue={getFieldValue} />
+                <LeftFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  thumbnailUri={thumbnail}
+                  tags={tags}
+                />
               </LeftContainer>
               <RightContainer>
                 <RightFields
+                  defaultName={name}
+                  defaultStartDate={startDate}
+                  defaultEndDate={endDate}
+                  defaultGrade={grade}
+                  defaultSubject={subject}
+                  defaultStandardSets={standardSets}
+                  defaultCourse={course}
+                  defaultSchool={institutionId}
                   curriculums={curriculums}
                   getFieldDecorator={getFieldDecorator}
                   getFieldValue={getFieldValue}
-                  schoolsData={defaultSchool}
                   courseList={courseList}
-                  schoolList={schools}
                   searchCourse={this.searchCourse}
                   isSearching={isSearching}
                 />
@@ -154,10 +177,10 @@ class ClassCreate extends React.Component {
   }
 }
 
-const ClassCreateForm = Form.create()(ClassCreate);
+const ClassEditForm = Form.create()(ClassEdit);
 
 const enhance = compose(
-  withNamespaces("classCreate"),
+  withNamespaces("classEdit"),
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),
@@ -165,15 +188,15 @@ const enhance = compose(
       isSearching: get(state, "coursesReducer.searching"),
       userOrgData: getUserOrgData(state),
       userId: get(state, "user.user._id"),
-      creating: get(state, "manageClass.creating"),
-      error: get(state, "manageClass.error")
+      updating: get(state, "manageClass.updating"),
+      selctedClass: get(state, "manageClass.entity", {})
     }),
     {
       getCurriculums: getDictCurriculumsAction,
-      createClass: createClassAction,
+      updateClass: updateClassAction,
       searchCourseList: receiveSearchCourseAction
     }
   )
 );
 
-export default enhance(ClassCreateForm);
+export default enhance(ClassEditForm);

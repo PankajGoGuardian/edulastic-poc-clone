@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { filter, isArray, isEmpty, debounce } from "lodash";
+import { filter, debounce, concat, find, isEmpty } from "lodash";
 
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
@@ -11,40 +11,53 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 const { allGrades, allSubjects } = selectsData;
 
 const startDate = moment();
-const endDate = moment().add(1, "years");
+const endDate = moment(); // .add("days", 7);
 
 // eslint-disable-next-line max-len
 const RightFields = ({
   curriculums,
-  defaultSchool,
   courseList,
-  schoolList,
   searchCourse,
   isSearching,
+  defaultName,
+  defaultStartDate,
+  defaultEndDate,
+  defaultGrade,
+  defaultSubject,
+  defaultStandardSets = [],
+  defaultCourse = {},
+  defaultSchool,
   ...restProps
 }) => {
-  const [subject, setSubject] = useState("");
+  const [subject, setSubject] = useState(defaultSubject || "");
 
   const updateSubject = e => {
     setSubject(e);
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
-
-  let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
-
-  if (isDropdown) {
-    if (schoolList.length === 1) {
-      isDropdown = schoolList[0]._id !== defaultSchool;
-    }
-  }
-
+  const defaultStandardSetIds = defaultStandardSets.map(({ _id }) => _id);
   const standardSets = filter(curriculums, el => el.subject === subject);
+  const isExist = find(courseList, ({ _id }) => _id === defaultCourse.id);
+  let courseOptions = [];
+  if (!isExist && !isEmpty(defaultCourse)) {
+    courseOptions = concat(
+      [
+        {
+          _id: defaultCourse.id,
+          name: defaultCourse.name
+        }
+      ],
+      courseList
+    );
+  } else {
+    courseOptions = courseList;
+  }
 
   return (
     <>
       <StyledFlexContainer>
-        <FieldLabel label="Class Name" {...restProps} fiedlName="name">
+        <FieldLabel label="Class Name" {...restProps} fiedlName="name" initialValue={defaultName}>
           <Input placeholder="Enter the name of your class" />
         </FieldLabel>
       </StyledFlexContainer>
@@ -54,18 +67,24 @@ const RightFields = ({
           label="Class Start Date"
           optional
           fiedlName="startDate"
-          initialValue={moment(startDate)}
+          initialValue={moment(defaultStartDate || startDate)}
           {...restProps}
         >
           <DatePicker data-cy="startDate" format="DD MMM, YYYY" placeholder="Open Date" />
         </FieldLabel>
-        <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
+        <FieldLabel
+          label="Class End Date"
+          optional
+          {...restProps}
+          fiedlName="endDate"
+          initialValue={moment(defaultEndDate || endDate)}
+        >
           <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
         </FieldLabel>
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue="">
+        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue={defaultGrade}>
           <Select placeholder="Select Grade">
             {allGrades.map(el => (
               <Select.Option key={el.value} value={el.value}>
@@ -85,7 +104,12 @@ const RightFields = ({
         </FieldLabel>
       </StyledFlexContainer>
 
-      <FieldLabel label="Standards Set" {...restProps} fiedlName="standardSets" initialValue={[]}>
+      <FieldLabel
+        label="Standards Set"
+        {...restProps}
+        fiedlName="standardSets"
+        initialValue={defaultStandardSetIds || []}
+      >
         <Select
           showSearch
           mode="multiple"
@@ -101,7 +125,7 @@ const RightFields = ({
         </Select>
       </FieldLabel>
 
-      <FieldLabel label="Course" {...restProps} fiedlName="courseId">
+      <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={defaultCourse.id || ""}>
         <Select
           placeholder="Select Course"
           showSearch
@@ -112,29 +136,15 @@ const RightFields = ({
           notFoundContent={null}
           loading={isSearching}
         >
-          {courseList.map(el => (
-            <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number}`}</Select.Option>
+          {courseOptions.map(el => (
+            <Select.Option key={el._id} value={el._id}>{`${el.name} - ${el.number || ""}`}</Select.Option>
           ))}
         </Select>
       </FieldLabel>
 
-      {!isDropdown && (
-        <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
-          <input type="hidden" />
-        </FieldLabel>
-      )}
-
-      {isDropdown && (
-        <FieldLabel label="School" {...restProps} fiedlName="institutionId">
-          <Select placeholder="Select School">
-            {schoolList.map(el => (
-              <Select.Option key={el._id} value={el._id}>
-                {el.name}
-              </Select.Option>
-            ))}
-          </Select>
-        </FieldLabel>
-      )}
+      <FieldLabel {...restProps} fiedlName="institutionId" initialValue={defaultSchool}>
+        <input type="hidden" />
+      </FieldLabel>
     </>
   );
 };
@@ -148,17 +158,28 @@ RightFields.propTypes = {
       subject: PropTypes.string.isRequired
     })
   ).isRequired,
-  defaultSchool: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   courseList: PropTypes.array.isRequired,
-  schoolList: PropTypes.array,
   searchCourse: PropTypes.func.isRequired,
   isSearching: PropTypes.bool.isRequired,
-  getFieldDecorator: PropTypes.func.isRequired
+  getFieldDecorator: PropTypes.func.isRequired,
+  defaultName: PropTypes.string.isRequired,
+  defaultStartDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  defaultEndDate: PropTypes.oneOfType([PropTypes.string, PropTypes.object, PropTypes.number]),
+  defaultGrade: PropTypes.string,
+  defaultSubject: PropTypes.string,
+  defaultStandardSets: PropTypes.array,
+  defaultCourse: PropTypes.object,
+  defaultSchool: PropTypes.string
 };
 
 RightFields.defaultProps = {
-  schoolList: [],
-  defaultSchool: null
+  defaultStartDate: startDate,
+  defaultEndDate: endDate,
+  defaultCourse: {},
+  defaultGrade: "",
+  defaultSubject: "",
+  defaultSchool: "",
+  defaultStandardSets: []
 };
 
 export default RightFields;

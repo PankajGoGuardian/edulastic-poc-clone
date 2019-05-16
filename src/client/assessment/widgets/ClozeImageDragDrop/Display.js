@@ -19,7 +19,6 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 
-const defaultImageURL = "https://assets.learnosity.com/demos/docs/colored_world_map.png";
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
@@ -125,6 +124,7 @@ class Display extends Component {
       imageUrl,
       responseContainers,
       imageAlterText,
+      imageWidth,
       imageTitle,
       showDashedBorder,
       backgroundColor,
@@ -152,7 +152,7 @@ class Display extends Component {
       imageUrl ? (
         <img
           src={imageUrl || ""}
-          style={{ userSelect: "none", pointerEvents: "none" }}
+          style={{ userSelect: "none", pointerEvents: "none", width: imageWidth || "auto" }}
           alt={imageAlterText}
           title={imageTitle}
         />
@@ -174,7 +174,7 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          width: "auto",
+          width: imageWidth || "fit-content",
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
           overflowY: smallSize && "hidden"

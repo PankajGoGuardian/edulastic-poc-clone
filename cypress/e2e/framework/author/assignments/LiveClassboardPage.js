@@ -1,4 +1,11 @@
+import LCBHeader from "./lcbHeader";
+import { studentSide as asgnStatus } from "../../constants/assignmentStatus";
+
 class LiveClassboardPage {
+  constructor() {
+    this.header = new LCBHeader();
+  }
+
   checkClassName(className) {
     return cy.get("[data-cy=CurrentClassName]").contains(className);
   }
@@ -190,6 +197,7 @@ class LiveClassboardPage {
     let maxScore = 0;
     let score;
     let perf;
+    let perfValue;
     let stats;
 
     Object.keys(attempt).forEach(queNum => {
@@ -201,9 +209,26 @@ class LiveClassboardPage {
     });
 
     score = `${totalScore} / ${maxScore}`;
-    perf = `${Math.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2)}%`;
-    stats = { score, perf };
+    perfValue = Math.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
+    perf = `${perfValue}%`;
+    stats = { score, perf, perfValue };
     return stats;
   };
+
+  verifyAvgScore(statsMap) {
+    let submittedCount = 0;
+    let totalPerformance = 0;
+    Object.keys(statsMap).forEach(studentName => {
+      const { status, perfValue } = statsMap[studentName];
+      if (status === asgnStatus.SUBMITTED || status === asgnStatus.GRADED) {
+        submittedCount += 1;
+        totalPerformance += perfValue;
+      }
+    });
+
+    const avgPerformance = `${Math.round(totalPerformance / submittedCount, 2)}%`;
+    // expect(5).to.eq(5);
+    this.getAvgScore().should("have.text", avgPerformance);
+  }
 }
 export default LiveClassboardPage;

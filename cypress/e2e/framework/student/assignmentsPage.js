@@ -36,9 +36,15 @@ class AssignmentsPage {
   // common actions on AssignmentPage
 
   clickOnAssignmentButton() {
+    cy.server();
+    cy.route("GET", "**/test-activity/**").as("test-start");
+
     this.getAssignmentButton()
       .should("be.visible")
       .click({ force: true });
+
+    cy.wait("@test-start");
+
     return new StudentTestPage();
   }
 

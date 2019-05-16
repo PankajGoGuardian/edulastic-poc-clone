@@ -1,8 +1,10 @@
 import FileHelper from "../../../framework/util/fileHelper";
 import AssignmentsPage from "../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../framework/student/studentTestPage";
-import LiveClassboardPage from "../../../framework/author/LiveClassboardPage";
-import AuthorAssignmentPage from "../../../framework/author/AuthorAssignmentPage";
+import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
+import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
+import { studentSide } from "../../../framework/constants/assignmentStatus";
+import StudentCentricViewPage from "../../../framework/author/assignments/StudentCentricViewPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment page UI`, () => {
   const attemptsData = [
@@ -45,9 +47,13 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   ];
 
   let questionData;
-  const questionTypeMap = {};
   let testData;
-  let statsMap = {};
+  const questionTypeMap = {};
+  const statsMap = {};
+
+  const studentList = attemptsData
+    .filter(({ stuName, status }) => status !== studentSide.NOT_STARTED)
+    .map(item => item.stuName);
 
   // TODO : will move below data into test data files
   const testId = "5cd9385f163c8a4fea055823";
@@ -57,6 +63,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   const assignmentPage = new AssignmentsPage();
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
+  const studentResponse = new StudentCentricViewPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
 
   before(" > create new assessment and assign", () => {
@@ -69,9 +76,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
-        console.log("questionData :: ", questionData);
+        const { attemptData } = questionData[queType][questionKey];
         const { points } = questionData[queType][questionKey].setAns;
-        const queMap = { queKey: queKey, points: points };
+        const queMap = { queKey, points, attemptData };
         questionTypeMap[`Q${index + 1}`] = queMap;
       });
     });
@@ -101,27 +108,52 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
           test.attemptQuestion(queType, attempt[queNum], attemptData);
           test.getNext().click();
         });
-        test.submitTest();
-        cy.contains("Reports").should("be.visible");
+        if (status !== "IN PROGRESS") {
+          test.submitTest();
+          cy.contains("Reports").should("be.visible");
+        }
       }
     });
   });
 
-  context(" > Verify LCB tab test cases", () => {
-    before("login as teacher", () => {
-      cy.login("teacher", teacher);
-      authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+  before("login as teacher", () => {
+    cy.login("teacher", teacher);
+    authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+    // cy.visit("author/classboard/5cdbe1cfdbe2e06ccf813274/5ccae64a7b99153441dd7e66");
+    // cy.wait(3000);
+  });
+
+  describe(" > verify LCB card view", () => {
+    it(" > verify avg score", () => {
+      lcb.verifyAvgScore(statsMap);
     });
 
-    it(` verifying all student card`, () => {
-      Object.keys(statsMap).forEach(studentName => {
+    it(" > verify submitted count", () => {
+      lcb.verifySubmittedCount(
+        attemptsData.filter(eachStudent => eachStudent.status === studentSide.SUBMITTED).length,
+        attemptsData.length
+      );
+    });
+
+    studentList.forEach(studentName => {
+      it(` > verify student cards for :: ${studentName}`, () => {
         const { status, score, perf, attempt } = statsMap[studentName];
         lcb.verifyStudentCard(studentName, status, score, perf, attempt);
       });
     });
-  });
 
-  describe(" > Verify Summary tab test cases", () => {
-    // TODO : add summary tests
+    describe(" > verify student centric view", () => {
+      before("student tab click", () => {
+        lcb.clickOnStudentsTab();
+        cy.wait(5000); // TODO : remove this
+      });
+      studentList.forEach(studentName => {
+        it(` > verify student centric view for :: ${studentName}`, () => {
+          const { attempt } = statsMap[studentName];
+          studentResponse.selectStudent(studentName);
+          studentResponse.verifyQuestionResponseCard(attempt, questionTypeMap);
+        });
+      });
+    });
   });
 });

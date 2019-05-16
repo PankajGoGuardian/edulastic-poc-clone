@@ -74,6 +74,8 @@ class StudentTestPage {
       .click();
 
   submitTest = () => {
+    cy.server();
+    cy.route("PUT", "**/test-activity/**").as("testactivity");
     cy.contains("SUBMIT")
       .as("submit")
       .should("be.visible")
@@ -84,6 +86,8 @@ class StudentTestPage {
     cy.get("[data-cy=submit]")
       .should("be.visible")
       .click();
+
+    cy.wait("@testactivity");
     cy.url().should("include", "/home/reports");
     return new ReportsPage();
   };

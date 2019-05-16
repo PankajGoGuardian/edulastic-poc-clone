@@ -8,7 +8,7 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 
 const FormulaEssayOptions = ({ onChange, item, fillSections, cleanSections }) => (
-  <WidgetOptions showScoring={false} fillSections={fillSections} cleanSections={cleanSections}>
+  <WidgetOptions fillSections={fillSections} cleanSections={cleanSections}>
     <Layout onChange={onChange} item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
     <Extras fillSections={fillSections} cleanSections={cleanSections} />

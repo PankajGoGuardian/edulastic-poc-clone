@@ -123,7 +123,7 @@ const EditEssayRichText = ({ item, setQuestionData, t, changeItem, changeUIStyle
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
       </Paper>
-      <WidgetOptions showScoring={false} outerStyle={{ marginTop: 40 }} title={t("common.options.title")}>
+      <WidgetOptions outerStyle={{ marginTop: 40 }} title={t("common.options.title")}>
         <Checkbox
           style={{ marginTop: 16, marginBottom: 16 }}
           defaultChecked={item && item.validation && item.validation.submit_over_limit}

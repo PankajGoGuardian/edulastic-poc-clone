@@ -1,5 +1,6 @@
 const questionType = require("./const/questionType");
 const evaluationType = require("./const/evaluationType.js");
+const nonAutoGradableTypes = require("./const/nonAutoGradableTypes.js");
 const httpMessages = require("./const/httpMessage");
 const roleuser = require("./const/roleType");
 const math = require("./const/math.js");
@@ -21,6 +22,7 @@ const playlists = require("./const/playlists");
 module.exports = {
   questionType,
   evaluationType,
+  nonAutoGradableTypes,
   evaluatorTypes,
   httpMessages,
   roleuser,

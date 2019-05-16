@@ -90,7 +90,7 @@ function* receiveDistrictProfileSaga({ payload }) {
 
 function* updateDictrictProfileSaga({ payload }) {
   try {
-    const updateDistrictProfile = yield call(settingsApi.updateDistrictProfie, payload);
+    const updateDistrictProfile = yield call(settingsApi.updateDistrictProfile, payload);
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
@@ -101,7 +101,7 @@ function* updateDictrictProfileSaga({ payload }) {
 
 function* createDictrictProfileSaga({ payload }) {
   try {
-    const createdDistrictProfile = yield call(settingsApi.createDistrictProfie, payload);
+    const createdDistrictProfile = yield call(settingsApi.createDistrictProfile, payload);
     yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
   } catch (err) {
     const errorMessage = "Update District Profile is failing";

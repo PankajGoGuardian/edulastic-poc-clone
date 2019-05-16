@@ -165,6 +165,13 @@ class QuestionWrapper extends Component {
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
     }
+    if (data.id) {
+      /**
+       * adding `key` forces the component to re-render when `id` changes.
+       */
+      userAnswerProps.key = data.id;
+    }
+
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">

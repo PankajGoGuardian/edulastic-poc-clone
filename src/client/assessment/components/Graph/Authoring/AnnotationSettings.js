@@ -2,14 +2,10 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import {
-  MoreOptionsContainer,
-  MoreOptionsColumn,
-  MoreOptionsColumnContainer,
-  MoreOptionsLabel,
-  MoreOptionsRow,
-  MoreOptionsSubHeading
-} from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Subtitle } from "../../../styled/Subtitle";
 import QuillInput from "../common/QuillInput";
 
 class AnnotationSettings extends Component {
@@ -27,65 +23,51 @@ class AnnotationSettings extends Component {
 
     return (
       <Fragment>
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>Annotation</MoreOptionsSubHeading>
+        <Subtitle>Annotation</Subtitle>
+        <Row gutter={60}>
+          <Col md={12}>
+            <Label>Title</Label>
+            <QuillInput value={title} onChange={value => this.handleInputChange("title", value)} toolbarId="title" />
+          </Col>
+          <Col md={12}>
+            <Label>Label top</Label>
+            <QuillInput
+              value={labelTop}
+              onChange={value => this.handleInputChange("labelTop", value)}
+              toolbarId="labelTop"
+            />
+          </Col>
+        </Row>
 
-          <MoreOptionsColumnContainer>
-            <MoreOptionsColumn style={{ padding: "0 30px 0 0" }}>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>Title</MoreOptionsLabel>
+        <Row gutter={60}>
+          <Col md={12}>
+            <Label>Label left</Label>
+            <QuillInput
+              value={labelLeft}
+              onChange={value => this.handleInputChange("labelLeft", value)}
+              toolbarId="labelLeft"
+            />
+          </Col>
+          <Col md={12}>
+            <Label>Label right</Label>
+            <QuillInput
+              value={labelRight}
+              onChange={value => this.handleInputChange("labelRight", value)}
+              toolbarId="labelRight"
+            />
+          </Col>
+        </Row>
 
-                <QuillInput
-                  value={title}
-                  onChange={value => this.handleInputChange("title", value)}
-                  toolbarId="title"
-                />
-              </MoreOptionsRow>
-
-              <MoreOptionsRow>
-                <MoreOptionsLabel>Label left</MoreOptionsLabel>
-
-                <QuillInput
-                  value={labelLeft}
-                  onChange={value => this.handleInputChange("labelLeft", value)}
-                  toolbarId="labelLeft"
-                />
-              </MoreOptionsRow>
-
-              <MoreOptionsRow>
-                <MoreOptionsLabel>Label bottom</MoreOptionsLabel>
-
-                <QuillInput
-                  value={labelBottom}
-                  onChange={value => this.handleInputChange("labelBottom", value)}
-                  toolbarId="labelBottom"
-                />
-              </MoreOptionsRow>
-            </MoreOptionsColumn>
-
-            <MoreOptionsColumn style={{ padding: "0 0 0 30px" }}>
-              <MoreOptionsRow>
-                <MoreOptionsLabel>Label top</MoreOptionsLabel>
-
-                <QuillInput
-                  value={labelTop}
-                  onChange={value => this.handleInputChange("labelTop", value)}
-                  toolbarId="labelTop"
-                />
-              </MoreOptionsRow>
-
-              <MoreOptionsRow>
-                <MoreOptionsLabel>Label right</MoreOptionsLabel>
-
-                <QuillInput
-                  value={labelRight}
-                  onChange={value => this.handleInputChange("labelRight", value)}
-                  toolbarId="labelRight"
-                />
-              </MoreOptionsRow>
-            </MoreOptionsColumn>
-          </MoreOptionsColumnContainer>
-        </MoreOptionsContainer>
+        <Row gutter={60}>
+          <Col md={12}>
+            <Label>Label bottom</Label>
+            <QuillInput
+              value={labelBottom}
+              onChange={value => this.handleInputChange("labelBottom", value)}
+              toolbarId="labelBottom"
+            />
+          </Col>
+        </Row>
       </Fragment>
     );
   }

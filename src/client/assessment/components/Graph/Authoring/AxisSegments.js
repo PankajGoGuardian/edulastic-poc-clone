@@ -4,7 +4,11 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
-import { Col, Label, Row, StyledTextField, Subtitle, TitleTextInput } from "../common/styled_components";
+import { StyledTextField, TitleTextInput } from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import { QuestionSection } from "./";
@@ -63,10 +67,11 @@ class AxisSegments extends Component {
             value={stimulus}
           />
         </QuestionSection>
+
         <QuestionSection section="main" label="LINE" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.graphline")}</Subtitle>
-          <Row>
-            <Col md={6}>
+          <Row gutter={60}>
+            <Col md={12}>
               <Label>{t("component.graphing.minVal")}</Label>
               <StyledTextField
                 type="number"
@@ -76,39 +81,48 @@ class AxisSegments extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 disabled={false}
                 step={1}
+                marginBottom="0px"
+                marginRight="0px"
+                width="100%"
               />
-              <div>
-                <Label>{t("component.graphing.responseNumAllowed")}</Label>
-                <StyledTextField
-                  type="number"
-                  name="responsesAllowed"
-                  value={canvas.responsesAllowed}
-                  onChange={this.handleCanvasChange}
-                  disabled={false}
-                  step={1}
-                  min={1}
-                />
-              </div>
             </Col>
-            <Col md={6} style={{ paddingLeft: 30 }}>
-              <div>
-                <Label>{t("component.graphing.maxVal")}</Label>
-                <StyledTextField
-                  type="number"
-                  name="x_max"
-                  value={canvas.x_max}
-                  onChange={this.handleCanvasChange}
-                  onBlur={event => this.handleCanvasBlur(event, 10)}
-                  disabled={false}
-                  step={1}
-                />
-              </div>
+            <Col md={12}>
+              <Label>{t("component.graphing.maxVal")}</Label>
+              <StyledTextField
+                type="number"
+                name="x_max"
+                value={canvas.x_max}
+                onChange={this.handleCanvasChange}
+                onBlur={event => this.handleCanvasBlur(event, 10)}
+                disabled={false}
+                step={1}
+                marginBottom="0px"
+                marginRight="0px"
+                width="100%"
+              />
+            </Col>
+          </Row>
+          <Row gutter={60}>
+            <Col md={12}>
+              <Label>{t("component.graphing.responseNumAllowed")}</Label>
+              <StyledTextField
+                type="number"
+                name="responsesAllowed"
+                value={canvas.responsesAllowed}
+                onChange={this.handleCanvasChange}
+                disabled={false}
+                step={1}
+                min={1}
+                marginBottom="0px"
+                marginRight="0px"
+                width="100%"
+              />
             </Col>
           </Row>
         </QuestionSection>
 
         <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
-          <PaddingDiv bottom={30}>
+          <PaddingDiv>
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>

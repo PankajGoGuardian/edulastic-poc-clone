@@ -4,17 +4,10 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Button } from "@edulastic/common";
 import { Select } from "antd";
-import {
-  MoreOptionsContainer,
-  MoreOptionsRow,
-  MoreOptionsSubHeading,
-  Row,
-  Col,
-  SelectWrapper,
-  GraphToolsParamsWrapper,
-  AddToolBtnWrapper,
-  ToolSelect
-} from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Subtitle } from "../../../styled/Subtitle";
+import { SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
 
 class ControlsSettings extends Component {
@@ -109,7 +102,7 @@ class ControlsSettings extends Component {
     );
 
     return (
-      <Col paddingRight="2.5em" md={6} marginBottom={20}>
+      <Col md={12}>
         {controlbar.controls.map((tool, i) =>
           !Array.isArray(tool) ? (
             <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
@@ -134,24 +127,16 @@ class ControlsSettings extends Component {
   };
 
   render() {
-    const { t } = this.props;
-
     return (
       <Fragment>
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>Controls</MoreOptionsSubHeading>
-
-          <MoreOptionsRow>
-            <GraphToolsParamsWrapper>{this.renderSingleToolsInDefaultGroup()}</GraphToolsParamsWrapper>
-          </MoreOptionsRow>
-        </MoreOptionsContainer>
+        <Subtitle>Controls</Subtitle>
+        <Row gutter={60}>{this.renderSingleToolsInDefaultGroup()}</Row>
       </Fragment>
     );
   }
 }
 
 ControlsSettings.propTypes = {
-  t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   controlbar: PropTypes.object.isRequired
 };

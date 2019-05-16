@@ -22,8 +22,8 @@ class QuestionSection extends Component {
   }
 
   render() {
-    const { children, marginLast } = this.props;
-    return <Section marginLast={marginLast}>{children}</Section>;
+    const { children, marginLast, padding, bgColor } = this.props;
+    return <Section marginLast={marginLast} bgColor={bgColor} padding={padding}>{children}</Section>;
   }
 }
 
@@ -31,15 +31,17 @@ QuestionSection.propTypes = {
   section: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   marginLast: PropTypes.number,
+  padding: PropTypes.string,
+  bgColor: PropTypes.string,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired
 };
 
 const Section = styled.section`
-  padding: 20px 35px;
+  padding: ${props => (props.padding ? props.padding : "30px")};
   margin-bottom: 30px;
   border-radius: 4px;
-  background-color: #f8f8f8;
+  background-color: ${props => (props.bgColor ? props.bgColor : `#f8f8f8`)};
 
   &:last-of-type {
     margin-bottom: ${props => (props.marginLast ? `${props.marginLast}px` : "30px")};

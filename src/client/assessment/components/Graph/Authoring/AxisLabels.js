@@ -6,7 +6,11 @@ import { PaddingDiv, Button } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { arrayMove } from "react-sortable-hoc";
 import { cloneDeep, clone } from "lodash";
-import { Subtitle, Label, ContainerStart, LineParameter, LineInput, TitleTextInput } from "../common/styled_components";
+import { StyledTextField, TitleTextInput } from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { Subtitle } from "../../../styled/Subtitle";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
@@ -98,10 +102,10 @@ class GraphAxisLabels extends Component {
 
         <QuestionSection section="main" label="LINE" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.graphline")}</Subtitle>
-          <ContainerStart>
-            <LineParameter>
+          <Row gutter={60}>
+            <Col md={12}>
               <Label>Minimum value</Label>
-              <LineInput
+              <StyledTextField
                 type="number"
                 value={canvas.x_min}
                 name="x_min"
@@ -109,11 +113,14 @@ class GraphAxisLabels extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 0)}
                 step={1}
                 disabled={false}
+                marginBottom="0px"
+                marginRight="0px"
+                width="100%"
               />
-            </LineParameter>
-            <LineParameter>
+            </Col>
+            <Col md={12}>
               <Label>Maximum value</Label>
-              <LineInput
+              <StyledTextField
                 type="number"
                 value={canvas.x_max}
                 name="x_max"
@@ -121,13 +128,16 @@ class GraphAxisLabels extends Component {
                 onBlur={event => this.handleCanvasBlur(event, 10)}
                 step={1}
                 disabled={false}
+                marginBottom="0px"
+                marginRight="0px"
+                width="100%"
               />
-            </LineParameter>
-          </ContainerStart>
+            </Col>
+          </Row>
         </QuestionSection>
 
         <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
-          <PaddingDiv bottom={30}>
+          <PaddingDiv>
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
           </PaddingDiv>
@@ -139,7 +149,7 @@ class GraphAxisLabels extends Component {
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
-          <PaddingDiv bottom={30}>
+          <PaddingDiv>
             <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>
             <QuillSortableList
               items={graphData.list.map(o => o.text)}

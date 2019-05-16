@@ -46,6 +46,7 @@ class CorrectAnswers extends Component {
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
         <Tab
+          IconPosition="right"
           key={i}
           close
           type="primary"
@@ -132,7 +133,7 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <CorrectAnswersContainer>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab label={t("component.correctanswers.correct")} type="primary" />
+            <Tab IconPosition="right" label={t("component.correctanswers.correct")} type="primary" />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

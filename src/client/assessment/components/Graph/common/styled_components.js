@@ -34,19 +34,19 @@ export const StyledTextarea = styled(TextareaAutosize)`
 
 export const Subtitle = styled.div`
   color: ${secondaryTextColor};
-  margin-bottom: 35px;
+  margin-bottom: 30px;
   font-size: 20px;
   font-weight: bold;
   font-style: normal;
   font-stretch: normal;
-  line-height: 1.35;
+  line-height: 1.36;
   letter-spacing: normal;
   text-align: left;
 `;
 
 export const StyledTextField = styled(TextField)`
   width: ${props => (props.width ? `${props.width}` : "100px")};
-  padding: 0 0 0 40px;
+  padding: 5px 15px;
   margin-right: ${props => (props.marginRight ? props.marginRight : "3em")};
   height: 40px;
   margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "1em")};
@@ -65,6 +65,7 @@ export const Label = styled.label`
   margin-right: 0.7em;
   margin-bottom: 0.7em;
   font-weight: 600;
+  font-size: 13px;
 `;
 
 export const ToolSubTitle = styled.span`
@@ -266,10 +267,9 @@ export const MoreOptionsLabelInline = styled(MoreOptionsLabel)`
 `;
 
 export const MoreOptionsInput = styled.input`
-  width: 77%;
+  width: 100%;
   height: 40px;
-  margin: 11px 0 0 0;
-  padding: 0 15px 0 15px;
+  padding: 0 15px;
   outline: 0;
   border-radius: 5px;
   border: 1px solid ${grey};

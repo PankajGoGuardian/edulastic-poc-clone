@@ -11,12 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
-import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
-import { AddNewChoiceBtn } from "../../../styled/AddNewChoiceBtn";
-
 import { ALPHABET } from "../constants/alphabet";
-import QuillSortableList from "../../../components/QuillSortableList";
 import { updateVariables } from "../../../utils/variables";
 import ComposeQuestion from "./ComposeQuestion";
 import MultipleChoiceOptions from "./MultipleChoiceOptions";

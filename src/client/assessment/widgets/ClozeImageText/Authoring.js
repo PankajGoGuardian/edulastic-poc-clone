@@ -187,7 +187,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, theme } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -199,8 +199,7 @@ class Authoring extends Component {
       headers: {
         "X-Requested-With": null,
         authorization: TokenStorage.getAccessToken()
-      },
-      className: "drag-full-parent"
+      }
     };
     return (
       <div>
@@ -345,15 +344,15 @@ class Authoring extends Component {
                   </Checkbox>
                 </CheckContainer>
                 {item.imageUrl && (
-                  <EduButton
-                    type="primary"
-                    style={{ marginTop: 20, marginBottom: 20 }}
-                    onClick={() => {
-                      setQuestionData({ ...item, imageUrl: "" });
-                    }}
+                  <Dragger
+                    className="super-dragger"
+                    {...draggerProps}
+                    style={{ padding: 0, marginBottom: 20, marginTop: 20 }}
+                    onChange={this.handleImageUpload}
+                    showUploadList={false}
                   >
-                    {t("component.cloze.imageText.deleteImageButtonText")}
-                  </EduButton>
+                    <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                  </Dragger>
                 )}
               </ImageFlexView>
             </FlexContainer>

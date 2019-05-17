@@ -106,8 +106,7 @@ class ClassCreate extends React.Component {
       const serachTerms = {
         districtId,
         search: {
-          name: { type: "cont", value: keyword },
-          number: { type: "cont", value: keyword }
+          name: { type: "cont", value: keyword }
         },
         status: 1,
         page: 0,

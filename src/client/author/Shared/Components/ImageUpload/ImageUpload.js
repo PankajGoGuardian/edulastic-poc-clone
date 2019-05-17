@@ -1,15 +1,8 @@
 import React, { Component } from "react";
-import {
-  StyledUploadContainer,
-  StyledUpload,
-  StyledP,
-  StyledImg,
-  StyledIcon,
-  StyledChangeLog,
-  StyledPRequired
-} from "./styled";
+import { uploadToS3 } from "../../../src/utils/upload";
+import { aws } from "@edulastic/constants";
+import { StyledUploadContainer, StyledUpload, StyledImg, StyledIcon, StyledChangeLog, StyledPRequired } from "./styled";
 import { message } from "antd";
-import { fileApi } from "@edulastic/api";
 
 class ImageUpload extends Component {
   constructor(props) {
@@ -25,7 +18,7 @@ class ImageUpload extends Component {
     if (file.size > 2 * 1024 * 1024) {
       message.error("Image must smaller then 2MB!");
     } else {
-      const { fileUri } = await fileApi.upload({ file });
+      const fileUri = await uploadToS3(file, aws.s3Folders.COURSE);
       this.setState({ file: fileUri, visibleRequired: false });
       const { keyName } = this.props;
       this.props.updateImgUrl(fileUri, keyName);

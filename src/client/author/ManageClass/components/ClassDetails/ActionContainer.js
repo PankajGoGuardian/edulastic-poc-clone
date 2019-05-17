@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
 import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
+import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 import { getUserOrgData } from "../../../src/selectors/user";
@@ -183,6 +184,12 @@ const ActionContainer = ({
         wrappedComponentRef={saveFormRef}
         stds={selectedStudent}
         isEdit={isEdit}
+      />
+
+      <ResetPwd
+        isOpen={isOpen.resetPwd}
+        handleCancel={() => toggleModal("resetPwd")}
+        selectedStudent={selectedStudent}
       />
 
       <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />

@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { message } from "antd";
-import { get } from "lodash";
+import { get, findIndex } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction } from "../sharedDucks/groups";
@@ -189,6 +189,14 @@ const selectStudent = (state, { payload }) => {
   state.selectedStudent = payload;
 };
 
+const updateStudent = (state, { payload }) => {
+  const stdList = state.studentsList;
+  const updatedIndex = findIndex(stdList, std => std._id === payload._id || std.userId === payload._id);
+  if (updatedIndex !== -1) {
+    state.studentsList.splice(updatedIndex, 1, payload);
+  }
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -206,7 +214,8 @@ export default createReducer(initialState, {
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
-  [SELECT_STUDENTS]: selectStudent
+  [SELECT_STUDENTS]: selectStudent,
+  [UPDATE_STUDENT_SUCCESS]: updateStudent
 });
 
 // sagas boi
@@ -288,7 +297,7 @@ function* changeUserTTSRequest({ payload }) {
     message.success(msg);
     yield put(userTTSRequestSuccessAction());
   } catch (error) {
-    message.error("Error occurred while enabling text to speech. Please contact customer support.");
+    message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
     yield put(userTTSRequestFailedAction(error));
   }
 }
@@ -316,16 +325,17 @@ function* removeStudentsRequest({ payload }) {
   }
 }
 
-function* updateStudent({ payload }) {
+function* updateStudentRequest({ payload }) {
   try {
     const { userId, data } = payload;
     const result = yield call(userApi.updateUser, { userId, data });
     const msg = "Successfully Updated student.";
+
     message.success(msg);
-    yield put(resetPasswordSuccessAction(result.data));
+    yield put(updateStudentSuccessAction(result));
   } catch (error) {
     message.error("Update a student request failing");
-    yield put(resetPasswordFaildedAction());
+    yield put(updateStudentFaildedAction());
   }
 }
 
@@ -352,6 +362,6 @@ export function* watcherSaga() {
     yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
     yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
     yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
-    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudent)
+    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest)
   ]);
 }

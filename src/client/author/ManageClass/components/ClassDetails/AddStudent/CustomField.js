@@ -4,9 +4,10 @@ import { Form } from "antd";
 import { Field } from "./styled";
 
 // eslint-disable-next-line max-len
-const CustomField = ({ label, children, getFieldDecorator, fiedlName, initialValue, getFieldValue }) => {
+const CustomField = ({ label, children, getFieldDecorator, fiedlName, initialValue, getFieldValue, isEdit }) => {
   const confirmPwdCheck = (rule, value, callback) => {
     const pwd = getFieldValue("password");
+
     if (pwd !== value) {
       callback(rule.message);
     } else {
@@ -24,7 +25,7 @@ const CustomField = ({ label, children, getFieldDecorator, fiedlName, initialVal
       { max: 128, message: "Must less than 128 characters!" }
     ],
     password: [
-      { required: true, message: "Please provide a valid password" },
+      { required: !isEdit, message: "Please provide a valid password" },
       { min: 6, message: "Must larger than 6 characters!" }
     ],
     confirmPwd: [{ validator: confirmPwdCheck, message: "Retyped password do not match." }],
@@ -62,14 +63,16 @@ CustomField.propTypes = {
   fiedlName: PropTypes.string,
   initialValue: PropTypes.any,
   label: PropTypes.string,
-  children: PropTypes.node
+  children: PropTypes.node,
+  isEdit: PropTypes.bool
 };
 
 CustomField.defaultProps = {
   fiedlName: "unknown",
   label: "",
   initialValue: null,
-  children: null
+  children: null,
+  isEdit: false
 };
 
 export default CustomField;

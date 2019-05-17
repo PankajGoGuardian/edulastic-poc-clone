@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { get, unset, split, isEmpty } from "lodash";
+import { get, unset, split, isEmpty, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
 import * as moment from "moment";
@@ -34,7 +34,8 @@ const ActionContainer = ({
   printPreview,
   studentLoaded,
   selectedStudent,
-  changeTTS
+  changeTTS,
+  updateStudentRequest
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -57,32 +58,50 @@ const ActionContainer = ({
       const { form } = formRef.props;
       form.validateFields((err, values) => {
         if (!err) {
-          const { fullName } = values;
-          const tempName = split(fullName, " ");
-          const firstName = tempName[0];
-          const lastName = tempName[1];
+          if (isEdit) {
+            if (values.dob) {
+              values.dob = moment(values.dob).format("x");
+            }
+            const std = { ...selectedStudent[0], ...values };
+            const userId = std._id || std.userId;
+            std.currentSignUpState = "DONE";
 
-          values.classCode = selectedClass.code;
-          values.role = "student";
-          values.districtId = orgData.districtId;
-          values.institutionIds = orgData.institutionIds;
-          values.firstName = firstName;
-          values.lastName = lastName;
+            unset(std, ["confirmPwd"]);
+            unset(std, ["__v"]);
+            unset(std, ["_id"]);
+            unset(std, ["createdAt"]);
+            unset(std, ["status"]);
+            unset(std, ["role"]);
+            updateStudentRequest({ userId, data: pickBy(std, identity) });
+            setModalStatus(false);
+          } else {
+            const { fullName } = values;
+            const tempName = split(fullName, " ");
+            const firstName = tempName[0];
+            const lastName = tempName[1];
 
-          const contactEmails = get(values, "contactEmails");
-          if (contactEmails) {
-            values.contactEmails = [contactEmails];
+            values.classCode = selectedClass.code;
+            values.role = "student";
+            values.districtId = orgData.districtId;
+            values.institutionIds = orgData.institutionIds;
+            values.firstName = firstName;
+            values.lastName = lastName;
+
+            const contactEmails = get(values, "contactEmails");
+            if (contactEmails) {
+              values.contactEmails = [contactEmails];
+            }
+
+            if (values.dob) {
+              values.dob = moment(values.dob).format("x");
+            }
+
+            unset(values, ["confirmPwd"]);
+            unset(values, ["fullName"]);
+
+            addStudentRequest(values);
+            setReqStatus(true);
           }
-
-          if (values.dob) {
-            values.dob = moment(values.dob).format("x");
-          }
-
-          unset(values, ["confirmPwd"]);
-          unset(values, ["fullName"]);
-
-          addStudentRequest(values);
-          setReqStatus(true);
         }
       });
     }
@@ -239,7 +258,8 @@ ActionContainer.propTypes = {
   studentLoaded: PropTypes.bool.isRequired,
   added: PropTypes.any.isRequired,
   selectedStudent: PropTypes.array.isRequired,
-  changeTTS: PropTypes.func.isRequired
+  changeTTS: PropTypes.func.isRequired,
+  updateStudentRequest: PropTypes.func.isRequired
 };
 
 ActionContainer.defaultProps = {};

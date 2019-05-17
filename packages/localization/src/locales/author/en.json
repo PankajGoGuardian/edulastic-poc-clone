@@ -113,7 +113,8 @@
       "layout": "Layout",
       "showVerticalDivider": "Show vertical divider",
       "enableScrolling": "Enable Scrolling For Long Content",
-      "tags": "Tags"
+      "tags": "Tags",
+      "flowLayout": "Use Flow Layout"
     },
     "pickupcomponent": {
       "headertitle": "Select a Widget (Question or Resource)",

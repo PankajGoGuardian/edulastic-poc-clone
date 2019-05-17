@@ -107,7 +107,6 @@ export const withMathFormula = WrappedComponent => {
       setNewInnerHtml(nNewInnerHtml);
     }, [dangerouslySetInnerHTML, mathField, window.MathQuill]);
 
-    console.log("props passed", props);
     return (
       <WithResources
         resources={[

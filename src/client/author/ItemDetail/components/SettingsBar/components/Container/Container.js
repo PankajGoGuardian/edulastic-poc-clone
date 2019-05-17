@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import SettingsBarItem from "../SettingsBarItem/SettingsBarItem";
 import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
+import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
 
 const layouts = [
@@ -45,9 +46,12 @@ class Container extends Component {
     onApply: PropTypes.func.isRequired,
     type: PropTypes.string.isRequired,
     t: PropTypes.func.isRequired,
+    useFlowLayout: PropTypes.func.isRequired,
     useTabs: PropTypes.func.isRequired,
     useTabsLeft: PropTypes.bool.isRequired,
     useTabsRight: PropTypes.bool.isRequired,
+    useFlowLayoutLeft: PropTypes.bool.isRequired,
+    useFlowLayoutRight: PropTypes.bool.isRequired,
     verticalDivider: PropTypes.bool.isRequired,
     scrolling: PropTypes.bool.isRequired,
     onVerticalDividerChange: PropTypes.func.isRequired,
@@ -72,6 +76,16 @@ class Container extends Component {
     useTabs({ rowIndex: 1, isUseTabs: !useTabsRight });
   };
 
+  handleChangeLeftFlowLayout = () => {
+    const { useFlowLayout, useFlowLayoutLeft } = this.props;
+    useFlowLayout({ rowIndex: 0, isUseFlowLayout: !useFlowLayoutLeft });
+  };
+
+  handleChangeRightFlowLayout = () => {
+    const { useFlowLayout, useFlowLayoutRight } = this.props;
+    useFlowLayout({ rowIndex: 1, isUseFlowLayout: !useFlowLayoutRight });
+  };
+
   onApplyLayoutClick = object => () => {
     const { onApply } = this.props;
     onApply(object);
@@ -92,6 +106,8 @@ class Container extends Component {
       t,
       useTabsLeft,
       useTabsRight,
+      useFlowLayoutLeft,
+      useFlowLayoutRight,
       verticalDivider,
       scrolling,
       onVerticalDividerChange,
@@ -125,6 +141,12 @@ class Container extends Component {
           onChangeRight={this.handleChangeRightTab}
           checkedLeft={useTabsLeft}
           checkedRight={useTabsRight}
+        />
+        <SettingsFlowLayout
+          onChangeLeft={this.handleChangeLeftFlowLayout}
+          onChangeRight={this.handleChangeRightFlowLayout}
+          checkedLeft={useFlowLayoutLeft}
+          checkedRight={useFlowLayoutRight}
         />
         <Checkboxes>
           <Checkbox

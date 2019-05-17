@@ -18,6 +18,7 @@ import {
   deleteWidgetAction,
   updateTabTitleAction,
   useTabsAction,
+  useFlowLayoutAction,
   getItemDetailLoadingSelector,
   getItemDetailRowsSelector,
   getItemDetailSelector,
@@ -26,8 +27,7 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector,
   clearRedirectTestAction,
-  setRedirectTestAction,
-  stateSelector
+  setRedirectTestAction
 } from "../../ducks";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
@@ -164,9 +164,9 @@ class Container extends Component {
   };
 
   handleShowSettings = () =>
-    this.setState({
-      showSettings: true
-    });
+    this.setState(preState => ({
+      showSettings: !preState.showSettings
+    }));
 
   handleAdd = ({ rowIndex, tabIndex }) => {
     const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
@@ -345,6 +345,7 @@ class Container extends Component {
       type,
       updateTabTitle,
       useTabs,
+      useFlowLayout,
       changePreview,
       windowWidth,
       testItemStatus,
@@ -376,6 +377,9 @@ class Container extends Component {
             useTabs={useTabs}
             useTabsLeft={!!rows[0].tabs.length}
             useTabsRight={!!rows[1] && !!rows[1].tabs.length}
+            useFlowLayout={useFlowLayout}
+            useFlowLayoutLeft={rows[0].flowLayout}
+            useFlowLayoutRight={rows[1] && rows[1].flowLayout}
             onVerticalDividerChange={this.handleVerticalDividerChange}
             onScrollingChange={this.handleScrollingChange}
             verticalDivider={item.verticalDivider}
@@ -462,6 +466,7 @@ Container.propTypes = {
   deleteWidget: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   updateTabTitle: PropTypes.func.isRequired,
+  useFlowLayout: PropTypes.func.isRequired,
   useTabs: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   showAnswer: PropTypes.func.isRequired,
@@ -499,7 +504,6 @@ const enhance = compose(
       rows: getItemDetailRowsSelector(state),
       loading: getItemDetailLoadingSelector(state),
       item: getItemDetailSelector(state),
-      loading: stateSelector(state).loading,
       updating: getItemDetailUpdatingSelector(state),
       type: getItemDetailDimensionTypeSelector(state),
       questions: getQuestionsSelector(state),
@@ -519,6 +523,7 @@ const enhance = compose(
       deleteWidget: deleteWidgetAction,
       updateTabTitle: updateTabTitleAction,
       useTabs: useTabsAction,
+      useFlowLayout: useFlowLayoutAction,
       loadQuestion: loadQuestionAction,
       publishTestItem: publishTestItemAction,
       clearRedirectTest: clearRedirectTestAction,

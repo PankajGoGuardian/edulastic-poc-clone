@@ -26,6 +26,7 @@ class Curriculum extends Component {
       hideEditOptions,
       expandedModules,
       onCollapseExpand,
+      mode,
       padding
     } = this.props;
 
@@ -35,10 +36,12 @@ class Curriculum extends Component {
           modules.map((moduleItem, index) => (
             <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
               <CurriculumModuleRow
-                collapsed={expandedModules.indexOf(moduleItem.id) === -1}
+                mode={mode}
+                collapsed={expandedModules.indexOf(index) === -1}
                 onCollapseExpand={onCollapseExpand}
                 key={moduleItem.id}
                 module={moduleItem}
+                moduleIndex={index}
                 padding={padding}
                 hideEditOptions={hideEditOptions}
               />
@@ -54,6 +57,7 @@ Curriculum.propTypes = {
   curriculum: PropTypes.object.isRequired,
   expandedModules: PropTypes.array.isRequired,
   padding: PropTypes.bool.isRequired,
+  mode: PropTypes.string,
   onCollapseExpand: PropTypes.func.isRequired
 };
 

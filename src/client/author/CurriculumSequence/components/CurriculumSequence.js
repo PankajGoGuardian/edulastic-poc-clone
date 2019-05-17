@@ -48,6 +48,8 @@ import {
 import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
 import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction } from "../../sharedDucks/groups";
 import AddUnitModalBody from "./AddUnitModalBody";
+import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
+import BreadCrumb from "../../src/components/Breadcrumb";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -266,6 +268,7 @@ class CurriculumSequence extends Component {
       setSelectedItemsForAssign,
       group,
       batchAssign,
+      mode,
       selectedItemsForAssign,
       dataForAssign
     } = this.props;
@@ -300,190 +303,210 @@ class CurriculumSequence extends Component {
       : 0;
     const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
 
+    const playlistBreadcrumbData = [
+      {
+        title: "PLAY LIST",
+        to: "/author/playlists"
+      },
+      {
+        title: "REVIEW",
+        to: ""
+      }
+    ];
     return (
-      <CurriculumSequenceWrapper>
-        <EditModal
-          visible={isAssignModalVisible}
-          title="New Assignment"
-          onOk={batchAssign}
-          onCancel={() => setSelectedItemsForAssign(null)}
-          onClose={() => setSelectedItemsForAssign(null)}
-          modalData={dataForAssign}
-          group={group}
-        />
-        <Modal
-          visible={addUnit}
-          title="Add Unit"
-          onOk={this.handleAddUnit}
-          onCancel={this.handleAddUnit}
-          footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
-        >
-          <AddUnitModalBody
-            destinationCurriculumSequence={destinationCurriculumSequence}
-            addNewUnitToDestination={this.addNewUnitToDestination}
-            handleAddUnit={this.handleAddUnit}
-            newUnit={newUnit}
+      <>
+        {mode === "embedded" && (
+          <BreadCrumbWrapper>
+            <SecondHeader>
+              <BreadCrumb data={playlistBreadcrumbData} style={{ position: "unset" }} />
+            </SecondHeader>
+          </BreadCrumbWrapper>
+        )}
+        <CurriculumSequenceWrapper>
+          <EditModal
+            visible={isAssignModalVisible}
+            title="New Assignment"
+            onOk={batchAssign}
+            onCancel={() => setSelectedItemsForAssign(null)}
+            onClose={() => setSelectedItemsForAssign(null)}
+            modalData={dataForAssign}
+            group={group}
           />
-        </Modal>
+          <Modal
+            visible={addUnit}
+            title="Add Unit"
+            onOk={this.handleAddUnit}
+            onCancel={this.handleAddUnit}
+            footer={null}
+            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+          >
+            <AddUnitModalBody
+              destinationCurriculumSequence={destinationCurriculumSequence}
+              addNewUnitToDestination={this.addNewUnitToDestination}
+              handleAddUnit={this.handleAddUnit}
+              newUnit={newUnit}
+            />
+          </Modal>
 
-        <Modal
-          visible={addCustomContent}
-          title="Add Custom Content"
-          onOk={this.handleAddCustomContent}
-          onCancel={this.handleAddCustomContent}
-          footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
-        >
-          <ModalBody>
-            <ModalLabelWrapper>
-              <label>Content Type</label>
-              <label>Add to</label>
-            </ModalLabelWrapper>
-            <ModalInputWrapper>
-              <Input.Group compact>
-                <Cascader defaultValue={["Lesson"]} options={options2} />
-              </Input.Group>
-              <Input.Group compact>
-                <Cascader defaultValue={["Unit Name"]} options={options1} />
-              </Input.Group>
-            </ModalInputWrapper>
-            <label>Reference #</label>
-            <Input />
-          </ModalBody>
-          <ModalFooter>
-            <Button type="primary" ghost key="back" onClick={this.handleAddCustomContent}>
-              CANCEL
-            </Button>
-            <Button key="submit" type="primary" onClick={this.handleAddCustomContent}>
-              SAVE
-            </Button>
-          </ModalFooter>
-        </Modal>
-
-        <Modal
-          visible={curriculumGuide}
-          onOk={this.handleGuideSave}
-          onCancel={this.handleGuideCancel}
-          footer={null}
-          style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
-        >
-          <ModalHeader>
-            <span>Curriculum Alignments in Two Clicks</span>
-          </ModalHeader>
-          <GuideModalBody>
-            <ModalSubtitleWrapper>
-              <div>Which of these do you use?</div>
-              <div>Select &#39;Other&#39; if you don&#39;t see your curriculum listed.</div>
-            </ModalSubtitleWrapper>
-            <RadioGroupWrapper>
-              <Radio.Group onChange={this.onChange} value={publisher}>
-                <Radio checked={publisher === EUREKA_PUBLISHER} value={EUREKA_PUBLISHER}>
-                  Eureka/EngageNY
-                </Radio>
-                <Radio checked={publisher === TENMARKS_PUBLISHER} value={TENMARKS_PUBLISHER}>
-                  TenMarks
-                </Radio>
-                <Radio checked={publisher === GOMATH_PUBLISHER} value={GOMATH_PUBLISHER}>
-                  GoMath!
-                </Radio>
-              </Radio.Group>
-            </RadioGroupWrapper>
-            <GuidesDropdownWrapper>
-              {guidesDropdownOptions.length > 0 && (
+          <Modal
+            visible={addCustomContent}
+            title="Add Custom Content"
+            onOk={this.handleAddCustomContent}
+            onCancel={this.handleAddCustomContent}
+            footer={null}
+            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+          >
+            <ModalBody>
+              <ModalLabelWrapper>
+                <label>Content Type</label>
+                <label>Add to</label>
+              </ModalLabelWrapper>
+              <ModalInputWrapper>
                 <Input.Group compact>
-                  <Cascader
-                    key={guide}
-                    onChange={onGuideChange}
-                    defaultValue={[guide]}
-                    style={{ width: "100%" }}
-                    options={guidesDropdownOptions}
-                  />
+                  <Cascader defaultValue={["Lesson"]} options={options2} />
                 </Input.Group>
-              )}
-            </GuidesDropdownWrapper>
-          </GuideModalBody>
-          <ModalFooter>
-            <Button type="primary" ghost key="back" onClick={this.handleGuideCancel}>
-              CANCEL
-            </Button>
-            <Button key="submit" type="primary" onClick={this.handleGuideSave}>
-              SAVE
-            </Button>
-          </ModalFooter>
-        </Modal>
-        <TopBar>
-          <CurriculumHeader justifyContent="space-between">
-            <HeaderTitle>
-              {publisher}
-              <Icon
-                style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
-                type={curriculumGuide ? "up" : "down"}
-                onClick={this.handleGuidePopup}
-              />
-            </HeaderTitle>
-            <CurriculumHeaderButtons>
+                <Input.Group compact>
+                  <Cascader defaultValue={["Unit Name"]} options={options1} />
+                </Input.Group>
+              </ModalInputWrapper>
+              <label>Reference #</label>
+              <Input />
+            </ModalBody>
+            <ModalFooter>
+              <Button type="primary" ghost key="back" onClick={this.handleAddCustomContent}>
+                CANCEL
+              </Button>
+              <Button key="submit" type="primary" onClick={this.handleAddCustomContent}>
+                SAVE
+              </Button>
+            </ModalFooter>
+          </Modal>
+
+          <Modal
+            visible={curriculumGuide}
+            onOk={this.handleGuideSave}
+            onCancel={this.handleGuideCancel}
+            footer={null}
+            style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
+          >
+            <ModalHeader>
+              <span>Curriculum Alignments in Two Clicks</span>
+            </ModalHeader>
+            <GuideModalBody>
+              <ModalSubtitleWrapper>
+                <div>Which of these do you use?</div>
+                <div>Select &#39;Other&#39; if you don&#39;t see your curriculum listed.</div>
+              </ModalSubtitleWrapper>
+              <RadioGroupWrapper>
+                <Radio.Group onChange={this.onChange} value={publisher}>
+                  <Radio checked={publisher === EUREKA_PUBLISHER} value={EUREKA_PUBLISHER}>
+                    Eureka/EngageNY
+                  </Radio>
+                  <Radio checked={publisher === TENMARKS_PUBLISHER} value={TENMARKS_PUBLISHER}>
+                    TenMarks
+                  </Radio>
+                  <Radio checked={publisher === GOMATH_PUBLISHER} value={GOMATH_PUBLISHER}>
+                    GoMath!
+                  </Radio>
+                </Radio.Group>
+              </RadioGroupWrapper>
+              <GuidesDropdownWrapper>
+                {guidesDropdownOptions.length > 0 && (
+                  <Input.Group compact>
+                    <Cascader
+                      key={guide}
+                      onChange={onGuideChange}
+                      defaultValue={[guide]}
+                      style={{ width: "100%" }}
+                      options={guidesDropdownOptions}
+                    />
+                  </Input.Group>
+                )}
+              </GuidesDropdownWrapper>
+            </GuideModalBody>
+            <ModalFooter>
+              <Button type="primary" ghost key="back" onClick={this.handleGuideCancel}>
+                CANCEL
+              </Button>
+              <Button key="submit" type="primary" onClick={this.handleGuideSave}>
+                SAVE
+              </Button>
+            </ModalFooter>
+          </Modal>
+          {mode !== "embedded" && (
+            <TopBar>
+              <CurriculumHeader justifyContent="space-between">
+                <HeaderTitle>
+                  {publisher}
+                  <Icon
+                    style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
+                    type={curriculumGuide ? "up" : "down"}
+                    onClick={this.handleGuidePopup}
+                  />
+                </HeaderTitle>
+                <CurriculumHeaderButtons>
+                  {!hideEditOptions && (
+                    <ShareButtonStyle>
+                      <Button type="default">
+                        <ShareButtonIcon color={greenThird} width={20} height={20} />
+                        <ShareButtonText>SHARE</ShareButtonText>
+                      </Button>
+                    </ShareButtonStyle>
+                  )}
+                  <SaveButtonStyle>
+                    <Button
+                      data-cy="saveCurriculumSequence"
+                      onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
+                    >
+                      {/* <IconPencilEdit color={greenThird} width={20} height={20} /> */}
+                      <SaveButtonText>{"Customize"}</SaveButtonText>
+                    </Button>
+                  </SaveButtonStyle>
+                  <SaveButtonStyle windowWidth={windowWidth}>
+                    <Button
+                      data-cy="saveCurriculumSequence"
+                      onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
+                    >
+                      <SaveButtonText>{"Use This"}</SaveButtonText>
+                    </Button>
+                  </SaveButtonStyle>
+                </CurriculumHeaderButtons>
+              </CurriculumHeader>
+            </TopBar>
+          )}
+          <SubTopBar>
+            <SubTopBarContainer active={isContentExpanded} mode={mode}>
+              <CurriculumSubHeaderRow marginBottom="36px">
+                <SubHeaderTitleContainer>
+                  <SubHeaderTitle>{title}</SubHeaderTitle>
+                  <SubHeaderDescription>{description}</SubHeaderDescription>
+                </SubHeaderTitleContainer>
+                <SunHeaderInfo>
+                  <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
+                    <GraduationCapIcon color="#848993" />
+                    <SunHeaderInfoCardText marginLeft="-3px">Grad 2-4</SunHeaderInfoCardText>
+                  </SunHeaderInfoCard>
+                  <SunHeaderInfoCard>
+                    <BookIcon color="#848993" />
+                    <SunHeaderInfoCardText>Mathematics</SunHeaderInfoCardText>
+                  </SunHeaderInfoCard>
+                </SunHeaderInfo>
+              </CurriculumSubHeaderRow>
               {!hideEditOptions && (
-                <ShareButtonStyle>
-                  <Button type="default">
-                    <ShareButtonIcon color={greenThird} width={20} height={20} />
-                    <ShareButtonText>SHARE</ShareButtonText>
-                  </Button>
-                </ShareButtonStyle>
-              )}
-              <SaveButtonStyle>
-                <Button
-                  data-cy="saveCurriculumSequence"
-                  onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
-                >
-                  {/* <IconPencilEdit color={greenThird} width={20} height={20} /> */}
-                  <SaveButtonText>{"Customize"}</SaveButtonText>
-                </Button>
-              </SaveButtonStyle>
-              <SaveButtonStyle windowWidth={windowWidth}>
-                <Button
-                  data-cy="saveCurriculumSequence"
-                  onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
-                >
-                  <SaveButtonText>{"Use This"}</SaveButtonText>
-                </Button>
-              </SaveButtonStyle>
-            </CurriculumHeaderButtons>
-          </CurriculumHeader>
-        </TopBar>
-        <SubTopBar>
-          <SubTopBarContainer active={isContentExpanded}>
-            <CurriculumSubHeaderRow marginBottom="36px">
-              <SubHeaderTitleContainer>
-                <SubHeaderTitle>{title}</SubHeaderTitle>
-                <SubHeaderDescription>{description}</SubHeaderDescription>
-              </SubHeaderTitleContainer>
-              <SunHeaderInfo>
-                <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
-                  <GraduationCapIcon color="#848993" />
-                  <SunHeaderInfoCardText marginLeft="-3px">Grad 2-4</SunHeaderInfoCardText>
-                </SunHeaderInfoCard>
-                <SunHeaderInfoCard>
-                  <BookIcon color="#848993" />
-                  <SunHeaderInfoCardText>Mathematics</SunHeaderInfoCardText>
-                </SunHeaderInfoCard>
-              </SunHeaderInfo>
-            </CurriculumSubHeaderRow>
-            {!hideEditOptions && (
-              <CurriculumSubHeaderRow>
-                <ModuleProgressWrapper>
-                  <ModuleProgressLabel>
-                    <ModuleProgressText>Module Progress</ModuleProgressText>
-                    <ModuleProgressValuesWrapper>
-                      <ModuleProgressValues>
-                        {modulesCompleted}/{totalModules}
-                      </ModuleProgressValues>
-                      <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
-                    </ModuleProgressValuesWrapper>
-                  </ModuleProgressLabel>
-                  <ModuleProgress modules={destinationCurriculumSequence.modules} />
-                </ModuleProgressWrapper>
-                {/* <SubheaderActions active={isContentExpanded}> 
+                <CurriculumSubHeaderRow>
+                  <ModuleProgressWrapper>
+                    <ModuleProgressLabel>
+                      <ModuleProgressText>Module Progress</ModuleProgressText>
+                      <ModuleProgressValuesWrapper>
+                        <ModuleProgressValues>
+                          {modulesCompleted}/{totalModules}
+                        </ModuleProgressValues>
+                        <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
+                      </ModuleProgressValuesWrapper>
+                    </ModuleProgressLabel>
+                    <ModuleProgress modules={destinationCurriculumSequence.modules} />
+                  </ModuleProgressWrapper>
+                  {/* <SubheaderActions active={isContentExpanded}> 
                   <AddUnitSubHeaderButtonStyle>
                     <Button data-cy="openAddUnit" block onClick={this.handleAddUnitOpen}>
                       <IconPlus color="#1774F0" />
@@ -503,36 +526,38 @@ class CurriculumSequence extends Component {
                     </Button>
                   </AddCustomContentSubHeaderButtonStyle>
             </SubheaderActions> */}
-              </CurriculumSubHeaderRow>
+                </CurriculumSubHeaderRow>
+              )}
+            </SubTopBarContainer>
+          </SubTopBar>
+          <Wrapper active={isContentExpanded}>
+            {destinationCurriculumSequence && (
+              <Curriculum
+                mode={mode}
+                key={destinationCurriculumSequence._id}
+                padding={selectContent}
+                curriculum={destinationCurriculumSequence}
+                expandedModules={expandedModules}
+                onCollapseExpand={onCollapseExpand}
+                onDrop={onDrop}
+                hideEditOptions={hideEditOptions}
+              />
             )}
-          </SubTopBarContainer>
-        </SubTopBar>
-        <Wrapper active={isContentExpanded}>
-          {destinationCurriculumSequence && (
-            <Curriculum
-              key={destinationCurriculumSequence._id}
-              padding={selectContent}
-              curriculum={destinationCurriculumSequence}
-              expandedModules={expandedModules}
-              onCollapseExpand={onCollapseExpand}
-              onDrop={onDrop}
-              hideEditOptions={hideEditOptions}
-            />
-          )}
-          {isSelectContent && (
-            <SelectContent
-              key={sourceCurriculumSequence._id}
-              destinationCurriculum={destinationCurriculumSequence}
-              curriculumList={curriculumList}
-              curriculum={sourceCurriculumSequence}
-              onCurriculumSequnceChange={onSourceCurriculumSequenceChange}
-              windowWidth={windowWidth}
-              onSelectContent={onSelectContent}
-              onBeginDrag={onBeginDrag}
-            />
-          )}
-        </Wrapper>
-      </CurriculumSequenceWrapper>
+            {isSelectContent && (
+              <SelectContent
+                key={sourceCurriculumSequence._id}
+                destinationCurriculum={destinationCurriculumSequence}
+                curriculumList={curriculumList}
+                curriculum={sourceCurriculumSequence}
+                onCurriculumSequnceChange={onSourceCurriculumSequenceChange}
+                windowWidth={windowWidth}
+                onSelectContent={onSelectContent}
+                onBeginDrag={onBeginDrag}
+              />
+            )}
+          </Wrapper>
+        </CurriculumSequenceWrapper>
+      </>
     );
   }
 }
@@ -985,7 +1010,7 @@ const SubTopBarContainer = styled.div`
   background: ${white};
   padding: 28px 43px 36px 45px;
   margin-bottom: 10px;
-  margin-top: -15px;
+  margin-top: ${props => (props.mode ? "0px" : "-15px")};
   z-index: 1;
   display: flex;
   flex-direction: column;
@@ -1148,6 +1173,10 @@ const SunHeaderInfoCardText = styled.div`
   margin-left: ${props => props.marginLeft || "0px"};
   font-family: Open Sans, Bold;
   font-weight: 600;
+`;
+
+const BreadCrumbWrapper = styled.div`
+  padding: 20px 40px;
 `;
 
 const enhance = compose(

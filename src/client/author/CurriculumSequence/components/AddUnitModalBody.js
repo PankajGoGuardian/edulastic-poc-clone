@@ -95,7 +95,6 @@ class AddUnitModalBody extends React.Component {
           <Button data-cy="addModuleCancel" type="primary" ghost key="back" onClick={handleAddModule}>
             CANCEL
           </Button>
-          ,
           <Button data-cy="addModuleSave" key="submit" type="primary" onClick={this.addModuleToPlaylist}>
             SAVE
           </Button>

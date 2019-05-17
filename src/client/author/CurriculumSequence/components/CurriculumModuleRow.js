@@ -27,6 +27,7 @@ import { matchAssigned, getNumberOfAssigned } from "../util";
 import Tags from "../../src/components/common/Tags";
 
 import AssessmentPlayer from "../../../assessment";
+import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
 /**
  * @typedef {object} Props
  * @property {import('./CurriculumSequence').Module} module
@@ -86,6 +87,8 @@ class ModuleRow extends Component {
       isContentExpanded,
       setSelectedItemsForAssign,
       module,
+      moduleIndex,
+      mode,
       removeItemFromUnit,
       hideEditOptions,
       removeUnit
@@ -120,7 +123,7 @@ class ModuleRow extends Component {
                 boxShadow={collapsed ? "0 3px 7px 0 rgba(0, 0, 0, 0.1)" : "unset"}
               >
                 <ModuleInfo>
-                  <CustomIcon marginRight="25" marginLeft={7} onClick={() => onCollapseExpand(id)}>
+                  <CustomIcon marginRight="25" marginLeft={7} onClick={() => onCollapseExpand(moduleIndex)}>
                     {!collapsed ? (
                       <Icon type="up" style={{ color: "#707070" }} />
                     ) : (
@@ -183,8 +186,8 @@ class ModuleRow extends Component {
                           data-cy="moduleItemMoreMenuItem"
                           onClick={() =>
                             removeItemFromUnit({
-                              moduleId: module.id,
-                              itemId: moduleData.id
+                              moduleIndex: moduleIndex,
+                              itemId: moduleData.contentId
                             })
                           }
                         >
@@ -256,7 +259,7 @@ class ModuleRow extends Component {
                                   </Button>
                                 </AssignmentButton>
                               )}
-                              {!hideEditOptions && (
+                              {(!hideEditOptions || mode === "embedded") && (
                                 <AssignmentIcon>
                                   <Dropdown overlay={moreMenu} trigger={["click"]}>
                                     <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
@@ -291,6 +294,7 @@ ModuleRow.propTypes = {
   isContentExpanded: PropTypes.bool.isRequired,
   removeItemFromUnit: PropTypes.func.isRequired,
   assigned: PropTypes.array.isRequired,
+  mode: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
 
@@ -736,7 +740,7 @@ const enhance = compose(
     {
       toggleUnitItem: toggleCheckedUnitItemAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
-      removeItemFromUnit: removeItemFromUnitAction,
+      removeItemFromUnit: removeTestFromModuleAction,
       removeUnit: removeUnitAction
     }
   )

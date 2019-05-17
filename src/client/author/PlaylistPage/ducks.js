@@ -46,6 +46,7 @@ export const DELETE_SHARED_USER = "[test] delete share user from list";
 export const ADD_MODULE = "[playlist] Add new module";
 export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
 export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
+export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from module";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -125,6 +126,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const createNewModuleAction = createAction(ADD_MODULE);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
+export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
 
 // reducer
 
@@ -189,6 +191,16 @@ const createNewTestInModule = test => ({
   contentType: "test"
 });
 
+const removeTestFromPlaylist = (playlist, payload) => {
+  const newPlaylist = produce(playlist, draft => {
+    draft.modules[payload.moduleIndex].data = draft.modules[payload.moduleIndex].data.filter(
+      content => content.contentId !== payload.itemId
+    );
+  });
+  message.success("Test removed from playlist");
+  return newPlaylist;
+};
+
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_MODULE: {
@@ -201,6 +213,10 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: newEntity
       };
+    }
+    case REMOVE_TEST_FROM_PLAYLIST: {
+      const newEntity = removeTestFromPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
     }
     case UPDATE_PLAYLIST: {
       return { ...state, entity: payload.updatedModule };
@@ -477,9 +493,10 @@ function* deleteSharedUserSaga({ payload }) {
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
     const newModule = createNewModuleState(payload.moduleName);
-    draft.modules.splice(payload.moduleIndex || 0, 0, newModule);
+    draft.modules.splice(payload.afterModuleIndex || 0, 0, newModule);
     return draft;
   });
+  message.success("Module Added to playlist");
   return newPlaylist;
 }
 
@@ -490,6 +507,7 @@ function addTestToModule(entity, payload) {
     draft.data.push(newTest);
     return draft;
   });
+  message.success("Test Added in playlist");
   return entity;
 }
 

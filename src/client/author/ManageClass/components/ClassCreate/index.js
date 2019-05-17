@@ -108,7 +108,7 @@ class ClassCreate extends React.Component {
         search: {
           name: { type: "cont", value: keyword }
         },
-        status: 1,
+        active: 1,
         page: 0,
         limit: 50
       };

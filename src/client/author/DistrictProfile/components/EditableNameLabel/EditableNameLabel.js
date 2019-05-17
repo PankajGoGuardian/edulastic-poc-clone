@@ -14,25 +14,54 @@ class EditableNameLabel extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      value: nextProps.value
+    };
+  }
+
+  setRequiredStatus = () => {
+    const { value } = this.state;
+    const { requiredStatus } = this.props;
+    if (value.length == 0 && requiredStatus) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `Plasse input your profile name`,
+        editing: true
+      });
+    }
+  };
+
   onInputBlur = () => {
     const { value, validateStatus } = this.state;
+    const { requiredStatus } = this.props;
+
     if (validateStatus === "error") return;
+    if (value.length == 0 && requiredStatus) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `Plasse input your profile name`
+      });
+      return;
+    }
 
     this.setState({
       editing: false,
-      value: value.trim()
+      value: value.toString().trim()
     });
-    this.props.setProfileName(value.trim());
+    const { setProfileName } = this.props;
+    setProfileName(value.toString().trim());
   };
 
   handleChange = e => {
     const validateStatus = e.target.value.length == 0 ? "error" : "success";
-    const validateMsg = validateStatus === "success" ? "" : "Please input profile name";
+    const validateMsg = validateStatus === "success" ? "" : "Please input your profile name";
     this.setState({
       value: e.target.value,
       validateStatus,
       validateMsg
     });
+    this.props.setProfileName(e.target.value.toString().trim());
   };
 
   onClickLabel = () => {

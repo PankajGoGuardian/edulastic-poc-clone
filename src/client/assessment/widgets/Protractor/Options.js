@@ -2,27 +2,27 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Upload, Button, Col, Checkbox } from "antd";
 
-import { fileApi } from "@edulastic/api";
+import { aws } from "@edulastic/constants";
 import { FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { Label } from "../../styled/WidgetOptions/Label";
+import { uploadToS3 } from "../../../author/src/utils/upload";
 
+import { Label } from "../../styled/WidgetOptions/Label";
 import { StyledRow } from "./styled/StyledRow";
 import { StyledInput } from "./styled/StyledInput";
 
 function Options({ onChange, item, t }) {
   const [uploading, setUploading] = useState(false);
 
-  const customRequest = async ({ file, onSuccess }) => {
+  const customRequest = async ({ file }) => {
     setUploading(true);
     try {
-      const { fileUri } = await fileApi.upload({ file });
-      setUploading(false);
+      const fileUri = await uploadToS3(file, aws.s3Folders.COURSE);
       onChange("image", fileUri);
-      onSuccess(null, file);
     } catch (err) {
       console.error(err);
+    } finally {
       setUploading(false);
     }
   };

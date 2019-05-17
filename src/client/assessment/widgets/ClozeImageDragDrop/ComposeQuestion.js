@@ -167,7 +167,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, theme } = this.props;
 
     const { maxRespCount, responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
@@ -364,15 +364,15 @@ class ComposeQuestion extends Component {
               </Checkbox>
             </PaddingDiv>
             {item.imageUrl && (
-              <EduButton
-                type="primary"
-                style={{ marginTop: 20, marginBottom: 20 }}
-                onClick={() => {
-                  setQuestionData({ ...item, imageUrl: "" });
-                }}
+              <Dragger
+                className="super-dragger"
+                {...draggerProps}
+                style={{ padding: 0 }}
+                onChange={this.handleImageUpload}
+                showUploadList={false}
               >
-                {t("component.cloze.imageText.deleteImageButtonText")}
-              </EduButton>
+                <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+              </Dragger>
             )}
           </FlexView>
         </FlexContainer>

@@ -130,9 +130,9 @@ class QuestionWrapper extends Component {
     activeTab: 0
   };
 
-  fillSections = (section, label, offset) => {
+  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight) => {
     this.setState(state => ({
-      [section]: state[section].concat({ label, offset })
+      [section]: state[section].concat({ label, offset, offsetBottom, haveDesk, deskHeight })
     }));
   };
 
@@ -166,6 +166,12 @@ class QuestionWrapper extends Component {
       userAnswerProps.userAnswer = userAnswer;
     }
 
+    if (data.id) {
+      /**
+       * adding `key` forces the component to re-render when `id` changes.
+       */
+      userAnswerProps.key = data.id;
+    }
     return (
       <ThemeProvider theme={themes.default}>
         <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">

@@ -2,15 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button } from "@edulastic/common";
 import { Select } from "antd";
-import {
-  Row,
-  Col,
-  ToolSubTitle,
-  SelectWrapper,
-  GraphToolsParamsWrapper,
-  AddToolBtnWrapper,
-  ToolSelect
-} from "../common/styled_components";
+import { ToolSubTitle, SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
 import DeleteButton from "../common/DeleteButton";
 
 class GraphToolsParams extends Component {
@@ -110,7 +104,7 @@ class GraphToolsParams extends Component {
     const countOfSingleTools = toolbar.tools.filter(t => !Array.isArray(t)).length;
 
     return (
-      <Col paddingRight="2.5em" md={6} marginBottom={20}>
+      <Col md={12} marginBottom="40px">
         <ToolSubTitle data-cy="toolSubTitle">Default Group</ToolSubTitle>
         {toolbar.tools.map((tool, i) =>
           !Array.isArray(tool) ? (
@@ -182,13 +176,7 @@ class GraphToolsParams extends Component {
     return (
       <React.Fragment>
         {toolGroups.map((toolGroup, i) => (
-          <Col
-            paddingRight={i % 2 === 1 ? "2.5em" : "0"}
-            paddingLeft={i % 2 === 0 ? "2.5em" : "0"}
-            md={6}
-            key={`${i}-${Math.random().toString(36)}`}
-            marginBottom={20}
-          >
+          <Col md={12} marginBottom="40px" key={`${i}-${Math.random().toString(36)}`}>
             <ToolSubTitle data-cy="toolSubTitle">
               {`Group ${i + 1}`}
               <DeleteButton
@@ -230,18 +218,15 @@ class GraphToolsParams extends Component {
   render() {
     return (
       <React.Fragment>
-        <Row marginBottom="10px">
-          <GraphToolsParamsWrapper>
-            {this.renderSingleToolsInDefaultGroup()}
-
-            {this.renderGroupTools()}
-          </GraphToolsParamsWrapper>
+        <Row gutter={60}>
+          {this.renderSingleToolsInDefaultGroup()}
+          {this.renderGroupTools()}
         </Row>
 
-        <Row>
-          <GraphToolsParamsWrapper>
-            <Col md={12}>{this.renderAddGroupBtn()}</Col>
-          </GraphToolsParamsWrapper>
+        <Row gutter={60}>
+          <Col marginBottom="0px" md={24}>
+            {this.renderAddGroupBtn()}
+          </Col>
         </Row>
       </React.Fragment>
     );

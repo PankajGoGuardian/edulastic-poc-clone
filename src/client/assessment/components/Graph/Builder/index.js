@@ -1,4 +1,3 @@
-import { cloneDeep, isEqual } from "lodash";
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
 import {
@@ -23,7 +22,8 @@ import {
   Secant,
   Exponent,
   Logarithm,
-  Polynom
+  Polynom,
+  Annotation
 } from "./elements";
 import {
   mergeParams,
@@ -49,71 +49,8 @@ import {
 import _events from "./events";
 
 import "jsxgraph/distrib/jsxgraph.css";
-import "../common/GraphShapeLabel.css";
+import "../common/QuillInput.css";
 import "../common/Mark.css";
-import { inherits } from "util";
-
-/**
- * if the coords between mousedown and mouseup events are different - is it move
- */
-function dragDetector() {
-  const start = {
-    x: 0,
-    y: 0
-  };
-  let elementsCopy = [];
-  let toolTempPointsCopy = [];
-  return {
-    start(event, elements, points) {
-      start.x = event.clientX;
-      start.y = event.clientY;
-      elementsCopy = cloneDeep(elements);
-      toolTempPointsCopy = cloneDeep(points);
-    },
-    isDragElements(event, elements) {
-      if (start.x === event.clientX && start.y === event.clientY) {
-        return false;
-      }
-
-      for (let i = 0; i < elements.length; i++) {
-        const element = elements[i];
-        const copyElement = elementsCopy.find(el => el.id === element.id);
-
-        if (element.elType === "point") {
-          if (!isEqual(copyElement.coords.usrCoords, element.coords.usrCoords)) {
-            return true;
-          }
-        } else if (element.ancestors && copyElement.ancestors) {
-          const ancestors = Object.values(element.ancestors);
-          for (let j = 0; j < ancestors.length; j++) {
-            const ancestor = ancestors[j];
-            const copyAncestor = Object.values(copyElement.ancestors).find(el => el.id === ancestor.id);
-            if (!isEqual(copyAncestor.coords.usrCoords, ancestor.coords.usrCoords)) {
-              return true;
-            }
-          }
-        }
-      }
-
-      return false;
-    },
-    isDragToolTempPoints(event, points) {
-      if (start.x === event.clientX && start.y === event.clientY) {
-        return false;
-      }
-
-      for (let i = 0; i < points.length; i++) {
-        const point = points[i];
-        const copyPoint = toolTempPointsCopy.find(el => el.id === point.id);
-        if (!isEqual(copyPoint.coords.usrCoords, point.coords.usrCoords)) {
-          return true;
-        }
-      }
-
-      return false;
-    }
-  };
-}
 
 /**
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
@@ -159,15 +96,12 @@ class Board {
 
     this.responsesAllowed = 2;
 
-    this.dragDetector = dragDetector();
-
     this.events = _events();
+
+    this.dragged = false;
 
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
-    this.$board.on(CONSTANT.EVENT_NAMES.DOWN, event => {
-      this.dragDetector.start(event, this.elements, this.getToolTempPoints());
-    });
   }
 
   isAnyElementsHasFocus() {
@@ -228,7 +162,6 @@ class Board {
         this.abortTool();
       }
     }
-    this.handleElementsHighlighting(tool);
     this.$board.off(CONSTANT.EVENT_NAMES.UP);
     this.currentTool = tool;
     switch (tool) {
@@ -277,12 +210,15 @@ class Board {
       case CONSTANT.TOOLS.LABEL:
         this.setCreatingHandler(Label.onHandler());
         return;
+      case CONSTANT.TOOLS.ANNOTATION:
+        this.setCreatingHandler(Annotation.onHandler());
+        return;
       case CONSTANT.TOOLS.MARK:
         this.setCreatingHandler(Mark.onHandler());
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.setCreatingHandler(
-          NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing),
+          NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing, tool),
           responsesAllowed
         );
         return;
@@ -309,40 +245,6 @@ class Board {
         return;
       default:
         throw new Error("Unknown tool:", tool);
-    }
-  }
-
-  getToolTempPoints() {
-    switch (this.currentTool) {
-      case CONSTANT.TOOLS.LINE:
-      case CONSTANT.TOOLS.RAY:
-      case CONSTANT.TOOLS.SEGMENT:
-      case CONSTANT.TOOLS.VECTOR:
-        return Line.getPoints();
-      case CONSTANT.TOOLS.CIRCLE:
-        return Circle.getPoints();
-      case CONSTANT.TOOLS.POLYGON:
-        return Polygon.getPoints();
-      case CONSTANT.TOOLS.SIN:
-        return Sin.getPoints();
-      case CONSTANT.TOOLS.PARABOLA:
-        return Parabola.getPoints();
-      case CONSTANT.TOOLS.ELLIPSE:
-        return Ellipse.getPoints();
-      case CONSTANT.TOOLS.HYPERBOLA:
-        return Hyperbola.getPoints();
-      case CONSTANT.TOOLS.EXPONENT:
-        return Exponent.getPoints();
-      case CONSTANT.TOOLS.LOGARITHM:
-        return Logarithm.getPoints();
-      case CONSTANT.TOOLS.POLYNOM:
-        return Polynom.getPoints();
-      case CONSTANT.TOOLS.TANGENT:
-        return Tangent.getPoints();
-      case CONSTANT.TOOLS.SECANT:
-        return Secant.getPoints();
-      default:
-        return [];
     }
   }
 
@@ -388,11 +290,8 @@ class Board {
    */
   setCreatingHandler(handler, responsesAllowed = null) {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
-      if (this.dragDetector.isDragToolTempPoints(event, this.getToolTempPoints())) {
-        return;
-      }
-      if (this.dragDetector.isDragElements(event, this.elements)) {
-        this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+      if (this.dragged) {
+        this.dragged = false;
         return;
       }
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
@@ -417,156 +316,6 @@ class Board {
           this.elements.push(newElement);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
         }
-      }
-    });
-  }
-
-  handleElementsHighlighting(tool) {
-    if (tool === CONSTANT.TOOLS.TRASH && !this.deleteHighlighting) {
-      // red highlighting
-      this.changeElementsHighlighting("red");
-      this.deleteHighlighting = true;
-    } else if (tool !== CONSTANT.TOOLS.TRASH && this.deleteHighlighting) {
-      // usual highlighting
-      this.changeElementsHighlighting("default");
-      this.deleteHighlighting = false;
-    }
-  }
-
-  changeElementsHighlighting(color) {
-    this.elements.forEach(element => {
-      switch (element.segmentType) {
-        case CONSTANT.TOOLS.SEGMENTS_POINT:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          break;
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits.forEach(point => {
-            point.setAttribute({
-              highlight: true,
-              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
-              highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
-              highlightFillOpacity: 1,
-              highlightStrokeOpacity: 1
-            });
-          });
-          break;
-        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits[0].setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits[1].setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          break;
-        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits[0].setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits[1].setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          break;
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits.forEach(point => {
-            point.setAttribute({
-              highlight: true,
-              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
-              highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
-              highlightFillOpacity: 1,
-              highlightStrokeOpacity: 1
-            });
-          });
-          break;
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits.forEach(point => {
-            point.setAttribute({
-              highlight: true,
-              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.POINT].highlightStrokeColor,
-              highlightFillColor: Colors[color][CONSTANT.TOOLS.POINT].highlightFillColor,
-              highlightFillOpacity: 1,
-              highlightStrokeOpacity: 1
-            });
-          });
-          break;
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-          element.setAttribute({
-            highlight: true,
-            highlightStrokeColor: Colors[color][CONSTANT.TOOLS.LINE].highlightStrokeColor,
-            highlightFillColor: Colors[color][CONSTANT.TOOLS.LINE].highlightFillColor,
-            highlightFillOpacity: 1,
-            highlightStrokeOpacity: 1
-          });
-          element.inherits.forEach(point => {
-            point.setAttribute({
-              highlight: true,
-              highlightStrokeColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightStrokeColor,
-              highlightFillColor: Colors[color][CONSTANT.TOOLS.SEGMENTS_POINT].highlightFillColor,
-              highlightFillOpacity: 1,
-              highlightStrokeOpacity: 1
-            });
-          });
-          break;
-        default:
-          break;
       }
     });
   }
@@ -821,7 +570,7 @@ class Board {
   removeObject(obj) {
     if (typeof obj === "string") {
       this.$board.removeObject(obj);
-    } else if (obj.elType !== "point") {
+    } else if (obj.elType !== "point" && obj.elType !== "text") {
       obj.getParents().map(this.removeObject.bind(this));
       if (obj.elType === "curve") this.$board.removeObject(obj);
     } else {
@@ -864,6 +613,8 @@ class Board {
           return Sin.getConfig(e);
         case 97:
           return Parabola.getConfig(e);
+        case 99:
+          return Annotation.getConfig(e);
         default:
           throw new Error("Unknown element type:", e.name, e.type);
       }
@@ -1046,6 +797,9 @@ class Board {
         fillColor: "transparent",
         highlightFillColor: "transparent",
         highlightStrokeWidth: 1
+      },
+      [CONSTANT.TOOLS.ANNOTATION]: {
+        fixed: true
       }
     };
     this.bgElements.push(
@@ -1265,11 +1019,21 @@ class Board {
               el,
               objectCreator: attrs => {
                 const [name, points, props] = Point.parseConfig(el, this.getParameters(CONSTANT.TOOLS.POINT));
-                return this.createElement(name, points, {
+                const point = this.createElement(name, points, {
                   ...props,
                   ...attrs,
                   visible: true
                 });
+                point.on("up", () => {
+                  if (point.dragged) {
+                    this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+                  }
+                });
+                point.on("drag", () => {
+                  point.dragged = true;
+                  this.dragged = true;
+                });
+                return point;
               }
             })
           );
@@ -1278,8 +1042,8 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const line = this.createElement(
                   "line",
                   [
                     mixProps({
@@ -1295,7 +1059,10 @@ class Board {
                     ...Line.parseConfig(el.type),
                     ...attrs
                   }
-                )
+                );
+                handleSnap(line, Object.values(line.ancestors), this);
+                return line;
+              }
             })
           );
           break;
@@ -1303,8 +1070,8 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const circle = this.createElement(
                   "circle",
                   [
                     mixProps({
@@ -1320,7 +1087,10 @@ class Board {
                     ...Circle.parseConfig(),
                     ...attrs
                   }
-                )
+                );
+                handleSnap(circle, Object.values(circle.ancestors), this);
+                return circle;
+              }
             })
           );
           break;
@@ -1350,8 +1120,7 @@ class Board {
                     ...attrs
                   }
                 );
-
-                handleSnap(newLine, Object.values(newLine.ancestors));
+                handleSnap(newLine, Object.values(newLine.ancestors), this);
                 return newLine;
               }
             })
@@ -1361,8 +1130,8 @@ class Board {
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs =>
-                this.createElement(
+              objectCreator: attrs => {
+                const polygon = this.createElement(
                   "polygon",
                   el.points.map(pointEl =>
                     mixProps({
@@ -1374,7 +1143,10 @@ class Board {
                     ...Polygon.parseConfig(),
                     ...attrs
                   }
-                )
+                );
+                handleSnap(polygon, Object.values(polygon.ancestors), this);
+                return polygon;
+              }
             })
           );
           break;
@@ -1404,10 +1176,8 @@ class Board {
                     ...attrs
                   }
                 );
-
                 newLine.type = 90;
-                handleSnap(newLine, Object.values(newLine.ancestors));
-
+                handleSnap(newLine, Object.values(newLine.ancestors), this);
                 return newLine;
               }
             })
@@ -1436,7 +1206,7 @@ class Board {
                 };
                 newElem.type = 91;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1465,7 +1235,7 @@ class Board {
                 };
                 newElem.type = 92;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1494,7 +1264,7 @@ class Board {
                 };
                 newElem.type = 93;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1523,7 +1293,7 @@ class Board {
                 };
                 newElem.type = 94;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1549,7 +1319,7 @@ class Board {
                 newElem.type = 95;
                 newElem.addParents(points);
                 newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1578,7 +1348,7 @@ class Board {
                 };
                 newElem.type = 96;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1601,6 +1371,16 @@ class Board {
                   ...props,
                   ...attrs
                 });
+              }
+            })
+          );
+          break;
+        case 99:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => {
+                return Annotation.renderElement(this, el, { ...attrs });
               }
             })
           );
@@ -1728,7 +1508,7 @@ class Board {
                   }
                 );
 
-                handleSnap(newLine, Object.values(newLine.ancestors));
+                handleSnap(newLine, Object.values(newLine.ancestors), this);
                 return newLine;
               }
             })
@@ -1785,7 +1565,7 @@ class Board {
                 );
 
                 newLine.type = 90;
-                handleSnap(newLine, Object.values(newLine.ancestors));
+                handleSnap(newLine, Object.values(newLine.ancestors), this);
 
                 return newLine;
               }
@@ -1816,7 +1596,7 @@ class Board {
                 };
                 newElem.type = 91;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1846,7 +1626,7 @@ class Board {
                 };
                 newElem.type = 92;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1876,7 +1656,7 @@ class Board {
                 };
                 newElem.type = 93;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1906,7 +1686,7 @@ class Board {
                 };
                 newElem.type = 94;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1933,7 +1713,7 @@ class Board {
                 newElem.type = 95;
                 newElem.addParents(points);
                 newElem.ancestors = Polynom.flatConfigPoints(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })
@@ -1963,7 +1743,7 @@ class Board {
                 };
                 newElem.type = 96;
                 newElem.addParents(points);
-                handleSnap(newElem, Object.values(newElem.ancestors));
+                handleSnap(newElem, Object.values(newElem.ancestors), this);
                 return newElem;
               }
             })

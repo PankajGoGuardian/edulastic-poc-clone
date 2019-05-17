@@ -207,7 +207,7 @@ class SideMenu extends Component {
                     <MenuItem
                       key={index.toString()}
                       onClick={this.toggleMenu}
-                      visible={menu.label === "Manage District" && userRole !== "district-admin" ? false : true}
+                      visible={!(menu.label === "Manage District" && userRole !== "district-admin")}
                     >
                       <MenuIcon />
                       {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
@@ -396,6 +396,9 @@ const SideBar = styled(Layout.Sider)`
         fill: #434b5d;
       }
     }
+  }
+  @media print {
+    display: none;
   }
 `;
 

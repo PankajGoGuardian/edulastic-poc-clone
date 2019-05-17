@@ -22,6 +22,7 @@ import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
+import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 
 class Container extends Component {
@@ -59,8 +60,9 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { saveQuestion, modalItemId, onCompleteItemCreation } = this.props;
+    const { saveQuestion, modalItemId, onCompleteItemCreation, removeAnswers } = this.props;
     saveQuestion(modalItemId);
+    removeAnswers();
     onCompleteItemCreation();
   };
 
@@ -259,7 +261,8 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
       showAnswer: showAnswerAction,
-      changePreview: changePreviewAction
+      changePreview: changePreviewAction,
+      removeAnswers: removeUserAnswerAction
     }
   )
 );

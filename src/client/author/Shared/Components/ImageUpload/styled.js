@@ -35,13 +35,19 @@ export const StyledP = styled.p`
   font-size: 14px;
 `;
 
-export const StyledPP = styled.p`
-	color: #096dd9;
+export const StyledChangeLog = styled.p`
+  color: #096dd9;
+  text-align: center;
+  margin-top: 5px;
+  font-size: 14px;
+  cursor: pointer;
+`;
+
+export const StyledPRequired = styled.p`
 	text-align: center;
 	margin-top: 5px;
-	display: ${props => (props.isVisible ? "block" : "none")}
-	font-size: 10px;
-	cursor: pointer;
+	color: #f5222d
+	font-size: 14px;	
 `;
 
 export const StyledIcon = styled(Icon)`

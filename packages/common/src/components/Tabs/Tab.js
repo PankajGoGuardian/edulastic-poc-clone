@@ -4,7 +4,20 @@ import styled from "styled-components";
 import { newBlue, white, mobileWidth, tabGrey } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
-const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange, data_cy, type, borderRadius }) => {
+const Tab = ({
+  IconPosition,
+  label,
+  onClick,
+  active,
+  style,
+  editable,
+  close,
+  onClose,
+  onChange,
+  data_cy,
+  type,
+  borderRadius
+}) => {
   const inputTab = (
     <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
@@ -13,7 +26,7 @@ const Tab = ({ label, onClick, active, style, editable, close, onClose, onChange
   );
 
   const closeButton = (
-    <CloseIcon>
+    <CloseIcon IconPosition={IconPosition}>
       <IconClose color={active ? white : "#AAAFB5"} width={8} height={8} onClick={onClose} />
     </CloseIcon>
   );
@@ -39,6 +52,7 @@ Tab.propTypes = {
   onClose: PropTypes.func,
   data_cy: PropTypes.string,
   type: PropTypes.string,
+  IconPosition: PropTypes.string,
   borderRadius: PropTypes.bool
 };
 
@@ -113,4 +127,5 @@ const EditableTab = styled.div`
 
 const CloseIcon = styled.span`
   margin-left: 14px;
+  float: ${props => (props.IconPosition ? props.IconPosition : "none")};
 `;

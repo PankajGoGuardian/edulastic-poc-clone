@@ -12,7 +12,7 @@ export default props => {
   return (
     <>
       <FieldLabel label="Class Image" optional {...props} fiedlName="thumbnail" initialValue={thumbnail}>
-        <Uploader defaultImage={thumbnail} uploadTestImage={setThumbnail} />
+        <Uploader url={thumbnail} setThumbnailUrl={setThumbnail} />
       </FieldLabel>
       <FieldLabel label="Tags" optional {...props} fiedlName="tags" initialValue={[]}>
         <Select showSearch mode="multiple" placeholder="Select Tags">

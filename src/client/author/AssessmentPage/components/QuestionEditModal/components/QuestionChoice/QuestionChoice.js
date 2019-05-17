@@ -52,7 +52,10 @@ export default class QuestionChoice extends React.Component {
 
     const { onUpdate } = this.props;
 
-    const options = value.trim().split("");
+    const options = value
+      .trim()
+      .replace(/\s/g, "")
+      .split("");
 
     const data = {
       options: options.map((option, index) => ({

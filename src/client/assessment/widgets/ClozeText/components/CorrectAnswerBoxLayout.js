@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 
 // eslint-disable-next-line max-len
-const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, groupResponses }) => {
+const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, groupResponses, altAnswers }) => {
   let results;
   if (hasGroupResponses) {
     results = {};
@@ -13,6 +13,18 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
       results[userAnswer.group].push(userAnswer.data);
     });
   } else {
+    if (altAnswers && altAnswers.length > 0) {
+      userAnswers = userAnswers.map((ans, index) => {
+        const final = [ans];
+        for (let altAnswer of altAnswers) {
+          const { value } = altAnswer;
+          if (value[index] && value[index] !== "") {
+            final.push(value[index]);
+          }
+        }
+        return final;
+      });
+    }
     results = userAnswers;
   }
   return (
@@ -35,7 +47,7 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
               &nbsp;<span className="index">{index + 1}</span>
-              <span className="text">{result}</span>&nbsp;
+              <span className="text">{typeof result === "string" ? result : result.join(", ")}</span>&nbsp;
             </div>
           ))}
       </div>
@@ -47,7 +59,8 @@ CorrectAnswerBoxLayout.propTypes = {
   hasGroupResponses: PropTypes.bool,
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
-  groupResponses: PropTypes.array
+  groupResponses: PropTypes.array,
+  altAnswers: PropTypes.array
 };
 
 CorrectAnswerBoxLayout.defaultProps = {

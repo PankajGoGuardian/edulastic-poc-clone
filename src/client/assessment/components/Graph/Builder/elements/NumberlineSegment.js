@@ -94,7 +94,7 @@ const findAvailableSegmentDragPlace = (segmentCoords, segments, ticksDistance, d
 
 // Pass board, handling segment, ticksDistance, numberlineAxis
 // Check if there an element inside after segment dragging, then find closest available space and put segment there
-const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
+const handleSegmentDrag = (board, segment, axis) => {
   segment.on("up", () => {
     const segments = board.elements
       .filter(element => element.elType === "segment" || element.elType === "point")
@@ -135,6 +135,8 @@ const handleSegmentDrag = (board, segment, ticksDistance, axis) => {
         previousPointsPositions[index].position = segment.point2.X();
       }
     });
+
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
@@ -167,12 +169,14 @@ const handleStackedSegmentDrag = (segment, ticksDistance, axis, yPosition) => {
       segment.point1.setPosition(JXG.COORDS_BY_USER, [newCoords[0], yPosition]);
       segment.point2.setPosition(JXG.COORDS_BY_USER, [newCoords[1], yPosition]);
     }
+
+    // board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
 // Pass point, board, ticks distance of numberline axis, parent segment of point, numberline axis
 // Function check if there an element inside of vector after dragging and if yes then find closest available space and put point there
-const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis, ticks) => {
+const handleSegmentPointDrag = (point, board, segment, axis, ticks) => {
   point.on("drag", () => {
     const currentPosition = point.X();
 
@@ -195,9 +199,12 @@ const handleSegmentPointDrag = (point, board, ticksDistance, segment, axis, tick
     point.setPosition(JXG.COORDS_BY_USER, [newXCoord, 0]);
     previousPointsPositions[prevPosIndex].position = newXCoord;
   });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+  });
 };
 
-const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
+const handleStackedSegmentPointDrag = (point, axis, yPosition, board) => {
   point.on("drag", () => {
     const currentPosition = point.X();
 
@@ -209,6 +216,9 @@ const handleStackedSegmentPointDrag = (point, axis, yPosition) => {
     } else if (currentPosition < xMin) {
       point.setPosition(JXG.COORDS_BY_USER, [xMin, yPosition]);
     }
+  });
+  point.on("up", () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
   });
 };
 
@@ -254,10 +264,19 @@ const checkForSegmentRenderPosition = (axis, coord, nextTick) => {
 // Draw segment point with proper settings
 const drawPoint = (board, coord, nextTick, point, fixed, colors, yPosition) => {
   const styles = point ? { ...Colors.default[CONSTANT.TOOLS.POINT] } : { ...Colors.special[CONSTANT.TOOLS.POINT] };
+  const highlightPointType = point ? CONSTANT.TOOLS.POINT : CONSTANT.TOOLS.SEGMENTS_POINT;
 
   return board.$board.create("point", [nextTick || coord, yPosition || 0], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...styles,
+    highlightStrokeColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][highlightPointType].highlightStrokeColor
+        : Colors["default"][highlightPointType].highlightStrokeColor,
+    highlightFillColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][highlightPointType].highlightFillColor
+        : Colors["default"][highlightPointType].highlightFillColor,
     ...colors,
     fixed,
     snapToGrid: false
@@ -274,6 +293,14 @@ const drawLine = (board, firstPoint, secondPoint, colors) =>
     straightlast: false,
     snapToGrid: false,
     ...Colors.default[CONSTANT.TOOLS.LINE],
+    highlightStrokeColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightStrokeColor
+        : Colors["default"][CONSTANT.TOOLS.LINE].highlightStrokeColor,
+    highlightFillColor: () =>
+      board.currentTool === CONSTANT.TOOLS.TRASH
+        ? Colors["red"][CONSTANT.TOOLS.LINE].highlightFillColor
+        : Colors["default"][CONSTANT.TOOLS.LINE].highlightFillColor,
     ...colors
   });
 
@@ -294,9 +321,9 @@ const loadSegment = (board, element, leftIncluded, rightIncluded, segmentType, s
       { id: secondPoint.id, position: secondPoint.X() }
     );
 
-    handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, board.numberlineAxis, ticks);
-    handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, board.numberlineAxis, ticks);
-    handleSegmentDrag(board, segment, ticksDistance, board.numberlineAxis);
+    handleSegmentPointDrag(firstPoint, board, segment, board.numberlineAxis, ticks);
+    handleSegmentPointDrag(secondPoint, board, segment, board.numberlineAxis, ticks);
+    handleSegmentDrag(board, segment, board.numberlineAxis);
 
     return segment;
   } else {
@@ -324,8 +351,8 @@ const loadSegment = (board, element, leftIncluded, rightIncluded, segmentType, s
 
     board.$board.on("drag", () => handleStackedSegmentDrag(segment, ticksDistance, board.numberlineAxis, element.y));
 
-    handleStackedSegmentPointDrag(firstPoint, board.numberlineAxis, element.y);
-    handleStackedSegmentPointDrag(secondPoint, board.numberlineAxis, element.y);
+    handleStackedSegmentPointDrag(firstPoint, board.numberlineAxis, element.y, board);
+    handleStackedSegmentPointDrag(secondPoint, board.numberlineAxis, element.y, board);
 
     return segment;
   }
@@ -362,9 +389,9 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
         { id: secondPoint.id, position: secondPoint.X() }
       );
 
-      handleSegmentPointDrag(firstPoint, board, ticksDistance, segment, board.numberlineAxis, ticks);
-      handleSegmentPointDrag(secondPoint, board, ticksDistance, segment, board.numberlineAxis, ticks);
-      handleSegmentDrag(board, segment, ticksDistance, board.numberlineAxis);
+      handleSegmentPointDrag(firstPoint, board, segment, board.numberlineAxis, ticks);
+      handleSegmentPointDrag(secondPoint, board, segment, board.numberlineAxis, ticks);
+      handleSegmentDrag(board, segment, board.numberlineAxis);
 
       return segment;
     }
@@ -389,8 +416,8 @@ const drawSegment = (board, coord, leftIncluded, rightIncluded, segmentType, sta
       handleStackedSegmentDrag(segment, ticksDistance, board.numberlineAxis, calcedYPosition)
     );
 
-    handleStackedSegmentPointDrag(firstPoint, board.numberlineAxis, calcedYPosition);
-    handleStackedSegmentPointDrag(secondPoint, board.numberlineAxis, calcedYPosition);
+    handleStackedSegmentPointDrag(firstPoint, board.numberlineAxis, calcedYPosition, board);
+    handleStackedSegmentPointDrag(secondPoint, board.numberlineAxis, calcedYPosition, board);
 
     return segment;
   }

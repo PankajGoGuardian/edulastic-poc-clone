@@ -122,14 +122,8 @@ export const StyledAnchor = styled.div`
     font-size: 0.6em;
   }
   :hover {
-    color: ${props => (props.isActive ? "#0288d1" : "#e5e5e5")};
+    color: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
     background-color: ${props => (props.isActive ? "#277DF1" : "#5196F3")};
-    a {
-      color: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
-      svg {
-        fill: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
-      }
-    }
   }
   a {
     color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};

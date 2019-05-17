@@ -91,15 +91,27 @@ const QuillInput = (element, board) => ({
     }
 
     if (text.length === 0 && !element.labelHTML) {
-      element.label.setAttribute({ visible: false });
+      if (element.type === 99) {
+        board.$board.removeObject(element);
+      } else {
+        element.label.setAttribute({ visible: false });
+      }
       return;
     }
 
     if (text.length === 0) {
-      element.label.setAttribute({ visible: false });
-      element.labelHTML = null;
+      if (element.type === 99) {
+        board.elements = board.elements.filter(el => el.id !== element.id);
+        board.$board.removeObject(element);
+      } else {
+        element.label.setAttribute({ visible: false });
+        element.labelHTML = null;
+      }
     } else {
       element.labelHTML = html;
+      if (element.type === 99 && board.elements.findIndex(el => el.id === element.id) === -1) {
+        board.elements.push(element);
+      }
     }
 
     board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_UPDATE);

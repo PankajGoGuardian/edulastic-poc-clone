@@ -11,7 +11,7 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 const { allGrades, allSubjects } = selectsData;
 
 const startDate = moment();
-const endDate = moment().add("years", 1);
+const endDate = moment().add(1, "years");
 
 // eslint-disable-next-line max-len
 const RightFields = ({
@@ -148,7 +148,7 @@ RightFields.propTypes = {
       subject: PropTypes.string.isRequired
     })
   ).isRequired,
-  defaultSchool: PropTypes.oneOfType([PropTypes.string, PropTypes.array]).isRequired,
+  defaultSchool: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   courseList: PropTypes.array.isRequired,
   schoolList: PropTypes.array,
   searchCourse: PropTypes.func.isRequired,
@@ -157,7 +157,8 @@ RightFields.propTypes = {
 };
 
 RightFields.defaultProps = {
-  schoolList: []
+  schoolList: [],
+  defaultSchool: null
 };
 
 export default RightFields;

@@ -1,8 +1,8 @@
 /// <reference Types="Cypress"/>
 
 import loginPage from "../../framework/student/loginPage";
-import AuthorAssignmentPage from "../../framework/author/AuthorAssignmentPage";
-import LiveClassboardPage from "../../framework/author/LiveClassboardPage";
+import AuthorAssignmentPage from "../../framework/author/assignments/AuthorAssignmentPage";
+import LiveClassboardPage from "../../framework/author/assignments/LiveClassboardPage";
 import FileHelper from "../../framework/util/fileHelper";
 
 const login = new loginPage();

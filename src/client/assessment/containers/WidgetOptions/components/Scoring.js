@@ -8,7 +8,7 @@ import { Input, Checkbox, Select } from "antd";
 import styled from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { rounding, evaluationType } from "@edulastic/constants";
+import { rounding, evaluationType, nonAutoGradableTypes } from "@edulastic/constants";
 import { getQuestionDataSelector, setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -73,28 +73,30 @@ class Scoring extends Component {
       setQuestionData(newData);
     };
 
-    const automarkable = get(questionData, "validation.automarkable", false);
+    const isAutomarkChecked = get(questionData, "validation.automarkable", false);
     const maxScore = get(questionData, "validation.max_score", 0);
-
+    const questionType = get(questionData, "type", "");
+    const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
     return (
       <Widget>
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
         {!isSection && <Subtitle>{t("component.options.scoring")}</Subtitle>}
+        {isAutoMarkBtnVisible && (
+          <Row>
+            <Col md={12}>
+              <Checkbox
+                data-cy="autoscoreChk"
+                checked={isAutomarkChecked}
+                onChange={e => handleChangeValidation("automarkable", e.target.checked)}
+                size="large"
+              >
+                {t("component.options.automarkable")}
+              </Checkbox>
+            </Col>
+          </Row>
+        )}
 
-        <Row>
-          <Col md={12}>
-            <Checkbox
-              data-cy="autoscoreChk"
-              checked={automarkable}
-              onChange={e => handleChangeValidation("automarkable", e.target.checked)}
-              size="large"
-            >
-              {t("component.options.automarkable")}
-            </Checkbox>
-          </Col>
-        </Row>
-
-        {automarkable && (
+        {isAutomarkChecked && (
           <Row gutter={60}>
             <Col md={12}>
               <Checkbox
@@ -121,7 +123,7 @@ class Scoring extends Component {
             </Col>
           </Row>
         )}
-        {automarkable && (
+        {isAutomarkChecked && (
           <Row gutter={60}>
             <Col md={12}>
               <Checkbox
@@ -149,7 +151,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {automarkable && !showSelect && (
+        {isAutomarkChecked && !showSelect && (
           <Row gutter={60}>
             <Col md={12}>
               <FormGroup>
@@ -168,7 +170,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {automarkable && showSelect && (
+        {isAutomarkChecked && showSelect && (
           <Row gutter={60}>
             <Col md={24} style={{ margin: 0 }}>
               <Label>{t("component.options.scoringType")}</Label>
@@ -222,7 +224,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {!automarkable && (
+        {!isAutomarkChecked && (
           <Row gutter={60}>
             <Col md={12}>
               <FormGroup>

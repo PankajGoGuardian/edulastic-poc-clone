@@ -10,6 +10,6 @@ export const Label = styled.label`
   text-align: left;
   color: ${props => props.theme.widgetOptions.labelColor};
   margin-bottom: 10px;
-  display: block;
+  display: ${props => (props.display ? props.display : "block")};
   text-transform: uppercase;
 `;

@@ -42,7 +42,7 @@ function onHandler() {
         label: getLabelParameters(jxgType)
       });
       newLine.type = jxgType;
-      handleSnap(newLine, points);
+      handleSnap(newLine, points, board);
 
       if (newLine) {
         newLine.addParents(points);

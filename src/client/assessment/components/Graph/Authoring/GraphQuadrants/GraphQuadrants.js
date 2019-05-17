@@ -5,10 +5,14 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
 import { QuestionSection } from "..";
-import { Subtitle, StyledTextField, Label, Row, Col } from "../../common/styled_components";
+import { StyledTextField } from "../../common/styled_components";
 import GraphToolsParams from "../../components/GraphToolsParams";
 import { setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../../QuestionTextArea";
+import { Row } from "../../../../styled/WidgetOptions/Row";
+import { Col } from "../../../../styled/WidgetOptions/Col";
+import { Label } from "../../../../styled/WidgetOptions/Label";
+import { Subtitle } from "../../../../styled/Subtitle";
 
 class GraphQuadrants extends Component {
   onChangeQuestion = stimulus => {
@@ -86,10 +90,10 @@ class GraphQuadrants extends Component {
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
-          <PaddingDiv top={4} bottom={8}>
+          <PaddingDiv>
             <Subtitle>{t("component.graphing.graphparameters")}</Subtitle>
-            <Row>
-              <Col paddingRight="2.5em" md={6}>
+            <Row gutter={60}>
+              <Col md={12}>
                 <Label>X min</Label>
                 <StyledTextField
                   width="100%"
@@ -138,40 +142,36 @@ class GraphQuadrants extends Component {
                   step={0.1}
                 />
               </Col>
-              <Col paddingLeft="2.5em" md={6}>
-                <div>
-                  <Label>Y min</Label>
-                  <StyledTextField
-                    width="100%"
-                    type="number"
-                    name="y_min"
-                    value={canvas.y_min}
-                    onChange={this.handleCanvasChange}
-                    onBlur={event => this.handleCanvasBlur(event, -10)}
-                    disabled={false}
-                    step={0.1}
-                  />
-                </div>
-                <div>
-                  <Label>Y max</Label>
-                  <StyledTextField
-                    marginBottom="0"
-                    width="100%"
-                    type="number"
-                    name="y_max"
-                    value={canvas.y_max}
-                    onChange={this.handleCanvasChange}
-                    onBlur={event => this.handleCanvasBlur(event, 10)}
-                    disabled={false}
-                    step={0.1}
-                  />
-                </div>
+              <Col md={12}>
+                <Label>Y min</Label>
+                <StyledTextField
+                  width="100%"
+                  type="number"
+                  name="y_min"
+                  value={canvas.y_min}
+                  onChange={this.handleCanvasChange}
+                  onBlur={event => this.handleCanvasBlur(event, -10)}
+                  disabled={false}
+                  step={0.1}
+                />
+                <Label>Y max</Label>
+                <StyledTextField
+                  marginBottom="0"
+                  width="100%"
+                  type="number"
+                  name="y_max"
+                  value={canvas.y_max}
+                  onChange={this.handleCanvasChange}
+                  onBlur={event => this.handleCanvasBlur(event, 10)}
+                  disabled={false}
+                  step={0.1}
+                />
               </Col>
             </Row>
           </PaddingDiv>
         </QuestionSection>
         <QuestionSection section="main" label="TOOLS" cleanSections={cleanSections} fillSections={fillSections}>
-          <PaddingDiv bottom={4}>
+          <PaddingDiv>
             <Subtitle>{t("component.graphing.tools")}</Subtitle>
             <GraphToolsParams
               options={this.getToolOptions()}

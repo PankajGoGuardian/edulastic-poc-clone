@@ -10,6 +10,11 @@ const RECEIVE_DISTRICT_PROFILE_ERROR = "[districtProfile] receive data error";
 const UPDATE_DISTRICT_PROFILE_REQUEST = "[districtProfile] update data request";
 const UPDATE_DISTRICT_PROFILE_SUCCESS = "[districtProfile] update data success";
 const UPDATE_DISTRICT_PROFILE_ERROR = "[districtProfile] update data error";
+const CREATE_DISTRICT_PROFILE_REQUEST = "[districtProfile] create data request";
+const CREATE_DISTRICT_PROFILE_SUCCESS = "[districtProfile] create data success";
+const CREATE_DISTRICT_PROFILE_ERROR = "[districtProfile] create data error";
+
+const SET_DISTRICT_PROFILE_VALUE = "[districtProfile] set dat value";
 
 export const receiveDistrictProfileAction = createAction(RECEIVE_DISTRICT_PROFILE_REQUEST);
 export const receiveDistrictProfileSuccessAction = createAction(RECEIVE_DISTRICT_PROFILE_SUCCESS);
@@ -17,13 +22,20 @@ export const receiveDistrictProfileErrorAction = createAction(RECEIVE_DISTRICT_P
 export const updateDistrictProfileAction = createAction(UPDATE_DISTRICT_PROFILE_REQUEST);
 export const updateDistrictProfileSuccessAction = createAction(UPDATE_DISTRICT_PROFILE_SUCCESS);
 export const updateDistrictProfileErrorAction = createAction(UPDATE_DISTRICT_PROFILE_ERROR);
+export const createDistrictProfileAction = createAction(CREATE_DISTRICT_PROFILE_REQUEST);
+export const createDistrictProfileSuccessAction = createAction(CREATE_DISTRICT_PROFILE_SUCCESS);
+export const createDistrictProfileErrorAction = createAction(CREATE_DISTRICT_PROFILE_ERROR);
+
+export const setDistrictValueAction = createAction(SET_DISTRICT_PROFILE_VALUE);
 
 const initialState = {
   data: {},
   error: null,
   loading: false,
   updating: false,
-  updateError: null
+  updateError: null,
+  creating: false,
+  createError: null
 };
 
 export const reducer = createReducer(initialState, {
@@ -48,6 +60,20 @@ export const reducer = createReducer(initialState, {
   [UPDATE_DISTRICT_PROFILE_ERROR]: state => {
     state.updating = false;
     state.updateError = payload.error;
+  },
+  [SET_DISTRICT_PROFILE_VALUE]: (state, { payload }) => {
+    state.data = { ...payload };
+  },
+  [CREATE_DISTRICT_PROFILE_REQUEST]: state => {
+    state.creating = true;
+  },
+  [CREATE_DISTRICT_PROFILE_SUCCESS]: (state, { payload }) => {
+    state.creating = false;
+    state.data = payload;
+  },
+  [CREATE_DISTRICT_PROFILE_ERROR]: (state, { payload }) => {
+    state.creating = false;
+    state.createError = payload.error;
   }
 });
 
@@ -64,7 +90,7 @@ function* receiveDistrictProfileSaga({ payload }) {
 
 function* updateDictrictProfileSaga({ payload }) {
   try {
-    const updateDistrictProfile = yield call(settingsApi.updateDistrictProfie, payload);
+    const updateDistrictProfile = yield call(settingsApi.updateDistrictProfile, payload);
     yield put(updateDistrictProfileSuccessAction(updateDistrictProfile));
   } catch (err) {
     const errorMessage = "Update District Profile is failing";
@@ -73,7 +99,19 @@ function* updateDictrictProfileSaga({ payload }) {
   }
 }
 
+function* createDictrictProfileSaga({ payload }) {
+  try {
+    const createdDistrictProfile = yield call(settingsApi.createDistrictProfile, payload);
+    yield put(createDistrictProfileSuccessAction(createdDistrictProfile));
+  } catch (err) {
+    const errorMessage = "Update District Profile is failing";
+    yield call(message.error, errorMessage);
+    yield put(createDistrictProfileErrorAction({ error: errorMessage }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_DISTRICT_PROFILE_REQUEST, receiveDistrictProfileSaga)]);
   yield all([yield takeEvery(UPDATE_DISTRICT_PROFILE_REQUEST, updateDictrictProfileSaga)]);
+  yield all([yield takeEvery(CREATE_DISTRICT_PROFILE_REQUEST, createDictrictProfileSaga)]);
 }

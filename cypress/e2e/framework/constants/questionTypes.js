@@ -18,6 +18,18 @@ export const questionTypeKey = {
   CHOICE_MATRIX_LABEL: "CHOICE_LABEL"
 };
 
+export const attemptTypes = {
+  RIGHT: "right",
+  WRONG: "wrong",
+  SKIP: "skip"
+};
+
+export const queColor = {
+  RIGHT: "rgb(94, 181, 0)",
+  WRONG: "rgb(243, 95, 95)",
+  SKIP: "rgb(229, 229, 229)"
+};
+
 export const questionGroup = {
   MCQ: "Multiple Choice"
 };

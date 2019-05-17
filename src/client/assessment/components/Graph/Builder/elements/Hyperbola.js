@@ -22,7 +22,7 @@ function onHandler() {
         label: getLabelParameters(jxgType)
       });
       newLine.type = jxgType;
-      handleSnap(newLine, points.filter(point => point.elType === "point"));
+      handleSnap(newLine, points.filter(point => point.elType === "point"), board);
       if (newLine) {
         points = [];
         return newLine;

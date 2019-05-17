@@ -14,9 +14,37 @@ class EditableLabel extends React.Component {
     };
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      value: nextProps.value
+    };
+  }
+
+  setRequiredStatus = () => {
+    const { value } = this.state;
+    const { requiredStatus, valueName } = this.props;
+    if (value.length == 0 && requiredStatus) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `Plasse input your ${valueName}`,
+        editing: true
+      });
+    }
+  };
+
   onInputBlur = () => {
     const { value, validateStatus } = this.state;
+    const { requiredStatus } = this.props;
+
     if (validateStatus === "error") return;
+    if (value.length == 0 && requiredStatus) {
+      this.setState({
+        validateStatus: "error",
+        validateMsg: `Plasse input your ${valueName}`
+      });
+      return;
+    }
+
     this.setState({
       editing: false,
       value: value.toString().trim()
@@ -26,7 +54,7 @@ class EditableLabel extends React.Component {
   };
 
   handleChange = e => {
-    const { valueName, maxLength, requiredStatus } = this.props;
+    const { valueName, maxLength, requiredStatus, type } = this.props;
     let validateStatus = "success";
     let validateMsg = "";
 
@@ -37,7 +65,15 @@ class EditableLabel extends React.Component {
 
     if (e.target.value.length > maxLength) {
       validateStatus = "error";
-      validateMsg = `${valueName} should be less than ${maxLength}.`;
+      validateMsg = `${valueName} should be less than ${maxLength}`;
+    }
+
+    if (type === "number") {
+      var isnum = /^\d+$/.test(e.target.value);
+      if (!isnum) {
+        validateStatus = "error";
+        validateMsg = "Please input number";
+      }
     }
 
     this.setState({
@@ -45,6 +81,8 @@ class EditableLabel extends React.Component {
       validateStatus,
       validateMsg
     });
+
+    this.props.setProfileValue(valueName, e.target.value.toString().trim());
   };
 
   onClickLabel = () => {

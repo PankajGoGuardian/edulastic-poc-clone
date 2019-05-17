@@ -324,13 +324,15 @@ class GraphContainer extends PureComponent {
         xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
         xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
         xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
+        xAxesParameters.showAxis !== prevProps.xAxesParameters.showAxis ||
         yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
         yAxesParameters.name !== prevProps.yAxesParameters.name ||
         yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
         yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
         yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
         yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
-        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel
+        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
+        yAxesParameters.showAxis !== prevProps.yAxesParameters.showAxis
       ) {
         this._graph.setAxesParameters({
           x: {
@@ -348,7 +350,11 @@ class GraphContainer extends PureComponent {
         this._graph.resizeContainer(layout.width, layout.height);
       }
 
-      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
+      if (
+        gridParams.gridY !== prevProps.gridParams.gridY ||
+        gridParams.gridX !== prevProps.gridParams.gridX ||
+        gridParams.showGrid !== prevProps.gridParams.showGrid
+      ) {
         this._graph.setGridParameters({
           ...defaultGridParameters(),
           ...gridParams
@@ -578,7 +584,8 @@ class GraphContainer extends PureComponent {
         };
 
         return <IconLabel {...newOptions} />;
-      }
+      },
+      annotation: () => "annotation"
     };
 
     return iconsByToolName[toolName]();
@@ -601,7 +608,8 @@ class GraphContainer extends PureComponent {
     "hyperbola",
     "polygon",
     "parabola",
-    "label"
+    "label",
+    "annotation"
   ];
 
   allControls = ["undo", "redo", "reset", "delete"];

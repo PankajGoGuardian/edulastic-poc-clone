@@ -10,7 +10,6 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
@@ -173,7 +172,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, theme } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -185,8 +184,7 @@ class ComposeQuestion extends Component {
       headers: {
         "X-Requested-With": null,
         authorization: TokenStorage.getAccessToken()
-      },
-      className: "drag-full-parent"
+      }
     };
 
     return (
@@ -322,15 +320,15 @@ class ComposeQuestion extends Component {
                   </Checkbox>
                 </CheckContainer>
                 {item.imageUrl && (
-                  <EduButton
-                    type="primary"
-                    style={{ marginTop: 20, marginBottom: 20 }}
-                    onClick={() => {
-                      setQuestionData({ ...item, imageUrl: "" });
-                    }}
+                  <Dragger
+                    className="super-dragger"
+                    {...draggerProps}
+                    style={{ padding: 0 }}
+                    onChange={this.handleImageUpload}
+                    showUploadList={false}
                   >
-                    {t("component.cloze.imageText.deleteImageButtonText")}
-                  </EduButton>
+                    <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                  </Dragger>
                 )}
               </ImageFlexView>
             </FlexContainer>

@@ -30,4 +30,9 @@ const Container = styled.div`
   border-radius: 10px;
   background-color: ${dashBorderColor};
   flex-grow: 1;
+  img {
+    max-height: 120px;
+    z-index: 100;
+    position: relative;
+  }
 `;

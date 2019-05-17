@@ -4,7 +4,7 @@ import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { isEmpty, find, get } from "lodash";
-import { Form, Divider } from "antd";
+import { Form, Divider, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
@@ -37,13 +37,18 @@ class ClassCreate extends React.Component {
     userOrgData: PropTypes.object.isRequired,
     createClass: PropTypes.func.isRequired,
     searchCourseList: PropTypes.func.isRequired,
+    creating: PropTypes.bool.isRequired,
     isSearching: PropTypes.bool.isRequired,
+    error: PropTypes.any,
     courseList: PropTypes.array.isRequired,
-    cancelCreate: PropTypes.func
+    changeView: PropTypes.func
   };
 
+  state = {};
+
   static defaultProps = {
-    cancelCreate: () => null
+    changeView: () => null,
+    error: null
   };
 
   componentDidMount() {
@@ -51,6 +56,12 @@ class ClassCreate extends React.Component {
 
     if (isEmpty(curriculums)) {
       getCurriculums();
+    }
+  }
+
+  componentDidUpdate({ creating, changeView, error }, { submitted }) {
+    if (!creating && submitted && isEmpty(error)) {
+      changeView("details");
     }
   }
 
@@ -78,52 +89,66 @@ class ClassCreate extends React.Component {
         values.owners = [userId];
 
         values.standardSets = updatedStandardsSets;
-        values.endDate = moment(endDate).format("X");
+        values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
 
+        // eslint-disable-next-line react/no-unused-state
+        this.setState({ submitted: true });
         createClass(values);
       }
     });
   };
 
   searchCourse = keyword => {
-    console.log(keyword);
     if (keyword) {
       const { searchCourseList, userOrgData } = this.props;
       const { districtId } = userOrgData;
-      searchCourseList({ searchText: keyword, districtId });
+      const serachTerms = {
+        districtId,
+        search: {
+          name: { type: "cont", value: keyword },
+          number: { type: "cont", value: keyword }
+        },
+        status: 1,
+        page: 0,
+        limit: 50
+      };
+      searchCourseList(serachTerms);
     }
   };
 
   render() {
-    const { curriculums, form, courseList, userOrgData, cancelCreate, isSearching } = this.props;
-    const { getFieldDecorator } = form;
+    const { curriculums, form, courseList, userOrgData, changeView, isSearching, creating } = this.props;
+    const { getFieldDecorator, getFieldValue } = form;
     const { defaultSchool, schools } = userOrgData;
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={cancelCreate} />
-        <Container>
-          <Divider orientation="left">
-            <FormTitle>Class Details</FormTitle>
-          </Divider>
-          <FlexContainer alignItems="baseline">
-            <LeftContainer>
-              <LeftFields getFieldDecorator={getFieldDecorator} />
-            </LeftContainer>
-            <RightContainer>
-              <RightFields
-                curriculums={curriculums}
-                getFieldDecorator={getFieldDecorator}
-                defaultSchool={defaultSchool}
-                courseList={courseList}
-                schoolList={schools}
-                searchCourse={this.searchCourse}
-                isSearching={isSearching}
-              />
-            </RightContainer>
-          </FlexContainer>
-        </Container>
+        <Header onCancel={() => changeView("list")} />
+        <Spin spinning={creating}>
+          <Container>
+            <Divider orientation="left">
+              <FormTitle>Class Details</FormTitle>
+            </Divider>
+            <FlexContainer alignItems="baseline">
+              <LeftContainer>
+                <LeftFields getFieldDecorator={getFieldDecorator} getFieldValue={getFieldValue} />
+              </LeftContainer>
+              <RightContainer>
+                <RightFields
+                  curriculums={curriculums}
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  schoolsData={defaultSchool}
+                  courseList={courseList}
+                  schoolList={schools}
+                  searchCourse={this.searchCourse}
+                  isSearching={isSearching}
+                />
+              </RightContainer>
+            </FlexContainer>
+          </Container>
+        </Spin>
       </Form>
     );
   }
@@ -139,7 +164,9 @@ const enhance = compose(
       courseList: get(state, "coursesReducer.searchResult"),
       isSearching: get(state, "coursesReducer.searching"),
       userOrgData: getUserOrgData(state),
-      userId: get(state, "user.user._id")
+      userId: get(state, "user.user._id"),
+      creating: get(state, "manageClass.creating"),
+      error: get(state, "manageClass.error")
     }),
     {
       getCurriculums: getDictCurriculumsAction,

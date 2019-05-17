@@ -5,6 +5,7 @@ import produce from "immer";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
+import { cloneDeep } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { CustomQuillComponent } from "@edulastic/common";
@@ -42,8 +43,9 @@ class Template extends Component {
 
     const _reduceResponseButtons = (responseIndexes = [], value) =>
       responseIndexes.map(nextIndex => {
+        const newArray = [initialMethod];
         const response = value.find((_, i) => nextIndex === i + 1);
-        return response || [];
+        return response || cloneDeep(newArray);
       });
 
     const _updateTemplate = (val, responseIndexes) => {

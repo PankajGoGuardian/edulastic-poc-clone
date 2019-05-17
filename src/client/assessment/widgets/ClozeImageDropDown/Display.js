@@ -102,7 +102,11 @@ class Display extends Component {
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize}>
         <StyledPreviewContainer smallSize={smallSize} width={calculateRatio(imagescale, fontsize, imageWidth)}>
-          <StyledPreviewImage src={imageUrl || ""} alt={imageAlterText} />
+          <StyledPreviewImage
+            src={imageUrl || ""}
+            width={calculateRatio(imagescale, fontsize, imageWidth)}
+            alt={imageAlterText}
+          />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
               const dropTargetIndex = index;

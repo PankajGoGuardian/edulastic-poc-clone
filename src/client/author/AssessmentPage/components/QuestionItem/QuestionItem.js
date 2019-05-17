@@ -177,7 +177,7 @@ class QuestionItem extends React.Component {
     const review = viewMode === "review";
 
     return (
-      <QuestionItemWrapper centered={centered} highlighted={highlighted}>
+      <QuestionItemWrapper id={id} centered={centered} highlighted={highlighted}>
         <AnswerForm>
           <Draggable
             type="question"

@@ -7,10 +7,11 @@ const elWeight = {
   ellipse: 4,
   hyperbola: 5,
   line: 6,
-  curve: 7
+  parabola: 7,
+  curve: 8
 };
 
-const allowElements = ["polygon", "point", "circle", "ellipse", "hyperbola", "line", "curve"];
+const allowElements = ["polygon", "point", "circle", "ellipse", "hyperbola", "line", "parabola", "curve"];
 
 function onHandler() {
   return board => {

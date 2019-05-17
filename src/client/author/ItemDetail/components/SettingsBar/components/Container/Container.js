@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactOutsideEvent from "react-outside-event";
 
 import { title } from "@edulastic/colors";
 import { Button, Checkbox } from "@edulastic/common";
@@ -76,6 +77,14 @@ class Container extends Component {
     onApply(object);
   };
 
+  onOutsideEvent = event => {
+    const { onCancel } = this.props;
+
+    if (event.type === "mousedown") {
+      onCancel();
+    }
+  };
+
   render() {
     const {
       onCancel,
@@ -137,4 +146,4 @@ class Container extends Component {
   }
 }
 
-export default withNamespaces(["default", "author"])(Container);
+export default withNamespaces(["default", "author"])(ReactOutsideEvent(Container, ["mousedown"]));

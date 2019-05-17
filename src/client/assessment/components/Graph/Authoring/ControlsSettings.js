@@ -4,17 +4,10 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Button } from "@edulastic/common";
 import { Select } from "antd";
-import {
-  MoreOptionsContainer,
-  MoreOptionsRow,
-  MoreOptionsSubHeading,
-  Row,
-  Col,
-  SelectWrapper,
-  GraphToolsParamsWrapper,
-  AddToolBtnWrapper,
-  ToolSelect
-} from "../common/styled_components";
+import { Row } from "../../../styled/WidgetOptions/Row";
+import { Col } from "../../../styled/WidgetOptions/Col";
+import { Subtitle } from "../../../styled/Subtitle";
+import { SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
 
 class ControlsSettings extends Component {
@@ -29,7 +22,10 @@ class ControlsSettings extends Component {
     const { controlbar, onChange } = this.props;
     const newTools = [...controlbar.controls];
     const areToolsArray = Array.isArray(controlbar.controls[groupIndex]);
-    const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
+    // const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
+    const defaultOption = this.controls.filter(
+      (control, index) => !controlbar.controls.some(elem => elem === control.value)
+    )[0].value;
 
     if (controlbar.controls.length <= 3) {
       if (groupIndex !== undefined && areToolsArray) {
@@ -101,16 +97,19 @@ class ControlsSettings extends Component {
   renderSingleToolsInDefaultGroup = () => {
     const { controlbar } = this.props;
     const countOfSingleTools = controlbar.controls.filter(t => !Array.isArray(t)).length;
+    const filteredTools = this.controls.filter(
+      (control, index) => !controlbar.controls.some(elem => elem === control.value)
+    );
 
     return (
-      <Col paddingRight="2.5em" md={6} marginBottom={20}>
+      <Col md={12}>
         {controlbar.controls.map((tool, i) =>
           !Array.isArray(tool) ? (
             <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
               <ToolSelect>
                 <Tool
                   value={tool}
-                  options={this.controls}
+                  options={filteredTools}
                   selectWidth="100%"
                   index={i}
                   countOfSingleTools={countOfSingleTools}
@@ -122,30 +121,22 @@ class ControlsSettings extends Component {
           ) : null
         )}
 
-        <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>
+        {countOfSingleTools < 4 && <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>}
       </Col>
     );
   };
 
   render() {
-    const { t } = this.props;
-
     return (
       <Fragment>
-        <MoreOptionsContainer>
-          <MoreOptionsSubHeading>Controls</MoreOptionsSubHeading>
-
-          <MoreOptionsRow>
-            <GraphToolsParamsWrapper>{this.renderSingleToolsInDefaultGroup()}</GraphToolsParamsWrapper>
-          </MoreOptionsRow>
-        </MoreOptionsContainer>
+        <Subtitle>Controls</Subtitle>
+        <Row gutter={60}>{this.renderSingleToolsInDefaultGroup()}</Row>
       </Fragment>
     );
   }
 }
 
 ControlsSettings.propTypes = {
-  t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   controlbar: PropTypes.object.isRequired
 };
@@ -155,20 +146,7 @@ const enhance = compose(withNamespaces("assessment"));
 export default enhance(ControlsSettings);
 
 const Tool = props => {
-  const {
-    // countOfSingleTools,
-    options,
-    // isGroup,
-    groupIndex,
-    value,
-    onChange,
-    selectWidth,
-    index,
-    onDelete,
-    deleteToolStyles
-  } = props;
-
-  // const isNeedToShowDeleteButton = () => countOfSingleTools > 1 || isGroup;
+  const { options, groupIndex, value, onChange, selectWidth, index, onDelete, deleteToolStyles } = props;
 
   const onSelectChange = val => {
     onChange(index, val, groupIndex);
@@ -191,23 +169,19 @@ const Tool = props => {
           ))}
         </Select>
 
-        {/* {isNeedToShowDeleteButton() && ( */}
         <DeleteButton
           onDelete={() => {
             onDelete(index, groupIndex);
           }}
           deleteToolStyles={deleteToolStyles}
         />
-        {/* )} */}
       </SelectWrapper>
     </React.Fragment>
   );
 };
 
 Tool.propTypes = {
-  // countOfSingleTools: PropTypes.number.isRequired,
   options: PropTypes.array.isRequired,
-  // isGroup: PropTypes.bool,
   groupIndex: PropTypes.number,
   value: PropTypes.any.isRequired,
   onChange: PropTypes.func.isRequired,

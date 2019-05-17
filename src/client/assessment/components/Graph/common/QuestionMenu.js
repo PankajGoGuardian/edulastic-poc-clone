@@ -9,7 +9,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 class QuestionMenu extends Component {
   state = {
     advancedAreOpen: false,
-    activeTab: 0
+    activeTab: 0,
+    recalcedOptions: []
   };
 
   handleAdvancedOpen = () => {
@@ -17,9 +18,9 @@ class QuestionMenu extends Component {
     this.setState({ advancedAreOpen: !advancedAreOpen });
   };
 
-  handleScroll = (option, index) =>
+  handleScroll = option =>
     window.scrollTo({
-      top: option.offset - (index === 0 ? 90 : 250),
+      top: option.offset - 115,
       behavior: "smooth"
     });
 
@@ -35,7 +36,7 @@ class QuestionMenu extends Component {
     this.setState({ activeTab: nextProps.activeTab });
   }
 
-  calcScrollPosition = (index, offset) => {
+  calcScrollPosition = offset => {
     const scrollYMax =
       Math.max(
         document.body.scrollHeight,
@@ -44,49 +45,74 @@ class QuestionMenu extends Component {
         document.documentElement.scrollHeight,
         document.documentElement.offsetHeight
       ) - window.innerHeight;
-
-    if (index === 0) {
-      return window.scrollY + 90;
+    if (offset < scrollYMax) {
+      return window.scrollY + 125;
     }
-    if (index !== 0 && offset < scrollYMax) {
-      return window.scrollY + 250;
-    }
-    if (index !== 0 && offset >= scrollYMax) {
+    if (offset >= scrollYMax) {
       return window.scrollY + 650;
-      // return window.scrollY + (offset - scrollYMax + 200)
     }
   };
 
   isActive = (index, options) => {
-    const scrollPosition = this.calcScrollPosition(index, options[index].offset);
+    const scrollPosition = this.calcScrollPosition(options[index].offset);
 
     if (index === 0) {
-      if (scrollPosition <= options[index].offset) {
+      if (scrollPosition <= options[index].offset + options[index].offsetBottom) {
         return true;
       }
     } else if (index === options.length - 1) {
       if (scrollPosition <= document.documentElement.scrollHeight && scrollPosition >= options[index].offset) {
         return true;
       }
-    } else if (scrollPosition >= options[index].offset && scrollPosition <= options[index + 1].offset) {
+    } else if (
+      scrollPosition >= options[index].offset &&
+      scrollPosition <= options[index].offset + options[index].offsetBottom
+    ) {
       return true;
     }
+
     return false;
+  };
+
+  recalcOptions = options => {
+    let additionalOffset = 0;
+
+    for (let i = 1; i < options.length; i++) {
+      if (options[i - 1].haveDesk) {
+        additionalOffset += options[i - 1].deskHeight;
+      }
+
+      options[i].offset += additionalOffset;
+    }
+
+    this.setState({ recalcedOptions: options });
   };
 
   findActiveTab = () => {
     const { main, advanced } = this.props;
-    const { activeTab } = this.state;
+    const { activeTab, recalcedOptions } = this.state;
     const allOptions = main.concat(advanced);
 
-    if (allOptions) {
-      allOptions.forEach((option, index) => {
-        if (this.isActive(index, allOptions)) {
-          if (index !== activeTab) {
-            return this.setState({ activeTab: index });
+    if (recalcedOptions.length === 0) {
+      this.recalcOptions(allOptions);
+    }
+
+    if (recalcedOptions) {
+      for (let i = 0; i < recalcedOptions.length; i++) {
+        let activeTabs = false;
+
+        if (this.isActive(i, recalcedOptions)) {
+          activeTabs = true;
+
+          if (i !== activeTab) {
+            return this.setState({ activeTab: i });
           }
         }
-      });
+
+        if (activeTabs) {
+          return;
+        }
+      }
     }
   };
 
@@ -103,10 +129,10 @@ class QuestionMenu extends Component {
               main.map((option, index) => (
                 <Option
                   key={index}
-                  onClick={() => this.handleScroll(option, index)}
+                  onClick={() => this.handleScroll(option)}
                   className={index === activeTab && "active"}
                 >
-                  {option.label}
+                  {option.label.toUpperCase()}
                 </Option>
               ))}
           </MainOptions>
@@ -120,10 +146,10 @@ class QuestionMenu extends Component {
                   {advanced.map((option, index) => (
                     <Option
                       key={index}
-                      onClick={() => this.handleScroll(option, main.length + index)}
+                      onClick={() => this.handleScroll(option)}
                       className={main.length + index === activeTab && "active"}
                     >
-                      {option.label}
+                      {option.label.toUpperCase()}
                     </Option>
                   ))}
                 </AdvancedOptions>
@@ -188,9 +214,7 @@ const MainOptions = styled.ul`
     top: -5px;
     z-index: 5;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(
-      ${props => `${props.activeTab * 80 + (props.activeTab > props.main.length - 1 ? 115 : 0)}px`}
-    );
+    transform: translateY(${props => `${props.activeTab * 50 + (props.activeTab > props.main.length - 1 ? 75 : 0)}px`});
   }
 `;
 
@@ -206,7 +230,7 @@ const Option = styled.li`
   letter-spacing: 0.2px;
   text-align: left;
   color: #6a737f;
-  margin-bottom: 80px;
+  margin-bottom: 50px;
   transition: 0.2s ease color;
 
   &:last-of-type {

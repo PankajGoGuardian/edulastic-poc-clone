@@ -22,6 +22,7 @@ import { history } from "../../../configureStore";
 import { getQuestionsSelector } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
 import { toggleCreateItemModalAction } from "../actions/testItem";
+import { CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 function* createTestItemSaga({ payload: { data, showModal } }) {
   try {
@@ -70,6 +71,15 @@ function* evaluateAnswers(action) {
     const oldAnswers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", null));
 
+    // Merge answered and unanswered question because
+    // evaluateItem should be aware of all questions and not only those that user answered
+    const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
+    let answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, questionId) => {
+      acc[questionId] = [];
+      return acc;
+    }, {});
+    answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
+
     if (!oldAnswers[id]) {
       yield put({
         type: SET_ANSWER,
@@ -79,9 +89,8 @@ function* evaluateAnswers(action) {
         }
       });
     }
-    const answers = yield select(state => state.answers);
     const validations = yield select(getQuestionsSelector);
-    const { evaluation, score, maxScore } = yield evaluateItem(answers, validations);
+    const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, validations);
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {
@@ -91,7 +100,8 @@ function* evaluateAnswers(action) {
     message.config({
       maxCount: 1
     });
-    if (action.hasOwnProperty("payload") && action.payload.mode !== "show") {
+    const previewMode = yield select(state => _get(state, "view.preview", null));
+    if (previewMode === CHECK) {
       message.success(`score: ${score}/${maxScore}`);
     }
   } catch (err) {

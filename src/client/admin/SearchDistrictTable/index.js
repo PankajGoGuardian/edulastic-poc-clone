@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Input, Popconfirm, Spin, message } from "antd";
-import { Table, Button, FlexColumn } from "../Common/StyledComponents";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
+import { Table, Button, FlexColumn } from "../Common/StyledComponents";
 import ErrorBoundary from "../Common/ErrorBoundary";
-import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType } from "../Data";
+import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType, CLEVER_DISTRICT_ID_REGEX } from "../Data";
 
 const { Column } = Table;
 
@@ -56,12 +56,12 @@ function UserCount({ users, getUsersDataAction, districtId, index }) {
   );
 }
 
-const EditableCell = ({ edit, cleverId, onInputPressEnter, onCancel, editValue, setEditValue }) => {
-  // here ref is used for the editable text input, since we keep it as an uncontrolled component
+const EditableCell = ({ edit, cleverId = "", onInputPressEnter, onCancel, editValue, setEditValue }) => {
+  // here ref is used for the editable text input, to focus, for better a11y
   const textInput = React.createRef();
   useEffect(() => {
     if (textInput.current) {
-      // as soon as edit button is clicked, the input element is focused for better accessibility
+      // as soon as edit button is clicked, the input element is focused
       textInput.current.input.focus();
     }
   }, [edit]);
@@ -83,7 +83,6 @@ const EditableCell = ({ edit, cleverId, onInputPressEnter, onCancel, editValue, 
 export default function SearchDistrictTable({ data, updateClever, deleteDistrictId, getUsersDataAction }) {
   const [editCell, setEditCell] = useState();
   const [editValue, setEditValue] = useState("");
-  const idRegex = RegExp(/^[0-9a-fA-F]{24}$/);
 
   function renderActions(text, record, index) {
     return editCell !== record._id ? (
@@ -102,9 +101,10 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
   }
 
   function updateCleverId(districtId) {
-    // here a ref is used to access value of the input field
-    // here editCell is set so that all fields become uneditable
+    const idRegex = RegExp(CLEVER_DISTRICT_ID_REGEX);
+
     if (idRegex.test(editValue)) {
+      // here editCell is set so that all fields become uneditable
       setEditCell();
       updateClever({
         districtId,
@@ -117,18 +117,16 @@ export default function SearchDistrictTable({ data, updateClever, deleteDistrict
 
   function renderCleverCell(text, record, index) {
     const edit = editCell === record._id;
-    const cleverId = record._source.cleverId;
+    const { cleverId } = record._source;
     return (
-      <ErrorBoundary>
-        <EditableCell
-          edit={edit}
-          cleverId={cleverId}
-          editValue={editValue}
-          setEditValue={setEditValue}
-          onInputPressEnter={() => updateCleverId(record._id)}
-          onCancel={setEditCell}
-        />
-      </ErrorBoundary>
+      <EditableCell
+        edit={edit}
+        cleverId={cleverId}
+        editValue={editValue}
+        setEditValue={setEditValue}
+        onInputPressEnter={() => updateCleverId(record._id)}
+        onCancel={setEditCell}
+      />
     );
   }
 

@@ -35,6 +35,7 @@ export default class API {
             window.location.href = "/login";
           }
         }
+        return Promise.reject(data.response);
       }
     );
   }

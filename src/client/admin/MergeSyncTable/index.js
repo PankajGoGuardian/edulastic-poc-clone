@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Button, Tabs as AntdTabs, Form, Input } from "antd";
 import { FirstDiv, FlexDiv, H2, OuterDiv } from "../Common/StyledComponents";
 import { DeltaSync, ClassNamePattern, Sync, SubjectStandard, Logs } from "./Tabs";
+import { CLEVER_DISTRICT_ID_REGEX } from "../Data";
 import {
   searchExistingDataApi,
   getSearchData,
@@ -107,7 +108,7 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
             rules: [
               {
                 message: "Please enter valid District ID",
-                pattern: /^[0-9a-fA-F]{24}$/
+                pattern: CLEVER_DISTRICT_ID_REGEX
               }
             ],
             initialValue: ""
@@ -118,7 +119,7 @@ const MergeInitializeSyncForm = Form.create({ name: "mergeInitiateSyncForm" })(
             rules: [
               {
                 message: "Please enter valid Clever ID",
-                pattern: /^[0-9a-fA-F]{24}$/
+                pattern: CLEVER_DISTRICT_ID_REGEX
               }
             ],
             initialValue: ""
@@ -154,10 +155,10 @@ function MergeSyncTable({
   closeMergeResponse,
   deleteSubjectStdMapAction
 }) {
-  const {
-    data: { rosterSyncConfig = {}, schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = {}
-  } = searchData;
+  const { data = {} } = searchData;
 
+  const { schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = data;
+  const rosterSyncConfig = data.rosterSyncConfig ? data.rosterSyncConfig : {};
   return (
     <OuterDiv>
       <H2>Merge and Initialize Sync</H2>
@@ -171,7 +172,7 @@ function MergeSyncTable({
             districtId={district._id}
             enableDisableSyncAction={enableDisableSyncAction}
           />
-          <Tabs type="card" animated={true} defaultActiveKey={"mergeCleverIds"}>
+          <Tabs type="card" defaultActiveKey="mergeCleverIds" animated>
             <TabPane tab="Merge Clever Ids" key="mergeCleverIds">
               <MergeCleverIdsTable
                 clvrCounts={cleverCountsInfo}
@@ -188,8 +189,8 @@ function MergeSyncTable({
             </TabPane>
             <TabPane tab="Subject Standard Mapping" key="subjectStdMapping" forceRender>
               <SubjectStandard
-                orgId={rosterSyncConfig.orgId}
-                orgType={rosterSyncConfig.orgType}
+                orgId={district._id}
+                orgType="district"
                 subStandardMapping={subStandardMapping}
                 fetchCurriculumDataAction={fetchCurriculumDataAction}
                 updateCleverSubjectAction={updateCleverSubjectAction}

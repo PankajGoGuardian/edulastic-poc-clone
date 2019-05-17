@@ -9,6 +9,7 @@ import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import CorrectAnswerBox from "./components/CorrectAnswerBox/index";
 import MathInputStatus from "./components/MathInputStatus/index";
 import MathInputWrapper from "./styled/MathInputWrapper";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 
@@ -19,7 +20,9 @@ const MathFormulaPreview = ({
   evaluation,
   saveAnswer,
   userAnswer,
-  theme
+  theme,
+  showQuestionNumber,
+  qIndex
 }) => {
   const studentRef = useRef();
   const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
@@ -105,11 +108,14 @@ const MathFormulaPreview = ({
 
   return (
     <div>
-      <MathFormulaDisplay
-        data-cy="preview-header"
-        style={{ marginBottom: 15 }}
-        dangerouslySetInnerHTML={{ __html: item.stimulus }}
-      />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        <MathFormulaDisplay
+          data-cy="preview-header"
+          style={{ marginBottom: 15 }}
+          dangerouslySetInnerHTML={{ __html: item.stimulus }}
+        />
+      </QuestionTitleWrapper>
 
       <MathInputWrapper>
         {isStatic && (

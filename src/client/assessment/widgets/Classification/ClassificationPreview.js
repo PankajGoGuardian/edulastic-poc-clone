@@ -25,6 +25,7 @@ import TableRow from "./components/TableRow";
 import { getStyles } from "./utils";
 import { getFontSize, getDirection } from "../../utils/helpers";
 import { TableWrapper } from "./styled/TableWrapper";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const ClassificationPreview = ({
   view,
@@ -35,7 +36,9 @@ const ClassificationPreview = ({
   previewTab,
   smallSize,
   editCorrectAnswers,
-  theme
+  theme,
+  qIndex,
+  showQuestionNumber
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -63,11 +66,16 @@ const ClassificationPreview = ({
   };
 
   const {
-    possible_responses: posResponses,
+    possible_responses: posResponses = [],
     group_possible_responses,
-    possible_response_groups,
+    possible_response_groups = [],
     stimulus,
-    ui_style: { column_count: colCount, column_titles: colTitles, row_count: rowCount, row_titles: rowTitles }
+    ui_style: {
+      column_count: colCount,
+      column_titles: colTitles = [],
+      row_count: rowCount,
+      row_titles: rowTitles = []
+    } = {}
   } = item;
 
   const itemValidation = item.validation || {};
@@ -225,7 +233,12 @@ const ClassificationPreview = ({
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+      {!smallSize && view === PREVIEW && (
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
+        </QuestionTitleWrapper>
+      )}
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
         <TableWrapper>
@@ -385,13 +398,17 @@ ClassificationPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   view: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  qIndex: PropTypes.number,
+  showQuestionNumber: PropTypes.bool
 };
 
 ClassificationPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
-  editCorrectAnswers: []
+  editCorrectAnswers: [],
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

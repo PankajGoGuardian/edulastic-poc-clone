@@ -21,6 +21,7 @@ import { FlexCol } from "./styled/FlexCol";
 import { IconUp } from "./styled/IconUp";
 import { IconDown } from "./styled/IconDown";
 import { getFontSize } from "../../utils/helpers";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const styles = {
   dropContainerStyles: smallSize => ({
@@ -29,7 +30,7 @@ const styles = {
   }),
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
-const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswer }) => {
+const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswer, showQuestionNumber, qIndex }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
@@ -149,7 +150,12 @@ const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswe
   return (
     <Paper data-cy="sortListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
-      {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {stimulus && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+      </QuestionTitleWrapper>
+
       <FlexContainer
         data-cy="sortListComponent"
         flexDirection={flexDirection}
@@ -232,13 +238,17 @@ SortListPreview.propTypes = {
   smallSize: PropTypes.bool,
   item: PropTypes.object,
   userAnswer: PropTypes.any.isRequired,
-  saveAnswer: PropTypes.func.isRequired
+  saveAnswer: PropTypes.func.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 SortListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
-  item: {}
+  item: {},
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withNamespaces("assessment")(SortListPreview);

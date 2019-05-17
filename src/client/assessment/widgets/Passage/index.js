@@ -16,7 +16,7 @@ import PassageView from "./PassageView";
 
 const EmptyWrapper = styled.div``;
 
-const Passage = ({ item, view, smallSize, setQuestionData, t }) => {
+const Passage = ({ item, view, smallSize, setQuestionData, t, ...restProps }) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
@@ -35,7 +35,7 @@ const Passage = ({ item, view, smallSize, setQuestionData, t }) => {
   if (view === "preview") {
     return (
       <Wrapper>
-        <PassageView preview item={itemForPreview} />
+        <PassageView preview item={itemForPreview} {...restProps} />
       </Wrapper>
     );
   }

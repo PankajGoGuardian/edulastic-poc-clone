@@ -23,6 +23,15 @@ const MathSpan = WithMathFormula(styled.span`
   line-height: ${props => props.lineHeight};
 `);
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
 class ClozeDropDownDisplay extends Component {
   constructor(props) {
     super(props);
@@ -100,7 +109,8 @@ class ClozeDropDownDisplay extends Component {
       evaluation,
       instructorStimulus,
       theme,
-      item
+      item,
+      showQuestionNumber
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -219,7 +229,10 @@ class ClozeDropDownDisplay extends Component {
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <div style={{ margin: smallSize ? "-10px -20px" : 0, borderRadius: 0 }}>{templateBoxLayout}</div>
         {answerBox}
       </div>
@@ -243,7 +256,8 @@ ClozeDropDownDisplay.propTypes = {
   instructorStimulus: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
-  qIndex: PropTypes.number.isRequired
+  qIndex: PropTypes.number,
+  showQuestionNumber: PropTypes.bool
 };
 
 ClozeDropDownDisplay.defaultProps = {
@@ -266,7 +280,9 @@ ClozeDropDownDisplay.defaultProps = {
     heightpx: 0,
     placeholder: null,
     responsecontainerindividuals: []
-  }
+  },
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));

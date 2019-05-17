@@ -33,7 +33,8 @@ const FormulaEssay = ({
   userAnswer,
   fillSections,
   cleanSections,
-  isSidebarCollapsed
+  isSidebarCollapsed,
+  ...restProps
 }) => {
   const [lines, setLines] = useState([
     { text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }
@@ -95,6 +96,7 @@ const FormulaEssay = ({
             item={itemForPreview}
             smallSize={smallSize}
             userAnswer={userAnswer}
+            {...restProps}
           />
         </Wrapper>
       )}

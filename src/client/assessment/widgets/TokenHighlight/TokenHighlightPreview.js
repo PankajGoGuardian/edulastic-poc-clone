@@ -2,13 +2,22 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, get } from "lodash";
 import { compose } from "redux";
-import { withTheme } from "styled-components";
+import styled, { withTheme } from "styled-components";
 
 import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 import { getFontSize } from "../../utils/helpers";
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
 
 const TokenHighlightPreview = ({
   view,
@@ -18,7 +27,9 @@ const TokenHighlightPreview = ({
   editCorrectAnswers,
   userAnswer,
   previewTab,
-  theme
+  theme,
+  showQuestionNumber,
+  qIndex
 }) => {
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
@@ -162,7 +173,12 @@ const TokenHighlightPreview = ({
       boxShadow={smallSize ? "none" : ""}
     >
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
+
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
           <span
@@ -193,14 +209,18 @@ TokenHighlightPreview.propTypes = {
   editCorrectAnswers: PropTypes.array,
   previewTab: PropTypes.string,
   userAnswer: PropTypes.any,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 TokenHighlightPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   userAnswer: [],
-  editCorrectAnswers: []
+  editCorrectAnswers: [],
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

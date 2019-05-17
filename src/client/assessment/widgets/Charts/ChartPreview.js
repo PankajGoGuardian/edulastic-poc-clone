@@ -14,8 +14,9 @@ import BarChart from "./BarChart";
 import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, view }) => {
+const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, view, showQuestionNumber, qIndex }) => {
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
 
@@ -58,8 +59,10 @@ const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, vie
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      </QuestionTitleWrapper>
       <CurrentChart
         {...passData}
         view={view}
@@ -77,14 +80,18 @@ ChartPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
   userAnswer: PropTypes.array,
-  view: PropTypes.string
+  view: PropTypes.string,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 ChartPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   userAnswer: [],
-  view: PREVIEW
+  view: PREVIEW,
+  qIndex: null,
+  showQuestionNumber: false
 };
 
 export default withNamespaces("assessment")(ChartPreview);

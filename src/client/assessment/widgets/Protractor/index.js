@@ -17,7 +17,7 @@ import ProtractorView from "./ProtractorView";
 
 const EmptyWrapper = styled.div``;
 
-const Protractor = ({ item, view, smallSize, setQuestionData, t }) => {
+const Protractor = ({ item, view, smallSize, setQuestionData, t, ...restProps }) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
@@ -35,7 +35,7 @@ const Protractor = ({ item, view, smallSize, setQuestionData, t }) => {
       <Paper style={{ marginBottom: 30 }}>
         <Subtitle>{t("component.protractor.details")}</Subtitle>
         <Options onChange={handleItemChangeChange} item={item} />
-        <ProtractorView smallSize={smallSize} item={item} />
+        <ProtractorView smallSize={smallSize} item={item} {...restProps} />
       </Paper>
     );
   }
@@ -43,7 +43,7 @@ const Protractor = ({ item, view, smallSize, setQuestionData, t }) => {
   if (view === "preview") {
     return (
       <Wrapper>
-        <ProtractorView smallSize={smallSize} item={itemForPreview} />
+        <ProtractorView smallSize={smallSize} item={itemForPreview} {...restProps} />
       </Wrapper>
     );
   }

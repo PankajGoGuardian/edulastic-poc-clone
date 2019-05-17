@@ -168,7 +168,8 @@ class ClozeImageDropDown extends Component {
       evaluation,
       fillSections,
       cleanSections,
-      isSidebarCollapsed
+      isSidebarCollapsed,
+      ...restProps
     } = this.props;
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
@@ -274,6 +275,7 @@ class ClozeImageDropDown extends Component {
               maxRespCount={item.maxRespCount}
               onChange={this.handleAddAnswer}
               qIndex={qIndex}
+              {...restProps}
             />
           </Wrapper>
         )}

@@ -1,10 +1,20 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import QuestionHeader from "../common/QuestionHeader";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
 
 const safeParseFloat = val => {
   if (val) {
@@ -457,7 +467,7 @@ class GraphDisplay extends Component {
   };
 
   render() {
-    const { graphData, smallSize, qIndex } = this.props;
+    const { graphData, smallSize, showAnswer, checkAnswer, clearAnswer, showQuestionNumber, qIndex } = this.props;
     const { stimulus } = graphData;
     const { graphIsValid } = this.state;
 
@@ -467,12 +477,18 @@ class GraphDisplay extends Component {
       <Fragment>
         {graphIsValid ? (
           <Fragment>
-            <QuestionHeader
-              qIndex={qIndex}
-              smallSize={smallSize}
-              dangerouslySetInnerHTML={{ __html: stimulus }}
-              data-cy="questionHeader"
-            />
+            {showAnswer ? "showAnswer" : null}
+            {checkAnswer ? "checkAnswer" : null}
+            {clearAnswer ? "clearAnswer" : null}
+            <QuestionTitleWrapper>
+              {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+              <QuestionHeader
+                qIndex={qIndex}
+                smallSize={smallSize}
+                dangerouslySetInnerHTML={{ __html: stimulus }}
+                data-cy="questionHeader"
+              />
+            </QuestionTitleWrapper>
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
@@ -494,7 +510,9 @@ GraphDisplay.propTypes = {
   checkAnswer: PropTypes.bool,
   clearAnswer: PropTypes.bool,
   bgShapes: PropTypes.bool,
-  altAnswerId: PropTypes.string
+  altAnswerId: PropTypes.string,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 GraphDisplay.defaultProps = {
@@ -507,7 +525,9 @@ GraphDisplay.defaultProps = {
   checkAnswer: false,
   clearAnswer: false,
   bgShapes: false,
-  altAnswerId: null
+  altAnswerId: null,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default GraphDisplay;

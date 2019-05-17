@@ -1,12 +1,23 @@
 import React from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { cloneDeep } from "lodash";
 import { InstructorStimulus, MathFormulaDisplay } from "@edulastic/common";
 
 import Matrix from "./Matrix";
 import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
 
-const Preview = ({ type, saveAnswer, userAnswer, item, smallSize, onCheckAnswer, feedbackAttempts }) => {
+const Preview = ({
+  type,
+  saveAnswer,
+  userAnswer,
+  item,
+  smallSize,
+  onCheckAnswer,
+  feedbackAttempts,
+  showQuestionNumber,
+  qIndex
+}) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
 
@@ -35,7 +46,11 @@ const Preview = ({ type, saveAnswer, userAnswer, item, smallSize, onCheckAnswer,
     <div>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
-      <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      </QuestionTitleWrapper>
+
       <Matrix
         stems={item.stems}
         options={item.options}
@@ -59,11 +74,24 @@ Preview.propTypes = {
   userAnswer: PropTypes.object.isRequired,
   onCheckAnswer: PropTypes.func.isRequired,
   feedbackAttempts: PropTypes.number.isRequired,
-  smallSize: PropTypes.bool
+  smallSize: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 Preview.defaultProps = {
-  smallSize: false
+  smallSize: false,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default Preview;
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;

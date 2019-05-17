@@ -15,6 +15,7 @@ import Draggable from "./components/Draggable";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import { ResponseContainer } from "./styled/ResponseContainer";
 import { AnswerContainer } from "./styled/AnswerContainer";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 
 const defaultTemplateMarkup =
@@ -238,7 +239,9 @@ class ClozeDragDropDisplay extends Component {
       validation,
       evaluation,
       item,
-      theme
+      theme,
+      showQuestionNumber,
+      qIndex
     } = this.props;
 
     const { templateParts, userAnswers, possibleResponses } = this.state;
@@ -390,7 +393,10 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>
@@ -481,7 +487,9 @@ ClozeDragDropDisplay.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   uiStyle: PropTypes.object,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 ClozeDragDropDisplay.defaultProps = {
@@ -510,7 +518,9 @@ ClozeDragDropDisplay.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withTheme(ClozeDragDropDisplay);

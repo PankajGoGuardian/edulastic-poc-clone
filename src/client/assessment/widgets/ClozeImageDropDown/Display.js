@@ -14,6 +14,7 @@ import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, calculateRatio, fromStringToNumberPx } from "../../utils/helpers";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -75,7 +76,9 @@ class Display extends Component {
       showDashedBorder,
       backgroundColor,
       item,
-      theme
+      theme,
+      showQuestionNumber,
+      qIndex
     } = this.props;
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -216,7 +219,10 @@ class Display extends Component {
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <TemplateBoxContainer smallSize={smallSize}>
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
         </TemplateBoxContainer>
@@ -247,7 +253,9 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 Display.defaultProps = {
@@ -273,7 +281,9 @@ Display.defaultProps = {
     heightpx: 0,
     wordwrap: false,
     responsecontainerindividuals: []
-  }
+  },
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default withTheme(Display);

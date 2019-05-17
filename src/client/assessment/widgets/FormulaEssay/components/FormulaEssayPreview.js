@@ -7,8 +7,18 @@ import { CLEAR } from "../../../constants/constantsForQuestions";
 import MathEssayInput from "./MathEssayInput";
 
 import { InstructorStimulus } from "../styled/InstructorStimulus";
+import { QuestionTitleWrapper, QuestionNumber } from "../styled/QustionNumber";
 
-const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, userAnswer }) => {
+const FormulaEssayPreview = ({
+  item,
+  type: previewType,
+  lines,
+  setLines,
+  resetLines,
+  userAnswer,
+  showQuestionNumber,
+  qIndex
+}) => {
   useEffect(() => {
     if (previewType === CLEAR) {
       resetLines();
@@ -18,8 +28,10 @@ const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLi
   return (
     <div>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-
-      <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
+      </QuestionTitleWrapper>
 
       <MathEssayInput
         item={item}
@@ -40,7 +52,13 @@ FormulaEssayPreview.propTypes = {
   lines: PropTypes.array.isRequired,
   setLines: PropTypes.func.isRequired,
   resetLines: PropTypes.func.isRequired,
-  userAnswer: PropTypes.any.isRequired
+  userAnswer: PropTypes.any.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
+};
+FormulaEssayPreview.defaultProps = {
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default FormulaEssayPreview;

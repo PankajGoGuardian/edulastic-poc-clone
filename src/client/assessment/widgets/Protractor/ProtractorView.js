@@ -4,10 +4,11 @@ import PropTypes from "prop-types";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
 import { Wrapper } from "./styled/Wrapper";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import ProtractorImg from "./assets/protractor.svg";
 import Rule from "./Rule";
 
-const ProtractorView = ({ item, smallSize }) => {
+const ProtractorView = ({ item, smallSize, showQuestionNumber, qIndex }) => {
   const [show, setShow] = useState(false);
 
   const renderRule = () => {
@@ -23,7 +24,10 @@ const ProtractorView = ({ item, smallSize }) => {
         <EduButton onClick={() => setShow(!show)} size="large">
           <FlexContainer>
             <img src={item.image ? item.image : ProtractorImg} alt="" width={16} height={16} />
-            <span>{item.label}</span>
+            <QuestionTitleWrapper>
+              {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+              <span>{item.label}</span>
+            </QuestionTitleWrapper>
           </FlexContainer>
         </EduButton>
       )}
@@ -34,11 +38,15 @@ const ProtractorView = ({ item, smallSize }) => {
 
 ProtractorView.propTypes = {
   item: PropTypes.object.isRequired,
-  smallSize: PropTypes.bool
+  smallSize: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 ProtractorView.defaultProps = {
-  smallSize: false
+  smallSize: false,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default memo(ProtractorView);

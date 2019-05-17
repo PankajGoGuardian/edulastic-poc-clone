@@ -29,6 +29,15 @@ import ListComponent from "./ListComponent";
 
 const EmptyWrapper = styled.div``;
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
 const OptionsList = withPoints(QuillSortableList);
 
 const OrderList = ({
@@ -43,6 +52,7 @@ const OrderList = ({
   t,
   setQuestionData,
   saveAnswer,
+  showQuestionNumber,
   isSidebarCollapsed,
   advancedAreOpen,
   fillSections,
@@ -183,11 +193,15 @@ const OrderList = ({
       {view === PREVIEW && (
         <Wrapper>
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
-          <QuestionHeader
-            qIndex={qIndex}
-            smallSize={smallSize}
-            dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
-          />
+
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            <QuestionHeader
+              qIndex={qIndex}
+              smallSize={smallSize}
+              dangerouslySetInnerHTML={{ __html: itemForPreview.stimulus }}
+            />
+          </QuestionTitleWrapper>
 
           {previewTab === CHECK && (
             <OrderListReport
@@ -247,7 +261,8 @@ OrderList.propTypes = {
   isSidebarCollapsed: PropTypes.bool.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool
 };
 
 OrderList.defaultProps = {
@@ -259,7 +274,8 @@ OrderList.defaultProps = {
   evaluation: "",
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  showQuestionNumber: false
 };
 
 const enhance = compose(

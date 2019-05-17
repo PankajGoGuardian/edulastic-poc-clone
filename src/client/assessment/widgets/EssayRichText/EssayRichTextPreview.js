@@ -13,11 +13,23 @@ import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
 import { ValidList } from "./constants/validList";
+import { ReactQuillWrapper } from "./styled/ReactQuillWrapper";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 
-const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer, theme }) => {
+const EssayRichTextPreview = ({
+  view,
+  saveAnswer,
+  t,
+  item,
+  smallSize,
+  userAnswer,
+  theme,
+  showQuestionNumber,
+  qIndex
+}) => {
   const [showCharacters, setShowCharacters] = useState(false);
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -80,7 +92,11 @@ const EssayRichTextPreview = ({ view, saveAnswer, t, item, smallSize, userAnswer
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+      </QuestionTitleWrapper>
 
       <div style={{ position: "relative" }}>
         <div style={{ position: "relative" }}>
@@ -132,12 +148,16 @@ EssayRichTextPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
-  userAnswer: ""
+  userAnswer: "",
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const toolbarOptions = options => {

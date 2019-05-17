@@ -23,7 +23,11 @@ class QuestionSection extends Component {
 
   render() {
     const { children, marginLast, padding, bgColor } = this.props;
-    return <Section marginLast={marginLast} bgColor={bgColor} padding={padding}>{children}</Section>;
+    return (
+      <Section marginLast={marginLast} bgColor={bgColor} padding={padding}>
+        {children}
+      </Section>
+    );
   }
 }
 

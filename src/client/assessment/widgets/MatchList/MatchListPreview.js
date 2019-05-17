@@ -22,6 +22,7 @@ import { ListItem } from "./styled/ListItem";
 import { Separator } from "./styled/Separator";
 import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, getDirection } from "../../utils/helpers";
 
 const styles = {
@@ -53,7 +54,9 @@ const MatchListPreview = ({
   previewTab,
   smallSize,
   editCorrectAnswers,
-  theme
+  theme,
+  showQuestionNumber,
+  qIndex
 }) => {
   const { possible_responses: posResponses, possible_response_groups, group_possible_responses, stimulus, list } = item;
 
@@ -179,7 +182,11 @@ const MatchListPreview = ({
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-      {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+
+      <QuestionTitleWrapper>
+        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {!smallSize && view === PREVIEW && <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />}
+      </QuestionTitleWrapper>
 
       <div data-cy="previewWrapper" style={wrapperStyle}>
         <FlexContainer style={{ flexGrow: 10 }} flexDirection="column" alignItems="flex-start">
@@ -313,13 +320,17 @@ MatchListPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 MatchListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
-  editCorrectAnswers: []
+  editCorrectAnswers: [],
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

@@ -24,7 +24,7 @@ class TestItemCol extends Component {
     multiple: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    index: PropTypes.number.isRequired
+    qIndex: PropTypes.number.isRequired
   };
 
   static defaultProps = {
@@ -39,8 +39,8 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = (widget, qIndex, restProps) => {
-    const { preview, showFeedback, multiple, questions } = this.props;
+  renderTabContent = widget => {
+    const { preview, showFeedback, multiple, questions, qIndex, ...restProps } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     const question = questions[widget.reference];
@@ -111,8 +111,8 @@ class TestItemCol extends Component {
         )}
         {col.widgets.map((widget, i) => (
           <React.Fragment key={i}>
-            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget, i, restProps)}
-            {col.tabs && !col.tabs.length && this.renderTabContent(widget, i, restProps)}
+            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
+            {col.tabs && !col.tabs.length && this.renderTabContent(widget)}
           </React.Fragment>
         ))}
       </Container>

@@ -136,6 +136,11 @@ class QuestionModal extends React.Component {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
 
+    let student = {};
+    if (rowIndex !== null) {
+      student = tableData[rowIndex].students;
+    }
+
     return (
       <ModalWrapper
         centered
@@ -151,7 +156,7 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <React.Fragment>
             <QuestionWrapper>
-              <Question record={question} />
+              <Question record={question} qIndex={colIndex} student={student} />
             </QuestionWrapper>
             <BottomNavigationWrapper>
               <BottomNavigation

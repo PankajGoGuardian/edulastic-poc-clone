@@ -14,6 +14,15 @@ const MathSpan = WithMathFormula(styled.span`
   line-height: ${props => props.lineHeight};
 `);
 
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;
+
 class ClozeTextDisplay extends Component {
   constructor(props) {
     super(props);
@@ -95,7 +104,9 @@ class ClozeTextDisplay extends Component {
       validation,
       evaluation,
       instructorStimulus,
-      item
+      item,
+      showQuestionNumber,
+      qIndex
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -216,8 +227,10 @@ class ClozeTextDisplay extends Component {
         {instructorStimulus && instructorStimulus !== "<p><br></p>" && (
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
-
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <div>
           <React.Fragment>
             <div style={{ margin: smallSize ? "-10px -20px" : 0, borderRadius: 0 }}>{templateBoxLayout}</div>
@@ -243,7 +256,9 @@ ClozeTextDisplay.propTypes = {
   instructorStimulus: PropTypes.string,
   /* eslint-disable react/no-unused-prop-types */
   templateMarkUp: PropTypes.string,
-  item: PropTypes.object
+  item: PropTypes.object,
+  showQuestionNumber: PropTypes.bool,
+  qIndex: PropTypes.number
 };
 
 ClozeTextDisplay.defaultProps = {
@@ -266,7 +281,9 @@ ClozeTextDisplay.defaultProps = {
     inputtype: "text",
     responsecontainerindividuals: []
   },
-  templateMarkUp: ""
+  templateMarkUp: "",
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 export default ClozeTextDisplay;

@@ -12,6 +12,7 @@ import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
 import { QuestionHeader } from "../../styled/QuestionHeader";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -129,7 +130,9 @@ class Display extends Component {
       showDashedBorder,
       backgroundColor,
       instructorStimulus,
-      theme
+      theme,
+      showQuestionNumber,
+      qIndex
     } = this.props;
 
     const { userAnswers, possibleResponses } = this.state;
@@ -323,7 +326,10 @@ class Display extends Component {
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-        <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
         <div>
           {responseposition === "top" && (
             <React.Fragment>

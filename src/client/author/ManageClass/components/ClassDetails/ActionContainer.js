@@ -7,6 +7,7 @@ import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
 import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
+import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 import { getUserOrgData } from "../../../src/selectors/user";
 
@@ -193,6 +194,8 @@ const ActionContainer = ({
       />
 
       <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />
+
+      <AddCoTeacher isOpen={isOpen.addCoTeacher} handleCancel={() => toggleModal("addCoTeacher")} />
 
       <AddStudentDivider>
         <TitleWarapper>Student</TitleWarapper>

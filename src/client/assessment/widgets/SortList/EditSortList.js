@@ -120,19 +120,18 @@ const EditSortList = ({ item, setQuestionData, t, fillSections, cleanSections })
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
-        <Widget>
-          <CorrectAnswers
-            onTabChange={setCorrectTab}
-            correctTab={correctTab}
-            readOnly
-            onAdd={handleAddAnswer}
-            validation={item.validation}
-            options={renderOptions()}
-            onCloseTab={handleCloseTab}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-          />
-        </Widget>
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          readOnly
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          marginBottom="-50px"
+        />
       </Paper>
       <AdvancedOptions
         item={item}

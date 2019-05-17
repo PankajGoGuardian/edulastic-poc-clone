@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
 import produce from "immer";
 import PropTypes from "prop-types";
@@ -18,6 +20,17 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 
 class LayoutWrapper extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+    cleanSections();
+  }
+
   render() {
     const { item, setQuestionData } = this.props;
     const changeItem = (prop, val) => {
@@ -42,7 +55,7 @@ class LayoutWrapper extends Component {
     return (
       <Widget>
         <Layout>
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <ResponseContainerPositionOption
                 onChange={val => changeUIStyle("possibility_list_position", val)}
@@ -57,7 +70,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <RowTitlesWidthOption
                 onChange={val => changeUIStyle("row_titles_width", val)}
@@ -72,7 +85,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <RowHeaderOption
                 onChange={val => changeUIStyle("row_header", val)}
@@ -87,7 +100,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
@@ -102,8 +115,16 @@ class LayoutWrapper extends Component {
 }
 
 LayoutWrapper.propTypes = {
+  t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
-export default LayoutWrapper;
+LayoutWrapper.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
+};
+
+export default withNamespaces("assessment")(LayoutWrapper);

@@ -220,7 +220,7 @@ const MainOptions = styled.ul`
 
 const Option = styled.li`
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   padding-left: 25px;
   font-weight: 600;
   font-style: normal;

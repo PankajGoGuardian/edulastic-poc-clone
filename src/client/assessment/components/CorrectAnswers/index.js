@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
+import { Widget } from "../../styled/Widget";
 
 import { Subtitle } from "../../styled/Subtitle";
 
@@ -40,7 +41,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, onTabChange, children, correctTab, onAdd, validation, options, onCloseTab } = this.props;
+    const { t, onTabChange, children, correctTab, onAdd, validation, options, onCloseTab, marginBottom } = this.props;
 
     const { tabs } = this.state;
 
@@ -81,7 +82,8 @@ class CorrectAnswers extends Component {
           borderRadius: 0,
           padding: 0,
           boxShadow: "none",
-          marginLeft: "auto"
+          marginLeft: "auto",
+          marginBottom: marginBottom
         }}
         onClick={() => {
           onTabChange();
@@ -96,8 +98,8 @@ class CorrectAnswers extends Component {
     );
 
     return (
-      <div>
-        <Subtitle margin="0">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+      <Widget>
+        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
 
         <div>
           <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()}>
@@ -115,7 +117,7 @@ class CorrectAnswers extends Component {
           {children}
         </div>
         {options}
-      </div>
+      </Widget>
     );
   }
 }
@@ -130,7 +132,8 @@ CorrectAnswers.propTypes = {
   correctTab: PropTypes.number.isRequired,
   options: PropTypes.any,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  marginBottom: PropTypes.string
 };
 
 CorrectAnswers.defaultProps = {

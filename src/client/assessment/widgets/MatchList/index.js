@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
 import { replaceVariables } from "../../utils/variables";
 import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
@@ -7,8 +8,10 @@ import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 import MatchListPreview from "./MatchListPreview";
 import MatchListEdit from "./MatchListEdit";
 
+import { ContentArea } from "../../styled/ContentArea";
+
 const MatchList = props => {
-  const { item, view } = props;
+  const { item, view, isSidebarCollapsed } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
@@ -16,7 +19,11 @@ const MatchList = props => {
       {view === PREVIEW && itemForPreview && itemForPreview.possible_response_groups && (
         <MatchListPreview {...props} item={itemForPreview} />
       )}
-      {view === EDIT && <MatchListEdit {...props} />}
+      {view === EDIT && (
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <MatchListEdit {...props} />
+        </ContentArea>
+      )}
     </Fragment>
   );
 };
@@ -29,7 +36,8 @@ MatchList.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 MatchList.defaultProps = {
@@ -41,4 +49,6 @@ MatchList.defaultProps = {
   evaluation: ""
 };
 
-export { MatchList };
+const MatchListContainer = connect(({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }))(MatchList);
+
+export { MatchListContainer as MatchList };

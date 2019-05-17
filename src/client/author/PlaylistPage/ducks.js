@@ -6,7 +6,7 @@ import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
 import { testsApi, assignmentApi } from "@edulastic/api";
-
+import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
 
@@ -22,6 +22,7 @@ export const CREATE_TEST_ERROR = "[tests] create playlist error";
 export const UPDATE_TEST_REQUEST = "[tests] update playlist request";
 export const UPDATE_TEST_SUCCESS = "[tests] update playlist success";
 export const UPDATE_TEST_ERROR = "[tests] update playlist error";
+export const UPDATE_PLAYLIST = "[playlists] update playlist ";
 
 export const RECEIVE_TEST_BY_ID_REQUEST = "[tests] receive playlist by id request";
 export const RECEIVE_TEST_BY_ID_SUCCESS = "[tests] receive playlist by id success";
@@ -41,6 +42,8 @@ export const UPDATE_ENTITY_DATA = "[test] update entity data";
 export const RECEIVE_SHARED_USERS_LIST = "[test] receive shared users list";
 export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
 export const DELETE_SHARED_USER = "[test] delete share user from list";
+export const ADD_MODULE = "[playlist] Add new module";
+export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -117,6 +120,9 @@ export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST);
 export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIST);
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
+export const createNewModuleAction = createAction(ADD_MODULE);
+export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
+
 // reducer
 
 const initialPlaylistState = {
@@ -135,11 +141,11 @@ const initialPlaylistState = {
   // FIXME: define schema for modules
   modules: [],
   type: "content",
-  collectionName: "",
+  // collectionName: "",
   grades: [],
   subjects: [],
-  versionId: "",
-  version: "",
+  // versionId: "",
+  version: 1,
   active: 1,
   authors: [
     {
@@ -167,8 +173,34 @@ const initialState = {
   sharedUsersList: []
 };
 
+const createNewModuleState = title => ({
+  _id: "",
+  title,
+  data: []
+});
+
+const createNewTestInModule = test => ({
+  contentId: test._id,
+  contentTitle: test.title,
+  contentType: "test"
+});
+
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
+    case ADD_MODULE: {
+      const newEntity = addModuleToPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case ADD_TEST_IN_PLAYLIST: {
+      const newEntity = addTestToModule(state.entity, payload);
+      return {
+        ...state,
+        entity: newEntity
+      };
+    }
+    case UPDATE_PLAYLIST: {
+      return { ...state, entity: payload.updatedModule };
+    }
     case SET_DEFAULT_TEST_DATA:
       return { ...state, entity: initialPlaylistState };
     case RECEIVE_TEST_BY_ID_REQUEST:
@@ -431,6 +463,25 @@ function* deleteSharedUserSaga({ payload }) {
     const errorMessage = "delete shared user is failing";
     yield call(message.error, errorMessage);
   }
+}
+
+function addModuleToPlaylist(playlist, payload) {
+  const newPlaylist = produce(playlist, draft => {
+    const newModule = createNewModuleState(payload.moduleName);
+    draft.modules.splice(payload.moduleIndex, 0, newModule);
+    return draft;
+  });
+  return newPlaylist;
+}
+
+function addTestToModule(entity, payload) {
+  const { testAdded, moduleIndex } = payload;
+  entity.modules[moduleIndex] = produce(entity.modules[moduleIndex], draft => {
+    const newTest = createNewTestInModule(testAdded);
+    draft.data.push(newTest);
+    return draft;
+  });
+  return entity;
 }
 
 export function* watcherSaga() {

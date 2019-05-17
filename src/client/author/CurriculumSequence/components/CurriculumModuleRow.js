@@ -60,7 +60,7 @@ class ModuleRow extends Component {
    */
   assignModule = module => {
     const { setSelectedItemsForAssign } = this.props;
-    const moduleItemsIds = module.data.map(item => item.testId);
+    const moduleItemsIds = module.data.map(item => item.contentId);
     setSelectedItemsForAssign(moduleItemsIds);
   };
 
@@ -95,7 +95,7 @@ class ModuleRow extends Component {
     const { assignModule } = this;
 
     const totalAssigned = data.length;
-    const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.testId));
+    const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.contentId));
     const [whichModule, moduleName] = title ? title.split(":") : [];
     const { showModal, selectedTest } = this.state;
     return (
@@ -193,7 +193,7 @@ class ModuleRow extends Component {
                       </Menu>
                     );
 
-                    const isAssigned = matchAssigned(assigned, moduleData.testId).length > 0;
+                    const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
 
                     return (
                       <Assignment
@@ -214,7 +214,7 @@ class ModuleRow extends Component {
                             <CustomIcon marginLeft={16}>
                               <Icon type="right" style={{ color: "#707070" }} />
                             </CustomIcon>
-                            <ModuleDataName>{moduleData.testTitle}</ModuleDataName>
+                            <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
                           </AssignmentContent>
                           <AssignmentIconsWrapper expanded={isContentExpanded}>
                             {!hideEditOptions && (
@@ -235,14 +235,17 @@ class ModuleRow extends Component {
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>
-                                  <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.testId)} />
+                                  <IconVisualization
+                                    color="#1774F0"
+                                    onClick={() => this.viewTest(moduleData.contentId)}
+                                  />
                                 </CustomIcon>
                               </AssignmentIcon>
                               {!hideEditOptions && (
                                 <AssignmentButton assigned={isAssigned}>
                                   <Button
                                     data-cy="assignButton"
-                                    onClick={() => setSelectedItemsForAssign(moduleData.testId)}
+                                    onClick={() => setSelectedItemsForAssign(moduleData.contentId)}
                                   >
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />

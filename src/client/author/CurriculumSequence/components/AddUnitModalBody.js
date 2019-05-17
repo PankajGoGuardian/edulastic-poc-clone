@@ -33,74 +33,70 @@ import { desktopWidth } from "@edulastic/colors";
 /**
  * @typedef {object} AddUnitModalBodyProps
  * @property {CurriculumSequenceType} destinationCurriculumSequence
- * @property {function} addNewUnitToDestination
- * @property {function} handleAddUnit
- * @property {Module | {}} newUnit
+ * @property {function} addModuleToPlaylist
+ * @property {function} handleAddModule
+ * @property {Module | {}} newModule
  */
 
 class AddUnitModalBody extends React.Component {
   state = {
     /** @type {Module | {}} */
-    newUnit: {}
+    newModule: {}
   };
 
   componentWillMount() {
-    const { newUnit } = this.props;
-    this.setState({ newUnit });
+    const { newModule } = this.props;
+    this.setState({ newModule });
   }
 
-  onNewUnitNameChange = evt => {
+  onNewModuleNameChange = evt => {
     evt.preventDefault();
-
-    const { newUnit } = { ...this.state };
-    newUnit.name = evt.target.value;
-    this.setState({ newUnit });
+    const { newModule } = { ...this.state };
+    newModule.name = evt.target.value;
+    this.setState({ newModule });
   };
 
-  onUnitAfterIdChange = id => {
-    const { newUnit } = { ...this.state };
-    const [afterUnitId] = id;
-    newUnit.afterUnitId = afterUnitId;
-    this.setState({ newUnit });
+  onModuleAfterIdChange = id => {
+    const { newModule } = { ...this.state };
+    const [afterModuleId] = id;
+    newModule.afterModuleId = afterModuleId;
+    this.setState({ newModule });
   };
 
-  addNewUnitToDestination = () => {
-    const { newUnit } = { ...this.state };
-    const { addNewUnitToDestination } = this.props;
-    if (addNewUnitToDestination) {
-      addNewUnitToDestination(newUnit);
-      this.setState({ newUnit: {} });
+  addModuleToPlaylist = () => {
+    const { newModule } = { ...this.state };
+    const { addModuleToPlaylist } = this.props;
+    if (addModuleToPlaylist) {
+      addModuleToPlaylist({ afterModuleIndex: newModule.afterModuleId, moduleName: newModule.name });
+      this.setState({ newModule: {} });
     }
   };
 
   render() {
-    const { destinationCurriculumSequence, handleAddUnit } = this.props;
-    const { newUnit } = this.state;
-    const { onNewUnitNameChange, onUnitAfterIdChange } = this;
+    const { destinationCurriculumSequence, handleAddModule } = this.props;
+    const { newModule } = this.state;
+    const { onNewModuleNameChange, onModuleAfterIdChange } = this;
     // Options for add unit
-    const options1 = destinationCurriculumSequence.modules.map(module => ({ value: module.id, label: module.name }));
-
+    let options1 =
+      destinationCurriculumSequence &&
+      destinationCurriculumSequence.modules.map(({ title }, index) => ({ value: index + 1, label: title }));
+    options1 = options1.length ? options1 : [];
     return (
       <div>
-        <AddUnitModalBodyContaner>
-          <label>Unit Name</label>
-          <Input data-cy="addNewUnitInputName" value={newUnit.name || ""} onChange={onNewUnitNameChange} />
+        <AddModuleModalBodyContaner>
+          <label>Module Name</label>
+          <Input data-cy="addNewModuleInputName" value={newModule.name || ""} onChange={onNewModuleNameChange} />
           <label>Add After</label>
           <Input.Group compact>
-            <Cascader
-              onChange={onUnitAfterIdChange}
-              defaultValue={[options1[0].value]}
-              style={{ width: "100%" }}
-              options={options1}
-            />
+            <Cascader onChange={onModuleAfterIdChange} style={{ width: "100%" }} options={options1} />
           </Input.Group>
-        </AddUnitModalBodyContaner>
+        </AddModuleModalBodyContaner>
         <ModalFooter>
-          <Button data-cy="addUnitCancel" type="primary" ghost key="back" onClick={handleAddUnit}>
+          <Button data-cy="addModuleCancel" type="primary" ghost key="back" onClick={handleAddModule}>
             CANCEL
           </Button>
           ,
-          <Button data-cy="addUnitSave" key="submit" type="primary" onClick={this.addNewUnitToDestination}>
+          <Button data-cy="addModuleSave" key="submit" type="primary" onClick={this.addModuleToPlaylist}>
             SAVE
           </Button>
         </ModalFooter>
@@ -110,14 +106,14 @@ class AddUnitModalBody extends React.Component {
 }
 AddUnitModalBody.propTypes = {
   destinationCurriculumSequence: PropTypes.object.isRequired,
-  addNewUnitToDestination: PropTypes.func.isRequired,
-  handleAddUnit: PropTypes.func.isRequired,
-  newUnit: PropTypes.object.isRequired
+  addModuleToPlaylist: PropTypes.func.isRequired,
+  handleAddModule: PropTypes.func.isRequired,
+  newModule: PropTypes.object.isRequired
 };
 
 export default AddUnitModalBody;
 
-const AddUnitModalBodyContaner = styled.div`
+const AddModuleModalBodyContaner = styled.div`
   display: flex;
   flex-direction: column;
   padding-bottom: 40px;

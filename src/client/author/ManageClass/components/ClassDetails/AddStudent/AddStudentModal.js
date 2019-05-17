@@ -57,7 +57,7 @@ class AddStudentModal extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={handleCancel}>
         <Spin spinning={submitted}>
           <Form>
             <Collapse

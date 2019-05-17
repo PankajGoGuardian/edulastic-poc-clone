@@ -11,7 +11,7 @@ import {
   titleColor,
   lightBlue3
 } from "@edulastic/colors";
-import { Button, Icon, Divider } from "antd";
+import { Button, Icon, Divider, Menu } from "antd";
 import { IconManage } from "@edulastic/icons";
 
 import { Paper } from "@edulastic/common";
@@ -227,5 +227,15 @@ export const NoConentDesc = styled.div`
   color: ${textColor};
   p {
     font-size: 14px;
+  }
+`;
+
+export const MenuItem = styled(Menu.Item)`
+  display: flex;
+  align-items: center;
+  color: ${lightBlue3};
+
+  svg {
+    fill: ${lightBlue3};
   }
 `;

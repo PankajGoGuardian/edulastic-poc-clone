@@ -39,9 +39,25 @@ const addStudent = data =>
     data
   });
 
+const removeStudents = data =>
+  api.callApi({
+    url: `${prefix}/student`,
+    method: "delete",
+    data
+  });
+
+const addEnrolMultiStudents = ({ classId, data }) =>
+  api.callApi({
+    url: `${prefix}/${classId}/students`,
+    method: "post",
+    data
+  });
+
 export default {
   fetch,
   create,
   fetchByIds,
-  addStudent
+  addStudent,
+  removeStudents,
+  addEnrolMultiStudents
 };

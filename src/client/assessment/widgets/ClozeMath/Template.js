@@ -2,17 +2,12 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
-import { compose } from "redux";
-import { connect } from "react-redux";
 import { withNamespaces } from "react-i18next";
 import { cloneDeep } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { CustomQuillComponent } from "@edulastic/common";
 
-import { withTutorial } from "../../../tutorials/withTutorial";
-import { checkAnswerAction } from "../../../author/src/actions/testItem";
-import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 
@@ -105,18 +100,4 @@ Template.defaultProps = {
   cleanSections: () => {}
 };
 
-const enhance = compose(
-  withTutorial("clozeMath"),
-  withNamespaces("assessment"),
-  connect(
-    (state, { item }) => ({
-      evaluation: state.evaluation[item.id]
-    }),
-    {
-      setQuestionData: setQuestionDataAction,
-      checkAnswer: checkAnswerAction
-    }
-  )
-);
-
-export default enhance(Template);
+export default withNamespaces("assessment")(Template);

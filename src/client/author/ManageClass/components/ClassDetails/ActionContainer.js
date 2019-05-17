@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
 import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
+import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 import { getUserOrgData } from "../../../src/selectors/user";
 
@@ -97,7 +98,7 @@ const ActionContainer = ({
     switch (key) {
       case "enableSpeech":
         if (isEmpty(selectedStudent)) {
-          showMessage("error", "Select 1 or more students to enable text to speech");
+          return showMessage("error", "Select 1 or more students to enable text to speech");
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id);
@@ -106,7 +107,7 @@ const ActionContainer = ({
         break;
       case "disableSpeech":
         if (isEmpty(selectedStudent)) {
-          showMessage("error", "Select 1 or more students to disable text to speech");
+          return showMessage("error", "Select 1 or more students to disable text to speech");
         }
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id);
@@ -121,7 +122,7 @@ const ActionContainer = ({
         break;
       case "resetPwd":
         if (isEmpty(selectedStudent)) {
-          showMessage("error", "Select 1 or more students to change password");
+          return showMessage("error", "Select 1 or more students to change password");
         }
         toggleModal("resetPwd");
         break;
@@ -183,6 +184,9 @@ const ActionContainer = ({
         stds={selectedStudent}
         isEdit={isEdit}
       />
+
+      <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />
+
       <AddStudentDivider>
         <TitleWarapper>Student</TitleWarapper>
         <DividerDiv />

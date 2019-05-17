@@ -5,7 +5,7 @@ import LiveClassboardPage from "../../../framework/author/assignments/LiveClassb
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
 import { studentSide } from "../../../framework/constants/assignmentStatus";
 
-describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment page UI`, () => {
+describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const attemptsData = [
     {
       email: "auto.lcb.student01@yopmail.com",
@@ -71,7 +71,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   const queList = Object.keys(getQuestionCentricData());
 
   // TODO : will move below data into test data files
-  const testId = "5cd9385f163c8a4fea055823";
+  const testId = "5cde784b09da3d60f2d7840c";
   const teacher = "auto.lcb.teacher01@yopmail.com";
   const student = "auto.lcb.student01@yopmail.com";
 
@@ -131,7 +131,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
     });
   });
 
-  before("login as teacher", () => {
+  before("login as teacher and to lcb of assignment", () => {
     cy.login("teacher", teacher);
     authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
   });

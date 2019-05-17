@@ -80,15 +80,6 @@ const deleteQuestion = (state, { payload }) => {
 
 // update question by id
 const updateQuestion = (state, { payload }) => {
-  // Alt response needs to be updated with the latest responses (from valid responses)
-  if (payload.validation.alt_responses && Array.isArray(payload.validation.alt_responses)) {
-    payload.validation.alt_responses = payload.validation.alt_responses.map(alt_response => {
-      return {
-        ...alt_response,
-        value: payload.validation.valid_response.value
-      };
-    });
-  }
   state.byId[payload.id] = payload;
 };
 

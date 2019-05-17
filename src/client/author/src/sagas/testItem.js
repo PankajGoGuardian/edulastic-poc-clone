@@ -2,6 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
+import { LOCATION_CHANGE } from "connected-react-router";
 import { evaluateItem } from "../utils/evalution";
 import createShowAnswerData from "../utils/showAnswer";
 
@@ -19,7 +20,7 @@ import {
 } from "../constants/actions";
 
 import { history } from "../../../configureStore";
-import { getQuestionsSelector } from "../../sharedDucks/questions";
+import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
 import { toggleCreateItemModalAction } from "../actions/testItem";
 import { CHECK } from "../../../assessment/constants/constantsForQuestions";
@@ -68,23 +69,65 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers(action) {
   try {
-    const oldAnswers = yield select(state => state.answers);
-    const id = yield select(state => _get(state, "question.entity.data.id", null));
-
-    // Merge answered and unanswered question because
-    // evaluateItem should be aware of all questions and not only those that user answered
+    let oldAnswers = yield select(state => state.answers);
+    const entityId = yield select(state => _get(state, "question.entity.data.id", null));
+    const questionOrItemId = yield select(state => _get(state, "authorQuestions.current", ""));
     const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
-    let answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, questionId) => {
-      acc[questionId] = [];
-      return acc;
-    }, {});
+
+    // We need to know what level the user is at (question vs item),
+    // currentQuestionId is used later for this purpose
+    let currentQuestionId;
+    if (entityId && Object.keys(allQuestions).indexOf(entityId) !== -1) {
+      currentQuestionId = entityId;
+    } else if (Object.keys(allQuestions).indexOf(questionOrItemId) !== -1) {
+      currentQuestionId = questionOrItemId;
+    } else {
+      currentQuestionId = "";
+    }
+
+    // User can be at item level or at question level, this one is question level
+    if (currentQuestionId && Object.keys(oldAnswers).length) {
+      oldAnswers = Object.keys(oldAnswers)
+        .filter(oldAnswerId => {
+          if (!currentQuestionId) return true;
+
+          if (currentQuestionId && oldAnswerId === currentQuestionId) {
+            return true;
+          }
+
+          return false;
+        })
+        .reduce((acc, currentId) => {
+          acc[currentId] = oldAnswers[currentId];
+          return acc;
+        }, {});
+    }
+
+    // We need all questions, not that user has answered,
+    // we also need them filtered to the current question
+    // that user is in.
+    let answeredAndUnanswered = Object.keys(allQuestions)
+      .filter(answerId => {
+        if (!currentQuestionId) return true;
+
+        if (currentQuestionId && answerId === currentQuestionId) {
+          return true;
+        }
+
+        return false;
+      })
+      .reduce((acc, currentId) => {
+        acc[currentId] = [];
+        return acc;
+      }, {});
+
     answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
 
-    if (!oldAnswers[id]) {
+    if (!oldAnswers[entityId]) {
       yield put({
         type: SET_ANSWER,
         payload: {
-          id,
+          id: entityId,
           data: []
         }
       });
@@ -149,12 +192,25 @@ function* setAnswerSaga() {
   }
 }
 
+function* testItemLocationChangeSaga({ payload }) {
+  // when user lands at item-detail route (item level)
+  // Clear current on authorQuestions, so we have a clean item/question state every time
+  // we rely on this in evaluateAnswers
+  if (payload.location.pathname.indexOf("item-detail") !== -1) {
+    yield put({
+      type: CHANGE_CURRENT_QUESTION,
+      payload: ""
+    });
+  }
+}
+
 export default function* watcherSaga() {
   yield all([
     yield takeEvery(CREATE_TEST_ITEM_REQUEST, createTestItemSaga),
     yield takeEvery(UPDATE_TEST_ITEM_REQUEST, updateTestItemSaga),
     yield takeEvery(CHECK_ANSWER, evaluateAnswers),
     yield takeEvery(CHANGE_VIEW, setAnswerSaga),
-    yield takeEvery(SHOW_ANSWER, showAnswers)
+    yield takeEvery(SHOW_ANSWER, showAnswers),
+    yield takeEvery(LOCATION_CHANGE, testItemLocationChangeSaga)
   ]);
 }

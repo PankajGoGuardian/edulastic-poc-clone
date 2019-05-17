@@ -111,11 +111,15 @@ class Container extends Component {
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
+        {!row.flowLayout && this.renderWidgets()}
 
-        {this.renderWidgets()}
-        <AddButtonContainer justifyContent="center">
-          <AddNew onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
-        </AddButtonContainer>
+        {row.flowLayout && <h1>flowLayout</h1>}
+
+        {!row.flowLayout && (
+          <AddButtonContainer justifyContent="center">
+            <AddNew onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+          </AddButtonContainer>
+        )}
       </Content>
     );
   }

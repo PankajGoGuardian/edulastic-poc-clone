@@ -9,11 +9,16 @@ import Extras from "../../../containers/Extras";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import LayoutWrapper from "./Layout";
 
-const Options = ({ item, t, setQuestionData }) => {
+const Options = ({ item, t, setQuestionData, fillSections, cleanSections }) => {
   return (
-    <WidgetOptions title={t("common.options.title")}>
-      <LayoutWrapper item={item} setQuestionData={setQuestionData} />
-      <Extras>
+    <WidgetOptions title={t("common.options.title")} fillSections={fillSections} cleanSections={cleanSections}>
+      <LayoutWrapper
+        item={item}
+        setQuestionData={setQuestionData}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
+      <Extras fillSections={fillSections} cleanSections={cleanSections}>
         <Extras.Distractors />
         <Extras.Hints />
       </Extras>
@@ -24,7 +29,14 @@ const Options = ({ item, t, setQuestionData }) => {
 Options.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+Options.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

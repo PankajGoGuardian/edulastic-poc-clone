@@ -33,7 +33,7 @@ class LayoutWrapper extends Component {
     return (
       <Widget>
         <Layout>
-          <Row gutter={20}>
+          <Row gutter={60}>
             <Col md={12}>
               <FontSizeSelect
                 value={fontsize}

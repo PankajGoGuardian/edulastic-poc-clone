@@ -3,6 +3,27 @@ import { questionTypeKey as queTypes, attemptTypes } from "../../constants/quest
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
 
+  getScoreInput = card => card.find('[data-cy="scoreInput"]');
+
+  verifyScore = (card, correct, points) => {
+    this.getScoreInput(card)
+      .as("scoreinputbox")
+      .should("have.value", correct ? points.toString() : "0");
+
+    // verify max score
+    cy.get("@scoreinputbox")
+      .next()
+      .should("have.text", points.toString());
+  };
+
+  verifyScoreRight = (card, points) => {
+    this.verifyScore(card, true, points);
+  };
+
+  verifyScoreWrong = (card, points) => {
+    this.verifyScore(card, false, points);
+  };
+
   selectStudent = studentName => {
     cy.server();
     cy.route("GET", "**/test-activity/**").as("test-activity");
@@ -36,7 +57,7 @@ export default class QuestionResponsePage {
   // MCQ
   getLabels = qcard => qcard.find("label");
 
-  verifyQuestionResponseCard = (queTypeKey, attemptType, attemptData, studentCentric = true, findKey) => {
+  verifyQuestionResponseCard = (points, queTypeKey, attemptType, attemptData, studentCentric = true, findKey) => {
     const queCard = studentCentric
       ? this.getQuestionContainer(findKey).as("quecard")
       : this.getQuestionContainerByStudent(findKey).as("quecard");
@@ -50,16 +71,17 @@ export default class QuestionResponsePage {
               .closest("label")
               .find("input")
               .should("be.checked");
+            this.verifyScoreRight(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.WRONG:
             this.getLabels(queCard)
-
               .contains(attemptData[attemptTypes.WRONG])
               .closest("label")
               .should("have.class", attemptTypes.WRONG)
               .find("input")
               .should("be.checked");
+            this.verifyScoreWrong(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.SKIP:

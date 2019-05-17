@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
 import PropTypes from "prop-types";
 import produce from "immer";
@@ -14,6 +16,17 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Widget } from "../../../styled/Widget";
 
 class LayoutWrapper extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+    cleanSections();
+  }
+
   render() {
     const { item, setQuestionData } = this.props;
 
@@ -32,7 +45,7 @@ class LayoutWrapper extends Component {
     return (
       <Widget>
         <Layout>
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <ListStyleOption
                 onChange={val => changeUIStyle("type", val)}
@@ -47,7 +60,7 @@ class LayoutWrapper extends Component {
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <FontSizeOption
                 onChange={val => changeUIStyle("fontsize", val)}
@@ -63,7 +76,14 @@ class LayoutWrapper extends Component {
 
 LayoutWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
-export default LayoutWrapper;
+LayoutWrapper.defaultProps = {
+  fillSections: () => {},
+  cleanSections: () => {}
+};
+
+export default withNamespaces("assessment")(LayoutWrapper);

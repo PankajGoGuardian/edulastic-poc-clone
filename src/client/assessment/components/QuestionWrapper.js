@@ -4,11 +4,10 @@ import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
-
-import { get } from "lodash";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";

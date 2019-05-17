@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import { cloneDeep, get } from "lodash";
+import { get } from "lodash";
 import styled from "styled-components";
 import produce from "immer";
 
@@ -11,21 +11,21 @@ import { withNamespaces } from "@edulastic/localization";
 import { Paper, InstructorStimulus } from "@edulastic/common";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import QuillSortableList from "../../components/QuillSortableList";
-import { Subtitle } from "../../styled/Subtitle";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT, PREVIEW, CHECK, SHOW, CLEAR } from "../../constants/constantsForQuestions";
-import withAddButton from "../../components/HOC/withAddButton";
 import withPoints from "../../components/HOC/withPoints";
 import OrderListPreview from "./components/OrderListPreview";
 import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
 import { getFontSize } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
-import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
+
+import ComposeQuestion from "./ComposeQuestion";
+import ListComponent from "./ListComponent";
 
 const EmptyWrapper = styled.div``;
 
@@ -53,7 +53,11 @@ const OrderList = ({
   t,
   setQuestionData,
   saveAnswer,
-  showQuestionNumber
+  showQuestionNumber,
+  isSidebarCollapsed,
+  advancedAreOpen,
+  fillSections,
+  cleanSections
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
   useEffect(() => {
@@ -67,70 +71,6 @@ const OrderList = ({
   const styleType = get(item, "ui_style.type", "list");
   const axis = styleType === "inline" ? "x" : "y";
   const columns = styleType === "inline" ? 3 : 1;
-
-  const handleQuestionChange = value => {
-    const newData = cloneDeep(item);
-    newData.stimulus = value;
-    updateVariables(newData);
-    setQuestionData(newData);
-  };
-
-  const onSortOrderListEnd = ({ oldIndex, newIndex }) => {
-    const newData = cloneDeep(item);
-
-    newData.list = arrayMove(item.list, oldIndex, newIndex);
-
-    setQuestionData(newData);
-  };
-
-  const handleQuestionsChange = (value, index) => {
-    const newData = cloneDeep(item);
-
-    newData.list[value] = index;
-    updateVariables(newData);
-    setQuestionData(newData);
-  };
-
-  const handleDeleteQuestion = index => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.list = draft.list.filter((q, i) => i !== index);
-
-        const indexList = draft.list.map((val, i) => i);
-
-        draft.validation.valid_response.value = indexList;
-
-        draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-          res.value = indexList;
-          return res;
-        });
-
-        saveAnswer(indexList);
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleAddQuestion = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.list = [...item.list, ""];
-        draft.validation.valid_response.value = [
-          ...draft.validation.valid_response.value,
-          draft.validation.valid_response.value.length
-        ];
-
-        if (draft.validation.alt_responses.length) {
-          draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-            res.value.push(res.value.length);
-            return res;
-          });
-        }
-
-        saveAnswer(draft.list.map((q, i) => i));
-      })
-    );
-  };
 
   const handleCorrectSortEnd = ({ oldIndex, newIndex }) => {
     setQuestionData(
@@ -225,25 +165,16 @@ const OrderList = ({
   return (
     <Fragment>
       {view === EDIT && (
-        <Fragment>
-          <Paper padding="0px" boxShadow="none">
-            <Widget>
-              <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
-              <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} />
-            </Widget>
-            <Widget>
-              <Subtitle data-cy="list-container">{t("component.orderlist.list")}</Subtitle>
-              <List
-                fontSize={fontSize}
-                onAdd={handleAddQuestion}
-                items={item.list}
-                onSortEnd={onSortOrderListEnd}
-                useDragHandle
-                onRemove={handleDeleteQuestion}
-                onChange={handleQuestionsChange}
+        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
+          <Fragment>
+            <Paper padding="0px" boxShadow="none">
+              <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+              <ListComponent
+                saveAnswer={saveAnswer}
+                item={item}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
               />
-            </Widget>
-            <Widget>
               <CorrectAnswers
                 onTabChange={onTabChange}
                 correctTab={correctTab}
@@ -251,11 +182,14 @@ const OrderList = ({
                 validation={item.validation}
                 options={renderOptions()}
                 onCloseTab={handleDeleteAltAnswers}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+                marginBottom="-50px"
               />
-            </Widget>
-          </Paper>
-          <Options />
-        </Fragment>
+            </Paper>
+            <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+          </Fragment>
+        </ContentArea>
       )}
       {view === PREVIEW && (
         <Wrapper>
@@ -324,7 +258,12 @@ OrderList.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   qIndex: PropTypes.any.isRequired,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  showQuestionNumber: PropTypes.bool
 };
 
 OrderList.defaultProps = {
@@ -333,16 +272,18 @@ OrderList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {},
+  showQuestionNumber: false
 };
 
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
-    null,
-    {
-      setQuestionData: setQuestionDataAction
-    }
+    ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

@@ -33,6 +33,7 @@ export const SET_DRAGGING = "[itemDetail] set dragging";
 export const DELETE_ITEM_DETAIL_WIDGET = "[itemDetail] delete widget";
 export const UPDATE_TAB_TITLE = "[itemDetail] update tab title";
 export const USE_TABS = "[itemDetail] is use tabs";
+export const USE_FLOW_LAYOUT = "[itemDetail] is use flow layout";
 export const MOVE_WIDGET = "[itemDetail] move widget";
 export const ITEM_DETAIL_PUBLISH = "[itemDetail] publish test item";
 export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
@@ -101,6 +102,11 @@ export const updateTabTitleAction = ({ rowIndex, tabIndex, value }) => ({
 export const useTabsAction = ({ rowIndex, isUseTabs }) => ({
   type: USE_TABS,
   payload: { rowIndex, isUseTabs }
+});
+
+export const useFlowLayoutAction = ({ rowIndex, isUseFlowLayout }) => ({
+  type: USE_FLOW_LAYOUT,
+  payload: { rowIndex, isUseFlowLayout }
 });
 
 export const moveItemDetailWidgetAction = ({ from, to }) => ({
@@ -297,6 +303,12 @@ const useTabs = (state, { rowIndex, isUseTabs }) => {
   return newState;
 };
 
+const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
+  const newState = cloneDeep(state);
+  newState.item.rows[rowIndex].flowLayout = isUseFlowLayout;
+  return newState;
+};
+
 const moveWidget = (state, { from, to }) => {
   const newState = cloneDeep(state);
   const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
@@ -328,6 +340,9 @@ export function reducer(state = initialState, { type, payload }) {
 
     case USE_TABS:
       return useTabs(state, payload);
+
+    case USE_FLOW_LAYOUT:
+      return useFlowLayout(state, payload);
 
     case SET_DRAGGING:
       return { ...state, dragging: payload.dragging };

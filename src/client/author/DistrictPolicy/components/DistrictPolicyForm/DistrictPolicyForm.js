@@ -1,5 +1,18 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { get } from "lodash";
+
+// actions
+import {
+  receiveDistrictPolicyAction,
+  updateDistrictPolicyAction,
+  createDistrictPolicyAction,
+  changeDistrictPolicyAction
+} from "../../ducks";
+import { getUserOrgId } from "../../../src/selectors/user";
+
 import { Form, Checkbox, Radio, message, Input } from "antd";
 const RadioGroup = Radio.Group;
 
@@ -32,194 +45,174 @@ function validURL(value) {
 class DistrictPolicyForm extends React.Component {
   constructor(props) {
     super(props);
-    const optionalValue = this.initOptionalStatue(this.props.districtPolicy);
-
     this.state = {
-      districtPolicy: {
-        ...this.props.districtPolicy
+      allowDomainForTeacherValidate: {
+        validateStatus: "success",
+        errorMsg: ""
       },
-      thirdPartyValue: optionalValue.thirdPartyValue,
-      optionalStatus: optionalValue.status,
-      allowDomainForTeacher: {
-        value: this.props.districtPolicy.allowedDomainForTeachers.toString(),
-        ...validURL(this.props.districtPolicy.allowedDomainForTeachers.toString())
+      allowDomainForStudentValidate: {
+        validateStatus: "success",
+        errorMsg: ""
       },
-      allowDomainForStudent: {
-        value: this.props.districtPolicy.allowedDomainForStudents.toString(),
-        ...validURL(this.props.districtPolicy.allowedDomainForStudents.toString())
-      },
-      allowDomainForSchool: {
-        value: this.props.districtPolicy.allowedDomainsForDistrict.toString(),
-        ...validURL(this.props.districtPolicy.allowedDomainsForDistrict.toString())
+      allowDomainForSchoolValidate: {
+        validateStatus: "success",
+        errorMsg: ""
       }
     };
   }
 
-  initOptionalStatue = districtPolicy => {
-    const optionalValue = {
-      status: {
-        office365Usernames: false,
-        firstNameAndLastName: false,
-        googleUsernames: false,
-        thirdPartyValue: false
-      },
-      value: {
-        office365Usernames: false,
-        firstNameAndLastName: false,
-        googleUsernames: false,
-        googleClassroom: false,
-        canvas: false
-      },
-      thirdPartyValue: 0
-    };
+  componentDidMount() {
+    const { loadDistrictPolicy, userOrgId } = this.props;
+    loadDistrictPolicy({ orgId: userOrgId });
+  }
 
-    const optionalValueArray = [
-      "office365Usernames",
-      "firstNameAndLastName",
-      "googleUsernames",
-      "googleClassroom",
-      "canvas"
-    ];
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.districtPolicy == null || Object.keys(nextProps.districtPolicy).length === 0) {
+      return {
+        districtPolicy: {
+          userNameAndPassword: true,
+          googleSignOn: true,
+          office365SignOn: true,
+          cleverSignOn: true,
 
-    for (const [index, value] of optionalValueArray.entries()) {
-      if (districtPolicy.hasOwnProperty(value)) {
-        if (value == "googleClassroom" || value == "canvas") {
-          optionalValue.status.thirdPartyValue = true;
-        } else optionalValue.status[value] = true;
-        optionalValue.value[value] = districtPolicy[value];
-      } else {
-        if (value == "googleClassroom" || value == "canvas") optionalValue.status.thirdPartyValue = false;
-        else optionalValueStatus[value] = false;
-      }
-    }
+          teacherSignUp: true,
+          studentSignUp: true,
 
-    if (optionalValue.status.thirdPartyValue) {
-      if (optionalValue.value.googleClassroom) optionalValue.thirdPartyValue = 1;
-      else if (optionalValue.value.canvas) optionalValue.thirdPartyValue = 2;
-    }
+          googleUsernames: true,
+          office365Usernames: true,
+          firstNameAndLastName: true,
 
-    return optionalValue;
-  };
+          allowedDomainForStudents: [],
+          allowedDomainForTeachers: [],
+          allowedDomainsForDistrict: [],
+
+          googleClassroom: false,
+          canvas: false
+        }
+      };
+    } else
+      return {
+        districtPolicy: nextProps.districtPolicy
+      };
+  }
 
   change = (e, keyName) => {
-    const { districtPolicy: policyData } = this.state;
-    policyData[keyName] = e.target.checked;
-
-    const { optionalStatus } = this.state;
-    if (keyName === "office365Usernames" || keyName === "firstNameAndLastName" || keyName === "googleUsernames")
-      optionalStatus[keyName] = true;
-    if (keyName == "googleClassroom" || keyName === "canvas") optionalStatus["thirdPartyValue"] = true;
-
-    this.setState({
-      districtPolicy: policyData,
-      optionalStatus: optionalStatus
-    });
+    const districtPolicyData = { ...this.state.districtPolicy };
+    districtPolicyData[keyName] = e.target.checked;
+    this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
   handleTagTeacherChange = e => {
+    const districtPolicyData = { ...this.state.districtPolicy };
     this.setState({
-      allowDomainForTeacher: {
-        ...validURL(e.target.value),
-        value: e.target.value
+      allowDomainForTeacherValidate: {
+        ...validURL(e.target.value)
       }
     });
+
+    districtPolicyData.allowDomainForTeacher = e.target.value.split(/[\s,]+/);
+    this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
   handleTagStudentChange = e => {
+    const districtPolicyData = { ...this.state.districtPolicy };
     this.setState({
-      allowDomainForStudent: {
-        ...validURL(e.target.value),
-        value: e.target.value
+      allowDomainForStudentValidate: {
+        ...validURL(e.target.value)
       }
     });
+
+    districtPolicyData.allowedDomainForStudents = e.target.value.split(/[\s,]+/);
+    this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
   handleTagSchoolChange = e => {
+    const districtPolicyData = { ...this.state.districtPolicy };
     this.setState({
-      allowDomainForSchool: {
-        ...validURL(e.target.value),
-        value: e.target.value
+      allowDomainForSchoolValidate: {
+        ...validURL(e.target.value)
       }
     });
+
+    districtPolicyData.allowedDomainsForDistrict = e.target.value.split(/[\s,]+/);
+    this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
   thirdpartyIntegration = e => {
-    const { districtPolicy: policyData } = this.state;
+    const districtPolicyData = { ...this.state.districtPolicy };
     if (e.target.value == 1) {
-      policyData.googleClassroom = true;
-      policyData.canvas = false;
+      districtPolicyData.googleClassroom = true;
+      districtPolicyData.canvas = false;
     } else if (e.target.value == 2) {
-      policyData.googleClassroom = false;
-      policyData.canvas = true;
+      districtPolicyData.googleClassroom = false;
+      districtPolicyData.canvas = true;
     }
-
-    this.setState({
-      districtPolicy: policyData,
-      thirdPartyValue: e.target.value
-    });
+    this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
   onSave = () => {
-    const {
-      districtPolicy: policyData,
-      optionalStatus,
-      allowDomainForStudent,
-      allowDomainForTeacher,
-      allowDomainForSchool
-    } = this.state;
+    const districtPolicyData = { ...this.state.districtPolicy };
+    const { allowDomainForTeacherValidate, allowDomainForStudentValidate, allowDomainForSchoolValidate } = this.state;
 
     if (
-      !policyData.userNameAndPassword &&
-      !policyData.office365SignOn &&
-      !policyData.cleverSignOn &&
-      !policyData.googleSignOn
+      !districtPolicyData.userNameAndPassword &&
+      !districtPolicyData.office365SignOn &&
+      !districtPolicyData.cleverSignOn &&
+      !districtPolicyData.googleSignOn
     ) {
       message.error("Please select 1 or more sign-on policies");
       return;
     }
 
     if (
-      allowDomainForStudent.validateStatus === "error" ||
-      allowDomainForTeacher.validateStatus === "error" ||
-      allowDomainForSchool.validateStatus === "error"
+      allowDomainForTeacherValidate.validateStatus === "error" ||
+      allowDomainForStudentValidate.validateStatus === "error" ||
+      allowDomainForSchoolValidate.validateStatus === "error"
     ) {
       return;
     }
 
     const updateData = {
-      orgId: policyData.orgId,
-      orgType: policyData.orgType,
-      userNameAndPassword: policyData.userNameAndPassword,
-      googleSignOn: policyData.googleSignOn,
-      office365SignOn: policyData.office365SignOn,
-      cleverSignOn: policyData.cleverSignOn,
-      teacherSignUp: policyData.teacherSignUp,
-      studentSignUp: policyData.studentSignUp,
-      allowedDomainForTeachers: allowDomainForStudent.value.split(/[\s,]+/),
-      allowedDomainForStudents: allowDomainForTeacher.value.split(/[\s,]+/),
-      allowedDomainsForDistrict: allowDomainForSchool.value.split(/[\s,]+/)
+      orgId: this.props.userOrgId,
+      orgType: "district",
+      userNameAndPassword: districtPolicyData.userNameAndPassword,
+      googleSignOn: districtPolicyData.googleSignOn,
+      office365SignOn: districtPolicyData.office365SignOn,
+      cleverSignOn: districtPolicyData.cleverSignOn,
+      teacherSignUp: districtPolicyData.teacherSignUp,
+      studentSignUp: districtPolicyData.studentSignUp,
+      googleUsernames: districtPolicyData.googleUsernames,
+      office365Usernames: districtPolicyData.office365Usernames,
+      firstNameAndLastName: districtPolicyData.firstNameAndLastName,
+      allowedDomainForTeachers: districtPolicyData.allowDomainForTeacher,
+      allowedDomainForStudents: districtPolicyData.allowDomainForStudent,
+      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict,
+      googleClassroom: districtPolicyData.googleClassroom,
+      canvas: districtPolicyData.canvas
     };
-
-    if (optionalStatus.thirdPartyValue) {
-      updateData.googleClassroom = policyData.googleClassroom;
-      updateData.canvas = policyData.canvas;
+    if (districtPolicyData.hasOwnProperty("_id")) {
+      this.props.updateDistrictPolicy(updateData);
+    } else {
+      this.props.createDistrictPolicy(updateData);
     }
-
-    if (optionalStatus.googleUsernames) updateData.googleUsernames = policyData.googleUsernames;
-    if (optionalStatus.office365Usernames) updateData.office365Usernames = policyData.office365Usernames;
-    if (optionalStatus.firstNameAndLastName) updateData.firstNameAndLastName = policyData.firstNameAndLastName;
-
-    this.props.saveDistrictPolicy(updateData);
   };
 
   render() {
     const {
       districtPolicy,
-      thirdPartyValue,
-      allowDomainForStudent,
-      allowDomainForTeacher,
-      allowDomainForSchool
+      allowDomainForTeacherValidate,
+      allowDomainForStudentValidate,
+      allowDomainForSchoolValidate
     } = this.state;
+
+    let thirdPartyValue = -1;
+    if (districtPolicy.googleClassroom) thirdPartyValue = 1;
+    else if (districtPolicy.canvas) thirdPartyValue = 2;
+
+    let saveBtnStr = "Create";
+    if (districtPolicy.hasOwnProperty("_id")) {
+      saveBtnStr = "Save";
+    }
 
     return (
       <StyledFormDiv>
@@ -284,8 +277,14 @@ class DistrictPolicyForm extends React.Component {
               <br />
               Teachers:
             </StyledLabel>
-            <StyledFormItem validateStatus={allowDomainForTeacher.validateStatus} help={allowDomainForTeacher.errorMsg}>
-              <Input defaultValue={districtPolicy.allowedDomainForTeachers} onChange={this.handleTagTeacherChange} />
+            <StyledFormItem
+              validateStatus={allowDomainForTeacherValidate.validateStatus}
+              help={allowDomainForTeacherValidate.errorMsg}
+            >
+              <Input
+                defaultValue={districtPolicy.allowedDomainForTeachers.toString()}
+                onChange={this.handleTagTeacherChange}
+              />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>
@@ -294,7 +293,10 @@ class DistrictPolicyForm extends React.Component {
               <br />
               Students:
             </StyledLabel>
-            <StyledFormItem validateStatus={allowDomainForStudent.validateStatus} help={allowDomainForStudent.errorMsg}>
+            <StyledFormItem
+              validateStatus={allowDomainForStudentValidate.validateStatus}
+              help={allowDomainForStudentValidate.errorMsg}
+            >
               <Input defaultValue={districtPolicy.allowedDomainForStudents} onChange={this.handleTagStudentChange} />
             </StyledFormItem>
           </StyledRow>
@@ -304,7 +306,10 @@ class DistrictPolicyForm extends React.Component {
               <br />
               recommending Schools:
             </StyledLabel>
-            <StyledFormItem validateStatus={allowDomainForSchool.validateStatus} help={allowDomainForSchool.errorMsg}>
+            <StyledFormItem
+              validateStatus={allowDomainForSchoolValidate.validateStatus}
+              help={allowDomainForSchoolValidate.errorMsg}
+            >
               <Input defaultValue={districtPolicy.allowedDomainsForDistrict} onChange={this.handleTagSchoolChange} />
             </StyledFormItem>
           </StyledRow>
@@ -316,7 +321,7 @@ class DistrictPolicyForm extends React.Component {
             </RadioGroup>
           </StyledRow>
           <StyledRow>
-            <SaveButton onClick={this.onSave}>Save</SaveButton>
+            <SaveButton onClick={this.onSave}>{saveBtnStr}</SaveButton>
           </StyledRow>
         </Form>
       </StyledFormDiv>
@@ -324,9 +329,26 @@ class DistrictPolicyForm extends React.Component {
   }
 }
 
-export default DistrictPolicyForm;
+const enhance = compose(
+  connect(
+    state => ({
+      districtPolicy: get(state, ["districtPolicyReducer", "data"], []),
+      userOrgId: getUserOrgId(state)
+    }),
+    {
+      loadDistrictPolicy: receiveDistrictPolicyAction,
+      updateDistrictPolicy: updateDistrictPolicyAction,
+      createDistrictPolicy: createDistrictPolicyAction,
+      changeDistrictPolicyData: changeDistrictPolicyAction
+    }
+  )
+);
+
+export default enhance(DistrictPolicyForm);
 
 DistrictPolicyForm.propTypes = {
-  districtPolicy: PropTypes.object.isRequired,
-  saveDistrictPolicy: PropTypes.func.isRequired
+  loadDistrictPolicy: PropTypes.func.isRequired,
+  updateDistrictPolicy: PropTypes.func.isRequired,
+  createDistrictPolicy: PropTypes.func.isRequired,
+  userOrgId: PropTypes.string.isRequired
 };

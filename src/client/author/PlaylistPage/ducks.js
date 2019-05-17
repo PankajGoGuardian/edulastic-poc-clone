@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
+import uuidv4 from "uuid/v4";
 import { playlists, test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
@@ -44,6 +45,8 @@ export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
 export const DELETE_SHARED_USER = "[test] delete share user from list";
 export const ADD_MODULE = "[playlist] Add new module";
 export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
+export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
+export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from module";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -122,6 +125,8 @@ export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIS
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const createNewModuleAction = createAction(ADD_MODULE);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
+export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
+export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
 
 // reducer
 
@@ -147,6 +152,7 @@ const initialPlaylistState = {
   // versionId: "",
   version: 1,
   active: 1,
+  customize: true,
   authors: [
     {
       _id: "",
@@ -174,7 +180,7 @@ const initialState = {
 };
 
 const createNewModuleState = title => ({
-  _id: "",
+  id: uuidv4(),
   title,
   data: []
 });
@@ -184,6 +190,16 @@ const createNewTestInModule = test => ({
   contentTitle: test.title,
   contentType: "test"
 });
+
+const removeTestFromPlaylist = (playlist, payload) => {
+  const newPlaylist = produce(playlist, draft => {
+    draft.modules[payload.moduleIndex].data = draft.modules[payload.moduleIndex].data.filter(
+      content => content.contentId !== payload.itemId
+    );
+  });
+  message.success("Test removed from playlist");
+  return newPlaylist;
+};
 
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
@@ -197,6 +213,10 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: newEntity
       };
+    }
+    case REMOVE_TEST_FROM_PLAYLIST: {
+      const newEntity = removeTestFromPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
     }
     case UPDATE_PLAYLIST: {
       return { ...state, entity: payload.updatedModule };
@@ -300,6 +320,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sharedUsersList: payload
+      };
+    case SET_USER_CUSTOMIZE:
+      return {
+        ...state,
+        customize: payload
       };
     default:
       return state;
@@ -468,9 +493,10 @@ function* deleteSharedUserSaga({ payload }) {
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
     const newModule = createNewModuleState(payload.moduleName);
-    draft.modules.splice(payload.moduleIndex, 0, newModule);
+    draft.modules.splice(payload.afterModuleIndex || 0, 0, newModule);
     return draft;
   });
+  message.success("Module Added to playlist");
   return newPlaylist;
 }
 
@@ -481,6 +507,7 @@ function addTestToModule(entity, payload) {
     draft.data.push(newTest);
     return draft;
   });
+  message.success("Test Added in playlist");
   return entity;
 }
 
@@ -529,6 +556,11 @@ export const getTestsCreatingSelector = createSelector(
 export const getTestsLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
+);
+
+export const getUserCustomizeSelector = createSelector(
+  stateSelector,
+  state => get(state, "customize", true)
 );
 
 export const getUserListSelector = createSelector(

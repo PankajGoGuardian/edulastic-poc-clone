@@ -169,6 +169,7 @@ class FeedbackRight extends Component {
         <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput
+              data-cy="scoreInput"
               onChange={this.onChangeScore}
               onBlur={this.preCheckSubmit}
               value={score}
@@ -176,7 +177,7 @@ class FeedbackRight extends Component {
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
             />
-            <TextPara> {maxScore}</TextPara>
+            <TextPara>{maxScore}</TextPara>
           </ScoreInputWrapper>
         </StyledDivSec>
         <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>

@@ -123,8 +123,8 @@ class CurriculumContainer extends Component {
     if (!destinationCurriculumSequence) return null;
 
     const hasContent =
-      destinationCurriculumSequence.modules.filter(module => {
-        if (module.id === moduleId && module.data && module.data.length > 0) {
+      destinationCurriculumSequence.modules.filter((module, index) => {
+        if (index === moduleId && module.data && module.data.length > 0) {
           return true;
         }
         return false;

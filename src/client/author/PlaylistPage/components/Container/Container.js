@@ -37,10 +37,9 @@ import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
-import Review from "../../../TestPage/components/Review";
 import Summary from "../../../TestPage/components/Summary";
 import Assign from "../../../TestPage/components/Assign";
-import Setting from "../../../TestPage/components/Setting";
+import Setting from "../Settings";
 import TestList from "../../../TestList";
 
 const statusConstants = {
@@ -161,7 +160,7 @@ class Container extends PureComponent {
     });
   };
   renderContent = () => {
-    const { playlist, setData, rows, isTestLoading, match, history, addNewModuleToPlaylist } = this.props;
+    const { playlist, setData, rows, isTestLoading, match, history } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
@@ -169,6 +168,7 @@ class Container extends PureComponent {
       current,
       backgroundColor,
       textColor,
+      expandedModules,
       isTextColorPickerVisible,
       isBackgroundColorPickerVisible
     } = this.state;
@@ -216,9 +216,11 @@ class Container extends PureComponent {
         );
       case "review":
         return (
-          <Review
-            test={test}
-            rows={rows}
+          <CurriculumSequence
+            mode={"embedded"}
+            destinationCurriculumSequence={playlist}
+            expandedModules={expandedModules}
+            onCollapseExpand={this.collapseExpandModule}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             current={current}

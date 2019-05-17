@@ -32,6 +32,8 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
   const [mathHtmls, setMathHtmls] = useState([]);
   const [newInnerHtml, setNewInnerHtml] = useState("");
 
+  const minWidth = item.ui_style && item.ui_style.min_width ? `${item.ui_style.min_width}px` : 0;
+
   const _onInput = (key, command = "cmd") => {
     if (!currentMathQuill) return;
     const innerField = currentMathQuill.innerFields[0];
@@ -216,7 +218,8 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
               $element.find(".mq-editable-field").each((ind, el) => {
                 const $el = $(el);
                 $el.css({
-                  padding: 5
+                  padding: 5,
+                  minWidth
                 });
               });
 

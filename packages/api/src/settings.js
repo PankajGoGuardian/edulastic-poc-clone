@@ -93,12 +93,21 @@ const getDistrictPolicy = ({ orgId }) =>
     })
     .then(result => result.data.result);
 
-const updateDistrictPolicy = ({ body }) =>
+const updateDistrictPolicy = data =>
   api
     .callApi({
       url: `${prefix}/district-policy/`,
       method: "put",
-      data: body
+      data
+    })
+    .then(result => result.data.result);
+
+const createDistrictPolicy = data =>
+  api
+    .callApi({
+      url: `${prefix}/district-policy/`,
+      method: "post",
+      data
     })
     .then(result => result.data.result);
 
@@ -187,6 +196,7 @@ export default {
   updateDistrictProfile,
   createDistrictProfile,
   getDistrictPolicy,
+  createDistrictPolicy,
   updateDistrictPolicy,
   getTestSetting,
   updateTestSetting,

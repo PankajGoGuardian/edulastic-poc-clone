@@ -45,6 +45,7 @@ export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
 export const DELETE_SHARED_USER = "[test] delete share user from list";
 export const ADD_MODULE = "[playlist] Add new module";
 export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
+export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -123,6 +124,7 @@ export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIS
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const createNewModuleAction = createAction(ADD_MODULE);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
+export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
 
 // reducer
 
@@ -148,6 +150,7 @@ const initialPlaylistState = {
   // versionId: "",
   version: 1,
   active: 1,
+  customize: true,
   authors: [
     {
       _id: "",
@@ -301,6 +304,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sharedUsersList: payload
+      };
+    case SET_USER_CUSTOMIZE:
+      return {
+        ...state,
+        customize: payload
       };
     default:
       return state;
@@ -530,6 +538,11 @@ export const getTestsCreatingSelector = createSelector(
 export const getTestsLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
+);
+
+export const getUserCustomizeSelector = createSelector(
+  stateSelector,
+  state => get(state, "customize", true)
 );
 
 export const getUserListSelector = createSelector(

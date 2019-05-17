@@ -40,7 +40,7 @@ import ShareModal from "../../../src/components/common/ShareModal";
 import Review from "../../../TestPage/components/Review";
 import Summary from "../../../TestPage/components/Summary";
 import Assign from "../../../TestPage/components/Assign";
-import Setting from "../../../TestPage/components/Setting";
+import Setting from "../Settings";
 import TestList from "../../../TestList";
 
 const statusConstants = {

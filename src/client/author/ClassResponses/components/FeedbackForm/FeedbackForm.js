@@ -59,7 +59,7 @@ class FeedbackRight extends Component {
     return (
       <StyledCardTwo bordered={false}>
         <StyledDivSec>
-          <ScoreInput onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
+          <ScoreInput data-cy="scoreInput" onChange={this.onChangeScore} onBlur={this.onFeedbackSubmit} value={score} />
           <TextPara> / {maxScore}</TextPara>
         </StyledDivSec>
         <LeaveDiv>{isError ? "Score is to large" : "Leave a Feedback!"}</LeaveDiv>

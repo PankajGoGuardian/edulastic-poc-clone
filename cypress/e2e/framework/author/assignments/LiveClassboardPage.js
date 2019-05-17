@@ -1,9 +1,11 @@
 import LCBHeader from "./lcbHeader";
-import { studentSide as asgnStatus } from "../../constants/assignmentStatus";
+import { studentSide as asgnStatus, studentSide } from "../../constants/assignmentStatus";
+import QuestionResponsePage from "./QuestionResponsePage";
 
 class LiveClassboardPage {
   constructor() {
     this.header = new LCBHeader();
+    this.questionResponsePage = new QuestionResponsePage();
   }
 
   checkClassName(className) {
@@ -116,6 +118,8 @@ class LiveClassboardPage {
 
   getStudentScoreByIndex = index => cy.get('[data-cy="studentScore"]').eq(index);
 
+  getViewResponseByIndex = index => cy.get('[data-cy="viewResponse"]').eq(index);
+
   getStudentPerformanceByIndex = index => cy.get('[data-cy="studentPerformance"]').eq(index);
 
   verifyStudentCard(studentName, status, score, performance, queAttempt) {
@@ -130,6 +134,9 @@ class LiveClassboardPage {
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
+      if (status !== studentSide.NOT_STARTED) {
+        this.getViewResponseByIndex(index).should("be.exist");
+      } else this.getViewResponseByIndex(index).should("not.be.exist");
     });
   }
 
@@ -209,26 +216,45 @@ class LiveClassboardPage {
     });
 
     score = `${totalScore} / ${maxScore}`;
-    perfValue = Math.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
+    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
     perf = `${perfValue}%`;
     stats = { score, perf, perfValue };
     return stats;
   };
 
   verifyAvgScore(statsMap) {
-    let submittedCount = 0;
-    let totalPerformance = 0;
+    let scoreObtain = 0;
+    let totalMaxScore = 0;
     Object.keys(statsMap).forEach(studentName => {
-      const { status, perfValue } = statsMap[studentName];
+      const { score, status } = statsMap[studentName];
+      const [scored, max] = score.split("/");
       if (status === asgnStatus.SUBMITTED || status === asgnStatus.GRADED) {
-        submittedCount += 1;
-        totalPerformance += perfValue;
+        // submittedCount += 1;
+        scoreObtain += parseFloat(scored);
+        totalMaxScore += parseFloat(max);
       }
     });
 
-    const avgPerformance = `${Math.round(totalPerformance / submittedCount, 2)}%`;
-    // expect(5).to.eq(5);
+    const avgPerformance = `${Cypress._.round((scoreObtain / totalMaxScore) * 100, 2)}%`;
     this.getAvgScore().should("have.text", avgPerformance);
   }
+
+  verifyStudentCentricCard(studentName, studentAttempts, questionTypeMap) {
+    this.questionResponsePage.selectStudent(studentName);
+    Object.keys(studentAttempts).forEach((queNum, qIndex) => {
+      const attemptType = studentAttempts[queNum];
+      const { queKey, attemptData } = questionTypeMap[queNum];
+      this.questionResponsePage.verifyQuestionResponseCard(queKey, attemptType, attemptData, true, qIndex);
+    });
+  }
+
+  verifyQuestionCentricCard = (queNum, studentAttempts, questionTypeMap) => {
+    this.questionResponsePage.selectQuestion(queNum);
+    Object.keys(studentAttempts).forEach(studentName => {
+      const attemptType = studentAttempts[studentName];
+      const { queKey, attemptData } = questionTypeMap[queNum];
+      this.questionResponsePage.verifyQuestionResponseCard(queKey, attemptType, attemptData, false, studentName);
+    });
+  };
 }
 export default LiveClassboardPage;

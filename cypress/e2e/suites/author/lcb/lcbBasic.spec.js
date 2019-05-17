@@ -4,7 +4,6 @@ import StudentTestPage from "../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
 import { studentSide } from "../../../framework/constants/assignmentStatus";
-import StudentCentricViewPage from "../../../framework/author/assignments/StudentCentricViewPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment page UI`, () => {
   const attemptsData = [
@@ -36,7 +35,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
       email: "auto.lcb.student05@yopmail.com",
       stuName: "Student05",
       attempt: { Q1: "right", Q2: "skip" },
-      status: "SUBMITTED"
+      status: "IN PROGRESS"
     },
     {
       email: "auto.lcb.student06@yopmail.com",
@@ -51,9 +50,25 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   const questionTypeMap = {};
   const statsMap = {};
 
-  const studentList = attemptsData
-    .filter(({ stuName, status }) => status !== studentSide.NOT_STARTED)
+  const allStudentList = attemptsData.map(item => item.stuName);
+  const submittedInprogressStudentList = attemptsData
+    .filter(({ status }) => status !== studentSide.NOT_STARTED)
     .map(item => item.stuName);
+
+  const queCentric = {};
+  function getQuestionCentricData() {
+    attemptsData
+      .filter(({ status }) => status !== studentSide.NOT_STARTED)
+      .forEach(({ attempt, stuName }) => {
+        Object.keys(attempt).forEach(queNum => {
+          if (!queCentric[queNum]) queCentric[queNum] = {};
+          queCentric[queNum][stuName] = attempt[queNum];
+        });
+      });
+    return queCentric;
+  }
+
+  const queList = Object.keys(getQuestionCentricData());
 
   // TODO : will move below data into test data files
   const testId = "5cd9385f163c8a4fea055823";
@@ -63,7 +78,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   const assignmentPage = new AssignmentsPage();
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
-  const studentResponse = new StudentCentricViewPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
 
   before(" > create new assessment and assign", () => {
@@ -106,8 +120,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
           const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
           const { attemptData } = questionData[queType][questionKey];
           test.attemptQuestion(queType, attempt[queNum], attemptData);
-          test.getNext().click();
+          test.clickOnNext();
         });
+
         if (status !== "IN PROGRESS") {
           test.submitTest();
           cy.contains("Reports").should("be.visible");
@@ -119,8 +134,6 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
   before("login as teacher", () => {
     cy.login("teacher", teacher);
     authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
-    // cy.visit("author/classboard/5cdbe1cfdbe2e06ccf813274/5ccae64a7b99153441dd7e66");
-    // cy.wait(3000);
   });
 
   describe(" > verify LCB card view", () => {
@@ -135,24 +148,34 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment pag
       );
     });
 
-    studentList.forEach(studentName => {
+    allStudentList.forEach(studentName => {
       it(` > verify student cards for :: ${studentName}`, () => {
         const { status, score, perf, attempt } = statsMap[studentName];
         lcb.verifyStudentCard(studentName, status, score, perf, attempt);
       });
     });
+  });
 
-    describe(" > verify student centric view", () => {
-      before("student tab click", () => {
-        lcb.clickOnStudentsTab();
-        cy.wait(5000); // TODO : remove this
+  describe(" > verify student centric view", () => {
+    before("student tab click", () => {
+      lcb.clickOnStudentsTab();
+    });
+    submittedInprogressStudentList.forEach(studentName => {
+      it(` > verify student centric view for :: ${studentName}`, () => {
+        const { attempt } = statsMap[studentName];
+        lcb.verifyStudentCentricCard(studentName, attempt, questionTypeMap);
       });
-      studentList.forEach(studentName => {
-        it(` > verify student centric view for :: ${studentName}`, () => {
-          const { attempt } = statsMap[studentName];
-          studentResponse.selectStudent(studentName);
-          studentResponse.verifyQuestionResponseCard(attempt, questionTypeMap);
-        });
+    });
+  });
+
+  describe(" > verify question centric view", () => {
+    before("student tab click", () => {
+      lcb.clickonQuestionsTab();
+    });
+    queList.forEach(queNumber => {
+      it(` > verify question centric view for :: ${queNumber}`, () => {
+        const attempt = queCentric[queNumber];
+        lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
       });
     });
   });

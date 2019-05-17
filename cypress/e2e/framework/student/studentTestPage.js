@@ -40,10 +40,13 @@ class StudentTestPage {
   getNext = () => cy.get("[data-cy=next]");
 
   clickOnNext = () => {
+    cy.server();
+    cy.route("POST", "**/test-activity/**").as("saved");
     cy.wait(500);
     this.getNext()
       .should("be.visible")
       .click();
+    cy.wait("@saved");
   };
 
   getPrevious = () => cy.get("[data-cy=prev]");

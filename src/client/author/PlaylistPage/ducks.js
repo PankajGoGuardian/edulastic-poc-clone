@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
+import uuidv4 from "uuid/v4";
 import { playlists, test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
@@ -174,7 +175,7 @@ const initialState = {
 };
 
 const createNewModuleState = title => ({
-  _id: "",
+  id: uuidv4(),
   title,
   data: []
 });
@@ -468,7 +469,7 @@ function* deleteSharedUserSaga({ payload }) {
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
     const newModule = createNewModuleState(payload.moduleName);
-    draft.modules.splice(payload.moduleIndex, 0, newModule);
+    draft.modules.splice(payload.moduleIndex || 0, 0, newModule);
     return draft;
   });
   return newPlaylist;

@@ -41,8 +41,8 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 
     yield put(
       receivePlaylistSuccessAction({
-        entities: result,
-        count: result.length,
+        entities: result.hits.hits,
+        count: result.hits.total,
         page,
         limit
       })

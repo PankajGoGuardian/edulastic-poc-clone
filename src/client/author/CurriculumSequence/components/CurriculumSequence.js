@@ -164,13 +164,13 @@ class CurriculumSequence extends Component {
   componentDidMount() {
     const { setPublisher, publisher, fetchGroups } = this.props;
     fetchGroups();
-    setPublisher(publisher);
+    // setPublisher(publisher);
   }
 
   onChange = evt => {
     const publisher = evt.target.value;
     const { setPublisher } = this.props;
-    setPublisher(publisher);
+    // setPublisher(publisher);
   };
 
   handleSaveClick = evt => {

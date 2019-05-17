@@ -27,9 +27,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
       newItem.validation.alt_responses = [];
     }
 
+    const newInitialArray = [initialMethod];
+
     newItem.validation.alt_responses.push({
       score: 1,
-      value: [[initialMethod]]
+      value: Array.from({ length: newItem.validation.valid_response.value.length }, () => cloneDeep(newInitialArray))
     });
 
     setQuestionData(newItem);

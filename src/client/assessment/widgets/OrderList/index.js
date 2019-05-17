@@ -38,7 +38,6 @@ const QuestionNumber = styled.div`
   margin-right: 4px;
 `;
 
-const List = withAddButton(QuillSortableList);
 const OptionsList = withPoints(QuillSortableList);
 
 const OrderList = ({

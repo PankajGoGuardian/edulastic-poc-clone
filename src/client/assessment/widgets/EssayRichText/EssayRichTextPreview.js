@@ -3,8 +3,9 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import { get } from "lodash";
+import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus, CustomQuillComponent } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -51,25 +52,15 @@ const EssayRichTextPreview = ({
     }
   }, [userAnswer]);
 
-  const handleTextChange = (val, a, b, editor) => {
-    setWordCount(
-      editor
-        .getText()
-        .split(" ")
-        .filter(i => !!i.trim()).length
-    );
-
+  // TODO: if this is slooooooow, debounce or throttle it..
+  const handleTextChange = val => {
+    const wordsCount = stripTags(val)
+      .split(" ")
+      .filter(i => !!i.trim()).length;
+    const mathInputCount = (val.match(/input__math/g) || []).length;
+    setWordCount(wordsCount + mathInputCount);
     setText(val);
     saveAnswer(val);
-  };
-
-  const handleSelect = range => {
-    if (range) {
-      setSelection({
-        start: range.index,
-        end: range.length
-      });
-    }
   };
 
   const handleCharacterSelect = char => {
@@ -119,24 +110,22 @@ const EssayRichTextPreview = ({
           )}
         </div>
         {!Array.isArray(userAnswer) && (
-          <ReactQuillWrapper
-            id="mainQuill"
-            minHeight={minHeight}
-            maxHeight={maxHeight}
-            fontSize={fontSize}
-            placeholder={placeholder}
-            onChangeSelection={handleSelect}
+          <CustomQuillComponent
+            custom
+            toolbarId={EssayRichTextPreview.modules(item.formatting_options)}
             style={{
               background:
                 item.max_word < wordCount
                   ? theme.widgets.essayRichText.quillLimitedBgColor
-                  : theme.widgets.essayRichText.quillBgColor
+                  : theme.widgets.essayRichText.quillBgColor,
+              minHeight,
+              maxHeight,
+              fontSize
             }}
+            onChange={handleTextChange}
             defaultValue={
               smallSize ? t("component.essayText.rich.templateText") : Array.isArray(userAnswer) ? "" : userAnswer
             }
-            onChange={handleTextChange}
-            modules={EssayRichTextPreview.modules(item.formatting_options)}
             {...getSpellCheckAttributes(item.spellcheck)}
           />
         )}
@@ -198,9 +187,7 @@ const toolbarOptions = options => {
   return arr;
 };
 
-EssayRichTextPreview.modules = options => ({
-  toolbar: toolbarOptions(options)
-});
+EssayRichTextPreview.modules = options => toolbarOptions(options);
 
 EssayRichTextPreview.formats = [
   "header",

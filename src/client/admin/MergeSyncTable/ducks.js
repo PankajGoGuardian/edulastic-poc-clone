@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { put, takeEvery, call, all } from "redux-saga/effects";
 import { message } from "antd";
 import { adminApi } from "@edulastic/api";
+import _get from "lodash.get";
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = "[admin] SEARCH_EXISTING_DATA_API";
@@ -66,10 +67,7 @@ const initialState = {
 
 const fetchExistingDataReducer = createReducer(initialState, {
   [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
-    const {
-      rosterSyncConfig: { cleverSubjectStandardMap }
-    } = payload.data;
-
+    const cleverSubjectStandardMap = _get(payload.data, ["rosterSyncConfig", "cleverSubjectStandardMap"], {});
     state.searchData = payload;
     state.subStandardMapping.cleverSubjectStandardMap = cleverSubjectStandardMap;
     state.subStandardMapping.rows = Object.keys(cleverSubjectStandardMap).map(key => ({ subject: key }));
@@ -212,8 +210,8 @@ function* fetchSchoolsSync({ payload }) {
     } = item;
     const messageKey = success ? "success" : "error";
     message[messageKey](infoMessage);
-  } catch (err) {
-    console.error(err);
+  } catch ({ data: { message: errMsg } }) {
+    message.error(errMsg);
   }
 }
 

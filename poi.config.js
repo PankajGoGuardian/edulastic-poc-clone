@@ -23,7 +23,7 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
-    chain.plugin("BannerPlugin").use(new webpack.BannerPlugin({ banner: new Date().toString() }));
+    chain.plugin("BannerPlugin").use(new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` }));
   }
 };
 if (process.env.PUBLIC_URL) {

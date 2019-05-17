@@ -66,6 +66,20 @@ const deleteUser = data =>
     })
     .then(result => result.data.result);
 
+const changeUserTTS = data =>
+  api.callApi({
+    url: `${prefix}/tts`,
+    method: "put",
+    data
+  });
+
+const resetPassword = data =>
+  api.callApi({
+    url: `${prefix}/password`,
+    method: "put",
+    data
+  });
+
 export default {
   getUser,
   fetchUsers,
@@ -73,5 +87,7 @@ export default {
   updateUser,
   deleteUser,
   getProxyUser,
-  getSwitchedToken
+  getSwitchedToken,
+  changeUserTTS,
+  resetPassword
 };

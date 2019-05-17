@@ -18,14 +18,16 @@ class AddStudentModal extends React.Component {
   setKeys = keys => this.setState({ keys });
 
   render() {
-    const { form, handleCancel, handleAdd, isOpen, submitted } = this.props;
+    const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit } = this.props;
     const { keys } = this.state;
     const { getFieldDecorator, getFieldValue } = form;
+
+    const std = isEdit ? stds[0] : {};
 
     const title = (
       <Title>
         <IconUser />
-        <label>Add Student to Class</label>
+        <label>{isEdit ? "Update a User" : "Add Student to Class"}</label>
       </Title>
     );
 
@@ -35,7 +37,8 @@ class AddStudentModal extends React.Component {
           No, Cancel
         </ActionButton>
         <ActionButton onClick={handleAdd} type="primary">
-          Yes, Add Student <Icon type="right" />
+          {isEdit ? "Yes, Update Student" : "Yes, Add Student"}
+          <Icon type="right" />
         </ActionButton>
       </>
     );
@@ -52,7 +55,7 @@ class AddStudentModal extends React.Component {
     const AdditionalDetailsHeader = (
       <PanelHeader>
         <Icon type="setting" theme="filled" />
-        <label>Basic Details</label>
+        <label>Configure Additional Details</label>
       </PanelHeader>
     );
 
@@ -67,11 +70,21 @@ class AddStudentModal extends React.Component {
               expandIconPosition="right"
             >
               <Panel header={BasicDetailsHeader} key="basic">
-                <BasicFields getFieldDecorator={getFieldDecorator} getFieldValue={getFieldValue} />
+                <BasicFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  std={std}
+                  isEdit={isEdit}
+                />
               </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">
                 {find(keys, key => key === "additional") && (
-                  <AdditionalFields getFieldDecorator={getFieldDecorator} getFieldValue={getFieldValue} />
+                  <AdditionalFields
+                    getFieldDecorator={getFieldDecorator}
+                    getFieldValue={getFieldValue}
+                    std={std}
+                    isEdit={isEdit}
+                  />
                 )}
               </Panel>
             </Collapse>
@@ -85,12 +98,18 @@ class AddStudentModal extends React.Component {
 AddStudentModal.propTypes = {
   handleAdd: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
-  isOpen: PropTypes.bool.isRequired,
   form: PropTypes.object.isRequired,
-  submitted: PropTypes.bool.isRequired
+  submitted: PropTypes.bool.isRequired,
+  isOpen: PropTypes.bool,
+  stds: PropTypes.array,
+  isEdit: PropTypes.bool
 };
 
-AddStudentModal.defaultProps = {};
+AddStudentModal.defaultProps = {
+  isOpen: false,
+  stds: [],
+  isEdit: false
+};
 
 const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal);
 

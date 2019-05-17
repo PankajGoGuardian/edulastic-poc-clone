@@ -8,7 +8,7 @@ import { compose } from "redux";
 import { Button, Row, Input, Spin } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
-import { IconList, IconTile } from "@edulastic/icons";
+import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
 
 import {
@@ -47,8 +47,12 @@ import {
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "./TestListFilters";
+import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
+import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
+import { ItemsMenu, StyledButton } from "../../../TestPage/components/AddItems/styled";
+import { createNewModuleAction, createTestInModuleAction } from "../../../PlaylistPage/ducks";
 
-const filterMenuItems = [
+export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
   { icon: "folder", filter: "AUTHORED_BY_ME", path: "by-me", text: "Authored by me" },
   { icon: "share-alt", filter: "SHARED_WITH_ME", path: "shared", text: "Shared with me" },
@@ -108,6 +112,8 @@ class TestList extends Component {
     search: getClearSearchState(),
     standardQuery: "",
     blockStyle: "tile",
+    showCreateModuleModal: false,
+    showAddTestInModules: false,
     isShowFilter: false
   };
 
@@ -118,41 +124,47 @@ class TestList extends Component {
       getCurriculums,
       limit,
       location,
+      mode,
       match: { params = {} }
     } = this.props;
     const { search } = this.state;
-    const parsedQueryData = qs.parse(location.search);
-    if (!curriculums.length) {
-      getCurriculums();
-    }
-    const { filterType } = params;
-    if (filterType) {
-      const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
-      const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      this.setState(prevState => ({
-        search: {
-          ...prevState.search,
-          filter
-        }
-      }));
-      receiveTests({
-        page: 1,
-        limit,
-        search: {
-          ...search,
-          filter
-        }
-      });
-    } else if (Object.entries(parsedQueryData).length > 0) {
-      this.setFilterParams(parsedQueryData, params);
-    } else if (params.page && params.limit) {
-      receiveTests({
-        page: Number(params.page),
-        limit: Number(params.limit),
-        search
-      });
-    } else {
+    if (mode === "embedded") {
+      this.handleStyleChange("horizontal");
       receiveTests({ page: 1, limit, search });
+    } else {
+      const parsedQueryData = qs.parse(location.search);
+      if (!curriculums.length) {
+        getCurriculums();
+      }
+      const { filterType } = params;
+      if (filterType) {
+        const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
+        const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
+        this.setState(prevState => ({
+          search: {
+            ...prevState.search,
+            filter
+          }
+        }));
+        receiveTests({
+          page: 1,
+          limit,
+          search: {
+            ...search,
+            filter
+          }
+        });
+      } else if (Object.entries(parsedQueryData).length > 0) {
+        this.setFilterParams(parsedQueryData, params);
+      } else if (params.page && params.limit) {
+        receiveTests({
+          page: Number(params.page),
+          limit: Number(params.limit),
+          search
+        });
+      } else {
+        receiveTests({ page: 1, limit, search });
+      }
     }
   }
 
@@ -197,7 +209,7 @@ class TestList extends Component {
 
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page } = this.props;
+    const { receiveTests, clearDictStandards, history, limit, page, mode } = this.props;
     let updatedKeys = {};
     if (name === "curriculumId" && !value.length) {
       clearDictStandards();
@@ -222,25 +234,30 @@ class TestList extends Component {
       () => {
         const { search: updatedSearch } = this.state;
         receiveTests({ search: updatedSearch, page: 1, limit });
-
-        history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+        if (mode !== "embedded") {
+          history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+        }
       }
     );
   };
 
   handleCreate = () => {
-    const { history, clearSelectedItems, clearTestData } = this.props;
-    history.push("/author/tests/create");
+    const { history, clearSelectedItems, clearTestData, mode } = this.props;
+    if (mode !== "embedded") {
+      history.push("/author/tests/create");
+    }
     clearTestData();
     clearSelectedItems();
   };
 
   handlePaginationChange = page => {
-    const { receiveTests, limit, history } = this.props;
+    const { receiveTests, limit, history, mode } = this.props;
     const { search } = this.state;
 
     receiveTests({ page, limit, search });
-    history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+    if (mode !== "embedded") {
+      history.push(`/author/tests/limit/${limit}/page/${page}/filter?${this.filterUrl}`);
+    }
   };
 
   handleStyleChange = blockStyle => {
@@ -261,7 +278,9 @@ class TestList extends Component {
     const { receiveTests, limit, history } = this.props;
     const { search } = this.state;
     receiveTests({ page: 1, limit, search });
-    history.push(`/author/tests`);
+    if (mode !== "embedded") {
+      history.push(`/author/tests`);
+    }
   };
 
   handleClearFilter = () => {
@@ -328,6 +347,32 @@ class TestList extends Component {
     );
   }
 
+  handleCreateNewModule = () => {
+    this.setState({ showCreateModuleModal: true });
+  };
+
+  handleAddTests = item => {
+    this.setState({ showAddTestInModules: true, testAdded: item });
+  };
+
+  onCloseCreateModule = () => {
+    this.setState({ showCreateModuleModal: false });
+  };
+
+  onCloseAddTestModal = () => {
+    this.setState({ showAddTestInModules: false });
+  };
+
+  handleTestAdded = index => {
+    const { addTestToModule, playlist } = this.props;
+    const { testAdded } = this.state;
+    addTestToModule({ moduleIndex: index, testAdded });
+  };
+
+  handleAddTests = item => {
+    this.setState({ showAddTestInModules: true, testAdded: item });
+  };
+
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
@@ -365,6 +410,7 @@ class TestList extends Component {
             item={item}
             history={history}
             match={match}
+            addTestToPlaylist={this.handleAddTests}
           />
         ))}
       </Row>
@@ -375,9 +421,11 @@ class TestList extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    const { history, receiveTests, limit } = this.props;
+    const { history, receiveTests, limit, mode } = this.props;
     const { search } = this.state;
-    history.push(`/author/tests/filter/${filterType}`);
+    if (mode !== "embedded") {
+      history.push(`/author/tests/filter/${filterType}`);
+    }
     this.setState(prevState => ({
       search: {
         ...prevState.search,
@@ -395,36 +443,41 @@ class TestList extends Component {
   };
 
   render() {
-    const { page, limit, count, creating } = this.props;
+    const { page, limit, count, creating, mode, playlist, addModuleToPlaylist } = this.props;
 
-    const { blockStyle, isShowFilter, search } = this.state;
+    const { blockStyle, isShowFilter, search, showAddTestInModules, showCreateModuleModal } = this.state;
     const { searchString } = search;
-
+    let modulesList = [];
+    if (playlist) {
+      modulesList = playlist.modules;
+    }
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
     return (
       <>
-        <ListHeader
-          onCreate={this.handleCreate}
-          creating={creating}
-          title="Test Library"
-          btnTitle="New Assessment"
-          renderFilter={() => (
-            <StyleChangeWrapper>
-              <IconTile
-                onClick={() => this.handleStyleChange("tile")}
-                width={18}
-                height={18}
-                color={blockStyle === "tile" ? white : grey}
-              />
-              <IconList
-                onClick={() => this.handleStyleChange("horizontal")}
-                width={18}
-                height={18}
-                color={blockStyle === "horizontal" ? white : grey}
-              />
-            </StyleChangeWrapper>
-          )}
-        />
+        {mode !== "embedded" && (
+          <ListHeader
+            onCreate={this.handleCreate}
+            creating={creating}
+            title="Test Library"
+            btnTitle="New Assessment"
+            renderFilter={() => (
+              <StyleChangeWrapper>
+                <IconTile
+                  onClick={() => this.handleStyleChange("tile")}
+                  width={18}
+                  height={18}
+                  color={blockStyle === "tile" ? white : grey}
+                />
+                <IconList
+                  onClick={() => this.handleStyleChange("horizontal")}
+                  width={18}
+                  height={18}
+                  color={blockStyle === "horizontal" ? white : grey}
+                />
+              </StyleChangeWrapper>
+            )}
+          />
+        )}
         <Container>
           <MobileFilter>
             <Input.Search
@@ -452,6 +505,31 @@ class TestList extends Component {
               />
             </SearchModalContainer>
           </Modal>
+
+          {showCreateModuleModal && (
+            <Modal
+              open={showCreateModuleModal}
+              title="Add Module"
+              onClose={this.onCloseCreateModule}
+              footer={null}
+              style={{ minWidth: "640px", padding: "20px" }}
+            >
+              <AddUnitModalBody
+                destinationCurriculumSequence={playlist}
+                addModuleToPlaylist={addModuleToPlaylist}
+                handleAddModule={this.onCloseCreateModule}
+                newModule={{ name: "New Module", afterModuleId: 0 }}
+              />
+            </Modal>
+          )}
+          {showAddTestInModules && (
+            <AddTestModal
+              isVisible={showAddTestInModules}
+              onClose={this.onCloseAddTestModal}
+              modulesList={modulesList}
+              handleTestAdded={this.handleTestAdded}
+            />
+          )}
           <FlexContainer>
             <Filter>
               <AffixWrapper>
@@ -483,6 +561,17 @@ class TestList extends Component {
                 <PaginationInfo>
                   {from} to {to} of <i>{count}</i>
                 </PaginationInfo>
+                <ItemsMenu>
+                  <StyledButton
+                    data-cy="createNewItem"
+                    type="secondary"
+                    size="large"
+                    onClick={this.handleCreateNewModule}
+                  >
+                    <IconPlusCircle color="#1774F0" width={15} height={15} />
+                    <span>Add Module</span>
+                  </StyledButton>
+                </ItemsMenu>
               </FlexContainer>
               <CardContainer type={blockStyle}>
                 {this.renderCardContent()}
@@ -521,6 +610,8 @@ const enhance = compose(
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       receiveTests: receiveTestsAction,
+      addModuleToPlaylist: createNewModuleAction,
+      addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
       clearTestData: clearTestDataAction

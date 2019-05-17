@@ -21,8 +21,8 @@ export const getTestItemAuthorName = item => {
 export const getPlaylistAuthorName = item => {
   const {
     _source: {
-      createdBy: { firstName, lastName }
+      createdBy: { name }
     }
   } = item;
-  return `${firstName} ${lastName}`;
+  return `${name}`;
 };

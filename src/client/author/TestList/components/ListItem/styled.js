@@ -199,6 +199,24 @@ export const ViewButton = styled.div`
   }
 `;
 
+export const AddButton = styled.div`
+  width: 120px;
+  float: right;
+  font-size: 12px;
+  color: ${blue};
+  background: white;
+  padding: 8px;
+  box-shadow: 0px 1px 1px 1px ${fadedGrey};
+  border-radius: 4px;
+  font-weight: 600;
+  margin-right: 10px;
+  text-align: center;
+  cursor: pointer;
+  &:hover {
+    background: ${lightGrey};
+  }
+`;
+
 export const Footer = styled(Col)`
   margin-top: 15px;
 `;

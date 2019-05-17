@@ -15,6 +15,8 @@ import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { ContentArea } from "../../styled/ContentArea";
 import { Widget } from "../../styled/Widget";
 
+import { replaceVariables, updateVariables } from "../../utils/variables";
+
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 
@@ -37,9 +39,18 @@ const ClozeMath = ({
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
+      updateVariables(draft);
     });
 
     setQuestionData(newItem);
+  };
+
+  const _setQuestionData = newItem => {
+    setQuestionData(
+      produce(newItem, draft => {
+        updateVariables(draft);
+      })
+    );
   };
 
   const getPreviewTemplate = tmpl => {
@@ -53,8 +64,10 @@ const ClozeMath = ({
   };
 
   useEffect(() => {
-    setTemplate(getPreviewTemplate(item.template));
+    setTemplate(replaceVariables(getPreviewTemplate(item.template)));
   }, [item.template]);
+
+  const itemForPreview = replaceVariables(item);
 
   return (
     <Fragment>
@@ -62,13 +75,13 @@ const ClozeMath = ({
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion
             item={item}
-            setQuestionData={setQuestionData}
+            setQuestionData={_setQuestionData}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
           <Template
             item={item}
-            setQuestionData={setQuestionData}
+            setQuestionData={_setQuestionData}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
@@ -76,7 +89,7 @@ const ClozeMath = ({
             <ClozeMathAnswers
               id="answers"
               item={item}
-              setQuestionData={setQuestionData}
+              setQuestionData={_setQuestionData}
               fillSections={fillSections}
               cleanSections={cleanSections}
             />
@@ -99,7 +112,7 @@ const ClozeMath = ({
         <Paper style={{ height: "100%", overflow: "visible" }}>
           <ClozeMathPreview
             type={previewTab}
-            item={item}
+            item={itemForPreview}
             template={template}
             saveAnswer={saveAnswer}
             check={checkAnswer}

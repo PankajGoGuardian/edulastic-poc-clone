@@ -27,7 +27,8 @@ import {
   CardIdWrapper,
   CardId,
   Footer,
-  ButtonWrapper
+  ButtonWrapper,
+  AddButton
 } from "./styled";
 import ViewModal from "../ViewModal";
 
@@ -83,11 +84,11 @@ class ListItem extends Component {
       owner = false,
       testItemId,
       isPlaylist,
+      addTestToPlaylist,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal } = this.state;
-
     return (
       <>
         <ViewModal
@@ -121,7 +122,7 @@ class ListItem extends Component {
               <Inner>
                 <div>
                   <StyledLink title={title} onClick={this.moveToItem}>
-                    {isPlaylist ? _source.publisher : title}
+                    {isPlaylist ? _source.collectionName : title}
                   </StyledLink>
                 </div>
                 <Description onClick={isPlaylist ? this.moveToItem : ""}>
@@ -136,11 +137,16 @@ class ListItem extends Component {
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
                 <ViewButton onClick={this.openModal}>VIEW</ViewButton>
+                {<AddButton onClick={e => addTestToPlaylist(item)}>ADD</AddButton>}
               </ViewButtonWrapper>
             )}
 
             <Footer span={24}>
-              <TagsWrapper span={12}>{!isPlaylist && <Tags tags={tags} />}</TagsWrapper>
+              {!isPlaylist && (
+                <TagsWrapper span={12}>
+                  <Tags tags={tags} />
+                </TagsWrapper>
+              )}
 
               <ItemInformation span={12}>
                 <ContentWrapper>

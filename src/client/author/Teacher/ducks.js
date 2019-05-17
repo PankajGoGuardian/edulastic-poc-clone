@@ -88,7 +88,7 @@ export const getTeachersListSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},

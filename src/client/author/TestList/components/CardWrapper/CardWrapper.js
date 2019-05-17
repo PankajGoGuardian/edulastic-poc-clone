@@ -12,6 +12,7 @@ class CardWrapper extends Component {
     match: PropTypes.object.isRequired,
     windowWidth: PropTypes.number,
     blockStyle: PropTypes.string,
+    addTestToPlaylist: PropTypes.func,
     owner: PropTypes.object
   };
 
@@ -30,6 +31,7 @@ class CardWrapper extends Component {
       history,
       match,
       isPlaylist,
+      addTestToPlaylist,
       owner
     } = this.props;
 
@@ -58,6 +60,7 @@ class CardWrapper extends Component {
           item={item}
           history={history}
           match={match}
+          addTestToPlaylist={addTestToPlaylist}
           authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
           testItemId={itemId}
           isPlaylist={isPlaylist}

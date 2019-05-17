@@ -22,6 +22,7 @@ import {
   getTestsLoadingSelector,
   publishTestAction,
   getTestStatusSelector,
+  createNewModuleAction,
   setRegradeOldIdAction
 } from "../../ducks";
 import {
@@ -36,11 +37,11 @@ import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
 
-import AddTests from "../AddTests/AddTests";
 import Review from "../../../TestPage/components/Review";
 import Summary from "../../../TestPage/components/Summary";
 import Assign from "../../../TestPage/components/Assign";
 import Setting from "../../../TestPage/components/Setting";
+import TestList from "../../../TestList";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -160,7 +161,7 @@ class Container extends PureComponent {
     });
   };
   renderContent = () => {
-    const { playlist, setData, rows, isTestLoading } = this.props;
+    const { playlist, setData, rows, isTestLoading, match, history, addNewModuleToPlaylist } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
@@ -182,11 +183,20 @@ class Container extends PureComponent {
             test.testId && selectedTests.push(test.testId);
           });
       });
-    console.log("play", playlist);
     _uniq(selectedTests);
     switch (current) {
-      case "addItems":
-        return <AddTests selectedItems={selectedTests} current={current} onSaveTestId={this.handleSaveTestId} />;
+      case "addTests":
+        return (
+          <TestList
+            history={history}
+            match={match}
+            mode={"embedded"}
+            selectedItems={selectedTests}
+            current={current}
+            onSaveTestId={this.handleSaveTestId}
+            playlist={playlist}
+          />
+        );
       case "summary":
         return (
           <Summary
@@ -377,6 +387,7 @@ const enhance = compose(
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
+      addNewModuleToPlaylist: createNewModuleAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )

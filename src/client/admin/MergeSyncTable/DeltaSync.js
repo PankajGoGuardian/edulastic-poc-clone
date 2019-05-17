@@ -12,41 +12,38 @@ const Column = styled(FlexColumn)`
   }
 `;
 
-function DeltaSync(props) {
-  const {
-    rosterSyncConfig,
-    form: { getFieldDecorator }
-  } = props;
+function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges }) {
+  const { getFieldDecorator } = form;
   const { orgId, orgType } = rosterSyncConfig;
 
   const setValueBackToDefault = () => {
-    props.form.setFieldsValue({
-      studentDeltaMergeEnabled: rosterSyncConfig["studentDeltaMergeEnabled"],
-      studentFullMergeEnabled: rosterSyncConfig["studentFullMergeEnabled"],
-      studentMergeAttribute: rosterSyncConfig["studentMergeAttribute"],
-      teacherDeltaMergeEnabled: rosterSyncConfig["teacherDeltaMergeEnabled"],
-      teacherFullMergeEnabled: rosterSyncConfig["teacherFullMergeEnabled"],
-      teacherMergeAttribute: rosterSyncConfig["teacherMergeAttribute"]
+    form.setFieldsValue({
+      studentDeltaMergeEnabled: rosterSyncConfig.studentDeltaMergeEnabled,
+      studentFullMergeEnabled: rosterSyncConfig.studentFullMergeEnabled,
+      studentMergeAttribute: rosterSyncConfig.studentMergeAttribute,
+      teacherDeltaMergeEnabled: rosterSyncConfig.teacherDeltaMergeEnabled,
+      teacherFullMergeEnabled: rosterSyncConfig.teacherFullMergeEnabled,
+      teacherMergeAttribute: rosterSyncConfig.teacherMergeAttribute
     });
   };
   useEffect(() => {
     setValueBackToDefault();
   }, [
-    rosterSyncConfig["studentDeltaMergeEnabled"],
-    rosterSyncConfig["studentFullMergeEnabled"],
-    rosterSyncConfig["studentMergeAttribute"],
-    rosterSyncConfig["teacherDeltaMergeEnabled"],
-    rosterSyncConfig["teacherFullMergeEnabled"],
-    rosterSyncConfig["teacherMergeAttribute"]
+    rosterSyncConfig.studentDeltaMergeEnabled,
+    rosterSyncConfig.studentFullMergeEnabled,
+    rosterSyncConfig.studentMergeAttribute,
+    rosterSyncConfig.teacherDeltaMergeEnabled,
+    rosterSyncConfig.teacherFullMergeEnabled,
+    rosterSyncConfig.teacherMergeAttribute
   ]); // this effect should run only if these 6 properties in rosterSyncConfig change
 
   function handleSubmit(evt) {
     const data = {
       orgId,
       orgType,
-      ...props.form.getFieldsValue()
+      ...form.getFieldsValue()
     };
-    props.applyDeltaSyncChanges(data);
+    applyDeltaSyncChanges(data);
     evt.preventDefault();
   }
 
@@ -61,14 +58,14 @@ function DeltaSync(props) {
         <Form.Item>
           {getFieldDecorator("studentDeltaMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig["studentDeltaMergeEnabled"]}</Checkbox>)}
+          })(<Checkbox>{deltaSyncConfig.studentDeltaMergeEnabled}</Checkbox>)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator("studentFullMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig["studentFullMergeEnabled"]}</Checkbox>)}
+          })(<Checkbox>{deltaSyncConfig.studentFullMergeEnabled}</Checkbox>)}
         </Form.Item>
-        <Form.Item label={deltaSyncConfig["studentMergeAttribute"]}>
+        <Form.Item label={deltaSyncConfig.studentMergeAttribute}>
           {getFieldDecorator("studentMergeAttribute", {})(
             <Select style={{ width: 120 }}>
               <Option value="name">Name</Option>
@@ -80,14 +77,14 @@ function DeltaSync(props) {
         <Form.Item>
           {getFieldDecorator("teacherDeltaMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig["teacherDeltaMergeEnabled"]}</Checkbox>)}
+          })(<Checkbox>{deltaSyncConfig.teacherDeltaMergeEnabled}</Checkbox>)}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator("teacherFullMergeEnabled", {
             valuePropName: "checked"
-          })(<Checkbox>{deltaSyncConfig["teacherFullMergeEnabled"]}</Checkbox>)}
+          })(<Checkbox>{deltaSyncConfig.teacherFullMergeEnabled}</Checkbox>)}
         </Form.Item>
-        <Form.Item label={deltaSyncConfig["teacherMergeAttribute"]}>
+        <Form.Item label={deltaSyncConfig.teacherMergeAttribute}>
           {getFieldDecorator("teacherMergeAttribute", {})(
             <Select style={{ width: 120 }}>
               <Option value="name">Name</Option>

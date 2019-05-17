@@ -179,7 +179,6 @@ class QuestionWrapper extends Component {
             style={{
               width: "-webkit-fill-available",
               display: "flex",
-              overflowX: "auto",
               boxShadow: "none"
             }}
           >
@@ -220,6 +219,7 @@ QuestionWrapper.propTypes = {
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
   noPadding: PropTypes.bool,
+  changePreviewTab: PropTypes.any.isRequired,
   isFlex: PropTypes.bool,
   timespent: PropTypes.string,
   qIndex: PropTypes.number,

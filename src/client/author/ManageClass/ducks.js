@@ -1,8 +1,8 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { message } from "antd";
-import { get } from "lodash";
-import { googleApi, groupApi, enrollmentApi } from "@edulastic/api";
+import { get, findIndex } from "lodash";
+import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction } from "../sharedDucks/groups";
 
@@ -32,6 +32,22 @@ export const ADD_STUDENT_FAILED = "[manageClass] add student to a class failed";
 
 export const SELECT_STUDENTS = "[manageClass] select students";
 
+export const CHANGE_USER_TTS_REQUEST = "[mangeClass] change student(s) tts";
+export const USER_TTS_REQUEST_FAILED = "[manageClass] student(s) tts request failing";
+export const USER_TTS_REQUEST_SUCCESS = "[manageClass] student(s) tts request success";
+
+export const RESET_PASSWORD_REQUEST = "[manageClass] reset password request";
+export const RESET_PASSWORD_FAILDED = "[manageClass] reset password request failed";
+export const RESET_PASSWORD_SUCCESS = "[manageClass] reset password request success";
+
+export const REMOVE_STUDENTS_REQUEST = "[manageClass] remove student(s) request";
+export const REMOVE_STUDENTS_FAILDED = "[manageClass] remove student(s) failed";
+export const REMOVE_STUDENTS_SUCCESS = "[manageClass] remove student(s) success";
+
+export const UPDATE_STUDENT_REQUEST = "[manageClass] update student request";
+export const UPDATE_STUDENT_FAILDED = "[manageClass] update student failed";
+export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
+
 // action creators
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);
@@ -58,6 +74,21 @@ export const addStudentFailedAction = createAction(ADD_STUDENT_FAILED);
 
 export const selectStudentAction = createAction(SELECT_STUDENTS);
 
+export const changeTTSRequestAction = createAction(CHANGE_USER_TTS_REQUEST);
+export const userTTSRequestFailedAction = createAction(USER_TTS_REQUEST_FAILED);
+export const userTTSRequestSuccessAction = createAction(USER_TTS_REQUEST_SUCCESS);
+
+export const resetPasswordRequestAction = createAction(RESET_PASSWORD_REQUEST);
+export const resetPasswordFaildedAction = createAction(RESET_PASSWORD_FAILDED);
+export const resetPasswordSuccessAction = createAction(RESET_PASSWORD_SUCCESS);
+
+export const removeStudentsRequestAction = createAction(REMOVE_STUDENTS_REQUEST);
+export const removeStudentsFaildedAction = createAction(REMOVE_STUDENTS_FAILDED);
+export const removeStudentsSuccessAction = createAction(REMOVE_STUDENTS_SUCCESS);
+
+export const updateStudentRequestAction = createAction(UPDATE_STUDENT_REQUEST);
+export const updateStudentFaildedAction = createAction(UPDATE_STUDENT_FAILDED);
+export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS);
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -158,6 +189,14 @@ const selectStudent = (state, { payload }) => {
   state.selectedStudent = payload;
 };
 
+const updateStudent = (state, { payload }) => {
+  const stdList = state.studentsList;
+  const updatedIndex = findIndex(stdList, std => std._id === payload._id || std.userId === payload._id);
+  if (updatedIndex !== -1) {
+    state.studentsList.splice(updatedIndex, 1, payload);
+  }
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -175,7 +214,8 @@ export default createReducer(initialState, {
   [ADD_STUDENT_REQUEST]: addStudentRequest,
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
-  [SELECT_STUDENTS]: selectStudent
+  [SELECT_STUDENTS]: selectStudent,
+  [UPDATE_STUDENT_SUCCESS]: updateStudent
 });
 
 // sagas boi
@@ -242,6 +282,63 @@ function* receiveAddStudentRequest({ payload }) {
   }
 }
 
+function* changeUserTTSRequest({ payload }) {
+  try {
+    const result = yield call(userApi.changeUserTTS, payload);
+    const { status } = result;
+
+    let msg = "";
+    if (status === 200) {
+      msg = "User(s) updated successfully";
+    } else {
+      msg = get(result, "data.result");
+    }
+
+    message.success(msg);
+    yield put(userTTSRequestSuccessAction());
+  } catch (error) {
+    message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
+    yield put(userTTSRequestFailedAction(error));
+  }
+}
+
+function* resetPasswordRequest({ payload }) {
+  try {
+    const result = yield call(userApi.resetPassword, payload);
+    const msg = "Password has been changed for the selected student(s).";
+    message.success(msg);
+    yield put(resetPasswordSuccessAction(result.data));
+  } catch (error) {
+    message.error("Reset password request failing");
+    yield put(resetPasswordFaildedAction());
+  }
+}
+
+function* removeStudentsRequest({ payload }) {
+  try {
+    const result = yield call(enrollmentApi.removeStudents, payload);
+    const { result: msg } = result.data;
+    message.success(msg);
+    yield put(removeStudentsSuccessAction(result.data));
+  } catch (error) {
+    yield put(removeStudentsFaildedAction(error));
+  }
+}
+
+function* updateStudentRequest({ payload }) {
+  try {
+    const { userId, data } = payload;
+    const result = yield call(userApi.updateUser, { userId, data });
+    const msg = "Successfully Updated student.";
+
+    message.success(msg);
+    yield put(updateStudentSuccessAction(result));
+  } catch (error) {
+    message.error("Update a student request failing");
+    yield put(updateStudentFaildedAction());
+  }
+}
+
 // sync google class
 function* syncClass({ payload }) {
   try {
@@ -261,6 +358,10 @@ export function* watcherSaga() {
     yield takeEvery(CREATE_CLASS_REQUEST, receiveCreateClassRequest),
     yield takeEvery(FETCH_STUDENTS_BY_ID_REQUEST, fetchStudentsByClassId),
     yield takeEvery(UPDATE_CLASS_REQUEST, receiveUpdateClass),
-    yield takeEvery(ADD_STUDENT_REQUEST, receiveAddStudentRequest)
+    yield takeEvery(ADD_STUDENT_REQUEST, receiveAddStudentRequest),
+    yield takeEvery(CHANGE_USER_TTS_REQUEST, changeUserTTSRequest),
+    yield takeEvery(REMOVE_STUDENTS_REQUEST, removeStudentsRequest),
+    yield takeEvery(RESET_PASSWORD_REQUEST, resetPasswordRequest),
+    yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentRequest)
   ]);
 }

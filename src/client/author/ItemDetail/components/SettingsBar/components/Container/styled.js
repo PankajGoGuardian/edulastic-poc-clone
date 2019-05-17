@@ -8,7 +8,7 @@ export const Content = styled.div`
   right: 0;
   top: 0;
   bottom: 0;
-  z-index: 1000;
+  z-index: 1030;
   padding: 30px;
   box-shadow: -3px 3px 6px 0 rgba(0, 0, 0, 0.16);
   overflow-y: auto;

@@ -70,11 +70,11 @@ Cypress.Commands.add("login", (role = "teacher", email, password = "snapwiz") =>
   cy.wait("@auth");
   // .then(() => {
   // TODO: wierd login issue redirects doesn't happens automatically
-  if (role === "teacher") {
+  /*   if (role === "teacher") {
     cy.visit("/author/assignments");
   } else {
     cy.visit("/home/assignments");
-  }
+  } */
   cy.wait("@assignment");
 });
 

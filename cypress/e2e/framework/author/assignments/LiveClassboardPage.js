@@ -156,7 +156,7 @@ class LiveClassboardPage {
 
     const queColor = {
       RIGHT: "rgb(94, 181, 0)",
-      WRONG: "rgb(243, 95, 95)",
+      WRONG: "rgb(243, 95, 94)",
       SKIP: "rgb(229, 229, 229)"
     };
 
@@ -243,8 +243,8 @@ class LiveClassboardPage {
     this.questionResponsePage.selectStudent(studentName);
     Object.keys(studentAttempts).forEach((queNum, qIndex) => {
       const attemptType = studentAttempts[queNum];
-      const { queKey, attemptData } = questionTypeMap[queNum];
-      this.questionResponsePage.verifyQuestionResponseCard(queKey, attemptType, attemptData, true, qIndex);
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      this.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, true, qIndex);
     });
   }
 
@@ -252,8 +252,15 @@ class LiveClassboardPage {
     this.questionResponsePage.selectQuestion(queNum);
     Object.keys(studentAttempts).forEach(studentName => {
       const attemptType = studentAttempts[studentName];
-      const { queKey, attemptData } = questionTypeMap[queNum];
-      this.questionResponsePage.verifyQuestionResponseCard(queKey, attemptType, attemptData, false, studentName);
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
     });
   };
 }

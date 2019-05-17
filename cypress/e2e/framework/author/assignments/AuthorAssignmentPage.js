@@ -17,13 +17,15 @@ class AuthorAssignmentPage {
       .click({ force: true });
   }
 
-  clcikOnPresenatationIconByIndex(index) {
-    return cy
-      .get("[data-cy=PresentationIcon]")
+  clcikOnPresenatationIconByIndex = index => {
+    cy.server();
+    cy.route("GET", "**/assignments/**").as("assignment");
+    cy.get("[data-cy=PresentationIcon]")
       .children()
       .eq(index)
       .click();
-  }
+    cy.wait("@assignment");
+  };
 }
 
 export default AuthorAssignmentPage;

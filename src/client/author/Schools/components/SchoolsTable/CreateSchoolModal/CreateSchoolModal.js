@@ -133,28 +133,14 @@ class CreateSchoolModal extends React.Component {
         <Row>
           <Col span={24}>
             <ModalFormItem label="Address">
-              {getFieldDecorator("address", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input school address"
-                  }
-                ]
-              })(<Input placeholder="Enter School Address" />)}
+              {getFieldDecorator("address", {})(<Input placeholder="Enter School Address" />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem label="City">
-              {getFieldDecorator("city", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input city name"
-                  }
-                ]
-              })(<Input placeholder="Enter City Name" />)}
+              {getFieldDecorator("city", {})(<Input placeholder="Enter City Name" />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -173,14 +159,7 @@ class CreateSchoolModal extends React.Component {
           </Col>
           <Col span={11} offset={2}>
             <ModalFormItem label="State">
-              {getFieldDecorator("state", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input state"
-                  }
-                ]
-              })(<Input placeholder="Enter State" />)}
+              {getFieldDecorator("state", {})(<Input placeholder="Enter State" />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -188,7 +167,7 @@ class CreateSchoolModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label="Country">
               {getFieldDecorator("country", {
-                rules: [{ required: true, message: "Please select Country" }]
+                initialValue: "US"
               })(
                 <StyledSelect
                   showSearch

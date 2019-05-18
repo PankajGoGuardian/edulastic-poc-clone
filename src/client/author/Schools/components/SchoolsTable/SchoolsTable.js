@@ -339,17 +339,18 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "asc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "name" && sortedInfo.order === "desc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "name",
         editable: true,
+        width: "20%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -365,17 +366,18 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "asc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "city" && sortedInfo.order === "desc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "city",
         editable: true,
+        width: "15%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -391,17 +393,18 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "asc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "state" && sortedInfo.order === "desc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "state",
         editable: true,
+        width: "15%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -417,17 +420,18 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "asc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "zip" && sortedInfo.order === "desc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "zip",
         editable: true,
+        width: "10%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -443,17 +447,18 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
         ),
         dataIndex: "status",
         editable: true,
+        width: "15%",
         onHeaderCell: column => {
           return {
             onClick: () => {

@@ -7,28 +7,31 @@ import { schoolApi } from "@edulastic/api";
 class EditSchoolModal extends React.Component {
   constructor(props) {
     super(props);
+    console.log(this.props.schoolData._id);
     this.state = {
-      name: this.props.schoolData.name,
-      nameValidateStatus: "success",
-      nameValidateMsg: "",
+      nameValidate: {
+        value: this.props.schoolData.name,
+        validateStatus: "success",
+        validateMsg: ""
+      },
       showSpin: false,
       checkSchoolExist: { totalSchools: 0, data: [] }
     };
     this.onUpdateSchool = this.onUpdateSchool.bind(this);
   }
 
-  async onUpdateSchool() {
-    const { name, nameValidateStatus } = this.state;
+  onUpdateSchool = async () => {
+    const { nameValidate } = this.state;
     let checkSchoolExist = { ...this.state.checkSchoolExist };
 
-    if (nameValidateStatus === "success" && name.length > 0) {
+    if (nameValidate.validateStatus === "success" && nameValidate.value.length > 0) {
       this.setState({ showSpin: true });
       checkSchoolExist = await schoolApi.getSchools({
         districtId: this.props.userOrgId,
         search: {
           name: {
             type: "eq",
-            value: name
+            value: nameValidate.value
           }
         }
       });
@@ -36,15 +39,21 @@ class EditSchoolModal extends React.Component {
 
       if (checkSchoolExist.totalSchools > 0 && checkSchoolExist.data[0]._id !== this.props.schoolData._id) {
         this.setState({
-          nameValidateStatus: "error",
-          nameValidateMsg: "School name already exists"
+          nameValidate: {
+            value: nameValidate.value,
+            validateStatus: "error",
+            validateMsg: "School name already exists"
+          }
         });
       }
     } else {
       if (name.length == 0) {
         this.setState({
-          nameValidateStatus: "error",
-          nameValidateMsg: "Please input school name"
+          nameValidate: {
+            value: nameValidate.value,
+            validateStatus: "error",
+            validateMsg: "Please input school name"
+          }
         });
       }
     }
@@ -52,12 +61,11 @@ class EditSchoolModal extends React.Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         if (checkSchoolExist.totalSchools > 0 && checkSchoolExist.data[0]._id !== this.props.schoolData._id) return;
-        row.name = name;
         row.key = this.props.schoolData.key;
         this.props.updateSchool(row);
       }
     });
-  }
+  };
 
   onCloseModal = () => {
     this.props.closeModal();
@@ -66,16 +74,20 @@ class EditSchoolModal extends React.Component {
   changeSchoolName = e => {
     if (e.target.value.length == 0) {
       this.setState({
-        name: e.target.value,
-        nameValidateStatus: "error",
-        nameValidateMsg: "Please input school name",
+        nameValidate: {
+          value: e.target.value,
+          validateStatus: "error",
+          validateMsg: "Please input school name"
+        },
         checkSchoolExist: { totalSchools: 0, data: [] }
       });
     } else {
       this.setState({
-        name: e.target.value,
-        nameValidateStatus: "success",
-        nameValidateMsg: "",
+        nameValidate: {
+          value: e.target.value,
+          validateStatus: "success",
+          validateMsg: ""
+        },
         checkSchoolExist: { totalSchools: 0, data: [] }
       });
     }
@@ -84,7 +96,7 @@ class EditSchoolModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible, schoolData } = this.props;
-    const { nameValidateStatus, nameValidateMsg, showSpin } = this.state;
+    const { nameValidate, showSpin } = this.state;
 
     return (
       <Modal
@@ -102,8 +114,21 @@ class EditSchoolModal extends React.Component {
         <StyledDescription>School Id - {schoolData._id}</StyledDescription>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Name" validateStatus={nameValidateStatus} help={nameValidateMsg} required={true}>
-              <Input placeholder="Enter School Name" onChange={this.changeSchoolName} defaultValue={schoolData.name} />
+            <ModalFormItem
+              label="Name"
+              validateStatus={nameValidate.validateStatus}
+              help={nameValidate.validateMsg}
+              required={true}
+            >
+              {getFieldDecorator("name", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input school name"
+                  }
+                ],
+                initialValue: schoolData.name
+              })(<Input placeholder="Enter School Name" onChange={this.changeSchoolName} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -111,12 +136,6 @@ class EditSchoolModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label="Address">
               {getFieldDecorator("address", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input school address"
-                  }
-                ],
                 initialValue: schoolData.address
               })(<Input placeholder="Enter School Address" />)}
             </ModalFormItem>
@@ -126,12 +145,6 @@ class EditSchoolModal extends React.Component {
           <Col span={24}>
             <ModalFormItem label="City">
               {getFieldDecorator("city", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input city name"
-                  }
-                ],
                 initialValue: schoolData.city
               })(<Input placeholder="Enter City Name" />)}
             </ModalFormItem>
@@ -154,12 +167,6 @@ class EditSchoolModal extends React.Component {
           <Col span={11} offset={2}>
             <ModalFormItem label="State">
               {getFieldDecorator("state", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input state"
-                  }
-                ],
                 initialValue: schoolData.state
               })(<Input placeholder="Enter State" />)}
             </ModalFormItem>

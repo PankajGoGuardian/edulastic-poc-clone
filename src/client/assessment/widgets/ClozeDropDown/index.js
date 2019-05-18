@@ -166,6 +166,7 @@ class ClozeDropDown extends Component {
                   }}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  advancedAreOpen={advancedAreOpen}
                 />
               </div>
             </React.Fragment>
@@ -228,6 +229,7 @@ ClozeDropDown.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

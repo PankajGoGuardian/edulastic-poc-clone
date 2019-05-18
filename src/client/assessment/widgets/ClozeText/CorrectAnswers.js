@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
@@ -17,6 +18,19 @@ import { IconPlus } from "./styled/IconPlus";
 class CorrectAnswers extends Component {
   state = {
     value: 0
+  };
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
+  };
+
+  componentWillUnmount = () => {
+    const { cleanSections } = this.props;
+
+    cleanSections();
   };
 
   handleTabChange = value => {
@@ -183,7 +197,9 @@ CorrectAnswers.propTypes = {
   hasGroupResponses: PropTypes.bool,
   onRemoveAltResponses: PropTypes.func,
   configureOptions: PropTypes.object.isRequired,
-  uiStyle: PropTypes.object
+  uiStyle: PropTypes.object,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 CorrectAnswers.defaultProps = {
@@ -200,7 +216,9 @@ CorrectAnswers.defaultProps = {
     widthpx: 0,
     heightpx: 0,
     placeholder: ""
-  }
+  },
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

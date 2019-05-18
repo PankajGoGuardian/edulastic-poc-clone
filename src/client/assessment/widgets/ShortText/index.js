@@ -28,7 +28,10 @@ ShortText.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 ShortText.defaultProps = {
@@ -37,7 +40,10 @@ ShortText.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const ShortTextContainer = connect(

@@ -37,6 +37,9 @@ MatchList.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
@@ -46,7 +49,10 @@ MatchList.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const MatchListContainer = connect(({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }))(MatchList);

@@ -119,8 +119,8 @@ class QuestionMenu extends Component {
   throttledFindActiveTab = throttle(this.findActiveTab, 200);
 
   render() {
-    const { main, advanced, isSidebarCollapsed } = this.props;
-    const { advancedAreOpen, activeTab } = this.state;
+    const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen } = this.props;
+    const { activeTab } = this.state;
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
         <ScrollbarContainer>
@@ -138,7 +138,7 @@ class QuestionMenu extends Component {
           </MainOptions>
           {advanced.length > 0 && (
             <Fragment>
-              <AdvancedOptionsHeader onClick={this.handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
+              <AdvancedOptionsHeader onClick={handleAdvancedOpen} advancedAreOpen={advancedAreOpen}>
                 <p>{advancedAreOpen ? "HIDE" : "SHOW"} ADVANCED OPTIONS</p>
               </AdvancedOptionsHeader>
               {advancedAreOpen && (
@@ -166,7 +166,9 @@ QuestionMenu.propTypes = {
   activeTab: PropTypes.number.isRequired,
   main: PropTypes.shape,
   advanced: PropTypes.shape,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  advancedAreOpen: PropTypes.bool.isRequired,
+  handleAdvancedOpen: PropTypes.func.isRequired
 };
 
 QuestionMenu.defaultProps = {

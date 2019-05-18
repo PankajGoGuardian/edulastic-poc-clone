@@ -67,6 +67,16 @@ class Variables extends Component {
     fillSections("advanced", t("component.options.dynamicParameters"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.dynamicParameters"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -74,7 +84,7 @@ class Variables extends Component {
   }
 
   render() {
-    const { setQuestionData, calculateFormula, t, questionData } = this.props;
+    const { setQuestionData, calculateFormula, t, questionData, advancedAreOpen } = this.props;
     const mathFieldRef = React.createRef();
 
     const generateExample = variable => {
@@ -153,7 +163,7 @@ class Variables extends Component {
     }));
 
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.dynamicParameters")}</Subtitle>
         <Row gutter={36}>
           <Col md={24}>{t("component.options.dynamicParametersDescription")}</Col>
@@ -322,10 +332,12 @@ Variables.propTypes = {
   questionData: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Variables.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

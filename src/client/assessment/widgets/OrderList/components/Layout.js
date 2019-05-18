@@ -3,7 +3,11 @@ import ReactDOM from "react-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import produce from "immer";
+import { get } from "lodash";
+
+import { withNamespaces } from "@edulastic/localization";
 
 import {
   Layout,
@@ -22,13 +26,23 @@ class LayoutWrapper extends Component {
     fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
     cleanSections();
   }
 
   render() {
-    const { item, setQuestionData } = this.props;
+    const { item, setQuestionData, advancedAreOpen } = this.props;
 
     const changeUIStyle = (prop, val) => {
       setQuestionData(
@@ -43,7 +57,7 @@ class LayoutWrapper extends Component {
     };
 
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Layout>
           <Row gutter={60}>
             <Col md={12}>
@@ -75,13 +89,16 @@ class LayoutWrapper extends Component {
 }
 
 LayoutWrapper.propTypes = {
+  t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 LayoutWrapper.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

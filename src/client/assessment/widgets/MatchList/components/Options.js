@@ -10,32 +10,38 @@ import { setQuestionDataAction } from "../../../../author/src/actions/question";
 import { getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import LayoutWrapper from "./Layout";
 
-const Options = ({ item, t, setQuestionData, fillSections, cleanSections }) => {
-  return (
-    <WidgetOptions title={t("common.options.title")} fillSections={fillSections} cleanSections={cleanSections}>
-      <LayoutWrapper
-        item={item}
-        setQuestionData={setQuestionData}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      />
-      <Extras fillSections={fillSections} cleanSections={cleanSections}>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
-    </WidgetOptions>
-  );
-};
+const Options = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => (
+  <WidgetOptions
+    title={t("common.options.title")}
+    advancedAreOpen={advancedAreOpen}
+    fillSections={fillSections}
+    cleanSections={cleanSections}
+  >
+    <LayoutWrapper
+      item={item}
+      setQuestionData={setQuestionData}
+      advancedAreOpen={advancedAreOpen}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    />
+    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
+      <Extras.Distractors />
+      <Extras.Hints />
+    </Extras>
+  </WidgetOptions>
+);
 
 Options.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Options.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

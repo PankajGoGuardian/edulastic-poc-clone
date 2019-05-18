@@ -10,10 +10,15 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ outerStyle, fillSections, cleanSections }) => (
-  <WidgetOptions outerStyle={outerStyle} fillSections={fillSections} cleanSections={cleanSections}>
-    <Layout fillSections={fillSections} cleanSections={cleanSections} />
-    <Extras fillSections={fillSections} cleanSections={cleanSections}>
+const Options = ({ outerStyle, advancedAreOpen, fillSections, cleanSections }) => (
+  <WidgetOptions
+    outerStyle={outerStyle}
+    advancedAreOpen={advancedAreOpen}
+    fillSections={fillSections}
+    cleanSections={cleanSections}
+  >
+    <Layout advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
@@ -22,12 +27,14 @@ const Options = ({ outerStyle, fillSections, cleanSections }) => (
 
 Options.propTypes = {
   outerStyle: PropTypes.object,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 Options.defaultProps = {
   outerStyle: {},
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

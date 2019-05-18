@@ -6,6 +6,8 @@ import { withRouter } from "react-router-dom";
 import { Spin } from "antd";
 import { isUndefined } from "lodash";
 
+import useInterval from "@use-it/interval";
+
 import { gotoItem, saveUserResponse } from "../actions/items";
 import { finishTestAcitivityAction } from "../actions/test";
 import { evaluateAnswer } from "../actions/evaluation";
@@ -17,7 +19,6 @@ import { getAnswersArraySelector, getAnswersListSelector } from "../selectors/an
 import AssessmentPlayerDefault from "./AssessmentPlayerDefault";
 import AssessmentPlayerSimple from "./AssessmentPlayerSimple";
 import AssessmentPlayerDocBased from "./AssessmentPlayerDocBased";
-import useInterval from "@use-it/interval";
 
 const shouldAutoSave = itemRows => {
   if (!itemRows) {

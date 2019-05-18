@@ -1,63 +1,30 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { Input, Row, Col } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 
 import { EDIT, BY_COUNT_METHOD } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
-import ShadesView from "./components/ShadesView";
 import ShadingPreview from "./ShadingPreview";
-import { StyledCheckbox } from "./styled/StyledCheckbox";
+
+import ComposeQuestion from "./ComposeQuestion";
+import CanvasSubtitle from "./CanvasSubtitle";
+import ShadesSubtitle from "./ShadesSubtitle";
 import Options from "./components/Options";
 
 const OptionsList = withPoints(ShadingPreview);
 
-const ShadingEdit = ({ item, setQuestionData, t, theme, saveAnswer }) => {
-  const { canvas } = item;
-
-  const cell_width = canvas ? canvas.cell_width : 1;
-  const cell_height = canvas ? canvas.cell_height : 1;
-  const row_count = canvas ? canvas.row_count : 1;
-  const column_count = canvas ? canvas.column_count : 1;
-  const shaded = canvas ? canvas.shaded : [];
-  const read_only_author_cells = canvas ? canvas.read_only_author_cells : false;
-
+const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleCanvasOptionsChange = (prop, val) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.canvas[prop] = val;
-
-        if (prop === "column_count" || prop === "row_count") {
-          draft.canvas.shaded = [];
-        }
-
-        updateVariables(draft);
-      })
-    );
-  };
 
   const handleAddAnswer = () => {
     setQuestionData(
@@ -123,24 +90,6 @@ const ShadingEdit = ({ item, setQuestionData, t, theme, saveAnswer }) => {
     );
   };
 
-  const handleOnCellClick = (rowNumber, colNumber) => () => {
-    setQuestionData(
-      produce(item, draft => {
-        const indexOfSameShade = draft.canvas.shaded.findIndex(
-          shade => shade[0] === rowNumber && shade[1] === colNumber
-        );
-
-        if (indexOfSameShade === -1) {
-          draft.canvas.shaded.push([rowNumber, colNumber]);
-        } else {
-          draft.canvas.shaded.splice(indexOfSameShade, 1);
-        }
-
-        updateVariables(draft);
-      })
-    );
-  };
-
   const renderOptions = () => (
     <OptionsList
       item={item}
@@ -164,96 +113,14 @@ const ShadingEdit = ({ item, setQuestionData, t, theme, saveAnswer }) => {
   );
 
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.shading.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.shading.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+    <ContentArea>
+      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-        <Subtitle>{t("component.shading.canvasSubtitle")}</Subtitle>
+      <CanvasSubtitle item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
 
-        <Row gutter={70}>
-          <Col span={12}>
-            <Subtitle
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-              padding="0 0 16px 0"
-            >
-              {t("component.shading.rowsCountSubtitle")}
-            </Subtitle>
+      <ShadesSubtitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-            <Input
-              size="large"
-              value={row_count}
-              onChange={e => handleCanvasOptionsChange("row_count", +e.target.value)}
-            />
-          </Col>
-          <Col span={12}>
-            <Subtitle
-              fontSize={theme.widgets.shading.subtitleFontSize}
-              color={theme.widgets.shading.subtitleColor}
-              padding="0 0 16px 0"
-            >
-              {t("component.shading.colsCountSubtitle")}
-            </Subtitle>
-
-            <Input
-              size="large"
-              value={column_count}
-              onChange={e => handleCanvasOptionsChange("column_count", +e.target.value)}
-            />
-          </Col>
-        </Row>
-        <Row gutter={70}>
-          <Col span={12}>
-            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
-              {t("component.shading.cellWidthSubtitle")}
-            </Subtitle>
-
-            <Input
-              size="large"
-              value={cell_width}
-              onChange={e => handleCanvasOptionsChange("cell_width", +e.target.value)}
-            />
-          </Col>
-          <Col span={12}>
-            <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
-              {t("component.shading.cellHeightSubtitle")}
-            </Subtitle>
-
-            <Input
-              size="large"
-              value={cell_height}
-              onChange={e => handleCanvasOptionsChange("cell_height", +e.target.value)}
-            />
-          </Col>
-        </Row>
-
-        <Subtitle>{t("component.shading.shadesSubtitle")}</Subtitle>
-
-        <div>
-          <ShadesView
-            colCount={column_count || 1}
-            rowCount={row_count || 1}
-            cellHeight={cell_height || 1}
-            cellWidth={cell_width || 1}
-            onCellClick={handleOnCellClick}
-            border={item.border}
-            hover={item.hover}
-            shaded={shaded}
-          />
-        </div>
-
-        <StyledCheckbox
-          onChange={() => handleCanvasOptionsChange("read_only_author_cells", !read_only_author_cells)}
-          defaultChecked={read_only_author_cells}
-        >
-          {t("component.shading.lockShadedCells")}
-        </StyledCheckbox>
-
+      <Widget>
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}
@@ -261,11 +128,18 @@ const ShadingEdit = ({ item, setQuestionData, t, theme, saveAnswer }) => {
           validation={item.validation}
           options={renderOptions()}
           onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
         />
-      </Paper>
+      </Widget>
 
-      <Options saveAnswer={saveAnswer} />
-    </Fragment>
+      <Options
+        saveAnswer={saveAnswer}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
+    </ContentArea>
   );
 };
 
@@ -273,8 +147,16 @@ ShadingEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+ShadingEdit.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

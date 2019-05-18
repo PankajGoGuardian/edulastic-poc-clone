@@ -33,6 +33,16 @@ class Layout extends Component {
     fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -40,7 +50,7 @@ class Layout extends Component {
   }
 
   render() {
-    const { item, t, changeItem, setQuestionData } = this.props;
+    const { item, t, changeItem, setQuestionData, advancedAreOpen } = this.props;
 
     const mapValues = val => (Number.isNaN(+val) ? "" : val);
 
@@ -69,7 +79,7 @@ class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Widget>
+        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
           <Block style={{ paddingTop: 0 }}>
             <Subtitle>{t("component.options.layout")}</Subtitle>
             <Row gutter={20}>
@@ -128,11 +138,13 @@ Layout.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   changeItem: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 Layout.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

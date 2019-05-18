@@ -19,6 +19,16 @@ class LayoutWrapper extends Component {
     fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -26,12 +36,12 @@ class LayoutWrapper extends Component {
   }
 
   render() {
-    const { onUiChange, item } = this.props;
+    const { onUiChange, advancedAreOpen, item } = this.props;
     const fontsize = get(item, "ui_style.fontsize");
     const orientation = get(item, "ui_style.orientation");
 
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Layout>
           <Row gutter={60}>
             <Col md={12}>
@@ -62,11 +72,13 @@ LayoutWrapper.propTypes = {
   t: PropTypes.func.isRequired,
   onUiChange: PropTypes.func.isRequired,
   item: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 LayoutWrapper.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

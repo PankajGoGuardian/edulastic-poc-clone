@@ -31,6 +31,7 @@ const FormulaEssay = ({
   setQuestionData,
   smallSize,
   userAnswer,
+  advancedAreOpen,
   fillSections,
   cleanSections,
   isSidebarCollapsed,
@@ -80,6 +81,7 @@ const FormulaEssay = ({
           <FormulaEssayOptions
             onChange={handleItemChange}
             item={item}
+            advancedAreOpen={advancedAreOpen}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
@@ -112,6 +114,7 @@ FormulaEssay.propTypes = {
   testItem: PropTypes.bool,
   smallSize: PropTypes.bool,
   userAnswer: PropTypes.any,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired
@@ -123,6 +126,7 @@ FormulaEssay.defaultProps = {
   testItem: false,
   smallSize: false,
   userAnswer: null,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

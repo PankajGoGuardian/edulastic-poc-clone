@@ -37,7 +37,9 @@ Classification.propTypes = {
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
   advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Classification.defaultProps = {
@@ -46,7 +48,10 @@ Classification.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

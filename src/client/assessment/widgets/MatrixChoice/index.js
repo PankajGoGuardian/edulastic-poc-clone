@@ -111,6 +111,7 @@ const MatrixChoice = ({
               uiStyle={item.ui_style}
               fillSections={fillSections}
               cleanSections={cleanSections}
+              advancedAreOpen={advancedAreOpen}
             />
           </Fragment>
         </ContentArea>
@@ -179,6 +180,7 @@ MatrixChoice.defaultProps = {
   item: {},
   userAnswer: null,
   smallSize: false,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

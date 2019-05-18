@@ -169,6 +169,7 @@ class ClozeImageDropDown extends Component {
       fillSections,
       cleanSections,
       isSidebarCollapsed,
+      advancedAreOpen,
       ...restProps
     } = this.props;
 
@@ -236,6 +237,7 @@ class ClozeImageDropDown extends Component {
                   questionData={item}
                   uiStyle={uiStyle}
                   onChange={this.handleOptionsChange}
+                  advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 />
@@ -297,6 +299,7 @@ ClozeImageDropDown.propTypes = {
   t: PropTypes.func.isRequired,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired
@@ -311,6 +314,7 @@ ClozeImageDropDown.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
+  advancedAreOpen: false,
   evaluation: [],
   fillSections: () => {},
   cleanSections: () => {}

@@ -23,7 +23,7 @@ class WidgetOptions extends Component {
     scoringTypes: types,
     showScoring: true,
     showVariables: true,
-    advancedAreOpen: true,
+    advancedAreOpen: false,
     fillSections: () => {},
     cleanSections: () => {}
   };

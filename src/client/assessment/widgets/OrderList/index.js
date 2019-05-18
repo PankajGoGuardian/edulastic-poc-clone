@@ -22,6 +22,7 @@ import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
 import { getFontSize } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
+import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
@@ -49,7 +50,6 @@ const OrderList = ({
   userAnswer,
   testItem,
   evaluation,
-  t,
   setQuestionData,
   saveAnswer,
   showQuestionNumber,
@@ -59,6 +59,7 @@ const OrderList = ({
   cleanSections
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
+
   useEffect(() => {
     if (userAnswer.length === 0) {
       const { list = [] } = item;
@@ -165,29 +166,22 @@ const OrderList = ({
     <Fragment>
       {view === EDIT && (
         <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
-          <Fragment>
-            <Paper padding="0px" boxShadow="none">
-              <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
-              <ListComponent
-                saveAnswer={saveAnswer}
-                item={item}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-              />
-              <CorrectAnswers
-                onTabChange={onTabChange}
-                correctTab={correctTab}
-                onAdd={handleAddAltResponse}
-                validation={item.validation}
-                options={renderOptions()}
-                onCloseTab={handleDeleteAltAnswers}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-                marginBottom="-50px"
-              />
-            </Paper>
-            <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
-          </Fragment>
+          <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+          <ListComponent saveAnswer={saveAnswer} item={item} fillSections={fillSections} cleanSections={cleanSections} />
+          <Widget>
+            <CorrectAnswers
+              onTabChange={onTabChange}
+              correctTab={correctTab}
+              onAdd={handleAddAltResponse}
+              validation={item.validation}
+              options={renderOptions()}
+              onCloseTab={handleDeleteAltAnswers}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+              marginBottom="-50px"
+            />
+          </Widget>
+          <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
         </ContentArea>
       )}
       {view === PREVIEW && (
@@ -249,7 +243,6 @@ const OrderList = ({
 OrderList.propTypes = {
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string,
-  t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object,
   setQuestionData: PropTypes.func.isRequired,

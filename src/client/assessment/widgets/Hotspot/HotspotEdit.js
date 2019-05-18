@@ -1,7 +1,6 @@
 import "rc-color-picker/assets/index.css";
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
-import Dropzone from "react-dropzone";
 import ColorPicker from "rc-color-picker";
 import { Row, Col } from "antd";
 import { compose } from "redux";
@@ -9,19 +8,17 @@ import { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, Tabs, Tab, Button, FlexContainer, Image } from "@edulastic/common";
-import { fileApi } from "@edulastic/api";
+import { Tabs, Tab, Button, FlexContainer } from "@edulastic/common";
 
 import { updateVariables } from "../../utils/variables";
 
-import QuestionTextArea from "../../components/QuestionTextArea";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import DropZoneToolbar from "../../components/DropZoneToolbar/index";
-import StyledDropZone from "../../components/StyledDropZone/index";
 import withPoints from "../../components/HOC/withPoints";
 import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
-import { EDIT, SOURCE } from "../../constants/constantsForQuestions";
+import { EDIT } from "../../constants/constantsForQuestions";
 
 import { hexToRGB, getAlpha } from "./helpers";
 import LocalColorPickers from "./components/LocalColorPickers";
@@ -30,18 +27,21 @@ import HotspotPreview from "./HotspotPreview";
 import { StyledCheckbox } from "./styled/StyledCheckbox";
 import { IconPlus } from "./styled/IconPlus";
 import { IconClose } from "./styled/IconClose";
+
+import ComposeQuestion from "./ComposeQuestion";
+import AreasBlockTitle from "./AreasBlockTitle";
+import AttributesTitle from "./AttributesTitle";
 import Options from "./components/Options";
 
 const OptionsList = withPoints(HotspotPreview);
 
-const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
+const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSections, cleanSections }) => {
   const { image, areas, area_attributes, multiple_responses } = item;
 
   const [loading, setLoading] = useState(false);
 
   const width = image ? image.width : 900;
   const height = image ? image.height : 470;
-  const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
   const getAreaIndexes = arr => {
@@ -70,41 +70,6 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
       })
     );
   };
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleImageToolbarChange = prop => val => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.image[prop] = val;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const onDrop = ([files]) => {
-    if (files) {
-      setLoading(true);
-      fileApi
-        .upload({ file: files })
-        .then(({ fileUri }) => {
-          handleImageToolbarChange(SOURCE)(fileUri);
-          setLoading(false);
-        })
-        .catch(() => {
-          setLoading(false);
-        });
-    }
-  };
-
-  const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
 
   const changeHandler = prop => obj => {
     setQuestionData(
@@ -268,91 +233,29 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
   );
 
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.hotspot.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.hotspot.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+    <ContentArea>
+      <ComposeQuestion
+        item={item}
+        loading={loading}
+        setLoading={setLoading}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <DropZoneToolbar
-          width={+width}
-          height={+height}
-          altText={altText}
-          maxWidth={980}
-          handleChange={handleImageToolbarChange}
-        />
+      <AreasBlockTitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-        <Dropzone
-          onDrop={onDrop}
-          maxSize={1000000}
-          accept="image/*"
-          className="dropzone"
-          activeClassName="active-dropzone"
-          multiple={false}
-        >
-          {({ getRootProps, getInputProps, isDragActive }) => (
-            <div
-              data-cy="dropzone-image-container"
-              {...getRootProps()}
-              className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}
-            >
-              <input {...getInputProps()} />
+      <AttributesTitle
+        item={item}
+        theme={theme}
+        customizeTab={customizeTab}
+        setCustomizeTab={setCustomizeTab}
+        selectedIndexes={selectedIndexes}
+        setSelectedIndexes={setSelectedIndexes}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-              <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
-            </div>
-          )}
-        </Dropzone>
-
-        <Subtitle>{t("component.hotspot.areasBlockTitle")}</Subtitle>
-        <AreasContainer areas={areas} itemData={item} width={+width} height={+height} imageSrc={file} />
-
-        <Subtitle>{t("component.hotspot.attributesTitle")}</Subtitle>
-
-        <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
-          <Tab label={t("component.hotspot.global")} />
-          {renderAltResponses()}
-        </Tabs>
-        {customizeTab === 0 ? (
-          <Row gutter={80}>
-            <Col span={5}>
-              <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
-                {t("component.hotspot.fillColorTitle")}
-              </Subtitle>
-              <ColorPicker
-                animation="slide-up"
-                color={area_attributes.global.fill}
-                alpha={getAlpha(area_attributes.global.fill)}
-                onChange={changeHandler("fill")}
-              />
-            </Col>
-            <Col span={5}>
-              <Subtitle fontSize={theme.widgets.hotspot.subtitleFontSize} color={theme.widgets.hotspot.subtitleColor}>
-                {t("component.hotspot.outlineColorTitle")}
-              </Subtitle>
-              <ColorPicker
-                animation="slide-up"
-                color={area_attributes.global.stroke}
-                alpha={getAlpha(area_attributes.global.stroke)}
-                onChange={changeHandler("stroke")}
-              />
-            </Col>
-          </Row>
-        ) : (
-          <LocalColorPickers
-            onLocalColorChange={handleLocalColorChange}
-            attributes={area_attributes.local[customizeTab - 1]}
-            handleSelectChange={handleSelectChange}
-            areaIndexes={areas
-              .map((area, i) => i)
-              .filter(
-                index => !selectedIndexes.includes(index) || index === area_attributes.local[customizeTab - 1].area
-              )}
-          />
-        )}
-
+      <Widget>
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}
@@ -360,15 +263,17 @@ const HotspotEdit = ({ item, setQuestionData, t, theme }) => {
           validation={item.validation}
           options={renderOptions()}
           onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
         />
 
         <StyledCheckbox onChange={handleResponseMode} defaultChecked={multiple_responses}>
           {t("component.hotspot.multipleResponses")}
         </StyledCheckbox>
-      </Paper>
+      </Widget>
 
-      <Options />
-    </Fragment>
+      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+    </ContentArea>
   );
 };
 
@@ -376,7 +281,16 @@ HotspotEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+HotspotEdit.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

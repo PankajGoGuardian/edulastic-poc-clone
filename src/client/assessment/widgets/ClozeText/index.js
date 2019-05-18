@@ -17,6 +17,7 @@ import Options from "./components/Options";
 import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import Display from "./Display";
+import { ContentArea } from "../../styled/ContentArea";
 import { Widget } from "../../styled/Widget";
 
 const EmptyWrapper = styled.div``;
@@ -99,44 +100,66 @@ class ClozeText extends Component {
   };
 
   render() {
-    const { view, previewTab, smallSize, item, userAnswer, testItem, evaluation, theme, ...restProps } = this.props;
+    const {
+      view,
+      previewTab,
+      smallSize,
+      item,
+      userAnswer,
+      testItem,
+      evaluation,
+      isSidebarCollapsed,
+      advancedAreOpen,
+      cleanSections,
+      fillSections,
+      ...restProps
+    } = this.props;
+
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+
     const Wrapper = testItem ? EmptyWrapper : Paper;
+
     return (
       <div>
         {view === "edit" && (
-          <React.Fragment>
-            <div className="authoring">
-              <Authoring item={itemForEdit} />
-              <Widget>
-                <CorrectAnswers
-                  key={duplicatedResponses || showDraghandle || shuffleOptions}
-                  validation={item.validation}
-                  configureOptions={{
-                    shuffleOptions
-                  }}
-                  options={previewDisplayOptions}
-                  question={previewStimulus}
+          <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
+            <React.Fragment>
+              <div className="authoring">
+                <Authoring item={itemForEdit} cleanSections={cleanSections} fillSections={fillSections} />
+                <Widget>
+                  <CorrectAnswers
+                    key={duplicatedResponses || showDraghandle || shuffleOptions}
+                    validation={item.validation}
+                    configureOptions={{
+                      shuffleOptions
+                    }}
+                    options={previewDisplayOptions}
+                    question={previewStimulus}
+                    uiStyle={uiStyle}
+                    templateMarkUp={itemForEdit.templateMarkUp}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
+                    cleanSections={cleanSections}
+                    fillSections={fillSections}
+                  />
+                </Widget>
+                <Options
+                  onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
-                  templateMarkUp={itemForEdit.templateMarkUp}
-                  onAddAltResponses={this.handleAddAltResponses}
-                  onRemoveAltResponses={this.handleRemoveAltResponses}
+                  characterMap={item.character_map}
+                  multipleLine={item.multiple_line}
+                  advancedAreOpen={advancedAreOpen}
+                  cleanSections={cleanSections}
+                  fillSections={fillSections}
+                  outerStyle={{
+                    padding: "30px 0px"
+                  }}
                 />
-              </Widget>
-            </div>
-            <div>
-              <Options
-                onChange={this.handleOptionsChange}
-                uiStyle={uiStyle}
-                characterMap={item.character_map}
-                multipleLine={item.multiple_line}
-                outerStyle={{
-                  padding: "30px 0px"
-                }}
-              />
-            </div>
-          </React.Fragment>
+              </div>
+            </React.Fragment>
+          </ContentArea>
         )}
         {view === "preview" && (
           <Wrapper>
@@ -213,7 +236,10 @@ ClozeText.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
-  theme: PropTypes.object.isRequired
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
+  isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
 ClozeText.defaultProps = {
@@ -225,7 +251,10 @@ ClozeText.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
-  evaluation: {}
+  evaluation: {},
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(
@@ -233,7 +262,9 @@ const enhance = compose(
   withNamespaces("assessment"),
   withTheme,
   connect(
-    null,
+    state => ({
+      isSidebarCollapsed: state.authorUi.isSidebarCollapsed
+    }),
     {
       setQuestionData: setQuestionDataAction
     }

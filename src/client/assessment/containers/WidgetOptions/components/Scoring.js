@@ -29,6 +29,16 @@ class Scoring extends Component {
     fillSections("advanced", t("component.options.scoring"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.scoring"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -36,7 +46,7 @@ class Scoring extends Component {
   }
 
   render() {
-    const { setQuestionData, t, scoringTypes, isSection, questionData, showSelect } = this.props;
+    const { setQuestionData, t, scoringTypes, isSection, questionData, showSelect, advancedAreOpen } = this.props;
 
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData);
@@ -78,7 +88,7 @@ class Scoring extends Component {
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
         {!isSection && <Subtitle>{t("component.options.scoring")}</Subtitle>}
         {isAutoMarkBtnVisible && (
@@ -254,12 +264,14 @@ Scoring.propTypes = {
   showSelect: PropTypes.bool,
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Scoring.defaultProps = {
   isSection: false,
   showSelect: true,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

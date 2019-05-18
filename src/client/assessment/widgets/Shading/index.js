@@ -27,7 +27,10 @@ Shading.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  advancedAreOpen: PropTypes.bool,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 Shading.defaultProps = {
@@ -36,7 +39,10 @@ Shading.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const ShadingContainer = connect(

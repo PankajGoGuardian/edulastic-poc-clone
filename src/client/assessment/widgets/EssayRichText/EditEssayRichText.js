@@ -1,46 +1,24 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
-import { isEqual, get } from "lodash";
+import { isEqual } from "lodash";
 import produce from "immer";
-import ReactQuill from "react-quill";
-import { Checkbox, Input } from "antd";
+import { Checkbox } from "antd";
 import { compose } from "redux";
 import { connect } from "react-redux";
 
-import { arrayMove } from "react-sortable-hoc";
-
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 
 import { updateVariables } from "../../utils/variables";
 
 import WordLimitAndCount from "../../components/WordLimitAndCount";
-import QuestionTextArea from "../../components/QuestionTextArea";
-import { Subtitle } from "../../styled/Subtitle";
-import WidgetOptions from "../../containers/WidgetOptions";
-import { Label } from "../../styled/WidgetOptions/Label";
-import { FormGroup } from "../../containers/WidgetOptions/styled/FormGroup";
-import { Heading } from "../../styled/WidgetOptions/Heading";
+import { ContentArea } from "../../styled/ContentArea";
+import { Widget } from "../../styled/Widget";
 
-import SortableList from "./components/SortableList";
-import { ValidList } from "./constants/validList";
-import { QlToolbar } from "./styled/QlToolbar";
-import Extras from "../../containers/Extras";
-import {
-  Layout,
-  FontSizeOption,
-  PlaceholderOption,
-  BrowserSpellcheckOption,
-  MinHeightOption,
-  MaxHeightOption,
-  SpecialCharactersOption,
-  CharactersToDisplayOption
-} from "../../containers/WidgetOptions/components";
-import { Row } from "../../styled/WidgetOptions/Row";
-import { Col } from "../../styled/WidgetOptions/Col";
-import { changeItemAction, changeUIStyleAction } from "../../../author/src/actions/question";
+import ComposeQuestion from "./ComposeQuestion";
+import FormattingOptions from "./FormattingOptions";
+import Options from "./Options";
 
-const EditEssayRichText = ({ item, setQuestionData, t, changeItem, changeUIStyle }) => {
+const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const [act, setAct] = useState(item.formatting_options || []);
 
   useEffect(() => {
@@ -58,61 +36,21 @@ const EditEssayRichText = ({ item, setQuestionData, t, changeItem, changeUIStyle
     );
   };
 
-  const handleValidationChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleActiveChange = index => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.formatting_options[index].active = !draft.formatting_options[index].active;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleChange = ({ oldIndex, newIndex }) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.formatting_options = arrayMove(draft.formatting_options, oldIndex, newIndex);
-        updateVariables(draft);
-      })
-    );
-  };
-
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.essayText.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+    <ContentArea>
+      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-        <Subtitle>{t("component.essayText.rich.formattingOptions")}</Subtitle>
-        <QlToolbar id="toolbar">
-          <SortableList
-            axis="xy"
-            onSortEnd={handleChange}
-            items={act}
-            useDragHandle
-            validList={ValidList}
-            handleActiveChange={handleActiveChange}
-          />
-        </QlToolbar>
-        <ReactQuill modules={EditEssayRichText.modules} readOnly />
+      <FormattingOptions item={item} act={act} fillSections={fillSections} cleanSections={cleanSections} />
 
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <WordLimitAndCount
           withOutTopMargin
           onChange={handleItemChangeChange}
           selectValue={item.show_word_limit}
           inputValue={item.max_word}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          advancedAreOpen={advancedAreOpen}
         />
 
         <Checkbox
@@ -122,108 +60,38 @@ const EditEssayRichText = ({ item, setQuestionData, t, changeItem, changeUIStyle
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
-      </Paper>
-      <WidgetOptions outerStyle={{ marginTop: 40 }} title={t("common.options.title")}>
-        <Checkbox
-          style={{ marginTop: 16, marginBottom: 16 }}
-          defaultChecked={item && item.validation && item.validation.submit_over_limit}
-          onChange={e => handleValidationChange("submit_over_limit", e.target.checked)}
-        >
-          {t("component.essayText.submitOverLimit")}
-        </Checkbox>
-        <Layout>
-          <Row gutter={36}>
-            <Col md={12}>
-              <SpecialCharactersOption
-                disabled
-                onChange={checked => {
-                  if (checked) {
-                    changeItem("character_map", []);
-                  } else {
-                    changeItem("character_map", undefined);
-                  }
-                }}
-                checked={!!item.character_map}
-              />
-            </Col>
-            {Array.isArray(item.character_map) && (
-              <Col md={12}>
-                <CharactersToDisplayOption
-                  disabled
-                  onChange={val => changeItem("character_map", val.split(""))}
-                  value={item.character_map.join("")}
-                />
-              </Col>
-            )}
-          </Row>
+      </Widget>
 
-          <Row gutter={36}>
-            <Col md={12}>
-              <MinHeightOption
-                onChange={val => changeUIStyle("min_height", +val)}
-                value={get(item, "ui_style.min_height", 0)}
-              />
-            </Col>
-            <Col md={12}>
-              <MaxHeightOption
-                onChange={val => changeUIStyle("max_height", +val)}
-                value={get(item, "ui_style.max_height", 0)}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <PlaceholderOption
-                onChange={val => changeItem("placeholder", val)}
-                value={get(item, "placeholder", "")}
-              />
-            </Col>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={val => changeItem("spellcheck", val)}
-                checked={get(item, "spellcheck", false)}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <FontSizeOption
-                onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
-              />
-            </Col>
-          </Row>
-        </Layout>
-        <Extras>
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
-      </WidgetOptions>
-    </Fragment>
+      <Options
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      />
+    </ContentArea>
   );
 };
 
 EditEssayRichText.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  changeUIStyle: PropTypes.func.isRequired,
-  changeItem: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
-EditEssayRichText.modules = {
-  toolbar: {
-    container: "#toolbar"
-  }
+EditEssayRichText.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(
   withNamespaces("assessment"),
   connect(
     ({ user }) => ({ user }),
-    { changeItem: changeItemAction, changeUIStyle: changeUIStyleAction }
+    null
   )
 );
 

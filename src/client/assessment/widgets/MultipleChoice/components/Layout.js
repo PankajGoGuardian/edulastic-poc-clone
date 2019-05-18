@@ -25,7 +25,8 @@ class Layout extends Component {
     uiStyle: PropTypes.object,
     t: PropTypes.func.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
+    cleanSections: PropTypes.func,
+    advancedAreOpen: PropTypes.bool
   };
 
   static defaultProps = {
@@ -36,6 +37,7 @@ class Layout extends Component {
       orientation: "horizontal",
       choice_label: "number"
     },
+    advancedAreOpen: false,
     fillSections: () => {},
     cleanSections: () => {}
   };
@@ -47,6 +49,16 @@ class Layout extends Component {
     fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -54,7 +66,7 @@ class Layout extends Component {
   }
 
   render() {
-    const { onChange, uiStyle, t } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -85,7 +97,7 @@ class Layout extends Component {
     ];
 
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.layout")}</Subtitle>
 
         <Row gutter={60}>

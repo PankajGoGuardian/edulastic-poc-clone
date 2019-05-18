@@ -12,7 +12,17 @@ import Extras from "../../../containers/Extras";
 
 class MathFormulaOptions extends Component {
   render() {
-    const { onChange, uiStyle, t, responseContainers, textBlocks, item, fillSections, cleanSections } = this.props;
+    const {
+      onChange,
+      uiStyle,
+      t,
+      responseContainers,
+      textBlocks,
+      item,
+      fillSections,
+      cleanSections,
+      advancedAreOpen
+    } = this.props;
 
     const scoringTypes = [
       {
@@ -22,18 +32,24 @@ class MathFormulaOptions extends Component {
     ];
 
     return (
-      <WidgetOptions scoringTypes={scoringTypes} fillSections={fillSections} cleanSections={cleanSections}>
+      <WidgetOptions
+        scoringTypes={scoringTypes}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
         <Layout
           onChange={onChange}
           uiStyle={uiStyle}
           responseContainers={responseContainers}
           textBlocks={textBlocks}
           item={item}
+          advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
         />
 
-        <Extras fillSections={fillSections} cleanSections={cleanSections}>
+        <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
           <Extras.Distractors />
           <Extras.Hints />
         </Extras>
@@ -49,6 +65,7 @@ MathFormulaOptions.propTypes = {
   t: PropTypes.func.isRequired,
   textBlocks: PropTypes.array,
   uiStyle: PropTypes.object,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
@@ -63,6 +80,7 @@ MathFormulaOptions.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

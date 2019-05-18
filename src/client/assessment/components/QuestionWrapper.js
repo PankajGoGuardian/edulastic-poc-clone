@@ -180,13 +180,38 @@ class QuestionWrapper extends Component {
   state = {
     main: [],
     advanced: [],
-    activeTab: 0
+    activeTab: 0,
+    advancedAreOpen: false
+  };
+
+  handleAdvancedOpen = () => {
+    this.setState(prevState => ({
+      advancedAreOpen: !prevState.advancedAreOpen
+    }));
   };
 
   fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight) => {
-    this.setState(state => ({
-      [section]: state[section].concat({ label, offset, offsetBottom, haveDesk, deskHeight })
-    }));
+    this.setState(state => {
+      const sectionState = state[section];
+      const found = sectionState.filter(el => el.label === label && el.offset !== offset);
+
+      if (found.length) {
+        // update of section offset in array
+        return {
+          [section]: sectionState.filter(el => {
+            if (el.label === label) {
+              el.offset = offset;
+            }
+            return el;
+          })
+        };
+      }
+
+      // push of section to array
+      return {
+        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight })
+      };
+    });
   };
 
   cleanSections = () => {
@@ -204,14 +229,13 @@ class QuestionWrapper extends Component {
       multiple,
       view,
       setQuestionData,
-      t,
       changePreviewTab,
       qIndex,
       windowWidth,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
-    const { main, advanced, activeTab } = this.state;
+    const { main, advanced, activeTab, advancedAreOpen } = this.state;
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
     const userAnswerProps = {};
@@ -235,7 +259,15 @@ class QuestionWrapper extends Component {
               boxShadow: "none"
             }}
           >
-            {view === "edit" && <QuestionMenu activeTab={activeTab} main={main} advanced={advanced} />}
+            {view === "edit" && (
+              <QuestionMenu
+                activeTab={activeTab}
+                main={main}
+                advanced={advanced}
+                advancedAreOpen={advancedAreOpen}
+                handleAdvancedOpen={this.handleAdvancedOpen}
+              />
+            )}
             <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
               {timespent ? <Timespent timespent={timespent} view={view} /> : null}
               <Question
@@ -245,6 +277,7 @@ class QuestionWrapper extends Component {
                 view={view}
                 changePreviewTab={changePreviewTab}
                 qIndex={qIndex}
+                advancedAreOpen={advancedAreOpen}
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}
                 showQuestionNumber={showFeedback}
@@ -262,7 +295,6 @@ class QuestionWrapper extends Component {
 
 QuestionWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
   showFeedback: PropTypes.bool,
@@ -276,7 +308,8 @@ QuestionWrapper.propTypes = {
   isFlex: PropTypes.bool,
   timespent: PropTypes.string,
   qIndex: PropTypes.number,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  changePreviewTab: PropTypes.func
 };
 
 QuestionWrapper.defaultProps = {
@@ -290,7 +323,8 @@ QuestionWrapper.defaultProps = {
   timespent: "",
   multiple: false,
   showFeedback: false,
-  qIndex: 0
+  qIndex: 0,
+  changePreviewTab: () => {}
 };
 
 const enhance = compose(

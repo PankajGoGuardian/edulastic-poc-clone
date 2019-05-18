@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -7,7 +6,6 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { desktopWidth } from "@edulastic/colors";
 import { Checkbox, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -16,6 +14,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
 
+import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import Options from "./components/Options";
@@ -23,7 +22,6 @@ import Display from "./Display";
 import Authoring from "./Authoring";
 import CorrectAnswers from "./CorrectAnswers";
 import { Widget } from "../../styled/Widget";
-import { ContentArea } from "../../styled/ContentArea";
 
 class ClozeImageText extends Component {
   state = {
@@ -139,6 +137,7 @@ class ClozeImageText extends Component {
       t,
       testItem,
       evaluation,
+      advancedAreOpen,
       fillSections,
       cleanSections,
       isSidebarCollapsed,
@@ -312,6 +311,7 @@ ClozeImageText.defaultProps = {
   userAnswer: [],
   testItem: false,
   evaluation: [],
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

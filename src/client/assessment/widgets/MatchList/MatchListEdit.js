@@ -1,8 +1,8 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import produce from "immer";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
-import PropTypes from "prop-types";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -15,12 +15,15 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import MatchListPreview from "./MatchListPreview";
 import Options from "./components/Options";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
+
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(MatchListPreview);
 
-const MatchListEdit = ({ item, setQuestionData, t, advancedAreOpen, fillSections, cleanSections }) => {
+const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleAddResp = () => {
@@ -223,49 +226,43 @@ const MatchListEdit = ({ item, setQuestionData, t, advancedAreOpen, fillSections
   };
 
   return (
-    <Fragment>
+    <ContentArea>
       <Paper padding="0px" boxShadow="none">
-        <ComposeQuestion
-          item={item}
-          setQuestionData={setQuestionData}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-        <ListComponent
-          item={item}
-          setQuestionData={setQuestionData}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-        <GroupPossibleResponses
-          checkboxChange={onGroupPossibleResp}
-          checkboxVal={item.group_possible_responses}
-          items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
-          firstFocus={item.firstMount}
-          onAddInner={onAddInner}
-          onTitleChange={onGroupTitleChange}
-          onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
-          onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
-          onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
-          onRemoveInner={onRemoveInner}
-          onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          marginBottom="-50px"
-        />
+        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        <ListComponent item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        <Widget>
+          <GroupPossibleResponses
+            checkboxChange={onGroupPossibleResp}
+            checkboxVal={item.group_possible_responses}
+            items={item.group_possible_responses ? item.possible_response_groups : item.possible_responses}
+            firstFocus={item.firstMount}
+            onAddInner={onAddInner}
+            onTitleChange={onGroupTitleChange}
+            onAdd={item.group_possible_responses ? handleGroupAdd : handleAddResp}
+            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleSortEndResp}
+            onChange={item.group_possible_responses ? handleGroupChange : handleChangeResp}
+            onRemoveInner={onRemoveInner}
+            onRemove={item.group_possible_responses ? handleGroupRemove : handleRemoveResp}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+        </Widget>
+        <Widget>
+          <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            marginBottom="-50px"
+          />
+        </Widget>
       </Paper>
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
-    </Fragment>
+    </ContentArea>
   );
 };
 

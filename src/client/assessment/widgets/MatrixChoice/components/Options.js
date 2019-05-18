@@ -13,14 +13,27 @@ import Layout from "./Layout";
 
 const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
 
-function Options({ onChange, uiStyle, fillSections, cleanSections }) {
+function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen }) {
   return (
-    <WidgetOptions fillSections={fillSections} cleanSections={cleanSections} scoringTypes={scoringTypes}>
-      <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
-      <Extras fillSections={fillSections} cleanSections={cleanSections}>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
+    <WidgetOptions
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+      scoringTypes={scoringTypes}
+      advancedAreOpen={advancedAreOpen}
+    >
+      <Block>
+        <Layout
+          onChange={onChange}
+          uiStyle={uiStyle}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          advancedAreOpen={advancedAreOpen}
+        />
+        <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
+      </Block>
     </WidgetOptions>
   );
 }
@@ -29,7 +42,8 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Options.defaultProps = {
@@ -40,6 +54,7 @@ Options.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

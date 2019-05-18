@@ -30,6 +30,16 @@ class Layout extends Component {
     fillSections("advanced", t("component.options.layout"), node.offsetTop);
   };
 
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
@@ -37,7 +47,7 @@ class Layout extends Component {
   }
 
   render() {
-    const { questionData, onChange, uiStyle, t } = this.props;
+    const { questionData, onChange, uiStyle, advancedAreOpen, t } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -121,7 +131,7 @@ class Layout extends Component {
 
     return (
       <React.Fragment>
-        <Widget>
+        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
           <Block style={{ paddingTop: 0 }}>
             <Subtitle>{t("component.options.layout")}</Subtitle>
             <MarginRow gutter={20}>
@@ -311,6 +321,7 @@ Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   t: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
@@ -325,6 +336,7 @@ Layout.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

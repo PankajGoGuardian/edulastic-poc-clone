@@ -18,7 +18,7 @@ import ListComponent from "./ListComponent";
 
 const OptionsList = withPoints(QuillSortableList);
 
-const EditSortList = ({ item, setQuestionData, t, fillSections, cleanSections }) => {
+const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const handleUiStyleChange = (prop, uiStyle) => {
@@ -136,6 +136,7 @@ const EditSortList = ({ item, setQuestionData, t, fillSections, cleanSections })
       <AdvancedOptions
         item={item}
         onUiChange={handleUiStyleChange}
+        advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
@@ -146,12 +147,13 @@ const EditSortList = ({ item, setQuestionData, t, fillSections, cleanSections })
 EditSortList.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 EditSortList.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

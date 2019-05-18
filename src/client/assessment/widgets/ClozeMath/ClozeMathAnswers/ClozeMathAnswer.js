@@ -2,6 +2,7 @@ import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import { Collapse } from "antd";
 
+import { EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import MathFormulaAnswerMethod from "../../MathFormula/components/MathFormulaAnswerMethod";
@@ -65,6 +66,11 @@ class ClozeMathAnswer extends Component {
                   {...method}
                 />
               ))}
+              {showAdditionals.length === 0 ? (
+                <EduButton onClick={() => onAdd(i)} type="primary" size="large" data-cy="add-new-method">
+                  {t("component.math.addComparison")}
+                </EduButton>
+              ) : null}
             </Panel>
           ))}
         </Collapse>

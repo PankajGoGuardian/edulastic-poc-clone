@@ -8,11 +8,17 @@ import Extras from "../../../containers/Extras";
 
 import Layout from "./Layout";
 
-function Options({ onChange, uiStyle, fillSections, cleanSections }) {
+function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOpen }) {
   return (
-    <WidgetOptions fillSections={fillSections} cleanSections={cleanSections}>
-      <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
-      <Extras fillSections={fillSections} cleanSections={cleanSections}>
+    <WidgetOptions fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+      <Layout
+        onChange={onChange}
+        uiStyle={uiStyle}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      />
+      <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
         <Extras.Distractors />
         <Extras.Hints />
       </Extras>
@@ -24,7 +30,8 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Options.defaultProps = {
@@ -35,6 +42,7 @@ Options.defaultProps = {
     orientation: "horizontal",
     choice_label: "number"
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

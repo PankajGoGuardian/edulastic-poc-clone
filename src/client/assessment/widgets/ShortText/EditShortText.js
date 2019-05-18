@@ -1,34 +1,25 @@
-import React, { Fragment, useState } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 
 import { EXACT_MATCH, CONTAINS } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
 import CorrectAnswer from "./components/CorrectAnswer";
+import ComposeQuestion from "./components/ComposeQuestion";
 import Options from "./components/Options";
 
 const OptionsList = withPoints(CorrectAnswer);
 
-const EditShortText = ({ item, setQuestionData, t }) => {
+const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen, t }) => {
   const [correctTab, setCorrectTab] = useState(0);
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
 
   const handleAddAnswer = () => {
     setQuestionData(
@@ -123,15 +114,10 @@ const EditShortText = ({ item, setQuestionData, t }) => {
   );
 
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.shortText.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.shortText.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+    <ContentArea>
+      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
+      <Widget>
         <CorrectAnswers
           onTabChange={setCorrectTab}
           correctTab={correctTab}
@@ -139,17 +125,29 @@ const EditShortText = ({ item, setQuestionData, t }) => {
           validation={item.validation}
           options={renderOptions()}
           onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
         />
-      </Paper>
-      <Options />
-    </Fragment>
+      </Widget>
+
+      <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
+    </ContentArea>
   );
 };
 
 EditShortText.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
+};
+
+EditShortText.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(EditShortText);

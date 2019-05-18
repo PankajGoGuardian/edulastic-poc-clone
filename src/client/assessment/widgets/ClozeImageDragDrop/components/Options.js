@@ -10,15 +10,22 @@ import Layout from "../Layout";
 
 const scoringTypes = [evaluationType.exactMatch, evaluationType.partialMatch, evaluationType.partialMatchV2];
 
-const Options = ({ onChange, uiStyle, outerStyle, fillSections, cleanSections }) => (
+const Options = ({ onChange, uiStyle, outerStyle, advancedAreOpen, fillSections, cleanSections }) => (
   <WidgetOptions
     outerStyle={outerStyle}
     scoringTypes={scoringTypes}
+    advancedAreOpen={advancedAreOpen}
     fillSections={fillSections}
     cleanSections={cleanSections}
   >
-    <Layout onChange={onChange} uiStyle={uiStyle} fillSections={fillSections} cleanSections={cleanSections} />
-    <Extras fillSections={fillSections} cleanSections={cleanSections}>
+    <Layout
+      onChange={onChange}
+      uiStyle={uiStyle}
+      advancedAreOpen={advancedAreOpen}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    />
+    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
@@ -30,7 +37,8 @@ Options.propTypes = {
   uiStyle: PropTypes.object,
   outerStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Options.defaultProps = {
@@ -44,6 +52,7 @@ Options.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

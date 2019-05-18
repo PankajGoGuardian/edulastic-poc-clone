@@ -29,7 +29,10 @@ HighlightImage.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 HighlightImage.defaultProps = {
@@ -38,7 +41,10 @@ HighlightImage.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  fillSections: () => {},
+  cleanSections: () => {},
+  advancedAreOpen: false
 };
 
 const HighlightImageContainer = connect(

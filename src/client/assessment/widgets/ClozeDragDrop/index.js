@@ -184,6 +184,7 @@ class ClozeDragDrop extends Component {
                   uiStyle={uiStyle}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  advancedAreOpen={advancedAreOpen}
                   outerStyle={{
                     padding: "30px 120px"
                   }}
@@ -290,6 +291,7 @@ ClozeDragDrop.defaultProps = {
   history: {},
   userAnswer: [],
   testItem: false,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

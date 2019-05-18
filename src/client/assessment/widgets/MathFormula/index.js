@@ -35,6 +35,7 @@ const MathFormula = ({
   saveAnswer,
   smallSize,
   userAnswer,
+  advancedAreOpen,
   fillSections,
   cleanSections,
   isSidebarCollapsed,
@@ -88,6 +89,7 @@ const MathFormula = ({
             stimulusReview={item.stimulus_review}
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
+            advancedAreOpen={advancedAreOpen}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
@@ -123,6 +125,7 @@ MathFormula.propTypes = {
   evaluation: PropTypes.any.isRequired,
   userAnswer: PropTypes.any,
   smallSize: PropTypes.bool,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   isSidebarCollapsed: PropTypes.bool.isRequired
@@ -134,6 +137,7 @@ MathFormula.defaultProps = {
   item: {},
   userAnswer: null,
   smallSize: false,
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

@@ -7,23 +7,36 @@ import WidgetOptions from "../../../../containers/WidgetOptions";
 import Extras from "../../../../containers/Extras";
 import Layout from "../../Layout";
 
-const Options = ({ onChange, uiStyle, multipleLine, outerStyle }) => {
-  return (
-    <WidgetOptions outerStyle={outerStyle}>
-      <Layout onChange={onChange} uiStyle={uiStyle} multipleLine={multipleLine} />
-      <Extras>
-        <Extras.Distractors />
-        <Extras.Hints />
-      </Extras>
-    </WidgetOptions>
-  );
-};
+const Options = ({ onChange, uiStyle, multipleLine, outerStyle, advancedAreOpen, cleanSections, fillSections }) => (
+  <WidgetOptions
+    outerStyle={outerStyle}
+    advancedAreOpen={advancedAreOpen}
+    cleanSections={cleanSections}
+    fillSections={fillSections}
+  >
+    <Layout
+      onChange={onChange}
+      uiStyle={uiStyle}
+      multipleLine={multipleLine}
+      advancedAreOpen={advancedAreOpen}
+      cleanSections={cleanSections}
+      fillSections={fillSections}
+    />
+    <Extras advancedAreOpen={advancedAreOpen} cleanSections={cleanSections} fillSections={fillSections}>
+      <Extras.Distractors />
+      <Extras.Hints />
+    </Extras>
+  </WidgetOptions>
+);
 
 Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   outerStyle: PropTypes.object,
-  multipleLine: PropTypes.bool
+  multipleLine: PropTypes.bool,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Options.defaultProps = {
@@ -37,7 +50,10 @@ Options.defaultProps = {
     placeholder: "",
     responsecontainerindividuals: []
   },
-  multipleLine: false
+  multipleLine: false,
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default React.memo(withNamespaces("assessment")(Options));

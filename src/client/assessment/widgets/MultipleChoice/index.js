@@ -229,6 +229,7 @@ class MultipleChoice extends Component {
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}
+                  advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                   {...restProps}
@@ -328,6 +329,7 @@ MultipleChoice.defaultProps = {
   userAnswer: [],
   testItem: false,
   evaluation: "",
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

@@ -1,37 +1,21 @@
-import React, { Fragment } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { get } from "lodash";
-import { Checkbox, Input } from "antd";
 import produce from "immer";
+import { Checkbox } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, FlexContainer } from "@edulastic/common";
 
 import { updateVariables } from "../../../utils/variables";
 
-import { AdaptiveCheckbox } from "../styled/AdaptiveCheckbox";
-import WidgetOptions from "../../../containers/WidgetOptions";
-import { Label } from "../../../styled/WidgetOptions/Label";
-import { FormGroup } from "../../../containers/WidgetOptions/styled/FormGroup";
-import { Heading } from "../../../styled/WidgetOptions/Heading";
-import QuestionTextArea from "../../../components/QuestionTextArea";
 import WordLimitAndCount from "../../../components/WordLimitAndCount";
-import { Subtitle } from "../../../styled/Subtitle";
-import Extras from "../../../containers/Extras";
-import {
-  Layout,
-  PlaceholderOption,
-  FontSizeOption,
-  MinHeightOption,
-  MaxHeightOption,
-  SpecialCharactersOption,
-  BrowserSpellcheckOption,
-  CharactersToDisplayOption
-} from "../../../containers/WidgetOptions/components";
-import { Row } from "../../../styled/WidgetOptions/Row";
-import { Col } from "../../../styled/WidgetOptions/Col";
+import { Widget } from "../../../styled/Widget";
+import { ContentArea } from "../../../styled/ContentArea";
 
-const EditEssayPlainText = ({ item, setQuestionData, t }) => {
+import ComposeQuestion from "./ComposeQuestion";
+import FormattingOptions from "./FormattingOptions";
+import Options from "./Options";
+
+const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections, t }) => {
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
       produce(item, draft => {
@@ -41,63 +25,20 @@ const EditEssayPlainText = ({ item, setQuestionData, t }) => {
     );
   };
 
-  const handleValidationChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.validation[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleUIStyleChange = (prop, val) => {
-    setQuestionData(
-      produce(item, draft => {
-        if (!draft.ui_style) {
-          draft.ui_style = {};
-        }
-
-        draft.ui_style[prop] = val;
-        updateVariables(draft);
-      })
-    );
-  };
-
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.essayText.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
-        <Subtitle>{t("component.essayText.plain.formattingOptions")}</Subtitle>
-        <FlexContainer childMarginRight={100}>
-          <AdaptiveCheckbox
-            defaultChecked={item.show_copy}
-            onChange={e => handleItemChangeChange("show_copy", e.target.checked)}
-          >
-            {t("component.essayText.copy")}
-          </AdaptiveCheckbox>
-          <AdaptiveCheckbox
-            defaultChecked={item.show_cut}
-            onChange={e => handleItemChangeChange("show_cut", e.target.checked)}
-          >
-            {t("component.essayText.cut")}
-          </AdaptiveCheckbox>
-          <AdaptiveCheckbox
-            defaultChecked={item.show_paste}
-            onChange={e => handleItemChangeChange("show_paste", e.target.checked)}
-          >
-            {t("component.essayText.paste")}
-          </AdaptiveCheckbox>
-        </FlexContainer>
+    <ContentArea>
+      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
+      <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
+
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.show_word_limit}
           inputValue={item.max_word}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
         />
 
         <Checkbox
@@ -107,93 +48,31 @@ const EditEssayPlainText = ({ item, setQuestionData, t }) => {
         >
           {t("component.essayText.showWordCheckbox")}
         </Checkbox>
-      </Paper>
-      <WidgetOptions outerStyle={{ marginTop: 40 }} title={t("common.options.title")}>
-        <Checkbox
-          style={{ marginTop: 16, marginBottom: 16 }}
-          defaultChecked={item && item.validation && item.validation.submit_over_limit}
-          onChange={e => handleValidationChange("submit_over_limit", e.target.checked)}
-        >
-          {t("component.essayText.submitOverLimit")}
-        </Checkbox>
+      </Widget>
 
-        <Layout>
-          <Row gutter={36}>
-            <Col md={12}>
-              <SpecialCharactersOption
-                onChange={checked => {
-                  if (checked) {
-                    handleItemChangeChange("character_map", []);
-                  } else {
-                    handleItemChangeChange("character_map", undefined);
-                  }
-                }}
-                checked={!!item.character_map}
-              />
-            </Col>
-            <Col md={12}>
-              <BrowserSpellcheckOption
-                onChange={checked => handleItemChangeChange("spellcheck", checked)}
-                checked={!!item.spellcheck}
-              />
-            </Col>
-          </Row>
-
-          {Array.isArray(item.character_map) && (
-            <Row gutter={36}>
-              <Col md={12}>
-                <CharactersToDisplayOption
-                  onChange={val => handleItemChangeChange("character_map", val.split(""))}
-                  value={item.character_map.join("")}
-                />
-              </Col>
-            </Row>
-          )}
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <MinHeightOption
-                onChange={val => handleUIStyleChange("min_height", +val)}
-                value={get(item, "ui_style.min_height", 0)}
-              />
-            </Col>
-            <Col md={12}>
-              <MaxHeightOption
-                onChange={val => handleUIStyleChange("max_height", +val)}
-                value={get(item, "ui_style.max_height", 0)}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <PlaceholderOption
-                onChange={val => handleItemChangeChange("placeholder", val)}
-                value={item.placeholder}
-              />
-            </Col>
-            <Col md={12}>
-              <FontSizeOption
-                onChange={val => handleUIStyleChange("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
-              />
-            </Col>
-          </Row>
-        </Layout>
-
-        <Extras>
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
-      </WidgetOptions>
-    </Fragment>
+      <Options
+        item={item}
+        advancedAreOpen={advancedAreOpen}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
+    </ContentArea>
   );
 };
 
 EditEssayPlainText.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
+};
+
+EditEssayPlainText.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(EditEssayPlainText);

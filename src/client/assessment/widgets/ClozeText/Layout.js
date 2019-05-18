@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import styled from "styled-components";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+
 import { Checkbox } from "antd";
 
 import { Block } from "../../styled/WidgetOptions/Block";
@@ -23,7 +25,10 @@ class Layout extends Component {
     onChange: PropTypes.func.isRequired,
     uiStyle: PropTypes.object,
     t: PropTypes.func.isRequired,
-    multipleLine: PropTypes.bool
+    multipleLine: PropTypes.bool,
+    fillSections: PropTypes.func,
+    cleanSections: PropTypes.func,
+    advancedAreOpen: PropTypes.bool
   };
 
   static defaultProps = {
@@ -36,11 +41,37 @@ class Layout extends Component {
       placeholder: "",
       responsecontainerindividuals: []
     },
-    multipleLine: false
+    multipleLine: false,
+    advancedAreOpen: false,
+    fillSections: () => {},
+    cleanSections: () => {}
   };
 
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.layout"), node.offsetTop);
+  };
+
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
+
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.layout"), node.offsetTop);
+    }
+  }
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
   render() {
-    const { onChange, uiStyle, multipleLine, t } = this.props;
+    const { onChange, uiStyle, multipleLine, advancedAreOpen, t } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -82,7 +113,7 @@ class Layout extends Component {
     };
 
     return (
-      <Widget>
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Block style={{ paddingTop: 0 }}>
           <Subtitle>{t("component.options.layout")}</Subtitle>
           <Row gutter={20}>

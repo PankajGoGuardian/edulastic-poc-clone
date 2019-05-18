@@ -11,16 +11,22 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ questionData, onChange, uiStyle, outerStyle, fillSections, cleanSections }) => (
-  <WidgetOptions outerStyle={outerStyle} fillSections={fillSections} cleanSections={cleanSections}>
+const Options = ({ questionData, onChange, uiStyle, outerStyle, advancedAreOpen, fillSections, cleanSections }) => (
+  <WidgetOptions
+    outerStyle={outerStyle}
+    advancedAreOpen={advancedAreOpen}
+    fillSections={fillSections}
+    cleanSections={cleanSections}
+  >
     <Layout
       questionData={questionData}
       onChange={onChange}
       uiStyle={uiStyle}
+      advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
     />
-    <Extras fillSections={fillSections} cleanSections={cleanSections}>
+    <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />
       <Extras.Hints />
     </Extras>
@@ -32,6 +38,7 @@ Options.propTypes = {
   onChange: PropTypes.func.isRequired,
   uiStyle: PropTypes.object,
   outerStyle: PropTypes.object,
+  advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
@@ -47,6 +54,7 @@ Options.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

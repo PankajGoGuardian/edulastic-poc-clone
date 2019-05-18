@@ -23,6 +23,8 @@ import { setQuestionDataAction, setFirstMountAction } from "../../../author/Ques
 import GroupPossibleResponses from "./components/GroupPossibleResponses";
 import ClassificationPreview from "./ClassificationPreview";
 import Options from "./components/Options";
+import { Widget } from "../../styled/Widget";
+
 import ComposeQuestion from "./ComposeQuestion";
 import RowColumn from "./RowColumn";
 
@@ -34,7 +36,15 @@ const actions = {
   SORTEND: "SORTEND"
 };
 
-const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t, fillSections, cleanSections }) => {
+const EditClassification = ({
+  item,
+  setQuestionData,
+  setFirstMount,
+  theme,
+  advancedAreOpen,
+  fillSections,
+  cleanSections
+}) => {
   const { firstMount } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
@@ -270,37 +280,40 @@ const EditClassification = ({ item, setQuestionData, setFirstMount, theme, t, fi
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
         <RowColumn item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
-
-        <GroupPossibleResponses
-          checkboxChange={onGroupPossibleResp}
-          checkboxVal={item.group_possible_responses}
-          items={
-            item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite)
-          }
-          onAddInner={onAddInner}
-          onTitleChange={onGroupTitleChange}
-          onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
-          onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
-          firstFocus={firstMount}
-          onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
-          onRemoveInner={onRemoveInner}
-          onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          marginBottom="-50px"
-        />
+        <Widget>
+          <GroupPossibleResponses
+            checkboxChange={onGroupPossibleResp}
+            checkboxVal={item.group_possible_responses}
+            items={
+              item.group_possible_responses ? item.possible_response_groups : item.possible_responses.map(ite => ite)
+            }
+            onAddInner={onAddInner}
+            onTitleChange={onGroupTitleChange}
+            onAdd={item.group_possible_responses ? handleGroupAdd : handleMainPossible(actions.ADD)}
+            onSortEnd={item.group_possible_responses ? handleGroupSortEnd : handleMainPossible(actions.SORTEND)}
+            firstFocus={firstMount}
+            onChange={item.group_possible_responses ? handleGroupChange : handleChangePossible()}
+            onRemoveInner={onRemoveInner}
+            onRemove={item.group_possible_responses ? handleGroupRemove : handleMainPossible(actions.REMOVE)}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+        </Widget>
+        <Widget>
+           <CorrectAnswers
+            onTabChange={setCorrectTab}
+            correctTab={correctTab}
+            onAdd={handleAddAnswer}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleCloseTab}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            marginBottom="-50px"
+          />
+        </Widget>
       </Paper>
-      <Options fillSections={fillSections} cleanSections={cleanSections} />
+      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </Fragment>
   );
 };
@@ -309,13 +322,14 @@ EditClassification.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   setFirstMount: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 EditClassification.defaultProps = {
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

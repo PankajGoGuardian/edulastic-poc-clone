@@ -124,13 +124,32 @@ class TestList extends Component {
       getCurriculums,
       limit,
       location,
+      playlist,
       mode,
       match: { params = {} }
     } = this.props;
     const { search } = this.state;
     if (mode === "embedded") {
-      this.handleStyleChange("horizontal");
-      receiveTests({ page: 1, limit, search });
+      const { grades, subjects, tags } = playlist;
+      this.setState(prevState => ({
+        search: {
+          ...prevState.search,
+          subject: subjects && subjects[0],
+          grades,
+          tags
+        },
+        blockStyle: "horizontal"
+      }));
+      receiveTests({
+        page: 1,
+        limit,
+        search: {
+          ...search,
+          subject: subjects && subjects[0],
+          grades,
+          tags
+        }
+      });
     } else {
       const parsedQueryData = qs.parse(location.search);
       if (!curriculums.length) {

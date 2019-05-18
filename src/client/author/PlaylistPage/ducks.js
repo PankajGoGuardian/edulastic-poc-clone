@@ -151,6 +151,7 @@ const initialPlaylistState = {
   subjects: [],
   // versionId: "",
   version: 1,
+  tags: [],
   active: 1,
   customize: true,
   authors: [

@@ -127,7 +127,7 @@ export const FolderListItem = styled.div`
   border-radius: 2px;
   background-color: ${({ active }) => (active ? fadedGrey : mainBgColor)};
   color: ${({ active }) => (active ? black : title)};
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-weight: 600;
   font-size: 11px;
   user-select: none;

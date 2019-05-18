@@ -5,6 +5,7 @@ import { FlexRow } from "./FlexRow";
 export const Content = WithMathFormula(styled(FlexRow)`
   align-items: center;
   padding-right: 36px;
-  padding-left: 36px;
-  white-space: nowrap;
+  padding-left: 16px;
+  white-space: normal;
+  display: flex !important;
 `);

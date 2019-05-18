@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { FlexRow } from "./FlexRow";
 
 export const Index = styled(FlexRow)`
+  display: flex;
   align-items: center;
   justify-content: center;
   border-top-left-radius: 4px;

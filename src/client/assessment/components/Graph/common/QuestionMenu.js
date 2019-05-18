@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
-import { newBlue, desktopWidth } from "@edulastic/colors";
+import { newBlue, desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 
 class QuestionMenu extends Component {
@@ -132,7 +132,7 @@ class QuestionMenu extends Component {
                   onClick={() => this.handleScroll(option)}
                   className={index === activeTab && "active"}
                 >
-                  {option.label.toUpperCase()}
+                  {option.label.toLowerCase()}
                 </Option>
               ))}
           </MainOptions>
@@ -149,7 +149,7 @@ class QuestionMenu extends Component {
                       onClick={() => this.handleScroll(option)}
                       className={main.length + index === activeTab && "active"}
                     >
-                      {option.label.toUpperCase()}
+                      {option.label.toLowerCase()}
                     </Option>
                   ))}
                 </AdvancedOptions>
@@ -180,10 +180,16 @@ export default connect(({ authorUi }) => ({
 
 const Menu = styled.div`
   position: fixed;
-  left: ${props => (props.isSidebarCollapsed ? "160px" : "255px")};
+  left: 160px;
   top: 150px;
   width: 230px;
   padding: 40px 0 0;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 300px;
+    padding-left: 43px;
+    padding-top: 46px;
+  }
 
   @media (max-width: ${desktopWidth}) {
     display: none;
@@ -232,6 +238,7 @@ const Option = styled.li`
   color: #6a737f;
   margin-bottom: 50px;
   transition: 0.2s ease color;
+  text-transform: capitalize;
 
   &:last-of-type {
     margin-bottom: 0;
@@ -249,8 +256,14 @@ const Option = styled.li`
     transform: translateY(-50%);
     z-index: 1;
   }
+
   &.active {
     color: ${newBlue};
+  }
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-left: 35px;
+    margin-bottom: 80px;
   }
 `;
 const AdvancedOptionsHeader = styled.div`

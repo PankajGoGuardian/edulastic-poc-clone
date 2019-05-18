@@ -1,9 +1,13 @@
 import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
+import { desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const ContentArea = styled.div`
   width: 100%;
-  padding-left: ${props => (props.isSidebarCollapsed ? "235px" : "320px")};
+  padding-left: 235px;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding-left: 325px;
+  }
 
   @media (max-width: ${desktopWidth}) {
     max-width: 100%;

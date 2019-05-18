@@ -1,7 +1,7 @@
 import React, { memo, Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { newBlue, mobileWidth } from "@edulastic/colors";
+import { newBlue, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
 
 class HeaderWrapper extends Component {
@@ -45,6 +45,10 @@ const Container = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    padding: 0px 45px;
+  }
 
   @media (max-width: ${mobileWidth}) {
     height: ${props => (props.type === "standard" ? "auto" : "61px")};

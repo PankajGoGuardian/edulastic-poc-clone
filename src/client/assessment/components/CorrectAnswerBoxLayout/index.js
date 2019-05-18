@@ -59,7 +59,9 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, clea
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
               &nbsp;<span className="index">{index + 1}</span>
-              <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(result) : result}</span>
+              <span className="text">
+                {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
+              </span>
               &nbsp;
             </div>
           ))}

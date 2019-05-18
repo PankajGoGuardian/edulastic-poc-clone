@@ -36,7 +36,7 @@ import { saveCurrentEditingTestIdAction } from "../../../ItemDetail/ducks";
 import { getUserSelector } from "../../../src/selectors/user";
 import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceModal";
 import ShareModal from "../../../src/components/common/ShareModal";
-
+import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
 import Summary from "../../../TestPage/components/Summary";
 import Assign from "../../../TestPage/components/Assign";
 import Setting from "../Settings";
@@ -82,6 +82,7 @@ class Container extends PureComponent {
     editEnable: false,
     isTextColorPickerVisible: false,
     isBackgroundColorPickerVisible: false,
+    expandedModules: [],
     showShareModal: false
   };
 
@@ -159,6 +160,33 @@ class Container extends PureComponent {
       [type]: value
     });
   };
+
+  collapseExpandModule = moduleId => {
+    const { playlist } = this.props;
+
+    if (!playlist) return null;
+
+    const hasContent =
+      playlist.modules.filter((module, index) => {
+        if (index === moduleId && module.data && module.data.length > 0) {
+          return true;
+        }
+        return false;
+      }).length > 0;
+
+    if (!hasContent) return message.error("Please add some content to this unit.");
+
+    const { expandedModules } = this.state;
+    if (expandedModules.indexOf(moduleId) === -1) {
+      this.setState({ expandedModules: [...expandedModules, moduleId] });
+    } else {
+      const newExpandedModules = expandedModules.filter(id => id !== moduleId);
+      this.setState({
+        expandedModules: newExpandedModules
+      });
+    }
+  };
+
   renderContent = () => {
     const { playlist, setData, rows, isTestLoading, match, history } = this.props;
     if (isTestLoading) {

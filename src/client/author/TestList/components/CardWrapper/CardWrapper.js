@@ -12,6 +12,8 @@ class CardWrapper extends Component {
     match: PropTypes.object.isRequired,
     windowWidth: PropTypes.number,
     blockStyle: PropTypes.string,
+    isTestAdded: PropTypes.bool,
+    removeTestFromPlaylist: PropTypes.func,
     addTestToPlaylist: PropTypes.func,
     owner: PropTypes.object
   };
@@ -19,6 +21,7 @@ class CardWrapper extends Component {
   static defaultProps = {
     owner: {},
     windowWidth: null,
+    isTestAdded: false,
     blockStyle: ""
   };
 
@@ -31,6 +34,8 @@ class CardWrapper extends Component {
       history,
       match,
       isPlaylist,
+      isTestAdded,
+      removeTestFromPlaylist,
       addTestToPlaylist,
       owner
     } = this.props;
@@ -58,9 +63,12 @@ class CardWrapper extends Component {
         <ListItem
           owner={owner}
           item={item}
+          windowWidth={windowWidth}
           history={history}
           match={match}
           addTestToPlaylist={addTestToPlaylist}
+          isTestAdded={isTestAdded}
+          removeTestFromPlaylist={removeTestFromPlaylist}
           authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
           testItemId={itemId}
           isPlaylist={isPlaylist}

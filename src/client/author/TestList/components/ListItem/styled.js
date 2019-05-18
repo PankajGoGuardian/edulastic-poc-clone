@@ -188,6 +188,7 @@ export const ViewButton = styled.div`
   font-size: 12px;
   color: ${blue};
   background: white;
+  margin-left: 10px;
   padding: 8px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};
   border-radius: 4px;
@@ -209,9 +210,9 @@ export const AddButton = styled.div`
   box-shadow: 0px 1px 1px 1px ${fadedGrey};
   border-radius: 4px;
   font-weight: 600;
-  margin-right: 10px;
   text-align: center;
   cursor: pointer;
+  margin-top: ${props => (props.windowWidth < 1485 ? "10px" : "0px")};
   &:hover {
     background: ${lightGrey};
   }

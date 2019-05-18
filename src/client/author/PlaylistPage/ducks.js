@@ -42,7 +42,8 @@ export const DELETE_SHARED_USER = "[test] delete share user from list";
 export const ADD_MODULE = "[playlist] Add new module";
 export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
 export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
-export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from module";
+export const REMOVE_TEST_FROM_MODULE = "[playlist] remove test from module";
+export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from playlist";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -122,7 +123,8 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 export const createNewModuleAction = createAction(ADD_MODULE);
 export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
-export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
+export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE);
+export const removeTestFromPlaylistAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
 
 // reducer
 
@@ -187,11 +189,22 @@ const createNewTestInModule = test => ({
 });
 
 const removeTestFromPlaylist = (playlist, payload) => {
-  const newPlaylist = produce(playlist, draft => {
-    draft.modules[payload.moduleIndex].data = draft.modules[payload.moduleIndex].data.filter(
-      content => content.contentId !== payload.itemId
-    );
-  });
+  const { moduleIndex, itemId } = payload;
+  let newPlaylist;
+  if (moduleIndex >= 0) {
+    newPlaylist = produce(playlist, draft => {
+      draft.modules[payload.moduleIndex].data = draft.modules[payload.moduleIndex].data.filter(
+        content => content.contentId !== payload.itemId
+      );
+    });
+  } else {
+    newPlaylist = produce(playlist, draft => {
+      draft.modules.map(mod => {
+        mod.data = mod.data.filter(data => data.contentId !== itemId);
+        return mod;
+      });
+    });
+  }
   message.success("Test removed from playlist");
   return newPlaylist;
 };
@@ -208,6 +221,10 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: newEntity
       };
+    }
+    case REMOVE_TEST_FROM_MODULE: {
+      const newEntity = removeTestFromPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
     }
     case REMOVE_TEST_FROM_PLAYLIST: {
       const newEntity = removeTestFromPlaylist(state.entity, payload);

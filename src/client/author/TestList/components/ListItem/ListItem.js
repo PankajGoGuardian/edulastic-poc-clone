@@ -83,7 +83,10 @@ class ListItem extends Component {
       authorName,
       owner = false,
       testItemId,
+      windowWidth,
       isPlaylist,
+      isTestAdded,
+      removeTestFromPlaylist,
       addTestToPlaylist,
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
@@ -137,7 +140,16 @@ class ListItem extends Component {
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
                 <ViewButton onClick={this.openModal}>VIEW</ViewButton>
-                {<AddButton onClick={e => addTestToPlaylist(item)}>ADD</AddButton>}
+                {!isTestAdded && (
+                  <AddButton windowWidth={windowWidth} onClick={e => addTestToPlaylist(item)}>
+                    ADD
+                  </AddButton>
+                )}
+                {isTestAdded && (
+                  <AddButton windowWidth={windowWidth} onClick={e => removeTestFromPlaylist(item._id)}>
+                    Remove
+                  </AddButton>
+                )}
               </ViewButtonWrapper>
             )}
 

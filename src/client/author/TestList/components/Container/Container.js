@@ -50,7 +50,11 @@ import TestListFilters from "./TestListFilters";
 import AddTestModal from "../../../PlaylistPage/components/AddTestsModal/AddTestModal";
 import AddUnitModalBody from "../../../CurriculumSequence/components/AddUnitModalBody";
 import { ItemsMenu, StyledButton } from "../../../TestPage/components/AddItems/styled";
-import { createNewModuleAction, createTestInModuleAction } from "../../../PlaylistPage/ducks";
+import {
+  createNewModuleAction,
+  createTestInModuleAction,
+  removeTestFromPlaylistAction
+} from "../../../PlaylistPage/ducks";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -114,6 +118,7 @@ class TestList extends Component {
     blockStyle: "tile",
     showCreateModuleModal: false,
     showAddTestInModules: false,
+    selectedTests: [],
     isShowFilter: false
   };
 
@@ -130,7 +135,13 @@ class TestList extends Component {
     } = this.props;
     const { search } = this.state;
     if (mode === "embedded") {
-      const { grades, subjects, tags } = playlist;
+      let selectedTests = [];
+      const { grades, subjects, tags, modules } = playlist;
+      modules.forEach(mod => {
+        mod.data.forEach(test => {
+          selectedTests.push(test.contentId);
+        });
+      });
       this.setState(prevState => ({
         search: {
           ...prevState.search,
@@ -138,6 +149,7 @@ class TestList extends Component {
           grades,
           tags
         },
+        selectedTests,
         blockStyle: "horizontal"
       }));
       receiveTests({
@@ -382,21 +394,26 @@ class TestList extends Component {
     this.setState({ showAddTestInModules: false });
   };
 
-  handleTestAdded = index => {
-    const { addTestToModule, playlist } = this.props;
-    const { testAdded } = this.state;
-    addTestToModule({ moduleIndex: index, testAdded });
+  removeTestFromPlaylist = itemId => {
+    const { selectedTests } = this.state;
+    const { removeTestFromPlaylistAction } = this.props;
+    const newSelectedTests = selectedTests.filter(testId => testId !== itemId);
+    removeTestFromPlaylistAction({ itemId });
+    this.setState({ selectedTests: newSelectedTests });
   };
 
-  handleAddTests = item => {
-    this.setState({ showAddTestInModules: true, testAdded: item });
+  handleTestAdded = index => {
+    const { addTestToModule } = this.props;
+    const { testAdded, selectedTests } = this.state;
+    this.setState(prevState => ({ ...prevState, selectedTests: [...selectedTests, testAdded._id] }));
+    addTestToModule({ moduleIndex: index, testAdded });
   };
 
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
     const { loading, tests, windowWidth, history, match, userId } = this.props;
-    const { blockStyle } = this.state;
+    const { blockStyle, selectedTests } = this.state;
 
     if (loading) {
       return <Spin size="large" />;
@@ -427,8 +444,11 @@ class TestList extends Component {
             key={index}
             owner={item.authors.find(x => x._id === userId)}
             item={item}
+            windowWidth={windowWidth}
             history={history}
             match={match}
+            removeTestFromPlaylist={this.removeTestFromPlaylist}
+            isTestAdded={selectedTests.includes(item._id)}
             addTestToPlaylist={this.handleAddTests}
           />
         ))}
@@ -633,6 +653,7 @@ const enhance = compose(
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
+      removeTestFromPlaylistAction: removeTestFromPlaylistAction,
       clearTestData: clearTestDataAction
     }
   )

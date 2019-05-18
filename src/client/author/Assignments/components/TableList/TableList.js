@@ -189,12 +189,14 @@ class TableList extends Component {
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (
-          <FlexContainer style={{ marginLeft: 0 }}>
-            <div>
-              <TestThumbnail src={row.thumbnail} />
-            </div>
-            <AssignmentTD>{text}</AssignmentTD>
-          </FlexContainer>
+          <Tooltip placement="bottom" title={<div>{text}</div>}>
+            <FlexContainer style={{ marginLeft: 0 }}>
+              <div>
+                <TestThumbnail src={row.thumbnail} />
+              </div>
+              <AssignmentTD>{text}</AssignmentTD>
+            </FlexContainer>
+          </Tooltip>
         )
       },
       {

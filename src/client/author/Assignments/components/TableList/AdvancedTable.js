@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { find, isEmpty, get } from "lodash";
 import { withRouter } from "react-router-dom";
-import { Dropdown } from "antd";
+import { Dropdown, Tooltip } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
 
@@ -91,12 +91,14 @@ class AdvancedTable extends Component {
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (
-          <FlexContainer style={{ marginLeft: 0 }}>
-            <div>
-              <TestThumbnail src={row.thumbnail} />
-            </div>
-            <AssignmentTD>{text}</AssignmentTD>
-          </FlexContainer>
+          <Tooltip placement="bottom" title={<div>{text}</div>}>
+            <FlexContainer style={{ marginLeft: 0 }}>
+              <div>
+                <TestThumbnail src={row.thumbnail} />
+              </div>
+              <AssignmentTD>{text}</AssignmentTD>
+            </FlexContainer>
+          </Tooltip>
         )
       },
       {

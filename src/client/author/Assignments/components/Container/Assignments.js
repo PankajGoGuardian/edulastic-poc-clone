@@ -185,7 +185,7 @@ class Assignments extends Component {
             <Main>
               {window.innerWidth >= tabletWidth && (
                 <>
-                  {(isAdvancedView || showFilter) && (
+                  {showFilter && (
                     <PerfectScrollbar option={{ suppressScrollX: true }}>
                       <LeftFilter
                         selectedRows={selectedRows}
@@ -197,15 +197,13 @@ class Assignments extends Component {
                     </PerfectScrollbar>
                   )}
                   <TableWrapper>
-                    {!isAdvancedView && (
-                      <FilterButton
-                        color={showFilter ? "primary" : "secondary"}
-                        variant="filter"
-                        onClick={this.toggleFilter}
-                      >
-                        <IconFilter color={showFilter ? white : blue} width={20} height={20} />
-                      </FilterButton>
-                    )}
+                    <FilterButton
+                      color={showFilter ? "primary" : "secondary"}
+                      variant="filter"
+                      onClick={this.toggleFilter}
+                    >
+                      <IconFilter color={showFilter ? white : blue} width={20} height={20} />
+                    </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (
                         <AdvancedTable

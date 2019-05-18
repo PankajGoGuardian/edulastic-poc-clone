@@ -1,12 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
 import { compose } from "redux";
-
+import { Tooltip } from "antd";
 import { Link, withRouter } from "react-router-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { test } from "@edulastic/constants";
-
 import presentationIcon from "../../assets/presentation.svg";
 import additemsIcon from "../../assets/add-items.svg";
 import piechartIcon from "../../assets/pie-chart.svg";
@@ -68,15 +66,21 @@ const columns = [
     width: "5%",
     render: (_, row) => (
       <ActionsWrapper>
-        <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-          <Icon src={presentationIcon} alt="Images" />
-        </Link>
-        <Link to="/author/expressgrader">
-          <Icon src={additemsIcon} alt="Images" />
-        </Link>
-        <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-          <Icon src={piechartIcon} alt="Images" />
-        </Link>
+        <Tooltip placement="bottom" title="LCB">
+          <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
+            <Icon src={presentationIcon} alt="Images" />
+          </Link>
+        </Tooltip>
+        <Tooltip placement="bottom" title="Express Grader">
+          <Link to="/author/expressgrader">
+            <Icon src={additemsIcon} alt="Images" />
+          </Link>
+        </Tooltip>
+        <Tooltip placement="bottom" title="Reports">
+          <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+            <Icon src={piechartIcon} alt="Images" />
+          </Link>
+        </Tooltip>
       </ActionsWrapper>
     )
   }

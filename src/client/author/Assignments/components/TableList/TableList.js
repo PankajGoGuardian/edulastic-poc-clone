@@ -130,15 +130,21 @@ class TableList extends Component {
         width: "14%",
         render: (_, row) => (
           <ActionsWrapper data-cy="PresentationIcon">
-            <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
-              <Icon src={presentationIcon} alt="Images" />
-            </Link>
-            <Link to="/author/expressgrader">
-              <Icon src={additemsIcon} alt="Images" />
-            </Link>
-            <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
-              <Icon src={piechartIcon} alt="Images" />
-            </Link>
+            <Tooltip placement="bottom" title="LCB">
+              <Link to={`/author/classboard/${row.assignmentId}/${row.classId}`}>
+                <Icon src={presentationIcon} alt="Images" />
+              </Link>
+            </Tooltip>
+            <Tooltip placement="bottom" title="Express Grader">
+              <Link to="/author/expressgrader">
+                <Icon src={additemsIcon} alt="Images" />
+              </Link>
+            </Tooltip>
+            <Tooltip placement="bottom" title="Reports">
+              <Link to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}>
+                <Icon src={piechartIcon} alt="Images" />
+              </Link>
+            </Tooltip>
           </ActionsWrapper>
         )
       }

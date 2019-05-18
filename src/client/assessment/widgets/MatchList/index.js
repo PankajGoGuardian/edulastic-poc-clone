@@ -8,10 +8,8 @@ import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 import MatchListPreview from "./MatchListPreview";
 import MatchListEdit from "./MatchListEdit";
 
-import { ContentArea } from "../../styled/ContentArea";
-
 const MatchList = props => {
-  const { item, view, isSidebarCollapsed } = props;
+  const { item, view } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   return (
@@ -19,11 +17,7 @@ const MatchList = props => {
       {view === PREVIEW && itemForPreview && itemForPreview.possible_response_groups && (
         <MatchListPreview {...props} item={itemForPreview} />
       )}
-      {view === EDIT && (
-        <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
-          <MatchListEdit {...props} />
-        </ContentArea>
-      )}
+      {view === EDIT && <MatchListEdit {...props} />}
     </Fragment>
   );
 };

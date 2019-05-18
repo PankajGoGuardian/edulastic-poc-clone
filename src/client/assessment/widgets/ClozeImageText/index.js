@@ -192,6 +192,7 @@ class ClozeImageText extends Component {
                   outerStyle={{
                     padding: "16px 60px 7px 60px"
                   }}
+                  advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
                 />
@@ -299,6 +300,7 @@ ClozeImageText.propTypes = {
   evaluation: PropTypes.any,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired
 };
 

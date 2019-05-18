@@ -21,19 +21,18 @@ function Options({ onChange, uiStyle, fillSections, cleanSections, advancedAreOp
       scoringTypes={scoringTypes}
       advancedAreOpen={advancedAreOpen}
     >
-      <Block>
-        <Layout
-          onChange={onChange}
-          uiStyle={uiStyle}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-          advancedAreOpen={advancedAreOpen}
-        />
-        <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
-          <Extras.Distractors />
-          <Extras.Hints />
-        </Extras>
-      </Block>
+      <Layout
+        onChange={onChange}
+        uiStyle={uiStyle}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        advancedAreOpen={advancedAreOpen}
+      />
+
+      <Extras fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen}>
+        <Extras.Distractors />
+        <Extras.Hints />
+      </Extras>
     </WidgetOptions>
   );
 }

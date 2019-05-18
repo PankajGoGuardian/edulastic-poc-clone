@@ -3,11 +3,7 @@ import ReactDOM from "react-dom";
 import { withNamespaces } from "@edulastic/localization";
 import { get } from "lodash";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import produce from "immer";
-import { get } from "lodash";
-
-import { withNamespaces } from "@edulastic/localization";
 
 import {
   Layout,

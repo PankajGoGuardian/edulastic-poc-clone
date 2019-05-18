@@ -50,7 +50,7 @@ const statusConstants = {
 
 class Container extends PureComponent {
   propTypes = {
-    createTest: PropTypes.func.isRequired,
+    createPlayList: PropTypes.func.isRequired,
     updateTest: PropTypes.func.isRequired,
     receiveTestById: PropTypes.func.isRequired,
     setData: PropTypes.func.isRequired,
@@ -236,42 +236,12 @@ class Container extends PureComponent {
   };
 
   handleSave = async () => {
-    const { selectedRows, user, test, updateTest, createTest, itemsSubjectAndGrade } = this.props;
-    const testItems = selectedRows.data;
-    const newTest = cloneDeep(test);
+    const { playlist, updateTest, createPlayList } = this.props;
 
-    newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
-    newTest.grades = _uniq([...newTest.grades, ...itemsSubjectAndGrade.grades]);
-
-    newTest.createdBy = {
-      id: user._id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
-    };
-
-    newTest.testItems = testItems || [];
-    newTest.scoring.testItems = (testItems || []).map(item => {
-      const foundItem = newTest.scoring.testItems.find(({ id }) => item && item._id === id);
-      if (!foundItem) {
-        return {
-          id: item ? item._id : uuidv4(),
-          points: 0
-        };
-      }
-      return foundItem;
-    });
-
-    if (test._id) {
-      if (this.props.editAssigned) {
-        newTest.versioned = true;
-        delete newTest["authors"];
-        createTest(newTest);
-      } else {
-        updateTest(test._id, newTest);
-      }
+    if (playlist._id) {
+      updateTest(playlist._id, newTest);
     } else {
-      createTest(newTest);
+      createPlayList(playlist);
     }
   };
 
@@ -379,7 +349,7 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
-      createTest: createTestAction,
+      createPlayList: createTestAction,
       updateTest: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,

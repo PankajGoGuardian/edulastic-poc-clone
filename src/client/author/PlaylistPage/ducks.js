@@ -1,22 +1,18 @@
 import { createSelector } from "reselect";
 import { createAction } from "redux-starter-kit";
-import uuidv4 from "uuid/v4";
-import { playlists, test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
-import { testsApi, assignmentApi } from "@edulastic/api";
+import { testsApi, assignmentApi, curriculumSequencesApi } from "@edulastic/api";
 import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
 
 // constants
 
-const testsStatusConstants = test.type;
-
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
-export const CREATE_TEST_REQUEST = "[tests] create playlist request";
+export const CREATE_TEST_REQUEST = "[playlist] create playlist request";
 export const CREATE_TEST_SUCCESS = "[tests] create playlist success";
 export const CREATE_TEST_ERROR = "[tests] create playlist error";
 
@@ -140,7 +136,6 @@ const initialPlaylistState = {
   },
   thumbnail: "https://fakeimg.pl/500x135/",
   derivedFrom: {
-    _id: "",
     name: ""
   },
   // FIXME: define schema for modules
@@ -153,20 +148,20 @@ const initialPlaylistState = {
   version: 1,
   tags: [],
   active: 1,
-  customize: true,
-  authors: [
-    {
-      _id: "",
-      name: ""
-    }
-  ],
-  sharedType: "",
-  sharedWith: [
-    {
-      _id: "",
-      name: ""
-    }
-  ]
+  customize: true
+  // authors: [
+  //   {
+  //     _id: "",
+  //     name: ""
+  //   }
+  // ],
+  // sharedType: ""
+  // sharedWith: [
+  //   {
+  //     _id: "",
+  //     name: ""
+  //   }
+  // ]
 };
 
 const initialState = {
@@ -181,7 +176,6 @@ const initialState = {
 };
 
 const createNewModuleState = title => ({
-  id: uuidv4(),
   title,
   data: []
 });
@@ -361,28 +355,29 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const { _id: oldId, versioned: regrade = false } = payload.data;
+  // const { _id: oldId, versioned: regrade = false } = payload.data;
   try {
-    const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
-    const entity = yield call(testsApi.create, dataToSend);
-    yield put({
-      type: UPDATE_ENTITY_DATA,
-      payload: {
-        entity
-      }
-    });
+    console.log("payload", payload);
+    // const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
+    const entity = yield call(curriculumSequencesApi.create, payload);
+    // yield put({
+    //   type: UPDATE_ENTITY_DATA,
+    //   payload: {
+    //     entity
+    //   }
+    // });
 
-    if (regrade) {
-      yield put(setCreateSuccessAction());
-      yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
-    } else {
-      const hash = payload.toReview ? "#review" : "";
+    // if (regrade) {
+    //   yield put(setCreateSuccessAction());
+    //   yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
+    // } else {
+    //   const hash = payload.toReview ? "#review" : "";
 
-      yield put(createTestSuccessAction(entity));
-      yield put(replace(`/author/tests/${entity._id}${hash}`));
+    //   yield put(createTestSuccessAction(entity));
+    //   yield put(replace(`/author/tests/${entity._id}${hash}`));
 
-      yield call(message.success, "Test created");
-    }
+    //   yield call(message.success, "Test created");
+    // }
   } catch (err) {
     const errorMessage = "Failed to create test!";
     yield call(message.error, errorMessage);

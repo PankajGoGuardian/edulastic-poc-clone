@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Input, Popconfirm, Spin, message } from "antd";
 import { IconPencilEdit, IconTrash, IconCaretDown } from "@edulastic/icons";
 import { Table, Button, FlexColumn } from "../Common/StyledComponents";
-import ErrorBoundary from "../Common/ErrorBoundary";
 import { DISTRICT_STATUS, DISTRICT_SYNC_STATUS, mapCountAsType, CLEVER_DISTRICT_ID_REGEX } from "../Data";
 
 const { Column } = Table;

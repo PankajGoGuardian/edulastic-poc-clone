@@ -132,6 +132,15 @@ const getUsersDataApi = districtId =>
     })
     .then(({ data }) => data);
 
+const upgradeDistrictApi = data =>
+  api
+    .callApi({
+      url: "/subscription",
+      method: "post",
+      data
+    })
+    .then(({ data }) => data);
+
 export default {
   searchUpdateDistrict,
   updateDistrictCleverId,
@@ -146,5 +155,6 @@ export default {
   uploadCSVtoClever,
   updateSubjectStandardApi,
   logsDataApi,
-  getUsersDataApi
+  getUsersDataApi,
+  upgradeDistrictApi
 };

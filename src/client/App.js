@@ -135,7 +135,7 @@ class App extends Component {
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
             {testRedirectRoutes.map(route => (
-              <Route path={route} component={RedirectToTest} />
+              <Route path={route} component={RedirectToTest} key={route} />
             ))}
           </Switch>
         </Suspense>

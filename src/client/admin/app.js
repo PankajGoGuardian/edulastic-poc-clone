@@ -6,10 +6,29 @@ import Sider from "./Common/Sider";
 import { LogoCompact, Logo, Button, MainDiv } from "./Common/StyledComponents";
 import CleverSearch from "./Containers/CleverSearch";
 import ProxyUser from "./Components/ProxyUser";
+import UpgradeUser from "./Containers/UpgradeUser";
 import { logoutAction } from "../author/src/actions/auth";
 import Logout from "./Common/Logout";
 
-function Admin({ match, history, logoutAction }) {
+const siderMenuData = [
+  {
+    icon: "pie-chart",
+    label: "clever search",
+    href: "/admin/search"
+  },
+  {
+    icon: "team",
+    label: "proxy",
+    href: "/admin/proxyUser"
+  },
+  {
+    icon: "team",
+    label: "Upgrade Plan",
+    href: "/admin/upgrade"
+  }
+];
+
+function Admin({ match, history, logoutAction, location }) {
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Logout logoutAction={logoutAction} />
@@ -25,7 +44,7 @@ function Admin({ match, history, logoutAction }) {
               >
                 {state ? <LogoCompact /> : <Logo />}
               </Button>
-              <Menu theme="light" defaultSelectedKeys={["search"]} mode="inline">
+              <Menu theme="light" defaultSelectedKeys={[location.pathname]} mode="inline">
                 {siderMenuData.map(item => (
                   <Menu.Item
                     onClick={() => {
@@ -34,7 +53,7 @@ function Admin({ match, history, logoutAction }) {
                         history.push(item.href);
                       }
                     }}
-                    key={item.id}
+                    key={item.href}
                   >
                     <Icon title={item.label} type={item.icon} />
                     <span>{item.label}</span>
@@ -50,6 +69,7 @@ function Admin({ match, history, logoutAction }) {
           <Redirect exact path={match.path} to={`${match.path}/search`} />
           <Route path={`${match.path}/search`} component={CleverSearch} />
           <Route path={`${match.path}/proxyUser`} component={ProxyUser} />
+          <Route path={`${match.path}/upgrade`} component={UpgradeUser} />
         </Switch>
       </MainDiv>
     </Layout>
@@ -64,18 +84,3 @@ const withConnect = connect(
 )(Admin);
 
 export default withConnect;
-
-export const siderMenuData = [
-  {
-    icon: "pie-chart",
-    id: "search",
-    label: "clever search",
-    href: "/admin/search"
-  },
-  {
-    icon: "team",
-    id: "proxyUser",
-    label: "proxy",
-    href: "/admin/proxyUser"
-  }
-];

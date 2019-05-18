@@ -28,6 +28,7 @@ import {
   StyledButton,
   MenuWrapper
 } from "./styled";
+import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 
 import { releaseScoreAction } from "../../../src/actions/classBoard";
 import { showScoreSelector } from "../../../ClassBoard/ducks";
@@ -109,21 +110,25 @@ class ClassHeader extends Component {
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <StyledLink
-              to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
-              data-cy="Expressgrader"
-            >
-              <StyledAnchor isActive={active === "expressgrader"}>
-                <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                <LinkLabel>{t("common.expressGrader")}</LinkLabel>
-              </StyledAnchor>
-            </StyledLink>
-            <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
-              <StyledAnchor isActive={active === "standard_report"}>
-                <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
-              </StyledAnchor>
-            </StyledLink>
+            <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
+              <StyledLink
+                to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
+                data-cy="Expressgrader"
+              >
+                <StyledAnchor isActive={active === "expressgrader"}>
+                  <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                  <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+                </StyledAnchor>
+              </StyledLink>
+            </FeatureWrapper>
+            <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
+              <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
+                <StyledAnchor isActive={active === "standard_report"}>
+                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                  <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
+                </StyledAnchor>
+              </StyledLink>
+            </FeatureWrapper>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>

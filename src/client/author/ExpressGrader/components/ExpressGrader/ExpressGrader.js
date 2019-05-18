@@ -17,6 +17,7 @@ import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 // styled wrappers
 import { PaginationInfo, StyledFlexContainer } from "./styled";
+import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 
 class ExpressGrader extends Component {
   constructor(props) {
@@ -83,35 +84,38 @@ class ExpressGrader extends Component {
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
     return (
-      <div>
-        <ClassHeader
-          classId={classId}
-          active="expressgrader"
-          assignmentId={assignmentId}
-          onCreate={this.handleCreate}
-          additionalData={additionalData || {}}
-          testActivityId={testActivityId}
-        />
-        <StyledFlexContainer justifyContent="space-between">
-          <PaginationInfo>
-            &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
-            {additionalData && <a>{additionalData.testName}</a>} / {additionalData && <a>{additionalData.className}</a>}
-          </PaginationInfo>
-        </StyledFlexContainer>
-        {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
-
-        {isMobile && <ScoreCard testActivity={testActivity} />}
-
-        {isVisibleModal && (
-          <QuestionModal
-            record={record}
-            tableData={tableData}
-            isVisibleModal={isVisibleModal}
-            showQuestionModal={this.showQuestionModal}
-            hideQuestionModal={this.hideQuestionModal}
+      <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
+        <div>
+          <ClassHeader
+            classId={classId}
+            active="expressgrader"
+            assignmentId={assignmentId}
+            onCreate={this.handleCreate}
+            additionalData={additionalData || {}}
+            testActivityId={testActivityId}
           />
-        )}
-      </div>
+          <StyledFlexContainer justifyContent="space-between">
+            <PaginationInfo>
+              &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
+              {additionalData && <a>{additionalData.testName}</a>} /{" "}
+              {additionalData && <a>{additionalData.className}</a>}
+            </PaginationInfo>
+          </StyledFlexContainer>
+          {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
+
+          {isMobile && <ScoreCard testActivity={testActivity} />}
+
+          {isVisibleModal && (
+            <QuestionModal
+              record={record}
+              tableData={tableData}
+              isVisibleModal={isVisibleModal}
+              showQuestionModal={this.showQuestionModal}
+              hideQuestionModal={this.hideQuestionModal}
+            />
+          )}
+        </div>
+      </FeatureWrapper>
     );
   }
 }

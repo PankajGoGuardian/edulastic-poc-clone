@@ -11,6 +11,7 @@ import TableDisplay from "./components/TableDisplay";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { getTestActivitySelector, getAdditionalDataSelector, getQIdsSelector } from "../ClassBoard/ducks";
 import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
+import FeatureWrapper from "../../features/components/FeatureWrapper";
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -42,28 +43,30 @@ class StandardsBasedReport extends Component {
     } = this.props;
     const testActivityId = this.getTestActivity(testActivity);
     return (
-      <React.Fragment>
-        <ClassHeader
-          classId={classId}
-          active="standard_report"
-          creating={creating}
-          assignmentId={assignmentId}
-          additionalData={additionalData || {}}
-          testActivityId={testActivityId}
-        />
-        <HooksContainer classId={classId} assignmentId={assignmentId} />
+      <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
+        <React.Fragment>
+          <ClassHeader
+            classId={classId}
+            active="standard_report"
+            creating={creating}
+            assignmentId={assignmentId}
+            additionalData={additionalData || {}}
+            testActivityId={testActivityId}
+          />
+          <HooksContainer classId={classId} assignmentId={assignmentId} />
 
-        <StyledFlexContainer justifyContent="space-between">
-          <PaginationInfo>
-            &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
-            <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
-          </PaginationInfo>
-        </StyledFlexContainer>
+          <StyledFlexContainer justifyContent="space-between">
+            <PaginationInfo>
+              &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
+              <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
+            </PaginationInfo>
+          </StyledFlexContainer>
 
-        <DivWrapper>
-          <TableDisplay testActivities={testActivity} additionalData={additionalData} qids={this.props.testQIds} />
-        </DivWrapper>
-      </React.Fragment>
+          <DivWrapper>
+            <TableDisplay testActivities={testActivity} additionalData={additionalData} qids={this.props.testQIds} />
+          </DivWrapper>
+        </React.Fragment>
+      </FeatureWrapper>
     );
   }
 }

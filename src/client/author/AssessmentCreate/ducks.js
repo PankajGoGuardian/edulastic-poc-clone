@@ -155,7 +155,7 @@ function* createAssessmentSaga({ payload }) {
 
       const newAssessment = {
         ...initialTestState,
-        title: "New Assessment",
+        title: "Author Test",
         createdBy: {
           id: user._id,
           firstName: user.firstName,

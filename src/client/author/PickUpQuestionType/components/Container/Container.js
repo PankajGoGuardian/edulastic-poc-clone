@@ -134,7 +134,7 @@ class Container extends Component {
         ]
       : [
           {
-            title: "ITEM LIBRARY",
+            title: "ITEM BANK",
             to: "/author/items"
           },
           {

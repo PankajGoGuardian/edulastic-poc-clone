@@ -16,7 +16,7 @@ class SecondHeadBar extends Component {
     this.state = {
       breadcrumbData: [
         {
-          title: "ITEM LIBRARY",
+          title: "ITEM BANK",
           to: "/author/items"
         },
         // eslint-disable-next-line react/destructuring-assignment

@@ -124,7 +124,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
 export const initialTestState = {
-  title: "New Test",
+  title: "Author Test",
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,

@@ -176,7 +176,7 @@ class Assignments extends Component {
         <ListHeader
           onCreate={this.handleCreate}
           title={t("common.assignmentsTitle")}
-          btnTitle="NEW ASSESSMENT"
+          btnTitle="AUTHOR TEST"
           renderFilter={this.renderSwitch}
           isAdvancedView={isAdvancedView}
         />

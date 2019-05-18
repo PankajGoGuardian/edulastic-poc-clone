@@ -27,7 +27,7 @@ const breadcrumbs = [
     to: "/author/assignments"
   },
   {
-    title: "New Assessment",
+    title: "Author Test",
     to: ""
   }
 ];
@@ -92,7 +92,7 @@ class Container extends React.Component {
     return (
       <>
         <HeaderWrapper>
-          <Title>New Assessment</Title>
+          <Title>Author Test</Title>
         </HeaderWrapper>
         <Breadcrumb data={breadcrumbs} style={breadcrumbStyle} />
         {creating && <Spin />}

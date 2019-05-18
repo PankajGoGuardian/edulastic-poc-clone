@@ -32,7 +32,7 @@ const ModalCreateTest = ({ onCancel, onProceed, createTestFromCart, amountOfSele
     >
       <Form layout="inline">
         <Form.Item label="Name">
-          <Input ref={inputRef} placeholder="New Test" value={testName} onChange={handleChangeTestName} />
+          <Input ref={inputRef} placeholder="Author Test" value={testName} onChange={handleChangeTestName} />
         </Form.Item>
       </Form>
     </Modal>

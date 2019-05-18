@@ -22,7 +22,7 @@
   },
 
   "component": {
-    "backToItemList": "Back to item library",
+    "backToItemList": "Back to item bank",
     "multiplechoice": {
       "thisisstem": "[This is the stem.]",
       "setcorrectanswers": "Set Correct Answer(s)",
@@ -80,8 +80,8 @@
     },
     "itemlist": {
       "header": {
-        "create": "Create",
-        "itemlist": "Item Library"
+        "create": "Create Item",
+        "itemlist": "Item Bank"
       },
       "filter": {
         "filters": "Filters",
@@ -91,12 +91,12 @@
       }
     },
     "itemAdd": {
-      "itemlist": "Item Library",
-      "backToItemList": "Back to Item Library"
+      "itemlist": "Item Bank",
+      "backToItemList": "Back to Item Bank"
     },
     "itemDetail": {
       "itemDetail": "Item Detail",
-      "backToItemList": "Back to Item Library",
+      "backToItemList": "Back to Item Bank",
       "backText": "Back to Item Detail",
       "addNew": "Add New"
     },

@@ -7,7 +7,7 @@ import { Container, CartButtonWrapper, ItemsAmount } from "./styled";
 
 const CartButton = ({ amountOfSelectedItems, onClick }) => (
   <Container onClick={onClick} disabled={!amountOfSelectedItems}>
-    <CartButtonWrapper>New Test</CartButtonWrapper>
+    <CartButtonWrapper>Author Test</CartButtonWrapper>
     <ItemsAmount>{amountOfSelectedItems}</ItemsAmount>
   </Container>
 );

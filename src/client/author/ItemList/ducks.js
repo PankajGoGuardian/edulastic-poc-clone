@@ -38,7 +38,7 @@ export function* addItemToCartSaga({ payload }) {
   yield put(setTestDataAction(updatedTest));
 }
 
-export function* createTestFromCart({ payload: { testName = "New Test" } }) {
+export function* createTestFromCart({ payload: { testName = "Author Test" } }) {
   const test = yield select(getTestEntitySelector);
 
   const updatedTest = {

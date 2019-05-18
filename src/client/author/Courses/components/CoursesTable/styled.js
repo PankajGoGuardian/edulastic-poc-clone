@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown, Checkbox } from "antd";
+import { Button, Table, Select, Input, Dropdown, Checkbox, Pagination, Icon } from "antd";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
@@ -30,15 +30,27 @@ export const StyledFilterSelect = styled(Select)`
   }
 `;
 
-export const StyledTable = styled(Table)``;
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      a {
+        opacity: 100;
+      }
+    }
+  }
+`;
 
 export const StyledFilterButton = styled(Button)`
   margin-left: 20px;
 `;
 
 export const StyledTableButton = styled.a`
+  opacity: 0;
   margin-right: 20px;
   font-size: 20px;
+  &:last-child {
+    margin-right: 0;
+  }
 `;
 
 export const StyledFilterInput = styled(Input)`
@@ -46,7 +58,7 @@ export const StyledFilterInput = styled(Input)`
   width: 300px;
 `;
 
-export const StyledNameSearch = styled(Input)`
+export const StyledNameSearch = styled(Search)`
   margin-left: 20px;
   width: 465px;
 `;
@@ -61,4 +73,36 @@ export const StyledActionDropDown = styled(Dropdown)`
 
 export const StyledActiveCheckbox = styled(Checkbox)`
   margin-left: auto;
+`;
+
+export const StyledPagination = styled(Pagination)`
+  align-self: flex-end;
+  margin-top: 15px;
+`;
+
+export const StyledHeaderColumn = styled.div`
+  display: flex;
+  align-item: center;
+  cursor: pointer;
+`;
+
+export const StyledSortIconDiv = styled.div`
+  position: relative;
+  margin-left: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.45);
+`;
+
+export const StyledSortIcon = styled(Icon)`
+  display: block;
+  height: 6px;
+  line-height: 0.5em;
+  cursor: pointer;
+  position: relative;
+  font-size: 11px;
+  margin-top: 0.125em;
+  color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
 `;

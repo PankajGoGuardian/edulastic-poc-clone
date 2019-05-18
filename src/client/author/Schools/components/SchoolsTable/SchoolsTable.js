@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Form, Icon, Select, message, Button } from "antd";
+import { Form, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
 import {
@@ -15,25 +15,19 @@ import {
   StyledFilterInput,
   StyledFilterButton,
   StyledSchoolSearch,
-  StyledSelectStatus,
   StyledTable,
   StyledHeaderColumn,
   StyledSortIconDiv,
   StyledSortIcon,
-  StyledPagination
+  StyledPagination,
+  StyledActionDropDown
 } from "./styled";
 
 import CreateSchoolModal from "./CreateSchoolModal/CreateSchoolModal";
 import EditSchoolModal from "./EditSchoolModal/EditSchoolModal";
 
 // actions
-import {
-  receiveSchoolsAction,
-  createSchoolsAction,
-  updateSchoolsAction,
-  deleteSchoolsAction,
-  setSchoolActionStatusAction
-} from "../../ducks";
+import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteSchoolsAction } from "../../ducks";
 
 import { getSchoolsSelector } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -186,26 +180,19 @@ class SchoolsTable extends React.Component {
     this.loadFilteredSchoolList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
-  changeActionMode = value => {
+  changeActionMode = e => {
     const { selectedRowKeys } = this.state;
-    const { setActionStatus } = this.props;
 
-    if (value === "") {
-      setActionStatus("");
-    } else if (value === "edit school") {
+    if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
-        setActionStatus("");
         message.error("Please select school to edit.");
       } else if (selectedRowKeys.length == 1) {
-        setActionStatus("edit school");
         this.onEditSchool(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
-        setActionStatus("");
         message.error("Please select single school to edit.");
       }
-    } else if (value === "deactivate school") {
+    } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
-        setActionStatus("deactivate school");
         const data = [...this.state.dataSource];
         this.setState({
           dataSource: data.filter(item => {
@@ -220,7 +207,6 @@ class SchoolsTable extends React.Component {
         const { deleteSchool } = this.props;
         deleteSchool(selectedSchoolsData);
       } else {
-        setActionStatus("");
         message.error("Please select schools to delete.");
       }
     }
@@ -278,7 +264,6 @@ class SchoolsTable extends React.Component {
   };
 
   closeEditSchoolModal = () => {
-    this.props.setActionStatus("");
     this.setState({ editSchoolModaVisible: false });
   };
 
@@ -539,6 +524,13 @@ class SchoolsTable extends React.Component {
 
     const editSchoolData = dataSource.filter(item => item.key === editSchoolKey);
 
+    const actionMenu = (
+      <Menu onClick={this.changeActionMode}>
+        <Menu.Item key="edit school">Edit School</Menu.Item>
+        <Menu.Item key="deactivate school">Deactivate School</Menu.Item>
+      </Menu>
+    );
+
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
       const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
@@ -629,11 +621,12 @@ class SchoolsTable extends React.Component {
           )}
 
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.handleSearchName} />
-          <StyledSelectStatus defaultValue="" onChange={this.changeActionMode} value={selectedAction}>
-            <Option value="">Actions</Option>
-            <Option value="edit school">Edit School</Option>
-            <Option value="deactivate school">Deactivate School</Option>
-          </StyledSelectStatus>
+
+          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+            <Button>
+              Actions <Icon type="down" />
+            </Button>
+          </StyledActionDropDown>
         </StyledControlDiv>
         {SearchRows}
         <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
@@ -665,15 +658,13 @@ const enhance = compose(
     state => ({
       schoolList: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
-      selectedAction: get(state, ["schoolsReducer", "selectedAction"], ""),
       totalSchoolsCount: get(state, ["schoolsReducer", "totalSchoolCount"], 0)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
       createSchool: createSchoolsAction,
       updateSchool: updateSchoolsAction,
-      deleteSchool: deleteSchoolsAction,
-      setActionStatus: setSchoolActionStatusAction
+      deleteSchool: deleteSchoolsAction
     }
   )
 );
@@ -687,6 +678,5 @@ SchoolsTable.propTypes = {
   loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,
   createSchool: PropTypes.func.isRequired,
-  deleteSchool: PropTypes.func.isRequired,
-  setActionStatus: PropTypes.func.isRequired
+  deleteSchool: PropTypes.func.isRequired
 };

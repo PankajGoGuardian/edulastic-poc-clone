@@ -1,12 +1,69 @@
 import React, { Component } from "react";
 import { Form, Input, Row, Col, Button, Modal } from "antd";
 
-import { StyledModal, ModalFormItem } from "./styled";
+import { ModalFormItem, StyledSpinContainer, StyledSpin } from "./styled";
+
+import { courseApi } from "@edulastic/api";
 
 class EditCourseModal extends React.Component {
-  onSaveCourse = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      nameValidate: {
+        value: this.props.courseData.name,
+        validateStatus: "success",
+        validateMsg: ""
+      },
+      showSpin: false,
+      checkCourseExist: { totalCourses: 0, result: [] }
+    };
+  }
+
+  onSaveCourse = async () => {
+    const { nameValidate } = this.state;
+    let checkCourseExist = { ...this.state.checkCourseExist };
+
+    if (nameValidate.validateStatus === "success" && nameValidate.value.length > 0) {
+      this.setState({ showSpin: true });
+      checkCourseExist = await courseApi.searchCourse({
+        districtId: this.props.userOrgId,
+        page: 1,
+        limit: 25,
+        sortField: "name",
+        order: "asc",
+        search: {
+          name: {
+            type: "eq",
+            value: nameValidate.value
+          }
+        }
+      });
+      this.setState({ showSpin: false, checkCourseExist });
+
+      if (checkCourseExist.totalCourses > 0 && checkCourseExist.result[0]._id !== this.props.courseData._id) {
+        this.setState({
+          nameValidate: {
+            value: nameValidate.value,
+            validateStatus: "error",
+            validateMsg: "Course name already exist"
+          }
+        });
+      }
+    } else {
+      if (nameValidate.value.length == 0) {
+        this.setState({
+          nameValidate: {
+            value: nameValidate.value,
+            validateStatus: "error",
+            validateMsg: "Please input course name"
+          }
+        });
+      }
+    }
+
     this.props.form.validateFields((err, row) => {
       if (!err) {
+        if (checkCourseExist.totalCourses > 0 && checkCourseExist.result[0]._id !== this.props.courseData._id) return;
         this.props.saveCourse(row);
       }
     });
@@ -16,20 +73,32 @@ class EditCourseModal extends React.Component {
     this.props.closeModal();
   };
 
-  checkNameUnique = (rule, value, callback) => {
-    const dataSource = this.props.dataSource.filter(item => item.key != this.props.courseData.key);
-    const sameNameRow = dataSource.filter(item => item.name === value);
-    if (sameNameRow.length <= 0) {
-      callback();
-      return;
+  handleCourseName = e => {
+    if (e.target.value.length == 0) {
+      this.setState({
+        nameValidate: {
+          value: e.target.value,
+          validateStatus: "error",
+          validateMsg: "Please input course name"
+        },
+        checkCourseExist: { totalCourses: 0, data: [] }
+      });
+    } else {
+      this.setState({
+        nameValidate: {
+          value: e.target.value,
+          validateStatus: "success",
+          validateMsg: ""
+        },
+        checkCourseExist: { totalCourses: 0, data: [] }
+      });
     }
-    callback("Course name should be unique.");
   };
 
   render() {
     const { modalVisible, courseData } = this.props;
     const { getFieldDecorator } = this.props.form;
-
+    const { nameValidate, showSpin } = this.state;
     return (
       <Modal
         visible={modalVisible}
@@ -45,17 +114,20 @@ class EditCourseModal extends React.Component {
       >
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Course Name">
+            <ModalFormItem
+              label="Course Name"
+              validateStatus={nameValidate.validateStatus}
+              help={nameValidate.validateMsg}
+            >
               {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
                     message: "Please input course name"
-                  },
-                  { validator: this.checkNameUnique }
+                  }
                 ],
                 initialValue: courseData.name
-              })(<Input placeholder="Course name" />)}
+              })(<Input placeholder="Course name" onChange={this.handleCourseName} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -74,6 +146,11 @@ class EditCourseModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
+        {showSpin && (
+          <StyledSpinContainer>
+            <StyledSpin size="large" />
+          </StyledSpinContainer>
+        )}
       </Modal>
     );
   }

@@ -18,8 +18,6 @@ const DELETE_SCHOOLS_REQUEST = "[school] delete data request";
 const DELETE_SCHOOLS_SUCCESS = "[school] delete data success";
 const DELETE_SCHOOLS_ERROR = "[school] delete data error";
 
-const SET_SCHOOLSACTION_STATUS_ACTION = "[school] set action status";
-
 export const receiveSchoolsAction = createAction(RECEIVE_SCHOOLS_REQUEST);
 export const receiveSchoolsSuccessAction = createAction(RECEIVE_SCHOOLS_SUCCESS);
 export const receiveSchoolsErrorAction = createAction(RECEIVE_SCHOOLS_ERROR);
@@ -32,8 +30,6 @@ export const createSchoolsErrorAction = createAction(CREATE_SCHOOLS_ERROR);
 export const deleteSchoolsAction = createAction(DELETE_SCHOOLS_REQUEST);
 export const deleteSchoolsSuccessAction = createAction(DELETE_SCHOOLS_SUCCESS);
 export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
-
-export const setSchoolActionStatusAction = createAction(SET_SCHOOLSACTION_STATUS_ACTION);
 
 //selectors
 const stateSchoolsSelector = state => state.schoolsReducer;
@@ -58,7 +54,6 @@ const initialState = {
   delete: null,
   deleting: false,
   deleteError: null,
-  selectedAction: "",
   totalSchoolCount: 0
 };
 
@@ -125,12 +120,10 @@ export const reducer = createReducer(initialState, {
     state.update = payload;
     state.updating = false;
     state.data = schoolsData;
-    state.selectedAction = "";
   },
   [UPDATE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.updating = false;
     state.updateError = payload.error;
-    state.selectedAction = "";
   },
   [CREATE_SCHOOLS_REQUEST]: state => {
     state.creating = true;
@@ -172,12 +165,10 @@ export const reducer = createReducer(initialState, {
       });
       if (nMatchCount == 0) return school;
     });
-    state.selectedAction = "";
   },
   [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.deleting = false;
     state.deleteError = payload.error;
-    state.selectedAction = "";
   }
 });
 

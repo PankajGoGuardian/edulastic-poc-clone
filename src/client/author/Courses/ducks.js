@@ -21,9 +21,6 @@ const UPLOAD_COURSE_CSV_REQUEST = "[course] upload CSV request";
 const UPLOAD_COURSE_CSV_SUCCESS = "[course] upload CSV success";
 const UPLOAD_COURSE_CSV_ERROR = "[course] upload CSV error";
 
-const SET_COURSE_SEARCHNAME = "[course] set search name";
-const SET_COURSE_FILTERS = "[course] set filters";
-const SET_COURSE_SHOWACTIVE = "[course] set show active";
 const SET_COURSE_SELECT_ROW_KEY = "[course] set selected row keys";
 
 const SEARCH_COURSE_REQUEST = "[course] search request received";
@@ -37,6 +34,10 @@ const SAVE_BULK_COURSE_SUCCESS = "[course] save bulk course success";
 const SAVE_BULK_COURSE_ERROR = "[course] save bulk course error";
 
 const SET_UPDATEMODAL_PAGE_STATUS = "[course] set update modal page status";
+
+const SET_COURSE_SHOWACTIVE_STATUS = "[course] set show active course status";
+
+const RESET_COURSE_UPLOADMODAL_STATUS = "[course] reset upload modal status";
 
 export const receiveCourseListAction = createAction(RECEIVE_COURSE_REQUEST);
 export const receiveCourseListSuccessAction = createAction(RECEIVE_COURSE_SUCCESS);
@@ -54,10 +55,6 @@ export const uploadCSVAction = createAction(UPLOAD_COURSE_CSV_REQUEST);
 export const uploadCSVSuccessAction = createAction(UPLOAD_COURSE_CSV_SUCCESS);
 export const uploadCSVErrorAction = createAction(UPLOAD_COURSE_CSV_ERROR);
 
-export const setSearchNameAction = createAction(SET_COURSE_SEARCHNAME);
-export const setFiltersAction = createAction(SET_COURSE_FILTERS);
-export const setShowActiveCourseAction = createAction(SET_COURSE_SHOWACTIVE);
-
 export const setSelectedRowKeysAction = createAction(SET_COURSE_SELECT_ROW_KEY);
 
 export const receiveSearchCourseAction = createAction(SEARCH_COURSE_REQUEST);
@@ -69,67 +66,15 @@ export const saveBulkCourseSuccessAction = createAction(SAVE_BULK_COURSE_SUCCESS
 export const saveBulkCourseErrorAction = createAction(SAVE_BULK_COURSE_ERROR);
 
 export const setUpdateModalPageStatusAction = createAction(SET_UPDATEMODAL_PAGE_STATUS);
+
+export const setShowActiveStatusAction = createAction(SET_COURSE_SHOWACTIVE_STATUS);
+
+export const resetUploadModalStatusAction = createAction(RESET_COURSE_UPLOADMODAL_STATUS);
 // selectors
 const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
   stateCourseSelector,
-  state => {
-    let searchedList = [];
-    if (state.searchName.length == 0) searchedList = [...state.data];
-    else {
-      searchedList = state.data.filter(item => {
-        const nameValue = item.name.toLowerCase();
-        return nameValue.indexOf(state.searchName.toLowerCase()) != -1;
-      });
-    }
-
-    if (state.showActiveCourse) {
-      searchedList = searchedList.filter(item => item.active == 1);
-    }
-
-    const filtersData = state.filtersData;
-    const filteredList = [];
-    for (let i = 0; i < searchedList.length; i++) {
-      let isMatched = true;
-      for (let j = 0; j < filtersData.length; j++) {
-        if (
-          filtersData[j].filtersColumn.length == 0 ||
-          filtersData[j].filtersValue.length == 0 ||
-          filtersData[j].filterStr.length == 0
-        ) {
-          continue;
-        }
-
-        if (filtersData[j].filtersValue === "eq") {
-          if (
-            searchedList[i][filtersData[j].filtersColumn] == null ||
-            (searchedList[i][filtersData[j].filtersColumn].toString().toLowerCase() !==
-              filtersData[j].filterStr.toLowerCase() &&
-              filtersData[j].filterStr.length != 0)
-          ) {
-            isMatched = false;
-            break;
-          }
-        } else if (filtersData[j].filtersValue === "cont") {
-          if (
-            searchedList[i][filtersData[j].filtersColumn] == null ||
-            (searchedList[i][filtersData[j].filtersColumn]
-              .toString()
-              .toLowerCase()
-              .indexOf(filtersData[j].filterStr.toLowerCase()) < 0 &&
-              filtersData[j].filterStr.length != 0)
-          ) {
-            isMatched = false;
-            break;
-          }
-        }
-      }
-      if (isMatched) {
-        filteredList.push(searchedList[i]);
-      }
-    }
-    return filteredList;
-  }
+  state => state.data
 );
 
 // reducers
@@ -149,22 +94,14 @@ const initialState = {
   uploadCSV: {},
   uploadingCSV: false,
   uploadCSVError: null,
-  searchName: "",
-  filtersData: [
-    {
-      filtersColumn: "",
-      filtersValue: "",
-      filterStr: "",
-      filterAdded: false
-    }
-  ],
-  showActiveCourse: true,
   selectedRowKeys: [],
   searchResult: [],
   searching: false,
   uploadModalPageStatus: "normal",
   saveingBulkCourse: false,
-  saveBulkCourseError: {}
+  saveBulkCourseError: {},
+  totalCourseCount: 0,
+  isShowActive: true
 };
 
 export const reducer = createReducer(initialState, {
@@ -173,10 +110,11 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_COURSE_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    payload.map(row => {
+    payload.result.map(row => {
       row.key = row._id;
     });
-    state.data = payload;
+    state.data = payload.result;
+    state.totalCourseCount = payload.totalCourses;
   },
   [RECEIVE_COURSE_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -209,7 +147,7 @@ export const reducer = createReducer(initialState, {
     state.creating = false;
     state.create = payload;
     payload.key = payload._id;
-    state.data = [payload, ...state.data];
+    state.data = [payload, ...state.data].slice(0, 25);
   },
   [CREATE_COURSE_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -223,13 +161,19 @@ export const reducer = createReducer(initialState, {
     state.deleting = false;
     const newData = [...state.data];
     const payloadIds = groupBy(payload, "id");
-    for (const row of newData) {
-      if (payloadIds[row._id]) {
-        row.active = 0;
+
+    if (state.isShowActive) {
+      state.data = newData.filter(item => !payloadIds[item._id]);
+    } else {
+      for (const row of newData) {
+        if (payloadIds[row._id]) {
+          row.status = 0;
+        }
       }
+      state.data = newData;
     }
+
     state.selectedRowKeys = [];
-    state.data = newData;
   },
   [DEACTIVATE_COURSE_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -251,15 +195,6 @@ export const reducer = createReducer(initialState, {
     state.uploadingCSV = false;
     state.uploadCSVError = payload.error;
     state.uploadModalPageStatus = "normal";
-  },
-  [SET_COURSE_SEARCHNAME]: (state, { payload }) => {
-    state.searchName = payload;
-  },
-  [SET_COURSE_FILTERS]: (state, { payload }) => {
-    state.filtersData = [...payload];
-  },
-  [SET_COURSE_SHOWACTIVE]: (state, { payload }) => {
-    state.showActiveCourse = payload;
   },
   [SET_COURSE_SELECT_ROW_KEY]: (state, { payload }) => {
     state.selectedRowKeys = [...payload];
@@ -291,13 +226,24 @@ export const reducer = createReducer(initialState, {
   },
   [SET_UPDATEMODAL_PAGE_STATUS]: (state, { payload }) => {
     state.uploadModalPageStatus = payload;
+  },
+  [SET_COURSE_SHOWACTIVE_STATUS]: (state, { payload }) => {
+    state.isShowActive = payload;
+  },
+  [RESET_COURSE_UPLOADMODAL_STATUS]: state => {
+    state.saveBulkCourse = false;
+    state.saveBulkCourseError = [];
+    state.uploadModalPageStatus = "normal";
+    state.uploadCSV = {};
+    state.uploadingCSV = false;
+    state.uploadCSVError = null;
   }
 });
 
 // sagas
 function* receiveCourseListSaga({ payload }) {
   try {
-    const course = yield call(courseApi.fetchCourse, payload);
+    const course = yield call(courseApi.searchCourse, payload);
     yield put(receiveCourseListSuccessAction(course));
   } catch (err) {
     const errorMessage = "Receive Course is failing!";
@@ -366,7 +312,7 @@ function* receiveSearchCourseSaga({ payload }) {
   }
 }
 
-function* saveBulkCourse({ payload }) {
+function* saveBulkCourseSaga({ payload }) {
   try {
     const saveBulkCourse = yield call(courseApi.saveBulkCourse, payload);
     yield put(saveBulkCourseSuccessAction(saveBulkCourse));
@@ -384,5 +330,5 @@ export function* watcherSaga() {
   yield all([yield takeEvery(DEACTIVATE_COURSE_REQUEST, deactivateCourseSaga)]);
   yield all([yield takeEvery(UPLOAD_COURSE_CSV_REQUEST, uploadCourseCSVSaga)]);
   yield all([yield takeEvery(SEARCH_COURSE_REQUEST, receiveSearchCourseSaga)]);
-  yield all([yield takeEvery(SAVE_BULK_COURSE_REQUEST, saveBulkCourse)]);
+  yield all([yield takeEvery(SAVE_BULK_COURSE_REQUEST, saveBulkCourseSaga)]);
 }

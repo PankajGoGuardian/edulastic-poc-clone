@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Icon, Pagination } from "antd";
+import { Button, Table, Select, Input, Icon, Pagination, Dropdown } from "antd";
 const Search = Input.Search;
 
 export const StyledTableContainer = styled.div`
@@ -62,11 +62,6 @@ export const StyledSchoolSearch = styled(Search)`
   width: 465px;
 `;
 
-export const StyledSelectStatus = styled(Select)`
-  margin-left: auto;
-  width: 200px;
-`;
-
 export const StyledHeaderColumn = styled.div`
   display: flex;
   align-item: center;
@@ -97,4 +92,12 @@ export const StyledSortIcon = styled(Icon)`
 export const StyledPagination = styled(Pagination)`
   align-self: flex-end;
   margin-top: 15px;
+`;
+
+export const StyledActionDropDown = styled(Dropdown)`
+  margin-left: auto;
+  width: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;

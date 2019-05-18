@@ -21,7 +21,7 @@ const searchCourse = data =>
       method: "post",
       data
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
 
 const saveCourse = data =>
   api

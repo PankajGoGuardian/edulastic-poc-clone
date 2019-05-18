@@ -15,7 +15,6 @@ import {
 import { Icon } from "antd";
 import {
   StyledModal,
-  StyledDownloadBtn,
   StyledUploadBtn,
   StyledUploadCSVDiv,
   SuccessIcon,
@@ -66,7 +65,7 @@ class UploadCourseModal extends React.Component {
 
   uploadCourse = () => {
     let uploadBulkCourseData = [];
-    for (let i = 0; i < this.state.dataSource; i++) {
+    for (let i = 0; i < this.state.dataSource.length; i++) {
       uploadBulkCourseData.push({
         number: this.state.dataSource[i].courseNo,
         name: this.state.dataSource[i].courseName
@@ -157,7 +156,7 @@ class UploadCourseModal extends React.Component {
     ];
     if (pageStatus === "uploaded") {
       modalFooter = [
-        <StyledConfirmButton type="primary" onClick={this.uploadCourse} disabled={isError}>
+        <StyledConfirmButton type="primary" onClick={this.uploadCourse} disabled={isError || dataSource.length == 0}>
           Yes, the format looks correct
         </StyledConfirmButton>,
         <StyledConfirmButton onClick={this.goBackUpload}>go back and upload a new file</StyledConfirmButton>
@@ -216,7 +215,7 @@ class UploadCourseModal extends React.Component {
                 {dataSource.length} course(s) uploaded successfully and 0 course(s) failed to upload
               </AlertSuccess>
             )}
-            <StyledTable dataSource={dataSource} columns={columns} />
+            <StyledTable dataSource={dataSource} columns={columns} pagination={false} />
             <StyledSpin isVisible={savingBulkCourse} size="large" />
           </UploadedContent>
         )}

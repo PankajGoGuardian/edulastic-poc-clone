@@ -1148,7 +1148,6 @@ span.token.active-word {
 .mq-root-block,
 .mq-math-mode .mq-root-block {
   margin-bottom: 0.2em;
-  min-width: 210px;
 }
 
 .mq-math-mode .mq-supsub.mq-sup-only {

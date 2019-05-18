@@ -217,11 +217,13 @@ class LeftFilter extends React.Component {
                 {isActive ? <IconFolderActive /> : <IconFolderDeactive />}
                 <span>{folder.folderName}</span>
               </FolderListItemTitle>
-              <Dropdown overlay={menu(folder._id)} trigger={["click"]} placement="bottomRight">
-                <MoreButton active={isActive}>
-                  <IconMoreVertical />
-                </MoreButton>
-              </Dropdown>
+              {!visibleModal.moveFolder && (
+                <Dropdown overlay={menu(folder._id)} trigger={["click"]} placement="bottomRight">
+                  <MoreButton active={isActive}>
+                    <IconMoreVertical />
+                  </MoreButton>
+                </Dropdown>
+              )}
             </FolderListItem>
           );
         })}

@@ -172,7 +172,7 @@ class AdvancedTable extends Component {
     ];
 
     const rowSelection = {
-      selectedRowKeys: selectedRows.map(({ key }) => key),
+      selectedRowKeys: selectedRows.map(({ testId }) => testId),
       onChange: (_, rows) => {
         if (onSelectRow) {
           onSelectRow(rows);

@@ -1,8 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button, Checkbox } from "antd";
 import styled from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction } from "../ducks";
 
@@ -15,6 +17,12 @@ import cleverIcon from "../../assets/clever-icon.svg";
 const FormItem = Form.Item;
 
 class LoginContainer extends React.Component {
+  static propTypes = {
+    form: PropTypes.object.isRequired,
+    login: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
+  };
+
   state = {
     confirmDirty: false
   };
@@ -104,7 +112,7 @@ class LoginContainer extends React.Component {
                       {getFieldDecorator("remember", {
                         valuePropName: "checked",
                         initialValue: true
-                      })(<Checkbox>{t("common.remembermetext")}</Checkbox>)}
+                      })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
                       <ForgetPassword href="#" style={{ marginTop: 1 }}>
                         {t("common.forgotpasswordtext")}
                       </ForgetPassword>
@@ -163,9 +171,9 @@ const FormWrapper = styled.div`
 
 const FormHead = styled(Row)`
   background: #157ad8;
-  background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-  background: -webkit-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-  background: linear-gradient(to right, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
+  background: -moz-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: -webkit-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
   padding: 15px;
   h3 {
     color: white;
@@ -188,60 +196,86 @@ const ThirdPartyLoginBtn = styled(Col)`
 `;
 
 const FormBody = styled(Row)`
-    padding: 15px;
-    h5 {
-      margin-bottom: 20px;
-      margin-top: 5px;
-      font-size: 13px;
+  padding: 15px;
+  h5 {
+    margin-bottom: 20px;
+    margin-top: 5px;
+    font-size: 13px;
+  }
+  form {
+    .ant-form-item {
+      margin-bottom: 10px;
     }
-    form {
-      .ant-form-item {
-        margin-bottom: 10px;
-      }
-      .ant-form-item-label {
-        text-align: left;
-        line-height: normal;
-        margin-bottom: 3px;
-        label {
-          font-size: 12px;
-          &.ant-form-item-required {
-            &:before, &:after {
-              content: '';
-            }
+    .ant-form-item-label {
+      text-align: left;
+      line-height: normal;
+      margin-bottom: 3px;
+      label {
+        font-size: 12px;
+        &.ant-form-item-required {
+          &:before,
+          &:after {
+            content: "";
           }
         }
       }
-      .ant-input:focus {
-        border: 1px solid #1fb58b;
+    }
+    .ant-input:focus {
+      border: 1px solid #1fb58b;
+    }
+    .has-error {
+      .ant-form-explain,
+      .ant-form-split {
+        font-size: 10px;
       }
-      .has-error {
-        .ant-form-explain, .ant-form-split { font-size: 10px; }
+    }
+    .ant-form-item-children {
+      width: 100%;
+      float: left;
+      label,
+      a {
+        line-height: normal;
+        font-size: 10px;
       }
-      .ant-form-item-children {
-        width: 100%;
+      label {
         float: left;
-        label, a {
-          line-height: normal;
-          font-size: 10px;
-        }
-        label { float: left; }
       }
     }
-    .ant-input-affix-wrapper .ant-input-prefix {
-      width: 15px;
-    }
+  }
+  .ant-input-affix-wrapper .ant-input-prefix {
+    width: 15px;
   }
 `;
 
 const ForgetPassword = styled("a")`
   float: right;
+  color: ${fadedBlack};
+
+  &:hover {
+    color: ${fadedBlack};
+    border-bottom: 1px ${springGreen} solid;
+  }
 `;
 
 const LoginButton = styled(Button)`
   width: 100%;
-  background: #1fb58b;
+  background: ${springGreen};
   font-size: 13px;
   color: white;
   border: 1px solid #1fb58b;
   font-weight: 600;
+  margin-top: 12px;
+
+  &:hover {
+    background: ${springGreen};
+  }
+`;
+
+const RememberCheckBox = styled(Checkbox)`
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background: ${springGreen};
+  }
+  .ant-checkbox-input:focus + .ant-checkbox-inner {
+    border-color: ${springGreen};
+  }
 `;

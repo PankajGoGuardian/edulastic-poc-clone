@@ -56,6 +56,7 @@ export const lightGreen1 = "#62ebbd";
 export const greenDark = "#4aac8b";
 export const greenDarkSecondary = "#057750";
 export const greenSecondary = "#4CD43B";
+export const springGreen = "#00ad50";
 
 export const greenPrimary = "#0EB08D";
 export const greenThird = "#5eb500";

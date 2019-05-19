@@ -5,6 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { compose } from "redux";
 import { Row, Col } from "antd";
 import { Link } from "react-router-dom";
+import { springGreen } from "@edulastic/colors";
 
 const Header = ({ t }) => (
   <RegistrationHeader type="flex" align="middle">
@@ -27,17 +28,18 @@ const enhance = compose(withNamespaces("login"));
 export default enhance(Header);
 
 const RegistrationHeader = styled(Row)`
-  padding: 10px 15px;
+  padding: 16px 24px;
   color: white;
   span {
     font-size: 12px;
     margin-right: 20px;
   }
   a {
-    padding: 5px 40px;
-    border: 1px solid #2d84dc;
+    padding: 8px 48px;
     text-decoration: none;
     color: white;
+    text-transform: uppercase;
     border-radius: 4px;
+    background: ${springGreen};
   }
 `;

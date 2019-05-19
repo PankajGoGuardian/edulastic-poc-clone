@@ -275,9 +275,13 @@ function* receiveAddStudentRequest({ payload }) {
       yield call(message.success, successMsg);
       yield put(addStudentSuccessAction(student));
     } else {
+      const msg = get(result, "data.message", "User already part of this class section");
+      message.error(msg);
       yield put(addStudentFailedAction("add student to class failed"));
     }
   } catch (error) {
+    const msg = get(error, "data.message", "User already part of this class section");
+    message.error(msg);
     yield put(addStudentFailedAction(error));
   }
 }

@@ -99,7 +99,7 @@ const ActionContainer = ({
             unset(values, ["confirmPwd"]);
             unset(values, ["fullName"]);
 
-            addStudentRequest(values);
+            addStudentRequest(pickBy(values, identity));
             setReqStatus(true);
           }
         }

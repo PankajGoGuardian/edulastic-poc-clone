@@ -29,6 +29,24 @@ export default {
       highlightStrokeColor: "#00b2ff",
       highlightFillColor: "#00b2ff"
     },
+    [TOOLS.RAY]: {
+      fillColor: "#00b2ff",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "#00b2ff"
+    },
+    [TOOLS.SEGMENT]: {
+      fillColor: "#00b2ff",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "#00b2ff"
+    },
+    [TOOLS.VECTOR]: {
+      fillColor: "#00b2ff",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "#00b2ff"
+    },
     [TOOLS.POLYGON]: {
       fillColor: "#00b2ff",
       strokeColor: "#00b2ff",
@@ -117,6 +135,24 @@ export default {
       highlightFillColor: "#ffffff"
     },
     [TOOLS.LINE]: {
+      fillColor: "#ee1658",
+      strokeColor: "#ee1658",
+      highlightStrokeColor: "#ee1658",
+      highlightFillColor: "#ee1658"
+    },
+    [TOOLS.RAY]: {
+      fillColor: "#ee1658",
+      strokeColor: "#ee1658",
+      highlightStrokeColor: "#ee1658",
+      highlightFillColor: "#ee1658"
+    },
+    [TOOLS.SEGMENT]: {
+      fillColor: "#ee1658",
+      strokeColor: "#ee1658",
+      highlightStrokeColor: "#ee1658",
+      highlightFillColor: "#ee1658"
+    },
+    [TOOLS.VECTOR]: {
       fillColor: "#ee1658",
       strokeColor: "#ee1658",
       highlightStrokeColor: "#ee1658",
@@ -215,6 +251,24 @@ export default {
       highlightStrokeColor: "#1fe3a1",
       highlightFillColor: "#1fe3a1"
     },
+    [TOOLS.RAY]: {
+      fillColor: "#1fe3a1",
+      strokeColor: "#1fe3a1",
+      highlightStrokeColor: "#1fe3a1",
+      highlightFillColor: "#1fe3a1"
+    },
+    [TOOLS.SEGMENT]: {
+      fillColor: "#1fe3a1",
+      strokeColor: "#1fe3a1",
+      highlightStrokeColor: "#1fe3a1",
+      highlightFillColor: "#1fe3a1"
+    },
+    [TOOLS.VECTOR]: {
+      fillColor: "#1fe3a1",
+      strokeColor: "#1fe3a1",
+      highlightStrokeColor: "#1fe3a1",
+      highlightFillColor: "#1fe3a1"
+    },
     [TOOLS.POLYGON]: {
       fillColor: "#1fe3a1",
       strokeColor: "transparent",
@@ -308,11 +362,35 @@ export default {
       highlightStrokeColor: "#ffcb00",
       highlightFillColor: "#ffcb00"
     },
-    [TOOLS.POLYGON]: {
+    [TOOLS.RAY]: {
       fillColor: "#ffcb00",
       strokeColor: "#ffcb00",
       highlightStrokeColor: "#ffcb00",
       highlightFillColor: "#ffcb00"
+    },
+    [TOOLS.SEGMENT]: {
+      fillColor: "#ffcb00",
+      strokeColor: "#ffcb00",
+      highlightStrokeColor: "#ffcb00",
+      highlightFillColor: "#ffcb00"
+    },
+    [TOOLS.VECTOR]: {
+      fillColor: "#ffcb00",
+      strokeColor: "#ffcb00",
+      highlightStrokeColor: "#ffcb00",
+      highlightFillColor: "#ffcb00"
+    },
+    [TOOLS.POLYGON]: {
+      fillColor: "#ffcb00",
+      strokeColor: "#ffcb00",
+      highlightStrokeColor: "#ffcb00",
+      highlightFillColor: "#ffcb00",
+      borders: {
+        fillColor: "#ffcb00",
+        strokeColor: "#ffcb00",
+        highlightStrokeColor: "#ffcb00",
+        highlightFillColor: "#ffcb00"
+      }
     },
     [TOOLS.CIRCLE]: {
       fillColor: "transparent",

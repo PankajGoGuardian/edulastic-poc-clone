@@ -31,8 +31,6 @@ const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
     let newElems = cloneDeep(elements);
     const subElems = [];
-    const red = "#ee1658";
-    const green = "#1fe3a1";
 
     newElems = newElems.map(el => {
       if (!el.subElement) {
@@ -42,25 +40,15 @@ const getColoredElems = (elements, compareResult) => {
 
         if (detail && detail.result) {
           newEl = {
-            colors: {
-              strokeColor: green,
-              highlightStrokeColor: green
-            },
+            colors: Colors.green[el.type],
             ...el
           };
           result = true;
         } else {
           newEl = {
-            colors: {
-              strokeColor: red,
-              highlightStrokeColor: red
-            },
+            colors: Colors.red[el.type],
             ...el
           };
-        }
-        if (newEl.type === "point") {
-          newEl.colors.fillColor = result ? green : red;
-          newEl.colors.highlightFillColor = result ? green : red;
         }
 
         if (el.subElementsIds) {
@@ -82,22 +70,12 @@ const getColoredElems = (elements, compareResult) => {
         let newEl = {};
         if (detail && detail.result) {
           newEl = {
-            colors: {
-              strokeColor: green,
-              highlightStrokeColor: green,
-              fillColor: green,
-              highlightFillColor: green
-            },
+            colors: Colors.green[el.type],
             ...el
           };
         } else {
           newEl = {
-            colors: {
-              fillColor: red,
-              highlightFillColor: red,
-              strokeColor: red,
-              highlightStrokeColor: red
-            },
+            colors: Colors.red[el.type],
             ...el
           };
         }
@@ -112,58 +90,10 @@ const getColoredElems = (elements, compareResult) => {
 
 const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
-    return answerArr.map(el => {
-      let colors = {};
-      switch (el.type) {
-        case CONSTANT.TOOLS.POINT:
-          colors = Colors.yellow[CONSTANT.TOOLS.POINT];
-          break;
-
-        case CONSTANT.TOOLS.VECTOR:
-        case CONSTANT.TOOLS.SEGMENT:
-        case CONSTANT.TOOLS.RAY:
-        case CONSTANT.TOOLS.LINE:
-          colors = Colors.yellow[CONSTANT.TOOLS.LINE];
-          break;
-        case CONSTANT.TOOLS.ELLIPSE:
-        case CONSTANT.TOOLS.CIRCLE:
-          colors = Colors.yellow[CONSTANT.TOOLS.CIRCLE];
-          break;
-        case CONSTANT.TOOLS.HYPERBOLA:
-          colors = Colors.yellow[CONSTANT.TOOLS.HYPERBOLA];
-          break;
-        case CONSTANT.TOOLS.SIN:
-          colors = Colors.yellow[CONSTANT.TOOLS.SIN];
-          break;
-        case CONSTANT.TOOLS.POLYGON:
-          colors = Colors.yellow[CONSTANT.TOOLS.POLYGON];
-          break;
-        case CONSTANT.TOOLS.PARABOLA:
-          colors = Colors.yellow[CONSTANT.TOOLS.PARABOLA];
-          break;
-        case CONSTANT.TOOLS.TANGENT:
-          colors = Colors.yellow[CONSTANT.TOOLS.TANGENT];
-          break;
-        case CONSTANT.TOOLS.SECANT:
-          colors = Colors.yellow[CONSTANT.TOOLS.SECANT];
-          break;
-        case CONSTANT.TOOLS.EXPONENT:
-          colors = Colors.yellow[CONSTANT.TOOLS.EXPONENT];
-          break;
-        case CONSTANT.TOOLS.LOGARITHM:
-          colors = Colors.yellow[CONSTANT.TOOLS.LOGARITHM];
-          break;
-        case CONSTANT.TOOLS.POLYNOM:
-          colors = Colors.yellow[CONSTANT.TOOLS.POLYNOM];
-          break;
-        default:
-          break;
-      }
-      return {
-        colors,
-        ...el
-      };
-    });
+    return answerArr.map(el => ({
+      colors: Colors.yellow[el.type],
+      ...el
+    }));
   }
   return answerArr;
 };

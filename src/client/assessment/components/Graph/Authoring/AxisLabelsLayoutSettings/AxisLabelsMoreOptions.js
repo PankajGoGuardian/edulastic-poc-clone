@@ -166,14 +166,14 @@ class AxisLabelsMoreOptions extends Component {
         <QuestionSection
           padding="0px"
           section="advanced"
-          label="SCORING"
+          label="Scoring"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
           <ScoreSettings scoringTypes={this.scoringTypes} setValidation={setValidation} graphData={graphData} />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Layout" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
 
           <Row gutter={60}>
@@ -300,7 +300,7 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="TICKS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Ticks" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.ticksoptionstitle")}</Subtitle>
 
           <Row gutter={60}>
@@ -363,7 +363,7 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="LABELS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Labels" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.labelstitle")}</Subtitle>
 
           <Row gutter={60}>

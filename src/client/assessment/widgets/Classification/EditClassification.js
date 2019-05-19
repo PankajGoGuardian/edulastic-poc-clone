@@ -300,7 +300,7 @@ const EditClassification = ({
           />
         </Widget>
         <Widget>
-           <CorrectAnswers
+          <CorrectAnswers
             onTabChange={setCorrectTab}
             correctTab={correctTab}
             onAdd={handleAddAnswer}

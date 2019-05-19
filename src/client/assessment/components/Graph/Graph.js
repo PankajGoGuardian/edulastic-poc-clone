@@ -285,7 +285,7 @@ class Graph extends Component {
               />
               <QuestionSection
                 section="main"
-                label="SET CORRECT ANSWER"
+                label="Set Correct Answer"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
                 deskHeight={ui_style.layout_height}
@@ -304,13 +304,13 @@ class Graph extends Component {
                       <Select
                         data-cy="ignoreRepeatedShapes"
                         style={{
-                          width: "auto",
+                          width: "170px",
                           margin: "11px 10px 0 0",
                           borderRadius: "10px"
                         }}
                         onChange={val => this.handleSelectIgnoreRepeatedShapes(val)}
                         options={getIgnoreRepeatedShapesOptions()}
-                        value={item.validation.ignore_repeated_shapes}
+                        value={item.validation.ignore_repeated_shapes || "no"}
                       >
                         {getIgnoreRepeatedShapesOptions().map(option => (
                           <Select.Option data-cy={option.value} key={option.value}>
@@ -322,7 +322,7 @@ class Graph extends Component {
                       <Select
                         data-cy="ignoreLabels"
                         style={{
-                          width: "auto",
+                          width: "70px",
                           margin: "11px 10px 0 25px",
                           borderRadius: "10px"
                         }}

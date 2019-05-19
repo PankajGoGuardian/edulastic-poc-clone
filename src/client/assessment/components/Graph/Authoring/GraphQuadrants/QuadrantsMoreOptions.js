@@ -106,14 +106,14 @@ class QuadrantsMoreOptions extends Component {
         <QuestionSection
           padding="0px"
           section="advanced"
-          label="SCORING"
+          label="Scoring"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
           <ScoreSettings showSelect={false} setValidation={setValidation} graphData={graphData} />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="LAYOUT" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Layout" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -216,7 +216,7 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="GRID" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Grid" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -420,13 +420,13 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="CONTROLS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="advanced" label="Controls" cleanSections={cleanSections} fillSections={fillSections}>
           <ControlsSettings onChange={setControls} controlbar={controlbar} />
         </QuestionSection>
 
         <QuestionSection
           section="advanced"
-          label="ANNOTATION"
+          label="Annotation"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
@@ -435,7 +435,7 @@ class QuadrantsMoreOptions extends Component {
 
         <QuestionSection
           section="advanced"
-          label="BACKGROUND IMAGE"
+          label="Background Image"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
@@ -522,7 +522,7 @@ class QuadrantsMoreOptions extends Component {
 
         <QuestionSection
           section="advanced"
-          label="BACKGROUND SHAPES"
+          label="Background Shapes"
           cleanSections={cleanSections}
           fillSections={fillSections}
           deskHeight={graphData.ui_style.layout_height}

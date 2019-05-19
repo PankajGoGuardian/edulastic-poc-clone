@@ -1,5 +1,6 @@
 import JXG from "jsxgraph";
 import { clone } from "lodash";
+import { Quill } from "react-quill";
 import { defaultTextParameters } from "../settings";
 import { calcMeasure, checkMarksRenderSpace, getClosestTick } from "../utils";
 
@@ -58,11 +59,13 @@ const onHandler = (board, coords, data, measure, xCoords, snapToTicks, setValue,
     name: "",
     visible: false
   });
-  const mark = board.$board.create(
-    "text",
-    [coords[0] - measure[0], coords[1] + measure[1], data.text],
-    defaultTextParameters()
-  );
+  const mark = board.$board.create("text", [coords[0] - measure[0], coords[1] + measure[1], data.text], {
+    ...defaultTextParameters(),
+    fixed: false
+  });
+  const selector = `[id*=${mark.id}]`;
+  mark.quillInput = new Quill(selector, { readOnly: true, modules: {} });
+
   const group = board.$board.create("group", [point, mark], { id: data.id });
   snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
 
@@ -90,6 +93,8 @@ const renderMarkAnswer = (board, config, measure, xCoords, snapToTicks, setValue
     highlightCssClass: "mark " + config.className + " mounted",
     visible: true
   });
+  const selector = `[id*=${mark.id}]`;
+  mark.quillInput = new Quill(selector, { readOnly: true, modules: {} });
 
   const group = board.$board.create("group", [point, mark], { id: config.id });
   snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
@@ -104,15 +109,17 @@ const renderMarkShowAnswer = (board, config, measure) => {
     fixed: true,
     frozen: true
   });
-  point.setLabel(config.point);
-  point.label.setPosition(JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
-  point.label.setText(config.point);
   point.label.setAttribute({
     ...defaultTextParameters(),
     cssClass: "mark " + config.className + " mounted",
     highlightCssClass: "mark " + config.className + " mounted",
     visible: true
   });
+  point.setLabel(config.point);
+  point.label.setPosition(JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
+  point.label.setText(config.point);
+  const selector = `[id*=${point.label.id}]`;
+  point.label.quillInput = new Quill(selector, { readOnly: true, modules: {} });
   return point;
 };
 

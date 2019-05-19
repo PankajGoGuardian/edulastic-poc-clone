@@ -18,13 +18,13 @@ class ComposeQuestion extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    
+
     fillSections("main", t("component.orderlist.composeQuestion"), node.offsetTop);
   };
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
-    
+
     cleanSections();
   }
 

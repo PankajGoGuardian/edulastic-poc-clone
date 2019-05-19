@@ -73,7 +73,7 @@ class GraphQuadrants extends Component {
       <div>
         <QuestionSection
           section="main"
-          label="COMPOSE QUESTION"
+          label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
@@ -81,12 +81,13 @@ class GraphQuadrants extends Component {
           <QuestionTextArea
             onChange={this.onChangeQuestion}
             value={graphData.stimulus}
+            firstFocus={graphData.firstMount}
             placeholder={t("component.graphing.question.enteryourquestion")}
           />
         </QuestionSection>
         <QuestionSection
           section="main"
-          label="GRAPH PARAMETERS"
+          label="Graph Parameters"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
@@ -170,7 +171,7 @@ class GraphQuadrants extends Component {
             </Row>
           </PaddingDiv>
         </QuestionSection>
-        <QuestionSection section="main" label="TOOLS" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="main" label="Tools" cleanSections={cleanSections} fillSections={fillSections}>
           <PaddingDiv>
             <Subtitle>{t("component.graphing.tools")}</Subtitle>
             <GraphToolsParams

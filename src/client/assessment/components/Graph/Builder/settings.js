@@ -113,7 +113,8 @@ const textParameters = {
   display: "html",
   fontSize: 12,
   cssClass: "mark",
-  highlightCssClass: "mark"
+  highlightCssClass: "mark",
+  parse: false
 };
 
 export const getLabelPositionParameters = elementType => {

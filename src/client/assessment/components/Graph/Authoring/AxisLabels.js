@@ -82,13 +82,13 @@ class GraphAxisLabels extends Component {
 
   render() {
     const { t, graphData, cleanSections, fillSections } = this.props;
-    const { canvas, stimulus } = graphData;
+    const { canvas, stimulus, firstMount } = graphData;
 
     return (
       <div>
         <QuestionSection
           section="main"
-          label="COMPOSE QUESTION"
+          label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >
@@ -97,10 +97,11 @@ class GraphAxisLabels extends Component {
             placeholder={t("component.graphing.question.enteryourquestion")}
             onChange={this.onChangeQuestion}
             value={stimulus}
+            firstFocus={firstMount}
           />
         </QuestionSection>
 
-        <QuestionSection section="main" label="LINE" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="main" label="Line" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.graphline")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -136,7 +137,7 @@ class GraphAxisLabels extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="main" label="TITLE" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection section="main" label="Title" cleanSections={cleanSections} fillSections={fillSections}>
           <PaddingDiv>
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
@@ -145,7 +146,7 @@ class GraphAxisLabels extends Component {
 
         <QuestionSection
           section="main"
-          label="POSSIBLE RESPONSES"
+          label="Possible Responses"
           cleanSections={cleanSections}
           fillSections={fillSections}
         >

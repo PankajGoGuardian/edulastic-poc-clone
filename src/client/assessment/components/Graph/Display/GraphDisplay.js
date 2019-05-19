@@ -2,7 +2,8 @@ import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import QuestionHeader from "../common/QuestionHeader";
+import { Stimulus } from "@edulastic/common";
+
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
@@ -477,7 +478,8 @@ class GraphDisplay extends Component {
       <Fragment>
         {graphIsValid ? (
           <Fragment>
-            {showAnswer ? "showAnswer" : null}
+            <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
+            {/* {showAnswer ? "showAnswer" : null}
             {checkAnswer ? "checkAnswer" : null}
             {clearAnswer ? "clearAnswer" : null}
             <QuestionTitleWrapper>
@@ -488,7 +490,7 @@ class GraphDisplay extends Component {
                 dangerouslySetInnerHTML={{ __html: stimulus }}
                 data-cy="questionHeader"
               />
-            </QuestionTitleWrapper>
+            </QuestionTitleWrapper> */}
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (

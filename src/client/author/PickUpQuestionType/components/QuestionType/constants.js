@@ -1140,6 +1140,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.GRAPH,
         graphType: "quadrants",
         stimulus: "Which color has the smallest walvelenght?",
+        firstMount: true,
         canvas: {
           x_max: 10.4,
           x_min: -10.4,
@@ -1225,6 +1226,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.GRAPH,
         graphType: "firstQuadrant",
         stimulus: "[This is the stem2.]",
+        firstMount: true,
         canvas: {
           x_max: 10.4,
           x_min: -0.8,
@@ -1310,6 +1312,7 @@ export const getCards = onSelectQuestionType => {
         title: "Number line with plot",
         type: questionType.GRAPH,
         stimulus: "[This is the stem3.]",
+        firstMount: true,
         graphType: "axisSegments",
         canvas: {
           x_max: 10,
@@ -1436,6 +1439,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Number line with drag & drop",
         type: questionType.GRAPH,
+        firstMount: true,
         graphType: "axisLabels",
         list: [
           {

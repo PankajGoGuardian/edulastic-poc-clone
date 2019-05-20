@@ -183,7 +183,7 @@ class Authoring extends Component {
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const width = this.naturalWidth;
+      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
       (width => {
         that.onItemPropChange("imageWidth", width);
       })(width);

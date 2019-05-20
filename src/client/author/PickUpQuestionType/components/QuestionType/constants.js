@@ -1599,7 +1599,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Expression",
         is_math: true,
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         type: questionType.MATH,
         validation: {
           scoring_type: "exactMatch",
@@ -1654,7 +1654,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Numeric",
         is_math: true,
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         template: EMBED_RESPONSE,
         templateDisplay: false,
         type: questionType.MATH,
@@ -1709,7 +1709,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Fill in the blanks",
         is_math: true,
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
@@ -1762,14 +1762,14 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "Equations & Inequalities",
+        title: "",
         is_math: true,
         response_containers: [
           {
             width: "60px"
           }
         ],
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         type: questionType.MATH,
         template: EMBED_RESPONSE,
         templateDisplay: false,
@@ -1824,7 +1824,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Matrices",
         is_math: true,
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         template: `\\begin{bmatrix}4&0\\\\1&-9\\end{bmatrix}\\times2=${EMBED_RESPONSE}`,
         templateDisplay: true,
         type: questionType.MATH,
@@ -1879,7 +1879,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Units",
         is_math: true,
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         template: `${EMBED_RESPONSE} = 1m`,
         templateDisplay: true,
         type: questionType.MATH,
@@ -1954,7 +1954,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Expression Multipart",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         template:
           '<p>Risus</p> <span class="response-btn" contenteditable="false">&nbsp;<span class="index">1</span><span class="text">Response</span>&nbsp;</span>, <p>et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et. Nunc diam enim, porta sed eros vitae.</p>',
         templateDisplay: true,
@@ -2017,7 +2017,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Math essay",
-        stimulus: "<p>[This is the stem.]</p>",
+        stimulus: "",
         type: questionType.FORMULA_ESSAY,
         ui_style: {
           default_mode: "math",

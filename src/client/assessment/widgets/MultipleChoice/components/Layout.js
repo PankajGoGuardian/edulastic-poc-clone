@@ -69,9 +69,10 @@ class Layout extends Component {
     const { onChange, uiStyle, t, advancedAreOpen } = this.props;
 
     const changeUiStyle = (prop, value) => {
+      const isNumberColumn = prop === "columns";
       onChange("ui_style", {
         ...uiStyle,
-        [prop]: value
+        [prop]: isNumberColumn ? Math.abs(value).toFixed() : value
       });
     };
 
@@ -125,7 +126,7 @@ class Layout extends Component {
               disabled={false}
               containerStyle={{ width: 120 }}
               onChange={e => changeUiStyle("columns", +e.target.value)}
-              value={uiStyle.columns}
+              value={uiStyle.columns || 0}
             />
           </Col>
         </Row>

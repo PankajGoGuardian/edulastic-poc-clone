@@ -88,7 +88,12 @@ const Option = props => {
   };
 
   const container = (
-    <CheckboxContainer smallSize={smallSize} styleType={styleType} multipleResponse={multipleResponse}>
+    <CheckboxContainer
+      smallSize={smallSize}
+      uiStyle={uiStyle}
+      styleType={styleType}
+      multipleResponse={multipleResponse}
+    >
       <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
       <span
         style={{
@@ -137,11 +142,18 @@ const Option = props => {
   };
 
   // const width = uiStyle.columns ? `${100 / uiStyle.columns - 1}%` : "100%";
-
   return (
     // <Label width={width} smallSize={smallSize} className={className} showAnswer>
     // TODO setup label background color for each option
-    <Label smallSize={smallSize} className={className} showAnswer styleType={styleType}>
+    <Label
+      smallSize={smallSize}
+      className={className}
+      showAnswer={showAnswer}
+      uiStyle={uiStyle}
+      styleType={styleType}
+      selected={isSelected}
+      checkAnswer={checkAnswer}
+    >
       <PaddingDiv top={0} bottom={0}>
         <FlexContainer justifyContent={uiStyle.type === "radioBelow" ? "center" : "space-between"}>
           {renderCheckbox()}

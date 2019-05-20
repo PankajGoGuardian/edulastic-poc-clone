@@ -7,3 +7,5 @@ export const MultiChoiceContent = styled.div`
   align-items: center;
   font-weight: ${props => props.theme.widgets.multipleChoice.multiChoiceContentFontWeight};
 `;
+
+MultiChoiceContent.displayName = "MultiChoiceContent";

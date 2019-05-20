@@ -147,8 +147,15 @@ const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswe
     }
   });
 
+  const paperStyle = {
+    fontSize,
+    padding: smallSize,
+    boxShadow: smallSize ? "none" : "",
+    overflow: "auto"
+  };
+
   return (
-    <Paper data-cy="sortListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper data-cy="sortListPreview" style={paperStyle}>
       <InstructorStimulus>{instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>

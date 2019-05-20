@@ -299,11 +299,14 @@ class ClassBoard extends Component {
                     {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
                   </StyledCheckbox>
                 </CheckContainer>
-                <PrintButton onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}>
+                <PrintButton
+                  data-cy="printButton"
+                  onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
+                >
                   <img src={Ptools} alt="" />
                   PRINT
                 </PrintButton>
-                <RedirectButton onClick={this.handleRedirect}>
+                <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
                   <img src={Elinks} alt="" />
                   REDIRECT
                 </RedirectButton>

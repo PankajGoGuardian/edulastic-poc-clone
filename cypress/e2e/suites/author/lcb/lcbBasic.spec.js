@@ -3,59 +3,77 @@ import AssignmentsPage from "../../../framework/student/assignmentsPage";
 import StudentTestPage from "../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
-import { studentSide } from "../../../framework/constants/assignmentStatus";
+import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
+import { attemptTypes } from "../../../framework/constants/questionTypes";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
-  const attemptsData = [
-    {
-      email: "auto.lcb.student01@yopmail.com",
-      stuName: "Student01",
-      attempt: { Q1: "right", Q2: "right" },
-      status: "SUBMITTED"
-    },
-    {
-      email: "auto.lcb.student02@yopmail.com",
-      stuName: "Student02",
-      attempt: { Q1: "right", Q2: "wrong" },
-      status: "SUBMITTED"
-    },
-    {
-      email: "auto.lcb.student03@yopmail.com",
-      stuName: "Student03",
-      attempt: { Q1: "wrong", Q2: "right" },
-      status: "SUBMITTED"
-    },
-    {
-      email: "auto.lcb.student04@yopmail.com",
-      stuName: "Student04",
-      attempt: { Q1: "wrong", Q2: "skip" },
-      status: "SUBMITTED"
-    },
-    {
-      email: "auto.lcb.student05@yopmail.com",
-      stuName: "Student05",
-      attempt: { Q1: "right", Q2: "skip" },
-      status: "IN PROGRESS"
-    },
-    {
-      email: "auto.lcb.student06@yopmail.com",
-      stuName: "Student06",
-      status: "NOT STARTED",
-      attempt: { Q1: "skip", Q2: "skip" }
-    }
-  ];
+  const lcbTestData = {
+    className: "Test LCB 01",
+    teacher: "auto.lcb.teacher01@yopmail.com",
+    student: "auto.lcb.student01@yopmail.com",
+    assignmentName: "New Assessment LCB",
+    testId: "5cde784b09da3d60f2d7840c",
+    redirectedData: [
+      {
+        email: "auto.lcb.student02@yopmail.com",
+        stuName: "Student02",
+        attempt: { Q1: "wrong", Q2: "wrong" },
+        status: "SUBMITTED"
+      }
+    ],
+    attemptsData: [
+      {
+        email: "auto.lcb.student01@yopmail.com",
+        stuName: "Student01",
+        attempt: { Q1: "right", Q2: "right" },
+        status: "SUBMITTED"
+      },
+      {
+        email: "auto.lcb.student02@yopmail.com",
+        stuName: "Student02",
+        attempt: { Q1: "right", Q2: "wrong" },
+        status: "SUBMITTED"
+      },
+      {
+        email: "auto.lcb.student03@yopmail.com",
+        stuName: "Student03",
+        attempt: { Q1: "wrong", Q2: "right" },
+        status: "SUBMITTED"
+      },
+      {
+        email: "auto.lcb.student04@yopmail.com",
+        stuName: "Student04",
+        attempt: { Q1: "wrong", Q2: "skip" },
+        status: "SUBMITTED"
+      },
+      {
+        email: "auto.lcb.student05@yopmail.com",
+        stuName: "Student05",
+        attempt: { Q1: "right", Q2: "skip" },
+        status: "IN PROGRESS"
+      },
+      {
+        email: "auto.lcb.student06@yopmail.com",
+        stuName: "Student06",
+        status: "NOT STARTED",
+        attempt: { Q1: "skip", Q2: "skip" }
+      }
+    ]
+  };
+  const { attemptsData, redirectedData, student, teacher, className, testId } = lcbTestData;
 
   let questionData;
   let testData;
   const questionTypeMap = {};
   const statsMap = {};
+  const queCentric = {};
+  let reDirectedQueCentric;
 
   const allStudentList = attemptsData.map(item => item.stuName);
   const submittedInprogressStudentList = attemptsData
     .filter(({ status }) => status !== studentSide.NOT_STARTED)
     .map(item => item.stuName);
 
-  const queCentric = {};
   function getQuestionCentricData() {
     attemptsData
       .filter(({ status }) => status !== studentSide.NOT_STARTED)
@@ -68,13 +86,19 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     return queCentric;
   }
 
+  function getNullifiedAttempts(attempts) {
+    const noAttempts = {};
+    for (let key in attempts) {
+      if (attempts.hasOwnProperty(key)) {
+        noAttempts[key] = attemptTypes.SKIP;
+      }
+    }
+    return noAttempts;
+  }
+
   const queList = Object.keys(getQuestionCentricData());
-
-  // TODO : will move below data into test data files
-  const testId = "5cde784b09da3d60f2d7840c";
-  const teacher = "auto.lcb.teacher01@yopmail.com";
-  const student = "auto.lcb.student01@yopmail.com";
-
+  const redirectedStudentList = redirectedData.map(item => item.stuName);
+  const redirectStatsMap = {};
   const assignmentPage = new AssignmentsPage();
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
@@ -178,5 +202,46 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
       });
     });
+  });
+
+  describe(" > verify redirect", () => {
+    context(" > redirect the students and verify", () => {
+      before("calculate redirected stats", () => {
+        redirectedData.forEach(attempts => {
+          const { attempt, stuName, status } = attempts;
+          redirectStatsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
+          redirectStatsMap[stuName].attempt = attempt;
+          redirectStatsMap[stuName].status = status;
+        });
+        lcb.clickOnCardViewTab();
+      });
+
+      it("redirect the students", () => {
+        redirectedStudentList.forEach(studentName => {
+          // redirect and verify
+          lcb.selectCheckBoxByStudentName(studentName);
+        });
+
+        lcb.clickOnRedirect();
+
+        redirectedStudentList.forEach(stu => {
+          lcb.verifyStudentsOnRedirectPopUp(stu);
+        });
+
+        lcb.clickOnRedirectSubmit();
+      });
+
+      redirectedStudentList.forEach(studentName => {
+        it(` > verify redirected student cards for :: ${studentName}`, () => {
+          const { attempt } = redirectStatsMap[studentName];
+          const noAttempt = getNullifiedAttempts(attempt);
+          const { score, perf } = lcb.getScoreAndPerformance(noAttempt, questionTypeMap);
+          lcb.verifyStudentCard(studentName, teacherSide.REDIRECTED, score, perf, noAttempt);
+          lcb.verifyRedirectIcon(studentName);
+        });
+      });
+    });
+
+    // TODO : attempt and verify
   });
 });

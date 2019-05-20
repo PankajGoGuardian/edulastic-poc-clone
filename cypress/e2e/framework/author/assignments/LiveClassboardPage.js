@@ -112,6 +112,11 @@ class LiveClassboardPage {
       .contains(studentName)
       .then(ele => Cypress.$('[data-cy="studentName"]').index(ele));
 
+  getStudentCardByStudentName = studentName => {
+    const selector = `[data-cy="student-card-${studentName}"]`;
+    return cy.get(selector);
+  };
+
   getAllStudentStatus = () => cy.get('[data-cy="studentStatus"]');
 
   getStudentStatusByIndex = index => this.getAllStudentStatus().eq(index);
@@ -135,10 +140,50 @@ class LiveClassboardPage {
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
       if (status !== studentSide.NOT_STARTED) {
-        this.getViewResponseByIndex(index).should("be.exist");
+        cy.server();
+        cy.route("GET", "**/test-activity/**").as("test-activity");
+        this.getViewResponseByIndex(index)
+          .should("be.exist")
+          .click()
+          .then(() => {
+            cy.wait("@test-activity");
+            cy.get(".ant-select-selection-selected-value").should("have.text", studentName);
+          });
+        this.clickOnCardViewTab();
       } else this.getViewResponseByIndex(index).should("not.be.exist");
     });
   }
+
+  verifyRedirectIcon = student => {
+    this.getStudentCardByStudentName(student)
+      .find('[data-cy="redirected"]')
+      .should("be.exist");
+  };
+
+  selectCheckBoxByStudentName = student => {
+    this.getStudentCardByStudentName(student)
+      .find('input[type="checkbox"]')
+      .click({ force: true });
+  };
+
+  clickOnRedirect = () => cy.get('[data-cy="rediectButton"]').click();
+
+  getRedirecPopUp = () => cy.get(".ant-modal-content");
+
+  clickOnRedirectSubmit = () => {
+    cy.server();
+    cy.route("POST", "**/redirect").as("redirect");
+    this.getRedirecPopUp()
+      .contains("span", "submit")
+      .click({ force: true });
+    cy.wait("@redirect");
+  };
+
+  verifyStudentsOnRedirectPopUp = student =>
+    this.getRedirecPopUp()
+      .find(".ant-select-selection__choice")
+      .contains(student)
+      .should("be.exist");
 
   verifyQuestion = queCount =>
     cy.get('[data-cy="questions"]').each((ele, index, $all) => {
@@ -156,7 +201,7 @@ class LiveClassboardPage {
 
     const queColor = {
       RIGHT: "rgb(94, 181, 0)",
-      WRONG: "rgb(243, 95, 94)",
+      WRONG: "rgb(243, 95, 95)",
       SKIP: "rgb(229, 229, 229)"
     };
 

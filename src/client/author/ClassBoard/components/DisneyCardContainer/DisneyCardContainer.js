@@ -124,7 +124,7 @@ export default class DisneyCardContainer extends Component {
         const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
 
         const studentData = (
-          <StyledCard bordered={false} key={index}>
+          <StyledCard data-cy={`student-card-${student.studentName}`} bordered={false} key={index}>
             <PaginationInfoF>
               <CircularDiv>{this.getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
@@ -157,6 +157,7 @@ export default class DisneyCardContainer extends Component {
                   <Col>
                     {student.redirected && (
                       <i
+                        data-cy="redirected"
                         title="Assessment is redirected to the student. The most recent response will be shown"
                         className="fa fa-external-link"
                         aria-hidden="true"

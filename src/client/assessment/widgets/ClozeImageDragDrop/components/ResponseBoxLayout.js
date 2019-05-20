@@ -48,12 +48,10 @@ const ResponseBoxLayout = ({
             </DragItem>
           )}
           {dragHandler && (
-            <React.Fragment>
-              <DragItem index={index} onDrop={onDrop} item={option} data={option}>
-                <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
-                <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
-              </DragItem>
-            </React.Fragment>
+            <DragItem index={index} onDrop={onDrop} item={option} data={option}>
+              <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />
+              <MathSpan dangerouslySetInnerHTML={{ __html: option || "" }} />
+            </DragItem>
           )}
         </div>
       ))}

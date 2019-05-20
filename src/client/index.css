@@ -1260,3 +1260,7 @@ span.token.active-word {
 .mq-math-mode sup.mq-nthroot {
   margin-top: 0.3em;
 }
+
+.mq-math-mode {
+  pointer-events: none;
+}

@@ -430,6 +430,109 @@ template {
   height: auto !important;
 }
 
+.ql-editor table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ql-editor table td {
+  border: 1px solid black;
+  padding: 5px;
+  height: 25px;
+  vertical-align: top;
+}
+
+span.ql-formula {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  height: 24px;
+  padding: 3px 5px;
+  width: 28px;
+}
+
+span.ql-formula:hover .ql-fill {
+  fill: #06c;
+}
+
+span.ql-table {
+  padding: 3px 5px;
+}
+span.ql-table::after {
+  content: "TABLE";
+  line-height: 24px;
+}
+span.ql-table:hover::after {
+  color: #06c;
+}
+
+.ql-picker.ql-table .ql-picker-label::before {
+  content: "TABLE";
+}
+span.ql-contain::after {
+  content: "WRAP";
+}
+span.ql-table-insert-rows::after {
+  content: "ROWS+";
+}
+span.ql-table-insert-columns::after {
+  content: "COLS+";
+}
+
+.ql-table,
+.ql-contain {
+  width: auto !important;
+}
+
+.tdbr,
+.trbr {
+  display: none;
+}
+
+.ql-td-1 {
+  width: 100%;
+}
+.ql-td-2 {
+  width: 50%;
+}
+.ql-td-3 {
+  width: 33%;
+}
+.ql-td-4 {
+  width: 25%;
+}
+.ql-td-5 {
+  width: 20%;
+}
+.ql-td-6 {
+  width: 16.67%;
+}
+.ql-td-7 {
+  width: 14.2%;
+}
+.ql-td-8 {
+  width: 12.5%;
+}
+.ql-td-9 {
+  width: 11.11%;
+}
+.ql-td-10 {
+  width: 10%;
+}
+
+table.quill-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+table.quill-table td {
+  border: 1px solid black;
+  padding: 5px;
+  height: 25px;
+  vertical-align: top;
+}
+
 .template_box p {
   display: inline;
 }

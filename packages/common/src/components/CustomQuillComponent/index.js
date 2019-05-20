@@ -3,39 +3,59 @@
 import "react-quill/dist/quill.snow.css";
 import React from "react";
 import ReactQuill, { Quill } from "react-quill";
+import Delta from "quill-delta";
 import PropTypes from "prop-types";
-import quillTable from "quill-table-module";
 
 // eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from "react-click-outside";
 import { fileApi } from "@edulastic/api";
-import MathModal from "./MathModal";
+import MathModal from "../MathModal";
+
 import MathInputCmp from "./QuillMathEmbed";
-import TableModal from "./TableModal";
+import ResponseCmp from "./ResponseCmp";
+import ContainBlot from "./table/ContainBlot";
+import TableRow from "./table/TableRow";
+import Table from "./table/Table";
+import RowBreak from "./table/RowBreak";
+import CellBreak from "./table/CellBreak";
+import TableCell from "./table/TableCell";
 
-const Embed = Quill.import("blots/block/embed");
+import TableSizeModal from "./table/TableSizeModal";
 
-class ResponseCmp extends Embed {
-  static create() {
-    const node = super.create();
-    const responseCount = document.querySelectorAll(".response-btn").length;
-    node.setAttribute("contenteditable", false);
-    node.innerHTML = `&nbsp;<span class="index">${responseCount + 1}</span><span class="text">Response</span>&nbsp;`;
-    return node;
-  }
-}
-ResponseCmp.blotName = "Response";
-ResponseCmp.tagName = "p";
-ResponseCmp.className = "response-btn";
+const Container = Quill.import("blots/container");
+const Parchment = Quill.import("parchment");
 
-// register components to quill
 Quill.register(ResponseCmp, true);
 Quill.register(MathInputCmp, true);
-Quill.register(quillTable.TableCell);
-Quill.register(quillTable.TableRow);
-Quill.register(quillTable.Table);
-Quill.register(quillTable.Contain);
-Quill.register("modules/table", quillTable.TableModule);
+Quill.register(ContainBlot);
+Quill.register(TableRow);
+
+Table.allowedChildren = [TableRow];
+Quill.register(Table);
+Quill.register(TableCell);
+Quill.register(RowBreak);
+Quill.register(CellBreak);
+
+Quill.imports.tablecell = TableCell;
+// Table components
+
+const maxRows = 10;
+const maxCols = 5;
+const tableOptions = [];
+for (let r = 1; r <= maxRows; r++) {
+  for (let c = 1; c <= maxCols; c++) {
+    tableOptions.push(`newtable_${r}_${c}`);
+  }
+}
+
+Container.order = [
+  "list",
+  "contain", // Must be lower
+  "td",
+  "tr",
+  "table" // Must be higher
+];
+
 /*
  * Custom "star" icon for the toolbar using an Octicon
  * https://octicons.github.io
@@ -44,27 +64,39 @@ const ResponseButton = () => (
   <div style={{ border: "dotted 2px #000", padding: "2px 0px 4px", lineHeight: "0.5em", width: 18 }}>r</div>
 );
 
+const FormulaButton = () => (
+  <svg viewBox="0 0 18 18">
+    <path
+      className="ql-fill"
+      d="M11.759,2.482a2.561,2.561,0,0,0-3.53.607A7.656,7.656,0,0,0,6.8,6.2C6.109,9.188,5.275,14.677,4.15,14.927a1.545,1.545,0,0,0-1.3-.933A0.922,0.922,0,0,0,2,15.036S1.954,16,4.119,16s3.091-2.691,3.7-5.553c0.177-.826.36-1.726,0.554-2.6L8.775,6.2c0.381-1.421.807-2.521,1.306-2.676a1.014,1.014,0,0,0,1.02.56A0.966,0.966,0,0,0,11.759,2.482Z"
+    />
+    <rect className="ql-fill" height="1.6" rx="0.8" ry="0.8" width="5" x="5.15" y="6.2" />
+    <path
+      className="ql-fill"
+      d="M13.663,12.027a1.662,1.662,0,0,1,.266-0.276q0.193,0.069.456,0.138a2.1,2.1,0,0,0,.535.069,1.075,1.075,0,0,0,.767-0.3,1.044,1.044,0,0,0,.314-0.8,0.84,0.84,0,0,0-.238-0.619,0.8,0.8,0,0,0-.594-0.239,1.154,1.154,0,0,0-.781.3,4.607,4.607,0,0,0-.781,1q-0.091.15-.218,0.346l-0.246.38c-0.068-.288-0.137-0.582-0.212-0.885-0.459-1.847-2.494-.984-2.941-0.8-0.482.2-.353,0.647-0.094,0.529a0.869,0.869,0,0,1,1.281.585c0.217,0.751.377,1.436,0.527,2.038a5.688,5.688,0,0,1-.362.467,2.69,2.69,0,0,1-.264.271q-0.221-.08-0.471-0.147a2.029,2.029,0,0,0-.522-0.066,1.079,1.079,0,0,0-.768.3A1.058,1.058,0,0,0,9,15.131a0.82,0.82,0,0,0,.832.852,1.134,1.134,0,0,0,.787-0.3,5.11,5.11,0,0,0,.776-0.993q0.141-.219.215-0.34c0.046-.076.122-0.194,0.223-0.346a2.786,2.786,0,0,0,.918,1.726,2.582,2.582,0,0,0,2.376-.185c0.317-.181.212-0.565,0-0.494A0.807,0.807,0,0,1,14.176,15a5.159,5.159,0,0,1-.913-2.446l0,0Q13.487,12.24,13.663,12.027Z"
+    />
+  </svg>
+);
+
 /*
  * Event handler to be attached using Quill toolbar module
  * http://quilljs.com/docs/modules/toolbar/
  */
-function formula() {
-  const cursorPosition = this.quill.getSelection().index;
-  if (cursorPosition === 0 || this.quill.getLength() - cursorPosition <= 2) {
+function formula(quill, latex) {
+  const cursorPosition = quill.getSelection().index;
+  if (cursorPosition === 0 || quill.getLength() - cursorPosition <= 2) {
     // This is the case when the MathFormula is required to be added at the very start of a line
     // In this case react-quill works really weird for embed blot
     // So we are just gonna add space before the MathFormula so that you can enter text there.
-    this.quill.insertText(cursorPosition, " ", "");
-    this.quill.insertEmbed(cursorPosition + 1, "MathInput", "");
-    this.quill.setSelection(cursorPosition + 2);
-    this.quill.inserted = 2;
+    quill.insertText(cursorPosition, " ", "");
+    quill.insertEmbed(cursorPosition + 1, "MathInput", latex);
+    quill.setSelection(cursorPosition + 3);
   } else {
     // This is the case when the MathFormula is required to be added at the middle of a line
     // In this case react-quill works really fine for embed blot
     // So we are not gonna add space before the MathFormula so that you can enter text there.
-    this.quill.insertEmbed(cursorPosition, "MathInput", "");
-    this.quill.setSelection(cursorPosition + 1);
-    this.quill.inserted = 1;
+    quill.insertEmbed(cursorPosition, "MathInput", latex);
+    quill.setSelection(cursorPosition + 2);
   }
 }
 
@@ -76,7 +108,7 @@ function insertStar() {
 
 function insertPara() {}
 
-const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
+const CustomToolbar = ({ showTableBtn, showResponseBtn, active, id, maxWidth, onTableClick, onFormulaClick }) => {
   const getTopStyle = () =>
     document.getElementById(id)
       ? document.getElementById(id).offsetHeight
@@ -135,8 +167,15 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
         <button className="ql-link" type="button" />
         <button className="ql-image" type="button" />
         <button className="ql-video" type="button" />
-        <button className="ql-formula" type="button" />
+        <span className="ql-formula" onClick={onFormulaClick}>
+          <FormulaButton />
+        </span>
       </span>
+      {showTableBtn && (
+        <span className="ql-formats" onClick={onTableClick}>
+          <span className="ql-table" />
+        </span>
+      )}
       <span className="ql-formats">
         <button className="ql-clean" type="button" />
       </span>
@@ -147,11 +186,6 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
           </button>
         </span>
       )}
-      <span className="ql-formats">
-        <button className="ql-insertTable" type="button">
-          Table
-        </button>
-      </span>
     </div>
   );
 };
@@ -159,15 +193,148 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
 CustomToolbar.propTypes = {
   maxWidth: PropTypes.any.isRequired,
   showResponseBtn: PropTypes.bool,
+  showTableBtn: PropTypes.bool,
   active: PropTypes.bool,
-  id: PropTypes.string
+  id: PropTypes.string,
+  onTableClick: PropTypes.func,
+  onFormulaClick: PropTypes.func
 };
 
 CustomToolbar.defaultProps = {
+  showTableBtn: true,
   showResponseBtn: true,
   active: false,
-  id: "toolbar"
+  id: "toolbar",
+  onTableClick: () => {},
+  onFormulaClick: () => {}
 };
+
+// Table-related functions
+function find_td(quill, what) {
+  const leaf = quill.getLeaf(quill.getSelection().index);
+  let blot = leaf[0];
+  for (; blot !== null && blot.statics.blotName !== what; ) {
+    blot = blot.parent;
+  }
+  return blot; // return TD or NULL
+}
+
+function getClosestNewLineIndex(contents, index) {
+  return (
+    index +
+    contents
+      .map(op => (typeof op.insert === "string" ? op.insert : " "))
+      .join("")
+      .slice(index)
+      .indexOf("\n")
+  );
+}
+
+function insertNewRow(quill, range) {
+  const td = find_td(quill, "td");
+  if (td) {
+    let columns = 0;
+    td.parent.children.forEach(child => {
+      if (child instanceof TableCell) {
+        columns++;
+      }
+    });
+
+    // range.index + 1 is to avoid the current index having a \n
+    const newLineIndex = getClosestNewLineIndex(quill.getContents(), range.index + 1);
+    let changeDelta = new Delta().retain(newLineIndex);
+    for (let j = 0; j < columns; j++) {
+      changeDelta = changeDelta.insert("\n", {
+        td: true
+      });
+      if (j < columns - 1) {
+        changeDelta = changeDelta.insert({ tdbr: true });
+      }
+    }
+    changeDelta = changeDelta.insert({ trbr: true });
+    quill.updateContents(changeDelta, Quill.sources.USER);
+  }
+}
+
+function getNextTDIndex(quill, contents, index) {
+  const joinedText = contents.map(op => (typeof op.insert === "string" ? op.insert : " ")).join("");
+  /**
+   * Breaking at first case of tdbr/trbr places the cursor
+   * at the beginning of the table cell, but from a UX point
+   * of view we want it to jump to the end. So we want the
+   * text preceeding the second tdbr/trbr
+   */
+  let breakCount = 0;
+  for (let i = 0; i < joinedText.length; i++) {
+    const format = quill.getFormat(index + i);
+    if (format.tdbr || format.trbr) {
+      breakCount++;
+    }
+    if (breakCount === 2) {
+      return index + i - 1;
+    }
+    if (!(format.tdbr || format.trbr || format.td)) {
+      // Add row when in last table cell
+      insertNewRow(quill, {
+        index,
+        length: 0
+      });
+      return index + i;
+    }
+  }
+}
+
+function getPreviousTDIndex(quill, contents /* , index */) {
+  const joinedText = contents.map(op => (typeof op.insert === "string" ? op.insert : " ")).join("");
+  for (let i = joinedText.length - 1; i >= 0; i--) {
+    const format = quill.getFormat(i);
+    if (format.tdbr || format.trbr) {
+      // Go To previous table cell
+      return i - 1;
+    }
+    if (!format.td) {
+      // Go to front of table if shift+tab pressed in first cell
+      return i + 1;
+    }
+  }
+}
+
+function table(quill, rows = 3, columns = 2) {
+  Parchment.create("table");
+  const range = quill.getSelection();
+  if (!range) return;
+  const newLineIndex = getClosestNewLineIndex(quill.getContents(), range.index + range.length);
+  let changeDelta = new Delta().retain(newLineIndex);
+  changeDelta = changeDelta.insert("\n");
+  for (let i = 0; i < rows; i++) {
+    for (let j = 0; j < columns; j++) {
+      changeDelta = changeDelta.insert("\n", {
+        td: true
+      });
+      if (j < columns - 1) {
+        changeDelta = changeDelta.insert({ tdbr: true });
+      }
+    }
+    changeDelta = changeDelta.insert({ trbr: true });
+  }
+  quill.updateContents(changeDelta, Quill.sources.USER);
+  quill.setSelection(newLineIndex + 1);
+}
+
+function tableInsertRows() {
+  insertNewRow(this.quill);
+}
+
+function tableInsertColumns() {
+  const td = find_td(this.quill, "td");
+  if (td) {
+    td.parent.parent.children.forEach(tr => {
+      const tdd = Parchment.create("td");
+      tr.appendChild(tdd);
+      tr.appendChild(Parchment.create("tdbr"));
+    });
+  }
+}
 
 function handleImage() {
   const input = document.createElement("input");
@@ -205,36 +372,6 @@ function handleImage() {
       });
   };
 }
-
-/*
- * generate a random for the table components
- */
-const random_id = () =>
-  Math.random()
-    .toString(36)
-    .slice(2);
-
-/*
- * generate html template for table with specified rows and columns
- */
-const createTable = (rows, columns) => {
-  const tableId = random_id();
-  let table = `<table table_id="${tableId}">`;
-  for (let i = 0; i < rows; i++) {
-    const rowId = random_id();
-    let row = `<tr row_id="${rowId}">`;
-    for (let j = 0; j < columns; j++) {
-      const columnId = random_id();
-      const column = `<td table_id="${tableId}" row_id="${rowId}" cell_id="${columnId}"> <p><p> </td>`;
-      row += column;
-    }
-    row += `</tr>`;
-    table += row;
-  }
-
-  table += `</table><br/>`;
-  return table;
-};
 
 /*
  * Editor component with custom toolbar and content containers
@@ -283,8 +420,10 @@ class CustomQuillComponent extends React.Component {
       quillVal: props.value,
       prevValue: props.value,
       quillKey: 0,
-      showTableModal: false,
-      quillSelection: 0
+      modules: CustomQuillComponent.modules(props.toolbarId),
+      showTableSize: false,
+      rows: 3,
+      cols: 2
     };
   }
 
@@ -352,6 +491,9 @@ class CustomQuillComponent extends React.Component {
           val = val.replace(line.domNode.outerHTML, newLineString);
         }
       }
+
+      val = val.replace(/<td class="tdbr"><\/td>/gm, "");
+      val = val.replace(/<td class="trbr"><\/td>/gm, "");
       this.setState({
         quillVal: content,
         prevValue: val
@@ -377,8 +519,9 @@ class CustomQuillComponent extends React.Component {
 
   onChangeSelection = range => {
     const { showMath } = this.state;
-    if (!range) return;
-    if (showMath) return;
+    if (!range || showMath) {
+      return;
+    }
 
     const leaf = this.quillRef.getEditor().getLeaf(range.index);
     if (range.length > 1) {
@@ -409,55 +552,59 @@ class CustomQuillComponent extends React.Component {
     }
   };
 
-  onSaveLatex = latex => {
-    const { mathField, curMathRange } = this.state;
-    mathField.latex(latex);
-
-    this.quillRef.getEditor().setSelection(curMathRange.index + 1);
-    this.setState({
-      selLatex: "",
-      showMath: false,
-      active: true
-    });
-  };
-
-  onCloseModal = () => {
-    const { selLatex, curMathRange } = this.state;
+  onSaveMathModal = latex => {
+    this.quillRef.focus();
     const quillEditor = this.quillRef.getEditor();
-    if (selLatex === "" && curMathRange) {
-      if (quillEditor.inserted === 1) {
-        quillEditor.deleteText(curMathRange.index, 1);
-      } else if (quillEditor.inserted === 2) {
-        quillEditor.deleteText(curMathRange.index, 1);
-        quillEditor.deleteText(curMathRange.index - 2, 2);
-      }
-      quillEditor.inserted = 0;
-    } else {
+
+    const { mathField, curMathRange } = this.state;
+    if (curMathRange) {
+      mathField.latex(latex);
       quillEditor.setSelection(curMathRange.index + 1);
+    } else {
+      formula(quillEditor, latex);
     }
+
     this.setState({
       selLatex: "",
       showMath: false,
-      active: true
+      active: true,
+      curMathRange: null
     });
   };
 
-  closeTableModal = () => this.setState({ showTableModal: false });
+  onCloseMathModal = () => {
+    this.setState({
+      selLatex: "",
+      showMath: false,
+      active: true,
+      curMathRange: null
+    });
+  };
 
-  showTableModal = () =>
-    this.setState({ showTableModal: true, quillSelection: this.quillRef.getEditor().getSelection() });
+  showTableModal = () => {
+    this.setState({ showTableSize: true });
+  };
 
-  addTable = (rows, cols) => {
-    const { quillSelection: selection } = this.state;
-    const quill = this.quillRef.getEditor();
-    const table = createTable(rows, cols);
-    quill.clipboard.dangerouslyPasteHTML(selection.index, table);
-    quill.setSelection(selection.index + 1);
-    this.closeTableModal();
+  showMathModal = () => {
+    this.setState({ showMath: true });
+  };
+
+  onTableSizeModalSave = (rows, cols) => {
+    this.setState({
+      rows,
+      cols,
+      showTableSize: false
+    });
+    this.quillRef.focus();
+    table(this.quillRef.getEditor(), rows, cols);
+  };
+
+  onTableSizeModalClose = () => {
+    this.setState({ showTableSize: false });
   };
 
   render() {
-    const { active, quillVal, quillKey, showMath, selLatex, showTableModal } = this.state;
+    const { active, quillVal, quillKey, showMath, selLatex, showTableSize, rows, cols, modules } = this.state;
     const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly, tabIndex, custom } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
@@ -483,32 +630,17 @@ class CustomQuillComponent extends React.Component {
       "="
     ];
 
-    const container = custom ? toolbarId : `#${toolbarId}`;
-
-    const modules = {
-      table: true, // enable table module
-      keyboard: { bindings: { tab: false } },
-      toolbar: {
-        container,
-        handlers: {
-          formula,
-          insertStar,
-          insertPara,
-          image: handleImage,
-          insertTable: this.showTableModal
-        }
-      }
-    };
-
     return (
       <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
         {!custom && (
           <CustomToolbar
-            key={`toolbarID${quillKey}`}
+            key={`toolbar${quillKey}`}
             active={active && !readOnly}
             showResponseBtn={showResponseBtn}
             id={toolbarId}
             maxWidth={style.width ? style.width : "initial"}
+            onTableClick={this.showTableModal}
+            onFormulaClick={this.showMathModal}
           />
         )}
         <ReactQuill
@@ -532,14 +664,100 @@ class CustomQuillComponent extends React.Component {
           numberPad={numberPad}
           value={selLatex}
           showResponse={false}
-          onSave={this.onSaveLatex}
-          onClose={this.onCloseModal}
+          onSave={this.onSaveMathModal}
+          onClose={this.onCloseMathModal}
         />
-        <TableModal show={showTableModal} onClose={this.closeTableModal} onSave={this.addTable} />
+        <TableSizeModal
+          show={showTableSize}
+          rows={rows}
+          cols={cols}
+          onSave={this.onTableSizeModalSave}
+          onClose={this.onTableSizeModalClose}
+        />
       </div>
     );
   }
 }
+
+/*
+ * Quill modules to attach to editor
+ * See http://quilljs.com/docs/modules/ for complete options
+ */
+CustomQuillComponent.modules = toolbarId => ({
+  clipboard: {
+    matchers: [
+      [
+        "TD, TH",
+        (node, delta) => {
+          delta.insert("\n", { td: true });
+          delta.insert({ tdbr: true });
+          return delta;
+        }
+      ],
+      [
+        "TR",
+        (node, delta) => {
+          delta.insert({ trbr: true });
+          return delta;
+        }
+      ]
+    ]
+  },
+  keyboard: {
+    bindings: {
+      tableBackspace: {
+        key: 8,
+        handler(range) {
+          const formats = this.quill.getFormat(range.index - 1, 1);
+          if (formats.tdbr || formats.trbr) {
+            // prevent deletion of table break
+            return false;
+          }
+          return true;
+        }
+      },
+      tableShiftTab: {
+        key: 9,
+        format: ["td", "tdbr", "trbr"],
+        shiftKey: true,
+        handler(range) {
+          const previousTD = getPreviousTDIndex(this.quill, this.quill.getContents(0, range.index), range.index);
+          this.quill.setSelection(previousTD, "silent");
+        }
+      },
+      tab: {
+        key: 9,
+        handler(range, context) {
+          const formats = this.quill.getFormat(range.index - 1, 1);
+          const nextTD = getNextTDIndex(this.quill, this.quill.getContents(range.index), range.index);
+          if (formats.td || formats.tdbr || formats.trbr) {
+            this.quill.setSelection(nextTD, 0);
+          } else {
+            if (!context.collapsed) {
+              this.quill.scroll.deleteAt(range.index, range.length);
+            }
+            this.quill.insertText(range.index, "\t", "user");
+            this.quill.setSelection(range.index + 1, "silent");
+          }
+        }
+      },
+      tableEnter: {
+        key: 13,
+        handler: () => true
+      }
+    }
+  },
+  toolbar: {
+    container: `#${toolbarId}`,
+    handlers: {
+      "table-insert-rows": tableInsertRows,
+      "table-insert-columns": tableInsertColumns,
+      insertStar,
+      insertPara,
+      image: handleImage
+    }
+  }
+});
 
 /*
  * Quill editor formats
@@ -556,8 +774,7 @@ CustomQuillComponent.formats = [
   "bullet",
   "indent",
   "link",
-  "image",
-  "formula"
+  "image"
 ];
 
 export default enhanceWithClickOutside(CustomQuillComponent);

@@ -11,6 +11,7 @@ export const withMathFormula = WrappedComponent => {
   `;
   const StyledWrappedComponent = styled(WrappedComponent)`
     display: block;
+    width: 100%;
     p {
       display: inline;
     }

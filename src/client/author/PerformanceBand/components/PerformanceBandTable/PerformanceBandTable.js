@@ -1,5 +1,18 @@
 import React, { Component } from "react";
 import { Table, Input, Form, Icon, Checkbox, Button, message } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { get } from "lodash";
+
+import {
+  receivePerformanceBandAction,
+  createPerformanceBandAction,
+  updatePerformanceBandAction,
+  setPerformanceBandChangesAction,
+  getPerformanceBandList
+} from "../../ducks";
+
+import { getUserOrgId } from "../../../src/selectors/user";
 
 import {
   StyledTableContainer,
@@ -193,7 +206,11 @@ class PerformanceBandTable extends React.Component {
         render: (text, record) => {
           return (
             <StyledDivCenter>
-              <Checkbox defaultChecked={record.aboveOrAtStandard} onChange={e => this.changeAbove(e, record.key)} />
+              <Checkbox
+                defaultChecked={record.aboveOrAtStandard}
+                checked={record.aboveOrAtStandard}
+                onChange={e => this.changeAbove(e, record.key)}
+              />
             </StyledDivCenter>
           );
         }
@@ -250,18 +267,19 @@ class PerformanceBandTable extends React.Component {
       }
     ];
 
-    const { performanceBand } = this.props.performanceBand;
-
-    performanceBand.map((row, index) => {
-      row.key = index;
-    });
-
     this.state = {
-      dataSource: performanceBand,
-      count: performanceBand.length,
       editingKey: -1,
       isChangeState: false
     };
+  }
+
+  componentDidMount() {
+    const { loadPerformanceBand, userOrgId } = this.props;
+    loadPerformanceBand({ orgId: userOrgId });
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return { dataSource: nextProps.dataSource, performanceBandId: nextProps.performanceBandId };
   }
 
   onClickFromTo = (e, key, keyName, value) => {
@@ -291,17 +309,17 @@ class PerformanceBandTable extends React.Component {
       }
     }
 
-    this.setState({
-      dataSource: dataSource,
-      isChangeState: true
-    });
+    this.setState({ isChangeState: true });
+    this.props.setPerformanceBandData(dataSource);
   };
 
   changeAbove = (e, key) => {
-    const dataSource = this.state.dataSource;
+    const dataSource = [...this.state.dataSource];
     dataSource.map(row => {
       if (row.key === key) row.aboveOrAtStandard = e.target.checked;
     });
+    this.setState({ isChangeState: true });
+    this.props.setPerformanceBandData(dataSource);
   };
 
   handleDelete = (e, key) => {
@@ -314,18 +332,20 @@ class PerformanceBandTable extends React.Component {
     else if (dataSource[dataSource.length - 1].key === key) dataSource[dataSource.length - 2].to = 0;
     else dataSource[key + 1].from = dataSource[key].from;
 
-    this.setState({
-      dataSource: dataSource.filter(item => item.key !== key),
-      isChangeState: true
-    });
+    this.setState({ isChangeState: true });
+    this.props.setPerformanceBandData(dataSource.filter(item => item.key !== key));
   };
 
   handleAdd = () => {
-    const { count, dataSource } = this.state;
-    const performanceBandName = "Performance Band" + dataSource.length;
+    const { dataSource } = this.state;
+    const keyArray = [];
+    for (let i = 0; i < dataSource.length; i++) {
+      keyArray.push(dataSource[i].key);
+    }
+
     const newData = {
-      key: count,
-      name: performanceBandName,
+      key: Math.max(...keyArray) + 1,
+      name: "Performance Band" + (Math.max(...keyArray) + 1),
       aboveOrAtStandard: true,
       from: 0,
       to: 0
@@ -334,11 +354,10 @@ class PerformanceBandTable extends React.Component {
     dataSource[dataSource.length - 1].to = dataSource[dataSource.length - 1].from - 1;
 
     this.setState({
-      dataSource: [...dataSource, newData],
-      count: count + 1,
       editingKey: dataSource[dataSource.length - 1].key,
       isChangeState: true
     });
+    this.props.setPerformanceBandData([...dataSource, newData]);
   };
 
   handleSave = row => {
@@ -352,10 +371,11 @@ class PerformanceBandTable extends React.Component {
     newData[newData.length - 1].from = newData[newData.length - 2].to;
 
     this.setState({
-      dataSource: newData,
       editingKey: -1,
       isChangeState: true
     });
+
+    this.props.setPerformanceBandData(newData);
   };
 
   updatePerformanceBand = () => {
@@ -368,14 +388,26 @@ class PerformanceBandTable extends React.Component {
         to: row.to
       });
     });
-    this.props.updatePerformanceBand(dataSource);
+
+    let performanceBandData = {
+      orgId: this.props.userOrgId,
+      orgType: "district",
+      performanceBand: dataSource
+    };
+
+    if (this.state.performanceBandId.length === 0) {
+      this.props.createPerformanceband(performanceBandData);
+    } else {
+      this.props.updatePerformanceBand(performanceBandData);
+    }
     this.setState({ isChangeState: false });
   };
 
   isToValueEditing = record => record.key === this.state.editingKey;
 
   render() {
-    const { dataSource, editingKey, isChangeState } = this.state;
+    const { dataSource, editingKey, isChangeState, performanceBandId } = this.state;
+
     const components = {
       body: {
         row: EditableFormRow,
@@ -401,6 +433,7 @@ class PerformanceBandTable extends React.Component {
     });
 
     const isAddDisable =
+      dataSource.length == 0 ||
       (dataSource[dataSource.length - 1].to == 0 && dataSource[dataSource.length - 1].from == 0) ||
       editingKey != -1 ||
       dataSource.length >= 10
@@ -412,9 +445,16 @@ class PerformanceBandTable extends React.Component {
         <Table components={components} rowClassName={() => "editable-row"} dataSource={dataSource} columns={columns} />
         <StyledBottomDiv>
           {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-          <StyledSaveButton type="primary" onClick={this.updatePerformanceBand} disabled={!isChangeState}>
-            Save
-          </StyledSaveButton>
+          {performanceBandId.length == 0 ? (
+            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand}>
+              Create
+            </StyledSaveButton>
+          ) : (
+            <StyledSaveButton type="primary" onClick={this.updatePerformanceBand} disabled={!isChangeState}>
+              Save
+            </StyledSaveButton>
+          )}
+
           <Button type="primary" shape="round" onClick={this.handleAdd} ghost disabled={isAddDisable}>
             + Add Band
           </Button>
@@ -424,4 +464,19 @@ class PerformanceBandTable extends React.Component {
   }
 }
 
-export default PerformanceBandTable;
+const enhance = compose(
+  connect(
+    state => ({
+      dataSource: getPerformanceBandList(state),
+      performanceBandId: get(state, ["performanceBandReducer", "data", "_id"], ""),
+      userOrgId: getUserOrgId(state)
+    }),
+    {
+      loadPerformanceBand: receivePerformanceBandAction,
+      createPerformanceband: createPerformanceBandAction,
+      updatePerformanceBand: updatePerformanceBandAction,
+      setPerformanceBandData: setPerformanceBandChangesAction
+    }
+  )
+);
+export default enhance(PerformanceBandTable);

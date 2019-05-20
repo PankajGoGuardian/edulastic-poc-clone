@@ -75,12 +75,21 @@ const getTestSetting = ({ orgId }) =>
     })
     .then(result => result.data.result);
 
-const updateTestSetting = ({ body }) =>
+const updateTestSetting = data =>
   api
     .callApi({
       url: `${prefix}/test`,
       method: "put",
-      data: body
+      data
+    })
+    .then(result => result.data.result);
+
+const createTestSetting = data =>
+  api
+    .callApi({
+      url: `${prefix}/test`,
+      method: "post",
+      data
     })
     .then(result => result.data.result);
 
@@ -120,21 +129,21 @@ const getStandardsProficiency = ({ orgId }) =>
     })
     .then(result => result.data.result);
 
-const createStandardsProficiency = ({ body }) =>
+const createStandardsProficiency = data =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/`,
       method: "post",
-      data: body
+      data
     })
     .then(result => result.data.result);
 
-const updateStandardsProficiency = ({ body }) =>
+const updateStandardsProficiency = data =>
   api
     .callApi({
       url: `${prefix}/standards-proficiency/`,
       method: "put",
-      data: body
+      data
     })
     .then(result => result.data.result);
 
@@ -147,23 +156,24 @@ const getPerformanceBand = ({ orgId }) =>
     })
     .then(result => result.data.result);
 
-const createPerformanceBand = ({ body }) =>
+const createPerformanceBand = data =>
   api
     .callApi({
       url: `${prefix}/performance-band/`,
       method: "post",
-      data: body
+      data
     })
     .then(result => result.data.result);
 
-const updatePerformanceBand = ({ body }) =>
+const updatePerformanceBand = data =>
   api
     .callApi({
       url: `${prefix}/performance-band/`,
       method: "put",
-      data: body
+      data
     })
     .then(result => result.data.result);
+
 // interested standards
 const getInterestedStandards = ({ orgId }) =>
   api
@@ -199,6 +209,7 @@ export default {
   createDistrictPolicy,
   updateDistrictPolicy,
   getTestSetting,
+  createTestSetting,
   updateTestSetting,
   getTerm,
   createTerm,

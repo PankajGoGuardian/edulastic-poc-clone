@@ -8,11 +8,6 @@ import StandardsProficiencyTable from "../StandardsProficiencyTable/StandardsPro
 
 import { StandardsProficiencyDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
 
-// actions
-import { receiveStandardsProficiencyAction, updateStandardsProficiencyAction } from "../../ducks";
-
-import { getUserOrgId } from "../../../src/selectors/user";
-
 const title = "Manage District";
 const menuActive = { mainMenu: "Settings", subMenu: "Standards Proficiency" };
 
@@ -21,27 +16,9 @@ class StandardsProficiency extends Component {
     super(props);
   }
 
-  componentDidMount() {
-    const { loadStandardsProficiency, userOrgId } = this.props;
-    loadStandardsProficiency({ orgId: userOrgId });
-  }
-
-  updateStandardsProficiency = standardsProficiencyData => {
-    const data = {
-      orgId: this.props.standardsProficiency.orgId,
-      scale: standardsProficiencyData.scale,
-      orgType: this.props.standardsProficiency.orgType,
-      calcType: standardsProficiencyData.calcType,
-      calcAttribute: standardsProficiencyData.calcAttribute,
-      decay: this.props.standardsProficiency.decay,
-      noOfAssessment: this.props.standardsProficiency.noOfAssessment
-    };
-    this.props.updateStandardsProficiency({ body: data });
-  };
-
   render() {
-    const { standardsProficiency, loading, updating, history } = this.props;
-    const showSpin = loading || updating;
+    const { loading, updating, creating, history } = this.props;
+    const showSpin = loading || updating || creating;
 
     return (
       <StandardsProficiencyDiv>
@@ -53,12 +30,7 @@ class StandardsProficiency extends Component {
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            {Object.keys(standardsProficiency).length > 0 && standardsProficiency.scale.length > 0 && (
-              <StandardsProficiencyTable
-                standardsProficiencyData={standardsProficiency}
-                updateStandardsProficiency={this.updateStandardsProficiency}
-              />
-            )}
+            <StandardsProficiencyTable />
           </StyledLayout>
         </StyledContent>
       </StandardsProficiencyDiv>
@@ -67,27 +39,17 @@ class StandardsProficiency extends Component {
 }
 
 const enhance = compose(
-  connect(
-    state => ({
-      standardsProficiency: get(state, ["standardsProficiencyReducer", "data"], []),
-      loading: get(state, ["standardsProficiencyReducer", "loading"], false),
-      updating: get(state, ["standardsProficiencyReducer", "updating"], false),
-      userOrgId: getUserOrgId(state)
-    }),
-    {
-      loadStandardsProficiency: receiveStandardsProficiencyAction,
-      updateStandardsProficiency: updateStandardsProficiencyAction
-    }
-  )
+  connect(state => ({
+    loading: get(state, ["standardsProficiencyReducer", "loading"], false),
+    updating: get(state, ["standardsProficiencyReducer", "updating"], false),
+    creating: get(state, ["standardsProficiencyReducer", "creating"], false)
+  }))
 );
 
 export default enhance(StandardsProficiency);
 
 StandardsProficiency.propTypes = {
-  loadStandardsProficiency: PropTypes.func.isRequired,
-  updateStandardsProficiency: PropTypes.func.isRequired,
-  standardsProficiency: PropTypes.object.isRequired,
-  userOrgId: PropTypes.string.isRequired,
   loading: PropTypes.bool.isRequired,
-  updating: PropTypes.bool.isRequired
+  updating: PropTypes.bool.isRequired,
+  creating: PropTypes.bool.isRequired
 };

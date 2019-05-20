@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { Table, Popconfirm, Form, Icon, Radio, Button, message } from "antd";
+import { Table, Form, Icon, Radio, Button, message } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { get } from "lodash";
 
 import StandardsProficiencyEditableCell from "./StandardsProficiencyEditableCell/StandardsProficiencyEditableCell";
 
@@ -23,33 +26,28 @@ import {
 } from "./styled";
 import { ScoreColorSpan } from "./StandardsProficiencyEditableCell/styled";
 
+import {
+  receiveStandardsProficiencyAction,
+  updateStandardsProficiencyAction,
+  createStandardsProficiencyAction,
+  setScaleDataAction,
+  setCalcTypeAction,
+  setDecayingAttrValueAction,
+  setMovingAttrValueAction
+} from "../../ducks";
+
+import { getUserOrgId } from "../../../src/selectors/user";
+
 const EditableContext = React.createContext();
 
 class StandardsProficiencyTable extends React.Component {
   constructor(props) {
     super(props);
-    const { scale, calcType, calcAttribute } = this.props.standardsProficiencyData;
-    const data = [];
-    for (let i = 0; i < scale.length; i++) {
-      data.push({
-        key: i,
-        score: scale[i].score,
-        _id: scale[i]._id,
-        shortName: scale[i].shortName,
-        threshold: scale[i].threshold,
-        masteryLevel: scale[i].masteryLevel,
-        color: scale[i].color
-      });
-    }
 
     this.state = {
-      data,
       editingKey: "",
       isAdding: false,
-      isChangeState: false,
-      calcType: calcType,
-      calcDecayingAttr: calcType === "DECAYING_AVERAGE" ? calcAttribute : 65,
-      calcMovingAvrAttr: calcType === "MOVING_AVERAGE" ? calcAttribute : 5
+      isChangeState: false
     };
 
     this.columns = [
@@ -125,6 +123,20 @@ class StandardsProficiencyTable extends React.Component {
     ];
   }
 
+  componentDidMount() {
+    const { loadStandardsProficiency, userOrgId } = this.props;
+    loadStandardsProficiency({ orgId: userOrgId });
+  }
+
+  static getDerivedStateFromProps(nextProps, prevState) {
+    return {
+      data: nextProps.standardsProficiency,
+      calcType: nextProps.calcType,
+      calcDecayingAttr: nextProps.calcDecayingAttr,
+      calcMovingAvrAttr: nextProps.calcMovingAvrAttr
+    };
+  }
+
   isEditing = record => record.key === this.state.editingKey;
 
   cancel = key => {
@@ -145,13 +157,11 @@ class StandardsProficiencyTable extends React.Component {
           ...item,
           ...row
         });
-        this.setState({ data: newData, editingKey: "" });
       } else {
         newData.push(row);
-        this.setState({ data: newData, editingKey: "" });
       }
-
-      this.setState({ isAdding: false, isChangeState: true });
+      this.setState({ editingKey: "", isAdding: false, isChangeState: true });
+      this.props.setScaleData(newData);
     });
   };
 
@@ -169,7 +179,7 @@ class StandardsProficiencyTable extends React.Component {
     if (editingKey !== "") return;
 
     const newData = {
-      key: data.length,
+      key: data[data.length - 1].key + 1,
       score: 1,
       masteryLevel: "Proficiency 1",
       shortName: "P1",
@@ -184,11 +194,11 @@ class StandardsProficiencyTable extends React.Component {
     data[data.length - 1].threshold = data[data.length - 2].threshold > 10 ? data[data.length - 2].threshold - 10 : 0;
 
     this.setState({
-      data: [...data, newData],
       editingKey: data.length,
       isChangeState: true,
       isAdding: true
     });
+    this.props.setScaleData([...data, newData]);
   };
 
   handleDelete = key => {
@@ -202,23 +212,22 @@ class StandardsProficiencyTable extends React.Component {
       row.score = newData.length - nIndex;
       if (newData.length - 1 == nIndex) row.threshold = 0;
     });
-    this.setState({
-      data: newData,
-      isChangeState: true
-    });
+
+    this.setState({ isChangeState: true });
+    this.props.setScaleData(newData);
   };
 
   changeCalcType = e => {
-    this.setState({
-      calcType: e.target.value,
-      isChangeState: true
-    });
+    this.setState({ isChangeState: true });
+    this.props.setCalcType(e.target.value);
   };
 
   saveScale = e => {
     if (this.state.isAdding) return;
     const dataSource = [];
-    const { data } = this.state;
+    const { data, calcType } = this.state;
+    const { standardsProficiencyID, userOrgId } = this.props;
+
     data.map(row => {
       dataSource.push({
         score: row.score,
@@ -229,10 +238,11 @@ class StandardsProficiencyTable extends React.Component {
       });
     });
 
-    const { calcType } = this.state;
     const updateData = {
+      orgId: userOrgId,
       scale: dataSource,
-      calcType: calcType
+      calcType: calcType,
+      orgType: "district"
     };
 
     if (calcType === "DECAYING_AVERAGE") {
@@ -246,22 +256,24 @@ class StandardsProficiencyTable extends React.Component {
     }
 
     this.setState({ isChangeState: false });
-
-    this.props.updateStandardsProficiency(updateData);
+    if (standardsProficiencyID.length == 0) this.props.createStandardProficiency(updateData);
+    else this.props.updateStandardsProficiency(updateData);
   };
 
   onChangeCalcAttr = (e, keyName) => {
     const { value } = e.target;
     const reg = /^-?(0|[1-9][0-9]*)(\.[0-9]*)?$/;
     if ((!Number.isNaN(value) && reg.test(value)) || value === "" || value === "-") {
-      if (keyName === "DECAYING_AVERAGE") this.setState({ calcDecayingAttr: value });
-      else if (keyName === "MOVING_AVERAGE") this.setState({ calcMovingAvrAttr: value });
+      if (keyName === "DECAYING_AVERAGE") this.props.setDecayingAttrValue(value);
+      else if (keyName === "MOVING_AVERAGE") this.props.setMovingAttrValue(value);
       this.setState({ isChangeState: true });
     }
   };
 
   render() {
     const { isChangeState, calcType, calcDecayingAttr, calcMovingAvrAttr, data } = this.state;
+    const { standardsProficiencyID } = this.props;
+
     const components = {
       body: {
         cell: StandardsProficiencyEditableCell
@@ -299,9 +311,15 @@ class StandardsProficiencyTable extends React.Component {
           </InfoDiv>
           <SaveButtonDiv>
             {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-            <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
-              Save
-            </Button>
+            {standardsProficiencyID.length == 0 ? (
+              <Button type="primary" onClick={this.saveScale}>
+                Create
+              </Button>
+            ) : (
+              <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
+                Save
+              </Button>
+            )}
           </SaveButtonDiv>
         </TopDiv>
 
@@ -324,7 +342,7 @@ class StandardsProficiencyTable extends React.Component {
             <li>Standards based scores persist across classes(they do NOT reset automatically)</li>
             <li>Mastery score is rounded up when the calcaulated score is at/above mid point between two levels</li>
           </StyledUl>
-          <StyledRadioGroup defaultValue={calcType} onChange={this.changeCalcType}>
+          <StyledRadioGroup defaultValue={calcType} onChange={this.changeCalcType} value={calcType}>
             <Radio value="MOST_RECENT">Most Recent</Radio>
             <Radio value="MAX_SCORE">Max Score</Radio>
             <Radio value="MODE_SCORE">Mode Score</Radio>
@@ -365,4 +383,26 @@ class StandardsProficiencyTable extends React.Component {
 }
 const EditableStandardsProficiencyTable = Form.create()(StandardsProficiencyTable);
 
-export default EditableStandardsProficiencyTable;
+const enhance = compose(
+  connect(
+    state => ({
+      standardsProficiency: get(state, ["standardsProficiencyReducer", "data", "scale"], []),
+      userOrgId: getUserOrgId(state),
+      calcType: get(state, ["standardsProficiencyReducer", "data", "calcType"], ""),
+      calcDecayingAttr: get(state, ["standardsProficiencyReducer", "data", "calcDecayingAttr"], 0),
+      calcMovingAvrAttr: get(state, ["standardsProficiencyReducer", "data", "calcMovingAvrAttr"], 0),
+      standardsProficiencyID: get(state, ["standardsProficiencyReducer", "data", "_id"], "")
+    }),
+    {
+      loadStandardsProficiency: receiveStandardsProficiencyAction,
+      updateStandardsProficiency: updateStandardsProficiencyAction,
+      createStandardProficiency: createStandardsProficiencyAction,
+      setScaleData: setScaleDataAction,
+      setCalcType: setCalcTypeAction,
+      setDecayingAttrValue: setDecayingAttrValueAction,
+      setMovingAttrValue: setMovingAttrValueAction
+    }
+  )
+);
+
+export default enhance(EditableStandardsProficiencyTable);

@@ -9,32 +9,24 @@ const RECEIVE_TEST_SETTING_SUCCESS = "[testSetting] receive data success";
 const RECEIVE_TEST_SETTING_ERROR = "[testSetting] receive data error";
 const UPDATE_TEST_SETTING_REQUEST = "[testSetting] update data request";
 const UPDATE_TEST_SETTING_SUCCESS = "[testSetting] update data success";
-const UPDATE_TEST_SETTING_ERROR = "[testSetting] receive data error";
+const UPDATE_TEST_SETTING_ERROR = "[testSetting] update data error";
+const CREATE_TEST_SETTING_REQUEST = "[testSetting] create data request";
+const CREATE_TEST_SETTING_SUCCESS = "[testSetting] create data success";
+const CREATE_TEST_SETTING_ERROR = "[testSetting] create data error";
+
+const SET_TEST_SETTING_VALUE_REQUEST = "[testSetting] set test setting value";
 
 export const receiveTestSettingAction = createAction(RECEIVE_TEST_SETTING_REQUEST);
 export const receiveTestSettingSuccessAction = createAction(RECEIVE_TEST_SETTING_SUCCESS);
 export const receiveTestSettingErrorAction = createAction(RECEIVE_TEST_SETTING_ERROR);
 export const updateTestSettingAction = createAction(UPDATE_TEST_SETTING_REQUEST);
 export const updateTestSettingSuccessAction = createAction(UPDATE_TEST_SETTING_SUCCESS);
-export const updaetTestSettingErrorAction = createAction(UPDATE_TEST_SETTING_ERROR);
+export const updateTestSettingErrorAction = createAction(UPDATE_TEST_SETTING_ERROR);
+export const createTestSettingAction = createAction(CREATE_TEST_SETTING_REQUEST);
+export const createTestSettingSuccessAction = createAction(CREATE_TEST_SETTING_SUCCESS);
+export const createTestSettingErrorAction = createAction(CREATE_TEST_SETTING_ERROR);
 
-// selectors
-const stateTestSettingSelector = state => state.testSettingReducer;
-
-export const getTestSettingSelector = createSelector(
-  stateTestSettingSelector,
-  state => state.data
-);
-
-export const getTestSettingLoadingSelector = createSelector(
-  stateTestSettingSelector,
-  state => state.loading
-);
-
-export const getTestSettingUpdatingSelector = createSelector(
-  stateTestSettingSelector,
-  state => state.updating
-);
+export const setTestSettingValueAction = createAction(SET_TEST_SETTING_VALUE_REQUEST);
 
 // reducers
 const initialState = {
@@ -46,47 +38,42 @@ const initialState = {
   updateError: null
 };
 
-const receiveTestSettingRequest = state => ({
-  ...state,
-  loading: true
-});
-
-const receiveTestSettingSuccess = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  data: payload
-});
-
-const receiveTestSettingError = (state, { payload }) => ({
-  ...state,
-  loading: false,
-  error: payload.error
-});
-
-const updateTestSettingRequest = state => ({
-  ...state,
-  updating: true
-});
-
-const updateTestSettingSuccess = (state, { payload }) => ({
-  ...state,
-  data: payload,
-  updating: false
-});
-
-const updateTestSettingError = (state, { payload }) => ({
-  ...state,
-  updateError: payload.error,
-  updating: false
-});
-
 export const reducer = createReducer(initialState, {
-  [RECEIVE_TEST_SETTING_REQUEST]: receiveTestSettingRequest,
-  [RECEIVE_TEST_SETTING_SUCCESS]: receiveTestSettingSuccess,
-  [RECEIVE_TEST_SETTING_ERROR]: receiveTestSettingError,
-  [UPDATE_TEST_SETTING_REQUEST]: updateTestSettingRequest,
-  [UPDATE_TEST_SETTING_SUCCESS]: updateTestSettingSuccess,
-  [UPDATE_TEST_SETTING_ERROR]: updateTestSettingError
+  [RECEIVE_TEST_SETTING_REQUEST]: state => {
+    state.loading = true;
+  },
+  [RECEIVE_TEST_SETTING_SUCCESS]: (state, { payload }) => {
+    state.loading = false;
+    state.data = payload;
+  },
+  [RECEIVE_TEST_SETTING_ERROR]: (state, { payload }) => {
+    (state.loading = false), (state.error = payload.error);
+  },
+  [UPDATE_TEST_SETTING_REQUEST]: state => {
+    state.updating = true;
+  },
+  [UPDATE_TEST_SETTING_SUCCESS]: (state, { payload }) => {
+    state.data = payload;
+    state.updating = false;
+  },
+  [UPDATE_TEST_SETTING_ERROR]: (state, { payload }) => {
+    state.updateError = payload.error;
+    state.updating = false;
+  },
+  [CREATE_TEST_SETTING_REQUEST]: state => {
+    state.creating = true;
+  },
+  [CREATE_TEST_SETTING_SUCCESS]: (state, { payload }) => {
+    state.data = payload;
+    state.creating = false;
+  },
+  [CREATE_TEST_SETTING_ERROR]: (state, { payload }) => {
+    state.createError = payload.error;
+    state.creating = false;
+  },
+  [SET_TEST_SETTING_VALUE_REQUEST]: (state, { payload }) => {
+    state.data = payload;
+  }
 });
 
 // sagas
@@ -104,8 +91,6 @@ function* receiveTestSettingeSaga({ payload }) {
 function* updateTestSettingSaga({ payload }) {
   try {
     const updateTestSetting = yield call(settingsApi.updateTestSetting, payload);
-    const successMessage = "Update succeeded";
-    yield call(message.success, successMessage);
     yield put(updateTestSettingSuccessAction(updateTestSetting));
   } catch (err) {
     const errorMessage = "Update Test Setting is failing";
@@ -114,7 +99,19 @@ function* updateTestSettingSaga({ payload }) {
   }
 }
 
+function* createTestSettingSaga({ payload }) {
+  try {
+    const createTestSetting = yield call(settingsApi.createTestSetting, payload);
+    yield put(createTestSettingSuccessAction(createTestSetting));
+  } catch (err) {
+    const errorMessage = "Create Test Setting is failing";
+    yield call(message.error, errorMessage);
+    yield put(createTestSettingErrorAction({ error: errorMessage }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_TEST_SETTING_REQUEST, receiveTestSettingeSaga)]);
   yield all([yield takeEvery(UPDATE_TEST_SETTING_REQUEST, updateTestSettingSaga)]);
+  yield all([yield takeEvery(CREATE_TEST_SETTING_REQUEST, createTestSettingSaga)]);
 }

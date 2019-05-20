@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
+
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
 import { Radio } from "antd";
 
@@ -18,10 +20,12 @@ import {
 } from "./styled";
 
 // actions
-import { receiveTestSettingAction, updateTestSettingAction } from "../../ducks";
-
-// selectors
-import { getTestSettingSelector, getTestSettingLoadingSelector, getTestSettingUpdatingSelector } from "../../ducks";
+import {
+  receiveTestSettingAction,
+  updateTestSettingAction,
+  createTestSettingAction,
+  setTestSettingValueAction
+} from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -32,8 +36,10 @@ class TestSetting extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      partialScore: false,
-      timer: false
+      testSetting: {
+        partialScore: true,
+        timer: true
+      }
     };
   }
 
@@ -42,84 +48,90 @@ class TestSetting extends Component {
     loadTestSetting({ orgId: userOrgId });
   }
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps._id !== this.props.testSetting._id) {
-      if (nextProps.testSetting.hasOwnProperty("partialScore")) {
-        this.setState({
-          partialScore: nextProps.testSetting.partialScore
-        });
-      }
-      if (nextProps.testSetting.hasOwnProperty("timer")) {
-        this.setState({
-          timer: nextProps.testSetting.timer
-        });
-      }
-    }
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.testSetting == null || Object.keys(nextProps.testSetting).length === 0) {
+      return {
+        testSetting: {
+          partialScore: true,
+          timer: true
+        }
+      };
+    } else return { testSetting: nextProps.testSetting };
   }
 
   changePartialScore = e => {
-    this.setState({
-      partialScore: e.target.value
-    });
+    const testSetting = { ...this.state.testSetting };
+    testSetting.partialScore = e.target.value;
+    this.props.setTestSettingValue(testSetting);
   };
 
   changeTimerScore = e => {
-    this.setState({
-      timer: e.target.value
-    });
+    const testSetting = { ...this.state.testSetting };
+    testSetting.timer = e.target.value;
+    this.props.setTestSettingValue(testSetting);
   };
 
   updateValue = () => {
-    const { testSetting, updateTestSetting } = this.props;
-    const { partialScore, timer } = this.state;
+    const { testSetting } = this.state;
+    const { createTestSetting, updateTestSetting } = this.props;
     const updateData = {
-      body: {
-        orgId: testSetting.orgId,
-        orgType: testSetting.orgType,
-        partialScore: partialScore,
-        timer: timer
-      }
+      orgId: this.props.userOrgId,
+      orgType: "district",
+      partialScore: testSetting.partialScore,
+      timer: testSetting.timer
     };
-    updateTestSetting(updateData);
+    if (testSetting.hasOwnProperty("_id")) {
+      updateTestSetting(updateData);
+    } else {
+      createTestSetting(updateData);
+    }
   };
 
   render() {
-    const { testSetting, loading, updating, history } = this.props;
+    const { loading, updating, creating, history } = this.props;
+    const { testSetting } = this.state;
+    const btnSaveStr = testSetting.hasOwnProperty("_id") ? "Save" : "Create";
 
     return (
       <TestSettingDiv>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout loading={updating || loading ? "true" : "false"}>
-            {(updating || loading) && (
+          <StyledLayout loading={updating || loading || creating ? "true" : "false"}>
+            {(updating || loading || creating) && (
               <SpinContainer>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
             <StyledRow>
-              {testSetting.hasOwnProperty("partialScore") && (
-                <React.Fragment>
-                  <StyledLabel>Allow Partial Score </StyledLabel>
-                  <StyledRdioGroup defaultValue={testSetting.partialScore} onChange={e => this.changePartialScore(e)}>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </StyledRdioGroup>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <StyledLabel>Allow Partial Score </StyledLabel>
+                <StyledRdioGroup
+                  defaultValue={testSetting.partialScore}
+                  onChange={e => this.changePartialScore(e)}
+                  value={testSetting.partialScore}
+                >
+                  <Radio value={true}>Yes</Radio>
+                  <Radio value={false}>No</Radio>
+                </StyledRdioGroup>
+              </React.Fragment>
             </StyledRow>
             <StyledRow>
-              {testSetting.hasOwnProperty("timer") && (
-                <React.Fragment>
-                  <StyledLabel>Show Timer </StyledLabel>
-                  <StyledRdioGroup defaultValue={testSetting.timer} onChange={e => this.changeTimerScore(e)}>
-                    <Radio value={true}>Yes</Radio>
-                    <Radio value={false}>No</Radio>
-                  </StyledRdioGroup>
-                </React.Fragment>
-              )}
+              <React.Fragment>
+                <StyledLabel>Show Timer </StyledLabel>
+                <StyledRdioGroup
+                  defaultValue={testSetting.timer}
+                  onChange={e => this.changeTimerScore(e)}
+                  value={testSetting.timer}
+                >
+                  <Radio value={true}>Yes</Radio>
+                  <Radio value={false}>No</Radio>
+                </StyledRdioGroup>
+              </React.Fragment>
             </StyledRow>
             <StyledRow>
-              <SaveButton onClick={this.updateValue}>Save</SaveButton>
+              <SaveButton type="primary" onClick={this.updateValue}>
+                {btnSaveStr}
+              </SaveButton>
             </StyledRow>
           </StyledLayout>
         </StyledContent>
@@ -131,14 +143,17 @@ class TestSetting extends Component {
 const enhance = compose(
   connect(
     state => ({
-      testSetting: getTestSettingSelector(state),
-      loading: getTestSettingLoadingSelector(state),
-      updating: getTestSettingUpdatingSelector(state),
+      testSetting: get(state, ["testSettingReducer", "data"], {}),
+      loading: get(state, ["testSettingReducer", "loading"], false),
+      updating: get(state, ["testSettingReducer", "updating"], false),
+      creating: get(state, ["testSettingReducer", "creating"], false),
       userOrgId: getUserOrgId(state)
     }),
     {
       loadTestSetting: receiveTestSettingAction,
-      updateTestSetting: updateTestSettingAction
+      createTestSetting: createTestSettingAction,
+      updateTestSetting: updateTestSettingAction,
+      setTestSettingValue: setTestSettingValueAction
     }
   )
 );
@@ -148,6 +163,6 @@ export default enhance(TestSetting);
 TestSetting.propTypes = {
   loadTestSetting: PropTypes.func.isRequired,
   updateTestSetting: PropTypes.func.isRequired,
-  testSetting: PropTypes.object.isRequired,
+  createTestSetting: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired
 };

@@ -34,7 +34,7 @@ const specSource = {
   }
 };
 
-const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex, theme }) =>
+const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex, theme, dragHandle }) =>
   item &&
   connectDragSource(
     <div
@@ -82,6 +82,7 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
             fontWeight: theme.widgets.classification.dragItemFontWeight
           }}
         >
+          {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
           <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
           {preview && valid !== undefined && (
             <div>

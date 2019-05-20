@@ -1,7 +1,9 @@
-import { includes, reduce } from "lodash";
+import { reduce, isEqual } from "lodash";
 import { ScoringType } from "./const/scoring";
 import partialMatchTemplate from "./helpers/partialMatchTemplate";
 import exactMatchTemplate from "./helpers/exactMatchTemplate";
+
+const sortFunc = (a, b) => a - b;
 
 const exactCompareFunction = ({ answers, userResponse = [] }) => {
   let score = 0;
@@ -29,8 +31,8 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
     );
 
     userResponse.forEach((col, colIndex) => {
-      col.forEach(ans => {
-        if (includes(answer[colIndex], ans)) {
+      col.sort(sortFunc).forEach((ans, index) => {
+        if (isEqual(answer[colIndex].sort(sortFunc)[index], ans)) {
           matches++;
         }
       });
@@ -50,8 +52,8 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
   let currentIndex = 0;
 
   userResponse.forEach((col, colIndex) => {
-    col.forEach(ans => {
-      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+    col.sort(sortFunc).forEach((ans, index) => {
+      evaluation[currentIndex] = isEqual(answers[rightIndex].value[colIndex].sort(sortFunc)[index], ans);
 
       currentIndex++;
     });
@@ -79,9 +81,9 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
     let totalMatches = 0;
 
     userResponse.forEach((col, colIndex) => {
-      col.forEach(ans => {
+      col.sort(sortFunc).forEach((ans, index) => {
         totalMatches++;
-        if (includes(answer[colIndex], ans)) {
+        if (isEqual(answer[colIndex].sort(sortFunc)[index], ans)) {
           matches++;
         }
       });
@@ -103,8 +105,8 @@ const partialCompareFunction = ({ answers, userResponse = [] }) => {
   let currentIndex = 0;
 
   userResponse.forEach((col, colIndex) => {
-    col.forEach(ans => {
-      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+    col.sort(sortFunc).forEach((ans, index) => {
+      evaluation[currentIndex] = isEqual(answers[rightIndex].value[colIndex].sort(sortFunc)[index], ans);
 
       currentIndex++;
     });

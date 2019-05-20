@@ -21,6 +21,7 @@ const TableRow = ({
   possible_responses,
   onDrop,
   validArray,
+  dragHandle,
   width,
   height,
   theme
@@ -37,6 +38,8 @@ const TableRow = ({
   };
 
   const cols = [];
+
+  let validIndex = -1;
 
   for (let index = startIndex; index < startIndex + colCount; index++) {
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
@@ -70,16 +73,22 @@ const TableRow = ({
           {Array.isArray(answers) &&
             Array.isArray(answers[index]) &&
             answers[index].length > 0 &&
-            answers[index].map((answerValue, answerIndex) => (
-              <DragItem
-                valid={validArray[index] && validArray[index].includes(possible_responses.indexOf(answerValue))}
-                preview={preview}
-                key={answerIndex}
-                renderIndex={possible_responses.indexOf(answerValue)}
-                onDrop={onDrop}
-                item={answerValue}
-              />
-            ))}
+            // eslint-disable-next-line no-loop-func
+            answers[index].map((answerValue, answerIndex) => {
+              validIndex++;
+
+              return (
+                <DragItem
+                  dragHandle={dragHandle}
+                  valid={validArray && validArray[validIndex]}
+                  preview={preview}
+                  key={answerIndex}
+                  renderIndex={possible_responses.indexOf(answerValue)}
+                  onDrop={onDrop}
+                  item={answerValue}
+                />
+              );
+            })}
         </DropContainer>
       </Column>
     );
@@ -93,6 +102,7 @@ TableRow.propTypes = {
   width: PropTypes.string.isRequired,
   height: PropTypes.string.isRequired,
   colCount: PropTypes.number.isRequired,
+  dragHandle: PropTypes.any.isRequired,
   arrayOfRows: PropTypes.object.isRequired,
   rowTitles: PropTypes.array.isRequired,
   drop: PropTypes.func.isRequired,

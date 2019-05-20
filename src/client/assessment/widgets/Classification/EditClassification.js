@@ -7,7 +7,7 @@ import { withTheme } from "styled-components";
 import { compose } from "redux";
 import produce from "immer";
 
-import { Paper } from "@edulastic/common";
+import { Paper, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
@@ -41,11 +41,17 @@ const EditClassification = ({
   setQuestionData,
   setFirstMount,
   theme,
+  t,
   advancedAreOpen,
   fillSections,
   cleanSections
 }) => {
-  const { firstMount } = item;
+  const {
+    firstMount,
+    shuffle_options,
+    duplicate_responses,
+    ui_style: { show_drag_handle }
+  } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -55,6 +61,25 @@ const EditClassification = ({
     },
     []
   );
+
+  const handleItemChangeChange = (prop, uiStyle) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft[prop] = uiStyle;
+        if (prop === "duplicate_responses" && uiStyle === false) {
+          const colCount = draft.ui_style.column_count;
+          const rowCount = draft.ui_style.row_count;
+          const initialLength = (colCount || 2) * (rowCount || 1);
+          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+          draft.validation.alt_responses.forEach(ite => {
+            ite.value = Array(...Array(initialLength)).map(() => []);
+          });
+        }
+        updateVariables(draft);
+      })
+    );
+  };
 
   const onGroupPossibleResp = e => {
     setQuestionData(
@@ -260,6 +285,29 @@ const EditClassification = ({
     );
   };
 
+  const onUiChange = prop => val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.ui_style[prop] = val;
+
+        const colCount = draft.ui_style.column_count;
+        const rowCount = draft.ui_style.row_count;
+
+        const initialLength = (colCount || 2) * (rowCount || 1);
+
+        if (prop === "column_count" || prop === "row_count") {
+          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+          draft.validation.alt_responses.forEach(ite => {
+            ite.value = Array(...Array(initialLength)).map(() => []);
+          });
+        }
+
+        updateVariables(draft);
+      })
+    );
+  };
+
   const renderOptions = () => (
     <OptionsList
       item={item}
@@ -300,6 +348,28 @@ const EditClassification = ({
           />
         </Widget>
         <Widget>
+          <div style={{ marginTop: 20 }}>
+            <Checkbox
+              className="additional-options"
+              onChange={() => onUiChange("show_drag_handle")(!show_drag_handle)}
+              label={t("component.cloze.imageDragDrop.showdraghandle")}
+              checked={!!show_drag_handle}
+            />
+            <Checkbox
+              className="additional-options"
+              onChange={() => handleItemChangeChange("duplicate_responses", !duplicate_responses)}
+              label={t("component.cloze.imageDragDrop.duplicatedresponses")}
+              checked={!!duplicate_responses}
+            />
+            <Checkbox
+              className="additional-options"
+              onChange={() => handleItemChangeChange("shuffle_options", !shuffle_options)}
+              label={t("component.cloze.imageDragDrop.shuffleoptions")}
+              checked={!!shuffle_options}
+            />
+          </div>
+        </Widget>
+        <Widget>
           <CorrectAnswers
             onTabChange={setCorrectTab}
             correctTab={correctTab}
@@ -324,6 +394,7 @@ EditClassification.propTypes = {
   setFirstMount: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
+  t: PropTypes.func.isRequired,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool
 };

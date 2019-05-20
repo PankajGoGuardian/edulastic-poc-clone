@@ -9,15 +9,19 @@ exports["default"] = void 0;
 
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
-var _reduce2 = _interopRequireDefault(require("lodash/reduce"));
+var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
-var _includes2 = _interopRequireDefault(require("lodash/includes"));
+var _reduce2 = _interopRequireDefault(require("lodash/reduce"));
 
 var _scoring = require("./const/scoring");
 
 var _partialMatchTemplate = _interopRequireDefault(require("./helpers/partialMatchTemplate"));
 
 var _exactMatchTemplate = _interopRequireDefault(require("./helpers/exactMatchTemplate"));
+
+var sortFunc = function sortFunc(a, b) {
+  return a - b;
+};
 
 var exactCompareFunction = function exactCompareFunction(_ref) {
   var answers = _ref.answers,
@@ -47,8 +51,8 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
       0
     );
     userResponse.forEach(function(col, colIndex) {
-      col.forEach(function(ans) {
-        if ((0, _includes2["default"])(answer[colIndex], ans)) {
+      col.sort(sortFunc).forEach(function(ans, index) {
+        if ((0, _isEqual2["default"])(answer[colIndex].sort(sortFunc)[index], ans)) {
           matches++;
         }
       });
@@ -64,8 +68,11 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
   var evaluation = [];
   var currentIndex = 0;
   userResponse.forEach(function(col, colIndex) {
-    col.forEach(function(ans) {
-      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+    col.sort(sortFunc).forEach(function(ans, index) {
+      evaluation[currentIndex] = (0, _isEqual2["default"])(
+        answers[rightIndex].value[colIndex].sort(sortFunc)[index],
+        ans
+      );
       currentIndex++;
     });
   });
@@ -94,10 +101,10 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
     var matches = 0;
     var totalMatches = 0;
     userResponse.forEach(function(col, colIndex) {
-      col.forEach(function(ans) {
+      col.sort(sortFunc).forEach(function(ans, index) {
         totalMatches++;
 
-        if ((0, _includes2["default"])(answer[colIndex], ans)) {
+        if ((0, _isEqual2["default"])(answer[colIndex].sort(sortFunc)[index], ans)) {
           matches++;
         }
       });
@@ -114,8 +121,11 @@ var partialCompareFunction = function partialCompareFunction(_ref3) {
   var evaluation = [];
   var currentIndex = 0;
   userResponse.forEach(function(col, colIndex) {
-    col.forEach(function(ans) {
-      evaluation[currentIndex] = answers[rightIndex].value[colIndex].includes(ans);
+    col.sort(sortFunc).forEach(function(ans, index) {
+      evaluation[currentIndex] = (0, _isEqual2["default"])(
+        answers[rightIndex].value[colIndex].sort(sortFunc)[index],
+        ans
+      );
       currentIndex++;
     });
   });

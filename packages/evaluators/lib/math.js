@@ -21,7 +21,10 @@ var _axios = _interopRequireDefault(require("axios"));
 
 var _scoring = require("./const/scoring");
 
-var url = "https://edulastic-poc.snapwiz.net/math-api/evaluate";
+var url = "".concat(
+  typeof window === "undefined" ? "https:" : window.location.protocol,
+  "//edulastic-poc.snapwiz.net/math-api/evaluate"
+);
 
 var evaluate = function evaluate(data) {
   return _axios["default"].post(url, (0, _objectSpread2["default"])({}, data)).then(function(result) {

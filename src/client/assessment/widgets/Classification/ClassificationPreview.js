@@ -1,6 +1,6 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, useMemo, Fragment } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual, difference, get } from "lodash";
+import { cloneDeep, isEqual, get, shuffle } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
@@ -32,6 +32,7 @@ const ClassificationPreview = ({
   saveAnswer,
   item = { ui_style: {} },
   t,
+  evaluation,
   userAnswer,
   previewTab,
   smallSize,
@@ -70,18 +71,20 @@ const ClassificationPreview = ({
     group_possible_responses,
     possible_response_groups = [],
     stimulus,
+    shuffle_options,
+    duplicate_responses,
     ui_style: {
       column_count: colCount,
       column_titles: colTitles = [],
       row_count: rowCount,
-      row_titles: rowTitles = []
-    } = {}
+      row_titles: rowTitles = [],
+      show_drag_handle
+    }
   } = item;
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation && itemValidation.valid_response && itemValidation.valid_response.value;
   validArray = validArray || [];
-  const altArray = itemValidation.alt_responses || [];
   let groupArrays = [];
 
   possible_response_groups.forEach(o => {
@@ -152,14 +155,14 @@ const ClassificationPreview = ({
         dItems.push(itemCurrent.item);
         setDragItems(dItems);
       }
-    } else if (dItems.includes(itemCurrent.item)) {
+    } else if (!duplicate_responses && dItems.includes(itemCurrent.item)) {
       dItems.splice(dItems.indexOf(itemCurrent.item), 1);
       setDragItems(dItems);
     }
 
     if (itemTo.flag === "column") {
       ansArrays.forEach((arr, i) => {
-        if (arr.includes(itemCurrent.item)) {
+        if (!duplicate_responses && arr.includes(itemCurrent.item)) {
           arr.splice(arr.indexOf(itemCurrent.item), 1);
         }
 
@@ -177,28 +180,6 @@ const ClassificationPreview = ({
 
   const drop = ({ flag, index }) => ({ flag, index });
 
-  const validateAnswers = () => {
-    const testArr = answers.map(array => array.map(answer => possible_responses.indexOf(answer)));
-
-    let valid = cloneDeep(validArray);
-
-    let flag = true;
-
-    altArray.forEach(altItem => {
-      flag = true;
-      altItem.value.forEach((answer, i) => {
-        if (difference(testArr[i], answer).length !== 0) {
-          flag = false;
-        }
-      });
-      if (flag) {
-        valid = cloneDeep(altItem.value);
-      }
-    });
-
-    return valid;
-  };
-
   const transformArray = Arr => {
     const len = colCount || 2;
 
@@ -210,8 +191,6 @@ const ClassificationPreview = ({
 
     return res;
   };
-
-  const valRespArr = validateAnswers();
 
   const preview = previewTab === CHECK || previewTab === SHOW;
 
@@ -229,6 +208,21 @@ const ClassificationPreview = ({
     display: "flex",
     flexDirection: getDirection(listPosition)
   };
+
+  const verifiedDragItems = useMemo(
+    () =>
+      shuffle_options
+        ? shuffle(duplicate_responses ? posResponses : dragItems)
+        : duplicate_responses
+        ? posResponses
+        : dragItems,
+    [shuffle_options, posResponses, duplicate_responses, possible_responses]
+  );
+
+  const verifiedGroupDragItems = useMemo(
+    () => possible_response_groups.map(obj => (shuffle_options ? shuffle(obj.responses) : obj.responses)),
+    [shuffle_options, posResponses, duplicate_responses, possible_responses]
+  );
 
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -271,8 +265,9 @@ const ClassificationPreview = ({
                       arrayOfRows={arrayOfRows}
                       rowTitles={rowTitles}
                       drop={drop}
+                      dragHandle={show_drag_handle}
                       answers={answers}
-                      validArray={valRespArr}
+                      validArray={evaluation}
                       preview={preview}
                       possible_responses={possible_responses}
                       onDrop={onDrop}
@@ -282,66 +277,41 @@ const ClassificationPreview = ({
             </tbody>
           </table>
         </TableWrapper>
-        {dragItems.length > 0 && (
-          <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
-            <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
-              <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-                {group_possible_responses ? (
-                  possible_response_groups.map((i, index) => (
-                    <Fragment key={index}>
-                      <FlexContainer
-                        style={{ flex: 1 }}
-                        flexDirection="column"
-                        alignItems="center"
-                        justifyContent="flex-start"
-                      >
-                        <Subtitle
-                          style={{
-                            color: theme.widgets.classification.previewSubtitleColor
-                          }}
-                        >
-                          {i.title}
-                        </Subtitle>
-                        <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                          {i.responses.map(
-                            (ite, ind) =>
-                              dragItems.includes(ite) && (
-                                <DragItem
-                                  key={ind}
-                                  preview={preview}
-                                  renderIndex={possible_responses.indexOf(ite)}
-                                  onDrop={onDrop}
-                                  item={ite}
-                                />
-                              )
-                          )}
-                        </FlexContainer>
-                      </FlexContainer>
-                      {index !== possible_response_groups.length - 1 && (
-                        <div
-                          style={{
-                            width: 0,
-                            marginLeft: 35,
-                            marginRight: 35,
-                            borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
-                          }}
-                        />
-                      )}
-                    </Fragment>
-                  ))
-                ) : (
-                  <Fragment>
+
+        <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
+          <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+            <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
+              {group_possible_responses ? (
+                verifiedGroupDragItems.map((i, index) => (
+                  <Fragment key={index}>
                     <FlexContainer
                       style={{ flex: 1 }}
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="flex-start"
                     >
+                      <Subtitle
+                        style={{
+                          color: theme.widgets.classification.previewSubtitleColor
+                        }}
+                      >
+                        {i.title}
+                      </Subtitle>
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {dragItems.map(
-                          (ite, ind) =>
+                        {i.map((ite, ind) =>
+                          duplicate_responses ? (
+                            <DragItem
+                              dragHandle={show_drag_handle}
+                              key={ind}
+                              preview={preview}
+                              renderIndex={possible_responses.indexOf(ite)}
+                              onDrop={onDrop}
+                              item={ite}
+                            />
+                          ) : (
                             dragItems.includes(ite) && (
                               <DragItem
+                                dragHandle={show_drag_handle}
                                 key={ind}
                                 preview={preview}
                                 renderIndex={possible_responses.indexOf(ite)}
@@ -349,15 +319,61 @@ const ClassificationPreview = ({
                                 item={ite}
                               />
                             )
+                          )
                         )}
                       </FlexContainer>
                     </FlexContainer>
+                    {index !== possible_response_groups.length - 1 && (
+                      <div
+                        style={{
+                          width: 0,
+                          marginLeft: 35,
+                          marginRight: 35,
+                          borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
+                        }}
+                      />
+                    )}
                   </Fragment>
-                )}
-              </FlexContainer>
-            </DropContainer>
-          </CorrectAnswersContainer>
-        )}
+                ))
+              ) : (
+                <Fragment>
+                  <FlexContainer
+                    style={{ flex: 1 }}
+                    flexDirection="column"
+                    alignItems="center"
+                    justifyContent="flex-start"
+                  >
+                    <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                      {verifiedDragItems.map((ite, ind) =>
+                        duplicate_responses ? (
+                          <DragItem
+                            dragHandle={show_drag_handle}
+                            key={ind}
+                            preview={preview}
+                            renderIndex={possible_responses.indexOf(ite)}
+                            onDrop={onDrop}
+                            item={ite}
+                          />
+                        ) : (
+                          dragItems.includes(ite) && (
+                            <DragItem
+                              dragHandle={show_drag_handle}
+                              key={ind}
+                              preview={preview}
+                              renderIndex={possible_responses.indexOf(ite)}
+                              onDrop={onDrop}
+                              item={ite}
+                            />
+                          )
+                        )
+                      )}
+                    </FlexContainer>
+                  </FlexContainer>
+                </Fragment>
+              )}
+            </FlexContainer>
+          </DropContainer>
+        </CorrectAnswersContainer>
 
         {previewTab === SHOW && (
           <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
@@ -394,6 +410,7 @@ ClassificationPreview.propTypes = {
   editCorrectAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
+  evaluation: PropTypes.array.isRequired,
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
@@ -58,8 +58,8 @@ class Extras extends Component {
     };
 
     return (
-      <div style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Widget>
+      <Fragment>
+        <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
           {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
           {!isSection && <Subtitle>{t("component.options.extras")}</Subtitle>}
 
@@ -135,8 +135,9 @@ class Extras extends Component {
             </Col>
           </Row>
         </Widget>
+
         {children}
-      </div>
+      </Fragment>
     );
   }
 }

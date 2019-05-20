@@ -17,7 +17,7 @@ import { Subtitle } from "../../styled/Subtitle";
 
 const SortableListWithAddButton = withAddButton(SortableList);
 
-const Distractors = ({ t, setQuestionData, item }) => {
+const Distractors = ({ t, setQuestionData, item, advancedAreOpen }) => {
   const prop = "distractor_rationale_response_level";
 
   const _change = change({ item, setQuestionData, prop });
@@ -26,7 +26,7 @@ const Distractors = ({ t, setQuestionData, item }) => {
   const _sort = sort({ item, setQuestionData, prop });
 
   return (
-    <Widget>
+    <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
       <Fragment>
         <Subtitle>{t("component.options.distractorTitle")}</Subtitle>
         <StyledRow gutter={60}>
@@ -52,7 +52,12 @@ const Distractors = ({ t, setQuestionData, item }) => {
 Distractors.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool
+};
+
+Distractors.defaultProps = {
+  advancedAreOpen: false
 };
 
 const enhance = compose(

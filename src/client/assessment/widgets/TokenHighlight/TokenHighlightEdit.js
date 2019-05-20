@@ -1,26 +1,25 @@
-import React, { Fragment, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, Tabs, Tab, CustomQuillComponent } from "@edulastic/common";
 import produce from "immer";
 
-import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE, EDIT } from "../../constants/constantsForQuestions";
+import { WORD_MODE, PARAGRAPH_MODE, EDIT } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Subtitle } from "../../styled/Subtitle";
+import { Widget } from "../../styled/Widget";
+import { ContentArea } from "../../styled/ContentArea";
 
 import TokenHighlightPreview from "./TokenHighlightPreview";
-import { Container } from "./styled/Container";
-import { ModeButton } from "./styled/ModeButton";
 import Options from "./components/Options";
+import ComposeQuestion from "./ComposeQuestion";
+import Template from "./Template";
 
 const OptionsList = withPoints(TokenHighlightPreview);
 
-const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
+const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections, advancedAreOpen }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
   const [templateTab, setTemplateTab] = useState(0);
@@ -71,41 +70,6 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
       })
     );
   }, [mode]);
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        if (prop === "template") {
-          let resultArray = "";
-          if (mode === WORD_MODE) {
-            resultArray = cloneDeep(wordsArray);
-          } else if (mode === PARAGRAPH_MODE) {
-            resultArray = cloneDeep(paragraphsArray);
-          } else {
-            resultArray = cloneDeep(sentencesArray);
-          }
-          setTemplate(resultArray);
-        }
-
-        draft[prop] = uiStyle;
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleTemplateClick = i => () => {
-    const newTemplate = cloneDeep(template);
-    setQuestionData(
-      produce(item, draft => {
-        newTemplate[i].active = !newTemplate[i].active;
-
-        draft.templeWithTokens = newTemplate;
-
-        setTemplate(newTemplate);
-        updateVariables(draft);
-      })
-    );
-  };
 
   const handleAddAnswer = () => {
     setQuestionData(
@@ -177,86 +141,52 @@ const TokenHighlightEdit = ({ item, setQuestionData, t }) => {
   );
 
   return (
-    <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.tokenHighlight.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.tokenHighlight.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+    <ContentArea>
+      <ComposeQuestion
+        item={item}
+        setTemplate={setTemplate}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <Subtitle>{t("component.tokenHighlight.templateTitle")}</Subtitle>
-        <Tabs style={{ marginBottom: 15 }} value={templateTab} onChange={setTemplateTab}>
-          <Tab label={t("component.tokenHighlight.editTemplateTab")} />
-          <Tab label={t("component.tokenHighlight.editTokenTab")} />
-        </Tabs>
+      <Template
+        item={item}
+        template={template}
+        setTemplate={setTemplate}
+        templateTab={templateTab}
+        setTemplateTab={setTemplateTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        {templateTab === 0 && (
-          <CustomQuillComponent
-            firstFocus={item.firstMount === undefined}
-            toolbarId="template"
-            onChange={val => handleItemChangeChange("template", val)}
-            showResponseBtn={false}
-            value={item.template}
-          />
-        )}
+      <CorrectAnswers
+        onTabChange={setCorrectTab}
+        correctTab={correctTab}
+        onAdd={handleAddAnswer}
+        validation={item.validation}
+        options={renderOptions()}
+        onCloseTab={handleCloseTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        {templateTab === 1 && (
-          <Fragment>
-            <Container>
-              <ModeButton
-                active={mode === PARAGRAPH_MODE}
-                onClick={() => handleItemChangeChange("tokenization", PARAGRAPH_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.paragraph")}
-              </ModeButton>
-              <ModeButton
-                active={mode === SENTENCE_MODE}
-                onClick={() => handleItemChangeChange("tokenization", SENTENCE_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.sentence")}
-              </ModeButton>
-              <ModeButton
-                active={mode === WORD_MODE}
-                onClick={() => handleItemChangeChange("tokenization", WORD_MODE)}
-                type="button"
-              >
-                {t("component.tokenHighlight.word")}
-              </ModeButton>
-            </Container>
-            {template.map((el, i) => (
-              <span
-                onClick={handleTemplateClick(i)}
-                dangerouslySetInnerHTML={{ __html: el.value }}
-                key={i}
-                className={el.active ? "active-word token" : "token"}
-              />
-            ))}
-          </Fragment>
-        )}
-
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        />
-      </Paper>
-
-      <Options />
-    </Fragment>
+      <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
+    </ContentArea>
   );
 };
 
 TokenHighlightEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
+};
+
+TokenHighlightEdit.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(TokenHighlightEdit);

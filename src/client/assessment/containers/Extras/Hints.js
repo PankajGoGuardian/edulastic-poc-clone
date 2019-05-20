@@ -16,7 +16,7 @@ import { Subtitle } from "../../styled/Subtitle";
 
 const SortableListWithAddButton = withAddButton(QuillSortableList);
 
-const Hints = ({ t, item, setQuestionData }) => {
+const Hints = ({ t, item, setQuestionData, advancedAreOpen }) => {
   const prop = "hints";
 
   const _change = change({ item, setQuestionData, prop });
@@ -25,7 +25,7 @@ const Hints = ({ t, item, setQuestionData }) => {
   const _sort = sort({ item, setQuestionData, prop });
 
   return (
-    <Widget>
+    <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
       <Fragment>
         <Subtitle>{t("component.options.hint")}</Subtitle>
         <StyledRow gutter={60}>
@@ -50,7 +50,12 @@ const Hints = ({ t, item, setQuestionData }) => {
 Hints.propTypes = {
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool
+};
+
+Hints.defaultProps = {
+  advancedAreOpen: false
 };
 
 const enhance = compose(

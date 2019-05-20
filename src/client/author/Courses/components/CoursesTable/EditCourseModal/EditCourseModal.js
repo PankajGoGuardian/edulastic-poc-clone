@@ -14,18 +14,25 @@ class EditCourseModal extends React.Component {
         validateStatus: "success",
         validateMsg: ""
       },
-      showSpin: false,
-      checkCourseExist: { totalCourses: 0, result: [] }
+      showSpinName: false,
+      checkCourseExist: { totalCourses: 0, result: [] },
+      numberValidate: {
+        value: this.props.courseData.number,
+        validateStatus: "success",
+        validateMsg: ""
+      },
+      showSpinNumber: false,
+      checkCourseNumberExist: { totalCourses: 0, result: [] }
     };
   }
 
   onSaveCourse = async () => {
-    const { nameValidate } = this.state;
-    let checkCourseExist = { ...this.state.checkCourseExist };
+    let { nameValidate, numberValidate, checkCourseNameExist, checkCourseNumberExist } = this.state;
 
+    //check if name is exist
     if (nameValidate.validateStatus === "success" && nameValidate.value.length > 0) {
-      this.setState({ showSpin: true });
-      checkCourseExist = await courseApi.searchCourse({
+      this.setState({ showSpinName: true });
+      checkCourseNameExist = await courseApi.searchCourse({
         districtId: this.props.userOrgId,
         page: 1,
         limit: 25,
@@ -38,35 +45,67 @@ class EditCourseModal extends React.Component {
           }
         }
       });
-      this.setState({ showSpin: false, checkCourseExist });
+      this.setState({ showSpinName: false, checkCourseNameExist });
 
-      if (checkCourseExist.totalCourses > 0 && checkCourseExist.result[0]._id !== this.props.courseData._id) {
-        this.setState({
-          nameValidate: {
-            value: nameValidate.value,
-            validateStatus: "error",
-            validateMsg: "Course name already exist"
-          }
-        });
+      if (checkCourseNameExist.totalCourses > 0 && checkCourseNameExist.result[0]._id !== this.props.courseData._id) {
+        nameValidate = {
+          value: nameValidate.value,
+          validateStatus: "error",
+          validateMsg: "Course name already exists"
+        };
+        this.setState({ nameValidate });
       }
-    } else {
-      if (nameValidate.value.length == 0) {
-        this.setState({
-          nameValidate: {
-            value: nameValidate.value,
-            validateStatus: "error",
-            validateMsg: "Please input course name"
-          }
-        });
-      }
+    } else if (nameValidate.value.length == 0) {
+      nameValidate = {
+        value: nameValidate.value,
+        validateStatus: "error",
+        validateMsg: "Please input name"
+      };
+      this.setState({ nameValidate });
     }
 
-    this.props.form.validateFields((err, row) => {
-      if (!err) {
-        if (checkCourseExist.totalCourses > 0 && checkCourseExist.result[0]._id !== this.props.courseData._id) return;
-        this.props.saveCourse(row);
+    // check if course number exist
+    if (numberValidate.validateStatus === "success" && numberValidate.value.length > 0) {
+      this.setState({ showSpinNumber: true });
+      checkCourseNumberExist = await courseApi.searchCourse({
+        districtId: this.props.userOrgId,
+        page: 1,
+        limit: 25,
+        sortField: "number",
+        order: "asc",
+        search: {
+          number: {
+            type: "eq",
+            value: numberValidate.value
+          }
+        }
+      });
+      this.setState({ showSpinNumber: false, checkCourseNumberExist });
+
+      if (
+        checkCourseNumberExist.totalCourses > 0 &&
+        checkCourseNumberExist.result[0]._id !== this.props.courseData._id
+      ) {
+        numberValidate = {
+          value: numberValidate.value,
+          validateStatus: "error",
+          validateMsg: "Course number already exists"
+        };
+        this.setState({ numberValidate });
       }
-    });
+    } else if (numberValidate.value.length == 0) {
+      numberValidate = {
+        value: numberValidate.value,
+        validateStatus: "error",
+        validateMsg: "Please input course number"
+      };
+      this.setState({ numberValidate });
+    }
+
+    if (nameValidate.validateStatus === "success" && numberValidate.validateStatus === "success") {
+      alert("Success");
+      // this.props.saveCourse({ name: nameValidate.value, number: numberValidate.value });
+    }
   };
 
   onCloseModal = () => {
@@ -95,10 +134,31 @@ class EditCourseModal extends React.Component {
     }
   };
 
+  handleCourseNumber = e => {
+    if (e.target.value.length == 0) {
+      this.setState({
+        numberValidate: {
+          value: e.target.value,
+          validateStatus: "error",
+          validateMsg: "Please input course number"
+        },
+        checkCourseNumberExist: { totalCourses: 0, data: [] }
+      });
+    } else {
+      this.setState({
+        numberValidate: {
+          value: e.target.value,
+          validateStatus: "success",
+          validateMsg: ""
+        },
+        checkCourseNumberExist: { totalCourses: 0, data: [] }
+      });
+    }
+  };
+
   render() {
     const { modalVisible, courseData } = this.props;
-    const { getFieldDecorator } = this.props.form;
-    const { nameValidate, showSpin } = this.state;
+    const { nameValidate, numberValidate, showSpinName, showSpinNumber } = this.state;
     return (
       <Modal
         visible={modalVisible}
@@ -116,37 +176,29 @@ class EditCourseModal extends React.Component {
           <Col span={24}>
             <ModalFormItem
               label="Course Name"
+              name="name"
               validateStatus={nameValidate.validateStatus}
               help={nameValidate.validateMsg}
+              required={true}
             >
-              {getFieldDecorator("name", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input course name"
-                  }
-                ],
-                initialValue: courseData.name
-              })(<Input placeholder="Course name" onChange={this.handleCourseName} />)}
+              <Input placeholder="Course name" defaultValue={courseData.name} onChange={this.handleCourseName} />
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Course Number">
-              {getFieldDecorator("number", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input course number"
-                  }
-                ],
-                initialValue: courseData.number
-              })(<Input placeholder="Course number" />)}
+            <ModalFormItem
+              label="Course Number"
+              name="number"
+              validateStatus={numberValidate.validateStatus}
+              help={numberValidate.validateMsg}
+              required={true}
+            >
+              <Input defaultValue={courseData.number} placeholder="Course number" onChange={this.handleCourseNumber} />
             </ModalFormItem>
           </Col>
         </Row>
-        {showSpin && (
+        {(showSpinName || showSpinNumber) && (
           <StyledSpinContainer>
             <StyledSpin size="large" />
           </StyledSpinContainer>

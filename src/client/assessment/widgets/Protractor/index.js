@@ -1,42 +1,40 @@
 import React, { memo, useMemo } from "react";
 import PropTypes from "prop-types";
-import produce from "immer";
+import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
-import styled from "styled-components";
 
 import { Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { updateVariables, replaceVariables } from "../../utils/variables";
+import { replaceVariables } from "../../utils/variables";
 
-import { Subtitle } from "../../styled/Subtitle";
+import { ContentArea } from "../../styled/ContentArea";
 
-import Options from "./Options";
 import ProtractorView from "./ProtractorView";
+import Details from "./Details";
 
 const EmptyWrapper = styled.div``;
 
-const Protractor = ({ item, view, smallSize, setQuestionData, t, ...restProps }) => {
+const Protractor = ({
+  item,
+  view,
+  smallSize,
+  setQuestionData,
+  t,
+  cleanSections,
+  fillSections,
+  advancedAreOpen,
+  ...restProps
+}) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
-  const handleItemChangeChange = (prop, value) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = value;
-        updateVariables(draft);
-      })
-    );
-  };
-
   if (view === "edit") {
     return (
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.protractor.details")}</Subtitle>
-        <Options onChange={handleItemChangeChange} item={item} />
-        <ProtractorView smallSize={smallSize} item={item} {...restProps} />
-      </Paper>
+      <ContentArea>
+        <Details item={item} smallSize={smallSize} fillSections={fillSections} cleanSections={cleanSections} />
+      </ContentArea>
     );
   }
 
@@ -54,7 +52,16 @@ Protractor.propTypes = {
   view: PropTypes.string.isRequired,
   smallSize: PropTypes.bool.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool,
+  cleanSections: PropTypes.func,
+  fillSections: PropTypes.func
+};
+
+Protractor.defaultProps = {
+  advancedAreOpen: false,
+  cleanSections: () => {},
+  fillSections: () => {}
 };
 
 const enhance = compose(

@@ -284,28 +284,36 @@ class LiveClassboardPage {
     this.getAvgScore().should("have.text", avgPerformance);
   }
 
-  verifyStudentCentricCard(studentName, studentAttempts, questionTypeMap) {
-    this.questionResponsePage.selectStudent(studentName);
-    Object.keys(studentAttempts).forEach((queNum, qIndex) => {
-      const attemptType = studentAttempts[queNum];
-      const { queKey, attemptData, points } = questionTypeMap[queNum];
-      this.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, true, qIndex);
-    });
+  verifyStudentCentricCard(studentName, studentAttempts, questionTypeMap, cardEntry = true) {
+    if (cardEntry) {
+      this.questionResponsePage.selectStudent(studentName);
+      Object.keys(studentAttempts).forEach((queNum, qIndex) => {
+        const attemptType = studentAttempts[queNum];
+        const { queKey, attemptData, points } = questionTypeMap[queNum];
+        this.questionResponsePage.verifyQuestionResponseCard(points, queKey, attemptType, attemptData, true, qIndex);
+      });
+    } else {
+      this.questionResponsePage.verifyOptionDisabled(studentName);
+    }
   }
 
   verifyQuestionCentricCard = (queNum, studentAttempts, questionTypeMap) => {
     this.questionResponsePage.selectQuestion(queNum);
     Object.keys(studentAttempts).forEach(studentName => {
       const attemptType = studentAttempts[studentName];
-      const { queKey, attemptData, points } = questionTypeMap[queNum];
-      this.questionResponsePage.verifyQuestionResponseCard(
-        points,
-        queKey,
-        attemptType,
-        attemptData,
-        false,
-        studentName
-      );
+      if (attemptType !== null) {
+        const { queKey, attemptData, points } = questionTypeMap[queNum];
+        this.questionResponsePage.verifyQuestionResponseCard(
+          points,
+          queKey,
+          attemptType,
+          attemptData,
+          false,
+          studentName
+        );
+      } else {
+        this.questionResponsePage.verifyNoQuestionResponseCard(studentName);
+      }
     });
   };
 }

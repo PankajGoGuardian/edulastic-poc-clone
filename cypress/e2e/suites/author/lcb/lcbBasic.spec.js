@@ -68,6 +68,22 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const statsMap = {};
   const queCentric = {};
   let reDirectedQueCentric;
+  let reDirectedQueCentricBeforeAttempt;
+
+  function getRedirectedQuestionCentricData(attempted = true) {
+    reDirectedQueCentric = Object.assign({}, queCentric);
+    reDirectedQueCentricBeforeAttempt = Object.assign({}, queCentric);
+    redirectedData.forEach(({ attempt, stuName }) => {
+      Object.keys(attempt).forEach(queNum => {
+        if (attempted) {
+          reDirectedQueCentric[queNum][stuName] = attempt[queNum];
+        } else {
+          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null;
+        }
+      });
+    });
+    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
+  }
 
   const allStudentList = attemptsData.map(item => item.stuName);
   const submittedInprogressStudentList = attemptsData
@@ -216,7 +232,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         lcb.clickOnCardViewTab();
       });
 
-      it("redirect the students", () => {
+      it(" > redirect the students", () => {
         redirectedStudentList.forEach(studentName => {
           // redirect and verify
           lcb.selectCheckBoxByStudentName(studentName);
@@ -240,8 +256,98 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           lcb.verifyRedirectIcon(studentName);
         });
       });
+
+      describe(" > verify student centric view - should be disabled", () => {
+        before("student tab click", () => {
+          lcb.clickOnStudentsTab();
+        });
+        redirectedStudentList.forEach(studentName => {
+          it(` > verify student centric view for :: ${studentName}`, () => {
+            lcb.verifyStudentCentricCard(studentName, undefined, undefined, false);
+          });
+        });
+      });
+
+      describe(" > verify question centric view - should not have student card", () => {
+        before("student tab click", () => {
+          lcb.clickonQuestionsTab();
+          getRedirectedQuestionCentricData(false);
+        });
+        queList.forEach(queNumber => {
+          it(` > verify question centric view for :: ${queNumber}`, () => {
+            const attempt = reDirectedQueCentricBeforeAttempt[queNumber];
+            lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
+          });
+        });
+      });
     });
 
-    // TODO : attempt and verify
+    context(" > attempt by redirected students and verify", () => {
+      before(" > attempt by redirected students", () => {
+        redirectedData.forEach(attempts => {
+          const { attempt, email, status } = attempts;
+          if (status !== "NOT STARTED") {
+            cy.login("student", email);
+            assignmentPage.clickOnAssignmentButton();
+            Object.keys(attempt).forEach(queNum => {
+              const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
+              const { attemptData } = questionData[queType][questionKey];
+              console.log("attemptData ::", attemptData);
+              console.log("attemptData queType ::", queType);
+              console.log("attemptData attempt[queNum]::", attempt[queNum]);
+              test.attemptQuestion(queType, attempt[queNum], attemptData);
+              test.clickOnNext();
+            });
+
+            if (status !== "IN PROGRESS") {
+              test.submitTest();
+              cy.contains("Reports").should("be.visible");
+            }
+          }
+        });
+      });
+
+      context(" > verify after attempt", () => {
+        before("teacher login", () => {
+          cy.login("teacher", teacher);
+          authorAssignmentPage.clcikOnPresenatationIconByIndex(0);
+        });
+
+        describe(" > verify redirected student card", () => {
+          redirectedStudentList.forEach(studentName => {
+            it(` > verify student card for ${studentName}`, () => {
+              const { status, score, perf, attempt } = redirectStatsMap[studentName];
+              lcb.verifyStudentCard(studentName, status, score, perf, attempt);
+            });
+          });
+        });
+
+        describe(" > verify redirected student centric view", () => {
+          before("student tab click", () => {
+            lcb.clickOnStudentsTab();
+          });
+          redirectedStudentList.forEach(studentName => {
+            it(` > verify student centric view for :: ${studentName}`, () => {
+              const { attempt } = redirectStatsMap[studentName];
+              lcb.verifyStudentCentricCard(studentName, attempt, questionTypeMap);
+            });
+          });
+        });
+
+        describe(" > verify question centric view", () => {
+          before("student tab click", () => {
+            lcb.clickonQuestionsTab();
+            getRedirectedQuestionCentricData(true);
+          });
+
+          queList.forEach(queNumber => {
+            it(` > verify question centric view for :: ${queNumber}`, () => {
+              const attempt = reDirectedQueCentric[queNumber];
+              lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
+            });
+          });
+        });
+      });
+    });
   });
 });

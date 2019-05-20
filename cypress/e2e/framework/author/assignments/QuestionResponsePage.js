@@ -3,6 +3,8 @@ import { questionTypeKey as queTypes, attemptTypes } from "../../constants/quest
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
 
+  getDropDownMenu = () => cy.get(".ant-select-dropdown-menu");
+
   getScoreInput = card => card.find('[data-cy="scoreInput"]');
 
   verifyScore = (card, correct, points) => {
@@ -28,11 +30,18 @@ export default class QuestionResponsePage {
     cy.server();
     cy.route("GET", "**/test-activity/**").as("test-activity");
     this.getDropDown().click();
-    cy.get(".ant-select-dropdown-menu")
+    this.getDropDownMenu()
       .contains(studentName)
       .click();
     cy.wait("@test-activity");
     this.getQuestionContainer(0).should("contain", studentName);
+  };
+
+  verifyOptionDisabled = option => {
+    this.getDropDown().click();
+    this.getDropDownMenu()
+      .contains(option)
+      .should("have.class", "ant-select-dropdown-menu-item-disabled");
   };
 
   selectQuestion = queNum => {
@@ -40,7 +49,7 @@ export default class QuestionResponsePage {
     cy.server();
     cy.route("GET", "**/question/**").as("question");
     this.getDropDown().click();
-    cy.get(".ant-select-dropdown-menu")
+    this.getDropDownMenu()
       .contains(questionSelect)
       .click();
     if (queNum !== "Q1") cy.wait("@question");
@@ -56,6 +65,12 @@ export default class QuestionResponsePage {
 
   // MCQ
   getLabels = qcard => qcard.find("label");
+
+  verifyNoQuestionResponseCard = studentName => {
+    cy.get('[data-cy="studentName"]')
+      .contains(studentName)
+      .should("not.exist");
+  };
 
   verifyQuestionResponseCard = (points, queTypeKey, attemptType, attemptData, studentCentric = true, findKey) => {
     const queCard = studentCentric

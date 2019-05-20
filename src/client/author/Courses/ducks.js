@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { courseApi } from "@edulastic/api";
 import { message } from "antd";
-import { groupBy } from "lodash";
+import { groupBy, get } from "lodash";
 
 const RECEIVE_COURSE_REQUEST = "[course] receive data request";
 const RECEIVE_COURSE_SUCCESS = "[course] receive data success";
@@ -300,7 +300,7 @@ function* receiveSearchCourseSaga({ payload }) {
     const course = yield call(courseApi.searchCourse, payload);
     yield put({
       type: SEARCH_COURSE_SUCCESS,
-      payload: course
+      payload: get(course, "result", [])
     });
   } catch (error) {
     const errorMessage = "Receive Course is failing!";

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty, find, get } from "lodash";
+import { isEmpty, find, get, pickBy, identity } from "lodash";
 import { Form, Divider, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
@@ -59,12 +59,6 @@ class ClassCreate extends React.Component {
     }
   }
 
-  componentDidUpdate({ creating, changeView, error }, { submitted }) {
-    if (!creating && submitted && isEmpty(error)) {
-      changeView("details");
-    }
-  }
-
   handleSubmit = e => {
     e.preventDefault();
     const { form, userId, userOrgData } = this.props;
@@ -94,7 +88,7 @@ class ClassCreate extends React.Component {
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
-        createClass(values);
+        createClass(pickBy(values, identity));
       }
     });
   };
@@ -117,10 +111,13 @@ class ClassCreate extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, userOrgData, changeView, isSearching, creating } = this.props;
+    const { curriculums, form, courseList, userOrgData, changeView, isSearching, creating, error } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     const { defaultSchool, schools } = userOrgData;
-
+    const { submitted } = this.state;
+    if (!creating && submitted && isEmpty(error)) {
+      changeView("details");
+    }
     return (
       <Form onSubmit={this.handleSubmit}>
         <Header onCancel={() => changeView("list")} />

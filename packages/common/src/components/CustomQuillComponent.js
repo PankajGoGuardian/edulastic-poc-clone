@@ -4,11 +4,14 @@ import "react-quill/dist/quill.snow.css";
 import React from "react";
 import ReactQuill, { Quill } from "react-quill";
 import PropTypes from "prop-types";
+import quillTable from "quill-table-module";
+
 // eslint-disable-next-line import/no-extraneous-dependencies
 import enhanceWithClickOutside from "react-click-outside";
 import { fileApi } from "@edulastic/api";
 import MathModal from "./MathModal";
 import MathInputCmp from "./QuillMathEmbed";
+import TableModal from "./TableModal";
 
 const Embed = Quill.import("blots/block/embed");
 
@@ -24,10 +27,15 @@ class ResponseCmp extends Embed {
 ResponseCmp.blotName = "Response";
 ResponseCmp.tagName = "p";
 ResponseCmp.className = "response-btn";
+
+// register components to quill
 Quill.register(ResponseCmp, true);
-
 Quill.register(MathInputCmp, true);
-
+Quill.register(quillTable.TableCell);
+Quill.register(quillTable.TableRow);
+Quill.register(quillTable.Table);
+Quill.register(quillTable.Contain);
+Quill.register("modules/table", quillTable.TableModule);
 /*
  * Custom "star" icon for the toolbar using an Octicon
  * https://octicons.github.io
@@ -139,6 +147,11 @@ const CustomToolbar = ({ showResponseBtn, active, id, maxWidth }) => {
           </button>
         </span>
       )}
+      <span className="ql-formats">
+        <button className="ql-insertTable" type="button">
+          Table
+        </button>
+      </span>
     </div>
   );
 };
@@ -154,6 +167,73 @@ CustomToolbar.defaultProps = {
   showResponseBtn: true,
   active: false,
   id: "toolbar"
+};
+
+function handleImage() {
+  const input = document.createElement("input");
+
+  input.setAttribute("type", "file");
+  input.setAttribute("accept", "image/*");
+  input.click();
+
+  input.onchange = async () => {
+    const file = input.files[0];
+    const formData = new FormData();
+
+    formData.append("image", file);
+
+    // Save current cursor state
+    const range = this.quill.getSelection(true);
+
+    // Insert temporary loading placeholder image
+    this.quill.insertEmbed(range.index, "image", `placeholder.gif`);
+
+    // Move cursor to right side of image (easier to continue typing)
+    this.quill.setSelection(range.index + 1);
+
+    fileApi
+      .upload({ file })
+      .then(res => {
+        // Remove placeholder image
+        this.quill.deleteText(range.index, 1);
+
+        // Insert uploaded image
+        this.quill.insertEmbed(range.index, "image", res.fileUri);
+      })
+      .catch(err => {
+        console.warn("There was en error with image upload", err);
+      });
+  };
+}
+
+/*
+ * generate a random for the table components
+ */
+const random_id = () =>
+  Math.random()
+    .toString(36)
+    .slice(2);
+
+/*
+ * generate html template for table with specified rows and columns
+ */
+const createTable = (rows, columns) => {
+  const tableId = random_id();
+  let table = `<table table_id="${tableId}">`;
+  for (let i = 0; i < rows; i++) {
+    const rowId = random_id();
+    let row = `<tr row_id="${rowId}">`;
+    for (let j = 0; j < columns; j++) {
+      const columnId = random_id();
+      const column = `<td table_id="${tableId}" row_id="${rowId}" cell_id="${columnId}"> <p><p> </td>`;
+      row += column;
+    }
+    row += `</tr>`;
+    table += row;
+  }
+
+  table += `</table><br/>`;
+  return table;
 };
 
 /*
@@ -203,12 +283,13 @@ class CustomQuillComponent extends React.Component {
       quillVal: props.value,
       prevValue: props.value,
       quillKey: 0,
-      modules: CustomQuillComponent.modules(props.toolbarId, props.custom)
+      showTableModal: false,
+      quillSelection: 0
     };
   }
 
   componentDidUpdate(prevProps) {
-    const { value, toolbarId, custom } = this.props;
+    const { value } = this.props;
     const { prevValue, quillKey } = this.state;
 
     if (prevProps.value !== value && prevValue !== value) {
@@ -216,13 +297,9 @@ class CustomQuillComponent extends React.Component {
       this.setState({
         quillVal: value,
         quillKey: quillKey + 1,
-        modules: CustomQuillComponent.modules(toolbarId, custom),
+
         prevValue: value
       });
-    }
-    if (prevProps.toolbarId !== toolbarId) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ modules: CustomQuillComponent.modules(toolbarId, custom) });
     }
   }
 
@@ -264,19 +341,17 @@ class CustomQuillComponent extends React.Component {
     const { onChange, showResponseBtn } = this.props;
     if (this.quillRef) {
       const lines = this.quillRef.getEditor().getLines();
-      const val = lines
-        .map(line => {
-          if (line instanceof MathInputCmp) {
-            if (line.state.mathField) {
-              const latex = line.state.mathField.latex();
-              return `<span class="input__math" data-latex="${latex}"></span>`;
-            }
-            return '<span class="input__math"></span>';
+      let val = content;
+      for (const line of lines) {
+        if (line instanceof MathInputCmp) {
+          let newLineString = '<span class="input__math"></span>';
+          if (line.state.mathField) {
+            const latex = line.state.mathField.latex();
+            newLineString = `<span class="input__math" data-latex="${latex}"></span>`;
           }
-          return line.domNode.outerHTML;
-        })
-        .join("");
-
+          val = val.replace(line.domNode.outerHTML, newLineString);
+        }
+      }
       this.setState({
         quillVal: content,
         prevValue: val
@@ -367,8 +442,22 @@ class CustomQuillComponent extends React.Component {
     });
   };
 
+  closeTableModal = () => this.setState({ showTableModal: false });
+
+  showTableModal = () =>
+    this.setState({ showTableModal: true, quillSelection: this.quillRef.getEditor().getSelection() });
+
+  addTable = (rows, cols) => {
+    const { quillSelection: selection } = this.state;
+    const quill = this.quillRef.getEditor();
+    const table = createTable(rows, cols);
+    quill.clipboard.dangerouslyPasteHTML(selection.index, table);
+    quill.setSelection(selection.index + 1);
+    this.closeTableModal();
+  };
+
   render() {
-    const { active, quillVal, quillKey, showMath, selLatex, modules } = this.state;
+    const { active, quillVal, quillKey, showMath, selLatex, showTableModal } = this.state;
     const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly, tabIndex, custom } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
@@ -394,6 +483,23 @@ class CustomQuillComponent extends React.Component {
       "="
     ];
 
+    const container = custom ? toolbarId : `#${toolbarId}`;
+
+    const modules = {
+      table: true, // enable table module
+      keyboard: { bindings: { tab: false } },
+      toolbar: {
+        container,
+        handlers: {
+          formula,
+          insertStar,
+          insertPara,
+          image: handleImage,
+          insertTable: this.showTableModal
+        }
+      }
+    };
+
     return (
       <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
         {!custom && (
@@ -407,7 +513,9 @@ class CustomQuillComponent extends React.Component {
         )}
         <ReactQuill
           tabIndex={tabIndex || 1}
-          ref={el => (this.quillRef = el)}
+          ref={el => {
+            this.quillRef = el;
+          }}
           key={`math${quillKey}`}
           readOnly={readOnly}
           modules={modules}
@@ -427,68 +535,11 @@ class CustomQuillComponent extends React.Component {
           onSave={this.onSaveLatex}
           onClose={this.onCloseModal}
         />
+        <TableModal show={showTableModal} onClose={this.closeTableModal} onSave={this.addTable} />
       </div>
     );
   }
 }
-
-function handleImage() {
-  const input = document.createElement("input");
-
-  input.setAttribute("type", "file");
-  input.setAttribute("accept", "image/*");
-  input.click();
-
-  input.onchange = async () => {
-    const file = input.files[0];
-    const formData = new FormData();
-
-    formData.append("image", file);
-
-    // Save current cursor state
-    const range = this.quill.getSelection(true);
-
-    // Insert temporary loading placeholder image
-    this.quill.insertEmbed(range.index, "image", `placeholder.gif`);
-
-    // Move cursor to right side of image (easier to continue typing)
-    this.quill.setSelection(range.index + 1);
-
-    fileApi
-      .upload({ file })
-      .then(res => {
-        // Remove placeholder image
-        this.quill.deleteText(range.index, 1);
-
-        // Insert uploaded image
-        this.quill.insertEmbed(range.index, "image", res.fileUri);
-      })
-      .catch(err => {
-        console.warn("There was en error with image upload", err);
-      });
-  };
-}
-
-/*
- * Quill modules to attach to editor
- * See http://quilljs.com/docs/modules/ for complete options
- */
-CustomQuillComponent.modules = (toolbar, custom) => {
-  const container = custom ? toolbar : `#${toolbar}`;
-
-  return {
-    keyboard: { bindings: { tab: false } },
-    toolbar: {
-      container,
-      handlers: {
-        formula,
-        insertStar,
-        insertPara,
-        image: handleImage
-      }
-    }
-  };
-};
 
 /*
  * Quill editor formats

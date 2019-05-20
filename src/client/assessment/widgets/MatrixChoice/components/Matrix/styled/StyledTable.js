@@ -25,6 +25,16 @@ export const StyledTable = styled(Table)`
         border-bottom: ${props => (props.horizontalLines ? "inherits" : 0)};
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
       }
+      td:nth-of-type(1) div {
+        min-width: 50px;
+      }
+
+      td div[data-cy="styled-wrapped-component"] {
+        max-width: 250px;
+        padding: 5px;
+        text-align: left;
+        word-break: break-word;
+      }
     }
   }
   @media (max-width: ${mobileWidth}) {

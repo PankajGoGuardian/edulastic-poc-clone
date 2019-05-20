@@ -4,10 +4,15 @@ import ReactDOM from "react-dom";
 import produce from "immer";
 import Dropzone from "react-dropzone";
 
+import { withRouter } from "react-router-dom";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import { withTheme } from "styled-components";
+
 import { Image } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
 import { withNamespaces } from "@edulastic/localization";
-
+import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../../utils/variables";
 
 import QuestionTextArea from "../../../components/QuestionTextArea";
@@ -133,4 +138,14 @@ ComposeQuestion.defaultProps = {
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(ComposeQuestion);
+const enhance = compose(
+  withRouter,
+  withNamespaces("assessment"),
+  withTheme,
+  connect(
+    null,
+    { setQuestionData: setQuestionDataAction }
+  )
+);
+
+export default enhance(ComposeQuestion);

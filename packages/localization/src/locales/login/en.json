@@ -22,16 +22,17 @@
   },
   "component": {
     "signup": {
-      "infotext": "Edulastic doesn't share your information with third parties.Your data will be completely private and secure.",
+      "infotext": "Edulastic doesn't share your information with third parties. Your data will be completely private and secure.",
       "iamstudent": "No, I'm a Student.",
       "iamteacher": "No, I'm a Teacher.",
-      "signupasstudent": "SIGN ME UP AS A STUDENT!",
-      "signupasteacher": "SIGN ME UP AS A TEACHER!",
+      "signupasstudent": "SIGN ME UP AS A STUDENT",
+      "signupasteacher": "SIGN ME UP AS A TEACHER",
+      "signupasadmin": "SIGN ME UP AS AN ADMINISTRATOR",
       "alreadyhaveanaccount": "Already have an account?",
       "signupboxheading": "Sign up",
       "googlesignupbtn": "SIGN UP WITH GOOGLE",
       "office365signupbtn": "SIGN UP WITH OFFICE 365",
-      "formboxheading": "Or you can...",
+      "formboxheading": "Or create your account",
       "signupnamelabel": "Name",
       "signuppasswordlabel": "Password",
       "teacher": {
@@ -49,7 +50,7 @@
         "validinputname": "Please input Administrators Name!"
       },
       "student": {
-        "signupclasslabel": "Class Code",
+        "signupclasslabel": "Class Code (provided by your teacher)",
         "signupidlabel": "Username / Email",
         "signupstudentbtn": "SIGN UP AS STUDENT",
         "forstudent": "for Students",

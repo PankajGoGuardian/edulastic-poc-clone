@@ -1,9 +1,11 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { springGreen } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { signupAction } from "../../Login/ducks";
 
@@ -19,6 +21,12 @@ import icon365 from "../../assets/icons8-office-365.svg";
 const FormItem = Form.Item;
 
 class StudentSignup extends React.Component {
+  static propTypes = {
+    form: PropTypes.object.isRequired,
+    signup: PropTypes.func.isRequired,
+    t: PropTypes.func.isRequired
+  };
+
   state = {
     confirmDirty: false
   };
@@ -71,15 +79,19 @@ class StudentSignup extends React.Component {
               <Link to="/login">{t("common.signinbtn")}</Link>
             </Col>
           </RegistrationHeader>
-          <RegistrationBody>
+          <RegistrationBody type="flex" align="middle">
             <Col xs={18} offset={3}>
               <Row type="flex" align="middle">
                 <BannerText xs={24} sm={10} md={11} lg={12} xl={14}>
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.student.forstudent")}
                   </h1>
-                  <div>{t("component.signup.iamteacher")}</div>
-                  <a href="/signup">{t("component.signup.signupasteacher")}</a>
+                  <LinkDiv>
+                    <Link to="/signup">{t("component.signup.signupasteacher")}</Link>
+                  </LinkDiv>
+                  <LinkDiv>
+                    <Link to="/signup">{t("component.signup.signupasadmin")}</Link>
+                  </LinkDiv>
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
@@ -104,32 +116,26 @@ class StudentSignup extends React.Component {
                       <Col span={20} offset={2}>
                         <h5 align="center">{t("component.signup.formboxheading")}</h5>
                         <Form onSubmit={this.handleSubmit}>
-                          <Row gutter={10}>
-                            <Col sm={24} md={12} lg={12}>
-                              <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
-                                {getFieldDecorator("classCode", {
-                                  rules: [
-                                    {
-                                      required: true,
-                                      message: t("component.signup.student.validclasscode")
-                                    }
-                                  ]
-                                })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
-                              </FormItem>
-                            </Col>
-                            <Col sm={24} md={12} lg={12}>
-                              <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
-                                {getFieldDecorator("name", {
-                                  rules: [
-                                    {
-                                      required: true,
-                                      message: t("component.signup.student.validinputname")
-                                    }
-                                  ]
-                                })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
-                              </FormItem>
-                            </Col>
-                          </Row>
+                          <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
+                            {getFieldDecorator("classCode", {
+                              rules: [
+                                {
+                                  required: true,
+                                  message: t("component.signup.student.validclasscode")
+                                }
+                              ]
+                            })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
+                          </FormItem>
+                          <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
+                            {getFieldDecorator("name", {
+                              rules: [
+                                {
+                                  required: true,
+                                  message: t("component.signup.student.validinputname")
+                                }
+                              ]
+                            })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
+                          </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
                             {getFieldDecorator("email", {
                               rules: [
@@ -167,6 +173,9 @@ class StudentSignup extends React.Component {
               </Row>
             </Col>
           </RegistrationBody>
+          <CircleDiv size={64} right={118} top={320} />
+          <CircleDiv size={40} right={210} top={432} />
+          <CircleDiv size={32} right={72} top={500} />
           <Copyright>
             <Col span={24}>{t("common.copyright")}</Col>
           </Copyright>
@@ -202,18 +211,19 @@ const RegistrationWrapper = styled.div`
 `;
 
 const RegistrationHeader = styled(Row)`
-  padding: 10px 15px;
+  padding: 16px 24px;
   color: white;
   span {
     font-size: 12px;
     margin-right: 20px;
   }
   a {
-    padding: 5px 40px;
-    border: 1px solid #2d84dc;
+    padding: 8px 48px;
+    border: 1px solid ${springGreen};
     text-decoration: none;
     color: white;
     border-radius: 4px;
+    background: ${springGreen};
   }
 `;
 
@@ -240,8 +250,15 @@ const BannerText = styled(Col)`
   }
 `;
 
+const LinkDiv = styled.div`
+  a {
+    padding-bottom: 2px;
+    border-bottom: 2px ${springGreen} solid;
+  }
+`;
+
 const RegistrationBody = styled(Row)`
-  padding-top: 30px;
+  min-height: calc(100vh - 120px);
 `;
 
 const Copyright = styled(Row)`
@@ -249,19 +266,25 @@ const Copyright = styled(Row)`
   color: #dddddd;
   text-align: center;
   margin: 25px 0px;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
 `;
 
 const FormWrapper = styled.div`
   background: white;
   overflow: hidden;
   border-radius: 8px;
+  position: relative;
+  z-index: 1;
 `;
 
 const FormHead = styled(Row)`
   background: #157ad8;
-  background: -moz-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-  background: -webkit-linear-gradient(left, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
-  background: linear-gradient(to right, #157ad8 0%, #157ad8 19%, #36a0e2 54%, #36a0e2 100%);
+  background: -moz-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: -webkit-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
   padding: 15px;
   h3 {
     color: white;
@@ -300,10 +323,12 @@ const InfoIcon = styled(Col)`
 
 const FormBody = styled(Row)`
   padding: 15px;
+  background: white;
   h5 {
-    margin-bottom: 20px;
-    margin-top: 5px;
-    font-size: 13px;
+    margin-bottom: 16px;
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 600;
   }
   form {
     .ant-form-item {
@@ -315,6 +340,7 @@ const FormBody = styled(Row)`
       margin-bottom: 3px;
       label {
         font-size: 12px;
+        font-weight: 600;
         &.ant-form-item-required {
           &:before,
           &:after {
@@ -352,9 +378,23 @@ const FormBody = styled(Row)`
 
 const RegisterButton = styled(Button)`
   width: 100%;
-  background: #1fb58b;
+  background: ${springGreen};
   font-size: 13px;
   color: white;
   border: 1px solid #1fb58b;
   font-weight: 600;
+`;
+
+const CircleDiv = styled.div`
+  height: ${({ size }) => size || 0}px;
+  width: ${({ size }) => size || 0}px;
+  top: ${({ top }) => top}px;
+  left: ${({ left }) => left}px;
+  bottom: ${({ bottom }) => bottom}px;
+  right: ${({ right }) => right}px;
+  background: #27947a;
+  border-radius: 50%;
+  position: fixed;
+  opacity: 0.6;
+  z-index: 0;
 `;

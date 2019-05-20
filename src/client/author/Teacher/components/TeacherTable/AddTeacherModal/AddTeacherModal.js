@@ -1,49 +1,73 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Modal } from "antd";
+import { Form, Input, Row, Col, Button, Select, Modal, Spin, Icon } from "antd";
 const Option = Select.Option;
 import { ModalFormItem } from "./styled";
 
-import { authApi } from "@edulastic/api";
+import { authApi, schoolApi } from "@edulastic/api";
 
 class AddTeacherModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      emailValidateStatus: "success",
-      emailValidateMsg: "",
-      email: ""
+      emailValidate: {
+        validateStatus: "success",
+        validateMsg: "",
+        value: ""
+      },
+      schoolsState: {
+        list: [],
+        value: [],
+        fetching: false
+      },
+      confirmPwdValidate: {
+        value: "",
+        validateStatus: "success",
+        validateMsg: ""
+      },
+      passwordValue: ""
     };
-    this.onAddTeacher = this.onAddTeacher.bind(this);
   }
 
-  async onAddTeacher() {
-    const { email, emailValidateStatus } = this.state;
+  onAddTeacher = async () => {
+    const { emailValidate } = this.state;
     let checkUserResponse = { userExists: true };
 
-    if (emailValidateStatus === "success" && email.length > 0) {
-      checkUserResponse = await authApi.checkUserExist({ email: email });
+    if (emailValidate.validateStatus === "success" && emailValidate.value.length > 0) {
+      checkUserResponse = await authApi.checkUserExist({ email: emailValidate.value });
       if (checkUserResponse.userExists) {
         this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Username already exists"
+          emailValidate: {
+            validateStatus: "error",
+            validateMsg: "Username already exists",
+            value: emailValidate.value
+          }
         });
       }
     } else {
-      if (email.length == 0) {
+      if (emailValidate.value.length == 0) {
         this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Please input Email"
+          emailValidate: {
+            validateStatus: "error",
+            validateMsg: "Please input Email",
+            value: emailValidate.value
+          }
         });
       } else {
-        if (this.checkValidEmail(email)) {
+        if (this.checkValidEmail(emailValidate.value)) {
           this.setState({
-            emailValidateStatus: "error",
-            emailValidateMsg: "Username already exists"
+            emailValidate: {
+              validateStatus: "error",
+              validateMsg: "Username already exists",
+              value: emailValidate.value
+            }
           });
         } else {
           this.setState({
-            emailValidateStatus: "error",
-            emailValidateMsg: "Please input valid Email"
+            emailValidate: {
+              validateStatus: "error",
+              validateMsg: "Please input valid Email",
+              value: emailValidate.value
+            }
           });
         }
       }
@@ -52,11 +76,21 @@ class AddTeacherModal extends React.Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         if (checkUserResponse.userExists) return;
-        row.email = this.state.email;
-        this.props.addTeacher(row);
+        let institutionIds = [];
+        for (let i = 0; i < row.institutionIds.length; i++) {
+          institutionIds.push(row.institutionIds[i].key);
+        }
+
+        this.props.addTeacher({
+          firstName: row.firstName,
+          lastName: row.lastName,
+          email: this.state.emailValidate.value,
+          password: row.password,
+          institutionIds
+        });
       }
     });
-  }
+  };
 
   onCloseModal = () => {
     this.props.closeModal();
@@ -65,22 +99,28 @@ class AddTeacherModal extends React.Component {
   changeEmail = e => {
     if (e.target.value.length === 0) {
       this.setState({
-        emailValidateStatus: "error",
-        emailValidateMsg: "Please input Email",
-        email: e.target.value
+        emailValidate: {
+          validateStatus: "error",
+          validateMsg: "Please input Email",
+          value: e.target.value
+        }
       });
     } else {
       if (this.checkValidEmail(e.target.value)) {
         this.setState({
-          emailValidateStatus: "success",
-          emailValidateMsg: "",
-          email: e.target.value
+          emailValidate: {
+            validateStatus: "success",
+            validateMsg: "",
+            value: e.target.value
+          }
         });
       } else {
         this.setState({
-          emailValidateStatus: "error",
-          emailValidateMsg: "Please input valid Email",
-          email: e.target.value
+          emailValidate: {
+            validateStatus: "error",
+            validateMsg: "Please input valid Email",
+            value: e.target.value
+          }
         });
       }
     }
@@ -91,20 +131,82 @@ class AddTeacherModal extends React.Component {
     return re.test(String(strEmail).toLowerCase());
   }
 
+  fetchSchool = async value => {
+    const schoolsData = { ...this.state.schoolsState };
+
+    this.setState({
+      schoolsState: {
+        list: [],
+        fetching: true,
+        value: schoolsData.value
+      }
+    });
+
+    const schoolListData = await schoolApi.getSchools({
+      districtId: this.props.userOrgId,
+      limit: 25,
+      page: 1,
+      sortField: "name",
+      order: "asc",
+      search: { name: { type: "cont", value } }
+    });
+
+    this.setState({
+      schoolsState: {
+        list: schoolListData.data,
+        fetching: false,
+        value: schoolsData.value
+      }
+    });
+  };
+
+  handleChange = value => {
+    this.setState({
+      schoolsState: {
+        list: [],
+        fetching: false,
+        value: value
+      }
+    });
+  };
+
+  changePwd = e => {
+    const confirmPwdValidate = { ...this.state.confirmPwdValidate };
+    if (e.target.value === confirmPwdValidate.value) {
+      confirmPwdValidate.validateStatus = "success";
+      confirmPwdValidate.validateMsg = "";
+    } else {
+      confirmPwdValidate.validateStatus = "error";
+      confirmPwdValidate.validateMsg = "Password does not match";
+    }
+    this.setState({
+      passwordValue: e.target.value,
+      confirmPwdValidate
+    });
+  };
+
+  changeConfirmPwd = e => {
+    const confirmPwdValidate = { ...this.state.confirmPwdValidate };
+    confirmPwdValidate.value = e.target.value;
+    if (e.target.value.length == 0) {
+      confirmPwdValidate.validateStatus = "error";
+      confirmPwdValidate.validateMsg = "Please input confirm password";
+    } else if (e.target.value !== this.state.passwordValue) {
+      confirmPwdValidate.validateStatus = "error";
+      confirmPwdValidate.validateMsg = "Password does not match";
+    } else {
+      confirmPwdValidate.validateStatus = "success";
+      confirmPwdValidate.validateMsg = "";
+    }
+    this.setState({
+      confirmPwdValidate
+    });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, schoolsData } = this.props;
-    const { emailValidateStatus, emailValidateMsg } = this.state;
-    const schoolsOptions = [];
-    if (schoolsData.length !== undefined) {
-      schoolsData.map((row, index) => {
-        schoolsOptions.push(
-          <Option key={index} value={row._id}>
-            {row.name}
-          </Option>
-        );
-      });
-    }
+    const { modalVisible } = this.props;
+    const { emailValidate, confirmPwdValidate, schoolsState } = this.state;
 
     return (
       <Modal
@@ -132,7 +234,7 @@ class AddTeacherModal extends React.Component {
                     message: "Please input First Name"
                   }
                 ]
-              })(<Input placeholder="Enter First Name" />)}
+              })(<Input placeholder="Enter First Name" prefix={<Icon type="user" />} />)}
             </ModalFormItem>
           </Col>
           <Col span={10} offset={2}>
@@ -144,7 +246,7 @@ class AddTeacherModal extends React.Component {
                     message: "Please input Last Name"
                   }
                 ]
-              })(<Input placeholder="Enter Last Name" />)}
+              })(<Input placeholder="Enter Last Name" prefix={<Icon type="user" />} />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -152,12 +254,17 @@ class AddTeacherModal extends React.Component {
           <Col span={24}>
             <ModalFormItem
               label="Email"
-              validateStatus={emailValidateStatus}
-              help={emailValidateMsg}
+              validateStatus={emailValidate.validateStatus}
+              help={emailValidate.validateMsg}
               required={true}
               type="email"
             >
-              <Input placeholder="Enter E-mail" autocomplete="new-password" onChange={this.changeEmail} />
+              <Input
+                placeholder="Enter E-mail"
+                autocomplete="new-password"
+                onChange={this.changeEmail}
+                prefix={<Icon type="mail" />}
+              />
             </ModalFormItem>
           </Col>
         </Row>
@@ -171,7 +278,41 @@ class AddTeacherModal extends React.Component {
                     message: "Please input password"
                   }
                 ]
-              })(<Input placeholder="Password" type="password" autocomplete="new-password" />)}
+              })(
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  autocomplete="new-password"
+                  onChange={this.changePwd}
+                  prefix={<Icon type="key" />}
+                />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem
+              label="Confirm Password"
+              validateStatus={confirmPwdValidate.validateStatus}
+              help={confirmPwdValidate.validateMsg}
+            >
+              {getFieldDecorator("confirm-password", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please input confirm password"
+                  }
+                ]
+              })(
+                <Input
+                  placeholder="Password"
+                  type="password"
+                  autocomplete="new-password"
+                  onChange={this.changeConfirmPwd}
+                  prefix={<Icon type="key" />}
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
@@ -186,8 +327,20 @@ class AddTeacherModal extends React.Component {
                   }
                 ]
               })(
-                <Select mode="multiple" placeholder="Select school">
-                  {schoolsOptions}
+                <Select
+                  mode="multiple"
+                  labelInValue
+                  placeholder="Please Select schools"
+                  notFoundContent={schoolsState.fetching ? <Spin size="small" /> : null}
+                  filterOption={false}
+                  onSearch={this.fetchSchool}
+                  onChange={this.handleChange}
+                >
+                  {schoolsState.list.map(school => (
+                    <Option key={school._id} value={school._id}>
+                      {school._source.name}
+                    </Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>

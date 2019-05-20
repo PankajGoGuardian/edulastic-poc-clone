@@ -35,8 +35,6 @@ import { getTeachersListSelector } from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
-
 function compareByAlph(a, b) {
   if (a > b) {
     return -1;
@@ -78,7 +76,7 @@ class TeacherTable extends React.Component {
         sorter: (a, b) => compareByAlph(a.lastName, b.lastName)
       },
       {
-        title: "Email",
+        title: "Username",
         dataIndex: "email",
         editable: true,
         sorter: (a, b) => compareByAlph(a.email, b.email)
@@ -111,9 +109,6 @@ class TeacherTable extends React.Component {
         role: "teacher"
       }
     });
-
-    const { loadSchoolsData, userOrgId } = this.props;
-    loadSchoolsData({ body: { districtId: userOrgId } });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -303,12 +298,12 @@ class TeacherTable extends React.Component {
       filterAdded
     } = this.state;
 
+    const { userOrgId } = this.props;
+
     const rowSelection = {
       selectedRowKeys,
       onChange: this.onSelectChange
     };
-
-    const { schoolsData } = this.props;
 
     const selectedTeachers = dataSource.filter(item => item.key == editTeacherKey);
     const actionMenu = (
@@ -377,6 +372,7 @@ class TeacherTable extends React.Component {
             modalVisible={editTeacherModaVisible}
             saveTeacher={this.updateTeacher}
             closeModal={this.closeEditTeacherModal}
+            userOrgId={userOrgId}
           />
         )}
         {addTeacherModalVisible && (
@@ -384,7 +380,7 @@ class TeacherTable extends React.Component {
             modalVisible={addTeacherModalVisible}
             addTeacher={this.addTeacher}
             closeModal={this.closeAddTeacherModal}
-            schoolsData={schoolsData}
+            userOrgId={userOrgId}
           />
         )}
       </StyledTableContainer>
@@ -396,8 +392,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      teachersList: getTeachersListSelector(state),
-      schoolsData: getSchoolsSelector(state)
+      teachersList: getTeachersListSelector(state)
     }),
     {
       createTeacher: createTeacherAction,
@@ -405,8 +400,7 @@ const enhance = compose(
       deleteTeacher: deleteTeacherAction,
       loadTeachersListData: receiveTeachersListAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
-      loadSchoolsData: receiveSchoolsAction
+      setFilters: setFiltersAction
     }
   )
 );
@@ -421,7 +415,5 @@ TeacherTable.propTypes = {
   deleteTeacher: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired,
-  loadSchoolsData: PropTypes.func.isRequired,
-  schoolsData: PropTypes.array.isRequired
+  userOrgId: PropTypes.string.isRequired
 };

@@ -29,7 +29,15 @@ export const StyledFilterSelect = styled(Select)`
   }
 `;
 
-export const StyledTable = styled(Table)``;
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      a {
+        opacity: 100;
+      }
+    }
+  }
+`;
 
 export const StyledAddFilterButton = styled(Button)`
   margin-left: 20px;
@@ -38,6 +46,7 @@ export const StyledAddFilterButton = styled(Button)`
 export const StyledTableButton = styled.a`
   margin-right: 20px;
   font-size: 20px;
+  opacity: 0;
 `;
 
 export const StyledFilterInput = styled(Input)`

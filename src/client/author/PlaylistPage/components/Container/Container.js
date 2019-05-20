@@ -4,8 +4,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { Spin, message } from "antd";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
-import uuidv4 from "uuid/v4";
+import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "../../../TestPage/components/Container/styled";
 
@@ -264,10 +263,10 @@ class Container extends PureComponent {
   };
 
   handleSave = async () => {
-    const { playlist, updateTest, createPlayList } = this.props;
+    const { playlist, updatePlaylist, createPlayList } = this.props;
 
     if (playlist._id) {
-      updateTest(playlist._id, newTest);
+      updatePlaylist(playlist._id, playlist);
     } else {
       createPlayList(playlist);
     }
@@ -298,16 +297,19 @@ class Container extends PureComponent {
     });
   };
 
-  handlePublishTest = () => {
-    const { publishTest, test, match } = this.props;
-    const { grades = [], subjects = [], _id } = test;
+  handlePublishPlaylist = () => {
+    const { publishPlaylist, playlist, match } = this.props;
+    const { grades = [], subjects = [], _id } = playlist;
+    if (!_id) {
+      return message.error("Save Playlist before publishing");
+    }
     if (!grades.length) {
       return message.error("Grade field cannot be empty");
     }
     if (!subjects.length) {
       return message.error("Subject field cannot be empty");
     }
-    publishTest({ _id, oldId: match.params.oldId });
+    publishPlaylist({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });
   };
 
@@ -332,19 +334,18 @@ class Container extends PureComponent {
     const { creating, windowWidth, playlist, testStatus } = this.props;
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId } = playlist || {};
-    console.log("playlist", playlist);
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (
       <>
         {this.renderModal()}
-        <ShareModal isVisible={showShareModal} onClose={this.onShareModalChange} />
+        <ShareModal isVisible={showShareModal} testId={testId} isPlaylist={true} onClose={this.onShareModalChange} />
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}
           onSave={this.handleSave}
           onShare={this.onShareModalChange}
-          onPublish={this.handlePublishTest}
+          onPublish={this.handlePublishPlaylist}
           title={playlist.title}
           creating={creating}
           windowWidth={windowWidth}
@@ -378,11 +379,11 @@ const enhance = compose(
     }),
     {
       createPlayList: createTestAction,
-      updateTest: updateTestAction,
+      updatePlaylist: updateTestAction,
       receiveTestById: receiveTestByIdAction,
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
-      publishTest: publishTestAction,
+      publishPlaylist: publishTestAction,
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,

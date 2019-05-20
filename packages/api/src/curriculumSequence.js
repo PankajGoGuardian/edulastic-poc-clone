@@ -2,7 +2,7 @@ import API from "./utils/API";
 
 const api = new API();
 const prefix = "/playlists";
-const getPlaylists = id => {
+const getPlaylist = id => {
   return api
     .callApi({
       method: "get",
@@ -50,24 +50,37 @@ const searchCurriculumSequences = ({ search, limit, page }) => {
 };
 
 const create = ({ data }) =>
-  api.callApi({
-    method: "post",
-    url: `${prefix}`,
-    data
-  });
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}`,
+      data
+    })
+    .then(res => res.data.result);
 
-const update = ({ data, _id }) =>
-  api.callApi({
-    method: "put",
-    urL: `${prefix}/${_id}`,
-    data
-  });
+const update = ({ data, id }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${id}`,
+      data
+    })
+    .then(res => res.data.result);
 
+const publishPlaylist = id => {
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${id}/publish`
+    })
+    .then(res => res.data.result);
+};
 export default {
-  getCurriculums: getPlaylists,
+  getCurriculums: getPlaylist,
   updateCurriculumSequence,
   searchDistinctPublishers,
   searchCurriculumSequences,
   create,
+  publishPlaylist,
   update
 };

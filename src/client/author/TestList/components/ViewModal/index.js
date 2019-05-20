@@ -48,7 +48,16 @@ export default class ViewModal extends React.Component {
 
   render() {
     const { isShow, close, item, assign, isPlaylist } = this.props;
-    const { title, description, tags, grades, subjects, analytics, testItems, _source } = item;
+    const {
+      title = "",
+      description = "",
+      tags = [],
+      grades = [],
+      subjects = [],
+      analytics = [],
+      testItems = [],
+      _source
+    } = item;
 
     return (
       <Modal open={isShow} onClose={close}>

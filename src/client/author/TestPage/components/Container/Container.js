@@ -340,7 +340,7 @@ class Container extends PureComponent {
     return (
       <>
         {this.renderModal()}
-        <ShareModal isVisible={showShareModal} onClose={this.onShareModalChange} />
+        <ShareModal isVisible={showShareModal} testId={testId} onClose={this.onShareModalChange} />
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}

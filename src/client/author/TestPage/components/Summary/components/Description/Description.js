@@ -45,7 +45,10 @@ const Description = ({
           {isBackgroundColorPickerVisible && (
             <ColorPickerContainer data-cy="image-text-box-color-panel">
               <ColorPickerWrapper onClick={() => onChangeColor("isBackgroundColorPickerVisible", false)} />
-              <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("backgroundColor", color.hex)} />
+              <ChromePicker
+                color={backgroundColor}
+                onChangeComplete={color => onChangeColor("backgroundColor", color.hex)}
+              />
             </ColorPickerContainer>
           )}
         </SummaryDiv>

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Button, Input, Cascader } from "antd";
+import { Button, Input, Cascader, message } from "antd";
 import { desktopWidth } from "@edulastic/colors";
 
 /**
@@ -65,10 +65,14 @@ class AddUnitModalBody extends React.Component {
 
   addModuleToPlaylist = () => {
     const { newModule } = { ...this.state };
-    const { addModuleToPlaylist } = this.props;
-    if (addModuleToPlaylist) {
-      addModuleToPlaylist({ afterModuleIndex: newModule.afterModuleId, moduleName: newModule.name });
-      this.setState({ newModule: {} });
+    if (newModule.name) {
+      const { addModuleToPlaylist } = this.props;
+      if (addModuleToPlaylist) {
+        addModuleToPlaylist({ afterModuleIndex: newModule.afterModuleId, moduleName: newModule.name });
+        this.setState({ newModule: {} });
+      }
+    } else {
+      message.warning("Module name cannot be empty");
     }
   };
 

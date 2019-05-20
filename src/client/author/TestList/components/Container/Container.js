@@ -5,7 +5,7 @@ import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { compose } from "redux";
-import { Button, Row, Input, Spin } from "antd";
+import { Button, Row, Input, Spin, message } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
@@ -383,7 +383,18 @@ class TestList extends Component {
   };
 
   handleAddTests = item => {
-    this.setState({ showAddTestInModules: true, testAdded: item });
+    const {
+      playlist: { modules }
+    } = this.props;
+    if (!modules.length) {
+      message.warning("Create atleast 1 module");
+    } else {
+      if (item.status === "draft") {
+        message.warning("Draft tests cannot be added");
+      } else {
+        this.setState({ showAddTestInModules: true, testAdded: item });
+      }
+    }
   };
 
   onCloseCreateModule = () => {
@@ -426,7 +437,7 @@ class TestList extends Component {
             <CardWrapper
               item={item}
               key={index}
-              owner={item.authors.find(x => x._id === userId)}
+              owner={item.authors && item.authors.find(x => x._id === userId)}
               blockStyle="tile"
               windowWidth={windowWidth}
               history={history}
@@ -439,19 +450,20 @@ class TestList extends Component {
 
     return (
       <Row>
-        {tests.map((item, index) => (
-          <CardWrapper
-            key={index}
-            owner={item.authors.find(x => x._id === userId)}
-            item={item}
-            windowWidth={windowWidth}
-            history={history}
-            match={match}
-            removeTestFromPlaylist={this.removeTestFromPlaylist}
-            isTestAdded={selectedTests.includes(item._id)}
-            addTestToPlaylist={this.handleAddTests}
-          />
-        ))}
+        {tests.length &&
+          tests.map((item, index) => (
+            <CardWrapper
+              key={index}
+              owner={item.authors && item.authors.find(x => x._id === userId)}
+              item={item}
+              windowWidth={windowWidth}
+              history={history}
+              match={match}
+              removeTestFromPlaylist={this.removeTestFromPlaylist}
+              isTestAdded={selectedTests.includes(item._id)}
+              addTestToPlaylist={this.handleAddTests}
+            />
+          ))}
       </Row>
     );
   };
@@ -598,18 +610,20 @@ class TestList extends Component {
             <Main>
               <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
                 <PaginationInfo>
-                  {from} to {to} of <i>{count}</i>
+                  {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
                 <ItemsMenu>
-                  <StyledButton
-                    data-cy="createNewItem"
-                    type="secondary"
-                    size="large"
-                    onClick={this.handleCreateNewModule}
-                  >
-                    <IconPlusCircle color="#1774F0" width={15} height={15} />
-                    <span>Add Module</span>
-                  </StyledButton>
+                  {mode === "embedded" && (
+                    <StyledButton
+                      data-cy="createNewItem"
+                      type="secondary"
+                      size="large"
+                      onClick={this.handleCreateNewModule}
+                    >
+                      <IconPlusCircle color="#1774F0" width={15} height={15} />
+                      <span>Add Module</span>
+                    </StyledButton>
+                  )}
                 </ItemsMenu>
               </FlexContainer>
               <CardContainer type={blockStyle}>

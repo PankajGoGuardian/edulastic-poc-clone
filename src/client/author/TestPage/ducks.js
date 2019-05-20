@@ -390,7 +390,7 @@ function* updateRegradeDataSaga({ payload }) {
 function* shareTestSaga({ payload }) {
   try {
     yield call(contentSharingApi.shareContent, payload);
-    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: "TEST" }));
+    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.data.contentType }));
     yield call(message.success, "Successfully shared");
   } catch (e) {
     const errorMessage = "Sharing failed";

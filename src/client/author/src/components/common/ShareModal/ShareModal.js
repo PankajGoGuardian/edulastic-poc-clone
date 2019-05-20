@@ -62,9 +62,9 @@ class ShareModal extends React.Component {
     this.handleSearch = this.handleSearch.bind(this);
   }
   componentDidMount() {
-    const { getSharedUsers, match } = this.props;
+    const { getSharedUsers, match, isPlaylist } = this.props;
     const testId = match.params.id;
-    if (testId) getSharedUsers({ contentId: testId, contentType: "TEST" });
+    if (testId) getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
   }
 
   radioHandler = e => {
@@ -131,7 +131,7 @@ class ShareModal extends React.Component {
 
   handleShare = () => {
     const { currentUser, sharedType, permission } = this.state;
-    const { shareTest, testId, sharedUsersList } = this.props;
+    const { shareTest, testId, sharedUsersList, isPlaylist } = this.props;
     const isExisting = sharedUsersList.some(item => item._userId === currentUser._userId);
 
     let person = {};
@@ -164,7 +164,7 @@ class ShareModal extends React.Component {
       ...person,
       sharedType,
       permission,
-      contentType: "TEST"
+      contentType: isPlaylist ? "PLAYLIST" : "TEST"
     };
     shareTest({ data, contentId: testId });
   };
@@ -283,10 +283,12 @@ class ShareModal extends React.Component {
 ShareModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  isPlaylist: PropTypes.bool,
   test: PropTypes.object
 };
 
 ShareModal.defaultProps = {
+  isPlaylist: false,
   test: null
 };
 
@@ -296,7 +298,6 @@ const enhance = compose(
     state => ({
       userList: getUsersListSelector(state),
       fetching: getFetchingSelector(state),
-      testId: getTestIdSelector(state),
       sharedUsersList: getUserListSelector(state),
       currentUserId: _get(state, "user.user._id", "")
     }),

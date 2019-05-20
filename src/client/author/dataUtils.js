@@ -5,7 +5,7 @@ export const getTestAuthorName = item => {
     const author = authors.find(item => item._id === createdBy._id) || {};
     return author.name || authors[0].name;
   }
-  return authors[0].name;
+  return authors.length && authors[0].name;
 };
 
 export const getTestItemAuthorName = item => {
@@ -15,7 +15,7 @@ export const getTestItemAuthorName = item => {
     const author = authors.find(item => item._id === owner) || {};
     return author.name || authors[0].name;
   }
-  return authors[0].name;
+  return authors.length && authors[0].name;
 };
 
 export const getPlaylistAuthorName = item => {

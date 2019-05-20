@@ -78,7 +78,7 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics, tags, _source },
+      item: { title, analytics, tags = [], _source },
       item,
       authorName,
       owner = false,

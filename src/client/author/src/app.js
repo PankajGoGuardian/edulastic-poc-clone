@@ -122,6 +122,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               />
               <Route
                 exact
+                path="/author/playlists/:id/edit"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <PlaylistPage {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
                 path="/author/playlists/:id"
                 render={props => (
                   <Suspense fallback={<Progress />}>

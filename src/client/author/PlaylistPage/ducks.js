@@ -4,17 +4,16 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
-import { testsApi, assignmentApi, curriculumSequencesApi } from "@edulastic/api";
+import { testsApi, assignmentApi, curriculumSequencesApi, contentSharingApi } from "@edulastic/api";
 import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
-import { loadQuestionsAction } from "../sharedDucks/questions";
 
 // constants
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[playlist] create playlist request";
-export const CREATE_TEST_SUCCESS = "[tests] create playlist success";
-export const CREATE_TEST_ERROR = "[tests] create playlist error";
+export const CREATE_PLAYLIST_SUCCESS = "[playlists] create playlist success";
+export const CREATE_PLAYLIST_ERROR = "[playlists] create playlist error";
 
 export const UPDATE_TEST_REQUEST = "[tests] update playlist request";
 export const UPDATE_TEST_SUCCESS = "[tests] update playlist success";
@@ -30,7 +29,7 @@ export const SET_DEFAULT_TEST_DATA = "[tests] set default playlist data";
 export const SET_TEST_EDIT_ASSIGNED = "[tests] set edit assigned";
 export const REGRADE_TEST = "[regrade] set regrade data";
 export const TEST_SHARE = "[test] send playlist share request";
-export const TEST_PUBLISH = "[test] publish playlist";
+export const PLAYLIST_PUBLISH = "[playlist] publish playlist";
 export const UPDATE_TEST_STATUS = "[test] update playlist status";
 export const CLEAR_TEST_DATA = "[test] clear playlist data";
 export const TEST_CREATE_SUCCESS = "[test] create playlist succes";
@@ -66,13 +65,13 @@ export const createTestAction = (data, toReview = false) => ({
   payload: { data, toReview }
 });
 
-export const createTestSuccessAction = entity => ({
-  type: CREATE_TEST_SUCCESS,
+export const createPlaylistSuccessAction = entity => ({
+  type: CREATE_PLAYLIST_SUCCESS,
   payload: { entity }
 });
 
-export const createTestErrorAction = error => ({
-  type: CREATE_TEST_ERROR,
+export const createPlaylistErrorAction = error => ({
+  type: CREATE_PLAYLIST_ERROR,
   payload: { error }
 });
 
@@ -114,7 +113,7 @@ export const setRegradeSettingsDataAction = payload => ({
 });
 
 export const sendTestShareAction = createAction(TEST_SHARE);
-export const publishTestAction = createAction(TEST_PUBLISH);
+export const publishTestAction = createAction(PLAYLIST_PUBLISH);
 export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
 export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST);
@@ -255,7 +254,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CREATE_TEST_REQUEST:
     case UPDATE_TEST_REQUEST:
       return { ...state, creating: true };
-    case CREATE_TEST_SUCCESS:
+    case CREATE_PLAYLIST_SUCCESS:
     case UPDATE_TEST_SUCCESS:
       const { testItems, ...entity } = payload.entity;
       return {
@@ -269,7 +268,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...dataRest }
       };
-    case CREATE_TEST_ERROR:
+    case CREATE_PLAYLIST_ERROR:
     case UPDATE_TEST_ERROR:
       return { ...state, creating: false, error: payload.error };
     case SET_TEST_DATA:
@@ -360,80 +359,58 @@ const getQuestions = (testItems = []) => {
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
-    const entity = yield call(testsApi.getById, payload.id, { data: true });
-    const questions = getQuestions(entity.testItems);
-    yield put(loadQuestionsAction(_keyBy(questions, "id")));
+    const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
     yield put(receiveTestByIdSuccess(entity));
   } catch (err) {
-    const errorMessage = "Receive test by id is failing";
+    const errorMessage = "Receive playlist by id is failing";
     yield call(message.error, errorMessage);
     yield put(receiveTestByIdError(errorMessage));
   }
 }
 
-function* createTestSaga({ payload }) {
-  // const { _id: oldId, versioned: regrade = false } = payload.data;
+function* createPlaylistSaga({ payload }) {
   try {
-    console.log("payload", payload);
-    // const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
-    const entity = yield call(curriculumSequencesApi.create, payload);
-    // yield put({
-    //   type: UPDATE_ENTITY_DATA,
-    //   payload: {
-    //     entity
-    //   }
-    // });
+    const dataToSend = omit(payload.data, ["sharedWith", "createdDate", "updatedDate"]);
 
-    // if (regrade) {
-    //   yield put(setCreateSuccessAction());
-    //   yield put(push(`/author/assignments/regrade/new/${entity._id}/old/${oldId}`));
-    // } else {
-    //   const hash = payload.toReview ? "#review" : "";
+    const entity = yield call(curriculumSequencesApi.create, { data: dataToSend });
+    const hash = payload.toReview ? "#review" : "";
+    yield put(createPlaylistSuccessAction(entity));
+    yield put(replace(`/author/playlists/${entity._id}/edit${hash}`));
 
-    //   yield put(createTestSuccessAction(entity));
-    //   yield put(replace(`/author/tests/${entity._id}${hash}`));
-
-    //   yield call(message.success, "Test created");
-    // }
+    yield call(message.success, "Playlist created");
   } catch (err) {
-    const errorMessage = "Failed to create test!";
+    const errorMessage = "Failed to create playlist!";
     yield call(message.error, errorMessage);
-    yield put(createTestErrorAction(errorMessage));
+    yield put(createPlaylistErrorAction(errorMessage));
   }
 }
 
-function* updateTestSaga({ payload }) {
+function* updatePlaylistSaga({ payload }) {
   try {
     // remove createdDate and updatedDate
     const oldId = payload.data._id;
-    delete payload.data.updatedDate;
-    delete payload.data.createdDate;
-    delete payload.data.assignments;
-    delete payload.data.authors;
+    const dataToSend = omit(payload.data, [
+      "updatedDate",
+      "createdDate",
+      "sharedWith",
+      "authors",
+      "sharedType",
+      "_id",
+      "__v"
+    ]);
 
-    const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
-      ...page,
-      _id: undefined
-    }));
-
-    payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
-
-    const entity = yield call(testsApi.update, payload);
+    const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
 
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     if (oldId != newId && newId) {
-      yield call(message.success, "Test versioned");
-      yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
+      yield call(message.success, "Playlist versioned");
+      yield put(push(`/author/playlists/${newId}/versioned/old/${oldId}`));
     } else {
       yield call(message.success, "Update Successful");
     }
-
-    if (payload.updateLocal) {
-      yield put(setTestDataAction(payload.data));
-    }
   } catch (err) {
-    const errorMessage = "Update test is failing";
+    const errorMessage = "Update playlist is failing";
     yield call(message.error, errorMessage);
     yield put(updateTestErrorAction(errorMessage));
   }
@@ -451,7 +428,7 @@ function* updateRegradeDataSaga({ payload }) {
 
 function* shareTestSaga({ payload }) {
   try {
-    yield call(testsApi.shareTest, payload);
+    yield call(contentSharingApi.shareContent, payload);
     yield put(receiveSharedWithListAction(payload.testId));
     yield call(message.success, "Successfully shared");
   } catch (e) {
@@ -460,17 +437,12 @@ function* shareTestSaga({ payload }) {
   }
 }
 
-function* publishTestSaga({ payload }) {
+function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
-    yield call(testsApi.publishTest, id);
+    yield call(curriculumSequencesApi.publishPlaylist, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
-    const oldId = yield select(state => state.tests.regradeTestId);
-    if (oldId) {
-      yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
-      yield put(setRegradeOldIdAction(undefined));
-    }
   } catch (e) {
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);
@@ -479,7 +451,7 @@ function* publishTestSaga({ payload }) {
 
 function* receiveSharedWithListSaga({ payload }) {
   try {
-    const result = yield call(testsApi.getSharedUsersList, payload);
+    const result = yield call(contentSharingApi.getSharedUsersList, payload);
     const coAuthors = result.map(({ permission, sharedWith, sharedType, _id }) => ({
       permission,
       sharedWith,
@@ -527,11 +499,11 @@ function addTestToModule(entity, payload) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
-    yield takeEvery(CREATE_TEST_REQUEST, createTestSaga),
-    yield takeEvery(UPDATE_TEST_REQUEST, updateTestSaga),
+    yield takeEvery(CREATE_TEST_REQUEST, createPlaylistSaga),
+    yield takeEvery(UPDATE_TEST_REQUEST, updatePlaylistSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
-    yield takeEvery(TEST_PUBLISH, publishTestSaga),
+    yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
   ]);

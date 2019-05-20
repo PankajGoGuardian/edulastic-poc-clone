@@ -39,7 +39,6 @@ import {
 } from "../../ducks";
 
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
-import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 // import { CompositeDisposable } from "rx-core";
@@ -429,7 +428,7 @@ class TestList extends Component {
             <Main>
               <FlexContainer justifyContent="space-between" style={{ marginBottom: 10 }}>
                 <PaginationInfo>
-                  {from} to {to} of <i>{count}</i>
+                  {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
               </FlexContainer>
               <CardContainer type={blockStyle}>

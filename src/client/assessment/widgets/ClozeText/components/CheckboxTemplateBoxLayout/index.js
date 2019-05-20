@@ -79,7 +79,17 @@ const CheckboxTemplateBoxLayout = ({
             <span key={index}>
               {showAnswer && (
                 <span
-                  className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
+                  className={`
+                    response-btn 
+                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
+                    ${
+                      userSelections.length > 0 && userSelections[dropTargetIndex]
+                        ? evaluation[dropTargetIndex]
+                          ? "right"
+                          : "wrong"
+                        : ""
+                    }
+                    ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
                   &nbsp;<span className="index">{indexStr}</span>
@@ -92,13 +102,25 @@ const CheckboxTemplateBoxLayout = ({
                 </span>
               )}
               {!showAnswer && (
-                <div className={`response-btn check-answer ${className}`} style={btnStyle}>
+                <div
+                  className={`response-btn 
+                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
+                ${
+                  userSelections.length > 0 && userSelections[dropTargetIndex]
+                    ? evaluation[dropTargetIndex]
+                      ? "right"
+                      : "wrong"
+                    : ""
+                }
+                `}
+                  style={btnStyle}
+                >
                   &nbsp;<span className="index">{indexStr}</span>
                   <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
                   &nbsp;
                   <IconWrapper>
-                    {className === "right" && <RightIcon />}
-                    {className === "wrong" && <WrongIcon />}
+                    {(evaluation[dropTargetIndex] ? "right" : "wrong") === "right" && <RightIcon />}
+                    {(evaluation[dropTargetIndex] ? "right" : "wrong") === "wrong" && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}

@@ -388,6 +388,10 @@ template {
   background: darkgray;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
+  min-width: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .response-btn:hover .index {
@@ -400,6 +404,7 @@ template {
   background: lightgray;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  min-width: 93.25px;
 }
 
 .response-btn:hover .text {

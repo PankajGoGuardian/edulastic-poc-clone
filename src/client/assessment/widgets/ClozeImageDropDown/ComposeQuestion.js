@@ -47,6 +47,11 @@ const { Option } = Select;
 const { Dragger } = Upload;
 
 class ComposeQuestion extends Component {
+  constructor(props) {
+    super(props);
+    this.imageWidthEditor = React.createRef();
+  }
+
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
@@ -159,12 +164,25 @@ class ComposeQuestion extends Component {
     );
   };
 
+  getImageWidth = url => {
+    const img = new Image();
+    const that = this;
+    img.addEventListener("load", function() {
+      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
+      (width => {
+        that.onItemPropChange("imageWidth", width);
+      })(width);
+    });
+    img.src = url;
+  };
+
   handleImageUpload = info => {
     const { status, response } = info.file;
     const { t } = this.props;
     if (status === "done") {
       message.success(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadedSuccessfully")}.`);
       const imageUrl = response.result.fileUri;
+      this.getImageWidth(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
     } else if (status === "error") {
       message.error(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadFailed")}.`);
@@ -206,9 +224,12 @@ class ComposeQuestion extends Component {
             <FormContainer>
               <div style={{ alignItems: "center" }}>
                 <ImageWidthInput
+                  ref={this.imageWidthEditor}
                   data-cy="image-width-input"
-                  defaultValue={imageWidth}
-                  onChange={val => this.onItemPropChange("imageWidth", val)}
+                  value={imageWidth > 0 ? imageWidth : 600}
+                  onChange={event => {
+                    this.onItemPropChange("imageWidth", event);
+                  }}
                 />
 
                 <PaddingDiv left={20}>{t("component.cloze.imageDropDown.widthpx")}</PaddingDiv>

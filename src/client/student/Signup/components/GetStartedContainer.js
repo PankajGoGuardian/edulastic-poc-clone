@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
+import { springGreen } from "@edulastic/colors";
 
 import loginBg from "../../assets/bg-login.png";
 import studentBg from "../../assets/small-bg-student.png";
@@ -13,6 +14,7 @@ import adminBg from "../../assets/small-bg-adm.png";
 
 const GetStarted = ({ t }) => (
   <RegistrationWrapper>
+    <RegistrationBg src={loginBg} alt="bg" />
     <RegistrationHeader type="flex" align="middle">
       <Col span={12}>
         <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
@@ -39,6 +41,9 @@ const GetStarted = ({ t }) => (
         </Row>
         <ChooseSignupBox>
           <h3>{t("component.signup.getstarted.createaccount")}</h3>
+          <CircleDiv size={60} top={-24} left={30} />
+          <CircleDiv size={45} top={64} left={-30} />
+          <CircleDiv size={30} bottom={35} right={-40} />
           <StudentSignupBox data-cy="student" to="/studentsignup" xs={24} sm={8}>
             <span>{t("component.signup.getstarted.imstudent")}</span>
           </StudentSignupBox>
@@ -68,31 +73,38 @@ const enhance = compose(withNamespaces("login"));
 export default enhance(ChooseSignup);
 
 const RegistrationWrapper = styled.div`
-  background: #999999 url(${loginBg});
-  background-position: top center;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   margin: 0px;
   padding: 0px;
   min-height: 100vh;
   height: 100%;
   width: 100%;
+  position: relative;
+  overflow: hidden;
+`;
+
+const RegistrationBg = styled.img`
+  position: absolute;
+  bottom: 0px;
+  top: -5px;
+  left: -5px;
+  right: 0px;
+  filter: blur(2px);
 `;
 
 const RegistrationHeader = styled(Row)`
-  padding: 10px 15px;
+  padding: 16px 24px;
   color: white;
   span {
     font-size: 12px;
     margin-right: 20px;
   }
   a {
-    padding: 5px 40px;
-    border: 1px solid #2d84dc;
+    padding: 8px 48px;
     text-decoration: none;
     color: white;
+    text-transform: uppercase;
     border-radius: 4px;
+    background: ${springGreen};
   }
 `;
 
@@ -120,8 +132,9 @@ const BannerText = styled(Col)`
 
 const ChooseSignupBox = styled(Row)`
   background: white;
-  width: 510px;
+  width: 559px;
   margin: 0px auto;
+  margin-top: 32px;
   border-radius: 7px 7px 0px 0px;
   text-align: center;
   h3 {
@@ -129,7 +142,10 @@ const ChooseSignupBox = styled(Row)`
     font-weight: 600;
     color: #444444;
     margin: 0px;
-    padding: 10px 0px;
+    padding: 16px 0px;
+    position: relative;
+    z-index: 1;
+    background: white;
   }
   a {
     color: white;
@@ -142,16 +158,21 @@ const StudentSignupBox = styled(Link)`
   background-size: 102% 102%;
   background-repeat: no-repeat;
   width: calc(100% / 3);
-  height: 250px;
+  height: 260px;
   float: left;
   position: relative;
   text-align: center;
   overflow: hidden;
   span {
     position: absolute;
-    left: 0;
-    right: 0;
+    left: 10%;
+    right: 10%;
     bottom: 10px;
+    background: #00ad50;
+    text-align: center;
+    font-size: 12px;
+    padding: 8px 4px;
+    border-radius: 4px;
   }
 `;
 
@@ -174,4 +195,18 @@ const Copyright = styled(Row)`
   color: #dddddd;
   text-align: center;
   margin: 25px 0px 10px;
+`;
+
+const CircleDiv = styled.div`
+  height: ${({ size }) => size || 0}px;
+  width: ${({ size }) => size || 0}px;
+  top: ${({ top }) => top}px;
+  left: ${({ left }) => left}px;
+  bottom: ${({ bottom }) => bottom}px;
+  right: ${({ right }) => right}px;
+  background: #27947a;
+  border-radius: 50%;
+  position: absolute;
+  opacity: 0.6;
+  z-index: 0;
 `;

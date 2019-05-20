@@ -49,6 +49,11 @@ const { Option } = Select;
 const { Dragger } = Upload;
 
 class Authoring extends Component {
+  constructor(props) {
+    super(props);
+    this.imageWidthEditor = React.createRef();
+  }
+
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
@@ -64,13 +69,13 @@ class Authoring extends Component {
   };
 
   state = {
-    isColorPickerVisible: false
+    isColorPickerVisible: false,
+    imageWidth: this.props.item.imageWidth > 0 ? this.props.item.imageWidth : 600
   };
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-
     fillSections("main", t("component.cloze.imageText.composequestion"), node.offsetTop);
   };
 
@@ -174,12 +179,25 @@ class Authoring extends Component {
     );
   };
 
+  getImageWidth = url => {
+    const img = new Image();
+    const that = this;
+    img.addEventListener("load", function() {
+      const width = this.naturalWidth;
+      (width => {
+        that.onItemPropChange("imageWidth", width);
+      })(width);
+    });
+    img.src = url;
+  };
+
   handleImageUpload = info => {
     const { status, response } = info.file;
     const { t } = this.props;
     if (status === "done") {
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
       const imageUrl = response.result.fileUri;
+      this.getImageWidth(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
     } else if (status === "error") {
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
@@ -220,9 +238,12 @@ class Authoring extends Component {
             <FormContainer>
               <div style={{ alignItems: "center" }}>
                 <ImageWidthInput
+                  ref={this.imageWidthEditor}
                   data-cy="image-width-input"
-                  defaultValue={imageWidth}
-                  onChange={val => this.onItemPropChange("imageWidth", val)}
+                  value={this.props.item.imageWidth > 0 ? this.props.item.imageWidth : 600}
+                  onChange={event => {
+                    this.onItemPropChange("imageWidth", event);
+                  }}
                 />
 
                 <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
@@ -298,7 +319,7 @@ class Authoring extends Component {
                 <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
                   {item.imageUrl && (
                     <React.Fragment>
-                      <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
+                      <PreviewImage src={item.imageUrl} width={"100%"} alt="resp-preview" />
                       <DropArea updateData={this.updateData} item={item} key={item} />
                     </React.Fragment>
                   )}

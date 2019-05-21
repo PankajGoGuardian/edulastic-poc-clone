@@ -299,7 +299,7 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title, description } = destinationCurriculumSequence;
+    const { title, description, subjects, grades } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
@@ -488,14 +488,22 @@ class CurriculumSequence extends Component {
                   <SubHeaderDescription>{description}</SubHeaderDescription>
                 </SubHeaderTitleContainer>
                 <SunHeaderInfo>
-                  <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
-                    <GraduationCapIcon color="#848993" />
-                    <SunHeaderInfoCardText marginLeft="-3px">Grad 2-4</SunHeaderInfoCardText>
-                  </SunHeaderInfoCard>
-                  <SunHeaderInfoCard>
-                    <BookIcon color="#848993" />
-                    <SunHeaderInfoCardText>Mathematics</SunHeaderInfoCardText>
-                  </SunHeaderInfoCard>
+                  {grades.length ? (
+                    <SunHeaderInfoCard marginBottom="13px" marginLeft="-3px">
+                      <GraduationCapIcon color="#848993" />
+                      <SunHeaderInfoCardText marginLeft="-3px">Grade {grades.join(", ")}</SunHeaderInfoCardText>
+                    </SunHeaderInfoCard>
+                  ) : (
+                    ""
+                  )}
+                  {subjects.length ? (
+                    <SunHeaderInfoCard>
+                      <BookIcon color="#848993" />
+                      <SunHeaderInfoCardText>{subjects.filter(item => !!item).join(", ")}</SunHeaderInfoCardText>
+                    </SunHeaderInfoCard>
+                  ) : (
+                    ""
+                  )}
                 </SunHeaderInfo>
               </CurriculumSubHeaderRow>
               {!hideEditOptions && (

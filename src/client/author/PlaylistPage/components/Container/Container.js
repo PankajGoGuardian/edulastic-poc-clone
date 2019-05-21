@@ -141,13 +141,11 @@ class Container extends PureComponent {
   handleChangeGrade = grades => {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, grades });
-    getItemsSubjectAndGrade({ subjects: itemsSubjectAndGrade.subjects, grades: [] });
   };
 
   handleChangeSubject = subjects => {
     const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
     setData({ ...test, subjects });
-    getItemsSubjectAndGrade({ grades: itemsSubjectAndGrade.grades, subjects: [] });
   };
 
   handleSaveTestId = () => {

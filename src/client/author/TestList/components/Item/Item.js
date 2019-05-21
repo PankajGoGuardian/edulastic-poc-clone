@@ -124,7 +124,7 @@ class Item extends Component {
           <Inner>
             <Question>
               <StyledLink title={title} onClick={this.moveToItem}>
-                {isPlaylist ? _source.collectionName : title}
+                {isPlaylist ? _source.title : title}
               </StyledLink>
             </Question>
             <CardDescription onClick={isPlaylist ? this.moveToItem : ""}>

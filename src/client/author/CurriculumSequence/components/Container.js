@@ -12,7 +12,8 @@ import {
   searchCurriculumSequencesAction,
   searchGuidesAction,
   toggleAddContentAction,
-  addContentToCurriculumSequenceAction
+  addContentToCurriculumSequenceAction,
+  useThisPlayListAction
 } from "../ducks";
 
 /**
@@ -148,14 +149,14 @@ class CurriculumContainer extends Component {
     toggleAddContent();
   };
 
-  handleUseThis = () => {
+  handleUseThis = title => {
     const {
-      history,
+      useThisPlayList,
       match: {
         params: { id }
       }
     } = this.props;
-    history.push(`/author/playlists/${id}/customize`);
+    useThisPlayList(id, title);
   };
 
   getSourceDestinationCurriculum = () => {
@@ -268,6 +269,9 @@ const mapDispatchToProps = dispatch => ({
   },
   addContentToCurriculumSequence(contentToAdd, toUnit) {
     dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
+  },
+  useThisPlayList(_id, title) {
+    dispatch(useThisPlayListAction({ _id, title }));
   }
 });
 

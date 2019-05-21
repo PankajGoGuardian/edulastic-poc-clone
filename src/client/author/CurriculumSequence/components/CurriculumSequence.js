@@ -5,6 +5,7 @@ import { uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
+import { withRouter } from "react-router-dom";
 import * as moment from "moment";
 import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
 import { FlexContainer } from "@edulastic/common";
@@ -181,10 +182,15 @@ class CurriculumSequence extends Component {
     saveCurriculumSequence();
   };
 
-  handleUseThisClick = evt => {
+  handleCustomizeClick = evt => {
     const { onUseThisClick } = this.props;
     this.setState({ hideEditOptions: false });
     onUseThisClick();
+  };
+
+  handleUseThisClick = () => {
+    const { onUseThisClick, publisher } = this.props;
+    onUseThisClick(publisher);
   };
 
   handleAddUnitOpen = () => {
@@ -270,11 +276,12 @@ class CurriculumSequence extends Component {
       batchAssign,
       mode,
       selectedItemsForAssign,
-      dataForAssign
+      dataForAssign,
+      history
     } = this.props;
 
-    const { handleSaveClick, handleUseThisClick } = this;
-
+    const { handleSaveClick, handleUseThisClick, handleCustomizeClick } = this;
+    const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.map(module => ({
@@ -456,20 +463,19 @@ class CurriculumSequence extends Component {
                   <SaveButtonStyle>
                     <Button
                       data-cy="saveCurriculumSequence"
-                      onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
+                      onClick={hideEditOptions ? handleCustomizeClick : handleSaveClick}
                     >
                       {/* <IconPencilEdit color={greenThird} width={20} height={20} /> */}
                       <SaveButtonText>{"Customize"}</SaveButtonText>
                     </Button>
                   </SaveButtonStyle>
-                  <SaveButtonStyle windowWidth={windowWidth}>
-                    <Button
-                      data-cy="saveCurriculumSequence"
-                      onClick={hideEditOptions ? handleUseThisClick : handleSaveClick}
-                    >
-                      <SaveButtonText>{"Use This"}</SaveButtonText>
-                    </Button>
-                  </SaveButtonStyle>
+                  {!urlHasUseThis && (
+                    <SaveButtonStyle windowWidth={windowWidth}>
+                      <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>
+                        <SaveButtonText>{"Use This"}</SaveButtonText>
+                      </Button>
+                    </SaveButtonStyle>
+                  )}
                 </CurriculumHeaderButtons>
               </CurriculumHeader>
             </TopBar>
@@ -1180,6 +1186,7 @@ const BreadCrumbWrapper = styled.div`
 `;
 
 const enhance = compose(
+  withRouter,
   connect(
     state => ({
       curriculumGuides: state.curriculumSequence.guides,

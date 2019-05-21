@@ -149,6 +149,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               />
               <Route
                 exact
+                path="/author/playlists/:id/use-this"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <CurriculumContainer {...props} />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
                 path="/author/playlists/:id/editAssigned"
                 render={props => (
                   <Suspense fallback={<Progress />}>

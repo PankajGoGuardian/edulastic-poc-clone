@@ -5,7 +5,7 @@ import { push } from "react-router-redux";
 import { authApi, userApi, TokenStorage } from "@edulastic/api";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
-
+import { receiveLastPlayListAction } from "../../author/Playlist/ducks";
 import { message } from "antd";
 import { roleuser } from "@edulastic/constants";
 
@@ -33,6 +33,9 @@ function* login({ payload }) {
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
+    if (user.role !== roleuser.STUDENT) {
+      yield put(receiveLastPlayListAction());
+    }
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
@@ -97,6 +100,9 @@ export function* fetchUser() {
       type: SET_USER,
       payload: user
     });
+    if (user.role !== roleuser.STUDENT) {
+      yield put(receiveLastPlayListAction());
+    }
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");

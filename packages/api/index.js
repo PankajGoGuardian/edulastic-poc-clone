@@ -21,6 +21,7 @@ export { default as enrollmentApi } from "./src/enrollment";
 export { default as evaluateApi } from "./src/evaluate";
 export { default as userApi } from "./src/user";
 export { default as curriculumSequencesApi } from "./src/curriculumSequence";
+export { default as userContextApi } from "./src/userContext";
 export { default as API } from "./src/utils/API";
 export { TokenStorage };
 export { default as googleApi } from "./src/google";

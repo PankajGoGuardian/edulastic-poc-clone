@@ -125,7 +125,7 @@ class ListItem extends Component {
               <Inner>
                 <div>
                   <StyledLink title={title} onClick={this.moveToItem}>
-                    {isPlaylist ? _source.collectionName : title}
+                    {isPlaylist ? _source.title : title}
                   </StyledLink>
                 </div>
                 <Description onClick={isPlaylist ? this.moveToItem : ""}>

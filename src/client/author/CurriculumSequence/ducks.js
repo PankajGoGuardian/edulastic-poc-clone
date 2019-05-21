@@ -5,7 +5,8 @@ import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
 import { flatten, cloneDeep, isEmpty, keyBy } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
-import { curriculumSequencesApi, assignmentApi } from "@edulastic/api";
+import { push } from "connected-react-router";
+import { curriculumSequencesApi, assignmentApi, userContextApi } from "@edulastic/api";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
 import { getUserSelector } from "../src/selectors/user";
 import {
@@ -22,6 +23,7 @@ import {
   getGroupsSelector
 } from "../sharedDucks/groups";
 import { generateClassData } from "../TestPage/components/Assign/utils";
+import { receiveLastPlayListAction, getLastPlayListSelector } from "../Playlist/ducks";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -67,6 +69,7 @@ export const BATCH_ASSIGN = "[curriculum-sequence] batch assign request";
 export const BATCH_ASSIGN_RESULT = "[curriculum-sequence] batch assign result";
 export const FETCH_ASSIGNED_REQUEST = "[curriculum-sequence] fetch assigned request";
 export const FETCH_ASSIGNED_RESULT = "[curriculum-sequence] fetch assigned result";
+export const USE_THIS_PLAYLIST = "[playlist] use this play list";
 
 // Actions
 export const updateCurriculumSequenceList = createAction(UPDATE_CURRICULUM_SEQUENCE_LIST);
@@ -93,6 +96,7 @@ export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT);
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT);
 export const batchAssignAction = createAction(BATCH_ASSIGN);
 export const fetchAssignedAction = createAction(FETCH_ASSIGNED_REQUEST);
+export const useThisPlayListAction = createAction(USE_THIS_PLAYLIST);
 
 export const removeItemFromUnitAction = createAction(REMOVE_ITEM_FROM_UNIT);
 export const putCurriculumSequenceAction = createAction(PUT_CURRICULUM_SEQUENCE);
@@ -631,6 +635,17 @@ function* fetchAssigned() {
   }
 }
 
+function* useThisPlayListSaga({ payload }) {
+  try {
+    yield call(userContextApi.setLastUsedPlayList, { ...payload });
+    yield put(receiveLastPlayListAction());
+    yield put(push(`/author/playlists/${payload._id}/use-this`));
+  } catch (error) {
+    console.error(error);
+    message.error("something went wrong");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(FETCH_CURRICULUM_SEQUENCES, fetchItemsFromApi),
@@ -652,7 +667,8 @@ export function* watcherSaga() {
     yield takeLatest(ADD_NEW_UNIT_INIT, addNewUnit),
     yield takeLatest(REMOVE_UNIT_INIT, removeUnit),
     yield takeLatest(BATCH_ASSIGN, batchAssign),
-    yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned)
+    yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned),
+    yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga)
   ]);
 }
 

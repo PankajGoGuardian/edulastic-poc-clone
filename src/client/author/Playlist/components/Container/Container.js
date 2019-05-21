@@ -41,8 +41,8 @@ import {
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
-// import { CompositeDisposable } from "rx-core";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
+import { receiveRecentPlayListsAction } from "../../ducks";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -106,6 +106,7 @@ class TestList extends Component {
     const {
       receivePlaylists,
       receivePublishers,
+      receiveRecentPlayLists,
       limit,
       location,
       match: { params = {} }
@@ -143,6 +144,7 @@ class TestList extends Component {
     } else {
       receivePlaylists({ page: 1, limit, search });
     }
+    receiveRecentPlayLists();
   }
 
   searchTest = debounce(() => {
@@ -466,7 +468,8 @@ const enhance = compose(
     {
       receivePlaylists: receivePlaylistsAction,
       receivePublishers: receivePublishersAction,
-      clearTestData: clearTestDataAction
+      clearTestData: clearTestDataAction,
+      receiveRecentPlayLists: receiveRecentPlayListsAction
     }
   )
 );

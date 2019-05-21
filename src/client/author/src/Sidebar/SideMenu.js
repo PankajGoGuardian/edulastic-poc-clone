@@ -22,11 +22,12 @@ import {
   IconCurriculumSequence,
   IconSettings
 } from "@edulastic/icons";
+import { greyish } from "@edulastic/colors";
+import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { withWindowSizes } from "@edulastic/common";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import Profile from "../assets/Profile.png";
-
 const menuItems = [
   {
     label: "Dashboard",
@@ -68,7 +69,6 @@ const menuItems = [
     path: "author/districtprofile"
   }
 ];
-
 class SideMenu extends Component {
   constructor(props) {
     super(props);
@@ -76,6 +76,25 @@ class SideMenu extends Component {
     this.state = {
       isVisible: false
     };
+  }
+  get MenuItems() {
+    const { lastPlayList, isSidebarCollapsed } = this.props;
+    if (!lastPlayList || !lastPlayList.value) return menuItems;
+    const [item1, ...rest] = menuItems;
+    const { title = "", _id = "" } = lastPlayList.value || {};
+    const [fT = "", lT = ""] = title.split(" ");
+    const PlayListTextIcon = () => (
+      <TextIcon isSidebarCollapsed={isSidebarCollapsed}>{`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`}</TextIcon>
+    );
+    return [
+      item1,
+      {
+        label: title,
+        icon: PlayListTextIcon,
+        path: `author/playlists/${_id}/use-this`
+      },
+      ...rest
+    ];
   }
 
   renderIcon = (icon, isSidebarCollapsed) => styled(icon)`
@@ -94,8 +113,8 @@ class SideMenu extends Component {
 
   handleMenu = item => {
     const { history } = this.props;
-    if (menuItems[item.key].path !== undefined) {
-      history.push(`/${menuItems[item.key].path}`);
+    if (this.MenuItems[item.key].path !== undefined) {
+      history.push(`/${this.MenuItems[item.key].path}`);
     }
   };
 
@@ -124,11 +143,9 @@ class SideMenu extends Component {
   render() {
     const { broken, isVisible } = this.state;
     const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
-    // const isPickQuestion = !!history.location.pathname.includes("pickup-questiontype");
-
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
-    const defaultSelectedMenu = menuItems.findIndex(menuItem => `/${menuItem.path}` === history.location.pathname);
+    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => `/${menuItem.path}` === history.location.pathname);
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>
@@ -197,11 +214,11 @@ class SideMenu extends Component {
             <MenuWrapper>
               <Menu
                 theme="light"
-                defaultSelectedKeys={[defaultSelectedMenu.toString()]}
+                selectedKeys={[defaultSelectedMenu.toString()]}
                 mode="inline"
                 onClick={item => this.handleMenu(item)}
               >
-                {menuItems.map((menu, index) => {
+                {this.MenuItems.map((menu, index) => {
                   const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
                   return (
                     <MenuItem
@@ -280,16 +297,22 @@ const enhance = compose(
   withRouter,
   withWindowSizes,
   connect(
-    ({ authorUi, user }) => ({
-      isSidebarCollapsed: authorUi.isSidebarCollapsed,
-      firstName: get(user, "user.firstName", ""),
-      userRole: get(user, "user.role", "")
+    state => ({
+      isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
+      firstName: get(state.user, "user.firstName", ""),
+      userRole: get(state.user, "user.role", ""),
+      lastPlayList: getLastPlayListSelector(state)
     }),
     { toggleSideBar: toggleSideBarAction, logout: logoutAction }
   )
 );
 
 export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
+
+const TextIcon = styled.div`
+  border-radius: 50%;
+  margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1em")};
+`;
 
 const FixedSidebar = styled.div`
   position: fixed;
@@ -298,10 +321,8 @@ const FixedSidebar = styled.div`
   bottom: 0px;
   z-index: 1000;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
-
   .scrollbar-container {
     max-height: 100vh;
-
     > * {
       pointer-events: ${props => (props.isCollapsed ? "none" : "all")};
     }

@@ -13,10 +13,18 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     student: "auto.lcb.student01@yopmail.com",
     assignmentName: "New Assessment LCB",
     testId: "5cde784b09da3d60f2d7840c",
-    redirectedData: [
+    feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02",
+        attempt: { Q1: "right", Q2: "right" },
+        status: "SUBMITTED"
+      }
+    ],
+    redirectedData: [
+      {
+        email: "auto.lcb.student01@yopmail.com",
+        stuName: "Student01",
         attempt: { Q1: "wrong", Q2: "wrong" },
         status: "SUBMITTED"
       }
@@ -60,7 +68,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       }
     ]
   };
-  const { attemptsData, redirectedData, student, teacher, className, testId } = lcbTestData;
+  const { attemptsData, redirectedData, student, teacher, testId, feedbackScoreData } = lcbTestData;
 
   let questionData;
   let testData;
@@ -346,6 +354,32 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
               lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
             });
           });
+        });
+      });
+    });
+  });
+
+  describe(" > verify score update", () => {
+    before("student centric view", () => {
+      lcb.clickonQuestionsTab();
+    });
+
+    feedbackScoreData.forEach(feedback => {
+      const { stuName, attempt } = feedback;
+      it(` > update the score for :: ${stuName}`, () => {
+        lcb.updateScore(stuName, lcb.getFeedBackScore(attempt, questionTypeMap));
+      });
+    });
+
+    describe(" > verify student cards", () => {
+      before(() => {
+        lcb.clickOnCardViewTab();
+      });
+      feedbackScoreData.forEach(feedback => {
+        const { stuName, status, attempt } = feedback;
+        it(` > verify student card for :${stuName}`, () => {
+          const { score, perf } = lcb.getScoreAndPerformance(attempt, questionTypeMap);
+          lcb.verifyStudentCard(stuName, status, score, perf, attempt);
         });
       });
     });

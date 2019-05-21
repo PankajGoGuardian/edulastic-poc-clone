@@ -18,6 +18,27 @@ export default class QuestionResponsePage {
       .should("have.text", points.toString());
   };
 
+  updateScoreForStudent = (studentName, score) => {
+    cy.server();
+    cy.route("PUT", "**/feedbackAndScore").as("feedback");
+    this.getQuestionContainerByStudent(studentName).as("updatecard");
+    this.getScoreInput(cy.get("@updatecard"))
+      .as("scoreinputbox")
+      .clear()
+      .type(score);
+
+    this.clickOnUpdateButton(cy.get("@updatecard")).then(() => {
+      cy.wait("@feedback").then(xhr => {
+        expect(xhr.status).to.eq(200);
+        expect(xhr.responseBody.result).to.eq("feedback and score are saved successfully");
+      });
+    });
+
+    cy.get("@scoreinputbox").should("have.value", score.toString());
+  };
+
+  clickOnUpdateButton = card => card.find('[data-cy="updateButton"]').click({ force: true });
+
   verifyScoreRight = (card, points) => {
     this.verifyScore(card, true, points);
   };

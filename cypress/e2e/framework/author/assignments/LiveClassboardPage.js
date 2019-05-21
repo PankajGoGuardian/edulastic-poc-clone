@@ -267,6 +267,17 @@ class LiveClassboardPage {
     return stats;
   };
 
+  getFeedBackScore = (feedbackMap, queTypeMap) => {
+    const score = {};
+    Object.keys(feedbackMap).forEach(queNum => {
+      const attempType = feedbackMap[queNum];
+      const { points } = queTypeMap[queNum];
+      score[queNum] = attempType === "right" ? points : "0";
+    });
+
+    return score;
+  };
+
   verifyAvgScore(statsMap) {
     let scoreObtain = 0;
     let totalMaxScore = 0;
@@ -314,6 +325,13 @@ class LiveClassboardPage {
       } else {
         this.questionResponsePage.verifyNoQuestionResponseCard(studentName);
       }
+    });
+  };
+
+  updateScore = (studentName, score) => {
+    Object.keys(score).forEach(queNum => {
+      this.questionResponsePage.selectQuestion(queNum);
+      this.questionResponsePage.updateScoreForStudent(studentName, score[queNum]);
     });
   };
 }

@@ -193,7 +193,7 @@ class FeedbackRight extends Component {
             />
           </Fragment>
         )}
-        <UpdateButton disabled={!activity || submitted} onClick={this.preCheckSubmit}>
+        <UpdateButton data-cy="updateButton" disabled={!activity || submitted} onClick={this.preCheckSubmit}>
           UPDATE
         </UpdateButton>
       </StyledCardTwo>

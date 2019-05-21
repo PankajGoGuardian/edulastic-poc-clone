@@ -326,7 +326,10 @@ export const reducer = (state = initialState, { type, payload }) => {
     case SET_USER_CUSTOMIZE:
       return {
         ...state,
-        customize: payload
+        entity: {
+          ...state.entity,
+          customize: payload
+        }
       };
     default:
       return state;

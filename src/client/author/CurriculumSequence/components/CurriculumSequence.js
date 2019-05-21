@@ -162,7 +162,7 @@ class CurriculumSequence extends Component {
       class: [],
       specificStudents: false
     },
-    hideEditOptions: true
+    isPlayListEdited: false
   };
 
   componentDidMount() {
@@ -263,7 +263,7 @@ class CurriculumSequence extends Component {
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange } = this;
-    const { addUnit, addCustomContent, curriculumGuide, newUnit, hideEditOptions } = this.state;
+    const { addUnit, addCustomContent, curriculumGuide, newUnit, isPlayListEdited } = this.state;
     const {
       expandedModules,
       onCollapseExpand,
@@ -308,7 +308,7 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title, description, subjects = [], grades = [] } = destinationCurriculumSequence;
+    const { title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
@@ -461,7 +461,7 @@ class CurriculumSequence extends Component {
                   />
                 </HeaderTitle>
                 <CurriculumHeaderButtons>
-                  {!hideEditOptions && (
+                  {urlHasUseThis && (
                     <ShareButtonStyle>
                       <Button type="default">
                         <ShareButtonIcon color={greenThird} width={20} height={20} />
@@ -469,15 +469,17 @@ class CurriculumSequence extends Component {
                       </Button>
                     </ShareButtonStyle>
                   )}
-                  <SaveButtonStyle>
-                    <Button
-                      data-cy="saveCurriculumSequence"
-                      onClick={hideEditOptions ? handleCustomizeClick : handleSaveClick}
-                    >
-                      {/* <IconPencilEdit color={greenThird} width={20} height={20} /> */}
-                      <SaveButtonText>{"Customize"}</SaveButtonText>
-                    </Button>
-                  </SaveButtonStyle>
+                  {(customize || urlHasUseThis) && (
+                    <SaveButtonStyle>
+                      <Button
+                        data-cy="saveCurriculumSequence"
+                        onClick={isPlayListEdited ? handleSaveClick : handleCustomizeClick}
+                      >
+                        <SaveButtonText>{"Customize"}</SaveButtonText>
+                      </Button>
+                    </SaveButtonStyle>
+                  )}
+
                   {!urlHasUseThis && (
                     <SaveButtonStyle windowWidth={windowWidth}>
                       <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>
@@ -515,7 +517,7 @@ class CurriculumSequence extends Component {
                   )}
                 </SunHeaderInfo>
               </CurriculumSubHeaderRow>
-              {!hideEditOptions && (
+              {urlHasUseThis && (
                 <CurriculumSubHeaderRow>
                   <ModuleProgressWrapper>
                     <ModuleProgressLabel>
@@ -563,7 +565,7 @@ class CurriculumSequence extends Component {
                 expandedModules={expandedModules}
                 onCollapseExpand={onCollapseExpand}
                 onDrop={onDrop}
-                hideEditOptions={hideEditOptions}
+                hideEditOptions={!urlHasUseThis}
               />
             )}
             {isSelectContent && (

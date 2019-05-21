@@ -16,7 +16,7 @@ const Setting = ({ current, history, windowWidth, customize, setUserCustomize })
   const breadcrumbData = [
     {
       title: "PLAY LIST",
-      to: "/author/tests"
+      to: "/author/playlists"
     },
     {
       title: current,

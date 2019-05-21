@@ -8,6 +8,10 @@ html {
   box-sizing: inherit;
 }
 
+a#logo {
+  display: none;
+}
+
 body {
   margin: 0;
   padding: 0;

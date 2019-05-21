@@ -6,14 +6,24 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
+import "froala-editor/js/froala_editor.pkgd.min.js";
+import "froala-editor/css/froala_style.min.css";
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import "font-awesome/css/font-awesome.css";
+import FroalaEditor from "react-froala-wysiwyg";
 
 import { withNamespaces } from "@edulastic/localization";
+
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
-import QuestionTextArea from "../../../components/QuestionTextArea";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
 import { updateVariables } from "../../../utils/variables";
+
+const toolbarConfig = {
+  tableResizerOffset: 10,
+  tableResizingLimit: 50
+};
 
 class ComposeQuestion extends Component {
   static propTypes = {
@@ -115,11 +125,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <QuestionTextArea
-          onChange={this.onChangeQuestion}
-          value={item.stimulus}
-          firstFocus={item.firstMount}
-          placeholder={t("component.multiplechoice.thisisstem")}
+
+        <FroalaEditor
+          tag="textarea"
+          model={item.stimulus}
+          onModelChange={this.onChangeQuestion}
+          config={toolbarConfig}
         />
       </Widget>
     );

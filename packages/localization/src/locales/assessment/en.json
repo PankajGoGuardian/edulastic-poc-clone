@@ -704,7 +704,8 @@
       "image": "Image",
       "caption": "Caption",
       "errorMessage": "Selected file is not allowed",
-      "uploadSuccess": " has been uploaded successfully"
+      "uploadSuccess": " has been uploaded successfully",
+      "settings": "Settings"
     },
     "protractor": {
       "details": "Details",

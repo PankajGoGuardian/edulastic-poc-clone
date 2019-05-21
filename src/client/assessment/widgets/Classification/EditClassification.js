@@ -326,29 +326,6 @@ const EditClassification = ({
     );
   };
 
-  const onUiChange = prop => val => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.ui_style[prop] = val;
-
-        const colCount = draft.ui_style.column_count;
-        const rowCount = draft.ui_style.row_count;
-
-        const initialLength = (colCount || 2) * (rowCount || 1);
-
-        if (prop === "column_count" || prop === "row_count") {
-          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
-
-          draft.validation.alt_responses.forEach(ite => {
-            ite.value = Array(...Array(initialLength)).map(() => []);
-          });
-        }
-
-        updateVariables(draft);
-      })
-    );
-  };
-
   const renderOptions = () => (
     <OptionsList
       item={item}

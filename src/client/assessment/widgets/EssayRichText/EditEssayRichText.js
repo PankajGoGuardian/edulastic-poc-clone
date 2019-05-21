@@ -35,10 +35,14 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
       })
     );
   };
-
   return (
     <ContentArea>
-      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <ComposeQuestion
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <FormattingOptions item={item} act={act} fillSections={fillSections} cleanSections={cleanSections} />
 

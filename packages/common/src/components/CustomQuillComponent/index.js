@@ -420,7 +420,7 @@ class CustomQuillComponent extends React.Component {
       quillVal: props.value,
       prevValue: props.value,
       quillKey: 0,
-      modules: CustomQuillComponent.modules(props.toolbarId),
+      modules: CustomQuillComponent.modules(props.toolbarId, props.custom),
       showTableSize: false,
       rows: 3,
       cols: 2
@@ -629,7 +629,6 @@ class CustomQuillComponent extends React.Component {
       "Backspace",
       "="
     ];
-
     return (
       <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
         {!custom && (
@@ -683,7 +682,7 @@ class CustomQuillComponent extends React.Component {
  * Quill modules to attach to editor
  * See http://quilljs.com/docs/modules/ for complete options
  */
-CustomQuillComponent.modules = toolbarId => ({
+CustomQuillComponent.modules = (toolbarId, custom) => ({
   clipboard: {
     matchers: [
       [
@@ -748,7 +747,7 @@ CustomQuillComponent.modules = toolbarId => ({
     }
   },
   toolbar: {
-    container: `#${toolbarId}`,
+    container: custom ? toolbarId : `#${toolbarId}`,
     handlers: {
       "table-insert-rows": tableInsertRows,
       "table-insert-columns": tableInsertColumns,

@@ -81,7 +81,7 @@ class SideMenu extends Component {
     const { lastPlayList, isSidebarCollapsed } = this.props;
     if (!lastPlayList || !lastPlayList.value) return menuItems;
     const [item1, ...rest] = menuItems;
-    const { title = "", _id = "" } = lastPlayList.value || {};
+    const { title = "Eureka Math", _id = "" } = lastPlayList.value || {};
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
       <TextIcon isSidebarCollapsed={isSidebarCollapsed}>{`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`}</TextIcon>

@@ -190,7 +190,8 @@ class CurriculumSequence extends Component {
 
   handleUseThisClick = () => {
     const { onUseThisClick, publisher } = this.props;
-    onUseThisClick(publisher);
+    const title = publisher || "Eureka Math";
+    onUseThisClick(title);
   };
 
   handleAddUnitOpen = () => {
@@ -299,7 +300,7 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title, description, subjects, grades } = destinationCurriculumSequence;
+    const { title, description, subjects = [], grades = [] } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 

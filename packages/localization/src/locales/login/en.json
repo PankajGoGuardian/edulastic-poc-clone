@@ -33,8 +33,10 @@
       "googlesignupbtn": "SIGN UP WITH GOOGLE",
       "office365signupbtn": "SIGN UP WITH OFFICE 365",
       "formboxheading": "Or create your account",
+      "formboxheadinggoole": "Please, enter your ClassCode",
       "signupnamelabel": "Name",
       "signuppasswordlabel": "Password",
+      "codeFieldDesc": "(provied by your teacher)",
       "teacher": {
         "signupnamelabel": "Teacher Name",
         "signupidlabel": "Email",
@@ -53,6 +55,7 @@
         "signupclasslabel": "Class Code (provided by your teacher)",
         "signupidlabel": "Username / Email",
         "signupstudentbtn": "SIGN UP AS STUDENT",
+        "signupentercode": " Enter",
         "forstudent": "for Students",
         "validclasscode": "Please input valid class code!",
         "validinputname": "Please input Student Name!"

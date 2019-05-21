@@ -19,7 +19,16 @@ import googleIcon from "../../assets/google-btn.svg";
 import icon365 from "../../assets/icons8-office-365.svg";
 
 const FormItem = Form.Item;
-
+const GOOGLE = "google";
+const OFFICE = "office";
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 }
+  },
+  wrapperCol: {
+    xs: { span: 24 }
+  }
+};
 class StudentSignup extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
@@ -28,7 +37,8 @@ class StudentSignup extends React.Component {
   };
 
   state = {
-    confirmDirty: false
+    confirmDirty: false,
+    method: ""
   };
 
   handleSubmit = e => {
@@ -52,20 +62,113 @@ class StudentSignup extends React.Component {
     this.setState({ confirmDirty });
   };
 
-  render() {
+  signupMethod = key => () =>
+    this.setState({
+      method: key
+    });
+
+  renderGeneralFormFields = () => {
     const {
       form: { getFieldDecorator },
       t
     } = this.props;
+    return (
+      <>
+        <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
+          {getFieldDecorator("classCode", {
+            rules: [
+              {
+                required: true,
+                message: t("component.signup.student.validclasscode")
+              }
+            ]
+          })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
+          {getFieldDecorator("name", {
+            rules: [
+              {
+                required: true,
+                message: t("component.signup.student.validinputname")
+              }
+            ]
+          })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
+          {getFieldDecorator("email", {
+            rules: [
+              {
+                type: "email",
+                message: t("common.validation.validemail")
+              },
+              {
+                required: true,
+                message: t("common.validation.emptyemailid")
+              }
+            ]
+          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
+        </FormItem>
+        <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
+          {getFieldDecorator("password", {
+            rules: [
+              {
+                required: true,
+                message: t("common.validation.emptypassword")
+              }
+            ]
+          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
+        </FormItem>
+      </>
+    );
+  };
 
-    const formItemLayout = {
-      labelCol: {
-        xs: { span: 24 }
-      },
-      wrapperCol: {
-        xs: { span: 24 }
-      }
-    };
+  renderFormHeader = () => {
+    const { t } = this.props;
+    return (
+      <FormHead>
+        <h3 align="center">
+          <b>{t("component.signup.signupboxheading")}</b>
+        </h3>
+        <ThirdPartyLoginBtn onClick={this.signupMethod(GOOGLE)} span={20} offset={2}>
+          <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+        </ThirdPartyLoginBtn>
+        <ThirdPartyLoginBtn onClick={this.signupMethod(OFFICE)} span={20} offset={2}>
+          <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+        </ThirdPartyLoginBtn>
+        <InfoBox span={20} offset={2}>
+          <InfoIcon span={3}>
+            <img src={lockIcon} alt="" />
+          </InfoIcon>
+          <Col span={21}>{t("component.signup.infotext")}</Col>
+        </InfoBox>
+      </FormHead>
+    );
+  };
+
+  renderGoogleForm = () => {
+    const {
+      form: { getFieldDecorator },
+      t
+    } = this.props;
+    return (
+      <FormItem {...formItemLayout}>
+        {getFieldDecorator("classCode", {
+          rules: [
+            {
+              required: true,
+              message: t("component.signup.student.validclasscode")
+            }
+          ]
+        })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}{" "}
+      </FormItem>
+    );
+  };
+
+  render() {
+    const { t } = this.props;
+    const { method } = this.state;
+
+    console.log(method);
 
     return (
       <div>
@@ -90,79 +193,26 @@ class StudentSignup extends React.Component {
                     <Link to="/signup">{t("component.signup.signupasteacher")}</Link>
                   </LinkDiv>
                   <LinkDiv>
-                    <Link to="/signup">{t("component.signup.signupasadmin")}</Link>
+                    <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
                   </LinkDiv>
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
-                    <FormHead>
-                      <h3 align="center">
-                        <b>{t("component.signup.signupboxheading")}</b>
-                      </h3>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
-                      </ThirdPartyLoginBtn>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
-                      </ThirdPartyLoginBtn>
-                      <InfoBox span={20} offset={2}>
-                        <InfoIcon span={3}>
-                          <img src={lockIcon} alt="" />
-                        </InfoIcon>
-                        <Col span={21}>{t("component.signup.infotext")}</Col>
-                      </InfoBox>
-                    </FormHead>
+                    {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
                     <FormBody>
                       <Col span={20} offset={2}>
-                        <h5 align="center">{t("component.signup.formboxheading")}</h5>
+                        <h5 align="center">
+                          {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
+                          {method === GOOGLE && t("component.signup.formboxheadinggoole")}
+                        </h5>
+                        {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
                         <Form onSubmit={this.handleSubmit}>
-                          <FormItem {...formItemLayout} label={t("component.signup.student.signupclasslabel")}>
-                            {getFieldDecorator("classCode", {
-                              rules: [
-                                {
-                                  required: true,
-                                  message: t("component.signup.student.validclasscode")
-                                }
-                              ]
-                            })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
-                          </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
-                            {getFieldDecorator("name", {
-                              rules: [
-                                {
-                                  required: true,
-                                  message: t("component.signup.student.validinputname")
-                                }
-                              ]
-                            })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
-                          </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
-                            {getFieldDecorator("email", {
-                              rules: [
-                                {
-                                  type: "email",
-                                  message: t("common.validation.validemail")
-                                },
-                                {
-                                  required: true,
-                                  message: t("common.validation.emptyemailid")
-                                }
-                              ]
-                            })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
-                          </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
-                            {getFieldDecorator("password", {
-                              rules: [
-                                {
-                                  required: true,
-                                  message: t("common.validation.emptypassword")
-                                }
-                              ]
-                            })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
-                          </FormItem>
+                          {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
+                          {method === GOOGLE && this.renderGoogleForm()}
                           <FormItem>
                             <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                              {t("component.signup.student.signupstudentbtn")}
+                              {method !== GOOGLE && method !== OFFICE && t("component.signup.student.signupstudentbtn")}
+                              {method === GOOGLE && t("component.signup.student.signupentercode")}
                             </RegisterButton>
                           </FormItem>
                         </Form>
@@ -397,4 +447,9 @@ const CircleDiv = styled.div`
   position: fixed;
   opacity: 0.6;
   z-index: 0;
+`;
+
+const Description = styled.p`
+  text-align: center;
+  margin-bottom: 16px;
 `;

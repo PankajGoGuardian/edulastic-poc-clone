@@ -89,6 +89,8 @@ const RegistrationBg = styled.img`
   left: -5px;
   right: 0px;
   filter: blur(2px);
+  width: 102%;
+  height: 102%;
 `;
 
 const RegistrationHeader = styled(Row)`

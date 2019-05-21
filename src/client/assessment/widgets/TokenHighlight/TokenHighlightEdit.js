@@ -144,6 +144,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
     <ContentArea>
       <ComposeQuestion
         item={item}
+        setQuestionData={setQuestionData}
         setTemplate={setTemplate}
         fillSections={fillSections}
         cleanSections={cleanSections}
@@ -154,6 +155,7 @@ const TokenHighlightEdit = ({ item, setQuestionData, fillSections, cleanSections
         template={template}
         setTemplate={setTemplate}
         templateTab={templateTab}
+        setQuestionData={setQuestionData}
         setTemplateTab={setTemplateTab}
         fillSections={fillSections}
         cleanSections={cleanSections}

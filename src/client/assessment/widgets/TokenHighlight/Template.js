@@ -33,29 +33,28 @@ class Template extends Component {
 
     const mode = item.tokenization;
 
-    const initialArray = item.template.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
-
-    const paragraphsArray = initialArray.map(el => ({
-      value: `${el}<br/>`,
-      active: true
-    }));
-
-    const sentencesArray = initialArray
-      .join("<br/>")
-      .split(".")
-      .map(el => ({ value: `${el}.`, active: true }))
-      .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
-
-    const wordsArray = initialArray
-      .join("<br/> ")
-      .split(" ")
-      .map(el => ({ value: `${el}`, active: true }));
-
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
         produce(item, draft => {
           if (prop === "template") {
             let resultArray = "";
+            const initialArray = uiStyle.replace(/(<p>|<\/p>)*/g, "").split('<p class="newline_section"><br>');
+
+            const paragraphsArray = initialArray.map(el => ({
+              value: `${el}<br/>`,
+              active: true
+            }));
+
+            const sentencesArray = initialArray
+              .join("<br/>")
+              .split(".")
+              .map(el => ({ value: `${el}.`, active: true }))
+              .filter(el => el.value !== "." && el.value.trim() && el.value !== "<br/>.");
+
+            const wordsArray = initialArray
+              .join("<br/> ")
+              .split(" ")
+              .map(el => ({ value: `${el}`, active: true }));
             if (mode === WORD_MODE) {
               resultArray = cloneDeep(wordsArray);
             } else if (mode === PARAGRAPH_MODE) {

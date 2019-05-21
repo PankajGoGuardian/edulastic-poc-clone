@@ -30,6 +30,7 @@ TokenHighlight.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  setQuestionData: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool

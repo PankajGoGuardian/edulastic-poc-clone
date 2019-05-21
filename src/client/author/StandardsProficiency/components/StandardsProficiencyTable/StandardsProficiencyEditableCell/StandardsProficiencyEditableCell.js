@@ -1,12 +1,28 @@
 import React, { Component } from "react";
-import { Input, Select } from "antd";
-import { StyledFormItem, ScoreColorSpan, StyledColorSelect, ScoreSpan } from "./styled";
-
-const Option = Select.Option;
+import { Input, Dropdown, Menu, Icon } from "antd";
+import {
+  StyledFormItem,
+  ScoreColorSpan,
+  StyledScoreDiv,
+  StyledHiddenInput,
+  StyledColorMenu,
+  ScoreMenuColorSpan
+} from "./styled";
 
 class StandardsProficiencyEditableCell extends React.Component {
   constructor(props) {
     super(props);
+    let selectedColor = "";
+    if (this.props.dataIndex === "color") {
+      selectedColor = this.props.record.color;
+    }
+    this.state = {
+      colorValidate: {
+        validateStatus: "success",
+        validateMsg: ""
+      },
+      selectedColor
+    };
   }
 
   checkLevelUique = (rule, value, callback) => {
@@ -84,19 +100,54 @@ class StandardsProficiencyEditableCell extends React.Component {
     callback("Color should be unique");
   };
 
+  handleColorMenuClick = (e, form) => {
+    form.setFieldsValue({ color: e.key });
+    const dataSource = this.props.dataSource.filter(item => item.key !== this.props.record.key);
+    const sameNameRow = dataSource.filter(item => item.color === e.key);
+    if (sameNameRow.length <= 0) {
+      this.setState({
+        colorValidate: {
+          validateStatus: "success",
+          validateMsg: ""
+        }
+      });
+    } else {
+      this.setState({
+        colorValidate: {
+          validateStatus: "error",
+          validateMsg: "Color should be unique"
+        }
+      });
+    }
+    this.setState({ selectedColor: e.key });
+  };
+
   render() {
     const { editing, dataIndex, title, inputType, record, context, ...restProps } = this.props;
+    const { selectedColor, colorValidate } = this.state;
+
+    const colorMenuItems = [];
+    const colors = ["#F3FCCF", "#C8EB9B", "#FDFDC8", "#FAFA2B", "#FDE2B3", "#FABDBD", "#FFC300", "#D4E9FA"];
+    for (let i = 0; i < colors.length; i++) {
+      colorMenuItems.push(
+        <Menu.Item key={colors[i]}>
+          <ScoreMenuColorSpan isActive={selectedColor === colors[i]} color={colors[i]} />
+        </Menu.Item>
+      );
+    }
+
     return (
       <React.Fragment>
         {editing ? (
           <context.Consumer>
             {form => {
               const { getFieldDecorator } = form;
+
               return (
                 <td {...restProps}>
-                  <StyledFormItem>
-                    {inputType === "shortName" &&
-                      getFieldDecorator(dataIndex, {
+                  {inputType === "shortName" && (
+                    <StyledFormItem>
+                      {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
@@ -108,8 +159,11 @@ class StandardsProficiencyEditableCell extends React.Component {
                         ],
                         initialValue: record[dataIndex]
                       })(<Input />)}
-                    {inputType === "threshold" &&
-                      getFieldDecorator(dataIndex, {
+                    </StyledFormItem>
+                  )}
+                  {inputType === "threshold" && (
+                    <StyledFormItem>
+                      {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
@@ -119,50 +173,40 @@ class StandardsProficiencyEditableCell extends React.Component {
                         ],
                         initialValue: record[dataIndex]
                       })(<Input disabled={record.score == 1} />)}
-                    {inputType === "color" && (
-                      <React.Fragment>
-                        {getFieldDecorator(dataIndex, {
-                          rules: [
-                            {
-                              required: true,
-                              message: "Please Input " + title + "!"
-                            },
-                            { validator: this.checkColorUnique }
-                          ],
-                          initialValue: record[dataIndex]
-                        })(
-                          <StyledColorSelect>
-                            <Option value={"#F3FCCF"}>
-                              <ScoreColorSpan color={"#F3FCCF"} />
-                            </Option>
-                            <Option value={"#C8EB9B"}>
-                              <ScoreColorSpan color={"#C8EB9B"} />
-                            </Option>
-                            <Option value={"#FDFDC8"}>
-                              <ScoreColorSpan color={"#FDFDC8"} />
-                            </Option>
-                            <Option value={"#FAFA2B"}>
-                              <ScoreColorSpan color={"#FAFA2B"} />
-                            </Option>
-                            <Option value={"#FDE2B3"}>
-                              <ScoreColorSpan color={"#FDE2B3"} />
-                            </Option>
-                            <Option value={"#FABDBD"}>
-                              <ScoreColorSpan color={"#FABDBD"} />
-                            </Option>
-                            <Option value={"#FFC300"}>
-                              <ScoreColorSpan color={"#FFC300"} />
-                            </Option>
-                            <Option value={"#D4E9FA"}>
-                              <ScoreColorSpan color={"#D4E9FA"} />
-                            </Option>
-                          </StyledColorSelect>
-                        )}
-                        <ScoreSpan>{record.score}</ScoreSpan>
-                      </React.Fragment>
-                    )}
-                    {inputType === "masteryLevel" &&
-                      getFieldDecorator(dataIndex, {
+                    </StyledFormItem>
+                  )}
+                  {inputType === "color" && (
+                    <StyledFormItem validateStatus={colorValidate.validateStatus} help={colorValidate.validateMsg}>
+                      {getFieldDecorator(dataIndex, {
+                        rules: [
+                          {
+                            required: true,
+                            message: "Please Input " + title + "!"
+                          },
+                          { validator: this.checkColorUnique }
+                        ],
+                        initialValue: record[dataIndex]
+                      })(<StyledHiddenInput />)}
+                      <Dropdown
+                        overlay={
+                          <StyledColorMenu onClick={e => this.handleColorMenuClick(e, form)}>
+                            {colorMenuItems}
+                          </StyledColorMenu>
+                        }
+                        trigger={["click"]}
+                      >
+                        <StyledScoreDiv>
+                          <ScoreColorSpan color={selectedColor} />
+                          <Icon type="down" />
+                          {record.score}
+                        </StyledScoreDiv>
+                      </Dropdown>
+                    </StyledFormItem>
+                  )}
+
+                  {inputType === "masteryLevel" && (
+                    <StyledFormItem>
+                      {getFieldDecorator(dataIndex, {
                         rules: [
                           {
                             required: true,
@@ -174,7 +218,8 @@ class StandardsProficiencyEditableCell extends React.Component {
                         ],
                         initialValue: record[dataIndex]
                       })(<Input />)}
-                  </StyledFormItem>
+                    </StyledFormItem>
+                  )}
                 </td>
               );
             }}

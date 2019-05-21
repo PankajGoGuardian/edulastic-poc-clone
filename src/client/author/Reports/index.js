@@ -17,6 +17,8 @@ import { MultipleAssessmentReport } from "./components/multipleAssessmentReport"
 import { CustomizedHeaderWrapper } from "./common/components/header";
 
 import navigation from "./common/static/json/navigation.json";
+import FeatureWrapper from "../../features/components/FeatureWrapper";
+import FeaturesWrapper from "../../features/components/FeaturesWrapper";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -108,18 +110,30 @@ const Reports = props => {
   return (
     <StyledContainer>
       <Row gutter={20}>
+        <FeaturesWrapper
+          featuresArray={["singleAssessmentReport", "studentProfileReport"]}
+          operation="OR"
+          actionOnInaccessible="hidden"
+        >
+          <Col md={12} xs={24}>
+            <FeatureWrapper feature="singleAssessmentReport" actionOnInaccessible="hidden">
+              <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
+                <SingleAssessmentReport />
+              </StyledCard>
+            </FeatureWrapper>
+            <FeatureWrapper feature="studentProfileReport" actionOnInaccessible="hidden">
+              <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
+                <StudentProfileReport />
+              </StyledCard>
+            </FeatureWrapper>
+          </Col>
+        </FeaturesWrapper>
         <Col md={12} xs={24}>
-          <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
-            <SingleAssessmentReport />
-          </StyledCard>
-          <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
-            <StudentProfileReport />
-          </StyledCard>
-        </Col>
-        <Col md={12} xs={24}>
-          <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
-            <MultipleAssessmentReport />
-          </StyledCard>
+          <FeatureWrapper feature="multipleAssessmentReport" actionOnInaccessible="hidden">
+            <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
+              <MultipleAssessmentReport />
+            </StyledCard>
+          </FeatureWrapper>
           <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
             <StandardsMasteryReport />
           </StyledCard>

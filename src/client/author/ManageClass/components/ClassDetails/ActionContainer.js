@@ -22,6 +22,7 @@ import {
   StyledIcon,
   MenuItem
 } from "./styled";
+import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 
 const modalStatus = {};
 
@@ -167,14 +168,18 @@ const ActionContainer = ({
 
   const actionMenu = (
     <Menu onClick={handleActionMenuClick}>
-      <MenuItem key="enableSpeech">
-        <Icon type="caret-right" />
-        Enable Text To Speech
-      </MenuItem>
-      <MenuItem key="disableSpeech">
-        <Icon type="sound" />
-        Disable Text To Speech
-      </MenuItem>
+      <FeatureWrapper feature="textToSpeech" actionOnInaccessible="hidden">
+        <MenuItem key="enableSpeech">
+          <Icon type="caret-right" />
+          Enable Text To Speech
+        </MenuItem>
+      </FeatureWrapper>
+      <FeatureWrapper feature="textToSpeech" actionOnInaccessible="hidden">
+        <MenuItem key="disableSpeech">
+          <Icon type="sound" />
+          Disable Text To Speech
+        </MenuItem>
+      </FeatureWrapper>
       <MenuItem key="delete">
         <Icon type="delete" />
         Remove Selected Student(s)
@@ -187,10 +192,12 @@ const ActionContainer = ({
         <Icon type="edit" />
         Edit Student
       </MenuItem>
-      <MenuItem key="addCoTeacher">
-        <Icon type="switcher" />
-        Add a Co-Teacher
-      </MenuItem>
+      <FeatureWrapper feature="addCoTeacher" actionOnInaccessible="hidden">
+        <MenuItem key="addCoTeacher">
+          <Icon type="switcher" />
+          Add a Co-Teacher
+        </MenuItem>
+      </FeatureWrapper>
     </Menu>
   );
 

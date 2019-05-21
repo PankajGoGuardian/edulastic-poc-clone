@@ -22,6 +22,21 @@ module.exports = {
     { id: "ui-time", title: "UI / Time" },
     { id: "administration", title: "Administration" }
   ],
+  settingCategoriesFeatureMap: {
+    "test-type": "free",
+    "mark-as-done": "assessmentSuperPowersMarkAsDone",
+    "release-scores": "free",
+    "require-safe-exame-browser": "assessmentSuperPowersRequireSafeExamBrowser",
+    // below "show-questions" is sth that I dont know and is not rendered in the settings so havent render it on the feature map by making it undefined
+    "show-questions": "undefined",
+    "suffle-question": "assessmentSuperPowersShuffleQuestions",
+    "show-answer-choice": "assessmentSuperPowersShuffleAnswerChoice",
+    "show-calculator": "assessmentSuperPowersShowCalculator",
+    "answer-on-paper": "assessmentSuperPowersAnswerOnPaper",
+    "require-password": "assessmentSuperPowersRequirePassword",
+    "evaluation-method": "assessmentSuperPowersEvaluationMethod",
+    "performance-bands": "performanceBands"
+  },
   performanceBandsData: {
     ADVANCED: {
       bands: "Advanced",

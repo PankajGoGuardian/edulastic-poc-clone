@@ -11,6 +11,7 @@ import { withRouter } from "react-router-dom";
 import { FlexContainer } from "@edulastic/common";
 import { mainBlueColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
 import { IconClose, IconShare } from "@edulastic/icons";
+import { getUserFeatures } from "../../../../../student/Login/ducks";
 
 import {
   getTestIdSelector,
@@ -57,10 +58,18 @@ class ShareModal extends React.Component {
     this.state = {
       sharedType: sharedKeysObj.INDIVIDUAL,
       currentUser: {},
-      permission: "EDIT"
+      permission: props.features["editPermissionOnTestSharing"] ? "EDIT" : "VIEW"
     };
     this.handleSearch = this.handleSearch.bind(this);
+
+    this._permissionKeys = [];
+    if (!props.features["editPermissionOnTestSharing"]) {
+      this._permissionKeys = [permissionKeys[1]];
+    } else {
+      this._permissionKeys = permissionKeys;
+    }
   }
+
   componentDidMount() {
     const { getSharedUsers, match, isPlaylist } = this.props;
     const testId = match.params.id;
@@ -258,11 +267,13 @@ class ShareModal extends React.Component {
                 disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
                 value={permission}
               >
-                {permissionKeys.map(item => (
-                  <Select.Option value={item} key={permissions[item]}>
-                    {permissions[item]}
-                  </Select.Option>
-                ))}
+                {this._permissionKeys.map(item => {
+                  return (
+                    <Select.Option value={item} key={permissions[item]}>
+                      {permissions[item]}
+                    </Select.Option>
+                  );
+                })}
               </Select>
               <ShareButton type="primary" onClick={this.handleShare}>
                 <IconShare color={white} /> SHARE
@@ -299,7 +310,8 @@ const enhance = compose(
       userList: getUsersListSelector(state),
       fetching: getFetchingSelector(state),
       sharedUsersList: getUserListSelector(state),
-      currentUserId: _get(state, "user.user._id", "")
+      currentUserId: _get(state, "user.user._id", ""),
+      features: getUserFeatures(state)
     }),
     {
       getUsers: fetchUsersListAction,

@@ -13,6 +13,7 @@ import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
+import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 
 export const SingleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -80,35 +81,37 @@ export const SingleAssessmentReportContainer = props => {
 
   return (
     <>
-      <SingleAssessmentReportFilters
-        onGoClick={onGoClick}
-        loc={props.loc}
-        history={props.history}
-        location={props.location}
-        match={props.match}
-        style={props.showFilter ? { display: "block" } : { display: "none" }}
-      />
-      <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
-      <Route
-        exact
-        path={`/author/reports/assessment-summary/test/:testId?`}
-        render={_props => <AssessmentSummary {..._props} settings={settings} />}
-      />
-      <Route
-        exact
-        path={`/author/reports/peer-performance/test/:testId?`}
-        render={_props => <PeerPerformance {..._props} settings={settings} />}
-      />
-      <Route
-        exact
-        path={`/author/reports/response-frequency/test/:testId?`}
-        render={_props => <ResponseFrequency {..._props} settings={settings} />}
-      />
-      <Route
-        exact
-        path={`/author/reports/performance-by-standards/test/:testId?`}
-        render={_props => <PerformanceByStandards {..._props} showFilter={props.showFilter} settings={settings} />}
-      />
+      <FeatureWrapper feature="singleAssessmentReport" actionOnInaccessible="hidden">
+        <SingleAssessmentReportFilters
+          onGoClick={onGoClick}
+          loc={props.loc}
+          history={props.history}
+          location={props.location}
+          match={props.match}
+          style={props.showFilter ? { display: "block" } : { display: "none" }}
+        />
+        <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
+        <Route
+          exact
+          path={`/author/reports/assessment-summary/test/:testId?`}
+          render={_props => <AssessmentSummary {..._props} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/peer-performance/test/:testId?`}
+          render={_props => <PeerPerformance {..._props} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/response-frequency/test/:testId?`}
+          render={_props => <ResponseFrequency {..._props} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/performance-by-standards/test/:testId?`}
+          render={_props => <PerformanceByStandards {..._props} showFilter={props.showFilter} settings={settings} />}
+        />
+      </FeatureWrapper>
     </>
   );
 };

@@ -146,7 +146,9 @@ class ClassHeader extends Component {
           {showDropdown && (
             <MenuWrapper>
               <Menu>
-                <Menu.Item key="1">Mark as Done</Menu.Item>
+                <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+                  <Menu.Item key="1">Mark as Done</Menu.Item>
+                </FeatureWrapper>
                 <Menu.Item
                   key="2"
                   onClick={this.handleReleaseScore}

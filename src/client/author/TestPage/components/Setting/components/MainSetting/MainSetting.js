@@ -33,9 +33,12 @@ import {
   ActivityInput,
   Container
 } from "./styled";
+import FeatureWrapper from "../../../../../../features/components/FeatureWrapper";
+import { getUserFeatures } from "../../../../../../student/Login/ducks";
 
 const {
   settingCategories,
+  settingCategoriesFeatureMap,
   performanceBandsData,
   type,
   navigations,
@@ -79,6 +82,11 @@ class MainSetting extends Component {
       enable: true,
       showAdvancedOption: false
     };
+
+    this._releaseGradeKeys = releaseGradeKeys;
+    if (!props.features.assessmentSuperPowersReleaseScorePremium) {
+      this._releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]];
+    }
   }
 
   handleShowPassword = () => {
@@ -179,13 +187,17 @@ class MainSetting extends Component {
         <Row style={{ padding: 0 }}>
           <Col span={isSmallSize ? 0 : 6}>
             <StyledAnchor affix={false} offsetTop={125}>
-              {settingCategories.slice(0, -5).map(category => (
-                <Anchor.Link
-                  key={category.id}
-                  href={`${history.location.pathname}#${category.id}`}
-                  title={category.title.toLowerCase()}
-                />
-              ))}
+              {settingCategories.slice(0, -5).map(category => {
+                if (this.props.features[settingCategoriesFeatureMap[category.id]]) {
+                  return (
+                    <Anchor.Link
+                      key={category.id}
+                      href={`${history.location.pathname}#${category.id}`}
+                      title={category.title.toLowerCase()}
+                    />
+                  );
+                }
+              })}
             </StyledAnchor>
             <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
               {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
@@ -240,31 +252,32 @@ class MainSetting extends Component {
                 </Col>
               </Row>
             </Block>
-            <Block id="mark-as-done" smallSize={isSmallSize}>
-              <Title>Mark as Done</Title>
-              <Body smallSize={isSmallSize}>
-                <StyledRadioGroup onChange={this.updateFeatures("markAsDoneValue")} value={markAsDoneValue}>
-                  {Object.keys(completionTypes).map(item => (
-                    <Radio value={completionTypes[item]} key={completionTypes[item]}>
-                      {completionTypes[item]}
-                    </Radio>
-                  ))}
-                </StyledRadioGroup>
-                <Description>
-                  {"Control when class will be marked as Done. "}
-                  <BlueText>Automatically</BlueText>
-                  {" when all students are graded and due date has passed OR "}
-                  <BlueText>Manually</BlueText>
-                  {' when you click the "Mark as Done" button.'}
-                </Description>
-              </Body>
-            </Block>
-
+            <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+              <Block id="mark-as-done" smallSize={isSmallSize}>
+                <Title>Mark as Done</Title>
+                <Body smallSize={isSmallSize}>
+                  <StyledRadioGroup onChange={this.updateFeatures("markAsDoneValue")} value={markAsDoneValue}>
+                    {Object.keys(completionTypes).map(item => (
+                      <Radio value={completionTypes[item]} key={completionTypes[item]}>
+                        {completionTypes[item]}
+                      </Radio>
+                    ))}
+                  </StyledRadioGroup>
+                  <Description>
+                    {"Control when class will be marked as Done. "}
+                    <BlueText>Automatically</BlueText>
+                    {" when all students are graded and due date has passed OR "}
+                    <BlueText>Manually</BlueText>
+                    {' when you click the "Mark as Done" button.'}
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
             <Block id="release-scores" smallSize={isSmallSize}>
               <Title>Release Scores</Title>
               <Body smallSize={isSmallSize}>
                 <StyledRadioGroup onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
-                  {releaseGradeKeys.map(item => (
+                  {this._releaseGradeKeys.map(item => (
                     <Radio value={item} key={item}>
                       {releaseGradeTypes[item]}
                     </Radio>
@@ -281,147 +294,155 @@ class MainSetting extends Component {
                 </Description>
               </Body>
             </Block>
-
-            <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
-              <Title>Require Safe Exam Browser</Title>
-              <Body smallSize={isSmallSize}>
-                <Switch defaultChecked={safeBrowser} onChange={this.updateTestData("safeBrowser")} />
-                {safeBrowser && (
-                  <InputPassword
-                    prefix={
-                      <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
-                    }
-                    onChange={this.setPassword}
-                    size="large"
-                    value={sebPassword}
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                  />
-                )}
-                <Description>
-                  {
-                    "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
-                  }
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="suffle-question" smallSize={isSmallSize}>
-              <Title>Shuffle Questions</Title>
-              <Body smallSize={isSmallSize}>
-                <Switch defaultChecked={shuffleQuestions} onChange={this.updateTestData("shuffleQuestions")} />
-                <Description>
-                  {"If "}
-                  <BlueText>ON</BlueText>
-                  {", then order of questions will be different for each student."}
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="show-answer-choice" smallSize={isSmallSize}>
-              <Title>Shuffle Answer Choice</Title>
-              <Body smallSize={isSmallSize}>
-                <Switch defaultChecked={shuffleAnswers} onChange={this.updateTestData("shuffleAnswers")} />
-                <Description>
-                  {"If set to "}
-                  <BlueText>ON</BlueText>
-                  {
-                    ", answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
-                  }
-                  <br />
-                  {"Text to speech does not work when the answer choices are shuffled."}
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="show-calculator" smallSize={isSmallSize}>
-              <Title>Show Calculator</Title>
-              <Body smallSize={isSmallSize}>
-                <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
-                  {calculatorKeys.map(item => (
-                    <Radio value={item} key={item}>
-                      {calculators[item]}
-                    </Radio>
-                  ))}
-                </StyledRadioGroup>
-                <Description>
-                  {
-                    "Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
-                  }
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="answer-on-paper" smallSize={isSmallSize}>
-              <Title>Answer on Paper</Title>
-              <Body smallSize={isSmallSize}>
-                <Switch defaultChecked={answerOnPaper} onChange={this.updateTestData("answerOnPaper")} />
-                <Description>
-                  {
-                    "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
-                  }
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="require-password" smallSize={isSmallSize}>
-              <Title>Require Password</Title>
-              <Body smallSize={isSmallSize}>
-                <Switch defaultChecked={requirePassword} onChange={this.updateTestData("shuffleAns")} />
-                <Description>
-                  {
-                    "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
-                  }
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="evaluation-method" smallSize={isSmallSize}>
-              <Title>Evaluation Method</Title>
-              <Body smallSize={isSmallSize}>
-                <StyledRadioGroup onChange={this.updateFeatures("evalType")} value={evalType}>
-                  {Object.keys(evalTypes).map(item => (
-                    <Radio value={evalTypes[item]} key={evalTypes[item]}>
-                      {evalTypes[item]}
-                    </Radio>
-                  ))}
-                </StyledRadioGroup>
-                <Description>
-                  {
-                    "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."
-                  }
-                </Description>
-              </Body>
-            </Block>
-
-            <Block id="performance-bands" smallSize={isSmallSize}>
-              <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
-                <Col span={6}>
-                  <Title>Performance Bands</Title>
-                </Col>
-                <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                  <NormalText>Above or At Standard</NormalText>
-                </Col>
-                <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                  <NormalText>From</NormalText>
-                </Col>
-                <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
-                  <NormalText>To</NormalText>
-                </Col>
-              </Row>
-              <List
-                grid={{ column: 1 }}
-                dataSource={Object.keys(performanceBandsData)}
-                renderItem={item => (
-                  <List.Item>
-                    <ListCard
-                      item={performanceBandsData[item]}
-                      onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
+            <FeatureWrapper feature="assessmentSuperPowersRequireSafeExamBrowser" actionOnInaccessible="hidden">
+              <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
+                <Title>Require Safe Exam Browser</Title>
+                <Body smallSize={isSmallSize}>
+                  <Switch defaultChecked={safeBrowser} onChange={this.updateTestData("safeBrowser")} />
+                  {safeBrowser && (
+                    <InputPassword
+                      prefix={
+                        <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
+                      }
+                      onChange={this.setPassword}
+                      size="large"
+                      value={sebPassword}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
                     />
-                  </List.Item>
-                )}
-              />
-            </Block>
+                  )}
+                  <Description>
+                    {
+                      "Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed."
+                    }
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersShuffleQuestions" actionOnInaccessible="hidden">
+              <Block id="suffle-question" smallSize={isSmallSize}>
+                <Title>Shuffle Questions</Title>
+                <Body smallSize={isSmallSize}>
+                  <Switch defaultChecked={shuffleQuestions} onChange={this.updateTestData("shuffleQuestions")} />
+                  <Description>
+                    {"If "}
+                    <BlueText>ON</BlueText>
+                    {", then order of questions will be different for each student."}
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersShuffleAnswerChoice" actionOnInaccessible="hidden">
+              <Block id="show-answer-choice" smallSize={isSmallSize}>
+                <Title>Shuffle Answer Choice</Title>
+                <Body smallSize={isSmallSize}>
+                  <Switch defaultChecked={shuffleAnswers} onChange={this.updateTestData("shuffleAnswers")} />
+                  <Description>
+                    {"If set to "}
+                    <BlueText>ON</BlueText>
+                    {
+                      ", answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
+                    }
+                    <br />
+                    {"Text to speech does not work when the answer choices are shuffled."}
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersShowCalculator" actionOnInaccessible="hidden">
+              <Block id="show-calculator" smallSize={isSmallSize}>
+                <Title>Show Calculator</Title>
+                <Body smallSize={isSmallSize}>
+                  <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
+                    {calculatorKeys.map(item => (
+                      <Radio value={item} key={item}>
+                        {calculators[item]}
+                      </Radio>
+                    ))}
+                  </StyledRadioGroup>
+                  <Description>
+                    {
+                      "Choose if student can use a calculator, also select the type of calculator that would be shown to the students."
+                    }
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersAnswerOnPaper" actionOnInaccessible="hidden">
+              <Block id="answer-on-paper" smallSize={isSmallSize}>
+                <Title>Answer on Paper</Title>
+                <Body smallSize={isSmallSize}>
+                  <Switch defaultChecked={answerOnPaper} onChange={this.updateTestData("answerOnPaper")} />
+                  <Description>
+                    {
+                      "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
+                    }
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersRequirePassword" actionOnInaccessible="hidden">
+              <Block id="require-password" smallSize={isSmallSize}>
+                <Title>Require Password</Title>
+                <Body smallSize={isSmallSize}>
+                  <Switch defaultChecked={requirePassword} onChange={this.updateTestData("shuffleAns")} />
+                  <Description>
+                    {
+                      "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."
+                    }
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
+              <Block id="evaluation-method" smallSize={isSmallSize}>
+                <Title>Evaluation Method</Title>
+                <Body smallSize={isSmallSize}>
+                  <StyledRadioGroup onChange={this.updateFeatures("evalType")} value={evalType}>
+                    {Object.keys(evalTypes).map(item => (
+                      <Radio value={evalTypes[item]} key={evalTypes[item]}>
+                        {evalTypes[item]}
+                      </Radio>
+                    ))}
+                  </StyledRadioGroup>
+                  <Description>
+                    {
+                      "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."
+                    }
+                  </Description>
+                </Body>
+              </Block>
+            </FeatureWrapper>
+            <FeatureWrapper feature="performanceBands" actionOnInaccessible="hidden">
+              <Block id="performance-bands" smallSize={isSmallSize}>
+                <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
+                  <Col span={6}>
+                    <Title>Performance Bands</Title>
+                  </Col>
+                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
+                    <NormalText>Above or At Standard</NormalText>
+                  </Col>
+                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
+                    <NormalText>From</NormalText>
+                  </Col>
+                  <Col span={6} style={{ display: "flex", justifyContent: "center" }}>
+                    <NormalText>To</NormalText>
+                  </Col>
+                </Row>
+                <List
+                  grid={{ column: 1 }}
+                  dataSource={Object.keys(performanceBandsData)}
+                  renderItem={item => (
+                    <List.Item>
+                      <ListCard
+                        item={performanceBandsData[item]}
+                        onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
+                      />
+                    </List.Item>
+                  )}
+                />
+              </Block>
+            </FeatureWrapper>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>
@@ -582,7 +603,8 @@ MainSetting.propTypes = {
 
 export default connect(
   state => ({
-    entity: getTestEntitySelector(state)
+    entity: getTestEntitySelector(state),
+    features: getUserFeatures(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

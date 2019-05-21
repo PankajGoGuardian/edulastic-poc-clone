@@ -6,6 +6,7 @@ import styled, { withTheme } from "styled-components";
 
 import { InstructorStimulus, WithMathFormula } from "@edulastic/common";
 
+import { PreWrapper } from "@edulastic/common";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
@@ -131,76 +132,78 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
 
     const previewTemplateBoxLayout = (
-      <div
-        className={`template_box ${smallSize ? "dropdown-small" : ""}`}
-        style={{
-          fontSize: smallSize ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize : fontSize,
-          padding: smallSize ? 0 : 20
-        }}
-      >
-        {templateParts.map((templatePart, index) => {
-          if (templatePart.indexOf('class="response-btn"') !== -1) {
-            const dropTargetIndex = responseIndex;
-            responseIndex++;
-            const btnStyle = {
-              width: 0,
-              height: 0,
-              widthpx: 0,
-              heightpx: 0,
-              placeholder
-            };
-            if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-              const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
-              btnStyle.width = widthpx;
-              btnStyle.height = heightpx;
-              btnStyle.widthpx = widthpx;
-              btnStyle.heightpx = heightpx;
-              btnStyle.placeholder = placeholder;
+      <PreWrapper>
+        <div
+          className={`template_box ${smallSize ? "dropdown-small" : ""}`}
+          style={{
+            fontSize: smallSize ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize : fontSize,
+            padding: smallSize ? 0 : 20
+          }}
+        >
+          {templateParts.map((templatePart, index) => {
+            if (templatePart.indexOf('class="response-btn"') !== -1) {
+              const dropTargetIndex = responseIndex;
+              responseIndex++;
+              const btnStyle = {
+                width: 0,
+                height: 0,
+                widthpx: 0,
+                heightpx: 0,
+                placeholder
+              };
+              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
+                btnStyle.width = widthpx;
+                btnStyle.height = heightpx;
+                btnStyle.widthpx = widthpx;
+                btnStyle.heightpx = heightpx;
+                btnStyle.placeholder = placeholder;
+              }
+              if (btnStyle && btnStyle.width === 0) {
+                btnStyle.width = responseBtnStyle.widthpx;
+              } else {
+                btnStyle.width = btnStyle.widthpx;
+              }
+              if (btnStyle && btnStyle.height === 0) {
+                btnStyle.height = responseBtnStyle.heightpx;
+              } else {
+                btnStyle.height = btnStyle.heightpx;
+              }
+              if (btnStyle && btnStyle.placeholder === undefined) {
+                btnStyle.placeholder = responseBtnStyle.placeholder;
+              }
+              maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
+              return (
+                <Select
+                  value={userAnswers[dropTargetIndex]}
+                  style={btnStyle}
+                  data-cy="drop_down_select"
+                  onChange={value => this.selectChange(value, dropTargetIndex)}
+                  key={index}
+                >
+                  <Option value="**default_value**" disabled>
+                    {placeholder}
+                  </Option>
+                  {responses &&
+                    responses[dropTargetIndex] &&
+                    responses[dropTargetIndex].map((response, respID) => (
+                      <Option value={response} key={respID}>
+                        {response}
+                      </Option>
+                    ))}
+                </Select>
+              );
             }
-            if (btnStyle && btnStyle.width === 0) {
-              btnStyle.width = responseBtnStyle.widthpx;
-            } else {
-              btnStyle.width = btnStyle.widthpx;
-            }
-            if (btnStyle && btnStyle.height === 0) {
-              btnStyle.height = responseBtnStyle.heightpx;
-            } else {
-              btnStyle.height = btnStyle.heightpx;
-            }
-            if (btnStyle && btnStyle.placeholder === undefined) {
-              btnStyle.placeholder = responseBtnStyle.placeholder;
-            }
-            maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
             return (
-              <Select
-                value={userAnswers[dropTargetIndex]}
-                style={btnStyle}
-                data-cy="drop_down_select"
-                onChange={value => this.selectChange(value, dropTargetIndex)}
+              <MathSpan
+                lineHeight={`${maxLineHeight}px`}
                 key={index}
-              >
-                <Option value="**default_value**" disabled>
-                  {placeholder}
-                </Option>
-                {responses &&
-                  responses[dropTargetIndex] &&
-                  responses[dropTargetIndex].map((response, respID) => (
-                    <Option value={response} key={respID}>
-                      {response}
-                    </Option>
-                  ))}
-              </Select>
+                dangerouslySetInnerHTML={{ __html: templatePart }}
+              />
             );
-          }
-          return (
-            <MathSpan
-              lineHeight={`${maxLineHeight}px`}
-              key={index}
-              dangerouslySetInnerHTML={{ __html: templatePart }}
-            />
-          );
-        })}
-      </div>
+          })}
+        </div>
+      </PreWrapper>
     );
 
     const checkboxTemplateBoxLayout = (

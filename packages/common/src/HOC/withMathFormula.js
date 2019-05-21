@@ -10,8 +10,6 @@ export const withMathFormula = WrappedComponent => {
     opacity: 0;
   `;
   const StyledWrappedComponent = styled(WrappedComponent)`
-    display: block;
-    width: 100%;
     p {
       display: inline;
     }

@@ -24,6 +24,7 @@ export { default as Subtitle } from "./src/components/Subtitle";
 export { default as CorItem } from "./src/components/CorItem";
 export { default as CenteredText } from "./src/components/CenteredText";
 export { default as Image } from "./src/components/Image";
+export { default as PreWrapper } from "./src/components/PreWrapper";
 
 export { default as Tabs } from "./src/components/Tabs";
 export { default as Tab } from "./src/components/Tabs/Tab";

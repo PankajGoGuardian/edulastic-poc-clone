@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import styled from "styled-components";
 
-import { InstructorStimulus, WithMathFormula } from "@edulastic/common";
+import { InstructorStimulus, WithMathFormula, PreWrapper } from "@edulastic/common";
 
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -122,80 +122,82 @@ class ClozeTextDisplay extends Component {
     };
     let maxLineHeight = smallSize ? 50 : 40;
     const previewTemplateBoxLayout = (
-      <div
-        className={`template_box ${smallSize ? "text-small" : ""}`}
-        style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
-      >
-        {Array.isArray(templateParts) &&
-          templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
-              responseIndex++;
-              const btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                placeholder,
-                inputtype
-              };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const {
-                  widthpx: widthpx1,
-                  heightpx: heightpx1,
-                  placeholder: placeholder1,
-                  inputtype: inputtype1
-                } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx1;
-                btnStyle.height = heightpx1;
-                btnStyle.widthpx = widthpx1;
-                btnStyle.heightpx = heightpx1;
-                btnStyle.placeholder = placeholder1;
-                btnStyle.inputtype = inputtype1;
+      <PreWrapper>
+        <div
+          className={`template_box ${smallSize ? "text-small" : ""}`}
+          style={{ fontSize: smallSize ? 14 : fontSize, padding: smallSize ? 0 : 20 }}
+        >
+          {Array.isArray(templateParts) &&
+            templateParts.map((templatePart, index) => {
+              if (templatePart.indexOf('class="response-btn"') !== -1) {
+                const dropTargetIndex = responseIndex;
+                responseIndex++;
+                const btnStyle = {
+                  width: 0,
+                  height: 0,
+                  widthpx: 0,
+                  heightpx: 0,
+                  placeholder,
+                  inputtype
+                };
+                if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                  const {
+                    widthpx: widthpx1,
+                    heightpx: heightpx1,
+                    placeholder: placeholder1,
+                    inputtype: inputtype1
+                  } = responsecontainerindividuals[dropTargetIndex];
+                  btnStyle.width = widthpx1;
+                  btnStyle.height = heightpx1;
+                  btnStyle.widthpx = widthpx1;
+                  btnStyle.heightpx = heightpx1;
+                  btnStyle.placeholder = placeholder1;
+                  btnStyle.inputtype = inputtype1;
+                }
+                if (btnStyle && btnStyle.width === 0) {
+                  btnStyle.width = responseBtnStyle.widthpx;
+                } else {
+                  btnStyle.width = btnStyle.widthpx;
+                }
+                if (btnStyle && btnStyle.height === 0) {
+                  btnStyle.height = responseBtnStyle.heightpx;
+                } else {
+                  btnStyle.height = btnStyle.heightpx;
+                }
+                if (btnStyle && btnStyle.placeholder === undefined) {
+                  btnStyle.placeholder = responseBtnStyle.placeholder;
+                } else {
+                  btnStyle.placeholder = btnStyle.placeholder;
+                }
+                if (btnStyle && btnStyle.inputtype === undefined) {
+                  btnStyle.inputtype = responseBtnStyle.inputtype;
+                } else {
+                  btnStyle.inputtype = btnStyle.inputtype;
+                }
+                maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
+                return (
+                  <ClozeTextInput
+                    value={userAnswers[dropTargetIndex]}
+                    style={{ height: btnStyle.height }}
+                    btnStyle={btnStyle}
+                    dropTargetIndex={dropTargetIndex}
+                    onChange={this._changeInput}
+                    placeholder={btnStyle.placeholder}
+                    type={btnStyle.inputtype}
+                    item={item}
+                  />
+                );
               }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle.height = responseBtnStyle.heightpx;
-              } else {
-                btnStyle.height = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.placeholder === undefined) {
-                btnStyle.placeholder = responseBtnStyle.placeholder;
-              } else {
-                btnStyle.placeholder = btnStyle.placeholder;
-              }
-              if (btnStyle && btnStyle.inputtype === undefined) {
-                btnStyle.inputtype = responseBtnStyle.inputtype;
-              } else {
-                btnStyle.inputtype = btnStyle.inputtype;
-              }
-              maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
               return (
-                <ClozeTextInput
-                  value={userAnswers[dropTargetIndex]}
-                  style={{ height: btnStyle.height }}
-                  btnStyle={btnStyle}
-                  dropTargetIndex={dropTargetIndex}
-                  onChange={this._changeInput}
-                  placeholder={btnStyle.placeholder}
-                  type={btnStyle.inputtype}
-                  item={item}
+                <MathSpan
+                  lineHeight={`${maxLineHeight}px`}
+                  key={index}
+                  dangerouslySetInnerHTML={{ __html: templatePart }}
                 />
               );
-            }
-            return (
-              <MathSpan
-                lineHeight={`${maxLineHeight}px`}
-                key={index}
-                dangerouslySetInnerHTML={{ __html: templatePart }}
-              />
-            );
-          })}
-      </div>
+            })}
+        </div>
+      </PreWrapper>
     );
 
     const checkboxTemplateBoxLayout = (

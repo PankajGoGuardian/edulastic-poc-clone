@@ -22,7 +22,7 @@ import {
   IconCurriculumSequence,
   IconSettings
 } from "@edulastic/icons";
-import { greyish } from "@edulastic/colors";
+import { dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { withWindowSizes } from "@edulastic/common";
 import { logoutAction } from "../actions/auth";
@@ -84,7 +84,9 @@ class SideMenu extends Component {
     const { title = "Eureka Math", _id = "" } = lastPlayList.value || {};
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
-      <TextIcon isSidebarCollapsed={isSidebarCollapsed}>{`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`}</TextIcon>
+      <TextIcon isSidebarCollapsed={isSidebarCollapsed}>
+        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`} <i class="fa fa-heart" />
+      </TextIcon>
     );
     return [
       item1,
@@ -311,7 +313,26 @@ export default enhance(ReactOutsideEvent(SideMenu, ["mousedown"]));
 
 const TextIcon = styled.div`
   border-radius: 50%;
+  margin-right: 1em;
+  width: 33px;
+  height: 33px;
+  background: ${dashBorderColor};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid ${fadedBlack};
+  color: ${fadedBlack};
+  position: relative;
   margin-right: ${props => (props.isSidebarCollapsed ? 0 : "1em")};
+  .fa-heart {
+    position: absolute;
+    bottom: 0px;
+    color: ${redHeart};
+    right: 0px;
+    &:before {
+      font-size: 10px;
+    }
+  }
 `;
 
 const FixedSidebar = styled.div`

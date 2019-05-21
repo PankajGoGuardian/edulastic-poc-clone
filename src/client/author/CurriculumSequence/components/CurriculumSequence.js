@@ -9,6 +9,7 @@ import { withRouter } from "react-router-dom";
 import * as moment from "moment";
 import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
 import { FlexContainer } from "@edulastic/common";
+import { curriculumSequencesApi } from "@edulastic/api";
 import {
   white,
   greenSecondary,
@@ -182,10 +183,17 @@ class CurriculumSequence extends Component {
     saveCurriculumSequence();
   };
 
-  handleCustomizeClick = evt => {
-    const { onUseThisClick } = this.props;
-    this.setState({ hideEditOptions: false });
-    onUseThisClick();
+  handleCustomizeClick = async () => {
+    const {
+      history,
+      destinationCurriculumSequence: { _id }
+    } = this.props;
+    const urlHasUseThis = history.location.pathname.match(/use-this/g);
+    if (urlHasUseThis) {
+      return history.push(`/author/playlists/${_id}/edit`);
+    }
+    const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList(_id);
+    history.push(`/author/playlists/${duplicatePlayList._id}/edit`);
   };
 
   handleUseThisClick = () => {

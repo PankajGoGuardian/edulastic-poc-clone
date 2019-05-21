@@ -75,6 +75,15 @@ const publishPlaylist = id => {
     })
     .then(res => res.data.result);
 };
+
+const duplicatePlayList = id =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${id}/duplicate`
+    })
+    .then(res => res.data.result);
+
 export default {
   getCurriculums: getPlaylist,
   updateCurriculumSequence,
@@ -82,5 +91,6 @@ export default {
   searchCurriculumSequences,
   create,
   publishPlaylist,
-  update
+  update,
+  duplicatePlayList
 };

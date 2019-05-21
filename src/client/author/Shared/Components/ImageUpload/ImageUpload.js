@@ -10,10 +10,9 @@ class ImageUpload extends Component {
     this.state = {
       visibleRequired: false
     };
-    this.handleChange = this.handleChange.bind(this);
   }
 
-  async handleChange(event) {
+  handleChange = async event => {
     const file = event.target.files[0];
     if (file.size > 2 * 1024 * 1024) {
       message.error("Image must smaller then 2MB!");
@@ -23,7 +22,7 @@ class ImageUpload extends Component {
       const { keyName } = this.props;
       this.props.updateImgUrl(fileUri, keyName);
     }
-  }
+  };
 
   clickFileOpen = () => {
     this.inputElement.click();
@@ -48,6 +47,9 @@ class ImageUpload extends Component {
             ref={input => (this.inputElement = input)}
             type="file"
             onChange={this.handleChange}
+            onClick={e => {
+              e.target.value = null;
+            }}
             accept=".jpg, .png"
           />
           <StyledImg src={this.props.imgSrc} />

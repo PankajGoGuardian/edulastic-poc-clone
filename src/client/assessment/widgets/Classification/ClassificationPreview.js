@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo, Fragment } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual, get, shuffle } from "lodash";
+import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
@@ -71,7 +71,9 @@ const ClassificationPreview = ({
     group_possible_responses,
     possible_response_groups = [],
     stimulus,
+    imageUrl,
     shuffle_options,
+    transparent_possible_responses,
     duplicate_responses,
     ui_style: {
       column_count: colCount,
@@ -116,8 +118,8 @@ const ClassificationPreview = ({
   );
 
   useEffect(() => {
-    setAnswers(initialAnswers);
-    setDragItems(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp))));
+    setAnswers(uniq(initialAnswers));
+    setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
   }, [userAnswer]);
 
   useEffect(() => {
@@ -127,8 +129,8 @@ const ClassificationPreview = ({
       ((possible_responses.length !== dragItems.length && editCorrectAnswers.length > 0) ||
         (editCorrectAnswers.length > 0 && !isEqual(possible_responses, dragItems)))
     ) {
-      setAnswers(initialAnswers);
-      setDragItems(possible_responses);
+      setAnswers(uniq(initialAnswers));
+      setDragItems(uniq(possible_responses));
     }
   });
 
@@ -149,6 +151,8 @@ const ClassificationPreview = ({
         if (arr.includes(itemCurrent.item)) {
           arr.splice(arr.indexOf(itemCurrent.item), 1);
         }
+
+        arr = uniq(arr);
       });
 
       if (!dItems.includes(itemCurrent.item)) {
@@ -169,13 +173,15 @@ const ClassificationPreview = ({
         if (i === itemTo.index) {
           arr.push(itemCurrent.item);
         }
+
+        arr = uniq(arr);
       });
     }
 
-    if (!isEqual(ansArrays, answers)) {
-      setAnswers(ansArrays);
+    if (!isEqual(uniq(ansArrays), answers)) {
+      setAnswers(uniq(ansArrays));
     }
-    saveAnswer(ansArrays.map(ansArr => ansArr.map(ans => posResp.indexOf(ans))));
+    saveAnswer(uniq(ansArrays.map(ansArr => uniq(ansArr.map(ans => posResp.indexOf(ans))))));
   };
 
   const drop = ({ flag, index }) => ({ flag, index });
@@ -211,16 +217,18 @@ const ClassificationPreview = ({
 
   const verifiedDragItems = useMemo(
     () =>
-      shuffle_options
-        ? shuffle(duplicate_responses ? posResponses : dragItems)
-        : duplicate_responses
-        ? posResponses
-        : dragItems,
+      uniq(
+        shuffle_options
+          ? shuffle(duplicate_responses ? posResponses : dragItems)
+          : duplicate_responses
+          ? posResponses
+          : dragItems
+      ),
     [shuffle_options, posResponses, duplicate_responses, possible_responses]
   );
 
   const verifiedGroupDragItems = useMemo(
-    () => possible_response_groups.map(obj => (shuffle_options ? shuffle(obj.responses) : obj.responses)),
+    () => possible_response_groups.map(obj => uniq(shuffle_options ? shuffle(obj.responses) : obj.responses)),
     [shuffle_options, posResponses, duplicate_responses, possible_responses]
   );
 
@@ -235,7 +243,7 @@ const ClassificationPreview = ({
       )}
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
-        <TableWrapper>
+        <TableWrapper imageUrl={imageUrl}>
           <table style={{ width: "100%", flexGrow: 2 }}>
             <thead>
               {rowHeader && (
@@ -258,6 +266,7 @@ const ClassificationPreview = ({
                   arrayOfRows.has(ind) && (
                     <TableRow
                       key={ind}
+                      isTransparent={transparent_possible_responses}
                       startIndex={ind}
                       width={get(item, "ui_style.row_titles_width", "100%")}
                       height={get(item, "ui_style.row_min_height", "150px")}
@@ -303,6 +312,7 @@ const ClassificationPreview = ({
                             <DragItem
                               dragHandle={show_drag_handle}
                               key={ind}
+                              isTransparent={transparent_possible_responses}
                               preview={preview}
                               renderIndex={possible_responses.indexOf(ite)}
                               onDrop={onDrop}
@@ -313,6 +323,7 @@ const ClassificationPreview = ({
                               <DragItem
                                 dragHandle={show_drag_handle}
                                 key={ind}
+                                isTransparent={transparent_possible_responses}
                                 preview={preview}
                                 renderIndex={possible_responses.indexOf(ite)}
                                 onDrop={onDrop}
@@ -349,6 +360,7 @@ const ClassificationPreview = ({
                           <DragItem
                             dragHandle={show_drag_handle}
                             key={ind}
+                            isTransparent={transparent_possible_responses}
                             preview={preview}
                             renderIndex={possible_responses.indexOf(ite)}
                             onDrop={onDrop}
@@ -359,6 +371,7 @@ const ClassificationPreview = ({
                             <DragItem
                               dragHandle={show_drag_handle}
                               key={ind}
+                              isTransparent={transparent_possible_responses}
                               preview={preview}
                               renderIndex={possible_responses.indexOf(ite)}
                               onDrop={onDrop}

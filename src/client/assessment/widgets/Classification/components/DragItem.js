@@ -34,7 +34,17 @@ const specSource = {
   }
 };
 
-const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderIndex, theme, dragHandle }) =>
+const DragItem = ({
+  connectDragSource,
+  item,
+  isDragging,
+  valid,
+  preview,
+  renderIndex,
+  theme,
+  isTransparent,
+  dragHandle
+}) =>
   item &&
   connectDragSource(
     <div
@@ -54,6 +64,7 @@ const DragItem = ({ connectDragSource, item, isDragging, valid, preview, renderI
       <div
         style={getStyles(
           isDragging,
+          isTransparent,
           valid && preview
             ? theme.widgets.classification.dragItemValidBgColor
             : preview && valid !== undefined

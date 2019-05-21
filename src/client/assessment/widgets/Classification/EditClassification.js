@@ -5,11 +5,14 @@ import { connect } from "react-redux";
 
 import { withTheme } from "styled-components";
 import { compose } from "redux";
+import { uniq } from "lodash";
 import produce from "immer";
 
-import { Paper, Checkbox } from "@edulastic/common";
+import { Paper, Checkbox, EduButton, FlexContainer } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import { message, Upload } from "antd";
+import { TokenStorage, API_CONFIG } from "@edulastic/api";
 import CorrectAnswers from "../../components/CorrectAnswers";
 
 import withPoints from "../../components/HOC/withPoints";
@@ -30,6 +33,8 @@ import RowColumn from "./RowColumn";
 
 const OptionsList = withPoints(ClassificationPreview);
 
+const { Dragger } = Upload;
+
 const actions = {
   ADD: "ADD",
   REMOVE: "REMOVE",
@@ -49,6 +54,7 @@ const EditClassification = ({
   const {
     firstMount,
     shuffle_options,
+    transparent_possible_responses,
     duplicate_responses,
     ui_style: { show_drag_handle }
   } = item;
@@ -61,6 +67,18 @@ const EditClassification = ({
     },
     []
   );
+
+  const getImageWidth = url => {
+    const img = new Image();
+    const that = this;
+    img.addEventListener("load", function() {
+      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
+      (wid => {
+        that.onItemPropChange("imageWidth", wid);
+      })(width);
+    });
+    img.src = url;
+  };
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
@@ -269,16 +287,39 @@ const EditClassification = ({
 
         if (item.group_possible_responses) {
           item.possible_response_groups.forEach(group => {
-            groupArray = [...groupArray, ...group.responses];
+            groupArray = uniq([...groupArray, ...group.responses].map(ans => uniq(ans)));
           });
         }
 
         if (correctTab === 0) {
           if (draft.validation && draft.validation.valid_response) {
-            draft.validation.valid_response.value = [...answer];
+            draft.validation.valid_response.value = uniq([...answer].map(ans => uniq(ans)));
           }
         } else if (draft.validation && draft.validation.alt_responses && draft.validation.alt_responses[correctTab - 1])
-          draft.validation.alt_responses[correctTab - 1].value = [...answer];
+          draft.validation.alt_responses[correctTab - 1].value = uniq([...answer].map(ans => uniq(ans)));
+
+        updateVariables(draft);
+      })
+    );
+  };
+
+  const onUiChange = prop => val => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.ui_style[prop] = val;
+
+        const colCount = draft.ui_style.column_count;
+        const rowCount = draft.ui_style.row_count;
+
+        const initialLength = (colCount || 2) * (rowCount || 1);
+
+        if (prop === "column_count" || prop === "row_count") {
+          draft.validation.valid_response.value = Array(...Array(initialLength)).map(() => []);
+
+          draft.validation.alt_responses.forEach(ite => {
+            ite.value = Array(...Array(initialLength)).map(() => []);
+          });
+        }
 
         updateVariables(draft);
       })
@@ -323,10 +364,54 @@ const EditClassification = ({
     />
   );
 
+  const handleImageUpload = info => {
+    const { status, response } = info.file;
+    if (status === "done") {
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+      const imageUrl = response.result.fileUri;
+      getImageWidth(imageUrl);
+      handleItemChangeChange("imageUrl", imageUrl);
+    } else if (status === "error") {
+      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
+    }
+  };
+  const draggerProps = {
+    name: "file",
+    action: `${API_CONFIG.api}/file/upload`,
+    headers: {
+      "X-Requested-With": null,
+      authorization: TokenStorage.getAccessToken()
+    }
+  };
+
   return (
     <Fragment>
       <Paper padding="0px" boxShadow="none">
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        <Widget>
+          {item.imageUrl ? (
+            <FlexContainer flexDirection="column">
+              <img src={item.imageUrl} alt="backgroundImage" />
+              <EduButton
+                onClick={() => handleItemChangeChange("imageUrl", "")}
+                style={{ marginTop: 20 }}
+                type="primary"
+              >
+                {t("component.classification.deleteBackImage")}
+              </EduButton>
+            </FlexContainer>
+          ) : (
+            <Dragger
+              className="super-dragger styled-dragger"
+              {...draggerProps}
+              style={{ padding: 0, marginTop: 20, background: "transparent" }}
+              onChange={handleImageUpload}
+              showUploadList={false}
+            >
+              <EduButton type="primary">{t("component.classification.addBackImage")}</EduButton>
+            </Dragger>
+          )}
+        </Widget>
         <RowColumn item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
         <Widget>
           <GroupPossibleResponses
@@ -366,6 +451,12 @@ const EditClassification = ({
               onChange={() => handleItemChangeChange("shuffle_options", !shuffle_options)}
               label={t("component.cloze.imageDragDrop.shuffleoptions")}
               checked={!!shuffle_options}
+            />
+            <Checkbox
+              className="additional-options"
+              onChange={() => handleItemChangeChange("transparent_possible_responses", !transparent_possible_responses)}
+              label={t("component.cloze.imageDragDrop.transparentpossibleresponses")}
+              checked={!!transparent_possible_responses}
             />
           </div>
         </Widget>

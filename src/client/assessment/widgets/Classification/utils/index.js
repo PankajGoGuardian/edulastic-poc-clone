@@ -1,4 +1,4 @@
-export const getStyles = (isDragging, backgroundColor, borderColor, styles = {}) => ({
+export const getStyles = (isDragging, isTransparent, backgroundColor, borderColor, styles = {}) => ({
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -7,7 +7,7 @@ export const getStyles = (isDragging, backgroundColor, borderColor, styles = {})
   minHeight: 40,
   borderRadius: 5,
   border: `1px solid ${borderColor}`,
-  backgroundColor,
+  backgroundColor: isTransparent ? "transparent" : backgroundColor,
   cursor: "pointer",
   ...styles
 });

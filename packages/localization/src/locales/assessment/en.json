@@ -271,6 +271,8 @@
       "correctAnswers": "Correct Answers"
     },
     "classification": {
+      "addBackImage": "Add Background Image",
+      "deleteBackImage": "Delete Background Image",
       "composeQuestion": "Compose Question",
       "enterQuestion": "Enter question",
       "dragItemsTitle": "Drag & Drop the answer",

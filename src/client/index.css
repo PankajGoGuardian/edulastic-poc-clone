@@ -934,6 +934,10 @@ input[type="checkbox"] {
   padding: 0;
 }
 
+.styled-dragger .ant-upload.ant-upload-drag {
+  background: transparent !important;
+}
+
 .ant-upload-drag > .ant-upload-list-item-progress {
   margin-top: -50px;
   bottom: 50px;

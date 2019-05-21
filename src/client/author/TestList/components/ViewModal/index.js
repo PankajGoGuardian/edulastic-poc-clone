@@ -109,7 +109,9 @@ export default class ViewModal extends React.Component {
               <SummaryTitle>Summary</SummaryTitle>
               <SummaryCardContainer>
                 <SummaryCard>
-                  <SummaryCardValue>{isPlaylist ? _source.modules.length : testItems.length}</SummaryCardValue>
+                  <SummaryCardValue>
+                    {isPlaylist ? _source.modules && _source.modules.length : testItems.length}
+                  </SummaryCardValue>
                   <SummaryCardLabel>Questions</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard>

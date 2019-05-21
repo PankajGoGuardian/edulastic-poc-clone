@@ -65,11 +65,11 @@ class AddUnitModalBody extends React.Component {
 
   addModuleToPlaylist = () => {
     const { newModule } = { ...this.state };
-    if (newModule.name) {
+    if (newModule.name.trim()) {
       const { addModuleToPlaylist } = this.props;
       if (addModuleToPlaylist) {
         addModuleToPlaylist({ afterModuleIndex: newModule.afterModuleId, moduleName: newModule.name });
-        this.setState({ newModule: {} });
+        this.setState({ newModule: { name: "" } });
       }
     } else {
       message.warning("Module name cannot be empty");

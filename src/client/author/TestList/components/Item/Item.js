@@ -84,7 +84,7 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags, analytics, _source, _id },
+      item: { title, tags = [], analytics, _source, _id },
       item,
       authorName,
       owner,

@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { darkBlue, lightBlue, greenDark, lightGreen, white, grey } from "@edulastic/colors";
 import { Dropdown } from "antd";
 
-const Tags = ({ tags, labelStyle, type, show }) => {
+const Tags = ({ tags = [], labelStyle, type, show }) => {
   if (!tags.length) return null;
 
   const visibleTags = tags.slice(0, show);

@@ -9,6 +9,11 @@ import produce from "immer";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 
 // constants
+const playlistStatusConstants = {
+  DRAFT: "draft",
+  PUBLISHED: "published",
+  ARCHIVED: "archived"
+};
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
 export const CREATE_TEST_REQUEST = "[playlist] create playlist request";
@@ -142,27 +147,13 @@ const initialPlaylistState = {
   // FIXME: define schema for modules
   modules: [],
   type: "content",
-  // collectionName: "",
+  collectionName: "Eureka",
   grades: [],
   subjects: [],
-  // versionId: "",
   version: 1,
   tags: [],
   active: 1,
   customize: true
-  // authors: [
-  //   {
-  //     _id: "",
-  //     name: ""
-  //   }
-  // ],
-  // sharedType: ""
-  // sharedWith: [
-  //   {
-  //     _id: "",
-  //     name: ""
-  //   }
-  // ]
 };
 
 const initialState = {
@@ -233,7 +224,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return { ...state, entity: payload.updatedModule };
     }
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: initialPlaylistState };
+      return { ...state, entity: produce(state.entity, draft => initialPlaylistState) };
     case RECEIVE_TEST_BY_ID_REQUEST:
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:
@@ -441,7 +432,7 @@ function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
     yield call(curriculumSequencesApi.publishPlaylist, id);
-    yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
+    yield put(updateTestStatusAction(playlistStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
   } catch (e) {
     const errorMessage = "publish failed";

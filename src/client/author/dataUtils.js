@@ -20,9 +20,15 @@ export const getTestItemAuthorName = item => {
 
 export const getPlaylistAuthorName = item => {
   const {
-    _source: {
-      createdBy: { name }
-    }
+    _source: { createdBy }
   } = item;
-  return `${name}`;
+  if (createdBy) {
+    return `${createdBy.name}`;
+  }
+  const {
+    _source: { sharedBy }
+  } = item;
+  if (sharedBy && sharedBy[0]) {
+    return `${sharedBy[0].name}`;
+  } else return ``;
 };

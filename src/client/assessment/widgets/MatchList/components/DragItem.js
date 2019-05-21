@@ -1,10 +1,10 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 
+import { MathFormulaDisplay } from "@edulastic/common";
 import { Index } from "../styled/Index";
 import { IconClose } from "../styled/IconClose";
 import { IconCheck } from "../styled/IconCheck";
-import { MathFormulaDisplay } from "@edulastic/common";
 
 function collectSource(connector, monitor) {
   return {
@@ -32,18 +32,19 @@ const specSource = {
 };
 
 const DragItem = ({ connectDragSource, item, isDragging, flag, correct, preview, renderIndex, getStyles }) =>
-  item &&
-  connectDragSource(
-    <div data-cy={`drag-drop-item-${renderIndex}`} style={getStyles({ isDragging, flag, preview, correct })}>
-      {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
-      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
-      {preview && (
-        <div style={{ marginRight: 15 }}>
-          {correct && <IconCheck />}
-          {!correct && <IconClose />}
+  item
+    ? connectDragSource(
+        <div data-cy={`drag-drop-item-${renderIndex}`} style={getStyles({ isDragging, flag, preview, correct })}>
+          {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
+          {preview && (
+            <div style={{ marginRight: 15 }}>
+              {correct && <IconCheck />}
+              {!correct && <IconClose />}
+            </div>
+          )}
         </div>
-      )}
-    </div>
-  );
+      )
+    : null;
 
 export default DragSource("item", specSource, collectSource)(DragItem);

@@ -37,13 +37,16 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   const handleRemoveResp = index => {
     setQuestionData(
       produce(item, draft => {
-        const spliceRes = draft.possible_responses.splice(index, 1);
-
-        draft.validation.valid_response.value.splice(draft.validation.valid_response.value.indexOf(spliceRes), 1);
+        draft.validation.valid_response.value.splice(
+          draft.validation.valid_response.value.indexOf(draft.possible_responses[index]),
+          1
+        );
 
         draft.validation.alt_responses.forEach(ite => {
-          ite.value.splice(ite.value.indexOf(spliceRes), 1);
+          ite.value.splice(ite.value.indexOf(draft.possible_responses[index]), 1);
         });
+
+        draft.possible_responses.splice(index, 1);
       })
     );
   };

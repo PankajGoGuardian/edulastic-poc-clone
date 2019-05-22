@@ -13,6 +13,7 @@ import MathModal from "../MathModal";
 
 import MathInputCmp from "./QuillMathEmbed";
 import ResponseCmp from "./ResponseCmp";
+import TextDropDown from "./TextDropDown";
 import ContainBlot from "./table/ContainBlot";
 import TableRow from "./table/TableRow";
 import Table from "./table/Table";
@@ -27,6 +28,7 @@ const Parchment = Quill.import("parchment");
 
 Quill.register(ResponseCmp, true);
 Quill.register(MathInputCmp, true);
+Quill.register(TextDropDown, true);
 Quill.register(ContainBlot);
 Quill.register(TableRow);
 
@@ -107,7 +109,9 @@ function insertStar() {
 }
 
 function insertDropdown() {
-  console.log("dropdown");
+  const cursorPosition = this.quill.getSelection().index;
+  this.quill.insertEmbed(cursorPosition, "TextDropDown", "value");
+  this.quill.setSelection(cursorPosition + 2);
 }
 
 function insertPara() {}

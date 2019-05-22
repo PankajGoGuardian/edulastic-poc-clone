@@ -19,14 +19,15 @@ class TestItemPreview extends Component {
     showFeedback: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    qIndex: PropTypes.number.isRequired
+    qIndex: PropTypes.number
   };
 
   static defaultProps = {
     showFeedback: false,
     verticalDivider: false,
     scrolling: false,
-    style: { padding: 0, display: "flex" }
+    style: { padding: 0, display: "flex" },
+    qIndex: null
   };
 
   getStyle = first => {

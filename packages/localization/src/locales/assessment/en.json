@@ -720,6 +720,12 @@
       "browse": "Browse",
       "showButton": "Show button",
       "showRotate": "Show rotate"
+    },
+    "multipart": {
+      "composequestion": "Compose Question",
+      "enterQuestion": "Enter Question",
+      "enterContent": "Enter Question Contents",
+      "content": "Content"
     }
   }
 }

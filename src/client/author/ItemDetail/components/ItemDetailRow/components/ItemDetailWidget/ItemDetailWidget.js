@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -23,44 +23,55 @@ const ItemDetailWidget = ({
   connectDragPreview,
   t,
   widgetIndex,
-  question
-}) =>
-  connectDragPreview &&
-  connectDragSource &&
-  connectDragPreview(
-    <div>
-      <Container isDragging={isDragging}>
-        <div>
-          {(widget.widgetType === "question" || widget.widgetType === "resource") && (
-            <QuestionWrapper
-              testItem
-              qIndex={widgetIndex}
-              type={widget.type}
-              view="preview"
-              questionId={widget.reference}
-              data={{ ...question, smallSize: true }}
-            />
-          )}
-        </div>
+  question,
+  flowLayout
+}) => {
+  const [showButtons, setShowButtons] = useState(false);
+  const onMouseEnterHander = () => setShowButtons(true);
+  const onMouseLeaveHander = () => setShowButtons(false);
 
-        <Buttons>
-          {connectDragSource(
-            <div>
-              <Button title={t("move")} move shape="circle">
-                <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
+  return (
+    connectDragPreview &&
+    connectDragSource &&
+    connectDragPreview(
+      <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
+        <Container isDragging={isDragging} flowLayout={flowLayout}>
+          <div>
+            {(widget.widgetType === "question" || widget.widgetType === "resource") && (
+              <QuestionWrapper
+                testItem
+                qIndex={widgetIndex}
+                type={widget.type}
+                view="preview"
+                questionId={widget.reference}
+                data={{ ...question, smallSize: true }}
+                flowLayout={flowLayout}
+              />
+            )}
+          </div>
+
+          {(!flowLayout || showButtons) && (
+            <Buttons>
+              {connectDragSource(
+                <div>
+                  <Button title={t("move")} move shape="circle">
+                    <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
+                  </Button>
+                </div>
+              )}
+              <Button title={t("edit")} onClick={onEdit} shape="circle">
+                <IconPencilEdit color={white} width={16} height={16} />
               </Button>
-            </div>
+              <Button title={t("delete")} onClick={onDelete} shape="circle">
+                <IconTrash color={white} width={16} height={16} />
+              </Button>
+            </Buttons>
           )}
-          <Button title={t("edit")} onClick={onEdit} shape="circle">
-            <IconPencilEdit color={white} width={16} height={16} />
-          </Button>
-          <Button title={t("delete")} onClick={onDelete} shape="circle">
-            <IconTrash color={white} width={16} height={16} />
-          </Button>
-        </Buttons>
-      </Container>
-    </div>
+        </Container>
+      </div>
+    )
   );
+};
 
 ItemDetailWidget.propTypes = {
   widget: PropTypes.object.isRequired,
@@ -72,7 +83,8 @@ ItemDetailWidget.propTypes = {
   t: PropTypes.func.isRequired,
   question: PropTypes.object.isRequired,
   rowIndex: PropTypes.number.isRequired,
-  widgetIndex: PropTypes.number.isRequired
+  widgetIndex: PropTypes.number.isRequired,
+  flowLayout: PropTypes.bool
 };
 
 const itemSource = {

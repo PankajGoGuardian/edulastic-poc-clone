@@ -10,6 +10,7 @@ import produce from "immer";
 
 import { PaddingDiv, Paper } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { white, boxShadowDefault } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
@@ -23,6 +24,13 @@ import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 const EmptyWrapper = styled.div``;
+
+const MutlChoiceWrapper = styled(Paper)`
+  border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
+  background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
+  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px 43px")};
+  box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+`;
 
 const Divider = styled.div`
   padding: 10px 0;
@@ -173,6 +181,7 @@ class MultipleChoice extends Component {
       cleanSections,
       isSidebarCollapsed,
       advancedAreOpen,
+      flowLayout,
       ...restProps
     } = this.props;
     const { shuffledOptions } = this.state;
@@ -185,7 +194,7 @@ class MultipleChoice extends Component {
       shuffleOptions
     } = this.getRenderData();
 
-    const Wrapper = testItem ? EmptyWrapper : Paper;
+    const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     // const multi_response = this.props.item.multiple_responses;
 
     return (
@@ -238,7 +247,7 @@ class MultipleChoice extends Component {
             </ContentArea>
           )}
           {view === PREVIEW && (
-            <Wrapper>
+            <Wrapper flowLayout={flowLayout}>
               {previewTab === CHECK && (
                 <Display
                   checkAnswer
@@ -254,6 +263,7 @@ class MultipleChoice extends Component {
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
                   multipleResponse={multipleResponses}
+                  flowLayout={flowLayout}
                   {...restProps}
                 />
               )}
@@ -272,6 +282,7 @@ class MultipleChoice extends Component {
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
                   multipleResponse={multipleResponses}
+                  flowLayout={flowLayout}
                   {...restProps}
                 />
               )}
@@ -289,6 +300,7 @@ class MultipleChoice extends Component {
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
                   multipleResponse={multipleResponses}
+                  flowLayout={flowLayout}
                   {...restProps}
                 />
               )}
@@ -316,7 +328,8 @@ MultipleChoice.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  flowLayout: PropTypes.bool
 };
 
 MultipleChoice.defaultProps = {
@@ -331,7 +344,8 @@ MultipleChoice.defaultProps = {
   evaluation: "",
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  flowLayout: false
 };
 
 const enhance = compose(

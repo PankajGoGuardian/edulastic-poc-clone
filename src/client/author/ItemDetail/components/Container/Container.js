@@ -473,9 +473,9 @@ Container.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
-  questions: PropTypes.func.isRequired,
+  questions: PropTypes.object.isRequired,
   changeView: PropTypes.func.isRequired,
-  testItemStatus: PropTypes.string.isRequired,
+  testItemStatus: PropTypes.string,
   setRedirectTest: PropTypes.func,
   publishTestItem: PropTypes.func,
   modalItemId: PropTypes.string,
@@ -493,7 +493,8 @@ Container.defaultProps = {
   modalItemId: undefined,
   onModalClose: () => {},
   navigateToPickupQuestionType: () => {},
-  redirectOnEmptyItem: true
+  redirectOnEmptyItem: true,
+  testItemStatus: ""
 };
 
 const enhance = compose(

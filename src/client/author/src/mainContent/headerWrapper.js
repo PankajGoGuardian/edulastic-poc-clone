@@ -19,7 +19,7 @@ class HeaderWrapper extends Component {
 }
 
 HeaderWrapper.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.node.isRequired,
   type: PropTypes.string
 };
 

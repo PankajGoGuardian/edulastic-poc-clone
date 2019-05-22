@@ -16,14 +16,20 @@ const Display = ({
   styleType,
   multipleResponse,
   showQuestionNumber,
+  flowLayout,
   ...restProps
 }) => (
   <div>
-    <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
-    <QuestionTitleWrapper>
-      {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
-      <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
-    </QuestionTitleWrapper>
+    {!flowLayout && (
+      <>
+        <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
+        </QuestionTitleWrapper>
+      </>
+    )}
+
     <Options
       view={view}
       smallSize={smallSize}
@@ -52,7 +58,8 @@ Display.propTypes = {
   index: PropTypes.number.isRequired,
   styleType: PropTypes.string,
   multipleResponse: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  flowLayout: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -72,7 +79,9 @@ Display.defaultProps = {
     choice_label: "number"
   },
   showQuestionNumber: false,
-  styleType: "default"
+  flowLayout: false,
+  styleType: "default",
+  multipleResponse: false
 };
 
 export default Display;

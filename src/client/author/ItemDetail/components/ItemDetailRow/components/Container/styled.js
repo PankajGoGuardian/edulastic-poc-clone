@@ -35,11 +35,17 @@ export const MobileSide = styled.div`
   align-items: center;
   justify-content: center;
   height: calc(100vh - 220px);
-  right: ${props => (props.type === "right" ? "0" : "unset")}
-  left: ${props => (props.type === "left" ? "0" : "unset")}
+  right: ${props => (props.type === "right" ? "0" : "unset")};
+  left: ${props => (props.type === "left" ? "0" : "unset")};
   background: ${darkBlueSecondary};
   width: 25px;
   bottom: 20px;
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
+`;
+
+export const WidgetContainer = styled.div`
+  display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
+  flex-wrap: wrap;
+  align-items: center;
 `;

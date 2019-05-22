@@ -51,11 +51,15 @@ class Container extends Component {
     useTabsLeft: PropTypes.bool.isRequired,
     useTabsRight: PropTypes.bool.isRequired,
     useFlowLayoutLeft: PropTypes.bool.isRequired,
-    useFlowLayoutRight: PropTypes.bool.isRequired,
     verticalDivider: PropTypes.bool.isRequired,
     scrolling: PropTypes.bool.isRequired,
     onVerticalDividerChange: PropTypes.func.isRequired,
-    onScrollingChange: PropTypes.func.isRequired
+    onScrollingChange: PropTypes.func.isRequired,
+    useFlowLayoutRight: PropTypes.bool
+  };
+
+  static defaultProps = {
+    useFlowLayoutRight: false
   };
 
   handleCheckboxChange = name => () => {

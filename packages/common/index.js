@@ -29,7 +29,7 @@ export { default as FroalaEditor } from "./src/components/FroalaEditor";
 export { default as Tabs } from "./src/components/Tabs";
 export { default as Tab } from "./src/components/Tabs/Tab";
 export { default as TabContainer } from "./src/components/Tabs/TabContainer";
-
+export { default as MathModal } from "./src/components/MathModal";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { WithResources } from "./src/HOC/withResources";

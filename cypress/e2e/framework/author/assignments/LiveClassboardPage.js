@@ -1,6 +1,7 @@
 import LCBHeader from "./lcbHeader";
 import { studentSide as asgnStatus, studentSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
+import { attemptTypes } from "../../constants/questionTypes";
 
 class LiveClassboardPage {
   constructor() {
@@ -333,6 +334,43 @@ class LiveClassboardPage {
       this.questionResponsePage.selectQuestion(queNum);
       this.questionResponsePage.updateScoreForStudent(studentName, score[queNum]);
     });
+  };
+
+  getRedirectedQuestionCentricData = (redirectedData, queCentric, attempted = true) => {
+    const reDirectedQueCentric = Object.assign({}, queCentric);
+    const reDirectedQueCentricBeforeAttempt = Object.assign({}, queCentric);
+    redirectedData.forEach(({ attempt, stuName }) => {
+      Object.keys(attempt).forEach(queNum => {
+        if (attempted) {
+          reDirectedQueCentric[queNum][stuName] = attempt[queNum];
+        } else {
+          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null;
+        }
+      });
+    });
+    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
+  };
+
+  getQuestionCentricData = (attemptsData, queCentric) => {
+    attemptsData
+      .filter(({ status }) => status !== studentSide.NOT_STARTED)
+      .forEach(({ attempt, stuName }) => {
+        Object.keys(attempt).forEach(queNum => {
+          if (!queCentric[queNum]) queCentric[queNum] = {};
+          queCentric[queNum][stuName] = attempt[queNum];
+        });
+      });
+    return queCentric;
+  };
+
+  getNullifiedAttempts = attempts => {
+    const noAttempts = {};
+    for (let key in attempts) {
+      if (attempts.hasOwnProperty(key)) {
+        noAttempts[key] = attemptTypes.SKIP;
+      }
+    }
+    return noAttempts;
   };
 }
 export default LiveClassboardPage;

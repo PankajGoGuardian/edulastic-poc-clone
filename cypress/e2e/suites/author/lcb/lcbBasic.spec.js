@@ -78,55 +78,20 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   let reDirectedQueCentric;
   let reDirectedQueCentricBeforeAttempt;
 
-  function getRedirectedQuestionCentricData(attempted = true) {
-    reDirectedQueCentric = Object.assign({}, queCentric);
-    reDirectedQueCentricBeforeAttempt = Object.assign({}, queCentric);
-    redirectedData.forEach(({ attempt, stuName }) => {
-      Object.keys(attempt).forEach(queNum => {
-        if (attempted) {
-          reDirectedQueCentric[queNum][stuName] = attempt[queNum];
-        } else {
-          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null;
-        }
-      });
-    });
-    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
-  }
-
   const allStudentList = attemptsData.map(item => item.stuName);
+
   const submittedInprogressStudentList = attemptsData
     .filter(({ status }) => status !== studentSide.NOT_STARTED)
     .map(item => item.stuName);
 
-  function getQuestionCentricData() {
-    attemptsData
-      .filter(({ status }) => status !== studentSide.NOT_STARTED)
-      .forEach(({ attempt, stuName }) => {
-        Object.keys(attempt).forEach(queNum => {
-          if (!queCentric[queNum]) queCentric[queNum] = {};
-          queCentric[queNum][stuName] = attempt[queNum];
-        });
-      });
-    return queCentric;
-  }
-
-  function getNullifiedAttempts(attempts) {
-    const noAttempts = {};
-    for (let key in attempts) {
-      if (attempts.hasOwnProperty(key)) {
-        noAttempts[key] = attemptTypes.SKIP;
-      }
-    }
-    return noAttempts;
-  }
-
-  const queList = Object.keys(getQuestionCentricData());
   const redirectedStudentList = redirectedData.map(item => item.stuName);
+
   const redirectStatsMap = {};
   const assignmentPage = new AssignmentsPage();
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
+  const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
 
   before(" > create new assessment and assign", () => {
     cy.fixture("questionAuthoring").then(queData => {
@@ -258,7 +223,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       redirectedStudentList.forEach(studentName => {
         it(` > verify redirected student cards for :: ${studentName}`, () => {
           const { attempt } = redirectStatsMap[studentName];
-          const noAttempt = getNullifiedAttempts(attempt);
+          const noAttempt = lcb.getNullifiedAttempts(attempt);
           const { score, perf } = lcb.getScoreAndPerformance(noAttempt, questionTypeMap);
           lcb.verifyStudentCard(studentName, teacherSide.REDIRECTED, score, perf, noAttempt);
           lcb.verifyRedirectIcon(studentName);
@@ -279,7 +244,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       describe(" > verify question centric view - should not have student card", () => {
         before("student tab click", () => {
           lcb.clickonQuestionsTab();
-          getRedirectedQuestionCentricData(false);
+          reDirectedQueCentricBeforeAttempt = lcb.getRedirectedQuestionCentricData(redirectedData, queCentric, false);
         });
         queList.forEach(queNumber => {
           it(` > verify question centric view for :: ${queNumber}`, () => {
@@ -345,7 +310,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         describe(" > verify question centric view", () => {
           before("student tab click", () => {
             lcb.clickonQuestionsTab();
-            getRedirectedQuestionCentricData(true);
+            reDirectedQueCentric = lcb.getRedirectedQuestionCentricData(redirectedData, queCentric, true);
           });
 
           queList.forEach(queNumber => {

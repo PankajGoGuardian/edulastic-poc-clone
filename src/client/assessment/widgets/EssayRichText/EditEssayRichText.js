@@ -17,6 +17,7 @@ import { Widget } from "../../styled/Widget";
 import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
+import Scoring from "../../containers/WidgetOptions/components/Scoring";
 
 const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const [act, setAct] = useState(item.formatting_options || []);
@@ -47,6 +48,14 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
       <FormattingOptions item={item} act={act} fillSections={fillSections} cleanSections={cleanSections} />
 
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Scoring
+          setQuestionData={setQuestionData}
+          t={t}
+          scoringTypes={[]}
+          questionData={item}
+          advancedAreOpen={advancedAreOpen}
+          noPaddingLeft={true}
+        />
         <WordLimitAndCount
           withOutTopMargin
           onChange={handleItemChangeChange}
@@ -55,8 +64,8 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
           fillSections={fillSections}
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
+          showHeading={false}
         />
-
         <Checkbox
           style={{ marginTop: 32 }}
           defaultChecked={item.show_word_count}

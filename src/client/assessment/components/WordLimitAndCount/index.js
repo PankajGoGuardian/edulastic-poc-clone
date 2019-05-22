@@ -19,7 +19,6 @@ class WordLimitAndCount extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-
     fillSections("advanced", t("component.essayText.scoring"), node.offsetTop);
   };
 
@@ -40,7 +39,7 @@ class WordLimitAndCount extends Component {
   }
 
   render() {
-    const { onChange, selectValue, inputValue, withOutTopMargin, t } = this.props;
+    const { onChange, selectValue, inputValue, withOutTopMargin, t, showHeading } = this.props;
 
     const options = [
       { value: ON_LIMIT, label: t("component.essayText.onLimit") },
@@ -50,7 +49,9 @@ class WordLimitAndCount extends Component {
 
     return (
       <Fragment>
-        <Subtitle padding={withOutTopMargin ? "0px 0 16px 0" : ""}>{t("component.essayText.scoring")}</Subtitle>
+        {showHeading && (
+          <Subtitle padding={withOutTopMargin ? "0px 0 16px 0" : ""}>{t("component.essayText.scoring")}</Subtitle>
+        )}
         <AdaptiveRow gutter={70}>
           <Col span={12}>
             <LabelText>{t("component.essayText.wordsLimitTitle")}</LabelText>
@@ -95,10 +96,12 @@ WordLimitAndCount.propTypes = {
   withOutTopMargin: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  showHeading: PropTypes.bool
 };
 
 WordLimitAndCount.defaultProps = {
+  showHeading: true,
   withOutTopMargin: false,
   advancedAreOpen: false,
   fillSections: () => {},

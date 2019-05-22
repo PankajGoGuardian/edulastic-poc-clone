@@ -8,6 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../../utils/variables";
 
 import WordLimitAndCount from "../../../components/WordLimitAndCount";
+import Scoring from "../../../containers/WidgetOptions/components/Scoring";
 import { Widget } from "../../../styled/Widget";
 import { ContentArea } from "../../../styled/ContentArea";
 
@@ -32,6 +33,14 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Scoring
+          setQuestionData={setQuestionData}
+          t={t}
+          scoringTypes={[]}
+          questionData={item}
+          advancedAreOpen={advancedAreOpen}
+          noPaddingLeft={true}
+        />
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.show_word_limit}
@@ -39,6 +48,7 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}
+          showHeading={false}
         />
 
         <Checkbox

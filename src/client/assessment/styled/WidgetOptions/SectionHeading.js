@@ -10,4 +10,5 @@ export const SectionHeading = styled.div`
   line-height: 1.35;
   letter-spacing: normal;
   text-align: left;
+  margin-left: ${({ marginLeft }) => (marginLeft ? marginLeft : 0)};
 `;

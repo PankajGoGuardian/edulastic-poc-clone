@@ -550,6 +550,15 @@ table.quill-table td {
   overflow: auto;
 }
 
+.template_box > div {
+  display: inline;
+  align-self: center;
+}
+
+.response-btn > div {
+  align-self: center;
+}
+
 .template_box div.content {
   width: 100%;
   white-space: inherit;

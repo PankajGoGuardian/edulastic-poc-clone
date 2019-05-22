@@ -60,11 +60,15 @@ class ModuleRow extends Component {
    * @param {import('./CurriculumSequence').Module} module
    */
   assignModule = module => {
-    const { setSelectedItemsForAssign } = this.props;
+    const { setSelectedItemsForAssign, history, playlistId } = this.props;
     const moduleItemsIds = module.data.map(item => item.contentId);
     setSelectedItemsForAssign(moduleItemsIds);
+    history.push(`/author/playlists/assignments/${playlistId}/${module._id}`);
   };
-
+  assignTest = (moduleId, testId) => {
+    const { history, playlistId } = this.props;
+    history.push(`/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`);
+  };
   viewTest = testId => {
     this.setState({
       showModal: true,
@@ -84,6 +88,7 @@ class ModuleRow extends Component {
       collapsed,
       padding,
       assigned,
+      status,
       isContentExpanded,
       setSelectedItemsForAssign,
       module,
@@ -93,9 +98,9 @@ class ModuleRow extends Component {
       hideEditOptions,
       removeUnit
     } = this.props;
-    const { completed, title, id, data = [] } = module;
+    const { completed, title, _id, data = [] } = module;
 
-    const { assignModule } = this;
+    const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
     const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.contentId));
@@ -158,21 +163,23 @@ class ModuleRow extends Component {
                         </ModuleCompleted>
                       </React.Fragment>
                     )}
-                    {!completed && !hideEditOptions && (
-                      <ModulesWrapper>
+                    <ModulesWrapper>
+                      {!completed && !hideEditOptions && (
                         <ModulesAssigned>
                           Assigned
                           <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
                           of
                           <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                         </ModulesAssigned>
+                      )}
+                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) && (
                         <AssignModuleButton>
                           <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
                             ASSIGN MODULE
                           </Button>
                         </AssignModuleButton>
-                      </ModulesWrapper>
-                    )}
+                      )}
+                    </ModulesWrapper>
                   </ModuleTitleAssignedWrapper>
                 </ModuleInfo>
               </ModuleHeader>
@@ -244,12 +251,9 @@ class ModuleRow extends Component {
                                   />
                                 </CustomIcon>
                               </AssignmentIcon>
-                              {!hideEditOptions && (
+                              {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                 <AssignmentButton assigned={isAssigned}>
-                                  <Button
-                                    data-cy="assignButton"
-                                    onClick={() => setSelectedItemsForAssign(moduleData.contentId)}
-                                  >
+                                  <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />
                                     ) : (
@@ -295,6 +299,7 @@ ModuleRow.propTypes = {
   removeItemFromUnit: PropTypes.func.isRequired,
   assigned: PropTypes.array.isRequired,
   mode: PropTypes.string,
+  status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
 

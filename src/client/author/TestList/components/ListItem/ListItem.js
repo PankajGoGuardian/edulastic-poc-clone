@@ -146,7 +146,11 @@ class ListItem extends Component {
                   </AddButton>
                 )}
                 {isTestAdded && (
-                  <AddButton windowWidth={windowWidth} onClick={e => removeTestFromPlaylist(item._id)}>
+                  <AddButton
+                    windowWidth={windowWidth}
+                    isTestAdded={isTestAdded}
+                    onClick={e => removeTestFromPlaylist(item._id)}
+                  >
                     Remove
                   </AddButton>
                 )}

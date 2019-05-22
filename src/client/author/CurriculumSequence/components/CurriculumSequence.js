@@ -308,7 +308,7 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
+    const { status, title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
@@ -559,6 +559,8 @@ class CurriculumSequence extends Component {
             {destinationCurriculumSequence && (
               <Curriculum
                 mode={mode}
+                history={history}
+                status={status}
                 key={destinationCurriculumSequence._id}
                 padding={selectContent}
                 curriculum={destinationCurriculumSequence}

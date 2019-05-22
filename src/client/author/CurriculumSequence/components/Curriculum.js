@@ -22,11 +22,13 @@ class Curriculum extends Component {
 
   render() {
     const {
-      curriculum: { modules },
+      curriculum: { modules, _id: playlistId },
       hideEditOptions,
       expandedModules,
       onCollapseExpand,
       mode,
+      status,
+      history,
       padding
     } = this.props;
 
@@ -37,11 +39,14 @@ class Curriculum extends Component {
             <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
               <CurriculumModuleRow
                 mode={mode}
+                status={status}
                 collapsed={expandedModules.indexOf(index) === -1}
                 onCollapseExpand={onCollapseExpand}
-                key={moduleItem.id}
+                key={moduleItem._id}
+                playlistId={playlistId}
                 module={moduleItem}
                 moduleIndex={index}
+                history={history}
                 padding={padding}
                 hideEditOptions={hideEditOptions}
               />
@@ -58,6 +63,8 @@ Curriculum.propTypes = {
   expandedModules: PropTypes.array.isRequired,
   padding: PropTypes.bool.isRequired,
   mode: PropTypes.string,
+  status: PropTypes.string,
+  history: PropTypes.object,
   onCollapseExpand: PropTypes.func.isRequired
 };
 

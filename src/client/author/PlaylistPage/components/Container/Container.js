@@ -11,11 +11,11 @@ import { Content } from "../../../TestPage/components/Container/styled";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
   createTestAction,
-  receiveTestByIdAction,
+  receivePlaylistByIdAction,
   setTestDataAction,
   updateTestAction,
   setDefaultTestDataAction,
-  getTestSelector,
+  getPlaylistSelector,
   getTestItemsRowsSelector,
   getTestsCreatingSelector,
   getTestsLoadingSelector,
@@ -51,7 +51,7 @@ class Container extends PureComponent {
   propTypes = {
     createPlayList: PropTypes.func.isRequired,
     updateTest: PropTypes.func.isRequired,
-    receiveTestById: PropTypes.func.isRequired,
+    receivePlaylistByIdAction: PropTypes.func.isRequired,
     setData: PropTypes.func.isRequired,
     setDefaultData: PropTypes.func.isRequired,
     match: PropTypes.object.isRequired,
@@ -130,21 +130,13 @@ class Container extends PureComponent {
     });
   };
 
-  handleAssign = () => {
-    const { history, match } = this.props;
-    const { id } = match.params;
-    if (id) {
-      history.push(`/author/assignments/${id}`);
-    }
-  };
-
   handleChangeGrade = grades => {
-    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
+    const { setData, test } = this.props;
     setData({ ...test, grades });
   };
 
   handleChangeSubject = subjects => {
-    const { setData, getItemsSubjectAndGrade, test, itemsSubjectAndGrade } = this.props;
+    const { setData, test } = this.props;
     setData({ ...test, subjects });
   };
 
@@ -205,7 +197,7 @@ class Container extends PureComponent {
       playlist.modules.forEach(module => {
         _isObject(module) &&
           module.data.forEach(test => {
-            test.testId && selectedTests.push(test.testId);
+            test.contentId && selectedTests.push(test.contentId);
           });
       });
     _uniq(selectedTests);
@@ -253,8 +245,6 @@ class Container extends PureComponent {
         );
       case "settings":
         return <Setting current={current} onShowSource={this.handleNavChange("source")} />;
-      case "assign":
-        return <Assign test={test} setData={setData} current={current} />;
       default:
         return null;
     }
@@ -352,7 +342,6 @@ class Container extends PureComponent {
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange("source")}
-          onAssign={this.handleAssign}
           isPlaylist={true}
         />
         <Content>{this.renderContent()}</Content>
@@ -366,7 +355,7 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      playlist: getTestSelector(state),
+      playlist: getPlaylistSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
@@ -378,7 +367,7 @@ const enhance = compose(
     {
       createPlayList: createTestAction,
       updatePlaylist: updateTestAction,
-      receiveTestById: receiveTestByIdAction,
+      receiveTestById: receivePlaylistByIdAction,
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
       publishPlaylist: publishTestAction,

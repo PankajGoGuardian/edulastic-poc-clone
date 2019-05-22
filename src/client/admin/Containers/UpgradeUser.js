@@ -2,40 +2,61 @@ import React from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Tabs } from "antd";
-import { ManageByDistrict } from "../Upgrade/Tabs";
-import { getDistrictDataAction, getDistrictData, upgradeDistrictSubscriptionAction } from "../Upgrade/ducks";
+import { ManageSubscriptionByDistrict, ManageSubscriptionByUser, ManageSubscriptionBySchool } from "../Upgrade/Tabs";
+import {
+  getDistrictDataAction,
+  getDistrictDataSelector,
+  upgradeDistrictSubscriptionAction,
+  upgradeUserSubscriptionAction,
+  searchUsersByEmailIdAction,
+  getUsersDataSelector
+} from "../Upgrade/ducks";
 
 const { TabPane } = Tabs;
 
-function UpgradeUser({ getDistrictDataAction, districtData, upgradeDistrictSubscriptionAction }) {
+function UpgradeUser({
+  getDistrictDataAction,
+  districtData,
+  upgradeDistrictSubscriptionAction,
+  upgradeUserSubscriptionAction,
+  searchUsersByEmailIdAction,
+  manageUsersData
+}) {
   return (
-    <Tabs type="card" defaultActiveKey="manageByDistrict" animated>
-      <TabPane tab="Manage by District" key="manageByDistrict">
-        <ManageByDistrict
+    <Tabs type="card" defaultActiveKey="manageSubscriptionByDistrict" animated>
+      <TabPane tab="Manage by District" key="manageSubscriptionByDistrict">
+        <ManageSubscriptionByDistrict
           getDistrictDataAction={getDistrictDataAction}
           districtData={districtData}
           upgradeDistrictSubscriptionAction={upgradeDistrictSubscriptionAction}
         />
       </TabPane>
-      <TabPane tab="Manage by School" key="manageBySchool">
-        Duis reprehenderit sit ipsum exercitation anim magna voluptate magna ut.
+      <TabPane tab="Manage by School" key="manageSubscriptionBySchool">
+        <ManageSubscriptionBySchool />
       </TabPane>
-      <TabPane tab="Manage by Teacher" key="manageByTeacher">
-        Duis reprehenderit sit ipsum exercitation anim magna voluptate magna ut.
+      <TabPane tab="Manage by User" key="manageSubscriptionByUser">
+        <ManageSubscriptionByUser
+          manageUsersData={manageUsersData}
+          upgradeUserSubscriptionAction={upgradeUserSubscriptionAction}
+          searchUsersByEmailIdAction={searchUsersByEmailIdAction}
+        />
       </TabPane>
     </Tabs>
   );
 }
 
 const mapStateToProps = state => ({
-  districtData: getDistrictData(state)
+  districtData: getDistrictDataSelector(state),
+  manageUsersData: getUsersDataSelector(state)
 });
 
 const withConnect = connect(
   mapStateToProps,
   {
     getDistrictDataAction,
-    upgradeDistrictSubscriptionAction
+    upgradeDistrictSubscriptionAction,
+    upgradeUserSubscriptionAction,
+    searchUsersByEmailIdAction
   }
 );
 

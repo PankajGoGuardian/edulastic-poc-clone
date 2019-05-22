@@ -11,11 +11,11 @@ const CircularInput = styled(Input)`
   border-radius: 20px;
 `;
 
-export default function SearchByIdName({ getFieldDecorator, handleSubmit }) {
+export default function SearchDistrictByIdName({ getFieldDecorator, handleSubmit }) {
   return (
     <Form onSubmit={handleSubmit} layout="inline">
       <Form.Item>
-        {getFieldDecorator("searchDistrict", {
+        {getFieldDecorator("districtSearchValue", {
           initialValue: ""
         })(<CircularInput placeholder="Search..." style={{ width: 300 }} />)}
         <Button
@@ -33,7 +33,7 @@ export default function SearchByIdName({ getFieldDecorator, handleSubmit }) {
         </Button>
       </Form.Item>
       <Form.Item>
-        {getFieldDecorator("radioInput", {
+        {getFieldDecorator("districtSearchOption", {
           initialValue: radioButtondata.list[0].id
         })(
           <RadioGroup name="searchOptions">

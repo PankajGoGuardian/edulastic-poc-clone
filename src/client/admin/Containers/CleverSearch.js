@@ -1,11 +1,10 @@
 import React, { memo } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import styled from "styled-components";
-import { Radio, Form, Input, Icon } from "antd";
+import { Form } from "antd";
 import SearchDistrictTable from "../SearchDistrictTable";
 import MergeSyncTable from "../MergeSyncTable";
-import { FirstDiv, Button, H2, OuterDiv } from "../Common/StyledComponents";
+import { FirstDiv, H2, OuterDiv } from "../Common/StyledComponents";
 import {
   fetchTableData,
   updateClever,
@@ -13,22 +12,22 @@ import {
   deleteDistrictId,
   getUsersDataAction
 } from "../SearchDistrictTable/ducks";
-import SearchedByIdName from "../Common/Form/SearchByIdName";
+import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 
 const WrappedForm = Form.create({ name: "validate_other" })(
   ({ fetchTableData, form: { getFieldDecorator, validateFields } }) => {
     function searchData(evt) {
       evt.preventDefault();
-      validateFields((err, { radioInput, searchDistrict }) => {
+      validateFields((err, { districtSearchOption, districtSearchValue }) => {
         if (!err) {
           fetchTableData({
-            [radioInput]: searchDistrict
+            [districtSearchOption]: districtSearchValue
           });
         }
       });
     }
 
-    return <SearchedByIdName handleSubmit={searchData} getFieldDecorator={getFieldDecorator} />;
+    return <SearchDistrictByIdName handleSubmit={searchData} getFieldDecorator={getFieldDecorator} />;
   }
 );
 

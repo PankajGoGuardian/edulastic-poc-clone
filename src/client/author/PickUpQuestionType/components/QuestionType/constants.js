@@ -1021,6 +1021,15 @@ export const getCards = onSelectQuestionType => {
         templateMarkUp:
           '<p>"It\'s all clear" he</p><p class="response-btn"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
         stimulus: "",
+        ui_style: {
+          fontsize: "normal",
+          heightpx: 35,
+          placeholder: "",
+          responsecontainerindividuals: [],
+          responsecontainerposition: "bottom",
+          stemnumeration: "",
+          widthpx: 30
+        },
         options: {
           0: "",
           1: ""

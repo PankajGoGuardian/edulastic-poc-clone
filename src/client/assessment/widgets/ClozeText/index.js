@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Paper } from "@edulastic/common";
@@ -23,6 +23,29 @@ import { Widget } from "../../styled/Widget";
 const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
+  componentDidUpdate(prevProps) {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+    if (!isEqual(prevProps.item.validation, newItem.validation)) {
+      let maxLength = 0;
+
+      newItem.validation.valid_response.value.forEach(resp => {
+        maxLength = Math.max(maxLength, resp.length);
+      });
+
+      newItem.validation.alt_responses.forEach(arr => {
+        arr.value.forEach(resp => {
+          maxLength = Math.max(maxLength, resp.length);
+        });
+      });
+
+      const finalWidth = 30 + maxLength * 7;
+      newItem.ui_style.widthpx = finalWidth > 120 ? 120 : finalWidth;
+
+      setQuestionData(newItem);
+    }
+  }
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);

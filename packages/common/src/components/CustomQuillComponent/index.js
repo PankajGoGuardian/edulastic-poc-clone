@@ -106,9 +106,22 @@ function insertStar() {
   this.quill.setSelection(cursorPosition + 2);
 }
 
+function insertDropdown() {
+  console.log("dropdown");
+}
+
 function insertPara() {}
 
-const CustomToolbar = ({ showTableBtn, showResponseBtn, active, id, maxWidth, onTableClick, onFormulaClick }) => {
+const CustomToolbar = ({
+  showTableBtn,
+  showResponseBtn,
+  showDropdownBtn,
+  active,
+  id,
+  maxWidth,
+  onTableClick,
+  onFormulaClick
+}) => {
   const getTopStyle = () =>
     document.getElementById(id)
       ? document.getElementById(id).offsetHeight
@@ -186,6 +199,13 @@ const CustomToolbar = ({ showTableBtn, showResponseBtn, active, id, maxWidth, on
           </button>
         </span>
       )}
+      {showDropdownBtn && (
+        <span className="ql-formats">
+          <button className="ql-insertDropdown" type="button">
+            <span>Text Dropdown</span>
+          </button>
+        </span>
+      )}
     </div>
   );
 };
@@ -194,6 +214,7 @@ CustomToolbar.propTypes = {
   maxWidth: PropTypes.any.isRequired,
   showResponseBtn: PropTypes.bool,
   showTableBtn: PropTypes.bool,
+  showDropdownBtn: PropTypes.bool,
   active: PropTypes.bool,
   id: PropTypes.string,
   onTableClick: PropTypes.func,
@@ -203,6 +224,7 @@ CustomToolbar.propTypes = {
 CustomToolbar.defaultProps = {
   showTableBtn: true,
   showResponseBtn: true,
+  showDropdownBtn: false,
   active: false,
   id: "toolbar",
   onTableClick: () => {},
@@ -388,7 +410,8 @@ class CustomQuillComponent extends React.Component {
     readOnly: PropTypes.bool,
     style: PropTypes.object,
     tabIndex: PropTypes.number,
-    custom: PropTypes.bool
+    custom: PropTypes.bool,
+    showDropdownBtn: PropTypes.bool
   };
 
   static defaultProps = {
@@ -404,7 +427,8 @@ class CustomQuillComponent extends React.Component {
       borderRadius: "4px"
     },
     tabIndex: 0,
-    custom: false
+    custom: false,
+    showDropdownBtn: false
   };
 
   constructor(props) {
@@ -605,7 +629,17 @@ class CustomQuillComponent extends React.Component {
 
   render() {
     const { active, quillVal, quillKey, showMath, selLatex, showTableSize, rows, cols, modules } = this.state;
-    const { placeholder, showResponseBtn, inputId, toolbarId, style, readOnly, tabIndex, custom } = this.props;
+    const {
+      placeholder,
+      showResponseBtn,
+      inputId,
+      toolbarId,
+      style,
+      readOnly,
+      tabIndex,
+      custom,
+      showDropdownBtn
+    } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
       "7",
@@ -640,6 +674,7 @@ class CustomQuillComponent extends React.Component {
             maxWidth={style.width ? style.width : "initial"}
             onTableClick={this.showTableModal}
             onFormulaClick={this.showMathModal}
+            showDropdownBtn={showDropdownBtn}
           />
         )}
         <ReactQuill
@@ -753,7 +788,8 @@ CustomQuillComponent.modules = (toolbarId, custom) => ({
       "table-insert-columns": tableInsertColumns,
       insertStar,
       insertPara,
-      image: handleImage
+      image: handleImage,
+      insertDropdown
     }
   }
 });

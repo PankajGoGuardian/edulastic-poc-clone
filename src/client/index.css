@@ -476,6 +476,15 @@ span.ql-table:hover::after {
   color: #06c;
 }
 
+button.ql-insertDropdown {
+  min-width: 118px;
+}
+
+button.ql-insertDropdown span {
+  padding: 0px 4px;
+  border: 2px dotted rgb(0, 0, 0);
+}
+
 .ql-picker.ql-table .ql-picker-label::before {
   content: "TABLE";
 }

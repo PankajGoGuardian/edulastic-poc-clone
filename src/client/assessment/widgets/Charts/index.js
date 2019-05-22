@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
+import { ContentArea } from "../../styled/ContentArea";
 import { PREVIEW, EDIT, CLEAR } from "../../constants/constantsForQuestions";
 
 import ChartPreview from "./ChartPreview";
@@ -14,7 +15,11 @@ class Chart extends Component {
     return (
       <Fragment>
         {view === PREVIEW && <ChartPreview {...this.props} />}
-        {view === EDIT && <ChartEdit {...this.props} />}
+        {view === EDIT && (
+          <ContentArea>
+            <ChartEdit {...this.props} />
+          </ContentArea>
+        )}
       </Fragment>
     );
   }
@@ -28,7 +33,10 @@ Chart.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
-  evaluation: PropTypes.any
+  evaluation: PropTypes.any,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 Chart.defaultProps = {
@@ -37,7 +45,10 @@ Chart.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: ""
+  evaluation: "",
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const ChartContainer = connect(

@@ -221,6 +221,7 @@
       "interactive": "Interactive",
       "addPoint": "Add Point",
       "point": "Point",
+      "points": "Points",
       "value": "Value",
       "label": "Label",
       "chartTitle": "Chart Title"

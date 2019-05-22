@@ -1,42 +1,63 @@
-import React from "react";
+import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { Checkbox } from "antd";
 
-import { FlexContainer, Paper } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
 
 import withAddButton from "../../../components/HOC/withAddButton";
 import UiInputGroup from "./UiInputGroup";
+import { Widget } from "../../../styled/Widget";
 import { Subtitle } from "../../../styled/Subtitle";
 import { IconTrash } from "../styled";
 
-const PointsList = ({ points, ratio, handleChange, handleDelete, t, onBlur }) => (
-  <div style={{ marginBottom: 40, marginTop: 80 }}>
-    {points.map((dot, index) => (
-      <Paper style={{ marginBottom: 20 }} padding="20px">
-        <FlexContainer justifyContent="space-between">
-          <Subtitle>{`${t("component.chart.point")} ${index + 1}`}</Subtitle>
-          <IconTrash onClick={() => handleDelete(index)} />
-        </FlexContainer>
-        <UiInputGroup
-          onChange={handleChange(index)}
-          firstInputType="text"
-          secondInputType="number"
-          ratio={ratio}
-          onBlur={onBlur}
-          firstFieldValue={dot.x}
-          secondFieldValue={dot.y}
-          t={t}
-        />
-        <Checkbox
-          checked={!dot.notInteractive}
-          onChange={() => handleChange(index)("interactive", !dot.notInteractive)}
-        >
-          {t("component.chart.interactive")}
-        </Checkbox>
-      </Paper>
-    ))}
-  </div>
-);
+class PointsList extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("main", t("component.chart.points"), node.offsetTop);
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
+
+  render() {
+    const { points, ratio, handleChange, handleDelete, t, onBlur } = this.props;
+
+    return (
+      <Fragment>
+        {points.map((dot, index) => (
+          <Widget>
+            <FlexContainer justifyContent="space-between">
+              <Subtitle>{`${t("component.chart.point")} ${index + 1}`}</Subtitle>
+              <IconTrash onClick={() => handleDelete(index)} />
+            </FlexContainer>
+            <UiInputGroup
+              onChange={handleChange(index)}
+              firstInputType="text"
+              secondInputType="number"
+              ratio={ratio}
+              onBlur={onBlur}
+              firstFieldValue={dot.x}
+              secondFieldValue={dot.y}
+              t={t}
+            />
+            <Checkbox
+              checked={!dot.notInteractive}
+              onChange={() => handleChange(index)("interactive", !dot.notInteractive)}
+            >
+              {t("component.chart.interactive")}
+            </Checkbox>
+          </Widget>
+        ))}
+      </Fragment>
+    );
+  }
+}
 
 PointsList.propTypes = {
   t: PropTypes.func.isRequired,
@@ -44,11 +65,15 @@ PointsList.propTypes = {
   handleChange: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
   onBlur: PropTypes.func,
-  ratio: PropTypes.number.isRequired
+  ratio: PropTypes.number.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
 };
 
 PointsList.defaultProps = {
-  onBlur: () => {}
+  onBlur: () => {},
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withAddButton(PointsList);

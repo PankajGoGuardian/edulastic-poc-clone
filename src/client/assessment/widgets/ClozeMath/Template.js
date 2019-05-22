@@ -78,6 +78,7 @@ class Template extends Component {
           toolbarId="template"
           onChange={_updateTemplate}
           showResponseBtn
+          showDropdownBtn
           value={item.template}
           data-cy="templateBox"
         />

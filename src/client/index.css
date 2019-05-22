@@ -808,12 +808,12 @@ input[type="checkbox"] {
   margin: 5px !important;
 }
 
-.ql-editor .text-dropdown-btn .text,
+.ql-editor .text-dropdown-btn .dropdown-text,
 .ql-editor .response-btn .text {
   padding: 0px 8px;
 }
 
-.ql-editor .text-dropdown-btn .index,
+.ql-editor .text-dropdown-btn .dropdown-index,
 .ql-editor .response-btn .index {
   padding: 0px 8px;
 }
@@ -824,13 +824,13 @@ input[type="checkbox"] {
   cursor: pointer;
 }
 
-.ql-editor .text-dropdown-btn .index {
+.ql-editor .text-dropdown-btn .dropdown-index {
   background: #d3d3d3;
   border-top-left-radius: 5px;
   border-bottom-left-radius: 5px;
 }
 
-.ql-editor .text-dropdown-btn .text {
+.ql-editor .text-dropdown-btn .dropdown-text {
   background: #e5e5e5;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
@@ -838,7 +838,7 @@ input[type="checkbox"] {
   align-items: center;
 }
 
-.ql-editor .text-dropdown-btn .text::after {
+.ql-editor .text-dropdown-btn .dropdown-text::after {
   content: "";
   width: 0;
   height: 0;
@@ -849,11 +849,11 @@ input[type="checkbox"] {
   margin-left: 5px;
 }
 
-.ql-editor .text-dropdown-btn:hover .text {
+.ql-editor .text-dropdown-btn:hover .dropdown-text {
   color: #12a6e8;
 }
 
-.ql-editor .text-dropdown-btn:hover .index {
+.ql-editor .text-dropdown-btn:hover .dropdown-index {
   background: #12a6e8;
   color: white;
 }

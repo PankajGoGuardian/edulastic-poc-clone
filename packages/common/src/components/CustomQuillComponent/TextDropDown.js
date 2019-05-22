@@ -7,7 +7,8 @@ class TextDropDown extends BlockEmbed {
     const node = super.create();
     const textDropdownCount = document.querySelectorAll(".text-dropdown-btn").length;
     node.setAttribute("contenteditable", false);
-    node.innerHTML = `<span class="index">${textDropdownCount + 1}</span><span class="text">Text Dropdown</span>`;
+    node.innerHTML = `<span class="dropdown-index">${textDropdownCount +
+      1}</span><span class="dropdown-text">Text Dropdown</span>`;
     return node;
   }
 }

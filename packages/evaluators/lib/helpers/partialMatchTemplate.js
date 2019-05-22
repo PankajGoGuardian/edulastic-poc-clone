@@ -16,10 +16,15 @@ var _getCalculateScores2 = _interopRequireDefault(require("./getCalculateScores"
 var partialMatchTemplate = function partialMatchTemplate(mainFunction, mainArguments) {
   var _mainArguments$valida = mainArguments.validation,
     penalty = _mainArguments$valida.penalty,
-    rounding = _mainArguments$valida.rounding;
+    rounding = _mainArguments$valida.rounding,
+    ignoreCase = _mainArguments$valida.ignoreCase,
+    allowSingleLetterMistake = _mainArguments$valida.allowSingleLetterMistake;
   var isRound = rounding === _rounding.rounding.ROUND_DOWN; // eslint-disable-next-line prefer-const
 
-  var _mainFunction = mainFunction(mainArguments),
+  var _mainFunction = mainFunction(mainArguments, {
+      ignoreCase: ignoreCase,
+      allowSingleLetterMistake: allowSingleLetterMistake
+    }),
     score = _mainFunction.score,
     maxScore = _mainFunction.maxScore,
     evaluation = _mainFunction.evaluation,

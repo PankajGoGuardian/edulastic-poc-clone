@@ -1,8 +1,9 @@
 import { cloneDeep } from "lodash";
 import getMatches from "./getMatches";
 import getEvaluation from "./getEvaluation";
+import { getClozeTextMatches } from "./clozeTextHelpers";
 
-const countPartialMatchScores = compareFunction => ({ answers, userResponse = [] }) => {
+const countPartialMatchScores = compareFunction => ({ answers, userResponse = [] }, restOptions = {}) => {
   let existingResponse = cloneDeep(userResponse);
   if (!Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
@@ -21,7 +22,11 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
 
     const scorePerAnswer = totalScore / answer.length;
 
-    const matches = getMatches(existingResponse, answer, compareFunction);
+    let matches = getMatches(existingResponse, answer, compareFunction);
+
+    if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
+      matches = getClozeTextMatches(existingResponse, answer, restOptions) === answer.length;
+    }
 
     const currentScore = matches * scorePerAnswer;
 
@@ -34,7 +39,7 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
     }
   });
 
-  const evaluation = getEvaluation(existingResponse, answers, rightIndex, compareFunction);
+  const evaluation = getEvaluation(existingResponse, answers, rightIndex, compareFunction, restOptions);
 
   return {
     score,

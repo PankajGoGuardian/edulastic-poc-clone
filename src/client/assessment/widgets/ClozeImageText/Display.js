@@ -156,7 +156,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responseBtnStyle={responseBtnStyle}
         imageUrl={imageUrl || MapImage}
-        imageWidth={imageWidth}
+        imageWidth={width}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}

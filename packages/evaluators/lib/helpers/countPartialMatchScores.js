@@ -13,11 +13,14 @@ var _getMatches = _interopRequireDefault(require("./getMatches"));
 
 var _getEvaluation = _interopRequireDefault(require("./getEvaluation"));
 
+var _clozeTextHelpers = require("./clozeTextHelpers");
+
 var countPartialMatchScores = function countPartialMatchScores(compareFunction) {
   return function(_ref) {
     var answers = _ref.answers,
       _ref$userResponse = _ref.userResponse,
       userResponse = _ref$userResponse === void 0 ? [] : _ref$userResponse;
+    var restOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
     var existingResponse = (0, _cloneDeep2["default"])(userResponse);
 
     if (!Array.isArray(userResponse)) {
@@ -38,6 +41,11 @@ var countPartialMatchScores = function countPartialMatchScores(compareFunction) 
 
       var scorePerAnswer = totalScore / answer.length;
       var matches = (0, _getMatches["default"])(existingResponse, answer, compareFunction);
+
+      if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
+        matches = (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions) === answer.length;
+      }
+
       var currentScore = matches * scorePerAnswer;
       score = Math.max(score, currentScore);
       maxScore = Math.max(maxScore, totalScore);
@@ -47,7 +55,13 @@ var countPartialMatchScores = function countPartialMatchScores(compareFunction) 
         rightIndex = ind;
       }
     });
-    var evaluation = (0, _getEvaluation["default"])(existingResponse, answers, rightIndex, compareFunction);
+    var evaluation = (0, _getEvaluation["default"])(
+      existingResponse,
+      answers,
+      rightIndex,
+      compareFunction,
+      restOptions
+    );
     return {
       score: score,
       maxScore: maxScore,

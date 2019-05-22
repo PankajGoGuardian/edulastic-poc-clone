@@ -12,8 +12,6 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
-import { CorrectAnswerOptions } from "../../styled/CorrectAnswerOptions";
-
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
@@ -121,6 +119,16 @@ class ClozeImageText extends Component {
     }
   };
 
+  handleValidationOptionsChange = (name, value) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation[name] = value;
+        updateVariables(draft);
+      })
+    );
+  };
+
   handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
@@ -140,6 +148,9 @@ class ClozeImageText extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
+      item: {
+        validation: { ignoreCase, allowSingleLetterMistake }
+      },
       isSidebarCollapsed,
       ...restProps
     } = this.props;
@@ -182,6 +193,24 @@ class ClozeImageText extends Component {
                       fillSections={fillSections}
                       cleanSections={cleanSections}
                     />
+
+                    <div style={{ marginTop: 40 }}>
+                      <Checkbox
+                        className="additional-options"
+                        onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                        label={t("component.cloze.dropDown.ignorecase")}
+                        checked={!!ignoreCase}
+                      />
+
+                      <Checkbox
+                        className="additional-options"
+                        onChange={() =>
+                          this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                        }
+                        label={t("component.cloze.dropDown.allowsinglelettermistake")}
+                        checked={!!allowSingleLetterMistake}
+                      />
+                    </div>
                   </Widget>
                 </div>
               </EditorContainer>

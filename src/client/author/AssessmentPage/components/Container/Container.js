@@ -152,15 +152,15 @@ class Container extends React.Component {
       return false;
     }
 
-    const correctAnswerPicked = questions.every(question => {
-      const validationValue = get(question, "validation.valid_response.value");
-
-      if (question.type === "math") {
-        return validationValue.every(value => !isEmpty(value.value));
-      }
-
-      return !isEmpty(validationValue);
-    });
+    const correctAnswerPicked = questions
+      .filter(question => question.type !== "sectionLabel")
+      .every(question => {
+        const validationValue = get(question, "validation.valid_response.value");
+        if (question.type === "math") {
+          return validationValue.every(value => !isEmpty(value.value));
+        }
+        return !isEmpty(validationValue);
+      });
 
     if (!correctAnswerPicked) {
       message.warning("Correct answers have to be chosen for every question");

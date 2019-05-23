@@ -35,6 +35,7 @@ import {
   SwitchLabel,
   AssignButton
 } from "./styled";
+import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 
 const initAssignment = {
   startDate: moment(),
@@ -61,20 +62,35 @@ class AssignTest extends React.Component {
       match,
       fetchPerformanceBand,
       userOrgId,
+      isPlaylist,
+      fetchPlaylistById,
       performanceBandData
     } = this.props;
     const { testId } = match.params;
     if (isEmpty(group)) {
       fetchGroups();
     }
-    if (isEmpty(assignments) && testId) {
-      fetchAssignments(testId);
-    }
     if (isEmpty(performanceBandData)) {
       fetchPerformanceBand({ orgId: userOrgId });
     }
-    if (testId) {
-      fetchTestByID(testId);
+    if (isPlaylist) {
+      fetchPlaylistById(match.params.playlistId);
+      this.setState(prevState => ({
+        ...prevState,
+        assignment: {
+          ...prevState.assignment,
+          playlistId: match.params.playlistId,
+          playlistModuleId: match.params.moduleId,
+          testId: match.params.testId
+        }
+      }));
+    } else {
+      if (isEmpty(assignments) && testId) {
+        fetchAssignments(testId);
+      }
+      if (testId) {
+        fetchTestByID(testId);
+      }
     }
   }
 
@@ -126,13 +142,13 @@ class AssignTest extends React.Component {
 
   render() {
     const { isAdvancedView, assignment } = this.state;
-    const { group, fetchStudents, students, testSettings, testItem } = this.props;
-    const { title } = testItem;
+    const { group, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
+    const { title } = isPlaylist ? playlist : testItem;
 
     return (
       <div>
         <ListHeader
-          title="Assign TEST"
+          title={`Assign ${isPlaylist ? "PLAYLIST" : "TEST"}`}
           midTitle="PICK CLASSES, GROUPS OR STUDENTS"
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
@@ -141,7 +157,11 @@ class AssignTest extends React.Component {
         <Container>
           <FullFlexContainer justifyContent="space-between">
             <PaginationInfo>
-              &lt; <AnchorLink to="/author/tests">TEST LIBRARY</AnchorLink> / <Anchor>{title}</Anchor>
+              &lt;{" "}
+              <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}`}>
+                {isPlaylist ? "PLAYLIST LIBRARY" : "TEST LIBRARY"}
+              </AnchorLink>{" "}
+              / <Anchor>{title}</Anchor>
             </PaginationInfo>
             <SwitchWrapper>
               <SwitchLabel>SIMPLE</SwitchLabel>
@@ -181,6 +201,7 @@ export default connect(
     students: getStudentsSelector(state),
     testSettings: getTestEntitySelector(state),
     userOrgId: getUserOrgId(state),
+    playlist: getPlaylistSelector(state),
     performanceBandData: get(state, ["performanceBandReducer", "data"], []),
     testItem: getTestSelector(state)
   }),
@@ -190,6 +211,7 @@ export default connect(
     fetchAssignments: fetchAssignmentsAction,
     saveAssignment: saveAssignmentAction,
     fetchPerformanceBand: receivePerformanceBandAction,
+    fetchPlaylistById: receivePlaylistByIdAction,
     fetchTestByID: receiveTestByIdAction
   }
 )(AssignTest);

@@ -6,7 +6,7 @@ import { SMALL_DESKTOP_WIDTH, MAX_MOBILE_WIDTH } from "../../../../constants/oth
 
 import QuestionWrapper from "../../../QuestionWrapper";
 
-import { Container } from "./styled/Container";
+import { Container, WidgetContainer } from "./styled/Container";
 import { MobileRightSide } from "./styled/MobileRightSide";
 import { MobileLeftSide } from "./styled/MobileLeftSide";
 import { IconArrow } from "./styled/IconArrow";
@@ -39,7 +39,7 @@ class TestItemCol extends Component {
     });
   };
 
-  renderTabContent = widget => {
+  renderTabContent = (widget, flowLayout) => {
     const { preview, showFeedback, multiple, questions, qIndex, ...restProps } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
@@ -65,6 +65,7 @@ class TestItemCol extends Component {
           noPadding
           noBoxShadow
           isFlex
+          flowLayout={flowLayout}
           {...restProps}
         />
       </Tabs.TabContainer>
@@ -109,12 +110,17 @@ class TestItemCol extends Component {
             <IconArrow type="right" />
           </MobileLeftSide>
         )}
-        {col.widgets.map((widget, i) => (
-          <React.Fragment key={i}>
-            {col.tabs && !!col.tabs.length && value === widget.tabIndex && this.renderTabContent(widget)}
-            {col.tabs && !col.tabs.length && this.renderTabContent(widget)}
-          </React.Fragment>
-        ))}
+        <WidgetContainer flowLayout={col.flowLayout}>
+          {col.widgets.map((widget, i) => (
+            <React.Fragment key={i}>
+              {col.tabs &&
+                !!col.tabs.length &&
+                value === widget.tabIndex &&
+                this.renderTabContent(widget, col.flowLayout)}
+              {col.tabs && !col.tabs.length && this.renderTabContent(widget, col.flowLayout)}
+            </React.Fragment>
+          ))}
+        </WidgetContainer>
       </Container>
     );
   }

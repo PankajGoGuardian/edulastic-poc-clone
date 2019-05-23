@@ -9,6 +9,7 @@ import { replace } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { formatAssignment } from "./utils";
 import { getUserNameSelector } from "../../../src/selectors/user";
+import { getPlaylistEntitySelector } from "../../../PlaylistPage/ducks";
 // constants
 export const SAVE_ASSIGNMENT = "[assignments] save assignment";
 export const UPDATE_ASSIGNMENT = "[assignments] update assignment";
@@ -99,11 +100,32 @@ export const getCurrentAssignmentSelector = createSelector(
 
 function* saveAssignment({ payload }) {
   try {
-    let testId = yield select(getTestIdSelector);
-    if (!testId) {
+    let testIds;
+    if (!payload.playlistModuleId && !playlistId) {
+      testIds = [yield select(getTestIdSelector)];
+    } else {
+      const playlist = yield select(getPlaylistEntitySelector);
+      testIds = [];
+      if (payload.testId) {
+        testIds = [payload.testId];
+      } else {
+        const module = playlist.modules.filter(module => module._id === payload.playlistModuleId);
+        if (!module || !(module && module.length)) {
+          return message.error("Module not found in playlist");
+        }
+        module &&
+          module[0].data.forEach(dat => {
+            testIds.push(dat.contentId);
+          });
+        if (!testIds.length) {
+          return message.error("No test in module");
+        }
+      }
+    }
+    if (!testIds || !(testIds && testIds.length)) {
       const test = yield select(getTestSelector);
       const entity = yield call(testsApi.create, test);
-      testId = entity._id;
+      testIds = [entity._id];
       yield put({
         type: SET_TEST_DATA,
         payload: {
@@ -142,21 +164,23 @@ function* saveAssignment({ payload }) {
         updateTestActivities = true;
       }
     }
-
-    const data = omit(
-      {
-        ...payload,
-        startDate,
-        endDate,
-        testId
-      },
-      ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
+    let data = [];
+    data = testIds.map(testId =>
+      omit(
+        {
+          ...payload,
+          startDate,
+          endDate,
+          testId
+        },
+        ["_id", "__v", "createdAt", "updatedAt", "students", "scoreReleasedClasses", "googleAssignmentIds"]
+      )
     );
     const result = isUpdate
       ? yield call(assignmentApi.update, payload._id, { ...data, updateTestActivities })
-      : yield call(assignmentApi.create, { assignments: [data], assignedBy });
+      : yield call(assignmentApi.create, { assignments: data, assignedBy });
     const assignment = isUpdate ? formatAssignment(result) : formatAssignment(result[0]);
-    const successMessage = "Assign test is successed!";
+    const successMessage = `Assign ${payload.playlistModuleId ? "module" : "test"} is successed!`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
   } catch (err) {

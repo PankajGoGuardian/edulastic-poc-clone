@@ -186,10 +186,9 @@ class CurriculumSequence extends Component {
   handleCustomizeClick = async () => {
     const {
       history,
-      destinationCurriculumSequence: { _id }
+      destinationCurriculumSequence: { status, _id }
     } = this.props;
-    const urlHasUseThis = history.location.pathname.match(/use-this/g);
-    if (urlHasUseThis) {
+    if (status === "draft") {
       return history.push(`/author/playlists/${_id}/edit`);
     }
     const duplicatePlayList = await curriculumSequencesApi.duplicatePlayList(_id);
@@ -284,6 +283,7 @@ class CurriculumSequence extends Component {
       group,
       batchAssign,
       mode,
+      onShareClick,
       selectedItemsForAssign,
       dataForAssign,
       history
@@ -308,7 +308,7 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
+    const { status, title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
@@ -463,13 +463,13 @@ class CurriculumSequence extends Component {
                 <CurriculumHeaderButtons>
                   {urlHasUseThis && (
                     <ShareButtonStyle>
-                      <Button type="default">
+                      <Button type="default" onClick={onShareClick}>
                         <ShareButtonIcon color={greenThird} width={20} height={20} />
                         <ShareButtonText>SHARE</ShareButtonText>
                       </Button>
                     </ShareButtonStyle>
                   )}
-                  {(customize || urlHasUseThis) && (
+                  {customize && (
                     <SaveButtonStyle>
                       <Button
                         data-cy="saveCurriculumSequence"
@@ -559,24 +559,16 @@ class CurriculumSequence extends Component {
             {destinationCurriculumSequence && (
               <Curriculum
                 mode={mode}
+                history={history}
+                status={status}
                 key={destinationCurriculumSequence._id}
                 padding={selectContent}
                 curriculum={destinationCurriculumSequence}
                 expandedModules={expandedModules}
                 onCollapseExpand={onCollapseExpand}
                 onDrop={onDrop}
+                customize={customize}
                 hideEditOptions={!urlHasUseThis}
-              />
-            )}
-            {isSelectContent && (
-              <SelectContent
-                key={sourceCurriculumSequence._id}
-                destinationCurriculum={destinationCurriculumSequence}
-                curriculumList={curriculumList}
-                curriculum={sourceCurriculumSequence}
-                onCurriculumSequnceChange={onSourceCurriculumSequenceChange}
-                windowWidth={windowWidth}
-                onSelectContent={onSelectContent}
                 onBeginDrag={onBeginDrag}
               />
             )}
@@ -612,6 +604,7 @@ CurriculumSequence.propTypes = {
   setSelectedItemsForAssign: PropTypes.func.isRequired,
   group: PropTypes.array.isRequired,
   batchAssign: PropTypes.func.isRequired,
+  onShareClick: PropTypes.func,
   selectedItemsForAssign: PropTypes.array.isRequired,
   dataForAssign: PropTypes.object.isRequired,
   setDataForAssign: PropTypes.func.isRequired
@@ -1060,6 +1053,7 @@ const SubTopBarContainer = styled.div`
     padding-left: 20px;
   }
 `;
+
 SubTopBarContainer.displayName = "SubTopBarContainer";
 
 const ButtonText = styled.div`

@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import * as moment from "moment";
 import { message } from "antd";
 import { takeLatest, put, call, all, select, take } from "redux-saga/effects";
-import { flatten, cloneDeep, isEmpty, keyBy } from "lodash";
+import { flatten, cloneDeep, isEmpty, keyBy, omit } from "lodash";
 import { v4 } from "uuid";
 import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
@@ -24,6 +24,7 @@ import {
 } from "../sharedDucks/groups";
 import { generateClassData } from "../TestPage/components/Assign/utils";
 import { receiveLastPlayListAction, getLastPlayListSelector } from "../Playlist/ducks";
+import produce from "immer";
 
 // Constants
 export const CURRICULUM_TYPE_GUIDE = "guide";
@@ -56,7 +57,6 @@ export const SET_SELECTED_ITEMS_FOR_ASSIGN = "[curriculum-sequence] set selected
 export const SET_SELECTED_ITEMS_FOR_ASSIGN_INIT = "[curriculum-sequence] set selected items for assign init";
 export const SET_DATA_FOR_ASSIGN_INIT = "[curriculum-sequence] set data for assign init";
 export const SET_DATA_FOR_ASSIGN = "[curriculum-sequence] set data for assign";
-export const ADD_CONTENT_TO_CURRICULUM = "[curriculum-sequence] add content to curriculum";
 export const ADD_CONTENT_TO_CURRICULUM_RESULT = "[curriculum-sequence] add content to curriculum result";
 export const REMOVE_ITEM_FROM_UNIT = "[curriculum-sequence] remove item from unit";
 export const SAVE_CURRICULUM_SEQUENCE = "[curriculum-sequence] save curriculum sequence";
@@ -90,7 +90,7 @@ export const createAssignmentAction = createAction(CREATE_ASSIGNMENT);
 export const createAssignmentNowAction = createAction(CREATE_ASSIGNMENT_NOW);
 export const setSelectedItemsForAssignAction = createAction(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT);
 export const setDataForAssignAction = createAction(SET_DATA_FOR_ASSIGN_INIT);
-export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_CURRICULUM);
+export const addContentToCurriculumSequenceAction = createAction(ADD_CONTENT_TO_CURRICULUM_RESULT);
 export const saveCurriculumSequenceAction = createAction(SAVE_CURRICULUM_SEQUENCE);
 export const addNewUnitAction = createAction(ADD_NEW_UNIT_INIT);
 export const removeUnitAction = createAction(REMOVE_UNIT_INIT);
@@ -185,7 +185,8 @@ function* putCurriculumSequence({ payload }) {
   const { id, curriculumSequence } = payload;
 
   try {
-    const response = yield curriculumSequencesApi.updateCurriculumSequence(id, curriculumSequence);
+    const dataToSend = omit(curriculumSequence, ["authors", "createdDate", "updatedDate", "sharedWith", "sharedType"]);
+    const response = yield curriculumSequencesApi.updateCurriculumSequence(id, dataToSend);
 
     message.success(`Successfully saved ${response.title}`);
     yield put(updateCurriculumSequenceAction(response));
@@ -660,7 +661,6 @@ export function* watcherSaga() {
     yield takeLatest(SAVE_GUIDE_ALIGNMENT, saveGuideAlignment),
     yield takeLatest(CREATE_ASSIGNMENT, createAssignment),
     yield takeLatest(CREATE_ASSIGNMENT_NOW, createAssignmentNow),
-    yield takeLatest(ADD_CONTENT_TO_CURRICULUM, addContentToCurriculumSequence),
     yield takeLatest(SAVE_CURRICULUM_SEQUENCE, saveCurriculumSequence),
     yield takeLatest(SET_DATA_FOR_ASSIGN_INIT, setDataForAssign),
     yield takeLatest(SET_SELECTED_ITEMS_FOR_ASSIGN_INIT, setSelectedItemsForAssign),
@@ -668,6 +668,7 @@ export function* watcherSaga() {
     yield takeLatest(REMOVE_UNIT_INIT, removeUnit),
     yield takeLatest(BATCH_ASSIGN, batchAssign),
     yield takeLatest(FETCH_ASSIGNED_REQUEST, fetchAssigned),
+    yield takeLatest(ADD_CONTENT_TO_CURRICULUM_RESULT, moveContentToPlaylistSaga),
     yield takeLatest(USE_THIS_PLAYLIST, useThisPlayListSaga)
   ]);
 }
@@ -982,25 +983,51 @@ const setDataForAssignReducer = (state, { payload }) => {
  * @param {Object<String, String>} args
  * @param {import('./components/CurriculumSequence').CurriculumSequenceType} [args.payload]
  */
-const addContentToCurriculumSequenceReducer = (state, { payload }) => {
-  const updatedModule = payload;
-  const destinationCurriculumSequence = {
-    ...state.destinationCurriculumSequence
-  };
-  const updatedModules = [
-    ...destinationCurriculumSequence.modules.map(module => {
-      if (module.id === updatedModule.id) {
-        return updatedModule;
-      }
-      return module;
-    })
-  ];
 
+function* moveContentToPlaylistSaga(payload) {
+  try {
+    const state = yield select(getCurriculumSequenceState);
+    const newState = moveContentInPlaylist(state, payload);
+    yield put(
+      putCurriculumSequenceAction({
+        id: newState.destinationCurriculumSequence._id,
+        curriculumSequence: newState.destinationCurriculumSequence
+      })
+    );
+  } catch (e) {
+    message.error("Moving test failed");
+  }
+}
+
+const moveContentInPlaylist = (state, { payload }) => {
+  const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
+  let newPlaylist;
+  if (!toContentIndex) {
+    newPlaylist = produce(state.destinationCurriculumSequence, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  } else {
+    newPlaylist = produce(stable.destinationCurriculumSequence, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.splice(
+        toContentIndex,
+        0,
+        draft.modules[fromModuleIndex].data[fromContentIndex]
+      );
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  }
   return {
     ...state,
     destinationCurriculumSequence: {
-      ...destinationCurriculumSequence,
-      modules: updatedModules
+      ...state.destinationCurriculumSequence,
+      modules: newPlaylist.modules
     }
   };
 };
@@ -1123,7 +1150,6 @@ export default createReducer(initialState, {
   [CREATE_ASSIGNMENT_OK]: createAssignmentReducer,
   [SET_SELECTED_ITEMS_FOR_ASSIGN]: setSelectedItemsForAssignReducer,
   [SET_DATA_FOR_ASSIGN]: setDataForAssignReducer,
-  [ADD_CONTENT_TO_CURRICULUM_RESULT]: addContentToCurriculumSequenceReducer,
   [REMOVE_ITEM_FROM_UNIT]: removeItemFromUnitReducer,
   [ADD_NEW_UNIT]: addNewUnitReducer,
   [REMOVE_UNIT]: removeUnitReducer,

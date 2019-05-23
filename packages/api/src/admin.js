@@ -132,14 +132,23 @@ const getUsersDataApi = districtId =>
     })
     .then(({ data }) => data);
 
-const upgradeDistrictApi = data =>
+const manageSubscription = data =>
   api
     .callApi({
       url: "/subscription",
       method: "post",
       data
     })
-    .then(({ data }) => data);
+    .then(({ data: response }) => response);
+
+const searchUsersByEmailIds = data =>
+  api
+    .callApi({
+      url: `/search/users/by-emails`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
 
 export default {
   searchUpdateDistrict,
@@ -156,5 +165,6 @@ export default {
   updateSubjectStandardApi,
   logsDataApi,
   getUsersDataApi,
-  upgradeDistrictApi
+  manageSubscription,
+  searchUsersByEmailIds
 };

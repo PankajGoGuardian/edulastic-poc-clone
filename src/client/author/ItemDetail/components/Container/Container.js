@@ -27,7 +27,10 @@ import {
   publishTestItemAction,
   getTestItemStatusSelector,
   clearRedirectTestAction,
-  setRedirectTestAction
+  setRedirectTestAction,
+  stateSelector,
+  setItemLevelScoringAction,
+  setItemLevelScoreAction
 } from "../../ducks";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
@@ -41,7 +44,8 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
-
+import { Row, Col, InputNumber, Input } from "antd";
+const InputGroup = Input.Group;
 const testItemStatusConstants = {
   DRAFT: "draft",
   PUBLISHED: "published",
@@ -163,10 +167,11 @@ class Container extends Component {
     this.setState({ showModal: true });
   };
 
-  handleShowSettings = () =>
-    this.setState(preState => ({
-      showSettings: !preState.showSettings
+  handleShowSettings = () => {
+    this.setState(state => ({
+      showSettings: !state.showSettings
     }));
+  };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
     const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
@@ -384,6 +389,8 @@ class Container extends Component {
             onScrollingChange={this.handleScrollingChange}
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
+            itemLevelScoring={item.itemLevelScoring}
+            setItemLevelScoring={this.props.setItemLevelScoring}
           />
         )}
         <ItemHeader
@@ -420,7 +427,20 @@ class Container extends Component {
           />
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH ? (
-          <SecondHeadBar />
+          <SecondHeadBar>
+            {item && item.itemLevelScoring && (
+              <Row type="flex" justify="end">
+                <Col>
+                  <InputGroup compact>
+                    <label>
+                      <b> Total Score :</b>
+                    </label>
+                    <InputNumber value={item.itemLevelScore} onChange={v => this.props.setItemLevelScore(v)} />
+                  </InputGroup>
+                </Col>
+              </Row>
+            )}
+          </SecondHeadBar>
         ) : (
           <BackLink onClick={history.goBack}>Back to Item List</BackLink>
         )}
@@ -473,9 +493,9 @@ Container.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   changePreview: PropTypes.func.isRequired,
   loadQuestion: PropTypes.func.isRequired,
-  questions: PropTypes.func.isRequired,
+  questions: PropTypes.object.isRequired,
   changeView: PropTypes.func.isRequired,
-  testItemStatus: PropTypes.string.isRequired,
+  testItemStatus: PropTypes.string,
   setRedirectTest: PropTypes.func,
   publishTestItem: PropTypes.func,
   modalItemId: PropTypes.string,
@@ -493,7 +513,8 @@ Container.defaultProps = {
   modalItemId: undefined,
   onModalClose: () => {},
   navigateToPickupQuestionType: () => {},
-  redirectOnEmptyItem: true
+  redirectOnEmptyItem: true,
+  testItemStatus: ""
 };
 
 const enhance = compose(
@@ -529,7 +550,9 @@ const enhance = compose(
       clearRedirectTest: clearRedirectTestAction,
       setRedirectTest: setRedirectTestAction,
       toggleCreateItemModal: toggleCreateItemModalAction,
-      toggleSideBar: toggleSideBarAction
+      toggleSideBar: toggleSideBarAction,
+      setItemLevelScoring: setItemLevelScoringAction,
+      setItemLevelScore: setItemLevelScoreAction
     }
   )
 );

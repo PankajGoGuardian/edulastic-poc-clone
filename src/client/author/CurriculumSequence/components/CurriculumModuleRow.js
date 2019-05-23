@@ -28,6 +28,7 @@ import Tags from "../../src/components/common/Tags";
 
 import AssessmentPlayer from "../../../assessment";
 import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
+import AssignmentDragItem from "./AssignmentDragItem";
 /**
  * @typedef {object} Props
  * @property {import('./CurriculumSequence').Module} module
@@ -60,11 +61,15 @@ class ModuleRow extends Component {
    * @param {import('./CurriculumSequence').Module} module
    */
   assignModule = module => {
-    const { setSelectedItemsForAssign } = this.props;
+    const { setSelectedItemsForAssign, history, playlistId } = this.props;
     const moduleItemsIds = module.data.map(item => item.contentId);
     setSelectedItemsForAssign(moduleItemsIds);
+    history.push(`/author/playlists/assignments/${playlistId}/${module._id}`);
   };
-
+  assignTest = (moduleId, testId) => {
+    const { history, playlistId } = this.props;
+    history.push(`/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`);
+  };
   viewTest = testId => {
     this.setState({
       showModal: true,
@@ -84,23 +89,39 @@ class ModuleRow extends Component {
       collapsed,
       padding,
       assigned,
+      status,
       isContentExpanded,
-      setSelectedItemsForAssign,
       module,
       moduleIndex,
       mode,
+      dropContent,
+      onBeginDrag,
       removeItemFromUnit,
       hideEditOptions,
+      curriculum,
+      customize,
       removeUnit
     } = this.props;
-    const { completed, title, id, data = [] } = module;
+    const { completed, title, _id, data = [] } = module;
 
-    const { assignModule } = this;
+    const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
     const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.contentId));
     const [whichModule, moduleName] = title ? title.split(":") : [];
     const { showModal, selectedTest } = this.state;
+    const menu = (
+      <Menu data-cy="addContentMenu">
+        {curriculum.modules.map(moduleItem => (
+          <Menu.Item data-cy="addContentMenuItem">
+            <span>{moduleItem.title}</span>
+          </Menu.Item>
+        ))}
+        <Menu.Item data-cy="addContentMenuItemAssignNow">
+          <span>Assign Now</span>
+        </Menu.Item>
+      </Menu>
+    );
     return (
       <React.Fragment>
         <ModalWrapper
@@ -158,28 +179,30 @@ class ModuleRow extends Component {
                         </ModuleCompleted>
                       </React.Fragment>
                     )}
-                    {!completed && !hideEditOptions && (
-                      <ModulesWrapper>
+                    <ModulesWrapper>
+                      {!completed && !hideEditOptions && (
                         <ModulesAssigned>
                           Assigned
                           <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
                           of
                           <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                         </ModulesAssigned>
+                      )}
+                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) && (
                         <AssignModuleButton>
                           <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
                             ASSIGN MODULE
                           </Button>
                         </AssignModuleButton>
-                      </ModulesWrapper>
-                    )}
+                      )}
+                    </ModulesWrapper>
                   </ModuleTitleAssignedWrapper>
                 </ModuleInfo>
               </ModuleHeader>
               {!collapsed && (
                 // eslint-disable-next-line
                 <div>
-                  {data.map(moduleData => {
+                  {data.map((moduleData, index) => {
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item
@@ -197,6 +220,27 @@ class ModuleRow extends Component {
                     );
 
                     const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
+                    if ((!hideEditOptions && customize) || mode === "embedded") {
+                      return (
+                        <AssignmentDragItem
+                          key={`${index}-${moduleData.id}`}
+                          moduleData={moduleData}
+                          onToggleCheck={() => toggleCheckedUnitItem(moduleData.contentId)}
+                          isContentExpanded={isContentExpanded}
+                          hideEditOptions={hideEditOptions}
+                          assignTest={this.assignTest}
+                          mode={mode}
+                          assigned={assigned}
+                          moreMenu={moreMenu}
+                          menu={menu}
+                          status={status}
+                          contentIndex={index}
+                          moduleIndex={moduleIndex}
+                          handleDrop={dropContent}
+                          onBeginDrag={onBeginDrag}
+                        />
+                      );
+                    }
 
                     return (
                       <Assignment
@@ -244,12 +288,9 @@ class ModuleRow extends Component {
                                   />
                                 </CustomIcon>
                               </AssignmentIcon>
-                              {!hideEditOptions && (
+                              {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
                                 <AssignmentButton assigned={isAssigned}>
-                                  <Button
-                                    data-cy="assignButton"
-                                    onClick={() => setSelectedItemsForAssign(moduleData.contentId)}
-                                  >
+                                  <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />
                                     ) : (
@@ -291,10 +332,12 @@ ModuleRow.propTypes = {
   collapsed: PropTypes.bool.isRequired,
   padding: PropTypes.bool.isRequired,
   // checkedUnitItems: PropTypes.array.isRequired,
+  customize: PropTypes.bool,
   isContentExpanded: PropTypes.bool.isRequired,
   removeItemFromUnit: PropTypes.func.isRequired,
   assigned: PropTypes.array.isRequired,
   mode: PropTypes.string,
+  status: PropTypes.string,
   removeUnit: PropTypes.func.isRequired
 };
 
@@ -323,7 +366,7 @@ const ModalWrapper = styled(Modal)`
   }
 `;
 
-const CustomIcon = styled.span`
+export const CustomIcon = styled.span`
   cursor: pointer;
   margin-right: ${props => (props.marginRight ? props.marginRight : 25)}px;
   margin-left: ${({ marginLeft }) => marginLeft || 0}px;
@@ -334,7 +377,7 @@ const CustomIcon = styled.span`
   }
 `;
 
-const AssignmentIconsHolder = styled.div`
+export const AssignmentIconsHolder = styled.div`
   display: flex;
   justify-items: flex-end;
   margin-left: auto;
@@ -358,7 +401,7 @@ const ModuleFocused = styled.div`
   opacity: 0;
 `;
 
-const ModuleAssignedUnit = styled.div`
+export const ModuleAssignedUnit = styled.div`
   margin-right: auto;
   @media only screen and (max-width: ${tabletWidth}) {
     margin-right: 0;
@@ -421,7 +464,7 @@ const TotalAssigned = styled.strong`
   font-weight: bolder;
 `;
 
-const AssignmentButton = styled.div`
+export const AssignmentButton = styled.div`
   min-width: 121px;
   .ant-btn {
     color: ${({ assigned }) => (assigned ? white : "#1774F0")};
@@ -474,7 +517,7 @@ const AssignModuleButton = styled.div`
   }
 `;
 
-const AssignmentContent = styled.div`
+export const AssignmentContent = styled.div`
   flex-direction: row;
   display: flex;
   min-width: ${props => (!props.expanded ? "30%" : "45%")};
@@ -515,7 +558,7 @@ const ModuleTitlePrefix = styled.div`
   font-weight: 300;
 `;
 
-const ModuleDataName = styled.div`
+export const ModuleDataName = styled.div`
   font-weight: 600;
   color: #30404f;
   font-size: 14px;
@@ -563,7 +606,7 @@ const AssignmentIconsWrapper = styled.div`
   }
 `;
 
-const AssignmentIcon = styled.span`
+export const AssignmentIcon = styled.span`
   margin-left: 10px;
   margin-right: 10px;
 `;

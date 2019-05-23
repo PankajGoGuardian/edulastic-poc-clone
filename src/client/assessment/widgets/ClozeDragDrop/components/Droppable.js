@@ -26,7 +26,8 @@ const Droppable = ({ connectDropTarget, children }) =>
     <div
       style={{
         top: -5,
-        display: "inline-flex"
+        display: "inline-flex",
+        verticalAlign: "middle"
       }}
     >
       {children}

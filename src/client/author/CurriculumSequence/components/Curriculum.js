@@ -15,18 +15,23 @@ import { theme } from "../theme";
 
 /** @extends Component<CurriculumProps> */
 class Curriculum extends Component {
-  onDrop = toModule => {
+  onDrop = toModuleIndex => {
     const { onDrop } = this.props;
-    onDrop(toModule);
+    onDrop(toModuleIndex);
   };
 
   render() {
     const {
-      curriculum: { modules },
+      curriculum: { modules, _id: playlistId },
+      curriculum,
       hideEditOptions,
       expandedModules,
       onCollapseExpand,
       mode,
+      status,
+      history,
+      customize,
+      onBeginDrag,
       padding
     } = this.props;
 
@@ -34,16 +39,22 @@ class Curriculum extends Component {
       <ModuleWrapper>
         {modules &&
           modules.map((moduleItem, index) => (
-            <DropContainer theme={theme} key={`drop-${index}-${moduleItem.id}`} drop={() => this.onDrop(moduleItem)}>
+            <DropContainer theme={theme} key={`drop-${index}-${moduleItem._id}`} drop={() => this.onDrop(index)}>
               <CurriculumModuleRow
                 mode={mode}
+                status={status}
+                curriculum={curriculum}
                 collapsed={expandedModules.indexOf(index) === -1}
                 onCollapseExpand={onCollapseExpand}
-                key={moduleItem.id}
+                key={moduleItem._id}
+                playlistId={playlistId}
                 module={moduleItem}
                 moduleIndex={index}
+                history={history}
                 padding={padding}
+                onBeginDrag={onBeginDrag}
                 hideEditOptions={hideEditOptions}
+                customize={customize}
               />
             </DropContainer>
           ))}
@@ -58,6 +69,10 @@ Curriculum.propTypes = {
   expandedModules: PropTypes.array.isRequired,
   padding: PropTypes.bool.isRequired,
   mode: PropTypes.string,
+  status: PropTypes.string,
+  history: PropTypes.object,
+  customize: PropTypes.bool,
+  onBeginDrag: PropTypes.func,
   onCollapseExpand: PropTypes.func.isRequired
 };
 

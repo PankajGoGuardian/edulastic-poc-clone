@@ -117,8 +117,8 @@ class ClozeTextDisplay extends Component {
     const { widthpx, heightpx, placeholder, inputtype, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: widthpx !== 0 ? widthpx : "100px",
-      heightpx: heightpx !== 0 ? heightpx : "35px"
+      widthpx: widthpx !== 0 ? widthpx : 20,
+      heightpx: heightpx !== 0 ? heightpx : 35
     };
     let maxLineHeight = smallSize ? 50 : 40;
     const previewTemplateBoxLayout = (

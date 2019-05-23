@@ -95,7 +95,7 @@ class SelectContent extends Component {
       setContentCurriculum,
       toggleCheckedUnitItem
     } = this.props;
-    const { title, modules } = curriculum;
+    const { title = "", modules = [] } = curriculum;
 
     const menu = (
       <Menu>
@@ -124,7 +124,7 @@ class SelectContent extends Component {
         </CurriculumHeader>
         {modules.map(moduleItem => (
           <SelectContentRow
-            key={moduleItem.id}
+            key={moduleItem._id}
             module={moduleItem}
             destinationCurriculum={destinationCurriculum}
             dropContent={dropContent}

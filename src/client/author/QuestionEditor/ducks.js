@@ -1,7 +1,8 @@
 import { createSelector } from "reselect";
 import { testItemsApi, evaluateApi, questionsApi } from "@edulastic/api";
 import { call, put, all, takeEvery, takeLatest, select } from "redux-saga/effects";
-import { cloneDeep, values, get } from "lodash";
+import { cloneDeep, values, get, omit, set } from "lodash";
+import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
@@ -302,13 +303,34 @@ function* saveQuestionSaga({ payload: modalItemId }) {
       q => currentQuestionIds.includes(q.id) && values(resourceTypeQuestions).includes(q.type)
     );
 
-    const data = {
+    let data = {
       ...itemDetail,
       data: {
         questions: currentQuestions,
         resources: currentResources
       }
     };
+
+    data = produce(data, draftData => {
+      if (draftData.data.questions.length > 0) {
+        if (data.itemLevelScoring) {
+          draftData.data.questions[0].itemScore = data.itemLevelScore;
+        } else {
+          delete draftData.data.questions[0].itemScore;
+        }
+
+        draftData.data.questions.forEach((q, index) => {
+          if (index > 0) {
+            if (data.itemLevelScoring) {
+              q.scoringDisabled = true;
+            } else {
+              delete q.scoringDisabled;
+            }
+          }
+        });
+      }
+    });
+
     const redirectTestId = yield select(redirectTestIdSelector);
     const { testId, ...item } = yield call(testItemsApi.updateById, itemDetail._id, data, redirectTestId);
     if (testId) {

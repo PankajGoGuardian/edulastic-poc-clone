@@ -1,8 +1,9 @@
 import { cloneDeep } from "lodash";
 import getEvaluation from "./getEvaluation";
 import getMatches from "./getMatches";
+import { getClozeTextMatches } from "./clozeTextHelpers";
 
-const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }) => {
+const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }, restOptions = {}) => {
   let existingResponse = cloneDeep(userResponse);
   if (!Array.isArray(userResponse)) {
     existingResponse = cloneDeep(userResponse.value);
@@ -19,7 +20,11 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
       return;
     }
 
-    const matches = getMatches(existingResponse, answer, compareFunction) === answer.length;
+    let matches = getMatches(existingResponse, answer, compareFunction) === answer.length;
+
+    if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
+      matches = getClozeTextMatches(existingResponse, answer, restOptions) === answer.length;
+    }
 
     const currentScore = matches && existingResponse.length === answer.length ? totalScore : 0;
 
@@ -32,7 +37,7 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
     }
   });
 
-  const evaluation = getEvaluation(existingResponse, answers, rightIndex, compareFunction);
+  const evaluation = getEvaluation(existingResponse, answers, rightIndex, compareFunction, restOptions);
 
   return {
     score,

@@ -13,6 +13,33 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
 };
 
 /**
+ * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string}[]}
+ */
+const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
+  let qids = [];
+  for (let testItemId of testItemIds) {
+    let questions = (testItemsDataKeyed[testItemId].data && testItemsDataKeyed[testItemId].data.questions) || [];
+    if (testItemsDataKeyed[testItemId].itemLevelScoring) {
+      qids = [
+        ...qids,
+        ...questions
+          //.filter(x => !x.scoringDisabled)
+          .map(x => ({
+            id: x.id,
+            weight: questions.length,
+            disabled: x.scoringDisabled,
+            testItemId,
+            qids: questions.map(x => x.id)
+          }))
+      ];
+    } else {
+      qids = [...qids, ...questions.map(x => ({ id: x.id, weight: 1 }))];
+    }
+  }
+  return qids;
+};
+
+/**
  * @returns {number}
  */
 const getMaxScoreFromQuestion = question => {
@@ -68,7 +95,7 @@ export const transformGradeBookResponse = ({
 }) => {
   const testItemIds = test.testItems;
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
-  const qids = getAllQids(testItemIds, testItemsDataKeyed);
+  const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
 
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
 
@@ -78,8 +105,11 @@ export const transformGradeBookResponse = ({
 
   //for students who hasn't even started the test
   const emptyQuestionActivities = qids.map(x => ({
-    _id: x,
-    notStarted: true
+    _id: x.id,
+    weight: x.weight,
+    notStarted: true,
+    disabled: x.disabled,
+    testItemId: x.testItemId
   }));
 
   return studentNames
@@ -120,22 +150,31 @@ export const transformGradeBookResponse = ({
 
       const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(el => {
+      const questionActivities = qids.map(({ id: el, weight, qids, disabled, testItemId }) => {
         const _id = el;
 
         if (!questionActivitiesIndexed[el]) {
-          return { _id, notStarted: true };
+          return { _id, notStarted: true, weight, disabled, testItemId };
         }
-        const { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
+        let { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
+        if (qids) {
+          correct = qids.map(x => questionActivitiesIndexed[x]).every(x => x.correct);
+          if (!correct) {
+            partialCorrect = qids.map(x => questionActivitiesIndexed[x]).some(x => x.correct);
+          }
+        }
         const questionMaxScore = getMaxScoreOfQid(_id, testItemsData);
         return {
           _id,
+          weight,
           skipped,
           correct,
           partialCorrect,
           score,
           maxScore: questionMaxScore,
-          timeSpent
+          timeSpent,
+          disabled,
+          testItemId
         };
       });
 

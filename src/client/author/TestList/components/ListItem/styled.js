@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue, darkBlue, fadedGrey, lightGrey, darkGrey } from "@edulastic/colors";
+import { blue, darkBlue, fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 
@@ -204,7 +204,7 @@ export const AddButton = styled.div`
   width: 120px;
   float: right;
   font-size: 12px;
-  color: ${blue};
+  color: ${props => (props.isTestAdded ? red : blue)};
   background: white;
   padding: 8px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};

@@ -143,13 +143,15 @@ ButtonAction.propTypes = {
   onShowSettings: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   clearAnswers: PropTypes.func.isRequired,
-  showCheckButton: PropTypes.bool.isRequired,
-  allowedAttempts: PropTypes.number.isRequired,
+  showCheckButton: PropTypes.bool,
+  allowedAttempts: PropTypes.number,
   showPublishButton: PropTypes.bool
 };
 
 ButtonAction.defaultProps = {
-  showPublishButton: null
+  showPublishButton: null,
+  showCheckButton: null,
+  allowedAttempts: null
 };
 
 const enhance = compose(

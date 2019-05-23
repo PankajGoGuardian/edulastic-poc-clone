@@ -568,6 +568,15 @@ table.quill-table td {
   overflow: auto;
 }
 
+.template_box > div {
+  display: inline;
+  align-self: center;
+}
+
+.response-btn > div {
+  align-self: center;
+}
+
 .template_box div.content {
   width: 100%;
   white-space: inherit;
@@ -1365,8 +1374,4 @@ span.token.active-word {
 
 .mq-math-mode sup.mq-nthroot {
   margin-top: 0.3em;
-}
-
-.mq-math-mode {
-  pointer-events: none;
 }

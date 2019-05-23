@@ -1,15 +1,33 @@
-import React, { memo, Component } from "react";
+import React, { memo, Component, createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { newBlue, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
 
 class HeaderWrapper extends Component {
+  containerRef = createRef();
+
+  dragToScrollUp = () => {
+    window.scrollBy(0, -1);
+  };
+
+  componentDidMount() {
+    /** @type {HTMLElement} */
+    const containerEl = this.containerRef.current;
+    containerEl.addEventListener("dragover", this.dragToScrollUp);
+  }
+
+  componentWillUnmount() {
+    /** @type {HTMLElement} */
+    const containerEl = this.containerRef.current;
+    containerEl.removeEventListener("dragover", this.dragToScrollUp);
+  }
+
   render = () => {
     const { children, type } = this.props;
 
     return (
-      <HeaderContainer type={type}>
+      <HeaderContainer innerRef={this.containerRef} type={type}>
         <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
           <Container type={type}>{children}</Container>
         </Affix>
@@ -19,7 +37,7 @@ class HeaderWrapper extends Component {
 }
 
 HeaderWrapper.propTypes = {
-  children: PropTypes.array.isRequired,
+  children: PropTypes.node.isRequired,
   type: PropTypes.string
 };
 

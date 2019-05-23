@@ -179,52 +179,24 @@ const HighlightImagePreview = ({
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
 
   const renderImage = () =>
-    file ? <img src={file} alt={altText} width={width} height={height} /> : <div style={{ width, height }} />;
+    file ? (
+      <div style={{ width: width - 50, height: "auto", paddingLeft: "20px" }}>
+        <img src={file} alt={altText} width={"100%"} height={"auto"} />
+      </div>
+    ) : (
+      <div style={{ width, height }} />
+    );
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
-
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
-        {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
-      </QuestionTitleWrapper>
-      <Container style={{ maxWidth: "100%" }} width={`${+width}px`} justifyContent="space-between">
-        {line_color.length > 1 && (
-          <StyledSelect value={currentColor} onChange={setCurrentColor}>
-            {line_color.map((color, i) => (
-              <Option key={i} value={color}>
-                <div className="rc-color-picker-wrap">
-                  <span className="rc-color-picker-trigger" style={{ background: color }} />
-                </div>
-              </Option>
-            ))}
-          </StyledSelect>
-        )}
-        <AdaptiveButtonList data-cy="adaptiveButtonList">
-          <Button disabled={historyTab === 0} onClick={onUndoClick}>
-            <IconUndo style={{ marginRight: 25 }} width={18} height={18} />
-            <Text data-cy="undo" fontSize={fontSize}>
-              {t("component.highlightImage.undo")}
-            </Text>
-          </Button>
-          <Button disabled={historyTab === history.length - 1 || history.length === 0} onClick={onRedoClick}>
-            <IconRedo style={{ marginRight: 25 }} width={18} height={18} />
-            <Text data-cy="redo" fontSize={fontSize}>
-              {t("component.highlightImage.redo")}
-            </Text>
-          </Button>
-          <Button onClick={onClearClick}>
-            <IconEraseText style={{ marginRight: 25 }} width={18} height={18} />
-            <Text data-cy="clear" fontSize={fontSize}>
-              {t("component.highlightImage.clear")}
-            </Text>
-          </Button>
-        </AdaptiveButtonList>
-      </Container>
-
-      <div ref={canvasContainerRef}>
+      <div style={{ height: height + 10 }} ref={canvasContainerRef}>
         <CanvasContainer>
+          <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+
+          <QuestionTitleWrapper>
+            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
+          </QuestionTitleWrapper>
           {renderImage()}
           <canvas
             onMouseDown={onCanvasMouseDown}

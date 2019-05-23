@@ -355,10 +355,10 @@ export const Col = styled.div`
 `;
 
 export const PaperWrapper = styled(Paper)`
-  padding: 35px;
+  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px")};
 
   @media (max-width: ${mobileWidth}) {
-    padding: 23px 20px;
+    padding: ${({ flowLayout }) => (flowLayout ? "0px" : "23px 20px;")};
     margin-bottom: 15px;
   }
 `;

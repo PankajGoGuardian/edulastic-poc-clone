@@ -140,12 +140,22 @@ class CoursesTable extends React.Component {
     filtersData[key].filtersColumn = value;
     if (value === "status") filtersData[key].filtersValue = "eq";
     this.setState({ filtersData });
+
+    if (filtersData[key].filterAdded) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   changeFilterValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filtersValue = value;
     this.setState({ filtersData });
+
+    if (filtersData[key].filterAdded) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   changeFilterText = (e, key) => {
@@ -154,10 +164,26 @@ class CoursesTable extends React.Component {
     this.setState({ filtersData });
   };
 
+  onBlurFilterText = (e, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filterStr = e.target.value;
+    this.setState({ filtersData });
+
+    if (filtersData[key].filterAdded) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    }
+  };
+
   changeStatusValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = value;
     this.setState({ filtersData });
+
+    if (filtersData[i].filterAdded) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredCourseList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   addFilter = (e, key) => {
@@ -266,7 +292,11 @@ class CoursesTable extends React.Component {
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      if (filtersData[i].filterAdded) {
+      if (
+        filtersData[i].filtersColumn !== "" &&
+        filtersData[i].filtersValue !== "" &&
+        filtersData[i].filterStr !== ""
+      ) {
         search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
@@ -357,7 +387,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "number",
         editable: true,
-        width: "40%",
+        width: "30%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -365,6 +395,16 @@ class CoursesTable extends React.Component {
             }
           };
         }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Classes</p>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "classCount",
+        editable: true,
+        width: "20%"
       },
       {
         dataIndex: "operation",
@@ -436,15 +476,12 @@ class CoursesTable extends React.Component {
           <StyledFilterInput
             placeholder="Enter text"
             onChange={e => this.changeFilterText(e, i)}
+            onBlur={e => this.onBlurFilterText(e, i)}
             disabled={isFilterTextDisable}
             value={filtersData[i].filterStr}
           />
 
-          <StyledFilterButton
-            type="primary"
-            onClick={e => this.addFilter(e, i)}
-            disabled={isAddFilterDisable || filtersData[i].filterAdded}
-          >
+          <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)} disabled={isAddFilterDisable}>
             + Add Filter
           </StyledFilterButton>
 

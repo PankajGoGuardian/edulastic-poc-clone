@@ -138,7 +138,8 @@ class Contaier extends Component {
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
-    } else if (fieldName === "subject") {
+    }
+    if (fieldName === "subject") {
       const { clearDictStandards } = this.props;
       clearDictStandards();
       updatedKeys = {
@@ -168,7 +169,9 @@ class Contaier extends Component {
         {
           tabs: [],
           dimension: "100%",
-          widgets: []
+          widgets: [],
+          flowLayout: false,
+          content: ""
         }
       ]
     });
@@ -239,7 +242,7 @@ class Contaier extends Component {
   };
 
   render() {
-    const { windowWidth, creating, t, curriculums, getCurriculumStandards, curriculumStandards, loading } = this.props;
+    const { windowWidth, creating, t, getCurriculumStandards, curriculumStandards, loading } = this.props;
 
     const { search, isShowFilter, modalCreateTestVisible } = this.state;
 
@@ -313,6 +316,7 @@ Contaier.propTypes = {
   page: PropTypes.number.isRequired,
   count: PropTypes.number.isRequired,
   receiveItems: PropTypes.func.isRequired,
+  match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
   createItem: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,

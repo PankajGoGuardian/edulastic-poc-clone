@@ -232,10 +232,12 @@ class QuestionWrapper extends Component {
       changePreviewTab,
       qIndex,
       windowWidth,
+      flowLayout,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
+    const disabled = get(data, "activity.disabled", false);
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
     const userAnswerProps = {};
@@ -258,6 +260,7 @@ class QuestionWrapper extends Component {
               display: "flex",
               boxShadow: "none"
             }}
+            flowLayout={flowLayout}
           >
             {view === "edit" && (
               <QuestionMenu
@@ -281,12 +284,17 @@ class QuestionWrapper extends Component {
                 cleanSections={this.cleanSections}
                 fillSections={this.fillSections}
                 showQuestionNumber={showFeedback}
+                flowLayout={flowLayout}
                 {...userAnswerProps}
               />
             </div>
           </PaperWrapper>
           {showFeedback &&
-            (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} studentName={studentName} />)}
+            (multiple ? (
+              <FeedbackBottom widget={data} disabled={disabled} />
+            ) : (
+              <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
+            ))}
         </QuestionContainer>
       </ThemeProvider>
     );
@@ -304,12 +312,12 @@ QuestionWrapper.propTypes = {
   saveClicked: PropTypes.bool,
   testItem: PropTypes.bool,
   noPadding: PropTypes.bool,
-  changePreviewTab: PropTypes.any.isRequired,
+  changePreviewTab: PropTypes.any,
   isFlex: PropTypes.bool,
   timespent: PropTypes.string,
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
-  changePreviewTab: PropTypes.func
+  flowLayout: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -324,7 +332,8 @@ QuestionWrapper.defaultProps = {
   multiple: false,
   showFeedback: false,
   qIndex: 0,
-  changePreviewTab: () => {}
+  changePreviewTab: () => {},
+  flowLayout: false
 };
 
 const enhance = compose(

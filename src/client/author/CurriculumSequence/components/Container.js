@@ -12,9 +12,10 @@ import {
   searchCurriculumSequencesAction,
   searchGuidesAction,
   toggleAddContentAction,
-  addContentToCurriculumSequenceAction,
-  useThisPlayListAction
+  useThisPlayListAction,
+  addContentToCurriculumSequenceAction
 } from "../ducks";
+import ShareModal from "../../src/components/common/ShareModal";
 
 /**
  * @typedef {object} ModuleData
@@ -66,7 +67,7 @@ import {
 /**
  * @typedef CurriculumProps
  * @property {CurriculumSequenceType} curriculum
- * @property {function} addContentToCurriculumSequence
+ * @property {function} moveContentInPlaylist
  * @property {CurriculumSequenceType} destinationCurriculumSequence
  */
 
@@ -74,11 +75,10 @@ import {
 class CurriculumContainer extends Component {
   state = {
     expandedModules: [],
-
+    showShareModal: false
     /**
      * state for handling drag and drop
      */
-    contentToBeAdded: null
   };
 
   componentDidMount() {
@@ -105,17 +105,18 @@ class CurriculumContainer extends Component {
     searchCurriculumSequences(publisher);
   };
 
-  onDrop = toUnit => {
-    const { contentToBeAdded } = this.state;
-    const { addContentToCurriculumSequence } = this.props;
-
-    if (contentToBeAdded) {
-      addContentToCurriculumSequence(contentToBeAdded, toUnit);
-    }
+  onDrop = toModuleIndex => {
+    const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
+    const { moveContentInPlaylist } = this.props;
+    moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
   };
 
-  onBeginDrag = contentToBeAdded => {
-    this.setState({ contentToBeAdded });
+  onBeginDrag = ({ fromModuleIndex, fromContentId, contentIndex }) => {
+    this.setState({
+      fromModuleIndex,
+      fromContentId,
+      fromContentIndex: contentIndex
+    });
   };
 
   collapseExpandModule = moduleId => {
@@ -180,9 +181,18 @@ class CurriculumContainer extends Component {
     this.setState({ sourceCurriculumSequence: curriculumSequence });
   };
 
+  handleShare = () => {
+    this.setState({ showShareModal: true });
+  };
+  onShareModalChange = () => {
+    this.setState({
+      showShareModal: !this.state.showShareModal
+    });
+  };
+
   render() {
     const { windowWidth, curriculumSequences, isContentExpanded } = this.props;
-    const { expandedModules } = this.state;
+    const { expandedModules, showShareModal } = this.state;
     const {
       handleSelectContent,
       setSourceCurriculumSequence,
@@ -191,6 +201,8 @@ class CurriculumContainer extends Component {
       savePublisher,
       changePublisher,
       handleUseThis,
+      handleShare,
+      onShareModalChange,
       collapseExpandModule
     } = this;
 
@@ -198,27 +210,34 @@ class CurriculumContainer extends Component {
 
     const { destinationCurriculumSequence } = this.props;
 
-    // if (!sourceCurriculumSequence || !destinationCurriculumSequence) return null;
-
     const curriculumList = Object.keys(curriculumSequences.byId).map(key => curriculumSequences.byId[key]);
 
     return (
-      <CurriculumSequence
-        onPublisherSave={savePublisher}
-        onPublisherChange={changePublisher}
-        selectContent={isContentExpanded}
-        onSelectContent={handleSelectContent}
-        destinationCurriculumSequence={destinationCurriculumSequence}
-        sourceCurriculumSequence={sourceCurriculumSequence}
-        expandedModules={expandedModules}
-        onCollapseExpand={collapseExpandModule}
-        curriculumList={curriculumList}
-        onSourceCurriculumSequenceChange={setSourceCurriculumSequence}
-        windowWidth={windowWidth}
-        onDrop={onDrop}
-        onBeginDrag={onBeginDrag}
-        onUseThisClick={handleUseThis}
-      />
+      <>
+        <ShareModal
+          isVisible={showShareModal}
+          testId={destinationCurriculumSequence._id}
+          isPlaylist={true}
+          onClose={onShareModalChange}
+        />
+        <CurriculumSequence
+          onPublisherSave={savePublisher}
+          onPublisherChange={changePublisher}
+          selectContent={isContentExpanded}
+          onSelectContent={handleSelectContent}
+          destinationCurriculumSequence={destinationCurriculumSequence}
+          sourceCurriculumSequence={sourceCurriculumSequence}
+          expandedModules={expandedModules}
+          onCollapseExpand={collapseExpandModule}
+          curriculumList={curriculumList}
+          onShareClick={handleShare}
+          onSourceCurriculumSequenceChange={setSourceCurriculumSequence}
+          windowWidth={windowWidth}
+          onDrop={onDrop}
+          onBeginDrag={onBeginDrag}
+          onUseThisClick={handleUseThis}
+        />
+      </>
     );
   }
 }
@@ -243,7 +262,7 @@ CurriculumContainer.propTypes = {
   getAllCurriculumSequences: PropTypes.func.isRequired,
   searchGuides: PropTypes.func.isRequired,
   searchCurriculumSequences: PropTypes.func.isRequired,
-  addContentToCurriculumSequence: PropTypes.func.isRequired,
+  moveContentInPlaylist: PropTypes.func.isRequired,
   toggleAddContent: PropTypes.func.isRequired
 };
 
@@ -267,8 +286,8 @@ const mapDispatchToProps = dispatch => ({
   toggleAddContent() {
     dispatch(toggleAddContentAction());
   },
-  addContentToCurriculumSequence(contentToAdd, toUnit) {
-    dispatch(addContentToCurriculumSequenceAction({ contentToAdd, toUnit }));
+  moveContentInPlaylist(payload) {
+    dispatch(addContentToCurriculumSequenceAction(payload));
   },
   useThisPlayList(_id, title) {
     dispatch(useThisPlayListAction({ _id, title }));

@@ -39,10 +39,26 @@ const receiveStudentQuestionResponse = ({ assignmentId, classId, questionId, stu
     })
     .then(result => result.data.result);
 
+const receiveStudentItemQuestionResponse = ({ assignmentId, classId, itemId, studentId }) =>
+  api
+    .callApi({
+      url: `/assignments/${assignmentId}/item/${itemId}/student/${studentId}/group/${classId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const questionClassQuestionResponse = ({ assignmentId, classId, questionId }) =>
   api
     .callApi({
       url: `/assignments/${assignmentId}/question/${questionId}/group/${classId}`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
+const questionClassItemQuestionResponse = ({ assignmentId, classId, questionId, itemId }) =>
+  api
+    .callApi({
+      url: `/assignments/${assignmentId}/item/${itemId}/group/${classId}`,
       method: "get"
     })
     .then(result => result.data.result);
@@ -52,5 +68,7 @@ export default {
   studentResponse,
   feedbackResponse,
   receiveStudentQuestionResponse,
-  questionClassQuestionResponse
+  questionClassQuestionResponse,
+  receiveStudentItemQuestionResponse,
+  questionClassItemQuestionResponse
 };

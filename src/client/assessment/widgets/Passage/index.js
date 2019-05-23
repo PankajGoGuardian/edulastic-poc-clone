@@ -5,6 +5,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 
 import { Paper } from "@edulastic/common";
+import { white, boxShadowDefault } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { replaceVariables } from "../../utils/variables";
@@ -16,6 +17,13 @@ import Details from "./Details";
 
 const EmptyWrapper = styled.div``;
 
+const PassageWrapper = styled(Paper)`
+  border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
+  background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
+  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px 43px")};
+  box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+`;
+
 const Passage = ({
   item,
   view,
@@ -25,9 +33,10 @@ const Passage = ({
   fillSections,
   cleanSections,
   advancedAreOpen,
+  flowLayout,
   ...restProps
 }) => {
-  const Wrapper = smallSize ? EmptyWrapper : Paper;
+  const Wrapper = smallSize ? EmptyWrapper : PassageWrapper;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
   if (view === "edit") {
@@ -40,8 +49,8 @@ const Passage = ({
 
   if (view === "preview") {
     return (
-      <Wrapper>
-        <PassageView preview item={itemForPreview} {...restProps} />
+      <Wrapper flowLayout={flowLayout}>
+        <PassageView preview item={itemForPreview} flowLayout={flowLayout} {...restProps} />
       </Wrapper>
     );
   }

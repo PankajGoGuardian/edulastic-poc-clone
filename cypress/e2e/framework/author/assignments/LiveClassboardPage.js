@@ -1,6 +1,7 @@
 import LCBHeader from "./lcbHeader";
 import { studentSide as asgnStatus, studentSide } from "../../constants/assignmentStatus";
 import QuestionResponsePage from "./QuestionResponsePage";
+import { attemptTypes } from "../../constants/questionTypes";
 
 class LiveClassboardPage {
   constructor() {
@@ -244,7 +245,7 @@ class LiveClassboardPage {
       });
   };
 
-  getScoreAndPerformance = (attempt, queTypeMap) => {
+  getScoreAndPerformance = (attempt, queTypeMap, queNum, queCentric = false) => {
     let totalScore = 0;
     let maxScore = 0;
     let score;
@@ -252,11 +253,10 @@ class LiveClassboardPage {
     let perfValue;
     let stats;
 
-    Object.keys(attempt).forEach(queNum => {
-      const attempType = attempt[queNum];
-      const { points } = queTypeMap[queNum];
-
-      if (attempType === "right") totalScore += points;
+    Object.keys(attempt).forEach(item => {
+      const attempType = attempt[item];
+      const { points } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
+      if (attempType === attemptTypes.RIGHT) totalScore += points;
       maxScore += points;
     });
 
@@ -272,7 +272,7 @@ class LiveClassboardPage {
     Object.keys(feedbackMap).forEach(queNum => {
       const attempType = feedbackMap[queNum];
       const { points } = queTypeMap[queNum];
-      score[queNum] = attempType === "right" ? points : "0";
+      score[queNum] = attempType === attemptTypes.RIGHT ? points : "0";
     });
 
     return score;
@@ -333,6 +333,43 @@ class LiveClassboardPage {
       this.questionResponsePage.selectQuestion(queNum);
       this.questionResponsePage.updateScoreForStudent(studentName, score[queNum]);
     });
+  };
+
+  getRedirectedQuestionCentricData = (redirectedData, queCentric, attempted = true) => {
+    const reDirectedQueCentric = Object.assign({}, queCentric);
+    const reDirectedQueCentricBeforeAttempt = Object.assign({}, queCentric);
+    redirectedData.forEach(({ attempt, stuName }) => {
+      Object.keys(attempt).forEach(queNum => {
+        if (attempted) {
+          reDirectedQueCentric[queNum][stuName] = attempt[queNum];
+        } else {
+          reDirectedQueCentricBeforeAttempt[queNum][stuName] = null;
+        }
+      });
+    });
+    return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
+  };
+
+  getQuestionCentricData = (attemptsData, queCentric, onlySubmitted = false) => {
+    attemptsData
+      .filter(({ status }) => (onlySubmitted ? status === studentSide.SUBMITTED : status !== studentSide.NOT_STARTED))
+      .forEach(({ attempt, stuName }) => {
+        Object.keys(attempt).forEach(queNum => {
+          if (!queCentric[queNum]) queCentric[queNum] = {};
+          queCentric[queNum][stuName] = attempt[queNum];
+        });
+      });
+    return queCentric;
+  };
+
+  getNullifiedAttempts = attempts => {
+    const noAttempts = {};
+    for (let key in attempts) {
+      if (attempts.hasOwnProperty(key)) {
+        noAttempts[key] = attemptTypes.SKIP;
+      }
+    }
+    return noAttempts;
   };
 }
 export default LiveClassboardPage;

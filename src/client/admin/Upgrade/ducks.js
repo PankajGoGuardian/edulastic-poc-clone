@@ -6,52 +6,128 @@ import { adminApi } from "@edulastic/api";
 import { message } from "antd";
 
 // ACTIONS
-const GET_DISTRICT_DATA = "[admin] GET_DISTRICT_DATA";
-const UPGRADE_DISTRICT_SUBSCRIPTION = "[admin] UPGRADE_DISTRICT_SUBSCRIPTION";
+const GET_DISTRICT_DATA = "[admin-upgrade] GET_DISTRICT_DATA";
+const UPGRADE_DISTRICT_SUBSCRIPTION = "[admin-upgrade] UPGRADE_DISTRICT_SUBSCRIPTION";
+const UPGRADE_USER_SUBSCRIPTION = "[admin-upgrade] UPGRADE_USER_SUBSCRIPTION";
+const SEARCH_USERS_BY_EMAIL_IDS = "[admin-upgrade] SEARCH_USERS_BY_EMAIL_IDS";
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA);
 export const upgradeDistrictSubscriptionAction = createAction(UPGRADE_DISTRICT_SUBSCRIPTION);
+export const upgradeUserSubscriptionAction = createAction(UPGRADE_USER_SUBSCRIPTION);
+export const searchUsersByEmailIdAction = createAction(SEARCH_USERS_BY_EMAIL_IDS);
 
-const districtSearchData = createSlice({
-  slice: "districtSearchData", // slice is optional, and could be blank ''
-  initialState: {},
+// SLICE's
+export const manageSubscriptionsBydistrict = createSlice({
+  slice: "manageSubscriptionsBydistrict", // slice is optional, and could be blank ''
+  initialState: {
+    listOfDistricts: [],
+    selectedDistrict: {}
+  },
   reducers: {
-    success: (state, { payload }) => payload.data[0]
+    success: (state, { payload }) => {
+      // if only a single district is returned, the returned district becomes the selected District by default
+      if (payload.data.length === 1) {
+        [state.selectedDistrict] = payload.data;
+      } else {
+        state.listOfDistricts = payload.data;
+      }
+    },
+    selectDistrict: (state, { payload: index }) => {
+      state.selectedDistrict = state.listOfDistricts[index];
+      // here the autocomplete dataSource becomes empty so that user is not presented with same data when he types
+      state.listOfDistricts = [];
+    }
+  }
+});
+
+const manageSubscriptionsByUsers = createSlice({
+  slice: "manageSubscriptionsByUsers", // slice is optional, and could be blank ''
+  initialState: {
+    validEmailIdsList: null,
+    subscriptionData: {}
+  },
+  reducers: {
+    success: (state, { payload }) => {
+      // here once subscription is completed, the table has to re-render and show the updated values,
+      // hence, these updatedSubType key is set.
+      for (let i = 0; i < payload.length; i++) {
+        state.validEmailIdsList[i].updatedSubType = payload[i].subType;
+        state.validEmailIdsList[i].updatedSubTypeSuccess = payload[i].success;
+      }
+    },
+    searchEmailIdsSuccess: (state, { payload }) => {
+      state.validEmailIdsList = payload.data;
+    }
   }
 });
 
 // SELECTORS
 const upGradeStateSelector = state => state.admin.upgradeData;
 
-export const getDistrictData = createSelector(
+export const getDistrictDataSelector = createSelector(
   upGradeStateSelector,
-  ({ districtSearchData: districtDataSelect }) => districtDataSelect
+  ({ districtSearchData }) => districtSearchData
+);
+
+export const getUsersDataSelector = createSelector(
+  upGradeStateSelector,
+  ({ manageUsers }) => manageUsers
 );
 
 // REDUCERS
 const reducer = combineReducers({
-  districtSearchData: districtSearchData.reducer
+  districtSearchData: manageSubscriptionsBydistrict.reducer,
+  manageUsers: manageSubscriptionsByUsers.reducer
 });
 
 // API's
-const { searchUpdateDistrict: searchUpdateDistrictApi, upgradeDistrictApi } = adminApi;
+const {
+  searchUpdateDistrict: searchUpdateDistrictApi,
+  manageSubscription: manageSubscriptionApi,
+  searchUsersByEmailIds: searchUsersByEmailIdsApi
+} = adminApi;
 
 // SAGAS
-function* getDistrictDataGenerator({ payload }) {
+function* getDistrictData({ payload }) {
   try {
     const item = yield call(searchUpdateDistrictApi, payload);
-    yield put(districtSearchData.actions.success(item));
+    yield put(manageSubscriptionsBydistrict.actions.success(item));
   } catch (err) {
     console.error(err);
   }
 }
 
-function* upgradeDistrictGenerator({ payload }) {
+function* upgradeDistrict({ payload }) {
   try {
-    const { result } = yield call(upgradeDistrictApi, payload);
+    const item = yield call(manageSubscriptionApi, payload);
+    if (item.result.success) {
+      message.success(item.result.message);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* upgradeUserData({ payload }) {
+  try {
+    const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
       message.success(result.message);
+      yield put(manageSubscriptionsByUsers.actions.success(result.subscriptionResult));
+    } else {
+      message.error(result.message);
+    }
+  } catch (err) {
+    console.error(err);
+  }
+}
+
+function* searchUsersByEmailIds({ payload }) {
+  try {
+    const item = yield call(searchUsersByEmailIdsApi, payload);
+    if (item.result) {
+      yield put(manageSubscriptionsByUsers.actions.searchEmailIdsSuccess(item.result));
     }
   } catch (err) {
     console.error(err);
@@ -60,8 +136,10 @@ function* upgradeDistrictGenerator({ payload }) {
 
 function* watcherSaga() {
   yield all([
-    yield takeEvery(GET_DISTRICT_DATA, getDistrictDataGenerator),
-    yield takeEvery(UPGRADE_DISTRICT_SUBSCRIPTION, upgradeDistrictGenerator)
+    yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
+    yield takeEvery(UPGRADE_DISTRICT_SUBSCRIPTION, upgradeDistrict),
+    yield takeEvery(UPGRADE_USER_SUBSCRIPTION, upgradeUserData),
+    yield takeEvery(SEARCH_USERS_BY_EMAIL_IDS, searchUsersByEmailIds)
   ]);
 }
 

@@ -319,7 +319,7 @@ MatchListPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  userAnswer: PropTypes.any.isRequired,
+  userAnswer: PropTypes.array,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
@@ -329,6 +329,7 @@ MatchListPreview.defaultProps = {
   previewTab: CLEAR,
   smallSize: false,
   editCorrectAnswers: [],
+  userAnswer: [],
   showQuestionNumber: false,
   qIndex: null
 };

@@ -4,13 +4,13 @@ import getCalculateScores from "./getCalculateScores";
 
 const partialMatchTemplate = (mainFunction, mainArguments) => {
   const {
-    validation: { penalty, rounding }
+    validation: { penalty, rounding, ignoreCase, allowSingleLetterMistake }
   } = mainArguments;
 
   const isRound = rounding === myRounding.ROUND_DOWN;
 
   // eslint-disable-next-line prefer-const
-  let { score, maxScore, evaluation, rightLen } = mainFunction(mainArguments);
+  let { score, maxScore, evaluation, rightLen } = mainFunction(mainArguments, { ignoreCase, allowSingleLetterMistake });
 
   score = getPenaltyScore({ score, penalty, evaluation, rightLen });
 

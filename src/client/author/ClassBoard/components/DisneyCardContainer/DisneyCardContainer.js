@@ -172,7 +172,7 @@ export default class DisneyCardContainer extends Component {
               <PerfomanceSection>
                 <StyledFlexDiv>
                   <StyledParaSS data-cy="studentScore">
-                    {student.score || 0} / {student.maxScore || 0}
+                    {round(student.score, 1) || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   <StyledParaSSS data-cy="studentPerformance">
                     {stu_per || stu_per === 0 ? `${stu_per}%` : "-%"}
@@ -188,24 +188,27 @@ export default class DisneyCardContainer extends Component {
               </PerfomanceSection>
             </PaginationInfoS>
             <PaginationInfoT data-cy="questions">
-              {student.questionActivities.map((questionAct, questionIndex) => {
-                if (questionAct.correct) {
-                  return <SquareColorDivGreen key={questionIndex} />;
-                }
-                if (questionAct.skipped) {
-                  return <SquareColorDivGray key={questionIndex} />;
-                }
-                if (questionAct.partialCorrect) {
-                  return <SquareColorDivYellow key={questionIndex} />;
-                }
-                if (questionAct.notStarted) {
-                  return <SquareColorDisabled key={questionIndex} />;
-                }
-                if (!questionAct.correct) {
-                  return <SquareColorDivPink key={questionIndex} />;
-                }
-                return null;
-              })}
+              {student.questionActivities
+                .filter(x => !x.disabled)
+                .map((questionAct, questionIndex) => {
+                  const weight = questionAct.weight;
+                  if (questionAct.correct) {
+                    return <SquareColorDivGreen weight={weight} key={questionIndex} />;
+                  }
+                  if (questionAct.skipped) {
+                    return <SquareColorDivGray weight={weight} key={questionIndex} />;
+                  }
+                  if (questionAct.partialCorrect) {
+                    return <SquareColorDivYellow weight={weight} key={questionIndex} />;
+                  }
+                  if (questionAct.notStarted) {
+                    return <SquareColorDisabled weight={weight} key={questionIndex} />;
+                  }
+                  if (!questionAct.correct) {
+                    return <SquareColorDivPink weight={weight} key={questionIndex} />;
+                  }
+                  return null;
+                })}
             </PaginationInfoT>
           </StyledCard>
         );

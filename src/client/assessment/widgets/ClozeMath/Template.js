@@ -22,6 +22,10 @@ const initialDropdownMethod = {
   value: "",
   option: 0
 };
+const initialInputMethod = {
+  value: "",
+  inputIndex: 0
+};
 
 class Template extends Component {
   componentDidMount = () => {
@@ -55,7 +59,14 @@ class Template extends Component {
         return response || cloneDeep(newValue);
       });
 
-    const _updateTemplate = (val, responseIndexes, dropDownIndexes) => {
+    const _reduceInputs = (dropDownIndexes = [], value) =>
+      dropDownIndexes.map((nextIndex, inputIndex) => {
+        const newValue = { ...initialInputMethod, inputIndex };
+        const response = value.find((_, i) => nextIndex === i + 1);
+        return response || cloneDeep(newValue);
+      });
+
+    const _updateTemplate = (val, responseIndexes, dropDownIndexes, inputIndexes) => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
@@ -68,6 +79,8 @@ class Template extends Component {
           dropDownIndexes,
           draft.validation.valid_dropdown.value
         );
+
+        draft.validation.valid_inputs.value = _reduceInputs(inputIndexes, draft.validation.valid_inputs.value);
 
         if (Array.isArray(draft.validation.alt_responses)) {
           draft.validation.alt_responses = draft.validation.alt_responses.map(res => {

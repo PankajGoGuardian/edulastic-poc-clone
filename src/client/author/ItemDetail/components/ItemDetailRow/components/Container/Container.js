@@ -9,7 +9,7 @@ import ItemDetailDropTarget from "../ItemDetailDropTarget/ItemDetailDropTarget";
 import { getItemDetailDraggingSelector } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
-import { Content, AddButtonContainer, TabContainer } from "./styled";
+import { Content, AddButtonContainer, TabContainer, WidgetContainer } from "./styled";
 
 class Container extends Component {
   state = {
@@ -49,13 +49,14 @@ class Container extends Component {
     onAdd(object);
   };
 
-  renderTabContent = ({ widgetIndex, widget, rowIndex }) => (
+  renderTabContent = ({ widgetIndex, widget, rowIndex, flowLayout }) => (
     <ItemDetailWidget
       widget={widget}
       onEdit={this.onEditWidgetClick(widget, rowIndex)}
       onDelete={this.onDeleteWidgetClick(widgetIndex)}
       widgetIndex={widgetIndex}
       rowIndex={rowIndex}
+      flowLayout={flowLayout}
     />
   );
 
@@ -63,17 +64,22 @@ class Container extends Component {
     const { row, dragging, rowIndex } = this.props;
     const { tabIndex } = this.state;
 
-    return row.widgets.map((widget, i) => (
-      <React.Fragment key={i}>
-        {dragging && widget.tabIndex === tabIndex && (
-          <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={tabIndex} />
-        )}
-        {!!row.tabs.length &&
-          tabIndex === widget.tabIndex &&
-          this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
-        {!row.tabs.length && this.renderTabContent({ widgetIndex: i, widget, rowIndex })}
-      </React.Fragment>
-    ));
+    return (
+      <WidgetContainer flowLayout={row.flowLayout}>
+        {row.widgets.map((widget, i) => (
+          <React.Fragment key={i}>
+            {dragging && widget.tabIndex === tabIndex && (
+              <ItemDetailDropTarget widgetIndex={i} rowIndex={rowIndex} tabIndex={tabIndex} />
+            )}
+            {!!row.tabs.length &&
+              tabIndex === widget.tabIndex &&
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout })}
+            {!row.tabs.length &&
+              this.renderTabContent({ widgetIndex: i, widget, rowIndex, flowLayout: row.flowLayout })}
+          </React.Fragment>
+        ))}
+      </WidgetContainer>
+    );
   };
 
   render() {
@@ -111,15 +117,11 @@ class Container extends Component {
         {dragging && row.widgets.filter(w => w.tabIndex === tabIndex).length === 0 && (
           <ItemDetailDropTarget widgetIndex={0} rowIndex={rowIndex} tabIndex={tabIndex} />
         )}
-        {!row.flowLayout && this.renderWidgets()}
+        {this.renderWidgets()}
 
-        {row.flowLayout && <h1>flowLayout</h1>}
-
-        {!row.flowLayout && (
-          <AddButtonContainer justifyContent="center">
-            <AddNew onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
-          </AddButtonContainer>
-        )}
+        <AddButtonContainer justifyContent="center">
+          <AddNew onClick={this.onAddBtnClick({ rowIndex, tabIndex })} />
+        </AddButtonContainer>
       </Content>
     );
   }

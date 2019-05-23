@@ -3,10 +3,10 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import { Paper } from "@edulastic/common";
+import { Paper, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -23,6 +23,29 @@ import { Widget } from "../../styled/Widget";
 const EmptyWrapper = styled.div``;
 
 class ClozeText extends Component {
+  componentDidUpdate(prevProps) {
+    const { item, setQuestionData } = this.props;
+    const newItem = cloneDeep(item);
+    if (!isEqual(prevProps.item.validation, newItem.validation)) {
+      let maxLength = 0;
+
+      newItem.validation.valid_response.value.forEach(resp => {
+        maxLength = Math.max(maxLength, resp.length);
+      });
+
+      newItem.validation.alt_responses.forEach(arr => {
+        arr.value.forEach(resp => {
+          maxLength = Math.max(maxLength, resp.length);
+        });
+      });
+
+      const finalWidth = 30 + maxLength * 7;
+      newItem.ui_style.widthpx = finalWidth > 120 ? 120 : finalWidth;
+
+      setQuestionData(newItem);
+    }
+  }
+
   getRenderData = () => {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
@@ -93,6 +116,16 @@ class ClozeText extends Component {
     );
   };
 
+  handleValidationOptionsChange = (name, value) => {
+    const { setQuestionData, item } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation[name] = value;
+        updateVariables(draft);
+      })
+    );
+  };
+
   handleAddAnswer = userAnswer => {
     const { saveAnswer } = this.props;
     const newAnswer = cloneDeep(userAnswer);
@@ -110,6 +143,7 @@ class ClozeText extends Component {
       evaluation,
       isSidebarCollapsed,
       advancedAreOpen,
+      t,
       cleanSections,
       fillSections,
       ...restProps
@@ -118,6 +152,10 @@ class ClozeText extends Component {
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+
+    const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
+
+    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -144,6 +182,23 @@ class ClozeText extends Component {
                     cleanSections={cleanSections}
                     fillSections={fillSections}
                   />
+                  <div style={{ marginTop: 40 }}>
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
+                      label={t("component.cloze.dropDown.ignorecase")}
+                      checked={!!ignoreCase}
+                    />
+
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() =>
+                        this.handleValidationOptionsChange("allowSingleLetterMistake", !allowSingleLetterMistake)
+                      }
+                      label={t("component.cloze.dropDown.allowsinglelettermistake")}
+                      checked={!!allowSingleLetterMistake}
+                    />
+                  </div>
                 </Widget>
                 <Options
                   onChange={this.handleOptionsChange}
@@ -236,6 +291,7 @@ ClozeText.propTypes = {
   userAnswer: PropTypes.any,
   testItem: PropTypes.bool,
   evaluation: PropTypes.any,
+  t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,

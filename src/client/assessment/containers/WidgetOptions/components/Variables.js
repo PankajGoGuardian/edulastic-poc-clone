@@ -54,7 +54,7 @@ const InlineLabel = styled(Label)`
 
 const CombinationInput = styled(Input)`
   display: inline-block;
-  width: 50px;
+  width: 70px;
   margin-left: 10px;
   margin-right: 10px;
 `;

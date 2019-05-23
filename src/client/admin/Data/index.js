@@ -91,3 +91,11 @@ export const mapCountAsType = {
 };
 
 export const CLEVER_DISTRICT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
+
+export const radioButtonUserData = {
+  UPGRADE: "Upgrade",
+  REVOKE: "Revoke",
+  get list() {
+    return [this.UPGRADE, this.REVOKE];
+  }
+};

@@ -12,3 +12,9 @@ export const Container = styled.div`
     margin-left: ${props => props.value && "20px"};
   }
 `;
+
+export const WidgetContainer = styled.div`
+  display: ${({ flowLayout }) => (flowLayout ? "flex" : "block")};
+  flex-wrap: wrap;
+  align-items: center;
+`;

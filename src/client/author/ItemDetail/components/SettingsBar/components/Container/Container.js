@@ -12,6 +12,7 @@ import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
+import { Switch } from "antd";
 
 const layouts = [
   {
@@ -51,11 +52,15 @@ class Container extends Component {
     useTabsLeft: PropTypes.bool.isRequired,
     useTabsRight: PropTypes.bool.isRequired,
     useFlowLayoutLeft: PropTypes.bool.isRequired,
-    useFlowLayoutRight: PropTypes.bool.isRequired,
     verticalDivider: PropTypes.bool.isRequired,
     scrolling: PropTypes.bool.isRequired,
     onVerticalDividerChange: PropTypes.func.isRequired,
-    onScrollingChange: PropTypes.func.isRequired
+    onScrollingChange: PropTypes.func.isRequired,
+    useFlowLayoutRight: PropTypes.bool
+  };
+
+  static defaultProps = {
+    useFlowLayoutRight: false
   };
 
   handleCheckboxChange = name => () => {
@@ -163,6 +168,18 @@ class Container extends Component {
         </Checkboxes>
         <Heading>{t("author:component.settingsBar.tags")}</Heading>
         <SettingsBarTags tags={["equations", "algebra"]} onRemove={this.handleRemoveTag} />
+        {/**
+        TODO: put this text in i18n namespace
+        */}
+        <Heading>Scoring</Heading>
+        Question Level{" "}
+        <Switch
+          onChange={v => {
+            this.props.setItemLevelScoring(v);
+          }}
+          checked={this.props.itemLevelScoring}
+        />{" "}
+        Item Level
       </Content>
     );
   }

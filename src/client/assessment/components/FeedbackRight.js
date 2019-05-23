@@ -167,18 +167,20 @@ class FeedbackRight extends Component {
     return (
       <StyledCardTwo bordered={isStudentName} title={title}>
         <StyledDivSec>
-          <ScoreInputWrapper>
-            <ScoreInput
-              data-cy="scoreInput"
-              onChange={this.onChangeScore}
-              onBlur={this.preCheckSubmit}
-              value={score}
-              disabled={!activity}
-              innerRef={this.scoreInput}
-              onKeyDown={this.arrowKeyHandler}
-            />
-            <TextPara>{maxScore}</TextPara>
-          </ScoreInputWrapper>
+          {!this.props.disabled && (
+            <ScoreInputWrapper>
+              <ScoreInput
+                data-cy="scoreInput"
+                onChange={this.onChangeScore}
+                onBlur={this.preCheckSubmit}
+                value={score}
+                disabled={!activity || this.props.disabled}
+                innerRef={this.scoreInput}
+                onKeyDown={this.arrowKeyHandler}
+              />
+              <TextPara> {maxScore}</TextPara>
+            </ScoreInputWrapper>
+          )}
         </StyledDivSec>
         <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (

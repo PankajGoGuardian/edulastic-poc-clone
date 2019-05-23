@@ -10,8 +10,14 @@ exports["default"] = void 0;
 var _getCalculateScores2 = _interopRequireDefault(require("./getCalculateScores"));
 
 var exactMatchTemplate = function exactMatchTemplate(mainFunction, mainArguments) {
-  // eslint-disable-next-line prefer-const
-  var _mainFunction = mainFunction(mainArguments),
+  var _mainArguments$valida = mainArguments.validation,
+    ignoreCase = _mainArguments$valida.ignoreCase,
+    allowSingleLetterMistake = _mainArguments$valida.allowSingleLetterMistake; // eslint-disable-next-line prefer-const
+
+  var _mainFunction = mainFunction(mainArguments, {
+      ignoreCase: ignoreCase,
+      allowSingleLetterMistake: allowSingleLetterMistake
+    }),
     score = _mainFunction.score,
     maxScore = _mainFunction.maxScore,
     evaluation = _mainFunction.evaluation;

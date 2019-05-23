@@ -10,7 +10,7 @@ import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 const ContentsTitle = Heading;
 
-const PassageView = ({ item, preview, showQuestionNumber, qIndex }) => {
+const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -24,40 +24,47 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex }) => {
 
   return (
     <div>
-      {item.instructor_stimulus && (
+      {item.instructor_stimulus && !flowLayout && (
         <InstructorStimulus dangerouslySetInnerHTML={{ __html: item.instructor_stimulus }} />
       )}
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
-        {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
-      </QuestionTitleWrapper>
-      {item.contentsTitle && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
-      <div
-        id="myToolbar"
-        style={{
-          display: "block",
-          position: "relative",
-          width: 50,
-          top: 0,
-          background: "transparent"
-        }}
-        className="passage_toolbar"
-      >
-        <span className="ql-formats">
-          <select className="ql-background">
-            <option value="transparent" />
-            <option value="#99c2ff" />
-            <option value="#99ff99" />
-            <option value="#ff8533" />
-            <option value="#ffff80" />
-            <option value="#ff99bb" />
-          </select>
-        </span>
-      </div>
+      {!flowLayout && (
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
+        </QuestionTitleWrapper>
+      )}
+
+      {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
+      {!flowLayout ? (
+        <div
+          id="myToolbar"
+          style={{
+            display: "block",
+            position: "relative",
+            width: 50,
+            top: 0,
+            background: "transparent"
+          }}
+          className="passage_toolbar"
+        >
+          <span className="ql-formats">
+            <select className="ql-background">
+              <option value="transparent" />
+              <option value="#99c2ff" />
+              <option value="#99ff99" />
+              <option value="#ff8533" />
+              <option value="#ffff80" />
+              <option value="#ff99bb" />
+            </select>
+          </span>
+        </div>
+      ) : (
+        <div id="myToolbar" style={{ display: "none" }} />
+      )}
       {!item.paginated_content && item.content && (
         <ReactQuill id="mainContents" value={item.content} modules={PassageView.modules} />
       )}
-      {item.paginated_content && item.pages && !!item.pages.length && (
+      {item.paginated_content && item.pages && !!item.pages.length && !flowLayout && (
         <div>
           <ReactQuill id="paginatedContents" value={item.pages[page - 1]} modules={PassageView.modules} />
 
@@ -79,13 +86,15 @@ PassageView.propTypes = {
   item: PropTypes.object.isRequired,
   preview: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  flowLayout: PropTypes.bool
 };
 
 PassageView.defaultProps = {
   preview: false,
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  flowLayout: false
 };
 
 PassageView.modules = {

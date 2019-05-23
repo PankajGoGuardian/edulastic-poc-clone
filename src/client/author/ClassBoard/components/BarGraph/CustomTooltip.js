@@ -10,7 +10,7 @@ export const CustomTooltip = props => {
 
   return (
     <>
-      {payload && payload.length === 3 ? (
+      {payload && payload.length >= 4 ? (
         <div className={className}>
           <div className="classboard-tooltip-title">{label}</div>
           <Row type="flex" justify="start">
@@ -20,6 +20,10 @@ export const CustomTooltip = props => {
           <Row type="flex" justify="start">
             <Col className="classboard-tooltip-key">Incorrect Attemps: </Col>
             <Col className="classboard-tooltip-value">{payload[1].value}</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="classboard-tooltip-key">Partial Attemps: </Col>
+            <Col className="classboard-tooltip-value">{payload[2].value}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="classboard-tooltip-key">Average Time Spent (seconds): </Col>

@@ -13,6 +13,7 @@ import { getQuestionDataSelector, setQuestionDataAction } from "../../../../auth
 
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
+import { ColNoPaddingLeft } from "../../../styled/WidgetOptions/ColNoPadding";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { SectionHeading } from "../../../styled/WidgetOptions/SectionHeading";
 import { Widget } from "../../../styled/Widget";
@@ -46,7 +47,16 @@ class Scoring extends Component {
   }
 
   render() {
-    const { setQuestionData, t, scoringTypes, isSection, questionData, showSelect, advancedAreOpen } = this.props;
+    const {
+      setQuestionData,
+      t,
+      scoringTypes,
+      isSection,
+      questionData,
+      showSelect,
+      advancedAreOpen,
+      noPaddingLeft
+    } = this.props;
 
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData);
@@ -87,10 +97,19 @@ class Scoring extends Component {
     const maxScore = get(questionData, "validation.max_score", 0);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
+    const ColWrapper = props => {
+      return props.noPaddingLeft ? (
+        <ColNoPaddingLeft md={12}>{props.children} </ColNoPaddingLeft>
+      ) : (
+        <Col md={12}>{props.children}</Col>
+      );
+    };
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
-        {!isSection && <Subtitle>{t("component.options.scoring")}</Subtitle>}
+        {!isSection && (
+          <Subtitle margin={noPaddingLeft ? "0 0 29px -30px" : null}>{t("component.options.scoring")}</Subtitle>
+        )}
         {isAutoMarkBtnVisible && (
           <Row>
             <Col md={12}>
@@ -236,7 +255,7 @@ class Scoring extends Component {
 
         {!isAutomarkChecked && (
           <Row gutter={60}>
-            <Col md={12}>
+            <ColWrapper noPaddingLeft={noPaddingLeft}>
               <FormGroup>
                 <Input
                   data-cy="maxscore"
@@ -248,7 +267,7 @@ class Scoring extends Component {
                 />
                 <Label>{t("component.options.maxScore")}</Label>
               </FormGroup>
-            </Col>
+            </ColWrapper>
           </Row>
         )}
       </Widget>
@@ -265,10 +284,12 @@ Scoring.propTypes = {
   isSection: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  noPaddingLeft: PropTypes.bool
 };
 
 Scoring.defaultProps = {
+  noPaddingLeft: false,
   isSection: false,
   showSelect: true,
   advancedAreOpen: false,

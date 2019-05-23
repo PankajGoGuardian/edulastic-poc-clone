@@ -103,9 +103,11 @@ const TestPageHeader = ({
         <EduButton data-cy="save" style={{ width: 42, padding: 0 }} disabled={creating} size="large" onClick={onSave}>
           <IconDiskette color="#1774F0" />
         </EduButton>
-        <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
-          Assign
-        </EduButton>
+        {!isPlaylist && (
+          <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
+            Assign
+          </EduButton>
+        )}
         {showPublishButton && testStatus === "draft" && (
           <EduButton data-cy="publish" style={{ width: 120 }} size="large" onClick={onPublish}>
             Publish

@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Icon } from "antd";
 
-import { mainBlueColor, white, darkBlueSecondary, tabletWidth, textColor } from "@edulastic/colors";
+import { mainBlueColor, white, darkBlueSecondary, tabletWidth, textColor, greyDarken } from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
 import { Status } from "../../../AssessmentPage/components/Header/styled";
@@ -54,6 +54,6 @@ export const MenuIconWrapper = styled.div`
 
 export const TestStatus = styled(Status)`
   margin-top: 0;
-  color: ${textColor};
-  background: ${white};
+  color: ${props => (props.mode === "embedded" ? white : textColor)};
+  background: ${props => (props.mode === "embedded" ? textColor : white)};
 `;

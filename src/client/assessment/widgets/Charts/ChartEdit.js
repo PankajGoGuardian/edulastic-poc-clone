@@ -6,25 +6,22 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
 
-import { Input } from "antd";
-import QuestionTextArea from "../../components/QuestionTextArea";
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
-import { Subtitle } from "../../styled/Subtitle";
 
 import { EDIT } from "../../constants/constantsForQuestions";
 import Options from "./components/Options";
 import ChartPreview from "./ChartPreview";
-import UiInputGroup from "./components/UiInputGroup";
 import PointsList from "./components/PointsList";
 import withGrid from "./HOC/withGrid";
 import { getGridVariables, getReCalculatedPoints, getReCalculatedDATAPoints } from "./helpers";
 
+import ComposeQuestion from "./ComposeQuestion";
+
 const OptionsList = withPoints(ChartPreview);
 
-const ChartEdit = ({ item, setQuestionData, t }) => {
+const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const {
     chart_data: { data },
     ui_style: { yAxisCount, stepSize, height, width, margin }
@@ -62,44 +59,6 @@ const ChartEdit = ({ item, setQuestionData, t }) => {
   useEffect(() => {
     setFirstMount(true);
   }, []);
-
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        draft[prop] = uiStyle;
-      })
-    );
-  };
-
-  const handleUiStyleChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, draft => {
-        if (prop === "yAxisCount") {
-          setLocalMaxValue(uiStyle);
-        } else if (prop === "stepSize" && uiStyle === 0) {
-          draft.ui_style[prop] = 1;
-        } else {
-          draft.ui_style[prop] = uiStyle;
-        }
-      })
-    );
-  };
-
-  const onMaxValueBlur = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.ui_style.yAxisCount = localMaxValue;
-      })
-    );
-  };
-
-  const handleTitleChange = e => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.chart_data.name = e.target.value;
-      })
-    );
-  };
 
   const handleAddPoint = () => {
     setQuestionData(
@@ -231,70 +190,37 @@ const ChartEdit = ({ item, setQuestionData, t }) => {
 
   return (
     <Fragment>
-      <Paper style={{ marginBottom: 30 }}>
-        <Subtitle>{t("component.chart.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.chart.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+      <ComposeQuestion
+        item={item}
+        localMaxValue={localMaxValue}
+        setLocalMaxValue={setLocalMaxValue}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <Subtitle>{t("component.chart.chartMainBlockTitle")}</Subtitle>
+      <PointsList
+        handleChange={handlePointChange}
+        ratio={yAxisStep}
+        handleDelete={handleDelete}
+        points={item.chart_data.data}
+        buttonText={t("component.chart.addPoint")}
+        onAdd={handleAddPoint}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <Subtitle>{t("component.chart.chartTitle")}</Subtitle>
+      <CorrectAnswers
+        onTabChange={setCorrectTab}
+        correctTab={correctTab}
+        onAdd={handleAddAnswer}
+        validation={item.validation}
+        options={renderOptions()}
+        onCloseTab={handleCloseTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
-        <Input size="large" value={item.chart_data.name} onChange={handleTitleChange} />
-
-        <UiInputGroup
-          onChange={handleUiStyleChange}
-          firstInputType="text"
-          secondInputType="text"
-          firstAttr="xAxisLabel"
-          secondAttr="yAxisLabel"
-          firstFieldValue={item.ui_style.xAxisLabel}
-          secondFieldValue={item.ui_style.yAxisLabel}
-          t={t}
-        />
-
-        <UiInputGroup
-          onChange={handleUiStyleChange}
-          firstAttr="width"
-          secondAttr="height"
-          firstFieldValue={parseInt(item.ui_style.width, 10) < 1 ? null : item.ui_style.width}
-          secondFieldValue={parseInt(item.ui_style.height, 10) < 1 ? null : item.ui_style.height}
-          t={t}
-        />
-
-        <UiInputGroup
-          onChange={handleUiStyleChange}
-          firstAttr="stepSize"
-          secondAttr="yAxisCount"
-          onBlur={onMaxValueBlur}
-          firstFieldValue={item.ui_style.stepSize}
-          secondFieldValue={localMaxValue}
-          t={t}
-        />
-
-        <PointsList
-          handleChange={handlePointChange}
-          ratio={yAxisStep}
-          handleDelete={handleDelete}
-          points={item.chart_data.data}
-          buttonText={t("component.chart.addPoint")}
-          onAdd={handleAddPoint}
-        />
-
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        />
-      </Paper>
-
-      <Options />
+      <Options fillSections={fillSections} cleanSections={cleanSections} advancedAreOpen={advancedAreOpen} />
     </Fragment>
   );
 };
@@ -302,11 +228,19 @@ const ChartEdit = ({ item, setQuestionData, t }) => {
 ChartEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
+};
+
+ChartEdit.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(
-  withGrid,
   withNamespaces("assessment"),
   withTheme
 );

@@ -306,7 +306,7 @@ class TestList extends Component {
   };
 
   resetFilter = () => {
-    const { receiveTests, limit, history } = this.props;
+    const { receiveTests, limit, history, mode } = this.props;
     const { search } = this.state;
     receiveTests({ page: 1, limit, search });
     if (mode !== "embedded") {
@@ -423,7 +423,7 @@ class TestList extends Component {
   searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
-    const { loading, tests, windowWidth, history, match, userId } = this.props;
+    const { loading, tests, windowWidth, history, match, userId, mode } = this.props;
     const { blockStyle, selectedTests } = this.state;
 
     if (loading) {
@@ -459,6 +459,7 @@ class TestList extends Component {
               windowWidth={windowWidth}
               history={history}
               match={match}
+              mode={mode}
               removeTestFromPlaylist={this.removeTestFromPlaylist}
               isTestAdded={selectedTests.includes(item._id)}
               addTestToPlaylist={this.handleAddTests}

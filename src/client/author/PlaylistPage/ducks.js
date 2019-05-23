@@ -25,9 +25,9 @@ export const UPDATE_TEST_SUCCESS = "[tests] update playlist success";
 export const UPDATE_TEST_ERROR = "[tests] update playlist error";
 export const UPDATE_PLAYLIST = "[playlists] update playlist ";
 
-export const RECEIVE_TEST_BY_ID_REQUEST = "[tests] receive playlist by id request";
-export const RECEIVE_TEST_BY_ID_SUCCESS = "[tests] receive playlist by id success";
-export const RECEIVE_TEST_BY_ID_ERROR = "[tests] receive playlist by id error";
+export const RECEIVE_PLAYLIST_BY_ID_REQUEST = "[playlists] receive playlist by id request";
+export const RECEIVE_PLAYLIST_BY_ID_SUCCESS = "[playlists] receive playlist by id success";
+export const RECEIVE_PLAYLIST_BY_ID_ERROR = "[playlists] receive playlist by id error";
 
 export const SET_TEST_DATA = "[tests] set playlist data";
 export const SET_DEFAULT_TEST_DATA = "[tests] set default playlist data";
@@ -48,20 +48,21 @@ export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
 export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
 export const REMOVE_TEST_FROM_MODULE = "[playlist] remove test from module";
 export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from playlist";
+export const MOVE_CONTENT = "[playlist] move content in playlist";
 // actions
 
-export const receiveTestByIdAction = id => ({
-  type: RECEIVE_TEST_BY_ID_REQUEST,
+export const receivePlaylistByIdAction = id => ({
+  type: RECEIVE_PLAYLIST_BY_ID_REQUEST,
   payload: { id }
 });
 
-export const receiveTestByIdSuccess = entity => ({
-  type: RECEIVE_TEST_BY_ID_SUCCESS,
+export const receivePlaylistByIdSuccess = entity => ({
+  type: RECEIVE_PLAYLIST_BY_ID_SUCCESS,
   payload: { entity }
 });
 
-export const receiveTestByIdError = error => ({
-  type: RECEIVE_TEST_BY_ID_ERROR,
+export const receivePlaylistByIdError = error => ({
+  type: RECEIVE_PLAYLIST_BY_ID_ERROR,
   payload: { error }
 });
 
@@ -129,7 +130,7 @@ export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
 export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE);
 export const removeTestFromPlaylistAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
-
+export const moveContentInPlaylistAction = createAction(MOVE_CONTENT);
 // reducer
 
 const initialPlaylistState = {
@@ -199,6 +200,33 @@ const removeTestFromPlaylist = (playlist, payload) => {
   return newPlaylist;
 };
 
+const moveContentInPlaylist = (playlist, payload) => {
+  const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
+  let newPlaylist;
+  if (!toContentIndex) {
+    newPlaylist = produce(playlist, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  } else {
+    newPlaylist = produce(playlist, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.splice(
+        toContentIndex,
+        0,
+        draft.modules[fromModuleIndex].data[fromContentIndex]
+      );
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  }
+  return newPlaylist;
+};
+
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_MODULE: {
@@ -216,6 +244,10 @@ export const reducer = (state = initialState, { type, payload }) => {
       const newEntity = removeTestFromPlaylist(state.entity, payload);
       return { ...state, entity: newEntity };
     }
+    case MOVE_CONTENT: {
+      const newEntity = moveContentInPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
     case REMOVE_TEST_FROM_PLAYLIST: {
       const newEntity = removeTestFromPlaylist(state.entity, payload);
       return { ...state, entity: newEntity };
@@ -225,13 +257,13 @@ export const reducer = (state = initialState, { type, payload }) => {
     }
     case SET_DEFAULT_TEST_DATA:
       return { ...state, entity: produce(state.entity, draft => initialPlaylistState) };
-    case RECEIVE_TEST_BY_ID_REQUEST:
+    case RECEIVE_PLAYLIST_BY_ID_REQUEST:
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:
       return { ...state, editAssigned: true };
     case SET_REGRADE_OLD_TESTID:
       return { ...state, regradeTestId: payload };
-    case RECEIVE_TEST_BY_ID_SUCCESS:
+    case RECEIVE_PLAYLIST_BY_ID_SUCCESS:
       return {
         ...state,
         loading: false,
@@ -239,7 +271,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...payload.entity
         }
       };
-    case RECEIVE_TEST_BY_ID_ERROR:
+    case RECEIVE_PLAYLIST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
 
     case CREATE_TEST_REQUEST:
@@ -351,14 +383,14 @@ const getQuestions = (testItems = []) => {
 };
 
 // saga
-function* receiveTestByIdSaga({ payload }) {
+function* receivePlaylistByIdSaga({ payload }) {
   try {
     const entity = yield call(curriculumSequencesApi.getCurriculums, payload.id, { data: true });
-    yield put(receiveTestByIdSuccess(entity));
+    yield put(receivePlaylistByIdSuccess(entity));
   } catch (err) {
     const errorMessage = "Receive playlist by id is failing";
     yield call(message.error, errorMessage);
-    yield put(receiveTestByIdError(errorMessage));
+    yield put(receivePlaylistByIdError(errorMessage));
   }
 }
 
@@ -492,7 +524,7 @@ function addTestToModule(entity, payload) {
 
 export function* watcherSaga() {
   yield all([
-    yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
+    yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
     yield takeEvery(CREATE_TEST_REQUEST, createPlaylistSaga),
     yield takeEvery(UPDATE_TEST_REQUEST, updatePlaylistSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
@@ -507,18 +539,18 @@ export function* watcherSaga() {
 
 export const stateSelector = state => state.playlist;
 
-export const getTestSelector = createSelector(
+export const getPlaylistSelector = createSelector(
   stateSelector,
   state => state.entity
 );
 
-export const getTestEntitySelector = createSelector(
+export const getPlaylistEntitySelector = createSelector(
   stateSelector,
   state => state.entity
 );
 
 export const getTestStatusSelector = createSelector(
-  getTestEntitySelector,
+  getPlaylistEntitySelector,
   state => state.status
 );
 
@@ -539,7 +571,7 @@ export const getTestsLoadingSelector = createSelector(
 
 export const getUserCustomizeSelector = createSelector(
   stateSelector,
-  state => get(state, "customize", true)
+  state => get(state.entity, "customize", true)
 );
 
 export const getUserListSelector = createSelector(
@@ -571,7 +603,7 @@ export const getUserListSelector = createSelector(
 );
 
 export const getTestItemsRowsSelector = createSelector(
-  getTestSelector,
+  getPlaylistSelector,
   state => state
   // state.testItems.map(item => {
   //     if (!item || !item.rows) return [];

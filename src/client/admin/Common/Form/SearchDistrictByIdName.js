@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Icon, Radio } from "antd";
+import { Form, Input, Icon, Radio, AutoComplete } from "antd";
 import styled from "styled-components";
 import { radioButtondata } from "../../Data";
 import { Button } from "../StyledComponents";
@@ -11,20 +11,33 @@ const CircularInput = styled(Input)`
   border-radius: 20px;
 `;
 
-export default function SearchByIdName({ getFieldDecorator, handleSubmit }) {
+export default function SearchDistrictByIdName({
+  getFieldDecorator,
+  handleSubmit,
+  autocomplete,
+  dataSource,
+  onSelect
+}) {
   return (
     <Form onSubmit={handleSubmit} layout="inline">
       <Form.Item>
-        {getFieldDecorator("searchDistrict", {
+        {getFieldDecorator("districtSearchValue", {
           initialValue: ""
-        })(<CircularInput placeholder="Search..." style={{ width: 300 }} />)}
+        })(
+          autocomplete ? (
+            <AutoComplete onSelect={onSelect} dataSource={dataSource} style={{ width: 350 }} />
+          ) : (
+            <CircularInput placeholder="Search..." style={{ width: 300 }} />
+          )
+        )}
         <Button
           icon="search"
           type="submit"
           style={{
             position: "absolute",
             top: "0",
-            right: "10px"
+            right: "10px",
+            zIndex: 20
           }}
           aria-label="Search"
           noStyle
@@ -33,7 +46,7 @@ export default function SearchByIdName({ getFieldDecorator, handleSubmit }) {
         </Button>
       </Form.Item>
       <Form.Item>
-        {getFieldDecorator("radioInput", {
+        {getFieldDecorator("districtSearchOption", {
           initialValue: radioButtondata.list[0].id
         })(
           <RadioGroup name="searchOptions">

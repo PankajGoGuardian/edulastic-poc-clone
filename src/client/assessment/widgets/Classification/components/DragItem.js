@@ -45,65 +45,66 @@ const DragItem = ({
   isTransparent,
   dragHandle
 }) =>
-  item &&
-  connectDragSource(
-    <div
-      data-cy={`drag-drop-item-${renderIndex}`}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        margin: "10px 15px 10px 15px",
-        opacity: isDragging ? 0 : 1
-      }}
-    >
-      {preview && valid !== undefined && (
-        <IndexBox preview={preview} valid={valid}>
-          {renderIndex + 1}
-        </IndexBox>
-      )}
-      <div
-        style={getStyles(
-          isDragging,
-          isTransparent,
-          valid && preview
-            ? theme.widgets.classification.dragItemValidBgColor
-            : preview && valid !== undefined
-            ? theme.widgets.classification.dragItemNotValidBgColor
-            : theme.widgets.classification.dragItemBgColor,
-          valid && preview
-            ? theme.widgets.classification.dragItemValidBorderColor
-            : preview && valid !== undefined
-            ? theme.widgets.classification.dragItemNotValidBorderColor
-            : theme.widgets.classification.dragItemBorderColor,
-          preview && valid !== undefined
-            ? {
-                paddingRight: 15,
-                paddingLeft: 15,
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0
-              }
-            : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
-        )}
-      >
-        <FlexContainer
-          alignItems="center"
-          justifyContent="center"
+  item
+    ? connectDragSource(
+        <div
+          data-cy={`drag-drop-item-${renderIndex}`}
           style={{
-            width: "100%",
-            fontWeight: theme.widgets.classification.dragItemFontWeight
+            display: "flex",
+            alignItems: "center",
+            margin: "10px 15px 10px 15px",
+            opacity: isDragging ? 0 : 1
           }}
         >
-          {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
-          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
           {preview && valid !== undefined && (
-            <div>
-              {valid && <IconCheck />}
-              {!valid && <IconClose />}
-            </div>
+            <IndexBox preview={preview} valid={valid}>
+              {renderIndex + 1}
+            </IndexBox>
           )}
-        </FlexContainer>
-      </div>
-    </div>
-  );
+          <div
+            style={getStyles(
+              isDragging,
+              isTransparent,
+              valid && preview
+                ? theme.widgets.classification.dragItemValidBgColor
+                : preview && valid !== undefined
+                ? theme.widgets.classification.dragItemNotValidBgColor
+                : theme.widgets.classification.dragItemBgColor,
+              valid && preview
+                ? theme.widgets.classification.dragItemValidBorderColor
+                : preview && valid !== undefined
+                ? theme.widgets.classification.dragItemNotValidBorderColor
+                : theme.widgets.classification.dragItemBorderColor,
+              preview && valid !== undefined
+                ? {
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0
+                  }
+                : { borderTopLeftRadius: 5, borderBottomLeftRadius: 5 }
+            )}
+          >
+            <FlexContainer
+              alignItems="center"
+              justifyContent="center"
+              style={{
+                width: "100%",
+                fontWeight: theme.widgets.classification.dragItemFontWeight
+              }}
+            >
+              {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
+              <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
+              {preview && valid !== undefined && (
+                <div>
+                  {valid && <IconCheck />}
+                  {!valid && <IconClose />}
+                </div>
+              )}
+            </FlexContainer>
+          </div>
+        </div>
+      )
+    : null;
 
 export default withTheme(DragSource("item", specSource, collectSource)(DragItem));

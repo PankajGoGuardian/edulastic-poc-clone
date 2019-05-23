@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -322,14 +322,18 @@ class Questions extends React.Component {
     const review = viewMode === "review";
 
     const minAvailableQuestionIndex = (maxBy(list, "qIndex") || { qIndex: 0 }).qIndex + 1;
-
+    let shouldModalBeVisibile = true;
+    if (list.length > 0 && list[currentEditQuestionIndex]) {
+      shouldModalBeVisibile = list[currentEditQuestionIndex]["type"] !== "sectionLabel";
+    }
     return (
-      <>
+      <Fragment>
         <QuestionsWrapper centered={centered}>
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
                 <Section
+                  key={question.id}
                   section={question}
                   viewMode={viewMode}
                   onUpdate={this.handleUpdateSection}
@@ -370,15 +374,17 @@ class Questions extends React.Component {
             </AnswerActionsWrapper>
           )}
         </QuestionsWrapper>
-        <QuestionEditModal
-          visible={this.editModalVisible}
-          question={this.currentQuestion}
-          index={currentEditQuestionIndex}
-          onClose={this.handleCloseEditModal}
-          onUpdate={this.handleUpdateData}
-          onCurrentChange={this.handleOpenEditModal}
-        />
-      </>
+        {shouldModalBeVisibile && (
+          <QuestionEditModal
+            visible={shouldModalBeVisibile}
+            question={this.currentQuestion}
+            index={currentEditQuestionIndex}
+            onClose={this.handleCloseEditModal}
+            onUpdate={this.handleUpdateData}
+            onCurrentChange={this.handleOpenEditModal}
+          />
+        )}
+      </Fragment>
     );
   }
 }

@@ -114,7 +114,12 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
 
   return (
     <ContentArea>
-      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <ComposeQuestion
+        setQuestionData={setQuestionData}
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
       <CanvasSubtitle item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
 

@@ -31,7 +31,9 @@
     "test:automation-open-dev": "cypress open --env configFile=development",
     "test:automation-run-dev": "cypress run --env configFile=development",
     "publish-evaluators": "git subtree push --prefix packages/evaluators git@github.com:snapwiz/edu-eval.git master",
-    "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master"
+    "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "@babel/polyfill": "^7.0.0",
@@ -183,7 +185,11 @@
     "style-loader": "^0.23.1",
     "test-data-bot": "^0.6.0",
     "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-stats-plugin": "^0.2.1"
+    "webpack-stats-plugin": "^0.2.1",
+    "@storybook/react": "^5.0.11",
+    "@storybook/addon-actions": "^5.0.11",
+    "@storybook/addon-links": "^5.0.11",
+    "@storybook/addons": "^5.0.11"
   },
   "ava": {
     "files": [

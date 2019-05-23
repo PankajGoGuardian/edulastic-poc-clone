@@ -13,6 +13,7 @@ class CardWrapper extends Component {
     windowWidth: PropTypes.number,
     blockStyle: PropTypes.string,
     isTestAdded: PropTypes.bool,
+    mode: PropTypes.string,
     removeTestFromPlaylist: PropTypes.func,
     addTestToPlaylist: PropTypes.func,
     owner: PropTypes.object
@@ -37,6 +38,7 @@ class CardWrapper extends Component {
       isTestAdded,
       removeTestFromPlaylist,
       addTestToPlaylist,
+      mode,
       owner
     } = this.props;
 
@@ -66,6 +68,7 @@ class CardWrapper extends Component {
           windowWidth={windowWidth}
           history={history}
           match={match}
+          mode={mode}
           addTestToPlaylist={addTestToPlaylist}
           isTestAdded={isTestAdded}
           removeTestFromPlaylist={removeTestFromPlaylist}

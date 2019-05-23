@@ -221,6 +221,7 @@
       "interactive": "Interactive",
       "addPoint": "Add Point",
       "point": "Point",
+      "points": "Points",
       "value": "Value",
       "label": "Label",
       "chartTitle": "Chart Title"
@@ -483,6 +484,8 @@
       "dropDown": {
         "templatemarkup": "Template Markup",
         "thisisstem": "[This is the stem.]",
+        "ignorecase": "Ignore Case",
+        "allowsinglelettermistake": "Allow single letter mistake",
         "setcorrectanswers": "Set Correct Answer(s)",
         "addnewchoice": "Add New Choice",
         "multiplechoiceoptions": "Multiple Choice Options",
@@ -720,6 +723,12 @@
       "browse": "Browse",
       "showButton": "Show button",
       "showRotate": "Show rotate"
+    },
+    "multipart": {
+      "composequestion": "Compose Question",
+      "enterQuestion": "Enter Question",
+      "enterContent": "Enter Question Contents",
+      "content": "Content"
     }
   }
 }

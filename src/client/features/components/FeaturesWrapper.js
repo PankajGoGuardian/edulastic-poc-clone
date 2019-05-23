@@ -28,7 +28,12 @@ const FeaturesWrapper = props => {
   }
 
   const _children = React.Children.map(children, (child, index) => {
-    return React.cloneElement(child, { ...props, actionOnInaccessible, isAccessible: isAccessible });
+    return React.cloneElement(child, {
+      ...props,
+      children: child.props.children,
+      actionOnInaccessible,
+      isAccessible: isAccessible
+    });
   });
   return isAccessible ? _children : actionOnInaccessible === "disabled" ? _children : null;
 };

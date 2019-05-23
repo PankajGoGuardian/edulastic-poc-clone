@@ -158,6 +158,16 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               />
               <Route
                 exact
+                path={`${match.url}/playlists/assignments/:playlistId/:moduleId`}
+                component={props => <AssignTest {...props} isPlaylist={true} />}
+              />
+              <Route
+                exact
+                path={`${match.url}/playlists/assignments/:playlistId/:moduleId/:testId`}
+                component={props => <AssignTest {...props} isPlaylist={true} />}
+              />
+              <Route
+                exact
                 path="/author/playlists/:id/editAssigned"
                 render={props => (
                   <Suspense fallback={<Progress />}>

@@ -11,6 +11,7 @@ const FeatureWrapper = props => {
   const _children = React.Children.map(children, (child, index) => {
     return React.cloneElement(child, {
       ...props,
+      children: child.props.children,
       actionOnInaccessible,
       isAccessible: features[feature] ? true : false
     });

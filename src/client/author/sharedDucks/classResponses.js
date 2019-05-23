@@ -33,7 +33,7 @@ function* receiveClassResponseSaga({ payload }) {
       payload: classResponse
     });
   } catch (err) {
-    const errorMessage = "Receive tests is failing";
+    const errorMessage = "Receive class response is failing";
     yield call(message.error, errorMessage);
     yield put({
       type: RECEIVE_CLASS_RESPONSE_ERROR,
@@ -124,7 +124,12 @@ function* receiveStudentQuestionSaga({ payload }) {
 
 function* receiveClassQuestionSaga({ payload }) {
   try {
-    const feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);
+    let feedbackResponse;
+    if (payload.itemId) {
+      feedbackResponse = yield call(classResponseApi.questionClassItemQuestionResponse, payload);
+    } else {
+      feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);
+    }
     yield put({
       type: RECEIVE_CLASS_QUESTION_SUCCESS,
       payload: feedbackResponse

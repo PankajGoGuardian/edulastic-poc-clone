@@ -128,12 +128,30 @@ class SchoolsTable extends React.Component {
     filtersData[key].filtersColumn = value;
     if (value === "status") filtersData[key].filtersValue = "eq";
     this.setState({ filtersData });
+
+    if (
+      (filtersData[key].filterAdded || key == 2) &&
+      filtersData[key].filtersValue !== "" &&
+      filtersData[key].filterStr !== ""
+    ) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   changeFilterValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filtersValue = value;
     this.setState({ filtersData });
+
+    if (
+      (filtersData[key].filterAdded || key == 2) &&
+      filtersData[key].filtersColumn !== "" &&
+      filtersData[key].filterStr !== ""
+    ) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   changeFilterText = (e, key) => {
@@ -142,14 +160,32 @@ class SchoolsTable extends React.Component {
     this.setState({ filtersData });
   };
 
+  onBlurFilterText = (e, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filterStr = e.target.value;
+    this.setState({ filtersData });
+
+    if (filtersData[key].filterAdded || key == 2) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    }
+  };
+
   changeStatusValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = value;
     this.setState({ filtersData });
+
+    if (filtersData[key].filterAdded || key == 2) {
+      const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    }
   };
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    if (filtersData[key].filterAdded && filtersData.length == 3) return;
+
     filtersData[key].filterAdded = true;
     if (filtersData.length < 3) {
       filtersData[key].filterAdded = true;
@@ -288,7 +324,11 @@ class SchoolsTable extends React.Component {
     }
 
     for (let i = 0; i < filtersData.length; i++) {
-      if (filtersData[i].filterAdded) {
+      if (
+        filtersData[i].filtersColumn !== "" &&
+        filtersData[i].filtersValue !== "" &&
+        filtersData[i].filterStr !== ""
+      ) {
         search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
@@ -314,7 +354,7 @@ class SchoolsTable extends React.Component {
       sortedInfo,
       currentPage
     } = this.state;
-    const { selectedAction, userOrgId, totalSchoolsCount } = this.props;
+    const { userOrgId, totalSchoolsCount } = this.props;
 
     const columnsInfo = [
       {
@@ -573,6 +613,7 @@ class SchoolsTable extends React.Component {
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
+              onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
             />
@@ -588,14 +629,15 @@ class SchoolsTable extends React.Component {
               <Option value="0">Not Approved</Option>
             </StyledFilterSelect>
           )}
-
-          <StyledFilterButton
-            type="primary"
-            onClick={e => this.addFilter(e, i)}
-            disabled={isAddFilterDisable || filtersData[i].filterAdded}
-          >
-            + Add Filter
-          </StyledFilterButton>
+          {i < 2 && (
+            <StyledFilterButton
+              type="primary"
+              onClick={e => this.addFilter(e, i)}
+              // disabled={isAddFilterDisable}
+            >
+              + Add Filter
+            </StyledFilterButton>
+          )}
 
           <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
             - Remove Filter
@@ -674,7 +716,6 @@ export default enhance(EditableSchoolsTable);
 SchoolsTable.propTypes = {
   schoolList: PropTypes.object.isRequired,
   userOrgId: PropTypes.string.isRequired,
-  selectedAction: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,
   createSchool: PropTypes.func.isRequired,

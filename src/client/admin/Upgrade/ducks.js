@@ -18,11 +18,26 @@ export const upgradeUserSubscriptionAction = createAction(UPGRADE_USER_SUBSCRIPT
 export const searchUsersByEmailIdAction = createAction(SEARCH_USERS_BY_EMAIL_IDS);
 
 // SLICE's
-const manageSubscriptionsBydistrict = createSlice({
+export const manageSubscriptionsBydistrict = createSlice({
   slice: "manageSubscriptionsBydistrict", // slice is optional, and could be blank ''
-  initialState: {},
+  initialState: {
+    listOfDistricts: [],
+    selectedDistrict: {}
+  },
   reducers: {
-    success: (state, { payload }) => payload.data[1]
+    success: (state, { payload }) => {
+      // if only a single district is returned, the returned district becomes the selected District by default
+      if (payload.data.length === 1) {
+        [state.selectedDistrict] = payload.data;
+      } else {
+        state.listOfDistricts = payload.data;
+      }
+    },
+    selectDistrict: (state, { payload: index }) => {
+      state.selectedDistrict = state.listOfDistricts[index];
+      // here the autocomplete dataSource becomes empty so that user is not presented with same data when he types
+      state.listOfDistricts = [];
+    }
   }
 });
 
@@ -34,7 +49,12 @@ const manageSubscriptionsByUsers = createSlice({
   },
   reducers: {
     success: (state, { payload }) => {
-      state.subscriptionData = payload;
+      // here once subscription is completed, the table has to re-render and show the updated values,
+      // hence, these updatedSubType key is set.
+      for (let i = 0; i < payload.length; i++) {
+        state.validEmailIdsList[i].updatedSubType = payload[i].subType;
+        state.validEmailIdsList[i].updatedSubTypeSuccess = payload[i].success;
+      }
     },
     searchEmailIdsSuccess: (state, { payload }) => {
       state.validEmailIdsList = payload.data;

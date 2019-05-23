@@ -26,7 +26,8 @@ export const Button = styled.button`
     border:0;
     border-radius:0
   `}
-  opacity: ${props => (props.disabled ? "0.2" : "1")}
+  opacity: ${props => (props.disabled ? "0.2" : "1")};
+  cursor: pointer;
 `;
 
 export const FlexDiv = styled.div`
@@ -39,6 +40,7 @@ export const FlexColumn = styled(FlexDiv)`
 
 export const MainDiv = styled.div`
   padding: 15px;
+  width: 100%;
 `;
 
 export const FirstDiv = styled(FlexDiv)`

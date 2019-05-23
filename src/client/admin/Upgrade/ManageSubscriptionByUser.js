@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Col, Form, Radio, Input, DatePicker, Button, Table } from "antd";
+import { Row, Col, Form, Radio, Input, DatePicker, Button, Table, Icon } from "antd";
 import moment from "moment";
 import NotesFormItem from "../Common/Form/NotesFormItem";
 import { radioButtonUserData } from "../Data";
@@ -46,7 +46,19 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
     },
     {
       title: "Subscription Type",
-      dataIndex: "subscription.subType"
+      dataIndex: "subscription.subType",
+      render: (text, { updatedSubType, updatedSubTypeSuccess }) =>
+        updatedSubType ? (
+          <>
+            <span style={{ marginRight: "5px" }}>{updatedSubType}</span>
+            <Icon
+              title={`Update ${updatedSubTypeSuccess ? "success" : "failed"}`}
+              type={updatedSubTypeSuccess ? "check-circle" : "warning"}
+            />
+          </>
+        ) : (
+          text
+        )
     },
     {
       title: "Email ID",

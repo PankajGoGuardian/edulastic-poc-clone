@@ -9,7 +9,8 @@ import {
   upgradeDistrictSubscriptionAction,
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
-  getUsersDataSelector
+  getUsersDataSelector,
+  manageSubscriptionsBydistrict
 } from "../Upgrade/ducks";
 
 const { TabPane } = Tabs;
@@ -20,7 +21,8 @@ function UpgradeUser({
   upgradeDistrictSubscriptionAction,
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
-  manageUsersData
+  manageUsersData,
+  selectDistrictAction
 }) {
   return (
     <Tabs type="card" defaultActiveKey="manageSubscriptionByDistrict" animated>
@@ -29,6 +31,7 @@ function UpgradeUser({
           getDistrictDataAction={getDistrictDataAction}
           districtData={districtData}
           upgradeDistrictSubscriptionAction={upgradeDistrictSubscriptionAction}
+          selectDistrictAction={selectDistrictAction}
         />
       </TabPane>
       <TabPane tab="Manage by School" key="manageSubscriptionBySchool">
@@ -56,7 +59,8 @@ const withConnect = connect(
     getDistrictDataAction,
     upgradeDistrictSubscriptionAction,
     upgradeUserSubscriptionAction,
-    searchUsersByEmailIdAction
+    searchUsersByEmailIdAction,
+    selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict
   }
 );
 

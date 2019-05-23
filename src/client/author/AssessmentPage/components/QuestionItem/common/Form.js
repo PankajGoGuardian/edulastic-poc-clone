@@ -20,7 +20,6 @@ export const QuestionOption = styled.span`
   height: 36px;
   padding-top: 10px;
   border: 1px solid ${getBorder};
-  border-radius: 18px;
   font-size: 10px;
   text-align: center;
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};

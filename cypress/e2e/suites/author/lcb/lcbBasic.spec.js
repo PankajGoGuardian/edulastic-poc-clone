@@ -5,6 +5,7 @@ import LiveClassboardPage from "../../../framework/author/assignments/LiveClassb
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
 import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
 import { attemptTypes } from "../../../framework/constants/questionTypes";
+import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -12,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "auto.lcb.teacher01@yopmail.com",
     student: "auto.lcb.student01@yopmail.com",
     assignmentName: "New Assessment LCB",
-    testId: "5cde784b09da3d60f2d7840c",
+    testId: "5ce4eb31c2512a87ccf5980e",
     feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",
@@ -75,6 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const questionTypeMap = {};
   const statsMap = {};
   const queCentric = {};
+  const submittedQueCentric = {};
   let reDirectedQueCentric;
   let reDirectedQueCentricBeforeAttempt;
 
@@ -84,6 +86,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     .filter(({ status }) => status !== studentSide.NOT_STARTED)
     .map(item => item.stuName);
 
+  const submittedStudentList = attemptsData
+    .filter(({ status }) => status === studentSide.SUBMITTED)
+    .map(item => item.stuName);
+
   const redirectedStudentList = redirectedData.map(item => item.stuName);
 
   const redirectStatsMap = {};
@@ -91,7 +97,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const test = new StudentTestPage();
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
+  const expressg = new ExpressGraderPage();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
+
+  lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
 
   before(" > create new assessment and assign", () => {
     cy.fixture("questionAuthoring").then(queData => {
@@ -193,6 +202,31 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
+  describe(" > verify express grader", () => {
+    before(() => {
+      lcb.header.clickOnExpressGraderTab();
+    });
+    context(" > verify scores", () => {
+      submittedStudentList.forEach(studentName => {
+        // ["Student01"].forEach(studentName => {
+        it(` > verify for student :: ${studentName}`, () => {
+          const { attempt, score, perf } = statsMap[studentName];
+          expressg.verifyScoreGrid(studentName, attempt, score, perf, questionTypeMap);
+        });
+      });
+    });
+
+    context(" > verify question level data", () => {
+      queList.forEach(queNum => {
+        // ["Q1"].forEach(queNum => {
+        it(` > verify for :: ${queNum}`, () => {
+          const attempt = submittedQueCentric[queNum];
+          expressg.verifyQuestionLevelGrid(queNum, attempt, questionTypeMap);
+        });
+      });
+    });
+  });
+
   describe(" > verify redirect", () => {
     context(" > redirect the students and verify", () => {
       before("calculate redirected stats", () => {
@@ -202,6 +236,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
           redirectStatsMap[stuName].attempt = attempt;
           redirectStatsMap[stuName].status = status;
         });
+        lcb.header.clickOnLCBTab();
         lcb.clickOnCardViewTab();
       });
 
@@ -265,9 +300,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
             Object.keys(attempt).forEach(queNum => {
               const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
               const { attemptData } = questionData[queType][questionKey];
-              console.log("attemptData ::", attemptData);
-              console.log("attemptData queType ::", queType);
-              console.log("attemptData attempt[queNum]::", attempt[queNum]);
+              // console.log("attemptData ::", attemptData);
+              // console.log("attemptData queType ::", queType);
+              // console.log("attemptData attempt[queNum]::", attempt[queNum]);
               test.attemptQuestion(queType, attempt[queNum], attemptData);
               test.clickOnNext();
             });

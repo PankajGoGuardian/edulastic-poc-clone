@@ -123,7 +123,7 @@ class ScoreTable extends Component {
       });
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={greenThird}>{`${Math.round((successAnswer / length) * 100)}%`}</StyledText>({successAnswer}
+          <StyledText color={greenThird}>{`${Math.round((successAnswer / length) * 100)}%`}</StyledText>({successAnswer}{" "}
           / {length})
         </StyledDivMid>
       );

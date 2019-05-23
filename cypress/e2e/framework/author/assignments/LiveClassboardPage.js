@@ -245,7 +245,7 @@ class LiveClassboardPage {
       });
   };
 
-  getScoreAndPerformance = (attempt, queTypeMap) => {
+  getScoreAndPerformance = (attempt, queTypeMap, queNum, queCentric = false) => {
     let totalScore = 0;
     let maxScore = 0;
     let score;
@@ -253,11 +253,10 @@ class LiveClassboardPage {
     let perfValue;
     let stats;
 
-    Object.keys(attempt).forEach(queNum => {
-      const attempType = attempt[queNum];
-      const { points } = queTypeMap[queNum];
-
-      if (attempType === "right") totalScore += points;
+    Object.keys(attempt).forEach(item => {
+      const attempType = attempt[item];
+      const { points } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
+      if (attempType === attemptTypes.RIGHT) totalScore += points;
       maxScore += points;
     });
 
@@ -273,7 +272,7 @@ class LiveClassboardPage {
     Object.keys(feedbackMap).forEach(queNum => {
       const attempType = feedbackMap[queNum];
       const { points } = queTypeMap[queNum];
-      score[queNum] = attempType === "right" ? points : "0";
+      score[queNum] = attempType === attemptTypes.RIGHT ? points : "0";
     });
 
     return score;
@@ -351,9 +350,9 @@ class LiveClassboardPage {
     return attempted ? reDirectedQueCentric : reDirectedQueCentricBeforeAttempt;
   };
 
-  getQuestionCentricData = (attemptsData, queCentric) => {
+  getQuestionCentricData = (attemptsData, queCentric, onlySubmitted = false) => {
     attemptsData
-      .filter(({ status }) => status !== studentSide.NOT_STARTED)
+      .filter(({ status }) => (onlySubmitted ? status === studentSide.SUBMITTED : status !== studentSide.NOT_STARTED))
       .forEach(({ attempt, stuName }) => {
         Object.keys(attempt).forEach(queNum => {
           if (!queCentric[queNum]) queCentric[queNum] = {};

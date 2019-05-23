@@ -151,12 +151,11 @@ class ClozeText extends Component {
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
-    const {
-      duplicatedResponses,
-      showDraghandle,
-      shuffleOptions,
-      validation: { ignoreCase, allowSingleLetterMistake }
-    } = item;
+    const { duplicatedResponses, showDraghandle, shuffleOptions } = item;
+
+    const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
+
+    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 

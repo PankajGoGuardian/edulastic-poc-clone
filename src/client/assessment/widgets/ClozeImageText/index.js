@@ -148,14 +148,15 @@ class ClozeImageText extends Component {
       advancedAreOpen,
       fillSections,
       cleanSections,
-      item: {
-        validation: { ignoreCase, allowSingleLetterMistake }
-      },
       isSidebarCollapsed,
       ...restProps
     } = this.props;
 
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
+
+    const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
+
+    const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
 
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 

@@ -135,6 +135,7 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
     <ContentArea>
       <ComposeQuestion
         item={item}
+        setQuestionData={setQuestionData}
         loading={loading}
         setLoading={setLoading}
         fillSections={fillSections}

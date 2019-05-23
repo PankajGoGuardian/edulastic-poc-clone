@@ -387,7 +387,7 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "number",
         editable: true,
-        width: "40%",
+        width: "30%",
         onHeaderCell: column => {
           return {
             onClick: () => {
@@ -395,6 +395,16 @@ class CoursesTable extends React.Component {
             }
           };
         }
+      },
+      {
+        title: (
+          <StyledHeaderColumn>
+            <p>Classes</p>
+          </StyledHeaderColumn>
+        ),
+        dataIndex: "classCount",
+        editable: true,
+        width: "20%"
       },
       {
         dataIndex: "operation",

@@ -251,7 +251,7 @@ const ClozeMathPreview = ({
           saveAnswer(newAnswers);
         }
       });
-  }, [type, wrappedRef.current]);
+  }, [type, wrappedRef.current, templateParts]);
 
   useEffect(() => {
     if (type === CHECK) {
@@ -354,7 +354,6 @@ const ClozeMathPreview = ({
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
-        <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
         <TemplateBox className="ql-editor">
           {templateParts &&
             dropdowns > 0 &&
@@ -376,18 +375,24 @@ const ClozeMathPreview = ({
               }
               if (templatePart.indexOf('class="text-input-btn"') !== -1) {
                 return (
-                  <InputDiv>
+                  <InputDiv key={index}>
                     <Input />
                   </InputDiv>
                 );
               }
-              return <MathDiv key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
+              return <MathP key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
             })}
         </TemplateBox>
         {type === SHOW && <AnswerBox answers={_getAnswers()} />}
         {showKeyboard && (
           <KeyboardWrapper>
-            <MathKeyboard onInput={_onInput} symbols={item.symbols} numberPad={item.numberPad} showResponse={false} />
+            <MathKeyboard
+              onInput={_onInput}
+              onClose={() => {}}
+              symbols={item.symbols}
+              numberPad={item.numberPad}
+              showResponse={false}
+            />
           </KeyboardWrapper>
         )}
         <NoneDiv>
@@ -448,7 +453,7 @@ const QuestionNumber = styled.div`
   margin-right: 4px;
 `;
 
-const MathDiv = styled.div`
+const MathP = styled.p`
   display: inline;
   p {
     display: inline;

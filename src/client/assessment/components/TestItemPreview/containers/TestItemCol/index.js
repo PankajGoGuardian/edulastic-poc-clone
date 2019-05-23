@@ -24,13 +24,14 @@ class TestItemCol extends Component {
     multiple: PropTypes.bool,
     style: PropTypes.object,
     questions: PropTypes.object.isRequired,
-    qIndex: PropTypes.number.isRequired
+    qIndex: PropTypes.number
   };
 
   static defaultProps = {
     showFeedback: false,
     multiple: false,
-    style: {}
+    style: {},
+    qIndex: null
   };
 
   handleTabChange = value => {

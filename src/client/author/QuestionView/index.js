@@ -54,7 +54,7 @@ class QuestionViewContainer extends Component {
     const { loadClassQuestionResponses, assignmentIdClassId: { assignmentId, classId } = {}, question } = nextProps;
     const { question: _question = {} } = preState || {};
     if (question.id !== _question.id) {
-      loadClassQuestionResponses(assignmentId, classId, question.id);
+      loadClassQuestionResponses(assignmentId, classId, question.id, nextProps.itemId);
     }
     return {
       question,
@@ -78,6 +78,7 @@ class QuestionViewContainer extends Component {
   };
 
   render() {
+    console.log("questionViewContainer props", this.props);
     const {
       testActivity,
       classResponse: { testItems, ...others },
@@ -90,12 +91,18 @@ class QuestionViewContainer extends Component {
 
     const filterdItems = testItems.filter(item => item.data.questions.filter(q => q.id === question.id).length > 0);
 
+    console.log("filtered items", filterdItems);
+
     filterdItems.forEach(item => {
-      item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
-      item.rows = item.rows.map(row => ({
-        ...row,
-        widgets: row.widgets.filter(({ reference }) => reference === question.id)
-      }));
+      if (this.props.itemId) {
+        console.log("itemId", this.props.itemId);
+      } else {
+        item.data.questions = item.data.questions.filter(({ id }) => id === question.id);
+        item.rows = item.rows.map(row => ({
+          ...row,
+          widgets: row.widgets.filter(({ reference }) => reference === question.id)
+        }));
+      }
     });
     const isMobile = this.isMobile();
     let data = [];

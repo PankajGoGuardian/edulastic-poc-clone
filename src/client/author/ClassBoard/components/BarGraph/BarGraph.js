@@ -3,7 +3,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { get, groupBy } from "lodash";
 import { ticks } from "d3-array";
-import { white, pointColor, dropZoneTitleColor, secondaryTextColor, green, incorrect, blue } from "@edulastic/colors";
+import {
+  white,
+  pointColor,
+  dropZoneTitleColor,
+  secondaryTextColor,
+  green,
+  incorrect,
+  blue,
+  yellow
+} from "@edulastic/colors";
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
@@ -82,8 +91,12 @@ export default class BarGraph extends Component {
           name: `Q${index + 1}`,
           totalAttemps: item.attemptsNum,
           correctAttemps: item.correctNum,
+          partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
-          avgTimeSpent: item.avgTimeSpent
+          avgTimeSpent: item.avgTimeSpent,
+          itemLevelScoring: item.itemLevelScoring,
+          itemId: item.itemId,
+          qid: item._id
         };
       });
     }
@@ -168,7 +181,7 @@ export default class BarGraph extends Component {
   handleClick = (data, index) => {
     const { onClickHandler } = this.props;
     if (onClickHandler) {
-      onClickHandler(index);
+      onClickHandler(data, index);
     }
   };
 
@@ -257,6 +270,14 @@ export default class BarGraph extends Component {
               shape={<RectangleBar dataKey="incorrectAttemps" />}
               onClick={this.handleClick}
             />
+            <Bar
+              yAxisId="left"
+              stackId="a"
+              dataKey="partialAttempts"
+              fill={yellow}
+              shape={<RectangleBar dataKey="partialAttempts" />}
+              onClick={this.handleClick}
+            />
             <Line
               yAxisId="right"
               dataKey="avgTimeSpent"
@@ -265,6 +286,7 @@ export default class BarGraph extends Component {
               type="monotone"
               dot={{ stroke: white, strokeWidth: 6, fill: white }}
             />
+
             <Tooltip content={<StyledCustomTooltip />} cursor={false} />
           </ComposedChart>
         </ResponsiveContainer>

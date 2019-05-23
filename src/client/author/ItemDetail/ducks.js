@@ -26,8 +26,13 @@ export const UPDATE_ITEM_DETAIL_SUCCESS = "[itemDetail] update by id success";
 export const UPDATE_ITEM_DETAIL_ERROR = "[itemDetail] update by id error";
 
 export const SET_ITEM_DETAIL_DATA = "[itemDetail] set data";
+export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING = "[itemDetail] set item level scoring";
+export const SET_ITEM_DETAIL_SCORE = "[itemDetail] set item score";
+export const INC_ITEM_DETAIL_SCORE = "[itemDetail] increment item score";
+export const DEC_ITEM_DETAIL_SCORE = "[itemDetail] decrement item score";
 export const UPDATE_ITEM_DETAIL_DIMENSION = "[itemDetail] update dimension";
-
+export const ADD_QUESTION = "[author questions] add question";
+export const REMOVE_QUESTION_BY_ID = "[author questions] delete question by id";
 export const SET_DRAGGING = "[itemDetail] set dragging";
 
 export const DELETE_ITEM_DETAIL_WIDGET = "[itemDetail] delete widget";
@@ -126,6 +131,10 @@ export const updateTestItemStatusAction = status => ({
 
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
+export const setItemLevelScoringAction = createAction(SET_ITEM_DETAIL_ITEM_LEVEL_SCORING);
+export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE);
+export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE);
+export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE);
 
 export const saveCurrentEditingTestIdAction = id => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -329,6 +338,24 @@ export function reducer(state = initialState, { type, payload }) {
     case SET_ITEM_DETAIL_DATA:
       return { ...state, item: payload.item };
 
+    case SET_ITEM_DETAIL_ITEM_LEVEL_SCORING:
+      return { ...state, item: { ...state.item, itemLevelScoring: !!payload } };
+
+    case SET_ITEM_DETAIL_SCORE:
+      return { ...state, item: { ...state.item, itemLevelScore: payload } };
+
+    case ADD_QUESTION:
+      return {
+        ...state,
+        item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }
+      };
+
+    case REMOVE_QUESTION_BY_ID:
+      return {
+        ...state,
+        item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) - 1 }
+      };
+
     case DELETE_ITEM_DETAIL_WIDGET_APPLY:
       return deleteWidget(state, payload);
 
@@ -393,10 +420,20 @@ function* receiveItemSaga({ payload }) {
       yield put(loadQuestionsAction(questions));
     }
     const item = _omit(data, "data");
+    const { itemLevelScore, itemLevelScoring } = data;
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
     });
+
+    let itemLevelScore1 = data.itemLevelScore;
+    //const questionsLength = ((data.data && data.data.questions) || []).length;
+    // if (data.itemLevelScoring && !itemLevelScore1 && questionsLength) {
+    //   itemLevelScore1 = questionsLength;
+    // }
+    console.log("setItemLevel", itemLevelScore1);
+
+    yield put(setItemLevelScoreAction(itemLevelScore1));
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS

@@ -79,6 +79,8 @@ class ClassBoard extends Component {
       selectedTab: "Both",
       selectAll: false,
       selectedQuestion: 0,
+      selectedQid: null,
+      itemId: null,
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: ""
@@ -214,8 +216,11 @@ class ClassBoard extends Component {
     });
   };
 
-  onClickBarGraph = selectedQuestion => {
-    this.setState({ selectedQuestion, selectedTab: "questionView" });
+  onClickBarGraph = (data, selectedQuestion) => {
+    const questions = this.getQuestions();
+    const index = questions.findIndex(x => x.id === data.qid);
+    console.log("onclick bargraph", data, "index", index, "questions", questions);
+    this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
   };
 
   isMobile = () => window.innerWidth < 480;
@@ -366,13 +371,14 @@ class ClassBoard extends Component {
           </React.Fragment>
         )}
 
-        {selectedTab === "questionView" && questions[selectedQuestion] && (
+        {selectedTab === "questionView" && (selectedQuestion || selectedQuestion == 0) && (
           <React.Fragment>
             <QuestionContainer
               classResponse={classResponse}
               testActivity={testActivity}
-              question={questions[selectedQuestion]}
               qIndex={selectedQuestion}
+              itemId={this.state.itemId}
+              question={{ id: this.state.selectedQid }}
             >
               <ClassSelect
                 classid="DI"
@@ -403,6 +409,7 @@ const enhance = compose(
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
+      testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       qActivityByStudent: stateStudentResponseSelector(state)
     }),
     {

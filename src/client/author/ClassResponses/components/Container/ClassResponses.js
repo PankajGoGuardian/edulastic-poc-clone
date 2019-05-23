@@ -88,6 +88,7 @@ class ClassResponses extends Component {
   };
 
   render() {
+    console.log("classResponses props", this.props);
     let totalScore = 0;
     let totalMaxScore = 0;
     const data = [];

@@ -12,6 +12,7 @@ import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
+import { Switch } from "antd";
 
 const layouts = [
   {
@@ -167,6 +168,18 @@ class Container extends Component {
         </Checkboxes>
         <Heading>{t("author:component.settingsBar.tags")}</Heading>
         <SettingsBarTags tags={["equations", "algebra"]} onRemove={this.handleRemoveTag} />
+        {/**
+        TODO: put this text in i18n namespace
+        */}
+        <Heading>Scoring</Heading>
+        Question Level{" "}
+        <Switch
+          onChange={v => {
+            this.props.setItemLevelScoring(v);
+          }}
+          checked={this.props.itemLevelScoring}
+        />{" "}
+        Item Level
       </Content>
     );
   }

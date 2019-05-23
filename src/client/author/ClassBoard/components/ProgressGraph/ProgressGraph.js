@@ -62,7 +62,7 @@ export default class Graph extends Component {
         <BarGraph
           gradebook={gradebook}
           testQuestionActivities={testQuestionActivities}
-          onClickHandler={question => onClickHandler(question)}
+          onClickHandler={onClickHandler}
         />
       </StyledDiv>
     );

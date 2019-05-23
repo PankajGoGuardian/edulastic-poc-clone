@@ -47,6 +47,7 @@ class ClassQuestions extends Component {
     if (!testItems) {
       return [];
     }
+    console.log("classQuestions", testItems);
     testItems = testItems.map(item => {
       const { data, rows, ...others } = item;
       if (!(data && data.questions)) {
@@ -59,6 +60,9 @@ class ClassQuestions extends Component {
           const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
           if (userQuestion) {
             q.timespent = userQuestion.timespent;
+            q.disabled = userQuestion.disabled;
+
+            q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
           }
           q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
           return { ...q };

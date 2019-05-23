@@ -237,6 +237,7 @@ class QuestionWrapper extends Component {
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
+    const disabled = get(data, "activity.disabled", false);
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
     const userAnswerProps = {};
@@ -289,7 +290,11 @@ class QuestionWrapper extends Component {
             </div>
           </PaperWrapper>
           {showFeedback &&
-            (multiple ? <FeedbackBottom widget={data} /> : <FeedbackRight widget={data} studentName={studentName} />)}
+            (multiple ? (
+              <FeedbackBottom widget={data} disabled={disabled} />
+            ) : (
+              <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
+            ))}
         </QuestionContainer>
       </ThemeProvider>
     );

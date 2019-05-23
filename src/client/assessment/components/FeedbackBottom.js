@@ -80,7 +80,12 @@ class FeedbackBottom extends Component {
           <ScoreContainer>
             <ScoreTitle>Score:</ScoreTitle>
             <ScoreContent>
-              <InputScore defaultValue={score} onChange={this.onChangeScore} onBlur={this.onSaveFeedback} />
+              <InputScore
+                disabled={this.props.disabled}
+                defaultValue={score}
+                onChange={this.onChangeScore}
+                onBlur={this.onSaveFeedback}
+              />
               <ScoreLine />
               <MaxScore>{maxScore}</MaxScore>
             </ScoreContent>

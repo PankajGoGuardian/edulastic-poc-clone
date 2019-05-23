@@ -1,25 +1,47 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Dropdown } from "antd";
+import { Dropdown, Icon, Button } from "antd";
 import styled from "styled-components";
 import { DragSource } from "react-dnd";
-import { darkBlue, lightBlue, lightGreen, green, white } from "@edulastic/colors";
-import assignContentIcon from "../assets/assign.svg";
-import visualizationIcon from "../assets/visualization-show.svg";
+import {
+  darkBlue,
+  lightBlue,
+  lightGreen,
+  green,
+  white,
+  mobileWidth,
+  desktopWidth,
+  extraDesktopWidth,
+  tabletWidth
+} from "@edulastic/colors";
+import Tags from "../../src/components/common/Tags";
+import { IconVisualization, IconMoreVertical, IconCheckSmall, IconLeftArrow } from "@edulastic/icons";
+import { matchAssigned } from "../util";
+import {
+  AssignmentContent,
+  CustomIcon,
+  ModuleDataName,
+  ModuleAssignedUnit,
+  AssignmentIconsHolder,
+  AssignmentIcon,
+  AssignmentButton
+} from "./CurriculumModuleRow";
 
 /**
  * @typedef Props
  * @property {function} onToggleCheck
  * @property {Object} moduleData
  * @property {boolean} checked
- * @property {function} handleContentClicked
  * @property {Component} menu
  */
 
+const IS_ASSIGNED = "ASSIGNED";
+const NOT_ASSIGNED = "ASSIGN";
+
 const itemSource = {
   beginDrag(props) {
-    const { moduleData, onBeginDrag } = props;
-    onBeginDrag({ ...moduleData });
+    const { moduleData, onBeginDrag, moduleIndex, contentIndex } = props;
+    onBeginDrag({ fromModuleIndex: moduleIndex, fromContentId: moduleData.contentId, contentIndex });
     return { moduleData };
   }
 };
@@ -35,27 +57,84 @@ function collect(connect, monitor) {
 /** @extends Component<Props> */
 class AssignmentDragItem extends Component {
   render() {
-    const { moduleData, handleAddContentMouseOver, menu } = this.props;
-    const { connectDragSource } = this.props;
+    const {
+      moduleData,
+      connectDragSource,
+      menu,
+      moreMenu,
+      mode,
+      isContentExpanded,
+      hideEditOptions,
+      assignTest,
+      status,
+      assigned
+    } = this.props;
+    const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
+
     return connectDragSource(
-      <div className="item">
-        <Assignment key={moduleData.id}>
-          <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix>
-          <span>{moduleData.name}</span>
-          <AssignmentIconsWrapper>
-            <Dropdown overlay={menu} placement="bottomCenter">
-              <AssignContent
-                data-cy="assignContentIcon"
-                onMouseOver={() => handleAddContentMouseOver(moduleData)}
-                onFocus={() => handleAddContentMouseOver(moduleData)}
-              >
-                <img src={assignContentIcon} alt="assign content" />
-              </AssignContent>
-            </Dropdown>
-            <Visualize>
-              <img src={visualizationIcon} alt="visualize " />
-            </Visualize>
-          </AssignmentIconsWrapper>
+      <div className={`item`}>
+        <Assignment
+          key={moduleData.contentId}
+          data-cy="moduleAssignment"
+          padding="14px 30px 14px 50px"
+          borderRadius="unset"
+          boxShadow="unset"
+        >
+          {/* <AssignmentPrefix>{moduleData.standards}</AssignmentPrefix> */}
+          <AssignmentContent expanded={isContentExpanded}>
+            {/* <Checkbox
+              onChange={() => toggleUnitItem(moduleData.id)}
+              checked={checkedUnitItems.indexOf(moduleData.id) !== -1}
+              className="module-checkbox"
+            /> */}
+            <CustomIcon marginLeft={16}>
+              <Icon type="right" style={{ color: "#707070" }} />
+            </CustomIcon>
+            <ModuleDataName>{moduleData.contentTitle}</ModuleDataName>
+          </AssignmentContent>
+          {!hideEditOptions && (
+            <ModuleAssignedUnit>
+              {moduleData.assigned && !moduleData.completed && (
+                <CustomIcon>
+                  <img src={assessmentRed} alt="Module item is assigned" />
+                </CustomIcon>
+              )}
+              {moduleData.completed && (
+                <CustomIcon>
+                  <img src={assessmentGreen} alt="Module item is completed" />
+                </CustomIcon>
+              )}
+            </ModuleAssignedUnit>
+          )}
+          <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
+          <AssignmentIconsHolder>
+            <AssignmentIcon>
+              <CustomIcon>
+                <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.contentId)} />
+              </CustomIcon>
+            </AssignmentIcon>
+            {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
+              <AssignmentButton assigned={isAssigned}>
+                <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
+                  {isAssigned ? (
+                    <IconCheckSmall color={white} />
+                  ) : (
+                    <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
+                  )}
+                  {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
+                </Button>
+              </AssignmentButton>
+            )}
+            {(!hideEditOptions || mode === "embedded") && (
+              <AssignmentIcon>
+                <Dropdown overlay={moreMenu} trigger={["click"]}>
+                  <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
+                    <IconMoreVertical color="#1774F0" />
+                  </CustomIcon>
+                </Dropdown>
+              </AssignmentIcon>
+            )}
+          </AssignmentIconsHolder>
         </Assignment>
       </div>
     );
@@ -63,7 +142,6 @@ class AssignmentDragItem extends Component {
 }
 AssignmentDragItem.propTypes = {
   moduleData: PropTypes.object.isRequired,
-  handleAddContentMouseOver: PropTypes.func.isRequired,
   menu: PropTypes.any.isRequired,
   connectDragSource: PropTypes.any.isRequired
 };
@@ -76,13 +154,6 @@ const AssignContent = styled.div`
   justify-self: flex-end;
   min-width: 19px;
   cursor: pointer;
-`;
-
-const AssignmentIconsWrapper = styled.div`
-  margin-left: auto;
-  justify-self: flex-end;
-  padding-right: 0;
-  display: inline-flex;
 `;
 
 const Visualize = styled.span`
@@ -143,18 +214,4 @@ const ModulesAssigned = styled.div`
   text-transform: uppercase;
   margin-left: auto;
   justify-self: flex-end;
-`;
-
-const AssignmentPrefix = styled(ModulesAssigned)`
-  font-size: 10px;
-  font-weight: 700;
-  min-width: 80px;
-  justify-content: center;
-  background-color: ${lightGreen};
-  justify-self: flex-start;
-  margin-left: 0;
-  margin-right: 20px;
-  color: ${green};
-  border-radius: 4px;
-  line-height: 2.4;
 `;

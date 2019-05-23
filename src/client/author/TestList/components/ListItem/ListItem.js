@@ -31,6 +31,7 @@ import {
   AddButton
 } from "./styled";
 import ViewModal from "../ViewModal";
+import { TestStatus } from "../../../TestPage/components/TestPageHeader/styled";
 
 class ListItem extends Component {
   static propTypes = {
@@ -53,8 +54,10 @@ class ListItem extends Component {
   };
 
   moveToItem = () => {
-    const { history, item, match } = this.props;
-    history.push(`${match.url}/${item._id}`);
+    const { history, item, match, mode } = this.props;
+    if (mode !== "embedded") {
+      history.push(`${match.url}/${item._id}`);
+    }
   };
 
   duplicate = async () => {
@@ -78,7 +81,7 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics, tags = [], _source },
+      item: { title, analytics, tags = [], _source, status: testStatus },
       item,
       authorName,
       owner = false,
@@ -86,6 +89,7 @@ class ListItem extends Component {
       windowWidth,
       isPlaylist,
       isTestAdded,
+      mode,
       removeTestFromPlaylist,
       addTestToPlaylist,
       likes = analytics ? analytics[0].likes : "0",
@@ -127,6 +131,7 @@ class ListItem extends Component {
                   <StyledLink title={title} onClick={this.moveToItem}>
                     {isPlaylist ? _source.title : title}
                   </StyledLink>
+                  {mode && <TestStatus mode={"embedded"}>{testStatus}</TestStatus>}
                 </div>
                 <Description onClick={isPlaylist ? this.moveToItem : ""}>
                   {isPlaylist

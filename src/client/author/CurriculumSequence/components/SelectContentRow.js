@@ -69,13 +69,13 @@ class ModuleRow extends Component {
       checkedUnitItems,
       onBeginDrag
     } = this.props;
-    const { data, name } = module;
+    const { data, title } = module;
 
     const menu = (
       <Menu data-cy="addContentMenu">
         {destinationCurriculum.modules.map(moduleItem => (
           <Menu.Item data-cy="addContentMenuItem" onClick={() => handleAddContentClick(moduleItem)}>
-            <span>{moduleItem.name}</span>
+            <span>{moduleItem.title}</span>
           </Menu.Item>
         ))}
         <Menu.Item data-cy="addContentMenuItemAssignNow" onClick={handleAddContentNowClick}>
@@ -89,7 +89,7 @@ class ModuleRow extends Component {
         <Container>
           <Module>
             <ModuleHeader collapsed={collapsed}>
-              <span>{name}</span>
+              <span>{title}</span>
               <UnitIcon
                 data-cy="expandCollapseContentUnit"
                 onClick={this.handleUnitExpandCollapse}

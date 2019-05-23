@@ -101,7 +101,7 @@ export const getCurrentAssignmentSelector = createSelector(
 function* saveAssignment({ payload }) {
   try {
     let testIds;
-    if (!payload.playlistModuleId) {
+    if (!payload.playlistModuleId && !playlistId) {
       testIds = [yield select(getTestIdSelector)];
     } else {
       const playlist = yield select(getPlaylistEntitySelector);

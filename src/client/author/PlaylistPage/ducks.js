@@ -48,6 +48,7 @@ export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
 export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
 export const REMOVE_TEST_FROM_MODULE = "[playlist] remove test from module";
 export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from playlist";
+export const MOVE_CONTENT = "[playlist] move content in playlist";
 // actions
 
 export const receivePlaylistByIdAction = id => ({
@@ -129,7 +130,7 @@ export const createTestInModuleAction = createAction(ADD_TEST_IN_PLAYLIST);
 export const setUserCustomizeAction = createAction(SET_USER_CUSTOMIZE);
 export const removeTestFromModuleAction = createAction(REMOVE_TEST_FROM_MODULE);
 export const removeTestFromPlaylistAction = createAction(REMOVE_TEST_FROM_PLAYLIST);
-
+export const moveContentInPlaylistAction = createAction(MOVE_CONTENT);
 // reducer
 
 const initialPlaylistState = {
@@ -199,6 +200,33 @@ const removeTestFromPlaylist = (playlist, payload) => {
   return newPlaylist;
 };
 
+const moveContentInPlaylist = (playlist, payload) => {
+  const { toModuleIndex, toContentIndex, fromModuleIndex, fromContentIndex } = payload;
+  let newPlaylist;
+  if (!toContentIndex) {
+    newPlaylist = produce(playlist, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.push(draft.modules[fromModuleIndex].data[fromContentIndex]);
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  } else {
+    newPlaylist = produce(playlist, draft => {
+      if (toModuleIndex != 0 && !toModuleIndex) {
+        return message.error("Invalid module selected");
+      }
+      draft.modules[toModuleIndex].data.splice(
+        toContentIndex,
+        0,
+        draft.modules[fromModuleIndex].data[fromContentIndex]
+      );
+      draft.modules[fromModuleIndex].data.splice(fromContentIndex, 1);
+    });
+  }
+  return newPlaylist;
+};
+
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case ADD_MODULE: {
@@ -214,6 +242,10 @@ export const reducer = (state = initialState, { type, payload }) => {
     }
     case REMOVE_TEST_FROM_MODULE: {
       const newEntity = removeTestFromPlaylist(state.entity, payload);
+      return { ...state, entity: newEntity };
+    }
+    case MOVE_CONTENT: {
+      const newEntity = moveContentInPlaylist(state.entity, payload);
       return { ...state, entity: newEntity };
     }
     case REMOVE_TEST_FROM_PLAYLIST: {
@@ -539,7 +571,7 @@ export const getTestsLoadingSelector = createSelector(
 
 export const getUserCustomizeSelector = createSelector(
   stateSelector,
-  state => get(state, "customize", true)
+  state => get(state.entity, "customize", true)
 );
 
 export const getUserListSelector = createSelector(

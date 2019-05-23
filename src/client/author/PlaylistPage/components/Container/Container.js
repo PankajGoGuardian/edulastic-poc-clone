@@ -22,7 +22,8 @@ import {
   publishTestAction,
   getTestStatusSelector,
   createNewModuleAction,
-  setRegradeOldIdAction
+  setRegradeOldIdAction,
+  moveContentInPlaylistAction
 } from "../../ducks";
 import {
   getSelectedItemSelector,
@@ -37,7 +38,6 @@ import SourceModal from "../../../QuestionEditor/components/SourceModal/SourceMo
 import ShareModal from "../../../src/components/common/ShareModal";
 import CurriculumSequence from "../../../CurriculumSequence/components/CurriculumSequence";
 import Summary from "../../../TestPage/components/Summary";
-import Assign from "../../../TestPage/components/Assign";
 import Setting from "../Settings";
 import TestList from "../../../TestList";
 
@@ -176,6 +176,20 @@ class Container extends PureComponent {
     }
   };
 
+  onBeginDrag = ({ fromModuleIndex, fromContentId, contentIndex }) => {
+    this.setState({
+      fromModuleIndex,
+      fromContentId,
+      fromContentIndex: contentIndex
+    });
+  };
+
+  onDrop = toModuleIndex => {
+    const { fromModuleIndex, fromContentId, fromContentIndex } = this.state;
+    const { moveContentInPlaylist } = this.props;
+    moveContentInPlaylist({ fromContentId, fromModuleIndex, toModuleIndex, fromContentIndex });
+  };
+
   renderContent = () => {
     const { playlist, setData, rows, isTestLoading, match, history } = this.props;
     if (isTestLoading) {
@@ -240,6 +254,8 @@ class Container extends PureComponent {
             onCollapseExpand={this.collapseExpandModule}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            onBeginDrag={this.onBeginDrag}
+            onDrop={this.onDrop}
             current={current}
           />
         );
@@ -376,6 +392,7 @@ const enhance = compose(
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,
       addNewModuleToPlaylist: createNewModuleAction,
+      moveContentInPlaylist: moveContentInPlaylistAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )

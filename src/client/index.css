@@ -485,6 +485,15 @@ button.ql-insertDropdown span {
   border: 2px dotted rgb(0, 0, 0);
 }
 
+button.ql-insertInput {
+  min-width: 88px;
+}
+
+button.ql-insertInput span {
+  padding: 0px 4px;
+  border: 2px dotted rgb(0, 0, 0);
+}
+
 .ql-picker.ql-table .ql-picker-label::before {
   content: "TABLE";
 }
@@ -803,17 +812,20 @@ input[type="checkbox"] {
 }
 
 .ql-editor .text-dropdown-btn,
+.ql-editor .text-input-btn,
 .ql-editor .response-btn {
   display: inline-flex !important;
   margin: 5px !important;
 }
 
 .ql-editor .text-dropdown-btn .dropdown-text,
+.ql-editor .text-input-btn .input-text,
 .ql-editor .response-btn .text {
   padding: 0px 8px;
 }
 
 .ql-editor .text-dropdown-btn .dropdown-index,
+.ql-editor .text-input-btn .text-input-index,
 .ql-editor .response-btn .index {
   padding: 0px 8px;
 }
@@ -854,6 +866,35 @@ input[type="checkbox"] {
 }
 
 .ql-editor .text-dropdown-btn:hover .dropdown-index {
+  background: #12a6e8;
+  color: white;
+}
+
+.ql-editor .text-input-btn {
+  border: 1px #777 solid;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.ql-editor .text-input-btn .text-input-index {
+  background: #d3d3d3;
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+
+.ql-editor .text-input-btn .input-text {
+  background: #e5e5e5;
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.ql-editor .text-input-btn:hover .input-text {
+  color: #12a6e8;
+}
+
+.ql-editor .text-input-btn:hover .text-input-index {
   background: #12a6e8;
   color: white;
 }

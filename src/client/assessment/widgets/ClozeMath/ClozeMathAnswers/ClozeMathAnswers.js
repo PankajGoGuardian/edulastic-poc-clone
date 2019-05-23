@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, set } from "lodash";
 import { math } from "@edulastic/constants";
 
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
+import DropDownAnswer from "./ClozeDropDownAnswer";
 import withPoints from "../../../components/HOC/withPoints";
 import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
 
@@ -95,6 +96,12 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     setQuestionData(newItem);
   };
 
+  const _updateCorrectAnswers = ({ value, dropIndex }) => {
+    const newItem = cloneDeep(item);
+    set(newItem, `validation.valid_dropdown.value[${dropIndex}].value`, value);
+    setQuestionData(newItem);
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -107,15 +114,22 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     >
       <CorrectAnswerContainer>
         {correctTab === 0 && (
-          <MathFormulaWithPoints
-            item={item}
-            onChange={_changeCorrectMethod}
-            onAdd={_addCorrectMethod}
-            onDelete={_deleteCorrectMethod}
-            answer={item.validation.valid_response.value}
-            points={item.validation.valid_response.score}
-            onChangePoints={_changeCorrectPoints}
-          />
+          <>
+            <MathFormulaWithPoints
+              item={item}
+              onChange={_changeCorrectMethod}
+              onAdd={_addCorrectMethod}
+              onDelete={_deleteCorrectMethod}
+              answer={item.validation.valid_response.value}
+              points={item.validation.valid_response.score}
+              onChangePoints={_changeCorrectPoints}
+            />
+            <DropDownAnswer
+              item={item}
+              onChange={_updateCorrectAnswers}
+              answer={item.validation.valid_dropdown.value}
+            />
+          </>
         )}
         {item.validation.alt_responses &&
           !!item.validation.alt_responses.length &&

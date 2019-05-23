@@ -18,10 +18,15 @@ const initialMethod = {
   value: "",
   options: {}
 };
+const initialDropdownMethod = {
+  value: "",
+  option: 0
+};
 
 class Template extends Component {
   componentDidMount = () => {
     const { fillSections, t, item } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
     if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop);
@@ -43,13 +48,25 @@ class Template extends Component {
         return response || cloneDeep(newArray);
       });
 
-    const _updateTemplate = (val, responseIndexes) => {
+    const _reduceDropDowns = (dropDownIndexes = [], value) =>
+      dropDownIndexes.map((nextIndex, optionIndex) => {
+        const newValue = { ...initialDropdownMethod, option: optionIndex };
+        const response = value.find((_, i) => nextIndex === i + 1);
+        return response || cloneDeep(newValue);
+      });
+
+    const _updateTemplate = (val, responseIndexes, dropDownIndexes) => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
         draft.validation.valid_response.value = _reduceResponseButtons(
           responseIndexes,
           draft.validation.valid_response.value
+        );
+
+        draft.validation.valid_dropdown.value = _reduceDropDowns(
+          dropDownIndexes,
+          draft.validation.valid_dropdown.value
         );
 
         if (Array.isArray(draft.validation.alt_responses)) {
@@ -79,6 +96,7 @@ class Template extends Component {
           onChange={_updateTemplate}
           showResponseBtn
           showDropdownBtn
+          showTextInputBtn
           value={item.template}
           data-cy="templateBox"
         />

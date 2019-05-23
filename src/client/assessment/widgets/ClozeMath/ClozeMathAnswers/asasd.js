@@ -1,13 +1,12 @@
 /* global $ */
 import React, { useEffect, useRef, useState } from "react";
-import { Select, Input } from "antd";
+import { Select } from "antd";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
-import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
+import { MathKeyboard, WithResources, Stimulus, WithMathFormula } from "@edulastic/common";
 import { black } from "@edulastic/colors";
-
 import { SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
@@ -88,30 +87,30 @@ const ClozeMathPreview = ({
   const replaceResponseButtons = () => {
     const MQ = window.MathQuill.getInterface(2);
     if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
-    $($(wrappedRef.current).find(".ql-editor")[0])
-      .find(".mathField")
-      // eslint-disable-next-line func-names
-      .each(function(index) {
-        const mQuill = MQ.StaticMath($(this).get(0));
-        $(this).on("click", () => {
-          setShowKeyboard(true);
-          setCurrentMathQuill(mQuill);
-        });
+    // $($(wrappedRef.current).find(".ql-editor")[0])
+    //   .find(".mathField")
+    //   // eslint-disable-next-line func-names
+    //   .each(function(index) {
+    //     const mQuill = MQ.StaticMath($(this).get(0));
+    //     $(this).on("click", () => {
+    //       setShowKeyboard(true);
+    //       setCurrentMathQuill(mQuill);
+    //     });
 
-        // if (userAnswer[index]) {
-        //   mQuill.innerFields[0].write(userAnswer[index]);
-        // }
+    //     // if (userAnswer[index]) {
+    //     //   mQuill.innerFields[0].write(userAnswer[index]);
+    //     // }
 
-        mQuill.innerFields[0].config({
-          handlers: {
-            edit(editingMathField) {
-              const newAnswers = cloneDeep(userAnswer);
-              newAnswers[index] = editingMathField.latex();
-              saveAnswer(newAnswers);
-            }
-          }
-        });
-      });
+    //     mQuill.innerFields[0].config({
+    //       handlers: {
+    //         edit(editingMathField) {
+    //           const newAnswers = cloneDeep(userAnswer);
+    //           newAnswers[index] = editingMathField.latex();
+    //           saveAnswer(newAnswers);
+    //         }
+    //       }
+    //     });
+    //   });
   };
 
   const detectLatexes = () => {
@@ -188,9 +187,9 @@ const ClozeMathPreview = ({
     }
   }, [template]);
 
-  useEffect(() => {
-    detectLatexes();
-  }, [template]);
+  // useEffect(() => {
+  //   detectLatexes();
+  // }, [template]);
 
   useEffect(() => {
     convertLatexesToMathHtmls();
@@ -200,17 +199,18 @@ const ClozeMathPreview = ({
     generateNewHtml();
   }, [mathHtmls]);
 
-  useEffect(() => {
-    if (window.MathQuill) replaceResponseButtons();
-  }, [newInnerHtml, userAnswer, wrappedRef.current]);
+  // useEffect(() => {
+  //   if (window.MathQuill) replaceResponseButtons();
+  // }, [newInnerHtml, userAnswer, wrappedRef.current]);
 
-  useEffect(() => {
-    document.addEventListener("mousedown", _clickOutside);
-    return () => {
-      document.removeEventListener("mousedown", _clickOutside);
-    };
-  }, []);
+  // useEffect(() => {
+  //   document.addEventListener("mousedown", _clickOutside);
+  //   return () => {
+  //     document.removeEventListener("mousedown", _clickOutside);
+  //   };
+  // }, []);
 
+  //! df
   useEffect(() => {
     if (!window.MathQuill) return;
     const MQ = window.MathQuill.getInterface(2);
@@ -253,89 +253,106 @@ const ClozeMathPreview = ({
       });
   }, [type, wrappedRef.current]);
 
-  useEffect(() => {
-    if (type === CHECK) {
-      if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
-      $($(wrappedRef.current).find(".ql-editor")[0])
-        .find(".mathField")
-        // eslint-disable-next-line func-names
-        .each(function(index) {
-          $(this)
-            .find(".icon-wrapper")
-            .remove();
-          if (typeof evaluation[index] !== "undefined") {
-            if (evaluation[index]) {
-              $(this).addClass("success");
-              $(this).append(
-                $(`
-                <div class="icon-wrapper success">
-                  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.947 11.71" fill="#5EB500">
-                    <g transform="translate(0.001 -67.998)">
-                      <g transform="translate(0 67.997)">
-                        <path
-                          d="M15.712,68.231a.8.8,0,0,0-1.128,0L5.032,77.784,1.361,74.112A.8.8,0,1,0,.233,75.239l4.236,4.236a.8.8,0,0,0,1.128,0L15.712,69.359A.8.8,0,0,0,15.712,68.231Z"
-                          transform="translate(0 -67.997)"
-                        />
-                      </g>
-                    </g>
-                  </SVG>
-                </div>
-              `)
-              );
-              $(this).removeClass("wrong");
-              $(this).removeClass("check");
-            } else {
-              $(this).addClass("wrong");
-              $(this).append(
-                $(`
-                <div class="icon-wrapper wrong">
-                  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635" fill="#DD2E44">
-                    <g transform="translate(0 0)">
-                      <g transform="translate(0 0)">
-                        <path
-                          d="M9.5-37.189l5.791-5.791a1.182,1.182,0,0,0,0-1.673,1.182,1.182,0,0,0-1.673,0L7.825-38.862,2.034-44.653a1.182,1.182,0,0,0-1.673,0,1.183,1.183,0,0,0,0,1.673l5.791,5.791-5.8,5.8a1.182,1.182,0,0,0,0,1.673,1.178,1.178,0,0,0,.837.347,1.178,1.178,0,0,0,.836-.347l5.8-5.8,5.791,5.791a1.181,1.181,0,0,0,.837.347,1.18,1.18,0,0,0,.836-.347,1.182,1.182,0,0,0,0-1.673Z"
-                          transform="translate(-0.001 45)"
-                        />
-                      </g>
-                    </g>
-                  </SVG>
-                </div>
-              `)
-              );
-              $(this).removeClass("success");
-              $(this).removeClass("check");
-            }
-          } else {
-            $(this).addClass("check");
-            $(this).addClass("wrong");
-            $(this).append(
-              $(`
-              <div class="icon-wrapper wrong">
-                <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635" fill="#DD2E44">
-                  <g transform="translate(0 0)">
-                    <g transform="translate(0 0)">
-                      <path
-                        d="M9.5-37.189l5.791-5.791a1.182,1.182,0,0,0,0-1.673,1.182,1.182,0,0,0-1.673,0L7.825-38.862,2.034-44.653a1.182,1.182,0,0,0-1.673,0,1.183,1.183,0,0,0,0,1.673l5.791,5.791-5.8,5.8a1.182,1.182,0,0,0,0,1.673,1.178,1.178,0,0,0,.837.347,1.178,1.178,0,0,0,.836-.347l5.8-5.8,5.791,5.791a1.181,1.181,0,0,0,.837.347,1.18,1.18,0,0,0,.836-.347,1.182,1.182,0,0,0,0-1.673Z"
-                        transform="translate(-0.001 45)"
-                      />
-                    </g>
-                  </g>
-                </SVG>
-              </div>
-            `)
-            );
-            $(this).removeClass("success");
-          }
+  // useEffect(() => {
+  //   if (type === CHECK) {
+  //     if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
+  //     $($(wrappedRef.current).find(".ql-editor")[0])
+  //       .find(".mathField")
+  //       // eslint-disable-next-line func-names
+  //       .each(function(index) {
+  //         $(this)
+  //           .find(".icon-wrapper")
+  //           .remove();
+  //         if (typeof evaluation[index] !== "undefined") {
+  //           if (evaluation[index]) {
+  //             $(this).addClass("success");
+  //             $(this).append(
+  //               $(`
+  //               <div class="icon-wrapper success">
+  //                 <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.947 11.71" fill="#5EB500">
+  //                   <g transform="translate(0.001 -67.998)">
+  //                     <g transform="translate(0 67.997)">
+  //                       <path
+  //                         d="M15.712,68.231a.8.8,0,0,0-1.128,0L5.032,77.784,1.361,74.112A.8.8,0,1,0,.233,75.239l4.236,4.236a.8.8,0,0,0,1.128,0L15.712,69.359A.8.8,0,0,0,15.712,68.231Z"
+  //                         transform="translate(0 -67.997)"
+  //                       />
+  //                     </g>
+  //                   </g>
+  //                 </SVG>
+  //               </div>
+  //             `)
+  //             );
+  //             $(this).removeClass("wrong");
+  //             $(this).removeClass("check");
+  //           } else {
+  //             $(this).addClass("wrong");
+  //             $(this).append(
+  //               $(`
+  //               <div class="icon-wrapper wrong">
+  //                 <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635" fill="#DD2E44">
+  //                   <g transform="translate(0 0)">
+  //                     <g transform="translate(0 0)">
+  //                       <path
+  //                         d="M9.5-37.189l5.791-5.791a1.182,1.182,0,0,0,0-1.673,1.182,1.182,0,0,0-1.673,0L7.825-38.862,2.034-44.653a1.182,1.182,0,0,0-1.673,0,1.183,1.183,0,0,0,0,1.673l5.791,5.791-5.8,5.8a1.182,1.182,0,0,0,0,1.673,1.178,1.178,0,0,0,.837.347,1.178,1.178,0,0,0,.836-.347l5.8-5.8,5.791,5.791a1.181,1.181,0,0,0,.837.347,1.18,1.18,0,0,0,.836-.347,1.182,1.182,0,0,0,0-1.673Z"
+  //                         transform="translate(-0.001 45)"
+  //                       />
+  //                     </g>
+  //                   </g>
+  //                 </SVG>
+  //               </div>
+  //             `)
+  //             );
+  //             $(this).removeClass("success");
+  //             $(this).removeClass("check");
+  //           }
+  //         } else {
+  //           $(this).addClass("check");
+  //           $(this).addClass("wrong");
+  //           $(this).append(
+  //             $(`
+  //             <div class="icon-wrapper wrong">
+  //               <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.635 15.635" fill="#DD2E44">
+  //                 <g transform="translate(0 0)">
+  //                   <g transform="translate(0 0)">
+  //                     <path
+  //                       d="M9.5-37.189l5.791-5.791a1.182,1.182,0,0,0,0-1.673,1.182,1.182,0,0,0-1.673,0L7.825-38.862,2.034-44.653a1.182,1.182,0,0,0-1.673,0,1.183,1.183,0,0,0,0,1.673l5.791,5.791-5.8,5.8a1.182,1.182,0,0,0,0,1.673,1.178,1.178,0,0,0,.837.347,1.178,1.178,0,0,0,.836-.347l5.8-5.8,5.791,5.791a1.181,1.181,0,0,0,.837.347,1.18,1.18,0,0,0,.836-.347,1.182,1.182,0,0,0,0-1.673Z"
+  //                       transform="translate(-0.001 45)"
+  //                     />
+  //                   </g>
+  //                 </g>
+  //               </SVG>
+  //             </div>
+  //           `)
+  //           );
+  //           $(this).removeClass("success");
+  //         }
 
-          $(this).attr("data-index", index + 1);
-        });
-    }
-  }, [evaluation, wrappedRef.current]);
+  //         $(this).attr("data-index", index + 1);
+  //       });
+  //   }
+  // }, [evaluation, wrappedRef.current]);
+
+  // useEffect(() => {
+  //   if (showKeyboard) {
+  //     $($(wrappedRef.current).find(".ql-editor")[0])
+  //       .find(".mathField")
+  //       // eslint-disable-next-line func-names
+  //       .each(function() {
+  //         $(this)
+  //           .find(".icon-wrapper")
+  //           .remove();
+  //         $(this).removeClass("success");
+  //         $(this).removeClass("wrong");
+  //         $(this).removeClass("check");
+  //         $(this).removeAttr("data-index");
+  //       });
+  //   }
+  // }, [showKeyboard, mathFieldRef.current]);
 
   useEffect(() => {
     getTemplateParts();
   }, [newInnerHtml]);
-
+  console.log(type, newInnerHtml);
   let dropDownOptionIndex = 0;
   return (
     <WithResources
@@ -374,14 +391,7 @@ const ClozeMathPreview = ({
                   </StyeldSelect>
                 );
               }
-              if (templatePart.indexOf('class="text-input-btn"') !== -1) {
-                return (
-                  <InputDiv>
-                    <Input />
-                  </InputDiv>
-                );
-              }
-              return <MathDiv key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
+              return <div key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
             })}
         </TemplateBox>
         {type === SHOW && <AnswerBox answers={_getAnswers()} />}
@@ -448,16 +458,6 @@ const QuestionNumber = styled.div`
   margin-right: 4px;
 `;
 
-const MathDiv = styled.div`
+const MathDiv = WithMathFormula(styled.p`
   display: inline;
-  p {
-    display: inline;
-  }
-`;
-
-const InputDiv = styled.div`
-  min-width: 80px;
-  max-width: 120px;
-  display: inline-block;
-  margin: 0px 4px;
-`;
+`);

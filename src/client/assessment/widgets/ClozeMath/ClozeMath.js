@@ -19,6 +19,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
+import ChoicesForDropDown from "./ChoicesForDropDown";
 
 const ClozeMath = ({
   view,
@@ -35,6 +36,7 @@ const ClozeMath = ({
   ...restProps
 }) => {
   const [template, setTemplate] = useState("");
+  const [dropDowns, setDropDowns] = useState(0);
 
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
@@ -63,12 +65,21 @@ const ClozeMath = ({
     return temp;
   };
 
+  const getDropdowns = tmpl => {
+    const temp = tmpl || "";
+    const dropDownParts = temp.match(/<p class="text-dropdown-btn.*?<\/p>/g);
+    const dropDownsCount = dropDownParts !== null ? dropDownParts.length : 0;
+    return dropDownsCount;
+  };
+
   useEffect(() => {
     setTemplate(replaceVariables(getPreviewTemplate(item.template)));
+    const counts = getDropdowns(item.template);
+    setDropDowns(counts);
   }, [item.template]);
 
   const itemForPreview = replaceVariables(item);
-
+  const dropDownsContainers = new Array(dropDowns).fill(true);
   return (
     <Fragment>
       {view === EDIT && (
@@ -94,6 +105,17 @@ const ClozeMath = ({
               cleanSections={cleanSections}
             />
           </Widget>
+          <Widget data-cy="text-drop-down-area">
+            {dropDownsContainers.map((_, i) => (
+              <ChoicesForDropDown
+                key={i}
+                index={i}
+                item={item}
+                fillSections={fillSections}
+                cleanSections={cleanSections}
+              />
+            ))}
+          </Widget>
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.ui_style}
@@ -114,6 +136,7 @@ const ClozeMath = ({
             type={previewTab}
             item={itemForPreview}
             template={template}
+            options={item.options || {}}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}

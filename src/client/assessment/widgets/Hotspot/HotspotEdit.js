@@ -1,32 +1,23 @@
 import "rc-color-picker/assets/index.css";
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import ColorPicker from "rc-color-picker";
-import { Row, Col } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab, Button, FlexContainer } from "@edulastic/common";
 
 import { updateVariables } from "../../utils/variables";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
-import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { EDIT } from "../../constants/constantsForQuestions";
 
-import { hexToRGB, getAlpha } from "./helpers";
-import LocalColorPickers from "./components/LocalColorPickers";
-import AreasContainer from "./AreasContainer";
 import HotspotPreview from "./HotspotPreview";
 import { StyledCheckbox } from "./styled/StyledCheckbox";
-import { IconPlus } from "./styled/IconPlus";
-import { IconClose } from "./styled/IconClose";
 
 import ComposeQuestion from "./ComposeQuestion";
 import AreasBlockTitle from "./AreasBlockTitle";
@@ -36,13 +27,9 @@ import Options from "./components/Options";
 const OptionsList = withPoints(HotspotPreview);
 
 const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSections, cleanSections }) => {
-  const { image, areas, area_attributes, multiple_responses } = item;
+  const { area_attributes, multiple_responses } = item;
 
   const [loading, setLoading] = useState(false);
-
-  const width = image ? image.width : 900;
-  const height = image ? image.height : 470;
-  const file = image ? image.source : "";
 
   const getAreaIndexes = arr => {
     const newIndexes = [];
@@ -59,65 +46,6 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
   const [customizeTab, setCustomizeTab] = useState(0);
   const [correctTab, setCorrectTab] = useState(0);
   const [selectedIndexes, setSelectedIndexes] = useState(getAreaIndexes(area_attributes.local));
-
-  const handleSelectChange = value => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.area_attributes.local[customizeTab - 1].area = value;
-
-        setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const changeHandler = prop => obj => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.area_attributes.global[prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
-      })
-    );
-  };
-
-  const onCloseAttrTab = index => e => {
-    e.stopPropagation();
-    setQuestionData(
-      produce(item, draft => {
-        draft.area_attributes.local.splice(index, 1);
-
-        setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
-
-        setCustomizeTab(0);
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleAddAttr = () => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.area_attributes.local.push({
-          area: "",
-          fill: area_attributes.global.fill,
-          stroke: area_attributes.global.stroke
-        });
-
-        setSelectedIndexes(getAreaIndexes(draft.area_attributes.local));
-
-        setCustomizeTab(draft.area_attributes.local.length);
-        updateVariables(draft);
-      })
-    );
-  };
-
-  const handleLocalColorChange = prop => obj => {
-    setQuestionData(
-      produce(item, draft => {
-        draft.area_attributes.local[customizeTab - 1][prop] = hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100);
-        updateVariables(draft);
-      })
-    );
-  };
 
   const handleCloseTab = tabIndex => {
     setQuestionData(
@@ -160,35 +88,6 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
       })
     );
     setCorrectTab(correctTab + 1);
-  };
-  const renderPlusButton = () => (
-    <Button
-      style={{
-        minWidth: 70,
-        minHeight: 25
-      }}
-      icon={<IconPlus />}
-      onClick={handleAddAttr}
-      color="primary"
-      variant="extendedFab"
-    />
-  );
-
-  const renderLabel = index => (
-    <FlexContainer>
-      <span>
-        {t("component.hotspot.local")} {index + 1}
-      </span>
-      <IconClose onClick={onCloseAttrTab(index)} />
-    </FlexContainer>
-  );
-
-  const renderAltResponses = () => {
-    if (area_attributes && area_attributes.local && area_attributes.local.length) {
-      return area_attributes.local.map((res, i) => <Tab key={i} label={renderLabel(i)} />);
-    }
-
-    return null;
   };
 
   const handlePointsChange = val => {
@@ -249,6 +148,7 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
         theme={theme}
         customizeTab={customizeTab}
         setCustomizeTab={setCustomizeTab}
+        setQuestionData={setQuestionData}
         selectedIndexes={selectedIndexes}
         setSelectedIndexes={setSelectedIndexes}
         fillSections={fillSections}

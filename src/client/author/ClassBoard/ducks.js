@@ -160,8 +160,6 @@ export const getGradeBookSelector = createSelector(
       avgScore: submittedScoresAverage,
       itemsSummary
     };
-    console.log("result", result);
-
     return result;
   }
 );

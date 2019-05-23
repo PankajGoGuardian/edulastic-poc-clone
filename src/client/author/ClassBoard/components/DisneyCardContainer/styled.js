@@ -153,7 +153,7 @@ export const StyledName = styled.div`
 
 const SquareColorDiv = styled.div`
   display: inline-block;
-  width: ${props => (props.weight ? props.weight * 23 + (props.weight - 1) : 23)}px;
+  width: ${props => ((props.weight || 1) > 1 ? 2 * 23 + 1 : 23)}px;
   height: 8px;
   margin: 1px 1px 0px 0px;
 `;

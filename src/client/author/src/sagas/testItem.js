@@ -69,83 +69,91 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers(action) {
   try {
-    let oldAnswers = yield select(state => state.answers);
-    const entityId = yield select(state => _get(state, "question.entity.data.id", null));
-    const questionOrItemId = yield select(state => _get(state, "authorQuestions.current", ""));
-    const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
+    // url path that the user is at
+    const currentPath = yield select(state => _get(state, "router.location.pathname", ""));
 
-    // We need to know what level the user is at (question vs item),
-    // currentQuestionId is used later for this purpose
-    let currentQuestionId;
-    if (entityId && Object.keys(allQuestions).indexOf(entityId) !== -1) {
-      currentQuestionId = entityId;
-    } else if (Object.keys(allQuestions).indexOf(questionOrItemId) !== -1) {
-      currentQuestionId = questionOrItemId;
-    } else {
-      currentQuestionId = "";
-    }
+    // User is at the question level
+    if (currentPath === "/author/questions/edit") {
+      const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
 
-    // User can be at item level or at question level, this one is question level
-    if (currentQuestionId && Object.keys(oldAnswers).length) {
-      oldAnswers = Object.keys(oldAnswers)
-        .filter(oldAnswerId => {
-          if (!currentQuestionId) return true;
+      const answers = yield select(state => _get(state, "answers", []));
+      const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
 
-          if (currentQuestionId && oldAnswerId === currentQuestionId) {
-            return true;
+      // Add questions that have not been answered
+      const answeredAndUnanswered = Object.keys(allQuestions)
+        .filter(questionId => questionId === currentQuestionId)
+        .reduce((acc, questionId) => {
+          if (answers[questionId]) {
+            acc[questionId] = answers[questionId];
+          } else {
+            acc[questionId] = [];
           }
 
-          return false;
-        })
-        .reduce((acc, currentId) => {
-          acc[currentId] = oldAnswers[currentId];
           return acc;
         }, {});
+
+      if (!answers[currentQuestionId]) {
+        yield put({
+          type: SET_ANSWER,
+          payload: {
+            id: currentQuestionId,
+            data: []
+          }
+        });
+      }
+      const questions = yield select(getQuestionsSelector);
+      const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, questions);
+      yield put({
+        type: ADD_ITEM_EVALUATION,
+        payload: {
+          ...evaluation
+        }
+      });
+      message.config({
+        maxCount: 1
+      });
+      const previewMode = yield select(state => _get(state, "view.preview", null));
+      if (previewMode === CHECK) {
+        message.success(`score: ${score}/${maxScore}`);
+      }
     }
 
-    // We need all questions, not that user has answered,
-    // we also need them filtered to the current question
-    // that user is in.
-    let answeredAndUnanswered = Object.keys(allQuestions)
-      .filter(answerId => {
-        if (!currentQuestionId) return true;
+    // User is at the item level
+    if (currentPath.indexOf("item-detail") !== -1) {
+      const oldAnswers = yield select(state => _get(state, "answers", []));
+      const entityId = yield select(state => _get(state, "question.entity.data.id", null));
+      const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
 
-        if (currentQuestionId && answerId === currentQuestionId) {
-          return true;
-        }
-
-        return false;
-      })
-      .reduce((acc, currentId) => {
+      const answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, currentId) => {
         acc[currentId] = [];
         return acc;
       }, {});
+      const _answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
 
-    answeredAndUnanswered = { ...answeredAndUnanswered, ...oldAnswers };
-
-    if (!oldAnswers[entityId]) {
+      if (!oldAnswers[entityId]) {
+        yield put({
+          type: SET_ANSWER,
+          payload: {
+            id: entityId,
+            data: []
+          }
+        });
+      }
+      const questions = yield select(getQuestionsSelector);
+      const { evaluation, score, maxScore } = yield evaluateItem(_answeredAndUnanswered, questions);
       yield put({
-        type: SET_ANSWER,
+        type: ADD_ITEM_EVALUATION,
         payload: {
-          id: entityId,
-          data: []
+          ...evaluation
         }
       });
-    }
-    const validations = yield select(getQuestionsSelector);
-    const { evaluation, score, maxScore } = yield evaluateItem(answeredAndUnanswered, validations);
-    yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluation
+      message.config({
+        maxCount: 1
+      });
+      const previewMode = yield select(state => _get(state, "view.preview", null));
+      if (previewMode === CHECK) {
+        message.success(`score: ${score}/${maxScore}`);
       }
-    });
-    message.config({
-      maxCount: 1
-    });
-    const previewMode = yield select(state => _get(state, "view.preview", null));
-    if (previewMode === CHECK) {
-      message.success(`score: ${score}/${maxScore}`);
     }
   } catch (err) {
     console.error(err);

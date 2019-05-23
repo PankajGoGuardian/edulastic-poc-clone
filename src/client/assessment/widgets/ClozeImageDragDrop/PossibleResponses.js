@@ -77,8 +77,23 @@ class PossibleResponses extends Component {
 
   editOptions = (index, value) => {
     const { item, setQuestionData } = this.props;
+
     setQuestionData(
       produce(item, draft => {
+        draft.validation.valid_response.value.forEach(arr => {
+          if (arr.includes(draft.options[index])) {
+            arr.splice(arr.indexOf(draft.options[index]), 1);
+          }
+        });
+
+        draft.validation.alt_responses.forEach(overArr => {
+          overArr.value.forEach(arr => {
+            if (arr.includes(draft.options[index])) {
+              arr.splice(arr.indexOf(draft.options[index]), 1);
+            }
+          });
+        });
+
         draft.options[index] = value;
         updateVariables(draft);
       })

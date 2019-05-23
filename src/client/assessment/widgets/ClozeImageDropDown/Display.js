@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { shuffle } from "lodash";
 import { withTheme } from "styled-components";
 
-import MapImage from "../../assets/map.svg";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
@@ -192,7 +191,7 @@ class Display extends Component {
         responseContainers={responseContainers}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
-        imageUrl={imageUrl || MapImage}
+        imageUrl={imageUrl || ""}
         imageWidth={imageWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}

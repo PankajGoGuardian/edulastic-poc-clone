@@ -3,8 +3,6 @@ import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { helpers } from "@edulastic/common";
 
-import MapImage from "../../assets/map.svg";
-
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
@@ -155,7 +153,7 @@ class Display extends Component {
       <CheckboxTemplateBoxLayout
         responseContainers={responseContainers}
         responseBtnStyle={responseBtnStyle}
-        imageUrl={imageUrl || MapImage}
+        imageUrl={imageUrl || ""}
         imageWidth={width}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}

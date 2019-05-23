@@ -177,7 +177,7 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          width: imageWidth || "fit-content",
+          width: imageWidth || "100%",
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
           overflowY: smallSize && "hidden"

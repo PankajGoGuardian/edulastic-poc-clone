@@ -73,7 +73,7 @@ function* evaluateAnswers(action) {
     const currentPath = yield select(state => _get(state, "router.location.pathname", ""));
 
     // User is at the question level
-    if (currentPath === "/author/questions/edit") {
+    if (["/author/questions/edit", "/author/questions/create"].includes(currentPath)) {
       const currentQuestionId = yield select(state => _get(state, "authorQuestions.current", ""));
 
       const answers = yield select(state => _get(state, "answers", []));
@@ -109,6 +109,7 @@ function* evaluateAnswers(action) {
           ...evaluation
         }
       });
+
       message.config({
         maxCount: 1
       });

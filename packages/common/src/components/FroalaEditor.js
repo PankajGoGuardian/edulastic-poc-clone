@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-
+import { message } from "antd";
+import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "font-awesome/css/font-awesome.css";
-
 import Editor from "react-froala-wysiwyg";
-
+import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 import { withMathFormula } from "../HOC/withMathFormula";
 
@@ -64,6 +64,7 @@ const NoneDiv = styled.div`
 
 const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
   const mathFieldRef = useRef(null);
+
   const [showMathModal, setMathModal] = useState(false);
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
@@ -82,11 +83,12 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
         "undo",
         "redo",
         "math",
-        "insertImage"
+        "insertImage",
+        "html"
       ],
-
       tableResizerOffset: 10,
       tableResizingLimit: 50,
+
       events: {
         click: evt => {
           const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
@@ -99,9 +101,22 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
             setCurrentMathEl(null);
           }
         },
-        keyup: evt => {
-          // Add deletion logic here.
-          // console.log("evt: ", evt);
+        "image.beforeUpload": function(image) {
+          this.image.showProgressBar();
+          // TODO: pass folder as props
+          uploadToS3(image[0], aws.s3Folders.COURSE)
+            .then(result => {
+              this.image.insert(result);
+            })
+            .catch(e => {
+              this.popups.hideAll();
+              message.error("image upload failed");
+            });
+
+          return false;
+        },
+        "image.error": function(err) {
+          console.log("upload err", err);
         }
       }
     },

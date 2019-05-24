@@ -34,9 +34,9 @@ export const getPerformanceBandList = createSelector(
   state => {
     if (state.data == null) {
       return [
-        { name: "Proficient", aboveOrAtStandard: true, from: 100, to: 60, key: 0 },
-        { name: "Basic", aboveOrAtStandard: true, from: 60, to: 40, key: 1 },
-        { name: "Below Basic", aboveOrAtStandard: false, from: 40, to: 0, key: 2 }
+        { name: "Proficient", aboveOrAtStandard: true, from: 100, to: 70, key: 0 },
+        { name: "Basic", aboveOrAtStandard: true, from: 70, to: 50, key: 1 },
+        { name: "Below Basic", aboveOrAtStandard: true, from: 50, to: 0, key: 2 }
       ];
     } else if (state.data.hasOwnProperty("performanceBand")) {
       return state.data.performanceBand;

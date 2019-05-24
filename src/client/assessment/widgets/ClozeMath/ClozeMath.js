@@ -172,7 +172,8 @@ ClozeMath.defaultProps = {
   item: {},
   evaluation: [],
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  advancedAreOpen: false
 };
 
 const enhance = compose(

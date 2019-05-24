@@ -1,40 +1,32 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Tabs } from "antd";
 import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
-const { TabPane } = Tabs;
 const AnswerBox = ({ mathAnswers, dropdownAnswers, textInputAnswers }) => (
   <Wrapper>
-    <Title>Correct answers</Title>
-    <Tabs type="card">
-      <TabPane tab="Math Expression" key="1">
-        {mathAnswers.map((answer, index) => (
-          <Answer key={index}>
-            <Label>{index + 1}</Label>
-            <AnswerBoxText>{answer}</AnswerBoxText>
-          </Answer>
-        ))}
-      </TabPane>
-      <TabPane tab="Text Dropdowns" key="2">
-        {dropdownAnswers.map((answer, index) => (
-          <Answer key={index}>
-            <Label>{index + 1}</Label>
-            <AnswerBoxText>{answer}</AnswerBoxText>
-          </Answer>
-        ))}
-      </TabPane>
-      <TabPane tab="Text Input" key="3">
-        {textInputAnswers.map((answer, index) => (
-          <Answer key={index}>
-            <Label>{index + 1}</Label>
-            <AnswerBoxText>{answer}</AnswerBoxText>
-          </Answer>
-        ))}
-      </TabPane>
-    </Tabs>
+    <Title>Correct answers math field</Title>
+    {mathAnswers.map((answer, index) => (
+      <Answer key={index}>
+        <Label>{index + 1}</Label>
+        <AnswerBoxText>{answer}</AnswerBoxText>
+      </Answer>
+    ))}
+    <Title>Correct answers dropdown field</Title>
+    {dropdownAnswers.map((answer, index) => (
+      <Answer key={index}>
+        <Label>{index + 1}</Label>
+        <AnswerBoxText>{answer}</AnswerBoxText>
+      </Answer>
+    ))}
+    <Title>Correct answers input field</Title>
+    {textInputAnswers.map((answer, index) => (
+      <Answer key={index}>
+        <Label>{index + 1}</Label>
+        <AnswerBoxText>{answer}</AnswerBoxText>
+      </Answer>
+    ))}
   </Wrapper>
 );
 
@@ -49,7 +41,7 @@ export default AnswerBox;
 const Wrapper = styled.div`
   background: #eeeeef;
   border-radius: 10px;
-  padding: 24px;
+  padding: 8px 24px 24px;
   margin-top: 16px;
 
   .ant-tabs-bar {
@@ -61,15 +53,12 @@ const Title = styled.div`
   text-transform: uppercase;
   font-size: 16px;
   margin-bottom: 10px;
+  margin-top: 16px;
 `;
 
 const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
-
-  :last-child {
-    margin-right: 0;
-  }
 `;
 
 const Label = styled.div`

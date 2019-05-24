@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -17,6 +17,11 @@ import { Widget } from "../../../../styled/Widget";
 import { Subtitle } from "../../../../styled/Subtitle";
 
 class Layout extends Component {
+  state = {
+    focused: null,
+    input: 0
+  };
+
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
@@ -141,10 +146,24 @@ class Layout extends Component {
             <Label>{t("component.options.widthpx")}</Label>
             <TextField
               type="number"
+              ref={ref => {
+                this.widthInput = ref;
+              }}
               disabled={false}
               containerStyle={{ width: 350 }}
-              onChange={e => changeUiStyle("widthpx", +e.target.value)}
-              value={uiStyle.widthpx}
+              onFocus={() => this.setState({ focused: this.widthInput, input: uiStyle.widthpx })}
+              onBlur={() => {
+                const { input } = this.state;
+                changeUiStyle("widthpx", input >= 140 && input <= 400 ? input : input < 140 ? 140 : 400);
+                this.setState({ input: 0, focused: null });
+              }}
+              onChange={e =>
+                this.setState({
+                  input: +e.target.value
+                })
+              }
+              // eslint-disable-next-line react/destructuring-assignment
+              value={isEqual(this.widthInput, this.state.focused) ? this.state.input || 0 : uiStyle.widthpx}
             />
           </Col>
           <Col md={6}>
@@ -185,10 +204,38 @@ class Layout extends Component {
                 <Label>{t("component.options.widthpx")}</Label>
                 <TextField
                   type="number"
+                  ref={ref => {
+                    this[`individualWidth${index}`] = ref;
+                  }}
                   disabled={false}
                   containerStyle={{ width: 350 }}
-                  onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                  value={responsecontainerindividual.widthpx}
+                  onFocus={() =>
+                    this.setState({
+                      focused: this[`individualWidth${index}`],
+                      input: responsecontainerindividual.widthpx
+                    })
+                  }
+                  onBlur={() => {
+                    const { input } = this.state;
+                    changeIndividualUiStyle(
+                      "widthpx",
+                      input >= 140 && input <= 400 ? input : input < 140 ? 140 : 400,
+                      index
+                    );
+                    this.setState({ input: 0, focused: null });
+                  }}
+                  onChange={e =>
+                    this.setState({
+                      input: +e.target.value
+                    })
+                  }
+                  value={
+                    // eslint-disable-next-line react/destructuring-assignment
+                    isEqual(this[`individualWidth${index}`], this.state.focused)
+                      ? // eslint-disable-next-line react/destructuring-assignment
+                        this.state.input || 0
+                      : responsecontainerindividual.widthpx
+                  }
                 />
               </Col>
               <Col md={6}>

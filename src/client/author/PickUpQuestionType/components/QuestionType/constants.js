@@ -972,6 +972,15 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drag & Drop",
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "",
+        ui_style: {
+          responsecontainerposition: "bottom",
+          fontsize: "normal",
+          stemnumeration: "",
+          widthpx: 140,
+          heightpx: 0,
+          wordwrap: false,
+          responsecontainerindividuals: []
+        },
         options: [
           { value: uuidsForFill[0], label: "WHISPERED" },
           { value: uuidsForFill[1], label: "HOLMES" },

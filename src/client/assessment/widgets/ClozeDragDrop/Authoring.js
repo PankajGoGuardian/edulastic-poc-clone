@@ -62,6 +62,7 @@ class Authoring extends Component {
 
   render() {
     const { item, theme, fillSections, cleanSections } = this.props;
+    console.log(item, "item");
     return (
       <div>
         <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />

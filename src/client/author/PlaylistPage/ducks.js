@@ -141,7 +141,7 @@ const initialPlaylistState = {
     _id: "",
     name: ""
   },
-  thumbnail: "https://fakeimg.pl/500x135/",
+  thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   derivedFrom: {
     name: ""
   },
@@ -154,7 +154,7 @@ const initialPlaylistState = {
   version: 1,
   tags: [],
   active: 1,
-  customize: true
+  customize: false
 };
 
 const initialState = {
@@ -510,7 +510,11 @@ function* deleteSharedUserSaga({ payload }) {
 function addModuleToPlaylist(playlist, payload) {
   const newPlaylist = produce(playlist, draft => {
     const newModule = createNewModuleState(payload.moduleName);
-    draft.modules.splice(payload.afterModuleIndex || 0, 0, newModule);
+    if (payload.afterModuleIndex !== undefined) {
+      draft.modules.splice(payload.afterModuleIndex, 0, newModule);
+    } else {
+      draft.modules.push(newModule);
+    }
     return draft;
   });
   message.success("Module Added to playlist");

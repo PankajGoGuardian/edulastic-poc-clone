@@ -68,6 +68,7 @@ class AssignmentDragItem extends Component {
       assignTest,
       status,
       moduleIndex,
+      viewTest,
       standardTags,
       assigned
     } = this.props;
@@ -112,7 +113,7 @@ class AssignmentDragItem extends Component {
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
-                <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.contentId)} />
+                <IconVisualization color="#1774F0" onClick={() => viewTest(moduleData.contentId)} />
               </CustomIcon>
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
@@ -200,6 +201,7 @@ const Assignment = styled(Row)`
   display: flex;
   align-items: center;
   border: 0;
+  cursor: grab;
   border-radius: 0;
   padding-top: 10px;
   padding-bottom: 10px;

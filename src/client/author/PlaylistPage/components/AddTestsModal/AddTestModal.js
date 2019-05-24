@@ -4,12 +4,13 @@ import { compose } from "redux";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
-import { white } from "@edulastic/colors";
+import { white, inputBorder, lightGreySecondary, blueButton } from "@edulastic/colors";
 import { Block } from "../../../TestPage/components/Setting/components/MainSetting/styled";
 
 const ModalStyles = {
   minWidth: 750,
   borderRadius: "5px",
+  "background-color": lightGreySecondary,
   padding: "30px"
 };
 
@@ -50,14 +51,12 @@ class AddTestModal extends React.Component {
         <HeadingWrapper>
           <Title>Add </Title>
         </HeadingWrapper>
-        <Block smallSize={true}>
-          {modulesList &&
-            modulesList.map(({ title }, index) => (
-              <ModuleWrapper onClick={e => this.onModuleClick(index)}>
-                <SubTitleWrapper>Module {index + 1}:</SubTitleWrapper> <TitleWrapper>{title}</TitleWrapper>
-              </ModuleWrapper>
-            ))}
-        </Block>
+        {modulesList &&
+          modulesList.map(({ title }, index) => (
+            <ModuleWrapper onClick={e => this.onModuleClick(index)}>
+              <SubTitleWrapper>Module {index + 1}:</SubTitleWrapper> <TitleWrapper>{title}</TitleWrapper>
+            </ModuleWrapper>
+          ))}
       </Modal>
     );
   }
@@ -94,12 +93,17 @@ const TitleWrapper = styled.span`
 `;
 
 const ModuleWrapper = styled.div`
-  margin-bottom: 2px;
-  border: grey solid 1px;
+  margin-bottom: 5px;
+  border: ${inputBorder} solid 1px;
   width: 100%;
-  padding: 2px;
-  border-radius: 10%;
+  padding: 15px 30px;
+  border-radius: 4px;
+  cursor: pointer;
   background-color: ${white};
+
+  :hover {
+    border: ${blueButton} solid 1px;
+  }
 `;
 
 const SubTitleWrapper = styled.span`

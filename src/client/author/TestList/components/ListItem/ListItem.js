@@ -110,7 +110,7 @@ class ListItem extends Component {
             <Col span={18}>
               <ListCard
                 title={
-                  <Header>
+                  <Header src={isPlaylist ? _source.thumbnail : undefined}>
                     <Stars size="small" />
                     <ButtonWrapper className="showHover">
                       {owner && (

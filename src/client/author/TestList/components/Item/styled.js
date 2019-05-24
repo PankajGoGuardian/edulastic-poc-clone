@@ -141,7 +141,8 @@ export const ButtonWrapper = styled.div`
 export const Header = styled.div`
   min-height: 100px;
   position: relative;
-  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
+  background: url(${props =>
+    props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
   background-repeat: no-repeat;
   background-size: cover;
   &:hover {

@@ -125,6 +125,7 @@ class Container extends PureComponent {
       });
       return;
     }
+    this.handleSave();
     this.setState({
       current: value
     });
@@ -303,7 +304,7 @@ class Container extends PureComponent {
 
   handlePublishPlaylist = () => {
     const { publishPlaylist, playlist, match } = this.props;
-    const { grades = [], subjects = [], _id } = playlist;
+    const { grades = [], subjects = [], _id, modules = [] } = playlist;
     if (!_id) {
       return message.error("Save Playlist before publishing");
     }
@@ -313,6 +314,10 @@ class Container extends PureComponent {
     if (!subjects.length) {
       return message.error("Subject field cannot be empty");
     }
+    if (!modules.length) {
+      return message.error("Add atleast 1 module");
+    }
+    this.handleSave();
     publishPlaylist({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });
   };

@@ -188,13 +188,14 @@ class ModuleRow extends Component {
                           <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                         </ModulesAssigned>
                       )}
-                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) && (
-                        <AssignModuleButton>
-                          <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                            ASSIGN MODULE
-                          </Button>
-                        </AssignModuleButton>
-                      )}
+                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) &&
+                        totalAssigned > 0 && (
+                          <AssignModuleButton>
+                            <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
+                              {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
+                            </Button>
+                          </AssignModuleButton>
+                        )}
                     </ModulesWrapper>
                   </ModuleTitleAssignedWrapper>
                 </ModuleInfo>
@@ -238,6 +239,7 @@ class ModuleRow extends Component {
                           standardTags={standardTags}
                           status={status}
                           contentIndex={index}
+                          viewTest={this.viewTest}
                           moduleIndex={moduleIndex}
                           handleDrop={dropContent}
                           onBeginDrag={onBeginDrag}

@@ -485,7 +485,7 @@ class CurriculumSequence extends Component {
                       </Button>
                     </ShareButtonStyle>
                   )}
-                  {customize && (
+                  {customize && urlHasUseThis && (
                     <SaveButtonStyle>
                       <Button
                         data-cy="saveCurriculumSequence"
@@ -495,7 +495,7 @@ class CurriculumSequence extends Component {
                       </Button>
                     </SaveButtonStyle>
                   )}
-                  {isAuthor && (
+                  {isAuthor && !urlHasUseThis && (
                     <SaveButtonStyle>
                       <Button data-cy="editCurriculumSequence" onClick={handleEditClick}>
                         <SaveButtonText>{"Edit"}</SaveButtonText>

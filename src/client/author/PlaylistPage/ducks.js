@@ -119,8 +119,8 @@ export const setRegradeSettingsDataAction = payload => ({
 });
 
 export const sendTestShareAction = createAction(TEST_SHARE);
-export const publishTestAction = createAction(PLAYLIST_PUBLISH);
-export const updateTestStatusAction = createAction(UPDATE_TEST_STATUS);
+export const publishPlaylistAction = createAction(PLAYLIST_PUBLISH);
+export const updatePlaylistStatusAction = createAction(UPDATE_TEST_STATUS);
 export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST);
 export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIST);
@@ -425,6 +425,11 @@ function* updatePlaylistSaga({ payload }) {
       "__v"
     ]);
 
+    dataToSend.modules = dataToSend.modules.map(mod => {
+      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
+      return mod;
+    });
+
     const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
 
     yield put(updateTestSuccessAction(entity));
@@ -467,8 +472,9 @@ function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
     yield call(curriculumSequencesApi.publishPlaylist, id);
-    yield put(updateTestStatusAction(playlistStatusConstants.PUBLISHED));
+    yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
+    yield put(push(`/author/playlists/${id}`));
   } catch (e) {
     const errorMessage = "publish failed";
     yield call(message.error, errorMessage);

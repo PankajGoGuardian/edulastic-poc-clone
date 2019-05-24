@@ -19,11 +19,11 @@ import {
   getTestItemsRowsSelector,
   getTestsCreatingSelector,
   getTestsLoadingSelector,
-  publishTestAction,
   getTestStatusSelector,
   createNewModuleAction,
   setRegradeOldIdAction,
-  moveContentInPlaylistAction
+  moveContentInPlaylistAction,
+  publishPlaylistAction
 } from "../../ducks";
 import {
   getSelectedItemSelector,
@@ -386,7 +386,7 @@ const enhance = compose(
       receiveTestById: receivePlaylistByIdAction,
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
-      publishPlaylist: publishTestAction,
+      publishPlaylist: publishPlaylistAction,
       clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,

@@ -222,7 +222,7 @@ class ModuleRow extends Component {
                     );
 
                     const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
-                    if ((!hideEditOptions && customize) || mode === "embedded") {
+                    if (mode === "embedded") {
                       return (
                         <AssignmentDragItem
                           key={`${index}-${moduleData.id}`}
@@ -303,7 +303,7 @@ class ModuleRow extends Component {
                                   </Button>
                                 </AssignmentButton>
                               )}
-                              {(!hideEditOptions || mode === "embedded") && (
+                              {mode === "embedded" && (
                                 <AssignmentIcon>
                                   <Dropdown overlay={moreMenu} trigger={["click"]}>
                                     <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>

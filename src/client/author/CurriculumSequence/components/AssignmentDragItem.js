@@ -67,6 +67,7 @@ class AssignmentDragItem extends Component {
       hideEditOptions,
       assignTest,
       status,
+      moduleIndex,
       standardTags,
       assigned
     } = this.props;
@@ -116,7 +117,7 @@ class AssignmentDragItem extends Component {
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
               <AssignmentButton assigned={isAssigned}>
-                <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
+                <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
                   {isAssigned ? (
                     <IconCheckSmall color={white} />
                   ) : (

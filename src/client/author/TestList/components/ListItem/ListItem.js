@@ -145,12 +145,12 @@ class ListItem extends Component {
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
                 <ViewButton onClick={this.openModal}>VIEW</ViewButton>
-                {!isTestAdded && (
+                {!isTestAdded && mode === "embedded" && (
                   <AddButton windowWidth={windowWidth} onClick={e => addTestToPlaylist(item)}>
                     ADD
                   </AddButton>
                 )}
-                {isTestAdded && (
+                {isTestAdded && mode === "embedded" && (
                   <AddButton
                     windowWidth={windowWidth}
                     isTestAdded={isTestAdded}

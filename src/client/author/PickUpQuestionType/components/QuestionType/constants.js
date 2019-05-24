@@ -1005,6 +1005,15 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         stimulus: "",
+        ui_style: {
+          responsecontainerposition: "bottom",
+          fontsize: "normal",
+          stemnumeration: "",
+          widthpx: 140,
+          heightpx: 0,
+          wordwrap: false,
+          responsecontainerindividuals: []
+        },
         options: {
           0: ["A", "B"],
           1: ["Choice A", "Choice B"]

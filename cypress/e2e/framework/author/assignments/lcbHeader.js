@@ -12,5 +12,5 @@ export default class LCBHeader {
       .first()
       .click();
 
-  clickOnStandardBasedReportTab = () => this.getStandardBasedReportTab().click();
+  clickOnStandardBasedReportTab = () => this.getStandardBasedReportTab().click({ force: true });
 }

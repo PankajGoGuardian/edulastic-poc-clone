@@ -4,8 +4,8 @@ import StudentTestPage from "../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
 import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
-import { attemptTypes } from "../../../framework/constants/questionTypes";
 import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
+import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -98,6 +98,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const expressg = new ExpressGraderPage();
+  const sbrPage = new StandardBasedReportPage();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
@@ -112,9 +113,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
-        const { attemptData } = questionData[queType][questionKey];
+        const { attemptData, standards } = questionData[queType][questionKey];
         const { points } = questionData[queType][questionKey].setAns;
-        const queMap = { queKey, points, attemptData };
+        const queMap = { queKey, points, attemptData, standards };
         questionTypeMap[`Q${index + 1}`] = queMap;
       });
     });
@@ -197,6 +198,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         const attempt = queCentric[queNumber];
         lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
       });
+    });
+  });
+
+  describe(" > verify standard based report", () => {
+    before(() => {
+      lcb.clickOnCardViewTab();
+      lcb.header.clickOnStandardBasedReportTab();
+    });
+
+    it(" > verify standard performance", () => {
+      sbrPage.verifyStandardPerformance(attemptsData, questionTypeMap);
     });
   });
 

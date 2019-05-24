@@ -1055,6 +1055,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
           scoring_type: EXACT_MATCH,

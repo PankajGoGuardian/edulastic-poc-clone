@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { SortableElement } from "react-sortable-hoc";
 import { IconTrash } from "@edulastic/icons";
-import { red, greenDark } from "@edulastic/colors";
+import { red, newBlue } from "@edulastic/colors";
 
 import { FlexContainer } from "@edulastic/common";
 import { SortableItemContainer } from "../../QuillSortableList/styled/SortableItemContainer";
@@ -29,7 +29,7 @@ const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, d
         data-cy="deleteButton"
         cIndex={cyIndex}
         onClick={onRemove}
-        color={greenDark}
+        color={newBlue}
         hoverColor={red}
         width={20}
         height={20}

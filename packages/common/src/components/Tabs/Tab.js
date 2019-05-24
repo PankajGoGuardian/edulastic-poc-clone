@@ -68,7 +68,8 @@ Tab.defaultProps = {
   },
   data_cy: "",
   type: "default",
-  borderRadius: false
+  borderRadius: false,
+  IconPosition: null
 };
 
 export default Tab;

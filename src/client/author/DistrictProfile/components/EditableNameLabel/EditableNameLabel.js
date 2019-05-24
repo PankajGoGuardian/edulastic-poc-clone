@@ -47,10 +47,10 @@ class EditableNameLabel extends React.Component {
 
     this.setState({
       editing: false,
-      value: value.toString().trim()
+      value: value.toString().replace(/\s\s+/g, " ")
     });
     const { setProfileName } = this.props;
-    setProfileName(value.toString().trim());
+    setProfileName(value.toString().replace(/\s\s+/g, " "));
   };
 
   handleChange = e => {
@@ -61,7 +61,7 @@ class EditableNameLabel extends React.Component {
       validateStatus,
       validateMsg
     });
-    this.props.setProfileName(e.target.value.toString().trim());
+    this.props.setProfileName(e.target.value.toString().replace(/\s\s+/g, " "));
   };
 
   onClickLabel = () => {

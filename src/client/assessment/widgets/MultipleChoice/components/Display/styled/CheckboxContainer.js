@@ -37,6 +37,7 @@ export const CheckboxContainer = styled.div`
       width: ${params.width}px;
       height: ${params.height}px;
       padding: ${params.padding};
+      margin: auto;
       border-radius: 50%;
       box-sizing: border-box;
       margin-right: ${params.marginRight}px;

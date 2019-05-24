@@ -14,7 +14,13 @@ const Row = styled(AntdRow)`
 `;
 
 const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" })(
-  ({ form: { getFieldDecorator, validateFields }, getDistrictDataAction, listOfDistricts, selectDistrictAction }) => {
+  ({
+    form: { getFieldDecorator, validateFields },
+    loading,
+    getDistrictDataAction,
+    listOfDistricts,
+    selectDistrictAction
+  }) => {
     const searchDistrictData = evt => {
       evt.preventDefault();
       validateFields((err, { districtSearchOption, districtSearchValue }) => {
@@ -29,23 +35,20 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
 
     // here index is passed as a prop and when the user selects district from the list of
     // districts retreived, the selected district is set with the index
-    const dataSource = listOfDistricts.map(({ _id, _source = {} }, index) => (
-      <AutocompleteOption key={_id} index={index}>
+    const dataSource = listOfDistricts.map(({ _source = {} }, index) => (
+      <AutocompleteOption key={_source.name} index={index}>
         {_source.name}
       </AutocompleteOption>
     ));
     return (
-      <Row>
-        <Col span={24}>
-          <SearchDistrictByIdName
-            getFieldDecorator={getFieldDecorator}
-            handleSubmit={searchDistrictData}
-            autocomplete
-            onSelect={onDistrictSelect}
-            dataSource={dataSource}
-          />
-        </Col>
-      </Row>
+      <SearchDistrictByIdName
+        getFieldDecorator={getFieldDecorator}
+        handleSubmit={searchDistrictData}
+        autocomplete
+        onSelect={onDistrictSelect}
+        dataSource={dataSource}
+        loading={loading}
+      />
     );
   }
 );
@@ -176,13 +179,14 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
 
 export default function ManageSubscriptionByDistrict({
   getDistrictDataAction,
-  districtData: { listOfDistricts, selectedDistrict },
+  districtData: { loading, listOfDistricts, selectedDistrict },
   upgradeDistrictSubscriptionAction,
   selectDistrictAction
 }) {
   return (
     <>
       <ManageDistrictSearchForm
+        loading={loading}
         getDistrictDataAction={getDistrictDataAction}
         listOfDistricts={listOfDistricts}
         selectDistrictAction={selectDistrictAction}

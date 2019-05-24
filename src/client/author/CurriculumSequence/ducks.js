@@ -8,7 +8,7 @@ import { normalize, schema } from "normalizr";
 import { push } from "connected-react-router";
 import { curriculumSequencesApi, assignmentApi, userContextApi } from "@edulastic/api";
 import { setCurrentAssignmentAction } from "../TestPage/components/Assign/ducks";
-import { getUserSelector } from "../src/selectors/user";
+import { getUserSelector, getUserId } from "../src/selectors/user";
 import {
   publishTestAction,
   receiveTestByIdAction,
@@ -141,8 +141,14 @@ function* makeApiRequest(idsForFetch = []) {
 
     // We're using flatten because return from the server
     // is array even if it's one item, so we flatten it
-    const items = flatten(unflattenedItems);
-
+    let items = flatten(unflattenedItems);
+    const { authors } = items[0];
+    const userId = yield select(getUserId);
+    if (authors && authors.map(author => author._id).includes(userId)) {
+      items[0].isAuthor = true;
+    } else {
+      items[0].isAuthor = false;
+    }
     // Normalize data
     if (idsForFetch.length > 1) {
       const curriculumSequenceSchema = new schema.Entity("curriculumSequenceList", {}, { idAttribute: "_id" });

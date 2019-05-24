@@ -188,13 +188,14 @@ class ModuleRow extends Component {
                           <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                         </ModulesAssigned>
                       )}
-                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) && (
-                        <AssignModuleButton>
-                          <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                            ASSIGN MODULE
-                          </Button>
-                        </AssignModuleButton>
-                      )}
+                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) &&
+                        totalAssigned > 0 && (
+                          <AssignModuleButton>
+                            <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
+                              {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
+                            </Button>
+                          </AssignModuleButton>
+                        )}
                     </ModulesWrapper>
                   </ModuleTitleAssignedWrapper>
                 </ModuleInfo>
@@ -203,6 +204,8 @@ class ModuleRow extends Component {
                 // eslint-disable-next-line
                 <div>
                   {data.map((moduleData, index) => {
+                    const { standards } = moduleData;
+                    const standardTags = (standards && standards.map(stand => stand.name)) || [];
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item
@@ -220,7 +223,7 @@ class ModuleRow extends Component {
                     );
 
                     const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
-                    if ((!hideEditOptions && customize) || mode === "embedded") {
+                    if (mode === "embedded") {
                       return (
                         <AssignmentDragItem
                           key={`${index}-${moduleData.id}`}
@@ -233,8 +236,10 @@ class ModuleRow extends Component {
                           assigned={assigned}
                           moreMenu={moreMenu}
                           menu={menu}
+                          standardTags={standardTags}
                           status={status}
                           contentIndex={index}
+                          viewTest={this.viewTest}
                           moduleIndex={moduleIndex}
                           handleDrop={dropContent}
                           onBeginDrag={onBeginDrag}
@@ -278,7 +283,7 @@ class ModuleRow extends Component {
                                 )}
                               </ModuleAssignedUnit>
                             )}
-                            <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
+                            <Tags tags={standardTags} />
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>
@@ -300,7 +305,7 @@ class ModuleRow extends Component {
                                   </Button>
                                 </AssignmentButton>
                               )}
-                              {(!hideEditOptions || mode === "embedded") && (
+                              {mode === "embedded" && (
                                 <AssignmentIcon>
                                   <Dropdown overlay={moreMenu} trigger={["click"]}>
                                     <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>

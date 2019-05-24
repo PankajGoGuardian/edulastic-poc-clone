@@ -21,6 +21,7 @@ import QuillSortableList from "../../components/QuillSortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Widget } from "../../styled/Widget";
+import { Label, Heading } from "./styled";
 
 const defaultTemplateMarkup =
   '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
@@ -262,12 +263,12 @@ class TemplateMarkup extends Component {
         <PaddingDiv>
           <Subtitle>
             <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
-            <label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</label>
+            <Label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</Label>
           </Subtitle>
         </PaddingDiv>
         {!hasGroupResponses && (
           <PaddingDiv>
-            <div>{t("component.cloze.dragDrop.choicesforresponse")}</div>
+            <Heading>{t("component.cloze.dragDrop.choicesforresponse")}</Heading>
             <QuillSortableList
               items={item.options.map(o => o.label)}
               onSortEnd={this.onSortEnd}

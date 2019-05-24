@@ -79,7 +79,7 @@ class ClassCreate extends React.Component {
         values.districtId = districtId;
         values.type = "class";
 
-        values.parent = { _id: userId };
+        values.parent = { id: userId };
         values.owners = [userId];
 
         values.standardSets = updatedStandardsSets;

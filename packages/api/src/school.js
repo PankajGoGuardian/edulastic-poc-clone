@@ -21,12 +21,12 @@ const updateSchool = ({ id, body }) =>
     })
     .then(result => result.data.result);
 
-const createSchool = ({ body }) =>
+const createSchool = data =>
   api
     .callApi({
       url: `${prefix}/`,
       method: "post",
-      data: body
+      data
     })
     .then(result => result.data.result);
 

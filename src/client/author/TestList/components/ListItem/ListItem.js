@@ -110,7 +110,7 @@ class ListItem extends Component {
             <Col span={18}>
               <ListCard
                 title={
-                  <Header>
+                  <Header src={isPlaylist ? _source.thumbnail : undefined}>
                     <Stars size="small" />
                     <ButtonWrapper className="showHover">
                       {owner && (
@@ -145,12 +145,12 @@ class ListItem extends Component {
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
                 <ViewButton onClick={this.openModal}>VIEW</ViewButton>
-                {!isTestAdded && (
+                {!isTestAdded && mode === "embedded" && (
                   <AddButton windowWidth={windowWidth} onClick={e => addTestToPlaylist(item)}>
                     ADD
                   </AddButton>
                 )}
-                {isTestAdded && (
+                {isTestAdded && mode === "embedded" && (
                   <AddButton
                     windowWidth={windowWidth}
                     isTestAdded={isTestAdded}

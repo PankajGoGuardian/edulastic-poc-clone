@@ -130,23 +130,68 @@ export const reducer = createReducer(initialState, {
   },
   [CREATE_SCHOOLS_SUCCESS]: (state, { payload }) => {
     const createdSchoolData = {
-      _id: payload._id,
-      name: payload.name,
-      districtId: payload.districtId,
-      address: payload.location.address,
-      city: payload.location.city,
-      state: payload.location.state,
-      country: payload.location.country,
-      zip: payload.location.zip,
+      _id: payload.createdSchool._id,
+      key: payload.createdSchool._id,
+      name: payload.createdSchool.name,
+      districtId: payload.createdSchool.districtId,
+      address: payload.createdSchool.location.address,
+      city: payload.createdSchool.location.city,
+      state: payload.createdSchool.location.state,
+      country: payload.createdSchool.location.country,
+      zip: payload.createdSchool.location.zip,
       teachersCount: 0,
       studentsCount: 0,
       sectionsCount: 0,
-      status: payload.status
+      status: payload.createdSchool.status
     };
 
     state.creating = false;
     state.create = createdSchoolData;
-    state.data = [createdSchoolData, ...state.data].slice(0, 25);
+
+    const searchData = payload.search;
+    const keys = Object.keys(payload.search);
+    let isFitFiltered = true;
+    for (let i = 0; i < keys.length; i++) {
+      if (searchData[keys[i]].type == "eq") {
+        if (
+          createdSchoolData[keys[i]].toString().toLowerCase() !== searchData[keys[i]].value.toString().toLowerCase()
+        ) {
+          isFitFiltered = false;
+          break;
+        }
+      } else {
+        if (
+          createdSchoolData[keys[i]]
+            .toString()
+            .toLowerCase()
+            .indexOf(searchData[keys[i]].value.toString().toLowerCase()) < 0
+        ) {
+          isFitFiltered = false;
+          break;
+        }
+      }
+    }
+
+    if (isFitFiltered) {
+      const newdData = [createdSchoolData, ...state.data].slice(0, 25);
+      state.data = newdData.sort((a, b) => {
+        const aValue = a[payload.sortedInfo.columnKey];
+        const bValue = b[payload.sortedInfo.columnKey];
+        let compareValue = 0;
+        if (aValue.toString().toLowerCase() < bValue.toString().toLowerCase()) {
+          compareValue = -1;
+        } else if (aValue.toString().toLowerCase() > bValue.toString().toLowerCase()) {
+          compareValue = 1;
+        }
+
+        if (compareValue != 0) {
+          if (payload.sortedInfo.order === "desc") {
+            compareValue = -compareValue;
+          }
+        }
+        return compareValue;
+      });
+    }
   },
   [CREATE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -197,8 +242,14 @@ function* updateSchoolsSaga({ payload }) {
 
 function* createSchoolsSaga({ payload }) {
   try {
-    const createSchool = yield call(schoolApi.createSchool, payload);
-    yield put(createSchoolsSuccessAction(createSchool));
+    const createSchool = yield call(schoolApi.createSchool, payload.body);
+    yield put(
+      createSchoolsSuccessAction({
+        createdSchool: createSchool,
+        sortedInfo: payload.sortedInfo,
+        search: payload.search
+      })
+    );
   } catch (err) {
     const errorMessage = "Create School is failing";
     yield call(message.error, errorMessage);

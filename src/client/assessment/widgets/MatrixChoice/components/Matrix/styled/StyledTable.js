@@ -4,7 +4,7 @@ import { mobileWidth } from "@edulastic/colors";
 
 export const StyledTable = styled(Table)`
   table {
-    width: auto;
+    width: 100%;
     font-size: ${props => props.fontSize};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
     tbody {

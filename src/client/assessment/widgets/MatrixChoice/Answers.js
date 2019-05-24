@@ -1,4 +1,4 @@
-import React, { useState, Fragment, Component } from "react";
+import React, { Fragment, Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
@@ -9,11 +9,8 @@ import { withNamespaces } from "@edulastic/localization";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
-import { Widget } from "../../styled/Widget";
 
 import Matrix from "./components/Matrix";
-
-import { Subtitle } from "../../styled/Subtitle";
 
 const MatrixWithPoints = withPoints(Matrix);
 
@@ -158,54 +155,52 @@ class Answers extends Component {
     );
 
     return (
-      <Widget>
-        <CorrectAnswers
-          onTabChange={this.setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-        >
-          <Fragment>
-            {correctTab === 0 && (
-              <div>
-                <MatrixWithPoints
-                  stems={item.stems}
-                  options={item.options}
-                  uiStyle={item.ui_style}
-                  response={item.validation.valid_response}
-                  isMultiple={item.multiple_responses}
-                  onCheck={handleCheck("valid_response")}
-                  points={item.validation.valid_response.score}
-                  onChangePoints={points => handleChangeValidPoints(points)}
-                  data-cy="points"
-                />
-              </div>
-            )}
-            {item.validation.alt_responses &&
-              !!item.validation.alt_responses.length &&
-              item.validation.alt_responses.map((alter, i) => {
-                if (i + 1 === correctTab) {
-                  return (
-                    <MatrixWithPoints
-                      key={i}
-                      stems={item.stems}
-                      options={item.options}
-                      uiStyle={item.ui_style}
-                      response={item.validation.alt_responses[i]}
-                      isMultiple={item.multiple_responses}
-                      onCheck={handleCheck("alt_responses", i)}
-                      points={item.validation.alt_responses[i].score}
-                      onChangePoints={points => handleChangeAltPoints(points, i)}
-                    />
-                  );
-                }
-                return null;
-              })}
-          </Fragment>
-        </CorrectAnswers>
-      </Widget>
+      <CorrectAnswers
+        onTabChange={this.setCorrectTab}
+        correctTab={correctTab}
+        onAdd={handleAddAnswer}
+        validation={item.validation}
+        options={renderOptions()}
+        onCloseTab={handleCloseTab}
+      >
+        <Fragment>
+          {correctTab === 0 && (
+            <div>
+              <MatrixWithPoints
+                stems={item.stems}
+                options={item.options}
+                uiStyle={item.ui_style}
+                response={item.validation.valid_response}
+                isMultiple={item.multiple_responses}
+                onCheck={handleCheck("valid_response")}
+                points={item.validation.valid_response.score}
+                onChangePoints={points => handleChangeValidPoints(points)}
+                data-cy="points"
+              />
+            </div>
+          )}
+          {item.validation.alt_responses &&
+            !!item.validation.alt_responses.length &&
+            item.validation.alt_responses.map((alter, i) => {
+              if (i + 1 === correctTab) {
+                return (
+                  <MatrixWithPoints
+                    key={i}
+                    stems={item.stems}
+                    options={item.options}
+                    uiStyle={item.ui_style}
+                    response={item.validation.alt_responses[i]}
+                    isMultiple={item.multiple_responses}
+                    onCheck={handleCheck("alt_responses", i)}
+                    points={item.validation.alt_responses[i].score}
+                    onChangePoints={points => handleChangeAltPoints(points, i)}
+                  />
+                );
+              }
+              return null;
+            })}
+        </Fragment>
+      </CorrectAnswers>
     );
   }
 }

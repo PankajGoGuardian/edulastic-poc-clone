@@ -142,6 +142,7 @@ class ClozeImageDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
+
     return (
       <div>
         {view === "edit" && (

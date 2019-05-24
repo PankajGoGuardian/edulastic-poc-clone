@@ -972,6 +972,15 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drag & Drop",
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "",
+        ui_style: {
+          responsecontainerposition: "bottom",
+          fontsize: "normal",
+          stemnumeration: "",
+          widthpx: 140,
+          heightpx: 0,
+          wordwrap: false,
+          responsecontainerindividuals: []
+        },
         options: [
           { value: uuidsForFill[0], label: "WHISPERED" },
           { value: uuidsForFill[1], label: "HOLMES" },
@@ -996,6 +1005,15 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         stimulus: "",
+        ui_style: {
+          responsecontainerposition: "bottom",
+          fontsize: "normal",
+          stemnumeration: "",
+          widthpx: 140,
+          heightpx: 0,
+          wordwrap: false,
+          responsecontainerindividuals: []
+        },
         options: {
           0: ["A", "B"],
           1: ["Choice A", "Choice B"]
@@ -1055,6 +1073,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1771,7 +1790,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "",
+        title: "Equations & Inequalities",
         is_math: true,
         response_containers: [
           {

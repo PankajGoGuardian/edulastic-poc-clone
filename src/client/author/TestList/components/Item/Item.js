@@ -105,7 +105,7 @@ class Item extends Component {
         />
         <Container
           title={
-            <Header>
+            <Header src={isPlaylist ? _source.thumbnail : undefined}>
               <Stars />
               <ButtonWrapper className="showHover">
                 {owner && (

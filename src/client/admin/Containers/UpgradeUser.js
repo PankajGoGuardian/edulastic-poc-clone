@@ -1,8 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Tabs } from "antd";
-import { ManageSubscriptionByDistrict, ManageSubscriptionByUser, ManageSubscriptionBySchool } from "../Upgrade/Tabs";
+import {
+  ManageSubscriptionByDistrict,
+  ManageSubscriptionByUser,
+  ManageSubscriptionBySchool,
+  ManageSubscriptionByUserSegments
+} from "../Upgrade/Tabs";
 import {
   getDistrictDataAction,
   getDistrictDataSelector,
@@ -10,7 +15,12 @@ import {
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
   getUsersDataSelector,
-  manageSubscriptionsBydistrict
+  manageSubscriptionsBydistrict,
+  searchSchoolsByIdAction,
+  getManageSubscriptionBySchoolData,
+  bulkSchoolsSubscribeAction,
+  manageSubscriptionsBySchool,
+  upgradePartialPremiumUserAction
 } from "../Upgrade/ducks";
 
 const { TabPane } = Tabs;
@@ -22,10 +32,18 @@ function UpgradeUser({
   upgradeUserSubscriptionAction,
   searchUsersByEmailIdAction,
   manageUsersData,
-  selectDistrictAction
+  selectDistrictAction,
+  searchSchoolsByIdAction,
+  manageSchoolData: { searchedSchoolsData, partialPremiumData },
+  bulkSchoolsSubscribeAction,
+  setPartialPremiumDataAction,
+  upgradePartialPremiumUserAction
 }) {
+  const [activeTab, setActiveTab] = useState("manageSubscriptionByDistrict");
+  const onChangeTab = tabKey => setActiveTab(tabKey);
+
   return (
-    <Tabs type="card" defaultActiveKey="manageSubscriptionByDistrict" animated>
+    <Tabs type="card" onChange={onChangeTab} activeKey={activeTab} animated>
       <TabPane tab="Manage by District" key="manageSubscriptionByDistrict">
         <ManageSubscriptionByDistrict
           getDistrictDataAction={getDistrictDataAction}
@@ -35,7 +53,14 @@ function UpgradeUser({
         />
       </TabPane>
       <TabPane tab="Manage by School" key="manageSubscriptionBySchool">
-        <ManageSubscriptionBySchool />
+        <ManageSubscriptionBySchool
+          searchedSchoolsData={searchedSchoolsData}
+          searchSchoolsByIdAction={searchSchoolsByIdAction}
+          bulkSchoolsSubscribeAction={bulkSchoolsSubscribeAction}
+          changeTab={onChangeTab}
+          manageByUserSegmentTabKey="manageSubscriptionByUserSegments"
+          setPartialPremiumDataAction={setPartialPremiumDataAction}
+        />
       </TabPane>
       <TabPane tab="Manage by User" key="manageSubscriptionByUser">
         <ManageSubscriptionByUser
@@ -44,13 +69,20 @@ function UpgradeUser({
           searchUsersByEmailIdAction={searchUsersByEmailIdAction}
         />
       </TabPane>
+      <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments">
+        <ManageSubscriptionByUserSegments
+          partialPremiumData={partialPremiumData}
+          upgradePartialPremiumUserAction={upgradePartialPremiumUserAction}
+        />
+      </TabPane>
     </Tabs>
   );
 }
 
 const mapStateToProps = state => ({
   districtData: getDistrictDataSelector(state),
-  manageUsersData: getUsersDataSelector(state)
+  manageUsersData: getUsersDataSelector(state),
+  manageSchoolData: getManageSubscriptionBySchoolData(state)
 });
 
 const withConnect = connect(
@@ -60,7 +92,11 @@ const withConnect = connect(
     upgradeDistrictSubscriptionAction,
     upgradeUserSubscriptionAction,
     searchUsersByEmailIdAction,
-    selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict
+    selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict,
+    searchSchoolsByIdAction,
+    bulkSchoolsSubscribeAction,
+    setPartialPremiumDataAction: manageSubscriptionsBySchool.actions.setPartialPremiumData,
+    upgradePartialPremiumUserAction
   }
 );
 

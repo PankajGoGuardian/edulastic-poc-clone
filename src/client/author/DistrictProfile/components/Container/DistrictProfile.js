@@ -18,7 +18,7 @@ class DistrictProfile extends Component {
   }
 
   render() {
-    const { updating, loading, creating, history } = this.props;
+    const { updating, loading, creating, imageUploading, history } = this.props;
 
     return (
       <FeatureWrapper feature="manageDistrict" actionOnInaccessible="hidden">
@@ -26,7 +26,7 @@ class DistrictProfile extends Component {
           <AdminHeader title={title} active={menuActive} history={history} />
           <StyledContent>
             <StyledLayout>
-              {(updating || loading || creating) && (
+              {(updating || loading || creating, imageUploading) && (
                 <SpinContainer>
                   <StyledSpin size="large" />
                 </SpinContainer>
@@ -44,7 +44,8 @@ const enhance = compose(
   connect(state => ({
     updating: get(state, ["districtProfileReducer", "updating"], false),
     loading: get(state, ["districtProfileReducer", "loading"], false),
-    creating: get(state, ["districtProfileReducer", "creating"], false)
+    creating: get(state, ["districtProfileReducer", "creating"], false),
+    imageUploading: get(state, ["districtProfileReducer", "imageUploading"], false)
   }))
 );
 

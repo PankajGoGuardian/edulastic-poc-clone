@@ -82,9 +82,9 @@ class DistrictPolicyForm extends React.Component {
           office365Usernames: true,
           firstNameAndLastName: true,
 
-          allowedDomainForStudents: [],
-          allowedDomainForTeachers: [],
-          allowedDomainsForDistrict: [],
+          allowedDomainForStudents: "",
+          allowedDomainForTeachers: "",
+          allowedDomainsForDistrict: "",
 
           googleClassroom: false,
           canvas: false
@@ -110,7 +110,7 @@ class DistrictPolicyForm extends React.Component {
       }
     });
 
-    districtPolicyData.allowDomainForTeacher = e.target.value.split(/[\s,]+/);
+    districtPolicyData.allowedDomainForTeachers = e.target.value;
     this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
@@ -122,7 +122,7 @@ class DistrictPolicyForm extends React.Component {
       }
     });
 
-    districtPolicyData.allowedDomainForStudents = e.target.value.split(/[\s,]+/);
+    districtPolicyData.allowedDomainForStudents = e.target.value;
     this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
@@ -134,7 +134,7 @@ class DistrictPolicyForm extends React.Component {
       }
     });
 
-    districtPolicyData.allowedDomainsForDistrict = e.target.value.split(/[\s,]+/);
+    districtPolicyData.allowedDomainsForDistrict = e.target.value;
     this.props.changeDistrictPolicyData(districtPolicyData);
   };
 
@@ -184,9 +184,9 @@ class DistrictPolicyForm extends React.Component {
       googleUsernames: districtPolicyData.googleUsernames,
       office365Usernames: districtPolicyData.office365Usernames,
       firstNameAndLastName: districtPolicyData.firstNameAndLastName,
-      allowedDomainForTeachers: districtPolicyData.allowDomainForTeacher,
-      allowedDomainForStudents: districtPolicyData.allowDomainForStudent,
-      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict,
+      allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers.split(/[\s,]+/),
+      allowedDomainForStudents: districtPolicyData.allowedDomainForStudents.split(/[\s,]+/),
+      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict.split(/[\s,]+/),
       googleClassroom: districtPolicyData.googleClassroom,
       canvas: districtPolicyData.canvas
     };
@@ -282,8 +282,9 @@ class DistrictPolicyForm extends React.Component {
               help={allowDomainForTeacherValidate.errorMsg}
             >
               <Input
-                defaultValue={districtPolicy.allowedDomainForTeachers.toString()}
+                value={districtPolicy.allowedDomainForTeachers}
                 onChange={this.handleTagTeacherChange}
+                placeholder={"Enter allowed domain(s), example - gmail.com, edulastic.com"}
               />
             </StyledFormItem>
           </StyledRow>
@@ -297,7 +298,11 @@ class DistrictPolicyForm extends React.Component {
               validateStatus={allowDomainForStudentValidate.validateStatus}
               help={allowDomainForStudentValidate.errorMsg}
             >
-              <Input defaultValue={districtPolicy.allowedDomainForStudents} onChange={this.handleTagStudentChange} />
+              <Input
+                value={districtPolicy.allowedDomainForStudents}
+                onChange={this.handleTagStudentChange}
+                placeholder={"Enter allowed domain(s), example - gmail.com, edulastic.com"}
+              />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>
@@ -310,7 +315,11 @@ class DistrictPolicyForm extends React.Component {
               validateStatus={allowDomainForSchoolValidate.validateStatus}
               help={allowDomainForSchoolValidate.errorMsg}
             >
-              <Input defaultValue={districtPolicy.allowedDomainsForDistrict} onChange={this.handleTagSchoolChange} />
+              <Input
+                value={districtPolicy.allowedDomainsForDistrict}
+                onChange={this.handleTagSchoolChange}
+                placeholder={"Enter allowed domain(s), example - gmail.com, edulastic.com"}
+              />
             </StyledFormItem>
           </StyledRow>
           <StyledRow>

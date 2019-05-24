@@ -4,8 +4,8 @@ import StudentTestPage from "../../../framework/student/studentTestPage";
 import LiveClassboardPage from "../../../framework/author/assignments/LiveClassboardPage";
 import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAssignmentPage";
 import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
-import { attemptTypes } from "../../../framework/constants/questionTypes";
 import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
+import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -98,6 +98,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const lcb = new LiveClassboardPage();
   const authorAssignmentPage = new AuthorAssignmentPage();
   const expressg = new ExpressGraderPage();
+  const sbrPage = new StandardBasedReportPage();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
@@ -112,9 +113,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       const { itemKeys } = testData;
       itemKeys.forEach((queKey, index) => {
         const [queType, questionKey] = queKey.split(".");
-        const { attemptData } = questionData[queType][questionKey];
+        const { attemptData, standards } = questionData[queType][questionKey];
         const { points } = questionData[queType][questionKey].setAns;
-        const queMap = { queKey, points, attemptData };
+        const queMap = { queKey, points, attemptData, standards };
         questionTypeMap[`Q${index + 1}`] = queMap;
       });
     });
@@ -128,9 +129,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
 
   before(" > attempt by all students", () => {
     attemptsData.forEach(attempts => {
-      console.log("attempts ::", attempts);
       const { attempt, email, stuName, status } = attempts;
-
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
       statsMap[stuName].attempt = attempt;
       statsMap[stuName].status = status;
@@ -202,6 +201,17 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
+  describe(" > verify standard based report", () => {
+    before(() => {
+      lcb.clickOnCardViewTab();
+      lcb.header.clickOnStandardBasedReportTab();
+    });
+
+    it(" > verify standard performance", () => {
+      sbrPage.verifyStandardPerformance(attemptsData, questionTypeMap);
+    });
+  });
+
   describe(" > verify express grader", () => {
     before(() => {
       lcb.header.clickOnExpressGraderTab();
@@ -225,21 +235,61 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         });
       });
     });
+
+    context(" > verify student responses pop ups", () => {
+      beforeEach(() => {
+        expressg.clickOnExit();
+      });
+      submittedStudentList.forEach(studentName => {
+        //  ["Student01"].forEach(studentName => {
+        it(` > using button for student :: ${studentName}`, () => {
+          const { attempt } = statsMap[studentName];
+          expressg.verifyResponsesInGridStudentLevel(studentName, attempt, questionTypeMap, false);
+        });
+
+        it(` > using keyboard key for student :: ${studentName}`, () => {
+          const { attempt } = statsMap[studentName];
+          expressg.verifyResponsesInGridStudentLevel(studentName, attempt, questionTypeMap, true);
+        });
+      });
+
+      queList.forEach(queNum => {
+        // ["Q1"].forEach(queNum => {
+        it(` > using button for que :: ${queNum} `, () => {
+          const attempt = submittedQueCentric[queNum];
+          expressg.verifyResponsesInGridQuestionLevel(queNum, attempt, questionTypeMap, false);
+        });
+
+        it(` > using keyboard key for que :: ${queNum} `, () => {
+          const attempt = submittedQueCentric[queNum];
+          expressg.verifyResponsesInGridQuestionLevel(queNum, attempt, questionTypeMap, true);
+        });
+      });
+    });
+
+    context(" > verify updating score", () => {
+      queList.forEach(queNum => {
+        it(` > update the score for :: ${queNum}`, () => {
+          // below will update the score for 1 student all question and then revert back to original score
+          expressg.verifyUpdateScore(submittedStudentList[0], queNum, "0.5");
+        });
+      });
+    });
   });
 
   describe(" > verify redirect", () => {
-    context(" > redirect the students and verify", () => {
-      before("calculate redirected stats", () => {
-        redirectedData.forEach(attempts => {
-          const { attempt, stuName, status } = attempts;
-          redirectStatsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
-          redirectStatsMap[stuName].attempt = attempt;
-          redirectStatsMap[stuName].status = status;
-        });
-        lcb.header.clickOnLCBTab();
-        lcb.clickOnCardViewTab();
+    before("calculate redirected stats", () => {
+      redirectedData.forEach(attempts => {
+        const { attempt, stuName, status } = attempts;
+        redirectStatsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
+        redirectStatsMap[stuName].attempt = attempt;
+        redirectStatsMap[stuName].status = status;
       });
+      lcb.header.clickOnLCBTab();
+      lcb.clickOnCardViewTab();
+    });
 
+    context(" > redirect the students and verify", () => {
       it(" > redirect the students", () => {
         redirectedStudentList.forEach(studentName => {
           // redirect and verify
@@ -360,7 +410,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   });
 
   describe(" > verify score update", () => {
-    before("student centric view", () => {
+    before("question centric view", () => {
       lcb.clickonQuestionsTab();
     });
 

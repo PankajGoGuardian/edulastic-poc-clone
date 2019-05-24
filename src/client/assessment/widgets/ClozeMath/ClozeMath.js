@@ -33,6 +33,7 @@ const ClozeMath = ({
   fillSections,
   cleanSections,
   isSidebarCollapsed,
+  advancedAreOpen,
   ...restProps
 }) => {
   const [template, setTemplate] = useState("");
@@ -125,6 +126,7 @@ const ClozeMath = ({
             stimulusReview={item.stimulus_review}
             instructorStimulus={item.instructor_stimulus}
             metadata={item.metadata}
+            advancedAreOpen={advancedAreOpen}
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
@@ -160,6 +162,7 @@ ClozeMath.propTypes = {
   item: PropTypes.object,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired
 };
 

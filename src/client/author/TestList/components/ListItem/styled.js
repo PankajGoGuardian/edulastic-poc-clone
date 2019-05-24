@@ -82,7 +82,8 @@ export const Header = styled.div`
   min-height: 90px;
   min-width: 180px;
   position: relative;
-  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
+  background: url(${props =>
+    props.src ? props.src : "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg"});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: center center;

@@ -22,10 +22,11 @@ export default class QuestionResponsePage {
     cy.server();
     cy.route("PUT", "**/feedbackAndScore").as("feedback");
     this.getQuestionContainerByStudent(studentName).as("updatecard");
+    cy.wait(500); // front end renders slow and gets old value appended in the box, hence waiting
     this.getScoreInput(cy.get("@updatecard"))
       .as("scoreinputbox")
-      .clear()
-      .type(score);
+      .type("{selectall}{del}", { force: score })
+      .type(score, { force: true });
 
     this.clickOnUpdateButton(cy.get("@updatecard")).then(() => {
       cy.wait("@feedback").then(xhr => {

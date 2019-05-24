@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 
 import { Select, TextField, Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 
 import { AddNewChoiceBtn } from "../../../../styled/AddNewChoiceBtn";
 import { Row } from "../../../../styled/WidgetOptions/Row";
@@ -17,6 +17,11 @@ import { Widget } from "../../../../styled/Widget";
 import { Subtitle } from "../../../../styled/Subtitle";
 
 class Layout extends Component {
+  state = {
+    focused: null,
+    input: 0
+  };
+
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
@@ -39,6 +44,12 @@ class Layout extends Component {
 
     cleanSections();
   }
+
+  handleInputChange = e => {
+    this.setState({
+      input: +e.target.value
+    });
+  };
 
   render() {
     const { onChange, uiStyle, t, advancedAreOpen } = this.props;
@@ -76,6 +87,41 @@ class Layout extends Component {
         ...uiStyle,
         responsecontainerindividuals
       });
+    };
+
+    const calculateRightWidth = value => (value >= 140 && value <= 400 ? value : value < 140 ? 140 : 400);
+
+    const onWidthInputBlur = index => () => {
+      const { input } = this.state;
+      if (index !== undefined) {
+        changeIndividualUiStyle("widthpx", calculateRightWidth(input), index);
+      } else {
+        changeUiStyle("widthpx", calculateRightWidth(input));
+      }
+
+      this.setState({ input: 0, focused: null });
+    };
+
+    const getIndividualWidthInputValue = (responsecontainerindividual, index) =>
+      // eslint-disable-next-line react/destructuring-assignment
+      isEqual(this[`individualWidth${index}`], this.state.focused)
+        ? // eslint-disable-next-line react/destructuring-assignment
+          this.state.input || 0
+        : responsecontainerindividual.widthpx;
+
+    const getMainWidthInputValue = () =>
+      // eslint-disable-next-line react/destructuring-assignment
+      isEqual(this.widthInput, this.state.focused) ? this.state.input || 0 : uiStyle.widthpx;
+
+    const onFocusHandler = (responsecontainerindividual, index) => () => {
+      if (responsecontainerindividual !== undefined && index !== undefined) {
+        this.setState({
+          focused: this[`individualWidth${index}`],
+          input: responsecontainerindividual.widthpx
+        });
+      } else {
+        this.setState({ focused: this.widthInput, input: uiStyle.widthpx });
+      }
     };
 
     return (
@@ -141,10 +187,15 @@ class Layout extends Component {
             <Label>{t("component.options.widthpx")}</Label>
             <TextField
               type="number"
+              ref={ref => {
+                this.widthInput = ref;
+              }}
               disabled={false}
               containerStyle={{ width: 350 }}
-              onChange={e => changeUiStyle("widthpx", +e.target.value)}
-              value={uiStyle.widthpx}
+              onFocus={onFocusHandler()}
+              onBlur={onWidthInputBlur()}
+              onChange={this.handleInputChange}
+              value={getMainWidthInputValue()}
             />
           </Col>
           <Col md={6}>
@@ -185,10 +236,15 @@ class Layout extends Component {
                 <Label>{t("component.options.widthpx")}</Label>
                 <TextField
                   type="number"
+                  ref={ref => {
+                    this[`individualWidth${index}`] = ref;
+                  }}
                   disabled={false}
                   containerStyle={{ width: 350 }}
-                  onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                  value={responsecontainerindividual.widthpx}
+                  onFocus={onFocusHandler(responsecontainerindividual, index)}
+                  onBlur={onWidthInputBlur(index)}
+                  onChange={this.handleInputChange}
+                  value={getIndividualWidthInputValue(responsecontainerindividual, index)}
                 />
               </Col>
               <Col md={6}>

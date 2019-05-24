@@ -4,7 +4,7 @@ import { IconPlus as Icon } from "@edulastic/icons";
 export const IconPlus = styled(Icon)`
   width: 10px;
   height: 10px;
-  fill: ${props => props.theme.widgets.clozeText.iconPlusColor}s
+  fill: ${props => props.theme.widgets.clozeText.iconPlusColor}
   :hover {
     fill: ${props => props.theme.widgets.clozeText.iconPlusColor}
   }

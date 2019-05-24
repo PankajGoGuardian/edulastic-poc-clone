@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-
+import styled from "styled-components";
+import { message } from "antd";
+import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
 import "froala-editor/css/froala_editor.pkgd.min.css";
 import "font-awesome/css/font-awesome.css";
-
 import Editor from "react-froala-wysiwyg";
-
+import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 import { withMathFormula } from "../HOC/withMathFormula";
+
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-command-id");
@@ -29,26 +31,6 @@ FroalaEditor.DefineIconTemplate(
 </g>
 </SVG>`
 );
-
-const defaultConfig = {
-  toolbarButtons: [
-    "bold",
-    "italic",
-    "underline",
-    "strikeThrough",
-    "insertTable",
-    "|",
-    "paragraphFormat",
-    "align",
-    "undo",
-    "redo",
-    "math",
-    "html"
-  ],
-
-  tableResizerOffset: 10,
-  tableResizingLimit: 50
-};
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
@@ -75,9 +57,71 @@ const numberPad = [
 ];
 
 let EditorRef = null;
+const NoneDiv = styled.div`
+  position: absolute;
+  opacity: 0;
+`;
 
-const CustomEditor = ({ value, onChange, tag }) => {
+const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
+  const mathFieldRef = useRef(null);
+
   const [showMathModal, setMathModal] = useState(false);
+  const [currentLatex, setCurrentLatex] = useState("");
+  const [currentMathEl, setCurrentMathEl] = useState(null);
+
+  const config = Object.assign(
+    {
+      toolbarButtons: [
+        "bold",
+        "italic",
+        "underline",
+        "strikeThrough",
+        "insertTable",
+        "|",
+        "paragraphFormat",
+        "align",
+        "undo",
+        "redo",
+        "math",
+        "insertImage",
+        "html"
+      ],
+      tableResizerOffset: 10,
+      tableResizingLimit: 50,
+
+      events: {
+        click: evt => {
+          const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
+          if (closestMathParent) {
+            setCurrentLatex(closestMathParent.getAttribute("data-latex"));
+            setCurrentMathEl(closestMathParent);
+            setMathModal(true);
+          } else {
+            setCurrentLatex("");
+            setCurrentMathEl(null);
+          }
+        },
+        "image.beforeUpload": function(image) {
+          this.image.showProgressBar();
+          // TODO: pass folder as props
+          uploadToS3(image[0], aws.s3Folders.COURSE)
+            .then(result => {
+              this.image.insert(result);
+            })
+            .catch(e => {
+              this.popups.hideAll();
+              message.error("image upload failed");
+            });
+
+          return false;
+        },
+        "image.error": function(err) {
+          console.log("upload err", err);
+        }
+      }
+    },
+    restOptions
+  );
 
   useEffect(() => {
     // sample extension of custom buttons
@@ -88,7 +132,10 @@ const CustomEditor = ({ value, onChange, tag }) => {
       focus: false,
       undo: false,
       refreshAfterCallback: false,
-      callback: function() {
+      callback() {
+        EditorRef.selection.save();
+        setCurrentLatex("");
+        setCurrentMathEl(null);
         setMathModal(true);
       }
     });
@@ -97,11 +144,20 @@ const CustomEditor = ({ value, onChange, tag }) => {
   const setMathValue = latex => {
     const MQ = window.MathQuill.getInterface(2);
 
-    const el = document.createElement("span");
-    el.setAttribute("data-latex", latex);
-    const mathfield = MQ.StaticMath(el);
+    const mathfield = MQ.StaticMath(mathFieldRef.current);
     mathfield.latex(latex);
-    EditorRef.html.insert(el.outerHTML);
+    EditorRef.selection.restore();
+    if (currentMathEl) {
+      currentMathEl.innerHTML = mathFieldRef.current.innerHTML;
+      currentMathEl.setAttribute("data-latex", latex);
+    } else {
+      EditorRef.html.insert(
+        `<span data-latex="${latex}" contenteditable="false" class="mq-math-mode">${
+          mathFieldRef.current.innerHTML
+        }</span>`
+      );
+    }
+
     setMathModal(false);
   };
 
@@ -124,6 +180,7 @@ const CustomEditor = ({ value, onChange, tag }) => {
         symbols={symbols}
         numberPad={numberPad}
         showResposnse={false}
+        value={currentLatex}
         onSave={setMathValue}
         onClose={closeMathModal}
       />
@@ -131,9 +188,12 @@ const CustomEditor = ({ value, onChange, tag }) => {
         tag={tag}
         model={value}
         onModelChange={setChange}
-        config={defaultConfig}
+        config={config}
         onManualControllerReady={manualControl}
       />
+      <NoneDiv>
+        <span ref={mathFieldRef} className="input__math__field" />
+      </NoneDiv>
     </>
   );
 };

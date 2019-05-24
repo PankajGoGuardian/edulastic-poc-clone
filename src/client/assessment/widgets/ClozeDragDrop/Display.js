@@ -402,15 +402,15 @@ class ClozeDragDropDisplay extends Component {
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>
-              <div style={{ margin: 15, borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: 15, borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
             </React.Fragment>
           )}
           {responsecontainerposition === "bottom" && (
             <React.Fragment>
               <div
                 style={{
-                  margin: smallSize ? "-18px -20px 10px" : 15,
+                  margin: smallSize ? "-18px -20px 10px" : "15px 0",
                   borderRadius: smallSize ? 0 : 10
                 }}
               >
@@ -420,7 +420,7 @@ class ClozeDragDropDisplay extends Component {
               </div>
               <div
                 style={{
-                  margin: smallSize ? "0 -40px -20px" : 15,
+                  margin: smallSize ? "0 -40px -20px" : "15px 0",
                   borderRadius: smallSize ? 0 : 10
                 }}
               >
@@ -435,7 +435,7 @@ class ClozeDragDropDisplay extends Component {
                 style={{
                   height: "100%",
                   maxWidth: "30%",
-                  margin: 15,
+                  margin: "15px 0",
                   borderRadius: 10,
                   background: theme.widgets.clozeDragDrop.responseBoxBgColor,
                   display: "flex",
@@ -455,7 +455,7 @@ class ClozeDragDropDisplay extends Component {
                 style={{
                   height: "100%",
                   maxWidth: "30%",
-                  margin: 15,
+                  margin: "15px 0",
                   borderRadius: 10,
                   background: theme.widgets.clozeDragDrop.responseBoxBgColor,
                   display: "flex",

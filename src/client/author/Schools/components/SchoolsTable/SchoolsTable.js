@@ -86,7 +86,7 @@ class SchoolsTable extends React.Component {
       }
     } else {
       sortedInfo.columnKey = colName;
-      sortedInfo.order = "asc";
+      sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
     }
     this.setState({ sortedInfo });
     this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
@@ -154,12 +154,6 @@ class SchoolsTable extends React.Component {
     }
   };
 
-  changeFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
-  };
-
   onBlurFilterText = (e, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = e.target.value;
@@ -169,6 +163,12 @@ class SchoolsTable extends React.Component {
       const { sortedInfo, searchByName, currentPage } = this.state;
       this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
     }
+  };
+
+  changeFilterText = (e, key) => {
+    const filtersData = [...this.state.filtersData];
+    filtersData[key].filterStr = e.target.value;
+    this.setState({ filtersData });
   };
 
   changeStatusValue = (value, key) => {
@@ -185,7 +185,6 @@ class SchoolsTable extends React.Component {
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
     if (filtersData[key].filterAdded && filtersData.length == 3) return;
-
     filtersData[key].filterAdded = true;
     if (filtersData.length < 3) {
       filtersData[key].filterAdded = true;
@@ -262,7 +261,19 @@ class SchoolsTable extends React.Component {
     };
 
     const { createSchool } = this.props;
-    createSchool({ body: newData });
+    const { sortedInfo, filtersData, searchByName } = this.state;
+
+    let search = {};
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: searchByName };
+    }
+    for (let i = 0; i < filtersData.length; i++) {
+      if (filtersData[i].filterAdded) {
+        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      }
+    }
+
+    createSchool({ body: newData, sortedInfo, search });
 
     this.setState({ createSchoolModalVisible: false });
   };
@@ -472,11 +483,11 @@ class SchoolsTable extends React.Component {
             <StyledSortIconDiv>
               <StyledSortIcon
                 type="caret-up"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
               />
               <StyledSortIcon
                 type="caret-down"
-                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "desc"}
+                colorValue={sortedInfo.columnKey === "status" && sortedInfo.order === "asc"}
               />
             </StyledSortIconDiv>
           </StyledHeaderColumn>
@@ -616,6 +627,7 @@ class SchoolsTable extends React.Component {
               onBlur={e => this.onBlurFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
+              onBlur={e => this.onBlurFilterText(e, i)}
             />
           ) : (
             <StyledFilterSelect
@@ -629,6 +641,7 @@ class SchoolsTable extends React.Component {
               <Option value="0">Not Approved</Option>
             </StyledFilterSelect>
           )}
+
           {i < 2 && (
             <StyledFilterButton
               type="primary"

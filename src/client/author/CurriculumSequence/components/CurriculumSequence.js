@@ -259,6 +259,14 @@ class CurriculumSequence extends Component {
     setGuide(id);
   };
 
+  handleEditClick = () => {
+    const {
+      history,
+      destinationCurriculumSequence: { _id }
+    } = this.props;
+    return history.push(`/author/playlists/${_id}/edit`);
+  };
+  
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange } = this;
@@ -289,7 +297,7 @@ class CurriculumSequence extends Component {
       history
     } = this.props;
 
-    const { handleSaveClick, handleUseThisClick, handleCustomizeClick } = this;
+    const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit
     const options1 = destinationCurriculumSequence.modules
@@ -308,7 +316,15 @@ class CurriculumSequence extends Component {
       label: item.title
     }));
 
-    const { status, title, description, subjects = [], grades = [], customize = true } = destinationCurriculumSequence;
+    const {
+      status,
+      title,
+      description,
+      subjects = [],
+      grades = [],
+      customize = true,
+      isAuthor = false
+    } = destinationCurriculumSequence;
 
     const isSelectContent = selectContent && destinationCurriculumSequence;
 
@@ -469,7 +485,7 @@ class CurriculumSequence extends Component {
                       </Button>
                     </ShareButtonStyle>
                   )}
-                  {customize && (
+                  {customize && urlHasUseThis && (
                     <SaveButtonStyle>
                       <Button
                         data-cy="saveCurriculumSequence"
@@ -479,7 +495,13 @@ class CurriculumSequence extends Component {
                       </Button>
                     </SaveButtonStyle>
                   )}
-
+                  {isAuthor && !urlHasUseThis && (
+                    <SaveButtonStyle>
+                      <Button data-cy="editCurriculumSequence" onClick={handleEditClick}>
+                        <SaveButtonText>{"Edit"}</SaveButtonText>
+                      </Button>
+                    </SaveButtonStyle>
+                  )}
                   {!urlHasUseThis && (
                     <SaveButtonStyle windowWidth={windowWidth}>
                       <Button data-cy="saveCurriculumSequence" onClick={handleUseThisClick}>

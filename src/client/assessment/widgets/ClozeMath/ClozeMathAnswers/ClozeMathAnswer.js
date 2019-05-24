@@ -55,9 +55,9 @@ class ClozeMathAnswer extends Component {
               {responseValue.map((method, methodIndex) => (
                 <MathFormulaAnswerMethod
                   onDelete={() => onDelete({ methodIndex, methodValueIndex: i })}
-                  key={methodIndex}
+                  key={methodIndex + i}
                   item={item}
-                  index={methodIndex + i}
+                  index={methodIndex}
                   answerIndex={methodIndex}
                   onChange={_changeMethod(i, methodIndex)}
                   showAdditionals={showAdditionals}

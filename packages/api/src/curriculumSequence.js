@@ -67,14 +67,13 @@ const update = ({ data, id }) =>
     })
     .then(res => res.data.result);
 
-const publishPlaylist = id => {
+const publishPlaylist = id =>
   api
     .callApi({
       method: "put",
       url: `${prefix}/${id}/publish`
     })
-    .then(res => res.data.result);
-};
+    .then(res => res);
 
 const duplicatePlayList = id =>
   api

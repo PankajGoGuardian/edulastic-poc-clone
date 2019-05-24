@@ -47,7 +47,12 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.data = payload;
+    state.data = {
+      ...payload,
+      allowedDomainForStudents: payload.allowedDomainForStudents.toString(),
+      allowedDomainForTeachers: payload.allowedDomainForTeachers.toString(),
+      allowedDomainsForDistrict: payload.allowedDomainsForDistrict.toString()
+    };
   },
   [RECEIVE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -58,7 +63,12 @@ export const reducer = createReducer(initialState, {
   },
   [UPDATE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.updating = false;
-    state.data = payload;
+    state.data = {
+      ...payload,
+      allowedDomainForStudents: payload.allowedDomainForStudents.toString(),
+      allowedDomainForTeachers: payload.allowedDomainForTeachers.toString(),
+      allowedDomainsForDistrict: payload.allowedDomainsForDistrict.toString()
+    };
   },
   [UPDATE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -69,7 +79,12 @@ export const reducer = createReducer(initialState, {
   },
   [CREATE_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.creating = false;
-    state.data = payload;
+    state.data = {
+      ...payload,
+      allowedDomainForStudents: payload.allowedDomainForStudents.toString(),
+      allowedDomainForTeachers: payload.allowedDomainForTeachers.toString(),
+      allowedDomainsForDistrict: payload.allowedDomainsForDistrict.toString()
+    };
   },
   [CREATE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
     state.creating = false;

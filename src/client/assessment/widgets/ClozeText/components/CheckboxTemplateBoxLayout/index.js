@@ -36,6 +36,7 @@ const CheckboxTemplateBoxLayout = ({
           responseIndex++;
           let indexStr;
           const className = evaluation[dropTargetIndex] ? "right" : "wrong";
+          console.log(className, "classname");
           switch (stemNumeration) {
             case "lowercase": {
               indexStr = ALPHABET[dropTargetIndex];
@@ -52,10 +53,11 @@ const CheckboxTemplateBoxLayout = ({
             default:
           }
           const btnStyle = {
-            width: 0,
+            width: showAnswer ? "auto" : 0,
             height: 0,
-            widthpx: 0,
-            heightpx: 0
+            widthpx: showAnswer ? "auto" : 0,
+            heightpx: 0,
+            position: "relative"
           };
           if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
             const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[dropTargetIndex];
@@ -64,7 +66,7 @@ const CheckboxTemplateBoxLayout = ({
             btnStyle.widthpx = widthpx1;
             btnStyle.heightpx = heightpx1;
           }
-          if (btnStyle && btnStyle.width === 0) {
+          if (btnStyle && btnStyle.width === 0 && !showAnswer) {
             btnStyle.width = responseBtnStyle.widthpx;
           } else {
             btnStyle.width = btnStyle.widthpx;
@@ -82,13 +84,7 @@ const CheckboxTemplateBoxLayout = ({
                   className={`
                     response-btn 
                     ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
-                    ${
-                      userSelections.length > 0 && userSelections[dropTargetIndex]
-                        ? evaluation[dropTargetIndex]
-                          ? "right"
-                          : "wrong"
-                        : ""
-                    }
+                    ${evaluation[dropTargetIndex] ? "right" : "wrong"}
                     ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
@@ -105,13 +101,7 @@ const CheckboxTemplateBoxLayout = ({
                 <div
                   className={`response-btn 
                 ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
-                ${
-                  userSelections.length > 0 && userSelections[dropTargetIndex]
-                    ? evaluation[dropTargetIndex]
-                      ? "right"
-                      : "wrong"
-                    : ""
-                }
+                ${evaluation[dropTargetIndex] ? "right" : "wrong"}
                 `}
                   style={btnStyle}
                 >

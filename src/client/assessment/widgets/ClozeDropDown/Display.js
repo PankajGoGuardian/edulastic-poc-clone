@@ -176,7 +176,10 @@ class ClozeDropDownDisplay extends Component {
               return (
                 <Select
                   value={userAnswers[dropTargetIndex]}
-                  style={btnStyle}
+                  style={{
+                    ...btnStyle,
+                    minWidth: 100
+                  }}
                   data-cy="drop_down_select"
                   onChange={value => this.selectChange(value, dropTargetIndex)}
                   key={index}

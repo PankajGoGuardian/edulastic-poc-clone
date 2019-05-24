@@ -67,6 +67,9 @@ class AssignmentDragItem extends Component {
       hideEditOptions,
       assignTest,
       status,
+      moduleIndex,
+      viewTest,
+      standardTags,
       assigned
     } = this.props;
     const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
@@ -106,16 +109,16 @@ class AssignmentDragItem extends Component {
               )}
             </ModuleAssignedUnit>
           )}
-          <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
+          <Tags tags={standardTags} />
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
-                <IconVisualization color="#1774F0" onClick={() => this.viewTest(moduleData.contentId)} />
+                <IconVisualization color="#1774F0" onClick={() => viewTest(moduleData.contentId)} />
               </CustomIcon>
             </AssignmentIcon>
             {(!hideEditOptions || (status === "published" && mode === "embedded")) && (
               <AssignmentButton assigned={isAssigned}>
-                <Button data-cy="assignButton" onClick={() => assignTest(_id, moduleData.contentId)}>
+                <Button data-cy="assignButton" onClick={() => assignTest(moduleIndex, moduleData.contentId)}>
                   {isAssigned ? (
                     <IconCheckSmall color={white} />
                   ) : (
@@ -143,6 +146,7 @@ class AssignmentDragItem extends Component {
 AssignmentDragItem.propTypes = {
   moduleData: PropTypes.object.isRequired,
   menu: PropTypes.any.isRequired,
+  standardTags: PropTypes.array,
   connectDragSource: PropTypes.any.isRequired
 };
 
@@ -197,6 +201,7 @@ const Assignment = styled(Row)`
   display: flex;
   align-items: center;
   border: 0;
+  cursor: grab;
   border-radius: 0;
   padding-top: 10px;
   padding-bottom: 10px;

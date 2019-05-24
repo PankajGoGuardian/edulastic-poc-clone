@@ -135,6 +135,7 @@ class ClozeTextDisplay extends Component {
                 const btnStyle = {
                   width: 0,
                   height: 0,
+                  minWidth: 100,
                   widthpx: 0,
                   heightpx: 0,
                   placeholder,
@@ -178,7 +179,7 @@ class ClozeTextDisplay extends Component {
                 return (
                   <ClozeTextInput
                     value={userAnswers[dropTargetIndex]}
-                    style={{ height: btnStyle.height }}
+                    style={{ height: btnStyle.height, minWidth: 100 }}
                     btnStyle={btnStyle}
                     dropTargetIndex={dropTargetIndex}
                     onChange={this._changeInput}

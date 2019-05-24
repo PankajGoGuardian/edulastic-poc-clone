@@ -1,5 +1,5 @@
 import React from "react";
-import { Form, Input, Icon, Radio, AutoComplete } from "antd";
+import { Form, Input, Icon, Radio, AutoComplete, Spin } from "antd";
 import styled from "styled-components";
 import { radioButtondata } from "../../Data";
 import { Button } from "../StyledComponents";
@@ -16,7 +16,12 @@ export default function SearchDistrictByIdName({
   handleSubmit,
   autocomplete,
   dataSource,
-  onSelect
+  onSelect,
+  listOfRadioOptions,
+  valueKey,
+  labelKey,
+  placeholder,
+  loading
 }) {
   return (
     <Form onSubmit={handleSubmit} layout="inline">
@@ -27,7 +32,7 @@ export default function SearchDistrictByIdName({
           autocomplete ? (
             <AutoComplete onSelect={onSelect} dataSource={dataSource} style={{ width: 350 }} />
           ) : (
-            <CircularInput placeholder="Search..." style={{ width: 300 }} />
+            <CircularInput placeholder={placeholder} style={{ width: 300 }} />
           )
         )}
         <Button
@@ -42,17 +47,17 @@ export default function SearchDistrictByIdName({
           aria-label="Search"
           noStyle
         >
-          <Icon type="search" />
+          {loading ? <Spin size="small" /> : <Icon type="search" />}
         </Button>
       </Form.Item>
       <Form.Item>
         {getFieldDecorator("districtSearchOption", {
-          initialValue: radioButtondata.list[0].id
+          initialValue: listOfRadioOptions[0][valueKey]
         })(
           <RadioGroup name="searchOptions">
-            {radioButtondata.list.map(item => (
-              <Radio key={item.id} id={item.id} value={item.id}>
-                {item.label}
+            {listOfRadioOptions.map(item => (
+              <Radio key={item[valueKey]} id={item[valueKey]} value={item[valueKey]}>
+                {item[labelKey]}
               </Radio>
             ))}
           </RadioGroup>
@@ -61,3 +66,11 @@ export default function SearchDistrictByIdName({
     </Form>
   );
 }
+
+SearchDistrictByIdName.defaultProps = {
+  listOfRadioOptions: radioButtondata.list,
+  valueKey: "id",
+  labelKey: "label",
+  placeholder: "Search...",
+  loading: false
+};

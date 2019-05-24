@@ -67,6 +67,7 @@ class AssignmentDragItem extends Component {
       hideEditOptions,
       assignTest,
       status,
+      standardTags,
       assigned
     } = this.props;
     const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
@@ -106,7 +107,7 @@ class AssignmentDragItem extends Component {
               )}
             </ModuleAssignedUnit>
           )}
-          <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
+          <Tags tags={standardTags} />
           <AssignmentIconsHolder>
             <AssignmentIcon>
               <CustomIcon>
@@ -143,6 +144,7 @@ class AssignmentDragItem extends Component {
 AssignmentDragItem.propTypes = {
   moduleData: PropTypes.object.isRequired,
   menu: PropTypes.any.isRequired,
+  standardTags: PropTypes.array,
   connectDragSource: PropTypes.any.isRequired
 };
 

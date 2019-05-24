@@ -59,6 +59,11 @@ export const getUserOrgData = createSelector(
   state => _get(state, "user.orgData")
 );
 
+export const getUserId = createSelector(
+  getUser,
+  state => _get(state, "_id")
+);
+
 export const getUserSchoolsListSelector = createSelector(
   getOrgDataSelector,
   state => state.schools

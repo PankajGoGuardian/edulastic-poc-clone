@@ -203,6 +203,8 @@ class ModuleRow extends Component {
                 // eslint-disable-next-line
                 <div>
                   {data.map((moduleData, index) => {
+                    const { standards } = moduleData;
+                    const standardTags = (standards && standards.map(stand => stand.name)) || [];
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item
@@ -233,6 +235,7 @@ class ModuleRow extends Component {
                           assigned={assigned}
                           moreMenu={moreMenu}
                           menu={menu}
+                          standardTags={standardTags}
                           status={status}
                           contentIndex={index}
                           moduleIndex={moduleIndex}
@@ -278,7 +281,7 @@ class ModuleRow extends Component {
                                 )}
                               </ModuleAssignedUnit>
                             )}
-                            <Tags tags={moduleData.standards ? [moduleData.standards] : []} />
+                            <Tags tags={standardTags} />
                             <AssignmentIconsHolder>
                               <AssignmentIcon>
                                 <CustomIcon>

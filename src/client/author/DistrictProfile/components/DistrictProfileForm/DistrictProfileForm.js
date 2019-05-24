@@ -6,7 +6,7 @@ import { get } from "lodash";
 
 import { CopyToClipboard } from "react-copy-to-clipboard";
 
-import ImageUpload from "../../../Shared/Components/ImageUpload/ImageUpload";
+import ImageUpload from "../ImageUpload/ImageUpload";
 import EditableNameLabel from "../EditableNameLabel/EditableNameLabel";
 import EditableLabel from "../EditableLabel/EditableLabel";
 

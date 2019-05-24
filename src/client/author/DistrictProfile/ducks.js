@@ -14,7 +14,8 @@ const CREATE_DISTRICT_PROFILE_REQUEST = "[districtProfile] create data request";
 const CREATE_DISTRICT_PROFILE_SUCCESS = "[districtProfile] create data success";
 const CREATE_DISTRICT_PROFILE_ERROR = "[districtProfile] create data error";
 
-const SET_DISTRICT_PROFILE_VALUE = "[districtProfile] set dat value";
+const SET_DISTRICT_PROFILE_VALUE = "[districtProfile] set data value";
+const SET_IMAGE_LOADING_STATUS = "[districtProfile] set image uploading status";
 
 export const receiveDistrictProfileAction = createAction(RECEIVE_DISTRICT_PROFILE_REQUEST);
 export const receiveDistrictProfileSuccessAction = createAction(RECEIVE_DISTRICT_PROFILE_SUCCESS);
@@ -27,6 +28,7 @@ export const createDistrictProfileSuccessAction = createAction(CREATE_DISTRICT_P
 export const createDistrictProfileErrorAction = createAction(CREATE_DISTRICT_PROFILE_ERROR);
 
 export const setDistrictValueAction = createAction(SET_DISTRICT_PROFILE_VALUE);
+export const setImageUploadingStatusAction = createAction(SET_IMAGE_LOADING_STATUS);
 
 const initialState = {
   data: {},
@@ -35,7 +37,8 @@ const initialState = {
   updating: false,
   updateError: null,
   creating: false,
-  createError: null
+  createError: null,
+  imageUploading: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -74,6 +77,9 @@ export const reducer = createReducer(initialState, {
   [CREATE_DISTRICT_PROFILE_ERROR]: (state, { payload }) => {
     state.creating = false;
     state.createError = payload.error;
+  },
+  [SET_IMAGE_LOADING_STATUS]: (state, { payload }) => {
+    state.imageUploading = payload;
   }
 });
 

@@ -2,7 +2,12 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Tabs } from "antd";
-import { ManageSubscriptionByDistrict, ManageSubscriptionByUser, ManageSubscriptionBySchool } from "../Upgrade/Tabs";
+import {
+  ManageSubscriptionByDistrict,
+  ManageSubscriptionByUser,
+  ManageSubscriptionBySchool,
+  ManageSubscriptionByUserSegments
+} from "../Upgrade/Tabs";
 import {
   getDistrictDataAction,
   getDistrictDataSelector,
@@ -14,7 +19,8 @@ import {
   searchSchoolsByIdAction,
   getManageSubscriptionBySchoolData,
   bulkSchoolsSubscribeAction,
-  manageSubscriptionsBySchool
+  manageSubscriptionsBySchool,
+  upgradePartialPremiumUserAction
 } from "../Upgrade/ducks";
 
 const { TabPane } = Tabs;
@@ -28,9 +34,10 @@ function UpgradeUser({
   manageUsersData,
   selectDistrictAction,
   searchSchoolsByIdAction,
-  manageSchoolData: { searchedSchoolsData },
+  manageSchoolData: { searchedSchoolsData, partialPremiumData },
   bulkSchoolsSubscribeAction,
-  setPartialPremiumDataAction
+  setPartialPremiumDataAction,
+  upgradePartialPremiumUserAction
 }) {
   const [activeTab, setActiveTab] = useState("manageSubscriptionByDistrict");
   const onChangeTab = tabKey => setActiveTab(tabKey);
@@ -51,7 +58,7 @@ function UpgradeUser({
           searchSchoolsByIdAction={searchSchoolsByIdAction}
           bulkSchoolsSubscribeAction={bulkSchoolsSubscribeAction}
           changeTab={onChangeTab}
-          manageByUserSegmentTabKey="manageSubscriptionByUserSegment"
+          manageByUserSegmentTabKey="manageSubscriptionByUserSegments"
           setPartialPremiumDataAction={setPartialPremiumDataAction}
         />
       </TabPane>
@@ -63,7 +70,10 @@ function UpgradeUser({
         />
       </TabPane>
       <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments">
-        Labore officia voluptate fugiat occaecat occaecat amet eiusmod.
+        <ManageSubscriptionByUserSegments
+          partialPremiumData={partialPremiumData}
+          upgradePartialPremiumUserAction={upgradePartialPremiumUserAction}
+        />
       </TabPane>
     </Tabs>
   );
@@ -85,7 +95,8 @@ const withConnect = connect(
     selectDistrictAction: manageSubscriptionsBydistrict.actions.selectDistrict,
     searchSchoolsByIdAction,
     bulkSchoolsSubscribeAction,
-    setPartialPremiumDataAction: manageSubscriptionsBySchool.actions.setPartialPremiumData
+    setPartialPremiumDataAction: manageSubscriptionsBySchool.actions.setPartialPremiumData,
+    upgradePartialPremiumUserAction
   }
 );
 

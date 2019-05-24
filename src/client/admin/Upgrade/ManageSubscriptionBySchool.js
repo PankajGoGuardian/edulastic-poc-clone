@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Row, Col, Form, DatePicker, Button, Table } from "antd";
+import { Row, Col, Form, DatePicker, Button } from "antd";
 import moment from "moment";
 import NotesFormItem from "../Common/Form/NotesFormItem";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
+import { Table } from "../Common/StyledComponents";
 
 const { Column } = Table;
 const SearchSchoolByIdRadioOptions = {

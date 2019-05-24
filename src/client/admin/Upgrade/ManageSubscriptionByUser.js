@@ -1,8 +1,9 @@
 import React from "react";
-import { Row, Col, Form, Radio, Input, DatePicker, Button, Table, Icon } from "antd";
+import { Row, Col, Form, Radio, Input, DatePicker, Button, Icon } from "antd";
 import moment from "moment";
 import NotesFormItem from "../Common/Form/NotesFormItem";
 import { radioButtonUserData } from "../Data";
+import { Table } from "../Common/StyledComponents";
 
 const { TextArea } = Input;
 const { Group: RadioGroup } = Radio;

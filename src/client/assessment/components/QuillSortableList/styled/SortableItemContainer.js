@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue } from "@edulastic/colors";
+import { newBlue, inputBorder } from "@edulastic/colors";
 
 export const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
@@ -13,6 +13,11 @@ export const SortableItemContainer = styled.div`
     font-size: ${props => props.fontSize || "14px"};
   }
 
+  &:hover {
+    input {
+      border-color: ${inputBorder};
+    }
+  }
   & div.main {
     border-radius: 4px;
     border: 0;
@@ -33,6 +38,9 @@ export const SortableItemContainer = styled.div`
     font-size: 14px;
     font-weight: 500;
     padding-left: 7px;
+  }
+  input {
+    border-color: transparent;
   }
 `;
 

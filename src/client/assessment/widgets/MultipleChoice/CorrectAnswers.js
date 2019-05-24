@@ -133,7 +133,12 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <CorrectAnswersContainer>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab IconPosition="right" label={t("component.correctanswers.correct")} type="primary" />
+            <Tab
+              style={{ borderRadius: validation.alt_responses <= 1 ? "4px" : "4px 0 0 4px" }}
+              IconPosition="right"
+              label={t("component.correctanswers.correct")}
+              type="primary"
+            />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

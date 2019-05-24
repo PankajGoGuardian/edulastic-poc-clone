@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep } from "lodash";
+import _, { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
@@ -13,7 +13,6 @@ import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
-import _ from "lodash";
 
 class CorrectAnswers extends Component {
   constructor(props) {
@@ -32,14 +31,16 @@ class CorrectAnswers extends Component {
   };
 
   componentDidUpdate(prevProps) {
-    if (!_.isEqual(this.props.options, prevProps.options)) {
+    const { options } = this.props;
+
+    if (!_.isEqual(options, prevProps.options)) {
       const oldValue = this.props.validation.valid_response.value;
-      const diff = _.difference(prevProps.options, this.props.options);
+      const diff = _.difference(prevProps.options, options);
       if (oldValue.some(el => diff.includes(el))) {
         const index = prevProps.options.indexOf(diff[0]);
         const valueIndex = oldValue.indexOf(diff[0]);
         const newAnswers = _.cloneDeep(oldValue);
-        newAnswers[valueIndex] = this.props.options[index];
+        newAnswers[valueIndex] = options[index];
         this.updateCorrectValidationAnswers(newAnswers);
       }
     }
@@ -73,13 +74,14 @@ class CorrectAnswers extends Component {
     if (validation.alt_responses && validation.alt_responses.length) {
       return validation.alt_responses.map((res, i) => (
         <Tab
-          style={{ marginRight: 5, marginBottom: 5 }}
           key={i}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
           close
           onClose={evt => {
             this.removeAltResponse(evt, i);
           }}
+          type="primary"
+          IconPosition="right"
         />
       ));
     }
@@ -91,7 +93,14 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        style={{ minWidth: 70, marginBottom: 5 }}
+        style={{
+          minWidth: 20,
+          minHeight: 20,
+          width: 20,
+          padding: 0,
+          marginLeft: 20,
+          marginBottom: 5
+        }}
         icon={<IconPlus data-cy="alternative" />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
@@ -166,7 +175,11 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab style={{ marginBottom: 5, marginRight: 5 }} label={t("component.correctanswers.correct")} />
+            <Tab
+              style={{ borderRadius: validation.alt_responses <= 1 ? "4px" : "4px 0 0 4px" }}
+              label={t("component.correctanswers.correct")}
+              type="primary"
+            />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

@@ -552,7 +552,7 @@ export const themes = {
         inlineLabelColor: "#4aac8b", // greenDark
         correctCellInputWrapperBgColor: "#e1fbf2", // lightGreen
         incorrectCellInputWrapperBgColor: "#fbdfe7", // lightRed
-        tableStyledHeaderColor: "#4aac8b", // greenDark
+        tableStyledHeaderColor: "#1774F0", // greenDark
         styledTableBorderColor: "#e8e8e8",
         styledTableThBgColor: "#fff" // white
       },

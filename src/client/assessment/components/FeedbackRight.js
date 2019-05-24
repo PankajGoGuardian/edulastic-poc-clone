@@ -178,7 +178,7 @@ class FeedbackRight extends Component {
                 innerRef={this.scoreInput}
                 onKeyDown={this.arrowKeyHandler}
               />
-              <TextPara> {maxScore}</TextPara>
+              <TextPara>{maxScore}</TextPara>
             </ScoreInputWrapper>
           )}
         </StyledDivSec>

@@ -69,7 +69,7 @@ class LiveClassboardPage {
     return cy
       .get("[data-cy=studentnQuestionTab]")
       .contains("a", "CARD VIEW")
-      .click();
+      .click({ force: true });
   }
 
   clickOnStudentsTab() {

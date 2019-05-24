@@ -7,25 +7,77 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     this.rowAlias = "studentRow";
   }
 
-  getGridRowByStudent = student => cy.contains("div", student).closest("tr");
+  getGridRowByStudent = student =>
+    cy
+      .contains("div", student)
+      .closest("tr")
+      .as(this.rowAlias);
 
   getScoreInputBox = () => cy.get('[data-cy="scoreInput"]');
 
-  navigateByRightKey = () => this.getScoreInputBox().type("{rightarrow}");
+  waitForStudentData = () => {
+    cy.wait("@student").then(xhr => expect(xhr.status).to.eq(200));
+  };
 
-  navigateByLeftKey = () => this.getScoreInputBox().type("{leftarrow}");
+  routeAPIs = () => {
+    cy.server();
+    cy.route("GET", "**/student/**").as("student");
+  };
 
-  navigateByUpKey = () => this.getScoreInputBox().type("{uparrow}");
+  navigateByRightKey = () => {
+    this.getScoreInputBox().type("{rightarrow}");
+    this.waitForStudentData();
+  };
 
-  navigateByDownKey = () => this.getScoreInputBox().type("{downarrow}");
+  navigateByLeftKey = () => {
+    this.getScoreInputBox().type("{leftarrow}");
+    this.waitForStudentData();
+  };
 
-  clickOnPrevStudent = () => cy.contains("span", "PREV STUDENT").click();
+  navigateByUpKey = () => {
+    this.getScoreInputBox().type("{uparrow}");
+    this.waitForStudentData();
+  };
 
-  clickOnNextStudent = () => cy.contains("span", "NEXT STUDENT").click();
+  navigateByDownKey = () => {
+    this.getScoreInputBox().type("{downarrow}");
+    this.waitForStudentData();
+  };
 
-  clickOnPrevQuestion = () => cy.contains("span", "PREV QUESTION").click();
+  clickOnPrevStudent = () => {
+    cy.contains("span", "PREV STUDENT").click();
+    this.waitForStudentData();
+  };
 
-  clickOnNextQuestion = () => cy.contains("span", "NEXT QUESTION").click();
+  clickOnNextStudent = () => {
+    cy.contains("span", "NEXT STUDENT").click();
+    this.waitForStudentData();
+  };
+
+  clickOnPrevQuestion = () => {
+    cy.contains("span", "PREV QUESTION").click();
+    this.waitForStudentData();
+  };
+
+  clickOnNextQuestion = () => {
+    cy.contains("span", "NEXT QUESTION").click();
+    this.waitForStudentData();
+  };
+
+  getEditResponseToggle = () => cy.get("button.ant-switch");
+
+  clickOnExit = (updated = false) => {
+    if (updated) {
+      cy.get("#react-app").then(() => {
+        if (Cypress.$('[data-cy="exitbutton"]').length === 1) {
+          cy.server();
+          cy.route("GET", "**/test-activity").as("test-activity");
+          cy.get('[data-cy="exitbutton"]').click({ force: true });
+          cy.wait("@test-activity");
+        }
+      });
+    } else cy.get('[data-cy="exitbutton"]').click({ force: true });
+  };
 
   verifyScoreAndPerformance = (score, perf) => {
     cy.get(`@${this.rowAlias}`)
@@ -65,7 +117,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   };
 
   verifyScoreGrid(studentName, studentAttempts, score, perf, questionTypeMap) {
-    this.getGridRowByStudent(studentName).as(this.rowAlias);
+    this.getGridRowByStudent(studentName);
 
     this.verifyScoreAndPerformance(score, perf);
 
@@ -82,12 +134,135 @@ export default class ExpressGraderPage extends LiveClassboardPage {
     const { points } = questionTypeMap[queNum];
 
     Object.keys(studentAttempts).forEach(studentName => {
-      this.getGridRowByStudent(studentName).as(this.rowAlias);
+      this.getGridRowByStudent(studentName);
       const attemptType = studentAttempts[studentName];
-      console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      // console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
       this.verifyScoreForStudent(queNum, points, attemptType);
     });
 
     this.verifyScoreAndPerformanceForQueNum(queNum, score, perf);
+  };
+
+  verifyResponsesInGridStudentLevel = (studentName, studentAttempts, questionTypeMap, useKeyBoardKeys = false) => {
+    this.routeAPIs();
+    this.getGridRowByStudent(studentName);
+    // start from Q1 always
+    this.getScoreforQueNum("Q1").click();
+    this.waitForStudentData();
+
+    Object.keys(studentAttempts)
+      .sort()
+      .forEach((queNum, index, item) => {
+        const attemptType = studentAttempts[queNum];
+        const { queKey, attemptData, points } = questionTypeMap[queNum];
+        console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+        this.questionResponsePage.verifyQuestionResponseCard(
+          points,
+          queKey,
+          attemptType,
+          attemptData,
+          false,
+          studentName
+        );
+
+        if (index < item.length - 1) {
+          if (useKeyBoardKeys) this.navigateByRightKey();
+          else this.clickOnNextQuestion();
+        }
+      });
+
+    Object.keys(studentAttempts)
+      .sort()
+      .reverse()
+      .forEach((queNum, index, item) => {
+        const attemptType = studentAttempts[queNum];
+        const { queKey, attemptData, points } = questionTypeMap[queNum];
+        this.questionResponsePage.verifyQuestionResponseCard(
+          points,
+          queKey,
+          attemptType,
+          attemptData,
+          false,
+          studentName
+        );
+
+        if (index < item.length - 1) {
+          if (useKeyBoardKeys) this.navigateByLeftKey();
+          else this.clickOnPrevQuestion();
+        }
+      });
+
+    this.clickOnExit();
+  };
+
+  verifyResponsesInGridQuestionLevel = (queNum, studentAttempts, questionTypeMap, useKeyBoardKeys = false) => {
+    const studentList = Object.keys(studentAttempts).sort();
+
+    this.routeAPIs();
+    // start with 1st student always
+    this.getGridRowByStudent(studentList[0]);
+    this.getScoreforQueNum(queNum).click();
+    this.waitForStudentData();
+
+    studentList.forEach((studentName, index, item) => {
+      const attemptType = studentAttempts[studentName];
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      // console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
+
+      if (index < item.length - 1) {
+        if (useKeyBoardKeys) this.navigateByDownKey();
+        else this.clickOnNextStudent();
+      }
+    });
+
+    studentList.reverse().forEach((studentName, index, item) => {
+      const attemptType = studentAttempts[studentName];
+      const { queKey, attemptData, points } = questionTypeMap[queNum];
+      // console.log(` grid score -queKey ${queKey} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
+      this.questionResponsePage.verifyQuestionResponseCard(
+        points,
+        queKey,
+        attemptType,
+        attemptData,
+        false,
+        studentName
+      );
+
+      if (index < item.length - 1) {
+        if (useKeyBoardKeys) this.navigateByUpKey();
+        else this.clickOnPrevStudent();
+      }
+    });
+  };
+
+  verifyUpdateScore = (studentName, queNum, score) => {
+    let previousScore;
+    this.routeAPIs();
+    this.getGridRowByStudent(studentName);
+
+    this.getScoreforQueNum(queNum)
+      .then(ele => {
+        previousScore = ele.text();
+        cy.wrap(ele).click({ force: true });
+        this.waitForStudentData();
+        this.questionResponsePage.updateScoreForStudent(studentName, score);
+        this.clickOnExit(true);
+      })
+      .then(() => {
+        this.getScoreforQueNum(queNum)
+          .should("have.text", score)
+          .click({ force: true });
+        console.log("previousScore ::", previousScore);
+        this.questionResponsePage.updateScoreForStudent(studentName, previousScore);
+        this.clickOnExit(true);
+      });
   };
 }

@@ -39,7 +39,7 @@ const BottomNavigation = ({ prevStudent, nextStudent, prevQuestion, nextQuestion
         <StyledText>Edit Response</StyledText>
         <Switch defaultChecked />
       </EditResponse>
-      <CloseModal onClick={hideModal}>
+      <CloseModal data-cy="exitbutton" onClick={hideModal}>
         <Icon type="close" width={5} height={5} />
         <CloseModalText>EXIT</CloseModalText>
       </CloseModal>

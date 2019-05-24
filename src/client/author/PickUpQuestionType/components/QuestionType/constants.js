@@ -1790,7 +1790,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTText,
       stimulus: "",
       data: {
-        title: "",
+        title: "Equations & Inequalities",
         is_math: true,
         response_containers: [
           {

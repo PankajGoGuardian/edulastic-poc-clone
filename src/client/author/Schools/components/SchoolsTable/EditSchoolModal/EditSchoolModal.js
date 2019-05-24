@@ -7,7 +7,6 @@ import { schoolApi } from "@edulastic/api";
 class EditSchoolModal extends React.Component {
   constructor(props) {
     super(props);
-    console.log(this.props.schoolData._id);
     this.state = {
       nameValidate: {
         value: this.props.schoolData.name,

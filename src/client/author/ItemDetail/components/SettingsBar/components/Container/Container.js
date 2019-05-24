@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { Switch } from "antd";
 import ReactOutsideEvent from "react-outside-event";
 
 import { title } from "@edulastic/colors";
@@ -12,7 +13,6 @@ import SettingsBarTags from "../SettingsBarTags/SettingsBarTags";
 import SettingsBarUseTabs from "../SettingsBarUseTabs/SettingsBarUseTabs";
 import SettingsFlowLayout from "../SettingsFlowLayout/SettingFlowLayout";
 import { Content, Items, Checkboxes, Heading, SettingsButtonWrapper } from "./styled";
-import { Switch } from "antd";
 
 const layouts = [
   {
@@ -56,11 +56,14 @@ class Container extends Component {
     scrolling: PropTypes.bool.isRequired,
     onVerticalDividerChange: PropTypes.func.isRequired,
     onScrollingChange: PropTypes.func.isRequired,
-    useFlowLayoutRight: PropTypes.bool
+    useFlowLayoutRight: PropTypes.bool,
+    itemLevelScoring: PropTypes.bool,
+    setItemLevelScoring: PropTypes.func.isRequired
   };
 
   static defaultProps = {
-    useFlowLayoutRight: false
+    useFlowLayoutRight: false,
+    itemLevelScoring: false
   };
 
   handleCheckboxChange = name => () => {
@@ -116,7 +119,9 @@ class Container extends Component {
       verticalDivider,
       scrolling,
       onVerticalDividerChange,
-      onScrollingChange
+      onScrollingChange,
+      itemLevelScoring,
+      setItemLevelScoring
     } = this.props;
 
     return (
@@ -172,14 +177,7 @@ class Container extends Component {
         TODO: put this text in i18n namespace
         */}
         <Heading>Scoring</Heading>
-        Question Level{" "}
-        <Switch
-          onChange={v => {
-            this.props.setItemLevelScoring(v);
-          }}
-          checked={this.props.itemLevelScoring}
-        />{" "}
-        Item Level
+        Question Level <Switch onChange={v => setItemLevelScoring(v)} checked={itemLevelScoring} /> Item Level
       </Content>
     );
   }

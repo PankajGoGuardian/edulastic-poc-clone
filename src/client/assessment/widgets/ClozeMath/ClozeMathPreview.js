@@ -76,7 +76,7 @@ const ClozeMathPreview = ({
     }
   };
 
-  const _getAnswers = () =>
+  const _getMathAnswers = () =>
     item.validation.valid_response.value.map(res => {
       const method = res[0];
       if (method) {
@@ -84,6 +84,10 @@ const ClozeMathPreview = ({
       }
       return "";
     });
+
+  const _getDropDownAnswers = () => item.validation.valid_dropdown.value.map(res => res.value || "");
+
+  const _getTextInputAnswers = () => item.validation.valid_inputs.value.map(res => res.value || "");
 
   const replaceResponseButtons = () => {
     const MQ = window.MathQuill.getInterface(2);
@@ -383,7 +387,13 @@ const ClozeMathPreview = ({
               return <MathP key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
             })}
         </TemplateBox>
-        {type === SHOW && <AnswerBox answers={_getAnswers()} />}
+        {type === SHOW && (
+          <AnswerBox
+            mathAnswers={_getMathAnswers()}
+            dropdownAnswers={_getDropDownAnswers()}
+            textInputAnswers={_getTextInputAnswers()}
+          />
+        )}
         {showKeyboard && (
           <KeyboardWrapper>
             <MathKeyboard

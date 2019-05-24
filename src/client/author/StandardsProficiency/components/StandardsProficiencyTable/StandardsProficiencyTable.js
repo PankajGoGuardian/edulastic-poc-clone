@@ -313,15 +313,9 @@ class StandardsProficiencyTable extends React.Component {
           </InfoDiv>
           <SaveButtonDiv>
             {isChangeState && <SaveAlert>You have unsaved changes.</SaveAlert>}
-            {standardsProficiencyID.length == 0 ? (
-              <Button type="primary" onClick={this.saveScale}>
-                Create
-              </Button>
-            ) : (
-              <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
-                Save
-              </Button>
-            )}
+            <Button type="primary" onClick={this.saveScale} disabled={!isChangeState}>
+              Save
+            </Button>
           </SaveButtonDiv>
         </TopDiv>
 

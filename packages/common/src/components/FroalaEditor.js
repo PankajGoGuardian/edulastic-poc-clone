@@ -32,26 +32,6 @@ FroalaEditor.DefineIconTemplate(
 </SVG>`
 );
 
-const defaultConfig = {
-  toolbarButtons: [
-    "bold",
-    "italic",
-    "underline",
-    "strikeThrough",
-    "insertTable",
-    "|",
-    "paragraphFormat",
-    "align",
-    "undo",
-    "redo",
-    "math",
-    "html"
-  ],
-
-  tableResizerOffset: 10,
-  tableResizingLimit: 50
-};
-
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
   "7",
@@ -77,36 +57,56 @@ const numberPad = [
 ];
 
 let EditorRef = null;
-
 const NoneDiv = styled.div`
   position: absolute;
   opacity: 0;
 `;
 
-const CustomEditor = ({ value, onChange, tag }) => {
+const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
   const mathFieldRef = useRef(null);
-
   const [showMathModal, setMathModal] = useState(false);
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
 
-  defaultConfig.events = {
-    click: evt => {
-      const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
-      if (closestMathParent) {
-        setCurrentLatex(closestMathParent.getAttribute("data-latex"));
-        setCurrentMathEl(closestMathParent);
-        setMathModal(true);
-      } else {
-        setCurrentLatex("");
-        setCurrentMathEl(null);
+  const config = Object.assign(
+    {
+      toolbarButtons: [
+        "bold",
+        "italic",
+        "underline",
+        "strikeThrough",
+        "insertTable",
+        "|",
+        "paragraphFormat",
+        "align",
+        "undo",
+        "redo",
+        "math",
+        "insertImage"
+      ],
+
+      tableResizerOffset: 10,
+      tableResizingLimit: 50,
+      events: {
+        click: evt => {
+          const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
+          if (closestMathParent) {
+            setCurrentLatex(closestMathParent.getAttribute("data-latex"));
+            setCurrentMathEl(closestMathParent);
+            setMathModal(true);
+          } else {
+            setCurrentLatex("");
+            setCurrentMathEl(null);
+          }
+        },
+        keyup: evt => {
+          // Add deletion logic here.
+          // console.log("evt: ", evt);
+        }
       }
     },
-    keyup: evt => {
-      // Add deletion logic here.
-      console.log("evt: ", evt);
-    }
-  };
+    restOptions
+  );
 
   useEffect(() => {
     // sample extension of custom buttons
@@ -173,7 +173,7 @@ const CustomEditor = ({ value, onChange, tag }) => {
         tag={tag}
         model={value}
         onModelChange={setChange}
-        config={defaultConfig}
+        config={config}
         onManualControllerReady={manualControl}
       />
       <NoneDiv>

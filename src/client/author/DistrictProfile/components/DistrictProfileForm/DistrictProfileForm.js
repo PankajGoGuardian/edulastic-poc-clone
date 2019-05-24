@@ -227,6 +227,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 type={"text"}
                 ref={this.childRefArr[1].component}
+                isSpaceEnable={false}
               />
               <Popover
                 trigger="click"
@@ -249,6 +250,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 type={"text"}
                 ref={this.childRefArr[2].component}
+                isSpaceEnable={true}
               />
             </StyledRow>
             <StyledRow>
@@ -261,6 +263,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 type={"text"}
                 ref={this.childRefArr[3].component}
+                isSpaceEnable={true}
               />
             </StyledRow>
             <StyledRow>
@@ -273,6 +276,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 type={"number"}
                 ref={this.childRefArr[4].component}
+                isSpaceEnable={true}
               />
             </StyledRow>
             <StyledRow>
@@ -285,6 +289,7 @@ class DistrictProfileForm extends React.Component {
                 updateEditing={this.setEditing}
                 type={"text"}
                 ref={this.childRefArr[5].component}
+                isSpaceEnable={true}
               />
             </StyledRow>
             <StyledRowLogo>

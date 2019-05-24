@@ -49,12 +49,13 @@ class EditableLabel extends React.Component {
       editing: false,
       value: value.toString().trim()
     });
-    const { valueName, setProfileValue } = this.props;
-    setProfileValue(valueName, value.toString().trim());
+    const { valueName, setProfileValue, isSpaceEnable } = this.props;
+    if (isSpaceEnable) setProfileValue(valueName, value.toString().replace(/\s\s+/g, " "));
+    else setProfileValue(valueName, value.toString().trim());
   };
 
   handleChange = e => {
-    const { valueName, maxLength, requiredStatus, type } = this.props;
+    const { valueName, maxLength, requiredStatus, type, isSpaceEnable } = this.props;
     let validateStatus = "success";
     let validateMsg = "";
 
@@ -69,7 +70,7 @@ class EditableLabel extends React.Component {
     }
 
     if (type === "number") {
-      var isnum = /^\d+$/.test(e.target.value);
+      var isnum = /^(?=.*\d)[\d ]+$/.test(e.target.value);
       if (!isnum) {
         validateStatus = "error";
         validateMsg = "Please input number";
@@ -82,7 +83,8 @@ class EditableLabel extends React.Component {
       validateMsg
     });
 
-    this.props.setProfileValue(valueName, e.target.value.toString().trim());
+    if (isSpaceEnable) this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s\s+/g, " "));
+    else this.props.setProfileValue(valueName, e.target.value.toString().trim());
   };
 
   onClickLabel = () => {

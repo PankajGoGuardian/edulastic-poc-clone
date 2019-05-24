@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
@@ -10,6 +11,7 @@ import Editor from "react-froala-wysiwyg";
 
 import MathModal from "./MathModal";
 import { withMathFormula } from "../HOC/withMathFormula";
+
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-command-id");
@@ -76,8 +78,35 @@ const numberPad = [
 
 let EditorRef = null;
 
+const NoneDiv = styled.div`
+  position: absolute;
+  opacity: 0;
+`;
+
 const CustomEditor = ({ value, onChange, tag }) => {
+  const mathFieldRef = useRef(null);
+
   const [showMathModal, setMathModal] = useState(false);
+  const [currentLatex, setCurrentLatex] = useState("");
+  const [currentMathEl, setCurrentMathEl] = useState(null);
+
+  defaultConfig.events = {
+    click: evt => {
+      const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
+      if (closestMathParent) {
+        setCurrentLatex(closestMathParent.getAttribute("data-latex"));
+        setCurrentMathEl(closestMathParent);
+        setMathModal(true);
+      } else {
+        setCurrentLatex("");
+        setCurrentMathEl(null);
+      }
+    },
+    keyup: evt => {
+      // Add deletion logic here.
+      console.log("evt: ", evt);
+    }
+  };
 
   useEffect(() => {
     // sample extension of custom buttons
@@ -88,7 +117,10 @@ const CustomEditor = ({ value, onChange, tag }) => {
       focus: false,
       undo: false,
       refreshAfterCallback: false,
-      callback: function() {
+      callback() {
+        EditorRef.selection.save();
+        setCurrentLatex("");
+        setCurrentMathEl(null);
         setMathModal(true);
       }
     });
@@ -97,11 +129,20 @@ const CustomEditor = ({ value, onChange, tag }) => {
   const setMathValue = latex => {
     const MQ = window.MathQuill.getInterface(2);
 
-    const el = document.createElement("span");
-    el.setAttribute("data-latex", latex);
-    const mathfield = MQ.StaticMath(el);
+    const mathfield = MQ.StaticMath(mathFieldRef.current);
     mathfield.latex(latex);
-    EditorRef.html.insert(el.outerHTML);
+    EditorRef.selection.restore();
+    if (currentMathEl) {
+      currentMathEl.innerHTML = mathFieldRef.current.innerHTML;
+      currentMathEl.setAttribute("data-latex", latex);
+    } else {
+      EditorRef.html.insert(
+        `<span data-latex="${latex}" contenteditable="false" class="mq-math-mode">${
+          mathFieldRef.current.innerHTML
+        }</span>`
+      );
+    }
+
     setMathModal(false);
   };
 
@@ -124,6 +165,7 @@ const CustomEditor = ({ value, onChange, tag }) => {
         symbols={symbols}
         numberPad={numberPad}
         showResposnse={false}
+        value={currentLatex}
         onSave={setMathValue}
         onClose={closeMathModal}
       />
@@ -134,6 +176,9 @@ const CustomEditor = ({ value, onChange, tag }) => {
         config={defaultConfig}
         onManualControllerReady={manualControl}
       />
+      <NoneDiv>
+        <span ref={mathFieldRef} className="input__math__field" />
+      </NoneDiv>
     </>
   );
 };

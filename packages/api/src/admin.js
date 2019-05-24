@@ -1,4 +1,5 @@
 import API from "./utils/API";
+import { message } from "antd";
 
 const api = new API();
 const prefix = "/clever/";
@@ -139,12 +140,22 @@ const manageSubscription = data =>
       method: "post",
       data
     })
-    .then(({ data: response }) => response);
+    .then(({ data: response }) => response)
+    .catch(({ data: errorData }) => message.error(errorData.message));
 
 const searchUsersByEmailIds = data =>
   api
     .callApi({
       url: `/search/users/by-emails`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
+
+const searchSchoolsById = data =>
+  api
+    .callApi({
+      url: `/search/schools`,
       method: "post",
       data
     })
@@ -166,5 +177,6 @@ export default {
   logsDataApi,
   getUsersDataApi,
   manageSubscription,
-  searchUsersByEmailIds
+  searchUsersByEmailIds,
+  searchSchoolsById
 };

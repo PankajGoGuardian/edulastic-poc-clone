@@ -70,7 +70,8 @@ class Authoring extends Component {
 
   state = {
     isColorPickerVisible: false,
-    imageWidth: this.props.item.imageWidth > 0 ? this.props.item.imageWidth : 600
+    imageWidth:
+      this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
 
   componentDidMount = () => {
@@ -184,8 +185,8 @@ class Authoring extends Component {
     const that = this;
     img.addEventListener("load", function() {
       const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (width => {
-        that.onItemPropChange("imageWidth", width);
+      (wid => {
+        that.onItemPropChange("imageWidth", wid);
       })(width);
     });
     img.src = url;
@@ -240,9 +241,15 @@ class Authoring extends Component {
                 <ImageWidthInput
                   ref={this.imageWidthEditor}
                   data-cy="image-width-input"
-                  value={this.props.item.imageWidth > 0 ? this.props.item.imageWidth : 600}
+                  value={
+                    this.props.item.imageWidth > 0
+                      ? this.props.item.imageWidth >= 700
+                        ? 700
+                        : this.props.item.imageWidth
+                      : 700
+                  }
                   onChange={event => {
-                    this.onItemPropChange("imageWidth", event);
+                    this.onItemPropChange("imageWidth", event > 0 ? (event >= 700 ? 700 : event) : 700);
                   }}
                 />
 

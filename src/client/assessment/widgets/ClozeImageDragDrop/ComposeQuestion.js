@@ -164,8 +164,8 @@ class ComposeQuestion extends Component {
     const that = this;
     img.addEventListener("load", function() {
       const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (width => {
-        that.onItemPropChange("imageWidth", width);
+      (wid => {
+        that.onItemPropChange("imageWidth", wid);
       })(width);
     });
     img.src = url;
@@ -226,9 +226,9 @@ class ComposeQuestion extends Component {
             <InputNumber
               ref={this.imageWidthEditor}
               data-cy="image-width-input"
-              value={imageWidth > 0 ? imageWidth : 600}
+              value={imageWidth > 0 ? (imageWidth >= 700 ? 700 : imageWidth) : 700}
               onChange={event => {
-                this.onItemPropChange("imageWidth", event);
+                this.onItemPropChange("imageWidth", event > 0 ? (event >= 700 ? 700 : event) : 700);
               }}
             />
 

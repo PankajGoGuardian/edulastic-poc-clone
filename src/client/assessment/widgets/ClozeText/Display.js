@@ -40,11 +40,23 @@ class ClozeTextDisplay extends Component {
 
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
-      const { templateParts } = this.getTemplateParts(nextProps);
-      this.setState({
-        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
-        templateParts
-      });
+      const { onChange: changeAnswers } = this.props;
+      const { userAnswers } = this.state;
+
+      const { templateParts, respLength } = this.getTemplateParts(nextProps);
+      const newUserAnswers = new Array(respLength).fill("");
+      if (userAnswers.length !== respLength) {
+        changeAnswers(newUserAnswers);
+        this.setState({
+          userAnswers: newUserAnswers,
+          templateParts
+        });
+      } else {
+        this.setState({
+          userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
+          templateParts
+        });
+      }
     }
   }
 

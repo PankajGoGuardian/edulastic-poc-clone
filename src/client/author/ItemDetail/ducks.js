@@ -351,6 +351,10 @@ export function reducer(state = initialState, { type, payload }) {
       };
 
     case REMOVE_QUESTION_BY_ID:
+      const currentScore = (state.item && state.item.itemLevelScore) || 0;
+      if (currentScore <= 1) {
+        return state;
+      }
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) - 1 }

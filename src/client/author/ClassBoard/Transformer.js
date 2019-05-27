@@ -97,7 +97,7 @@ export const transformGradeBookResponse = ({
   testQuestionActivities
 }) => {
   const testItemIds = test.testItems;
-  const testItemsDataKeyed = keyBy(testItemsData, "_id");
+  const testItemsDataKeyed = keyBy(testItemsData, "origTestItemId");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
 
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
@@ -178,7 +178,8 @@ export const transformGradeBookResponse = ({
           timeSpent,
           disabled,
           testItemId,
-          qids: _qids
+          qids: _qids,
+          testActivityId
         };
       });
 

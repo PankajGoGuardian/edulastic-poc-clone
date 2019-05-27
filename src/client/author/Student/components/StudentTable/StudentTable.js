@@ -21,13 +21,16 @@ import {
 import AddStudentModal from "./AddStudentModal/AddStudentModal";
 import EditStudentModal from "./EditStudentModal/EditStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
+import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
 
 import {
   receiveStudentsListAction,
   updateStudentAction,
   deleteStudentAction,
   setSearchNameAction,
-  setFiltersAction
+  setFiltersAction,
+  addMultiStudentsRequestAction,
+  setStudentsDetailsModalVisibleAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
@@ -291,13 +294,18 @@ class StudentTable extends React.Component {
     this.setState({
       inviteStudentModalVisible: false
     });
-    console.log(inviteStudentList);
+    const { addMultiStudents, userOrgId } = this.props;
+    addMultiStudents({ districtId: userOrgId, data: inviteStudentList });
   };
 
   closeInviteStudentModal = () => {
     this.setState({
       inviteStudentModalVisible: false
     });
+  };
+
+  closeStudentsDetailModal = () => {
+    this.props.setStudentsDetailsModalVisible(false);
   };
 
   searchByName = e => {
@@ -328,7 +336,7 @@ class StudentTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { schoolsData, classList } = this.props;
+    const { schoolsData, classList, studentDetailsModalVisible } = this.props;
     const selectedStudents = dataSource.filter(item => item.key == editStudentKey);
 
     const actionMenu = (
@@ -349,11 +357,13 @@ class StudentTable extends React.Component {
           <Button type="primary" onClick={this.showInviteStudentModal}>
             + Add Multiple Students
           </Button>
-          <InviteMultipleStudentModal
-            modalVisible={inviteStudentModalVisible}
-            inviteStudents={this.sendInviteStudent}
-            closeModal={this.closeInviteStudentModal}
-          />
+          {inviteStudentModalVisible && (
+            <InviteMultipleStudentModal
+              modalVisible={inviteStudentModalVisible}
+              inviteStudents={this.sendInviteStudent}
+              closeModal={this.closeInviteStudentModal}
+            />
+          )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
 
           <StyledActionDropDown overlay={actionMenu}>
@@ -398,14 +408,18 @@ class StudentTable extends React.Component {
             closeModal={this.closeEditStudentModal}
           />
         )}
-
-        <AddStudentModal
-          modalVisible={addStudentModalVisible}
-          addStudent={this.addStudent}
-          closeModal={this.closeAddStudentModal}
-          schoolsData={schoolsData}
-          classData={classList}
-        />
+        {addStudentModalVisible && (
+          <AddStudentModal
+            modalVisible={addStudentModalVisible}
+            addStudent={this.addStudent}
+            closeModal={this.closeAddStudentModal}
+            schoolsData={schoolsData}
+            classData={classList}
+          />
+        )}
+        {studentDetailsModalVisible && (
+          <StudentsDetailsModal modalVisible={studentDetailsModalVisible} closeModal={this.closeStudentsDetailModal} />
+        )}
       </StyledTableContainer>
     );
   }
@@ -417,7 +431,8 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       studentsList: getStudentsListSelector(state),
       schoolsData: getSchoolsSelector(state),
-      classList: get(state, ["classesReducer", "data"], [])
+      classList: get(state, ["classesReducer", "data"], []),
+      studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false)
     }),
     {
       createStudent: createStudentAction,
@@ -427,7 +442,9 @@ const enhance = compose(
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
       loadSchoolsData: receiveSchoolsAction,
-      loadClassList: receiveClassListAction
+      loadClassList: receiveClassListAction,
+      addMultiStudents: addMultiStudentsRequestAction,
+      setStudentsDetailsModalVisible: setStudentsDetailsModalVisibleAction
     }
   )
 );

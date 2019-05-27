@@ -80,6 +80,15 @@ const resetPassword = data =>
     data
   });
 
+const addMultipleStudents = ({ districtId, data }) =>
+  api
+    .callApi({
+      url: `${prefix}/${districtId}/students`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   getUser,
   fetchUsers,
@@ -89,5 +98,6 @@ export default {
   getProxyUser,
   getSwitchedToken,
   changeUserTTS,
-  resetPassword
+  resetPassword,
+  addMultipleStudents
 };

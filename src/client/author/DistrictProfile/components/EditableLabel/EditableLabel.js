@@ -34,7 +34,7 @@ class EditableLabel extends React.Component {
 
   onInputBlur = () => {
     const { value, validateStatus } = this.state;
-    const { requiredStatus } = this.props;
+    const { requiredStatus, valueName, setProfileValue, isSpaceEnable } = this.props;
 
     if (validateStatus === "error") return;
     if (value.length == 0 && requiredStatus) {
@@ -46,12 +46,11 @@ class EditableLabel extends React.Component {
     }
 
     this.setState({
-      editing: false,
-      value: value.toString().trim()
+      editing: false
     });
-    const { valueName, setProfileValue, isSpaceEnable } = this.props;
+
     if (isSpaceEnable) setProfileValue(valueName, value.toString().replace(/\s\s+/g, " "));
-    else setProfileValue(valueName, value.toString().trim());
+    else setProfileValue(valueName, value.toString().replace(/\s/g, ""));
   };
 
   handleChange = e => {
@@ -84,7 +83,7 @@ class EditableLabel extends React.Component {
     });
 
     if (isSpaceEnable) this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s\s+/g, " "));
-    else this.props.setProfileValue(valueName, e.target.value.toString().trim());
+    else this.props.setProfileValue(valueName, e.target.value.toString().replace(/\s/g, ""));
   };
 
   onClickLabel = () => {

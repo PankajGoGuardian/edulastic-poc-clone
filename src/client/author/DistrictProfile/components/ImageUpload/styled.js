@@ -16,7 +16,8 @@ export const StyledUpload = styled.div`
   height: ${props => props.height};
   overflow: hidden;
   cursor: pointer;
-  border: ${props => (props.isVisible ? "1px dashed #d9d9d9" : "none")} input {
+  border: ${props => (props.isVisible ? "1px dashed #d9d9d9" : "none")};
+  input {
     display: none !important;
   }
 

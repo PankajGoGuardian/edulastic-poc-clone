@@ -19,7 +19,13 @@ const signup = data =>
       method: "post",
       data
     })
-    .then(result => result.data.result);
+    .then(result => result.data);
+
+const signupWithGoogle = () =>
+  api.callApi({
+    url: `${prefix}/login-google`,
+    method: "post"
+  });
 
 const getGoogleAuth = () =>
   api.callApi({
@@ -40,5 +46,6 @@ export default {
   login,
   signup,
   getGoogleAuth,
-  checkUserExist
+  checkUserExist,
+  signupWithGoogle
 };

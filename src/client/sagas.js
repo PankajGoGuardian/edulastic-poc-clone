@@ -5,7 +5,8 @@ import {
   skillReportSaga,
   studentAssignmentsSaga,
   authenticationSaga,
-  testActivityReportSaga
+  testActivityReportSaga,
+  signupSaga
 } from "./student/sagas";
 import authorSagas from "./author/src/sagas";
 import assessmentSagas from "./assessment/sagas";
@@ -22,6 +23,7 @@ export default function*() {
     ...authorSagas,
     ...assessmentSagas,
     ...adminSagas,
-    CurriculumSequenceSaga()
+    CurriculumSequenceSaga(),
+    signupSaga()
   ]);
 }

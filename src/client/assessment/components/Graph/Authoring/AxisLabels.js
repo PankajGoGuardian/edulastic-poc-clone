@@ -33,7 +33,7 @@ class GraphAxisLabels extends Component {
 
   handleQuestionsChange = (index, value) => {
     const { setQuestionData, graphData } = this.props;
-    const labels = clone(graphData.list);
+    const labels = cloneDeep(graphData.list);
 
     labels[index].text = value;
     setQuestionData({ ...graphData, list: labels });
@@ -41,7 +41,7 @@ class GraphAxisLabels extends Component {
 
   handleDeleteQuestion = index => {
     const { setQuestionData, graphData } = this.props;
-    const filteredItems = clone(graphData.list).filter((q, i) => i !== index);
+    const filteredItems = cloneDeep(graphData.list).filter((q, i) => i !== index);
 
     setQuestionData({ ...graphData, list: filteredItems });
   };

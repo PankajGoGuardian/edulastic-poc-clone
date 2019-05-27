@@ -6,6 +6,7 @@ import testItem from "./sharedDucks/TestItem";
 import testFeedback from "./TestAcitivityReport/ducks";
 
 import user from "./Login/ducks";
+import signup from "./Signup/duck";
 
 const studentReducer = {
   ui,
@@ -14,7 +15,8 @@ const studentReducer = {
   testFeedback,
   studentReport: studentReportReducer,
   studentAssignment: studentAssignmentReducer,
-  studentTestItems: testItem
+  studentTestItems: testItem,
+  signup
 };
 
 export default studentReducer;

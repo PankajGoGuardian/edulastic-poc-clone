@@ -48,13 +48,13 @@ export default function Tools(props) {
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
       <ToolbarLeft>
         {uiTools.map(
-          uiTool =>
+          (uiTool, i) =>
             !uiTool.group && (
               <ToolBtn
                 style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
                 className={isActive(uiTool) ? "active" : ""}
                 onClick={() => onSelect(uiTool)}
-                key={Math.random().toString(36)}
+                key={`tool-btn-${i}`}
               >
                 <ToolbarItem>
                   <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
@@ -69,11 +69,11 @@ export default function Tools(props) {
               </ToolBtn>
             )
         )}
-        {uiTools.map(uiTool =>
+        {uiTools.map((uiTool, i) =>
           uiTool.group
             ? uiTool.group[0] && (
                 <Dropdown
-                  key={Math.random().toString(36)}
+                  key={`tools-group-${i}`}
                   list={uiTool.group}
                   resetThenSet={resetThenSet}
                   currentTool={tool}
@@ -86,8 +86,9 @@ export default function Tools(props) {
       </ToolbarLeft>
 
       <ToolbarRight>
-        {controls.map(control => (
+        {controls.map((control, i) => (
           <ToolBtn
+            key={`control-${i}`}
             className={isActiveControl(control) ? "active" : ""}
             onClick={() => getHandlerByControlName(control)}
             style={{ width: fontSize > 20 ? 105 : 93 }}

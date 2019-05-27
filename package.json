@@ -57,6 +57,7 @@
     "jsxgraph": "^0.99.7",
     "loaderjs": "^1.0.0",
     "lodash": "^4.17.11",
+    "mathjs": "^5.8.0",
     "mathquill": "^0.10.1-a",
     "memoize-one": "^5.0.4",
     "mqtt": "^2.18.8",

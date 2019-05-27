@@ -3,28 +3,85 @@ import { pick, last } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { authApi, userApi, TokenStorage } from "@edulastic/api";
+import { message } from "antd";
+import { roleuser } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction } from "../../author/Playlist/ducks";
-import { message } from "antd";
-import { roleuser } from "@edulastic/constants";
 
-//types
+// types
 export const LOGIN = "[auth] login";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
+export const SINGUP_SUCCESS = "[auth] signup success";
 export const FETCH_USER = "[auth] fetch user";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
 
-//actions
+// actions
 export const loginAction = createAction(LOGIN);
 export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
+export const signupSuccessAction = createAction(SINGUP_SUCCESS);
 export const fetchUserAction = createAction(FETCH_USER);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
+
+const initialState = {
+  isAuthenticated: false,
+  authenticating: true,
+  signupStatus: 0
+};
+
+const setUser = (state, { payload }) => {
+  state.user = payload;
+  state.isAuthenticated = true;
+  state.authenticating = false;
+  state.signupStatus = payload.currentSignUpState || 3;
+};
+
+export default createReducer(initialState, {
+  [SET_USER]: setUser,
+  [CHANGE_CLASS]: (state, { payload }) => {
+    if (!(state.user && state.user.orgData)) {
+      return state;
+    }
+    state.user.orgData.defaultClass = payload;
+  },
+  [FETCH_USER]: state => {
+    state.isAuthenticated = false;
+    state.authenticating = true;
+  },
+  [SINGUP_SUCCESS]: setUser
+});
+
+export const getClasses = createSelector(
+  ["user.user.orgData.classList"],
+  classes => classes
+);
+
+export const getCurrentGroup = createSelector(
+  ["user.user.orgData.defaultClass"],
+  r => r
+);
+
+export const getCurrentSchool = createSelector(
+  ["user.user.orgData.defaultSchool"],
+  r => r
+);
+
+export const getUserRole = createSelector(
+  ["user.user.role"],
+  r => r
+);
+
+export const getUserFeatures = createSelector(
+  ["user.user.features"],
+  features => features
+);
+
+const routeSelector = state => state.router.location.pathname;
 
 function* login({ payload }) {
   try {
@@ -60,7 +117,12 @@ function* signup({ payload }) {
     const nameList = name.split(" ");
     let firstName;
     let lastName;
-    if (nameList.length > 1) {
+    let middleName;
+    if (nameList.length > 2) {
+      firstName = nameList.slice(0, -1).join(" ");
+      middleName = nameList.slice(1, -1).join(" ");
+      lastName = last(nameList);
+    } else if (nameList.length > 1) {
       lastName = last(nameList);
       firstName = nameList.slice(0, -1).join(" ");
     } else {
@@ -70,11 +132,18 @@ function* signup({ payload }) {
       password,
       email,
       firstName,
+      middleName,
       lastName,
       role
     };
-    yield call(authApi.signup, obj);
-    yield put(push("/login"));
+    const response = yield call(authApi.signup, obj);
+    const { message: _responseMsg, result } = response;
+    if (_responseMsg && !result) {
+      yield call(message.error, _responseMsg);
+    } else {
+      yield put(signupSuccessAction(result));
+      yield put(push("/"));
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Email already exist";
@@ -83,7 +152,7 @@ function* signup({ payload }) {
 }
 
 const getCurrentPath = () => {
-  const location = window.location;
+  const { location } = window;
   return `${location.pathname}${location.search}${location.hash}`;
 };
 
@@ -141,55 +210,3 @@ export function* watcherSaga() {
   yield takeLatest(FETCH_USER, fetchUser);
   yield takeLatest(CHANGE_CLASS, changeClass);
 }
-
-const initialState = {
-  isAuthenticated: false,
-  authenticating: true
-};
-
-const setUser = (state, { payload }) => {
-  state.user = payload;
-  state.isAuthenticated = true;
-  state.authenticating = false;
-};
-
-export default createReducer(initialState, {
-  [SET_USER]: setUser,
-  [CHANGE_CLASS]: (state, { payload }) => {
-    if (!(state.user && state.user.orgData)) {
-      return state;
-    }
-    state.user.orgData.defaultClass = payload;
-  },
-  [FETCH_USER]: (state, { payload }) => {
-    state.isAuthenticated = false;
-    state.authenticating = true;
-  }
-});
-
-export const getClasses = createSelector(
-  ["user.user.orgData.classList"],
-  classes => classes
-);
-
-export const getCurrentGroup = createSelector(
-  ["user.user.orgData.defaultClass"],
-  r => r
-);
-
-export const getCurrentSchool = createSelector(
-  ["user.user.orgData.defaultSchool"],
-  r => r
-);
-
-export const getUserRole = createSelector(
-  ["user.user.role"],
-  r => r
-);
-
-export const getUserFeatures = createSelector(
-  ["user.user.features"],
-  features => features
-);
-
-const routeSelector = state => state.router.location.pathname;

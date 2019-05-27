@@ -4,7 +4,7 @@ import { getUserFeatures } from "../../student/Login/ducks";
 
 /**
  *
- * @param {features: object, feature: string, children: JSX, actionOnInaccessible: "disabled"|"hidden"} props
+ * @param {{features: object, feature: string, children: JSX, actionOnInaccessible: "disabled"|"hidden"}} props
  */
 const FeatureWrapper = props => {
   let { features, feature, children, actionOnInaccessible } = props;

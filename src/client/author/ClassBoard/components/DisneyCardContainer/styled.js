@@ -155,7 +155,7 @@ const SquareColorDiv = styled.div`
   display: inline-block;
   width: ${props => ((props.weight || 1) > 1 ? 2 * 23 + 1 : 23)}px;
   height: 8px;
-  margin: 1px 1px 0px 0px;
+  margin: 1px 2px 0px 0px;
 `;
 
 export const SquareColorDivGreen = styled(SquareColorDiv)`

@@ -108,7 +108,7 @@ class GraphToolsParams extends Component {
         <ToolSubTitle data-cy="toolSubTitle">Default Group</ToolSubTitle>
         {toolbar.tools.map((tool, i) =>
           !Array.isArray(tool) ? (
-            <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
+            <React.Fragment key={`default-group-tool-${i}`}>
               <ToolSelect>
                 <Tool
                   value={tool}
@@ -176,7 +176,7 @@ class GraphToolsParams extends Component {
     return (
       <React.Fragment>
         {toolGroups.map((toolGroup, i) => (
-          <Col md={12} marginBottom="40px" key={`${i}-${Math.random().toString(36)}`}>
+          <Col md={12} marginBottom="40px" key={`tool-group-${i}`}>
             <ToolSubTitle data-cy="toolSubTitle">
               {`Group ${i + 1}`}
               <DeleteButton
@@ -191,7 +191,7 @@ class GraphToolsParams extends Component {
             </ToolSubTitle>
 
             {toolGroup.tools.map((innerTool, innerIndex) => (
-              <React.Fragment key={`${i}-${innerIndex}-${Math.random().toString(36)}`}>
+              <React.Fragment key={`group-${i}-item-${innerIndex}`}>
                 <ToolSelect>
                   <Tool
                     countOfSingleTools={toolGroup.tools.length}

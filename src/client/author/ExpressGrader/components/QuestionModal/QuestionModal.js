@@ -129,8 +129,8 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData } = this.props;
-    const { rowIndex, colIndex, loaded } = this.state;
+    const { isVisibleModal, tableData, record } = this.props;
+    const { rowIndex, colIndex, loaded, row } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
       question = tableData[rowIndex][`Q${colIndex}`];
@@ -156,7 +156,7 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <React.Fragment>
             <QuestionWrapper>
-              <Question record={question} qIndex={colIndex} student={student} />
+              <Question record={question} key={question.id} qIndex={colIndex} student={student} />
             </QuestionWrapper>
             <BottomNavigationWrapper>
               <BottomNavigation

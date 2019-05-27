@@ -26,7 +26,7 @@ class DistrictProfile extends Component {
           <AdminHeader title={title} active={menuActive} history={history} />
           <StyledContent>
             <StyledLayout>
-              {(updating || loading || creating, imageUploading) && (
+              {(updating || loading || creating || imageUploading) && (
                 <SpinContainer>
                   <StyledSpin size="large" />
                 </SpinContainer>

@@ -302,16 +302,52 @@ class AxisLabelsMoreOptions extends Component {
 
         <QuestionSection section="advanced" label="Ticks" cleanSections={cleanSections} fillSections={fillSections}>
           <Subtitle>{t("component.graphing.ticksoptionstitle")}</Subtitle>
-
+          <Row gutter={60}>
+            <Col md={12}>
+              <Label>{t("component.graphing.ticksoptions.tickdistance")}</Label>
+              <MoreOptionsInput
+                type="text"
+                name="ticksDistance"
+                placeholder="1, 1/2, 1 1/2"
+                onChange={this.handleNumberlineInputChange}
+                value={numberlineAxis.ticksDistance}
+              />
+            </Col>
+            <Col md={12}>
+              <Label>{t("component.graphing.ticksoptions.minorTicks")}</Label>
+              <MoreOptionsInput
+                type="text"
+                name="minorTicks"
+                onChange={this.handleNumberlineInputChange}
+                value={numberlineAxis.minorTicks}
+              />
+            </Col>
+          </Row>
           <Row gutter={60}>
             <Col md={12}>
               <Row>
-                <Col md={24}>
+                <Col md={24} marginBottom="0px">
                   <Checkbox
                     label={t("component.graphing.ticksoptions.showticks")}
                     name="showTicks"
                     onChange={() => this.handleNumberlineCheckboxChange("showTicks", numberlineAxis.showTicks)}
                     checked={numberlineAxis.showTicks}
+                  />
+                </Col>
+                <Col md={24} marginBottom="0px">
+                  <Checkbox
+                    label={t("component.graphing.labelsoptions.showmax")}
+                    name="showMax"
+                    onChange={() => this.handleNumberlineCheckboxChange("showMax", numberlineAxis.showMax)}
+                    checked={numberlineAxis.showMax}
+                  />
+                </Col>
+                <Col md={24} marginBottom="0px">
+                  <Checkbox
+                    label={t("component.graphing.labelsoptions.showmin")}
+                    name="showMin"
+                    onChange={() => this.handleNumberlineCheckboxChange("showMin", numberlineAxis.showMin)}
+                    checked={numberlineAxis.showMin}
                   />
                 </Col>
                 <Col md={12} marginBottom="0px">
@@ -325,40 +361,36 @@ class AxisLabelsMoreOptions extends Component {
               </Row>
             </Col>
             <Col md={12}>
-              <Label>{t("component.graphing.ticksoptions.fractionsformat")}</Label>
-              <Select style={{ width: "100%" }} onChange={this.changeFractionsFormat} value={currentFractionItem.label}>
-                {fractionsFormatList.map(option => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {t(option.label)}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-          </Row>
-          <Row gutter={60}>
-            <Col md={12}>
-              <Label>{t("component.graphing.ticksoptions.tickdistance")}</Label>
-              <MoreOptionsInput
-                type="text"
-                name="ticksDistance"
-                placeholder="1, 1/2, 1 1/2"
-                onChange={this.handleNumberlineInputChange}
-                value={numberlineAxis.ticksDistance}
-              />
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
-              <Select
-                style={{ width: "100%" }}
-                onChange={this.changeRenderingBase}
-                value={currentRenderingBaseItem.label}
-              >
-                {renderingBaseList.map(option => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {t(option.label)}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Row>
+                <Col md={24}>
+                  <Label>{t("component.graphing.ticksoptions.fractionsformat")}</Label>
+                  <Select
+                    style={{ width: "100%" }}
+                    onChange={this.changeFractionsFormat}
+                    value={currentFractionItem.label}
+                  >
+                    {fractionsFormatList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col md={24}>
+                  <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
+                  <Select
+                    style={{ width: "100%" }}
+                    onChange={this.changeRenderingBase}
+                    value={currentRenderingBaseItem.label}
+                  >
+                    {renderingBaseList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </QuestionSection>
@@ -388,15 +420,17 @@ class AxisLabelsMoreOptions extends Component {
             <Col md={12}>
               <Checkbox
                 label={t("component.graphing.labelsoptions.showmin")}
-                onChange={() => this.handleNumberlineCheckboxChange("showMin", numberlineAxis.showMin)}
-                checked={numberlineAxis.showMin}
+                name="labelShowMin"
+                onChange={() => this.handleNumberlineCheckboxChange("labelShowMin", numberlineAxis.labelShowMin)}
+                checked={numberlineAxis.labelShowMin}
               />
             </Col>
             <Col md={12}>
               <Checkbox
                 label={t("component.graphing.labelsoptions.showmax")}
-                onChange={() => this.handleNumberlineCheckboxChange("showMax", numberlineAxis.showMax)}
-                checked={numberlineAxis.showMax}
+                name="labelShowMax"
+                onChange={() => this.handleNumberlineCheckboxChange("labelShowMax", numberlineAxis.labelShowMax)}
+                checked={numberlineAxis.labelShowMax}
               />
             </Col>
           </Row>

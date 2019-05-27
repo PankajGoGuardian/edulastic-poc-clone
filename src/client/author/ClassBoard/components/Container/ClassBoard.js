@@ -251,6 +251,11 @@ class ClassBoard extends Component {
     const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     const isMobile = this.isMobile();
 
+    const selectedStudentsKeys = Object.keys(selectedStudents);
+    const selectedStudentsKey = selectedStudentsKeys.length ? selectedStudentsKeys[0] : "";
+    let selectedStudentsEntity = this.props.entities.find(item => item.studentId === selectedStudentsKey);
+    selectedStudentsEntity = selectedStudentsEntity || {};
+
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -262,6 +267,8 @@ class ClassBoard extends Component {
           assignmentId={assignmentId}
           additionalData={additionalData}
           testActivityId={testActivityId}
+          selectedStudentsTestActivityId={selectedStudentsEntity.testActivityId}
+          entity={selectedStudentsEntity}
         />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>
@@ -410,6 +417,7 @@ const enhance = compose(
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
+      entities: get(state, ["author_classboard_testActivity", "entities"], []),
       qActivityByStudent: stateStudentResponseSelector(state)
     }),
     {

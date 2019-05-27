@@ -19,7 +19,6 @@ export const TOOLS = {
   ELLIPSE: "ellipse",
   LABEL: "label",
   ANNOTATION: "annotation",
-  MARK: "mark",
   SEGMENTS_POINT: "segments_point",
   SEGMENT_BOTH_POINT_INCLUDED: "segment_both_point_included",
   SEGMENT_LEFT_POINT_HOLLOW: "segment_left_point_hollow",
@@ -30,6 +29,9 @@ export const TOOLS = {
   RAY_LEFT_DIRECTION_RIGHT_HOLLOW: "ray_left_direction_right_hollow",
   RAY_RIGHT_DIRECTION_LEFT_HOLLOW: "ray_right_direction_left_hollow",
   TRASH: "trash",
+
+  EQUATION: "equation",
+  AREA: "area",
 
   // Default
   RESET: "reset"

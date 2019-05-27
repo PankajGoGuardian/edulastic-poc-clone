@@ -7,6 +7,7 @@ import { FlexContainer } from "@edulastic/common";
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
+import { get } from "lodash";
 
 const SortableItem = SortableElement(
   ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
@@ -119,7 +120,10 @@ const List = SortableContainer(
         item = scoring.testItems.find(({ id }) => id === testItems[i].id);
       }
 
-      return testItems && testItems[i] && testItems[i].maxScore ? testItems[i].maxScore : 0;
+      return get(testItems, [i, "data", "questions"], []).reduce(
+        (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
+        0
+      );
     };
 
     return (

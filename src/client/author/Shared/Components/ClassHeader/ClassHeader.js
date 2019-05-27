@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { message, Menu } from "antd";
+import { message, Menu, Dropdown, Button, Modal } from "antd";
 import moment from "moment";
 import { withNamespaces } from "@edulastic/localization";
 import {
@@ -28,6 +28,8 @@ import {
   StyledButton,
   MenuWrapper
 } from "./styled";
+import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
+import { StudentReportCardModal } from "./components/studentReportCardModal";
 import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 
 import { releaseScoreAction } from "../../../src/actions/classBoard";
@@ -39,7 +41,10 @@ class ClassHeader extends Component {
     this.state = {
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-      showDropdown: false
+      showDropdown: false,
+      studentReportCardMenuModalVisibility: false,
+      studentReportCardModalVisibility: false,
+      studentReportCardModalColumnsFlags: {}
     };
   }
 
@@ -82,11 +87,60 @@ class ClassHeader extends Component {
     this.toggleDropdown();
   };
 
+  onStudentReportCardsClick = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardMenuModalVisibility: true };
+    });
+  };
+
+  onStudentReportCardMenuModalOk = obj => {
+    this.setState(state => {
+      return {
+        ...this.state,
+        studentReportCardMenuModalVisibility: false,
+        studentReportCardModalVisibility: true,
+        studentReportCardModalColumnsFlags: { ...obj }
+      };
+    });
+  };
+
+  onStudentReportCardMenuModalCancel = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardMenuModalVisibility: false };
+    });
+  };
+
+  onStudentReportCardModalOk = () => {};
+
+  onStudentReportCardModalCancel = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardModalVisibility: false };
+    });
+  };
+
   render() {
-    const { t, active, assignmentId, classId, testActivityId, additionalData = {}, showScore } = this.props;
+    const { t, active, assignmentId, classId, testActivityId, additionalData = {}, showScore, entity } = this.props;
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
+
+    const menu = (
+      <Menu>
+        <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+          <Menu.Item key="key1">Mark as Done</Menu.Item>
+        </FeatureWrapper>
+        <Menu.Item
+          key="key2"
+          onClick={this.handleReleaseScore}
+          style={{ textDecoration: showScore ? "line-through" : "none" }}
+        >
+          Release Score
+        </Menu.Item>
+        <Menu.Item key="key3" onClick={this.onStudentReportCardsClick}>
+          Student Report Cards
+        </Menu.Item>
+      </Menu>
+    );
 
     return (
       <Container>
@@ -110,17 +164,17 @@ class ClassHeader extends Component {
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
-              <StyledLink
-                to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
-                data-cy="Expressgrader"
-              >
-                <StyledAnchor isActive={active === "expressgrader"}>
-                  <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.expressGrader")}</LinkLabel>
-                </StyledAnchor>
-              </StyledLink>
-            </FeatureWrapper>
+            {/* TODO: put this under premium features wrapper */}
+            <StyledLink
+              to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
+              data-cy="Expressgrader"
+            >
+              <StyledAnchor isActive={active === "expressgrader"}>
+                <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+              </StyledAnchor>
+            </StyledLink>
+
             <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
@@ -140,26 +194,33 @@ class ClassHeader extends Component {
             okText="Yes"
             cancelText="No"
           />
-          <StyledButton onClick={this.toggleDropdown}>
-            <IconMoreVertical color="#FFFFFF" />
-          </StyledButton>
-          {showDropdown && (
-            <MenuWrapper>
-              <Menu>
-                <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
-                  <Menu.Item key="1">Mark as Done</Menu.Item>
-                </FeatureWrapper>
-                <Menu.Item
-                  key="2"
-                  onClick={this.handleReleaseScore}
-                  style={{ textDecoration: showScore ? "line-through" : "none" }}
-                >
-                  Release Score
-                </Menu.Item>
-              </Menu>
-            </MenuWrapper>
-          )}
+          <Dropdown overlay={menu}>
+            <Button type="primary" shape="circle" icon="more" />
+          </Dropdown>
         </StyledDiv>
+        <>
+          {/* Modals */}
+          {this.state.studentReportCardMenuModalVisibility ? (
+            <StudentReportCardMenuModal
+              title="Student Report Card"
+              visible={this.state.studentReportCardMenuModalVisibility}
+              onOk={this.onStudentReportCardMenuModalOk}
+              onCancel={this.onStudentReportCardMenuModalCancel}
+            />
+          ) : null}
+          {this.state.studentReportCardModalVisibility ? (
+            <StudentReportCardModal
+              visible={this.state.studentReportCardModalVisibility}
+              onOk={this.onStudentReportCardModalOk}
+              onCancel={this.onStudentReportCardModalCancel}
+              groupId={classId}
+              testActivityId={this.props.selectedStudentsTestActivityId}
+              entity={entity}
+              assignmentId={assignmentId}
+              columnsFlags={this.state.studentReportCardModalColumnsFlags}
+            />
+          ) : null}
+        </>
       </Container>
     );
   }

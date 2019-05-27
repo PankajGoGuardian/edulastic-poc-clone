@@ -3,6 +3,7 @@ import { Point } from ".";
 import segmentConfig from "./Segment";
 import { CONSTANT, Colors } from "../config";
 import { getLabelParameters } from "../settings";
+import { handleSnap } from "../utils";
 
 export const defaultConfig = {
   hasInnerPoints: true
@@ -18,6 +19,7 @@ let lines = [];
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
+    newPoint.isTemp = true;
     if (!points.length) {
       newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
       points.push(newPoint);
@@ -31,10 +33,29 @@ function onHandler() {
         board.$board.removeObject(newPoint);
         lines.map(board.$board.removeObject.bind(board.$board));
         points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+        points.forEach(point => {
+          point.isTemp = false;
+        });
         const newPolygon = board.$board.create("polygon", points, {
           ...defaultConfig,
           ...Colors.default[CONSTANT.TOOLS.POLYGON],
           label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
+        });
+        handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
+        newPolygon.borders.forEach(border => {
+          border.on("up", () => {
+            if (border.dragged) {
+              border.dragged = false;
+              board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+            }
+          });
+          border.on("drag", e => {
+            if (e.movementX === 0 && e.movementY === 0) {
+              return;
+            }
+            border.dragged = true;
+            board.dragged = true;
+          });
         });
         points = [];
         lines = [];

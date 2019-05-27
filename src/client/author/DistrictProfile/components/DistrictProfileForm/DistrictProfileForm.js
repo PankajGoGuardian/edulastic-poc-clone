@@ -274,7 +274,7 @@ class DistrictProfileForm extends React.Component {
                 requiredStatus={true}
                 setProfileValue={this.updateProfileValue}
                 updateEditing={this.setEditing}
-                type={"number"}
+                type={"text"}
                 ref={this.childRefArr[4].component}
                 isSpaceEnable={true}
               />

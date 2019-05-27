@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Button, Select, Modal } from "antd";
+import { Form, Input, Row, Col, Button, Select, Modal, Spin } from "antd";
 const Option = Select.Option;
 import { ModalFormItem } from "./styled";
 
-import { authApi } from "@edulastic/api";
+import { authApi, schoolApi } from "@edulastic/api";
 
 class CreateSchoolAdminModal extends React.Component {
   constructor(props) {
@@ -11,12 +11,13 @@ class CreateSchoolAdminModal extends React.Component {
     this.state = {
       emailValidateStatus: "success",
       emailValidateMsg: "",
-      email: ""
+      email: "",
+      schoolList: [],
+      fetching: false
     };
-    this.onCreateSchoolAdmin = this.onCreateSchoolAdmin.bind(this);
   }
 
-  async onCreateSchoolAdmin() {
+  onCreateSchoolAdmin = async () => {
     const { email, emailValidateStatus } = this.state;
     let checkUserResponse = { userExists: true };
 
@@ -52,20 +53,34 @@ class CreateSchoolAdminModal extends React.Component {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         if (checkUserResponse.userExists) return;
-        row.email = this.state.email;
-        this.props.createSchoolAdmin(row);
+
+        const firstName = row.name.split(" ", 1);
+        let lastName = "";
+        if (firstName.length < row.name.length) {
+          const lastNameIndex = firstName[0].length + 1;
+          lastName = row.name.substr(lastNameIndex, row.name.length);
+        }
+
+        const institutionIds = [];
+        for (let i = 0; i < row.institutionIds.length; i++) {
+          institutionIds.push(row.institutionIds[i].key);
+        }
+
+        const newUser = {
+          firstName: firstName[0],
+          lastName,
+          password: row.password,
+          email: this.state.email,
+          institutionIds: institutionIds
+        };
+        this.props.createSchoolAdmin(newUser);
       }
     });
-  }
+  };
 
   onCloseModal = () => {
     this.props.closeModal();
   };
-
-  checkValidEmail(strEmail) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
-  }
 
   changeEmail = e => {
     if (e.target.value.length === 0) {
@@ -91,20 +106,36 @@ class CreateSchoolAdminModal extends React.Component {
     }
   };
 
+  checkValidEmail(strEmail) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(strEmail).toLowerCase());
+  }
+
+  fetchSchool = async value => {
+    this.setState({ schoolList: [], fetching: true });
+    const schoolListData = await schoolApi.getSchools({
+      districtId: this.props.userOrgId,
+      limit: 25,
+      page: 1,
+      sortField: "name",
+      order: "asc",
+      search: { name: { type: "cont", value } }
+    });
+    this.setState({ schoolList: schoolListData.data, fetching: false });
+  };
+
+  handleChange = value => {
+    this.props.form.setFieldsValue({ institutionIds: value });
+    this.setState({
+      schoolList: [],
+      fetching: false
+    });
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, schoolsData } = this.props;
-    const { emailValidateStatus, emailValidateMsg } = this.state;
-    const schoolsOptions = [];
-    if (schoolsData.length !== undefined) {
-      schoolsData.map((row, index) => {
-        schoolsOptions.push(
-          <Option key={index} value={row._id}>
-            {row.name}
-          </Option>
-        );
-      });
-    }
+    const { modalVisible } = this.props;
+    const { emailValidateStatus, emailValidateMsg, fetching, schoolList } = this.state;
 
     return (
       <Modal
@@ -123,35 +154,23 @@ class CreateSchoolAdminModal extends React.Component {
         ]}
       >
         <Row>
-          <Col span={11}>
-            <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
+          <Col span={24}>
+            <ModalFormItem label="Name">
+              {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
+                    message: "Please input Name"
                   }
                 ]
-              })(<Input placeholder="Enter First Name" />)}
-            </ModalFormItem>
-          </Col>
-          <Col span={11} offset={2}>
-            <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input Last Name"
-                  }
-                ]
-              })(<Input placeholder="Enter Last Name" />)}
+              })(<Input placeholder="Enter Name" />)}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
             <ModalFormItem
-              label="Email"
+              label="Username"
               validateStatus={emailValidateStatus}
               help={emailValidateMsg}
               required={true}
@@ -186,8 +205,20 @@ class CreateSchoolAdminModal extends React.Component {
                   }
                 ]
               })(
-                <Select mode="multiple" placeholder="Select school">
-                  {schoolsOptions}
+                <Select
+                  mode="multiple"
+                  labelInValue
+                  placeholder="Please Select schools"
+                  notFoundContent={fetching ? <Spin size="small" /> : null}
+                  filterOption={false}
+                  onSearch={this.fetchSchool}
+                  onChange={this.handleChange}
+                >
+                  {schoolList.map(school => (
+                    <Option key={school._id} value={school._id}>
+                      {school._source.name}
+                    </Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>

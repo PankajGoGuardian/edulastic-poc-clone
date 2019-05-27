@@ -23,7 +23,9 @@ import {
   Exponent,
   Logarithm,
   Polynom,
-  Annotation
+  Equation,
+  Annotation,
+  Area
 } from "./elements";
 import {
   mergeParams,
@@ -40,11 +42,9 @@ import {
   getImageCoordsByPercent,
   flatConfig,
   flat2nestedConfig,
-  checkMarksRenderSpace,
-  calcMeasure,
   calcUnitX,
-  findElementsDiff,
-  handleSnap
+  handleSnap,
+  isInPolygon
 } from "./utils";
 import _events from "./events";
 
@@ -79,6 +79,10 @@ class Board {
     this.bgImage = null;
 
     this.numberlineAxis = null;
+
+    this.numberlineTitle = null;
+
+    this.marksContainer = null;
     /**
      * Board settings
      */
@@ -89,8 +93,6 @@ class Board {
     this.currentTool = null;
 
     this.stackResponses = false;
-
-    this.deleteHighlighting = false;
 
     this.stackResponsesSpacing = 30;
 
@@ -104,21 +106,21 @@ class Board {
     this.$board.setZoom(1, 1);
   }
 
-  isAnyElementsHasFocus() {
+  isAnyElementsHasFocus(withPrepare = false) {
     if (!this.elements) {
       return false;
     }
 
     for (let i = 0; i < this.elements.length; i++) {
       const element = this.elements[i];
-      if (element.hasFocus) {
+      if (element.hasFocus || (withPrepare && element.prepareToFocus)) {
         return true;
       }
 
       if (element.ancestors) {
         const ancestors = Object.values(element.ancestors);
         for (let j = 0; j < ancestors.length; j++) {
-          if (ancestors[j].hasFocus) {
+          if (ancestors[j].hasFocus || (withPrepare && ancestors[j].prepareToFocus)) {
             return true;
           }
         }
@@ -134,6 +136,9 @@ class Board {
     }
 
     this.elements.forEach(element => {
+      if (element.type === 100 || element.latexIsBroken) {
+        return;
+      }
       element.setAttribute({ fixed });
       if (element.ancestors) {
         Object.values(element.ancestors).forEach(ancestor => {
@@ -213,8 +218,8 @@ class Board {
       case CONSTANT.TOOLS.ANNOTATION:
         this.setCreatingHandler(Annotation.onHandler());
         return;
-      case CONSTANT.TOOLS.MARK:
-        this.setCreatingHandler(Mark.onHandler());
+      case CONSTANT.TOOLS.AREA:
+        this.setCreatingHandler(Area.onHandler());
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.setCreatingHandler(
@@ -308,7 +313,7 @@ class Board {
           if (elementsLength < responsesAllowed) {
             newElement = handler(this, event);
           }
-        } else {
+        } else if (!this.isAnyElementsHasFocus(true)) {
           newElement = handler(this, event);
         }
 
@@ -383,12 +388,8 @@ class Board {
         containerSettings
       );
 
-      const marks = this.elements.filter(element => element.elType === "group");
-      this.elements = this.elements.filter(element => element.elType !== "group");
-      marks.forEach(mark => Mark.removeMark(this, mark));
-      marks.forEach(mark =>
-        Mark.rerenderMark(mark, this, graphParameters, settings, setValue, lineSettings, containerSettings)
-      );
+      Mark.alignMarks(this, settings, containerSettings, lineSettings);
+      setValue();
     }
 
     if (graphType === "axisSegments") {
@@ -406,28 +407,21 @@ class Board {
   }
 
   // Update numberline axis settings (such as ticks visibility, font size and etc.)
-  updateGraphSettings(settings, graphType) {
+  updateGraphSettings(settings) {
     updateNumberline(this.numberlineAxis, settings);
-
-    if (graphType === "axisLabels") {
-      const marks = this.elements.filter(element => element.elType === "group");
-      marks.forEach(mark => Mark.updateTextSize(mark, settings.fontSize));
-    }
-
     this.$board.fullUpdate();
   }
 
   // Render marks
-  renderMarks(marks, xCoords, settings, setValue, lineSettings, containerSettings, markCoords) {
+  renderMarks(marks, graphParameters, settings, setValue, lineSettings, containerSettings, markCoords = []) {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(
         Mark.onHandler(
           this,
-          markCoord ? [markCoord.position, markCoord.y] : checkMarksRenderSpace(this, settings, containerSettings),
+          markCoord,
           mark,
-          calcMeasure(51.5, 45, this),
-          xCoords,
+          graphParameters,
           settings.snapToTicks,
           setValue,
           lineSettings,
@@ -435,77 +429,28 @@ class Board {
         )
       );
     });
+
+    Mark.alignMarks(this, settings, containerSettings, lineSettings);
   }
 
   removeMarks() {
-    const marks = this.elements.filter(element => element.elType === "group");
-    this.elements = this.elements.filter(element => element.elType !== "group");
-    marks.forEach(mark => Mark.removeMark(this, mark));
+    this.elements.forEach(mark => this.removeObject(mark));
+    this.elements = [];
   }
 
   removeMarksAnswers() {
-    const marks = this.answers.filter(element => element.elType === "group");
-    this.answers = this.answers.filter(element => element.elType !== "group");
-    marks.forEach(mark => Mark.removeMark(this, mark));
-  }
-
-  // Marks shuffled or text edited
-  updateMarks(marks, oldMarks, containerSettings) {
-    Mark.checkForUpdate(
-      marks,
-      this.elements.filter(element => element.elType === "group"),
-      this,
-      oldMarks,
-      containerSettings
-    );
-  }
-
-  // Size of marks array have changed
-  marksSizeChanged(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
-    const filteredElements = this.elements.filter(element => element.elType === "group");
-
-    if (marks.length < filteredElements.length) {
-      this.removeMark(marks, filteredElements);
-    } else {
-      this.addMark(marks, filteredElements, xCoords, setValue, lineSettings, containerSettings, settings);
-    }
-  }
-
-  // Add new mark
-  addMark(marks, elements, xCoords, setValue, lineSettings, containerSettings, settings) {
-    const newMark = findElementsDiff(marks, elements);
-    this.elements.push(
-      Mark.onHandler(
-        this,
-        checkMarksRenderSpace(this, settings, containerSettings),
-        newMark,
-        calcMeasure(51.5, 45, this),
-        xCoords,
-        settings.snapToTicks,
-        setValue,
-        lineSettings,
-        containerSettings
-      )
-    );
-    this.$board.fullUpdate();
-  }
-
-  // Remove mark
-  removeMark(marks, elements) {
-    const removedMark = findElementsDiff(elements, marks);
-    this.elements = this.elements.filter(element => element.elType !== "group" || element.id !== removedMark.id);
-    Mark.removeMark(this, removedMark);
-    this.$board.fullUpdate();
+    this.answers.forEach(mark => this.removeObject(mark));
+    this.answers = [];
   }
 
   renderTitle(title) {
-    this.elements.push(Title.renderTitle(this, title));
+    this.numberlineTitle = Title.renderTitle(this, title);
     this.$board.fullUpdate();
   }
 
   updateTitle(title) {
-    Title.updateTitle(this, title);
-    this.$board.fullUpdate();
+    this.$board.removeObject(this.numberlineTitle);
+    this.renderTitle(title);
   }
 
   getCoords(e) {
@@ -552,8 +497,13 @@ class Board {
   }
 
   removeObjectsUnderMouse(event) {
+    const coords = this.getCoords(event);
     const elementsUnderMouse = this.$board.getAllObjectsUnderMouse(event);
-    const elementsToDelete = this.elements.filter(el => elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1);
+    const elementsToDelete = this.elements.filter(
+      el =>
+        elementsUnderMouse.findIndex(eum => eum.id === el.id) > -1 ||
+        (el.type === 100 && isInPolygon({ x: coords.usrCoords[1], y: coords.usrCoords[2] }, el.pointCoords))
+    );
 
     if (elementsToDelete.length === 0) {
       return false;
@@ -568,10 +518,13 @@ class Board {
   }
 
   removeObject(obj) {
+    if (!obj) {
+      return;
+    }
     if (typeof obj === "string") {
       this.$board.removeObject(obj);
     } else if (obj.elType !== "point" && obj.elType !== "text") {
-      obj.getParents().map(this.removeObject.bind(this));
+      if (obj.getParents) obj.getParents().map(this.removeObject.bind(this));
       if (obj.elType === "curve") this.$board.removeObject(obj);
     } else {
       this.$board.removeObject(obj);
@@ -583,47 +536,51 @@ class Board {
    */
   getConfig() {
     this.abortTool();
-    const config = this.elements.map(e => {
-      switch (e.type) {
-        case JXG.OBJECT_TYPE_POINT:
-          return Point.getConfig(e);
-        case JXG.OBJECT_TYPE_LINE:
-          return Line.getConfig(e);
-        case JXG.OBJECT_TYPE_CIRCLE:
-          return Circle.getConfig(e);
-        case JXG.OBJECT_TYPE_CONIC:
-          return Ellipse.getConfig(e);
-        case JXG.OBJECT_TYPE_POLYGON:
-          return Polygon.getConfig(e);
-        case JXG.OBJECT_TYPE_TEXT:
-          return Mark.getConfig(e);
-        case 90:
-          return Hyperbola.getConfig(e);
-        case 91:
-          return Tangent.getConfig(e);
-        case 92:
-          return Secant.getConfig(e);
-        case 93:
-          return Exponent.getConfig(e);
-        case 94:
-          return Logarithm.getConfig(e);
-        case 95:
-          return Polynom.getConfig(e);
-        case 96:
-          return Sin.getConfig(e);
-        case 97:
-          return Parabola.getConfig(e);
-        case 99:
-          return Annotation.getConfig(e);
-        default:
-          throw new Error("Unknown element type:", e.name, e.type);
-      }
-    });
+    const config = this.elements
+      .filter(e => e)
+      .map(e => {
+        switch (e.type) {
+          case JXG.OBJECT_TYPE_POINT:
+            return Point.getConfig(e);
+          case JXG.OBJECT_TYPE_LINE:
+            return Line.getConfig(e);
+          case JXG.OBJECT_TYPE_CIRCLE:
+            return Circle.getConfig(e);
+          case JXG.OBJECT_TYPE_CONIC:
+            return Ellipse.getConfig(e);
+          case JXG.OBJECT_TYPE_POLYGON:
+            return Polygon.getConfig(e);
+          case 90:
+            return Hyperbola.getConfig(e);
+          case 91:
+            return Tangent.getConfig(e);
+          case 92:
+            return Secant.getConfig(e);
+          case 93:
+            return Exponent.getConfig(e);
+          case 94:
+            return Logarithm.getConfig(e);
+          case 95:
+            return Polynom.getConfig(e);
+          case 96:
+            return Sin.getConfig(e);
+          case 97:
+            return Parabola.getConfig(e);
+          case 98:
+            return Equation.getConfig(e);
+          case 99:
+            return Annotation.getConfig(e);
+          case 100:
+            return Area.getConfig(e);
+          default:
+            throw new Error("Unknown element type:", e.name, e.type);
+        }
+      });
     return Object.values(flatConfig(config));
   }
 
   getMarks() {
-    return this.elements.filter(element => element.elType === "group").map(group => Mark.getConfig(group));
+    return this.elements.map(mark => Mark.getConfig(mark));
   }
 
   getSegments() {
@@ -798,8 +755,17 @@ class Board {
         highlightFillColor: "transparent",
         highlightStrokeWidth: 1
       },
+      [CONSTANT.TOOLS.EQUATION]: {
+        ...defaultBgObjectParameters(),
+        fillColor: "transparent",
+        highlightFillColor: "transparent",
+        highlightStrokeWidth: 1
+      },
       [CONSTANT.TOOLS.ANNOTATION]: {
         fixed: true
+      },
+      [CONSTANT.TOOLS.AREA]: {
+        ...defaultBgObjectParameters()
       }
     };
     this.bgElements.push(
@@ -815,28 +781,23 @@ class Board {
     );
   }
 
-  loadMarksAnswers(marks, xCoords, settings, setValue, lineSettings, containerSettings) {
-    if (marks) {
-      this.elements.push(
-        ...marks.map(config =>
-          Mark.renderMarkAnswer(
+  loadMarksAnswers(marks, graphParameters, settings, setValue, lineSettings, containerSettings, markCoords) {
+    if (markCoords) {
+      marks.forEach(mark => {
+        const markCoord = markCoords.find(el => el.id === mark.id);
+        this.answers.push(
+          Mark.onHandler(
             this,
-            config,
-            calcMeasure(51.5, 45, this),
-            xCoords,
+            { ...markCoord, fixed: true },
+            mark,
+            graphParameters,
             settings.snapToTicks,
             setValue,
             lineSettings,
             containerSettings
           )
-        )
-      );
-    }
-  }
-
-  loadMarksShowAnswers(marks) {
-    if (marks) {
-      this.answers.push(marks.map(config => Mark.renderMarkShowAnswer(this, config, calcMeasure(51.5, 45, this))));
+        );
+      });
     }
   }
 
@@ -913,10 +874,6 @@ class Board {
         return newElement;
       })
     );
-  }
-
-  loadMarks(elements) {
-    this.elements.push(...elements.map(() => Mark.loadMarks()));
   }
 
   loadSegments(elements) {
@@ -1026,10 +983,14 @@ class Board {
                 });
                 point.on("up", () => {
                   if (point.dragged) {
+                    point.dragged = false;
                     this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
                   }
                 });
-                point.on("drag", () => {
+                point.on("drag", e => {
+                  if (e.movementX === 0 && e.movementY === 0) {
+                    return;
+                  }
                   point.dragged = true;
                   this.dragged = true;
                 });
@@ -1145,6 +1106,21 @@ class Board {
                   }
                 );
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
+                polygon.borders.forEach(border => {
+                  border.on("up", () => {
+                    if (border.dragged) {
+                      border.dragged = false;
+                      this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+                    }
+                  });
+                  border.on("drag", e => {
+                    if (e.movementX === 0 && e.movementY === 0) {
+                      return;
+                    }
+                    border.dragged = true;
+                    this.dragged = true;
+                  });
+                });
                 return polygon;
               }
             })
@@ -1375,24 +1351,44 @@ class Board {
             })
           );
           break;
-        case 99:
+        case 98:
           objects.push(
             mixProps({
               el,
               objectCreator: attrs => {
-                return Annotation.renderElement(this, el, { ...attrs });
+                const props = Equation.parseConfig();
+
+                let points = null;
+                if (el.points) {
+                  points = el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createPointFromConfig(pointEl, attributes)
+                    })
+                  );
+                }
+
+                return Equation.renderElement(this, el, points, {
+                  ...props,
+                  ...attrs
+                });
               }
             })
           );
           break;
-        case JXG.OBJECT_TYPE_TEXT:
+        case 99:
           objects.push(
             mixProps({
               el,
-              objectCreator: attrs => {
-                const [name, points, props] = Mark.parseConfig(el, this.getParameters(CONSTANT.TOOLS.MARK));
-                return this.createElement(name, points, { ...props, ...attrs });
-              }
+              objectCreator: attrs => Annotation.renderElement(this, el, { ...attrs })
+            })
+          );
+          break;
+        case 100:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => Area.renderElement(this, el, { ...attrs })
             })
           );
           break;
@@ -1771,14 +1767,37 @@ class Board {
             })
           );
           break;
-        case JXG.OBJECT_TYPE_TEXT:
+        case 98:
           objects.push(
             mixProps({
               el,
               objectCreator: attrs => {
-                const [name, points, props] = Mark.parseConfig(el, this.getParameters(CONSTANT.TOOLS.MARK));
-                return this.createElement(name, points, { ...props, ...attrs, fixed: true });
+                const props = Equation.parseConfig();
+
+                let points = null;
+                if (el.points) {
+                  points = el.points.map(pointEl =>
+                    mixProps({
+                      el: pointEl,
+                      objectCreator: attributes => this.createAnswerPointFromConfig(pointEl, attributes)
+                    })
+                  );
+                }
+
+                return Equation.renderElement(this, el, points, {
+                  ...props,
+                  ...attrs,
+                  fixed: true
+                });
               }
+            })
+          );
+          break;
+        case 100:
+          objects.push(
+            mixProps({
+              el,
+              objectCreator: attrs => Area.renderElement(this, el, { ...attrs })
             })
           );
           break;

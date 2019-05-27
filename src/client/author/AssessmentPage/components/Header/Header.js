@@ -2,32 +2,34 @@ import React from "react";
 import PropTypes from "prop-types";
 import { Button, Dropdown, Menu, Icon } from "antd";
 
-import { IconSave } from "@edulastic/icons";
+import { IconDiskette } from "@edulastic/icons";
+import { FlexContainer, EduButton } from "@edulastic/common";
 
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Title from "../../common/Title";
 import TestPageNav from "../../../TestPage/components/TestPageNav/TestPageNav";
 import { Status, SaveWrapper } from "./styled";
 
-const saveMenu = handleClick => (
-  <Menu>
-    <Menu.Item onClick={handleClick("draft")}>Save as draft</Menu.Item>
-    <Menu.Item onClick={handleClick("published")}>Save & publish</Menu.Item>
-  </Menu>
-);
+const style = { justifyContent: "center", background: "white" };
 
-const Header = ({ onTabChange, currentTab, tabs, title, status, onSave }) => (
+const Header = ({ onTabChange, currentTab, tabs, title, status, onSave, onPublish, onAssign }) => (
   <HeaderWrapper>
     <Title>
       {title} <Status>{status}</Status>
     </Title>
     <TestPageNav onChange={onTabChange} current={currentTab} buttons={tabs} />
     <SaveWrapper>
-      <Dropdown overlay={saveMenu(onSave)} trigger={["click"]}>
-        <Button type="primary" size="large">
-          <IconSave /> Save <Icon type="down" />
-        </Button>
-      </Dropdown>
+      <FlexContainer justifyContent="space-between" className="abcdTesting">
+        <EduButton data-cy="save" style={{ ...style, width: 42, padding: 0 }} size="large" onClick={onSave("draft")}>
+          <IconDiskette color="#1774F0" fill="#1774F0" />
+        </EduButton>
+        <EduButton data-cy="assign" style={{ ...style, width: 120 }} size="large" onClick={onAssign}>
+          Assign
+        </EduButton>
+        <EduButton data-cy="publish" style={{ ...style, width: 120 }} size="large" onClick={onPublish}>
+          Publish
+        </EduButton>
+      </FlexContainer>
     </SaveWrapper>
   </HeaderWrapper>
 );

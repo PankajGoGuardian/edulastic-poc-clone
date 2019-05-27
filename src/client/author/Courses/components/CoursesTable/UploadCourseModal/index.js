@@ -26,7 +26,8 @@ import {
   StyledTable,
   StyledTableButton,
   StyledConfirmButton,
-  AlertSuccess
+  AlertSuccess,
+  AlertMsgDiv
 } from "./styled";
 
 class UploadCourseModal extends React.Component {
@@ -111,10 +112,10 @@ class UploadCourseModal extends React.Component {
                 {record.status === "success" ? (
                   <SuccessIcon type="check-circle" />
                 ) : (
-                  <React.Fragment>
+                  <AlertMsgDiv>
                     <AlertIcon type="close-circle" />
                     <AlertP>{record.statusMessage}</AlertP>
-                  </React.Fragment>
+                  </AlertMsgDiv>
                 )}
               </React.Fragment>
             );

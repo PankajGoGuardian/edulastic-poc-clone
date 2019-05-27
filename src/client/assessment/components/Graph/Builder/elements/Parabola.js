@@ -59,7 +59,7 @@ function renderElement(board, points, params) {
   points[1].on("drag", updateCoords);
 
   newLine.type = jxgType;
-  handleSnap(newLine, points, board);
+  handleSnap(newLine, points, board, updateCoords);
 
   if (newLine) {
     newLine.addParents(...points, focus, dirPoint1, dirPoint2);
@@ -74,10 +74,12 @@ function renderElement(board, points, params) {
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      tempToolPoints.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    tempToolPoints.push(newPoint);
     if (tempToolPoints.length === 2) {
+      tempToolPoints.forEach(point => {
+        point.isTemp = false;
+      });
       const params = {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.PARABOLA],

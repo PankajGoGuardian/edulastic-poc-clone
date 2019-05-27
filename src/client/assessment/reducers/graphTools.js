@@ -1,4 +1,4 @@
-import { isEqualWith, cloneDeep } from "lodash";
+import { isEqualWith, cloneDeep, isEqual } from "lodash";
 import { SET_ELEMENTS_STASH, SET_STASH_INDEX } from "../constants/actions";
 
 const initialState = {
@@ -7,16 +7,28 @@ const initialState = {
 };
 
 const customizer = (objValue, othValue) => {
-  if (
-    objValue.id !== othValue.id &&
-    objValue.label === othValue.label &&
-    objValue.type === othValue.type &&
-    objValue.x === othValue.x &&
-    objValue.y === othValue.y &&
-    objValue._type === othValue._type
-  ) {
+  if (!objValue && !othValue) {
     return true;
   }
+  if (objValue.length === 0 && othValue.length === 0) {
+    return true;
+  }
+  if (objValue.length !== othValue.length) {
+    return false;
+  }
+
+  for (let i = 0; i < objValue.length; i++) {
+    const objItem = cloneDeep(objValue[i]);
+    const othItem = cloneDeep(othValue[i]);
+    delete objItem.id;
+    delete othItem.id;
+    delete objItem.subElementsIds;
+    delete othItem.subElementsIds;
+    if (!isEqual(objItem, othItem)) {
+      return false;
+    }
+  }
+  return true;
 };
 
 const reducer = (state = initialState, { type, payload }) => {

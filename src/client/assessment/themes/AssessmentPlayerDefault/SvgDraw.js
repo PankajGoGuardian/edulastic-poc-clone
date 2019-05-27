@@ -6,7 +6,18 @@ import { drawTools } from "@edulastic/constants";
 import styled from "styled-components";
 import { Input } from "antd";
 
-const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, saveHistory, fillColor, deleteMode }) => {
+const SvgDraw = ({
+  lineColor,
+  lineWidth,
+  activeMode,
+  scratchPadMode,
+  history,
+  saveHistory,
+  fillColor,
+  deleteMode,
+  height,
+  top
+}) => {
   const svg = useRef(null);
 
   const [points, setPoints] = useState([]);
@@ -640,11 +651,11 @@ const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, sa
         ref={svg}
         {...getSvgHandlers()}
         width="100%"
-        height={document.body.scrollHeight + 28}
+        height={!height ? document.body.scrollHeight + 28 : height}
         style={{
           background: "transparent",
           position: "absolute",
-          top: 62,
+          top: `${top === 0 ? 0 : 62}`,
           left: 0,
           display: scratchPadMode ? "block" : "none",
           pointerEvents: activeMode === "" ? "none" : "all",
@@ -702,15 +713,17 @@ const SvgDraw = ({ lineColor, lineWidth, activeMode, scratchPadMode, history, sa
           )}
 
         {pathes.length > 0 &&
-          pathes.map((path, i) => (
-            <Path
-              key={i}
-              onClick={deleteMode ? handleDeletePath(i) : undefined}
-              stroke={path[0].color}
-              strokeWidth={path[0].lineWidth}
-              d={getPointsForDrawingPath(path)}
-            />
-          ))}
+          pathes.map((path, i) => {
+            return (
+              <Path
+                key={i}
+                onClick={deleteMode ? handleDeletePath(i) : undefined}
+                stroke={path[0].color}
+                strokeWidth={path[0].lineWidth}
+                d={getPointsForDrawingPath(path)}
+              />
+            );
+          })}
 
         {points.length > 0 && (
           <Path

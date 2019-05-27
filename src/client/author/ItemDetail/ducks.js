@@ -351,6 +351,10 @@ export function reducer(state = initialState, { type, payload }) {
       };
 
     case REMOVE_QUESTION_BY_ID:
+      const currentScore = (state.item && state.item.itemLevelScore) || 0;
+      if (currentScore <= 1) {
+        return state;
+      }
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) - 1 }
@@ -455,14 +459,13 @@ export function* updateItemSaga({ payload }) {
       // avoid data part being put into db
       delete payload.data.data;
     }
-
     const data = _omit(payload.data, ["authors", "__v"]);
     if (payload.testId) {
       data.testId = testId;
     }
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
     console.log("update by id item itemId ", item._id, "payload.id", payload.id);
-    if (item._id !== payload.id) {
+    if (payload.redirect && item._id !== payload.id) {
       yield put(
         replace(
           payload.testId

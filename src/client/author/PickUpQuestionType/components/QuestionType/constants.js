@@ -1046,7 +1046,7 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
           stemnumeration: "",
-          widthpx: 30
+          widthpx: 140
         },
         options: {
           0: "",
@@ -1104,6 +1104,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1568,7 +1569,7 @@ export const getCards = onSelectQuestionType => {
           xAxisLabel: "X",
           yAxisLabel: "Y",
           title_position: 55,
-          line_position: 34,
+          line_position: 33,
           point_box_position: 60
         },
         background_image: {

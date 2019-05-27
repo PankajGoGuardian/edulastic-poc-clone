@@ -16,7 +16,11 @@ const CREATE_STUDENT_ERROR = "[student] create data error";
 const DELETE_STUDENT_REQUEST = "[student] delete data request";
 const DELETE_STUDENT_SUCCESS = "[student] delete data success";
 const DELETE_STUDENT_ERROR = "[student] delete data error";
+const ADD_MULTI_STUDENTS_REQUEST = "[student] add multip students request";
+const ADD_MULTI_STUDENTS_SUCCESS = "[student] add multip students success";
+const ADD_MULTI_STUDENTS_ERROR = "[student] add multip students error";
 
+const SET_STUDENTDETAIL_MODAL_VISIBLE = "[student] set student detail modal visible";
 const SET_STUDENT_SEARCHNAME = "[student] set search name";
 const SET_STUDENT_SETFILTERS = "[student] set filters";
 
@@ -32,7 +36,11 @@ export const createStudentErrorAction = createAction(CREATE_STUDENT_ERROR);
 export const deleteStudentAction = createAction(DELETE_STUDENT_REQUEST);
 export const deleteStudentSuccessAction = createAction(DELETE_STUDENT_SUCCESS);
 export const deleteStudentErrorAction = createAction(DELETE_STUDENT_ERROR);
+export const addMultiStudentsRequestAction = createAction(ADD_MULTI_STUDENTS_REQUEST);
+export const addMultiStudentsSuccessAction = createAction(ADD_MULTI_STUDENTS_SUCCESS);
+export const addMultiStudentsErrorAction = createAction(ADD_MULTI_STUDENTS_ERROR);
 
+export const setStudentsDetailsModalVisibleAction = createAction(SET_STUDENTDETAIL_MODAL_VISIBLE);
 export const setSearchNameAction = createAction(SET_STUDENT_SEARCHNAME);
 export const setFiltersAction = createAction(SET_STUDENT_SETFILTERS);
 
@@ -103,7 +111,11 @@ const initialState = {
   searchName: "",
   filtersColumn: "",
   filtersValue: "",
-  filtersText: ""
+  filtersText: "",
+  multiStudentsAdding: false,
+  multiStudents: {},
+  multiStudentsError: null,
+  studentDetailsModalVisible: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -198,6 +210,24 @@ export const reducer = createReducer(initialState, {
     state.filtersColumn = payload.column;
     state.filtersValue = payload.value;
     state.filtersText = payload.text;
+  },
+  [ADD_MULTI_STUDENTS_REQUEST]: state => {
+    state.multiStudentsAdding = true;
+  },
+  [ADD_MULTI_STUDENTS_SUCCESS]: (state, { payload }) => {
+    state.multiStudentsAdding = false;
+    payload.map((row, index) => {
+      row.key = index;
+    });
+    state.multiStudents = payload;
+    state.studentDetailsModalVisible = true;
+  },
+  [ADD_MULTI_STUDENTS_ERROR]: (state, { payload }) => {
+    state.multiStudentsAdding = false;
+    state.multiStudentsError = payload.error;
+  },
+  [SET_STUDENTDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
+    state.studentDetailsModalVisible = payload;
   }
 });
 
@@ -248,9 +278,21 @@ function* deleteStudentSaga({ payload }) {
   }
 }
 
+function* addMultiStudentSaga({ payload }) {
+  try {
+    const addMultiStudents = yield call(userApi.addMultipleStudents, payload);
+    yield put(addMultiStudentsSuccessAction(addMultiStudents));
+  } catch (err) {
+    const errorMessage = "Adding Multi Students is failing";
+    yield call(message.error, errorMessage);
+    yield put(addMultiStudentsErrorAction({ error: errorMessage }));
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_STUDENTLIST_REQUEST, receiveStudentsListSaga)]);
   yield all([yield takeEvery(UPDATE_STUDENT_REQUEST, updateStudentSaga)]);
   yield all([yield takeEvery(CREATE_STUDENT_REQUEST, createStudentSaga)]);
   yield all([yield takeEvery(DELETE_STUDENT_REQUEST, deleteStudentSaga)]);
+  yield all([yield takeEvery(ADD_MULTI_STUDENTS_REQUEST, addMultiStudentSaga)]);
 }

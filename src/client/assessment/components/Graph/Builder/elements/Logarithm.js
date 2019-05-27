@@ -32,10 +32,12 @@ let points = [];
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      points.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    points.push(newPoint);
     if (points.length === 2) {
+      points.forEach(point => {
+        point.isTemp = false;
+      });
       const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.LOGARITHM],

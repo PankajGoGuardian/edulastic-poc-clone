@@ -29,14 +29,14 @@ const CheckboxTemplateBoxLayout = ({
   let responseIndex = 0;
 
   return (
-    <span className="template_box dropdown" style={{ fontSize, padding: 20 }}>
+    <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
       {templateParts.map((templatePart, index) => {
         if (templatePart.indexOf('class="response-btn"') !== -1) {
           const dropTargetIndex = responseIndex;
           responseIndex++;
           let indexStr;
           const className = evaluation[dropTargetIndex] ? "right" : "wrong";
-          console.log(className, "classname");
+
           switch (stemNumeration) {
             case "lowercase": {
               indexStr = ALPHABET[dropTargetIndex];
@@ -53,9 +53,9 @@ const CheckboxTemplateBoxLayout = ({
             default:
           }
           const btnStyle = {
-            width: showAnswer ? "auto" : 0,
+            width: showAnswer ? "auto" : 140,
             height: 0,
-            widthpx: showAnswer ? "auto" : 0,
+            widthpx: showAnswer ? "auto" : 140,
             heightpx: 0,
             position: "relative"
           };
@@ -103,10 +103,25 @@ const CheckboxTemplateBoxLayout = ({
                 ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
                 ${evaluation[dropTargetIndex] ? "right" : "wrong"}
                 `}
-                  style={btnStyle}
+                  style={{
+                    ...btnStyle,
+                    overflow: "hidden"
+                  }}
                 >
                   &nbsp;<span className="index">{indexStr}</span>
-                  <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                  <span
+                    style={{
+                      width: "70%",
+                      display: "block",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden",
+                      lineHeight: 2.5
+                    }}
+                    className="text"
+                  >
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+                  </span>
                   &nbsp;
                   <IconWrapper>
                     {(evaluation[dropTargetIndex] ? "right" : "wrong") === "right" && <RightIcon />}

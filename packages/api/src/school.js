@@ -38,9 +38,27 @@ const deleteSchool = ({ schoolId, orgId }) =>
     })
     .then(result => result.data.result);
 
+const searchSchool = body =>
+  api
+    .callApi({
+      url: "search/schools",
+      method: "post",
+      data: body
+    })
+    .then(result => result.data.result);
+
+const searchDistricts = body =>
+  api.callApi({
+    url: "search/districts",
+    method: "post",
+    data: body
+  });
+
 export default {
   getSchools,
   updateSchool,
   createSchool,
-  deleteSchool
+  deleteSchool,
+  searchSchool,
+  searchDistricts
 };

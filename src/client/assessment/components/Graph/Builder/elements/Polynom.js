@@ -41,6 +41,7 @@ function flatConfigPoints(pointsConfig) {
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
+    newPoint.isTemp = true;
     if (!points.length) {
       newPoint.setAttribute(Colors.yellow[CONSTANT.TOOLS.POINT]);
       points.push(newPoint);
@@ -50,6 +51,9 @@ function onHandler() {
     if (isStart(points[0].coords.usrCoords, newPoint.coords.usrCoords)) {
       board.$board.removeObject(newPoint);
       points[0].setAttribute(Colors.default[CONSTANT.TOOLS.POINT]);
+      points.forEach(point => {
+        point.isTemp = false;
+      });
       const newPolynom = board.$board.create("functiongraph", [makeCallback(...points)], {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.POLYNOM],

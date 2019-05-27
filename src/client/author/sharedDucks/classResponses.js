@@ -107,7 +107,13 @@ function* receiveFeedbackResponseSaga({ payload }) {
 
 function* receiveStudentQuestionSaga({ payload }) {
   try {
-    const feedbackResponse = yield call(classResponseApi.receiveStudentQuestionResponse, payload);
+    let feedbackResponse;
+    if (payload.testItemId) {
+      feedbackResponse = yield call(classResponseApi.receiveStudentItemQuestionResponse, payload);
+    } else {
+      feedbackResponse = yield call(classResponseApi.receiveStudentQuestionResponse, payload);
+    }
+
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
       payload: feedbackResponse
@@ -125,7 +131,7 @@ function* receiveStudentQuestionSaga({ payload }) {
 function* receiveClassQuestionSaga({ payload }) {
   try {
     let feedbackResponse;
-    if (payload.itemId) {
+    if (payload.testItemId) {
       feedbackResponse = yield call(classResponseApi.questionClassItemQuestionResponse, payload);
     } else {
       feedbackResponse = yield call(classResponseApi.questionClassQuestionResponse, payload);

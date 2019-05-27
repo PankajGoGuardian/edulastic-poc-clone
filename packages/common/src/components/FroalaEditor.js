@@ -56,7 +56,6 @@ const numberPad = [
   "="
 ];
 
-let EditorRef = null;
 const NoneDiv = styled.div`
   position: absolute;
   opacity: 0;
@@ -68,6 +67,7 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
   const [showMathModal, setMathModal] = useState(false);
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
+  const EditorRef = useRef(null);
 
   const config = Object.assign(
     {
@@ -91,6 +91,7 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
 
       events: {
         click: evt => {
+          EditorRef.current.selection.save();
           const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
           if (closestMathParent) {
             setCurrentLatex(closestMathParent.getAttribute("data-latex"));
@@ -114,9 +115,6 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
             });
 
           return false;
-        },
-        "image.error": function(err) {
-          console.log("upload err", err);
         }
       }
     },
@@ -133,25 +131,27 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
       undo: false,
       refreshAfterCallback: false,
       callback() {
-        EditorRef.selection.save();
+        EditorRef.current = this;
+        this.selection.save();
         setCurrentLatex("");
         setCurrentMathEl(null);
         setMathModal(true);
       }
     });
-  });
+  }, []);
 
   const setMathValue = latex => {
     const MQ = window.MathQuill.getInterface(2);
 
     const mathfield = MQ.StaticMath(mathFieldRef.current);
     mathfield.latex(latex);
-    EditorRef.selection.restore();
+    EditorRef.current.selection.restore();
+
     if (currentMathEl) {
       currentMathEl.innerHTML = mathFieldRef.current.innerHTML;
       currentMathEl.setAttribute("data-latex", latex);
     } else {
-      EditorRef.html.insert(
+      EditorRef.current.html.insert(
         `<span data-latex="${latex}" contenteditable="false" class="mq-math-mode">${
           mathFieldRef.current.innerHTML
         }</span>`
@@ -165,8 +165,7 @@ const CustomEditor = ({ value, onChange, tag, ...restOptions }) => {
 
   const manualControl = ({ getEditor, initialize }) => {
     initialize();
-    EditorRef = getEditor();
-    window.eRef = EditorRef;
+    EditorRef.current = getEditor();
   };
 
   const setChange = val => {

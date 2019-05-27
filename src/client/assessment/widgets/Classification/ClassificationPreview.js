@@ -387,33 +387,34 @@ const ClassificationPreview = ({
             </FlexContainer>
           </DropContainer>
         </CorrectAnswersContainer>
-
-        {previewTab === SHOW && (
-          <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
-            {arrayOfCols.map((arr, i) => (
-              <FlexContainer>
-                <Subtitle style={styles.correctAnswersMargins}>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
-                </Subtitle>
-                {arr.map(index => (
-                  <div style={styles.itemContainerStyle} key={index}>
-                    <IndexBox preview={preview}>{index + 1}</IndexBox>
-                    <MathFormulaDisplay
-                      style={getStyles(
-                        false,
-                        theme.widgets.classification.boxBgColor,
-                        theme.widgets.classification.boxBorderColor,
-                        styles.previewItemStyle
-                      )}
-                      dangerouslySetInnerHTML={{ __html: posResp[index] }}
-                    />
-                  </div>
-                ))}
-              </FlexContainer>
-            ))}
-          </CorrectAnswersContainer>
-        )}
       </div>
+
+      {previewTab === SHOW && (
+        <CorrectAnswersContainer title={t("component.classification.correctAnswers")}>
+          {arrayOfCols.map((arr, i) => (
+            <FlexContainer style={{ flexWrap: "wrap", marginBottom: 40 }}>
+              <Subtitle style={styles.correctAnswersMargins}>
+                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: colTitles[i] }} />
+              </Subtitle>
+              {arr.map(index => (
+                <div style={styles.itemContainerStyle} key={index}>
+                  <IndexBox preview={preview}>{index + 1}</IndexBox>
+                  <MathFormulaDisplay
+                    style={getStyles(
+                      false,
+                      false,
+                      theme.widgets.classification.boxBgColor,
+                      theme.widgets.classification.boxBorderColor,
+                      styles.previewItemStyle
+                    )}
+                    dangerouslySetInnerHTML={{ __html: posResp[index] }}
+                  />
+                </div>
+              ))}
+            </FlexContainer>
+          ))}
+        </CorrectAnswersContainer>
+      )}
     </Paper>
   );
 };

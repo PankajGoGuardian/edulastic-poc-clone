@@ -20,7 +20,7 @@ const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
 const AssessmentPlayer = lazy(() => import(/* webpackChunkName: "assessmentPlayer" */ "./assessment/index"));
 const TeacherSignup = lazy(() =>
-  import(/* webpackChunkName: "teacherSignup" */ "./student/Signup/components/TeacherContainer")
+  import(/* webpackChunkName: "teacherSignup" */ "./student/Signup/components/TeacherContainer/Container")
 );
 const Auth = lazy(() => import(/* webpackChunkName: "auth" */ "./Auth"));
 const GetStarted = lazy(() =>
@@ -30,7 +30,7 @@ const StudentSignup = lazy(() =>
   import(/* webpackChunkName: "studentSignup" */ "./student/Signup/components/StudentContainer")
 );
 const AdminSignup = lazy(() =>
-  import(/* webpackChunkName: "adminSignup" */ "./student/Signup/components/AdminContainer")
+  import(/* webpackChunkName: "adminSignup" */ "./student/Signup/components/AdminContainer/Container")
 );
 const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student/app"));
 
@@ -95,7 +95,11 @@ class App extends Component {
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
-          defaultRoute = "/author/assignments";
+          if (user.signupStatus === 3) {
+            defaultRoute = "/author/assignments";
+          } else {
+            defaultRoute = "/signup";
+          }
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
         } else if (role === "student") {

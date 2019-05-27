@@ -24,10 +24,14 @@ function renderElement(board, params, attrs = {}) {
   newElem.type = jxgType;
   newElem.on("up", () => {
     if (newElem.dragged) {
+      newElem.dragged = false;
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
-  newElem.on("drag", () => {
+  newElem.on("drag", e => {
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
     newElem.dragged = true;
     board.dragged = true;
   });
@@ -37,29 +41,6 @@ function renderElement(board, params, attrs = {}) {
 
 function onHandler() {
   return (board, event) => {
-    if (board.isAnyElementsHasFocus()) {
-      return;
-    }
-
-    const elementsUnderMouse = board.$board.getAllObjectsUnderMouse(event);
-    const annotations = elementsUnderMouse
-      .map(eum => {
-        const ancestors = Object.values(eum.ancestors);
-        if (ancestors && ancestors[0] && ancestors[0].type === jxgType) {
-          return ancestors[0];
-        }
-        return null;
-      })
-      .filter(el => el);
-    const elements = board.elements.filter(el => annotations.findIndex(ann => ann.id === el.id) > -1);
-
-    const currentElement = elements[0] || null;
-
-    if (currentElement) {
-      QuillInput(currentElement, board).setFocus();
-      return;
-    }
-
     const coords = board.getCoords(event);
 
     const newElement = renderElement(board, {

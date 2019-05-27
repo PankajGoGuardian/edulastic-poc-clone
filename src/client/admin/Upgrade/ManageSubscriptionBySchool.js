@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import { Row, Col, Form, DatePicker, Button } from "antd";
-import moment from "moment";
-import NotesFormItem from "../Common/Form/NotesFormItem";
+import { Form, Button } from "antd";
+import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 import { Table } from "../Common/StyledComponents";
+import SubTypeTag from "../Common/SubTypeTag";
 
 const { Column } = Table;
 const SearchSchoolByIdRadioOptions = {
@@ -84,7 +84,7 @@ const SearchSchoolsByIdForm = Form.create({ name: "searchSchoolsByIdForm" })(
 
 const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   ({
-    form: { getFieldDecorator, validateFields, getFieldsValue, getFieldValue },
+    form: { getFieldDecorator, validateFields, validateFieldsAndScroll },
     searchedSchoolsData,
     bulkSchoolsSubscribeAction,
     changeTab,
@@ -93,9 +93,6 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   }) => {
     const [selectedSchools, setSelectedSchools] = useState([]);
     const [firstSchoolSubType, setSelectedSchoolSubType] = useState("");
-
-    const nowDate = moment();
-    const nextYearDate = nowDate.clone().add(1, "year");
 
     const handleSubmit = evt => {
       validateFields((err, { subStartDate, subEndDate, notes }) => {
@@ -138,30 +135,26 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
 
     const renderActions = (subType = "free", record) => {
       const handleClick = () => {
-        const { schoolId, subscription } = record;
-        if (subType === "enterprise") {
-          const { subStartDate, subEndDate } = subscription;
-          const notes = getFieldValue("notes");
-          bulkSchoolsSubscribeAction({
-            subStartDate,
-            subEndDate,
-            notes,
-            schoolIds: [schoolId],
-            subType: SubscriptionButtonConfig[subType].subTypeToBeSent
-          });
-        } else if (subType === "partial_premium") {
+        if (subType === "partial_premium") {
           // if partial premium, we move user to a new tab with the data preserved
           setPartialPremiumDataAction(record);
           changeTab(manageByUserSegmentTabKey);
         } else {
-          const { subStartDate, subEndDate, notes } = getFieldsValue(["subStartDate", "subEndDate", "notes"]);
-          bulkSchoolsSubscribeAction({
-            subStartDate: subStartDate.valueOf(),
-            subEndDate: subEndDate.valueOf(),
-            notes,
-            schoolIds: [schoolId],
-            subType: SubscriptionButtonConfig[subType].subTypeToBeSent
-          });
+          validateFieldsAndScroll(
+            ["notes", "subStartDate", "subEndDate"],
+            (err, { notes, subStartDate, subEndDate }) => {
+              if (!err) {
+                const { schoolId } = record;
+                bulkSchoolsSubscribeAction({
+                  subStartDate: subStartDate.valueOf(),
+                  subEndDate: subEndDate.valueOf(),
+                  notes,
+                  schoolIds: [schoolId],
+                  subType: SubscriptionButtonConfig[subType].subTypeToBeSent
+                });
+              }
+            }
+          );
         }
       };
       return <Button onClick={handleClick}>{SubscriptionButtonConfig[subType].label}</Button>;
@@ -177,20 +170,24 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
           pagination={false}
           rowSelection={rowSelection}
           bordered
+          scroll={{ x: "100%", y: 300 }}
         >
           <Column title="School Name" dataIndex="schoolName" key="schoolName" />
           <Column title="District Name" dataIndex="districtName" key="districtName" />
           <Column title="City" dataIndex="address.city" key="city" />
           <Column title="State" dataIndex="address.state" key="state" />
-          <Column title="Plan" dataIndex="subscription.subType" key="plan" render={(text = "free") => text} />
+          <Column
+            title="Plan"
+            dataIndex="subscription.subType"
+            key="plan"
+            render={(text = "free") => <SubTypeTag>{text}</SubTypeTag>}
+          />
           <Column title="Action" dataIndex="subscription.subType" key="action" render={renderActions} />
         </Table>
         {noOfSelectedSchools ? `${noOfSelectedSchools} Selected` : null}
         <BulkSubscribeForm
           handleSubmit={handleSubmit}
           getFieldDecorator={getFieldDecorator}
-          nowDate={nowDate}
-          nextYearDate={nextYearDate}
           ctaText={`Bulk ${SubscriptionButtonConfig[firstSchoolSubType || "free"].label}`}
         />
       </>
@@ -198,27 +195,9 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   }
 );
 
-const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, nowDate, nextYearDate, ctaText }) => (
+const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText }) => (
   <Form onSubmit={handleSubmit}>
-    <Row>
-      <Col span={12}>
-        <Form.Item>
-          {getFieldDecorator("subStartDate", {
-            rules: [{ required: true }],
-            initialValue: nowDate
-          })(<DatePicker />)}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator("subEndDate", {
-            rules: [{ required: true }],
-            initialValue: nextYearDate
-          })(<DatePicker />)}
-        </Form.Item>
-      </Col>
-      <Col span={12}>
-        <NotesFormItem getFieldDecorator={getFieldDecorator} />
-      </Col>
-    </Row>
+    <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
     <Form.Item>
       <Button type="primary" htmlType="submit">
         {ctaText}

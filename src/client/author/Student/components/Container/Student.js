@@ -19,8 +19,8 @@ class Student extends Component {
   }
 
   render() {
-    const { loading, updating, deleting, creating, history } = this.props;
-    const showSpin = loading || updating || deleting || creating;
+    const { loading, updating, deleting, creating, multiStudentsAdding, history } = this.props;
+    const showSpin = loading || updating || deleting || creating || multiStudentsAdding;
 
     return (
       <StudentDiv>
@@ -45,7 +45,8 @@ const enhance = compose(
     loading: get(state, ["studentReducer", "loading"], false),
     updating: get(state, ["studentReducer", "updating"], false),
     creating: get(state, ["studentReducer", "creating"], false),
-    deleting: get(state, ["studentReducer", "deleting"], false)
+    deleting: get(state, ["studentReducer", "deleting"], false),
+    multiStudentsAdding: get(state, ["studentReducer", "multiStudentsAdding"], false)
   }))
 );
 
@@ -55,5 +56,6 @@ Student.propTypes = {
   creating: PropTypes.bool.isRequired,
   loading: PropTypes.bool.isRequired,
   updating: PropTypes.bool.isRequired,
-  deleting: PropTypes.bool.isRequired
+  deleting: PropTypes.bool.isRequired,
+  multiStudentsAdding: PropTypes.bool.isRequired
 };

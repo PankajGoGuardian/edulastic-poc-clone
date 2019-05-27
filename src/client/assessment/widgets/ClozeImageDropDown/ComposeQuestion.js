@@ -226,9 +226,9 @@ class ComposeQuestion extends Component {
                 <ImageWidthInput
                   ref={this.imageWidthEditor}
                   data-cy="image-width-input"
-                  value={imageWidth > 0 ? imageWidth : 600}
+                  value={imageWidth > 0 ? (imageWidth >= 700 ? 700 : imageWidth) : 700}
                   onChange={event => {
-                    this.onItemPropChange("imageWidth", event);
+                    this.onItemPropChange("imageWidth", event > 0 ? (event >= 700 ? 700 : event) : 700);
                   }}
                 />
 

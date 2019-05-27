@@ -22,10 +22,8 @@ class ControlsSettings extends Component {
     const { controlbar, onChange } = this.props;
     const newTools = [...controlbar.controls];
     const areToolsArray = Array.isArray(controlbar.controls[groupIndex]);
-    // const defaultOption = this.controls && this.controls[0] ? this.controls[0].value : "";
-    const defaultOption = this.controls.filter(
-      (control, index) => !controlbar.controls.some(elem => elem === control.value)
-    )[0].value;
+    const defaultOption = this.controls.filter(control => !controlbar.controls.some(elem => elem === control.value))[0]
+      .value;
 
     if (controlbar.controls.length <= 3) {
       if (groupIndex !== undefined && areToolsArray) {
@@ -35,7 +33,6 @@ class ControlsSettings extends Component {
       }
 
       onChange({
-        ...toolbar,
         controls: newTools
       });
     }
@@ -54,7 +51,6 @@ class ControlsSettings extends Component {
     }
 
     onChange({
-      ...toolbar,
       controls: newTools
     });
   };
@@ -71,7 +67,6 @@ class ControlsSettings extends Component {
     }
 
     onChange({
-      ...toolbar,
       controls: newTools
     });
   };
@@ -94,25 +89,21 @@ class ControlsSettings extends Component {
     </Row>
   );
 
-  renderSingleToolsInDefaultGroup = () => {
+  renderControls = () => {
     const { controlbar } = this.props;
-    const countOfSingleTools = controlbar.controls.filter(t => !Array.isArray(t)).length;
-    const filteredTools = this.controls.filter(
-      (control, index) => !controlbar.controls.some(elem => elem === control.value)
-    );
+    const filteredTools = this.controls.filter(control => !controlbar.controls.some(elem => elem === control.value));
 
     return (
       <Col md={12}>
         {controlbar.controls.map((tool, i) =>
           !Array.isArray(tool) ? (
-            <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
+            <React.Fragment key={`controls-item-${i}`}>
               <ToolSelect>
                 <Tool
                   value={tool}
                   options={filteredTools}
                   selectWidth="100%"
                   index={i}
-                  countOfSingleTools={countOfSingleTools}
                   onDelete={this.deleteTool}
                   onChange={this.handleSelect}
                 />
@@ -121,7 +112,7 @@ class ControlsSettings extends Component {
           ) : null
         )}
 
-        {countOfSingleTools < 4 && <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>}
+        {filteredTools.length > 0 && <AddToolBtnWrapper>{this.renderAddToolBtn()}</AddToolBtnWrapper>}
       </Col>
     );
   };
@@ -130,7 +121,7 @@ class ControlsSettings extends Component {
     return (
       <Fragment>
         <Subtitle>Controls</Subtitle>
-        <Row gutter={60}>{this.renderSingleToolsInDefaultGroup()}</Row>
+        <Row gutter={60}>{this.renderControls()}</Row>
       </Fragment>
     );
   }

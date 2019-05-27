@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Icon, Select, message, Button, Menu, Table } from "antd";
+import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
 import {
@@ -33,8 +33,6 @@ import {
 import { getDistrictAdminSelector } from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
-
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 
 function compareByAlph(a, b) {
   if (a > b) {
@@ -76,7 +74,7 @@ class DistrictAdminTable extends React.Component {
         sorter: (a, b) => compareByAlph(a.lastName, b.lastName)
       },
       {
-        title: "Email",
+        title: "Username",
         dataIndex: "email",
         editable: true,
         sorter: (a, b) => compareByAlph(a.email, b.email)
@@ -109,9 +107,6 @@ class DistrictAdminTable extends React.Component {
         role: "district-admin"
       }
     });
-
-    const { loadSchoolsData, userOrgId } = this.props;
-    loadSchoolsData({ body: { districtId: userOrgId } });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
@@ -284,7 +279,7 @@ class DistrictAdminTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { schoolsData } = this.props;
+    const { userOrgId } = this.props;
 
     const selectedDistrictAdmin = dataSource.filter(item => item.key == editDistrictAdminKey);
     const actionMenu = (
@@ -308,8 +303,7 @@ class DistrictAdminTable extends React.Component {
               modalVisible={createDistrictAdminModalVisible}
               createDistrictAdmin={this.createDistrictAdmin}
               closeModal={this.closeCreateDistrictAdminModal}
-              schoolsData={schoolsData}
-              dataSource={dataSource}
+              userOrgId={userOrgId}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
@@ -347,7 +341,7 @@ class DistrictAdminTable extends React.Component {
             </StyledAddFilterButton>
           )}
         </StyledControlDiv>
-        <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
+        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
         {editDistrictAdminModaVisible && editDistrictAdminKey >= 0 && (
           <EditDistrictAdminModal
             districtAdminData={selectedDistrictAdmin[0]}
@@ -365,8 +359,7 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      districtAdminData: getDistrictAdminSelector(state),
-      schoolsData: getSchoolsSelector(state)
+      districtAdminData: getDistrictAdminSelector(state)
     }),
     {
       createDistrictAdmin: createDistrictAdminAction,
@@ -374,8 +367,7 @@ const enhance = compose(
       deleteDistrictAdmin: deleteDistrictAdminAction,
       loadDistrictAdminData: receiveDistrictAdminAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
-      loadSchoolsData: receiveSchoolsAction
+      setFilters: setFiltersAction
     }
   )
 );
@@ -391,7 +383,5 @@ DistrictAdminTable.propTypes = {
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   districtAdminData: PropTypes.array.isRequired,
-  userOrgId: PropTypes.string.isRequired,
-  loadSchoolsData: PropTypes.func.isRequired,
-  schoolsData: PropTypes.object.isRequired
+  userOrgId: PropTypes.string.isRequired
 };

@@ -20,9 +20,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, keepData) => ({
+export const updateItemDetailByIdAction = (id, data, keepData, redirect = true) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, keepData }
+  payload: { id, data, keepData, redirect }
 });
 
 export const updateItemDetailDimensionAction = (left, right) => ({

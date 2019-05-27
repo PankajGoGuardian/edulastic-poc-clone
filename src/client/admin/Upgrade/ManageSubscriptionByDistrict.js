@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Row as AntdRow, Col, Form, Select, DatePicker, Button, AutoComplete } from "antd";
+import { Row as AntdRow, Col, Form, Select, Button, AutoComplete } from "antd";
 import moment from "moment";
 import styled from "styled-components";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
-import NotesFormItem from "../Common/Form/NotesFormItem";
+import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
-import { getDate } from "../Common/Utils";
+import { getDate, useUpdateEffect } from "../Common/Utils";
 
 const { Option } = Select;
 const { Option: AutocompleteOption } = AutoComplete;
@@ -74,7 +74,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
     }, []);
 
     // when a district is searched, the form fields are populated according to the data received
-    useEffect(() => {
+    useUpdateEffect(() => {
       setFieldsValue({
         subType,
         subStartDate: moment(subStartDate || savedDate.current.currentDate),
@@ -110,8 +110,6 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
       evt.preventDefault();
     };
 
-    const disabledDate = val => val < moment().startOf("day");
-
     return (
       <Form onSubmit={handleSubmit} labelAlign="left">
         <Row>
@@ -124,7 +122,8 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
         </Row>
         <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelCol={{ span: 3 }}>
           {getFieldDecorator("subType", {
-            valuePropName: "value"
+            valuePropName: "value",
+            rules: [{ required: true }]
           })(
             <Select style={{ width: 120 }} onChange={handleSubTypeChange}>
               <Option value="free">Free</Option>
@@ -154,19 +153,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
             <ValueSpan>{location.zip}</ValueSpan>
           </Col>
         </Row>
-        <Form.Item label={<HeadingSpan>Start Date</HeadingSpan>} labelCol={{ span: 4 }}>
-          {getFieldDecorator("subStartDate", {
-            rules: [{ required: true }]
-          })(<DatePicker disabledDate={disabledDate} />)}
-        </Form.Item>
-        <Form.Item label={<HeadingSpan>End Date</HeadingSpan>} labelCol={{ span: 4 }}>
-          {getFieldDecorator("subEndDate", {
-            rules: [{ required: true }]
-          })(<DatePicker disabledDate={disabledDate} />)}
-        </Form.Item>
-        <div>
-          <NotesFormItem getFieldDecorator={getFieldDecorator} />
-        </div>
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
         <Form.Item>
           <Button type="primary" htmlType="submit">
             {ctaSubscriptionState}

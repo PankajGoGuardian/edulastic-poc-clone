@@ -1,9 +1,9 @@
 import React from "react";
-import { Row, Col, Form, Radio, Input, DatePicker, Button, Icon } from "antd";
-import moment from "moment";
-import NotesFormItem from "../Common/Form/NotesFormItem";
+import { Row, Col, Form, Radio, Input, Button, Icon } from "antd";
+import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { radioButtonUserData } from "../Data";
 import { Table } from "../Common/StyledComponents";
+import SubTypeTag from "../Common/SubTypeTag";
 
 const { TextArea } = Input;
 const { Group: RadioGroup } = Radio;
@@ -48,17 +48,17 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
     {
       title: "Subscription Type",
       dataIndex: "subscription.subType",
-      render: (text, { updatedSubType, updatedSubTypeSuccess }) =>
+      render: (text = "free", { updatedSubType, updatedSubTypeSuccess }) =>
         updatedSubType ? (
           <>
-            <span style={{ marginRight: "5px" }}>{updatedSubType}</span>
+            <SubTypeTag style={{ marginRight: "5px" }}>{updatedSubType}</SubTypeTag>
             <Icon
               title={`Update ${updatedSubTypeSuccess ? "success" : "failed"}`}
               type={updatedSubTypeSuccess ? "check-circle" : "warning"}
             />
           </>
         ) : (
-          text
+          <SubTypeTag>{text}</SubTypeTag>
         )
     },
     {
@@ -83,9 +83,6 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
 
 const SubmitUserForm = Form.create({ name: "submitUserForm" })(
   ({ form: { getFieldDecorator, validateFields }, upgradeUserSubscriptionAction, validEmailIdsList }) => {
-    const nowDate = moment();
-    const nextYearDate = nowDate.clone().add(1, "year");
-
     const handleSubmit = evt => {
       validateFields((err, { subStartDate, subEndDate, notes, subscriptionAction }) => {
         if (!err) {
@@ -106,25 +103,8 @@ const SubmitUserForm = Form.create({ name: "submitUserForm" })(
 
     return (
       <Form onSubmit={handleSubmit}>
-        <Row>
-          <Col span={12}>
-            <Form.Item>
-              {getFieldDecorator("subStartDate", {
-                rules: [{ required: true }],
-                initialValue: nowDate
-              })(<DatePicker />)}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator("subEndDate", {
-                rules: [{ required: true }],
-                initialValue: nextYearDate
-              })(<DatePicker />)}
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <NotesFormItem getFieldDecorator={getFieldDecorator} />
-          </Col>
-        </Row>
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+
         <Row>
           <Col span={8}>
             <Form.Item>

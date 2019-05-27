@@ -118,6 +118,16 @@ export default {
       strokeColor: "#00b2ff",
       highlightStrokeColor: "#00b2ff",
       highlightFillColor: "transparent"
+    },
+    [TOOLS.EQUATION]: {
+      fillColor: "transparent",
+      strokeColor: "#00b2ff",
+      highlightStrokeColor: "#00b2ff",
+      highlightFillColor: "transparent"
+    },
+    [TOOLS.AREA]: {
+      fillColor: "#00b2ff",
+      highlightFillColor: "#00b2ff"
     }
   },
 
@@ -229,6 +239,16 @@ export default {
       strokeColor: "#ee1658",
       highlightStrokeColor: "#ee1658",
       highlightStrokeWidth: 1
+    },
+    [TOOLS.EQUATION]: {
+      fillColor: "transparent",
+      strokeColor: "#ee1658",
+      highlightStrokeColor: "#ee1658",
+      highlightStrokeWidth: 1
+    },
+    [TOOLS.AREA]: {
+      fillColor: "#ee1658",
+      highlightFillColor: "#ee1658"
     }
   },
 
@@ -340,6 +360,16 @@ export default {
       strokeColor: "#1fe3a1",
       highlightStrokeColor: "#1fe3a1",
       highlightStrokeWidth: 1
+    },
+    [TOOLS.EQUATION]: {
+      fillColor: "transparent",
+      strokeColor: "#1fe3a1",
+      highlightStrokeColor: "#1fe3a1",
+      highlightStrokeWidth: 1
+    },
+    [TOOLS.AREA]: {
+      fillColor: "#1fe3a1",
+      highlightFillColor: "#1fe3a1"
     }
   },
 
@@ -451,6 +481,16 @@ export default {
       strokeColor: "#ffcb00",
       highlightStrokeColor: "#ffcb00",
       highlightFillColor: "transparent"
+    },
+    [TOOLS.EQUATION]: {
+      fillColor: "transparent",
+      strokeColor: "#ffcb00",
+      highlightStrokeColor: "#ffcb00",
+      highlightFillColor: "transparent"
+    },
+    [TOOLS.AREA]: {
+      fillColor: "#ffcb00",
+      highlightFillColor: "#ffcb00"
     }
   }
 };

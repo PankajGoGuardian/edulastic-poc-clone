@@ -6,17 +6,27 @@ import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
-import { springGreen } from "@edulastic/colors";
-import { signupAction } from "../../Login/ducks";
+import {
+  springGreen,
+  greyGraphstroke,
+  grey,
+  darkBlue1,
+  lightGreen2,
+  greenDark1,
+  greenDark2,
+  greenDark3,
+  white
+} from "@edulastic/colors";
+import { signupAction } from "../../../Login/ducks";
 
-import teacherBg from "../../assets/bg-teacher.png";
-import userIcon from "../../assets/user-icon.svg";
-import mailIcon from "../../assets/mail-icon.svg";
-import keyIcon from "../../assets/key-icon.svg";
-import lockIcon from "../../assets/lock-icon.svg";
-import googleIcon from "../../assets/google-btn.svg";
-import icon365 from "../../assets/icons8-office-365.svg";
-import cleverIcon from "../../assets/clever-icon.svg";
+import teacherBg from "../../../assets/bg-teacher.png";
+import userIcon from "../../../assets/user-icon.svg";
+import mailIcon from "../../../assets/mail-icon.svg";
+import keyIcon from "../../../assets/key-icon.svg";
+import lockIcon from "../../../assets/lock-icon.svg";
+import googleIcon from "../../../assets/google-btn.svg";
+import icon365 from "../../../assets/icons8-office-365.svg";
+import cleverIcon from "../../../assets/clever-icon.svg";
 
 const FormItem = Form.Item;
 
@@ -191,7 +201,7 @@ const enhance = compose(
 export default enhance(SignupForm);
 
 const RegistrationWrapper = styled.div`
-  background: #999999 url(${teacherBg});
+  background: ${greyGraphstroke} url(${teacherBg});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -249,7 +259,7 @@ const RegistrationBody = styled(Row)`
 
 const Copyright = styled(Row)`
   font-size: 10px;
-  color: #dddddd;
+  color: ${grey};
   text-align: center;
   margin: 25px 0px 10px;
 `;
@@ -263,10 +273,10 @@ const FormWrapper = styled.div`
 `;
 
 const FormHead = styled(Row)`
-  background: #157ad8;
-  background: -moz-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
-  background: -webkit-radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
-  background: radial-gradient(ellipse at center, #94df5e 16%, #00b373 100%);
+  background: ${darkBlue1};
+  background: ${`-moz-radial-gradient(ellipse at center, ${lightGreen2} 16%, ${greenDark1} 100%)`};
+  background: ${`-webkit-radial-gradient(ellipse at center,  ${lightGreen2} 16%, ${greenDark1} 100%)`};
+  background: ${`radial-gradient(ellipse at center, ${lightGreen2} 16%, ${greenDark1} 100%)`};
   padding: 15px;
   h3 {
     color: white;
@@ -275,7 +285,7 @@ const FormHead = styled(Row)`
 `;
 
 const ThirdPartyLoginBtn = styled(Col)`
-  background: #ffffff;
+  background: ${white};
   margin-top: 5px;
   border-radius: 4px;
   text-align: center;
@@ -329,7 +339,7 @@ const FormBody = styled(Row)`
       }
     }
     .ant-input:focus {
-      border: 1px solid #1fb58b;
+      border: 1px solid ${greenDark2};
     }
     .has-error {
       .ant-form-explain,
@@ -357,10 +367,10 @@ const FormBody = styled(Row)`
 
 const RegisterButton = styled(Button)`
   width: 100%;
-  background: #1fb58b;
+  background: ${greenDark2};
   font-size: 13px;
-  color: white;
-  border: 1px solid #1fb58b;
+  color: ${white};
+  border: 1px solid ${greenDark2};
   font-weight: 600;
 `;
 
@@ -378,7 +388,7 @@ const CircleDiv = styled.div`
   left: ${({ left }) => left}px;
   bottom: ${({ bottom }) => bottom}px;
   right: ${({ right }) => right}px;
-  background: #27947a;
+  background: ${greenDark3};
   border-radius: 50%;
   position: fixed;
   opacity: 0.6;

@@ -54,7 +54,8 @@ const CheckboxTemplateBoxLayout = ({
           left: responseContainer.left,
           height: responseContainer.height,
           position: "absolute",
-          borderRadius: 5
+          borderRadius: 5,
+          overflow: "hidden"
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
           const { widthpx } = responsecontainerindividuals[dropTargetIndex];
@@ -102,7 +103,11 @@ const CheckboxTemplateBoxLayout = ({
                           border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
                           margin: 5,
                           padding: 5,
-                          display: "inline-block"
+                          display: "inline-block",
+                          width: "70%",
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis"
                         }}
                         item={answer}
                         onDrop={onDropHandler}

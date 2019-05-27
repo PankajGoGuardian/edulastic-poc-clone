@@ -1,10 +1,8 @@
 import JXG from "jsxgraph";
-import { clone } from "lodash";
 import { Quill } from "react-quill";
-import { defaultTextParameters } from "../settings";
-import { calcMeasure, checkMarksRenderSpace, getClosestTick } from "../utils";
+import { calcMeasure, getClosestTick } from "../utils";
 
-const snapMark = (mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board) => {
+const snapMark = (mark, graphParameters, snapToTicks, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
     const setCoords = JXG.COORDS_BY_USER;
     let x;
@@ -15,185 +13,97 @@ const snapMark = (mark, point, xCoords, snapToTicks, setValue, lineSettings, con
       .map(t => t.fixedTicks !== null && t.fixedTicks)
       .reduce((previousValue, currentValue) => previousValue.concat(currentValue))
       .sort();
-    const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
-    const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+    const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
     const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
     const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
-    if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() < xCoords[0]) {
+    if (mark.Y() >= containerY && mark.X() < graphParameters.xMin) {
       y = lineY;
-      x = getClosestTick(point.X(), ticks);
-    } else if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() > xCoords[1]) {
+      x = getClosestTick(mark.X(), ticks);
+    } else if (mark.Y() >= containerY && mark.X() > graphParameters.xMax) {
       y = lineY;
-      x = getClosestTick(point.X(), ticks);
-    } else if (point.Y() >= containerY - markYMeasure * 1.35 && point.X() < xCoords[1] && point.X() > xCoords[0]) {
+      x = getClosestTick(mark.X(), ticks);
+    } else if (mark.Y() >= containerY && mark.X() < graphParameters.xMax && mark.X() > graphParameters.xMin) {
       y = lineY;
       if (snapToTicks) {
-        x = getClosestTick(point.X(), ticks);
+        x = getClosestTick(mark.X(), ticks);
       } else {
-        x = point.X();
+        x = mark.X();
       }
     } else {
-      y = point.Y();
-      x = point.X();
+      y = mark.Y();
+      x = mark.X();
     }
 
-    if (point.Y() >= containerY - markYMeasure * 1.35) {
-      mark.setAttribute({
-        cssClass: "mark mounted",
-        highlightCssClass: "mark mounted"
-      });
-    } else {
-      mark.setAttribute({ cssClass: "mark", highlightCssClass: "mark" });
+    let cssClass = mark.visProp.cssclass;
+    cssClass = cssClass.replace(" mounted", "");
+    if (mark.Y() >= containerY) {
+      cssClass += " mounted";
     }
-    point.setPosition(setCoords, [x, y]);
+    mark.setAttribute({
+      cssClass,
+      highlightCssClass: cssClass
+    });
+
+    mark.setPosition(setCoords, [x, y]);
     setValue();
   });
 };
 
-const onHandler = (board, coords, data, measure, xCoords, snapToTicks, setValue, lineSettings, containerSettings) => {
-  const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
-  const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
-  const point = board.$board.create("point", coords, {
-    name: "",
-    visible: false
-  });
-  const mark = board.$board.create("text", [coords[0] - measure[0], coords[1] + measure[1], data.text], {
-    ...defaultTextParameters(),
-    fixed: false
-  });
-  const selector = `[id*=${mark.id}]`;
-  mark.quillInput = new Quill(selector, { readOnly: true, modules: {} });
-
-  const group = board.$board.create("group", [point, mark], { id: data.id });
-  snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
-
-  if (point.Y() >= containerY - markYMeasure * 1.35) {
-    mark.setAttribute({
-      cssClass: "mark mounted",
-      highlightCssClass: "mark mounted"
-    });
-  } else {
-    mark.setAttribute({ cssClass: "mark", highlightCssClass: "mark" });
-  }
-
-  return group;
-};
-
-const renderMarkAnswer = (board, config, measure, xCoords, snapToTicks, setValue, lineSettings, containerSettings) => {
-  const point = board.$board.create("point", [config.position, config.y], {
-    name: "",
-    visible: false
-  });
-
-  const mark = board.$board.create("text", [config.position - measure[0], config.y + measure[1], config.point], {
-    ...defaultTextParameters(),
-    cssClass: "mark " + config.className + " mounted",
-    highlightCssClass: "mark " + config.className + " mounted",
-    visible: true
-  });
-  const selector = `[id*=${mark.id}]`;
-  mark.quillInput = new Quill(selector, { readOnly: true, modules: {} });
-
-  const group = board.$board.create("group", [point, mark], { id: config.id });
-  snapMark(mark, point, xCoords, snapToTicks, setValue, lineSettings, containerSettings, board);
-
-  return group;
-};
-
-const renderMarkShowAnswer = (board, config, measure) => {
-  const point = board.$board.create("point", [config.position, config.y], {
-    name: "",
-    visible: false,
-    fixed: true,
-    frozen: true
-  });
-  point.label.setAttribute({
-    ...defaultTextParameters(),
-    cssClass: "mark " + config.className + " mounted",
-    highlightCssClass: "mark " + config.className + " mounted",
-    visible: true
-  });
-  point.setLabel(config.point);
-  point.label.setPosition(JXG.COORDS_BY_USER, [config.position - measure[0], config.y + measure[1]]);
-  point.label.setText(config.point);
-  const selector = `[id*=${point.label.id}]`;
-  point.label.quillInput = new Quill(selector, { readOnly: true, modules: {} });
-  return point;
-};
-
-const findObjectInGroup = (group, type) => {
-  for (const element in group.objects) {
-    if (group.objects[element].point && group.objects[element].point.elType === type) {
-      return group.objects[element].point;
-    }
-  }
-};
-
-const rerenderMark = (mark, board, graphParameters, settings, setValue, lineSettings, containerSettings) => {
-  const oldPoint = findObjectInGroup(mark, "point");
-  const oldMark = findObjectInGroup(mark, "text");
-  const data = { id: mark.id, text: clone(oldMark.plaintext) };
-  let oldCoords = [clone(oldPoint.coords.usrCoords[1]), clone(oldPoint.coords.usrCoords[2])];
-
-  const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
-  const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
+const onHandler = (board, coords, data, graphParameters, snapToTicks, setValue, lineSettings, containerSettings) => {
+  const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
-
-  const axis = board.numberlineAxis;
-  const ticks = axis.ticks.filter(t => t.fixedTicks !== null)[0];
-
-  if (oldCoords[1] >= containerY - markYMeasure * 1.35) {
-    oldCoords[1] = lineY;
-
-    oldCoords[0] = getClosestTick(oldCoords[0], ticks.fixedTicks);
-  } else {
-    oldCoords = checkMarksRenderSpace(board, settings, containerSettings);
+  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
+  const [xMin, , , yMin] = board.$board.getBoundingBox();
+  let x = xMin;
+  let y = yMin;
+  if (coords) {
+    x = coords.position;
+    y = Number.isNaN(Number.parseFloat(coords.y)) ? lineY : coords.y;
   }
 
-  const newMark = onHandler(
-    board,
-    oldCoords,
-    data,
-    calcMeasure(51.5, 45, board),
-    [graphParameters.xMin, graphParameters.xMax],
-    settings.snapToTicks,
-    settings.ticksDistance,
-    setValue,
-    lineSettings,
-    containerSettings
+  const mark = board.$board.create("text", [x, y, ""], {
+    id: coords && coords.fixed ? null : data.id,
+    anchorX: "middle",
+    anchorY: "bottom",
+    fixed: coords && coords.fixed
+  });
+
+  const selector = `[id*=${mark.id}]`;
+  mark.quillInput = new Quill(selector, {
+    theme: "bubble",
+    readOnly: true,
+    modules: {
+      toolbar: false
+    }
+  });
+
+  mark.quillInput.clipboard.matchers = mark.quillInput.clipboard.matchers.filter(
+    matcher => matcher[1].name !== "matchNewline"
   );
-  const newPoint = findObjectInGroup(newMark, "point");
-  const newLabel = findObjectInGroup(newMark, "text");
 
-  if (newPoint.Y() >= containerY - markYMeasure * 1.35) {
-    newLabel.setAttribute({
-      cssClass: "mark mounted",
-      highlightCssClass: "mark mounted"
-    });
-  } else {
-    newLabel.setAttribute({ cssClass: "mark", highlightCssClass: "mark" });
+  mark.quillInput.clipboard.dangerouslyPasteHTML(0, data.text);
+  mark.labelHTML = data.text;
+
+  if (!coords || !coords.fixed) {
+    snapMark(mark, graphParameters, snapToTicks, setValue, lineSettings, containerSettings, board);
   }
 
-  board.elements.push(newMark);
-};
+  let cssClass = `mark ${coords && coords.className ? coords.className : ""}`;
+  if (mark.Y() >= containerY) {
+    cssClass += " mounted";
+  }
 
-const updateTextSize = (mark, fontSize) => {
-  const text = findObjectInGroup(mark, "text");
-  text.setAttribute({ fontSize });
-};
+  mark.setAttribute({
+    cssClass,
+    highlightCssClass: cssClass
+  });
 
-const removeMark = (board, mark) => {
-  const text = findObjectInGroup(mark, "text");
-  const point = findObjectInGroup(mark, "point");
-  board.$board.removeObject(text);
-  board.$board.removeObject(point);
+  return mark;
 };
 
 const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
-  const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
   const polygonCoords = [[xMin, containerY], [xMin, -1.75], [xMax, -1.75], [xMax, containerY]];
@@ -201,123 +111,69 @@ const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
     fixed: true,
     withLines: false,
     fillOpacity: 1,
-    fillColor: "#efefef"
+    fillColor: "#efefef",
+    vertices: {
+      visible: false
+    }
   });
-  polygon.vertices.forEach(ancestor => ancestor.setAttribute({ visible: false }));
   return polygon;
 };
 
 const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
-  const oldBoard = board.elements.filter(element => element.elType === "polygon");
-  board.$board.removeObject(oldBoard);
-  board.elements = board.elements.filter(element => element.elType !== "polygon");
-  board.elements.push(renderMarksContainer(board, xMin, xMax, containerSettings));
+  board.$board.removeObject(board.marksContainer);
+  board.marksContainer = renderMarksContainer(board, xMin, xMax, containerSettings);
 };
 
-const updateText = (oldText, newText) => oldText.setText(newText);
+const getConfig = mark => ({
+  position: mark.X(),
+  y: mark.Y(),
+  point: mark.labelHTML,
+  id: mark.id
+});
 
-const checkForTextUpdate = (marks, elements) => {
-  marks.forEach(mark => {
-    elements.forEach(element => {
-      if (element.id === mark.id) {
-        const oldText = findObjectInGroup(element, "text");
-
-        if (oldText.htmlStr !== mark.text) {
-          updateText(oldText, mark.text);
-        }
-      }
-    });
-  });
-};
-
-const swapCoordinates = (swappedMarks, board, containerSettings) => {
-  const newPositions = swappedMarks.map(swappedMark => {
-    const oldObject = board.elements.find(element => element.id === swappedMark.itemToSwap);
-    const oldPoint = findObjectInGroup(oldObject, "point");
-
-    const newObject = board.elements.find(element => element.id === swappedMark.currentElement);
-    const newPoint = findObjectInGroup(newObject, "point");
-    const newMark = findObjectInGroup(newObject, "text");
-
-    return {
-      newCoords: clone(oldPoint.coords.usrCoords),
-      oldCoords: clone(newPoint.coords.usrCoords),
-      mark: newMark,
-      point: newPoint
-    };
-  });
-
-  const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
-  const [xMeasure, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+const alignMarks = (board, settings, containerSettings, lineSettings) => {
+  const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
-  newPositions.forEach(group => {
-    group.point.setPositionDirectly(JXG.COORDS_BY_USER, group.newCoords, group.oldCoords);
+  const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
+  const pxInUnitX = board.$board.canvasWidth / (xMax - xMin);
+  const pxInUnitY = board.$board.canvasHeight / (yMax - yMin);
+  const marginLeft = settings.separationDistanceX / pxInUnitX;
+  const marginTop = settings.separationDistanceY / pxInUnitY;
 
-    if (group.point.Y() >= containerY - markYMeasure * 1.35) {
-      group.mark.setAttribute({
-        cssClass: "mark mounted",
-        highlightCssClass: "mark mounted"
-      });
-    } else {
-      group.mark.setAttribute({ cssClass: "mark", highlightCssClass: "mark" });
+  let offsetX = xMin; // right side of previous mark
+  let offsetY = containerY; // bottom side of previous marks line
+  board.elements.forEach(mark => {
+    if (mark.Y() === lineY) {
+      return;
     }
-  });
-};
 
-const checkForSwap = (marks, oldMarks, board, containerSettings) => {
-  const swappedMarks = [];
+    const rect = mark.rendNode.getBoundingClientRect();
+    const height = rect.height / pxInUnitY;
+    const width = rect.width / pxInUnitX;
+    const setCoords = JXG.COORDS_BY_USER;
 
-  oldMarks.forEach((oldMark, index) => {
-    if (oldMark.id !== marks[index].id) {
-      marks.forEach((mark, i) => {
-        if (oldMark.id === mark.id) {
-          swappedMarks.push({
-            currentElement: oldMark.id,
-            itemToSwap: oldMarks[i].id
-          });
-        }
-      });
+    if (offsetX + marginLeft + width > xMax) {
+      offsetX = xMin;
+      offsetY -= marginTop + height;
     }
+
+    const x = offsetX + marginLeft + width / 2;
+    const y = offsetY - (marginTop + height);
+    mark.setPosition(setCoords, [x, y]);
+    mark.setAttribute({
+      cssClass: "mark",
+      highlightCssClass: "mark"
+    });
+
+    offsetX = x + width / 2;
   });
-
-  if (swappedMarks.length > 0) {
-    swapCoordinates(swappedMarks, board, containerSettings);
-  }
-};
-
-const checkForUpdate = (marks, elements, board, oldMarks, containerSettings) => {
-  checkForTextUpdate(marks, elements);
-  checkForSwap(marks, oldMarks, board, containerSettings);
-  board.$board.fullUpdate();
-};
-
-const getConfig = group => {
-  const point = findObjectInGroup(group, "point");
-  const text = findObjectInGroup(group, "text");
-
-  return {
-    position: point.X(),
-    y: point.Y(),
-    point: text.htmlStr,
-    id: group.id
-  };
 };
 
 export default {
   onHandler,
-  renderMarksContainer,
   updateMarksContainer,
-  updateText,
-  updateTextSize,
-  swapCoordinates,
-  findObjectInGroup,
-  checkForTextUpdate,
-  checkForSwap,
-  checkForUpdate,
-  removeMark,
-  rerenderMark,
   getConfig,
-  renderMarkAnswer,
-  renderMarkShowAnswer
+  alignMarks
 };

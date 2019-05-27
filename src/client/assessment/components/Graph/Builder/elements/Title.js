@@ -21,14 +21,6 @@ const renderTitle = (board, title) => {
   return point;
 };
 
-const updateTitle = (board, title) => {
-  const oldTitle = board.elements.filter(element => element.elType === "title");
-  board.$board.removeObject(oldTitle);
-  board.elements = board.elements.filter(element => element.elType !== "title");
-  board.elements.push(renderTitle(board, title));
-};
-
 export default {
-  renderTitle,
-  updateTitle
+  renderTitle
 };

@@ -23,6 +23,10 @@ function init(element, board, readOnly = false) {
     }
   });
 
+  element.quillInput.root.addEventListener("mousedown", () => {
+    element.prepareToFocus = true;
+  });
+
   element.quillInput.root.addEventListener("click", () => {
     QuillInput(element, board).setFocus();
   });
@@ -30,12 +34,12 @@ function init(element, board, readOnly = false) {
 
 const QuillInput = (element, board) => ({
   setLabel(label, readOnly = false) {
-    if (!label) {
+    if (!label || element.latexIsBroken) {
       return;
     }
 
     init(element, board, readOnly);
-    element.quillInput.root.innerHTML = label;
+    element.quillInput.clipboard.dangerouslyPasteHTML(0, label);
     element.labelHTML = label;
   },
 
@@ -75,6 +79,7 @@ const QuillInput = (element, board) => ({
     element.quillInput.theme.tooltip.root.style.display = "none";
     element.quillInput.container.style.zIndex = 9;
     element.hasFocus = false;
+    element.prepareToFocus = false;
 
     const html = element.quillInput
       .getLines()

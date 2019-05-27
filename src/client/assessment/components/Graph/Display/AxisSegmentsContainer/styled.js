@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { greenDark, secondaryTextColor, svgDisabledColor, white, green } from "@edulastic/colors";
+import { greenDark, secondaryTextColor, svgDisabledColor, white } from "@edulastic/colors";
 
 export const GraphToolbar = styled.div`
   box-sizing: border-box;
@@ -23,29 +23,6 @@ export const GraphToolbar = styled.div`
   }
 `;
 
-export const ToolbarLeft = styled.ul`
-  display: flex;
-  max-width: 100%;
-  width: 100%;
-  height: 100%;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  margin: 0;
-  padding: 0;
-`;
-
-export const ToolbarRight = styled.ul`
-  display: flex;
-  align-items: center;
-  min-width: 93px;
-  height: 100%;
-  margin: 0;
-  margin-left: auto;
-  padding: 0;
-`;
-
 export const SegmentsToolbarItem = styled.div`
   width: 100%;
   height: 65px;
@@ -53,22 +30,6 @@ export const SegmentsToolbarItem = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-`;
-
-export const ToolbarItem = styled.div`
-  width: 100%;
-  height: 84px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const ToolbarItemLabel = styled.span`
-  color: ${props => (props.color ? props.color : `${secondaryTextColor}`)}
-  font-size: 14px;
-  font-weight: 600;
-  line-height: 19px;
 `;
 
 export const ToolbarItemIcon = styled.div`
@@ -183,54 +144,6 @@ export const SegmentsToolBtn = styled.li`
   }
 `;
 
-export const ToolBtn = styled.li`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 93px;
-  height: 84px;
-  background-color: transparent;
-  color: ${secondaryTextColor};
-  cursor: pointer;
-  display: inline-block;
-  line-height: 1.5em;
-  transition: background-color 0.1s ease-in;
-  user-select: none;
-  box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0);
-
-  svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
-  }
-
-  &:hover {
-    background-color: ${white};
-  }
-
-  &:active {
-    background-color: ${white};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
-  }
-
-  &.active {
-    background-color: ${white};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
-
-    .dd-header-title svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
-    }
-
-    .tool-btn-icon svg {
-      color: ${greenDark};
-      stroke: ${greenDark};
-      fill: ${greenDark};
-    }
-  }
-`;
-
 export const GraphWrapper = styled.div`
   width: ${props => (props.width ? `${props.width}px` : "100%")};
   border-radius: 4px;
@@ -280,70 +193,4 @@ export const DropdownMenu = styled.ul`
     border-width: 0 12px 10px 12px;
     border-color: transparent transparent #fff transparent;
   }
-`;
-
-export const GroupToolBtn = styled.li`
-  padding: 0.6em 1.6em;
-  background-color: ${white};
-  width: 100%;
-  line-height: 1.5em;
-  transition: background-color 0.1s ease-in;
-  user-select: none;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  position: relative;
-  cursor: pointer;
-  color: ${secondaryTextColor};
-  box-shadow: none;
-
-  svg {
-    color: ${secondaryTextColor};
-    stroke: ${secondaryTextColor};
-    fill: ${secondaryTextColor};
-  }
-
-  &:hover {
-    background-color: ${green};
-    color: ${white};
-
-    svg {
-      color: ${white};
-      stroke: ${white};
-      fill: ${white};
-    }
-  }
-
-  &.active {
-    background-color: ${green};
-    color: ${white};
-
-    svg {
-      color: ${white};
-      stroke: ${white};
-      fill: ${white};
-    }
-  }
-`;
-
-export const DropdownArrowWrapper = styled.div`
-  position: absolute;
-  bottom: 2px;
-  left: 50%;
-  transform: translateX(-50%) rotate(90deg);
-  display: flex;
-  left: 50%;
-  align-items: center;
-  justify-content: center;
-  max-width: 12px;
-  max-height: 12px;
-  z-index: 11;
-`;
-
-export const Icon = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-right: 19px;
-  font-size: 16px;
 `;

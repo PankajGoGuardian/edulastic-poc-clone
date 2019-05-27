@@ -99,7 +99,6 @@ class Dropdown extends Component {
       <ToolBtn
         style={{ position: "relative", width: fontSize > 20 ? 105 : 93 }}
         className={isToolGroupActive ? "active" : ""}
-        key={Math.random().toString(36)}
       >
         <div className="dd-header" onClick={this.toggleList}>
           <div className="dd-header-title">
@@ -122,11 +121,10 @@ class Dropdown extends Component {
               this.dropdownMenu = comp;
             }}
           >
-            {list.map(uiTool => (
-              <React.Fragment key={Math.random().toString(36)}>
+            {list.map((uiTool, i) => (
+              <React.Fragment key={`dropdown-menu-item-${i}`}>
                 <GroupToolBtn
                   className={this.isActiveTool(uiTool) ? "active" : ""}
-                  key={Math.random().toString(36)}
                   onClick={() => this.selectItem(uiTool)}
                   style={{ fontSize }}
                 >

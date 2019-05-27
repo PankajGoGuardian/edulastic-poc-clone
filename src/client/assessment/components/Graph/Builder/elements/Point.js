@@ -39,15 +39,29 @@ export function findPoint(elements, coords) {
 
 function onHandler(board, event) {
   const coords = board.getCoords(event);
-  // const point = findPoint(board.elements, coords.usrCoords);
-  // if (!point) {
-  return board.$board.create("point", coords.usrCoords, {
+  const point = board.$board.create("point", coords.usrCoords, {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.default[CONSTANT.TOOLS.POINT],
     label: getLabelParameters(JXG.OBJECT_TYPE_POINT)
   });
-  // }
-  // return point;
+
+  point.on("up", () => {
+    if (point.dragged) {
+      point.dragged = false;
+      if (!point.isTemp) {
+        board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+      }
+    }
+  });
+  point.on("drag", e => {
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
+    point.dragged = true;
+    board.dragged = true;
+  });
+
+  return point;
 }
 
 function getConfig(point) {

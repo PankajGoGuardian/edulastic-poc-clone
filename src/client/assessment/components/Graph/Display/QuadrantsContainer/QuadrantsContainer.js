@@ -26,6 +26,7 @@ import {
 } from "../../Builder/settings";
 import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from "./styled";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import Equations from "./Equations";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -134,7 +135,7 @@ class GraphContainer extends PureComponent {
 
     this.onSelectTool = this.onSelectTool.bind(this);
     this.onReset = this.onReset.bind(this);
-    this.getConfig = this.getConfig.bind(this);
+    this.updateValues = this.updateValues.bind(this);
   }
 
   getDefaultTool() {
@@ -321,7 +322,7 @@ class GraphContainer extends PureComponent {
   }
 
   onReset() {
-    const { tools, setElementsStash } = this.props;
+    const { tools } = this.props;
 
     this.setState({
       selectedTool: this.getDefaultTool()
@@ -329,8 +330,7 @@ class GraphContainer extends PureComponent {
 
     this._graph.setTool(tools[0]);
     this._graph.reset();
-    this.getConfig();
-    setElementsStash(this._graph.getConfig(), this.getStashId());
+    this.updateValues();
   }
 
   onUndo = () => {
@@ -383,14 +383,15 @@ class GraphContainer extends PureComponent {
       case "delete":
         return this.onDelete();
       default:
-        return null;
+        return () => {};
     }
   };
 
-  getConfig() {
+  updateValues() {
     const conf = this._graph.getConfig();
-    const { setValue, changePreviewTab, checkAnswer } = this.props;
+    const { setValue, changePreviewTab, checkAnswer, setElementsStash } = this.props;
     setValue(conf);
+    setElementsStash(conf, this.getStashId());
 
     if (checkAnswer) {
       changePreviewTab("clear");
@@ -398,9 +399,7 @@ class GraphContainer extends PureComponent {
   }
 
   graphUpdateHandler = () => {
-    const { setElementsStash } = this.props;
-    this.getConfig();
-    setElementsStash(this._graph.getConfig(), this.getStashId());
+    this.updateValues();
   };
 
   setGraphUpdateEventHandler = () => {
@@ -410,7 +409,7 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
-  setElementsToGraph = (prevProps = {}) => {
+  setElementsToGraph = () => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     if (checkAnswer || showAnswer) {
@@ -435,7 +434,7 @@ class GraphContainer extends PureComponent {
 
       this._graph.reset();
       this._graph.loadFromConfig(coloredElements);
-    } else if (!isEqual(prevProps.elements, this._graph.getConfig())) {
+    } else if (!isEqual(elements, this._graph.getConfig())) {
       this._graph.reset();
       this._graph.resetAnswers();
       this._graph.loadFromConfig(elements);
@@ -515,10 +514,24 @@ class GraphContainer extends PureComponent {
 
         return <IconLabel {...newOptions} />;
       },
-      annotation: () => "annotation"
+      annotation: () => "annotation",
+      area: () => "area"
     };
 
     return iconsByToolName[toolName]();
+  };
+
+  setEquations = equations => {
+    const { setValue, changePreviewTab, checkAnswer, setElementsStash, elements } = this.props;
+    let newElements = cloneDeep(elements);
+    newElements = newElements.filter(el => el.type !== CONSTANT.TOOLS.EQUATION);
+    newElements.push(...equations);
+    setValue(newElements);
+    setElementsStash(newElements, this.getStashId());
+
+    if (checkAnswer) {
+      changePreviewTab("clear");
+    }
   };
 
   allTools = [
@@ -539,16 +552,18 @@ class GraphContainer extends PureComponent {
     "polygon",
     "parabola",
     "label",
-    "annotation"
+    "annotation",
+    "area"
   ];
 
   allControls = ["undo", "redo", "reset", "delete"];
 
   render() {
-    const { tools, layout, annotation, controls, bgShapes } = this.props;
+    const { tools, layout, annotation, controls, bgShapes, elements } = this.props;
     const { selectedTool } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
+    const equations = elements.filter(el => el.type === CONSTANT.TOOLS.EQUATION);
     return (
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
@@ -561,9 +576,9 @@ class GraphContainer extends PureComponent {
             getIconByToolName={this.getIconByToolName}
             getHandlerByControlName={this.getHandlerByControlName}
             onSelect={this.onSelectTool}
-            onReset={this.onReset}
             fontSize={bgShapes ? 12 : layout.fontSize}
           />
+          <Equations equations={equations} setEquations={this.setEquations} />
           <div
             style={{
               position: "relative",

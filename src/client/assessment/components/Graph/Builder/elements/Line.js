@@ -14,16 +14,17 @@ let points = [];
 function onLineHandler(type) {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      points.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    points.push(newPoint);
     if (points.length === 2) {
+      points.forEach(point => {
+        point.isTemp = false;
+      });
       const newLine = board.$board.create("line", points, {
         ...getPropsByLineType(type),
         ...Colors.default[CONSTANT.TOOLS.LINE],
         label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
       });
-
       handleSnap(newLine, points, board);
       if (newLine) {
         points = [];

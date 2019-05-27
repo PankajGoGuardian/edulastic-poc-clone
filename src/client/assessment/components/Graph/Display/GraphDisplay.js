@@ -279,9 +279,18 @@ class GraphDisplay extends Component {
   };
 
   getAxisSegmentsProps = () => {
-    const { graphData, evaluation, onChange, showAnswer, checkAnswer, changePreviewTab, elements } = this.props;
+    const {
+      graphData,
+      evaluation,
+      onChange,
+      showAnswer,
+      checkAnswer,
+      changePreviewTab,
+      elements,
+      altAnswerId
+    } = this.props;
 
-    const { ui_style, canvas, toolbar, numberlineAxis, validation, graphType } = graphData;
+    const { ui_style, canvas, toolbar, numberlineAxis, validation, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -363,7 +372,9 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      graphType
+      graphType,
+      questionId: id,
+      altAnswerId
     };
   };
 
@@ -375,11 +386,11 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      previewTab,
-      elements
+      elements,
+      altAnswerId
     } = this.props;
 
-    const { ui_style, canvas, numberlineAxis, validation, list, graphType } = graphData;
+    const { ui_style, canvas, numberlineAxis, validation, list, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -463,7 +474,8 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
-      previewTab
+      questionId: id,
+      altAnswerId
     };
   };
 

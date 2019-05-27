@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
@@ -14,7 +15,7 @@ import {
   IconTrash
 } from "@edulastic/icons";
 import { cloneDeep, isEqual } from "lodash";
-import { GraphWrapper, JSXBox } from "../AxisLabelsContainer/styled";
+import { GraphWrapper, JSXBox } from "./styled";
 import {
   defaultAxesParameters,
   defaultGraphParameters,
@@ -23,7 +24,8 @@ import {
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
-import SegmentsTools from "../GraphContainer/SegmentsTools";
+import SegmentsTools from "./SegmentsTools";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -179,8 +181,7 @@ class AxisSegmentsContainer extends PureComponent {
       selectedTool: this.getDefaultTool()
     };
 
-    this.onReset = this.onReset.bind(this);
-    this.getConfig = this.getConfig.bind(this);
+    this.updateValues = this.updateValues.bind(this);
   }
 
   getDefaultTool() {
@@ -206,7 +207,8 @@ class AxisSegmentsContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      graphType
+      graphType,
+      setElementsStash
     } = this.props;
 
     this._graph = makeBorder(this._graphId);
@@ -272,6 +274,8 @@ class AxisSegmentsContainer extends PureComponent {
     });
 
     this.setGraphUpdateEventHandler();
+
+    setElementsStash(this._graph.getSegments(), this.getStashId());
   }
 
   componentDidUpdate(prevProps) {
@@ -471,26 +475,52 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   onSelectTool = ({ name, index, groupIndex }, graphType, responsesAllowed) => {
+    if (name === "undo") {
+      this.onUndo();
+      return;
+    }
+    if (name === "redo") {
+      this.onRedo();
+      return;
+    }
+
     this.setState({ selectedTool: { name, index, groupIndex } });
     this._graph.setTool(name, graphType, responsesAllowed);
   };
 
-  onReset() {
-    const { tools } = this.props;
+  onUndo = () => {
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
+      this._graph.segmentsReset();
+      this._graph.loadSegments(stash[id][stashIndex[id] - 1]);
+      setValue(stash[id][stashIndex[id] - 1]);
+      setStashIndex(stashIndex[id] - 1, id);
+    }
+  };
 
-    this.setState({
-      selectedTool: this.getDefaultTool()
-    });
-
-    this._graph.setTool(tools[0]);
-    this._graph.reset();
-    this.getConfig();
+  onRedo() {
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
+      this._graph.segmentsReset();
+      this._graph.loadSegments(stash[id][stashIndex[id] + 1]);
+      setValue(stash[id][stashIndex[id] + 1]);
+      setStashIndex(stashIndex[id] + 1, id);
+    }
   }
 
-  getConfig() {
+  getStashId() {
+    const { questionId, altAnswerId, view } = this.props;
+    const type = altAnswerId || view;
+    return `${questionId}_${type}`;
+  }
+
+  updateValues() {
     const conf = this._graph.getSegments();
-    const { setValue, changePreviewTab, checkAnswer } = this.props;
+    const { setValue, changePreviewTab, checkAnswer, setElementsStash } = this.props;
     setValue(conf);
+    setElementsStash(conf, this.getStashId());
 
     if (checkAnswer) {
       changePreviewTab("clear");
@@ -498,9 +528,9 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   setGraphUpdateEventHandler = () => {
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.getConfig());
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.getConfig());
-    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.getConfig());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_MOVE, () => this.updateValues());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_NEW, () => this.updateValues());
+    this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.updateValues());
   };
 
   setElementsToGraph = (prevProps = {}) => {
@@ -614,6 +644,12 @@ class AxisSegmentsContainer extends PureComponent {
           width: width + 10
         };
         return <IconTrash {...newOptions} />;
+      },
+      undo: () => {
+        return "Undo";
+      },
+      redo: () => {
+        return "Redo";
       }
     };
 
@@ -662,14 +698,34 @@ AxisSegmentsContainer.propTypes = {
   checkAnswer: PropTypes.bool,
   changePreviewTab: PropTypes.func,
   tools: PropTypes.array.isRequired,
-  graphType: PropTypes.string.isRequired
+  graphType: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired,
+  setElementsStash: PropTypes.func.isRequired,
+  setStashIndex: PropTypes.func.isRequired,
+  stash: PropTypes.object,
+  stashIndex: PropTypes.object,
+  questionId: PropTypes.string.isRequired,
+  altAnswerId: PropTypes.string
 };
 
 AxisSegmentsContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {}
+  changePreviewTab: () => {},
+  stash: {},
+  stashIndex: {},
+  altAnswerId: null
 };
 
-export default AxisSegmentsContainer;
+export default connect(
+  state => ({
+    stash: state.graphTools.stash,
+    stashIndex: state.graphTools.stashIndex,
+    view: state.view.view
+  }),
+  {
+    setElementsStash: setElementsStashAction,
+    setStashIndex: setStashIndexAction
+  }
+)(AxisSegmentsContainer);

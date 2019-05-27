@@ -266,7 +266,7 @@ class CurriculumSequence extends Component {
     } = this.props;
     return history.push(`/author/playlists/${_id}/edit`);
   };
-  
+
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange } = this;

@@ -11,16 +11,18 @@ let points = [];
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      points.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    points.push(newPoint);
     if (points.length === 3) {
+      points.forEach(point => {
+        point.isTemp = false;
+      });
       const newLine = board.$board.create("ellipse", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
         label: getLabelParameters(JXG.OBJECT_TYPE_CONIC)
       });
-      handleSnap(newLine, points.filter(point => point.elType === "point"), board);
+      handleSnap(newLine, Object.values(newLine.ancestors), board);
       if (newLine) {
         points = [];
         return newLine;

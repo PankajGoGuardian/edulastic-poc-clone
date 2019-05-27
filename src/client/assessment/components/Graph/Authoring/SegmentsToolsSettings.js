@@ -104,7 +104,7 @@ class SegmentsToolsSettings extends Component {
       <Col md={12} marginBottom={countOfSingleTools > 0 ? 20 : 0}>
         {toolbar.tools.map((tool, i) =>
           !Array.isArray(tool) ? (
-            <React.Fragment key={`${i}-${Math.random().toString(36)}`}>
+            <React.Fragment key={`segments-tool-${i}`}>
               <ToolSelect>
                 <Tool
                   value={tool}

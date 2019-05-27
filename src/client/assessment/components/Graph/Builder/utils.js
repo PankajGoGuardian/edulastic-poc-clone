@@ -123,89 +123,8 @@ export const calcUnitX = (xMin, xMax, layoutWidth) => {
   return !layoutWidth ? 1 : layoutWidth / unitLength;
 };
 
-// Return different element from new array
-export const findElementsDiff = (mainArray, secondaryArray) => {
-  let diffElement;
-
-  mainArray.forEach((mainElement, index) => {
-    let flag = false;
-
-    secondaryArray.forEach(secondaryElement => {
-      if (mainElement.id === secondaryElement.id) {
-        flag = true;
-      }
-    });
-
-    if (!flag) {
-      diffElement = mainArray[index];
-    }
-  });
-
-  return diffElement;
-};
-
 // Calculate amount of units in chosen amount of pixels
-export const calcMeasure = (x, y, board) => {
-  if (board.$board === undefined) {
-    return [x / board.unitX, y / board.unitY];
-  }
-  return [x / board.$board.unitX, y / board.$board.unitY];
-};
-
-// Calculate first available space for render in marks container
-export const checkMarksRenderSpace = (board, settings, containerSettings) => {
-  const [xContainerMeasure, yContainerMeasure] = calcMeasure(
-    board.$board.canvasWidth,
-    board.$board.canvasHeight,
-    board
-  );
-  const [xPadding, yPadding] = calcMeasure(
-    settings.separationDistanceX <= 0 ? 1 : settings.separationDistanceX,
-    settings.separationDistanceY <= 0 ? 1 : settings.separationDistanceY,
-    board
-  ); // Padding from settings
-  const [xMeasure, yMeasure] = calcMeasure(52.5, 65, board); // half of element's width and full height in units
-  const [markXMeasure, markYMeasure] = calcMeasure(51.5, 45, board);
-
-  const filteredElements = board.elements.filter(element => element.elType === "group");
-  const containerY = containerSettings.yMax - (yContainerMeasure / 100) * containerSettings.position; // End of the mark's container
-
-  const xRenderPos = board.$board.plainBB[0] + xMeasure + xPadding; // X start position for marks' point
-  const yRenderPos = containerY - yMeasure - yPadding; // Y start position for mark's point
-  const elementSpace = (xMeasure + xPadding) * 2; // Full width of one mark
-
-  if (filteredElements.length === 0) {
-    // If it's first element
-    return [xRenderPos, yRenderPos];
-  }
-  for (let i = 0; i < filteredElements.length; i++) {
-    //  Compare each POSITION with each element
-    const xStart = board.$board.plainBB[0] + elementSpace * i;
-    const xEnd = board.$board.plainBB[0] + elementSpace * (i + 1);
-    let isPositionAvailable = true;
-
-    for (let j = 0; j < filteredElements.length; j++) {
-      const [groupZPos, groupXPos, groupYPos] = filteredElements[j].translationPoints[0].coords.usrCoords;
-      const markLeftSide = groupXPos - xMeasure;
-      const markRightSide = groupXPos + xMeasure;
-
-      if (
-        groupYPos < containerY - markYMeasure * 1.35 &&
-        ((markRightSide > xStart && markRightSide < xEnd) || (markLeftSide < xEnd && markLeftSide > xStart))
-      ) {
-        // If some element is on this place
-        isPositionAvailable = false;
-      }
-    }
-
-    if (isPositionAvailable) {
-      return [xRenderPos + elementSpace * i, yRenderPos];
-    }
-  }
-
-  // If all elements at their start place
-  return [xRenderPos + elementSpace * filteredElements.length, yRenderPos];
-};
+export const calcMeasure = (x, y, board) => [x / board.$board.unitX, y / board.$board.unitY];
 
 function compareKeys(config, props) {
   return Object.keys(config).every(k => !!props[k] === !!config[k]);
@@ -221,6 +140,9 @@ function numberWithCommas(x) {
 }
 
 function getPointsFromFlatConfig(type, pointIds, config) {
+  if (!pointIds) {
+    return null;
+  }
   switch (type) {
     case CONSTANT.TOOLS.POLYGON:
     case CONSTANT.TOOLS.ELLIPSE:
@@ -237,15 +159,19 @@ function getPointsFromFlatConfig(type, pointIds, config) {
   }
 }
 
-export const handleSnap = (line, points, board) => {
+export const handleSnap = (line, points, board, beforeEmitMoveEventCallback = () => {}) => {
   line.on("up", () => {
     if (line.dragged) {
-      const setCoords = JXG.COORDS_BY_USER;
-      points.forEach(point => point.setPositionDirectly(setCoords, [Math.round(point.X()), Math.round(point.Y())]));
+      points.forEach(point => point.snapToGrid());
+      beforeEmitMoveEventCallback();
+      line.dragged = false;
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
     }
   });
-  line.on("drag", () => {
+  line.on("drag", e => {
+    if (e.movementX === 0 && e.movementY === 0) {
+      return;
+    }
     line.dragged = true;
     board.dragged = true;
   });
@@ -253,10 +179,15 @@ export const handleSnap = (line, points, board) => {
   points.forEach(point => {
     point.on("up", () => {
       if (point.dragged) {
+        beforeEmitMoveEventCallback();
+        point.dragged = false;
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
       }
     });
-    point.on("drag", () => {
+    point.on("drag", e => {
+      if (e.movementX === 0 && e.movementY === 0) {
+        return;
+      }
       point.dragged = true;
       board.dragged = true;
     });
@@ -318,10 +249,10 @@ export function updatePointParameters(elements, attr, isSwitchToGrid) {
     if (el.type === JXG.OBJECT_TYPE_POINT) {
       el.setAttribute(attr);
       if (isSwitchToGrid) {
-        el.setPositionDirectly(JXG.COORDS_BY_USER, Point.roundCoords(el.coords.usrCoords));
+        el.snapToGrid();
       }
     } else {
-      updatePointParameters(Object.values(el.ancestors), attr, isSwitchToGrid);
+      updatePointParameters(Object.values(el.ancestors || {}), attr, isSwitchToGrid);
     }
   });
 }
@@ -406,8 +337,8 @@ export function getImageCoordsByPercent(boardParameters, bgImageParameters) {
 
 export function flatConfig(config, accArg = {}, isSub = false) {
   return config.reduce((acc, element) => {
-    const { id, type, points } = element;
-    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK || type === CONSTANT.TOOLS.ANNOTATION) {
+    const { id, type, points, latex, subType } = element;
+    if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION || type === CONSTANT.TOOLS.AREA) {
       if (!acc[id]) {
         acc[id] = element;
       }
@@ -422,7 +353,19 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       id: element.id,
       label: element.label
     };
-    if (
+    if (type === CONSTANT.TOOLS.EQUATION) {
+      acc[id].latex = latex;
+      acc[id].subType = subType;
+      if (points && points[0] && points[1]) {
+        acc[id].subElementsIds = {
+          startPoint: points[0].id,
+          endPoint: points[1].id
+        };
+      } else {
+        acc[id].subElementsIds = null;
+        return acc;
+      }
+    } else if (
       type !== CONSTANT.TOOLS.POLYGON &&
       type !== CONSTANT.TOOLS.ELLIPSE &&
       type !== CONSTANT.TOOLS.HYPERBOLA &&
@@ -442,7 +385,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
 export function flat2nestedConfig(config) {
   return Object.values(
     config.reduce((acc, element) => {
-      const { id, type, subElement = false } = element;
+      const { id, type, subElement = false, latex = null, subType = null, points } = element;
 
       if (!acc[id] && !subElement) {
         acc[id] = {
@@ -450,9 +393,13 @@ export function flat2nestedConfig(config) {
           type,
           _type: element._type,
           colors: element.colors || null,
-          label: element.label
+          label: element.label,
+          latex,
+          subType
         };
-        if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.MARK || type === CONSTANT.TOOLS.ANNOTATION) {
+        if (type === CONSTANT.TOOLS.AREA) {
+          acc[id].points = points;
+        } else if (type === CONSTANT.TOOLS.POINT || type === CONSTANT.TOOLS.ANNOTATION) {
           acc[id].x = element.x;
           acc[id].y = element.y;
         } else {
@@ -499,4 +446,50 @@ export function getSpecialTicks(axis) {
     fixedTicks = fixedTicks.concat(t.fixedTicks);
   });
   return fixedTicks;
+}
+
+export function fixLatex(latex) {
+  return latex
+    .trim()
+    .replace(/\\frac{([^}]+)}{([^}]+)}/g, "($1)/($2)") // fractions
+    .replace(/\\left\(/g, "(") // open parenthesis
+    .replace(/\\right\)/g, ")") // close parenthesis
+    .replace(/\\cdot/g, "*")
+    .replace(/[^\(](floor|ceil|(sin|cos|tan|sec|csc|cot)h?)\(([^\(\)]+)\)[^\)]/g, "($&)") // functions
+    .replace(/([^(floor|ceil|(sin|cos|tan|sec|csc|cot)h?|\+|\-|\*|\/)])\(/g, "$1*(")
+    .replace(/\)([\w])/g, ")*$1")
+    .replace(/([0-9])([A-Za-z])/g, "$1*$2")
+    .replace("\\", "");
+}
+
+export function isInPolygon(testPoint, vertices) {
+  if (vertices.length < 3) {
+    return false;
+  }
+
+  function isBetween(x, a, b) {
+    return (x - a) * (x - b) < 0;
+  }
+
+  let result = false;
+  let lastVertex = vertices[vertices.length - 1];
+  vertices.forEach(vertex => {
+    if (isBetween(testPoint.y, lastVertex.y, vertex.y)) {
+      const t = (testPoint.y - lastVertex.y) / (vertex.y - lastVertex.y);
+      const x = t * (vertex.x - lastVertex.x) + lastVertex.x;
+      if (x >= testPoint.x) {
+        result = !result;
+      }
+    } else {
+      if (testPoint.y === lastVertex.y && testPoint.x < lastVertex.x && vertex.y > testPoint.y) {
+        result = !result;
+      }
+      if (testPoint.y === vertex.y && testPoint.x < vertex.x && lastVertex.y > testPoint.y) {
+        result = !result;
+      }
+    }
+    lastVertex = vertex;
+  });
+
+  return result;
 }

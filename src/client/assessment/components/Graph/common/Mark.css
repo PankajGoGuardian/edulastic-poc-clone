@@ -1,5 +1,5 @@
 .mark {
-  width: 100px;
+  min-width: 100px;
   height: 40px !important;
   padding: 5px;
   border-radius: 4px;
@@ -21,6 +21,10 @@
   opacity: 1;
 }
 
+.mark.mounted {
+  transform: translate(0, -15px);
+}
+
 .mark .ql-editor {
   padding: 0 !important;
   font-size: 14px;
@@ -38,8 +42,8 @@
 .mark.mounted::after {
   content: "";
   position: absolute;
-  top: 38.5px;
-  right: 37px;
+  top: 100%;
+  right: calc(50% - 10.5px);
   width: 0;
   height: 0;
   border-style: solid;

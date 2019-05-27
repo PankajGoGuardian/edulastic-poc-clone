@@ -1,5 +1,7 @@
 import React, { PureComponent } from "react";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { isEqual } from "lodash";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import { GraphWrapper, JSXBox } from "./styled";
 import {
@@ -9,6 +11,8 @@ import {
   defaultPointParameters
 } from "../../Builder/settings";
 import { makeBorder } from "../../Builder";
+import Tools from "../QuadrantsContainer/Tools";
+import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 
 const getColoredElems = (elements, compareResult) => {
   const { details } = compareResult;
@@ -70,8 +74,6 @@ class AxisLabelsContainer extends PureComponent {
 
     this._graphId = `jxgbox${Math.random().toString(36)}`;
     this._graph = null;
-
-    this.onReset = this.onReset.bind(this);
   }
 
   componentDidMount() {
@@ -83,7 +85,8 @@ class AxisLabelsContainer extends PureComponent {
       yAxesParameters,
       layout,
       gridParams,
-      graphType
+      graphType,
+      setElementsStash
     } = this.props;
     this._graph = makeBorder(this._graphId);
 
@@ -134,6 +137,8 @@ class AxisLabelsContainer extends PureComponent {
       );
 
       this.setElementsToGraph();
+
+      setElementsStash(this._graph.getMarks(), this.getStashId());
     }
   }
 
@@ -146,7 +151,10 @@ class AxisLabelsContainer extends PureComponent {
       yAxesParameters,
       layout,
       graphType,
-      gridParams
+      gridParams,
+      list,
+      setValue,
+      setElementsStash
     } = this.props;
 
     if (this._graph) {
@@ -189,7 +197,7 @@ class AxisLabelsContainer extends PureComponent {
         numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
         numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
-        this._graph.updateGraphSettings(numberlineAxis, graphType);
+        this._graph.updateGraphSettings(numberlineAxis);
       }
 
       if (
@@ -290,7 +298,10 @@ class AxisLabelsContainer extends PureComponent {
         numberlineAxis.separationDistanceY !== prevProps.numberlineAxis.separationDistanceY ||
         numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase ||
         numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints ||
-        numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat
+        numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat ||
+        numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
+        numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
+        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
       ) {
         this._graph.updateGraphParameters(
           canvas,
@@ -312,37 +323,30 @@ class AxisLabelsContainer extends PureComponent {
       }
 
       this.setElementsToGraph(prevProps);
+
+      if (!isEqual(prevProps.list, list) && !this.elementsIsEmpty()) {
+        const conf = this._graph.getMarks();
+        setValue(conf);
+      }
     }
   }
 
-  onReset() {
-    this._graph.reset();
-    this.getConfig();
-  }
-
   setMarks = () => {
-    const { setValue, previewTab, changePreviewTab } = this.props;
-    setValue(this._graph.getMarks());
-    if (previewTab === "check") {
+    const conf = this._graph.getMarks();
+    const { setValue, checkAnswer, changePreviewTab, setElementsStash } = this.props;
+    setValue(conf);
+    setElementsStash(conf, this.getStashId());
+
+    if (checkAnswer) {
       changePreviewTab("clear");
     }
   };
 
-  setElementsToGraph = (prevProps = {}) => {
-    const {
-      elements,
-      checkAnswer,
-      showAnswer,
-      evaluation,
-      validation,
-      canvas,
-      numberlineAxis,
-      layout,
-      list
-    } = this.props;
+  getOptions = () => {
+    const { canvas, numberlineAxis, layout } = this.props;
 
-    const options = [
-      [canvas.xMin, canvas.xMax],
+    return [
+      canvas,
       numberlineAxis,
       this.setMarks,
       {
@@ -356,19 +360,24 @@ class AxisLabelsContainer extends PureComponent {
         yMin: canvas.yMin
       }
     ];
+  };
+
+  setElementsToGraph = (prevProps = {}) => {
+    const { elements, checkAnswer, showAnswer, evaluation, validation, list } = this.props;
 
     if (checkAnswer || showAnswer) {
       if (showAnswer && !prevProps.showAnswer) {
         this._graph.removeMarksAnswers();
-        this._graph.loadMarksShowAnswers(
-          getColoredAnswer(validation ? validation.valid_response.value : []),
-          ...options
+        this._graph.loadMarksAnswers(
+          list,
+          ...this.getOptions(),
+          getColoredAnswer(validation ? validation.valid_response.value : [])
         );
       }
 
       this._graph.removeMarks();
 
-      if (elements && elements.length > 0) {
+      if (!this.elementsIsEmpty()) {
         let coloredElements;
         if (evaluation && evaluation.length) {
           const compareResult = getCompareResult(evaluation);
@@ -383,26 +392,77 @@ class AxisLabelsContainer extends PureComponent {
           coloredElements = getColoredElems(elements, compareResult);
         }
 
-        this._graph.loadMarksAnswers(coloredElements, ...options);
+        this._graph.renderMarks(list, ...this.getOptions(), coloredElements);
       } else {
-        this._graph.renderMarks(list, ...options, []);
+        this._graph.renderMarks(list, ...this.getOptions(), []);
       }
-    } else {
+    } else if (!isEqual(elements, this._graph.getMarks()) || this.elementsIsEmpty() || !isEqual(prevProps.list, list)) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(list, ...options, elements || []);
+      this._graph.renderMarks(list, ...this.getOptions(), elements);
+    }
+  };
+
+  elementsIsEmpty = () => {
+    const { elements } = this.props;
+    return !elements || elements.length === 0;
+  };
+
+  controls = ["undo", "redo"];
+
+  onUndo = () => {
+    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
+      this._graph.removeMarks();
+      this._graph.renderMarks(list, ...this.getOptions(), stash[id][stashIndex[id] - 1]);
+      setValue(stash[id][stashIndex[id] - 1]);
+      setStashIndex(stashIndex[id] - 1, id);
+    }
+  };
+
+  onRedo() {
+    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
+    const id = this.getStashId();
+    if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
+      this._graph.removeMarks();
+      this._graph.renderMarks(list, ...this.getOptions(), stash[id][stashIndex[id] - 1]);
+      setValue(stash[id][stashIndex[id] + 1]);
+      setStashIndex(stashIndex[id] + 1, id);
+    }
+  }
+
+  getStashId() {
+    const { questionId, altAnswerId, view } = this.props;
+    const type = altAnswerId || view;
+    return `${questionId}_${type}`;
+  }
+
+  getHandlerByControlName = control => {
+    switch (control) {
+      case "undo":
+        return this.onUndo();
+      case "redo":
+        return this.onRedo();
+      default:
+        return () => {};
     }
   };
 
   render() {
-    const { layout } = this.props;
+    const { layout, numberlineAxis } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
-          <div>
-            <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-          </div>
+          <Tools
+            controls={this.controls}
+            getIconByToolName={() => ""}
+            getHandlerByControlName={this.getHandlerByControlName}
+            onSelect={() => {}}
+            fontSize={numberlineAxis.fontSize}
+          />
+          <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
         </GraphWrapper>
       </div>
     );
@@ -424,14 +484,36 @@ AxisLabelsContainer.propTypes = {
   validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
-  checkAnswer: PropTypes.bool
+  checkAnswer: PropTypes.bool,
+  changePreviewTab: PropTypes.func,
+  view: PropTypes.string.isRequired,
+  setElementsStash: PropTypes.func.isRequired,
+  setStashIndex: PropTypes.func.isRequired,
+  stash: PropTypes.object,
+  stashIndex: PropTypes.object,
+  questionId: PropTypes.string.isRequired,
+  altAnswerId: PropTypes.string
 };
 
 AxisLabelsContainer.defaultProps = {
   list: [],
   evaluation: null,
   showAnswer: false,
-  checkAnswer: false
+  checkAnswer: false,
+  changePreviewTab: () => {},
+  stash: {},
+  stashIndex: {},
+  altAnswerId: null
 };
 
-export default AxisLabelsContainer;
+export default connect(
+  state => ({
+    stash: state.graphTools.stash,
+    stashIndex: state.graphTools.stashIndex,
+    view: state.view.view
+  }),
+  {
+    setElementsStash: setElementsStashAction,
+    setStashIndex: setStashIndexAction
+  }
+)(AxisLabelsContainer);

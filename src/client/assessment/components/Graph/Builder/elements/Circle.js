@@ -2,6 +2,7 @@ import JXG from "jsxgraph";
 import { Point } from ".";
 import { CONSTANT, Colors } from "../config";
 import { getLabelParameters } from "../settings";
+import { handleSnap } from "../utils";
 
 export const defaultConfig = {};
 
@@ -10,15 +11,18 @@ let points = [];
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
-    if (newPoint) {
-      points.push(newPoint);
-    }
+    newPoint.isTemp = true;
+    points.push(newPoint);
     if (points.length === 2) {
+      points.forEach(point => {
+        point.isTemp = false;
+      });
       const newLine = board.$board.create("circle", points, {
         ...defaultConfig,
         ...Colors.default[CONSTANT.TOOLS.CIRCLE],
         label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE)
       });
+      handleSnap(newLine, Object.values(newLine.ancestors), board);
       if (newLine) {
         points = [];
         return newLine;

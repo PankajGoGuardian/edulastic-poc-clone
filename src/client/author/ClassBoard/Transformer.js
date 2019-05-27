@@ -77,6 +77,9 @@ const getMaxScoreFromItem = testItem => {
   if (!testItem) {
     return total;
   }
+  if (testItem.itemLevelScoring) {
+    return testItem.itemLevelScore || 0;
+  }
   if (!(testItem.data && testItem.data.questions)) {
     return total;
   }
@@ -150,17 +153,17 @@ export const transformGradeBookResponse = ({
 
       const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(({ id: el, weight, qids, disabled, testItemId }) => {
+      const questionActivities = qids.map(({ id: el, weight, qids: _qids, disabled, testItemId }) => {
         const _id = el;
 
         if (!questionActivitiesIndexed[el]) {
           return { _id, notStarted: true, weight, disabled, testItemId };
         }
         let { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
-        if (qids) {
-          correct = qids.map(x => questionActivitiesIndexed[x]).every(x => x.correct);
+        if (_qids) {
+          correct = _qids.map(x => questionActivitiesIndexed[x]).every(x => x.correct);
           if (!correct) {
-            partialCorrect = qids.map(x => questionActivitiesIndexed[x]).some(x => x.correct);
+            partialCorrect = _qids.map(x => questionActivitiesIndexed[x]).some(x => x.correct);
           }
         }
         const questionMaxScore = getMaxScoreOfQid(_id, testItemsData);
@@ -174,7 +177,8 @@ export const transformGradeBookResponse = ({
           maxScore: questionMaxScore,
           timeSpent,
           disabled,
-          testItemId
+          testItemId,
+          qids: _qids
         };
       });
 

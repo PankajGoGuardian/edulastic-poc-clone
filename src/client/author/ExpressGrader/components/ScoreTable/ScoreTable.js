@@ -112,9 +112,10 @@ class ScoreTable extends Component {
       let successAnswer = 0;
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
+      const qids = students[0].questionActivities[index].qids;
       const title = (
         <StyledDivMid>
-          Q{index + 1}
+          {(qids || []).map(x => `Q${x}`).join(",")}
           <img src={InfoIcon} alt="help" />
         </StyledDivMid>
       );

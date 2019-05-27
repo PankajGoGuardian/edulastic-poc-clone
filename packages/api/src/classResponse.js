@@ -39,10 +39,10 @@ const receiveStudentQuestionResponse = ({ assignmentId, classId, questionId, stu
     })
     .then(result => result.data.result);
 
-const receiveStudentItemQuestionResponse = ({ assignmentId, classId, itemId, studentId }) =>
+const receiveStudentItemQuestionResponse = ({ assignmentId, classId, testItemId, studentId }) =>
   api
     .callApi({
-      url: `/assignments/${assignmentId}/item/${itemId}/student/${studentId}/group/${classId}`,
+      url: `/assignments/${assignmentId}/item/${testItemId}/student/${studentId}/group/${classId}`,
       method: "get"
     })
     .then(result => result.data.result);

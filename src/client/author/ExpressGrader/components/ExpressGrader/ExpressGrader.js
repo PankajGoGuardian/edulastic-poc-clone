@@ -18,6 +18,24 @@ import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 // styled wrappers
 import { PaginationInfo, StyledFlexContainer } from "./styled";
 import FeatureWrapper from "../../../../features/components/FeatureWrapper";
+import memoizeOne from "memoize-one";
+
+/**
+ *
+ * @param {Object[]} activities
+ */
+const testActivitiesTransform = activities => {
+  
+  return activities
+    .map((x, index) => ({ ...x, qIndex: index }))
+    .filter(x => !x.disabled)
+    .map(x => ({ ...x, qids: (x.qids || []).map((id, index) => index + (x.qIndex + 1)) }));
+};
+
+const transform = testActivities =>
+  testActivities.map(x => ({ ...x, questionActivities: testActivitiesTransform(x.questionActivities) }));
+
+const transformMemoized = memoizeOne(transform);
 
 class ExpressGrader extends Component {
   constructor(props) {
@@ -79,43 +97,41 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 480;
 
   render() {
-    const { testActivity, additionalData, match } = this.props;
+    const { testActivity: _testActivity = [], additionalData, match } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
+    const testActivity = transformMemoized(_testActivity);
     return (
-      <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
-        <div>
-          <ClassHeader
-            classId={classId}
-            active="expressgrader"
-            assignmentId={assignmentId}
-            onCreate={this.handleCreate}
-            additionalData={additionalData || {}}
-            testActivityId={testActivityId}
+      <div>
+        <ClassHeader
+          classId={classId}
+          active="expressgrader"
+          assignmentId={assignmentId}
+          onCreate={this.handleCreate}
+          additionalData={additionalData || {}}
+          testActivityId={testActivityId}
+        />
+        <StyledFlexContainer justifyContent="space-between">
+          <PaginationInfo>
+            &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
+            {additionalData && <a>{additionalData.testName}</a>} / {additionalData && <a>{additionalData.className}</a>}
+          </PaginationInfo>
+        </StyledFlexContainer>
+        {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
+
+        {isMobile && <ScoreCard testActivity={testActivity} />}
+
+        {isVisibleModal && (
+          <QuestionModal
+            record={record}
+            tableData={tableData}
+            isVisibleModal={isVisibleModal}
+            showQuestionModal={this.showQuestionModal}
+            hideQuestionModal={this.hideQuestionModal}
           />
-          <StyledFlexContainer justifyContent="space-between">
-            <PaginationInfo>
-              &lt; <Link to="/author/assignments">RECENTS ASSIGNMENTS</Link> /{" "}
-              {additionalData && <a>{additionalData.testName}</a>} /{" "}
-              {additionalData && <a>{additionalData.className}</a>}
-            </PaginationInfo>
-          </StyledFlexContainer>
-          {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
-
-          {isMobile && <ScoreCard testActivity={testActivity} />}
-
-          {isVisibleModal && (
-            <QuestionModal
-              record={record}
-              tableData={tableData}
-              isVisibleModal={isVisibleModal}
-              showQuestionModal={this.showQuestionModal}
-              hideQuestionModal={this.hideQuestionModal}
-            />
-          )}
-        </div>
-      </FeatureWrapper>
+        )}
+      </div>
     );
   }
 }

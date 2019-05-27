@@ -56,9 +56,9 @@ export const setShowScoreAction = payload => ({
   payload
 });
 
-export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId) => ({
+export const receiveStudentQuestionAction = (assignmentId, classId, questionId, studentId, testItemId) => ({
   type: RECEIVE_STUDENT_QUESTION_REQUEST,
-  payload: { assignmentId, classId, questionId, studentId }
+  payload: { assignmentId, classId, questionId, studentId, testItemId }
 });
 
 export const receiveAnswersAction = (assignmentId, classId, questionId, itemId) => ({

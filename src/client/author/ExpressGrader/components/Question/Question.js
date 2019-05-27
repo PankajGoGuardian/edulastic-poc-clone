@@ -24,9 +24,9 @@ class Question extends Component {
       loadStudentQuestionResponses,
       assignmentClassId: { assignmentId, classId }
     } = this.props;
-    const { testActivityId, studentId, _id } = record;
+    const { testActivityId, studentId, _id, weight, testItemId } = record;
     if (testActivityId) {
-      loadStudentQuestionResponses(assignmentId, classId, _id, studentId);
+      loadStudentQuestionResponses(assignmentId, classId, _id, studentId, weight > 1 ? testItemId : undefined);
     }
   }
 
@@ -41,10 +41,20 @@ class Question extends Component {
       return null;
     }
 
+    let studentQuestions = [];
+    if (studentQuestion) {
+      if (Array.isArray(studentQuestion)) {
+        studentQuestions = studentQuestion;
+      } else {
+        studentQuestions = [studentQuestion];
+      }
+    }
+  
+
     return (
       <ClassQuestions
         currentStudent={student}
-        questionActivities={studentQuestion ? [studentQuestion] : []}
+        questionActivities={studentQuestions}
         classResponse={{ testItems: selectedItems }}
         qIndex={qIndex}
       />

@@ -110,17 +110,17 @@ class ClassHeader extends Component {
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
-              <StyledLink
-                to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
-                data-cy="Expressgrader"
-              >
-                <StyledAnchor isActive={active === "expressgrader"}>
-                  <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.expressGrader")}</LinkLabel>
-                </StyledAnchor>
-              </StyledLink>
-            </FeatureWrapper>
+            {/* TODO: put this under premium features wrapper */}
+            <StyledLink
+              to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
+              data-cy="Expressgrader"
+            >
+              <StyledAnchor isActive={active === "expressgrader"}>
+                <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
+                <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+              </StyledAnchor>
+            </StyledLink>
+
             <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>

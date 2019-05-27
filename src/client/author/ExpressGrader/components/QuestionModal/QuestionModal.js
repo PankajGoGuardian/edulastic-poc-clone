@@ -136,7 +136,6 @@ class QuestionModal extends React.Component {
       question = tableData[rowIndex][`Q${colIndex}`];
     }
 
-
     let student = {};
     if (rowIndex !== null) {
       student = tableData[rowIndex].students;

@@ -49,7 +49,6 @@ class Question extends Component {
         studentQuestions = [studentQuestion];
       }
     }
-  
 
     return (
       <ClassQuestions

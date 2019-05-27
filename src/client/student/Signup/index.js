@@ -1,2 +1,1 @@
-export { watcherSaga as authenticationSaga } from "../Login/ducks";
-export { default as Signup } from "./components";
+export { watcherSaga as signupSaga } from "./duck";

@@ -25,7 +25,6 @@ import memoizeOne from "memoize-one";
  * @param {Object[]} activities
  */
 const testActivitiesTransform = activities => {
-  
   return activities
     .map((x, index) => ({ ...x, qIndex: index }))
     .filter(x => !x.disabled)

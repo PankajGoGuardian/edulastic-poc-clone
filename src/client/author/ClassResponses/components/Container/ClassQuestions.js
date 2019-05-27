@@ -47,7 +47,7 @@ class ClassQuestions extends Component {
     if (!testItems) {
       return [];
     }
-    
+
     testItems = testItems.map(item => {
       const { data, rows, ...others } = item;
       if (!(data && data.questions)) {
@@ -58,7 +58,7 @@ class ClassQuestions extends Component {
         let qActivities = questionActivities.filter(({ qid }) => qid === id);
         qActivities = qActivities.map(q => {
           const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
-          
+
           if (userQuestion) {
             q.timespent = userQuestion.timespent;
             q.disabled = userQuestion.disabled;

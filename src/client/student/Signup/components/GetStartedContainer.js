@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
-import { springGreen } from "@edulastic/colors";
+import { springGreen, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
 
 import loginBg from "../../assets/bg-login.png";
 import studentBg from "../../assets/small-bg-student.png";
@@ -142,7 +142,7 @@ const ChooseSignupBox = styled(Row)`
   h3 {
     font-size: 14px;
     font-weight: 600;
-    color: #444444;
+    color: ${mainTextColor};
     margin: 0px;
     padding: 16px 0px;
     position: relative;
@@ -155,7 +155,7 @@ const ChooseSignupBox = styled(Row)`
 `;
 
 const StudentSignupBox = styled(Link)`
-  background: #999999 url(${studentBg});
+  background: ${greyGraphstroke} url(${studentBg});
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
@@ -170,7 +170,7 @@ const StudentSignupBox = styled(Link)`
     left: 10%;
     right: 10%;
     bottom: 10px;
-    background: #00ad50;
+    background: ${springGreen};
     text-align: center;
     font-size: 12px;
     padding: 8px 4px;
@@ -179,14 +179,14 @@ const StudentSignupBox = styled(Link)`
 `;
 
 const TeacherSignupBox = styled(StudentSignupBox)`
-  background: #999999 url(${teacherBg});
+  background: ${greyGraphstroke} url(${teacherBg});
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
 `;
 
 const AdminSignupBox = styled(StudentSignupBox)`
-  background: #999999 url(${adminBg});
+  background: ${greyGraphstroke} url(${adminBg});
   background-position: top center;
   background-size: 102% 102%;
   background-repeat: no-repeat;
@@ -194,7 +194,7 @@ const AdminSignupBox = styled(StudentSignupBox)`
 
 const Copyright = styled(Row)`
   font-size: 10px;
-  color: #dddddd;
+  color: ${grey};
   text-align: center;
   margin: 25px 0px 10px;
 `;
@@ -206,7 +206,7 @@ const CircleDiv = styled.div`
   left: ${({ left }) => left}px;
   bottom: ${({ bottom }) => bottom}px;
   right: ${({ right }) => right}px;
-  background: #27947a;
+  background: ${greenDark3};
   border-radius: 50%;
   position: absolute;
   opacity: 0.6;

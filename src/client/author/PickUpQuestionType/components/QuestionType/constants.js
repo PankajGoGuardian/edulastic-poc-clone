@@ -1046,7 +1046,7 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: [],
           responsecontainerposition: "bottom",
           stemnumeration: "",
-          widthpx: 30
+          widthpx: 140
         },
         options: {
           0: "",

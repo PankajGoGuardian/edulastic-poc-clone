@@ -21,6 +21,7 @@ export const cardTitleColor = "#aaafb5";
 export const linkColor = "#69727e";
 export const linkColor1 = "#6a737f";
 export const lightGrey3 = "#f4f3f3";
+export const someGreyColor1 = "#c0c0c0";
 
 export const whiteSmoke = "#f5f5f5";
 

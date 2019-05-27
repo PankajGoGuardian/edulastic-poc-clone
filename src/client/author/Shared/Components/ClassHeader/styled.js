@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { white, mobileWidth, newBlue } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../student/themes";
+import { StyledTable as Table } from "../../../Reports/common/styled";
 
 const classBoardTheme = themes.default.classboard;
 
@@ -157,4 +158,32 @@ export const MenuWrapper = styled.div`
   position: absolute;
   min-width: 90px;
   right: 10px;
+`;
+
+export const StyledTable = styled(Table)`
+  .ant-table-body {
+    overflow: auto;
+    table {
+      thead {
+        tr {
+          th {
+            text-align: center;
+            font-weight: 900;
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          td {
+            text-align: center;
+            font-weight: 900;
+          }
+        }
+      }
+    }
+  }
+  .ant-pagination {
+    display: none;
+  }
 `;

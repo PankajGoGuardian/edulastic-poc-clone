@@ -1,0 +1,66 @@
+{
+  "questionTable": [
+    {
+      "title": "QUESTION",
+      "dataIndex": "question",
+      "key": "question",
+      "width": 210
+    },
+    {
+      "title": "YOUR ANSWER",
+      "dataIndex": "yourAnswer",
+      "key": "yourAnswer",
+      "width": 250
+    },
+    {
+      "title": "CORRECT ANSWER",
+      "dataIndex": "correctAnswer",
+      "key": "correctAnswer",
+      "width": 250
+    },
+    {
+      "title": "SCORE",
+      "dataIndex": "score",
+      "key": "score",
+      "width": 100
+    },
+    {
+      "title": "MAX SCORE",
+      "dataIndex": "maxScore",
+      "key": "maxScore",
+      "width": 100
+    }
+  ],
+  "standardsTable": [
+    {
+      "title": "STANDARD",
+      "dataIndex": "standardInfo",
+      "key": "standardInfo",
+      "width": 210
+    },
+    {
+      "title": "QUESTION",
+      "dataIndex": "question",
+      "key": "question",
+      "width": 190
+    },
+    {
+      "title": "SCORE",
+      "dataIndex": "score",
+      "key": "score",
+      "width": 100
+    },
+    {
+      "title": "PERFORMANCE %",
+      "dataIndex": "performance",
+      "key": "performance",
+      "width": 150
+    },
+    {
+      "title": "MASTERY SUMMARY",
+      "dataIndex": "masterySummary",
+      "key": "masterySummary",
+      "width": 250
+    }
+  ]
+}

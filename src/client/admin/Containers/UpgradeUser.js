@@ -69,7 +69,7 @@ function UpgradeUser({
           searchUsersByEmailIdAction={searchUsersByEmailIdAction}
         />
       </TabPane>
-      <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments">
+      <TabPane tab="Manage by User Segments" key="manageSubscriptionByUserSegments" forceRender>
         <ManageSubscriptionByUserSegments
           partialPremiumData={partialPremiumData}
           upgradePartialPremiumUserAction={upgradePartialPremiumUserAction}

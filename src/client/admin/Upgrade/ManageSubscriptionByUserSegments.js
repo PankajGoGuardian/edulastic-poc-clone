@@ -1,9 +1,10 @@
-import React, { useEffect } from "react";
-import { Form, DatePicker, Button, Select, Input } from "antd";
+import React from "react";
+import { Form, Button, Select, Input } from "antd";
 import moment from "moment";
 import { HeadingSpan } from "../Common/StyledComponents/upgradePlan";
-import NotesFormItem from "../Common/Form/NotesFormItem";
+import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { GRADES_LIST, SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from "../Data";
+import { useUpdateEffect } from "../Common/Utils";
 
 const { Option } = Select;
 
@@ -13,7 +14,16 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
     partialPremiumData: { subscription = {} },
     upgradePartialPremiumUserAction
   }) => {
-    const { subType, districtId, schoolId, grades, subjects, notes, subStartDate, subEndDate } = subscription;
+    const {
+      subType = "partial_premium",
+      districtId,
+      schoolId,
+      grades,
+      subjects,
+      notes,
+      subStartDate,
+      subEndDate
+    } = subscription;
     const handleSubmit = evt => {
       validateFields((err, { schoolId: schoolIdValue, subStartDate: startDate, subEndDate: endDate, ...rest }) => {
         if (!err) {
@@ -29,9 +39,8 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
       evt.preventDefault();
     };
 
-    useEffect(() => {
+    useUpdateEffect(() => {
       setFieldsValue({
-        subType,
         districtId,
         schoolId,
         grades,
@@ -40,7 +49,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
         subEndDate: moment(subEndDate),
         notes
       });
-    }, [subType, districtId, schoolId, grades, subjects, subStartDate, subEndDate, notes]);
+    }, [districtId, schoolId, grades, subjects, subStartDate, subEndDate, notes]);
 
     return (
       <Form onSubmit={handleSubmit} labelAlign="left" labelCol={{ span: 4 }}>
@@ -48,6 +57,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
           {getFieldDecorator("districtId", {
             rules: [
               {
+                required: true,
                 message: "Please enter valid District ID",
                 pattern: CLEVER_DISTRICT_ID_REGEX
               }
@@ -59,6 +69,7 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
           {getFieldDecorator("schoolId", {
             rules: [
               {
+                required: true,
                 message: "Please enter valid School ID",
                 pattern: CLEVER_DISTRICT_ID_REGEX
               }
@@ -92,19 +103,8 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
             </Select>
           )}
         </Form.Item>
-        <Form.Item label={<HeadingSpan>Start Date</HeadingSpan>}>
-          {getFieldDecorator("subStartDate", {
-            rules: [{ required: true }]
-          })(<DatePicker />)}
-        </Form.Item>
-        <Form.Item label={<HeadingSpan>End Date</HeadingSpan>}>
-          {getFieldDecorator("subEndDate", {
-            rules: [{ required: true }]
-          })(<DatePicker />)}
-        </Form.Item>
-        <div>
-          <NotesFormItem getFieldDecorator={getFieldDecorator} />
-        </div>
+
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
         <Form.Item>
           <Button type="primary" htmlType="submit">
             Upgrade to premium

@@ -1104,6 +1104,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,

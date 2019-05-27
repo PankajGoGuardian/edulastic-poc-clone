@@ -181,7 +181,7 @@ class ClozeImageDropDown extends Component {
     const fontSize = item.ui_style ? (item.ui_style.fontsize ? item.ui_style.fontsize : "lol") : "lol";
 
     const { imagescale } = item;
-
+    
     return (
       <React.Fragment>
         {view === "edit" && (

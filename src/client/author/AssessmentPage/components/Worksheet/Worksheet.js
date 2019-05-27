@@ -1,16 +1,21 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import uuid from "uuid/v4";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
 import { isEmpty, get } from "lodash";
+import { ActionCreators } from "redux-undo";
 
 import { setTestDataAction } from "../../../TestPage/ducks";
 import Thumbnails from "../Thumbnails/Thumbnails";
 import PDFPreview from "../PDFPreview/PDFPreview";
 import Questions from "../Questions/Questions";
 import { WorksheetWrapper } from "./styled";
+import Tools from "../../../../assessment/themes/AssessmentPlayerDefault/Tools";
+import SvgDraw from "../../../../assessment/themes/AssessmentPlayerDefault/SvgDraw";
+
+import { saveScratchPadAction } from "../../../../assessment/actions/userWork";
 
 const swap = (array, i, j) => {
   const copy = array.slice();
@@ -56,7 +61,13 @@ class Worksheet extends React.Component {
 
   state = {
     currentPage: 0,
-    highlightedQuestion: undefined
+    highlightedQuestion: undefined,
+    currentColor: "#ff0000",
+    fillColor: "#ff0000",
+    activeMode: "",
+    history: 0,
+    deleteMode: false,
+    lineWidth: 6
   };
 
   handleHighlightQuestion = questionId =>
@@ -228,9 +239,103 @@ class Worksheet extends React.Component {
     history.push(`/author/assessments/create?assessmentId=${assessmentId}`);
   };
 
+  // Set up for scratchpad
+
+  hexToRGB = (hex, alpha) => {
+    const r = parseInt(hex.slice(1, 3), 16);
+
+    const g = parseInt(hex.slice(3, 5), 16);
+
+    const b = parseInt(hex.slice(5, 7), 16);
+
+    if (alpha) {
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
+    return `rgb(${r}, ${g}, ${b})`;
+  };
+
+  onFillColorChange = obj => {
+    this.setState({
+      fillColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+    });
+  };
+
+  handleToolChange = value => () => {
+    const { activeMode } = this.state;
+
+    if (value === "deleteMode") {
+      this.setState(prevState => ({ deleteMode: !prevState.deleteMode }));
+    } else if (activeMode === value) {
+      this.setState({ activeMode: "" });
+    } else {
+      this.setState({ activeMode: value });
+    }
+  };
+
+  handleUndo = () => {
+    const { undoScratchPad } = this.props;
+    const { history } = this.state;
+    if (history > 0) {
+      this.setState(
+        state => ({ history: state.history - 1 }),
+        () => {
+          undoScratchPad();
+        }
+      );
+    }
+  };
+
+  saveHistory = data => {
+    console.log("data after drawing", data);
+    const { saveScratchPad, itemDetail } = this.props;
+    this.setState(({ history }) => ({ history: history + 1 }));
+    const id = itemDetail["item"]["_id"];
+    saveScratchPad({
+      [id]: data
+    });
+  };
+
+  handleRedo = () => {
+    const { redoScratchPad } = this.props;
+
+    this.setState(
+      state => ({ history: state.history + 1 }),
+      () => {
+        redoScratchPad();
+      }
+    );
+  };
+
+  handleColorChange = obj => {
+    this.setState({
+      currentColor: this.hexToRGB(obj.color, (obj.alpha ? obj.alpha : 1) / 100)
+    });
+  };
+
+  // setup for scratchpad ends
+
   render() {
-    const { currentPage, highlightedQuestion } = this.state;
-    const { docUrl, annotations, review, noCheck, questions, questionsById, answersById, pageStructure } = this.props;
+    const {
+      currentPage,
+      highlightedQuestion,
+      currentColor,
+      fillColor,
+      activeMode,
+      history,
+      deleteMode,
+      lineWidth
+    } = this.state;
+    const {
+      docUrl,
+      annotations,
+      review,
+      noCheck,
+      questions,
+      questionsById,
+      answersById,
+      pageStructure,
+      scratchPad
+    } = this.props;
 
     const shouldRenderDocument = review ? !isEmpty(docUrl) : true;
 
@@ -255,13 +360,38 @@ class Worksheet extends React.Component {
           />
         )}
         {shouldRenderDocument && (
-          <PDFPreview
-            page={selectedPage}
-            currentPage={currentPage + 1}
-            annotations={annotations}
-            onDropAnnotation={this.handleAddAnnotation}
-            onHighlightQuestion={this.handleHighlightQuestion}
-          />
+          <Fragment>
+            <PDFPreview
+              page={selectedPage}
+              currentPage={currentPage + 1}
+              annotations={annotations}
+              onDropAnnotation={this.handleAddAnnotation}
+              onHighlightQuestion={this.handleHighlightQuestion}
+            />
+            <SvgDraw
+              activeMode={activeMode}
+              scratchPadMode={true}
+              lineColor={currentColor}
+              deleteMode={deleteMode}
+              lineWidth={lineWidth}
+              fillColor={fillColor}
+              saveHistory={this.saveHistory}
+              history={scratchPad}
+              height={560}
+              top={0}
+            />
+            <Tools
+              onFillColorChange={this.onFillColorChange}
+              fillColor={fillColor}
+              deleteMode={deleteMode}
+              currentColor={currentColor}
+              onToolChange={this.handleToolChange}
+              activeMode={activeMode}
+              undo={this.handleUndo}
+              redo={this.handleRedo}
+              onColorChange={this.handleColorChange}
+            />
+          </Fragment>
         )}
         <Questions
           noCheck={noCheck}
@@ -279,8 +409,18 @@ class Worksheet extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    null,
+    (state, ownProps) => {
+      return {
+        scratchPad: state["itemDetail"]["item"]
+          ? state.userWork.present[state["itemDetail"]["item"]["_id"]] || null
+          : null,
+        itemDetail: state["itemDetail"]
+      };
+    },
     {
+      saveScratchPad: saveScratchPadAction,
+      undoScratchPad: ActionCreators.undo,
+      redoScratchPad: ActionCreators.redo,
       setTestData: setTestDataAction
     }
   )

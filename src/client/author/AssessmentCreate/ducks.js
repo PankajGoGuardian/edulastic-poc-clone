@@ -75,7 +75,6 @@ function* createAssessmentSaga({ payload }) {
   let testItem;
   let amountOfPDFPages = 0;
   let pageStructure = [];
-
   try {
     if (payload.file) {
       fileURI = yield call(uploadToS3, payload.file, aws.s3Folders.DOCS);
@@ -168,7 +167,6 @@ function* createAssessmentSaga({ payload }) {
         assignments: undefined,
         pageStructure: pageStructure.length ? pageStructure : defaultPageStructure
       };
-
       const assessment = yield call(testsApi.create, newAssessment);
 
       yield put(createAssessmentSuccessAction());

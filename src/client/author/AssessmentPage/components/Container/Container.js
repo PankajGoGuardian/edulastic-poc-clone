@@ -14,7 +14,8 @@ import {
   getTestEntitySelector,
   getTestsLoadingSelector,
   setTestDataAction,
-  updateTestAction
+  updateTestAction,
+  publishTestAction
 } from "../../../TestPage/ducks";
 import { getQuestionsArraySelector, getQuestionsSelector } from "../../../sharedDucks/questions";
 import { getItemDetailByIdAction, updateItemDetailByIdAction } from "../../../src/actions/itemDetail";
@@ -77,6 +78,11 @@ class Container extends React.Component {
     updateTest: PropTypes.func.isRequired,
     changeView: PropTypes.func.isRequired,
     currentTab: PropTypes.string.isRequired
+  };
+
+  state = {
+    saved: false,
+    published: false
   };
 
   componentDidMount() {
@@ -143,7 +149,45 @@ class Container extends React.Component {
     };
 
     updateTest(assessment._id, newAssessment, true);
-    updateItemDetailById(testItemId, updatedTestItem, true);
+    updateItemDetailById(testItemId, updatedTestItem, true, false);
+    this.setState({ saved: true, published: false });
+  };
+
+  validateTest = assessment => {
+    const { subjects, grades } = assessment;
+
+    if (isEmpty(grades)) {
+      message.error("Grade field cannot be empty");
+      return false;
+    }
+    if (isEmpty(subjects)) {
+      message.error("Subject field cannot be empty");
+      return false;
+    }
+    return true;
+  };
+
+  handlePublish = async () => {
+    const { saved } = this.state;
+    if (saved) {
+      const {
+        assessment: { _id: id },
+        publishTest
+      } = this.props;
+      await publishTest({ _id: id });
+      this.setState({ saved: false, published: true });
+    }
+  };
+
+  handleAssign = () => {
+    const { assessment, history, match } = this.props;
+    const { published } = this.state;
+    if (published && this.validateTest(assessment)) {
+      const { assessmentId } = match.params;
+      if (assessmentId) {
+        history.push(`/author/assignments/${assessmentId}`);
+      }
+    }
   };
 
   validateQuestions = questions => {
@@ -215,6 +259,8 @@ class Container extends React.Component {
           title={title}
           status={status}
           onSave={this.handleSave}
+          onPublish={this.handlePublish}
+          onAssign={this.handleAssign}
         />
         {this.renderContent()}
       </>
@@ -225,21 +271,25 @@ class Container extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({
-      assessment: getTestEntitySelector(state),
-      loading: getTestsLoadingSelector(state),
-      questions: getQuestionsArraySelector(state),
-      questionsById: getQuestionsSelector(state),
-      currentTestItem: getItemDetailSelector(state),
-      currentTab: getViewSelector(state)
-    }),
+    state => {
+      console.log("state in container", state);
+      return {
+        assessment: getTestEntitySelector(state),
+        loading: getTestsLoadingSelector(state),
+        questions: getQuestionsArraySelector(state),
+        questionsById: getQuestionsSelector(state),
+        currentTestItem: getItemDetailSelector(state),
+        currentTab: getViewSelector(state)
+      };
+    },
     {
       receiveTestById: receiveTestByIdAction,
       receiveItemDetailById: getItemDetailByIdAction,
       updateItemDetailById: updateItemDetailByIdAction,
       setTestData: setTestDataAction,
       updateTest: updateTestAction,
-      changeView: changeViewAction
+      changeView: changeViewAction,
+      publishTest: publishTestAction
     }
   )
 );

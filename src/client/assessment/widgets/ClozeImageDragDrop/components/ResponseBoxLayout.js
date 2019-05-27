@@ -40,7 +40,9 @@ const ResponseBoxLayout = ({
         <div
           key={index}
           className={transparentResponses ? "draggable_box_transparent" : "draggable_box"}
-          style={{ fontSize: smallSize ? 10 : fontSize }}
+          style={{
+            fontSize: smallSize ? 10 : fontSize
+          }}
         >
           {!dragHandler && (
             <DragItem index={index} onDrop={onDrop} item={option} data={option}>

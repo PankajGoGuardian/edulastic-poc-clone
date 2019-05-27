@@ -101,7 +101,7 @@ const RightFields = ({
         </Select>
       </FieldLabel>
 
-      <FieldLabel label="Course" {...restProps} fiedlName="courseId">
+      <FieldLabel label="Course" {...restProps} fiedlName="courseId" initialValue={[]}>
         <Select
           placeholder="Select Course"
           showSearch

@@ -1,5 +1,5 @@
 import JXG from "jsxgraph";
-import * as math from "mathjs";
+import { parse, derivative } from "mathjs";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 import { Point } from ".";
@@ -22,7 +22,7 @@ function isLine(xMin, xMax, equationLeft, equationRight) {
     return true;
   }
 
-  const func = math.parse(equationRight);
+  const func = parse(equationRight);
   const step = (xMax - xMin) / 5;
   for (let i = 0; i < 3; i++) {
     const x1 = xMin + step * i;
@@ -167,7 +167,7 @@ function findLinePointsCoords(gridParams, equationLeft, equationRight) {
     return [[xMin + stepX, rightNumber], [xMax - stepX, rightNumber]];
   }
 
-  const func = math.parse(equationRight);
+  const func = parse(equationRight);
   const result = [];
 
   let x = xMin + stepX;
@@ -196,8 +196,8 @@ function findLinePointsCoords(gridParams, equationLeft, equationRight) {
 function findParabolaPointsCoords(gridParams, equationRight) {
   const { xMin, yMax, xMax, yMin, stepX, stepY } = gridParams;
 
-  const func = math.parse(equationRight);
-  const deriv = math.derivative(equationRight, "x");
+  const func = parse(equationRight);
+  const deriv = derivative(equationRight, "x");
   const result = [];
 
   let x = xMin + stepX;

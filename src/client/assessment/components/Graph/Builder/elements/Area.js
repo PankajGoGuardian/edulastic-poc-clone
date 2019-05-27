@@ -1,5 +1,5 @@
 import { isEqual } from "lodash";
-import * as math from "mathjs";
+import { parse } from "mathjs";
 import { Colors, CONSTANT } from "../config";
 import { getLabelParameters } from "../settings";
 import { fixLatex, isInPolygon } from "../utils";
@@ -54,7 +54,7 @@ function onHandler() {
             return x > +equationRight ? "right" : x < +equationRight ? "left" : "on";
           }
 
-          const func = math.parse(equationRight);
+          const func = parse(equationRight);
           return y > func.eval({ x }) ? "top" : y < func.eval({ x }) ? "below" : "on";
         };
       });

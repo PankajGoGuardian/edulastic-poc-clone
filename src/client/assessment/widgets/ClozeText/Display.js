@@ -129,7 +129,7 @@ class ClozeTextDisplay extends Component {
     const { widthpx, heightpx, placeholder, inputtype, responsecontainerindividuals, stemnumeration } = uiStyle;
 
     const responseBtnStyle = {
-      widthpx: widthpx !== 0 ? widthpx : 20,
+      widthpx: widthpx !== 0 ? widthpx : 140,
       heightpx: heightpx !== 0 ? heightpx : 35
     };
     let maxLineHeight = smallSize ? 50 : 40;
@@ -145,10 +145,10 @@ class ClozeTextDisplay extends Component {
                 const dropTargetIndex = responseIndex;
                 responseIndex++;
                 const btnStyle = {
-                  width: 0,
+                  width: widthpx || 140,
                   height: 0,
                   minWidth: 100,
-                  widthpx: 0,
+                  widthpx: widthpx || 140,
                   heightpx: 0,
                   placeholder,
                   inputtype
@@ -290,7 +290,7 @@ ClozeTextDisplay.defaultProps = {
   uiStyle: {
     fontsize: "normal",
     stemnumeration: "numerical",
-    widthpx: 0,
+    widthpx: 140,
     heightpx: 0,
     placeholder: null,
     inputtype: "text",

@@ -40,7 +40,7 @@ class ClozeText extends Component {
       });
 
       const finalWidth = 30 + maxLength * 7;
-      newItem.ui_style.widthpx = finalWidth > 120 ? 120 : finalWidth;
+      newItem.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
 
       setQuestionData(newItem);
     }

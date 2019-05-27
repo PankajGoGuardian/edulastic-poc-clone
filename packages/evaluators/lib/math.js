@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -347,13 +346,14 @@ var evaluator =
 
               case 6:
                 checks = getChecks(validation);
-                _context2.next = 9;
+                console.log(validation, answers, checks);
+                _context2.next = 10;
                 return exactMatchEvaluator(userResponse, answers, checks);
 
-              case 9:
+              case 10:
                 result = _context2.sent;
 
-              case 10:
+              case 11:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
@@ -362,7 +362,7 @@ var evaluator =
 
                 return _context2.abrupt("return", result);
 
-              case 12:
+              case 13:
               case "end":
                 return _context2.stop();
             }

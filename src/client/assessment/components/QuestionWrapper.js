@@ -238,6 +238,7 @@ class QuestionWrapper extends Component {
     const userAnswer = get(data, "activity.userResponse", null);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
     const disabled = get(data, "activity.disabled", false);
+    console.log("type::=>", type);
     const Question = getQuestion(type);
     const studentName = data.activity && data.activity.studentName;
     const userAnswerProps = {};

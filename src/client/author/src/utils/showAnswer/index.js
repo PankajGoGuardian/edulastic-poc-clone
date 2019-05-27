@@ -8,6 +8,8 @@ const createShowAnswerResult = (questions, answers) => {
     const question = questions[id];
     const evaluator = evaluators[question.type];
     const answer = answers[id];
+    console.log("testItem checkAnser Saga question::", question);
+    console.log("testItem checkAnser Saga answer::", answer);
     if (evaluator) {
       results[id] = evaluator(question, answer);
     }

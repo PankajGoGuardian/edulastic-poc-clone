@@ -18,14 +18,6 @@ const initialMethod = {
   value: "",
   options: {}
 };
-const initialDropdownMethod = {
-  value: "",
-  option: 0
-};
-const initialInputMethod = {
-  value: "",
-  inputIndex: 0
-};
 
 class Template extends Component {
   componentDidMount = () => {
@@ -53,15 +45,15 @@ class Template extends Component {
       });
 
     const _reduceDropDowns = (dropDownIndexes = [], value) =>
-      dropDownIndexes.map((nextIndex, optionIndex) => {
-        const newValue = { ...initialDropdownMethod, option: optionIndex };
+      dropDownIndexes.map(nextIndex => {
+        const newValue = "";
         const response = value.find((_, i) => nextIndex === i + 1);
         return response || cloneDeep(newValue);
       });
 
     const _reduceInputs = (dropDownIndexes = [], value) =>
-      dropDownIndexes.map((nextIndex, inputIndex) => {
-        const newValue = { ...initialInputMethod, inputIndex };
+      dropDownIndexes.map(nextIndex => {
+        const newValue = "";
         const response = value.find((_, i) => nextIndex === i + 1);
         return response || cloneDeep(newValue);
       });

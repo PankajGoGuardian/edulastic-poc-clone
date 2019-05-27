@@ -1,4 +1,3 @@
-/* eslint-disable */
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -23,6 +22,8 @@ var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
 var _axios = _interopRequireDefault(require("axios"));
 
 var _scoring = require("./const/scoring");
+
+var _clozeText = _interopRequireDefault(require("./clozeText"));
 
 var url = "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
@@ -132,7 +133,7 @@ var checkCorrect =
 
                 case 7:
                   if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context.next = 26;
+                    _context.next = 27;
                     break;
                   }
 
@@ -142,74 +143,75 @@ var checkCorrect =
                     expected: correct ? correct.replace(/\\ /g, " ") : ":",
                     checks: checks
                   };
-                  _context.prev = 10;
-                  _context.next = 13;
+                  console.log(data);
+                  _context.prev = 11;
+                  _context.next = 14;
                   return evaluate(data);
 
-                case 13:
+                case 14:
                   _ref3 = _context.sent;
                   result = _ref3.result;
 
                   if (!(result === "true")) {
-                    _context.next = 18;
+                    _context.next = 19;
                     break;
                   }
 
                   valid = true;
-                  return _context.abrupt("break", 26);
+                  return _context.abrupt("break", 27);
 
-                case 18:
-                  _context.next = 23;
+                case 19:
+                  _context.next = 24;
                   break;
 
-                case 20:
-                  _context.prev = 20;
-                  _context.t0 = _context["catch"](10);
-                  return _context.abrupt("continue", 23);
+                case 21:
+                  _context.prev = 21;
+                  _context.t0 = _context["catch"](11);
+                  return _context.abrupt("continue", 24);
 
-                case 23:
+                case 24:
                   _iteratorNormalCompletion = true;
                   _context.next = 7;
                   break;
 
-                case 26:
-                  _context.next = 32;
+                case 27:
+                  _context.next = 33;
                   break;
 
-                case 28:
-                  _context.prev = 28;
+                case 29:
+                  _context.prev = 29;
                   _context.t1 = _context["catch"](5);
                   _didIteratorError = true;
                   _iteratorError = _context.t1;
 
-                case 32:
-                  _context.prev = 32;
+                case 33:
                   _context.prev = 33;
+                  _context.prev = 34;
 
                   if (!_iteratorNormalCompletion && _iterator["return"] != null) {
                     _iterator["return"]();
                   }
 
-                case 35:
-                  _context.prev = 35;
+                case 36:
+                  _context.prev = 36;
 
                   if (!_didIteratorError) {
-                    _context.next = 38;
+                    _context.next = 39;
                     break;
                   }
 
                   throw _iteratorError;
 
-                case 38:
-                  return _context.finish(35);
-
                 case 39:
-                  return _context.finish(32);
+                  return _context.finish(36);
 
                 case 40:
-                  return _context.abrupt("return", valid);
+                  return _context.finish(33);
 
                 case 41:
+                  return _context.abrupt("return", valid);
+
+                case 42:
                 case "end":
                   return _context.stop();
               }
@@ -217,7 +219,7 @@ var checkCorrect =
           },
           _callee,
           null,
-          [[5, 28, 32, 40], [10, 20], [33, , 35, 39]]
+          [[5, 29, 33, 41], [11, 21], [34, , 36, 40]]
         );
       })
     );
@@ -243,6 +245,7 @@ var exactMatchEvaluator =
                   maxScore = 1;
                   evaluation = [];
                   correctIndex = 0;
+                  console.log("&&&&&", userResponse, answers, checks);
 
                   asyncForEach =
                     /*#__PURE__*/
@@ -285,7 +288,7 @@ var exactMatchEvaluator =
                       };
                     })();
 
-                  _context5.prev = 5;
+                  _context5.prev = 6;
 
                   getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
                     if (Array.isArray(answer.value)) {
@@ -300,7 +303,7 @@ var exactMatchEvaluator =
                     return [];
                   };
 
-                  _context5.next = 9;
+                  _context5.next = 10;
                   return asyncForEach(
                     answers,
                     /*#__PURE__*/
@@ -383,24 +386,24 @@ var exactMatchEvaluator =
                     })()
                   );
 
-                case 9:
-                  _context5.next = 14;
+                case 10:
+                  _context5.next = 15;
                   break;
 
-                case 11:
-                  _context5.prev = 11;
-                  _context5.t0 = _context5["catch"](5);
+                case 12:
+                  _context5.prev = 12;
+                  _context5.t0 = _context5["catch"](6);
                   console.error(_context5.t0);
 
-                case 14:
-                  _context5.prev = 14;
+                case 15:
+                  _context5.prev = 15;
                   return _context5.abrupt("return", {
                     score: score,
                     maxScore: maxScore,
                     evaluation: evaluation[correctIndex]
                   });
 
-                case 17:
+                case 18:
                 case "end":
                   return _context5.stop();
               }
@@ -408,7 +411,7 @@ var exactMatchEvaluator =
           },
           _callee5,
           null,
-          [[5, 11, 14, 17]]
+          [[6, 12, 15, 18]]
         );
       })
     );
@@ -424,50 +427,112 @@ var evaluator =
     var _ref10 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee6(_ref9) {
-        var userResponse,
+        var _ref9$userResponse,
+          userResponse,
           validation,
           valid_response,
+          valid_dropdown,
+          valid_inputs,
           _validation$alt_respo,
           alt_responses,
           scoring_type,
           attemptScore,
           answers,
+          _userResponse$dropDow,
+          _dropDownResponse,
+          _userResponse$inputs,
+          _inputsResponse,
+          _userResponse$math,
+          _mathResponse,
           result,
+          _ref11,
+          _inputEvaluation,
+          _inputScore,
+          _inputMaxScore,
+          _ref12,
+          _dropdownEvaluation,
+          _dropdownScore,
+          __dropdownMaxScore,
           checks;
 
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
             switch ((_context6.prev = _context6.next)) {
               case 0:
-                (userResponse = _ref9.userResponse), (validation = _ref9.validation);
+                (_ref9$userResponse = _ref9.userResponse),
+                  (userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse),
+                  (validation = _ref9.validation);
                 (valid_response = validation.valid_response),
+                  (valid_dropdown = validation.valid_dropdown),
+                  (valid_inputs = validation.valid_inputs),
                   (_validation$alt_respo = validation.alt_responses),
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                _context6.t0 = scoring_type;
-                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
-                break;
+                (_userResponse$dropDow = userResponse.dropDown),
+                  (_dropDownResponse = _userResponse$dropDow === void 0 ? [] : _userResponse$dropDow),
+                  (_userResponse$inputs = userResponse.inputs),
+                  (_inputsResponse = _userResponse$inputs === void 0 ? [] : _userResponse$inputs),
+                  (_userResponse$math = userResponse.math),
+                  (_mathResponse = _userResponse$math === void 0 ? [] : _userResponse$math);
+                _context6.next = 6;
+                return (0, _clozeText["default"])({
+                  userResponse: _inputsResponse,
+                  validation: {
+                    scoring_type: scoring_type,
+                    alt_responses: [],
+                    valid_response: (0, _objectSpread2["default"])({}, valid_inputs)
+                  }
+                });
 
               case 6:
+                _ref11 = _context6.sent;
+                _inputEvaluation = _ref11.evaluation;
+                _inputScore = _ref11.score;
+                _inputMaxScore = _ref11.maxScore;
+                _context6.next = 12;
+                return (0, _clozeText["default"])({
+                  userResponse: _dropDownResponse,
+                  validation: {
+                    scoring_type: scoring_type,
+                    alt_responses: [],
+                    valid_response: (0, _objectSpread2["default"])({}, valid_dropdown)
+                  }
+                });
+
+              case 12:
+                _ref12 = _context6.sent;
+                _dropdownEvaluation = _ref12.evaluation;
+                _dropdownScore = _ref12.score;
+                __dropdownMaxScore = _ref12.maxScore;
+                console.log("evaluator::validation", validation);
+                console.log("evaluator::userResponse", userResponse);
+                _context6.t0 = scoring_type;
+                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 21 : 21;
+                break;
+
+              case 21:
                 checks = getChecks(validation);
-                _context6.next = 9;
+                console.log(userResponse, answers, checks);
+                _context6.next = 25;
                 return exactMatchEvaluator(userResponse, answers, checks);
 
-              case 9:
+              case 25:
                 result = _context6.sent;
 
-              case 10:
+              case 26:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
                   result.score = attemptScore;
                 }
 
+                console.log(_inputEvaluation, _inputScore, _inputMaxScore);
+                console.log(_dropdownEvaluation, _dropdownScore, __dropdownMaxScore);
                 return _context6.abrupt("return", result);
 
-              case 12:
+              case 30:
               case "end":
                 return _context6.stop();
             }

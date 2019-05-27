@@ -85,9 +85,9 @@ const ClozeMathPreview = ({
       return "";
     });
 
-  const _getDropDownAnswers = () => item.validation.valid_dropdown.value.map(res => res.value || "");
+  const _getDropDownAnswers = () => item.validation.valid_dropdown.value.map(res => res || "");
 
-  const _getTextInputAnswers = () => item.validation.valid_inputs.value.map(res => res.value || "");
+  const _getTextInputAnswers = () => item.validation.valid_inputs.value.map(res => res || "");
 
   const replaceResponseButtons = () => {
     const MQ = window.MathQuill.getInterface(2);
@@ -109,8 +109,15 @@ const ClozeMathPreview = ({
         mQuill.innerFields[0].config({
           handlers: {
             edit(editingMathField) {
-              const newAnswers = cloneDeep(userAnswer);
-              newAnswers[index] = editingMathField.latex();
+              let newAnswers = cloneDeep(userAnswer);
+              const answer = editingMathField.latex();
+              const mathAnswers = newAnswers.math || [];
+
+              mathAnswers[index] = answer;
+              newAnswers = {
+                ...newAnswers,
+                math: mathAnswers
+              };
               saveAnswer(newAnswers);
             }
           }
@@ -182,6 +189,18 @@ const ClozeMathPreview = ({
     setDropdowns(_dropdowns);
   };
 
+  const handleAddAnswer = (answer, index, key) => {
+    let newAnswers = cloneDeep(userAnswer);
+    const answers = newAnswers[key] || [];
+    answers[index] = answer;
+
+    newAnswers = {
+      ...newAnswers,
+      [key]: answers
+    };
+    saveAnswer(newAnswers);
+  };
+
   useEffect(() => {
     startMathValidating();
   }, [mathFieldRef.current]);
@@ -224,9 +243,16 @@ const ClozeMathPreview = ({
       // eslint-disable-next-line func-names
       .each(function(index) {
         if (type === CLEAR) {
-          const newAnswers = cloneDeep(userAnswer);
+          let newAnswers = cloneDeep(userAnswer);
           const mQuill = MQ.StaticMath($(this).get(0));
-          newAnswers[index] = mQuill.innerFields[0].latex("");
+          const answer = mQuill.innerFields[0].latex("");
+          const mathAnswers = newAnswers.math || [];
+
+          mathAnswers[index] = answer;
+          newAnswers = {
+            ...newAnswers,
+            math: mathAnswers
+          };
 
           $(wrappedRef.current)
             .find(".mathField")
@@ -341,6 +367,8 @@ const ClozeMathPreview = ({
   }, [newInnerHtml]);
 
   let dropDownOptionIndex = 0;
+  let inputIndex = 0;
+
   return (
     <WithResources
       resources={[
@@ -366,7 +394,7 @@ const ClozeMathPreview = ({
                 const optionsIndex = dropDownOptionIndex;
                 dropDownOptionIndex++;
                 return (
-                  <StyeldSelect key={index}>
+                  <StyeldSelect key={index} onChange={text => handleAddAnswer(text, optionsIndex, "dropDown")}>
                     {options &&
                       options[optionsIndex] &&
                       options[optionsIndex].map((response, respID) => (
@@ -378,9 +406,11 @@ const ClozeMathPreview = ({
                 );
               }
               if (templatePart.indexOf('class="text-input-btn"') !== -1) {
+                const targetIndex = inputIndex;
+                inputIndex++;
                 return (
                   <InputDiv key={index}>
-                    <Input />
+                    <Input onChange={e => handleAddAnswer(e.target.value, targetIndex, "inputs")} />
                   </InputDiv>
                 );
               }
@@ -418,7 +448,7 @@ ClozeMathPreview.propTypes = {
   item: PropTypes.object.isRequired,
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.array.isRequired,
+  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.array.isRequired,
   options: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,

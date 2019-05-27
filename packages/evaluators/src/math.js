@@ -123,6 +123,7 @@ const evaluator = async ({ userResponse, validation }) => {
     case ScoringType.EXACT_MATCH:
     default:
       const checks = getChecks(validation);
+      console.log(validation, answers, checks);
       result = await exactMatchEvaluator(userResponse, answers, checks);
   }
 

@@ -23,14 +23,11 @@ class ClozeInputAnswer extends Component {
     return (
       <AnswerContainer>
         <Collapse onChange={() => {}}>
-          {answer.map((inputValue, inputIndex) => {
-            const { value } = inputValue;
-            return (
-              <Panel header={`Text Input ${inputIndex + 1}`} key={inputIndex}>
-                <Input value={value} onChange={e => this.onChangeHandler(e.target.value, inputIndex)} />
-              </Panel>
-            );
-          })}
+          {answer.map((inputValue, inputIndex) => (
+            <Panel header={`Text Input ${inputIndex + 1}`} key={inputIndex}>
+              <Input value={inputValue} onChange={e => this.onChangeHandler(e.target.value, inputIndex)} />
+            </Panel>
+          ))}
         </Collapse>
       </AnswerContainer>
     );

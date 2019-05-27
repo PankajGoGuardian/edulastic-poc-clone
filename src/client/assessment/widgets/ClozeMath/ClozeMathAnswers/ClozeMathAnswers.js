@@ -99,13 +99,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
 
   const _updateDropDownCorrectAnswer = ({ value, dropIndex }) => {
     const newItem = cloneDeep(item);
-    set(newItem, `validation.valid_dropdown.value[${dropIndex}].value`, value);
+    set(newItem, `validation.valid_dropdown.value[${dropIndex}]`, value);
     setQuestionData(newItem);
   };
 
   const _updateInputCorrectAnswer = ({ value, inputIndex }) => {
     const newItem = cloneDeep(item);
-    set(newItem, `validation.valid_inputs.value[${inputIndex}].value`, value);
+    set(newItem, `validation.valid_inputs.value[${inputIndex}]`, value);
     setQuestionData(newItem);
   };
 

@@ -30,12 +30,11 @@ class ClozeDropDownAnswer extends Component {
       <AnswerContainer>
         <Collapse onChange={() => {}}>
           {answer.map((dropDownValue, dropIndex) => {
-            const { value, option: _optionIndex } = dropDownValue;
-            const option = options[_optionIndex];
+            const option = options[dropIndex];
 
             return (
               <Panel header={`Text Dropdown ${dropIndex + 1}`} key={dropIndex}>
-                <AnswerSelect value={value} onChange={text => this.selectChange(text, _optionIndex)}>
+                <AnswerSelect value={dropDownValue} onChange={text => this.selectChange(text, dropIndex)}>
                   {option &&
                     option.map((op, opIndex) => (
                       <Option value={op} key={opIndex}>

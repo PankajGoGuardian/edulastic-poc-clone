@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Icon, Select, message, Button, Menu, Table } from "antd";
+import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
 import {
@@ -32,7 +32,6 @@ import {
 
 import { getSchoolAdminSelector } from "../../ducks";
 
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
 
 function compareByAlph(a, b) {
@@ -119,9 +118,6 @@ class SchoolAdminTable extends React.Component {
   }
 
   componentDidMount() {
-    const { loadSchoolsData, userOrgId } = this.props;
-    loadSchoolsData({ body: { districtId: userOrgId } });
-
     const { loadSchoolAdminData } = this.props;
     loadSchoolAdminData({
       type: "SCHOOL",
@@ -313,7 +309,7 @@ class SchoolAdminTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { schoolsData } = this.props;
+    const { userOrgId } = this.props;
     const selectedSchoolAdmin = dataSource.filter(item => item.key == editSchoolAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
@@ -336,7 +332,7 @@ class SchoolAdminTable extends React.Component {
               modalVisible={createSchoolAdminModalVisible}
               createSchoolAdmin={this.createSchoolAdmin}
               closeModal={this.closeCreateSchoolAdminModal}
-              schoolsData={schoolsData}
+              userOrgId={userOrgId}
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
@@ -389,7 +385,7 @@ class SchoolAdminTable extends React.Component {
             modalVisible={editSchoolAdminModaVisible}
             saveSchoolAdmin={this.updateSchoolAdmin}
             closeModal={this.closeEditSchoolAdminModal}
-            schoolsData={schoolsData}
+            userOrgId={userOrgId}
           />
         )}
       </StyledTableContainer>
@@ -400,7 +396,6 @@ class SchoolAdminTable extends React.Component {
 const enhance = compose(
   connect(
     state => ({
-      schoolsData: getSchoolsSelector(state),
       userOrgId: getUserOrgId(state),
       schoolAdminData: getSchoolAdminSelector(state)
     }),
@@ -408,7 +403,6 @@ const enhance = compose(
       createSchoolAdmin: createSchoolAdminAction,
       updateSchoolAdmin: updateSchoolAdminAction,
       deleteSchoolAdmin: deleteSchoolAdminAction,
-      loadSchoolsData: receiveSchoolsAction,
       loadSchoolAdminData: receiveSchoolAdminAction,
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction
@@ -427,6 +421,5 @@ SchoolAdminTable.propTypes = {
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   schoolAdminData: PropTypes.array.isRequired,
-  loadSchoolsData: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired
 };

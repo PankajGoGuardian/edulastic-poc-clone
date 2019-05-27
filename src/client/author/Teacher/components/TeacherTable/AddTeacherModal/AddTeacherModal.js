@@ -81,9 +81,16 @@ class AddTeacherModal extends React.Component {
           institutionIds.push(row.institutionIds[i].key);
         }
 
+        const firstName = row.name.split(" ", 1);
+        let lastName = "";
+        if (firstName.length < row.name.length) {
+          const lastNameIndex = firstName[0].length + 1;
+          lastName = row.name.substr(lastNameIndex, row.name.length);
+        }
+
         this.props.addTeacher({
-          firstName: row.firstName,
-          lastName: row.lastName,
+          firstName: firstName[0],
+          lastName,
           email: this.state.emailValidate.value,
           password: row.password,
           institutionIds
@@ -225,28 +232,16 @@ class AddTeacherModal extends React.Component {
         ]}
       >
         <Row>
-          <Col span={10}>
-            <ModalFormItem label="First Name">
-              {getFieldDecorator("firstName", {
+          <Col span={24}>
+            <ModalFormItem label="Name">
+              {getFieldDecorator("name", {
                 rules: [
                   {
                     required: true,
-                    message: "Please input First Name"
+                    message: "Please input Name"
                   }
                 ]
-              })(<Input placeholder="Enter First Name" prefix={<Icon type="user" />} />)}
-            </ModalFormItem>
-          </Col>
-          <Col span={10} offset={2}>
-            <ModalFormItem label="Last Name">
-              {getFieldDecorator("lastName", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please input Last Name"
-                  }
-                ]
-              })(<Input placeholder="Enter Last Name" prefix={<Icon type="user" />} />)}
+              })(<Input placeholder="Enter Name" prefix={<Icon type="user" />} />)}
             </ModalFormItem>
           </Col>
         </Row>

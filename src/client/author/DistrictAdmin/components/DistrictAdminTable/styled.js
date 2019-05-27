@@ -16,6 +16,16 @@ export const StyledTableContainer = styled.div`
   }
 `;
 
+export const StyledTable = styled(Table)`
+  .ant-table-row {
+    &: hover {
+      a {
+        visibility: visible;
+      }
+    }
+  }
+`;
+
 export const StyledControlDiv = styled.div`
   display: flex;
   margin-bottom: 20px;
@@ -34,8 +44,12 @@ export const StyledAddFilterButton = styled(Button)`
 `;
 
 export const StyledTableButton = styled.a`
+  visibility: hidden;
   margin-right: 20px;
   font-size: 20px;
+  &:last-child {
+    margin-right: 0;
+  }
 `;
 
 export const StyledFilterInput = styled(Input)`

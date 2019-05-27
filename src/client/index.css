@@ -1198,6 +1198,10 @@ span.token.active-word {
   white-space: normal;
 }
 
+.ant-select-dropdown {
+  z-index: 100000;
+}
+
 .template_box .ant-select-selection {
   border-color: #fff;
 }

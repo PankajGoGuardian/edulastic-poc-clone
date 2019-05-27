@@ -79,6 +79,7 @@ class Display extends Component {
       showQuestionNumber,
       qIndex
     } = this.props;
+
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
     let newOptions;

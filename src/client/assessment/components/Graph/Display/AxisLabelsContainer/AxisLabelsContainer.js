@@ -13,6 +13,7 @@ import {
 import { makeBorder } from "../../Builder";
 import Tools from "../QuadrantsContainer/Tools";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import AnnotationRnd from "../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   const { details } = compareResult;
@@ -450,7 +451,7 @@ class AxisLabelsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, numberlineAxis } = this.props;
+    const { layout, numberlineAxis, questionId } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
@@ -463,6 +464,7 @@ class AxisLabelsContainer extends PureComponent {
             fontSize={numberlineAxis.fontSize}
           />
           <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
+          <AnnotationRnd questionId={questionId} />
         </GraphWrapper>
       </div>
     );

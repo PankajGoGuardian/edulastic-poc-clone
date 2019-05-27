@@ -1,6 +1,7 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { Rnd } from "react-rnd";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphPoint as IconPoint,
@@ -26,6 +27,8 @@ import { makeBorder } from "../../Builder";
 import { CONSTANT, Colors } from "../../Builder/config";
 import SegmentsTools from "./SegmentsTools";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
+import { getQuestionDataSelector, setQuestionDataAction } from "../../../../../author/QuestionEditor/ducks";
+import AnnotationRnd from "../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -657,13 +660,14 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, graphType, canvas, elements, tools } = this.props;
+    const { layout, graphType, canvas, elements, tools, questionId } = this.props;
     const { selectedTool } = this.state;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
         <GraphWrapper>
-          <div>
+          <div style={{ position: "relative", overflow: "hidden" }}>
+            <AnnotationRnd questionId={questionId} />
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
           </div>
           <SegmentsTools
@@ -705,7 +709,9 @@ AxisSegmentsContainer.propTypes = {
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
-  altAnswerId: PropTypes.string
+  altAnswerId: PropTypes.string,
+  question: PropTypes.object.isRequired,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 AxisSegmentsContainer.defaultProps = {
@@ -722,10 +728,12 @@ export default connect(
   state => ({
     stash: state.graphTools.stash,
     stashIndex: state.graphTools.stashIndex,
-    view: state.view.view
+    view: state.view.view,
+    question: getQuestionDataSelector(state)
   }),
   {
     setElementsStash: setElementsStashAction,
-    setStashIndex: setStashIndexAction
+    setStashIndex: setStashIndexAction,
+    setQuestionData: setQuestionDataAction
   }
 )(AxisSegmentsContainer);

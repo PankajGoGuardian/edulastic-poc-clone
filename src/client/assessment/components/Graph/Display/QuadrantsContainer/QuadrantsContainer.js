@@ -27,6 +27,7 @@ import {
 import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from "./styled";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 import Equations from "./Equations";
+import AnnotationRnd from "../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -559,7 +560,7 @@ class GraphContainer extends PureComponent {
   allControls = ["undo", "redo", "reset", "delete"];
 
   render() {
-    const { tools, layout, annotation, controls, bgShapes, elements } = this.props;
+    const { tools, layout, annotation, controls, bgShapes, elements, questionId } = this.props;
     const { selectedTool } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
@@ -604,6 +605,7 @@ class GraphContainer extends PureComponent {
               className="jxgbox"
               margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
             />
+            <AnnotationRnd questionId={questionId} />
           </div>
         </GraphWrapper>
       </div>

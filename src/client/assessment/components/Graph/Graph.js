@@ -18,6 +18,7 @@ import { AxisSegments, GraphAxisLabels, GraphQuadrants, QuestionSection } from "
 import { CorrectAnswers } from "./CorrectAnswers";
 import { GraphDisplay } from "./Display";
 import { InstructorStimulus } from "./common/styled_components";
+import Annotations from "./Annotations/Annotations";
 
 const EmptyWrapper = styled.div``;
 
@@ -83,8 +84,8 @@ class Graph extends Component {
 
     switch (graphType) {
       case "axisSegments":
-        return AxisSegmentsOptions;
-      case "axisLabels":
+        return AxisSegmentsOptions; // number line with plot
+      case "axisLabels": // numberline drag drop
         return AxisLabelsOptions;
       case "quadrants":
       case "firstQuadrant":
@@ -340,6 +341,14 @@ class Graph extends Component {
                     </React.Fragment>
                   )}
                 </React.Fragment>
+              </QuestionSection>
+              <QuestionSection
+                section="main"
+                label="Annotations"
+                cleanSections={cleanSections}
+                fillSections={fillSections}
+              >
+                <Annotations editable />
               </QuestionSection>
               <MoreOptionsComponent {...this.getMoreOptionsProps()} />
             </ContentArea>

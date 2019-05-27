@@ -40,7 +40,7 @@ const RightFields = ({
   }
 
   const standardSets = filter(curriculums, el => el.subject === subject);
-
+  const grades = filter(allGrades, el => el.isContentGrade !== true);
   return (
     <>
       <StyledFlexContainer>
@@ -67,7 +67,7 @@ const RightFields = ({
       <StyledFlexContainer>
         <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue="">
           <Select placeholder="Select Grade">
-            {allGrades.map(el => (
+            {grades.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
               </Select.Option>

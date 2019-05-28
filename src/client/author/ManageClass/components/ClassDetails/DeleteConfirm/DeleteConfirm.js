@@ -49,7 +49,7 @@ class DeleteConfirm extends React.Component {
     );
   }
 
-  onChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
+  onChangeHandler = ({ target }) => this.setState({ confirmText: upperCase(target.value) });
 
   onRemove = () => {
     const { handleCancel, selectedStudent, orgData, selectedClass, removeStds } = this.props;

@@ -108,24 +108,34 @@ class ScoreTable extends Component {
       }
     ];
 
+    console.log("testActivity", this.props.testActivity[0]);
+
     for (let index = 0; index < length; index++) {
-      let successAnswer = 0;
+      let successScore = 0;
+      let num = 0;
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
+      const isQids = qids && qids.length > 0;
+      console.log("for index ", index, " qids ", qids);
       const title = (
         <StyledDivMid>
-          {(qids || []).map(x => `Q${x}`).join(",")}
+          {`Q${index + 1}`}
           <img src={InfoIcon} alt="help" />
         </StyledDivMid>
       );
+
       students.forEach(student => {
-        if (student && student.questionActivities[index].correct) successAnswer++;
+        if (student && !student.questionActivities[index].notStarted) {
+          successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
+          num++;
+        }
       });
+      const averageScore = successScore / num;
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={greenThird}>{`${Math.round((successAnswer / length) * 100)}%`}</StyledText>({successAnswer}{" "}
-          / {length})
+          <StyledText color={greenThird}>{`${round((averageScore / length) * 100, 1)}%`}</StyledText>({averageScore} /{" "}
+          {length})
         </StyledDivMid>
       );
 

@@ -65,7 +65,7 @@ class FeedbackRight extends Component {
   }
 
   componentDidUpdate() {
-    this.focusScoreInput();
+    //this.focusScoreInput();
   }
 
   onFeedbackSubmit() {
@@ -121,7 +121,7 @@ class FeedbackRight extends Component {
     if (e.key === "Tab") {
       e.stopPropagation();
       e.preventDefault();
-      this.focusScoreInput();
+      //this.focusScoreInput();
     }
   };
 

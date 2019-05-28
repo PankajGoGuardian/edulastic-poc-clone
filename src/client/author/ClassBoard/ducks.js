@@ -77,92 +77,102 @@ export function* watcherSaga() {
 export const stateGradeBookSelector = state => state.author_classboard_gradebook;
 export const stateTestActivitySelector = state => state.author_classboard_testActivity;
 
-export const getGradeBookSelector = createSelector(
-  stateTestActivitySelector,
-  state => {
-    const { entities } = state;
-    const total = entities.length;
-    const submittedEntities = entities.filter(x => x.status === "submitted");
-    const submittedNumber = submittedEntities.length;
-    // TODO: handle absent
-    const absentNumber = 0;
-    const submittedScores = submittedEntities
-      .map(({ score, maxScore }) => score / maxScore)
-      .reduce((prev, cur) => prev + cur, 0);
-    const submittedScoresAverage = submittedNumber > 0 ? submittedScores / submittedNumber : 0;
-    // const startedEntities = entities.filter(x => x.status !== "notStarted");
-    const questionMap = {};
-    for (const entity of entities) {
-      const { questionActivities } = entity;
-      for (const {
-        _id,
-        notStarted,
-        skipped,
-        correct,
-        timeSpent,
-        partialCorrect: partiallyCorrect,
-        testItemId,
-        disabled
-      } of questionActivities.filter(x => !x.disabled)) {
-        if (!questionMap[_id]) {
-          questionMap[_id] = {
-            _id,
-            itemLevelScoring: false,
-            itemId: null,
-            attemptsNum: 0,
-            avgTimeSpent: 0,
-            correctNum: 0,
-            skippedNum: 0,
-            wrongNum: 0,
-            partialNum: 0,
-            notStartedNum: 0,
-            timeSpent: 0
-          };
-        }
-        if (testItemId) {
-          questionMap[_id].itemLevelScoring = true;
-          questionMap[_id].itemId = testItemId;
-        }
-        if (!notStarted) {
-          questionMap[_id].attemptsNum += 1;
-        } else {
-          questionMap[_id].notStartedNum += 1;
-        }
+export const getAggregateByQuestion = (entities, studentId) => {
+  if (!entities) {
+    return {};
+  }
+  const total = entities.length;
+  let submittedEntities = entities.filter(x => x.status === "submitted");
 
-        if (skipped) {
-          questionMap[_id].skippedNum += 1;
-        }
+  const submittedNumber = submittedEntities.length;
+  // TODO: handle absent
+  const absentNumber = 0;
+  const submittedScores = submittedEntities
+    .map(({ score, maxScore }) => score / maxScore)
+    .reduce((prev, cur) => prev + cur, 0);
+  const submittedScoresAverage = submittedNumber > 0 ? submittedScores / submittedNumber : 0;
+  // const startedEntities = entities.filter(x => x.status !== "notStarted");
+  const questionMap = {};
+  if (studentId) {
+    console.log("studentid selected", studentId);
+    entities = entities.filter(x => x.studentId === studentId);
+  }
+  for (const entity of entities) {
+    const { questionActivities } = entity;
+    for (const {
+      _id,
+      notStarted,
+      skipped,
+      correct,
+      timeSpent,
+      partialCorrect: partiallyCorrect,
+      testItemId,
+      disabled,
+      score,
+      maxScore
+    } of questionActivities.filter(x => !x.disabled)) {
+      if (!questionMap[_id]) {
+        questionMap[_id] = {
+          _id,
+          itemLevelScoring: false,
+          itemId: null,
+          attemptsNum: 0,
+          avgTimeSpent: 0,
+          correctNum: 0,
+          skippedNum: 0,
+          wrongNum: 0,
+          partialNum: 0,
+          notStartedNum: 0,
+          timeSpent: 0
+        };
+      }
+      if (testItemId) {
+        questionMap[_id].itemLevelScoring = true;
+        questionMap[_id].itemId = testItemId;
+      }
+      if (!notStarted) {
+        questionMap[_id].attemptsNum += 1;
+      } else {
+        questionMap[_id].notStartedNum += 1;
+      }
 
-        if (correct) {
-          questionMap[_id].correctNum += 1;
-        }
+      if (skipped) {
+        questionMap[_id].skippedNum += 1;
+      }
 
-        if (!correct && !notStarted && !partiallyCorrect) {
-          questionMap[_id].wrongNum += 1;
-        }
+      if (score === maxScore && !notStarted && score > 0) {
+        questionMap[_id].correctNum += 1;
+      } else if (score === 0 && !notStarted && maxScore > 0) {
+        questionMap[_id].wrongNum += 1;
+      }
 
-        if (partiallyCorrect) {
-          questionMap[_id].partialNum += 1;
-        }
-        if (timeSpent && !notStarted) {
-          questionMap[_id].timeSpent += timeSpent;
-        }
+      if (score > 0 && score < maxScore) {
+        questionMap[_id].partialNum += 1;
+      }
+      if (timeSpent && !notStarted) {
+        questionMap[_id].timeSpent += timeSpent;
       }
     }
-    for (const question in questionMap) {
-      questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
-    }
-    const itemsSummary = _values(questionMap);
-    const result = {
-      total,
-      submittedNumber,
-      absentNumber,
-      avgScore: submittedScoresAverage,
-      itemsSummary
-    };
-    return result;
   }
+  for (const question in questionMap) {
+    questionMap[question].avgTimeSpent = questionMap[question].timeSpent / questionMap[question].attemptsNum;
+  }
+  const itemsSummary = _values(questionMap);
+  const result = {
+    total,
+    submittedNumber,
+    absentNumber,
+    avgScore: submittedScoresAverage,
+    itemsSummary
+  };
+  return result;
+};
+
+export const getGradeBookSelector = createSelector(
+  stateTestActivitySelector,
+  state => getAggregateByQuestion(state.entities)
 );
+
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
   state => state.entities

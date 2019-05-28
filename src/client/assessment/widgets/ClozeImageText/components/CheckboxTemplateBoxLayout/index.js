@@ -27,7 +27,12 @@ const CheckboxTemplateBoxLayout = ({
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
     <TemplateCover width={imageWidth}>
-      <img src={imageUrl} width="100%" style={{ userSelect: "none", pointerEvents: "none" }} alt={imageAlterText} />
+      <img
+        src={imageUrl}
+        width={imageWidth}
+        style={{ userSelect: "none", pointerEvents: "none" }}
+        alt={imageAlterText}
+      />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {

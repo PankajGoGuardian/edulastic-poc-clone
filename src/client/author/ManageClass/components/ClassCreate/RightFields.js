@@ -65,7 +65,7 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue="">
+        <FieldLabel label="Grade" {...restProps} fiedlName="grade" initialValue={[]}>
           <Select placeholder="Select Grade">
             {grades.map(el => (
               <Select.Option key={el.value} value={el.value}>

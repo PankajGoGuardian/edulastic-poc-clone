@@ -131,3 +131,6 @@ export const fadedBlue = "#BED8FA";
 export const orange = "#FFA200";
 
 export const eastBaycolor = "#51596a";
+
+export const draftColor = "#f8ac59";
+export const publishedColor = "#1ab394";

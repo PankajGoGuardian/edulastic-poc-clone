@@ -537,6 +537,7 @@ const ModuleTitle = styled.div`
   align-items: center;
   color: #30404f;
   font-size: 18px;
+  font-weight: 600;
   @media only screen and (max-width: ${tabletWidth}) {
     align-items: flex-start;
     padding-top: 10px;
@@ -560,7 +561,8 @@ const ModuleTitleAssignedWrapper = styled.div`
 `;
 
 const ModuleTitlePrefix = styled.div`
-  font-weight: 300;
+  font-weight: 600;
+  font-size: 16px;
 `;
 
 export const ModuleDataName = styled.div`

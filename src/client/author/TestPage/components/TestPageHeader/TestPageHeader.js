@@ -86,7 +86,8 @@ const TestPageHeader = ({
   return windowWidth > 993 ? (
     <HeaderWrapper>
       <Title>
-        {title} <TestStatus>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
+        {title}{" "}
+        <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
       </Title>
 
       <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />

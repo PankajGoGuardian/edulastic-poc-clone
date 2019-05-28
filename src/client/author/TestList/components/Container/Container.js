@@ -613,19 +613,17 @@ class TestList extends Component {
                 <PaginationInfo>
                   {count ? from : 0} to {to} of <i>{count}</i>
                 </PaginationInfo>
-                <ItemsMenu>
-                  {mode === "embedded" && (
-                    <StyledButton
-                      data-cy="createNewItem"
-                      type="secondary"
-                      size="large"
-                      onClick={this.handleCreateNewModule}
-                    >
-                      <IconPlusCircle color="#1774F0" width={15} height={15} />
-                      <span>Add Module</span>
-                    </StyledButton>
-                  )}
-                </ItemsMenu>
+                {mode === "embedded" && (
+                  <StyledButton
+                    data-cy="createNewItem"
+                    type="secondary"
+                    size="large"
+                    onClick={this.handleCreateNewModule}
+                  >
+                    <IconPlusCircle color="#1774F0" width={15} height={15} />
+                    <span>Add Module</span>
+                  </StyledButton>
+                )}
               </FlexContainer>
               <CardContainer type={blockStyle}>
                 {this.renderCardContent()}

@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { Progress, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
-import { Layout } from "antd";
+import { Row, Col, InputNumber, Input, Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
@@ -44,7 +44,6 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
-import { Row, Col, InputNumber, Input } from "antd";
 const InputGroup = Input.Group;
 const testItemStatusConstants = {
   DRAFT: "draft",

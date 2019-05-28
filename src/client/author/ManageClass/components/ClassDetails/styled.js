@@ -1,4 +1,5 @@
 import styled, { css } from "styled-components";
+import { Link } from "react-router-dom";
 import {
   white,
   blueButton,
@@ -130,7 +131,7 @@ export const RightContent = styled.div`
   align-items: center;
 `;
 
-export const AnchorLink = styled.div`
+export const AnchorLink = styled(Link)`
   font-size: 14px;
   font-weight: 600;
   color: ${darkBlue};

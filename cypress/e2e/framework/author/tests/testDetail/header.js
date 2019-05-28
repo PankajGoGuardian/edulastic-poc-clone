@@ -35,7 +35,12 @@ export default class TestHeader {
     });
   };
 
-  clickOnPublishButton = () => cy.get('[data-cy="publish"]').click();
+  clickOnPublishButton = () => {
+    cy.server();
+    cy.route("PUT", "**/test/**").as("published");
+    cy.get('[data-cy="publish"]').click();
+    cy.wait("@published");
+  };
 
   clickOnShare = () => cy.get('[data-cy="share"]').click();
 }

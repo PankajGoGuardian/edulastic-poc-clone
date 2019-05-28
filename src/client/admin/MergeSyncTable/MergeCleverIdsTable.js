@@ -1,8 +1,8 @@
 import React from "react";
 import { CSVLink } from "react-csv";
-import { Button, Upload, Icon, message, Modal } from "antd";
+import { Button, Upload, Icon, Modal } from "antd";
 import { Table } from "../Common/StyledComponents";
-import { mapCountAsType } from "../Data";
+import { mapCountAsType, DISABLE_SUBMIT_TITLE } from "../Data";
 const { Column } = Table;
 
 const orgTypesCount = ["schoolCount", "groupCount", "saCount", "teacherCount", "studentCount", "daCount"];
@@ -14,10 +14,11 @@ const MergeCleverIdsTable = ({
   districtId,
   cleverId,
   mergeResponse,
-  closeMergeResponse
+  closeMergeResponse,
+  disableFields
 }) => {
   const { data: mergeResponseData, showData: showMergeResponseData, mergeType: downloadMergeType } = mergeResponse;
-
+  const ButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
   const handleUpload = (info, mergeType) => {
     try {
       const { file } = info;
@@ -94,7 +95,7 @@ const MergeCleverIdsTable = ({
           key="btnName"
           render={(_, { type }) => (
             <Upload aria-label="Upload" {...props} customRequest={info => handleUpload(info, type)}>
-              <Button>
+              <Button {...ButtonProps}>
                 <Icon type="upload" /> Upload
               </Button>
               {" *.csv"}

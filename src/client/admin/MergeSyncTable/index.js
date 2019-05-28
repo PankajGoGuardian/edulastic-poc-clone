@@ -157,7 +157,12 @@ function MergeSyncTable({
 }) {
   const { data = {} } = searchData;
 
-  const { schools, district = {}, cleverCountsInfo = {}, edulasticCountsInfo = {} } = data;
+  const {
+    schools,
+    district: { name: districtName, _id: districtId, cleverId, syncEnabled = false } = {},
+    cleverCountsInfo = {},
+    edulasticCountsInfo = {}
+  } = data;
   const rosterSyncConfig = data.rosterSyncConfig ? data.rosterSyncConfig : {};
   return (
     <OuterDiv>
@@ -168,8 +173,8 @@ function MergeSyncTable({
       {searchData.data && (
         <>
           <SyncEnableDisable
-            districtName={district.name}
-            districtId={district._id}
+            districtName={districtName}
+            districtId={districtId}
             enableDisableSyncAction={enableDisableSyncAction}
           />
           <Tabs type="card" defaultActiveKey="mergeCleverIds" animated>
@@ -178,18 +183,23 @@ function MergeSyncTable({
                 clvrCounts={cleverCountsInfo}
                 eduCounts={edulasticCountsInfo}
                 uploadCSVtoClever={uploadCSVtoClever}
-                districtId={district._id}
-                cleverId={district.cleverId}
+                districtId={districtId}
+                cleverId={cleverId}
                 mergeResponse={mergeResponse}
                 closeMergeResponse={closeMergeResponse}
+                disableFields={syncEnabled}
               />
             </TabPane>
             <TabPane tab="Delta Sync Parameter" key="deltaSyncParameter">
-              <DeltaSync rosterSyncConfig={rosterSyncConfig} applyDeltaSyncChanges={applyDeltaSyncChanges} />
+              <DeltaSync
+                rosterSyncConfig={rosterSyncConfig}
+                applyDeltaSyncChanges={applyDeltaSyncChanges}
+                disableFields={syncEnabled}
+              />
             </TabPane>
             <TabPane tab="Subject Standard Mapping" key="subjectStdMapping" forceRender>
               <SubjectStandard
-                orgId={district._id}
+                orgId={districtId}
                 orgType="district"
                 subStandardMapping={subStandardMapping}
                 fetchCurriculumDataAction={fetchCurriculumDataAction}
@@ -199,6 +209,7 @@ function MergeSyncTable({
                 addSubjectStandardRowAction={addSubjectStandardRowAction}
                 updateSubjectStdMapAction={updateSubjectStdMapAction}
                 deleteSubjectStdMapAction={deleteSubjectStdMapAction}
+                disableFields={syncEnabled}
               />
             </TabPane>
             <TabPane tab="Class Name Pattern" key="classNamePattern">
@@ -207,17 +218,14 @@ function MergeSyncTable({
                 orgType={rosterSyncConfig.orgType}
                 applyClassNamesSync={applyClassNamesSync}
                 classNamePattern={rosterSyncConfig.classNamePattern}
+                disableFields={syncEnabled}
               />
             </TabPane>
             <TabPane tab="Sync" key="sync">
-              <Sync schools={schools} cleverId={district.cleverId} syncSchools={syncSchools} />
+              <Sync schools={schools} cleverId={cleverId} syncSchools={syncSchools} />
             </TabPane>
             <TabPane tab="Logs" key="logs">
-              <Logs
-                logs={subStandardMapping.logs}
-                fetchLogsDataAction={fetchLogsDataAction}
-                districtId={district._id}
-              />
+              <Logs logs={subStandardMapping.logs} fetchLogsDataAction={fetchLogsDataAction} districtId={districtId} />
             </TabPane>
           </Tabs>
         </>

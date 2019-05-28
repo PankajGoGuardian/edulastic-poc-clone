@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Form, Checkbox, Select } from "antd";
 import styled from "styled-components";
-import { deltaSyncConfig } from "../Data";
+import { deltaSyncConfig, DISABLE_SUBMIT_TITLE } from "../Data";
 import { FlexColumn } from "../Common/StyledComponents";
 import CancelApplyActions from "./CancelApplyActions";
 
@@ -12,9 +12,10 @@ const Column = styled(FlexColumn)`
   }
 `;
 
-function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges }) {
+function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges, disableFields }) {
   const { getFieldDecorator } = form;
   const { orgId, orgType } = rosterSyncConfig;
+  const cancelApplyButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
 
   const setValueBackToDefault = () => {
     form.setFieldsValue({
@@ -93,7 +94,7 @@ function DeltaSync({ rosterSyncConfig, form, applyDeltaSyncChanges }) {
             </Select>
           )}
         </Form.Item>
-        <CancelApplyActions applySubmit onCancelAction={setValueBackToDefault} />
+        <CancelApplyActions {...cancelApplyButtonProps} type="submit" onCancelAction={setValueBackToDefault} />
       </Form>
     </Column>
   );

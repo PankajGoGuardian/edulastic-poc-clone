@@ -131,7 +131,11 @@ class ListItem extends Component {
                   <StyledLink title={title} onClick={this.moveToItem}>
                     {isPlaylist ? _source.title : title}
                   </StyledLink>
-                  {mode && <TestStatus mode={"embedded"}>{testStatus}</TestStatus>}
+                  {mode && (
+                    <TestStatus className={testStatus} mode={"embedded"}>
+                      {testStatus}
+                    </TestStatus>
+                  )}
                 </div>
                 <Description onClick={isPlaylist ? this.moveToItem : ""}>
                   {isPlaylist
@@ -163,11 +167,7 @@ class ListItem extends Component {
             )}
 
             <Footer span={24}>
-              {!isPlaylist && (
-                <TagsWrapper span={12}>
-                  <Tags tags={tags} />
-                </TagsWrapper>
-              )}
+              <TagsWrapper span={12}>{!isPlaylist && <Tags tags={tags} />}</TagsWrapper>
 
               <ItemInformation span={12}>
                 <ContentWrapper>

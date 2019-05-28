@@ -16,13 +16,13 @@ const playlistStatusConstants = {
 };
 
 export const SET_ASSIGNMENT = "[assignments] set assignment"; // TODO remove cyclic dependency
-export const CREATE_TEST_REQUEST = "[playlist] create playlist request";
+export const CREATE_PLAYLIST_REQUEST = "[playlist] create playlist request";
 export const CREATE_PLAYLIST_SUCCESS = "[playlists] create playlist success";
 export const CREATE_PLAYLIST_ERROR = "[playlists] create playlist error";
 
-export const UPDATE_TEST_REQUEST = "[tests] update playlist request";
-export const UPDATE_TEST_SUCCESS = "[tests] update playlist success";
-export const UPDATE_TEST_ERROR = "[tests] update playlist error";
+export const UPDATE_PLAYLIST_REQUEST = "[playlists] update playlist request";
+export const UPDATE_PLAYLIST_SUCCESS = "[playlists] update playlist success";
+export const UPDATE_PLAYLIST_ERROR = "[playlists] update playlist error";
 export const UPDATE_PLAYLIST = "[playlists] update playlist ";
 
 export const RECEIVE_PLAYLIST_BY_ID_REQUEST = "[playlists] receive playlist by id request";
@@ -66,8 +66,8 @@ export const receivePlaylistByIdError = error => ({
   payload: { error }
 });
 
-export const createTestAction = (data, toReview = false) => ({
-  type: CREATE_TEST_REQUEST,
+export const createPlaylistAction = (data, toReview = false) => ({
+  type: CREATE_PLAYLIST_REQUEST,
   payload: { data, toReview }
 });
 
@@ -81,18 +81,18 @@ export const createPlaylistErrorAction = error => ({
   payload: { error }
 });
 
-export const updateTestAction = (id, data, updateLocal) => ({
-  type: UPDATE_TEST_REQUEST,
+export const updatePlaylistAction = (id, data, updateLocal) => ({
+  type: UPDATE_PLAYLIST_REQUEST,
   payload: { id, data, updateLocal }
 });
 
-export const updateTestSuccessAction = entity => ({
-  type: UPDATE_TEST_SUCCESS,
+export const updatePlaylistSuccessAction = entity => ({
+  type: UPDATE_PLAYLIST_SUCCESS,
   payload: { entity }
 });
 
-export const updateTestErrorAction = error => ({
-  type: UPDATE_TEST_ERROR,
+export const updatePlaylistErrorAction = error => ({
+  type: UPDATE_PLAYLIST_ERROR,
   payload: { error }
 });
 
@@ -148,7 +148,7 @@ const initialPlaylistState = {
   // FIXME: define schema for modules
   modules: [],
   type: "content",
-  collectionName: "Eureka",
+  collectionName: "Private Library",
   grades: [],
   subjects: [],
   version: 1,
@@ -274,11 +274,11 @@ export const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_PLAYLIST_BY_ID_ERROR:
       return { ...state, loading: false, error: payload.error };
 
-    case CREATE_TEST_REQUEST:
-    case UPDATE_TEST_REQUEST:
+    case CREATE_PLAYLIST_REQUEST:
+    case UPDATE_PLAYLIST_REQUEST:
       return { ...state, creating: true };
     case CREATE_PLAYLIST_SUCCESS:
-    case UPDATE_TEST_SUCCESS:
+    case UPDATE_PLAYLIST_SUCCESS:
       const { testItems, ...entity } = payload.entity;
       return {
         ...state,
@@ -292,7 +292,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         entity: { ...state.entity, ...dataRest }
       };
     case CREATE_PLAYLIST_ERROR:
-    case UPDATE_TEST_ERROR:
+    case UPDATE_PLAYLIST_ERROR:
       return { ...state, creating: false, error: payload.error };
     case SET_TEST_DATA:
       return {
@@ -432,7 +432,7 @@ function* updatePlaylistSaga({ payload }) {
 
     const entity = yield call(curriculumSequencesApi.update, { id: oldId, data: dataToSend });
 
-    yield put(updateTestSuccessAction(entity));
+    yield put(updatePlaylistSuccessAction(entity));
     const newId = entity._id;
     if (oldId != newId && newId) {
       yield call(message.success, "Playlist versioned");
@@ -443,7 +443,7 @@ function* updatePlaylistSaga({ payload }) {
   } catch (err) {
     const errorMessage = "Update playlist is failing";
     yield call(message.error, errorMessage);
-    yield put(updateTestErrorAction(errorMessage));
+    yield put(updatePlaylistErrorAction(errorMessage));
   }
 }
 
@@ -471,6 +471,8 @@ function* shareTestSaga({ payload }) {
 function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
+    const data = yield select(getPlaylistSelector);
+    yield put(updatePlaylistAction(id, data));
     yield call(curriculumSequencesApi.publishPlaylist, id);
     yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
@@ -535,8 +537,8 @@ function addTestToModule(entity, payload) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_PLAYLIST_BY_ID_REQUEST, receivePlaylistByIdSaga),
-    yield takeEvery(CREATE_TEST_REQUEST, createPlaylistSaga),
-    yield takeEvery(UPDATE_TEST_REQUEST, updatePlaylistSaga),
+    yield takeEvery(CREATE_PLAYLIST_REQUEST, createPlaylistSaga),
+    yield takeEvery(UPDATE_PLAYLIST_REQUEST, updatePlaylistSaga),
     yield takeEvery(REGRADE_TEST, updateRegradeDataSaga),
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(PLAYLIST_PUBLISH, publishPlaylistSaga),

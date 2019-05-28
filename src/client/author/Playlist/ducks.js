@@ -75,7 +75,7 @@ function* receiveLastPlayListSaga() {
 function* receiveRecentPlayListsSaga() {
   try {
     const result = yield call(userContextApi.getRecentPlayLists);
-    yield put(updateRecentPlayListsAction(result));
+    yield put(updateRecentPlayListsAction(result.value));
   } catch (err) {
     const errorMessage = "Receive recent playlist is failing";
     yield call(message.error, errorMessage);
@@ -133,7 +133,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_RECENT_PLAYLISTS:
       return {
         ...state,
-        recentPlayLists: [...state.recentPlayLists, payload]
+        recentPlayLists: payload
       };
     case UPDATE_LAST_PLAYLIST:
       return {
@@ -177,4 +177,9 @@ export const getCollectionsSelector = createSelector(
 export const getLastPlayListSelector = createSelector(
   stateSelector,
   state => state.lastPlayList
+);
+
+export const getRecentPlaylistSelector = createSelector(
+  stateSelector,
+  state => state.recentPlayLists
 );

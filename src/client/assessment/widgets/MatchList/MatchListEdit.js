@@ -250,19 +250,17 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
             cleanSections={cleanSections}
           />
         </Widget>
-        <Widget>
-          <CorrectAnswers
-            onTabChange={setCorrectTab}
-            correctTab={correctTab}
-            onAdd={handleAddAnswer}
-            validation={item.validation}
-            options={renderOptions()}
-            onCloseTab={handleCloseTab}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-            marginBottom="-50px"
-          />
-        </Widget>
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          marginBottom="-50px"
+        />
       </Paper>
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </ContentArea>

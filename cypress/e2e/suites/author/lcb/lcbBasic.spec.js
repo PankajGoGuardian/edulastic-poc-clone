@@ -13,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "auto.lcb.teacher01@yopmail.com",
     student: "auto.lcb.student01@yopmail.com",
     assignmentName: "New Assessment LCB",
-    testId: "5ce4eb31c2512a87ccf5980e",
+    testId: "5cebbbe5a9b0758231d4dd72",
     feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",

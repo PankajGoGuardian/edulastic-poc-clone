@@ -36,7 +36,7 @@ const Settings = ({ history, windowWidth, customize, handleUserCustomize }) => {
               <Switch defaultChecked={customize} onChange={handleUserCustomize} />
               <Description>
                 {
-                  "If set to ON(default), the play list can be customized by users ie, they can add/remove the items in the play list."
+                  "If set to ON (default), the playlist can be customized by the users i.e, users can add/remove the items in the playlist"
                 }
               </Description>
             </Body>

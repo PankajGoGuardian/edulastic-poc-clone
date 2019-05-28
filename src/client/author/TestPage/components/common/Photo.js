@@ -44,7 +44,9 @@ class Photo extends React.Component {
 
     const uploadButton = (
       <Container height={height}>
-        <Image src={url || defaultImage} alt="Test" />
+        <Image src={url || defaultImage} alt="Test">
+          <Backdrop />
+        </Image>
         <Camera>
           <IconPhotoCamera color={white} width={16} height={16} />
         </Camera>
@@ -69,7 +71,9 @@ class Photo extends React.Component {
               {loading ? (
                 <ImageLoading />
               ) : imageUrl ? (
-                <Image src={imageUrl} windowWidth={windowWidth} alt="test" />
+                <Image imgUrl={imageUrl} height={height} windowWidth={windowWidth}>
+                  <Backdrop />
+                </Image>
               ) : (
                 uploadButton
               )}
@@ -106,6 +110,8 @@ const Container = styled.div`
   height: ${props => props.height}px;
   width: 100%;
   position: relative;
+  border-radius: 5px;
+  background: #dddddd;
 `;
 
 const UploadWrapper = styled.div`
@@ -129,9 +135,21 @@ const ImageLoading = styled(Spin)`
   justify-content: center;
 `;
 
-const Image = styled.img`
+const Image = styled.div`
   width: 100%;
-  height: ${props => (props.windowWidth > 993 ? "unset" : "100%")};
+  height: ${props => (props.windowWidth > 993 ? props.height + "px" : "100%")};
+  border-radius: 5px;
+  background: url(${props => (props.imgUrl ? props.imgUrl : props.src)});
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+`;
+
+const Backdrop = styled.div`
+  background: rgba(0, 0, 0, 0.5);
+  position: absolute;
+  width: 100%;
+  height: 100%;
   border-radius: 5px;
 `;
 
@@ -147,6 +165,7 @@ const Camera = styled.div`
   align-items: center;
   justify-content: center;
   z-index: 1;
+  cursor: pointer;
 `;
 
 const ImageContainer = styled.div`

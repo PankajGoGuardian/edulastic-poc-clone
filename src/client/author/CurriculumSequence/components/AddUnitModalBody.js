@@ -100,7 +100,7 @@ class AddUnitModalBody extends React.Component {
             CANCEL
           </Button>
           <Button data-cy="addModuleSave" key="submit" type="primary" onClick={this.addModuleToPlaylist}>
-            SAVE
+            ADD
           </Button>
         </ModalFooter>
       </div>

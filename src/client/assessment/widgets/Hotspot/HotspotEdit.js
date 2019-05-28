@@ -11,7 +11,6 @@ import { updateVariables } from "../../utils/variables";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import withPoints from "../../components/HOC/withPoints";
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -156,22 +155,20 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
         cleanSections={cleanSections}
       />
 
-      <Widget>
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-
-        <StyledCheckbox onChange={handleResponseMode} defaultChecked={multiple_responses}>
+      <CorrectAnswers
+        onTabChange={setCorrectTab}
+        correctTab={correctTab}
+        onAdd={handleAddAnswer}
+        validation={item.validation}
+        options={renderOptions()}
+        onCloseTab={handleCloseTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      >
+        <StyledCheckbox onChange={handleResponseMode} defaultChecked={multiple_responses} style={{ marginBottom: 30 }}>
           {t("component.hotspot.multipleResponses")}
         </StyledCheckbox>
-      </Widget>
+      </CorrectAnswers>
 
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </ContentArea>

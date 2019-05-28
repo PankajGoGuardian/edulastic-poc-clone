@@ -13,7 +13,7 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
 };
 
 /**
- * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string}[]}
+ * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number}[]}
  */
 const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
@@ -24,8 +24,9 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
         ...qids,
         ...questions
           //.filter(x => !x.scoringDisabled)
-          .map(x => ({
+          .map((x, index) => ({
             id: x.id,
+            maxScore: index === 0 ? testItemsDataKeyed[testItemId].itemLevelScore : undefined,
             weight: questions.length,
             disabled: x.scoringDisabled,
             testItemId,
@@ -33,7 +34,7 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           }))
       ];
     } else {
-      qids = [...qids, ...questions.map(x => ({ id: x.id, weight: 1 }))];
+      qids = [...qids, ...questions.map(x => ({ id: x.id, weight: 1, qids: [x.id] }))];
     }
   }
   return qids;
@@ -112,7 +113,8 @@ export const transformGradeBookResponse = ({
     weight: x.weight,
     notStarted: true,
     disabled: x.disabled,
-    testItemId: x.testItemId
+    testItemId: x.testItemId,
+    qids: x.qids
   }));
 
   return studentNames
@@ -153,7 +155,7 @@ export const transformGradeBookResponse = ({
 
       const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(({ id: el, weight, qids: _qids, disabled, testItemId }) => {
+      const questionActivities = qids.map(({ id: el, weight, qids: _qids, disabled, testItemId, maxScore }, index) => {
         const _id = el;
 
         if (!questionActivitiesIndexed[el]) {
@@ -166,7 +168,7 @@ export const transformGradeBookResponse = ({
             partialCorrect = _qids.map(x => questionActivitiesIndexed[x]).some(x => x.correct);
           }
         }
-        const questionMaxScore = getMaxScoreOfQid(_id, testItemsData);
+        const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
         return {
           _id,
           weight,

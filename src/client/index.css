@@ -385,6 +385,7 @@ template {
   border-radius: 5px;
   display: inline-flex;
   margin: 0 5px;
+  user-select: none;
 }
 
 .response-btn .index {
@@ -1781,6 +1782,25 @@ table td {
 .liveinspect-keydata .numbered-paragraph {
   margin-left: 36px;
 }
+
 .liveinspect-keydata .lrn_feature h3 {
   margin-top: 0 !important;
+}
+
+.fr-box.fr-basic {
+  border: 1px solid #cccccc;
+  border-radius: 10px;
+}
+
+.fr-box.fr-basic .fr-toolbar.fr-top {
+  border: none !important;
+}
+
+.fr-box.fr-basic .fr-wrapper {
+  border: none !important;
+  border-radius: 10px;
+}
+
+.fr-box.fr-basic .second-toolbar {
+  border: none !important;
 }

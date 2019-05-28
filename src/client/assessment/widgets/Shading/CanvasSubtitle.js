@@ -56,7 +56,7 @@ class CanvasSubtitle extends Component {
         <Subtitle>{t("component.shading.canvasSubtitle")}</Subtitle>
 
         <Row gutter={70}>
-          <Col span={12}>
+          <Col span={12} style={{ marginBottom: 25 }}>
             <Subtitle
               fontSize={theme.widgets.shading.subtitleFontSize}
               color={theme.widgets.shading.subtitleColor}
@@ -89,7 +89,7 @@ class CanvasSubtitle extends Component {
         </Row>
 
         <Row gutter={70}>
-          <Col span={12}>
+          <Col span={12} style={{ marginBottom: 25 }}>
             <Subtitle fontSize={theme.widgets.shading.subtitleFontSize} color={theme.widgets.shading.subtitleColor}>
               {t("component.shading.cellWidthSubtitle")}
             </Subtitle>

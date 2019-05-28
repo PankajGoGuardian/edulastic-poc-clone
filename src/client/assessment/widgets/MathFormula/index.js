@@ -11,7 +11,6 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
@@ -72,14 +71,12 @@ const MathFormula = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Widget>
-            <MathFormulaAnswers
-              item={item}
-              setQuestionData={setQuestionData}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-            />
-          </Widget>
+          <MathFormulaAnswers
+            item={item}
+            setQuestionData={setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
           <MathFormulaOptions
             onChange={handleItemChangeChange}
             uiStyle={item.ui_style}

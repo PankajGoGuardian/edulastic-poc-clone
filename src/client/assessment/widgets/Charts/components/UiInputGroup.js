@@ -1,7 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Row, Col, Input } from "antd";
-import { Subtitle } from "../../../styled/Subtitle";
+
+import { WidgetSubHeading } from "../../../styled/Widget";
+import { ColContainer } from "../../../styled/ColContainer";
 
 const UiInputGroup = ({
   t,
@@ -15,28 +17,30 @@ const UiInputGroup = ({
   secondInputType,
   ratio
 }) => (
-  <Row style={{ marginBottom: 10 }} gutter={80}>
-    <Col span={12}>
-      <Subtitle>{t(`component.chart.${firstAttr}`)}</Subtitle>
-      <Input
-        size="large"
-        type={firstInputType}
-        value={firstFieldValue}
-        onChange={e => onChange(firstAttr, firstInputType === "text" ? e.target.value : +e.target.value)}
-      />
-    </Col>
-    <Col span={12}>
-      <Subtitle>{t(`component.chart.${secondAttr}`)}</Subtitle>
-      <Input
-        size="large"
-        type={secondInputType}
-        onBlur={onBlur}
-        value={
-          secondAttr === "value" ? Math.round(ratio ? secondFieldValue / ratio : secondFieldValue) : secondFieldValue
-        }
-        onChange={e => onChange(secondAttr, secondInputType === "text" ? e.target.value : +e.target.value)}
-      />
-    </Col>
+  <Row gutter={60}>
+    <ColContainer>
+      <Col span={12}>
+        <WidgetSubHeading>{t(`component.chart.${firstAttr}`)}</WidgetSubHeading>
+        <Input
+          size="large"
+          type={firstInputType}
+          value={firstFieldValue}
+          onChange={e => onChange(firstAttr, firstInputType === "text" ? e.target.value : +e.target.value)}
+        />
+      </Col>
+      <Col span={12}>
+        <WidgetSubHeading>{t(`component.chart.${secondAttr}`)}</WidgetSubHeading>
+        <Input
+          size="large"
+          type={secondInputType}
+          onBlur={onBlur}
+          value={
+            secondAttr === "value" ? Math.round(ratio ? secondFieldValue / ratio : secondFieldValue) : secondFieldValue
+          }
+          onChange={e => onChange(secondAttr, secondInputType === "text" ? e.target.value : +e.target.value)}
+        />
+      </Col>
+    </ColContainer>
   </Row>
 );
 

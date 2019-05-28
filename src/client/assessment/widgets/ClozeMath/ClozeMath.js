@@ -13,7 +13,6 @@ import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -97,26 +96,23 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Widget>
-            <ClozeMathAnswers
-              id="answers"
+          <ClozeMathAnswers
+            id="answers"
+            item={item}
+            setQuestionData={_setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
+          {dropDownsContainers.map((_, i) => (
+            <ChoicesForDropDown
+              key={i}
+              index={i}
               item={item}
-              setQuestionData={_setQuestionData}
               fillSections={fillSections}
               cleanSections={cleanSections}
             />
-          </Widget>
-          <Widget data-cy="text-drop-down-area">
-            {dropDownsContainers.map((_, i) => (
-              <ChoicesForDropDown
-                key={i}
-                index={i}
-                item={item}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-              />
-            ))}
-          </Widget>
+          ))}
+
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.ui_style}
@@ -171,9 +167,9 @@ ClozeMath.defaultProps = {
   userAnswer: [],
   item: {},
   evaluation: [],
+  advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {},
-  advancedAreOpen: false
+  cleanSections: () => {}
 };
 
 const enhance = compose(

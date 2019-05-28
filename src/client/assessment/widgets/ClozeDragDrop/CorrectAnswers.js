@@ -98,8 +98,7 @@ class CorrectAnswers extends Component {
           minHeight: 20,
           width: 20,
           padding: 0,
-          marginLeft: 20,
-          marginBottom: 5
+          marginLeft: 20
         }}
         icon={<IconPlus data-cy="alternative" />}
         onClick={() => {

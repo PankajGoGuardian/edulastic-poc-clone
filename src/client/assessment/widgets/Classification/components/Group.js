@@ -3,6 +3,7 @@ import { Input } from "antd";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
+import { newBlue } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../../styled/Subtitle";
@@ -25,24 +26,10 @@ const Group = ({
   groupHeadText,
   onRemoveInner,
   firstFocus,
-  text,
   prefix,
   theme
 }) => (
   <Fragment>
-    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
-      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
-      <IconTrash onClick={onRemove(index)} />
-    </FlexContainer>
-    <Subtitle
-      fontSize={theme.widgets.classification.subtitleFontSize}
-      color={theme.widgets.classification.subtitleColor}
-      margin="20px 0px 10px"
-    >
-      {headText}
-    </Subtitle>
-    <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
-    <Subtitle margin="20px 0px 10px">{text}</Subtitle>
     <div data-cy="group-choices" style={{ marginBottom: 30 }}>
       <List
         prefix={prefix}
@@ -55,6 +42,21 @@ const Group = ({
         useDragHandle
         columns={1}
       />
+    </div>
+
+    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
+      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
+      <IconTrash onClick={onRemove(index)} />
+    </FlexContainer>
+    <Subtitle
+      fontSize={theme.widgets.classification.subtitleFontSize}
+      color={theme.widgets.classification.subtitleColor}
+      margin="20px 0px 10px"
+    >
+      {headText}
+    </Subtitle>
+    <div style={{ marginBottom: 20 }}>
+      <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
     </div>
   </Fragment>
 );
@@ -69,7 +71,6 @@ Group.propTypes = {
   firstFocus: PropTypes.bool.isRequired,
   index: PropTypes.number.isRequired,
   headText: PropTypes.string.isRequired,
-  text: PropTypes.string.isRequired,
   groupHeadText: PropTypes.string.isRequired,
   onRemoveInner: PropTypes.func.isRequired,
   prefix: PropTypes.string.isRequired,

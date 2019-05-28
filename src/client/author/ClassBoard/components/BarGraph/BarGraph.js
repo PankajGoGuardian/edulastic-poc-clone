@@ -16,6 +16,10 @@ import {
 import { ComposedChart, Bar, Line, XAxis, YAxis, ResponsiveContainer, Rectangle, Tooltip } from "recharts";
 import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
+import { getAggregateByQuestion } from "../../ducks";
+import memoizeOne from "memoize-one";
+
+const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
 
 const RectangleBar = ({ fill, x, y, width, height, dataKey, incorrectAttemps }) => {
   let radius = [5, 5, 0, 0];
@@ -72,8 +76,16 @@ export default class BarGraph extends Component {
   }
 
   static getDerivedStateFromProps(props, state) {
-    const { gradebook } = props;
-    const { itemsSummary } = gradebook;
+    const { gradebook, studentview, studentId, testActivity } = props;
+
+    let { itemsSummary } = gradebook;
+    if (studentview && studentId) {
+      const filtered = getAggregateByQuestion(testActivity, studentId);
+      if (filtered) {
+        itemsSummary = filtered.itemsSummary;
+      }
+      console.log("studentId selected", studentId, "itemsummary", itemsSummary);
+    }
 
     let chartData = [];
 

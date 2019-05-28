@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth } from "@edulastic/colors";
+import { desktopWidth, fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const Widget = styled.div`
   padding: 30px;
@@ -31,9 +31,26 @@ export const Widget = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     padding: 20px;
+    display: block !important;
 
     &:not(:first-child) {
       margin-top: 20px;
     }
+  }
+`;
+
+export const WidgetSubHeading = styled.div`
+  color: ${fadedBlack};
+  margin-bottom: 10px;
+  font-size: 12px;
+  line-height: 1.333;
+  list-style: none;
+  display: block;
+  font-weight: 600;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 15px;
   }
 `;

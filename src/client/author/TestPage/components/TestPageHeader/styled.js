@@ -1,7 +1,15 @@
 import styled from "styled-components";
 import { Icon } from "antd";
 
-import { mainBlueColor, white, darkBlueSecondary, tabletWidth, textColor, greyDarken } from "@edulastic/colors";
+import {
+  mainBlueColor,
+  white,
+  darkBlueSecondary,
+  tabletWidth,
+  textColor,
+  draftColor,
+  publishedColor
+} from "@edulastic/colors";
 import { IconShare } from "@edulastic/icons";
 
 import { Status } from "../../../AssessmentPage/components/Header/styled";
@@ -56,4 +64,13 @@ export const TestStatus = styled(Status)`
   margin-top: 0;
   color: ${props => (props.mode === "embedded" ? white : textColor)};
   background: ${props => (props.mode === "embedded" ? textColor : white)};
+  font-weight: 600;
+  &.draft {
+    background: ${draftColor};
+    color: white;
+  }
+  &.published {
+    background: ${publishedColor};
+    color: white;
+  }
 `;

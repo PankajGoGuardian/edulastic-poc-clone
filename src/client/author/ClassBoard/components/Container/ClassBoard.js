@@ -255,7 +255,7 @@ class ClassBoard extends Component {
     const selectedStudentsKey = selectedStudentsKeys.length ? selectedStudentsKeys[0] : "";
     let selectedStudentsEntity = this.props.entities.find(item => item.studentId === selectedStudentsKey);
     selectedStudentsEntity = selectedStudentsEntity || {};
-
+    const firstStudentId = get(this.props.entities, [0, "studentId"]);
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -280,7 +280,10 @@ class ClassBoard extends Component {
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
               CARD VIEW
             </BothButton>
-            <StudentButton active={selectedTab === "Student"} onClick={e => this.onTabChange(e, "Student")}>
+            <StudentButton
+              active={selectedTab === "Student"}
+              onClick={e => this.onTabChange(e, "Student", firstStudentId)}
+            >
               STUDENTS
             </StudentButton>
             <QuestionButton active={selectedTab === "questionView"} onClick={e => this.onTabChange(e, "questionView")}>
@@ -332,7 +335,9 @@ class ClassBoard extends Component {
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
                 studentUnselect={this.onUnselectCardOne}
-                viewResponses={(e, selected) => this.onTabChange(e, "Student", selected)}
+                viewResponses={(e, selected) => {
+                  this.onTabChange(e, "Student", selected);
+                }}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -357,7 +362,13 @@ class ClassBoard extends Component {
           <React.Fragment>
             <StudentGrapContainer>
               <StyledCard bordered={false} paddingTop={15}>
-                <BarGraph gradebook={gradebook} studentview studentResponse={qActivityByStudent}>
+                <BarGraph
+                  gradebook={gradebook}
+                  testActivity={testActivity}
+                  studentId={selectedStudentId}
+                  studentview
+                  studentResponse={qActivityByStudent}
+                >
                   <StudentSelect
                     students={studentItems}
                     selectedStudent={selectedStudentId}

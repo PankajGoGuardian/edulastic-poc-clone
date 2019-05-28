@@ -203,38 +203,36 @@ class MultipleChoice extends Component {
           {view === EDIT && (
             <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
               <React.Fragment>
-                <Paper padding="0px" boxShadow="none" style={{ marginBottom: 25 }}>
-                  <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                  <Widget>
-                    <CorrectAnswers
-                      uiStyle={uiStyle}
-                      options={previewDisplayOptions}
-                      question={previewStimulus}
-                      multipleResponses={multipleResponses}
-                      onAddAltResponses={this.handleAddAltResponses}
-                      onRemoveAltResponses={this.handleRemoveAltResponses}
-                      validation={item.validation}
-                      styleType="primary"
-                      fillSections={fillSections}
-                      cleanSections={cleanSections}
-                      {...restProps}
-                    />
-                    <Divider />
-                    <Checkbox
-                      data-cy="multi"
-                      onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
-                      checked={multipleResponses}
-                    >
-                      {t("component.multiplechoice.multipleResponses")}
-                    </Checkbox>
-                    <Checkbox
-                      onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                      checked={shuffleOptions}
-                    >
-                      {t("component.multiplechoice.shuffleOptions")}
-                    </Checkbox>
-                  </Widget>
-                </Paper>
+                <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                <Widget>
+                  <CorrectAnswers
+                    uiStyle={uiStyle}
+                    options={previewDisplayOptions}
+                    question={previewStimulus}
+                    multipleResponses={multipleResponses}
+                    onAddAltResponses={this.handleAddAltResponses}
+                    onRemoveAltResponses={this.handleRemoveAltResponses}
+                    validation={item.validation}
+                    styleType="primary"
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                    {...restProps}
+                  />
+                  <Divider />
+                  <Checkbox
+                    data-cy="multi"
+                    onChange={() => this.handleOptionsChange("multiple_responses", !multipleResponses)}
+                    checked={multipleResponses}
+                  >
+                    {t("component.multiplechoice.multipleResponses")}
+                  </Checkbox>
+                  <Checkbox
+                    onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                    checked={shuffleOptions}
+                  >
+                    {t("component.multiplechoice.shuffleOptions")}
+                  </Checkbox>
+                </Widget>
                 <Options
                   onChange={this.handleOptionsChange}
                   uiStyle={uiStyle}

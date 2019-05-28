@@ -291,7 +291,7 @@ class QuestionWrapper extends Component {
           </PaperWrapper>
           {showFeedback &&
             (multiple ? (
-              <FeedbackBottom widget={data} disabled={disabled} />
+              <FeedbackBottom widget={data} disabled={disabled} studentName={studentName} />
             ) : (
               <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
             ))}

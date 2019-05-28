@@ -27,7 +27,6 @@ const CheckboxTemplateBoxLayout = ({
   evaluation
 }) => {
   let responseIndex = 0;
-
   return (
     <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
       {templateParts.map((templatePart, index) => {
@@ -35,7 +34,7 @@ const CheckboxTemplateBoxLayout = ({
           const dropTargetIndex = responseIndex;
           responseIndex++;
           let indexStr;
-          const className = evaluation[dropTargetIndex] ? "right" : "wrong";
+          const status = evaluation[dropTargetIndex] ? "right" : "wrong";
 
           switch (stemNumeration) {
             case "lowercase": {
@@ -88,12 +87,16 @@ const CheckboxTemplateBoxLayout = ({
                     ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
+                  &nbsp;<span className="index">{responseIndex}</span>
                   <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
                   &nbsp;
                   <IconWrapper>
-                    {className === "right" && <RightIcon />}
-                    {className === "wrong" && <WrongIcon />}
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
+                      <RightIcon />
+                    )}
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && (
+                      <WrongIcon />
+                    )}
                   </IconWrapper>
                 </span>
               )}
@@ -108,7 +111,7 @@ const CheckboxTemplateBoxLayout = ({
                     overflow: "hidden"
                   }}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
+                  &nbsp;<span className="index">{responseIndex}</span>
                   <span
                     style={{
                       width: "70%",
@@ -124,8 +127,12 @@ const CheckboxTemplateBoxLayout = ({
                   </span>
                   &nbsp;
                   <IconWrapper>
-                    {(evaluation[dropTargetIndex] ? "right" : "wrong") === "right" && <RightIcon />}
-                    {(evaluation[dropTargetIndex] ? "right" : "wrong") === "wrong" && <WrongIcon />}
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
+                      <RightIcon />
+                    )}
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && (
+                      <WrongIcon />
+                    )}
                   </IconWrapper>
                 </div>
               )}

@@ -78,8 +78,6 @@ const checkCorrect = async ({ correctAnswers, userResponse, checks }) => {
       checks
     };
 
-    console.log(data);
-
     try {
       const { result } = await evaluate(data);
 
@@ -101,7 +99,6 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
   let maxScore = 1;
   const evaluation = [];
   let correctIndex = 0;
-  console.log("&&&&&", userResponse, answers, checks);
 
   const asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index++) {
@@ -121,14 +118,12 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
       const corrects = getAnswerCorrectMethods(answer);
 
       const valid = [];
-
       await asyncForEach(userResponse, async (userAns, index) => {
         const res = await checkCorrect({ correctAnswers: corrects[index], userResponse: userAns, checks });
         valid.push(res);
       });
 
       evaluation.push([...valid]);
-
       const isExact = element => element;
 
       if (valid.every(isExact)) {
@@ -151,6 +146,8 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
   }
 };
 
+// const
+
 const evaluator = async ({ userResponse = {}, validation }) => {
   const {
     valid_response,
@@ -163,10 +160,11 @@ const evaluator = async ({ userResponse = {}, validation }) => {
   const answers = [valid_response, ...alt_responses];
 
   const { dropDown: _dropDownResponse = [], inputs: _inputsResponse = [], math: _mathResponse = [] } = userResponse;
+  let entered = _dropDownResponse.filter(response => response).length;
+  entered += _inputsResponse.filter(response => response).length;
+  entered += _mathResponse.filter(response => response).length;
 
-  let result;
-
-  const { evaluation: _inputEvaluation, score: _inputScore, maxScore: _inputMaxScore } = await clozeTextEvaluator({
+  const inputsResults = await clozeTextEvaluator({
     userResponse: _inputsResponse,
     validation: {
       scoring_type,
@@ -177,11 +175,7 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     }
   });
 
-  const {
-    evaluation: _dropdownEvaluation,
-    score: _dropdownScore,
-    maxScore: __dropdownMaxScore
-  } = await clozeTextEvaluator({
+  const dropDownResults = await clozeTextEvaluator({
     userResponse: _dropDownResponse,
     validation: {
       scoring_type,
@@ -191,28 +185,39 @@ const evaluator = async ({ userResponse = {}, validation }) => {
       }
     }
   });
-  console.log("evaluator::validation", validation);
-  console.log("evaluator::userResponse", userResponse);
+
+  let mathResults = {};
 
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
     default:
       const checks = getChecks(validation);
-      console.log(userResponse, answers, checks);
-
-      result = await exactMatchEvaluator(userResponse, answers, checks);
+      mathResults = await exactMatchEvaluator(_mathResponse, answers, checks);
   }
 
   // if score for attempting is greater than current score
   // let it be the score!
-  if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
-    result.score = attemptScore;
+  if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
+    mathResults.score = attemptScore;
   }
 
-  console.log(_inputEvaluation, _inputScore, _inputMaxScore);
-  console.log(_dropdownEvaluation, _dropdownScore, __dropdownMaxScore);
+  let corrects = inputsResults.evaluation.filter(answer => answer).length;
+  corrects += dropDownResults.evaluation.filter(answer => answer).length;
+  corrects += mathResults.evaluation ? mathResults.evaluation.filter(answer => answer).length : 0;
 
-  return result;
+  const evaluation = {
+    mathResults,
+    inputsResults,
+    dropDownResults
+  };
+  const score = corrects / entered;
+  const maxScore = 1;
+
+  return {
+    evaluation,
+    score,
+    maxScore
+  };
 };
 
 export default evaluator;

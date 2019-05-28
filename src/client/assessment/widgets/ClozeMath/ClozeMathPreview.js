@@ -4,7 +4,7 @@ import { Select, Input } from "antd";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEmpty } from "lodash";
 import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
 import { black } from "@edulastic/colors";
 
@@ -25,6 +25,11 @@ const ClozeMathPreview = ({
   qIndex,
   options
 }) => {
+  if (!isEmpty(evaluation)) {
+    console.log("---------------- evaluation -------------------");
+    console.log(evaluation);
+    console.log("------------------------------------------------");
+  }
   const wrappedRef = useRef();
   const mathFieldRef = useRef();
   const [showKeyboard, setShowKeyboard] = useState(false);
@@ -449,7 +454,7 @@ ClozeMathPreview.propTypes = {
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  evaluation: PropTypes.array.isRequired,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number

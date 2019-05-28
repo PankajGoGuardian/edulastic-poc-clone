@@ -70,9 +70,9 @@ class AssignmentDragItem extends Component {
       moduleIndex,
       viewTest,
       standardTags,
+      isAssigned,
       assigned
     } = this.props;
-    const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
 
     return connectDragSource(
       <div className={`item`}>

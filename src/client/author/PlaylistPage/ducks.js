@@ -472,7 +472,15 @@ function* publishPlaylistSaga({ payload }) {
   try {
     const { _id: id } = payload;
     const data = yield select(getPlaylistSelector);
-    yield put(updatePlaylistAction(id, data));
+    const dataToSend = omit(data, ["updatedDate", "createdDate", "sharedWith", "authors", "sharedType", "_id", "__v"]);
+    dataToSend.modules = dataToSend.modules.map(mod => {
+      mod.data = mod.data.map(test => omit(test, ["standards", "alignment", "assignments"]));
+      return mod;
+    });
+
+    yield call(curriculumSequencesApi.update, { id, data: dataToSend });
+    yield call(message.success, "Update Successful");
+
     yield call(curriculumSequencesApi.publishPlaylist, id);
     yield put(updatePlaylistStatusAction(playlistStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");

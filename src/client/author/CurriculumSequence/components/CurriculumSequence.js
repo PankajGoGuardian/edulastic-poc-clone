@@ -283,7 +283,6 @@ class CurriculumSequence extends Component {
       mode,
       recentPlaylists,
       onShareClick,
-      selectedItemsForAssign,
       history
     } = this.props;
 
@@ -325,9 +324,9 @@ class CurriculumSequence extends Component {
     const modulesCompleted = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.filter(m => {
           const statusList = m.data
-            .flatMap(item => item.assignments)
-            .flatMap(item => item.class)
-            .flatMap(item => item.status);
+            .flatMap(item => item.assignments || [])
+            .flatMap(item => item.class || [])
+            .flatMap(item => item.status || []);
           return statusList.length > 0 && statusList.filter(status => status === "DONE").length === statusList.length;
         }).length
       : 0;
@@ -530,7 +529,10 @@ class CurriculumSequence extends Component {
                         <ModuleProgressValuesLabel>Completed</ModuleProgressValuesLabel>
                       </ModuleProgressValuesWrapper>
                     </ModuleProgressLabel>
-                    <ModuleProgress modules={destinationCurriculumSequence.modules} />
+                    <ModuleProgress
+                      modulesCompleted={modulesCompleted}
+                      modules={destinationCurriculumSequence.modules}
+                    />
                   </ModuleProgressWrapper>
                   {/* <SubheaderActions active={isContentExpanded}> 
                   <AddUnitSubHeaderButtonStyle>
@@ -619,9 +621,9 @@ CurriculumSequence.defaultProps = {
   curriculumGuides: []
 };
 
-const ModuleProgress = ({ modules }) => (
+const ModuleProgress = ({ modules, modulesCompleted }) => (
   <ModuleProgressBars>
-    {modules && modules.map((m, index) => <ModuleProgressBar completed={m.completed} key={index} />)}
+    {modules && modules.map((m, index) => <ModuleProgressBar completed={modulesCompleted} key={index} />)}
   </ModuleProgressBars>
 );
 ModuleProgress.propTypes = {

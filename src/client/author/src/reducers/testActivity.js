@@ -112,7 +112,11 @@ const reducer = (state = initialState, { type, payload }) => {
               _st.entities[entityIndex].questionActivities.push(questionItem);
               // console.warn(`can't find any questionItem for id ${testActivityId}`);
             } else {
-              _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
+              if (!maxScore && (score || score === 0)) {
+                _st.entities[entityIndex].questionActivities[itemIndex].score = score;
+              } else {
+                _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
+              }
             }
             if (score) {
               _st.entities[entityIndex].score += score;

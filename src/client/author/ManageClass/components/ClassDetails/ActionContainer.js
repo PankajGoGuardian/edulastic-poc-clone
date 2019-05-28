@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
-import { get, unset, split, isEmpty, pickBy, identity } from "lodash";
+import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
 import * as moment from "moment";
@@ -66,14 +66,29 @@ const ActionContainer = ({
             const std = { ...selectedStudent[0], ...values };
             const userId = std._id || std.userId;
             std.currentSignUpState = "DONE";
+            const stdData = pick(std, [
+              "districtId",
+              "dob",
+              "ellStatus",
+              "email",
+              "firstName",
+              "gender",
+              "institutionIds",
+              "lastName",
+              "race",
+              "sisId",
+              "studentNumber",
+              "frlStatus",
+              "iepStatus",
+              "sedStatus",
+              "username",
+              "contactEmails"
+            ]);
 
-            unset(std, ["confirmPwd"]);
-            unset(std, ["__v"]);
-            unset(std, ["_id"]);
-            unset(std, ["createdAt"]);
-            unset(std, ["status"]);
-            unset(std, ["role"]);
-            updateStudentRequest({ userId, data: pickBy(std, identity) });
+            updateStudentRequest({
+              userId,
+              data: stdData
+            });
             setModalStatus(false);
           } else {
             const { fullName } = values;

@@ -13,7 +13,6 @@ QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
   style: PropTypes.object,
-
   showResponseBtn: PropTypes.bool,
   placeholder: PropTypes.string
 };

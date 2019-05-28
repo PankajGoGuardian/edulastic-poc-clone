@@ -19,7 +19,7 @@ import {
   getAssignmentsSelector,
   getTestEntitySelector
 } from "../../duck";
-import { getUserOrgId } from "../../../src/selectors/user";
+import { getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import SimpleOptions from "../SimpleOptions/SimpleOptions";
@@ -64,7 +64,8 @@ class AssignTest extends React.Component {
       userOrgId,
       isPlaylist,
       fetchPlaylistById,
-      performanceBandData
+      performanceBandData,
+      userRole
     } = this.props;
     const { testId } = match.params;
     if (isEmpty(group)) {
@@ -76,15 +77,25 @@ class AssignTest extends React.Component {
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
       this.setState(prevState => ({
-        ...prevState,
         assignment: {
           ...prevState.assignment,
           playlistId: match.params.playlistId,
           playlistModuleId: match.params.moduleId,
-          testId: match.params.testId
+          testId: match.params.testId,
+          openPolicy: userRole === "district-admin" ? "Open Manually by Teacher" : prevState.assignment.openPolicy,
+          closePolicy: userRole === "district-admin" ? "Close Manually by Admin" : prevState.assignment.closePolicy
         }
       }));
     } else {
+      if (userRole === "district-admin") {
+        this.setState(prevState => ({
+          assignment: {
+            ...prevState.assignment,
+            openPolicy: "Open Manually by Teacher",
+            closePolicy: "Close Manually by Admin"
+          }
+        }));
+      }
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId);
       }
@@ -203,7 +214,8 @@ export default connect(
     userOrgId: getUserOrgId(state),
     playlist: getPlaylistSelector(state),
     performanceBandData: get(state, ["performanceBandReducer", "data"], []),
-    testItem: getTestSelector(state)
+    testItem: getTestSelector(state),
+    userRole: getUserRole(state)
   }),
   {
     fetchGroups: fetchGroupsAction,

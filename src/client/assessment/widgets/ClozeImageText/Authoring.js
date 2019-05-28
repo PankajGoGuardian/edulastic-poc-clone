@@ -10,6 +10,7 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
+import { cloneDeep } from "lodash";
 
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton } from "@edulastic/common";
@@ -84,6 +85,38 @@ class Authoring extends Component {
     const { cleanSections } = this.props;
 
     cleanSections();
+  }
+
+  componentDidUpdate(nextProps) {
+    const { item, setQuestionData } = nextProps;
+    const newItem = cloneDeep(item);
+    if (document.getElementById("mainImage") && item.imageUrl) {
+      const imageHeight = document.getElementById("mainImage").clientHeight;
+      const imageWidth = document.getElementById("mainImage").clientWidth;
+
+      newItem.responses = item.responses.map(response => {
+        const newResponse = cloneDeep(response);
+        if (newResponse.width > imageWidth) {
+          newResponse.width = imageWidth;
+        }
+        if (newResponse.height > imageHeight) {
+          newResponse.height = imageHeight;
+        }
+        if (newResponse.top + newResponse.height > imageHeight) {
+          newResponse.top = imageHeight - newResponse.height;
+        }
+        if (newResponse.left + newResponse.width > imageWidth) {
+          newResponse.left = imageWidth - newResponse.width;
+        }
+
+        return newResponse;
+      });
+
+      if (item.imageWidth && imageWidth !== item.imageWidth) {
+        newItem.imageWidth = imageWidth;
+        setQuestionData(newItem);
+      }
+    }
   }
 
   onChangeQuestion = stimulus => {
@@ -205,6 +238,17 @@ class Authoring extends Component {
     }
   };
 
+  changeImageWidth = event => {
+    const newWidth = event > 0 ? (event >= 700 ? 700 : event) : 700;
+    this.onItemPropChange("imageWidth", newWidth);
+  };
+
+  getWidth = () => {
+    const { item } = this.props;
+
+    return item.imageWidth > 0 ? (item.imageWidth >= 700 ? 700 : item.imageWidth) : 700;
+  };
+
   render() {
     const { t, item, theme } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
@@ -241,16 +285,8 @@ class Authoring extends Component {
                 <ImageWidthInput
                   ref={this.imageWidthEditor}
                   data-cy="image-width-input"
-                  value={
-                    this.props.item.imageWidth > 0
-                      ? this.props.item.imageWidth >= 700
-                        ? 700
-                        : this.props.item.imageWidth
-                      : 700
-                  }
-                  onChange={event => {
-                    this.onItemPropChange("imageWidth", event > 0 ? (event >= 700 ? 700 : event) : 700);
-                  }}
+                  value={this.getWidth()}
+                  onChange={this.changeImageWidth}
                 />
 
                 <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
@@ -326,7 +362,7 @@ class Authoring extends Component {
                 <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
                   {item.imageUrl && (
                     <React.Fragment>
-                      <PreviewImage src={item.imageUrl} width={"100%"} alt="resp-preview" />
+                      <PreviewImage id="mainImage" src={item.imageUrl} width="100%" alt="resp-preview" />
                       <DropArea updateData={this.updateData} item={item} key={item} />
                     </React.Fragment>
                   )}

@@ -6,7 +6,7 @@ import { withNamespaces } from "react-i18next";
 import { cloneDeep } from "lodash";
 
 import { math } from "@edulastic/constants";
-import { CustomQuillComponent } from "@edulastic/common";
+import { FroalaEditor } from "@edulastic/common";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
@@ -73,14 +73,14 @@ class Template extends Component {
     return (
       <Widget>
         <Subtitle data-cy="template">{t("component.math.template")}</Subtitle>
-        <CustomQuillComponent
-          inputId="templateInput"
-          toolbarId="template"
-          onChange={_updateTemplate}
-          showResponseBtn
-          showDropdownBtn
-          value={item.template}
+        <FroalaEditor
+          // These options are required for tutorials, cypress: We should have to add this to QuestionTextArea component
+          // inputId="templateInput"
+          // toolbarid="template"
           data-cy="templateBox"
+          onChange={_updateTemplate}
+          value={item.template}
+          additionalToolbarOptions={["response"]}
         />
       </Widget>
     );

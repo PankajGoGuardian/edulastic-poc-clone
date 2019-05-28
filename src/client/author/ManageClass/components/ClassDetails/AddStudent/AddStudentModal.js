@@ -15,8 +15,6 @@ class AddStudentModal extends React.Component {
     keys: ["basic"]
   };
 
-  setKeys = keys => this.setState({ keys });
-
   render() {
     const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit } = this.props;
     const { keys } = this.state;
@@ -63,12 +61,7 @@ class AddStudentModal extends React.Component {
       <StyledModal title={title} visible={isOpen} footer={footer}>
         <Spin spinning={submitted}>
           <Form>
-            <Collapse
-              defaultActiveKey={keys}
-              onChange={this.setKeys}
-              expandIcon={expandIcon}
-              expandIconPosition="right"
-            >
+            <Collapse accordion defaultActiveKey={keys} expandIcon={expandIcon} expandIconPosition="right">
               <Panel header={BasicDetailsHeader} key="basic">
                 <BasicFields
                   getFieldDecorator={getFieldDecorator}
@@ -78,14 +71,12 @@ class AddStudentModal extends React.Component {
                 />
               </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">
-                {find(keys, key => key === "additional") && (
-                  <AdditionalFields
-                    getFieldDecorator={getFieldDecorator}
-                    getFieldValue={getFieldValue}
-                    std={std}
-                    isEdit={isEdit}
-                  />
-                )}
+                <AdditionalFields
+                  getFieldDecorator={getFieldDecorator}
+                  getFieldValue={getFieldValue}
+                  std={std}
+                  isEdit={isEdit}
+                />
               </Panel>
             </Collapse>
           </Form>

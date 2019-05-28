@@ -1073,6 +1073,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
@@ -1137,6 +1138,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "",
         options: [],
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         imageWidth: 0,
         validation: {
           scoring_type: EXACT_MATCH,

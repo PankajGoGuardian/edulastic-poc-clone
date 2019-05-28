@@ -391,6 +391,7 @@ const ClozeMathPreview = ({
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
+        <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
         <TemplateBox className="ql-editor">
           {templateParts &&
             dropdowns > 0 &&

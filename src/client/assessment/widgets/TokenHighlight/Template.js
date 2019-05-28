@@ -4,11 +4,11 @@ import produce from "immer";
 import ReactDOM from "react-dom";
 import { cloneDeep } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
-import { Tabs, Tab, CustomQuillComponent } from "@edulastic/common";
+import { Tabs, Tab } from "@edulastic/common";
 
 import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE } from "../../constants/constantsForQuestions";
 import { updateVariables } from "../../utils/variables";
-
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 import { Container } from "./styled/Container";
@@ -94,13 +94,7 @@ class Template extends Component {
         </Tabs>
 
         {templateTab === 0 && (
-          <CustomQuillComponent
-            firstFocus={item.firstMount === undefined}
-            toolbarId="template"
-            onChange={val => handleItemChangeChange("template", val)}
-            showResponseBtn={false}
-            value={item.template}
-          />
+          <QuestionTextArea onChange={val => handleItemChangeChange("template", val)} value={item.template} />
         )}
 
         {templateTab === 1 && (

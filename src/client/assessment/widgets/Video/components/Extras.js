@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { CustomQuillComponent } from "@edulastic/common";
+import QuestionTextArea from "../../../components/QuestionTextArea";
 import { updateVariables } from "../../../utils/variables";
 
 import { Subtitle } from "../../../styled/Subtitle";
@@ -71,9 +71,7 @@ class Extras extends Component {
         <Row>
           <Col md={24}>
             <Label>{t("component.video.transcript")}</Label>
-            <CustomQuillComponent
-              showResponseBtn={false}
-              toolbarId="transcript"
+            <QuestionTextArea
               value={transcript}
               style={inputStyle}
               onChange={value => handleChange("transcript", value)}

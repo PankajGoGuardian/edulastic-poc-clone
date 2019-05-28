@@ -3,11 +3,11 @@ import { pick, last } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { authApi, userApi, TokenStorage } from "@edulastic/api";
-import { message } from "antd";
 import { roleuser } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
-import { receiveLastPlayListAction } from "../../author/Playlist/ducks";
+import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
+import { message } from "antd";
 
 // types
 export const LOGIN = "[auth] login";
@@ -92,6 +92,7 @@ function* login({ payload }) {
     yield put(setUserAction(user));
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
+      yield put(receiveRecentPlayListsAction());
     }
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
 
@@ -171,6 +172,7 @@ export function* fetchUser() {
     });
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveLastPlayListAction());
+      yield put(receiveRecentPlayListsAction());
     }
   } catch (e) {
     console.log(e);

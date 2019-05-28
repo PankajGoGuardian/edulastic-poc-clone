@@ -23,7 +23,7 @@ import {
   getGroupsSelector
 } from "../sharedDucks/groups";
 import { generateClassData } from "../TestPage/components/Assign/utils";
-import { receiveLastPlayListAction, getLastPlayListSelector } from "../Playlist/ducks";
+import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../Playlist/ducks";
 import produce from "immer";
 
 // Constants
@@ -135,7 +135,6 @@ const getSelectedItemsForAssign = state => {
 const getDestinationCurriculumSequence = state => state.curriculumSequence.destinationCurriculumSequence;
 
 function* makeApiRequest(idsForFetch = []) {
-  yield put(fetchAssignedAction());
   try {
     const unflattenedItems = yield all(idsForFetch.map(id => call(curriculumSequencesApi.getCurriculums, id)));
 
@@ -644,9 +643,19 @@ function* fetchAssigned() {
 
 function* useThisPlayListSaga({ payload }) {
   try {
-    yield call(userContextApi.setLastUsedPlayList, { ...payload });
+    const { _id, title, onChange } = payload;
+    yield call(userContextApi.setLastUsedPlayList, { _id, title });
+    yield call(userContextApi.setRecentUsedPlayLists, { _id, title });
     yield put(receiveLastPlayListAction());
-    yield put(push(`/author/playlists/${payload._id}/use-this`));
+    yield put(receiveRecentPlayListsAction());
+    yield put(getAllCurriculumSequencesAction([_id]));
+    const location = yield select(state => state.router.location.pathname);
+    const urlHasUseThis = location.match(/use-this/g);
+    if (onChange && !urlHasUseThis) {
+      yield put(push(`/author/playlists/${_id}`));
+    } else {
+      yield put(push(`/author/playlists/${_id}/use-this`));
+    }
   } catch (error) {
     console.error(error);
     message.error("something went wrong");

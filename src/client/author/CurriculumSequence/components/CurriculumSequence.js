@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { uniqueId } from "lodash";
@@ -44,14 +45,15 @@ import {
   setDataForAssignAction,
   saveCurriculumSequenceAction,
   addNewUnitAction,
-  batchAssignAction
+  batchAssignAction,
+  useThisPlayListAction
 } from "../ducks";
 /* eslint-enable */
 import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
-import { fetchGroupsAction, getGroupsSelector, fetchMultipleGroupMembersAction } from "../../sharedDucks/groups";
 import AddUnitModalBody from "./AddUnitModalBody";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
+import { getRecentPlaylistSelector } from "../../Playlist/ducks";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -135,7 +137,6 @@ import BreadCrumb from "../../src/components/Breadcrumb";
  * @property {function} setSelectedItemsForAssign
  * @property {any[]} selectedItemsForAssign
  * @property {function} batchAssign
- * @property {function} fetchGroups
  * @property {import('./ducks').AssignData} dataForAssign
  */
 
@@ -165,16 +166,12 @@ class CurriculumSequence extends Component {
     isPlayListEdited: false
   };
 
-  componentDidMount() {
-    const { setPublisher, publisher, fetchGroups } = this.props;
-    fetchGroups();
-    // setPublisher(publisher);
-  }
-
   onChange = evt => {
-    const publisher = evt.target.value;
-    const { setPublisher } = this.props;
-    // setPublisher(publisher);
+    const playlistIndex = evt.target.value;
+    const { history, recentPlaylists, useThisPlayList } = this.props;
+    this.handleGuideCancel();
+    const playlistChange = recentPlaylists[playlistIndex];
+    useThisPlayList({ _id: playlistChange._id, title: playlistChange.title, onChange: true });
   };
 
   handleSaveClick = evt => {
@@ -196,9 +193,16 @@ class CurriculumSequence extends Component {
   };
 
   handleUseThisClick = () => {
-    const { onUseThisClick, publisher } = this.props;
-    const title = publisher || "Eureka Math";
-    onUseThisClick(title);
+    const {
+      destinationCurriculumSequence,
+      useThisPlayList,
+      match: {
+        params: { id: _id }
+      }
+    } = this.props;
+    const { title, collectionName } = destinationCurriculumSequence;
+    const playlistTitle = collectionName || title;
+    useThisPlayList({ _id, title: playlistTitle });
   };
 
   handleAddUnitOpen = () => {
@@ -225,12 +229,6 @@ class CurriculumSequence extends Component {
 
   handleAddUnit = () => {
     this.setState(prevState => ({ addUnit: !prevState.addUnit }));
-  };
-
-  handleGuideSave = () => {
-    const { saveGuideAlignment } = this.props;
-    this.setState({ curriculumGuide: false });
-    saveGuideAlignment();
   };
 
   handleGuidePopup = () => {
@@ -274,29 +272,22 @@ class CurriculumSequence extends Component {
     const {
       expandedModules,
       onCollapseExpand,
-      curriculumList,
       destinationCurriculumSequence,
-      sourceCurriculumSequence,
-      onSelectContent,
       windowWidth,
-      onSourceCurriculumSequenceChange,
       selectContent,
       onDrop,
       onBeginDrag,
       curriculumGuides,
-      publisher,
       guide,
       isContentExpanded,
-      setSelectedItemsForAssign,
-      group,
-      batchAssign,
       mode,
+      recentPlaylists,
       onShareClick,
       selectedItemsForAssign,
-      dataForAssign,
       history
     } = this.props;
 
+    const lastThreeRecentPlaylist = recentPlaylists.slice(0, 3);
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit
@@ -323,6 +314,7 @@ class CurriculumSequence extends Component {
       subjects = [],
       grades = [],
       customize = true,
+      collectionName = "",
       isAuthor = false
     } = destinationCurriculumSequence;
 
@@ -331,9 +323,15 @@ class CurriculumSequence extends Component {
     // Module progress
     const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
     const modulesCompleted = destinationCurriculumSequence.modules
-      ? destinationCurriculumSequence.modules.filter(m => m.completed === true).length
+      ? destinationCurriculumSequence.modules.filter(m => {
+          const statusList = m.data
+            .flatMap(item => item.assignments)
+            .flatMap(item => item.class)
+            .flatMap(item => item.status);
+          return statusList.length > 0 && statusList.filter(status => status === "DONE").length === statusList.length;
+        }).length
       : 0;
-    const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
+    // const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
 
     const playlistBreadcrumbData = [
       {
@@ -355,15 +353,6 @@ class CurriculumSequence extends Component {
           </BreadCrumbWrapper>
         )}
         <CurriculumSequenceWrapper>
-          <EditModal
-            visible={isAssignModalVisible}
-            title="New Assignment"
-            onOk={batchAssign}
-            onCancel={() => setSelectedItemsForAssign(null)}
-            onClose={() => setSelectedItemsForAssign(null)}
-            modalData={dataForAssign}
-            group={group}
-          />
           <Modal
             visible={addUnit}
             title="Add Unit"
@@ -421,25 +410,20 @@ class CurriculumSequence extends Component {
             footer={null}
             style={windowWidth > desktopWidthValue ? { minWidth: "640px", padding: "20px" } : { padding: "20px" }}
           >
-            <ModalHeader>
-              <span>Curriculum Alignments in Two Clicks</span>
-            </ModalHeader>
+            <ModalHeader />
             <GuideModalBody>
               <ModalSubtitleWrapper>
-                <div>Which of these do you use?</div>
-                <div>Select &#39;Other&#39; if you don&#39;t see your curriculum listed.</div>
+                <div>Select a playlist from below to change:</div>
               </ModalSubtitleWrapper>
               <RadioGroupWrapper>
-                <Radio.Group onChange={this.onChange} value={publisher}>
-                  <Radio checked={publisher === EUREKA_PUBLISHER} value={EUREKA_PUBLISHER}>
-                    Eureka/EngageNY
-                  </Radio>
-                  <Radio checked={publisher === TENMARKS_PUBLISHER} value={TENMARKS_PUBLISHER}>
-                    TenMarks
-                  </Radio>
-                  <Radio checked={publisher === GOMATH_PUBLISHER} value={GOMATH_PUBLISHER}>
-                    GoMath!
-                  </Radio>
+                <Radio.Group onChange={this.onChange}>
+                  {lastThreeRecentPlaylist.map((recentPlaylist, ind) => {
+                    return (
+                      <Radio checked={ind == 0} value={ind}>
+                        {recentPlaylist.title}
+                      </Radio>
+                    );
+                  })}
                 </Radio.Group>
               </RadioGroupWrapper>
               <GuidesDropdownWrapper>
@@ -457,19 +441,14 @@ class CurriculumSequence extends Component {
               </GuidesDropdownWrapper>
             </GuideModalBody>
             <ModalFooter>
-              <Button type="primary" ghost key="back" onClick={this.handleGuideCancel}>
-                CANCEL
-              </Button>
-              <Button key="submit" type="primary" onClick={this.handleGuideSave}>
-                SAVE
-              </Button>
+              <Link to={`/author/playlists`}>Go To Library</Link>
             </ModalFooter>
           </Modal>
           {mode !== "embedded" && (
             <TopBar>
               <CurriculumHeader justifyContent="space-between">
                 <HeaderTitle>
-                  {publisher}
+                  {collectionName}
                   <Icon
                     style={{ fontSize: "12px", cursor: "pointer", marginLeft: "18px" }}
                     type={curriculumGuide ? "up" : "down"}
@@ -612,7 +591,6 @@ CurriculumSequence.propTypes = {
   setPublisher: PropTypes.func.isRequired,
   setGuide: PropTypes.func.isRequired,
   saveGuideAlignment: PropTypes.func.isRequired,
-  fetchGroups: PropTypes.func.isRequired,
   onSelectContent: PropTypes.func.isRequired,
   addNewUnitToDestination: PropTypes.func.isRequired,
   destinationCurriculumSequence: PropTypes.object.isRequired,
@@ -624,11 +602,11 @@ CurriculumSequence.propTypes = {
   onBeginDrag: PropTypes.func.isRequired,
   isContentExpanded: PropTypes.bool.isRequired,
   setSelectedItemsForAssign: PropTypes.func.isRequired,
-  group: PropTypes.array.isRequired,
   batchAssign: PropTypes.func.isRequired,
   onShareClick: PropTypes.func,
   selectedItemsForAssign: PropTypes.array.isRequired,
   dataForAssign: PropTypes.object.isRequired,
+  recentPlaylists: PropTypes.array,
   setDataForAssign: PropTypes.func.isRequired
 };
 
@@ -637,6 +615,7 @@ CurriculumSequence.defaultProps = {
   guide: "",
   curriculumList: [],
   expandedModules: [],
+  recentPlaylists: [],
   curriculumGuides: []
 };
 
@@ -1225,12 +1204,11 @@ const enhance = compose(
   connect(
     state => ({
       curriculumGuides: state.curriculumSequence.guides,
-      publisher: state.curriculumSequence.selectedPublisher,
       guide: state.curriculumSequence.selectedGuide,
       isContentExpanded: state.curriculumSequence.isContentExpanded,
       selectedItemsForAssign: state.curriculumSequence.selectedItemsForAssign,
       dataForAssign: state.curriculumSequence.dataForAssign,
-      group: getGroupsSelector(state)
+      recentPlaylists: getRecentPlaylistSelector(state)
     }),
     {
       onGuideChange: changeGuideAction,
@@ -1238,11 +1216,10 @@ const enhance = compose(
       setGuide: setGuideAction,
       saveGuideAlignment: saveGuideAlignmentAction,
       setSelectedItemsForAssign: setSelectedItemsForAssignAction,
-      fetchGroups: fetchGroupsAction,
-      fetchMultipleGroupMembers: fetchMultipleGroupMembersAction,
       setDataForAssign: setDataForAssignAction,
       batchAssign: batchAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
+      useThisPlayList: useThisPlayListAction,
       addNewUnitToDestination: addNewUnitAction
     }
   )

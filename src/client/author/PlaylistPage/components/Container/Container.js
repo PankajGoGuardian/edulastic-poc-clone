@@ -10,10 +10,10 @@ import { Content } from "../../../TestPage/components/Container/styled";
 
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
-  createTestAction,
+  createPlaylistAction,
   receivePlaylistByIdAction,
   setTestDataAction,
-  updateTestAction,
+  updatePlaylistAction,
   setDefaultTestDataAction,
   getPlaylistSelector,
   getTestItemsRowsSelector,
@@ -50,7 +50,7 @@ const statusConstants = {
 class Container extends PureComponent {
   propTypes = {
     createPlayList: PropTypes.func.isRequired,
-    updateTest: PropTypes.func.isRequired,
+    updatePlaylist: PropTypes.func.isRequired,
     receivePlaylistByIdAction: PropTypes.func.isRequired,
     setData: PropTypes.func.isRequired,
     setDefaultData: PropTypes.func.isRequired,
@@ -317,7 +317,6 @@ class Container extends PureComponent {
     if (!modules.length) {
       return message.error("Add atleast 1 module");
     }
-    this.handleSave();
     publishPlaylist({ _id, oldId: match.params.oldId });
     this.setState({ editEnable: false });
   };
@@ -386,8 +385,8 @@ const enhance = compose(
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {
-      createPlayList: createTestAction,
-      updatePlaylist: updateTestAction,
+      createPlayList: createPlaylistAction,
+      updatePlaylist: updatePlaylistAction,
       receiveTestById: receivePlaylistByIdAction,
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,

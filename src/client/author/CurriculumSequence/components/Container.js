@@ -150,16 +150,6 @@ class CurriculumContainer extends Component {
     toggleAddContent();
   };
 
-  handleUseThis = title => {
-    const {
-      useThisPlayList,
-      match: {
-        params: { id }
-      }
-    } = this.props;
-    useThisPlayList(id, title);
-  };
-
   getSourceDestinationCurriculum = () => {
     let sourceCurriculumSequence;
     let destinationCurriculumSequence;
@@ -191,7 +181,7 @@ class CurriculumContainer extends Component {
   };
 
   render() {
-    const { windowWidth, curriculumSequences, isContentExpanded } = this.props;
+    const { windowWidth, curriculumSequences, isContentExpanded, match } = this.props;
     const { expandedModules, showShareModal } = this.state;
     const {
       handleSelectContent,
@@ -200,7 +190,6 @@ class CurriculumContainer extends Component {
       onBeginDrag,
       savePublisher,
       changePublisher,
-      handleUseThis,
       handleShare,
       onShareModalChange,
       collapseExpandModule
@@ -234,8 +223,8 @@ class CurriculumContainer extends Component {
           onSourceCurriculumSequenceChange={setSourceCurriculumSequence}
           windowWidth={windowWidth}
           onDrop={onDrop}
+          match={match}
           onBeginDrag={onBeginDrag}
-          onUseThisClick={handleUseThis}
         />
       </>
     );

@@ -16,13 +16,13 @@ const setLastUsedPlayList = ({ _id, title }) =>
     }
   });
 
-const setRecentUsedPlayLists = ({ playLists }) =>
+const setRecentUsedPlayLists = playLists =>
   api.callApi({
     method: "post",
     url: `${prefix}`,
     data: {
       name: "RECENT_PLAYLISTS",
-      value: playLists
+      value: [playLists]
     }
   });
 

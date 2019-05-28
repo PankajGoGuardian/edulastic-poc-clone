@@ -107,8 +107,8 @@ class ModuleRow extends Component {
     const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
-    const numberOfAssigned = getNumberOfAssigned(assigned, data.map(d => d.contentId));
-    const [whichModule, moduleName] = title ? title.split(":") : [];
+    const numberOfAssigned = data.filter(content => content.assignments.length > 0).length;
+
     const { showModal, selectedTest } = this.state;
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -154,7 +154,7 @@ class ModuleRow extends Component {
                   <ModuleTitleAssignedWrapper>
                     <ModuleTitleWrapper>
                       <ModuleTitlePrefix>
-                        {whichModule}
+                        {`Module ${moduleIndex + 1}`}
                         {!hideEditOptions && (
                           <Icon
                             type="close-circle"
@@ -164,7 +164,7 @@ class ModuleRow extends Component {
                           />
                         )}
                       </ModuleTitlePrefix>
-                      <ModuleTitle>{moduleName}</ModuleTitle>
+                      <ModuleTitle>{title}</ModuleTitle>
                     </ModuleTitleWrapper>
 
                     {completed && !hideEditOptions && (
@@ -222,7 +222,7 @@ class ModuleRow extends Component {
                       </Menu>
                     );
 
-                    const isAssigned = matchAssigned(assigned, moduleData.contentId).length > 0;
+                    const isAssigned = moduleData.assignments && moduleData.assignments.length > 0;
                     if (mode === "embedded") {
                       return (
                         <AssignmentDragItem

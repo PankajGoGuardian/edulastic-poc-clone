@@ -14,25 +14,25 @@ export default class StandardBasedReportPage {
         queList.forEach(queNum => {
           const { points, standards } = questionTypeMap[queNum];
           const attemptType = attempt[queNum];
-          standards.forEach(standard => {
-            // debugger;
-            let scoreObtain = 0;
-            let maxScore = 0;
-            if (!allStandardPerformance[standard]) {
-              allStandardPerformance[standard] = { students: {}, questions: [] };
-              allStandardPerformance[standard].students[stuName] = {};
-            } else if (!allStandardPerformance[standard].students[stuName]) {
-              allStandardPerformance[standard].students[stuName] = {};
-            } else if (allStandardPerformance[standard].students[stuName].max) {
-              scoreObtain = allStandardPerformance[standard].students[stuName].obtain;
-              maxScore = allStandardPerformance[standard].students[stuName].max;
-            }
-            allStandardPerformance[standard].questions = Cypress._.union(allStandardPerformance[standard].questions, [
-              queNum
-            ]);
-            if (attemptType === attemptTypes.RIGHT) scoreObtain += points;
-            maxScore += points;
-            allStandardPerformance[standard].students[stuName] = { obtain: scoreObtain, max: maxScore };
+          standards.forEach(({ standard }) => {
+            standard.forEach(std => {
+              // debugger;
+              let scoreObtain = 0;
+              let maxScore = 0;
+              if (!allStandardPerformance[std]) {
+                allStandardPerformance[std] = { students: {}, questions: [] };
+                allStandardPerformance[std].students[stuName] = {};
+              } else if (!allStandardPerformance[std].students[stuName]) {
+                allStandardPerformance[std].students[stuName] = {};
+              } else if (allStandardPerformance[std].students[stuName].max) {
+                scoreObtain = allStandardPerformance[std].students[stuName].obtain;
+                maxScore = allStandardPerformance[std].students[stuName].max;
+              }
+              allStandardPerformance[std].questions = Cypress._.union(allStandardPerformance[std].questions, [queNum]);
+              if (attemptType === attemptTypes.RIGHT) scoreObtain += points;
+              maxScore += points;
+              allStandardPerformance[std].students[stuName] = { obtain: scoreObtain, max: maxScore };
+            });
           });
         });
       });
@@ -47,8 +47,12 @@ export default class StandardBasedReportPage {
     const queList = Object.keys(questionTypeMap);
 
     queList.forEach(que => {
+      let stdPerQue = [];
       const { standards } = questionTypeMap[que];
-      allStandards = Cypress._.union(allStandards, standards);
+      standards.forEach(({ standard }) => {
+        stdPerQue = Cypress._.union(stdPerQue, standard);
+      });
+      allStandards = Cypress._.union(allStandards, stdPerQue);
     });
 
     allStandards.forEach(standard => {

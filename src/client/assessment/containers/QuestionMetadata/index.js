@@ -162,7 +162,7 @@ const QuestionMetadata = ({
           </ShowAlignmentRowsContainer>
 
           <AddButtonContainer autoheight={true}>
-            <Button htmlType="button" type="primary" onClick={handleAdd}>
+            <Button data-cy="newAligment" htmlType="button" type="primary" onClick={handleAdd}>
               <span>{t("component.options.newAligment")}</span>
             </Button>
             <CustomSelect

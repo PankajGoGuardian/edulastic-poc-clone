@@ -11,14 +11,28 @@
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
-      "standards": ["K.CC.B.4.a"]
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.B.4.a"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     },
     "std_2": {
       "quetext": "This is MCQ_STD.default question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
-      "standards": ["K.CC.A.1"]
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "MCQ_MULTI": {

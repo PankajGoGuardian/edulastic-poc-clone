@@ -5,6 +5,7 @@ import MCQMultiplePage from "./questionType/mcq/mcqMultiplePage";
 import MCQTrueFalsePage from "./questionType/mcq/mcqTrueFalsePage";
 import MCQBlockLayoutPage from "./questionType/mcq/mcqBlockLayoutPage";
 import ChoiceMatrixStandardPage from "./questionType/mcq/choiceMatrixPage";
+import MetadataPage from "./itemDetail/metadataPage";
 
 class ItemListPage {
   clickOnCreate = () => {
@@ -28,6 +29,7 @@ class ItemListPage {
 
   createItem = itemKey => {
     const editItem = new EditItemPage();
+    const metadataPage = new MetadataPage();
     cy.fixture("questionAuthoring").then(itemData => {
       const [queType, queKey] = itemKey.split(".");
       let question;
@@ -65,6 +67,13 @@ class ItemListPage {
         ) {
           question.createQuestion(queType);
         } else question.createQuestion();
+
+        if (itemData[queType][queKey].standards) {
+          editItem.getEditButton().click();
+          editItem.header.metadata();
+          metadataPage.mapStandards(itemData[queType][queKey].standards);
+          editItem.header.save();
+        }
 
         editItem.header.clickOnPublishItem();
       }

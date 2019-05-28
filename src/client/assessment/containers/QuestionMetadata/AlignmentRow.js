@@ -151,11 +151,15 @@ const AlignmentRow = ({
         <Col md={20}>
           <Row gutter={1}>
             <Col md={7}>
-              <CustomTreeSelect title={`${subject}-${curriculum}-${grades}`} style={{ marginTop: 11 }}>
+              <CustomTreeSelect
+                data-cy="subjectStandardSet"
+                title={`${subject}-${curriculum}-${grades}`}
+                style={{ marginTop: 11 }}
+              >
                 <Fragment>
-                  <ItemBody>
+                  <ItemBody data-cy="subjectItem">
                     <div className="select-label">{t("component.options.subject")}</div>
-                    <Select style={{ width: "100%" }} value={subject} onChange={setSubject}>
+                    <Select data-cy="subjectSelect" style={{ width: "100%" }} value={subject} onChange={setSubject}>
                       {selectsData.allSubjects.map(({ text, value }) => (
                         <Select.Option key={value} value={value}>
                           {text}
@@ -163,9 +167,10 @@ const AlignmentRow = ({
                       ))}
                     </Select>
                   </ItemBody>
-                  <ItemBody>
+                  <ItemBody data-cy="standardItem">
                     <div className="select-label">{t("component.options.standardSet")}</div>
                     <Select
+                      data-cy="standardSetSelect"
                       style={{ width: "100%" }}
                       showSearch
                       filterOption
@@ -179,9 +184,16 @@ const AlignmentRow = ({
                       ))}
                     </Select>
                   </ItemBody>
-                  <ItemBody>
+                  <ItemBody data-cy="gradeItem">
                     <div className="select-label">{t("component.options.grade")}</div>
-                    <Select mode="multiple" showSearch style={{ width: "100%" }} value={grades} onChange={setGrades}>
+                    <Select
+                      data-cy="gradeSelect"
+                      mode="multiple"
+                      showSearch
+                      style={{ width: "100%" }}
+                      value={grades}
+                      onChange={setGrades}
+                    >
                       {selectsData.allGrades.map(({ text, value }) => (
                         <Select.Option key={text} value={value}>
                           {text}
@@ -193,8 +205,9 @@ const AlignmentRow = ({
               </CustomTreeSelect>
             </Col>
             <Col md={17}>
-              <ItemBody>
+              <ItemBody data-cy="searchStandardSelectItem">
                 <Select
+                  data-cy="searchStandardSelect"
                   mode="multiple"
                   style={{ width: "100%" }}
                   placeholder={t("component.options.searchStandards")}

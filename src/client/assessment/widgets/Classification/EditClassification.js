@@ -408,8 +408,6 @@ const EditClassification = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-        </Widget>
-        <Widget>
           <div style={{ marginTop: 20 }}>
             <Checkbox
               className="additional-options"
@@ -437,19 +435,17 @@ const EditClassification = ({
             />
           </div>
         </Widget>
-        <Widget>
-          <CorrectAnswers
-            onTabChange={setCorrectTab}
-            correctTab={correctTab}
-            onAdd={handleAddAnswer}
-            validation={item.validation}
-            options={renderOptions()}
-            onCloseTab={handleCloseTab}
-            fillSections={fillSections}
-            cleanSections={cleanSections}
-            marginBottom="-50px"
-          />
-        </Widget>
+        <CorrectAnswers
+          onTabChange={setCorrectTab}
+          correctTab={correctTab}
+          onAdd={handleAddAnswer}
+          validation={item.validation}
+          options={renderOptions()}
+          onCloseTab={handleCloseTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          marginBottom="-50px"
+        />
       </Paper>
       <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
     </Fragment>

@@ -11,7 +11,6 @@ import { updateVariables } from "../../utils/variables";
 
 import withPoints from "../../components/HOC/withPoints";
 import CorrectAnswers from "../../components/CorrectAnswers";
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import ShadingPreview from "./ShadingPreview";
@@ -125,18 +124,16 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
 
       <ShadesSubtitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
-      <Widget>
-        <CorrectAnswers
-          onTabChange={setCorrectTab}
-          correctTab={correctTab}
-          onAdd={handleAddAnswer}
-          validation={item.validation}
-          options={renderOptions()}
-          onCloseTab={handleCloseTab}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
-      </Widget>
+      <CorrectAnswers
+        onTabChange={setCorrectTab}
+        correctTab={correctTab}
+        onAdd={handleAddAnswer}
+        validation={item.validation}
+        options={renderOptions()}
+        onCloseTab={handleCloseTab}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+      />
 
       <Options
         saveAnswer={saveAnswer}

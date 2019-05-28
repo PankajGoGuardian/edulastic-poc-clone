@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import ReactDOM from "react-dom";
 import { Checkbox, Row, Col } from "antd";
 import PropTypes from "prop-types";
@@ -9,7 +9,6 @@ import { EduButton } from "@edulastic/common";
 import { Subtitle } from "../../../styled/Subtitle";
 import withAddButton from "../../../components/HOC/withAddButton";
 import QuillSortableList from "../../../components/QuillSortableList";
-import { Widget } from "../../../styled/Widget";
 
 import Group from "./Group";
 
@@ -30,53 +29,61 @@ class GroupPossibleResponses extends Component {
   render() {
     const { checkboxChange, checkboxVal, firstFocus, items, t, onAdd, ...restProps } = this.props;
 
-    return checkboxVal ? (
-      <Widget>
-        <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-          {t("component.matchList.groupPossibleRespTitle")}
-        </Checkbox>
-        <Row gutter={60}>
-          {items.map((item, index) => (
-            <Col data-cy={`group-container-${index}`} key={index} span={12}>
-              <Group
-                prefix={`group${index}`}
-                item={item}
-                firstFocus={firstFocus}
-                index={index}
-                groupHeadText={t("component.matchList.titleOfGroupTitle")}
-                headText={t("component.matchList.titleOfGroupTitleLabel")}
-                text={t("component.matchList.possibleRespTitle")}
-                {...restProps}
-              />
-            </Col>
-          ))}
-        </Row>
-        <EduButton type="primary" onClick={onAdd}>
-          {t("component.matchList.addNewGroup")}
-        </EduButton>
-      </Widget>
-    ) : (
-      <Widget>
-        <Row gutter={60}>
-          <Col span={12}>
-            <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
-              {t("component.matchList.groupPossibleRespTitle")}
-            </Checkbox>
-            <Subtitle margin="20px 0px 10px">{t("component.matchList.possibleRespTitle")}</Subtitle>
-            <List
-              prefix="group"
-              items={items}
-              onAdd={onAdd}
-              firstFocus={firstFocus}
-              onSortEnd={restProps.onSortEnd}
-              onChange={restProps.onChange}
-              onRemove={restProps.onRemove}
-              useDragHandle
-              columns={1}
-            />
-          </Col>
-        </Row>
-      </Widget>
+    return (
+      <Fragment>
+        <Subtitle margin="0 0 15px">{t("component.matchList.possibleRespTitle")}</Subtitle>
+        {checkboxVal ? (
+          <Fragment>
+            <div style={{ marginBottom: 20 }}>
+              <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
+                {t("component.matchList.groupPossibleRespTitle")}
+              </Checkbox>
+            </div>
+            <Row gutter={60}>
+              {items.map((item, index) => (
+                <Col data-cy={`group-container-${index}`} key={index} span={12}>
+                  <Group
+                    prefix={`group${index}`}
+                    item={item}
+                    firstFocus={firstFocus}
+                    index={index}
+                    groupHeadText={t("component.matchList.titleOfGroupTitle")}
+                    headText={t("component.matchList.titleOfGroupTitleLabel")}
+                    text={t("component.matchList.possibleRespTitle")}
+                    {...restProps}
+                  />
+                </Col>
+              ))}
+            </Row>
+            <EduButton type="primary" onClick={onAdd}>
+              {t("component.matchList.addNewGroup")}
+            </EduButton>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <div style={{ marginBottom: 20 }}>
+              <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
+                {t("component.matchList.groupPossibleRespTitle")}
+              </Checkbox>
+            </div>
+            <Row gutter={60}>
+              <Col span={12}>
+                <List
+                  prefix="group"
+                  items={items}
+                  onAdd={onAdd}
+                  firstFocus={firstFocus}
+                  onSortEnd={restProps.onSortEnd}
+                  onChange={restProps.onChange}
+                  onRemove={restProps.onRemove}
+                  useDragHandle
+                  columns={1}
+                />
+              </Col>
+            </Row>
+          </Fragment>
+        )}
+      </Fragment>
     );
   }
 }

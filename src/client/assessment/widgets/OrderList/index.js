@@ -22,7 +22,6 @@ import OrderListReport from "./components/OrderListReport";
 import Options from "./components/Options";
 import { getFontSize } from "../../utils/helpers";
 import { replaceVariables, updateVariables } from "../../utils/variables";
-import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
@@ -173,19 +172,17 @@ const OrderList = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Widget>
-            <CorrectAnswers
-              onTabChange={onTabChange}
-              correctTab={correctTab}
-              onAdd={handleAddAltResponse}
-              validation={item.validation}
-              options={renderOptions()}
-              onCloseTab={handleDeleteAltAnswers}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-              marginBottom="-50px"
-            />
-          </Widget>
+          <CorrectAnswers
+            onTabChange={onTabChange}
+            correctTab={correctTab}
+            onAdd={handleAddAltResponse}
+            validation={item.validation}
+            options={renderOptions()}
+            onCloseTab={handleDeleteAltAnswers}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+            marginBottom="-50px"
+          />
           <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
         </ContentArea>
       )}

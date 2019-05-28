@@ -9,7 +9,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Subtitle } from "../../../styled/Subtitle";
 
 const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inputValue, theme }) => (
-  <Row>
+  <Row gutter={60}>
     <Col span={12}>
       <Subtitle
         fontSize={theme.widgets.shortText.subtitleFontSize}
@@ -25,7 +25,8 @@ const CorrectAnswer = ({ t, onSelectChange, onChange, options, selectValue, inpu
           </Select.Option>
         ))}
       </Select>
-
+    </Col>
+    <Col span={12}>
       <Subtitle
         fontSize={theme.widgets.shortText.subtitleFontSize}
         color={theme.widgets.shortText.subtitleColor}

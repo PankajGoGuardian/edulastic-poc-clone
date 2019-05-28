@@ -10,7 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetSubHeading } from "../../styled/Widget";
 
 import UiInputGroup from "./components/UiInputGroup";
 
@@ -78,11 +78,11 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
         />
 
-        <Subtitle>{t("component.chart.chartMainBlockTitle")}</Subtitle>
+        <div style={{ margin: "20px 0" }}>
+          <WidgetSubHeading>{t("component.chart.chartTitle")}</WidgetSubHeading>
 
-        <Subtitle>{t("component.chart.chartTitle")}</Subtitle>
-
-        <Input size="large" value={item.chart_data.name} onChange={handleTitleChange} />
+          <Input size="large" value={item.chart_data.name} onChange={handleTitleChange} />
+        </div>
 
         <UiInputGroup
           onChange={handleUiStyleChange}

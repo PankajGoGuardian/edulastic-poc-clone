@@ -30,19 +30,6 @@ const Group = ({
   theme
 }) => (
   <Fragment>
-    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
-      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
-      <IconTrash onClick={onRemove(index)} />
-    </FlexContainer>
-    <Subtitle
-      fontSize={theme.widgets.matchList.subtitleFontSize}
-      color={theme.widgets.matchList.subtitleColor}
-      margin="20px 0px 10px"
-    >
-      {headText}
-    </Subtitle>
-    <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
-    <Subtitle margin="20px 0px 10px">{text}</Subtitle>
     <div data-cy="group-choices" style={{ marginBottom: 30 }}>
       <List
         prefix={prefix}
@@ -55,6 +42,20 @@ const Group = ({
         useDragHandle
         columns={1}
       />
+    </div>
+    <FlexContainer alignItems="baseline" justifyContent="space-between" style={{ width: "100%" }}>
+      <Subtitle margin="20px 0px 0px">{`${groupHeadText}${index + 1}`}</Subtitle>
+      <IconTrash onClick={onRemove(index)} />
+    </FlexContainer>
+    <Subtitle
+      fontSize={theme.widgets.matchList.subtitleFontSize}
+      color={theme.widgets.matchList.subtitleColor}
+      margin="20px 0px 10px"
+    >
+      {headText}
+    </Subtitle>
+    <div style={{ marginBottom: 20 }}>
+      <Input size="large" value={item.title} onChange={e => onTitleChange(index, e.target.value)} />
     </div>
   </Fragment>
 );

@@ -47,6 +47,8 @@ class CorrectAnswers extends Component {
           key={i}
           onClose={() => onRemoveAltResponses(i)}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
+          type="primary"
+          IconPosition="right"
         />
       ));
     }
@@ -58,7 +60,13 @@ class CorrectAnswers extends Component {
 
     return (
       <Button
-        style={{ minWidth: 70, marginBottom: 5 }}
+        style={{
+          minWidth: 20,
+          minHeight: 20,
+          width: 20,
+          padding: 0,
+          marginLeft: 20
+        }}
         icon={<IconPlus data-cy="alternate" />}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
@@ -140,7 +148,7 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab style={{ marginBottom: 5, marginRight: 5 }} label={t("component.correctanswers.correct")} />
+            <Tab label={t("component.correctanswers.correct")} type="primary" IconPosition="right" />
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (

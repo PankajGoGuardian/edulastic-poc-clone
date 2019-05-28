@@ -51,7 +51,7 @@ const HeaderContainer = styled.div`
   padding-top: 96px;
 
   @media (max-width: ${mobileWidth}) {
-    padding-top: ${props => (props.type === "standard" ? "138px" : "62px")};
+    padding-top: ${props => (props.type === "standard" ? "121px" : "62px")};
     margin-bottom: ${props => (props.type === "standard" ? "26px" : "33px")};
   }
 `;

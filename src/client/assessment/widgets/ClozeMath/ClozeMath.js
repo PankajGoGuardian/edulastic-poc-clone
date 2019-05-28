@@ -13,7 +13,6 @@ import MathFormulaOptions from "../MathFormula/components/MathFormulaOptions";
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import { ContentArea } from "../../styled/ContentArea";
-import { Widget } from "../../styled/Widget";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
@@ -86,15 +85,13 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          <Widget>
-            <ClozeMathAnswers
-              id="answers"
-              item={item}
-              setQuestionData={_setQuestionData}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-            />
-          </Widget>
+          <ClozeMathAnswers
+            id="answers"
+            item={item}
+            setQuestionData={_setQuestionData}
+            fillSections={fillSections}
+            cleanSections={cleanSections}
+          />
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.ui_style}
@@ -148,6 +145,7 @@ ClozeMath.defaultProps = {
   userAnswer: [],
   item: {},
   evaluation: [],
+  advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}
 };

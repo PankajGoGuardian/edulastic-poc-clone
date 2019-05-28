@@ -120,7 +120,7 @@ export const themes = {
       inputFontSize: "13px"
     },
     typedList: {
-      iconTrashColor: "#4aac8b", // greenDark
+      iconTrashColor: "#1774F0", // greenDark
       iconTrashHoverColor: "#ee1658", // red
       itemContainerBorderColor: "#dfdfdf",
       dragIconColor: "#1fe3a1",
@@ -240,7 +240,7 @@ export const themes = {
         dragItemFontWeight: "600",
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658", // red
-        iconTrashColor: "#4aac8b", // greenDark
+        iconTrashColor: "#1774F0", // greenDark
         iconTrashHoverColor: "#ee1658", // red
         dropContainerBgColor: "#fff" // white
       },
@@ -542,7 +542,7 @@ export const themes = {
         indexFontWeight: "600",
         indexFontSize: "14px",
         corTitleFontWeight: "600",
-        iconTrashColor: "#4aac8b", // greenDark
+        iconTrashColor: "#1774F0", // greenDark
         iconTrashHoverColor: "#ee1658", // red
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658" // red

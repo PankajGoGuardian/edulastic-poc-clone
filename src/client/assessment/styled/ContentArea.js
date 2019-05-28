@@ -11,5 +11,6 @@ export const ContentArea = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     max-width: 100%;
+    padding-left: 0;
   }
 `;

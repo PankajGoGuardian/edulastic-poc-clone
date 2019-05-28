@@ -83,7 +83,7 @@ class CorrectAnswers extends Component {
           padding: 0,
           boxShadow: "none",
           marginLeft: "auto",
-          marginBottom: marginBottom
+          marginBottom
         }}
         onClick={() => {
           onTabChange();
@@ -102,7 +102,7 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
 
         <div>
-          <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()}>
+          <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 15 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"
@@ -139,6 +139,7 @@ CorrectAnswers.propTypes = {
 CorrectAnswers.defaultProps = {
   options: null,
   children: undefined,
+  marginBottom: 0,
   fillSections: () => {},
   cleanSections: () => {}
 };

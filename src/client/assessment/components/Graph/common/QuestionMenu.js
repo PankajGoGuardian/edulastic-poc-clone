@@ -8,14 +8,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 
 class QuestionMenu extends Component {
   state = {
-    advancedAreOpen: false,
     activeTab: 0,
     recalcedOptions: []
-  };
-
-  handleAdvancedOpen = () => {
-    const { advancedAreOpen } = this.state;
-    this.setState({ advancedAreOpen: !advancedAreOpen });
   };
 
   handleScroll = option =>
@@ -222,7 +216,7 @@ const MainOptions = styled.ul`
     top: -5px;
     z-index: 5;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(${props => `${props.activeTab * 50 + (props.activeTab > props.main.length - 1 ? 75 : 0)}px`});
+    transform: translateY(${props => `${props.activeTab * 50 + (props.activeTab > props.main.length - 1 ? 67 : 0)}px`});
   }
 `;
 

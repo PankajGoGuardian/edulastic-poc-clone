@@ -80,32 +80,30 @@ const MatrixChoice = ({
       {view === "edit" && (
         <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <Fragment>
-            <Paper style={{ marginBottom: 25, padding: 0, boxShadow: "none" }}>
-              <ComposeQuestion
-                setQuestionData={setQuestionData}
-                fillSections={fillSections}
-                item={item}
-                cleanSections={cleanSections}
-              />
-              <MultipleChoiceOptions
-                item={item}
-                setQuestionData={setQuestionData}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-              />
-              <Steams
-                item={item}
-                setQuestionData={setQuestionData}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-              />
-              <Answers
-                item={item}
-                setQuestionData={setQuestionData}
-                fillSections={fillSections}
-                cleanSections={cleanSections}
-              />
-            </Paper>
+            <ComposeQuestion
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              item={item}
+              cleanSections={cleanSections}
+            />
+            <MultipleChoiceOptions
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+            <Steams
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+            <Answers
+              item={item}
+              setQuestionData={setQuestionData}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
             <Options
               onChange={handleItemChangeChange}
               uiStyle={item.ui_style}

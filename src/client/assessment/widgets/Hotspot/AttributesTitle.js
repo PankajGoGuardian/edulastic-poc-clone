@@ -122,8 +122,11 @@ class AttributesTitle extends Component {
     const renderPlusButton = () => (
       <Button
         style={{
-          minWidth: 70,
-          minHeight: 25
+          minWidth: 20,
+          minHeight: 20,
+          width: 20,
+          padding: 0,
+          marginLeft: 20
         }}
         icon={<IconPlus />}
         onClick={handleAddAttr}
@@ -143,7 +146,9 @@ class AttributesTitle extends Component {
 
     const renderAltResponses = () => {
       if (area_attributes && area_attributes.local && area_attributes.local.length) {
-        return area_attributes.local.map((res, i) => <Tab key={i} label={renderLabel(i)} />);
+        return area_attributes.local.map((res, i) => (
+          <Tab key={i} label={renderLabel(i)} type="primary" IconPosition="right" />
+        ));
       }
 
       return null;
@@ -154,7 +159,11 @@ class AttributesTitle extends Component {
         <Subtitle>{t("component.hotspot.attributesTitle")}</Subtitle>
 
         <Tabs style={{ marginBottom: 15 }} value={customizeTab} onChange={setCustomizeTab} extra={renderPlusButton()}>
-          <Tab label={t("component.hotspot.global")} />
+          <Tab
+            style={{ borderRadius: area_attributes.local <= 1 ? "4px" : "4px 0 0 4px" }}
+            label={t("component.hotspot.global")}
+            type="primary"
+          />
           {renderAltResponses()}
         </Tabs>
         {customizeTab === 0 ? (

@@ -1346,11 +1346,6 @@ span.token.active-word {
   margin-top: 0.3em;
 }
 
-table td {
-  border: 1px solid #dddddd;
-  padding: 5px;
-}
-
 .liveinspect-keydata {
   display: inline;
 }

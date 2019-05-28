@@ -66,15 +66,22 @@ const CheckboxTemplateBoxLayout = ({
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const className = evaluation[dropTargetIndex] ? "right" : "wrong";
+        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
         return (
           <React.Fragment key={index}>
             {!showAnswer && (
-              <div style={btnStyle} className={`imagelabeldragdrop-droppable active check-answer ${className}`}>
+              <div
+                style={btnStyle}
+                className={`
+                imagelabeldragdrop-droppable 
+                active 
+                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                ${status}`}
+              >
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {className === "right" && <RightIcon />}
-                  {className === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -85,13 +92,18 @@ const CheckboxTemplateBoxLayout = ({
             {showAnswer && (
               <div
                 style={btnStyle}
-                className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
+                className={`
+                imagelabeldragdrop-droppable 
+                active
+                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                ${status} 
+                show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
-                  {className === "right" && <RightIcon />}
-                  {className === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />

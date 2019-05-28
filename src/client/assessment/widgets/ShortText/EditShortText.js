@@ -115,7 +115,12 @@ const EditShortText = ({ item, setQuestionData, fillSections, cleanSections, adv
 
   return (
     <ContentArea>
-      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <ComposeQuestion
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <Widget>
         <CorrectAnswers

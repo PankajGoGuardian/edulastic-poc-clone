@@ -313,7 +313,7 @@ function* saveQuestionSaga({ payload: modalItemId }) {
 
     data = produce(data, draftData => {
       if (draftData.data.questions.length > 0) {
-        if (data.itemLevelScoring) {
+        if (data.itemLevelScoring && draftData.data.questions[0].validation.valid_response) {
           draftData.data.questions[0].itemScore = data.itemLevelScore;
           draftData.data.questions[0].validation.valid_response.score = data.itemLevelScore;
           for (let [index] of draftData.data.questions.entries()) {

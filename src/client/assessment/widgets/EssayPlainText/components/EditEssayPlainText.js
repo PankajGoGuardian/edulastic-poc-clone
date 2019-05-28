@@ -28,19 +28,17 @@ const EditEssayPlainText = ({ item, setQuestionData, advancedAreOpen, fillSectio
 
   return (
     <ContentArea>
-      <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+      <ComposeQuestion
+        item={item}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <FormattingOptions item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Scoring
-          setQuestionData={setQuestionData}
-          t={t}
-          scoringTypes={[]}
-          questionData={item}
-          advancedAreOpen={advancedAreOpen}
-          noPaddingLeft={true}
-        />
+        <Scoring t={t} scoringTypes={[]} questionData={item} advancedAreOpen={advancedAreOpen} noPaddingLeft={true} />
         <WordLimitAndCount
           onChange={handleItemChangeChange}
           selectValue={item.show_word_limit}

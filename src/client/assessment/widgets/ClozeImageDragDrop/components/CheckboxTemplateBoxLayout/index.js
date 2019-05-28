@@ -91,7 +91,6 @@ const CheckboxTemplateBoxLayout = ({
                 className={`imagelabeldragdrop-droppable active check-answer ${className}`}
                 drop={drop}
               >
-                <span className="index index-box">{indexStr}</span>
                 <div className="text container">
                   {userSelections[dropTargetIndex] &&
                     userSelections[dropTargetIndex].map((answer, user_select_index) => (

@@ -90,7 +90,6 @@ const CheckboxTemplateBoxLayout = ({
                   className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
                   <span className="text">{getLabel(dropTargetIndex)}</span>
                   &nbsp;
                   <IconWrapper>
@@ -104,7 +103,6 @@ const CheckboxTemplateBoxLayout = ({
                   className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
                   <span className="text">{getLabel(dropTargetIndex)}</span>
                   &nbsp;
                   <IconWrapper>

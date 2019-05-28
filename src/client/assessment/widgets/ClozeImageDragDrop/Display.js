@@ -248,7 +248,6 @@ class Display extends Component {
                     Drop target {responseContainer.label}
                   </span>
                 )}
-                <span className="index-box">{indexStr}</span>
                 <div className="container">
                   {userAnswers[dropTargetIndex] &&
                     userAnswers[dropTargetIndex].map((answer, item_index) => (

@@ -58,7 +58,6 @@ const CheckboxTemplateBoxLayout = ({
           <React.Fragment key={index}>
             {!showAnswer && (
               <div style={btnStyle} className={`imagelabeldragdrop-droppable active check-answer ${className}`}>
-                <span className="index index-box">{indexStr}</span>
                 <div className="text container">{userSelections[dropTargetIndex]}</div>
                 <IconWrapper>
                   {className === "right" && <RightIcon />}

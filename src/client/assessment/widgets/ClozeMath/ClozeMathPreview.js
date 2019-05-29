@@ -26,6 +26,7 @@ const ClozeMathPreview = ({
   let mathEvaluation = [];
   let dropDwonEvaluation = [];
   let inputEvaluation = [];
+
   if (!isEmpty(evaluation)) {
     const { mathResults, inputsResults, dropDownResults } = evaluation;
     mathEvaluation = get(mathResults, "evaluation", []);
@@ -410,7 +411,7 @@ const ClozeMathPreview = ({
                 userSelections={
                   item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswer
                 }
-                checked={type === CHECK}
+                checked={type === CHECK || type === SHOW}
               />
             )}
           </TemplateBox>

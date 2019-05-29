@@ -3,8 +3,8 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Input } from "antd";
 
-const ClozeInput = ({ handleAddAnswer, targetIndex, key }) => (
-  <InputDiv key={key}>
+const ClozeInput = ({ handleAddAnswer, targetIndex, emkey }) => (
+  <InputDiv key={emkey}>
     <Input onChange={e => handleAddAnswer(e.target.value, targetIndex, "inputs")} />
   </InputDiv>
 );
@@ -12,7 +12,7 @@ const ClozeInput = ({ handleAddAnswer, targetIndex, key }) => (
 ClozeInput.propTypes = {
   handleAddAnswer: PropTypes.func.isRequired,
   targetIndex: PropTypes.number.isRequired,
-  key: PropTypes.string.isRequired
+  emkey: PropTypes.string.isRequired
 };
 
 export default ClozeInput;

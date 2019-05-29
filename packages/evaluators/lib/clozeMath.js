@@ -15,6 +15,10 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+
+var _isNumber2 = _interopRequireDefault(require("lodash/isNumber"));
+
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
 
 var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
@@ -139,7 +143,10 @@ var checkCorrect =
 
                   correct = _step.value;
                   data = {
-                    input: userResponse.replace(/\\ /g, " "),
+                    input:
+                      (0, _isString2["default"])(userResponse) || (0, _isNumber2["default"])(userResponse)
+                        ? userResponse.replace(/\\ /g, " ")
+                        : "",
                     expected: correct ? correct.replace(/\\ /g, " ") : ":",
                     checks: checks
                   };

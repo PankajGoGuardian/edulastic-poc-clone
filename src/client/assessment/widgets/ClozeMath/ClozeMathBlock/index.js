@@ -20,7 +20,7 @@ const ClozeMathBlock = ({
   let dropDownOptionIndex = 0;
   let inputIndex = 0;
 
-  const { dropDown: _dropDownAnswers, inputs: _inputAnswers } = userSelections;
+  const { dropDown: _dropDownAnswers = [], inputs: _inputAnswers = [] } = userSelections;
 
   return blocks.map((block, blockIndex) => {
     const templateParts = parsreTemplate(block);
@@ -56,7 +56,7 @@ const ClozeMathBlock = ({
             index={targetIndex}
           />
         ) : (
-          <ClozeInput handleAddAnswer={handleAddAnswer} targetIndex={targetIndex} key={`${blockIndex}_${tplIndex}`} />
+          <ClozeInput handleAddAnswer={handleAddAnswer} targetIndex={targetIndex} emkey={`${blockIndex}_${tplIndex}`} />
         );
       }
       return <MathP key={`${blockIndex}_${tplIndex}`} dangerouslySetInnerHTML={{ __html: tplPart }} />;

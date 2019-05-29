@@ -1,5 +1,5 @@
 import axios from "axios";
-import { omitBy, flatten } from "lodash";
+import { omitBy, flatten, isNumber, isString } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
@@ -73,7 +73,7 @@ const checkCorrect = async ({ correctAnswers, userResponse, checks }) => {
 
   for (const correct of correctAnswers) {
     const data = {
-      input: userResponse.replace(/\\ /g, " "),
+      input: isString(userResponse) || isNumber(userResponse) ? userResponse.replace(/\\ /g, " ") : "",
       expected: correct ? correct.replace(/\\ /g, " ") : ":",
       checks
     };

@@ -1,5 +1,5 @@
 import styled, { css } from "styled-components";
-import { white, green, greenDark, blueButton, blue, greyDarken } from "@edulastic/colors";
+import { white, green, greenDark, blueButton, blue, greyDarken, red } from "@edulastic/colors";
 import { Button } from "antd";
 import { IconManage } from "@edulastic/icons";
 import { Paper, FlexContainer } from "@edulastic/common";
@@ -81,4 +81,8 @@ export const LeftContainer = styled.div`
 
 export const RightContainer = styled.div`
   flex: 2;
+`;
+
+export const StandardsValidationMSG = styled.div`
+  color: ${red};
 `;

@@ -17,7 +17,12 @@ import { searchSchoolRequestAction } from "../../duck";
 
 const { Option } = Select;
 
-const JionSchool = ({ isSearching, searchSchool, schools, newSchool }) => {
+const schoolFilter = {
+  ipZipCode: "10001"
+};
+
+const JionSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo }) => {
+  const { email } = userInfo;
   const [selected, setSchool] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -25,13 +30,16 @@ const JionSchool = ({ isSearching, searchSchool, schools, newSchool }) => {
 
   const changeSchool = value => setSchool(value);
 
-  const handleSearch = debounce(keyword => searchSchool(keyword), 500);
+  const fetchSchool = searchText => {
+    if (searchText) {
+      searchSchool({ ...schoolFilter, email, searchText });
+    }
+  };
+
+  const handleSearch = debounce(keyword => fetchSchool(keyword), 500);
 
   useEffect(() => {
-    searchSchool({
-      ipZipCode: "10001",
-      email: "ashishsnap@snawpiz.com"
-    });
+    searchSchool({ ...schoolFilter, email });
   }, []);
 
   useEffect(() => {
@@ -114,7 +122,8 @@ JionSchool.propTypes = {
   isSearching: PropTypes.bool.isRequired,
   searchSchool: PropTypes.func.isRequired,
   schools: PropTypes.array.isRequired,
-  newSchool: PropTypes.object.isRequired
+  newSchool: PropTypes.object.isRequired,
+  userInfo: PropTypes.object.isRequired
 };
 
 const enhance = compose(

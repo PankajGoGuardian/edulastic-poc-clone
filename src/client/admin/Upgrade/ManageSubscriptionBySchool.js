@@ -1,11 +1,17 @@
-import React, { useState } from "react";
-import { Form, Button } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Button, DatePicker, Input, Select, Row } from "antd";
+import moment from "moment";
+import { IconEdit } from "@edulastic/icons";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
-import { Table } from "../Common/StyledComponents";
-import SubTypeTag from "../Common/SubTypeTag";
+import { Table, Button as CustomButton } from "../Common/StyledComponents";
+import { renderSubscriptionType } from "../Common/SubTypeTag";
+import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
+import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
 
 const { Column } = Table;
+const { Option } = Select;
+
 const SearchSchoolByIdRadioOptions = {
   SCHOOL_ID: "schoolId",
   DISTRICT_ID: "districtId",
@@ -35,7 +41,7 @@ const SubscriptionButtonConfig = {
   },
   premium: {
     label: "Revoke",
-    subTypeToBeSent: "enterprise"
+    subTypeToBeSent: "free"
   },
   partial_premium: {
     label: "Edit",
@@ -84,25 +90,45 @@ const SearchSchoolsByIdForm = Form.create({ name: "searchSchoolsByIdForm" })(
 
 const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   ({
-    form: { getFieldDecorator, validateFields, validateFieldsAndScroll },
+    form: { getFieldDecorator, validateFields, getFieldValue, setFieldsValue },
     searchedSchoolsData,
     bulkSchoolsSubscribeAction,
     changeTab,
     manageByUserSegmentTabKey,
-    setPartialPremiumDataAction
+    setPartialPremiumDataAction,
+    currentEditableRow,
+    updateCurrentEditableRow,
+    editableRowFieldValues: {
+      subType: editedSubType = "free",
+      subStartDate: editedStartDate,
+      subEndDate: editedEndDate,
+      notes: editedNotes
+    },
+    setEditableRowFieldValues
   }) => {
     const [selectedSchools, setSelectedSchools] = useState([]);
     const [firstSchoolSubType, setSelectedSchoolSubType] = useState("");
+    const bulkSelectedSubType = getFieldValue("subType");
+    const submitCtaText =
+      firstSchoolSubType && bulkSelectedSubType
+        ? `Bulk ${SUBSCRIPTION_TYPE_CONFIG[firstSchoolSubType][bulkSelectedSubType].label}`
+        : "Apply Changes";
+
+    useEffect(() => {
+      setFieldsValue({
+        subType: firstSchoolSubType
+      });
+    }, [firstSchoolSubType]);
 
     const handleSubmit = evt => {
-      validateFields((err, { subStartDate, subEndDate, notes }) => {
+      validateFields((err, { subStartDate, subEndDate, notes, subType }) => {
         if (!err) {
           bulkSchoolsSubscribeAction({
             subStartDate: subStartDate.valueOf(),
             subEndDate: subEndDate.valueOf(),
             notes,
             schoolIds: selectedSchools,
-            subType: SubscriptionButtonConfig[firstSchoolSubType].subTypeToBeSent
+            subType
           });
         }
       });
@@ -134,39 +160,122 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
     };
 
     const renderActions = (subType = "free", record) => {
-      const handleClick = () => {
+      const { schoolId, subscription = {} } = record;
+
+      const handleClick = subTypeParam => {
+        bulkSchoolsSubscribeAction({
+          subStartDate: editedStartDate,
+          subEndDate: editedEndDate,
+          notes: editedNotes,
+          schoolIds: [schoolId],
+          subType: subTypeParam
+        });
+      };
+
+      const handleEditClick = () => {
         if (subType === "partial_premium") {
           // if partial premium, we move user to a new tab with the data preserved
           setPartialPremiumDataAction(record);
           changeTab(manageByUserSegmentTabKey);
         } else {
-          validateFieldsAndScroll(
-            ["notes", "subStartDate", "subEndDate"],
-            (err, { notes, subStartDate, subEndDate }) => {
-              if (!err) {
-                const { schoolId } = record;
-                bulkSchoolsSubscribeAction({
-                  subStartDate: subStartDate.valueOf(),
-                  subEndDate: subEndDate.valueOf(),
-                  notes,
-                  schoolIds: [schoolId],
-                  subType: SubscriptionButtonConfig[subType].subTypeToBeSent
-                });
-              }
-            }
-          );
+          const { subEndDate, subStartDate, notes } = subscription;
+          updateCurrentEditableRow({
+            schoolId,
+            subEndDate,
+            subStartDate,
+            notes,
+            subType
+          });
         }
       };
-      return <Button onClick={handleClick}>{SubscriptionButtonConfig[subType].label}</Button>;
+      return schoolId === currentEditableRow ? (
+        <>
+          <Button onClick={() => handleClick(editedSubType)}>
+            {editedSubType === subType ? "Update" : SubscriptionButtonConfig[subType].label}
+          </Button>
+          <Button onClick={updateCurrentEditableRow}>Cancel</Button>
+        </>
+      ) : (
+        <CustomButton aria-label="Edit" title="Edit" onClick={handleEditClick} noStyle>
+          <IconEdit />
+        </CustomButton>
+      );
     };
 
+    const renderStartDate = (date, record) => {
+      return record.schoolId === currentEditableRow ? (
+        <DatePicker
+          value={moment(editedStartDate)}
+          onChange={startDate =>
+            setEditableRowFieldValues({
+              fieldName: "subStartDate",
+              value: startDate.valueOf()
+            })
+          }
+        />
+      ) : (
+        moment(date).format("YYYY-MM-DD")
+      );
+    };
+
+    const renderEndDate = (date, record) => {
+      return record.schoolId === currentEditableRow ? (
+        <DatePicker
+          value={moment(editedEndDate)}
+          onChange={endDate =>
+            setEditableRowFieldValues({
+              fieldName: "subEndDate",
+              value: endDate.valueOf()
+            })
+          }
+        />
+      ) : (
+        moment(date).format("YYYY-MM-DD")
+      );
+    };
+
+    const renderNotes = (note, record) => {
+      return record.schoolId === currentEditableRow ? (
+        <Input.TextArea
+          value={editedNotes}
+          onChange={evt =>
+            setEditableRowFieldValues({
+              fieldName: "notes",
+              value: evt.target.value
+            })
+          }
+        />
+      ) : (
+        note
+      );
+    };
+
+    const renderSubscription = (subscription, record) => {
+      return record.schoolId === currentEditableRow ? (
+        <Select
+          style={{ width: 120 }}
+          value={editedSubType || "free"}
+          onChange={value =>
+            setEditableRowFieldValues({
+              fieldName: "subType",
+              value
+            })
+          }
+        >
+          <Option value="free">Free</Option>
+          <Option value="enterprise">Enterprise</Option>
+        </Select>
+      ) : (
+        renderSubscriptionType(subscription)
+      );
+    };
     const noOfSelectedSchools = selectedSchools.length;
 
     return (
       <>
         <Table
           rowKey={record => record.schoolId}
-          dataSource={searchedSchoolsData}
+          dataSource={Object.values(searchedSchoolsData)}
           pagination={false}
           rowSelection={rowSelection}
           bordered
@@ -174,32 +283,49 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
         >
           <Column title="School Name" dataIndex="schoolName" key="schoolName" />
           <Column title="District Name" dataIndex="districtName" key="districtName" />
-          <Column title="City" dataIndex="address.city" key="city" />
-          <Column title="State" dataIndex="address.state" key="state" />
-          <Column
-            title="Plan"
-            dataIndex="subscription.subType"
-            key="plan"
-            render={(text = "free") => <SubTypeTag>{text}</SubTypeTag>}
-          />
+          <Column title="Start Date" dataIndex="subscription.subStartDate" key="startDate" render={renderStartDate} />
+          <Column title="End Date" dataIndex="subscription.subEndDate" key="endDate" render={renderEndDate} />
+          <Column title="Notes" dataIndex="subscription.notes" key="notes" render={renderNotes} />
+          <Column title="Plan" dataIndex="subscription" key="plan" render={renderSubscription} />
           <Column title="Action" dataIndex="subscription.subType" key="action" render={renderActions} />
         </Table>
         {noOfSelectedSchools ? `${noOfSelectedSchools} Selected` : null}
+        <Row style={{ margin: "15px 0 15px" }}>
+          <HeadingSpan>Bulk Selected Plan:</HeadingSpan>
+          <ValueSpan>{firstSchoolSubType}</ValueSpan>
+        </Row>
         <BulkSubscribeForm
+          firstSchoolSubType={firstSchoolSubType}
+          disabled={!selectedSchools.length}
           handleSubmit={handleSubmit}
           getFieldDecorator={getFieldDecorator}
-          ctaText={`Bulk ${SubscriptionButtonConfig[firstSchoolSubType || "free"].label}`}
+          ctaText={submitCtaText}
         />
       </>
     );
   }
 );
 
-const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText }) => (
+const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText, disabled, firstSchoolSubType }) => (
   <Form onSubmit={handleSubmit}>
+    <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelAlign="left" labelCol={{ span: 4 }}>
+      {getFieldDecorator("subType", {
+        valuePropName: "value",
+        rules: [{ required: true }],
+        initialValue: "free"
+      })(
+        <Select style={{ width: 120 }}>
+          <Option value="free">Free</Option>
+          <Option value="enterprise">Enterprise</Option>
+          <Option value="partial_premium" disabled={firstSchoolSubType !== "partial_premium"}>
+            Partial Premium
+          </Option>
+        </Select>
+      )}
+    </Form.Item>
     <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
     <Form.Item>
-      <Button type="primary" htmlType="submit">
+      <Button disabled={disabled} type="primary" htmlType="submit">
         {ctaText}
       </Button>
     </Form.Item>
@@ -207,22 +333,28 @@ const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText }) => (
 );
 
 export default function ManageSubscriptionBySchool({
-  searchedSchoolsData,
+  manageSchoolData: { searchedSchoolsData, currentEditableRow, editableRowFieldValues },
   searchSchoolsByIdAction,
   bulkSchoolsSubscribeAction,
   changeTab,
   manageByUserSegmentTabKey,
-  setPartialPremiumDataAction
+  setPartialPremiumDataAction,
+  updateCurrentEditableRow,
+  setEditableRowFieldValues
 }) {
   return (
     <>
       <SearchSchoolsByIdForm searchSchoolsByIdAction={searchSchoolsByIdAction} />
       <SchoolsTable
+        currentEditableRow={currentEditableRow}
         searchedSchoolsData={searchedSchoolsData}
         bulkSchoolsSubscribeAction={bulkSchoolsSubscribeAction}
         changeTab={changeTab}
         manageByUserSegmentTabKey={manageByUserSegmentTabKey}
         setPartialPremiumDataAction={setPartialPremiumDataAction}
+        updateCurrentEditableRow={updateCurrentEditableRow}
+        editableRowFieldValues={editableRowFieldValues}
+        setEditableRowFieldValues={setEditableRowFieldValues}
       />
     </>
   );

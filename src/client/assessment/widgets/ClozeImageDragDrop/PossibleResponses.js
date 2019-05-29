@@ -118,7 +118,7 @@ class PossibleResponses extends Component {
     const { item, setQuestionData, t } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options.push(t("component.cloze.dragDrop.newChoice"));
+        draft.options.push("");
       })
     );
   };

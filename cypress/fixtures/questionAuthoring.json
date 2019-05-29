@@ -7,7 +7,7 @@
       "attemptData": { "right": "right-1", "wrong": "wrong-1" }
     },
     "std_1": {
-      "quetext": "This is MCQ_STD.default question",
+      "quetext": "This is MCQ_STD.std_1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
@@ -21,7 +21,7 @@
       ]
     },
     "std_2": {
-      "quetext": "This is MCQ_STD.default question",
+      "quetext": "This is MCQ_STD.std_2 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },

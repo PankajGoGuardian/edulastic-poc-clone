@@ -7,6 +7,7 @@ import TestAddItem from "./testDetail/testAddItemTab";
 export default class TestLibrary {
   constructor() {
     this.sidebar = new TeacherSideBar();
+    this.items = [];
   }
 
   clickOnNewAssignment = () => {
@@ -19,14 +20,13 @@ export default class TestLibrary {
     const testSummary = new TestSummary();
     const testAddItem = new TestAddItem();
     const itemListPage = new ItemListPage();
-    const itemIdList = [];
 
     cy.fixture("testAuthoring").then(testData => {
       const test = testData[key];
-      test.itemKeys.forEach(async itemKey => {
-        itemListPage.createItem(itemKey);
+      test.itemKeys.forEach(async (itemKey, index) => {
+        itemListPage.createItem(itemKey, index);
         const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
-        itemIdList.push(itemId);
+        this.items.push(itemId);
       });
 
       // create new test
@@ -49,7 +49,7 @@ export default class TestLibrary {
       // add items
       testSummary.header.clickOnAddItems();
       testAddItem.authoredByMe().then(() => {
-        itemIdList.forEach(itemKey => {
+        this.items.forEach(itemKey => {
           cy.get(`[data-row-key="${itemKey}"]`)
             .contains("ADD")
             .click({ force: true });
@@ -58,7 +58,6 @@ export default class TestLibrary {
 
       // save
       testSummary.header.clickOnSaveButton();
-
       // publish
       testSummary.header.clickOnPublishButton();
     });

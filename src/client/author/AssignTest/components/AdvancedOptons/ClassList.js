@@ -217,7 +217,7 @@ class ClassList extends React.Component {
           rowSelection={rowSelection}
           columns={columns}
           dataSource={tableData}
-          pagination={{ pageSize: 7 }}
+          pagination={{ pageSize: 20 }}
         />
       </ClassListContainer>
     );

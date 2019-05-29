@@ -152,6 +152,8 @@ class ClozeImageText extends Component {
       ...restProps
     } = this.props;
 
+    const maxWidth = "700px",
+      maxHeight = "600px";
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
@@ -168,7 +170,14 @@ class ClozeImageText extends Component {
             <React.Fragment>
               <EditorContainer>
                 <div className="authoring">
-                  <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
+                  <Authoring
+                    item={itemForEdit}
+                    fillSections={fillSections}
+                    cleanSections={cleanSections}
+                    maxHeight={maxHeight}
+                    maxWidth={maxWidth}
+                    imageWidth={item.imageWidth}
+                  />
                   <Widget>
                     <CorrectAnswers
                       key={duplicatedResponses || showDraghandle || shuffleOptions}
@@ -193,6 +202,8 @@ class ClozeImageText extends Component {
                       onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
+                      maxHeight={maxHeight}
+                      maxWidth={maxWidth}
                     />
 
                     <div style={{ marginTop: 40 }}>
@@ -254,6 +265,8 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
               />
             )}
             {previewTab === "show" && (
@@ -278,6 +291,8 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
                 {...restProps}
               />
             )}
@@ -307,6 +322,8 @@ class ClozeImageText extends Component {
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
                 qIndex={qIndex}
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
               />
             )}
           </Wrapper>

@@ -7,6 +7,5 @@ export const TemplateCover = styled.div`
   width: ${({ width }) => (width ? `${width}px` : "100%")};
   min-height: 350px;
   margin: auto;
-  min-width: 600px;
   max-width: 100%;
 `;

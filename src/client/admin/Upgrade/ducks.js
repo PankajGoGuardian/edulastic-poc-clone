@@ -4,6 +4,7 @@ import { combineReducers } from "redux";
 import { put, takeEvery, call, all } from "redux-saga/effects";
 import { adminApi } from "@edulastic/api";
 import { message } from "antd";
+import { keyBy } from "lodash";
 
 // ACTIONS
 const GET_DISTRICT_DATA = "[admin-upgrade] GET_DISTRICT_DATA";
@@ -47,6 +48,9 @@ export const manageSubscriptionsBydistrict = createSlice({
       state.selectedDistrict = state.listOfDistricts[index];
       // here the autocomplete dataSource becomes empty so that user is not presented with same data when he types
       state.listOfDistricts = [];
+    },
+    subscribeSuccess: (state, { payload }) => {
+      state.selectedDistrict.subscription = payload.subscription;
     }
   }
 });
@@ -61,10 +65,16 @@ const manageSubscriptionsByUsers = createSlice({
     success: (state, { payload }) => {
       // here once subscription is completed, the table has to re-render and show the updated values,
       // hence, these updatedSubType key is set.
-      for (let i = 0; i < payload.length; i++) {
-        state.validEmailIdsList[i].updatedSubType = payload[i].subType;
-        state.validEmailIdsList[i].updatedSubTypeSuccess = payload[i].success;
-      }
+      payload.forEach((item, index) => {
+        const { subscription = {} } = item;
+        if (!state.validEmailIdsList[index].subscription) {
+          state.validEmailIdsList[index].subscription = {};
+        }
+        if (item.success) {
+          state.validEmailIdsList[index].subscription = subscription;
+        }
+        state.validEmailIdsList[index].subscription.updatedSubTypeSuccess = item.success;
+      });
     },
     searchEmailIdsSuccess: (state, { payload }) => {
       state.validEmailIdsList = payload.data;
@@ -75,15 +85,62 @@ const manageSubscriptionsByUsers = createSlice({
 export const manageSubscriptionsBySchool = createSlice({
   slice: "manageSubscriptionsBySchool", // slice is optional, and could be blank ''
   initialState: {
-    searchedSchoolsData: null,
-    partialPremiumData: {}
+    searchedSchoolsData: {},
+    currentEditableRow: null,
+    editableRowFieldValues: {}
   },
   reducers: {
     success: (state, { payload }) => {
       state.searchedSchoolsData = payload;
     },
+    bulkSubscriptionSuccess: (state, { payload }) => {
+      payload.forEach(item => {
+        const { subscription = {} } = item;
+        if (item.success) {
+          state.searchedSchoolsData[subscription.schoolId].subscription = subscription;
+        }
+        state.searchedSchoolsData[subscription.schoolId].subscription.updatedSubTypeSuccess = item.success;
+      });
+    },
+    updateCurrentEditableRow: (state, { payload }) => {
+      if (payload) {
+        const { schoolId, ...rest } = payload;
+        state.currentEditableRow = schoolId;
+        state.editableRowFieldValues = rest;
+      } else {
+        state.currentEditableRow = null;
+        state.editableRowFieldValues = {};
+      }
+    },
+    setEditableRowFieldValues: (state, { payload: { fieldName, value } }) => {
+      state.editableRowFieldValues[fieldName] = value;
+    }
+  }
+});
+
+export const manageSubscriptionsByUserSegments = createSlice({
+  slice: "manageSubscriptionsByUserSegments", // slice is optional, and could be blank ''
+  initialState: {
+    partialPremiumData: {},
+    gradeSubject: []
+  },
+  reducers: {
     setPartialPremiumData: (state, { payload }) => {
+      const { subscription: { gradeSubject = [] } = {} } = payload;
       state.partialPremiumData = payload;
+      state.gradeSubject = gradeSubject;
+    },
+    setGradeSubjectValue: (state, { payload: { type, index, value } }) => {
+      state.gradeSubject[index][type] = value;
+    },
+    addGradeSubjectRow: state => {
+      state.gradeSubject.push({
+        grade: "",
+        subject: ""
+      });
+    },
+    deleteGradeSubjectRow: (state, { payload: index }) => {
+      state.gradeSubject.splice(index, 1);
     }
   }
 });
@@ -106,11 +163,17 @@ export const getManageSubscriptionBySchoolData = createSelector(
   ({ manageSchoolsData }) => manageSchoolsData
 );
 
+export const getManageSubscriptionByUserSegmentsData = createSelector(
+  upGradeStateSelector,
+  ({ manageUserSegmentData }) => manageUserSegmentData
+);
+
 // REDUCERS
 const reducer = combineReducers({
   districtSearchData: manageSubscriptionsBydistrict.reducer,
   manageUsers: manageSubscriptionsByUsers.reducer,
-  manageSchoolsData: manageSubscriptionsBySchool.reducer
+  manageSchoolsData: manageSubscriptionsBySchool.reducer,
+  manageUserSegmentData: manageSubscriptionsByUserSegments.reducer
 });
 
 // API's
@@ -135,9 +198,10 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const item = yield call(manageSubscriptionApi, payload);
-    if (item.result.success) {
-      message.success(item.result.message);
+    const { result } = yield call(manageSubscriptionApi, payload);
+    if (result.success) {
+      message.success(result.message);
+      yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {
     console.error(err);
@@ -162,6 +226,9 @@ function* searchUsersByEmailIds({ payload }) {
   try {
     const item = yield call(searchUsersByEmailIdsApi, payload);
     if (item.result) {
+      if (!item.result.data.length) {
+        message.error("No Records Found");
+      }
       yield put(manageSubscriptionsByUsers.actions.searchEmailIdsSuccess(item.result));
     }
   } catch (err) {
@@ -173,7 +240,8 @@ function* searchSchoolsById({ payload }) {
   try {
     const item = yield call(searchSchoolsByIdApi, payload);
     if (item.result) {
-      yield put(manageSubscriptionsBySchool.actions.success(item.result));
+      const hashedResult = keyBy(item.result, "schoolId");
+      yield put(manageSubscriptionsBySchool.actions.success(hashedResult));
     }
   } catch (err) {
     console.error(err);
@@ -185,6 +253,8 @@ function* bulkSchoolsSubscribe({ payload }) {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
       message.success(result.message);
+      yield put(manageSubscriptionsBySchool.actions.bulkSubscriptionSuccess(result.subscriptionResult));
+      yield put(manageSubscriptionsBySchool.actions.updateCurrentEditableRow());
     } else {
       message.error(result.message);
     }

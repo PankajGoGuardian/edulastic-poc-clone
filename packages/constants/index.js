@@ -18,6 +18,7 @@ const tutorials = require("./tutorials");
 const videoTypes = require("./const/videoTypes");
 const aws = require("./const/aws");
 const playlists = require("./const/playlists");
+const signUpState = require("./const/signUpState");
 
 module.exports = {
   questionType,
@@ -39,5 +40,6 @@ module.exports = {
   tutorials,
   videoTypes,
   playlists,
-  aws
+  aws,
+  signUpState
 };

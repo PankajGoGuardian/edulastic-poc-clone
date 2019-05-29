@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 import { WithResources } from "@edulastic/common";
 
+import { replaceLatexesWithMathHtml } from "../utils/mathUtils";
+
 export const withMathFormula = WrappedComponent => {
   const NoneDiv = styled.div`
     position: absolute;
@@ -27,50 +29,6 @@ export const withMathFormula = WrappedComponent => {
     const [newInnerHtml, setNewInnerHtml] = useState("");
     const mathFieldRef = useRef(null);
 
-    const detectLatexes = () => {
-      if (!dangerouslySetInnerHTML || !dangerouslySetInnerHTML.__html) {
-        return {
-          latexHtmls: [],
-          latexes: []
-        };
-      }
-      const mathRegex = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
-      let newLatexHtmls = [];
-
-      if (dangerouslySetInnerHTML.__html.match) {
-        newLatexHtmls = dangerouslySetInnerHTML.__html.match(mathRegex);
-      }
-
-      if (!newLatexHtmls) {
-        return {
-          latexHtmls: [],
-          latexes: []
-        };
-      }
-      const newLatexes = newLatexHtmls.map(html => {
-        const mathRegex2 = /<span class="input__math" data-latex="([^"]+)"><\/span>/g;
-        const matches = mathRegex2.exec(html);
-        if (matches && matches[1]) {
-          return matches[1];
-        }
-        return null;
-      });
-
-      return {
-        latexHtmls: newLatexHtmls,
-        latexes: newLatexes
-      };
-    };
-
-    const generateNewHtml = (latexHtmls, mathHtmls) => {
-      const prevHtml = dangerouslySetInnerHTML.__html;
-      let nNewInnerHtml = ` ${prevHtml}`.slice(1);
-      for (let i = 0; i < latexHtmls.length; i++) {
-        nNewInnerHtml = nNewInnerHtml.replace(latexHtmls[i], mathHtmls[i]);
-      }
-      return nNewInnerHtml;
-    };
-
     const initMathField = () => {
       if (mathField || !window.MathQuill) return;
       if (mathFieldRef.current) {
@@ -82,13 +40,12 @@ export const withMathFormula = WrappedComponent => {
       }
     };
 
-    const convertLatexToHTML = latex => {
+    const getMathHtml = latex => {
       if (!mathField) return latex;
       mathField.latex(latex);
-      return `<span class="input__math" data-latex="${latex}">${mathFieldRef.current.outerHTML}</span>`;
-    };
 
-    const convertLatexesToMathHtmls = latexes => latexes.map(latex => convertLatexToHTML(latex));
+      return mathFieldRef.current.outerHTML;
+    };
 
     useEffect(() => {
       if (mathFieldRef.current) {
@@ -101,11 +58,8 @@ export const withMathFormula = WrappedComponent => {
         setNewInnerHtml(dangerouslySetInnerHTML.__html);
         return;
       }
-      const { latexHtmls, latexes } = detectLatexes();
-      const mathHtmls = convertLatexesToMathHtmls(latexes);
-      const nNewInnerHtml = generateNewHtml(latexHtmls, mathHtmls);
 
-      setNewInnerHtml(nNewInnerHtml);
+      setNewInnerHtml(replaceLatexesWithMathHtml(dangerouslySetInnerHTML.__html, getMathHtml));
     }, [dangerouslySetInnerHTML, mathField, window.MathQuill]);
 
     return (

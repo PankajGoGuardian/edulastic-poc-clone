@@ -6,6 +6,7 @@ import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
 import { getDate, useUpdateEffect } from "../Common/Utils";
+import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
 
 const { Option } = Select;
 const { Option: AutocompleteOption } = AutoComplete;
@@ -55,7 +56,7 @@ const ManageDistrictSearchForm = Form.create({ name: "manageDistrictSearchForm" 
 
 const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm" })(
   ({
-    form: { getFieldDecorator, validateFields, setFieldsValue },
+    form: { getFieldDecorator, validateFields, setFieldsValue, getFieldsValue },
     selectedDistrict,
     upgradeDistrictSubscriptionAction
   }) => {
@@ -65,6 +66,7 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
     const { _source = {}, _id: districtId, subscription = {} } = selectedDistrict;
     const { location = {} } = _source;
     const { subType = "free", subStartDate, subEndDate, notes } = subscription;
+    const { subType: currentSubType = "free" } = getFieldsValue(["subType"]);
 
     const savedDate = useRef();
 
@@ -83,18 +85,13 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
       });
     }, [subType, subStartDate, subEndDate, notes]);
 
-    const handleSubTypeChange = value => {
-      // if the existing plan and the chosen plan are different, cta button text should change
-      if (value !== subType) {
-        if (subType === "enterprise") {
-          setCtaSubscriptionState("Revoke");
-        } else {
-          setCtaSubscriptionState("Upgrade");
-        }
+    useUpdateEffect(() => {
+      if (currentSubType !== subType) {
+        setCtaSubscriptionState(SUBSCRIPTION_TYPE_CONFIG[subType][currentSubType].label);
       } else {
         setCtaSubscriptionState("Apply Changes");
       }
-    };
+    }, [currentSubType, subType]);
 
     const handleSubmit = evt => {
       validateFields((err, { subStartDate: startDate, subEndDate: endDate, ...rest }) => {
@@ -120,17 +117,6 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
           <HeadingSpan>Existing Plan:</HeadingSpan>
           <ValueSpan>{subType}</ValueSpan>
         </Row>
-        <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelCol={{ span: 3 }}>
-          {getFieldDecorator("subType", {
-            valuePropName: "value",
-            rules: [{ required: true }]
-          })(
-            <Select style={{ width: 120 }} onChange={handleSubTypeChange}>
-              <Option value="free">Free</Option>
-              <Option value="enterprise">Enterprise</Option>
-            </Select>
-          )}
-        </Form.Item>
         <Row>
           <HeadingSpan>District Name:</HeadingSpan>
           <ValueSpan>{_source.name}</ValueSpan>
@@ -153,6 +139,17 @@ const ManageDistrictPrimaryForm = Form.create({ name: "manageDistrictPrimaryForm
             <ValueSpan>{location.zip}</ValueSpan>
           </Col>
         </Row>
+        <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelCol={{ span: 3 }}>
+          {getFieldDecorator("subType", {
+            valuePropName: "value",
+            rules: [{ required: true }]
+          })(
+            <Select style={{ width: 120 }}>
+              <Option value="free">Free</Option>
+              <Option value="enterprise">Enterprise</Option>
+            </Select>
+          )}
+        </Form.Item>
         <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
         <Form.Item>
           <Button type="primary" htmlType="submit">

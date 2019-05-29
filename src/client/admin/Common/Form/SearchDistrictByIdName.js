@@ -21,13 +21,14 @@ export default function SearchDistrictByIdName({
   valueKey,
   labelKey,
   placeholder,
-  loading
+  loading,
+  initialSearchValue
 }) {
   return (
     <Form onSubmit={handleSubmit} layout="inline">
       <Form.Item>
         {getFieldDecorator("districtSearchValue", {
-          initialValue: ""
+          initialValue: initialSearchValue
         })(
           autocomplete ? (
             <AutoComplete onSelect={onSelect} dataSource={dataSource} style={{ width: 350 }} />
@@ -72,5 +73,6 @@ SearchDistrictByIdName.defaultProps = {
   valueKey: "id",
   labelKey: "label",
   placeholder: "Search...",
-  loading: false
+  loading: false,
+  initialSearchValue: ""
 };

@@ -15,9 +15,9 @@ import ScoreTable from "../ScoreTable/ScoreTable";
 import ScoreCard from "../ScoreCard/ScoreCard";
 import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
 import { PaginationInfo, StyledFlexContainer } from "./styled";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 import memoizeOne from "memoize-one";
 
 /**
@@ -102,7 +102,7 @@ class ExpressGrader extends Component {
     const isMobile = this.isMobile();
     const testActivity = transformMemoized(_testActivity);
     return (
-      <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden">
         <div>
           <ClassHeader
             classId={classId}
@@ -133,7 +133,7 @@ class ExpressGrader extends Component {
             />
           )}
         </div>
-      </FeatureWrapper>
+      </FeaturesSwitch>
     );
   }
 }

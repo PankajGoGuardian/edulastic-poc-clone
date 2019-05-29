@@ -5,7 +5,7 @@ import { filter, isArray, isEmpty, debounce } from "lodash";
 import * as moment from "moment";
 import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
-import { StyledFlexContainer } from "./styled";
+import { StyledFlexContainer, StandardsValidationMSG } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
 const { allGrades, allSubjects } = selectsData;
@@ -94,11 +94,17 @@ const RightFields = ({
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           placeholder="Select Standards"
         >
-          {standardSets.map(el => (
-            <Select.Option key={el._id} value={el._id}>
-              {el.curriculum}
+          {isEmpty(standardSets) ? (
+            <Select.Option key="subject_first" value="subject_first" disabled>
+              <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
-          ))}
+          ) : (
+            standardSets.map(el => (
+              <Select.Option key={el._id} value={el._id}>
+                {el.curriculum}
+              </Select.Option>
+            ))
+          )}
         </Select>
       </FieldLabel>
 

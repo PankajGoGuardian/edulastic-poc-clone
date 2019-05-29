@@ -26,7 +26,6 @@ export const StyledTable = styled(Table)`
         border-top: ${props => (props.horizontalLines ? "inherits" : 0)};
       }
       td div {
-        max-width: 250px;
         padding: 5px;
         word-break: break-word;
       }

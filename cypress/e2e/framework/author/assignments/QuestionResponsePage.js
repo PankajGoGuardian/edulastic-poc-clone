@@ -55,7 +55,8 @@ export default class QuestionResponsePage {
     this.getDropDownMenu()
       .contains(studentName)
       .click();
-    cy.wait("@test-activity");
+
+    if (studentName !== "Student01") cy.wait("@test-activity");
     this.getQuestionContainer(0).should("contain", studentName);
   };
 
@@ -67,12 +68,12 @@ export default class QuestionResponsePage {
   };
 
   selectQuestion = queNum => {
-    const questionSelect = `Question ${queNum.slice(1)}`;
+    // const questionSelect = `Question ${queNum.slice(1)}`;
     cy.server();
     cy.route("GET", "**/question/**").as("question");
     this.getDropDown().click();
     this.getDropDownMenu()
-      .contains(questionSelect)
+      .contains(queNum)
       .click();
     if (queNum !== "Q1") cy.wait("@question");
   };

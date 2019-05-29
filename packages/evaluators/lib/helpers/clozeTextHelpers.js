@@ -18,7 +18,7 @@ var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer
 
   if (ignoreCase) {
     userAnswerArray.forEach(function(letter, index) {
-      if (letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
+      if (!validAnswerArray[index] || !letter || letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
         mistakesCount++;
       }
     });
@@ -42,7 +42,10 @@ var getClozeTextMatches = function getClozeTextMatches(response, answer, restOpt
     }
 
     if (restOptions.ignoreCase) {
-      return (0, _isEqual2["default"])(answer[index].trim().toLowerCase(), resp.trim().toLowerCase());
+      return (0, _isEqual2["default"])(
+        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
+        resp.trim() ? resp.trim().toLowerCase() : undefined
+      );
     }
 
     return (0, _isEqual2["default"])(answer[index].trim(), resp.trim());
@@ -58,7 +61,10 @@ var getClozeTextEvaluation = function getClozeTextEvaluation(response, answer, r
     }
 
     if (restOptions.ignoreCase) {
-      return (0, _isEqual2["default"])(answer[index].trim().toLowerCase(), resp.trim().toLowerCase());
+      return (0, _isEqual2["default"])(
+        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
+        resp.trim() ? resp.trim().toLowerCase() : undefined
+      );
     }
 
     return (0, _isEqual2["default"])(answer[index].trim(), resp.trim());

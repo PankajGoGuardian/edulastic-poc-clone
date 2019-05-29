@@ -565,10 +565,6 @@ table.quill-table td {
   display: inline;
 }
 
-.template_box div {
-  overflow: auto;
-}
-
 .template_box > div {
   display: inline;
   align-self: center;
@@ -1792,6 +1788,11 @@ span.token.active-word {
 
 .liveinspect-keydata .lrn_feature h3 {
   margin-top: 0 !important;
+}
+
+/* NOTE: Fix all inputs for Froala - show placeholder text */
+.fr-box {
+  width: 100%;
 }
 
 .fr-box.fr-basic {

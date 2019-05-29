@@ -6,12 +6,7 @@ import { IconHeader } from "@edulastic/icons";
 import { lightGrey4, white, eastBaycolor, mainTextColor } from "@edulastic/colors";
 import Profile from "../../../assets/Profile.png";
 
-const menu = (
-  <Menu>
-    <Menu.Item>Sign Out</Menu.Item>
-  </Menu>
-);
-const Header = ({ userInfo }) => {
+const Header = ({ userInfo, logout }) => {
   const [isVisible, setVisible] = useState(false);
   const { firstName, lastName, role } = userInfo;
 
@@ -19,6 +14,12 @@ const Header = ({ userInfo }) => {
   if (lastName) {
     userName = `${firstName} ${lastName.charAt(0)}`;
   }
+
+  const menu = (
+    <Menu>
+      <Menu.Item onClick={logout}>Sign Out</Menu.Item>
+    </Menu>
+  );
 
   const toggleDropdown = () => {
     setVisible(!isVisible);
@@ -57,7 +58,8 @@ const Header = ({ userInfo }) => {
 };
 
 Header.propTypes = {
-  userInfo: PropTypes.object.isRequired
+  userInfo: PropTypes.object.isRequired,
+  logout: PropTypes.func.isRequired
 };
 
 export default Header;

@@ -10,7 +10,9 @@ import JoinSchool from "./JoinSchool";
 import SignupForm from "./SignupForm";
 import SubjectGradeForm from "./SubjectGrade";
 
-const Container = ({ user }) => {
+import { logoutAction } from "../../../Login/ducks";
+
+const Container = ({ user, logout }) => {
   const { isAuthenticated, signupStatus } = user;
   if (!isAuthenticated) {
     return (
@@ -22,26 +24,30 @@ const Container = ({ user }) => {
   const userInfo = get(user, "user");
   return (
     <>
-      <Header userInfo={userInfo} />
-      {signupStatus === 1 && <JoinSchool />}
+      <Header userInfo={userInfo} logout={logout} />
+      {signupStatus === 1 && <JoinSchool userInfo={userInfo} />}
       {signupStatus === 2 && <SubjectGradeForm />}
     </>
   );
 };
 
 Container.propTypes = {
-  user: PropTypes.object
+  user: PropTypes.object,
+  logout: PropTypes.func
 };
 
 Container.defaultProps = {
-  user: null
+  user: null,
+  logout: () => null
 };
 
 const enhance = compose(
   withRouter,
   connect(
     state => ({ user: state.user }),
-    {}
+    {
+      logout: logoutAction
+    }
   )
 );
 

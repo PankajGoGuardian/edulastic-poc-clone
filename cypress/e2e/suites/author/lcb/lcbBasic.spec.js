@@ -13,7 +13,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     teacher: "auto.lcb.teacher01@yopmail.com",
     student: "auto.lcb.student01@yopmail.com",
     assignmentName: "New Assessment LCB",
-    testId: "5cebbbe5a9b0758231d4dd72",
+    testId: "5cee418721be0e18675cd00c",
     feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",
@@ -201,7 +201,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify standard based report", () => {
+  describe.skip(" > verify standard based report", () => {
     before(() => {
       lcb.clickOnCardViewTab();
       lcb.header.clickOnStandardBasedReportTab();
@@ -212,7 +212,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify express grader", () => {
+  describe.skip(" > verify express grader", () => {
     before(() => {
       lcb.header.clickOnExpressGraderTab();
     });

@@ -7,7 +7,7 @@ import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader"
 import DistrictProfileForm from "../DistrictProfileForm/DistrictProfileForm";
 
 import { DistrictProfileDiv, StyledContent, StyledLayout, SpinContainer, StyledSpin } from "./styled";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 const title = "Manage District";
 const menuActive = { mainMenu: "District Profile", subMenu: "" };
@@ -21,7 +21,7 @@ class DistrictProfile extends Component {
     const { updating, loading, creating, imageUploading, history } = this.props;
 
     return (
-      <FeatureWrapper feature="manageDistrict" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="manageDistrict" actionOnInaccessible="hidden">
         <DistrictProfileDiv>
           <AdminHeader title={title} active={menuActive} history={history} />
           <StyledContent>
@@ -35,7 +35,7 @@ class DistrictProfile extends Component {
             </StyledLayout>
           </StyledContent>
         </DistrictProfileDiv>
-      </FeatureWrapper>
+      </FeaturesSwitch>
     );
   }
 }

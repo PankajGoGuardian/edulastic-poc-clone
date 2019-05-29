@@ -16,17 +16,10 @@ const CharacterLimitSpan = styled.span`
 const OuterDiv = styled.div`
   position: relative;
   width: 70%;
+  margin-top: 20px;
 `;
 
-const DatesNotesFormItem = ({
-  getFieldDecorator,
-  notesFieldName,
-  initialValue,
-  placeholder,
-  initialStartDate,
-  initialEndDate
-}) => {
-  const max = 200;
+const DatesFormItem = ({ getFieldDecorator, initialStartDate, initialEndDate }) => {
   const disabledDate = val => val < moment().startOf("day");
   const formLayout = { labelCol: { span: 4 }, labelAlign: "left" };
   return (
@@ -43,25 +36,64 @@ const DatesNotesFormItem = ({
           initialValue: initialEndDate
         })(<DatePicker disabledDate={disabledDate} />)}
       </Form.Item>
-      <OuterDiv>
-        <CharacterLimitSpan>{`${max} chars`}</CharacterLimitSpan>
-        <Form.Item>
-          {getFieldDecorator(notesFieldName, {
-            rules: [{ required: true, max }],
-            initialValue
-          })(<TextArea rows={4} placeholder={placeholder} />)}
-        </Form.Item>
-      </OuterDiv>
     </>
   );
 };
 
-DatesNotesFormItem.defaultProps = {
-  notesFieldName: "notes",
-  initialValue: "",
-  placeholder: "Add Notes*",
+DatesFormItem.defaultProps = {
   initialStartDate: moment(),
   initialEndDate: moment().add(1, "year")
 };
+
+const NotesFormItem = ({ getFieldDecorator, notesFieldName, initialValue, placeholder }) => {
+  const max = 200;
+  return (
+    <OuterDiv>
+      <CharacterLimitSpan>{`${max} chars`}</CharacterLimitSpan>
+      <Form.Item>
+        {getFieldDecorator(notesFieldName, {
+          rules: [{ required: true, max }],
+          initialValue
+        })(<TextArea rows={2} placeholder={placeholder} />)}
+      </Form.Item>
+    </OuterDiv>
+  );
+};
+
+NotesFormItem.defaultProps = {
+  notesFieldName: "notes",
+  initialValue: "",
+  placeholder: "Add Notes*"
+};
+
+const DatesNotesFormItem = ({
+  getFieldDecorator,
+  initialStartDate,
+  initialEndDate,
+  notesFieldName,
+  initialValue,
+  placeholder
+}) => (
+  <>
+    <DatesFormItem
+      getFieldDecorator={getFieldDecorator}
+      initialStartDate={initialStartDate}
+      initialEndDate={initialEndDate}
+    />
+    <NotesFormItem
+      getFieldDecorator={getFieldDecorator}
+      notesFieldName={notesFieldName}
+      initialValue={initialValue}
+      placeholder={placeholder}
+    />
+  </>
+);
+
+DatesNotesFormItem.defaultProps = {
+  ...NotesFormItem.defaultProps,
+  ...DatesFormItem.defaultProps
+};
+
+export { DatesFormItem, NotesFormItem };
 
 export default DatesNotesFormItem;

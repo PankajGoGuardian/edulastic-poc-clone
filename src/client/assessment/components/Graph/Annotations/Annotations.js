@@ -1,6 +1,6 @@
 import React, { Component, createRef } from "react";
 import { v4 } from "uuid";
-import { Button } from "@edulastic/common";
+import { EduButton } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { connect } from "react-redux";
@@ -10,6 +10,7 @@ import { Subtitle } from "../common/styled_components";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import Annotation from "./Annotation";
 import { EditAnnotationsContainer } from "./styled/EditAnnotationsContainer";
+import { AnnotationsStyle } from "./styled/styled_components";
 
 class Annotations extends Component {
   ref = createRef();
@@ -89,14 +90,24 @@ class Annotations extends Component {
     const annotations = question.annotations || [];
 
     return (
-      <div ref={this.ref}>
+      <AnnotationsStyle ref={this.ref}>
         <Subtitle>Annotations</Subtitle>
 
         {editable && (
           <EditAnnotationsContainer>
-            <Button style={{ marginBottom: "30px" }} onClick={this.handleClick}>
+            <EduButton
+              type="primary"
+              style={{
+                marginBottom: "30px",
+                minWidth: 227,
+                minHeight: 40,
+                marginRight: "0.7em",
+                borderRadius: "4px"
+              }}
+              onClick={this.handleClick}
+            >
               ADD NEW ANNOTATION
-            </Button>
+            </EduButton>
 
             {annotations.map((annotation, i) => (
               <Annotation
@@ -108,7 +119,7 @@ class Annotations extends Component {
             ))}
           </EditAnnotationsContainer>
         )}
-      </div>
+      </AnnotationsStyle>
     );
   }
 }

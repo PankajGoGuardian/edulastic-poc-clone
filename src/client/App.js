@@ -1,5 +1,5 @@
 import React, { Component, Suspense, lazy } from "react";
-import { get } from "lodash";
+import { get, isUndefined } from "lodash";
 import queryString from "query-string";
 import PropTypes from "prop-types";
 import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router-dom";
@@ -9,7 +9,7 @@ import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
-import { test } from "@edulastic/constants";
+import { test, signUpState } from "@edulastic/constants";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
@@ -95,7 +95,7 @@ class App extends Component {
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
-          if (user.signupStatus === 3) {
+          if (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus)) {
             defaultRoute = "/author/assignments";
           } else {
             defaultRoute = "/signup";

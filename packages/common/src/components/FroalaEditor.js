@@ -1,9 +1,11 @@
 /* eslint-disable func-names */
-/* eslint-disable no-undef */
+/* eslint-disable */
+/* global $ */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { message } from "antd";
+import { debounce } from "lodash";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
@@ -13,6 +15,8 @@ import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 import { withMathFormula } from "../HOC/withMathFormula";
+
+import { replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
@@ -118,6 +122,11 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   const [showMathModal, setMathModal] = useState(false);
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
+  const [content, setContent] = useState("");
+  const [prevValue, setPrevValue] = useState("");
+
+  const [mathField, setMathField] = useState(null);
+
   const EditorRef = useRef(null);
 
   const config = Object.assign(
@@ -133,7 +142,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       events: {
         click: evt => {
           EditorRef.current.selection.save();
-          const closestMathParent = evt.currentTarget.closest("span.mq-math-mode[contenteditable=false]");
+          const closestMathParent = evt.currentTarget.closest("span.input__math");
           if (closestMathParent) {
             setCurrentLatex(closestMathParent.getAttribute("data-latex"));
             setCurrentMathEl(closestMathParent);
@@ -143,15 +152,16 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             setCurrentMathEl(null);
           }
         },
-        "image.beforeUpload": image => {
-          image.showProgressBar();
+        "image.beforeUpload": function(image) {
+          this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.COURSE)
             .then(result => {
-              image.insert(result);
+              this.image.insert(result);
             })
-            .catch(() => {
-              EditorRef.current.popups.hideAll();
+            .catch(e => {
+              console.error(e);
+              this.popups.hideAll();
               message.error("image upload failed");
             });
 
@@ -162,8 +172,94 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     restOptions
   );
 
+  // Math Html related helper functions
+
+  const initMathField = () => {
+    if (mathField || !window.MathQuill) return;
+    if (mathFieldRef.current) {
+      const MQ = window.MathQuill.getInterface(2);
+      try {
+        setMathField(MQ.StaticMath(mathFieldRef.current));
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
+    }
+  };
+
+  const getMathHtml = latex => {
+    if (!mathField) return latex;
+    mathField.latex(latex);
+
+    return mathFieldRef.current.outerHTML;
+  };
+
+  const setChange = debounce(val => {
+    setContent(val);
+
+    const valueToSave = replaceMathHtmlWithLatexes(val);
+    setPrevValue(valueToSave);
+
+    if (
+      !restOptions.toolbarButtons || // Default toolbarButtons are used
+      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
+      restOptions.toolbarButtons.includes("dropdown") || // toolbarButtons prop contains dropdown
+      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
+    ) {
+      const responseIndexes = $(val)
+        .find(".index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      const dropDownIndexes = $(val)
+        .find(".dropdown-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      const inputIndexes = $(val)
+        .find(".text-input-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      onChange(val, responseIndexes, dropDownIndexes, inputIndexes);
+    } else {
+      onChange(valueToSave, []);
+    }
+  }, 500);
+
+  // Math Modal related functions
+  const saveMathModal = latex => {
+    EditorRef.current.selection.restore();
+
+    const mathHtml = getMathHtml(latex);
+    if (currentMathEl) {
+      currentMathEl.innerHTML = mathHtml;
+      currentMathEl.setAttribute("data-latex", latex);
+    } else {
+      EditorRef.current.html.insert(
+        `<span class="input__math" contenteditable="false" data-latex="${latex}">${mathHtml}</span> `
+      );
+      EditorRef.current.undo.saveStep();
+    }
+
+    setMathModal(false);
+  };
+
+  const closeMathModal = () => setMathModal(false);
+
+  // Froala configuration
+  const manualControl = ({ getEditor, initialize }) => {
+    initialize();
+    EditorRef.current = getEditor();
+  };
+
   useEffect(() => {
     // sample extension of custom buttons
+    initMathField();
 
     FroalaEditor.DefineIcon("math", { NAME: "math", template: "math" });
     FroalaEditor.RegisterCommand("math", {
@@ -234,69 +330,26 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         this.undo.saveStep();
       }
     });
-  });
+  }, []);
 
-  const setMathValue = latex => {
-    const MQ = window.MathQuill.getInterface(2);
+  useEffect(() => {
+    if (mathFieldRef.current) {
+      initMathField();
+    }
+  }, [mathFieldRef.current]);
 
-    const mathfield = MQ.StaticMath(mathFieldRef.current);
-    mathfield.latex(latex);
-    EditorRef.current.selection.restore();
-
-    if (currentMathEl) {
-      currentMathEl.innerHTML = mathFieldRef.current.innerHTML;
-      currentMathEl.setAttribute("data-latex", latex);
-    } else {
-      EditorRef.current.html.insert(
-        `<span data-latex="${latex}" contenteditable="false" class="mq-math-mode">${
-          mathFieldRef.current.innerHTML
-        }</span>`
-      );
+  useEffect(() => {
+    // In case of prop updates after onChange, we are gonna ignore that.
+    if (!value) {
+      setContent("");
+      setPrevValue("");
+      return;
     }
 
-    setMathModal(false);
-  };
-
-  const closeMathModal = () => setMathModal(false);
-
-  const manualControl = ({ getEditor, initialize }) => {
-    initialize();
-    EditorRef.current = getEditor();
-  };
-
-  const setChange = val => {
-    if (
-      !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
-      restOptions.toolbarButtons.includes("dropdown") || // toolbarButtons prop contains dropdown
-      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
-    ) {
-      const responseIndexes = $(val)
-        .find(".index")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-
-      const dropDownIndexes = $(val)
-        .find(".dropdown-index")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-
-      const inputIndexes = $(val)
-        .find(".text-input-index")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-
-      onChange(val, responseIndexes, dropDownIndexes, inputIndexes);
-    } else {
-      onChange(val, []);
-    }
-  };
+    if (prevValue === value) return;
+    setPrevValue(value);
+    setContent(replaceLatexesWithMathHtml(value, getMathHtml));
+  }, [value]);
 
   return (
     <>
@@ -306,12 +359,12 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         numberPad={numberPad}
         showResposnse={false}
         value={currentLatex}
-        onSave={setMathValue}
+        onSave={saveMathModal}
         onClose={closeMathModal}
       />
       <Editor
         tag={tag}
-        model={value}
+        model={content}
         onModelChange={setChange}
         config={config}
         onManualControllerReady={manualControl}

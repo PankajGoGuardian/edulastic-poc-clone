@@ -145,20 +145,36 @@ class Item extends Component {
 
   renderStandards = () => {
     const outStandardsCount = 3;
-    const { item } = this.props;
+    const {
+      item,
+      interestedCurriculums,
+      search: { curriculumId }
+    } = this.props;
     const domains = [];
     const standards = [];
-
     if (item.data && item.data.questions) {
-      item.data.questions.filter(question =>
-        question.alignment
-          ? question.alignment.map(el => (el.domains && el.domains.length ? domains.push(...el.domains) : null))
-          : null
-      );
+      item.data.questions.map(question => {
+        if (!question.alignment || !question.alignment.length) return;
+        //removing all multiStandard mappings
+        const authorAlignments = question.alignment.filter(item => !item.isEquivalentStandard && item.curriculumId);
 
-      if (domains.length) {
-        domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
-      }
+        //pick alignments matching with interested curriculums
+        let interestedAlignments = authorAlignments.filter(alignment =>
+          interestedCurriculums.some(interested => interested._id === alignment.curriculumId)
+        );
+
+        //pick alignments based on search if interested alignments is empty
+        if (!interestedAlignments.length) {
+          interestedAlignments = authorAlignments.filter(alignment => alignment.curriculumId === curriculumId);
+          // use the authored alignments if still the interested alignments is empty
+          if (!interestedAlignments.length) {
+            interestedAlignments = authorAlignments;
+          }
+        }
+        interestedAlignments.map(el => (el.domains && el.domains.length ? domains.push(...el.domains) : null));
+      });
+      if (!domains.length) return null;
+      domains.map(el => (el.standards && el.standards.length ? standards.push(...el.standards) : null));
     }
 
     return standards.length ? (

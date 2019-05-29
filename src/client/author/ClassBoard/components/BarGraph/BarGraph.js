@@ -107,6 +107,7 @@ export default class BarGraph extends Component {
           incorrectAttemps: item.wrongNum,
           avgTimeSpent: item.avgTimeSpent,
           itemLevelScoring: item.itemLevelScoring,
+          skippedNum: item.skippedNum,
           itemId: item.itemId,
           qid: item._id
         };
@@ -290,6 +291,15 @@ export default class BarGraph extends Component {
               shape={<RectangleBar dataKey="partialAttempts" />}
               onClick={this.handleClick}
             />
+            <Bar
+              yAxisId="left"
+              stackId="a"
+              dataKey="skippedNum"
+              fill={dropZoneTitleColor}
+              shape={<RectangleBar dataKey="skippedNum" />}
+              onClick={this.handleClick}
+            />
+
             <Line
               yAxisId="right"
               dataKey="avgTimeSpent"

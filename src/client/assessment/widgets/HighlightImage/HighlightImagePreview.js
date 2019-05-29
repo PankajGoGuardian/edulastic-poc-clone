@@ -180,7 +180,7 @@ const HighlightImagePreview = ({
 
   const renderImage = () =>
     file ? (
-      <div style={{ width: width - 50, height: "auto", paddingLeft: "20px" }}>
+      <div style={{ width: width > 700 ? 650 : width - 50, height: "auto", paddingLeft: width > 650 ? "0px" : "20px" }}>
         <img src={file} alt={altText} width={"100%"} height={"auto"} />
       </div>
     ) : (

@@ -4,6 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { findIndex, isUndefined, get, keyBy } from "lodash";
 import produce, { setAutoFreeze } from "immer";
+import memoizeOne from "memoize-one";
 
 import {
   StyledFlexContainer,
@@ -24,7 +25,8 @@ import {
   getAssignmentClassIdSelector,
   getClassQuestionSelector,
   getStudentResponseSelector,
-  getDynamicVariablesSetIdForViewResponse
+  getDynamicVariablesSetIdForViewResponse,
+  getTestItemsOrderSelector
 } from "../ClassBoard/ducks";
 
 setAutoFreeze(false);
@@ -86,7 +88,8 @@ class StudentViewContainer extends Component {
   }
 
   render() {
-    const { classResponse, studentItems, studentResponse, selectedStudent, variableSetIds } = this.props;
+    const { classResponse, studentItems, studentResponse, selectedStudent, variableSetIds, testActivity } = this.props;
+
     const { loading } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
@@ -96,6 +99,7 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId;
     });
+
     return (
       <React.Fragment>
         <StyledFlexContainer justifyContent="space-between">
@@ -112,6 +116,7 @@ class StudentViewContainer extends Component {
             currentStudent={currentStudent || {}}
             questionActivities={studentResponse.questionActivities}
             classResponse={classResponseProcessed}
+            testItemsOrder={this.props.testItemsOrder}
           />
         )}
       </React.Fragment>
@@ -125,6 +130,7 @@ const enhance = compose(
       classQuestion: getClassQuestionSelector(state),
       studentResponse: getStudentResponseSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
+      testItemsOrder: getTestItemsOrderSelector(state),
       variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent)
     }),
     {

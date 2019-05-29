@@ -1747,6 +1747,11 @@ span.token.active-word {
   margin-top: 0 !important;
 }
 
+/* NOTE: Fix all inputs for Froala - show placeholder text */
+.fr-box {
+  width: 100%;
+}
+
 .fr-box.fr-basic {
   border: 1px solid #cccccc;
   border-radius: 10px;

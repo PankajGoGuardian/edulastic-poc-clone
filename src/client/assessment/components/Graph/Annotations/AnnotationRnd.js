@@ -7,7 +7,7 @@ import { FroalaEditor } from "@edulastic/common";
 import { FroalaInput } from "./styled/styled_components";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { getViewSelector } from "../../../../author/src/selectors/view";
-import { getQuestionByIdSelector } from "../../../../author/sharedDucks/questions";
+import { getQuestionByIdSelector, getCurrentQuestionSelector } from "../../../../author/sharedDucks/questions";
 
 const resizeDisable = {
   bottom: false,
@@ -91,8 +91,8 @@ class AnnotationsRnd extends Component {
   };
 
   render() {
-    const { question, view, questionId } = this.props;
-    if (!question || !question.annotations || !questionId) return null;
+    const { question, view } = this.props;
+    if (!question || !question.annotations) return null;
 
     const { updateAnnotation } = this;
     const annotations = question.annotations || [];
@@ -121,7 +121,7 @@ class AnnotationsRnd extends Component {
                 enableResizing={view === "preview" ? resizeDisable : resizeEnable}
                 disableDragging={view === "preview"}
               >
-                <FroalaInput isRnd>
+                <FroalaInput {...this.props} isRnd>
                   <FroalaEditor
                     value={value}
                     onChange={val => updateAnnotation(val, annotation.id)}
@@ -144,13 +144,19 @@ AnnotationsRnd.propTypes = {
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  questionId: PropTypes.string.isRequired
+  questionId: PropTypes.string
+};
+
+AnnotationsRnd.defaultProps = {
+  questionId: ""
 };
 
 const enhance = compose(
   connect(
     (state, ownProps) => ({
-      question: getQuestionByIdSelector(state, ownProps.questionId),
+      question: !ownProps.questionId
+        ? getCurrentQuestionSelector(state)
+        : getQuestionByIdSelector(state, ownProps.questionId),
       view: getViewSelector(state)
     }),
     { setQuestionData: setQuestionDataAction }

@@ -22,6 +22,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
+import Annotations from "../../components/Graph/Annotations/Annotations";
 
 const EmptyWrapper = styled.div``;
 
@@ -172,6 +173,7 @@ class ClozeImageDragDrop extends Component {
                     onAddAltResponses={this.handleAddAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
+                    questionId={item.id}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -207,6 +209,7 @@ class ClozeImageDragDrop extends Component {
                       {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
                     </Checkbox>
                   </CorrectAnswerOptions>
+                  <Annotations editable />
                 </Widget>
               </div>
               <Options

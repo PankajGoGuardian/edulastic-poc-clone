@@ -19,6 +19,8 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
+import { RelativeContainer } from "../../styled/RelativeContainer";
+import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -132,8 +134,11 @@ class Display extends Component {
       instructorStimulus,
       theme,
       showQuestionNumber,
-      qIndex
+      qIndex,
+      item
     } = this.props;
+
+    const questionId = item && item.id;
 
     const { userAnswers, possibleResponses } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
@@ -334,7 +339,11 @@ class Display extends Component {
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <div>
+        <RelativeContainer>
+          <AnnotationRnd
+            style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+            questionId={questionId}
+          />
           {responseposition === "top" && (
             <React.Fragment>
               <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
@@ -409,7 +418,8 @@ class Display extends Component {
               </div>
             </div>
           )}
-        </div>
+        </RelativeContainer>
+
         {answerBox}
       </div>
     );

@@ -7,7 +7,8 @@ export const FroalaInput = styled.div`
   border-radius: 4px;
   border: 0;
   flex: 1;
-  height: 100%;
+  height: ${({ isRnd }) => (!isRnd ? "auto" : "100%")};
+  min-height: ${({ isRnd }) => (!isRnd ? "40px" : "0")};
   display: flex;
   align-items: center;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
@@ -29,7 +30,7 @@ export const FroalaInput = styled.div`
 export const Header = styled.div`
   top: 0;
   left: 0;
-  height: 40px;
+  min-height: 40px;
   display: inline-flex;
   align-items: center;
   margin-bottom: 15px;
@@ -67,4 +68,8 @@ export const DragHolder = styled.div`
   background-color: #efefef;
   overflow: hidden;
   flex-wrap: wrap;
+`;
+
+export const AnnotationsStyle = styled.div`
+  margin-top: 30px;
 `;

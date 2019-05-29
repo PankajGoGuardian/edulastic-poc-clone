@@ -191,7 +191,7 @@ const ClozeMathPreview = ({
   };
 
   const getBlocks = () => {
-    const _blocks = newInnerHtml.match(/(<p.*?<\/p>)|(<hr>)/g); // |(<span.*?<\/span>)
+    const _blocks = newInnerHtml.match(/(<p.*?<\/p>)|(<hr>)/g);
 
     const dropDownParts = newInnerHtml.match(/<span class="text-dropdown-btn.*?<\/span>/g);
     const _dropdowns = dropDownParts !== null ? dropDownParts.length : 0;

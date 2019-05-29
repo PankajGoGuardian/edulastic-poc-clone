@@ -63,7 +63,7 @@ class Container extends Component {
 
   static defaultProps = {
     useFlowLayoutRight: false,
-    itemLevelScoring: false
+    itemLevelScoring: true
   };
 
   handleCheckboxChange = name => () => {

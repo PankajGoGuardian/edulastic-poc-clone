@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
@@ -207,7 +209,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
           `<span class="text-dropdown-btn" contenteditable="false">
             <span class="dropdown-index">${dropDownCount + 1}</span>
             <span class="dropdown-text">Text Dropdown</span>
-          </span`
+          </span>`
         );
         this.undo.saveStep();
       }
@@ -216,7 +218,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     // Cloze Text Input
     FroalaEditor.DefineIcon("textinput", { NAME: "textinput", template: "textinput" });
     FroalaEditor.RegisterCommand("textinput", {
-      title: "DropDown",
+      title: "Text Input",
       focus: true,
       undo: true,
       refreshAfterCallback: true,
@@ -226,7 +228,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
           `<span class="text-input-btn" contenteditable="false">
             <span class="text-input-index">${inputCount + 1}</span>
             <span class="input-text">Text Input</span>
-          </span`
+          </span>`
         );
         this.undo.saveStep();
       }
@@ -264,18 +266,32 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   const setChange = val => {
     if (
       !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") // toolbarButtons prop contains response
+      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
+      restOptions.toolbarButtons.includes("dropdown") || // toolbarButtons prop contains dropdown
+      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
     ) {
-      // eslint-disable-next-line func-names, no-undef
       const responseIndexes = $(val)
         .find(".index")
-        // eslint-disable-next-line func-names
         .map(function() {
-          // eslint-disable-next-line no-undef
           return +$(this).text();
         })
         .toArray();
-      onChange(val, responseIndexes);
+
+      const dropDownIndexes = $(val)
+        .find(".dropdown-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      const inputIndexes = $(val)
+        .find(".text-input-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      onChange(val, responseIndexes, dropDownIndexes, inputIndexes);
     } else {
       onChange(val, []);
     }

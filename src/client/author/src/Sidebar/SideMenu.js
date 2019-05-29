@@ -85,7 +85,7 @@ class SideMenu extends Component {
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
       <TextIcon isSidebarCollapsed={isSidebarCollapsed}>
-        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`} <i class="fa fa-heart" />
+        {`${fT[0] ? fT[0] : ""}${lT[0] ? lT[0] : ""}`} <i className="fa fa-heart" />
       </TextIcon>
     );
     return [

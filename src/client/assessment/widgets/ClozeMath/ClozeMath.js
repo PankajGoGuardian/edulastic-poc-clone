@@ -67,7 +67,7 @@ const ClozeMath = ({
 
   const getDropdowns = tmpl => {
     const temp = tmpl || "";
-    const dropDownParts = temp.match(/<p class="text-dropdown-btn.*?<\/p>/g);
+    const dropDownParts = temp.match(/<span class="text-dropdown-btn.*?<\/span>/g);
     const dropDownsCount = dropDownParts !== null ? dropDownParts.length : 0;
     return dropDownsCount;
   };
@@ -152,7 +152,7 @@ ClozeMath.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.array,
+  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   evaluation: PropTypes.array,
   previewTab: PropTypes.string,
   item: PropTypes.object,

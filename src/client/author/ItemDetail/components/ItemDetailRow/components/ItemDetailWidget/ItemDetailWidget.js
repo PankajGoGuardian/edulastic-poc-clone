@@ -54,7 +54,7 @@ const ItemDetailWidget = ({
             <Buttons>
               {connectDragSource(
                 <div>
-                  <Button title={t("move")} move shape="circle">
+                  <Button title={t("move")} shape="circle">
                     <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
                   </Button>
                 </div>

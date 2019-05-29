@@ -1,18 +1,16 @@
 /* global $ */
 import React, { useEffect, useRef, useState } from "react";
-import { Select, Input } from "antd";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep, isEmpty, get } from "lodash";
 import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
 import { black } from "@edulastic/colors";
 
 import { SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
-
-const { Option } = Select;
+import ClozeMathBlock from "./ClozeMathBlock";
 
 const ClozeMathPreview = ({
   type,
@@ -25,10 +23,14 @@ const ClozeMathPreview = ({
   qIndex,
   options
 }) => {
+  let mathEvaluation = [];
+  let dropDwonEvaluation = [];
+  let inputEvaluation = [];
   if (!isEmpty(evaluation)) {
-    console.log("---------------- evaluation -------------------");
-    console.log(evaluation);
-    console.log("------------------------------------------------");
+    const { mathResults, inputsResults, dropDownResults } = evaluation;
+    mathEvaluation = get(mathResults, "evaluation", []);
+    inputEvaluation = get(inputsResults, "evaluation", []);
+    dropDwonEvaluation = get(dropDownResults, "evaluation", []);
   }
   const wrappedRef = useRef();
   const mathFieldRef = useRef();
@@ -40,8 +42,9 @@ const ClozeMathPreview = ({
   const [latexes, setLatexes] = useState([]);
   const [mathHtmls, setMathHtmls] = useState([]);
   const [newInnerHtml, setNewInnerHtml] = useState("");
-  const [templateParts, setTemplateParts] = useState([]);
+  const [blocks, setBlocks] = useState([]);
   const [dropdowns, setDropdowns] = useState(0);
+  const [inputs, setInputs] = useState(0);
 
   const minWidth = item.ui_style && item.ui_style.min_width ? `${item.ui_style.min_width}px` : 0;
 
@@ -186,12 +189,18 @@ const ClozeMathPreview = ({
     setMathHtmls(newMathHtmls);
   };
 
-  const getTemplateParts = () => {
-    const _templateParts = newInnerHtml.match(/(<p.*?<\/p>)|(<span.*?<\/span>)/g);
-    const dropDownParts = newInnerHtml.match(/<p class="text-dropdown-btn.*?<\/p>/g);
+  const getBlocks = () => {
+    const _blocks = newInnerHtml.match(/(<p.*?<\/p>)|(<hr>)/g); // |(<span.*?<\/span>)
+
+    const dropDownParts = newInnerHtml.match(/<span class="text-dropdown-btn.*?<\/span>/g);
     const _dropdowns = dropDownParts !== null ? dropDownParts.length : 0;
-    setTemplateParts(_templateParts);
+
+    const inputParts = newInnerHtml.match(/<span class="text-dropdown-btn.*?<\/span>/g);
+    const _inputs = inputParts !== null ? inputParts.length : 0;
+
+    setBlocks(_blocks);
     setDropdowns(_dropdowns);
+    setInputs(_inputs);
   };
 
   const handleAddAnswer = (answer, index, key) => {
@@ -286,7 +295,7 @@ const ClozeMathPreview = ({
           saveAnswer(newAnswers);
         }
       });
-  }, [type, wrappedRef.current, templateParts]);
+  }, [type, wrappedRef.current, blocks]);
 
   useEffect(() => {
     if (type === CHECK) {
@@ -298,8 +307,8 @@ const ClozeMathPreview = ({
           $(this)
             .find(".icon-wrapper")
             .remove();
-          if (typeof evaluation[index] !== "undefined") {
-            if (evaluation[index]) {
+          if (typeof mathEvaluation[index] !== "undefined") {
+            if (mathEvaluation[index]) {
               $(this).addClass("success");
               $(this).append(
                 $(`
@@ -368,11 +377,8 @@ const ClozeMathPreview = ({
   }, [evaluation, wrappedRef.current]);
 
   useEffect(() => {
-    getTemplateParts();
+    getBlocks();
   }, [newInnerHtml]);
-
-  let dropDownOptionIndex = 0;
-  let inputIndex = 0;
 
   return (
     <WithResources
@@ -391,38 +397,29 @@ const ClozeMathPreview = ({
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
-        <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
-        <TemplateBox className="ql-editor">
-          {templateParts &&
-            dropdowns > 0 &&
-            templateParts.map((templatePart, index) => {
-              if (templatePart.indexOf('class="text-dropdown-btn"') !== -1) {
-                const optionsIndex = dropDownOptionIndex;
-                dropDownOptionIndex++;
-                return (
-                  <StyeldSelect key={index} onChange={text => handleAddAnswer(text, optionsIndex, "dropDown")}>
-                    {options &&
-                      options[optionsIndex] &&
-                      options[optionsIndex].map((response, respID) => (
-                        <Option value={response} key={respID}>
-                          {response}
-                        </Option>
-                      ))}
-                  </StyeldSelect>
-                );
-              }
-              if (templatePart.indexOf('class="text-input-btn"') !== -1) {
-                const targetIndex = inputIndex;
-                inputIndex++;
-                return (
-                  <InputDiv key={index}>
-                    <Input onChange={e => handleAddAnswer(e.target.value, targetIndex, "inputs")} />
-                  </InputDiv>
-                );
-              }
-              return <MathP key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
-            })}
-        </TemplateBox>
+
+        {(dropdowns > 0 || inputs > 0) && (
+          <TemplateBox className="ql-editor">
+            {blocks && (
+              <ClozeMathBlock
+                blocks={blocks}
+                dropDwonEvaluation={dropDwonEvaluation}
+                inputEvaluation={inputEvaluation}
+                handleAddAnswer={handleAddAnswer}
+                options={options}
+                userSelections={
+                  item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswer
+                }
+                checked={type === CHECK}
+              />
+            )}
+          </TemplateBox>
+        )}
+
+        {dropdowns === 0 && inputs === 0 && (
+          <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
+        )}
+
         {type === SHOW && (
           <AnswerBox
             mathAnswers={_getMathAnswers()}
@@ -474,14 +471,8 @@ const KeyboardWrapper = styled.div`
   z-index: 100;
 `;
 
-const StyeldSelect = styled(Select)`
-  min-width: 80px;
-  margin: 0px 4px;
-`;
-
 const NoneDiv = styled.div`
-  /* display: none; */
-  color: red;
+  display: none;
 `;
 
 const TemplateBox = styled.div`
@@ -497,18 +488,4 @@ const QuestionTitleWrapper = styled.div`
 const QuestionNumber = styled.div`
   font-weight: 700;
   margin-right: 4px;
-`;
-
-const MathP = styled.p`
-  display: inline;
-  p {
-    display: inline;
-  }
-`;
-
-const InputDiv = styled.div`
-  min-width: 80px;
-  max-width: 120px;
-  display: inline-block;
-  margin: 0px 4px;
 `;

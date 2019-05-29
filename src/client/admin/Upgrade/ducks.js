@@ -200,6 +200,7 @@ function* upgradeDistrict({ payload }) {
   try {
     const { result } = yield call(manageSubscriptionApi, payload);
     if (result.success) {
+      message.success(result.message);
       yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {
@@ -253,6 +254,7 @@ function* bulkSchoolsSubscribe({ payload }) {
     if (result.success) {
       message.success(result.message);
       yield put(manageSubscriptionsBySchool.actions.bulkSubscriptionSuccess(result.subscriptionResult));
+      yield put(manageSubscriptionsBySchool.actions.updateCurrentEditableRow());
     } else {
       message.error(result.message);
     }

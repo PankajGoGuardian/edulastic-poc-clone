@@ -1,6 +1,21 @@
 import React from "react";
-import { Tag } from "antd";
+import { Tag, Icon } from "antd";
 import { greenDark, darkBlue, lightBlue } from "@edulastic/colors";
+
+export function renderSubscriptionType(subscription = {}) {
+  const { subType = "free", updatedSubTypeSuccess } = subscription;
+  return (
+    <>
+      <SubTypeTag style={{ marginRight: "5px" }}>{subType}</SubTypeTag>
+      {typeof updatedSubTypeSuccess === "undefined" ? null : (
+        <Icon
+          title={`Update ${updatedSubTypeSuccess ? "success" : "failed"}`}
+          type={updatedSubTypeSuccess ? "check-circle" : "warning"}
+        />
+      )}
+    </>
+  );
+}
 
 export default function SubTypeTag({ children }) {
   const color = {

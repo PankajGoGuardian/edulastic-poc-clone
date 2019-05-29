@@ -5,7 +5,7 @@ import { IconEdit } from "@edulastic/icons";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 import { Table, Button as CustomButton } from "../Common/StyledComponents";
-import { renderSubscriptionType } from "../Common/Utils";
+import { renderSubscriptionType } from "../Common/SubTypeTag";
 import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
 import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
 
@@ -170,7 +170,6 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
           schoolIds: [schoolId],
           subType: subTypeParam
         });
-        updateCurrentEditableRow();
       };
 
       const handleEditClick = () => {
@@ -215,7 +214,7 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
           }
         />
       ) : (
-        date
+        moment(date).format("YYYY-MM-DD")
       );
     };
 
@@ -231,7 +230,7 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
           }
         />
       ) : (
-        date
+        moment(date).format("YYYY-MM-DD")
       );
     };
 

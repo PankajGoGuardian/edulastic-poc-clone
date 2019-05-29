@@ -3,7 +3,7 @@ import { Row, Col, Form, Radio, Input, Button } from "antd";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { radioButtonUserData } from "../Data";
 import { Table } from "../Common/StyledComponents";
-import { renderSubscriptionType } from "../Common/Utils";
+import { renderSubscriptionType } from "../Common/SubTypeTag";
 
 const { TextArea } = Input;
 const { Group: RadioGroup } = Radio;

@@ -47,14 +47,9 @@ const MathFormulaPreview = ({
 
   const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-  const updateStaticMathFromUserAnswer = clear => {
+  const updateStaticMathFromUserAnswer = () => {
     if (!userAnswer) {
       setLatex(studentTemplate);
-      setInnerValues([]);
-      return;
-    }
-
-    if (clear) {
       setInnerValues([]);
       return;
     }
@@ -81,7 +76,7 @@ const MathFormulaPreview = ({
         setLatex(userAnswer || studentTemplate);
         return;
       }
-      updateStaticMathFromUserAnswer(true);
+      updateStaticMathFromUserAnswer();
     }
   }, [studentTemplate, previewType, userAnswer]);
 
@@ -91,7 +86,7 @@ const MathFormulaPreview = ({
         setLatex(userAnswer || studentTemplate);
         return;
       }
-      updateStaticMathFromUserAnswer(false);
+      updateStaticMathFromUserAnswer();
     }, 0);
   }, [studentTemplate, userAnswer]);
 

@@ -122,16 +122,16 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             setCurrentMathEl(null);
           }
         },
-        "image.beforeUpload": image => {
-          image.showProgressBar();
+        "image.beforeUpload": function(image) {
+          this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.COURSE)
             .then(result => {
-              image.insert(result);
+              this.image.insert(result);
             })
             .catch(e => {
               console.error(e);
-              EditorRef.current.popups.hideAll();
+              this.popups.hideAll();
               message.error("image upload failed");
             });
 

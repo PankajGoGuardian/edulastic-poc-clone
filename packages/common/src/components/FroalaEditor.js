@@ -197,6 +197,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       EditorRef.current.html.insert(
         `<span class="input__math" contenteditable="false" data-latex="${latex}">${mathHtml}</span> `
       );
+      EditorRef.current.undo.saveStep();
     }
 
     setMathModal(false);

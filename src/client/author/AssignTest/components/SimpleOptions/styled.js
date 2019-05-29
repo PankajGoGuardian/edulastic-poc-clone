@@ -17,7 +17,7 @@ export const InitOptions = styled.div`
   box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 54px 50px;
-  width: 60vw;
+  width: 70vw;
 `;
 
 export const StyledRow = styled(Row)`
@@ -26,13 +26,11 @@ export const StyledRow = styled(Row)`
 
 export const StyledRowLabel = styled(Row)`
   color: ${secondaryTextColor};
-  font-size: 12px;
   font-weight: 600;
   margin-bottom: 8px;
 `;
 
 export const StyledRowButton = styled(Row)`
-  font-size: 12px;
   font-weight: 600;
   margin-bottom: 32px;
   margin-top: 16px;
@@ -80,7 +78,6 @@ export const StyledRowSettings = styled(Row)`
 
   .ant-radio-wrapper {
     color: #434b5d;
-    font-size: 12px;
     font-weight: 600;
   }
 `;
@@ -106,7 +103,6 @@ export const SpaceDiv = styled.div`
 export const SettingsWrapper = styled.div`
   margin-top: 48px;
   color: #434b5d;
-  font-size: 12px;
   font-weight: 600;
   display: flex;
   flex-direction: ${({ isAdvanced }) => (isAdvanced ? "row" : "column")};
@@ -128,7 +124,6 @@ export const SettingsBtn = styled.span`
   align-items: center;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: 11px;
   font-weight: bold;
   color: #6a737f;
 
@@ -207,7 +202,6 @@ export const StyledTable = styled(Table)`
   margin-left: ${({ isAdvanced }) => (isAdvanced ? "20px" : "0px")};
   .ant-table {
     color: #434b5d;
-    font-size: 12px;
     font-weight: 600;
 
     .ant-table-thead > tr > th {
@@ -217,7 +211,6 @@ export const StyledTable = styled(Table)`
       font-weight: bold;
       text-transform: uppercase;
       text-align: center;
-      font-size: ${({ isAdvanced }) => (isAdvanced ? "10px" : "12px")};
       padding: 8px;
 
       &:first-child {

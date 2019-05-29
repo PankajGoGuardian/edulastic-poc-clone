@@ -19,7 +19,6 @@ export const StyledRow = styled(Row)`
 
 export const StyledRowLabel = styled(Row)`
   color: ${secondaryTextColor};
-  font-size: 12px;
   font-weight: 600;
   margin-bottom: 8px;
 `;
@@ -29,7 +28,6 @@ export const SettingsBtn = styled.span`
   align-items: center;
   text-transform: uppercase;
   cursor: pointer;
-  font-size: 11px;
   font-weight: bold;
   color: #6a737f;
 
@@ -109,7 +107,6 @@ export const StyledTable = styled(Table)`
   margin-left: 70px;
   .ant-table {
     color: #434b5d;
-    font-size: 12px;
     font-weight: 600;
 
     .ant-table-thead > tr > th {

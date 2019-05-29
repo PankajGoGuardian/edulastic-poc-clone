@@ -104,6 +104,10 @@ export const radioButtonUserData = {
 
 export const GRADES_LIST = [
   {
+    label: "All",
+    value: "All"
+  },
+  {
     label: "Kindergarten",
     value: "K"
   },
@@ -157,4 +161,4 @@ export const GRADES_LIST = [
   }
 ];
 
-export const SUBJECTS_LIST = ["Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];
+export const SUBJECTS_LIST = ["All", "Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];

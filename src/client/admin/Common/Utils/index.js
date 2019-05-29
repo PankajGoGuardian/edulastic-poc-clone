@@ -1,4 +1,6 @@
 import React, { useEffect, useRef } from "react";
+import { Icon } from "antd";
+import SubTypeTag from "../SubTypeTag";
 
 export const getDate = () => {
   const currentDate = new Date();
@@ -17,4 +19,19 @@ export function useUpdateEffect(fn, inputs) {
     if (didMountRef.current) fn();
     else didMountRef.current = true;
   }, inputs);
+}
+
+export function renderSubscriptionType(subscription = {}) {
+  const { subType = "free", updatedSubTypeSuccess } = subscription;
+  return (
+    <>
+      <SubTypeTag style={{ marginRight: "5px" }}>{subType}</SubTypeTag>
+      {typeof updatedSubTypeSuccess === "undefined" ? null : (
+        <Icon
+          title={`Update ${updatedSubTypeSuccess ? "success" : "failed"}`}
+          type={updatedSubTypeSuccess ? "check-circle" : "warning"}
+        />
+      )}
+    </>
+  );
 }

@@ -1,9 +1,9 @@
 import React from "react";
-import { Row, Col, Form, Radio, Input, Button, Icon } from "antd";
+import { Row, Col, Form, Radio, Input, Button } from "antd";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { radioButtonUserData } from "../Data";
 import { Table } from "../Common/StyledComponents";
-import SubTypeTag from "../Common/SubTypeTag";
+import { renderSubscriptionType } from "../Common/Utils";
 
 const { TextArea } = Input;
 const { Group: RadioGroup } = Radio;
@@ -47,23 +47,16 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
     },
     {
       title: "Subscription Type",
-      dataIndex: "subscription.subType",
-      render: (text = "free", { updatedSubType, updatedSubTypeSuccess }) =>
-        updatedSubType ? (
-          <>
-            <SubTypeTag style={{ marginRight: "5px" }}>{updatedSubType}</SubTypeTag>
-            <Icon
-              title={`Update ${updatedSubTypeSuccess ? "success" : "failed"}`}
-              type={updatedSubTypeSuccess ? "check-circle" : "warning"}
-            />
-          </>
-        ) : (
-          <SubTypeTag>{text}</SubTypeTag>
-        )
+      dataIndex: "subscription",
+      render: renderSubscriptionType
     },
     {
       title: "Email ID",
       dataIndex: "_source.email"
+    },
+    {
+      title: "Notes",
+      dataIndex: "subscription.notes"
     }
   ];
 

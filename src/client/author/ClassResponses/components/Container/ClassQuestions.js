@@ -48,35 +48,38 @@ class ClassQuestions extends Component {
       return [];
     }
 
-    testItems = testItems.map(item => {
-      const { data, rows, ...others } = item;
-      if (!(data && data.questions)) {
-        return;
-      }
-      const questions = data.questions.map(question => {
-        const { id } = question;
-        let qActivities = questionActivities.filter(({ qid }) => qid === id);
-        qActivities = qActivities.map(q => {
-          const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
-
-          if (userQuestion) {
-            q.timespent = userQuestion.timespent;
-            q.disabled = userQuestion.disabled;
-
-            q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
-          }
-          q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
-          return { ...q };
-        });
-        if (qActivities.length > 0) {
-          [question.activity] = qActivities;
-        } else {
-          question.activity = undefined;
+    const { testItemsOrder } = this.props;
+    testItems = testItems
+      .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
+      .map(item => {
+        const { data, rows, ...others } = item;
+        if (!(data && data.questions)) {
+          return;
         }
-        return { ...question };
+        const questions = data.questions.map(question => {
+          const { id } = question;
+          let qActivities = questionActivities.filter(({ qid }) => qid === id);
+          qActivities = qActivities.map(q => {
+            const userQuestion = userQActivities.find(({ _id }) => _id === q.qid);
+
+            if (userQuestion) {
+              q.timespent = userQuestion.timespent;
+              q.disabled = userQuestion.disabled;
+
+              q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
+            }
+            q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
+            return { ...q };
+          });
+          if (qActivities.length > 0) {
+            [question.activity] = qActivities;
+          } else {
+            question.activity = undefined;
+          }
+          return { ...question };
+        });
+        return { ...others, rows, data: { questions } };
       });
-      return { ...others, rows, data: { questions } };
-    });
     return [...testItems];
   }
 

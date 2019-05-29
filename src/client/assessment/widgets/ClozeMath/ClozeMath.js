@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Paper } from "@edulastic/common";
+import { isUndefined } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -66,10 +68,13 @@ const ClozeMath = ({
   };
 
   const getDropdowns = tmpl => {
+    if (isUndefined(window.$)) {
+      return;
+    }
     const temp = tmpl || "";
-    const dropDownParts = temp.match(/<span class="text-dropdown-btn.*?<\/span>/g);
-    const dropDownsCount = dropDownParts !== null ? dropDownParts.length : 0;
-    return dropDownsCount;
+    const parsedHTML = $.parseHTML(temp);
+    const _dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
+    return _dropDowns;
   };
 
   useEffect(() => {

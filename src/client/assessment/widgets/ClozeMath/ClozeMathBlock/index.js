@@ -1,6 +1,8 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 import React from "react";
 import styled from "styled-components";
-import { isEmpty } from "lodash";
+import { isEmpty, isUndefined } from "lodash";
 
 import ClozeDropDown from "./ClozeDropDown";
 import CheckedDropDown from "./CheckedDropDown";
@@ -16,7 +18,19 @@ const ClozeMathBlock = ({
   inputEvaluation,
   userSelections
 }) => {
-  const parsreTemplate = tpl => tpl.match(/(<span.*?<\/span>)/g);
+  const parsreTemplate = tpl => {
+    if (isUndefined(window.$)) {
+      return;
+    }
+
+    const templateParts = [];
+    const parsedHTML = $.parseHTML(tpl);
+    $(parsedHTML).each(function() {
+      templateParts.push($(this).prop("outerHTML"));
+    });
+    return templateParts;
+  };
+
   let dropDownOptionIndex = 0;
   let inputIndex = 0;
   const { dropDown: _dropDownAnswers = [], inputs: _inputAnswers = [] } = userSelections;

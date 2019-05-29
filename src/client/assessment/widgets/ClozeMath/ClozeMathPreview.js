@@ -1,9 +1,10 @@
+/* eslint-disable func-names */
 /* global $ */
 import React, { useEffect, useRef, useState } from "react";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep, isEmpty, get } from "lodash";
+import { cloneDeep, isEmpty, get, isUndefined } from "lodash";
 import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
 import { black } from "@edulastic/colors";
 
@@ -43,9 +44,7 @@ const ClozeMathPreview = ({
   const [latexes, setLatexes] = useState([]);
   const [mathHtmls, setMathHtmls] = useState([]);
   const [newInnerHtml, setNewInnerHtml] = useState("");
-  const [blocks, setBlocks] = useState([]);
-  const [dropdowns, setDropdowns] = useState(0);
-  const [inputs, setInputs] = useState(0);
+  const [templateParts, setBlocks] = useState({ blocks: [], inputs: 0, dropDowns: 0 });
 
   const minWidth = item.ui_style && item.ui_style.min_width ? `${item.ui_style.min_width}px` : 0;
 
@@ -191,17 +190,24 @@ const ClozeMathPreview = ({
   };
 
   const getBlocks = () => {
-    const _blocks = newInnerHtml.match(/(<p.*?<\/p>)|(<hr>)/g);
+    if (isUndefined(window.$)) {
+      return;
+    }
 
-    const dropDownParts = newInnerHtml.match(/<span class="text-dropdown-btn.*?<\/span>/g);
-    const _dropdowns = dropDownParts !== null ? dropDownParts.length : 0;
+    const blocks = [];
+    const parsedHTML = $.parseHTML(newInnerHtml);
+    $(parsedHTML).each(function() {
+      blocks.push($(this).prop("outerHTML"));
+    });
 
-    const inputParts = newInnerHtml.match(/<span class="text-dropdown-btn.*?<\/span>/g);
-    const _inputs = inputParts !== null ? inputParts.length : 0;
+    const dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
+    const inputs = $(parsedHTML).find(".text-dropdown-btn").length;
 
-    setBlocks(_blocks);
-    setDropdowns(_dropdowns);
-    setInputs(_inputs);
+    setBlocks({
+      blocks,
+      inputs,
+      dropDowns
+    });
   };
 
   const handleAddAnswer = (answer, index, key) => {
@@ -296,7 +302,7 @@ const ClozeMathPreview = ({
           saveAnswer(newAnswers);
         }
       });
-  }, [type, wrappedRef.current, blocks]);
+  }, [type, wrappedRef.current, templateParts]);
 
   useEffect(() => {
     if (type === CHECK) {
@@ -379,8 +385,9 @@ const ClozeMathPreview = ({
 
   useEffect(() => {
     getBlocks();
-  }, [newInnerHtml]);
+  }, [newInnerHtml, window.$]);
 
+  const { blocks, inputs, dropDowns } = templateParts;
   return (
     <WithResources
       resources={[
@@ -399,7 +406,7 @@ const ClozeMathPreview = ({
           <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
 
-        {(dropdowns > 0 || inputs > 0) && (
+        {(dropDowns > 0 || inputs > 0) && (
           <TemplateBox className="ql-editor">
             {blocks && (
               <ClozeMathBlock
@@ -415,7 +422,7 @@ const ClozeMathPreview = ({
           </TemplateBox>
         )}
 
-        {dropdowns === 0 && inputs === 0 && (
+        {dropDowns === 0 && inputs === 0 && (
           <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
         )}
 

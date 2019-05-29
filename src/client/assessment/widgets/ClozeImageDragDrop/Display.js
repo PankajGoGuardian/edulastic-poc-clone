@@ -359,7 +359,6 @@ class Display extends Component {
           {responseposition === "left" && (
             <div style={{ display: "flex" }}>
               <div
-                hidden={checkAnswer || showAnswer}
                 className="left responseboxContainer"
                 style={{
                   width: "20%",
@@ -402,7 +401,6 @@ class Display extends Component {
                 {templateBoxLayout}
               </div>
               <div
-                hidden={checkAnswer || showAnswer}
                 className={`right responseboxContainer ${smallSize ? "small" : ""}`}
                 style={{
                   height: "auto",

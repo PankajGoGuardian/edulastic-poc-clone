@@ -7,7 +7,7 @@ export const isLessThanOneMistake = (userAnswer, validAnswer, ignoreCase) => {
   let mistakesCount = 0;
   if (ignoreCase) {
     userAnswerArray.forEach((letter, index) => {
-      if (letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
+      if (!validAnswerArray[index] || !letter || letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
         mistakesCount++;
       }
     });
@@ -28,7 +28,10 @@ export const getClozeTextMatches = (response, answer, restOptions) =>
       return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
     }
     if (restOptions.ignoreCase) {
-      return isEqual(answer[index].trim().toLowerCase(), resp.trim().toLowerCase());
+      return isEqual(
+        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
+        resp.trim() ? resp.trim().toLowerCase() : undefined
+      );
     }
     return isEqual(answer[index].trim(), resp.trim());
   }).length;
@@ -39,7 +42,10 @@ export const getClozeTextEvaluation = (response, answer, restOptions) =>
       return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
     }
     if (restOptions.ignoreCase) {
-      return isEqual(answer[index].trim().toLowerCase(), resp.trim().toLowerCase());
+      return isEqual(
+        answer[index].trim() ? answer[index].trim().toLowerCase() : null,
+        resp.trim() ? resp.trim().toLowerCase() : undefined
+      );
     }
     return isEqual(answer[index].trim(), resp.trim());
   });

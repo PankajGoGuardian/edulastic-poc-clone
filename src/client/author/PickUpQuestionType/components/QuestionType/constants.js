@@ -2016,14 +2016,16 @@ export const getCards = onSelectQuestionType => {
           valid_response: {
             score: 1,
             value: [
-              {
-                method: "equivSymbolic",
-                value: "",
-                options: {
-                  inverseResult: false,
-                  decimalPlaces: 10
+              [
+                {
+                  method: "equivSymbolic",
+                  value: "",
+                  options: {
+                    inverseResult: false,
+                    decimalPlaces: 10
+                  }
                 }
-              }
+              ]
             ]
           },
           valid_dropdown: {

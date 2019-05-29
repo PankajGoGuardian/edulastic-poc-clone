@@ -408,9 +408,7 @@ const ClozeMathPreview = ({
                 inputEvaluation={inputEvaluation}
                 handleAddAnswer={handleAddAnswer}
                 options={options}
-                userSelections={
-                  item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswer
-                }
+                userSelections={get(item, "item.activity.userResponse", false) || userAnswer}
                 checked={type === CHECK || type === SHOW}
               />
             )}

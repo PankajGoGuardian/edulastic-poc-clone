@@ -19,7 +19,6 @@ const ClozeMathBlock = ({
   const parsreTemplate = tpl => tpl.match(/(<span.*?<\/span>)/g);
   let dropDownOptionIndex = 0;
   let inputIndex = 0;
-
   const { dropDown: _dropDownAnswers = [], inputs: _inputAnswers = [] } = userSelections;
 
   return blocks.map((block, blockIndex) => {

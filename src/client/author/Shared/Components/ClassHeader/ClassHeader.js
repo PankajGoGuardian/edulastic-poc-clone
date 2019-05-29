@@ -30,7 +30,7 @@ import {
 } from "./styled";
 import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
 import { StudentReportCardModal } from "./components/studentReportCardModal";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { releaseScoreAction } from "../../../src/actions/classBoard";
 import { showScoreSelector } from "../../../ClassBoard/ducks";
@@ -126,9 +126,9 @@ class ClassHeader extends Component {
 
     const menu = (
       <Menu>
-        <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+        <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
           <Menu.Item key="key1">Mark as Done</Menu.Item>
-        </FeatureWrapper>
+        </FeaturesSwitch>
         <Menu.Item
           key="key2"
           onClick={this.handleReleaseScore}
@@ -176,14 +176,14 @@ class ClassHeader extends Component {
               </StyledLink>
             </FeatureWrapper>
 
-            <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden">
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
                   <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
                   <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
                 </StyledAnchor>
               </StyledLink>
-            </FeatureWrapper>
+            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>

@@ -13,7 +13,7 @@ import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
 import { getNavigationTabLinks } from "../../common/util";
 
 import navigation from "../../common/static/json/navigation.json";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 export const SingleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -81,7 +81,7 @@ export const SingleAssessmentReportContainer = props => {
 
   return (
     <>
-      <FeatureWrapper feature="singleAssessmentReport" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
         <SingleAssessmentReportFilters
           onGoClick={onGoClick}
           loc={props.loc}
@@ -111,7 +111,7 @@ export const SingleAssessmentReportContainer = props => {
           path={`/author/reports/performance-by-standards/test/:testId?`}
           render={_props => <PerformanceByStandards {..._props} showFilter={props.showFilter} settings={settings} />}
         />
-      </FeatureWrapper>
+      </FeaturesSwitch>
     </>
   );
 };

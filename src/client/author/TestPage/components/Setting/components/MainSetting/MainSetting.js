@@ -33,7 +33,7 @@ import {
   ActivityInput,
   Container
 } from "./styled";
-import FeatureWrapper from "../../../../../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
 
 const {
@@ -252,7 +252,7 @@ class MainSetting extends Component {
                 </Col>
               </Row>
             </Block>
-            <FeatureWrapper feature="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>
                 <Body smallSize={isSmallSize}>
@@ -272,7 +272,7 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
+            </FeaturesSwitch>
             <Block id="release-scores" smallSize={isSmallSize}>
               <Title>Release Scores</Title>
               <Body smallSize={isSmallSize}>
@@ -294,7 +294,7 @@ class MainSetting extends Component {
                 </Description>
               </Body>
             </Block>
-            <FeatureWrapper feature="assessmentSuperPowersRequireSafeExamBrowser" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersRequireSafeExamBrowser" actionOnInaccessible="hidden">
               <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
                 <Title>Require Safe Exam Browser</Title>
                 <Body smallSize={isSmallSize}>
@@ -318,8 +318,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersShuffleQuestions" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersShuffleQuestions" actionOnInaccessible="hidden">
               <Block id="suffle-question" smallSize={isSmallSize}>
                 <Title>Shuffle Questions</Title>
                 <Body smallSize={isSmallSize}>
@@ -331,8 +331,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersShuffleAnswerChoice" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersShuffleAnswerChoice" actionOnInaccessible="hidden">
               <Block id="show-answer-choice" smallSize={isSmallSize}>
                 <Title>Shuffle Answer Choice</Title>
                 <Body smallSize={isSmallSize}>
@@ -348,8 +348,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersShowCalculator" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersShowCalculator" actionOnInaccessible="hidden">
               <Block id="show-calculator" smallSize={isSmallSize}>
                 <Title>Show Calculator</Title>
                 <Body smallSize={isSmallSize}>
@@ -367,8 +367,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersAnswerOnPaper" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersAnswerOnPaper" actionOnInaccessible="hidden">
               <Block id="answer-on-paper" smallSize={isSmallSize}>
                 <Title>Answer on Paper</Title>
                 <Body smallSize={isSmallSize}>
@@ -380,8 +380,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersRequirePassword" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersRequirePassword" actionOnInaccessible="hidden">
               <Block id="require-password" smallSize={isSmallSize}>
                 <Title>Require Password</Title>
                 <Body smallSize={isSmallSize}>
@@ -393,8 +393,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
               <Block id="evaluation-method" smallSize={isSmallSize}>
                 <Title>Evaluation Method</Title>
                 <Body smallSize={isSmallSize}>
@@ -412,8 +412,8 @@ class MainSetting extends Component {
                   </Description>
                 </Body>
               </Block>
-            </FeatureWrapper>
-            <FeatureWrapper feature="performanceBands" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="performanceBands" actionOnInaccessible="hidden">
               <Block id="performance-bands" smallSize={isSmallSize}>
                 <Row style={{ marginBottom: 18, display: "flex", alignItems: "center" }}>
                   <Col span={6}>
@@ -442,7 +442,7 @@ class MainSetting extends Component {
                   )}
                 />
               </Block>
-            </FeatureWrapper>
+            </FeaturesSwitch>
             <AdvancedSettings style={{ display: isSmallSize || showAdvancedOption ? "block" : "none" }}>
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>

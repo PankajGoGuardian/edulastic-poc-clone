@@ -17,8 +17,7 @@ import { MultipleAssessmentReport } from "./components/multipleAssessmentReport"
 import { CustomizedHeaderWrapper } from "./common/components/header";
 
 import navigation from "./common/static/json/navigation.json";
-import FeatureWrapper from "../../features/components/FeatureWrapper";
-import FeaturesWrapper from "../../features/components/FeaturesWrapper";
+import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -110,30 +109,30 @@ const Reports = props => {
   return (
     <StyledContainer>
       <Row gutter={20}>
-        <FeaturesWrapper
-          featuresArray={["singleAssessmentReport", "studentProfileReport"]}
+        <FeaturesSwitch
+          inputFeatures={["singleAssessmentReport", "studentProfileReport"]}
           operation="OR"
           actionOnInaccessible="hidden"
         >
           <Col md={12} xs={24}>
-            <FeatureWrapper feature="singleAssessmentReport" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="singleAssessmentReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="single-assessment-reports report">
                 <SingleAssessmentReport />
               </StyledCard>
-            </FeatureWrapper>
-            <FeatureWrapper feature="studentProfileReport" actionOnInaccessible="hidden">
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="studentProfileReport" actionOnInaccessible="hidden">
               <StyledCard margin="0px 0px 20px" className="student-profile-reports report">
                 <StudentProfileReport />
               </StyledCard>
-            </FeatureWrapper>
+            </FeaturesSwitch>
           </Col>
-        </FeaturesWrapper>
+        </FeaturesSwitch>
         <Col md={12} xs={24}>
-          <FeatureWrapper feature="multipleAssessmentReport" actionOnInaccessible="hidden">
+          <FeaturesSwitch inputFeatures="multipleAssessmentReport" actionOnInaccessible="hidden">
             <StyledCard margin="0px 0px 20px" className="multiple-assessment-reports report">
               <MultipleAssessmentReport />
             </StyledCard>
-          </FeatureWrapper>
+          </FeaturesSwitch>
           <StyledCard margin="0px 0px 20px" className="standards-mastery-reports report">
             <StandardsMasteryReport />
           </StyledCard>

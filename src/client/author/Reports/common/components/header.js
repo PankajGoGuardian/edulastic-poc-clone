@@ -5,7 +5,7 @@ import { white, fadedGrey } from "@edulastic/colors";
 import { IconBarChart } from "@edulastic/icons";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 import Breadcrumb from "../../../src/components/Breadcrumb";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 export const CustomizedHeaderWrapper = ({
   breadcrumbsData,
@@ -46,25 +46,25 @@ export const CustomizedHeaderWrapper = ({
         {title !== "Reports" ? <Breadcrumb data={breadcrumbsData} style={{ position: "unset" }} /> : ReportHeader}
       </HeaderTitle>
       <StyledCol>
-        <FeatureWrapper feature="shareReports" actionOnInaccessible="hidden">
+        <FeaturesSwitch inputFeatures="shareReports" actionOnInaccessible="hidden">
           {onShareClickCB ? (
             <StyledButton shape="round" size="default" icon="share-alt" onClick={_onShareClickCB}>
               Share
             </StyledButton>
           ) : null}
-        </FeatureWrapper>
+        </FeaturesSwitch>
         {onPrintClickCB ? (
           <StyledButton shape="round" size="default" icon="printer" onClick={_onPrintClickCB}>
             Print
           </StyledButton>
         ) : null}
-        <FeatureWrapper feature="downloadReports" actionOnInaccessible="hidden">
+        <FeaturesSwitch inputFeatures="downloadReports" actionOnInaccessible="hidden">
           {onDownloadCSVClickCB ? (
             <StyledButton type="primary" shape="round" size="default" icon="download" onClick={_onDownloadCSVClickCB}>
               Download CSV
             </StyledButton>
           ) : null}
-        </FeatureWrapper>
+        </FeaturesSwitch>
         {onRefineResultsCB ? (
           <StyledButton
             type={refineButtonActive ? "default" : "primary"}

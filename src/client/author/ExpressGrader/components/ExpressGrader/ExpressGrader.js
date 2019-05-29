@@ -17,7 +17,6 @@ import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 // styled wrappers
 import { PaginationInfo, StyledFlexContainer } from "./styled";
-import FeatureWrapper from "../../../../features/components/FeatureWrapper";
 import memoizeOne from "memoize-one";
 
 /**

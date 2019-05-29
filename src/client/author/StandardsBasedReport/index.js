@@ -11,7 +11,7 @@ import TableDisplay from "./components/TableDisplay";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import { getTestActivitySelector, getAdditionalDataSelector, getQIdsSelector } from "../ClassBoard/ducks";
 import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
-import FeatureWrapper from "../../features/components/FeatureWrapper";
+import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -43,7 +43,7 @@ class StandardsBasedReport extends Component {
     } = this.props;
     const testActivityId = this.getTestActivity(testActivity);
     return (
-      <FeatureWrapper feature="standardBasedReport" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden">
         <React.Fragment>
           <ClassHeader
             classId={classId}
@@ -66,7 +66,7 @@ class StandardsBasedReport extends Component {
             <TableDisplay testActivities={testActivity} additionalData={additionalData} qids={this.props.testQIds} />
           </DivWrapper>
         </React.Fragment>
-      </FeatureWrapper>
+      </FeaturesSwitch>
     );
   }
 }

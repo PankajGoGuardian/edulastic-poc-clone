@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, isEmpty } from "lodash";
+import { get, isEmpty, size } from "lodash";
 import { Table, Spin } from "antd";
 import { lightBlue3 } from "@edulastic/colors";
 import { StudentContent, NoStudents, NoConentDesc, StyledIcon } from "./styled";
@@ -63,7 +63,14 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
           </NoStudents>
         )}
         {loaded && !empty && (
-          <Table columns={columns} bordered rowSelection={rowSelection} dataSource={students} rowKey={rowKey} />
+          <Table
+            columns={columns}
+            bordered
+            rowSelection={rowSelection}
+            dataSource={students}
+            rowKey={rowKey}
+            pagination={size(students) > 10 ? students : false}
+          />
         )}
       </StudentContent>
     </Spin>

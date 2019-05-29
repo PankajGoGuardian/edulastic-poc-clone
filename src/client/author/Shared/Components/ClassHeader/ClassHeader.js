@@ -164,7 +164,7 @@ class ClassHeader extends Component {
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeatureWrapper feature="expressGrader" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden">
               <StyledLink
                 to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
                 data-cy="Expressgrader"
@@ -174,7 +174,7 @@ class ClassHeader extends Component {
                   <LinkLabel>{t("common.expressGrader")}</LinkLabel>
                 </StyledAnchor>
               </StyledLink>
-            </FeatureWrapper>
+            </FeaturesSwitch>
 
             <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden">
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">

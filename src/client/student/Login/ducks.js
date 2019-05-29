@@ -1,13 +1,13 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { pick, last } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
+import { message } from "antd";
 import { push } from "react-router-redux";
 import { authApi, userApi, TokenStorage } from "@edulastic/api";
-import { roleuser } from "@edulastic/constants";
+import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
-import { message } from "antd";
 
 // types
 export const LOGIN = "[auth] login";
@@ -38,7 +38,12 @@ const setUser = (state, { payload }) => {
   state.user = payload;
   state.isAuthenticated = true;
   state.authenticating = false;
-  state.signupStatus = payload.currentSignUpState || 3;
+  state.signupStatus = payload.currentSignUpState;
+};
+
+const getCurrentPath = () => {
+  const { location } = window;
+  return `${location.pathname}${location.search}${location.hash}`;
 };
 
 export default createReducer(initialState, {
@@ -142,8 +147,26 @@ function* signup({ payload }) {
     if (_responseMsg && !result) {
       yield call(message.error, _responseMsg);
     } else {
+      const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData", "currentSignUpState"]);
+      TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
+      TokenStorage.selectAccessToken(user._id, user.role);
       yield put(signupSuccessAction(result));
-      yield put(push("/"));
+      localStorage.removeItem("loginRedirectUrl");
+      if (user.role === roleuser.TEACHER) {
+        switch (user.currentSignUpState) {
+          case signUpState.SCHOOL_NOT_SELECTED:
+            yield put(push("/signup"));
+            break;
+          case signUpState.PREFERENCE_NOTSELECTED:
+            yield put(push("/signup"));
+            break;
+          case signUpState.DONE:
+            yield put(push("/author/assignments"));
+            break;
+          default:
+            yield put(push("/"));
+        }
+      }
     }
   } catch (err) {
     console.error(err);
@@ -151,11 +174,6 @@ function* signup({ payload }) {
     yield call(message.error, errorMessage);
   }
 }
-
-const getCurrentPath = () => {
-  const { location } = window;
-  return `${location.pathname}${location.search}${location.hash}`;
-};
 
 export function* fetchUser() {
   try {

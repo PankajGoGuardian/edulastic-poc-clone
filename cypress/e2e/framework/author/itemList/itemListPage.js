@@ -27,7 +27,7 @@ class ItemListPage {
     // return itemId;
   };
 
-  createItem = itemKey => {
+  createItem = (itemKey, queIndex = 0) => {
     const editItem = new EditItemPage();
     const metadataPage = new MetadataPage();
     cy.fixture("questionAuthoring").then(itemData => {
@@ -65,13 +65,14 @@ class ItemListPage {
             queType
           ) > -1
         ) {
-          question.createQuestion(queType);
-        } else question.createQuestion();
+          question.createQuestion(queType, queKey, queIndex);
+        } else question.createQuestion(queKey, queIndex);
 
         if (itemData[queType][queKey].standards) {
           editItem.getEditButton().click();
           editItem.header.metadata();
           metadataPage.mapStandards(itemData[queType][queKey].standards);
+          metadataPage.header.edit();
           editItem.header.save();
         }
 

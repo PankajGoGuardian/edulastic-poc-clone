@@ -114,7 +114,7 @@ class ComposeQuestion extends Component {
     const { t, item } = this.props;
 
     return (
-      <Widget questionTextArea>
+      <Widget data-cy="questiontext" questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
         <FroalaEditor tag="textarea" value={item.stimulus} onChange={this.onChangeQuestion} />
       </Widget>

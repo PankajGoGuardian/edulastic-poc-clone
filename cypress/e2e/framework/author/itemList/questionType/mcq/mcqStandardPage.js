@@ -74,16 +74,15 @@ class MCQStandardPage {
   }
 
   // question content
-  getQuestionEditor = () => cy.get('[data-placeholder="[This is the stem.]"');
+  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
 
   // choices
   getChoiceByIndex = index => {
-    const selector = `#idprefix${index}`;
+    // const selector = `#idprefix${index}`;
     return cy
-      .get(".text-editor")
-      .find(selector)
-      .next()
-      .find(".ql-editor");
+      .get('[data-cy="compose-question-quill-component"]')
+      .eq(index)
+      .find(".fr-element");
   };
 
   deleteChoiceByIndex(index) {
@@ -96,7 +95,8 @@ class MCQStandardPage {
     cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find(".ql-editor");
+      .find(".fr-element");
+  // .find(".ql-editor");
 
   getAllAnsChoicesLabel = () =>
     cy
@@ -318,6 +318,11 @@ class MCQStandardPage {
         this.getPoints()
           .clear()
           .type(points);
+        // uncheck default ans
+        this.getAllAnsChoicesLabel()
+          .find("input:checked")
+          .click({ force: true });
+
         this.getAllAnsChoicesLabel()
           .contains(correct)
           .click();

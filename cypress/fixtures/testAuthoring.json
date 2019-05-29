@@ -7,8 +7,14 @@
   },
   "LCB_1": {
     "name": "LCB Test Assessment 01",
-    "grade": ["Grade 10"],
+    "grade": ["Kindergarten"],
     "subject": ["Math"],
     "itemKeys": ["MCQ_STD.std_1", "MCQ_STD.std_2"]
+  },
+  "EDIT_1": {
+    "name": "Test Edit Flow",
+    "grade": ["Grade 10"],
+    "subject": ["Math"],
+    "itemKeys": ["MCQ_STD.default", "MCQ_STD.default"]
   }
 }

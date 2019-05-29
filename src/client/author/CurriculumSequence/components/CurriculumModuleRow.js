@@ -12,7 +12,8 @@ import {
   tabletWidth,
   greenThird,
   extraDesktopWidth,
-  mainBgColor
+  mainBgColor,
+  textColor
 } from "@edulastic/colors";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
 import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
@@ -151,8 +152,10 @@ class ModuleRow extends Component {
                   </CustomIcon>
                   <ModuleTitleAssignedWrapper>
                     <ModuleTitleWrapper>
+                      <ModuleTitle>
+                        {`Module ${moduleIndex + 1}`}: {title}
+                      </ModuleTitle>
                       <ModuleTitlePrefix>
-                        {`Module ${moduleIndex + 1}`}
                         {!hideEditOptions && (
                           <Icon
                             type="close-circle"
@@ -162,7 +165,6 @@ class ModuleRow extends Component {
                           />
                         )}
                       </ModuleTitlePrefix>
-                      <ModuleTitle>{title}</ModuleTitle>
                     </ModuleTitleWrapper>
 
                     {completed && !hideEditOptions && (
@@ -419,7 +421,6 @@ export const ModuleAssignedUnit = styled.div`
 
 const ModuleTitleWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   @media only screen and (max-width: ${tabletWidth}) {
     width: 80%;
   }
@@ -562,11 +563,12 @@ const ModuleTitleAssignedWrapper = styled.div`
 const ModuleTitlePrefix = styled.div`
   font-weight: 600;
   font-size: 16px;
+  margin-left: 10px;
 `;
 
 export const ModuleDataName = styled.div`
   font-weight: 600;
-  color: #30404f;
+  color: ${textColor};
   font-size: 14px;
   font-family: Open Sans, SemiBold;
   @media only screen and (max-width: ${desktopWidth}) {
@@ -678,7 +680,6 @@ const ModuleHeader = styled(Row)`
   flex-direction: column;
   border-bottom-left-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
   border-bottom-right-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
-  /* padding-bottom: 0; */
   overflow: hidden;
   position: relative;
 `;

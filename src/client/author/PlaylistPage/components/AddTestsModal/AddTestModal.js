@@ -4,8 +4,7 @@ import { compose } from "redux";
 import styled from "styled-components";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
-import { white, inputBorder, lightGreySecondary, blueButton } from "@edulastic/colors";
-import { Block } from "../../../TestPage/components/Setting/components/MainSetting/styled";
+import { white, lightGreySecondary, lightBlue3, fadedGrey } from "@edulastic/colors";
 
 const ModalStyles = {
   minWidth: 750,
@@ -49,14 +48,17 @@ class AddTestModal extends React.Component {
     return (
       <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={this.closeModal} center>
         <HeadingWrapper>
-          <Title>Add </Title>
+          <Title>Add to Module</Title>
         </HeadingWrapper>
-        {modulesList &&
-          modulesList.map(({ title }, index) => (
-            <ModuleWrapper onClick={e => this.onModuleClick(index)}>
-              <SubTitleWrapper>Module {index + 1}:</SubTitleWrapper> <TitleWrapper>{title}</TitleWrapper>
-            </ModuleWrapper>
-          ))}
+        <ModuleWrapper>
+          {modulesList &&
+            modulesList.map(({ title }, index) => (
+              <ModuleList onClick={e => this.onModuleClick(index)}>
+                <SubTitleWrapper>Module {index + 1}:</SubTitleWrapper> <TitleWrapper>{title}</TitleWrapper>
+              </ModuleList>
+            ))}
+          <ModuleList>Create New Module</ModuleList>
+        </ModuleWrapper>
       </Modal>
     );
   }
@@ -78,7 +80,7 @@ export default enhance(AddTestModal);
 const HeadingWrapper = styled.div`
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 0px 0px 10px;
   justify-content: space-between;
 `;
 
@@ -92,17 +94,26 @@ const TitleWrapper = styled.span`
   width: 80%;
 `;
 
-const ModuleWrapper = styled.div`
-  margin-bottom: 5px;
-  border: ${inputBorder} solid 1px;
+const ModuleWrapper = styled.ul`
+  margin: 0;
+  padding: 0px;
+  list-style: none;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid ${fadedGrey};
+`;
+
+const ModuleList = styled.li`
   width: 100%;
-  padding: 15px 30px;
-  border-radius: 4px;
+  padding: 10px 15px;
   cursor: pointer;
   background-color: ${white};
-
-  :hover {
-    border: ${blueButton} solid 1px;
+  border-bottom: 1px solid ${fadedGrey};
+  &:last-child {
+    color: ${lightBlue3};
+  }
+  &:hover {
+    background-color: ${fadedGrey};
   }
 `;
 

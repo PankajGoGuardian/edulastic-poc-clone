@@ -34,6 +34,7 @@ import { getCurriculumsListSelector, getStandardsListSelector } from "../../../s
 import { addItemToCartAction } from "../../ducks";
 import FilterButton from "../FilterButton/FilterButton";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
+import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -207,8 +208,16 @@ class Contaier extends Component {
   };
 
   renderItems = () => {
-    const { items, itemTypes, history, windowWidth, addItemToCart, selectedCartItems } = this.props;
-
+    const {
+      items,
+      itemTypes,
+      history,
+      windowWidth,
+      addItemToCart,
+      selectedCartItems,
+      interestedCurriculums
+    } = this.props;
+    const { search } = this.state;
     return items.map(item => (
       <Item
         key={`Item_${item._id}`}
@@ -218,6 +227,8 @@ class Contaier extends Component {
         windowWidth={windowWidth}
         onToggleToCart={addItemToCart}
         selectedToCart={selectedCartItems.includes(item._id)}
+        interestedCurriculums={interestedCurriculums}
+        search={search}
       />
     ));
   };
@@ -355,7 +366,8 @@ const enhance = compose(
       itemTypes: getItemsTypesSelector(state),
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      selectedCartItems: getSelectedItemSelector(state).data
+      selectedCartItems: getSelectedItemSelector(state).data,
+      interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
       receiveItems: receiveTestItemsAction,

@@ -5,6 +5,7 @@ import Field from "./CustomField";
 
 const BasicFields = ({ std, isEdit, ...restProps }) => {
   const { email, firstName, lastName } = std;
+  const emailFieldValue = restProps.getFieldValue("email");
   return (
     <>
       <Field label="Username/Email" {...restProps} fiedlName="email" initialValue={email}>
@@ -12,7 +13,7 @@ const BasicFields = ({ std, isEdit, ...restProps }) => {
       </Field>
       {!isEdit && (
         <Field label="Name of User" {...restProps} fiedlName="fullName">
-          <Input placeholder="Enter the name of the user" />
+          <Input placeholder="Enter the name of the user" disabled={!emailFieldValue} />
         </Field>
       )}
       {isEdit && (

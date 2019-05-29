@@ -2,18 +2,28 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { Line, Text } from "../styled";
+import { convertUnitToPx, getPadding, getYAxis } from "../helpers";
+import AxisLabel from "./AxisLabel";
 
-const HorizontalLines = ({ lines, height, width, margin, step, padding }) => {
-  const getConstantY = dot => height - margin - step * dot;
+const HorizontalLines = ({ gridParams }) => {
+  const { yAxisMax, yAxisMin, stepSize, width, fractionFormat } = gridParams;
+  const yAxis = getYAxis(yAxisMax, yAxisMin, stepSize);
+  const padding = getPadding(yAxis);
 
   return (
     <g>
-      {lines.map(dot => (
+      {yAxis.map(dot => (
         <Fragment>
-          <Text textAnchor="start" x={0} y={getConstantY(dot)} transform="translate(0, 5)">
-            {dot}
+          <Text textAnchor="start" x={0} y={convertUnitToPx(dot, gridParams)} transform="translate(0, 5)">
+            <AxisLabel fractionFormat={fractionFormat} value={dot} />
           </Text>
-          <Line x1={padding} y1={getConstantY(dot)} x2={width} y2={getConstantY(dot)} strokeWidth={1} />
+          <Line
+            x1={padding}
+            y1={convertUnitToPx(dot, gridParams)}
+            x2={width}
+            y2={convertUnitToPx(dot, gridParams)}
+            strokeWidth={1}
+          />
         </Fragment>
       ))}
     </g>
@@ -21,12 +31,15 @@ const HorizontalLines = ({ lines, height, width, margin, step, padding }) => {
 };
 
 HorizontalLines.propTypes = {
-  lines: PropTypes.array.isRequired,
-  height: PropTypes.number.isRequired,
-  width: PropTypes.number.isRequired,
-  margin: PropTypes.number.isRequired,
-  step: PropTypes.number.isRequired,
-  padding: PropTypes.number.isRequired
+  gridParams: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.number,
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
+  }).isRequired
 };
 
 export default HorizontalLines;

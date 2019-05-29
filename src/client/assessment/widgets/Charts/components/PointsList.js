@@ -26,7 +26,7 @@ class PointsList extends Component {
   }
 
   render() {
-    const { points, ratio, handleChange, handleDelete, t, onBlur } = this.props;
+    const { points, handleChange, handleDelete, t } = this.props;
 
     return (
       <Fragment>
@@ -40,8 +40,6 @@ class PointsList extends Component {
               onChange={handleChange(index)}
               firstInputType="text"
               secondInputType="number"
-              ratio={ratio}
-              onBlur={onBlur}
               firstFieldValue={dot.x}
               secondFieldValue={dot.y}
               t={t}
@@ -64,14 +62,11 @@ PointsList.propTypes = {
   points: PropTypes.array.isRequired,
   handleChange: PropTypes.func.isRequired,
   handleDelete: PropTypes.func.isRequired,
-  onBlur: PropTypes.func,
-  ratio: PropTypes.number.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func
 };
 
 PointsList.defaultProps = {
-  onBlur: () => {},
   fillSections: () => {},
   cleanSections: () => {}
 };

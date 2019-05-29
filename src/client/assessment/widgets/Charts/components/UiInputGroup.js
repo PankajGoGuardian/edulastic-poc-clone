@@ -12,10 +12,10 @@ const UiInputGroup = ({
   secondFieldValue,
   firstAttr,
   secondAttr,
-  onBlur,
+  onBlurFirstInput,
+  onBlurSecondInput,
   firstInputType,
-  secondInputType,
-  ratio
+  secondInputType
 }) => (
   <Row gutter={60}>
     <ColContainer>
@@ -33,10 +33,8 @@ const UiInputGroup = ({
         <Input
           size="large"
           type={secondInputType}
-          onBlur={onBlur}
-          value={
-            secondAttr === "value" ? Math.round(ratio ? secondFieldValue / ratio : secondFieldValue) : secondFieldValue
-          }
+          onBlur={onBlurSecondInput}
+          value={secondFieldValue}
           onChange={e => onChange(secondAttr, secondInputType === "text" ? e.target.value : +e.target.value)}
         />
       </Col>
@@ -53,8 +51,8 @@ UiInputGroup.propTypes = {
   secondAttr: PropTypes.string,
   firstInputType: PropTypes.string,
   secondInputType: PropTypes.string,
-  onBlur: PropTypes.func,
-  ratio: PropTypes.number
+  onBlurFirstInput: PropTypes.func,
+  onBlurSecondInput: PropTypes.func
 };
 
 UiInputGroup.defaultProps = {
@@ -62,8 +60,8 @@ UiInputGroup.defaultProps = {
   secondInputType: "number",
   firstAttr: "label",
   secondAttr: "value",
-  onBlur: () => {},
-  ratio: 1
+  onBlurFirstInput: () => {},
+  onBlurSecondInput: () => {}
 };
 
 export default UiInputGroup;

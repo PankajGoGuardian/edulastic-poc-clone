@@ -2,9 +2,14 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 
 import { Line, Text } from "../styled";
+import { getGridVariables } from "../helpers";
 
-const BarsAxises = ({ lines, height, margin, step, padding }) => {
-  const getConstantX = index => step * index + margin / 2 + padding + step / 2 - 10;
+const BarsAxises = ({ lines, gridParams }) => {
+  const { height, margin } = gridParams;
+
+  const { padding, step } = getGridVariables(lines, gridParams, true);
+
+  const getConstantX = index => step * index + margin / 2 + padding + step / 2;
 
   return (
     <g>
@@ -28,10 +33,15 @@ const BarsAxises = ({ lines, height, margin, step, padding }) => {
 
 BarsAxises.propTypes = {
   lines: PropTypes.array.isRequired,
-  height: PropTypes.number.isRequired,
-  margin: PropTypes.number.isRequired,
-  step: PropTypes.number.isRequired,
-  padding: PropTypes.number.isRequired
+  gridParams: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.number,
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
+  }).isRequired
 };
 
 export default BarsAxises;

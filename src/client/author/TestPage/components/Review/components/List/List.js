@@ -119,7 +119,7 @@ const List = SortableContainer(
       if (scoring.testItems && scoring.testItems.length) {
         item = scoring.testItems.find(({ id }) => id === testItems[i].id);
       }
-     
+
       return get(testItems, [i, "data", "questions"], []).reduce(
         (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
         0

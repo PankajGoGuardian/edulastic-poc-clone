@@ -214,8 +214,10 @@
       "chartMainBlockTitle": "Chart",
       "width": "Width (px)",
       "height": "Height (px)",
-      "yAxisCount": "Max Value",
+      "yAxisMin": "Min Value",
+      "yAxisMax": "Max Value",
       "stepSize": "Y Axis Step",
+      "snapTo": "Snap To",
       "xAxisLabel": "X Axis Label",
       "yAxisLabel": "Y Axis Label",
       "interactive": "Interactive",
@@ -224,7 +226,8 @@
       "points": "Points",
       "value": "Value",
       "label": "Label",
-      "chartTitle": "Chart Title"
+      "chartTitle": "Chart Title",
+      "fractionFormat": "Fraction Format"
     },
     "hotspot": {
       "widthLabel": "Width (px)",

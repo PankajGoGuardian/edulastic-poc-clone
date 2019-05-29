@@ -14,8 +14,7 @@ import { EDIT } from "../../constants/constantsForQuestions";
 import Options from "./components/Options";
 import ChartPreview from "./ChartPreview";
 import PointsList from "./components/PointsList";
-import withGrid from "./HOC/withGrid";
-import { getGridVariables, getReCalculatedPoints, getReCalculatedDATAPoints } from "./helpers";
+import { getReCalculatedPoints } from "./helpers";
 
 import ComposeQuestion from "./ComposeQuestion";
 
@@ -23,38 +22,28 @@ const OptionsList = withPoints(ChartPreview);
 
 const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const {
-    chart_data: { data },
-    ui_style: { yAxisCount, stepSize, height, width, margin }
+    ui_style: { yAxisMax, yAxisMin, snapTo }
   } = item;
-  const { yAxisStep, changingStep } = getGridVariables(yAxisCount, stepSize, data, height, width, margin);
 
-  const [oldStep, setOldStep] = useState(yAxisStep);
   const [correctTab, setCorrectTab] = useState(0);
-  const [localMaxValue, setLocalMaxValue] = useState(yAxisCount);
-
   const [firstMount, setFirstMount] = useState(false);
 
   useEffect(() => {
     if (firstMount) {
       setQuestionData(
         produce(item, draft => {
-          const variables = { oldStep, yAxisCount, yAxisStep, changingStep };
-
-          draft.chart_data.data = getReCalculatedDATAPoints(draft.chart_data.data, variables);
+          const params = { yAxisMax, yAxisMin, snapTo };
+          draft.chart_data.data = getReCalculatedPoints(draft.chart_data.data, params);
 
           draft.validation.alt_responses.forEach(altResp => {
-            altResp.value = getReCalculatedPoints(altResp.value, variables);
+            altResp.value = getReCalculatedPoints(altResp.value, params);
           });
 
-          draft.validation.valid_response.value = getReCalculatedPoints(
-            draft.validation.valid_response.value,
-            variables
-          );
+          draft.validation.valid_response.value = getReCalculatedPoints(draft.validation.valid_response.value, params);
         })
       );
-      setOldStep(yAxisStep);
     }
-  }, [yAxisCount, stepSize]);
+  }, [yAxisMax, yAxisMin, snapTo]);
 
   useEffect(() => {
     setFirstMount(true);
@@ -63,7 +52,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
   const handleAddPoint = () => {
     setQuestionData(
       produce(item, draft => {
-        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: 0 };
+        const newPoint = { x: `Bar ${draft.chart_data.data.length + 1}`, y: yAxisMin };
 
         draft.chart_data.data.push({ ...newPoint });
 
@@ -97,11 +86,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
             break;
           }
           case "value": {
-            if (yAxisStep * value > yAxisCount * yAxisStep) {
-              draft.chart_data.data[index].y = yAxisCount * yAxisStep;
-            } else {
-              draft.chart_data.data[index].y = yAxisStep * value;
-            }
+            draft.chart_data.data[index].y = value > yAxisMax ? yAxisMax : value < yAxisMin ? yAxisMin : value;
             break;
           }
           default:
@@ -192,15 +177,13 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
     <Fragment>
       <ComposeQuestion
         item={item}
-        localMaxValue={localMaxValue}
-        setLocalMaxValue={setLocalMaxValue}
+        setQuestionData={setQuestionData}
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
 
       <PointsList
         handleChange={handlePointChange}
-        ratio={yAxisStep}
         handleDelete={handleDelete}
         points={item.chart_data.data}
         buttonText={t("component.chart.addPoint")}

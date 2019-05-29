@@ -200,9 +200,6 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     }
 
     setMathModal(false);
-    setTimeout(() => {
-      setChange(EditorRef.current.html.get());
-    });
   };
 
   const closeMathModal = () => setMathModal(false);

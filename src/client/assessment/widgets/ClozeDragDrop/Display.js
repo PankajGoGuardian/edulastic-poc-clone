@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep } from "lodash";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
+import striptags from "striptags";
 
 import { InstructorStimulus, MathSpan, PreWrapper } from "@edulastic/common";
 
@@ -322,6 +323,7 @@ class ClozeDragDropDisplay extends Component {
                       smallSize={smallSize}
                     >
                       <Draggable
+                        title={striptags(this.getLabel(dropTargetIndex)) || ""}
                         className="content"
                         onDrop={this.onDrop}
                         data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
@@ -334,6 +336,7 @@ class ClozeDragDropDisplay extends Component {
                   {hasGroupResponses && (
                     <ResponseContainer style={btnStyle} smallSize={smallSize}>
                       <Draggable
+                        title={striptags(this.getLabel(dropTargetIndex)) || ""}
                         className="content"
                         onDrop={this.onDrop}
                         data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&

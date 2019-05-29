@@ -25,12 +25,18 @@ const specSource = {
   }
 };
 
-const Draggable = ({ connectDragSource, data, children, className }) =>
-  data && connectDragSource(<div className={className}>{children}</div>);
+const Draggable = ({ connectDragSource, title, data, children, className }) =>
+  data &&
+  connectDragSource(
+    <div title={title} className={className}>
+      {children}
+    </div>
+  );
 
 Draggable.propTypes = {
   connectDragSource: PropTypes.func.isRequired,
   data: PropTypes.any.isRequired,
+  title: PropTypes.any.isRequired,
   children: PropTypes.node,
   className: PropTypes.string
 };

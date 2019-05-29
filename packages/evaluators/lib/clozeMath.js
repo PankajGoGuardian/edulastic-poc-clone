@@ -15,6 +15,10 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+
+var _isNumber2 = _interopRequireDefault(require("lodash/isNumber"));
+
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
 
 var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
@@ -22,6 +26,8 @@ var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
 var _axios = _interopRequireDefault(require("axios"));
 
 var _scoring = require("./const/scoring");
+
+var _clozeText = _interopRequireDefault(require("./clozeText"));
 
 var url = "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
@@ -137,7 +143,10 @@ var checkCorrect =
 
                   correct = _step.value;
                   data = {
-                    input: userResponse.replace(/\\ /g, " "),
+                    input:
+                      (0, _isString2["default"])(userResponse) || (0, _isNumber2["default"])(userResponse)
+                        ? userResponse.replace(/\\ /g, " ")
+                        : "",
                     expected: correct ? correct.replace(/\\ /g, " ") : ":",
                     checks: checks
                   };
@@ -415,7 +424,7 @@ var exactMatchEvaluator =
     return function exactMatchEvaluator(_x2, _x3, _x4) {
       return _ref4.apply(this, arguments);
     };
-  })();
+  })(); // const
 
 var evaluator =
   /*#__PURE__*/
@@ -423,50 +432,132 @@ var evaluator =
     var _ref10 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee6(_ref9) {
-        var userResponse,
+        var _ref9$userResponse,
+          userResponse,
           validation,
           valid_response,
+          valid_dropdown,
+          valid_inputs,
           _validation$alt_respo,
           alt_responses,
           scoring_type,
           attemptScore,
           answers,
-          result,
-          checks;
+          _userResponse$dropDow,
+          _dropDownResponse,
+          _userResponse$inputs,
+          _inputsResponse,
+          _userResponse$math,
+          _mathResponse,
+          entered,
+          inputsResults,
+          dropDownResults,
+          mathResults,
+          checks,
+          corrects,
+          evaluation,
+          score,
+          maxScore;
 
         return _regenerator["default"].wrap(function _callee6$(_context6) {
           while (1) {
             switch ((_context6.prev = _context6.next)) {
               case 0:
-                (userResponse = _ref9.userResponse), (validation = _ref9.validation);
+                (_ref9$userResponse = _ref9.userResponse),
+                  (userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse),
+                  (validation = _ref9.validation);
                 (valid_response = validation.valid_response),
+                  (valid_dropdown = validation.valid_dropdown),
+                  (valid_inputs = validation.valid_inputs),
                   (_validation$alt_respo = validation.alt_responses),
                   (alt_responses = _validation$alt_respo === void 0 ? [] : _validation$alt_respo),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                _context6.t0 = scoring_type;
-                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 6 : 6;
-                break;
-
-              case 6:
-                checks = getChecks(validation);
+                (_userResponse$dropDow = userResponse.dropDown),
+                  (_dropDownResponse = _userResponse$dropDow === void 0 ? [] : _userResponse$dropDow),
+                  (_userResponse$inputs = userResponse.inputs),
+                  (_inputsResponse = _userResponse$inputs === void 0 ? [] : _userResponse$inputs),
+                  (_userResponse$math = userResponse.math),
+                  (_mathResponse = _userResponse$math === void 0 ? [] : _userResponse$math);
+                entered = _dropDownResponse.filter(function(response) {
+                  return response;
+                }).length;
+                entered += _inputsResponse.filter(function(response) {
+                  return response;
+                }).length;
+                entered += _mathResponse.filter(function(response) {
+                  return response;
+                }).length;
                 _context6.next = 9;
-                return exactMatchEvaluator(userResponse, answers, checks);
+                return (0, _clozeText["default"])({
+                  userResponse: _inputsResponse,
+                  validation: {
+                    scoring_type: scoring_type,
+                    alt_responses: [],
+                    valid_response: (0, _objectSpread2["default"])({}, valid_inputs)
+                  }
+                });
 
               case 9:
-                result = _context6.sent;
-
-              case 10:
-                // if score for attempting is greater than current score
-                // let it be the score!
-                if (!Number.isNaN(attemptScore) && attemptScore > result.score) {
-                  result.score = attemptScore;
-                }
-
-                return _context6.abrupt("return", result);
+                inputsResults = _context6.sent;
+                _context6.next = 12;
+                return (0, _clozeText["default"])({
+                  userResponse: _dropDownResponse,
+                  validation: {
+                    scoring_type: scoring_type,
+                    alt_responses: [],
+                    valid_response: (0, _objectSpread2["default"])({}, valid_dropdown)
+                  }
+                });
 
               case 12:
+                dropDownResults = _context6.sent;
+                mathResults = {};
+                _context6.t0 = scoring_type;
+                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 17 : 17;
+                break;
+
+              case 17:
+                checks = getChecks(validation);
+                _context6.next = 20;
+                return exactMatchEvaluator(_mathResponse, answers, checks);
+
+              case 20:
+                mathResults = _context6.sent;
+
+              case 21:
+                // if score for attempting is greater than current score
+                // let it be the score!
+                if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
+                  mathResults.score = attemptScore;
+                }
+
+                corrects = inputsResults.evaluation.filter(function(answer) {
+                  return answer;
+                }).length;
+                corrects += dropDownResults.evaluation.filter(function(answer) {
+                  return answer;
+                }).length;
+                corrects += mathResults.evaluation
+                  ? mathResults.evaluation.filter(function(answer) {
+                      return answer;
+                    }).length
+                  : 0;
+                evaluation = {
+                  mathResults: mathResults,
+                  inputsResults: inputsResults,
+                  dropDownResults: dropDownResults
+                };
+                score = corrects / entered;
+                maxScore = 1;
+                return _context6.abrupt("return", {
+                  evaluation: evaluation,
+                  score: score,
+                  maxScore: maxScore
+                });
+
+              case 29:
               case "end":
                 return _context6.stop();
             }

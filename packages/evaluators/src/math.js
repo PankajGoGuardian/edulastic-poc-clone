@@ -90,6 +90,7 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
           expected: correct ? correct.replace(/\\ /g, " ") : "",
           checks
         };
+
         const { result } = await evaluate(data);
         if (result === "true") {
           valid = true;
@@ -123,6 +124,7 @@ const evaluator = async ({ userResponse, validation }) => {
     case ScoringType.EXACT_MATCH:
     default:
       const checks = getChecks(validation);
+
       result = await exactMatchEvaluator(userResponse, answers, checks);
   }
 

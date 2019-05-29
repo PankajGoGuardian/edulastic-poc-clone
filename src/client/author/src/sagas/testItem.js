@@ -67,7 +67,7 @@ function* updateTestItemSaga({ payload }) {
   }
 }
 
-function* evaluateAnswers(action) {
+function* evaluateAnswers() {
   try {
     // url path that the user is at
     const currentPath = yield select(state => _get(state, "router.location.pathname", ""));

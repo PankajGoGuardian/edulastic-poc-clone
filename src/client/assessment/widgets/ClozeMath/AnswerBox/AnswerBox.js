@@ -4,10 +4,24 @@ import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
-const AnswerBox = ({ answers }) => (
+const AnswerBox = ({ mathAnswers, dropdownAnswers, textInputAnswers }) => (
   <Wrapper>
-    <Title>Correct answer</Title>
-    {answers.map((answer, index) => (
+    <Title>Correct answers math field</Title>
+    {mathAnswers.map((answer, index) => (
+      <Answer key={index}>
+        <Label>{index + 1}</Label>
+        <AnswerBoxText>{answer}</AnswerBoxText>
+      </Answer>
+    ))}
+    <Title>Correct answers dropdown field</Title>
+    {dropdownAnswers.map((answer, index) => (
+      <Answer key={index}>
+        <Label>{index + 1}</Label>
+        <AnswerBoxText>{answer}</AnswerBoxText>
+      </Answer>
+    ))}
+    <Title>Correct answers input field</Title>
+    {textInputAnswers.map((answer, index) => (
       <Answer key={index}>
         <Label>{index + 1}</Label>
         <AnswerBoxText>{answer}</AnswerBoxText>
@@ -17,7 +31,9 @@ const AnswerBox = ({ answers }) => (
 );
 
 AnswerBox.propTypes = {
-  answers: PropTypes.array.isRequired
+  mathAnswers: PropTypes.array.isRequired,
+  dropdownAnswers: PropTypes.array.isRequired,
+  textInputAnswers: PropTypes.array.isRequired
 };
 
 export default AnswerBox;
@@ -25,22 +41,24 @@ export default AnswerBox;
 const Wrapper = styled.div`
   background: #eeeeef;
   border-radius: 10px;
-  padding: 25px;
+  padding: 8px 24px 24px;
+  margin-top: 16px;
+
+  .ant-tabs-bar {
+    border-bottom: 1px solid #ccc;
+  }
 `;
 
 const Title = styled.div`
   text-transform: uppercase;
   font-size: 16px;
   margin-bottom: 10px;
+  margin-top: 16px;
 `;
 
 const Answer = styled.div`
   display: inline-flex;
   margin-right: 15px;
-
-  :last-child {
-    margin-right: 0;
-  }
 `;
 
 const Label = styled.div`

@@ -667,7 +667,8 @@
       "isExponent": "Check if variable is an exponent",
       "isStandardForm": "Check if equation is in standard form",
       "isSlopeInterceptForm": "Check if equation is in slope intercept form",
-      "isPointSlopeForm": "Check if equation is in point slope form"
+      "isPointSlopeForm": "Check if equation is in point slope form",
+      "choicesfordropdown": "Choices for Text Dropdown"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

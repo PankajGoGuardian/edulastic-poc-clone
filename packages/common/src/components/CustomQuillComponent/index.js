@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 /* eslint-disable no-return-assign */
 /* eslint-disable react/no-multi-comp */
 import "react-quill/dist/quill.snow.css";
@@ -14,6 +16,7 @@ import MathModal from "../MathModal";
 import MathInputCmp from "./QuillMathEmbed";
 import ResponseCmp from "./ResponseCmp";
 import TextDropDown from "./TextDropDown";
+import TextInput from "./TextInput";
 import ContainBlot from "./table/ContainBlot";
 import TableRow from "./table/TableRow";
 import Table from "./table/Table";
@@ -29,6 +32,7 @@ const Parchment = Quill.import("parchment");
 Quill.register(ResponseCmp, true);
 Quill.register(MathInputCmp, true);
 Quill.register(TextDropDown, true);
+Quill.register(TextInput, true);
 Quill.register(ContainBlot);
 Quill.register(TableRow);
 
@@ -114,12 +118,19 @@ function insertDropdown() {
   this.quill.setSelection(cursorPosition + 2);
 }
 
+function insertInput() {
+  const cursorPosition = this.quill.getSelection().index;
+  this.quill.insertEmbed(cursorPosition, "TextInput", "value");
+  this.quill.setSelection(cursorPosition + 2);
+}
+
 function insertPara() {}
 
 const CustomToolbar = ({
   showTableBtn,
   showResponseBtn,
   showDropdownBtn,
+  showTextInputBtn,
   active,
   id,
   maxWidth,
@@ -210,6 +221,13 @@ const CustomToolbar = ({
           </button>
         </span>
       )}
+      {showTextInputBtn && (
+        <span className="ql-formats">
+          <button className="ql-insertInput" type="button">
+            <span>Text Input</span>
+          </button>
+        </span>
+      )}
     </div>
   );
 };
@@ -218,6 +236,7 @@ CustomToolbar.propTypes = {
   maxWidth: PropTypes.any.isRequired,
   showResponseBtn: PropTypes.bool,
   showTableBtn: PropTypes.bool,
+  showTextInputBtn: PropTypes.bool,
   showDropdownBtn: PropTypes.bool,
   active: PropTypes.bool,
   id: PropTypes.string,
@@ -228,6 +247,7 @@ CustomToolbar.propTypes = {
 CustomToolbar.defaultProps = {
   showTableBtn: true,
   showResponseBtn: true,
+  showTextInputBtn: false,
   showDropdownBtn: false,
   active: false,
   id: "toolbar",
@@ -415,7 +435,8 @@ class CustomQuillComponent extends React.Component {
     style: PropTypes.object,
     tabIndex: PropTypes.number,
     custom: PropTypes.bool,
-    showDropdownBtn: PropTypes.bool
+    showDropdownBtn: PropTypes.bool,
+    showTextInputBtn: PropTypes.bool
   };
 
   static defaultProps = {
@@ -432,7 +453,8 @@ class CustomQuillComponent extends React.Component {
     },
     tabIndex: 0,
     custom: false,
-    showDropdownBtn: false
+    showDropdownBtn: false,
+    showTextInputBtn: false
   };
 
   constructor(props) {
@@ -505,7 +527,7 @@ class CustomQuillComponent extends React.Component {
   }
 
   handleChange = content => {
-    const { onChange, showResponseBtn } = this.props;
+    const { onChange } = this.props;
     if (this.quillRef) {
       const lines = this.quillRef.getEditor().getLines();
       let val = content;
@@ -527,21 +549,32 @@ class CustomQuillComponent extends React.Component {
         prevValue: val
       });
 
-      if (showResponseBtn) {
-        // eslint-disable-next-line func-names, no-undef
-        const responseIndexes = $(val)
-          .find(".index")
-          // eslint-disable-next-line func-names
-          .map(function() {
-            // eslint-disable-next-line no-undef
-            return +$(this).text();
-          })
-          .toArray();
+      // if (showResponseBtn) {
+      const responseIndexes = $(val)
+        .find(".index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
 
-        onChange(val, responseIndexes);
-      } else {
-        onChange(val);
-      }
+      const textDropDownIndexes = $(val)
+        .find(".dropdown-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      const textInputIndexes = $(val)
+        .find(".text-input-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      onChange(val, responseIndexes, textDropDownIndexes, textInputIndexes);
+      // } else {
+      //   onChange(val);
+      // }
     }
   };
 
@@ -642,7 +675,8 @@ class CustomQuillComponent extends React.Component {
       readOnly,
       tabIndex,
       custom,
-      showDropdownBtn
+      showDropdownBtn,
+      showTextInputBtn
     } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
@@ -679,6 +713,7 @@ class CustomQuillComponent extends React.Component {
             onTableClick={this.showTableModal}
             onFormulaClick={this.showMathModal}
             showDropdownBtn={showDropdownBtn}
+            showTextInputBtn={showTextInputBtn}
           />
         )}
         <ReactQuill
@@ -793,7 +828,8 @@ CustomQuillComponent.modules = (toolbarId, custom) => ({
       insertStar,
       insertPara,
       image: handleImage,
-      insertDropdown
+      insertDropdown,
+      insertInput
     }
   }
 });

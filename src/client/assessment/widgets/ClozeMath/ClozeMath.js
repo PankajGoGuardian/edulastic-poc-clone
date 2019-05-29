@@ -1,6 +1,8 @@
+/* eslint-disable no-undef */
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Paper } from "@edulastic/common";
+import { isUndefined } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -18,6 +20,7 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 
 import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
+import ChoicesForDropDown from "./ChoicesForDropDown";
 
 const ClozeMath = ({
   view,
@@ -35,6 +38,7 @@ const ClozeMath = ({
   ...restProps
 }) => {
   const [template, setTemplate] = useState("");
+  const [dropDowns, setDropDowns] = useState(0);
 
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
@@ -63,12 +67,24 @@ const ClozeMath = ({
     return temp;
   };
 
+  const getDropdowns = tmpl => {
+    if (isUndefined(window.$)) {
+      return;
+    }
+    const temp = tmpl || "";
+    const parsedHTML = $.parseHTML(temp);
+    const _dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
+    return _dropDowns;
+  };
+
   useEffect(() => {
     setTemplate(replaceVariables(getPreviewTemplate(item.template)));
+    const counts = getDropdowns(item.template);
+    setDropDowns(counts);
   }, [item.template]);
 
   const itemForPreview = replaceVariables(item);
-
+  const dropDownsContainers = new Array(dropDowns).fill(true);
   return (
     <Fragment>
       {view === EDIT && (
@@ -92,6 +108,16 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
+          {dropDownsContainers.map((_, i) => (
+            <ChoicesForDropDown
+              key={i}
+              index={i}
+              item={item}
+              fillSections={fillSections}
+              cleanSections={cleanSections}
+            />
+          ))}
+
           <MathFormulaOptions
             onChange={_itemChange}
             uiStyle={item.ui_style}
@@ -113,6 +139,7 @@ const ClozeMath = ({
             type={previewTab}
             item={itemForPreview}
             template={template}
+            options={item.options || {}}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}
@@ -130,7 +157,7 @@ ClozeMath.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.array,
+  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   evaluation: PropTypes.array,
   previewTab: PropTypes.string,
   item: PropTypes.object,

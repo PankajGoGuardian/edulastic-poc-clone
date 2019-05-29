@@ -22,6 +22,7 @@ const initialMethod = {
 class Template extends Component {
   componentDidMount = () => {
     const { fillSections, t, item } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
     if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop);
@@ -43,7 +44,10 @@ class Template extends Component {
         return response || cloneDeep(newArray);
       });
 
-    const _updateTemplate = (val, responseIndexes) => {
+    const _reduceVlaues = (emIndexes = [], value) =>
+      emIndexes.map(emIndex => value.find((_, i) => emIndex === i + 1) || "");
+
+    const _updateTemplate = (val, responseIndexes, dropDownIndexes, inputIndexes) => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
@@ -51,6 +55,10 @@ class Template extends Component {
           responseIndexes,
           draft.validation.valid_response.value
         );
+
+        draft.validation.valid_dropdown.value = _reduceVlaues(dropDownIndexes, draft.validation.valid_dropdown.value);
+
+        draft.validation.valid_inputs.value = _reduceVlaues(inputIndexes, draft.validation.valid_inputs.value);
 
         if (Array.isArray(draft.validation.alt_responses)) {
           draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
@@ -80,7 +88,7 @@ class Template extends Component {
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.template}
-          additionalToolbarOptions={["response"]}
+          additionalToolbarOptions={["response", "dropdown", "textinput"]}
         />
       </Widget>
     );

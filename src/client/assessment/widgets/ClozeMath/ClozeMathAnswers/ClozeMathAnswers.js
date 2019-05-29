@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep } from "lodash";
+import { cloneDeep, set, get } from "lodash";
 import { math } from "@edulastic/constants";
 
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
+import DropDownAnswer from "./ClozeDropDownAnswer";
+import InputAnswer from "./ClozeInputAnswer";
 import withPoints from "../../../components/HOC/withPoints";
 import { CorrectAnswerContainer } from "../../../styled/CorrectAnswerContainer";
 
@@ -95,6 +97,18 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     setQuestionData(newItem);
   };
 
+  const _updateDropDownCorrectAnswer = ({ value, dropIndex }) => {
+    const newItem = cloneDeep(item);
+    set(newItem, `validation.valid_dropdown.value[${dropIndex}]`, value);
+    setQuestionData(newItem);
+  };
+
+  const _updateInputCorrectAnswer = ({ value, inputIndex }) => {
+    const newItem = cloneDeep(item);
+    set(newItem, `validation.valid_inputs.value[${inputIndex}]`, value);
+    setQuestionData(newItem);
+  };
+
   return (
     <CorrectAnswers
       onTabChange={setCorrectTab}
@@ -107,15 +121,23 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     >
       <CorrectAnswerContainer>
         {correctTab === 0 && (
-          <MathFormulaWithPoints
-            item={item}
-            onChange={_changeCorrectMethod}
-            onAdd={_addCorrectMethod}
-            onDelete={_deleteCorrectMethod}
-            answer={item.validation.valid_response.value}
-            points={item.validation.valid_response.score}
-            onChangePoints={_changeCorrectPoints}
-          />
+          <>
+            <MathFormulaWithPoints
+              item={item}
+              onChange={_changeCorrectMethod}
+              onAdd={_addCorrectMethod}
+              onDelete={_deleteCorrectMethod}
+              answer={get(item, "validation.valid_response.value", [])}
+              points={get(item, "validation.valid_response.score", 0)}
+              onChangePoints={_changeCorrectPoints}
+            />
+            <DropDownAnswer
+              item={item}
+              onChange={_updateDropDownCorrectAnswer}
+              answer={get(item, "validation.valid_dropdown.value", [])}
+            />
+            <InputAnswer onChange={_updateInputCorrectAnswer} answer={get(item, "validation.valid_inputs.value", [])} />
+          </>
         )}
         {item.validation.alt_responses &&
           !!item.validation.alt_responses.length &&

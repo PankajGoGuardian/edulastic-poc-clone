@@ -1,35 +1,39 @@
+/* eslint-disable func-names */
 /* global $ */
 import React, { useEffect, useRef, useState } from "react";
+
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEmpty, get, isUndefined } from "lodash";
 import { MathKeyboard, WithResources, Stimulus } from "@edulastic/common";
 import { black } from "@edulastic/colors";
 
 import { SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
+import ClozeMathBlock from "./ClozeMathBlock";
 
-const NoneDiv = styled.div`
-  display: none;
-`;
+const ClozeMathPreview = ({
+  type,
+  item,
+  template,
+  userAnswer,
+  saveAnswer,
+  evaluation,
+  showQuestionNumber,
+  qIndex,
+  options
+}) => {
+  let mathEvaluation = [];
+  let dropDwonEvaluation = [];
+  let inputEvaluation = [];
 
-const TemplateBox = styled.div`
-  p {
-    display: inline;
+  if (!isEmpty(evaluation)) {
+    const { mathResults, inputsResults, dropDownResults } = evaluation;
+    mathEvaluation = get(mathResults, "evaluation", []);
+    inputEvaluation = get(inputsResults, "evaluation", []);
+    dropDwonEvaluation = get(dropDownResults, "evaluation", []);
   }
-`;
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;
-
-const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evaluation, showQuestionNumber, qIndex }) => {
   const wrappedRef = useRef();
   const mathFieldRef = useRef();
   const [showKeyboard, setShowKeyboard] = useState(false);
@@ -40,6 +44,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
   const [latexes, setLatexes] = useState([]);
   const [mathHtmls, setMathHtmls] = useState([]);
   const [newInnerHtml, setNewInnerHtml] = useState("");
+  const [templateParts, setBlocks] = useState({ blocks: [], inputs: 0, dropDowns: 0 });
 
   const minWidth = item.ui_style && item.ui_style.min_width ? `${item.ui_style.min_width}px` : 0;
 
@@ -79,7 +84,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
     }
   };
 
-  const _getAnswers = () =>
+  const _getMathAnswers = () =>
     item.validation.valid_response.value.map(res => {
       const method = res[0];
       if (method) {
@@ -87,6 +92,10 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
       }
       return "";
     });
+
+  const _getDropDownAnswers = () => item.validation.valid_dropdown.value.map(res => res || "");
+
+  const _getTextInputAnswers = () => item.validation.valid_inputs.value.map(res => res || "");
 
   const replaceResponseButtons = () => {
     const MQ = window.MathQuill.getInterface(2);
@@ -108,8 +117,15 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
         mQuill.innerFields[0].config({
           handlers: {
             edit(editingMathField) {
-              const newAnswers = cloneDeep(userAnswer);
-              newAnswers[index] = editingMathField.latex();
+              let newAnswers = cloneDeep(userAnswer);
+              const answer = editingMathField.latex();
+              const mathAnswers = newAnswers.math || [];
+
+              mathAnswers[index] = answer;
+              newAnswers = {
+                ...newAnswers,
+                math: mathAnswers
+              };
               saveAnswer(newAnswers);
             }
           }
@@ -173,6 +189,39 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
     setMathHtmls(newMathHtmls);
   };
 
+  const getBlocks = () => {
+    if (isUndefined(window.$)) {
+      return;
+    }
+
+    const blocks = [];
+    const parsedHTML = $.parseHTML(newInnerHtml);
+    $(parsedHTML).each(function() {
+      blocks.push($(this).prop("outerHTML"));
+    });
+
+    const dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
+    const inputs = $(parsedHTML).find(".text-dropdown-btn").length;
+
+    setBlocks({
+      blocks,
+      inputs,
+      dropDowns
+    });
+  };
+
+  const handleAddAnswer = (answer, index, key) => {
+    let newAnswers = cloneDeep(userAnswer);
+    const answers = newAnswers[key] || [];
+    answers[index] = answer;
+
+    newAnswers = {
+      ...newAnswers,
+      [key]: answers
+    };
+    saveAnswer(newAnswers);
+  };
+
   useEffect(() => {
     startMathValidating();
   }, [mathFieldRef.current]);
@@ -215,9 +264,16 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
       // eslint-disable-next-line func-names
       .each(function(index) {
         if (type === CLEAR) {
-          const newAnswers = cloneDeep(userAnswer);
+          let newAnswers = cloneDeep(userAnswer);
           const mQuill = MQ.StaticMath($(this).get(0));
-          newAnswers[index] = mQuill.innerFields[0].latex("");
+          const answer = mQuill.innerFields[0].latex("");
+          const mathAnswers = newAnswers.math || [];
+
+          mathAnswers[index] = answer;
+          newAnswers = {
+            ...newAnswers,
+            math: mathAnswers
+          };
 
           $(wrappedRef.current)
             .find(".mathField")
@@ -246,7 +302,7 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
           saveAnswer(newAnswers);
         }
       });
-  }, [type, wrappedRef.current]);
+  }, [type, wrappedRef.current, templateParts]);
 
   useEffect(() => {
     if (type === CHECK) {
@@ -258,8 +314,8 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
           $(this)
             .find(".icon-wrapper")
             .remove();
-          if (typeof evaluation[index] !== "undefined") {
-            if (evaluation[index]) {
+          if (typeof mathEvaluation[index] !== "undefined") {
+            if (mathEvaluation[index]) {
               $(this).addClass("success");
               $(this).append(
                 $(`
@@ -328,22 +384,10 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
   }, [evaluation, wrappedRef.current]);
 
   useEffect(() => {
-    if (showKeyboard) {
-      $($(wrappedRef.current).find(".ql-editor")[0])
-        .find(".mathField")
-        // eslint-disable-next-line func-names
-        .each(function() {
-          $(this)
-            .find(".icon-wrapper")
-            .remove();
-          $(this).removeClass("success");
-          $(this).removeClass("wrong");
-          $(this).removeClass("check");
-          $(this).removeAttr("data-index");
-        });
-    }
-  }, [showKeyboard, mathFieldRef.current]);
+    getBlocks();
+  }, [newInnerHtml, window.$]);
 
+  const { blocks, inputs, dropDowns } = templateParts;
   return (
     <WithResources
       resources={[
@@ -361,11 +405,43 @@ const ClozeMathPreview = ({ type, item, template, userAnswer, saveAnswer, evalua
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
         </QuestionTitleWrapper>
-        <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
-        {type === SHOW && <AnswerBox answers={_getAnswers()} />}
+
+        {(dropDowns > 0 || inputs > 0) && (
+          <TemplateBox className="ql-editor">
+            {blocks && (
+              <ClozeMathBlock
+                blocks={blocks}
+                dropDwonEvaluation={dropDwonEvaluation}
+                inputEvaluation={inputEvaluation}
+                handleAddAnswer={handleAddAnswer}
+                options={options}
+                userSelections={get(item, "item.activity.userResponse", false) || userAnswer}
+                checked={type === CHECK || type === SHOW}
+              />
+            )}
+          </TemplateBox>
+        )}
+
+        {dropDowns === 0 && inputs === 0 && (
+          <TemplateBox className="ql-editor" dangerouslySetInnerHTML={{ __html: newInnerHtml }} />
+        )}
+
+        {type === SHOW && (
+          <AnswerBox
+            mathAnswers={_getMathAnswers()}
+            dropdownAnswers={_getDropDownAnswers()}
+            textInputAnswers={_getTextInputAnswers()}
+          />
+        )}
         {showKeyboard && (
           <KeyboardWrapper>
-            <MathKeyboard onInput={_onInput} symbols={item.symbols} numberPad={item.numberPad} showResponse={false} />
+            <MathKeyboard
+              onInput={_onInput}
+              onClose={() => {}}
+              symbols={item.symbols}
+              numberPad={item.numberPad}
+              showResponse={false}
+            />
           </KeyboardWrapper>
         )}
         <NoneDiv>
@@ -381,8 +457,9 @@ ClozeMathPreview.propTypes = {
   item: PropTypes.object.isRequired,
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  userAnswer: PropTypes.array.isRequired,
-  evaluation: PropTypes.array.isRequired,
+  userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
+  options: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };
@@ -398,4 +475,23 @@ const KeyboardWrapper = styled.div`
   width: 50%;
   position: absolute;
   z-index: 100;
+`;
+
+const NoneDiv = styled.div`
+  display: none;
+`;
+
+const TemplateBox = styled.div`
+  p {
+    display: inline;
+  }
+`;
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
 `;

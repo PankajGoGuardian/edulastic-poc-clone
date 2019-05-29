@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable */
 /* global $ */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
@@ -46,6 +48,34 @@ FroalaEditor.DefineIconTemplate(
       <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
       <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
         <tspan x="0" y="0">R</tspan>
+      </text>
+    </g>
+  </svg>
+  `
+);
+
+FroalaEditor.DefineIconTemplate(
+  "dropdown",
+  `
+  <svg xmlns="http://www.w3.org/2000/svg" width="43.081" height="40" viewBox="0 0 43.081 40">
+    <g transform="translate(-0.045)">
+      <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
+      <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
+        <tspan x="0" y="0">D</tspan>
+      </text>
+    </g>
+  </svg>
+  `
+);
+
+FroalaEditor.DefineIconTemplate(
+  "textinput",
+  `
+  <svg xmlns="http://www.w3.org/2000/svg" width="43.081" height="40" viewBox="0 0 43.081 40">
+    <g transform="translate(-0.045)">
+      <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
+      <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
+        <tspan x="0" y="0">I</tspan>
       </text>
     </g>
   </svg>
@@ -170,16 +200,32 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
     if (
       !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") // toolbarButtons prop contains response
+      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
+      restOptions.toolbarButtons.includes("dropdown") || // toolbarButtons prop contains dropdown
+      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
     ) {
       const responseIndexes = $(val)
         .find(".index")
-        // eslint-disable-next-line func-names
         .map(function() {
-          return $(this).text();
+          return +$(this).text();
         })
         .toArray();
-      onChange(valueToSave, responseIndexes);
+
+      const dropDownIndexes = $(val)
+        .find(".dropdown-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      const inputIndexes = $(val)
+        .find(".text-input-index")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
+
+      onChange(val, responseIndexes, dropDownIndexes, inputIndexes);
     } else {
       onChange(valueToSave, []);
     }
@@ -242,6 +288,44 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         this.html.insert(
           ` <span class="response-btn" contenteditable="false"><span class="index">${responseCount +
             1}</span><span class="text">Response</span></span> `
+        );
+        this.undo.saveStep();
+      }
+    });
+
+    // Cloze DropDown
+    FroalaEditor.DefineIcon("dropdown", { NAME: "dropdown", template: "dropdown" });
+    FroalaEditor.RegisterCommand("dropdown", {
+      title: "DropDown",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        const dropDownCount = EditorRef.current.$el[0].querySelectorAll(".text-dropdown-btn").length;
+        this.html.insert(
+          `<span class="text-dropdown-btn" contenteditable="false">
+            <span class="dropdown-index">${dropDownCount + 1}</span>
+            <span class="dropdown-text">Text Dropdown</span>
+          </span>`
+        );
+        this.undo.saveStep();
+      }
+    });
+
+    // Cloze Text Input
+    FroalaEditor.DefineIcon("textinput", { NAME: "textinput", template: "textinput" });
+    FroalaEditor.RegisterCommand("textinput", {
+      title: "Text Input",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        const inputCount = EditorRef.current.$el[0].querySelectorAll(".text-input-btn").length;
+        this.html.insert(
+          `<span class="text-input-btn" contenteditable="false">
+            <span class="text-input-index">${inputCount + 1}</span>
+            <span class="input-text">Text Input</span>
+          </span>`
         );
         this.undo.saveStep();
       }

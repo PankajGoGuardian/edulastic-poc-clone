@@ -28,7 +28,6 @@ import {
   getTestItemStatusSelector,
   clearRedirectTestAction,
   setRedirectTestAction,
-  stateSelector,
   setItemLevelScoringAction,
   setItemLevelScoreAction
 } from "../../ducks";
@@ -44,6 +43,7 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import SettingsBar from "../SettingsBar";
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import TestItemMetadata from "../../../../assessment/components/TestItemMetadata";
+
 const InputGroup = Input.Group;
 const testItemStatusConstants = {
   DRAFT: "draft",
@@ -356,7 +356,9 @@ class Container extends Component {
       modalItemId,
       onModalClose,
       toggleSideBar,
-      history
+      history,
+      setItemLevelScore,
+      setItemLevelScoring
     } = this.props;
 
     let showPublishButton = false;
@@ -389,7 +391,7 @@ class Container extends Component {
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
             itemLevelScoring={item.itemLevelScoring}
-            setItemLevelScoring={this.props.setItemLevelScoring}
+            setItemLevelScoring={setItemLevelScoring}
           />
         )}
         <ItemHeader
@@ -434,7 +436,7 @@ class Container extends Component {
                     <label>
                       <b> Total Score :</b>
                     </label>
-                    <InputNumber min={1} value={item.itemLevelScore} onChange={v => this.props.setItemLevelScore(v)} />
+                    <InputNumber min={1} value={item.itemLevelScore} onChange={v => setItemLevelScore(v)} />
                   </InputGroup>
                 </Col>
               </Row>
@@ -501,7 +503,9 @@ Container.propTypes = {
   onModalClose: PropTypes.func,
   navigateToPickupQuestionType: PropTypes.func,
   toggleSideBar: PropTypes.func.isRequired,
-  redirectOnEmptyItem: PropTypes.bool
+  redirectOnEmptyItem: PropTypes.bool,
+  setItemLevelScore: PropTypes.func,
+  setItemLevelScoring: PropTypes.func
 };
 
 Container.defaultProps = {
@@ -513,7 +517,9 @@ Container.defaultProps = {
   onModalClose: () => {},
   navigateToPickupQuestionType: () => {},
   redirectOnEmptyItem: true,
-  testItemStatus: ""
+  testItemStatus: "",
+  setItemLevelScore: () => {},
+  setItemLevelScoring: () => {}
 };
 
 const enhance = compose(

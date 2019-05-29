@@ -2009,6 +2009,8 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           type: "floating-keyboard"
         },
+        options: {},
+        inputs: {},
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
@@ -2025,6 +2027,14 @@ export const getCards = onSelectQuestionType => {
                 }
               ]
             ]
+          },
+          valid_dropdown: {
+            score: 1,
+            value: []
+          },
+          valid_inputs: {
+            score: 1,
+            value: []
           }
         },
         is_math: true,

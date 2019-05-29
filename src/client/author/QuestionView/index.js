@@ -78,7 +78,6 @@ class QuestionViewContainer extends Component {
   };
 
   render() {
-    console.log("questionViewContainer props", this.props);
     const {
       testActivity,
       classResponse: { testItems, ...others },
@@ -90,8 +89,6 @@ class QuestionViewContainer extends Component {
     const { loading } = this.state;
 
     const filterdItems = testItems.filter(item => item.data.questions.filter(q => q.id === question.id).length > 0);
-
-    console.log("filtered items", filterdItems);
 
     filterdItems.forEach(item => {
       if (this.props.itemId) {
@@ -124,11 +121,11 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => student.status === "submitted")
+        .filter(student => student.status != "notStarted")
         .map(st => {
           const stData = {
             name: st.studentName,
-            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities),
+            avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
             attempts: st.questionActivities.length,
             correct: 0,
             wrong: 0,
@@ -136,24 +133,23 @@ class QuestionViewContainer extends Component {
             skipped: 0,
             manuallyGraded: 0
           };
-          st.questionActivities.map(({ correct, partialCorrect, skipped, manuallyGraded }) => {
-            if (correct) {
-              stData.correct += 1;
-            } else if (skipped) {
-              stData.skipped += 1;
-            } else if (!skipped && !correct) {
-              stData.wrong += 1;
-            }
-
-            if (partialCorrect) {
-              stData.pCorrect += 1;
-            }
-
-            if (manuallyGraded) {
-              stData.manuallyGraded += 1;
-            }
-            return null;
-          });
+          st.questionActivities
+            .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
+            .forEach(({ correct, partialCorrect, skipped, manuallyGraded, score, maxScore }) => {
+              if (skipped) {
+                stData.skipped += 1;
+              } else if (score === maxScore && score > 0) {
+                stData.correct += 1;
+              } else if (score > 0 && score < maxScore) {
+                stData.pCorrect += 1;
+              } else if (score === 0) {
+                stData.wrong += 1;
+              }
+              if (manuallyGraded) {
+                stData.manuallyGraded += 1;
+              }
+              return null;
+            });
           return stData;
         });
     }
@@ -227,6 +223,7 @@ class QuestionViewContainer extends Component {
                   stroke={blue}
                   strokeWidth="3"
                   type="monotone"
+                  yAxisId={1}
                   dot={{ stroke: white, strokeWidth: 6, fill: white }}
                 />
                 <Tooltip content={<CustomTooltip />} cursor={false} />

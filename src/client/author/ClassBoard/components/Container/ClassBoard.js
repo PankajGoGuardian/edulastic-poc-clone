@@ -256,6 +256,7 @@ class ClassBoard extends Component {
     let selectedStudentsEntity = this.props.entities.find(item => item.studentId === selectedStudentsKey);
     selectedStudentsEntity = selectedStudentsEntity || {};
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
+    const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -286,7 +287,22 @@ class ClassBoard extends Component {
             >
               STUDENTS
             </StudentButton>
-            <QuestionButton active={selectedTab === "questionView"} onClick={e => this.onTabChange(e, "questionView")}>
+            <QuestionButton
+              active={selectedTab === "questionView"}
+              onClick={e => {
+                const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
+                if (!firstQuestion) {
+                  console.warn("no question activities");
+                  return;
+                }
+                this.setState({
+                  selectedQuestion: 0,
+                  selectedQid: firstQuestion._id,
+                  itemId: firstQuestion.testItemId,
+                  selectedTab: "questionView"
+                });
+              }}
+            >
               QUESTIONS
             </QuestionButton>
           </StudentButtonDiv>
@@ -400,11 +416,18 @@ class ClassBoard extends Component {
             >
               <ClassSelect
                 classid="DI"
-                classname={selectedTab === "Student" ? classname : questionsIds}
+                classname={
+                  selectedTab === "Student"
+                    ? classname
+                    : firstQuestionEntities
+                        .filter(x => !(x.disabled || x.scoringDisabled))
+                        .map((x, index) => ({ name: `Q${index + 1}` }))
+                }
                 selected={selectedQuestion}
                 justifyContent="flex-end"
                 handleChange={value => {
-                  this.setState({ selectedQuestion: value });
+                  const { _id: qid, testItemId: itemId } = this.props.entities[0].questionActivities[value];
+                  this.setState({ selectedQuestion: value, selectedQid: qid, itemId });
                 }}
               />
             </QuestionContainer>

@@ -162,13 +162,14 @@ export const transformGradeBookResponse = ({
           return { _id, notStarted: true, weight, disabled, testItemId };
         }
         let { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
-        if (_qids) {
-          correct = _qids.map(x => questionActivitiesIndexed[x]).every(x => x.correct);
+        const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+        if (_qids && _qids.length) {
+          correct = score === questionMaxScore && score > 0;
           if (!correct) {
-            partialCorrect = _qids.map(x => questionActivitiesIndexed[x]).some(x => x.correct);
+            partialCorrect = score > 0 && score <= questionMaxScore;
           }
         }
-        const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+
         return {
           _id,
           weight,

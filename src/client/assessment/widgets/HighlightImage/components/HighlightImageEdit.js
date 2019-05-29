@@ -9,7 +9,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import LineColorOptionsSubtitle from "./LineColorOptionsSubtitle";
 import Options from "./Options";
 
-const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedAreOpen }) => {
+const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
   const { line_color } = item;
 
   const [loading, setLoading] = useState(false);
@@ -27,6 +27,7 @@ const HighlightImageEdit = ({ item, fillSections, cleanSections, advancedAreOpen
       <LineColorOptionsSubtitle
         line_color={line_color}
         item={item}
+        setQuestionData={setQuestionData}
         fillSections={fillSections}
         cleanSections={cleanSections}
       />

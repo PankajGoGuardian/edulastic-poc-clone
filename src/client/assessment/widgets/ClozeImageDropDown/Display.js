@@ -167,11 +167,6 @@ class Display extends Component {
                   className="imagelabeldragdrop-droppable active"
                 >
                   {!smallSize && (
-                    <span className="index-box" data-cy={`dropdown-board-${index}`}>
-                      {indexStr}
-                    </span>
-                  )}
-                  {!smallSize && (
                     <AnswerDropdown
                       responseIndex={dropTargetIndex}
                       style={{ width: "100%", height: "100%" }}

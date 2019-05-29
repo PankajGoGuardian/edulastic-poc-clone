@@ -6,24 +6,17 @@ import { mainBlueColor, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 import { Bar, ActiveBar, Text, Circle, StrokedRect } from "../styled";
 import { EDIT, CLEAR } from "../../../constants/constantsForQuestions";
+import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Circles = ({
-  bars,
-  step,
-  yAxisStep,
-  height,
-  margin,
-  onPointOver,
-  onMouseDown,
-  isMouseDown,
-  view,
-  previewTab,
-  validation
-}) => {
+const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, validation }) => {
+  const { height, margin, yAxisMin } = gridParams;
+
+  const { yAxisStep, step } = getGridVariables(bars, gridParams, true);
+
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleMouseAction = value => () => {
-    if (!isMouseDown) {
+    if (activeIndex === null) {
       onPointOver(value);
     }
   };
@@ -43,7 +36,7 @@ const Circles = ({
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => height - margin - dot.y;
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
 
   const renderValidationIcons = index => {
     if (isEqual(newValidation[validatingIndex].value[index].y.toFixed(4), bars[index].y.toFixed(4))) {
@@ -65,12 +58,18 @@ const Circles = ({
     setHoveredIndex(index);
   };
 
+  const getBarHeight = y => convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams);
+
+  const getLength = y => Math.floor((height - margin - convertUnitToPx(y, gridParams)) / yAxisStep);
+
+  const isHovered = index => hoveredIndex === index || activeIndex === index;
+
   return (
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment>
           {previewTab !== CLEAR && renderValidationIcons(index)}
-          {Array.from({ length: Math.floor(dot.y / yAxisStep) }).map((a, ind) => (
+          {Array.from({ length: getLength(dot.y) }).map((a, ind) => (
             <Circle
               cx={getCenterX(index) + step / 2}
               cy={height - margin - ind * yAxisStep - yAxisStep / 2}
@@ -83,17 +82,17 @@ const Circles = ({
             x={getCenterX(index)}
             y={getCenterY(dot)}
             width={step - 2}
-            height={dot.y}
+            height={getBarHeight(dot.y)}
             color="transparent"
           />
           {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
             <Fragment>
               <StrokedRect
-                hoverState={hoveredIndex === index}
+                hoverState={isHovered(index)}
                 x={getCenterX(index)}
                 y={getCenterY(dot)}
                 width={step - 2}
-                height={dot.y}
+                height={getBarHeight(dot.y)}
               />
               <ActiveBar
                 onMouseEnter={handleMouse(index)}
@@ -103,8 +102,8 @@ const Circles = ({
                 y={getCenterY(dot) - 4}
                 width={step - 2}
                 color={dot.y === 0 ? mainBlueColor : "transparent"}
-                hoverState={hoveredIndex === index}
-                height={hoveredIndex === index ? 5 : 1}
+                hoverState={isHovered(index)}
+                height={isHovered(index) ? 5 : 1}
               />
             </Fragment>
           )}
@@ -119,14 +118,19 @@ const Circles = ({
 
 Circles.propTypes = {
   bars: PropTypes.array.isRequired,
-  step: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  yAxisStep: PropTypes.number.isRequired,
-  margin: PropTypes.number.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  isMouseDown: PropTypes.bool.isRequired,
+  activeIndex: PropTypes.number.isRequired,
   view: PropTypes.string.isRequired,
+  gridParams: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.number,
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
+  }).isRequired,
   previewTab: PropTypes.string,
   validation: PropTypes.object
 };

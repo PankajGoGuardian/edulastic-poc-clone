@@ -9,5 +9,4 @@ export const FormContainer = styled(FlexContainer)`
   color: ${props => props.theme.widgets.clozeImageText.formContainerColor};
   border-bottom: 1px solid ${props => props.theme.widgets.clozeImageText.formContainerBorderColor};
   border-radius: 10px 10px 0px 0px;
-  overflow: hidden;
 `;

@@ -39,7 +39,10 @@ class Header {
     return new EditItemPage();
   }
 
-  clickOnPublishItem = () => cy.get('[data-cy="publishItem"]').click();
+  clickOnPublishItem = () => {
+    cy.get('[data-cy="publishItem"]').click();
+    cy.wait("@saveItem");
+  };
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();
 }

@@ -14,7 +14,7 @@ import BarChart from "./BarChart";
 import Histogram from "./Histogram";
 import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
 
 const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, view, showQuestionNumber, qIndex }) => {
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
@@ -48,11 +48,11 @@ const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, vie
     userAnswer.length !== chart_data.data.length
       ? {
           ...chart_data,
-          ui_style: { ...item.ui_style }
+          gridParams: { ...item.ui_style }
         }
       : {
           ...chart_data,
-          ui_style: { ...item.ui_style },
+          gridParams: { ...item.ui_style },
           data: [...userAnswer]
         };
 

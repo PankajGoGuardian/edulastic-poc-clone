@@ -1,7 +1,7 @@
 import styled from "styled-components";
-import { CustomQuillComponent } from "@edulastic/common";
+import QuestionTextArea from "../../../components/QuestionTextArea";
 
-export const StyledCustomQuill = styled(CustomQuillComponent)`
+export const StyledQuestionTextArea = styled(QuestionTextArea)`
   min-height: 134px;
   border-radius: 4px;
   border: 1px solid ${props => props.theme.widgets.clozeImageDropDown.customQuilBorderColor};

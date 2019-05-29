@@ -92,6 +92,8 @@ export const mapCountAsType = {
 
 export const CLEVER_DISTRICT_ID_REGEX = /^[0-9a-fA-F]{24}$/;
 
+export const DISABLE_SUBMIT_TITLE = "Disabled since Sync Enabled";
+
 export const radioButtonUserData = {
   UPGRADE: "Upgrade",
   REVOKE: "Revoke",

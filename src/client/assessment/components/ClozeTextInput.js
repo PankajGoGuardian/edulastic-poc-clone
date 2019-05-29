@@ -81,7 +81,8 @@ const ClozeTextInput = ({
   style,
   placeholder,
   type,
-  indexNumber
+  indexNumber,
+  showIndex = true
 }) => {
   const ref = useRef();
   const MInput = item.multiple_line ? TextArea : Input;
@@ -120,7 +121,7 @@ const ClozeTextInput = ({
 
   return (
     <CustomInput style={style}>
-      {indexNumber && <IndexBox>{indexNumber}</IndexBox>}
+      {showIndex && indexNumber && <IndexBox>{indexNumber}</IndexBox>}
       <MInput
         ref={ref}
         onChange={e => {

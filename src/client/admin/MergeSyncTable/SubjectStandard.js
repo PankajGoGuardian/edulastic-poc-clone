@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Select } from "antd";
 import { Table } from "../Common/StyledComponents";
-import { LIST_CLEVER_SUBJECTS } from "../Data";
+import { LIST_CLEVER_SUBJECTS, DISABLE_SUBMIT_TITLE } from "../Data";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { Button } from "../Common/StyledComponents";
 import CancelApplyActions from "./CancelApplyActions";
@@ -19,10 +19,11 @@ export default function SubjectStandard({
   orgId,
   orgType,
   updateSubjectStdMapAction,
-  deleteSubjectStdMapAction
+  deleteSubjectStdMapAction,
+  disableFields
 }) {
   const { rows, cleverSubjectStandardMap, curriculum } = subStandardMapping;
-
+  const cancelApplyButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
   useEffect(() => {
     fetchCurriculumDataAction();
   }, []);
@@ -120,6 +121,7 @@ export default function SubjectStandard({
         />
       </Table>
       <CancelApplyActions
+        {...cancelApplyButtonProps}
         onApplyAction={() =>
           updateSubjectStdMapAction({
             orgId,

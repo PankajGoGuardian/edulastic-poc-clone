@@ -6,9 +6,9 @@ import { Col, Checkbox, Select } from "antd";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
-import { CustomQuillComponent } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import QuestionTextArea from "../../../components/QuestionTextArea";
 import { updateVariables } from "../../../utils/variables";
 
 import withAddButton from "../../../components/HOC/withAddButton";
@@ -87,10 +87,8 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
       <StyledRow gutter={32}>
         <Col span={24}>
           <Label>{t("component.passage.heading")}</Label>
-          <CustomQuillComponent
-            toolbarId="heading"
+          <QuestionTextArea
             onChange={value => handleChange("heading", value)}
-            showResponseBtn={false}
             value={item.heading || ""}
             style={{
               border: `1px solid ${theme.widgets.passage.quillBorderColor}`,
@@ -104,10 +102,8 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
       <StyledRow gutter={32}>
         <Col span={24}>
           <Label>{t("component.passage.contentsTitle")}</Label>
-          <CustomQuillComponent
-            toolbarId="contentsTitle"
+          <QuestionTextArea
             onChange={value => handleChange("contentsTitle", value)}
-            showResponseBtn={false}
             value={item.contentsTitle || ""}
             style={{
               border: `1px solid ${theme.widgets.passage.quillBorderColor}`,
@@ -122,11 +118,9 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
         {!item.paginated_content && (
           <Col span={24}>
             <Label>{t("component.passage.contents")}</Label>
-            <CustomQuillComponent
-              toolbarId="contents"
+            <QuestionTextArea
               placeholder={t("component.passage.enterPassageContentHere")}
               onChange={value => handleChange("content", value)}
-              showResponseBtn={false}
               value={item.content}
             />
           </Col>
@@ -165,10 +159,8 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
       <StyledRow gutter={32}>
         <Col span={12}>
           <Label>{t("component.passage.instructorStimulus")}</Label>
-          <CustomQuillComponent
-            toolbarId="instructorStimulus"
+          <QuestionTextArea
             onChange={value => handleChange("instructor_stimulus", value)}
-            showResponseBtn={false}
             value={item.instructor_stimulus || ""}
             style={{
               border: `1px solid ${theme.widgets.passage.quillBorderColor}`,

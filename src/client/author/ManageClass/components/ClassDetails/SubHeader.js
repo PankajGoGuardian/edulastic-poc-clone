@@ -18,7 +18,7 @@ const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler,
         </TitleWarapper>
       </LeftContent>
       <RightContent>
-        <AnchorLink onClick={viewAssessmentHandler}>View Assessments</AnchorLink>
+        <AnchorLink to="/author/assignments">View Assessments</AnchorLink>
         <StyledIcon type="user" fill={greenDark} />
         <StyledIcon type="delete" fill={greyDarken} />
         <ClassCode>

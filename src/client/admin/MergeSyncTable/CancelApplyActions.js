@@ -12,13 +12,19 @@ const CustomButton = styled(Button)`
   margin-right: 10px;
 `;
 
-const CancelApplyActions = ({ onCancelAction, onApplyAction, applySubmit }) => (
+const CancelApplyActions = ({ onCancelAction, onApplyAction, type, ...rest }) => (
   <ButtonDiv>
-    <CustomButton onClick={onCancelAction}>Cancel</CustomButton>
-    <CustomButton type="primary" htmlType={applySubmit ? "submit" : "button"} onClick={onApplyAction}>
+    <CustomButton onClick={onCancelAction} {...rest}>
+      Cancel
+    </CustomButton>
+    <CustomButton type="primary" htmlType={type} onClick={onApplyAction} {...rest}>
       Apply
     </CustomButton>
   </ButtonDiv>
 );
 
 export default CancelApplyActions;
+
+CancelApplyActions.defaultProps = {
+  type: "button"
+};

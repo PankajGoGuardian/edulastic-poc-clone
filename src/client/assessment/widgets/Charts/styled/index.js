@@ -45,6 +45,14 @@ export const Text = styled.text`
   user-select: none;
 `;
 
+export const Sub = styled.tspan`
+  font-size: 80%;
+`;
+
+export const Sup = styled.tspan`
+  font-size: 80%;
+`;
+
 export const Group = styled.g`
   background: ${({ active }) => (active === null ? "transparent" : "black")};
   z-index: 1;

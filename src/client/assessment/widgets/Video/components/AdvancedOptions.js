@@ -8,7 +8,7 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "./Extras";
 import Settings from "./Settings";
 
-const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen }) => {
+const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
   const [modalSettings, setModalSettings] = useState({
     editMode: false,
     modalName: ""
@@ -39,6 +39,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
         fillSections={fillSections}
         cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
+        setQuestionData={setQuestionData}
       />
     </WidgetOptions>
   );
@@ -66,7 +67,8 @@ AdvancedOptions.propTypes = {
   theme: PropTypes.object.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  setQuestionData: PropTypes.func.isRequired
 };
 
 AdvancedOptions.defaultProps = {

@@ -7,31 +7,24 @@ import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { Bar, ActiveBar } from "../styled";
 import { EDIT, CLEAR } from "../../../constants/constantsForQuestions";
+import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Bars = ({
-  bars,
-  step,
-  padding,
-  height,
-  margin,
-  onPointOver,
-  onMouseDown,
-  isMouseDown,
-  view,
-  validation,
-  previewTab
-}) => {
+const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, validation, previewTab }) => {
+  const { margin, yAxisMin } = gridParams;
+
+  const { padding, step } = getGridVariables(bars, gridParams, true);
+
   const [hoveredIndex, setHoveredIndex] = useState(null);
 
   const handleMouseAction = value => () => {
-    if (!isMouseDown) {
+    if (activeIndex === null) {
       onPointOver(value);
     }
   };
 
-  const getCenterX = index => step * index + margin / 2 + padding + step / 2 - 10 - (step * 0.8) / 2;
+  const getCenterX = index => step * index + margin / 2 + padding + (step * (1 - 0.8)) / 2;
 
-  const getCenterY = dot => height - margin - dot.y;
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
 
   const handleMouse = index => () => {
     handleMouseAction(index)();
@@ -65,6 +58,10 @@ const Bars = ({
     );
   };
 
+  const getBarHeight = y => convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams);
+
+  const isHovered = index => hoveredIndex === index || activeIndex === index;
+
   return (
     <Fragment>
       {bars.map((dot, index) => (
@@ -76,7 +73,7 @@ const Bars = ({
             x={getCenterX(index)}
             y={getCenterY(dot)}
             width={step * 0.8}
-            height={dot.y}
+            height={getBarHeight(dot.y)}
           />
           {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
             <ActiveBar
@@ -86,8 +83,8 @@ const Bars = ({
               x={getCenterX(index)}
               y={getCenterY(dot)}
               width={step * 0.8}
-              hoverState={hoveredIndex === index}
-              height={hoveredIndex === index ? 5 : 1}
+              hoverState={isHovered(index)}
+              height={isHovered(index) ? 5 : 1}
             />
           )}
         </Fragment>
@@ -98,14 +95,19 @@ const Bars = ({
 
 Bars.propTypes = {
   bars: PropTypes.array.isRequired,
-  step: PropTypes.number.isRequired,
-  padding: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  margin: PropTypes.number.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  isMouseDown: PropTypes.bool.isRequired,
+  activeIndex: PropTypes.number.isRequired,
   view: PropTypes.string.isRequired,
+  gridParams: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.number,
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
+  }).isRequired,
   previewTab: PropTypes.string,
   validation: PropTypes.object
 };

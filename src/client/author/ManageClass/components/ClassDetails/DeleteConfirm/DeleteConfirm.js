@@ -49,7 +49,7 @@ class DeleteConfirm extends React.Component {
     );
   }
 
-  onChangeHandler = ({ target }) => this.setState({ confirmText: target.value });
+  onChangeHandler = ({ target }) => this.setState({ confirmText: upperCase(target.value) });
 
   onRemove = () => {
     const { handleCancel, selectedStudent, orgData, selectedClass, removeStds } = this.props;
@@ -91,7 +91,7 @@ class DeleteConfirm extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer}>
+      <StyledModal title={title} visible={isOpen} onCancel={handleCancel} footer={footer}>
         {this.renderUserNames()}
         <Description>
           Are you sure you want to remove the selected students from the class? <br />

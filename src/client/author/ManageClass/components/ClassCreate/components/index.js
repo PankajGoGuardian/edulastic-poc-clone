@@ -39,8 +39,6 @@ export const FieldLabel = ({
     ],
     startDate: [{ validator: checkStartDate, message: "Should be later than the today!" }],
     endDate: [{ validator: checkEndDate, message: "Should be later than the Start date" }],
-    subject: [{ required: true, message: "Please select a subject." }],
-    grade: [{ required: true, message: "Please select a Grade." }],
     institutionId: [{ required: true, message: "Please select a School." }]
   };
 

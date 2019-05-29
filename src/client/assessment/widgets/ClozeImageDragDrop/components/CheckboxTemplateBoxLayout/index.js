@@ -80,7 +80,7 @@ const CheckboxTemplateBoxLayout = ({
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const className = evaluation[dropTargetIndex] ? "right" : "wrong";
+        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
 
         return (
           <React.Fragment key={index}>
@@ -88,10 +88,13 @@ const CheckboxTemplateBoxLayout = ({
               <DropContainer
                 index={index}
                 style={btnStyle}
-                className={`imagelabeldragdrop-droppable active check-answer ${className}`}
+                className={`
+                imagelabeldragdrop-droppable
+                active
+                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}  
+                ${status}`}
                 drop={drop}
               >
-                <span className="index index-box">{indexStr}</span>
                 <div className="text container">
                   {userSelections[dropTargetIndex] &&
                     userSelections[dropTargetIndex].map((answer, user_select_index) => (
@@ -119,8 +122,8 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === "right" && <RightIcon />}
-                  {className === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -131,7 +134,12 @@ const CheckboxTemplateBoxLayout = ({
             {showAnswer && (
               <div
                 style={btnStyle}
-                className={`imagelabeldragdrop-droppable active check-answer ${className} show-answer`}
+                className={`
+                  imagelabeldragdrop-droppable 
+                  active 
+                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                  ${status} 
+                  show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container">
@@ -153,8 +161,8 @@ const CheckboxTemplateBoxLayout = ({
                     ))}
                 </div>
                 <IconWrapper>
-                  {className === "right" && <RightIcon />}
-                  {className === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />

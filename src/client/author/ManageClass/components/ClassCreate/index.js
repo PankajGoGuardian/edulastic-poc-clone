@@ -66,7 +66,7 @@ class ClassCreate extends React.Component {
     form.validateFields((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
-        const { standardSets, endDate, startDate } = values;
+        const { standardSets, endDate, startDate, courseId, grade, subject } = values;
 
         const updatedStandardsSets = standardSets.map(el => {
           const selectedCurriculum = find(curriculums, curriculum => curriculum._id === el);
@@ -85,6 +85,9 @@ class ClassCreate extends React.Component {
         values.standardSets = updatedStandardsSets;
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
+        values.courseId = isEmpty(courseId) ? "" : courseId;
+        values.grade = isEmpty(grade) ? "Other" : subject;
+        values.subject = isEmpty(subject) ? "Other Subjects" : subject;
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });

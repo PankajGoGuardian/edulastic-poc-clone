@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import CancelApplyActions from "./CancelApplyActions";
-import { CLASS_NAME_PATTERN_CONFIG } from "../Data";
+import { CLASS_NAME_PATTERN_CONFIG, DISABLE_SUBMIT_TITLE } from "../Data";
 
-const Option = Select.Option;
+const { Option } = Select;
 
-export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, classNamePattern }) {
+export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, classNamePattern, disableFields }) {
   const [selectState, setSelectState] = useState(CLASS_NAME_PATTERN_CONFIG[classNamePattern]);
-
+  const cancelApplyButtonProps = disableFields ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE } : {};
   const setValueBackToDefault = () => setSelectState(CLASS_NAME_PATTERN_CONFIG[classNamePattern]);
 
   useEffect(() => {
@@ -29,7 +29,11 @@ export default function ClassNamePattern({ orgId, orgType, applyClassNamesSync, 
         <Option value="CNAME_TLNAME_PERIOD">Course Name - Teacher LastName - Period</Option>
         <Option value="CNAME_TLNAME_TERM">Course Name - Teacher LastName - Term</Option>
       </Select>
-      <CancelApplyActions onApplyAction={handleApplyClick} onCancelAction={setValueBackToDefault} />
+      <CancelApplyActions
+        {...cancelApplyButtonProps}
+        onApplyAction={handleApplyClick}
+        onCancelAction={setValueBackToDefault}
+      />
     </>
   );
 }

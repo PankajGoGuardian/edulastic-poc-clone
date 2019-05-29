@@ -117,11 +117,13 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
-          yAxisCount: 10,
+          yAxisMax: 10,
+          yAxisMin: 0,
           width: 640,
           height: 440,
           margin: 40,
           stepSize: 1,
+          snapTo: 1,
           chart_type: "linePlot"
         },
         validation: {
@@ -202,11 +204,13 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
-          yAxisCount: 10,
+          yAxisMax: 10,
+          yAxisMin: 0,
           width: 640,
           height: 440,
           margin: 40,
           stepSize: 1,
+          snapTo: 1,
           chart_type: "dots"
         },
         validation: {
@@ -287,12 +291,15 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
-          yAxisCount: 70,
+          yAxisMax: 70,
+          yAxisMin: 0,
           width: 640,
           height: 440,
           margin: 40,
           stepSize: 5,
-          chart_type: "histogram"
+          snapTo: 5,
+          chart_type: "histogram",
+          fractionFormat: "Decimal"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -372,12 +379,15 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
-          yAxisCount: 70,
+          yAxisMax: 70,
+          yAxisMin: 0,
           width: 640,
           height: 440,
           margin: 40,
           stepSize: 5,
-          chart_type: "bar"
+          snapTo: 5,
+          chart_type: "bar",
+          fractionFormat: "Decimal"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -457,12 +467,15 @@ export const getCards = onSelectQuestionType => {
         ui_style: {
           xAxisLabel: "X Axis Label",
           yAxisLabel: "Y Axis Label",
-          yAxisCount: 70,
+          yAxisMax: 70,
+          yAxisMin: 0,
           width: 640,
           height: 440,
           margin: 40,
           stepSize: 5,
-          chart_type: "line"
+          snapTo: 5,
+          chart_type: "line",
+          fractionFormat: "Decimal"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1073,6 +1086,7 @@ export const getCards = onSelectQuestionType => {
         firstMount: true,
         stimulus: "",
         imageWidth: 0,
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
@@ -1137,6 +1151,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "",
         options: [],
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         imageWidth: 0,
         validation: {
           scoring_type: EXACT_MATCH,

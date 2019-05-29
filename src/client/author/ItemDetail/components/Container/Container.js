@@ -436,7 +436,7 @@ class Container extends Component {
                     <label>
                       <b> Total Score :</b>
                     </label>
-                    <InputNumber value={item.itemLevelScore} onChange={v => setItemLevelScore(v)} />
+                    <InputNumber min={1} value={item.itemLevelScore} onChange={v => setItemLevelScore(v)} />
                   </InputGroup>
                 </Col>
               </Row>

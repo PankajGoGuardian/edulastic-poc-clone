@@ -6,22 +6,15 @@ import { IconClose, IconCheck } from "@edulastic/icons";
 import { red, green } from "@edulastic/colors";
 import { Circle } from "../styled";
 import { EDIT, CLEAR } from "../../../constants/constantsForQuestions";
+import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Points = ({
-  circles,
-  step,
-  padding,
-  height,
-  margin,
-  onPointOver,
-  onMouseDown,
-  isMouseDown,
-  view,
-  validation,
-  previewTab
-}) => {
+const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridParams, validation, previewTab }) => {
+  const { margin } = gridParams;
+
+  const { padding, step } = getGridVariables(circles, gridParams);
+
   const handleMouseAction = value => () => {
-    if (!isMouseDown) {
+    if (activeIndex === null) {
       onPointOver(value);
     }
   };
@@ -41,7 +34,7 @@ const Points = ({
 
   const getCenterX = index => step * index + margin / 2 + padding;
 
-  const getCenterY = dot => height - margin - dot.y;
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
 
   const renderValidationIcons = index => {
     if (isEqual(newValidation[validatingIndex].value[index].y.toFixed(4), circles[index].y.toFixed(4))) {
@@ -82,14 +75,19 @@ const Points = ({
 
 Points.propTypes = {
   circles: PropTypes.array.isRequired,
-  step: PropTypes.number.isRequired,
-  padding: PropTypes.number.isRequired,
-  height: PropTypes.number.isRequired,
-  margin: PropTypes.number.isRequired,
   onPointOver: PropTypes.func.isRequired,
   onMouseDown: PropTypes.func.isRequired,
-  isMouseDown: PropTypes.bool.isRequired,
+  activeIndex: PropTypes.number.isRequired,
   view: PropTypes.string.isRequired,
+  gridParams: PropTypes.shape({
+    width: PropTypes.number,
+    height: PropTypes.number,
+    margin: PropTypes.number,
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
+  }).isRequired,
   previewTab: PropTypes.string,
   validation: PropTypes.object
 };

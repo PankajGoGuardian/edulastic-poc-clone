@@ -19,5 +19,6 @@ export default class TestAddItemTab {
 
   authoredByMe = () => {
     cy.xpath("//li[text()='Authored by me']").click();
+    return cy.wait("@searchItem");
   };
 }

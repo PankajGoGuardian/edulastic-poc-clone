@@ -12,18 +12,13 @@ import {
   tabletWidth,
   greenThird,
   extraDesktopWidth,
-  mainBgColor
+  mainBgColor,
+  textColor
 } from "@edulastic/colors";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
-import {
-  toggleCheckedUnitItemAction,
-  setSelectedItemsForAssignAction,
-  removeItemFromUnitAction,
-  removeUnitAction
-} from "../ducks";
+import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
 import assessmentRed from "../assets/assessment.svg";
 import assessmentGreen from "../assets/concept-check.svg";
-import { matchAssigned, getNumberOfAssigned } from "../util";
 import Tags from "../../src/components/common/Tags";
 
 import AssessmentPlayer from "../../../assessment";
@@ -102,13 +97,17 @@ class ModuleRow extends Component {
       customize,
       removeUnit
     } = this.props;
-    const { completed, title, _id, data = [] } = module;
-
+    const { title, _id, data = [] } = module;
+    const statusList = data
+      .flatMap(item => item.assignments || [])
+      .flatMap(item => item.class || [])
+      .flatMap(item => item.status || []);
+    const completed =
+      statusList.filter(status => status === "DONE").length === statusList.length && statusList.length > 0;
     const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
-    const numberOfAssigned = data.filter(content => content.assignments.length > 0).length;
-
+    const numberOfAssigned = data.filter(content => content.assignments && content.assignments.length > 0).length;
     const { showModal, selectedTest } = this.state;
     const menu = (
       <Menu data-cy="addContentMenu">
@@ -153,8 +152,10 @@ class ModuleRow extends Component {
                   </CustomIcon>
                   <ModuleTitleAssignedWrapper>
                     <ModuleTitleWrapper>
+                      <ModuleTitle>
+                        {`Module ${moduleIndex + 1}`}: {title}
+                      </ModuleTitle>
                       <ModuleTitlePrefix>
-                        {`Module ${moduleIndex + 1}`}
                         {!hideEditOptions && (
                           <Icon
                             type="close-circle"
@@ -164,7 +165,6 @@ class ModuleRow extends Component {
                           />
                         )}
                       </ModuleTitlePrefix>
-                      <ModuleTitle>{title}</ModuleTitle>
                     </ModuleTitleWrapper>
 
                     {completed && !hideEditOptions && (
@@ -179,24 +179,21 @@ class ModuleRow extends Component {
                         </ModuleCompleted>
                       </React.Fragment>
                     )}
-                    <ModulesWrapper>
-                      {!completed && !hideEditOptions && (
+                    {!completed && !hideEditOptions && (
+                      <ModulesWrapper>
                         <ModulesAssigned>
                           Assigned
                           <NumberOfAssigned data-cy="numberOfAssigned">{numberOfAssigned}</NumberOfAssigned>
                           of
                           <TotalAssigned data-cy="totalAssigned">{totalAssigned}</TotalAssigned>
                         </ModulesAssigned>
-                      )}
-                      {((!completed && !hideEditOptions) || (status === "published" && mode === "embedded")) &&
-                        totalAssigned > 0 && (
-                          <AssignModuleButton>
-                            <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
-                              {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
-                            </Button>
-                          </AssignModuleButton>
-                        )}
-                    </ModulesWrapper>
+                        <AssignModuleButton>
+                          <Button ghost data-cy="AssignWholeModule" onClick={() => assignModule(module)}>
+                            {numberOfAssigned === totalAssigned ? "MODULE ASSIGNED" : "ASSIGN MODULE"}
+                          </Button>
+                        </AssignModuleButton>
+                      </ModulesWrapper>
+                    )}
                   </ModuleTitleAssignedWrapper>
                 </ModuleInfo>
               </ModuleHeader>
@@ -204,8 +201,12 @@ class ModuleRow extends Component {
                 // eslint-disable-next-line
                 <div>
                   {data.map((moduleData, index) => {
-                    const { standards } = moduleData;
+                    const { standards, assignments = [] } = moduleData;
                     const standardTags = (standards && standards.map(stand => stand.name)) || [];
+                    const statusList = assignments.flatMap(item => item.class || []).flatMap(item => item.status || []);
+                    const contentCompleted =
+                      statusList.filter(status => status === "DONE").length === statusList.length &&
+                      statusList.length > 0;
                     const moreMenu = (
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item
@@ -221,8 +222,7 @@ class ModuleRow extends Component {
                         </Menu.Item>
                       </Menu>
                     );
-
-                    const isAssigned = moduleData.assignments && moduleData.assignments.length > 0;
+                    const isAssigned = assignments.length > 0;
                     if (mode === "embedded") {
                       return (
                         <AssignmentDragItem
@@ -239,6 +239,7 @@ class ModuleRow extends Component {
                           standardTags={standardTags}
                           status={status}
                           contentIndex={index}
+                          isAssigned={isAssigned}
                           viewTest={this.viewTest}
                           moduleIndex={moduleIndex}
                           handleDrop={dropContent}
@@ -276,9 +277,9 @@ class ModuleRow extends Component {
                                     <img src={assessmentRed} alt="Module item is assigned" />
                                   </CustomIcon>
                                 )}
-                                {moduleData.completed && (
+                                {contentCompleted && (
                                   <CustomIcon>
-                                    <img src={assessmentGreen} alt="Module item is completed" />
+                                    <img src={assessmentGreen} alt="Content is completed" />
                                   </CustomIcon>
                                 )}
                               </ModuleAssignedUnit>
@@ -420,7 +421,6 @@ export const ModuleAssignedUnit = styled.div`
 
 const ModuleTitleWrapper = styled.div`
   display: flex;
-  flex-direction: column;
   @media only screen and (max-width: ${tabletWidth}) {
     width: 80%;
   }
@@ -453,7 +453,7 @@ const ModuleCompleted = styled.div`
   width: auto;
   align-items: center;
   @media only screen and (max-width: ${tabletWidth}) {
-    align-self: flex-start;
+    align-self: flex-end;
     margin-left: 0;
   }
 `;
@@ -563,11 +563,12 @@ const ModuleTitleAssignedWrapper = styled.div`
 const ModuleTitlePrefix = styled.div`
   font-weight: 600;
   font-size: 16px;
+  margin-left: 10px;
 `;
 
 export const ModuleDataName = styled.div`
   font-weight: 600;
-  color: #30404f;
+  color: ${textColor};
   font-size: 14px;
   font-family: Open Sans, SemiBold;
   @media only screen and (max-width: ${desktopWidth}) {
@@ -679,7 +680,6 @@ const ModuleHeader = styled(Row)`
   flex-direction: column;
   border-bottom-left-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
   border-bottom-right-radius: ${({ collapsed }) => (!collapsed ? "0px" : "10px")};
-  /* padding-bottom: 0; */
   overflow: hidden;
   position: relative;
 `;

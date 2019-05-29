@@ -2,12 +2,13 @@ import React, { memo } from "react";
 import { SortableElement } from "react-sortable-hoc";
 import PropTypes from "prop-types";
 
-import { FroalaEditor, FlexContainer } from "@edulastic/common";
+import { FlexContainer } from "@edulastic/common";
 
 import { SortableItemContainer } from "../styled/SortableItemContainer";
 import { Label } from "../styled/Label";
 import { IconTrash } from "../styled/IconTrash";
 import DragHandle from "./DragHandle";
+import QuestionTextArea from "../../QuestionTextArea";
 
 // TODO: rOnly is in use?
 const QuillSortableItem = SortableElement(({ value, onRemove, rOnly, onChange, columns, indx, label, fontSize }) => (
@@ -17,7 +18,7 @@ const QuillSortableItem = SortableElement(({ value, onRemove, rOnly, onChange, c
       <div className="main" data-cy="quillSortableItem">
         <DragHandle index={indx} />
 
-        <FroalaEditor value={value} onChange={onChange} toolbarInline toolbarVisibleWithoutSelection />
+        <QuestionTextArea value={value} onChange={onChange} style={{ width: "100%" }} />
       </div>
       {onRemove && <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />}
     </FlexContainer>

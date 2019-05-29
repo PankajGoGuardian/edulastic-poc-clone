@@ -1,3 +1,4 @@
+import promisify from "cypress-promise";
 import ItemListPage from "../itemList/itemListPage";
 import TeacherSideBar from "../SideBarPage";
 import TestSummary from "./testDetail/testSummaryTab";
@@ -10,7 +11,7 @@ export default class TestLibrary {
 
   clickOnNewAssignment = () => {
     cy.get("button")
-      .contains("New Assignment")
+      .contains("Author Test")
       .click();
   };
 
@@ -18,11 +19,14 @@ export default class TestLibrary {
     const testSummary = new TestSummary();
     const testAddItem = new TestAddItem();
     const itemListPage = new ItemListPage();
+    const itemIdList = [];
 
     cy.fixture("testAuthoring").then(testData => {
       const test = testData[key];
-      test.itemKeys.forEach(itemKey => {
+      test.itemKeys.forEach(async itemKey => {
         itemListPage.createItem(itemKey);
+        const itemId = await promisify(cy.url().then(url => url.split("/").reverse()[1]));
+        itemIdList.push(itemId);
       });
 
       // create new test
@@ -44,14 +48,12 @@ export default class TestLibrary {
 
       // add items
       testSummary.header.clickOnAddItems();
-      testAddItem.authoredByMe();
-      test.itemKeys.forEach(itemKey => {
-        cy.contains(itemKey)
-          .first()
-          .closest("tr")
-          .find("button")
-          .contains("ADD")
-          .click({ force: true });
+      testAddItem.authoredByMe().then(() => {
+        itemIdList.forEach(itemKey => {
+          cy.get(`[data-row-key="${itemKey}"]`)
+            .contains("ADD")
+            .click({ force: true });
+        });
       });
 
       // save

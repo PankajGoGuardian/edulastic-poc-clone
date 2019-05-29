@@ -21,7 +21,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import DropArea from "../../containers/DropArea";
 import { Subtitle } from "../../styled/Subtitle";
 
-import { StyledCustomQuill } from "./styled/StyledCustomQuill";
+import { StyledQuestionTextArea } from "./styled/StyledCustomQuill";
 import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
@@ -210,11 +210,7 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
-            <StyledCustomQuill
-              toolbarId="stimulus"
-              wrappedRef={instance => {
-                this.stimulus = instance;
-              }}
+            <StyledQuestionTextArea
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
               showResponseBtn={false}

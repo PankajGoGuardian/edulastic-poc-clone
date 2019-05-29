@@ -141,6 +141,7 @@ class Display extends Component {
                   type={uiStyle.inputtype}
                   indexNumber={indexNumber}
                   item={item}
+                  showIndex={false}
                 />
               </div>
             );

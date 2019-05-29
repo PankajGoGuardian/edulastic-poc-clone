@@ -112,10 +112,18 @@ const reducer = (state = initialState, { type, payload }) => {
               _st.entities[entityIndex].questionActivities.push(questionItem);
               // console.warn(`can't find any questionItem for id ${testActivityId}`);
             } else {
-              _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
+              if (!maxScore && (score || score === 0)) {
+                _st.entities[entityIndex].questionActivities[itemIndex].score = score;
+                console.log("updating for", { entityIndex, itemIndex, score });
+              } else {
+                _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
+              }
             }
             if (score) {
-              _st.entities[entityIndex].score += score;
+              _st.entities[entityIndex].score = _st.entities[entityIndex].questionActivities.reduce(
+                (acc, x) => acc + (x.score || 0),
+                0
+              );
             }
           } else {
             console.warn(`can't find any testactivity for testActivityId ${testActivityId}`);

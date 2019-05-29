@@ -120,7 +120,7 @@ const methodOptions = {
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
 };
 
-export {
+module.exports = {
   methods,
   methodOptions,
   fields,

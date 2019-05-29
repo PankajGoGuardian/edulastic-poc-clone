@@ -41,6 +41,7 @@ const RightFields = ({
 
   const standardSets = filter(curriculums, el => el.subject === subject);
   const grades = filter(allGrades, el => el.isContentGrade !== true);
+  const subjects = filter(allSubjects, el => el.value !== "");
   return (
     <>
       <StyledFlexContainer>
@@ -74,9 +75,9 @@ const RightFields = ({
             ))}
           </Select>
         </FieldLabel>
-        <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={subject}>
+        <FieldLabel label="Subject" {...restProps} fiedlName="subject" initialValue={[]}>
           <Select placeholder="Select Subject" onSelect={updateSubject}>
-            {allSubjects.map(el => (
+            {subjects.map(el => (
               <Select.Option key={el.value} value={el.value}>
                 {el.text}
               </Select.Option>

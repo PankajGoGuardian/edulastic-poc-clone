@@ -4,35 +4,25 @@ import { cloneDeep, isEqual } from "lodash";
 
 import { mainBlueColor } from "@edulastic/colors";
 
+import { SHOW } from "../../constants/constantsForQuestions";
+
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
-import { getGridVariables, getReCalculatedPoints } from "./helpers";
-import { SHOW } from "../../constants/constantsForQuestions";
+import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 
-const LineChart = ({
-  data,
-  previewTab,
-  validation,
-  saveAnswer,
-  ui_style: { width, height, margin, yAxisCount, stepSize },
-  view
-}) => {
-  const { yAxis, padding, yAxisStep, changingStep, step } = getGridVariables(
-    yAxisCount,
-    stepSize,
-    data,
-    height,
-    width,
-    margin
-  );
+const LineChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }) => {
+  const { width, height, margin } = gridParams;
+
+  const { padding, step } = getGridVariables(data, gridParams);
 
   const [active, setActive] = useState(null);
   const [activeIndex, setActiveIndex] = useState(null);
   const [isMouseDown, setIsMouseDown] = useState(false);
   const [cursorY, setCursorY] = useState(null);
+  const [initY, setInitY] = useState(null);
 
   const [localData, setLocalData] = useState(data);
 
@@ -46,12 +36,12 @@ const LineChart = ({
     setLocalData(data);
   }, []);
 
-  const getPolylinePoints = () =>
-    previewTab === SHOW
-      ? validation.valid_response.value
-          .map((dot, index) => `${step * index + margin / 2 + padding},${height - margin - dot.y}`)
-          .join(" ")
-      : localData.map((dot, index) => `${step * index + margin / 2 + padding},${height - margin - dot.y}`).join(" ");
+  const getPolylinePoints = () => {
+    const points = previewTab === SHOW ? validation.valid_response.value : localData;
+    return points
+      .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams)}`)
+      .join(" ");
+  };
 
   const getActivePoint = index =>
     active !== null
@@ -60,15 +50,20 @@ const LineChart = ({
           [active].split(",")[index]
       : null;
 
+  const save = () => {
+    setCursorY(null);
+    setActiveIndex(null);
+    setInitY(null);
+    setActive(null);
+    setIsMouseDown(false);
+    saveAnswer(localData);
+  };
+
   const onMouseMove = e => {
     const newLocalData = cloneDeep(localData);
     if (isMouseDown && cursorY) {
-      newLocalData[activeIndex].y -= e.pageY - cursorY;
-      if (newLocalData[activeIndex].y >= 0) {
-        setCursorY(e.pageY);
-      } else {
-        newLocalData[activeIndex].y = 0;
-      }
+      const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY;
+      newLocalData[activeIndex].y = convertPxToUnit(newPxY, gridParams);
 
       setLocalData(newLocalData);
     }
@@ -77,39 +72,44 @@ const LineChart = ({
   const onMouseDown = index => e => {
     setCursorY(e.pageY);
     setActiveIndex(index);
+    setInitY(localData[index].y);
     setIsMouseDown(true);
   };
 
   const onMouseUp = () => {
-    setCursorY(null);
-    setActiveIndex(null);
-    setActive(null);
-    setIsMouseDown(false);
-    saveAnswer(getReCalculatedPoints(localData, { oldStep: yAxisStep, yAxisStep, yAxisCount, changingStep }));
+    save();
+  };
+
+  const onMouseLeave = () => {
+    save();
   };
 
   return (
-    <svg style={{ userSelect: "none" }} width={width} onMouseMove={onMouseMove} onMouseUp={onMouseUp} height={height}>
-      <VerticalLines lines={data} step={step} height={height} margin={margin} padding={padding} />
+    <svg
+      style={{ userSelect: "none" }}
+      width={width}
+      height={height}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseLeave}
+    >
+      <VerticalLines lines={data} gridParams={gridParams} />
 
-      <HorizontalLines lines={yAxis} step={yAxisStep} height={height} width={width} margin={margin} padding={padding} />
+      <HorizontalLines gridParams={gridParams} />
 
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={mainBlueColor} />
 
       <ArrowPair getActivePoint={getActivePoint} />
 
       <Points
-        isMouseDown={activeIndex !== null}
+        activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
         validation={validation}
         circles={previewTab === SHOW ? validation.valid_response.value : localData}
         view={view}
-        step={step}
-        height={height}
-        padding={padding}
-        margin={margin}
         onMouseDown={onMouseDown}
+        gridParams={gridParams}
       />
     </svg>
   );
@@ -118,12 +118,14 @@ const LineChart = ({
 LineChart.propTypes = {
   data: PropTypes.array.isRequired,
   saveAnswer: PropTypes.func.isRequired,
-  ui_style: PropTypes.shape({
+  gridParams: PropTypes.shape({
     width: PropTypes.number,
     height: PropTypes.number,
     margin: PropTypes.number,
-    yAxisCount: PropTypes.number,
-    stepSize: PropTypes.number
+    yAxisMax: PropTypes.number,
+    yAxisMin: PropTypes.number,
+    stepSize: PropTypes.number,
+    snapTo: PropTypes.number
   }).isRequired,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,

@@ -23,14 +23,22 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemnumeration,
-  evaluation
+  evaluation,
+  maxHeight,
+  maxWidth
 }) => (
-  <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={imageWidth}>
+  <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
+    <TemplateCover width={imageWidth} maxHeight={maxHeight} maxWidth={maxWidth}>
       <img
         src={imageUrl}
-        width={imageWidth}
-        style={{ userSelect: "none", pointerEvents: "none" }}
+        style={{
+          userSelect: "none",
+          pointerEvents: "none",
+          height: "auto",
+          maxWidth,
+          maxHeight,
+          width: !maxWidth ? imageWidth : imageWidth < 700 ? imageWidth : "100%"
+        }}
         alt={imageAlterText}
       />
       {responseContainers.map((responseContainer, index) => {

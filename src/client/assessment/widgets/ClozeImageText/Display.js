@@ -82,12 +82,19 @@ class Display extends Component {
       theme,
       item,
       showQuestionNumber,
-      qIndex
+      qIndex,
+      maxHeight,
+      maxWidth
     } = this.props;
-
+    console.log("props passed to display", maxHeight, maxWidth);
     const { userAnswers } = this.state;
-
-    const width = item.imagescale ? this.getEmWidth() : imageWidth;
+    const width = !maxWidth
+      ? item.imagescale
+        ? this.getEmWidth()
+        : imageWidth
+      : imageWidth < 700
+      ? imageWidth
+      : maxWidth;
 
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
@@ -100,9 +107,16 @@ class Display extends Component {
     };
 
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize}>
-        <StyledPreviewContainer data-cy="image-text-answer-board" width={width}>
-          <StyledPreviewImage src={imageUrl || ""} width={width} alt={imageAlterText} />
+      <StyledPreviewTemplateBox fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
+        <StyledPreviewContainer data-cy="image-text-answer-board" width={width} height={maxHeight} maxWidth={maxWidth}>
+          <StyledPreviewImage
+            src={imageUrl || ""}
+            width={width}
+            height={maxHeight}
+            maxHeight={maxHeight}
+            maxWidth={maxWidth}
+            alt={imageAlterText}
+          />
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
             const btnStyle = {
@@ -163,6 +177,8 @@ class Display extends Component {
         options={options}
         userSelections={userAnswers}
         evaluation={evaluation}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

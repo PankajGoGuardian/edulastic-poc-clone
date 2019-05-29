@@ -250,7 +250,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme } = this.props;
+    const { t, item, theme, maxWidth, maxHeight } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -264,6 +264,7 @@ class Authoring extends Component {
         authorization: TokenStorage.getAccessToken()
       }
     };
+
     return (
       <div>
         <PaddingDiv>
@@ -358,12 +359,25 @@ class Authoring extends Component {
                   </PointerSelect>
                 </PointerContainer>
               </ControlBar>
-              <ImageFlexView size={1}>
-                <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
+              <ImageFlexView size={1} leftAlign={true}>
+                <ImageContainer
+                  data-cy="drag-drop-image-panel"
+                  imageUrl={item.imageUrl}
+                  height={maxHeight}
+                  width={maxWidth}
+                >
                   {item.imageUrl && (
                     <React.Fragment>
-                      <PreviewImage id="mainImage" src={item.imageUrl} width="100%" alt="resp-preview" />
-                      <DropArea updateData={this.updateData} item={item} key={item} />
+                      <PreviewImage
+                        id="mainImage"
+                        src={item.imageUrl}
+                        width={imageWidth < 700 ? imageWidth : maxWidth}
+                        height={"auto"}
+                        maxWidth={maxWidth}
+                        maxHeight={maxHeight}
+                        alt="resp-preview"
+                      />
+                      <DropArea updateData={this.updateData} item={item} key={item} width={maxWidth} />
                     </React.Fragment>
                   )}
                   {!item.imageUrl && (
@@ -398,26 +412,29 @@ class Authoring extends Component {
                     </Dragger>
                   )}
                 </ImageContainer>
-                <CheckContainer>
-                  <Checkbox
-                    data-cy="drag-drop-image-aria-check"
-                    defaultChecked={isEditAriaLabels}
-                    onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-                  >
-                    {t("component.cloze.imageText.editAriaLabels")}
-                  </Checkbox>
-                </CheckContainer>
-                {item.imageUrl && (
-                  <Dragger
-                    className="super-dragger"
-                    {...draggerProps}
-                    style={{ padding: 0, marginBottom: 20, marginTop: 20 }}
-                    onChange={this.handleImageUpload}
-                    showUploadList={false}
-                  >
-                    <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-                  </Dragger>
-                )}
+                <FlexContainer>
+                  {item.imageUrl && (
+                    <Dragger
+                      className="super-dragger"
+                      {...draggerProps}
+                      style={{ padding: 0, marginBottom: 20, marginTop: 20, marginRight: 20 }}
+                      onChange={this.handleImageUpload}
+                      showUploadList={false}
+                    >
+                      <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                    </Dragger>
+                  )}
+
+                  <CheckContainer position={"unset"} alignSelf={"center"}>
+                    <Checkbox
+                      data-cy="drag-drop-image-aria-check"
+                      defaultChecked={isEditAriaLabels}
+                      onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+                    >
+                      {t("component.cloze.imageText.editAriaLabels")}
+                    </Checkbox>
+                  </CheckContainer>
+                </FlexContainer>
               </ImageFlexView>
             </FlexContainer>
             <PaddingDiv>

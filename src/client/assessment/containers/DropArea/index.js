@@ -5,7 +5,7 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item }) => {
+const DropArea = ({ updateData, item, width }) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -85,7 +85,7 @@ const DropArea = ({ updateData, item }) => {
         cursor: "crosshair",
         top: 0,
         left: 0,
-        width: item.imageWidth || "100%"
+        width: !width ? item.imageWidth || "100%" : width
       }}
       onClick={_addNew}
     >

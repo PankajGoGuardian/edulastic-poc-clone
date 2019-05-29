@@ -44,19 +44,8 @@ class Template extends Component {
         return response || cloneDeep(newArray);
       });
 
-    const _reduceDropDowns = (dropDownIndexes = [], value) =>
-      dropDownIndexes.map(nextIndex => {
-        const newValue = "";
-        const response = value.find((_, i) => nextIndex === i + 1);
-        return response || cloneDeep(newValue);
-      });
-
-    const _reduceInputs = (dropDownIndexes = [], value) =>
-      dropDownIndexes.map(nextIndex => {
-        const newValue = "";
-        const response = value.find((_, i) => nextIndex === i + 1);
-        return response || cloneDeep(newValue);
-      });
+    const _reduceVlaues = (emIndexes = [], value) =>
+      emIndexes.map(emIndex => value.find((_, i) => emIndex === i + 1) || "");
 
     const _updateTemplate = (val, responseIndexes, dropDownIndexes, inputIndexes) => {
       const newItem = produce(item, draft => {
@@ -67,12 +56,9 @@ class Template extends Component {
           draft.validation.valid_response.value
         );
 
-        draft.validation.valid_dropdown.value = _reduceDropDowns(
-          dropDownIndexes,
-          draft.validation.valid_dropdown.value
-        );
+        draft.validation.valid_dropdown.value = _reduceVlaues(dropDownIndexes, draft.validation.valid_dropdown.value);
 
-        draft.validation.valid_inputs.value = _reduceInputs(inputIndexes, draft.validation.valid_inputs.value);
+        draft.validation.valid_inputs.value = _reduceVlaues(inputIndexes, draft.validation.valid_inputs.value);
 
         if (Array.isArray(draft.validation.alt_responses)) {
           draft.validation.alt_responses = draft.validation.alt_responses.map(res => {

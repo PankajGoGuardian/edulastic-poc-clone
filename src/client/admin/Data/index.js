@@ -162,3 +162,50 @@ export const GRADES_LIST = [
 ];
 
 export const SUBJECTS_LIST = ["All", "Science", "Other Subjects", "Mathematics", "Social Studies", "ELA"];
+
+export const SUBSCRIPTION_TYPE_CONFIG = {
+  free: {
+    free: {
+      label: "Apply Changes",
+      subTypeToBeSent: "free"
+    },
+    enterprise: {
+      label: "Upgrade",
+      subTypeToBeSent: "enterprise"
+    }
+  },
+  premium: {
+    free: {
+      label: "Revoke",
+      subTypeToBeSent: "free"
+    },
+    premium: {
+      label: "Apply Changes",
+      subTypeToBeSent: "premium"
+    }
+  },
+  partial_premium: {
+    enterprise: {
+      label: "Upgrade",
+      subTypeToBeSent: "enterprise"
+    },
+    free: {
+      label: "Revoke",
+      subTypeToBeSent: "free"
+    },
+    partial_premium: {
+      label: "Apply Changes",
+      subTypeToBeSent: "partial_premium"
+    }
+  },
+  enterprise: {
+    free: {
+      label: "Revoke",
+      subTypeToBeSent: "free"
+    },
+    enterprise: {
+      label: "Apply Changes",
+      subTypeToBeSent: "enterprise"
+    }
+  }
+};

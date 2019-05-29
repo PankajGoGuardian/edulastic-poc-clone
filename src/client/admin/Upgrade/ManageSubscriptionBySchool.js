@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { Form, Button, DatePicker, Input, Select } from "antd";
+import React, { useState, useEffect } from "react";
+import { Form, Button, DatePicker, Input, Select, Row } from "antd";
 import moment from "moment";
 import { IconEdit } from "@edulastic/icons";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import SearchDistrictByIdName from "../Common/Form/SearchDistrictByIdName";
 import { Table, Button as CustomButton } from "../Common/StyledComponents";
 import { renderSubscriptionType } from "../Common/Utils";
+import { HeadingSpan, ValueSpan } from "../Common/StyledComponents/upgradePlan";
+import { SUBSCRIPTION_TYPE_CONFIG } from "../Data";
 
 const { Column } = Table;
 const { Option } = Select;
@@ -88,7 +90,7 @@ const SearchSchoolsByIdForm = Form.create({ name: "searchSchoolsByIdForm" })(
 
 const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   ({
-    form: { getFieldDecorator, validateFields },
+    form: { getFieldDecorator, validateFields, getFieldValue, setFieldsValue },
     searchedSchoolsData,
     bulkSchoolsSubscribeAction,
     changeTab,
@@ -106,16 +108,27 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
   }) => {
     const [selectedSchools, setSelectedSchools] = useState([]);
     const [firstSchoolSubType, setSelectedSchoolSubType] = useState("");
+    const bulkSelectedSubType = getFieldValue("subType");
+    const submitCtaText =
+      firstSchoolSubType && bulkSelectedSubType
+        ? `Bulk ${SUBSCRIPTION_TYPE_CONFIG[firstSchoolSubType][bulkSelectedSubType].label}`
+        : "Apply Changes";
+
+    useEffect(() => {
+      setFieldsValue({
+        subType: firstSchoolSubType
+      });
+    }, [firstSchoolSubType]);
 
     const handleSubmit = evt => {
-      validateFields((err, { subStartDate, subEndDate, notes }) => {
+      validateFields((err, { subStartDate, subEndDate, notes, subType }) => {
         if (!err) {
           bulkSchoolsSubscribeAction({
             subStartDate: subStartDate.valueOf(),
             subEndDate: subEndDate.valueOf(),
             notes,
             schoolIds: selectedSchools,
-            subType: SubscriptionButtonConfig[firstSchoolSubType].subTypeToBeSent
+            subType
           });
         }
       });
@@ -278,19 +291,39 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
           <Column title="Action" dataIndex="subscription.subType" key="action" render={renderActions} />
         </Table>
         {noOfSelectedSchools ? `${noOfSelectedSchools} Selected` : null}
+        <Row style={{ margin: "15px 0 15px" }}>
+          <HeadingSpan>Bulk Selected Plan:</HeadingSpan>
+          <ValueSpan>{firstSchoolSubType}</ValueSpan>
+        </Row>
         <BulkSubscribeForm
+          firstSchoolSubType={firstSchoolSubType}
           disabled={!selectedSchools.length}
           handleSubmit={handleSubmit}
           getFieldDecorator={getFieldDecorator}
-          ctaText={`Bulk ${SubscriptionButtonConfig[firstSchoolSubType || "free"].label}`}
+          ctaText={submitCtaText}
         />
       </>
     );
   }
 );
 
-const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText, disabled }) => (
+const BulkSubscribeForm = ({ handleSubmit, getFieldDecorator, ctaText, disabled, firstSchoolSubType }) => (
   <Form onSubmit={handleSubmit}>
+    <Form.Item label={<HeadingSpan>Change Plan</HeadingSpan>} labelAlign="left" labelCol={{ span: 4 }}>
+      {getFieldDecorator("subType", {
+        valuePropName: "value",
+        rules: [{ required: true }],
+        initialValue: "free"
+      })(
+        <Select style={{ width: 120 }}>
+          <Option value="free">Free</Option>
+          <Option value="enterprise">Enterprise</Option>
+          <Option value="partial_premium" disabled={firstSchoolSubType !== "partial_premium"}>
+            Partial Premium
+          </Option>
+        </Select>
+      )}
+    </Form.Item>
     <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
     <Form.Item>
       <Button disabled={disabled} type="primary" htmlType="submit">

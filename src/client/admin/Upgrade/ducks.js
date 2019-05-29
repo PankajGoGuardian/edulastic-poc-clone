@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 import { put, takeEvery, call, all } from "redux-saga/effects";
 import { adminApi } from "@edulastic/api";
 import { message } from "antd";
-import { keyBy } from 'lodash';
+import { keyBy } from "lodash";
 
 // ACTIONS
 const GET_DISTRICT_DATA = "[admin-upgrade] GET_DISTRICT_DATA";
@@ -48,6 +48,9 @@ export const manageSubscriptionsBydistrict = createSlice({
       state.selectedDistrict = state.listOfDistricts[index];
       // here the autocomplete dataSource becomes empty so that user is not presented with same data when he types
       state.listOfDistricts = [];
+    },
+    subscribeSuccess: (state, { payload }) => {
+      state.selectedDistrict.subscription = payload.subscription;
     }
   }
 });
@@ -119,16 +122,13 @@ export const manageSubscriptionsByUserSegments = createSlice({
   slice: "manageSubscriptionsByUserSegments", // slice is optional, and could be blank ''
   initialState: {
     partialPremiumData: {},
-    gradeSubject: [
-      {
-        grade: "K",
-        subject: "Mathematics"
-      }
-    ]
+    gradeSubject: []
   },
   reducers: {
     setPartialPremiumData: (state, { payload }) => {
+      const { subscription: { gradeSubject = [] } = {} } = payload;
       state.partialPremiumData = payload;
+      state.gradeSubject = gradeSubject;
     },
     setGradeSubjectValue: (state, { payload: { type, index, value } }) => {
       state.gradeSubject[index][type] = value;
@@ -198,9 +198,9 @@ function* getDistrictData({ payload }) {
 
 function* upgradeDistrict({ payload }) {
   try {
-    const item = yield call(manageSubscriptionApi, payload);
-    if (item.result.success) {
-      message.success(item.result.message);
+    const { result } = yield call(manageSubscriptionApi, payload);
+    if (result.success) {
+      yield put(manageSubscriptionsBydistrict.actions.subscribeSuccess(result.subscriptionResult[0]));
     }
   } catch (err) {
     console.error(err);

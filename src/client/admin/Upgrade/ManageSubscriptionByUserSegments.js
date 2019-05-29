@@ -1,12 +1,12 @@
 import React from "react";
-import { Form, Button as AntdButton, Select, Input, Table } from "antd";
+import { Form, Button as AntdButton, Select, Input } from "antd";
 import moment from "moment";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
 import { HeadingSpan } from "../Common/StyledComponents/upgradePlan";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
 import { GRADES_LIST, SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from "../Data";
 import { useUpdateEffect } from "../Common/Utils";
-import { Button } from "../Common/StyledComponents";
+import { Button, Table } from "../Common/StyledComponents";
 
 const { Option } = Select;
 const { Column } = Table;
@@ -53,13 +53,11 @@ const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmail
       setFieldsValue({
         districtId,
         schoolId,
-        grades,
-        subjects,
         subStartDate: moment(subStartDate),
         subEndDate: moment(subEndDate),
         notes
       });
-    }, [districtId, schoolId, grades, subjects, subStartDate, subEndDate, notes]);
+    }, [districtId, schoolId, subStartDate, subEndDate, notes]);
 
     const renderGrade = (item, _, index) => (
       <Select

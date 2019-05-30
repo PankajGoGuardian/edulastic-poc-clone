@@ -260,52 +260,54 @@ const ClozeMathPreview = ({
   }, []);
 
   useEffect(() => {
-    if (!window.MathQuill) return;
-    const MQ = window.MathQuill.getInterface(2);
-    if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
-    $($(wrappedRef.current).find(".ql-editor")[0])
-      .find(".mathField")
-      // eslint-disable-next-line func-names
-      .each(function(index) {
-        if (type === CLEAR) {
-          let newAnswers = cloneDeep(userAnswer);
-          const mQuill = MQ.StaticMath($(this).get(0));
-          const answer = mQuill.innerFields[0].latex("");
-          const mathAnswers = newAnswers.math || [];
+    try {
+      if (!window.MathQuill) return;
+      const MQ = window.MathQuill.getInterface(2);
+      if (!$(wrappedRef.current).find(".ql-editor")[0]) return;
+      $($(wrappedRef.current).find(".ql-editor")[0])
+        .find(".mathField")
+        // eslint-disable-next-line func-names
+        .each(function(index) {
+          if (type === CLEAR) {
+            let newAnswers = cloneDeep(userAnswer);
+            const mQuill = MQ.StaticMath($(this).get(0));
+            const answer = mQuill.innerFields[0].latex("");
+            const mathAnswers = newAnswers.math || [];
 
-          mathAnswers[index] = answer;
-          newAnswers = {
-            ...newAnswers,
-            math: mathAnswers
-          };
+            mathAnswers[index] = answer;
+            newAnswers = {
+              ...newAnswers,
+              math: mathAnswers
+            };
 
-          $(wrappedRef.current)
-            .find(".mathField")
-            .each((i, element) => {
-              const $element = $(element);
+            $(wrappedRef.current)
+              .find(".mathField")
+              .each((i, element) => {
+                const $element = $(element);
 
-              $element.find(".mq-editable-field").each((ind, el) => {
-                const $el = $(el);
-                $el.css({
-                  padding: 5,
-                  minWidth
+                $element.find(".mq-editable-field").each((ind, el) => {
+                  const $el = $(el);
+                  $el.css({
+                    padding: 5,
+                    minWidth
+                  });
+                });
+
+                $element.css({
+                  background: "",
+                  color: black
                 });
               });
+            $(this).removeClass("success");
+            $(this).removeClass("wrong");
+            $(this).removeClass("check");
+            $(this).removeAttr("data-index");
+            $(this).remove(".icon-wrapper");
 
-              $element.css({
-                background: "",
-                color: black
-              });
-            });
-          $(this).removeClass("success");
-          $(this).removeClass("wrong");
-          $(this).removeClass("check");
-          $(this).removeAttr("data-index");
-          $(this).remove(".icon-wrapper");
-
-          saveAnswer(newAnswers);
-        }
-      });
+            saveAnswer(newAnswers);
+          }
+        });
+    } catch (e) {}
   }, [type, wrappedRef.current, templateParts]);
 
   useEffect(() => {

@@ -224,3 +224,7 @@ export const CLEAR_FOLDER = "[folder] clear folder";
 // playlist
 export const UPDATE_PLAYLISTS_SUCCESS = "[playlists] update success";
 export const CREATE_PLAYLISTS_SUCCESS = "[playlists] create success";
+
+//
+export const SET_QUESTION_CATEGORY = "[pickUpQuestion] set question category success";
+export const SET_QUESTION_TAB = "[pickUpQuestion] set question tab success";

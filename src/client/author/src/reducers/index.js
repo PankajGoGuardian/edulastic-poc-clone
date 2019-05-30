@@ -48,6 +48,7 @@ import folder from "./folder";
 import { interestedStandardsReducer } from "../../InterestedStandards";
 import { playlists } from "../../Playlist";
 import { playlist } from "../../PlaylistPage";
+import pickUpQuestion from "./pickUpQuestion";
 
 const authorReducers = {
   authorUi,
@@ -99,7 +100,8 @@ const authorReducers = {
   folder,
   playlist,
   playlists,
-  interestedStandardsReducer
+  interestedStandardsReducer,
+  pickUpQuestion
 };
 
 export default authorReducers;

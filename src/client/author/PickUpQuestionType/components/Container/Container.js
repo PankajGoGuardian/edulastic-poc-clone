@@ -15,6 +15,7 @@ import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import { setQuestionAction } from "../../../QuestionEditor/ducks";
 import { addQuestionAction } from "../../../sharedDucks/questions";
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
+import { setQuestionCategory, setQuestionTab } from "../../../src/actions/pickUpQuestion";
 import {
   Content,
   LeftSide,
@@ -43,8 +44,6 @@ import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class Container extends Component {
   state = {
-    currentQuestion: "multiple-choice",
-    currentTab: "question-tab",
     isShowCategories: false
   };
 
@@ -95,17 +94,22 @@ class Container extends Component {
   }
 
   handleCategory = ({ key }) => {
-    this.setState({ currentQuestion: key });
+    const { setCategory } = this.props;
+
+    setCategory(key);
   };
 
   handleChangeTab = ({ key }) => {
-    this.setState({ currentTab: key });
+    const { setCategory, setTab } = this.props;
+
+    setTab(key);
 
     if (key === "feature-tab") {
-      this.setState({ currentQuestion: "feature" });
+      setCategory("feature");
     }
+
     if (key === "question-tab") {
-      this.setState({ currentQuestion: "multiple-choice" });
+      setCategory("multiple-choice");
     }
   };
 
@@ -118,8 +122,18 @@ class Container extends Component {
   };
 
   render() {
-    const { t, windowWidth, toggleSideBar, modalItemId, onModalClose, navigateToItemDetail } = this.props;
-    const { currentQuestion, currentTab, mobileViewShow, isShowCategories } = this.state;
+    const {
+      t,
+      windowWidth,
+      toggleSideBar,
+      modalItemId,
+      onModalClose,
+      navigateToItemDetail,
+      selectedCategory,
+      selectedTab
+    } = this.props;
+    const { mobileViewShow, isShowCategories } = this.state;
+
     const breadcrumbData = modalItemId
       ? [
           {
@@ -164,7 +178,7 @@ class Container extends Component {
         <LeftSide>
           <Menu
             mode="horizontal"
-            selectedKeys={[currentTab]}
+            selectedKeys={[selectedTab]}
             onClick={this.handleChangeTab}
             style={{
               background: "transparent",
@@ -182,7 +196,7 @@ class Container extends Component {
               background: "transparent",
               border: 0
             }}
-            selectedKeys={[currentQuestion]}
+            selectedKeys={[selectedCategory]}
             onClick={this.handleCategory}
           >
             <Menu.Item key="multiple-choice">
@@ -264,7 +278,7 @@ class Container extends Component {
               minHeight: "calc(100vh - 190px)"
             }}
           >
-            <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={currentQuestion} />
+            <QuestionTypes onSelectQuestionType={this.selectQuestionType} questionType={selectedCategory} />
           </PaddingDiv>
         </RightSide>
 
@@ -284,7 +298,7 @@ class Container extends Component {
                 background: "transparent",
                 border: 0
               }}
-              selectedKeys={[currentQuestion]}
+              selectedKeys={[selectedCategory]}
               onClick={this.handleCategory}
             >
               <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
@@ -348,12 +362,16 @@ const enhance = compose(
   withWindowSizes,
   connect(
     state => ({
-      item: getItemSelector(state)
+      item: getItemSelector(state),
+      selectedCategory: state.pickUpQuestion.selectedCategory,
+      selectedTab: state.pickUpQuestion.selectedTab
     }),
     {
       setQuestion: setQuestionAction,
       addQuestion: addQuestionAction,
-      toggleSideBar: toggleSideBarAction
+      toggleSideBar: toggleSideBarAction,
+      setCategory: setQuestionCategory,
+      setTab: setQuestionTab
     }
   )
 );
@@ -369,7 +387,11 @@ Container.propTypes = {
   modalItemId: PropTypes.string,
   onModalClose: PropTypes.func,
   navigateToQuestionEdit: PropTypes.func,
-  navigateToItemDetail: PropTypes.func
+  navigateToItemDetail: PropTypes.func,
+  setCategory: PropTypes.func.isRequired,
+  setTab: PropTypes.func.isRequired,
+  selectedCategory: PropTypes.string.isRequired,
+  selectedTab: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {

@@ -7,16 +7,16 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Button, Icon, Input } from "antd";
-import "react-quill/dist/quill.snow.css";
+
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
-import { PaddingDiv, CustomQuillComponent } from "@edulastic/common";
+import { PaddingDiv } from "@edulastic/common";
 
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-
+import QuestionTextArea from "../../components/QuestionTextArea";
 import QuillSortableList from "../../components/QuillSortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
@@ -248,16 +248,10 @@ class TemplateMarkup extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
-        <CustomQuillComponent
-          toolbarId="templatemarkup"
-          wrappedRef={instance => {
-            this.templatemarkup = instance;
-          }}
+        <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
           onChange={this.onChangeMarkUp}
-          firstFocus={!item.templateMarkUp}
           showResponseBtn
-          clearOnFirstFocus
           value={item.templateMarkUp || defaultTemplateMarkup}
         />
         <PaddingDiv>

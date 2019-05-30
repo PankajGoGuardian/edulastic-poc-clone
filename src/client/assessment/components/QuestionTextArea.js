@@ -3,11 +3,22 @@ import PropTypes from "prop-types";
 import { FroalaEditor } from "@edulastic/common";
 
 // TODO: decide what to do with first focus
-const QuestionTextArea = ({ onChange, value, style, placeholder }) => (
-  <div style={style} data-cy="compose-question-quill-component">
-    <FroalaEditor placeholder={placeholder} onChange={onChange} value={value} />
-  </div>
-);
+const QuestionTextArea = ({ onChange, value, style, placeholder, showResponseBtn }) => {
+  const additionalToolbarOptions = [];
+
+  if (showResponseBtn) additionalToolbarOptions.push("response");
+
+  return (
+    <div style={style} data-cy="compose-question-quill-component">
+      <FroalaEditor
+        placeholder={placeholder}
+        onChange={onChange}
+        value={value}
+        additionalToolbarOptions={additionalToolbarOptions}
+      />
+    </div>
+  );
+};
 
 QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,

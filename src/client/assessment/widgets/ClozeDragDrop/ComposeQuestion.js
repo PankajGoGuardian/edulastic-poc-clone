@@ -5,13 +5,13 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import "react-quill/dist/quill.snow.css";
+
 import { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { CustomQuillComponent } from "@edulastic/common";
 
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -80,14 +80,9 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
-        <CustomQuillComponent
-          toolbarId="stimulus"
-          wrappedRef={instance => {
-            this.stimulus = instance;
-          }}
+        <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
-          showResponseBtn={false}
           value={item.stimulus}
         />
       </Widget>

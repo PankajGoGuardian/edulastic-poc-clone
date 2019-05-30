@@ -127,9 +127,7 @@ class AnnotationsRnd extends Component {
                     onChange={val => updateAnnotation(val, annotation.id)}
                     toolbarInline
                     toolbarVisibleWithoutSelection
-                    config={{
-                      placeholderText: "Edit your content"
-                    }}
+                    readOnly
                   />
                 </FroalaInput>
               </Rnd>

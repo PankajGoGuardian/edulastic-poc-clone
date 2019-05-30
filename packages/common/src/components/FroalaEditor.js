@@ -166,6 +166,11 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             });
 
           return false;
+        },
+        "edit.on": function(e, editor) {
+          if (restOptions.readOnly === true) {
+            EditorRef.current.edit.off();
+          }
         }
       }
     },
@@ -380,12 +385,14 @@ CustomEditor.propTypes = {
   tag: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  additionalToolbarOptions: PropTypes.array
+  additionalToolbarOptions: PropTypes.array,
+  readOnly: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
   tag: "textarea",
-  additionalToolbarOptions: []
+  additionalToolbarOptions: [],
+  readOnly: false
 };
 
 export default withMathFormula(CustomEditor);

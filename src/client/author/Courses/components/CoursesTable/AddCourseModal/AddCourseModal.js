@@ -68,7 +68,7 @@ class AddCourseModal extends React.Component {
     }
 
     // check if course number exist
-    if (numberValidate.validateStatus === "success" && numberValidate.value.length > 0) {
+    if (checkCourseNameExist.totalCourses > 0 && numberValidate.value.length > 0) {
       this.setState({ showSpinNumber: true });
       checkCourseNumberExist = await courseApi.searchCourse({
         districtId: this.props.userOrgId,

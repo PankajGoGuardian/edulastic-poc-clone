@@ -185,8 +185,8 @@ export const reducer = createReducer(initialState, {
   },
   [UPLOAD_COURSE_CSV_SUCCESS]: (state, { payload }) => {
     state.uploadingCSV = false;
-    payload.map(row => {
-      row.key = row.courseNo;
+    payload.map((row, index) => {
+      row.key = index;
     });
     state.uploadCSV = payload;
     state.uploadModalPageStatus = "uploaded";
@@ -211,7 +211,7 @@ export const reducer = createReducer(initialState, {
     state.error = payload;
   },
   [REMOVE_UPLOADED_COURSE]: (state, { payload }) => {
-    state.uploadCSV = state.uploadCSV.filter(row => row.courseNo !== payload);
+    state.uploadCSV = state.uploadCSV.filter(row => row.key !== payload);
   },
   [SAVE_BULK_COURSE_REQUEST]: state => {
     state.saveingBulkCourse = true;

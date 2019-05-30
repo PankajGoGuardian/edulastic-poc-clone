@@ -78,7 +78,7 @@ export default class QuestionEditModal extends React.Component {
     const { type, qIndex } = question;
 
     return (
-      <Modal open={visible} onClose={onClose} styles={modalStyles} center>
+      <Modal open={visible} onClose={onClose} styles={modalStyles} overlayId="docBasedModalOverlay" center>
         <ModalWrapper>
           <ModalHeader>
             <QuestionNumber>{qIndex || index + 1}</QuestionNumber>

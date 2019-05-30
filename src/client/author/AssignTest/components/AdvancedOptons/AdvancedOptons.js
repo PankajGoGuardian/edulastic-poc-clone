@@ -98,7 +98,7 @@ class AdvancedOptons extends React.Component {
             </p>
           </ClassSelectorLabel>
 
-          <ClassList selectedClasses={classIds} selectClass={changeField} />
+          <ClassList selectedClasses={classIds} selectClass={this.onChange} />
         </InitOptions>
       </OptionConationer>
     );

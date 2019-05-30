@@ -9,6 +9,7 @@ export const SET_GROUPS = "[author groups] set groups";
 export const SET_GROUP_MEMBERS = "[author groups] add students to groups";
 export const SET_MULTIPLE_GROUP_MEMBERS = "[author groups] set multiple group members";
 export const SET_LOADED_GROUPS = "[author groups] set loaded groups";
+export const ADD_GROUP = "[author groups] add group";
 
 // actions
 export const fetchGroupsAction = createAction(FETCH_GROUPS);
@@ -17,6 +18,7 @@ export const setGroupsAction = createAction(SET_GROUPS);
 export const setGroupMemebersAction = createAction(SET_GROUP_MEMBERS);
 export const fetchMultipleGroupMembersAction = createAction(SET_MULTIPLE_GROUP_MEMBERS);
 export const setLoadedGroupsAction = createAction(SET_LOADED_GROUPS);
+export const addGroupAction = createAction(ADD_GROUP);
 
 // initial state
 const initialState = {
@@ -46,12 +48,17 @@ const setLoadedGroups = (state, { payload }) => {
   state.loadedGroups = payload;
 };
 
+const addGroup = (state, { payload }) => {
+  state.groups = [...state.groups, payload];
+};
+
 // default reducer
 export default createReducer(initialState, {
   [FETCH_GROUPS]: setLoading,
   [SET_GROUPS]: setGroups,
   [SET_GROUP_MEMBERS]: populateGroups,
-  [SET_LOADED_GROUPS]: setLoadedGroups
+  [SET_LOADED_GROUPS]: setLoadedGroups,
+  [ADD_GROUP]: addGroup
 });
 
 // selectors

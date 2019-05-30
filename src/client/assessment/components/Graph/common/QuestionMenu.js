@@ -158,8 +158,8 @@ class QuestionMenu extends Component {
 
 QuestionMenu.propTypes = {
   activeTab: PropTypes.number.isRequired,
-  main: PropTypes.shape,
-  advanced: PropTypes.shape,
+  main: PropTypes.array,
+  advanced: PropTypes.array,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool.isRequired,
   handleAdvancedOpen: PropTypes.func.isRequired

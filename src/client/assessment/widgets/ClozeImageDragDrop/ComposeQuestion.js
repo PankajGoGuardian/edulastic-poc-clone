@@ -185,7 +185,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme } = this.props;
+    const { t, item, theme, maxWidth, maxHeight } = this.props;
 
     const { maxRespCount, responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
 
@@ -346,11 +346,23 @@ class ComposeQuestion extends Component {
               overflowY: "hidden"
             }}
           >
-            <ImageContainer data-cy="drag-drop-image-panel" imageUrl={item.imageUrl} width={imageWidth || null}>
+            <ImageContainer
+              data-cy="drag-drop-image-panel"
+              imageUrl={item.imageUrl}
+              width={!maxWidth ? imageWidth || null : maxWidth}
+              height={maxHeight}
+            >
               {item.imageUrl && (
                 <React.Fragment>
-                  <PreviewImage src={item.imageUrl} width="100%" alt="resp-preview" />
-                  <DropArea updateData={this.updateData} item={item} />
+                  <PreviewImage
+                    src={item.imageUrl}
+                    width={imageWidth < 700 ? imageWidth : maxWidth}
+                    height={"auto"}
+                    maxWidth={maxWidth}
+                    maxHeight={maxHeight}
+                    alt="resp-preview"
+                  />
+                  <DropArea updateData={this.updateData} item={item} width={"100%"} showIndex={false} />
                 </React.Fragment>
               )}
               {!item.imageUrl && (

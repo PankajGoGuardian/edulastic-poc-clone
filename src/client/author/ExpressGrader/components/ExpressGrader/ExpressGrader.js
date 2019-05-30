@@ -8,7 +8,11 @@ import { isEmpty, size } from "lodash";
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 
 // ducks
-import { getTestActivitySelector, getAdditionalDataSelector } from "../../../ClassBoard/ducks";
+import {
+  getTestActivitySelector,
+  getAdditionalDataSelector,
+  getClassResponseSelector
+} from "../../../ClassBoard/ducks";
 import { getFeedbackResponseSelector } from "../../../src/selectors/feedback";
 // components
 import ScoreTable from "../ScoreTable/ScoreTable";
@@ -96,13 +100,18 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 480;
 
   render() {
-    const { testActivity: _testActivity = [], additionalData, match } = this.props;
+    const { testActivity: _testActivity = [], additionalData, match, classResponse = {} } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
     const testActivity = transformMemoized(_testActivity);
+    const gradeSubject = {
+      grade: classResponse.metadata ? classResponse.metadata.grades : [],
+      subject: classResponse.metadata ? classResponse.metadata.subjects : []
+    };
+
     return (
-      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
         <div>
           <ClassHeader
             classId={classId}
@@ -143,7 +152,8 @@ const enhance = compose(
     state => ({
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
-      changedFeedback: getFeedbackResponseSelector(state)
+      changedFeedback: getFeedbackResponseSelector(state),
+      classResponse: getClassResponseSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

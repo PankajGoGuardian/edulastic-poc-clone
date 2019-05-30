@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { findDOMNode } from "react-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import uuid from "uuid/v4";
@@ -155,6 +156,10 @@ const validationCreators = {
 };
 
 class Questions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.containerRef = React.createRef();
+  }
   static propTypes = {
     list: PropTypes.array,
     questionsById: PropTypes.object,
@@ -196,6 +201,15 @@ class Questions extends React.Component {
       }
     }
   }
+  scrollToBottom = () => {
+    const reference = this.containerRef;
+    if (reference.current) {
+      const elem = findDOMNode(reference.current);
+      if (elem.scrollHeight > elem.clientHeight) {
+        elem.scrollTop = elem.scrollHeight - elem.clientHeight;
+      }
+    }
+  };
 
   handleAddQuestion = (type, index, modalQuestionId) => () => {
     const { addQuestion, list } = this.props;
@@ -228,6 +242,7 @@ class Questions extends React.Component {
     const section = createSection(sectionIndex);
 
     addQuestion(section);
+    this.scrollToBottom();
   };
 
   handleUpdateSection = (sectionId, title) => {
@@ -282,9 +297,12 @@ class Questions extends React.Component {
   };
 
   handleCloseEditModal = () =>
-    this.setState({
-      currentEditQuestionIndex: -1
-    });
+    this.setState(
+      {
+        currentEditQuestionIndex: -1
+      },
+      () => this.scrollToBottom()
+    );
 
   handleCheckAnswer = () => {
     const { checkAnswer, changePreview } = this.props;
@@ -328,7 +346,7 @@ class Questions extends React.Component {
     }
     return (
       <Fragment>
-        <QuestionsWrapper centered={centered}>
+        <QuestionsWrapper centered={centered} ref={this.containerRef}>
           <div>
             {this.questionList.map((question, i) =>
               question.type === "sectionLabel" ? (
@@ -361,6 +379,7 @@ class Questions extends React.Component {
               onAddQuestion={this.handleAddQuestion}
               onAddSection={this.handleAddSection}
               minAvailableQuestionIndex={minAvailableQuestionIndex}
+              scrollToBottom={this.scrollToBottom}
             />
           )}
           {review && !noCheck && (

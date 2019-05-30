@@ -447,7 +447,6 @@ class Container extends Component {
         )}
         {view === "edit" && (
           <ItemDetailWrapper>
-            {loading && <Progress />}
             {rows &&
               rows.map((row, i) => (
                 <ItemDetailRow

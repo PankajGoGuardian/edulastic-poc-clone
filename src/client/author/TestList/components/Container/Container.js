@@ -55,6 +55,7 @@ import {
   createTestInModuleAction,
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
+import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -117,6 +118,7 @@ class TestList extends Component {
     standardQuery: "",
     blockStyle: "tile",
     showCreateModuleModal: false,
+    showConfirmRemoveModal: false,
     showAddTestInModules: false,
     selectedTests: [],
     isShowFilter: false
@@ -137,6 +139,8 @@ class TestList extends Component {
     if (mode === "embedded") {
       let selectedTests = [];
       const { grades, subjects, tags, modules } = playlist;
+      const { state = {} } = location;
+      const { editFlow } = state;
       modules.forEach(mod => {
         mod.data.forEach(test => {
           selectedTests.push(test.contentId);
@@ -150,6 +154,7 @@ class TestList extends Component {
           tags
         },
         selectedTests,
+        editFlow,
         blockStyle: "horizontal"
       }));
       receiveTests({
@@ -405,14 +410,29 @@ class TestList extends Component {
     this.setState({ showAddTestInModules: false });
   };
 
-  removeTestFromPlaylist = itemId => {
-    const { selectedTests } = this.state;
+  removeTestFromPlaylist = () => {
+    const { selectedTests, removeItemId } = this.state;
     const { removeTestFromPlaylistAction } = this.props;
-    const newSelectedTests = selectedTests.filter(testId => testId !== itemId);
-    removeTestFromPlaylistAction({ itemId });
-    this.setState({ selectedTests: newSelectedTests });
+    const newSelectedTests = selectedTests.filter(testId => testId !== removeItemId);
+    removeTestFromPlaylistAction({ itemId: removeItemId });
+    this.setState({ selectedTests: newSelectedTests, showConfirmRemoveModal: false });
   };
 
+  handleRemoveTest = itemId => {
+    const { editFlow } = this.state;
+    const { removeTestFromPlaylist } = this;
+    if (editFlow) {
+      this.setState({ removeItemId: itemId, showConfirmRemoveModal: true });
+    } else {
+      removeTestFromPlaylist;
+      this.setState({ removeItemId: itemId }, () => {
+        removeTestFromPlaylist();
+      });
+    }
+  };
+  onCloseConfirmRemoveModal = () => {
+    this.setState({ showConfirmRemoveModal: false });
+  };
   handleTestAdded = index => {
     const { addTestToModule } = this.props;
     const { testAdded, selectedTests } = this.state;
@@ -460,7 +480,7 @@ class TestList extends Component {
               history={history}
               match={match}
               mode={mode}
-              removeTestFromPlaylist={this.removeTestFromPlaylist}
+              removeTestFromPlaylist={this.handleRemoveTest}
               isTestAdded={selectedTests.includes(item._id)}
               addTestToPlaylist={this.handleAddTests}
             />
@@ -497,7 +517,14 @@ class TestList extends Component {
   render() {
     const { page, limit, count, creating, mode, playlist, addModuleToPlaylist } = this.props;
 
-    const { blockStyle, isShowFilter, search, showAddTestInModules, showCreateModuleModal } = this.state;
+    const {
+      blockStyle,
+      isShowFilter,
+      search,
+      showAddTestInModules,
+      showCreateModuleModal,
+      showConfirmRemoveModal
+    } = this.state;
     const { searchString } = search;
     let modulesList = [];
     if (playlist) {
@@ -506,6 +533,11 @@ class TestList extends Component {
     const { from, to } = helpers.getPaginationInfo({ page, limit, count });
     return (
       <>
+        <RemoveTestModal
+          isVisible={showConfirmRemoveModal}
+          onClose={this.onCloseConfirmRemoveModal}
+          handleRemove={this.removeTestFromPlaylist}
+        />
         {mode !== "embedded" && (
           <ListHeader
             onCreate={this.handleCreate}

@@ -369,6 +369,7 @@ class ClozeDragDropDisplay extends Component {
         userSelections={userAnswers}
         evaluation={evaluation}
         onDropHandler={this.onDrop}
+        showIndex={showAnswer}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

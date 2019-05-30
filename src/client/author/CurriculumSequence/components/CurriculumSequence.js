@@ -31,8 +31,7 @@ import {
   IconBook,
   IconPlus,
   IconMoveTo,
-  IconCollapse,
-  IconPencilEdit
+  IconCollapse
 } from "@edulastic/icons";
 import Curriculum from "./Curriculum";
 import SelectContent from "./SelectContent";
@@ -49,11 +48,12 @@ import {
   useThisPlayListAction
 } from "../ducks";
 /* eslint-enable */
-import EditModal from "../../TestPage/components/Assign/components/EditModal/EditModal";
 import AddUnitModalBody from "./AddUnitModalBody";
 import { SecondHeader } from "../../TestPage/components/Summary/components/Container/styled";
 import BreadCrumb from "../../src/components/Breadcrumb";
 import { getRecentPlaylistSelector } from "../../Playlist/ducks";
+import { removeTestFromModuleAction } from "../../PlaylistPage/ducks";
+import RemoveTestModal from "../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
 
 /** @typedef {object} ModuleData
  * @property {String} contentId
@@ -163,6 +163,7 @@ class CurriculumSequence extends Component {
       class: [],
       specificStudents: false
     },
+    showConfirmRemoveModal: false,
     isPlayListEdited: false
   };
 
@@ -262,13 +263,45 @@ class CurriculumSequence extends Component {
       history,
       destinationCurriculumSequence: { _id }
     } = this.props;
-    return history.push(`/author/playlists/${_id}/edit`);
+    return history.push({ pathname: `/author/playlists/${_id}/edit`, state: { editFlow: true } });
   };
 
+  onCloseConfirmRemoveModal = () => {
+    this.setState({ showConfirmRemoveModal: false });
+  };
+
+  handleRemoveTest = (removeModuleIndex, removeTestId) => {
+    const {
+      history: {
+        location: { state = {} }
+      }
+    } = this.props;
+    const { editFlow } = state;
+    const { removeTestFromPlaylist } = this;
+    if (editFlow) {
+      this.setState({ removeModuleIndex, removeTestId, showConfirmRemoveModal: true });
+    } else {
+      this.setState({ removeModuleIndex, removeTestId }, () => removeTestFromPlaylist(removeModuleIndex, removeTestId));
+    }
+  };
+
+  removeTestFromPlaylist = () => {
+    const { removeModuleIndex, removeTestId } = this.state;
+    const { removeTestFromModule } = this.props;
+    removeTestFromModule({ moduleIndex: removeModuleIndex, itemId: removeTestId });
+    this.setState({ showConfirmRemoveModal: false });
+  };
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
-    const { onGuideChange } = this;
-    const { addUnit, addCustomContent, curriculumGuide, newUnit, isPlayListEdited } = this.state;
+    const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
+    const {
+      addUnit,
+      addCustomContent,
+      curriculumGuide,
+      newUnit,
+      isPlayListEdited,
+      showConfirmRemoveModal
+    } = this.state;
     const {
       expandedModules,
       onCollapseExpand,
@@ -321,17 +354,30 @@ class CurriculumSequence extends Component {
 
     // Module progress
     const totalModules = destinationCurriculumSequence.modules ? destinationCurriculumSequence.modules.length : 0;
-    const modulesCompleted = destinationCurriculumSequence.modules
+    const modulesStatus = destinationCurriculumSequence.modules
       ? destinationCurriculumSequence.modules.filter(m => {
-          const statusList = m.data
-            .flatMap(item => item.assignments || [])
-            .flatMap(item => item.class || [])
-            .flatMap(item => item.status || []);
-          return statusList.length > 0 && statusList.filter(status => status === "DONE").length === statusList.length;
-        }).length
-      : 0;
-    // const isAssignModalVisible = selectedItemsForAssign && selectedItemsForAssign.length > 0;
-
+          if (m.data.length === 0) {
+            return false;
+          }
+          for (const test of m.data) {
+            if (!test.assignments || test.assignments.length === 0) {
+              return false;
+            }
+            for (const assignment of test.assignments) {
+              if (!assignment.class || assignment.class.length === 0) {
+                return false;
+              }
+              for (const cs of assignment.class) {
+                if (cs.status !== "DONE") {
+                  return false;
+                }
+              }
+            }
+          }
+          return true;
+        })
+      : [];
+    const modulesCompleted = modulesStatus.length;
     const playlistBreadcrumbData = [
       {
         title: "PLAY LIST",
@@ -344,6 +390,11 @@ class CurriculumSequence extends Component {
     ];
     return (
       <>
+        <RemoveTestModal
+          isVisible={showConfirmRemoveModal}
+          onClose={onCloseConfirmRemoveModal}
+          handleRemove={removeTestFromPlaylist}
+        />
         {mode === "embedded" && (
           <BreadCrumbWrapper>
             <SecondHeader>
@@ -570,7 +621,9 @@ class CurriculumSequence extends Component {
                 expandedModules={expandedModules}
                 onCollapseExpand={onCollapseExpand}
                 onDrop={onDrop}
+                modulesStatus={modulesStatus}
                 customize={customize}
+                handleRemove={handleRemoveTest}
                 hideEditOptions={!urlHasUseThis}
                 onBeginDrag={onBeginDrag}
               />
@@ -623,7 +676,7 @@ CurriculumSequence.defaultProps = {
 
 const ModuleProgress = ({ modules, modulesCompleted }) => (
   <ModuleProgressBars>
-    {modules && modules.map((m, index) => <ModuleProgressBar completed={modulesCompleted} key={index} />)}
+    {modules && modules.map((m, index) => <ModuleProgressBar completed={index < modulesCompleted} key={index} />)}
   </ModuleProgressBars>
 );
 ModuleProgress.propTypes = {
@@ -1222,6 +1275,7 @@ const enhance = compose(
       batchAssign: batchAssignAction,
       saveCurriculumSequence: saveCurriculumSequenceAction,
       useThisPlayList: useThisPlayListAction,
+      removeTestFromModule: removeTestFromModuleAction,
       addNewUnitToDestination: addNewUnitAction
     }
   )

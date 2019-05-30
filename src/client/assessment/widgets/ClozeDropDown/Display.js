@@ -212,6 +212,7 @@ class ClozeDropDownDisplay extends Component {
 
     const checkboxTemplateBoxLayout = (
       <CheckboxTemplateBoxLayout
+        showIndex={showAnswer}
         templateParts={templateParts}
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}

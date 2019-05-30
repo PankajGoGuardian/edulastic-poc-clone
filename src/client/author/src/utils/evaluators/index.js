@@ -50,6 +50,7 @@ const evaluators = {
   [questionType.HOTSPOT]: hotspot,
   [questionType.TOKEN_HIGHLIGHT]: tokenhighlight,
   [questionType.SHADING]: shading,
+  [questionType.FORMULA_ESSAY]: essayRichText,
   [questionType.GRAPH]: graph
 };
 

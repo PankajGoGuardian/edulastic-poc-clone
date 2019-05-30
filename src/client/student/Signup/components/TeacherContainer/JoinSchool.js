@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import { get, debounce, find } from "lodash";
+import { get, debounce, find, split } from "lodash";
 import { Row, Col, Select } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
@@ -13,7 +13,7 @@ import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
 import RequestSchoolModal from "./RequestSchoolModal";
 
-import { searchSchoolRequestAction } from "../../duck";
+import { searchSchoolRequestAction, joinSchoolRequestAction } from "../../duck";
 
 const { Option } = Select;
 
@@ -21,14 +21,28 @@ const schoolFilter = {
   ipZipCode: "10001"
 };
 
-const JionSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo }) => {
-  const { email } = userInfo;
+const JoinSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo, joinSchool }) => {
+  const { email, firstName } = userInfo;
   const [selected, setSchool] = useState("");
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => setShowModal(!showModal);
 
   const changeSchool = value => setSchool(value);
+
+  const currentSchool = find(schools, ({ schoolId, _id }) => schoolId === selected || _id === selected) || {};
+
+  const handleSubmit = () => {
+    const currentSignUpState = "PREFERENCE_NOT_SELECTED";
+    const data = {
+      institutionIds: split(currentSchool.schoolId) || split(currentSchool._id) || "",
+      districtId: currentSchool.districtId,
+      currentSignUpState,
+      email,
+      firstName
+    };
+    joinSchool({ data, userId: userInfo._id });
+  };
 
   const fetchSchool = searchText => {
     if (searchText) {
@@ -48,11 +62,9 @@ const JionSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo })
     }
   }, [newSchool]);
 
-  const currentSchool = find(schools, ({ schoolId, _id }) => schoolId === selected || _id === selected) || {};
-
   return (
     <>
-      <JionSchoolBody type="flex" align="middle">
+      <JoinSchoolBody type="flex" align="middle">
         <Col xs={18} offset={3}>
           <Row type="flex" align="middle">
             <BannerText md={12}>
@@ -105,25 +117,26 @@ const JionSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo })
                 {selected && (
                   <>
                     <TeacherCarousel />
-                    <ProceedBtn>Proceed</ProceedBtn>
+                    <ProceedBtn onClick={handleSubmit}>Proceed</ProceedBtn>
                   </>
                 )}
               </SelectForm>
             </Col>
           </Row>
         </Col>
-      </JionSchoolBody>
+      </JoinSchoolBody>
       <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} />
     </>
   );
 };
 
-JionSchool.propTypes = {
+JoinSchool.propTypes = {
   isSearching: PropTypes.bool.isRequired,
   searchSchool: PropTypes.func.isRequired,
   schools: PropTypes.array.isRequired,
   newSchool: PropTypes.object.isRequired,
-  userInfo: PropTypes.object.isRequired
+  userInfo: PropTypes.object.isRequired,
+  joinSchool: PropTypes.func.isRequired
 };
 
 const enhance = compose(
@@ -134,13 +147,13 @@ const enhance = compose(
       schools: get(state, "signup.schools", []),
       newSchool: get(state, "signup.newSchool", {})
     }),
-    { searchSchool: searchSchoolRequestAction }
+    { searchSchool: searchSchoolRequestAction, joinSchool: joinSchoolRequestAction }
   )
 );
 
-export default enhance(JionSchool);
+export default enhance(JoinSchool);
 
-const JionSchoolBody = styled(Row)`
+const JoinSchoolBody = styled(Row)`
   margin-top: 80px;
 `;
 

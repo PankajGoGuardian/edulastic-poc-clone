@@ -166,6 +166,11 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             });
 
           return false;
+        },
+        "edit.on": function(e, editor) {
+          if (restOptions.readOnly === true) {
+            EditorRef.current.edit.off();
+          }
         }
       }
     },
@@ -286,8 +291,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       callback() {
         const responseCount = EditorRef.current.$el[0].querySelectorAll(".response-btn").length;
         this.html.insert(
-          ` <span class="response-btn" contenteditable="false"><span class="index">${responseCount +
-            1}</span><span class="text">Response</span></span> `
+          ` <span class="response-btn" contenteditable="false"><span class="text">Response</span></span> `
         );
         this.undo.saveStep();
       }
@@ -380,12 +384,14 @@ CustomEditor.propTypes = {
   tag: PropTypes.string,
   value: PropTypes.string.isRequired,
   onChange: PropTypes.func.isRequired,
-  additionalToolbarOptions: PropTypes.array
+  additionalToolbarOptions: PropTypes.array,
+  readOnly: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
   tag: "textarea",
-  additionalToolbarOptions: []
+  additionalToolbarOptions: [],
+  readOnly: false
 };
 
 export default withMathFormula(CustomEditor);

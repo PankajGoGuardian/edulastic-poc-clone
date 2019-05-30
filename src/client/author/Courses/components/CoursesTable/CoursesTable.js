@@ -404,7 +404,11 @@ class CoursesTable extends React.Component {
         ),
         dataIndex: "classCount",
         editable: true,
-        width: "20%"
+        width: "20%",
+        render: (text, record) => {
+          const strClassCount = record.classCount == 0 ? "-" : record.classCount;
+          return <React.Fragment>{strClassCount}</React.Fragment>;
+        }
       },
       {
         dataIndex: "operation",

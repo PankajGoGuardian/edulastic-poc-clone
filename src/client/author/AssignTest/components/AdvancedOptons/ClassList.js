@@ -90,15 +90,13 @@ class ClassList extends React.Component {
     this.setState({ searchTerms }, this.loadClassList);
   };
 
-  selectClass = (classId, checked) => {
-    const { selectClass, selectedClasses } = this.props;
+  handleSelectAll = checked => {
+    const { selectClass, classList } = this.props;
     if (checked) {
-      selectedClasses.push(classId);
+      const selectedClasses = classList.map(item => item._id);
+      selectClass("class", selectedClasses, classList);
     } else {
-      remove(selectedClasses, item => item === classId);
-    }
-    if (selectClass) {
-      selectClass("class", selectedClasses);
+      selectClass("class", [], classList);
     }
   };
 
@@ -110,11 +108,13 @@ class ClassList extends React.Component {
 
     const rowSelection = {
       selectedRowKeys: selectedClasses,
-      onChange: selectedRowKeys => {
+      hideDefaultSelections: true,
+      onSelect: (_, __, selectedRows) => {
         if (selectClass) {
-          selectClass("class", selectedRowKeys, classList);
+          selectClass("class", selectedRows.map(item => item.key), classList);
         }
-      }
+      },
+      onSelectAll: this.handleSelectAll
     };
 
     const columns = [

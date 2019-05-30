@@ -4,8 +4,11 @@ export const TemplateCover = styled.div`
   position: relative;
   top: 0px;
   left: 0px;
-  width: ${({ width }) => (width ? `${width}px` : "100%")};
+  width: ${({ width, maxWidth }) => (!maxWidth ? (width ? `${width}px` : "auto") : maxWidth)};
   min-height: 350px;
   margin: auto;
-  max-width: 100%;
+  min-width: 600px;
+  max-width: ${({ maxWidth }) => (!maxWidth ? "100%" : maxWidth)};
+  max-height: ${({ maxHeight }) => (!maxHeight ? null : maxHeight)};
+  height: ${({ maxHeight }) => (!maxHeight ? null : maxHeight)};
 `;

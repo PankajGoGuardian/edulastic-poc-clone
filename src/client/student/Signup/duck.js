@@ -1,7 +1,9 @@
 import { createAction, createReducer } from "redux-starter-kit";
-import { takeLatest, call, put } from "redux-saga/effects";
-import { schoolApi } from "@edulastic/api";
 import { get } from "lodash";
+import { message } from "antd";
+import { takeLatest, call, put } from "redux-saga/effects";
+import { schoolApi, userApi } from "@edulastic/api";
+import { signupSuccessAction } from "../Login/ducks";
 
 // Types
 const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
@@ -16,6 +18,9 @@ const CREATE_SCHOOL_REQUEST = "[signup] create a school request";
 const CREATE_SCHOOL_SUCCESS = "[signup] create a school success";
 const CREATE_SCHOOL_FAILED = "[signup] create a school failed";
 
+const JOIN_SCHOOL_REQUEST = "[signup] update with school request";
+const JOIN_SCHOOL_FAILED = "[signup] update with school failed";
+
 // Actions
 export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST);
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS);
@@ -28,6 +33,8 @@ export const searchDistrictsFailedAction = createAction(SEARCH_DISTRICTS_FAILED)
 export const createSchoolRequestAction = createAction(CREATE_SCHOOL_REQUEST);
 export const createSchoolSuccessAction = createAction(CREATE_SCHOOL_SUCCESS);
 export const createSchoolFailedAction = createAction(CREATE_SCHOOL_FAILED);
+
+export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 
 // Reducers
 const initialState = {
@@ -102,7 +109,7 @@ function* searchDistrictsSaga({ payload = {} }) {
 
 function* createSchoolSaga({ payload = {} }) {
   try {
-    const result = yield call(schoolApi.createSchool, { body: payload });
+    const result = yield call(schoolApi.createSchool, payload);
     yield put(createSchoolSuccessAction(result));
   } catch (err) {
     console.error(err);
@@ -110,8 +117,18 @@ function* createSchoolSaga({ payload = {} }) {
   }
 }
 
+function* joinSchoolSaga({ payload = {} }) {
+  try {
+    const result = yield call(userApi.updateUser, payload);
+    yield put(signupSuccessAction(result));
+  } catch (err) {
+    yield call(message.error, JOIN_SCHOOL_FAILED);
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolSaga);
   yield takeLatest(SEARCH_DISTRICTS_REQUEST, searchDistrictsSaga);
   yield takeLatest(CREATE_SCHOOL_REQUEST, createSchoolSaga);
+  yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
 }

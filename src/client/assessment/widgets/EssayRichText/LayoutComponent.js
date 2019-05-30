@@ -95,7 +95,7 @@ class LayoutComponent extends Component {
             <Col md={12}>
               <MinHeightOption
                 onChange={val => changeUIStyle("min_height", +val)}
-                value={get(item, "ui_style.min_height", 0)}
+                value={get(item, "ui_style.min_height", 300)}
               />
             </Col>
             <Col md={12}>

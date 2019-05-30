@@ -24,7 +24,8 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemNumeration,
-  evaluation
+  evaluation,
+  showIndex
 }) => {
   let responseIndex = 0;
   return (
@@ -111,7 +112,11 @@ const CheckboxTemplateBoxLayout = ({
                     overflow: "hidden"
                   }}
                 >
-                  &nbsp;<span className="index">{responseIndex}</span>
+                  {showIndex && (
+                    <Fragment>
+                      &nbsp;<span className="index">{responseIndex}</span>
+                    </Fragment>
+                  )}
                   <span
                     style={{
                       width: "70%",
@@ -155,7 +160,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array,
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
-  showAnswer: PropTypes.bool
+  showAnswer: PropTypes.bool,
+  showIndex: PropTypes.bool
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -166,7 +172,8 @@ CheckboxTemplateBoxLayout.defaultProps = {
   userSelections: [],
   stemNumeration: "numerical",
   evaluation: [],
-  showAnswer: false
+  showAnswer: false,
+  showIndex: true
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

@@ -118,7 +118,6 @@ class QuestionItem extends React.Component {
 
   renderContent = () => {
     const { data, saveAnswer, viewMode, onCreateOptions, evaluation, answer, previewMode } = this.props;
-
     const props = {
       saveAnswer,
       answer,

@@ -1,10 +1,21 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { get, isEmpty, find } from "lodash";
 import { Form } from "antd";
 import { Field } from "./styled";
 
 // eslint-disable-next-line max-len
-const CustomField = ({ label, children, getFieldDecorator, fiedlName, initialValue, getFieldValue, isEdit }) => {
+const CustomField = ({
+  label,
+  children,
+  getFieldDecorator,
+  fiedlName,
+  initialValue,
+  getFieldValue,
+  isEdit,
+  students
+}) => {
   const confirmPwdCheck = (rule, value, callback) => {
     const pwd = getFieldValue("password");
 
@@ -15,8 +26,18 @@ const CustomField = ({ label, children, getFieldDecorator, fiedlName, initialVal
     }
   };
 
+  const checkEmail = (rule, value, callback) => {
+    const isExist = find(students, ({ email: _existingEmail }) => _existingEmail === value);
+    if (isEmpty(isExist)) {
+      callback();
+    } else {
+      callback(rule.message);
+    }
+  };
+
   const validations = {
     email: [
+      { validator: checkEmail, message: "User already part of this class section." },
       { required: true, message: "Please provide valid Username or Email id" },
       { max: 256, message: "Must less than 256 characters!" }
     ],
@@ -64,7 +85,8 @@ CustomField.propTypes = {
   initialValue: PropTypes.any,
   label: PropTypes.string,
   children: PropTypes.node,
-  isEdit: PropTypes.bool
+  isEdit: PropTypes.bool,
+  students: PropTypes.array.isRequired
 };
 
 CustomField.defaultProps = {
@@ -75,4 +97,6 @@ CustomField.defaultProps = {
   isEdit: false
 };
 
-export default CustomField;
+export default connect(state => ({
+  students: get(state, "manageClass.studentsList", [])
+}))(CustomField);

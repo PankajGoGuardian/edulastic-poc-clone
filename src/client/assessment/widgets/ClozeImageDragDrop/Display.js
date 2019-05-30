@@ -135,7 +135,9 @@ class Display extends Component {
       theme,
       showQuestionNumber,
       qIndex,
-      item
+      item,
+      maxHeight,
+      maxWidth
     } = this.props;
 
     const questionId = item && item.id;
@@ -160,7 +162,14 @@ class Display extends Component {
       imageUrl ? (
         <img
           src={imageUrl || ""}
-          style={{ userSelect: "none", pointerEvents: "none", width: imageWidth || "auto" }}
+          style={{
+            userSelect: "none",
+            pointerEvents: "none",
+            width: !maxWidth ? imageWidth || "auto" : "min-content",
+            height: !maxWidth ? null : "auto",
+            maxHeight: !maxHeight ? null : maxHeight,
+            maxWidth: !maxWidth ? null : maxWidth
+          }}
           alt={imageAlterText}
           title={imageTitle}
         />
@@ -182,12 +191,19 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          width: imageWidth || "100%",
+          width: !maxWidth ? imageWidth || "100%" : maxWidth,
+          height: !maxHeight ? null : maxHeight,
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
-          overflowY: smallSize && "hidden"
+          position: "relative",
+          maxHeight: !maxHeight ? null : maxHeight,
+          maxWidth: !maxWidth ? null : maxWidth
         }}
       >
+        <AnnotationRnd
+          style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+          questionId={questionId}
+        />
         <div
           data-cy="drag-drop-board"
           style={{
@@ -243,7 +259,9 @@ class Display extends Component {
                 index={index}
                 style={{
                   ...btnStyle,
-                  borderStyle: smallSize ? "dashed" : "solid"
+                  borderStyle: smallSize ? "dashed" : "solid",
+                  height: "auto",
+                  minHeight: btnStyle.height
                 }}
                 className="imagelabeldragdrop-droppable active"
                 drop={drop}
@@ -303,6 +321,8 @@ class Display extends Component {
         evaluation={evaluation}
         drop={drop}
         onDropHandler={this.onDrop}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
@@ -339,85 +359,78 @@ class Display extends Component {
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <RelativeContainer>
-          <AnnotationRnd
-            style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-            questionId={questionId}
-          />
-          {responseposition === "top" && (
-            <React.Fragment>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
-            </React.Fragment>
-          )}
-          {responseposition === "bottom" && (
-            <React.Fragment>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-            </React.Fragment>
-          )}
-          {responseposition === "left" && (
-            <div style={{ display: "flex" }}>
-              <div
-                className="left responseboxContainer"
-                style={{
-                  width: "20%",
-                  margin: 15,
-                  height: "auto",
-                  borderRadius: 10,
-                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
-              <div
-                style={{
-                  margin: "15px 0 15px 15px",
-                  borderRadius: 10,
-                  flex: 1
-                }}
-              >
-                {templateBoxLayout}
-              </div>
-            </div>
-          )}
-          {responseposition === "right" && (
+        {responseposition === "top" && (
+          <React.Fragment>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+          </React.Fragment>
+        )}
+        {responseposition === "bottom" && (
+          <React.Fragment>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+          </React.Fragment>
+        )}
+        {responseposition === "left" && (
+          <div style={{ display: "flex" }}>
             <div
+              className="left responseboxContainer"
               style={{
+                width: "20%",
+                margin: 15,
+                height: "auto",
+                borderRadius: 10,
+                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                 display: "flex",
-                height: smallSize ? 190 : "100%",
-                margin: smallSize ? "-30px -40px" : 0
+                justifyContent: "center"
               }}
             >
-              <div
-                style={{
-                  flex: 1,
-                  margin: smallSize ? 0 : "15px 15px 15px 0",
-                  borderRadius: 10
-                }}
-              >
-                {templateBoxLayout}
-              </div>
-              <div
-                className={`right responseboxContainer ${smallSize ? "small" : ""}`}
-                style={{
-                  height: "auto",
-                  width: smallSize ? "120px" : "20%",
-                  margin: smallSize ? 0 : 15,
-                  borderRadius: smallSize ? 0 : 10,
-                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
+              {responseBoxLayout}
             </div>
-          )}
-        </RelativeContainer>
-
+            <div
+              style={{
+                margin: "15px 0 15px 15px",
+                borderRadius: 10,
+                flex: 1
+              }}
+            >
+              {templateBoxLayout}
+            </div>
+          </div>
+        )}
+        {responseposition === "right" && (
+          <div
+            style={{
+              display: "flex",
+              height: smallSize ? 190 : "100%",
+              margin: smallSize ? "-30px -40px" : 0
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                margin: smallSize ? 0 : "15px 15px 15px 0",
+                borderRadius: 10
+              }}
+            >
+              {templateBoxLayout}
+            </div>
+            <div
+              className={`right responseboxContainer ${smallSize ? "small" : ""}`}
+              style={{
+                height: "auto",
+                width: smallSize ? "120px" : "20%",
+                margin: smallSize ? 0 : 15,
+                borderRadius: smallSize ? 0 : 10,
+                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              {responseBoxLayout}
+            </div>
+          </div>
+        )}
         {answerBox}
       </div>
     );

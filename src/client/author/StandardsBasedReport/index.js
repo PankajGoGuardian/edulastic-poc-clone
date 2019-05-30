@@ -9,7 +9,12 @@ import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
 
 import TableDisplay from "./components/TableDisplay";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
-import { getTestActivitySelector, getAdditionalDataSelector, getQIdsSelector } from "../ClassBoard/ducks";
+import {
+  getTestActivitySelector,
+  getAdditionalDataSelector,
+  getQIdsSelector,
+  getClassResponseSelector
+} from "../ClassBoard/ducks";
 import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
@@ -39,11 +44,17 @@ class StandardsBasedReport extends Component {
       creating,
       match: {
         params: { assignmentId, classId }
-      }
+      },
+      classResponse = {}
     } = this.props;
     const testActivityId = this.getTestActivity(testActivity);
+    const gradeSubject = {
+      grade: classResponse.metadata ? classResponse.metadata.grades : [],
+      subject: classResponse.metadata ? classResponse.metadata.subjects : []
+    };
+
     return (
-      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
         <React.Fragment>
           <ClassHeader
             classId={classId}
@@ -76,7 +87,8 @@ const enhance = compose(
     state => ({
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
-      testQIds: getQIdsSelector(state)
+      testQIds: getQIdsSelector(state),
+      classResponse: getClassResponseSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction

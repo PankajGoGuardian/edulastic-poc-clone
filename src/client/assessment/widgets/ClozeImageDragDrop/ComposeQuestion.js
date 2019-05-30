@@ -362,7 +362,7 @@ class ComposeQuestion extends Component {
                     maxHeight={maxHeight}
                     alt="resp-preview"
                   />
-                  <DropArea updateData={this.updateData} item={item} width={"100%"} />
+                  <DropArea updateData={this.updateData} item={item} width={"100%"} showIndex={false} />
                 </React.Fragment>
               )}
               {!item.imageUrl && (

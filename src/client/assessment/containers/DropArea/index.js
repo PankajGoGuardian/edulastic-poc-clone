@@ -5,7 +5,7 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item, width }) => {
+const DropArea = ({ updateData, item, width, showIndex = true }) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -100,6 +100,7 @@ const DropArea = ({ updateData, item, width }) => {
           onResize={_resize(i)}
           onDelete={_delete(i)}
           onClick={_click(i)}
+          showIndex={showIndex}
         />
       ))}
     </div>

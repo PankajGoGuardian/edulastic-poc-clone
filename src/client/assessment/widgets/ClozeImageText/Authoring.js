@@ -387,7 +387,13 @@ class Authoring extends Component {
                         maxHeight={maxHeight}
                         alt="resp-preview"
                       />
-                      <DropArea updateData={this.updateData} item={item} key={item} width={maxWidth} />
+                      <DropArea
+                        updateData={this.updateData}
+                        item={item}
+                        key={item}
+                        width={maxWidth}
+                        showIndex={false}
+                      />
                     </React.Fragment>
                   )}
                   {!item.imageUrl && (

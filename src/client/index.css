@@ -415,6 +415,7 @@ template {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   min-width: 93.25px;
+  padding: 0 40px 0 10px !important;
 }
 
 .response-btn:hover .text {
@@ -707,6 +708,11 @@ input[type="checkbox"] {
 
 .responses_box .group:last-child {
   border-right: none;
+}
+
+.response-btn {
+  min-height: 35px;
+  position: relative;
 }
 
 .response-btn.check-answer {

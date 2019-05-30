@@ -18,7 +18,8 @@ const CheckboxTemplateBoxLayout = ({
   fontSize,
   userSelections,
   stemNumeration,
-  evaluation
+  evaluation,
+  showIndex
 }) => {
   let responseIndex = 0;
 
@@ -29,7 +30,13 @@ const CheckboxTemplateBoxLayout = ({
           const dropTargetIndex = responseIndex;
           responseIndex++;
           let indexStr;
-          const className = evaluation[dropTargetIndex] ? "right" : "wrong";
+          const status =
+            userSelections.length > 0 && evaluation.length > 0
+              ? evaluation[dropTargetIndex]
+                ? "right"
+                : "wrong"
+              : null;
+          const choiceAttempted = userSelections.length > 0 ? (userSelections[dropTargetIndex] ? true : false) : null;
           switch (stemNumeration) {
             case "lowercase": {
               indexStr = ALPHABET[dropTargetIndex];
@@ -62,31 +69,39 @@ const CheckboxTemplateBoxLayout = ({
             <div key={index}>
               {showAnswer && hasGroupResponses && (
                 <div
-                  className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
+                  className={`
+                    response-btn 
+                    ${choiceAttempted ? "check-answer" : ""} 
+                    ${status} 
+                    ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
+                  &nbsp;<span className="index">{responseIndex}</span>
                   <span className="text">
                     {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
                   </span>
                   &nbsp;
                   <IconWrapper>
-                    {className === "right" && <RightIcon />}
-                    {className === "wrong" && <WrongIcon />}
+                    {choiceAttempted && status === "right" && <RightIcon />}
+                    {choiceAttempted && status === "wrong" && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
               {showAnswer && !hasGroupResponses && (
                 <div
-                  className={`response-btn check-answer ${className} ${showAnswer ? "show-answer" : ""}`}
+                  className={`
+                    response-btn 
+                    ${choiceAttempted ? "check-answer" : ""} 
+                    ${status} 
+                    ${showAnswer ? "show-answer" : ""}`}
                   style={btnStyle}
                 >
-                  &nbsp;<span className="index">{indexStr}</span>
+                  &nbsp;<span className="index">{responseIndex}</span>
                   <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
                   &nbsp;
                   <IconWrapper>
-                    {className === "right" && <RightIcon />}
-                    {className === "wrong" && <WrongIcon />}
+                    {choiceAttempted && status === "right" && <RightIcon />}
+                    {choiceAttempted && status === "wrong" && <WrongIcon />}
                   </IconWrapper>
                 </div>
               )}
@@ -98,28 +113,48 @@ const CheckboxTemplateBoxLayout = ({
               >
                 {!showAnswer && hasGroupResponses && (
                   <div>
-                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span>
+                    <div
+                      className={`
+                        response-btn 
+                        ${choiceAttempted ? "check-answer" : ""} 
+                        ${status}`}
+                      style={btnStyle}
+                    >
+                      {showIndex && (
+                        <Fragment>
+                          &nbsp;<span className="index">{responseIndex}</span>
+                        </Fragment>
+                      )}
                       <span className="text">
                         {userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}
                       </span>
                       &nbsp;
                       <IconWrapper>
-                        {className === "right" && <RightIcon />}
-                        {className === "wrong" && <WrongIcon />}
+                        {choiceAttempted && status === "right" && <RightIcon />}
+                        {choiceAttempted && status === "wrong" && <WrongIcon />}
                       </IconWrapper>
                     </div>
                   </div>
                 )}
                 {!showAnswer && !hasGroupResponses && (
                   <div>
-                    <div className={`response-btn check-answer ${className}`} style={btnStyle}>
-                      &nbsp;<span className="index">{indexStr}</span>
+                    <div
+                      className={`
+                        response-btn 
+                        ${choiceAttempted ? "check-answer" : ""} 
+                        ${status}`}
+                      style={btnStyle}
+                    >
+                      {showIndex && (
+                        <Fragment>
+                          &nbsp;<span className="index">{responseIndex}</span>
+                        </Fragment>
+                      )}
                       <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
                       &nbsp;
                       <IconWrapper>
-                        {className === "right" && <RightIcon />}
-                        {className === "wrong" && <WrongIcon />}
+                        {choiceAttempted && status === "right" && <RightIcon />}
+                        {choiceAttempted && status === "wrong" && <WrongIcon />}
                       </IconWrapper>
                     </div>
                   </div>
@@ -143,7 +178,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   userSelections: PropTypes.array,
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
-  showAnswer: PropTypes.bool
+  showAnswer: PropTypes.bool,
+  showIndex: PropTypes.bool
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -155,7 +191,8 @@ CheckboxTemplateBoxLayout.defaultProps = {
   userSelections: [],
   stemNumeration: "numerical",
   evaluation: [],
-  showAnswer: false
+  showAnswer: false,
+  showIndex: true
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

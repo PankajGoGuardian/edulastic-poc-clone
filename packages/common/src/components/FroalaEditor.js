@@ -291,8 +291,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       callback() {
         const responseCount = EditorRef.current.$el[0].querySelectorAll(".response-btn").length;
         this.html.insert(
-          ` <span class="response-btn" contenteditable="false"><span class="index">${responseCount +
-            1}</span><span class="text">Response</span></span> `
+          ` <span class="response-btn" contenteditable="false"><span class="text">Response</span></span> `
         );
         this.undo.saveStep();
       }

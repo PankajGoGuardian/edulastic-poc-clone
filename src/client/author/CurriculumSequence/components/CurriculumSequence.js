@@ -273,11 +273,10 @@ class CurriculumSequence extends Component {
   handleRemoveTest = (removeModuleIndex, removeTestId) => {
     const {
       history: {
-        location: {
-          state: { editFlow }
-        }
+        location: { state = {} }
       }
     } = this.props;
+    const { editFlow } = state;
     const { removeTestFromPlaylist } = this;
     if (editFlow) {
       this.setState({ removeModuleIndex, removeTestId, showConfirmRemoveModal: true });
@@ -370,7 +369,7 @@ class CurriculumSequence extends Component {
               }
               for (const cs of assignment.class) {
                 if (cs.status !== "DONE") {
-                  return true;
+                  return false;
                 }
               }
             }

@@ -139,9 +139,8 @@ class TestList extends Component {
     if (mode === "embedded") {
       let selectedTests = [];
       const { grades, subjects, tags, modules } = playlist;
-      const {
-        state: { editFlow }
-      } = location;
+      const { state = {} } = location;
+      const { editFlow } = state;
       modules.forEach(mod => {
         mod.data.forEach(test => {
           selectedTests.push(test.contentId);

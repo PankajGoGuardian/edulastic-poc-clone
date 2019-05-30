@@ -26,7 +26,7 @@ const QuestionNumber = styled.div`
 class ClozeTextDisplay extends Component {
   constructor(props) {
     super(props);
-    const { templateParts, respLength } = this.getTemplateParts(props);
+    const { templateParts, respLength, responseParts } = this.getTemplateParts(props);
     const userAnswers = new Array(respLength).fill("");
     props.userSelections.forEach((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -34,6 +34,7 @@ class ClozeTextDisplay extends Component {
 
     this.state = {
       templateParts,
+      responseParts,
       userAnswers
     };
   }
@@ -41,19 +42,34 @@ class ClozeTextDisplay extends Component {
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const { onChange: changeAnswers } = this.props;
-      const { userAnswers } = this.state;
-
-      const { templateParts, respLength } = this.getTemplateParts(nextProps);
-      const newUserAnswers = new Array(respLength).fill("");
+      const { userAnswers, responseParts } = this.state;
+      const { templateParts, respLength, responseParts: currentResParts } = this.getTemplateParts(nextProps);
+      let newUserAnswers = new Array(respLength).fill("");
+      if (userAnswers.length < respLength) {
+        newUserAnswers.splice(0, userAnswers.length, ...userAnswers);
+      } else if (userAnswers.length > respLength) {
+        newUserAnswers.splice(0, userAnswers.length, ...userAnswers);
+        for (const i in currentResParts) {
+          if (currentResParts[i] !== responseParts[i]) {
+            newUserAnswers.splice(i, 1);
+            break;
+          }
+        }
+        if (userAnswers.length === newUserAnswers.length) {
+          newUserAnswers.splice(-1);
+        }
+      }
       if (userAnswers.length !== respLength) {
         changeAnswers(newUserAnswers);
         this.setState({
           userAnswers: newUserAnswers,
+          responseParts: currentResParts,
           templateParts
         });
       } else {
         this.setState({
           userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
+          responseParts: currentResParts,
           templateParts
         });
       }
@@ -65,13 +81,15 @@ class ClozeTextDisplay extends Component {
     const templateParts = templateMarkUp.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
     const responseParts = templateMarkUp.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
-    return { templateParts, respLength };
+    return { templateParts, respLength, responseParts };
   };
 
   selectChange = (value, index) => {
+    console.log("value", value, index);
     const { userAnswers: newAnswers } = this.state;
     const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;
+    console.log(newAnswers);
     this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
   };

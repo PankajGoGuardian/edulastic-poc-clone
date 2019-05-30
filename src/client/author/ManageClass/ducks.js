@@ -4,7 +4,7 @@ import { message } from "antd";
 import { get, findIndex } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
-import { fetchGroupsAction } from "../sharedDucks/groups";
+import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
 
 // action types
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
@@ -247,6 +247,7 @@ function* receiveCreateClassRequest({ payload }) {
     const successMessage = "Create Class is successed!";
     yield call(message.success, successMessage);
     yield put(createClassSuccessAction(result));
+    yield put(addGroupAction(result));
   } catch (error) {
     const errorMessage = "creating a class failed";
     yield call(message.error, errorMessage);

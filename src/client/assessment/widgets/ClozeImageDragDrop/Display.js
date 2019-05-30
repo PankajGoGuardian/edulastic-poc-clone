@@ -185,9 +185,14 @@ class Display extends Component {
           width: imageWidth || "100%",
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
-          overflowY: smallSize && "hidden"
+          overflowY: smallSize && "hidden",
+          position: "relative"
         }}
       >
+        <AnnotationRnd
+          style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+          questionId={questionId}
+        />
         <div
           data-cy="drag-drop-board"
           style={{
@@ -339,85 +344,78 @@ class Display extends Component {
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <RelativeContainer>
-          <AnnotationRnd
-            style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-            questionId={questionId}
-          />
-          {responseposition === "top" && (
-            <React.Fragment>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
-            </React.Fragment>
-          )}
-          {responseposition === "bottom" && (
-            <React.Fragment>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-            </React.Fragment>
-          )}
-          {responseposition === "left" && (
-            <div style={{ display: "flex" }}>
-              <div
-                className="left responseboxContainer"
-                style={{
-                  width: "20%",
-                  margin: 15,
-                  height: "auto",
-                  borderRadius: 10,
-                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
-              <div
-                style={{
-                  margin: "15px 0 15px 15px",
-                  borderRadius: 10,
-                  flex: 1
-                }}
-              >
-                {templateBoxLayout}
-              </div>
-            </div>
-          )}
-          {responseposition === "right" && (
+        {responseposition === "top" && (
+          <React.Fragment>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+          </React.Fragment>
+        )}
+        {responseposition === "bottom" && (
+          <React.Fragment>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+          </React.Fragment>
+        )}
+        {responseposition === "left" && (
+          <div style={{ display: "flex" }}>
             <div
+              className="left responseboxContainer"
               style={{
+                width: "20%",
+                margin: 15,
+                height: "auto",
+                borderRadius: 10,
+                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
                 display: "flex",
-                height: smallSize ? 190 : "100%",
-                margin: smallSize ? "-30px -40px" : 0
+                justifyContent: "center"
               }}
             >
-              <div
-                style={{
-                  flex: 1,
-                  margin: smallSize ? 0 : "15px 15px 15px 0",
-                  borderRadius: 10
-                }}
-              >
-                {templateBoxLayout}
-              </div>
-              <div
-                className={`right responseboxContainer ${smallSize ? "small" : ""}`}
-                style={{
-                  height: "auto",
-                  width: smallSize ? "120px" : "20%",
-                  margin: smallSize ? 0 : 15,
-                  borderRadius: smallSize ? 0 : 10,
-                  background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
-                  display: "flex",
-                  justifyContent: "center"
-                }}
-              >
-                {responseBoxLayout}
-              </div>
+              {responseBoxLayout}
             </div>
-          )}
-        </RelativeContainer>
-
+            <div
+              style={{
+                margin: "15px 0 15px 15px",
+                borderRadius: 10,
+                flex: 1
+              }}
+            >
+              {templateBoxLayout}
+            </div>
+          </div>
+        )}
+        {responseposition === "right" && (
+          <div
+            style={{
+              display: "flex",
+              height: smallSize ? 190 : "100%",
+              margin: smallSize ? "-30px -40px" : 0
+            }}
+          >
+            <div
+              style={{
+                flex: 1,
+                margin: smallSize ? 0 : "15px 15px 15px 0",
+                borderRadius: 10
+              }}
+            >
+              {templateBoxLayout}
+            </div>
+            <div
+              className={`right responseboxContainer ${smallSize ? "small" : ""}`}
+              style={{
+                height: "auto",
+                width: smallSize ? "120px" : "20%",
+                margin: smallSize ? 0 : 15,
+                borderRadius: smallSize ? 0 : 10,
+                background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,
+                display: "flex",
+                justifyContent: "center"
+              }}
+            >
+              {responseBoxLayout}
+            </div>
+          </div>
+        )}
         {answerBox}
       </div>
     );

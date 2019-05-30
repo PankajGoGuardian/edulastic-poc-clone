@@ -104,32 +104,34 @@ const ClozeMathPreview = ({
       .find(".mathField")
       // eslint-disable-next-line func-names
       .each(function(index) {
-        const mQuill = MQ.StaticMath($(this).get(0));
-        $(this).on("click", () => {
-          setShowKeyboard(true);
-          setCurrentMathQuill(mQuill);
-        });
+        try {
+          const mQuill = MQ.StaticMath($(this).get(0));
+          $(this).on("click", () => {
+            setShowKeyboard(true);
+            setCurrentMathQuill(mQuill);
+          });
 
-        // if (userAnswer[index]) {
-        //   mQuill.innerFields[0].write(userAnswer[index]);
-        // }
+          // if (userAnswer[index]) {
+          //   mQuill.innerFields[0].write(userAnswer[index]);
+          // }
 
-        mQuill.innerFields[0].config({
-          handlers: {
-            edit(editingMathField) {
-              let newAnswers = cloneDeep(userAnswer);
-              const answer = editingMathField.latex();
-              const mathAnswers = newAnswers.math || [];
+          mQuill.innerFields[0].config({
+            handlers: {
+              edit(editingMathField) {
+                let newAnswers = cloneDeep(userAnswer);
+                const answer = editingMathField.latex();
+                const mathAnswers = newAnswers.math || [];
 
-              mathAnswers[index] = answer;
-              newAnswers = {
-                ...newAnswers,
-                math: mathAnswers
-              };
-              saveAnswer(newAnswers);
+                mathAnswers[index] = answer;
+                newAnswers = {
+                  ...newAnswers,
+                  math: mathAnswers
+                };
+                saveAnswer(newAnswers);
+              }
             }
-          }
-        });
+          });
+        } catch (e) {}
       });
   };
 
@@ -173,8 +175,10 @@ const ClozeMathPreview = ({
   const startMathValidating = () => {
     if (mathField || !window.MathQuill) return;
     if (mathFieldRef.current) {
-      const MQ = window.MathQuill.getInterface(2);
-      setMathField(MQ.StaticMath(mathFieldRef.current));
+      try {
+        const MQ = window.MathQuill.getInterface(2);
+        setMathField(MQ.StaticMath(mathFieldRef.current));
+      } catch (e) {}
     }
   };
 

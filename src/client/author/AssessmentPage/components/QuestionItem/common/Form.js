@@ -1,16 +1,16 @@
 import styled from "styled-components";
 
-import { white, secondaryTextColor, mainBlueColor, green, red } from "@edulastic/colors";
+import { white, secondaryTextColor, mainBlueColor, green, red, greyishDarker1 } from "@edulastic/colors";
 
 const getBackground = ({ selected, checked, correct }) =>
   selected ? (checked ? (correct ? green : red) : mainBlueColor) : white;
 
 const getBorder = ({ selected, checked, correct }) =>
-  selected ? (checked ? (correct ? green : red) : mainBlueColor) : "#eee";
+  selected ? (checked ? (correct ? green : red) : mainBlueColor) : greyishDarker1;
 
 export const QuestionChunk = styled.div`
   &:not(:last-child) {
-    margin-bottom: 8px;
+    margin-bottom: 5px;
   }
 `;
 
@@ -25,9 +25,9 @@ export const QuestionOption = styled.span`
   color: ${({ selected }) => (selected ? white : secondaryTextColor)};
   background: ${getBackground};
   cursor: ${({ review }) => (review ? "pointer" : "default")};
-
+  border-radius: ${({ multipleResponses }) => (!multipleResponses ? "50%" : null)};
   &:not(:last-child) {
-    margin-right: 8px;
+    margin-right: 5px;
   }
 `;
 

@@ -1826,3 +1826,6 @@ span.token.active-word {
 .fr-box.fr-basic .second-toolbar {
   border: none !important;
 }
+#docBasedModalOverlay {
+  z-index: 1000000;
+}

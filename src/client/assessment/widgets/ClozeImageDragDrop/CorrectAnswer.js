@@ -64,7 +64,9 @@ class CorrectAnswer extends Component {
       uiStyle,
       showDashedBorder,
       backgroundColor,
-      maxRespCount
+      maxRespCount,
+      maxHeight,
+      maxWidth
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -83,6 +85,8 @@ class CorrectAnswer extends Component {
           <span>{t("component.correctanswers.points")}</span>
         </CorrectAnswerHeader>
         <Display
+          maxHeight={maxHeight}
+          maxWidth={maxWidth}
           preview
           setAnswers
           dragHandler

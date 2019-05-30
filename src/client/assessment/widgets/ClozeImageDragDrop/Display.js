@@ -135,7 +135,9 @@ class Display extends Component {
       theme,
       showQuestionNumber,
       qIndex,
-      item
+      item,
+      maxHeight,
+      maxWidth
     } = this.props;
 
     const questionId = item && item.id;
@@ -160,7 +162,14 @@ class Display extends Component {
       imageUrl ? (
         <img
           src={imageUrl || ""}
-          style={{ userSelect: "none", pointerEvents: "none", width: imageWidth || "auto" }}
+          style={{
+            userSelect: "none",
+            pointerEvents: "none",
+            width: !maxWidth ? imageWidth || "auto" : "min-content",
+            height: !maxWidth ? null : "auto",
+            maxHeight: !maxHeight ? null : maxHeight,
+            maxWidth: !maxWidth ? null : maxWidth
+          }}
           alt={imageAlterText}
           title={imageTitle}
         />
@@ -182,11 +191,13 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          width: imageWidth || "100%",
+          width: !maxWidth ? imageWidth || "100%" : maxWidth,
+          height: !maxHeight ? null : maxHeight,
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
-          overflowY: smallSize && "hidden",
-          position: "relative"
+          position: "relative",
+          maxHeight: !maxHeight ? null : maxHeight,
+          maxWidth: !maxWidth ? null : maxWidth
         }}
       >
         <AnnotationRnd
@@ -308,6 +319,8 @@ class Display extends Component {
         evaluation={evaluation}
         drop={drop}
         onDropHandler={this.onDrop}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

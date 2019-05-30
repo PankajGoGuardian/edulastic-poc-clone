@@ -30,9 +30,22 @@ const CheckboxTemplateBoxLayout = ({
   evaluation,
   drop,
   onDropHandler,
-  theme
+  theme,
+  maxHeight,
+  maxWidth
 }) => (
-  <div className="imagedragdrop_template_box" style={{ fontSize, padding: 20 }}>
+  <div
+    className="imagedragdrop_template_box"
+    style={{
+      fontSize,
+      padding: 20,
+      width: !maxWidth ? imageWidth || "100%" : maxWidth,
+      height: !maxHeight ? null : maxHeight,
+      margin: "auto",
+      maxHeight: !maxHeight ? null : maxHeight,
+      maxWidth: !maxWidth ? null : maxWidth
+    }}
+  >
     <div
       style={{
         position: "relative",

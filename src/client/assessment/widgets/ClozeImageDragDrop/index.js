@@ -143,15 +143,27 @@ class ClozeImageDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
+    const maxWidth = "700px",
+      maxHeight = "600px";
+
     return (
       <div>
         {view === "edit" && (
           <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
               <div className="authoring">
-                <Authoring item={itemForEdit} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
+                <Authoring
+                  maxHeight={maxHeight}
+                  maxWidth={maxWidth}
+                  item={itemForEdit}
+                  theme={theme}
+                  fillSections={fillSections}
+                  cleanSections={cleanSections}
+                />
                 <Widget>
                   <CorrectAnswers
+                    maxHeight={maxHeight}
+                    maxWidth={maxWidth}
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
                     configureOptions={{
@@ -229,6 +241,8 @@ class ClozeImageDragDrop extends Component {
           <Wrapper>
             {previewTab === "check" && (
               <Display
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
                 checkAnswer
                 item={itemForPreview}
                 options={previewDisplayOptions}
@@ -257,6 +271,8 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "show" && (
               <Display
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
                 showAnswer
                 item={itemForPreview}
                 instructorStimulus={itemForPreview.instructor_stimulus}
@@ -286,6 +302,8 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "clear" && (
               <Display
+                maxHeight={maxHeight}
+                maxWidth={maxWidth}
                 preview
                 item={itemForPreview}
                 instructorStimulus={itemForPreview.instructor_stimulus}

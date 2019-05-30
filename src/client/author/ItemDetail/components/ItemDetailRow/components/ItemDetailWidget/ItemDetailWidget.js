@@ -26,9 +26,13 @@ const ItemDetailWidget = ({
   question,
   flowLayout
 }) => {
-  const [showButtons, setShowButtons] = useState(false);
-  const onMouseEnterHander = () => setShowButtons(true);
-  const onMouseLeaveHander = () => setShowButtons(false);
+  const [showButtons, setShowButtons] = useState(!flowLayout);
+  const onMouseEnterHander = () => {
+    if (flowLayout) setShowButtons(true);
+  };
+  const onMouseLeaveHander = () => {
+    if (flowLayout) setShowButtons(false);
+  };
 
   return (
     connectDragPreview &&

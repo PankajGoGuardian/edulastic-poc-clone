@@ -1,5 +1,5 @@
 import axios from "axios";
-import { omitBy, flatten, isNumber, isString } from "lodash";
+import { omitBy, flatten, isNumber, isString, round } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
@@ -210,7 +210,7 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     inputsResults,
     dropDownResults
   };
-  const score = corrects / entered;
+  const score = round(corrects / entered, 2);
   const maxScore = 1;
 
   return {

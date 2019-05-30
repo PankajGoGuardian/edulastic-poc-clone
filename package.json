@@ -85,6 +85,7 @@
     "react-google-login": "^5.0.2",
     "react-icons": "^3.1.0",
     "react-joyride": "^2.0.5",
+    "react-jsx-parser": "^1.17.0",
     "react-media-player": "^0.7.7",
     "react-notifications": "^1.4.3",
     "react-outside-event": "^1.2.7",
@@ -135,6 +136,10 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-stage-2": "^7.0.0",
     "@babel/runtime": "^7.0.0",
+    "@storybook/addon-actions": "^5.0.11",
+    "@storybook/addon-links": "^5.0.11",
+    "@storybook/addons": "^5.0.11",
+    "@storybook/react": "^5.0.11",
     "@types/react": "^16.8.2",
     "ava": "1.0.0-rc.2",
     "babel-core": "^7.0.0-bridge.0",
@@ -186,11 +191,7 @@
     "style-loader": "^0.23.1",
     "test-data-bot": "^0.6.0",
     "webpack-bundle-analyzer": "^3.0.3",
-    "webpack-stats-plugin": "^0.2.1",
-    "@storybook/react": "^5.0.11",
-    "@storybook/addon-actions": "^5.0.11",
-    "@storybook/addon-links": "^5.0.11",
-    "@storybook/addons": "^5.0.11"
+    "webpack-stats-plugin": "^0.2.1"
   },
   "ava": {
     "files": [

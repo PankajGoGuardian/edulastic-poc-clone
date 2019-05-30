@@ -388,6 +388,11 @@ template {
   user-select: none;
 }
 
+.response-btn img {
+  max-width: 100px;
+  max-height: 100px;
+}
+
 .response-btn .index {
   padding: 4px 8px;
   background: darkgray;
@@ -706,7 +711,6 @@ input[type="checkbox"] {
 
 .response-btn.check-answer {
   min-height: 35px;
-  height: 35px;
   display: inline-flex;
   position: relative;
   top: 0;
@@ -714,26 +718,24 @@ input[type="checkbox"] {
   margin: 5px;
   font-weight: 700;
   font-size: 13px;
+  display: flex;
 }
 
 .check-answer .index {
   background: #ee1658;
   color: white;
-  display: inline-flex;
-  height: 100%;
   align-items: center;
   width: 30px;
   justify-content: center;
 }
 
 .check-answer .text {
-  flex: 1;
   display: inline-flex;
+  flex: 1;
   text-align: center;
   background: #fce0e8;
   color: #878282;
   align-items: center;
-  height: 100%;
   padding: 0 40px 0 10px;
 }
 

@@ -15,4 +15,8 @@ export const ResponseContainer = styled.span`
   align-items: center;
   border-radius: 10px;
   overflow: hidden;
+  img {
+    max-width: 100px;
+    max-height: 100px;
+  }
 `;

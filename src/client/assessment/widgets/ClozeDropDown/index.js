@@ -145,7 +145,7 @@ class ClozeDropDown extends Component {
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
                 <Widget>
                   <CorrectAnswers
-                    key={shuffleOptions}
+                    key={"shuffleOptions"}
                     validation={item.validation}
                     configureOptions={{
                       shuffleOptions
@@ -162,7 +162,7 @@ class ClozeDropDown extends Component {
                   <CorrectAnswerOptions>
                     <Checkbox
                       className="additional-options"
-                      key={`shuffleOptions_${shuffleOptions}`}
+                      key={"shuffleOptions"}
                       onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                       label={t("component.cloze.dropDown.shuffleoptions")}
                       checked={shuffleOptions}

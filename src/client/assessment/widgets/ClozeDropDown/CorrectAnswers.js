@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -11,7 +12,6 @@ import { getQuestionDataSelector, setQuestionDataAction } from "../../../author/
 
 import CorrectAnswer from "./CorrectAnswer";
 import { IconPlus } from "./styled/IconPlus";
-import ReactDOM from "react-dom";
 
 class CorrectAnswers extends Component {
   state = {

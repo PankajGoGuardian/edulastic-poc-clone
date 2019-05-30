@@ -15,6 +15,8 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _round2 = _interopRequireDefault(require("lodash/round"));
+
 var _isString2 = _interopRequireDefault(require("lodash/isString"));
 
 var _isNumber2 = _interopRequireDefault(require("lodash/isNumber"));
@@ -549,7 +551,7 @@ var evaluator =
                   inputsResults: inputsResults,
                   dropDownResults: dropDownResults
                 };
-                score = corrects / entered;
+                score = (0, _round2["default"])(corrects / entered, 2);
                 maxScore = 1;
                 return _context6.abrupt("return", {
                   evaluation: evaluation,

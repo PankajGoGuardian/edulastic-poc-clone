@@ -1,18 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { isEmpty } from "lodash";
 import { Input } from "antd";
+import CheckedBlock from "./CheckedBlock";
 
-const ClozeInput = ({ handleAddAnswer, targetIndex, emkey }) => (
-  <InputDiv key={emkey}>
-    <Input onChange={e => handleAddAnswer(e.target.value, targetIndex, "inputs")} />
-  </InputDiv>
-);
+const ClozeInput = ({ save, index, answers, evaluation, checked }) => {
+  const { inputs: _inputsAnwers = [] } = answers;
+  const [val, setVal] = useState(_inputsAnwers[index]);
+
+  const { inputsResults: checkResult = {} } = evaluation;
+  const isChecked = checked && !isEmpty(checkResult);
+  console.log(evaluation);
+  return isChecked ? (
+    <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_inputsAnwers[index]} index={index} />
+  ) : (
+    <InputDiv>
+      <Input onChange={e => setVal(e.target.value)} onBlur={() => save(val, index, "inputs")} value={val} />
+    </InputDiv>
+  );
+};
 
 ClozeInput.propTypes = {
-  handleAddAnswer: PropTypes.func.isRequired,
-  targetIndex: PropTypes.number.isRequired,
-  emkey: PropTypes.string.isRequired
+  save: PropTypes.func.isRequired,
+  index: PropTypes.number.isRequired,
+  checked: PropTypes.bool.isRequired,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
+  answers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
 };
 
 export default ClozeInput;

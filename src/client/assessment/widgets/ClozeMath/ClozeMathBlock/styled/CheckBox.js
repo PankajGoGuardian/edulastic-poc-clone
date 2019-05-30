@@ -13,6 +13,7 @@ export const CheckBox = styled.div`
   color: ${textColor};
   align-items: center;
   border-radius: 5px;
+  padding-right: 24px;
 
   &.wrong {
     background: ${fadedRed};

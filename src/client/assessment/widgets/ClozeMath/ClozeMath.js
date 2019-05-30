@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 /* eslint-disable no-undef */
 import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
@@ -37,7 +38,6 @@ const ClozeMath = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const [template, setTemplate] = useState("");
   const [dropDowns, setDropDowns] = useState(0);
 
   const _itemChange = (prop, uiStyle) => {
@@ -57,16 +57,6 @@ const ClozeMath = ({
     );
   };
 
-  const getPreviewTemplate = tmpl => {
-    let temp = ` ${tmpl}`.slice(1);
-    temp = temp.replace(/<p class="response-btn.*?<\/p>/g, '<span class="mathField">\\MathQuillMathField{}</span>');
-    temp = temp.replace(
-      /<span class="response-btn.*?<\/span>/g,
-      '<span class="mathField">\\MathQuillMathField{}</span>'
-    );
-    return temp;
-  };
-
   const getDropdowns = tmpl => {
     if (isUndefined(window.$)) {
       return;
@@ -78,7 +68,6 @@ const ClozeMath = ({
   };
 
   useEffect(() => {
-    setTemplate(replaceVariables(getPreviewTemplate(item.template)));
     const counts = getDropdowns(item.template);
     setDropDowns(counts);
   }, [item.template]);
@@ -138,7 +127,7 @@ const ClozeMath = ({
           <ClozeMathPreview
             type={previewTab}
             item={itemForPreview}
-            template={template}
+            template={item.template}
             options={item.options || {}}
             saveAnswer={saveAnswer}
             check={checkAnswer}
@@ -158,7 +147,7 @@ ClozeMath.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
-  evaluation: PropTypes.array,
+  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]),
   previewTab: PropTypes.string,
   item: PropTypes.object,
   fillSections: PropTypes.func,

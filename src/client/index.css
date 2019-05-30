@@ -1812,3 +1812,12 @@ span.token.active-word {
 .fr-box.fr-basic .second-toolbar {
   border: none !important;
 }
+
+.jsx-parser table td {
+  border: 1px #ddd solid;
+  padding: 4px 8px;
+}
+
+.jsx-parser .mq-math-mode {
+  padding: 2px 4px;
+}

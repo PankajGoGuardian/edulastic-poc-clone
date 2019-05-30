@@ -77,7 +77,9 @@ class Display extends Component {
       item,
       theme,
       showQuestionNumber,
-      qIndex
+      qIndex,
+      maxHeight,
+      maxWidth
     } = this.props;
 
     const { userAnswers } = this.state;
@@ -88,7 +90,6 @@ class Display extends Component {
     } else {
       newOptions = options;
     }
-
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { heightpx, wordwrap, responsecontainerindividuals, stemnumeration } = uiStyle;
@@ -100,12 +101,28 @@ class Display extends Component {
     };
 
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize}>
-        <StyledPreviewContainer smallSize={smallSize} width={calculateRatio(imagescale, fontsize, imageWidth)}>
+      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={
+            !maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : imageWidth < maxWidth ? imageWidth : maxWidth
+          }
+          height={maxHeight}
+          maxWidth={maxWidth}
+        >
           <StyledPreviewImage
             src={imageUrl || ""}
-            width={calculateRatio(imagescale, fontsize, imageWidth)}
+            width={
+              !maxWidth
+                ? calculateRatio(imagescale, fontsize, imageWidth)
+                : imageWidth < maxWidth
+                ? imageWidth
+                : maxWidth
+            }
             alt={imageAlterText}
+            maxHeight={maxHeight}
+            maxWidth={maxWidth}
+            height={maxHeight}
           />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
@@ -196,6 +213,8 @@ class Display extends Component {
         uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
         userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
         evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
       />

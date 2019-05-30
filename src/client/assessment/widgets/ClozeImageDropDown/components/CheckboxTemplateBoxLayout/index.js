@@ -27,11 +27,29 @@ const CheckboxTemplateBoxLayout = ({
   stemnumeration,
   uiStyle,
   imagescale,
-  evaluation
+  evaluation,
+  maxHeight,
+  maxWidth
 }) => (
-  <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={calculateRatio(imagescale, uiStyle.fontsize, imageWidth)}>
-      <img src={imageUrl} width="100%" style={{ userSelect: "none", pointerEvents: "none" }} alt={imageAlterText} />
+  <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
+    <TemplateCover
+      width={calculateRatio(imagescale, uiStyle.fontsize, imageWidth)}
+      maxHeight={maxHeight}
+      maxWidth={maxWidth}
+    >
+      <img
+        src={imageUrl}
+        width="100%"
+        style={{
+          height: "auto",
+          maxWidth,
+          maxHeight,
+          width: !maxWidth ? imageWidth : imageWidth < 700 ? imageWidth : "100%",
+          userSelect: "none",
+          pointerEvents: "none"
+        }}
+        alt={imageAlterText}
+      />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {

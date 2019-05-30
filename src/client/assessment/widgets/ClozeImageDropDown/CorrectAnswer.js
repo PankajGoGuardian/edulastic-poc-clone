@@ -71,7 +71,9 @@ class CorrectAnswer extends Component {
       uiStyle,
       showDashedBorder,
       backgroundColor,
-      maxRespCount
+      maxRespCount,
+      maxHeight,
+      maxWidth
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -107,6 +109,8 @@ class CorrectAnswer extends Component {
           imageWidth={imageWidth}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
+          maxHeight={maxHeight}
+          maxWidth={maxWidth}
         />
       </div>
     );

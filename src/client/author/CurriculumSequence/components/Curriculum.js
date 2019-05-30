@@ -31,7 +31,9 @@ class Curriculum extends Component {
       status,
       history,
       customize,
+      handleRemove,
       onBeginDrag,
+      modulesStatus,
       padding
     } = this.props;
 
@@ -51,8 +53,10 @@ class Curriculum extends Component {
                 module={moduleItem}
                 moduleIndex={index}
                 history={history}
+                moduleStatus={modulesStatus[index]}
                 padding={padding}
                 onBeginDrag={onBeginDrag}
+                handleRemove={handleRemove}
                 hideEditOptions={hideEditOptions}
                 customize={customize}
               />
@@ -73,6 +77,8 @@ Curriculum.propTypes = {
   history: PropTypes.object,
   customize: PropTypes.bool,
   onBeginDrag: PropTypes.func,
+  handleRemove: PropTypes.func,
+  modulesStatus: PropTypes.array,
   onCollapseExpand: PropTypes.func.isRequired
 };
 

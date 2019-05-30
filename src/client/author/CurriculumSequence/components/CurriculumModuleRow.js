@@ -91,19 +91,15 @@ class ModuleRow extends Component {
       mode,
       dropContent,
       onBeginDrag,
-      removeItemFromUnit,
       hideEditOptions,
       curriculum,
+      moduleStatus,
       customize,
+      handleRemove,
       removeUnit
     } = this.props;
     const { title, _id, data = [] } = module;
-    const statusList = data
-      .flatMap(item => item.assignments || [])
-      .flatMap(item => item.class || [])
-      .flatMap(item => item.status || []);
-    const completed =
-      statusList.filter(status => status === "DONE").length === statusList.length && statusList.length > 0;
+    const completed = moduleStatus;
     const { assignModule, assignTest } = this;
 
     const totalAssigned = data.length;
@@ -211,12 +207,7 @@ class ModuleRow extends Component {
                       <Menu data-cy="moduleItemMoreMenu">
                         <Menu.Item
                           data-cy="moduleItemMoreMenuItem"
-                          onClick={() =>
-                            removeItemFromUnit({
-                              moduleIndex: moduleIndex,
-                              itemId: moduleData.contentId
-                            })
-                          }
+                          onClick={() => handleRemove(moduleIndex, moduleData.contentId)}
                         >
                           Remove
                         </Menu.Item>
@@ -337,7 +328,7 @@ ModuleRow.propTypes = {
   onCollapseExpand: PropTypes.func.isRequired,
   collapsed: PropTypes.bool.isRequired,
   padding: PropTypes.bool.isRequired,
-  // checkedUnitItems: PropTypes.array.isRequired,
+  moduleStatus: PropTypes.bool,
   customize: PropTypes.bool,
   isContentExpanded: PropTypes.bool.isRequired,
   removeItemFromUnit: PropTypes.func.isRequired,
@@ -615,6 +606,7 @@ const AssignmentIconsWrapper = styled.div`
 `;
 
 export const AssignmentIcon = styled.span`
+  cursor: pointer;
   margin-left: 10px;
   margin-right: 10px;
 `;

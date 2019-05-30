@@ -221,6 +221,7 @@ class Container extends PureComponent {
         return (
           <TestList
             history={history}
+            location={history.location}
             match={match}
             mode={"embedded"}
             selectedItems={selectedTests}
@@ -256,6 +257,7 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             onBeginDrag={this.onBeginDrag}
+            history={history}
             onDrop={this.onDrop}
             current={current}
           />

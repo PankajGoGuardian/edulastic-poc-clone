@@ -89,6 +89,8 @@ class Authoring extends Component {
 
   componentDidUpdate(nextProps) {
     const { item, setQuestionData } = nextProps;
+    const { item: pastItem } = this.props;
+
     const newItem = cloneDeep(item);
     if (document.getElementById("mainImage") && item.imageUrl) {
       const imageHeight = document.getElementById("mainImage").clientHeight;
@@ -116,6 +118,14 @@ class Authoring extends Component {
         newItem.imageWidth = imageWidth;
         setQuestionData(newItem);
       }
+    }
+    if (newItem.responses.length - pastItem.responses.length === 1) {
+      pastItem.validation.valid_response.value.pop();
+      pastItem.validation.alt_responses = pastItem.validation.alt_responses.map(resp => {
+        resp.value.pop();
+        return resp;
+      });
+      setQuestionData(pastItem);
     }
   }
 
@@ -252,7 +262,7 @@ class Authoring extends Component {
   render() {
     const { t, item, theme, maxWidth, maxHeight } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
-
+    console.log(item, "item");
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 

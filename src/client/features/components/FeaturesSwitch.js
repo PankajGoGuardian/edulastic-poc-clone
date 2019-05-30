@@ -5,7 +5,7 @@ import { getUserFeatures } from "../../student/Login/ducks";
 
 /**
  *
- * @param {{features: {[feature:string]:boolean|Object[]} & {premiumGradeSubject:Object[]}, inputFeatures: string[] | string, operation: "AND" | "OR", gradeSubject: {grade: string, subject: string}, children: JSX.Element, actionOnInaccessible: "disabled"|"hidden"}} props
+ * @param {{features: {[feature:string]:boolean|Object[]} & {premiumGradeSubject:Object[]}, inputFeatures: string[] | string, operation: "AND" | "OR", gradeSubject: {grade: string[], subject: string[]}, children: JSX.Element, actionOnInaccessible: "disabled"|"hidden"}} props
  *
  * gradeSubject is optional, if omitted only features will be taken into account
  *
@@ -17,7 +17,7 @@ const FeaturesSwitch = props => {
     features,
     inputFeatures = [],
     operation = "AND",
-    gradeSubject = { grade: "", subject: "" },
+    gradeSubject = { grade: [], subject: [] },
     children,
     actionOnInaccessible = "hidden"
   } = props;
@@ -49,11 +49,21 @@ const FeaturesSwitch = props => {
   const feat = features.premiumGradeSubject.find(
     item => item.grade.toLowerCase() === "all" && item.subject.toLowerCase() === "all"
   );
+
+  const gradesIncludesAll = gradeSubject.grade.includes("all") || gradeSubject.grade.includes("All");
+  const subjectsIncludesAll = gradeSubject.subject.includes("all") || gradeSubject.subject.includes("All");
+
   if (!feat) {
     const feat = features.premiumGradeSubject.find(
       item =>
-        (gradeSubject.grade === item.grade || gradeSubject.grade.toLowerCase() === "all") &&
-        (gradeSubject.subject === item.subject || gradeSubject.subject.toLowerCase() === "all")
+        (gradeSubject.grade.includes(item.grade) ||
+          gradesIncludesAll ||
+          item.grade === "All" ||
+          item.grade === "all") &&
+        (gradeSubject.subject.includes(item.subject) ||
+          subjectsIncludesAll ||
+          item.subject === "All" ||
+          item.subject === "all")
     );
     if (feat) {
       gradeSubjectFlag = true;

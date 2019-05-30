@@ -33,7 +33,7 @@ import { StudentReportCardModal } from "./components/studentReportCardModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { releaseScoreAction } from "../../../src/actions/classBoard";
-import { showScoreSelector } from "../../../ClassBoard/ducks";
+import { showScoreSelector, getClassResponseSelector } from "../../../ClassBoard/ducks";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -119,14 +119,32 @@ class ClassHeader extends Component {
   };
 
   render() {
-    const { t, active, assignmentId, classId, testActivityId, additionalData = {}, showScore, entity } = this.props;
+    const {
+      t,
+      active,
+      assignmentId,
+      classId,
+      testActivityId,
+      additionalData = {},
+      showScore,
+      entity,
+      classResponse = {}
+    } = this.props;
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
+    const gradeSubject = {
+      grade: classResponse.metadata ? classResponse.metadata.grades : [],
+      subject: classResponse.metadata ? classResponse.metadata.subjects : []
+    };
 
     const menu = (
       <Menu>
-        <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
+        <FeaturesSwitch
+          inputFeatures="assessmentSuperPowersMarkAsDone"
+          actionOnInaccessible="hidden"
+          gradeSubject={gradeSubject}
+        >
           <Menu.Item key="key1">Mark as Done</Menu.Item>
         </FeaturesSwitch>
         <Menu.Item
@@ -164,7 +182,7 @@ class ClassHeader extends Component {
                 <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
               </StyledAnchor>
             </StyledLink>
-            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden">
+            <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
               <StyledLink
                 to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
                 data-cy="Expressgrader"
@@ -176,7 +194,11 @@ class ClassHeader extends Component {
               </StyledLink>
             </FeaturesSwitch>
 
-            <FeaturesSwitch inputFeatures="standardBasedReport" actionOnInaccessible="hidden">
+            <FeaturesSwitch
+              inputFeatures="standardBasedReport"
+              actionOnInaccessible="hidden"
+              gradeSubject={gradeSubject}
+            >
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
                   <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
@@ -247,7 +269,8 @@ const enhance = compose(
   withNamespaces("classBoard"),
   connect(
     state => ({
-      showScore: showScoreSelector(state)
+      showScore: showScoreSelector(state),
+      classResponse: getClassResponseSelector(state)
     }),
     {
       setReleaseScore: releaseScoreAction

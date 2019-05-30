@@ -343,7 +343,7 @@ class Worksheet extends React.Component {
 
     return (
       <WorksheetWrapper>
-        {(review ? pageStructure.length > 1 : true) && (
+        {
           <Thumbnails
             list={pageStructure}
             currentPage={currentPage}
@@ -358,8 +358,8 @@ class Worksheet extends React.Component {
             onRotate={this.handleRotate}
             review={review}
           />
-        )}
-        {shouldRenderDocument && (
+        }
+        {
           <Fragment>
             <PDFPreview
               page={selectedPage}
@@ -392,7 +392,7 @@ class Worksheet extends React.Component {
               onColorChange={this.handleColorChange}
             />
           </Fragment>
-        )}
+        }
         <Questions
           noCheck={noCheck}
           list={questions}

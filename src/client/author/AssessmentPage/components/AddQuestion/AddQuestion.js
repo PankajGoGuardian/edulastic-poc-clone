@@ -19,7 +19,7 @@ class AddQuestion extends React.Component {
   };
 
   handleApply = ({ number, type, startingIndex }) => {
-    const { onAddQuestion } = this.props;
+    const { onAddQuestion, scrollToBottom } = this.props;
 
     for (let i = 0; i < number; i++) {
       const index = startingIndex + i;
@@ -27,6 +27,7 @@ class AddQuestion extends React.Component {
     }
 
     this.toggleBulkModal();
+    scrollToBottom();
   };
 
   render() {

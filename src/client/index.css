@@ -1023,6 +1023,12 @@ input[type="checkbox"] {
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 }
 
+.imagelabeldragdrop-droppable img {
+  max-width: 151.5px;
+  max-height: 100px;
+  width: auto !important;
+}
+
 .controls-bar .ant-select-selection {
   display: none;
 }

@@ -259,7 +259,9 @@ class Display extends Component {
                 index={index}
                 style={{
                   ...btnStyle,
-                  borderStyle: smallSize ? "dashed" : "solid"
+                  borderStyle: smallSize ? "dashed" : "solid",
+                  height: "auto",
+                  minHeight: btnStyle.height
                 }}
                 className="imagelabeldragdrop-droppable active"
                 drop={drop}

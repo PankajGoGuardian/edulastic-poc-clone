@@ -171,8 +171,6 @@ class Container extends Component {
             onChange={onScrollingChange}
           />
         </Checkboxes>
-        <Heading>{t("author:component.settingsBar.tags")}</Heading>
-        <SettingsBarTags tags={["equations", "algebra"]} onRemove={this.handleRemoveTag} />
         {/**
         TODO: put this text in i18n namespace
         */}

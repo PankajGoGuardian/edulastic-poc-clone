@@ -253,8 +253,9 @@ class QuestionWrapper extends Component {
     }
     return (
       <ThemeProvider theme={themes.default}>
-        <QuestionContainer noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
+        <QuestionContainer disabled={disabled} noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
           <PaperWrapper
+            disabled={disabled}
             style={{
               width: "-webkit-fill-available",
               display: "flex",

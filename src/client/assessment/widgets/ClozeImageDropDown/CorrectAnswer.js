@@ -8,6 +8,7 @@ import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import { CorrectAnswerHeader } from "./styled/CorrectAnswerHeader";
 import { Points } from "./styled/Points";
 import Display from "./Display";
+import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -29,6 +30,7 @@ class CorrectAnswer extends Component {
     imageWidth: PropTypes.number.isRequired
   };
 
+  static contextType = ItemLevelContext;
   static defaultProps = {
     imagescale: false
   };
@@ -78,19 +80,21 @@ class CorrectAnswer extends Component {
     const { responseScore } = this.state;
     return (
       <div>
-        <CorrectAnswerHeader>
-          <CorrectAnswerPointField
-            type="number"
-            value={responseScore}
-            onChange={this.updateScore}
-            onBlur={this.updateScore}
-            disabled={false}
-            min={0}
-            step={0.5}
-            data-cy="point-field"
-          />
-          <Points>{t("component.correctanswers.points")}</Points>
-        </CorrectAnswerHeader>
+        {this.context || (
+          <CorrectAnswerHeader>
+            <CorrectAnswerPointField
+              type="number"
+              value={responseScore}
+              onChange={this.updateScore}
+              onBlur={this.updateScore}
+              disabled={false}
+              min={0}
+              step={0.5}
+              data-cy="point-field"
+            />
+            <Points>{t("component.correctanswers.points")}</Points>
+          </CorrectAnswerHeader>
+        )}
         <Display
           preview
           setAnswers

@@ -165,22 +165,20 @@ class FeedbackRight extends Component {
     }
 
     return (
-      <StyledCardTwo bordered={isStudentName} title={title}>
+      <StyledCardTwo bordered={isStudentName} disabled={this.props.disabled} title={title}>
         <StyledDivSec>
-          {!this.props.disabled && (
-            <ScoreInputWrapper>
-              <ScoreInput
-                data-cy="scoreInput"
-                onChange={this.onChangeScore}
-                onBlur={this.preCheckSubmit}
-                value={score}
-                disabled={!activity || this.props.disabled}
-                innerRef={this.scoreInput}
-                onKeyDown={this.arrowKeyHandler}
-              />
-              <TextPara>{maxScore}</TextPara>
-            </ScoreInputWrapper>
-          )}
+          <ScoreInputWrapper>
+            <ScoreInput
+              data-cy="scoreInput"
+              onChange={this.onChangeScore}
+              onBlur={this.preCheckSubmit}
+              value={score}
+              disabled={!activity}
+              innerRef={this.scoreInput}
+              onKeyDown={this.arrowKeyHandler}
+            />
+            <TextPara>{maxScore}</TextPara>
+          </ScoreInputWrapper>
         </StyledDivSec>
         <LeaveDiv>{isError ? "Score is to large" : "Leave a feedback!"}</LeaveDiv>
         {!isError && (
@@ -236,6 +234,7 @@ const enhance = compose(
 export default enhance(FeedbackRight);
 
 const StyledCardTwo = styled(Card)`
+  visibility: ${props => (props.disabled ? "hidden" : "visible")};
   border-radius: 10px;
   box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.1);
   display: flex;

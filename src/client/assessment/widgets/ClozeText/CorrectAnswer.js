@@ -6,6 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 import Display from "./Display";
+import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -20,6 +21,8 @@ class CorrectAnswer extends Component {
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired
   };
+
+  static contextType = ItemLevelContext;
 
   constructor(props) {
     super(props);
@@ -49,18 +52,20 @@ class CorrectAnswer extends Component {
     const { responseScore } = this.state;
     return (
       <div>
-        <CorrectAnswerHeader>
-          <CorrectAnswerPointField
-            type="number"
-            value={responseScore}
-            onChange={this.updateScore}
-            onBlur={this.updateScore}
-            disabled={false}
-            min={0}
-            step={0.5}
-          />
-          <span>{t("component.correctanswers.points")}</span>
-        </CorrectAnswerHeader>
+        {this.context || (
+          <CorrectAnswerHeader>
+            <CorrectAnswerPointField
+              type="number"
+              value={responseScore}
+              onChange={this.updateScore}
+              onBlur={this.updateScore}
+              disabled={false}
+              min={0}
+              step={0.5}
+            />
+            <span>{t("component.correctanswers.points")}</span>
+          </CorrectAnswerHeader>
+        )}
         <Display
           preview
           setAnswers

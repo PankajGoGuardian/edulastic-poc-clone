@@ -19,12 +19,12 @@ import QuestionMetadata from "../../../../assessment/containers/QuestionMetadata
 import { ButtonClose } from "../../../ItemDetail/components/Container/styled";
 import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
-import { getItemIdSelector } from "../../../ItemDetail/ducks";
+import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
 import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
-
+import ItemLevelScoringContext from "./QuestionContext";
 class Container extends Component {
   state = {
     showModal: false,
@@ -84,24 +84,27 @@ class Container extends Component {
   };
 
   renderQuestion = () => {
-    const { view, question } = this.props;
+    const { view, question, itemLevelScoring } = this.props;
     const { previewTab, saveClicked } = this.state;
     const questionType = question && question.type;
     if (view === "metadata") {
       return <QuestionMetadata />;
     }
     if (questionType) {
+      console.log("itemLevelScoring", itemLevelScoring);
       return (
-        <QuestionWrapper
-          type={questionType}
-          view={view}
-          previewTab={previewTab}
-          changePreviewTab={this.handleChangePreviewTab}
-          key={questionType && view && saveClicked}
-          data={question}
-          questionId={question.id}
-          saveClicked={saveClicked}
-        />
+        <ItemLevelScoringContext.Provider value={itemLevelScoring}>
+          <QuestionWrapper
+            type={questionType}
+            view={view}
+            previewTab={previewTab}
+            changePreviewTab={this.handleChangePreviewTab}
+            key={questionType && view && saveClicked}
+            data={question}
+            questionId={question.id}
+            saveClicked={saveClicked}
+          />
+        </ItemLevelScoringContext.Provider>
       );
     }
   };
@@ -253,7 +256,8 @@ const enhance = compose(
     state => ({
       view: getViewSelector(state),
       question: getCurrentQuestionSelector(state),
-      testItemId: getItemIdSelector(state)
+      testItemId: getItemIdSelector(state),
+      itemLevelScoring: getItemLevelScoringSelector(state)
     }),
     {
       changeView: changeViewAction,

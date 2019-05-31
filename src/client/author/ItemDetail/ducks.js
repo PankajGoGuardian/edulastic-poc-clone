@@ -173,6 +173,11 @@ export const getItemIdSelector = createSelector(
   item => item && item._id
 );
 
+export const getItemLevelScoringSelector = createSelector(
+  getItemDetailSelector,
+  item => item && item.itemLevelScoring
+);
+
 export const getTestItemStatusSelector = createSelector(
   getItemDetailSelector,
   item => item && item.status

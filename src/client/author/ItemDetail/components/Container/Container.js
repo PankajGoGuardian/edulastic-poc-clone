@@ -429,7 +429,7 @@ class Container extends Component {
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH ? (
           <SecondHeadBar>
-            {item && item.itemLevelScoring && (
+            {item && item.itemLevelScoring && view !== "preview" && (
               <Row type="flex" justify="end">
                 <Col>
                   <InputGroup compact>

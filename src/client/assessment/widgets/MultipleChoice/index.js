@@ -213,6 +213,9 @@ class MultipleChoice extends Component {
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     validation={item.validation}
+                    itemLevelScoring={item.itemLevelScoring}
+                    itemLevelScore={item.itemLevelScore}
+                    item={item}
                     styleType="primary"
                     fillSections={fillSections}
                     cleanSections={cleanSections}

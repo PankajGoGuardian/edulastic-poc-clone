@@ -7,6 +7,7 @@ import { CorrectAnswerHeader } from "../../styled/CorrectAnswerHeader";
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
 
 import Display from "./components/Display";
+import ItemLevelContext from "../../../author/QuestionEditor/components/Container/QuestionContext";
 
 class CorrectAnswer extends Component {
   static propTypes = {
@@ -19,6 +20,8 @@ class CorrectAnswer extends Component {
     multipleResponses: PropTypes.bool.isRequired,
     uiStyle: PropTypes.object.isRequired
   };
+
+  static contextType = ItemLevelContext;
 
   constructor(props) {
     super(props);
@@ -68,22 +71,24 @@ class CorrectAnswer extends Component {
   render() {
     const { t, options, stimulus, response, uiStyle, styleType } = this.props;
     const { responseScore } = this.state;
-
+    const itemLevelScoring = this.context;
     return (
       <div>
-        <CorrectAnswerHeader>
-          <CorrectAnswerPointField
-            type="number"
-            data-cy="points"
-            value={responseScore}
-            onChange={this.updateScore}
-            onBlur={this.updateScore}
-            disabled={false}
-            min={0}
-            step={0.5}
-          />
-          <span>{t("component.correctanswers.points")}</span>
-        </CorrectAnswerHeader>
+        {itemLevelScoring || (
+          <CorrectAnswerHeader>
+            <CorrectAnswerPointField
+              type="number"
+              data-cy="points"
+              value={responseScore}
+              onChange={this.updateScore}
+              onBlur={this.updateScore}
+              disabled={false}
+              min={0}
+              step={0.5}
+            />
+            <span>{t("component.correctanswers.points")}</span>
+          </CorrectAnswerHeader>
+        )}
         <Display
           preview
           qIndex={0}

@@ -57,47 +57,7 @@ FroalaEditor.DefineIconTemplate(
   `
 );
 
-FroalaEditor.DefineIconTemplate(
-  "textdropdown",
-  `
-  <svg xmlns="http://www.w3.org/2000/svg" width="43.081" height="40" viewBox="0 0 43.081 40">
-    <g transform="translate(-0.045)">
-      <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
-      <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
-        <tspan x="0" y="0">D</tspan>
-      </text>
-    </g>
-  </svg>
-  `
-);
-
-FroalaEditor.DefineIconTemplate(
-  "textinput",
-  `
-  <svg xmlns="http://www.w3.org/2000/svg" width="43.081" height="40" viewBox="0 0 43.081 40">
-    <g transform="translate(-0.045)">
-      <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
-      <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
-        <tspan x="0" y="0">I</tspan>
-      </text>
-    </g>
-  </svg>
-  `
-);
-
-FroalaEditor.DefineIconTemplate(
-  "mathinput",
-  `
-  <svg xmlns="http://www.w3.org/2000/svg" width="43.081" height="40" viewBox="0 0 43.081 40">
-    <g transform="translate(-0.045)">
-      <rect width="43.081" height="40" rx="4" transform="translate(0.045)" fill="#aaafb5"/>
-      <text transform="translate(17.045 26)" fill="#fff" font-size="14" font-family="OpenSans-SemiBold, Open Sans" font-weight="600" letter-spacing="0.019em">
-        <tspan x="0" y="0">MathInput</tspan>
-      </text>
-    </g>
-  </svg>
-  `
-);
+FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="responses-boxes-btn">Response Boxes</span>`);
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
@@ -323,76 +283,61 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       }
     });
 
-    // Cloze DropDown
-    FroalaEditor.DefineIcon("textdropdown", { NAME: "textdropdown", template: "textdropdown" });
-    FroalaEditor.RegisterCommand("textdropdown", {
-      title: "Text Dropdown",
-      focus: true,
+    // Dropdown Toobar button for MathInput/TextDropDown/TextInput
+    FroalaEditor.DefineIcon("responseBoxes", { NAME: "responseBoxes", template: "responseBoxes" });
+    FroalaEditor.RegisterCommand("responseBoxes", {
+      type: "dropdown",
+      focus: false,
       undo: true,
       refreshAfterCallback: true,
-      callback() {
-        const dropDownCount = this.$el[0].querySelectorAll(".text-dropdown-btn").length;
-        this.html.insert(
-          `<TextDropdown
-            class="text-dropdown-btn"
-            contenteditable="false"
-            save={{save}}
-            options={{options}}
-            checked={{checked}}
-            evaluation={{evaluation}}
-            answers={{answers}}
-            index={{${dropDownCount}}}
-            >Text Dropdown</TextDropdown>`
-        );
-        this.undo.saveStep();
-      }
-    });
-
-    // Cloze Text Input
-    FroalaEditor.DefineIcon("textinput", { NAME: "textinput", template: "textinput" });
-    FroalaEditor.RegisterCommand("textinput", {
-      title: "textinput",
-      focus: true,
-      undo: true,
-      refreshAfterCallback: true,
-      callback() {
-        const inputCount = this.$el[0].querySelectorAll(".text-input-btn").length;
-        this.html.insert(
-          `<TextInput
-            class="text-input-btn"
-            contenteditable="false"
-            index={{${inputCount}}}
-            save={{save}}
-            evaluation={{evaluation}}
-            checked={{checked}}
-            answers={{answers}}
-          >Text Input</TextInput>`
-        );
-        this.undo.saveStep();
-      }
-    });
-
-    // Math Input
-    FroalaEditor.DefineIcon("mathinput", { NAME: "mathinput", template: "mathinput" });
-    FroalaEditor.RegisterCommand("mathinput", {
-      title: "Math Input",
-      focus: true,
-      undo: true,
-      refreshAfterCallback: true,
-      callback() {
-        const mathInputCount = this.$el[0].querySelectorAll(".math-input-btn").length;
-        this.html.insert(
-          `<MathInput
-            class="math-input-btn"
-            contenteditable="false"
-            index={{${mathInputCount}}}
-            item={{item}}
-            save={{save}}
-            evaluation={{evaluation}}
-            checked={{checked}}
-            answers={{answers}}
-          >Math Input</MathInput>`
-        );
+      options: {
+        textinput: "Text Input",
+        textdropdown: "Text Dropdown",
+        mathinput: "Math Input"
+      },
+      callback: function(_, op) {
+        if (op === "textinput") {
+          const inputCount = this.$el[0].querySelectorAll(".text-input-btn").length;
+          this.html.insert(
+            `<TextInput
+                class="text-input-btn"
+                contenteditable="false"
+                index={{${inputCount}}}
+                save={{save}}
+                evaluation={{evaluation}}
+                checked={{checked}}
+                answers={{answers}}
+              >Text Input</TextInput>`
+          );
+        } else if (op === "textdropdown") {
+          const dropDownCount = this.$el[0].querySelectorAll(".text-dropdown-btn").length;
+          this.html.insert(
+            `<TextDropdown
+              class="text-dropdown-btn"
+              contenteditable="false"
+              save={{save}}
+              options={{options}}
+              checked={{checked}}
+              evaluation={{evaluation}}
+              answers={{answers}}
+              index={{${dropDownCount}}}
+              >Text Dropdown</TextDropdown>`
+          );
+        } else if (op === "mathinput") {
+          const mathInputCount = this.$el[0].querySelectorAll(".math-input-btn").length;
+          this.html.insert(
+            `<MathInput
+                class="math-input-btn"
+                contenteditable="false"
+                index={{${mathInputCount}}}
+                item={{item}}
+                save={{save}}
+                evaluation={{evaluation}}
+                checked={{checked}}
+                answers={{answers}}
+              >Math Input</MathInput>`
+          );
+        }
         this.undo.saveStep();
       }
     });

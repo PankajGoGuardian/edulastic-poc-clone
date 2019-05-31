@@ -1,14 +1,28 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Collapse, Input } from "antd";
-
+import { Collapse, Input, Icon } from "antd";
+import { white, darkGrey1, inputBorder } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 
 const { Panel } = Collapse;
 
 const AnswerContainer = styled.div`
   margin-top: 16px;
+  .ant-collapse-item {
+    border: 1px solid ${inputBorder};
+    margin-bottom: 16px;
+
+    .ant-collapse-header {
+      background-color: ${darkGrey1};
+      color: ${white};
+      font-weight: 600;
+    }
+
+    .ant-collapse-content {
+      margin-top: 8px;
+    }
+  }
 `;
 
 class ClozeInputAnswer extends Component {
@@ -22,7 +36,12 @@ class ClozeInputAnswer extends Component {
 
     return (
       <AnswerContainer>
-        <Collapse onChange={() => {}}>
+        <Collapse
+          onChange={() => {}}
+          bordered={false}
+          expandIconPosition="right"
+          expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
+        >
           {answer.map((inputValue, inputIndex) => (
             <Panel header={`Text Input ${inputIndex + 1}`} key={inputIndex}>
               <Input value={inputValue} onChange={e => this.onChangeHandler(e.target.value, inputIndex)} />

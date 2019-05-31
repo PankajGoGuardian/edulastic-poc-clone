@@ -1,15 +1,30 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { Collapse, Select } from "antd";
+import { Collapse, Select, Icon } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
+import { white, darkGrey1, inputBorder } from "@edulastic/colors";
 
 const { Panel } = Collapse;
 const { Option } = Select;
 
 const AnswerContainer = styled.div`
   margin-top: 16px;
+  .ant-collapse-item {
+    border: 1px solid ${inputBorder};
+    margin-bottom: 16px;
+
+    .ant-collapse-header {
+      background-color: ${darkGrey1};
+      color: ${white};
+      font-weight: 600;
+    }
+
+    .ant-collapse-content {
+      margin-top: 8px;
+    }
+  }
 `;
 
 const AnswerSelect = styled(Select)`
@@ -28,7 +43,12 @@ class ClozeDropDownAnswer extends Component {
 
     return (
       <AnswerContainer>
-        <Collapse onChange={() => {}}>
+        <Collapse
+          onChange={() => {}}
+          bordered={false}
+          expandIconPosition="right"
+          expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
+        >
           {answer.map((dropDownValue, dropIndex) => {
             const option = options[dropIndex];
 

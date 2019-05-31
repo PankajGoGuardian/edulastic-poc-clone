@@ -89,7 +89,7 @@ class Template extends Component {
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.template}
-          additionalToolbarOptions={["mathinput", "textdropdown", "textinput"]}
+          additionalToolbarOptions={["responseBoxes"]}
         />
       </Widget>
     );

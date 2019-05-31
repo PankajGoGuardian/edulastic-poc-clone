@@ -7,6 +7,7 @@ export const lightGrey = "#f9f9f9";
 export const fadedGrey = "#e5e5e5";
 export const lightGreySecondary = "#f8f8f8";
 export const darkGrey = "#a3a0a0";
+export const darkGrey1 = "#b5b5b5";
 export const greyish = "#f3f3f4";
 export const greyishDarker1 = "#a7b1c2";
 export const greyishDarker2 = "#cccccc";

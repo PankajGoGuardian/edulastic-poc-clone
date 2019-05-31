@@ -4,6 +4,8 @@ import produce from "immer";
 import ReactDOM from "react-dom";
 import { get } from "lodash";
 import { Checkbox } from "antd";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
 
@@ -21,6 +23,7 @@ import {
   BrowserSpellcheckOption,
   CharactersToDisplayOption
 } from "../../../containers/WidgetOptions/components";
+import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 
 class LayoutComponent extends Component {
   componentDidMount = () => {
@@ -173,4 +176,16 @@ LayoutComponent.defaultProps = {
   cleanSections: () => {}
 };
 
-export default withNamespaces("assessment")(LayoutComponent);
+const enhance = compose(
+  withNamespaces("assessment"),
+  connect(
+    state => ({
+      item: getQuestionDataSelector(state)
+    }),
+    {
+      setQuestionData: setQuestionDataAction
+    }
+  )
+);
+
+export default enhance(LayoutComponent);

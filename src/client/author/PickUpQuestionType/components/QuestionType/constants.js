@@ -671,6 +671,7 @@ export const getCards = onSelectQuestionType => {
         max_word: 5,
         show_word_limit: ON_LIMIT,
         show_word_count: true,
+        ui_style: { min_height: 300 },
         validation: { max_score: 1 }
       },
       onSelectQuestionType

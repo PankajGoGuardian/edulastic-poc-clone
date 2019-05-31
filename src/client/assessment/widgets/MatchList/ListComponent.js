@@ -36,11 +36,6 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.push("");
-
-          draft.validation.valid_response.value.push("");
-          draft.validation.alt_responses.forEach(ite => {
-            ite.value.push("");
-          });
         })
       );
     };

@@ -100,10 +100,8 @@ class MCQStandardPage {
 
   getAllAnsChoicesLabel = () =>
     cy
-      .get('[data-cy="points"]')
+      .get('[data-cy="tabs"]')
       .parent()
-      .parent()
-      .next()
       .find("label");
 
   addNewChoice() {
@@ -315,9 +313,6 @@ class MCQStandardPage {
 
       if (setAns) {
         const { correct, points } = setAns;
-        this.getPoints()
-          .clear()
-          .type(points);
         // uncheck default ans
         this.getAllAnsChoicesLabel()
           .find("input:checked")
@@ -326,9 +321,15 @@ class MCQStandardPage {
         this.getAllAnsChoicesLabel()
           .contains(correct)
           .click();
-      }
 
-      this.header.save();
+        this.header.save();
+
+        item
+          .getItemTotalScore()
+          .clear()
+          .type(points);
+        item.header.save();
+      }
     });
   }
 }

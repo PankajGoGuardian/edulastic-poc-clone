@@ -64,8 +64,9 @@ class MetadataPage {
     cy.get('[data-cy="searchStandardSelect"]').click();
     cy.focused()
       .type(standard)
-      .then(() => standard.split("").forEach(() => cy.wait("@searchStandard")))
+      // .then(() => standard.split("").forEach(() => cy.wait("@searchStandard")))
       .then(() => {
+        cy.wait("@searchStandard");
         cy.wait(500); // UI renders list slow even after api responsed
         this.getDropDownMenu()
           .contains(standard)

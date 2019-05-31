@@ -27,6 +27,7 @@ const StudentsSelector = ({ specificStudents, students = [], updateStudents, onC
         <StyledRow>
           <Col span={24}>
             <Select
+              data-cy="selectStudent"
               placeholder="Please select"
               style={{ width: "100%" }}
               mode="multiple"

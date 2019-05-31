@@ -144,6 +144,8 @@ class EditItemPage {
       }
     });
   }
+
+  getItemTotalScore = () => cy.get('[data-cy="itemTotalScore"]');
 }
 
 export default EditItemPage;

@@ -120,7 +120,7 @@ class AssignTest extends React.Component {
   };
 
   renderHeaderButton = () => (
-    <AssignButton onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
+    <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
       ASSIGN
     </AssignButton>
   );

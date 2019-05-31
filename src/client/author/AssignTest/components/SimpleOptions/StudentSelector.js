@@ -16,8 +16,12 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
       <StyledRadioGropRow gutter={16}>
         <Col span={24}>
           <RadioGroup onChange={changeRadioGrop} value={specificStudents}>
-            <Radio value={false}>Entire Class</Radio>
-            <Radio value={true}>Specific Student</Radio>
+            <Radio data-cy="radioEntireClass" value={false}>
+              Entire Class
+            </Radio>
+            <Radio data-cy="radioSpecificStudent" value={true}>
+              Specific Student
+            </Radio>
           </RadioGroup>
         </Col>
       </StyledRadioGropRow>
@@ -29,6 +33,7 @@ const StudentsSelector = ({ specificStudents, students, updateStudents, onChange
           <StyledRow>
             <Col span={24}>
               <StyledSelect
+                data-cy="selectStudent"
                 placeholder="Please select"
                 style={{ width: "100%" }}
                 mode="multiple"

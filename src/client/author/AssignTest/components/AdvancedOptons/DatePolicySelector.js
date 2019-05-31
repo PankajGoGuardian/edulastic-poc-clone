@@ -86,7 +86,7 @@ const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, close
         </Col>
         <Col span={6}>
           <StyledSelect
-            data-cy="selectClass"
+            data-cy="selectClosePolicy"
             placeholder="Please select"
             cache="false"
             value={closePolicy}

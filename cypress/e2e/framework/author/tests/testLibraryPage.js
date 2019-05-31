@@ -4,12 +4,16 @@ import TeacherSideBar from "../SideBarPage";
 import TestSummary from "./testDetail/testSummaryTab";
 import TestAddItem from "./testDetail/testAddItemTab";
 import SearchFilters from "../searchFiltersPage";
+import TestHeader from "./testDetail/header";
+import TestAssignPage from "./testDetail/testAssignPage";
 
 export default class TestLibrary {
   constructor() {
     this.sidebar = new TeacherSideBar();
     this.items = [];
     this.searchFilters = new SearchFilters();
+    this.header = new TestHeader();
+    this.assignPage = new TestAssignPage();
   }
 
   clickOnNewAssignment = () => {

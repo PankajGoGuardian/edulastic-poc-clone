@@ -6,6 +6,7 @@ import AuthorAssignmentPage from "../../../framework/author/assignments/AuthorAs
 import { studentSide, teacherSide } from "../../../framework/constants/assignmentStatus";
 import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
 import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
+import TestLibrary from "../../../framework/author/tests/testLibraryPage";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -69,7 +70,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       }
     ]
   };
-  const { attemptsData, redirectedData, student, teacher, testId, feedbackScoreData } = lcbTestData;
+  const { attemptsData, redirectedData, student, teacher, testId, feedbackScoreData, className } = lcbTestData;
 
   let questionData;
   let testData;
@@ -99,6 +100,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const authorAssignmentPage = new AuthorAssignmentPage();
   const expressg = new ExpressGraderPage();
   const sbrPage = new StandardBasedReportPage();
+  const testLibrary = new TestLibrary();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
@@ -120,11 +122,14 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
     });
 
-    // TODO : add this block once add-item page is fixed while creating new assessment
-    // For now assigning pre created test
     cy.deleteAllAssignments(student, teacher);
     cy.login("teacher", teacher);
-    cy.assignAssignment(testId, undefined, undefined, "LCB1");
+    testLibrary.createTest("LCB_1").then(() => {
+      testLibrary.header.clickOnAssign();
+      testLibrary.assignPage.selectClass(className);
+      testLibrary.assignPage.clickOnAssign();
+    });
+    // cy.assignAssignment(testId, undefined, undefined, "LCB1");
   });
 
   before(" > attempt by all students", () => {

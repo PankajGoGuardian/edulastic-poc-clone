@@ -50,4 +50,9 @@ export default class TestHeader {
   };
 
   clickOnShare = () => cy.get('[data-cy="share"]').click();
+
+  clickOnAssign = () => {
+    cy.get('[data-cy="assign"]').click();
+    cy.wait("@assignment");
+  };
 }

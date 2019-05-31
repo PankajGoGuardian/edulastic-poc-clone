@@ -28,8 +28,7 @@ import {
   StyledTableButton,
   StyledConfirmButton,
   AlertSuccess,
-  StatusDiv,
-  AlertMsgDiv
+  StatusDiv
 } from "./styled";
 
 class UploadCourseModal extends React.Component {
@@ -202,6 +201,7 @@ class UploadCourseModal extends React.Component {
             <StyledSpin isVisible={pageStatus === "uploading"} size="large" />
           </React.Fragment>
         )}
+
         {(pageStatus === "uploaded" || pageStatus === "bulk-success") && (
           <UploadedContent isBulkSuccess={pageStatus === "bulk-success"}>
             {pageStatus === "uploaded" && (

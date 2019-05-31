@@ -17,7 +17,7 @@ const resizeDisable = {
   right: false,
   top: false,
   topLeft: false,
-  topRight: true
+  topRight: false
 };
 
 const resizeEnable = {

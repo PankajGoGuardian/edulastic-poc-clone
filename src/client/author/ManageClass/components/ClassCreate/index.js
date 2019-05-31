@@ -86,7 +86,7 @@ class ClassCreate extends React.Component {
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
         values.courseId = isEmpty(courseId) ? "" : courseId;
-        values.grade = isEmpty(grade) ? "Other" : subject;
+        values.grade = isEmpty(grade) ? "Other" : grade;
         values.subject = isEmpty(subject) ? "Other Subjects" : subject;
 
         // eslint-disable-next-line react/no-unused-state

@@ -140,10 +140,10 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       toolbarVisibleWithoutSelection: true,
 
       events: {
-        click: evt => {
-          EditorRef.current.selection.save();
+        click: function(evt) {
           const closestMathParent = evt.currentTarget.closest("span.input__math");
           if (closestMathParent) {
+            this.selection.save();
             setCurrentLatex(closestMathParent.getAttribute("data-latex"));
             setCurrentMathEl(closestMathParent);
             setMathModal(true);

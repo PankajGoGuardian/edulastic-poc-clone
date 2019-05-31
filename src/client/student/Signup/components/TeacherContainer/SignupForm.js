@@ -148,7 +148,7 @@ class Signup extends React.Component {
                                 },
                                 {
                                   required: true,
-                                  message: t("common.validation.emptyemailid")
+                                  message: t("component.signup.teacher.validemail")
                                 }
                               ]
                             })(<Input prefix={<img src={mailIcon} alt="" />} />)}

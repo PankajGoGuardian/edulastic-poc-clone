@@ -1102,7 +1102,7 @@ input[type="checkbox"] {
 }
 
 .imagelabeldragdrop-droppable img,
-.responseboxContainer img {
+.responses_box img {
   max-width: 151.5px;
   max-height: 100px;
   width: auto !important;

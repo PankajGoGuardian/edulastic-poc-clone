@@ -93,26 +93,7 @@ class Authoring extends Component {
 
     const newItem = cloneDeep(item);
     if (document.getElementById("mainImage") && item.imageUrl) {
-      const imageHeight = document.getElementById("mainImage").clientHeight;
       const imageWidth = document.getElementById("mainImage").clientWidth;
-
-      newItem.responses = item.responses.map(response => {
-        const newResponse = cloneDeep(response);
-        if (newResponse.width > imageWidth) {
-          newResponse.width = imageWidth;
-        }
-        if (newResponse.height > imageHeight) {
-          newResponse.height = imageHeight;
-        }
-        if (newResponse.top + newResponse.height > imageHeight) {
-          newResponse.top = imageHeight - newResponse.height;
-        }
-        if (newResponse.left + newResponse.width > imageWidth) {
-          newResponse.left = imageWidth - newResponse.width;
-        }
-
-        return newResponse;
-      });
 
       if (item.imageWidth && imageWidth !== item.imageWidth) {
         newItem.imageWidth = imageWidth;
@@ -262,7 +243,6 @@ class Authoring extends Component {
   render() {
     const { t, item, theme, maxWidth, maxHeight } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
-    console.log(item, "item");
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 

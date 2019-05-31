@@ -11,7 +11,7 @@ const ClozeInput = ({ save, index, answers, evaluation, checked }) => {
 
   const { inputsResults: checkResult = {} } = evaluation;
   const isChecked = checked && !isEmpty(checkResult);
-  console.log(evaluation);
+
   return isChecked ? (
     <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_inputsAnwers[index]} index={index} />
   ) : (

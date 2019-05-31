@@ -865,11 +865,43 @@ input[type="checkbox"] {
   border-radius: 3px;
 }
 
-.response-btn,
-.text-dropdown-btn,
-.text-input-btn {
+.response-btn {
   display: inline-flex !important;
   margin: 5px !important;
+}
+
+.math-input-btn,
+.text-dropdown-btn,
+.text-input-btn {
+  padding: 2px 12px;
+  color: rgba(0, 0, 0, 0.65);
+  font-size: 14px;
+  line-height: 1.5;
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #d9d9d9;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 4px;
+  position: relative;
+}
+
+.text-dropdown-btn {
+  padding-right: 20px;
+}
+
+.text-dropdown-btn::after {
+  content: "";
+  width: 0;
+  height: 0;
+  border-color: #5f5f5f;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid;
+  margin-left: 5px;
+  position: absolute;
+  right: 5px;
+  top: 10px;
 }
 
 .response-btn .text,
@@ -882,11 +914,6 @@ input[type="checkbox"] {
 .text-dropdown-btn .dropdown-index,
 .text-input-btn .text-input-index {
   padding: 0 8px;
-}
-
-.text-dropdown-btn {
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .text-dropdown-btn .dropdown-index {
@@ -925,11 +952,6 @@ input[type="checkbox"] {
 .text-dropdown-btn:hover .dropdown-index {
   background: #12a6e8;
   color: white;
-}
-
-.text-input-btn {
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 .text-input-btn .text-input-index {
@@ -1891,6 +1913,10 @@ span.token.active-word {
   border: none !important;
 }
 
+.jsx-parser table {
+  margin: 8px 0;
+}
+
 .jsx-parser table td {
   border: 1px #ddd solid;
   padding: 4px 8px;
@@ -1902,4 +1928,14 @@ span.token.active-word {
 
 #docBasedModalOverlay {
   z-index: 1000000;
+}
+
+.fr-view p,
+.fr-view table {
+  margin: 8px 0;
+}
+
+.fr-view table td,
+.fr-view table th {
+  padding: 8px 0;
 }

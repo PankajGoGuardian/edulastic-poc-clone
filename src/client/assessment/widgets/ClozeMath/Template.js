@@ -37,8 +37,8 @@ class Template extends Component {
   render() {
     const { t, item, setQuestionData } = this.props;
 
-    const _reduceResponseButtons = (responseIndexes = [], value) =>
-      responseIndexes.map(nextIndex => {
+    const _reduceResponseButtons = (mathInputIndexes = [], value) =>
+      mathInputIndexes.map(nextIndex => {
         const newArray = [initialMethod];
         const response = value.find((_, i) => nextIndex === i + 1);
         return response || cloneDeep(newArray);
@@ -47,12 +47,13 @@ class Template extends Component {
     const _reduceVlaues = (emIndexes = [], value) =>
       emIndexes.map(emIndex => value.find((_, i) => emIndex === i + 1) || "");
 
-    const _updateTemplate = (val, responseIndexes, dropDownIndexes, inputIndexes) => {
+    // important don't remove responseIndexes for now
+    const _updateTemplate = (val, responseIndexes, mathInputIndexes, dropDownIndexes, inputIndexes) => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
         draft.validation.valid_response.value = _reduceResponseButtons(
-          responseIndexes,
+          mathInputIndexes,
           draft.validation.valid_response.value
         );
 
@@ -62,7 +63,7 @@ class Template extends Component {
 
         if (Array.isArray(draft.validation.alt_responses)) {
           draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-            res.value = _reduceResponseButtons(responseIndexes, res.value);
+            res.value = _reduceResponseButtons(mathInputIndexes, res.value);
             return res;
           });
         }
@@ -88,7 +89,7 @@ class Template extends Component {
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.template}
-          additionalToolbarOptions={["response", "dropdown", "textinput"]}
+          additionalToolbarOptions={["mathinput", "textdropdown", "textinput"]}
         />
       </Widget>
     );

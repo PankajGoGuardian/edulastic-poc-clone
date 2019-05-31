@@ -1,10 +1,8 @@
-/* eslint-disable no-undef */
-/* eslint-disable func-names */
 import React, { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep, isUndefined } from "lodash";
+import { cloneDeep } from "lodash";
 import { WithResources, Stimulus } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
@@ -53,57 +51,7 @@ const ClozeMathPreview = ({
   };
 
   const getPreviewTemplate = tmpl => {
-    if (isUndefined(window.$)) {
-      return "";
-    }
     let temp = ` ${tmpl}`.slice(1);
-    const parsedHTML = $.parseHTML(temp);
-    $(parsedHTML)
-      .find(".response-btn")
-      .each(function(index) {
-        $(this).replaceWith(
-          `<ClozeMathInput 
-            save={{save}}
-            index={{${index}}}
-            item={{item}}
-            evaluation={{evaluation}}
-            checked={{checked}}
-            answers={{answers}}
-          />`
-        );
-      });
-    $(parsedHTML)
-      .find(".text-dropdown-btn")
-      .each(function(index) {
-        $(this).replaceWith(
-          `<ClozeDropDown
-            options={{options}}
-            index={{${index}}}
-            save={{save}}
-            evaluation={{evaluation}}
-            checked={{checked}}
-            answers={{answers}}
-          />`
-        );
-      });
-
-    $(parsedHTML)
-      .find(".text-input-btn")
-      .each(function(index) {
-        $(this).replaceWith(
-          `<ClozeInput
-            index={{${index}}}
-            save={{save}}
-            evaluation={{evaluation}}
-            checked={{checked}}
-            answers={{answers}}
-          />`
-        );
-      });
-    temp = $("<div />")
-      .append(parsedHTML)
-      .html();
-
     temp = temp.replace(/<hr>/g, "<hr/>");
     temp = temp.replace(/<br>/g, "<br/>");
     temp = temp.replace(/"{{/g, "{");
@@ -144,9 +92,9 @@ const ClozeMathPreview = ({
         }}
         showWarnings
         components={{
-          clozedropdown: ClozeDropDown,
-          clozeinput: ClozeInput,
-          clozemathinput: ClozeMathInput
+          textdropdown: ClozeDropDown,
+          textinput: ClozeInput,
+          mathinput: ClozeMathInput
         }}
         jsx={newHtml}
       />

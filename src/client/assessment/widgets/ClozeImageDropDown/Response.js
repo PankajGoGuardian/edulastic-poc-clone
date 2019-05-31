@@ -45,8 +45,6 @@ class Response extends Component {
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
-
-    cleanSections();
   }
 
   onChangeQuestion = stimulus => {

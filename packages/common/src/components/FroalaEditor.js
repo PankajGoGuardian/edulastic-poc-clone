@@ -197,7 +197,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     return mathFieldRef.current.outerHTML;
   };
 
-  const setChange = debounce(val => {
+  const setChange = val => {
     setContent(val);
 
     const valueToSave = replaceMathHtmlWithLatexes(val);
@@ -234,7 +234,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     } else {
       onChange(valueToSave, []);
     }
-  }, 500);
+  };
 
   // Math Modal related functions
   const saveMathModal = latex => {

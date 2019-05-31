@@ -104,8 +104,8 @@ class MultipleChoiceOptions extends Component {
       produce(item, draft => {
         draft.options.splice(index, 1);
         for (let i = index + 1; i < draft.options.length; i++) {
-          if (draft.variable) {
-            draft.variable.variableStatus[`option-${index - 1}`] = draft.variable.variableStatus[`option-${index}`];
+          if (draft.variable && draft.variable.variableStatus) {
+            draft.variable.variableStatus[`option-${i - 1}`] = draft.variable.variableStatus[`option-${i}`];
           }
         }
         updateVariables(draft);

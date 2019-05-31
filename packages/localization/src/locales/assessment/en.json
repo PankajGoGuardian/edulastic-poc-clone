@@ -190,14 +190,14 @@
       "lineColorOptionsSubtitle": "Line color options",
       "lineColorLabel": "Line color",
       "addButtonText": "Add new color",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "undo": "Undo",
       "redo": "Redo",
       "clear": "Clear"
     },
     "shading": {
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "canvasSubtitle": "Canvas option",
       "rowsCountSubtitle": "Row count",
@@ -209,7 +209,7 @@
       "methodSubtitle": "Method"
     },
     "chart": {
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "chartMainBlockTitle": "Chart",
       "width": "Width (px)",
@@ -246,11 +246,11 @@
       "local": "Local",
       "multipleResponses": "Multiple responses",
       "areaSelectLabel": "Select Area",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question"
     },
     "tokenHighlight": {
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "paragraph": "Paragraph",
       "sentence": "Sentence",
@@ -267,7 +267,7 @@
       "titleOfGroupTitleLabel": "Title",
       "possibleRespTitle": "Possible responses",
       "addNewGroup": "ADD NEW GROUP",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "list": "List",
       "addNew": "Add new",
@@ -277,7 +277,7 @@
     "classification": {
       "addBackImage": "Add Background Image",
       "deleteBackImage": "Delete Background Image",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "dragItemsTitle": "Drag & Drop the answer",
       "correctAnswers": "Correct Answers",
@@ -307,7 +307,7 @@
       "paste": "Paste",
       "cut": "Cut",
       "submitOverLimit": "Submit over limit",
-      "composequestion": "Compose Question",
+      "composequestion": "Question",
       "enterQuestion": "Enter question",
       "plain": {
         "templateText": "The United States of America, is a federal republic composed of 50 states, a federal district, five major territories and various possessions.",
@@ -319,7 +319,7 @@
       }
     },
     "shortText": {
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question",
       "smallSizeTitle": "How many states are there in America?",
       "smallSizePar": "Write your answer in the text field below.",
@@ -330,12 +330,12 @@
       "correctAnswers": "Correct Answers"
     },
     "orderlist": {
-      "composequestion": "Compose Question",
+      "composequestion": "Question",
       "enteryourquestion": "Enter your question",
       "addnewchoicebtn": "Add New Choice",
       " ": "[This is the stem.]",
       "correctanswer": "Correct Answer:",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "list": "List"
     },
     "sortList": {
@@ -343,7 +343,7 @@
       "containerTargetPreview": "Target",
       "correctAnswers": "Correct Answers",
       "list": "List",
-      "composeQuestion": "Compose Question",
+      "composeQuestion": "Question",
       "enterQuestion": "Enter question"
     },
     "multiplechoice": {
@@ -351,7 +351,7 @@
       "setcorrectanswers": "Set Correct Answer(s)",
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
-      "composequestion": "Compose Question",
+      "composequestion": "Question",
       "multipleResponses": "Multiple Responses",
       "shuffleOptions": "Shuffle options",
       "choice": "Choice"
@@ -364,7 +364,7 @@
         "setcorrectanswers": "Set Correct Answer(s)",
         "addnewchoice": "Add New Choice",
         "multiplechoiceoptions": "Multiple Choice Options",
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "templatemarkupplaceholder": "[This is the template markup]",
         "grouppossibleresponses": "Group possible responses",
         "group": "Group",
@@ -380,11 +380,11 @@
         "templatemarkup": "Template Markup",
         "thisisstem": "[This is the stem.]",
         "setcorrectanswers": "Set Correct Answer(s)",
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "templatemarkupplaceholder": "[This is the template markup]"
       },
       "imageDragDrop": {
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "response": "Response",
         "thisisstem": "[This is the stem.]",
         "addimage": "Add image",
@@ -420,7 +420,7 @@
         "orBrowse": "OR BROWSE"
       },
       "imageDropDown": {
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "response": "Response",
         "thisisstem": "[This is the stem.]",
         "addimage": "Add image",
@@ -457,7 +457,7 @@
         "dragAndDrop": "Drag & Drop"
       },
       "imageText": {
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "response": "Response",
         "deleteImageButtonText": "Delete Image",
         "updateImageButtonText": "Update Image",
@@ -492,7 +492,7 @@
         "setcorrectanswers": "Set Correct Answer(s)",
         "addnewchoice": "Add New Choice",
         "multiplechoiceoptions": "Multiple Choice Options",
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "templatemarkupplaceholder": "[This is the template markup]",
         "grouppossibleresponses": "Group possible responses",
         "group": "Group",
@@ -514,7 +514,7 @@
     },
     "graphing": {
       "question": {
-        "composequestion": "Compose Question",
+        "composequestion": "Question",
         "enteryourquestion": "Enter your question"
       },
       "title": "Title",
@@ -647,7 +647,7 @@
       "exactMatch": "Exact match",
       "template": "Template",
       "allowThousandsSeparator": "Allow specifying thousands separator",
-      "composequestion": "Compose Question",
+      "composequestion": "Question",
       "compareUsing": "Compare Using",
       "expectedAnswer": "Expected Answer",
       "addComparison": "Add Comparison",
@@ -728,7 +728,7 @@
       "showRotate": "Show rotate"
     },
     "multipart": {
-      "composequestion": "Compose Question",
+      "composequestion": "Question",
       "enterQuestion": "Enter Question",
       "enterContent": "Enter Question Contents",
       "content": "Content"

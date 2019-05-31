@@ -201,6 +201,9 @@ class QuestionWrapper extends Component {
           [section]: sectionState.filter(el => {
             if (el.label === label) {
               el.offset = offset;
+              el.offsetBottom = offsetBottom;
+              el.haveDesk = haveDesk;
+              el.deskHeight = deskHeight;
             }
             return el;
           })

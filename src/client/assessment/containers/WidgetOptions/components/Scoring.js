@@ -27,16 +27,15 @@ class Scoring extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.scoring"), node.offsetTop);
+    fillSections("advanced", t("component.options.scoring"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
     const { advancedAreOpen, fillSections, t } = this.props;
-
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.scoring"), node.offsetTop);
+      fillSections("advanced", t("component.options.scoring"), node.offsetTop, node.scrollHeight);
     }
   }
 

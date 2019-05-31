@@ -37,7 +37,7 @@ class MultipleChoiceOptions extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.multiplechoice.multiplechoiceoptions"), node.offsetTop);
+    fillSections("main", t("component.multiplechoice.multiplechoiceoptions"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

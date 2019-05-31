@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { throttle } from "lodash";
 import { newBlue, desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import { withWindowSizes } from "@edulastic/common";
 
 class QuestionMenu extends Component {
   state = {
@@ -48,6 +49,8 @@ class QuestionMenu extends Component {
   };
 
   isActive = (index, options) => {
+    if (options[index].offset <= 115) return false;
+
     const scrollPosition = this.calcScrollPosition(options[index].offset);
 
     if (index === 0) {
@@ -113,12 +116,12 @@ class QuestionMenu extends Component {
   throttledFindActiveTab = throttle(this.findActiveTab, 200);
 
   render() {
-    const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen } = this.props;
+    const { main, advanced, isSidebarCollapsed, advancedAreOpen, handleAdvancedOpen, windowWidth } = this.props;
     const { activeTab } = this.state;
     return (
       <Menu isSidebarCollapsed={isSidebarCollapsed}>
         <ScrollbarContainer>
-          <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen}>
+          <MainOptions activeTab={activeTab} main={main} advancedAreOpen={advancedAreOpen} windowWidth={windowWidth}>
             {main &&
               main.map((option, index) => (
                 <Option
@@ -126,7 +129,7 @@ class QuestionMenu extends Component {
                   onClick={() => this.handleScroll(option)}
                   className={index === activeTab && "active"}
                 >
-                  {option.label.toLowerCase()}
+                  {option.label}
                 </Option>
               ))}
           </MainOptions>
@@ -143,7 +146,7 @@ class QuestionMenu extends Component {
                       onClick={() => this.handleScroll(option)}
                       className={main.length + index === activeTab && "active"}
                     >
-                      {option.label.toLowerCase()}
+                      {option.label}
                     </Option>
                   ))}
                 </AdvancedOptions>
@@ -162,7 +165,8 @@ QuestionMenu.propTypes = {
   advanced: PropTypes.array,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool.isRequired,
-  handleAdvancedOpen: PropTypes.func.isRequired
+  handleAdvancedOpen: PropTypes.func.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 QuestionMenu.defaultProps = {
@@ -172,7 +176,7 @@ QuestionMenu.defaultProps = {
 
 export default connect(({ authorUi }) => ({
   isSidebarCollapsed: authorUi.isSidebarCollapsed
-}))(QuestionMenu);
+}))(withWindowSizes(QuestionMenu));
 
 const Menu = styled.div`
   position: fixed;
@@ -216,7 +220,15 @@ const MainOptions = styled.ul`
     top: -5px;
     z-index: 5;
     transition: 0.2s ease transform, 0.2s ease opacity;
-    transform: translateY(${props => `${props.activeTab * 80 + (props.activeTab > props.main.length - 1 ? 45 : 0)}px`});
+    transform: translateY(
+      ${props =>
+        `${props.activeTab * (props.windowWidth >= extraDesktopWidthMax.replace("px", "") ? 80 : 50) +
+          (props.activeTab > props.main.length - 1
+            ? props.windowWidth >= extraDesktopWidthMax.replace("px", "")
+              ? 48
+              : 77
+            : 0)}px`}
+    );
   }
 `;
 
@@ -234,7 +246,6 @@ const Option = styled.li`
   color: #6a737f;
   margin-bottom: 50px;
   transition: 0.2s ease color;
-  text-transform: capitalize;
 
   &:last-of-type {
     margin-bottom: 0;

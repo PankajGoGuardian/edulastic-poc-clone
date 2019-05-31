@@ -20,10 +20,18 @@ class Answers extends Component {
   };
 
   componentDidMount = () => {
-    const { fillSections, t } = this.props;
+    const { fillSections, t, item } = this.props;
     const node = ReactDOM.findDOMNode(this);
+    const deskHeight = item.ui_style.layout_height;
 
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
+    fillSections(
+      "main",
+      t("component.correctanswers.setcorrectanswers"),
+      node.offsetTop,
+      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
+      deskHeight === true,
+      deskHeight
+    );
   };
 
   componentWillUnmount() {

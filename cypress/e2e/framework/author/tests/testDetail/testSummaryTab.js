@@ -23,6 +23,14 @@ export default class TestSummayTab {
     cy.focused().blur();
   };
 
+  verifyName = name => this.getTestName().should("have.value", name);
+
+  verifyGrade = grade => {
+    this.getTestGradeSelect()
+      .find("li.ant-select-selection__choice")
+      .should("contain", grade);
+  };
+
   setName = testname => {
     this.getTestName()
       .clear()
@@ -35,5 +43,11 @@ export default class TestSummayTab {
       .contains(subject)
       .click();
     cy.focused().blur();
+  };
+
+  verifySubject = subject => {
+    this.getTestSubjectSelect()
+      .find("li.ant-select-selection__choice")
+      .should("contain", subject);
   };
 }

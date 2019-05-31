@@ -21,4 +21,16 @@ export default class TestAddItemTab {
     cy.xpath("//li[text()='Authored by me']").click();
     return cy.wait("@searchItem");
   };
+
+  addItemById = itemId =>
+    cy
+      .get(`[data-row-key="${itemId}"]`)
+      .contains("ADD")
+      .click({ force: true });
+
+  removeItemById = itemId =>
+    cy
+      .get(`[data-row-key="${itemId}"]`)
+      .contains("REMOVE")
+      .click({ force: true });
 }

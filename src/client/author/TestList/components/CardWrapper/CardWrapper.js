@@ -46,7 +46,7 @@ class CardWrapper extends Component {
 
     if (blockStyle === "tile") {
       return (
-        <Col key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 20 }}>
+        <Col data-cy={item._id} key={item._id} span={windowWidth > 468 ? 8 : 24} style={{ marginBottom: 20 }}>
           <Item
             owner={owner}
             item={item}
@@ -61,7 +61,7 @@ class CardWrapper extends Component {
     }
 
     return (
-      <Col key={item._id} span={24}>
+      <Col data-cy={item._id} key={item._id} span={24}>
         <ListItem
           owner={owner}
           item={item}
@@ -73,8 +73,8 @@ class CardWrapper extends Component {
           isTestAdded={isTestAdded}
           removeTestFromPlaylist={removeTestFromPlaylist}
           authorName={isPlaylist ? getPlaylistAuthorName(item) : getTestAuthorName(item)}
-          testItemId={itemId}
           isPlaylist={isPlaylist}
+          testItemId={itemId}
         />
       </Col>
     );

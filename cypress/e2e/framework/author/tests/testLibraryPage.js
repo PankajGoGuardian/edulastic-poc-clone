@@ -3,11 +3,13 @@ import ItemListPage from "../itemList/itemListPage";
 import TeacherSideBar from "../SideBarPage";
 import TestSummary from "./testDetail/testSummaryTab";
 import TestAddItem from "./testDetail/testAddItemTab";
+import SearchFilters from "../searchFiltersPage";
 
 export default class TestLibrary {
   constructor() {
     this.sidebar = new TeacherSideBar();
     this.items = [];
+    this.searchFilters = new SearchFilters();
   }
 
   clickOnNewAssignment = () => {
@@ -21,7 +23,7 @@ export default class TestLibrary {
     const testAddItem = new TestAddItem();
     const itemListPage = new ItemListPage();
 
-    cy.fixture("testAuthoring").then(testData => {
+    return cy.fixture("testAuthoring").then(testData => {
       const test = testData[key];
       test.itemKeys.forEach(async (itemKey, index) => {
         itemListPage.createItem(itemKey, index);
@@ -50,9 +52,7 @@ export default class TestLibrary {
       testSummary.header.clickOnAddItems();
       testAddItem.authoredByMe().then(() => {
         this.items.forEach(itemKey => {
-          cy.get(`[data-row-key="${itemKey}"]`)
-            .contains("ADD")
-            .click({ force: true });
+          testAddItem.addItemById(itemKey);
         });
       });
 
@@ -60,6 +60,35 @@ export default class TestLibrary {
       testSummary.header.clickOnSaveButton();
       // publish
       testSummary.header.clickOnPublishButton();
+
+      return cy.url().then(url => url.split("/").reverse()[0]);
     });
   };
+
+  getTestCardById = testId => cy.get(`[data-cy="${testId}"]`).as("testcard");
+
+  getShortId = testId => testId.substr(testId.length - 5);
+
+  clickOnEditTestById = testId => {
+    cy.server();
+    cy.route("GET", "**/content-sharing/**").as("testload");
+    this.getTestCardById(testId);
+    cy.get("@testcard")
+      .find(".showHover")
+      .invoke("show")
+      .contains("button", "Edit")
+      .click({ force: true })
+      .then(() => {
+        cy.wait("@testload");
+        cy.wait("@testload");
+      });
+  };
+
+  verifyVersionedURL = (oldTestId, newTestId) =>
+    // URL changes after ~4 sec after API response, could not watch this event, hence wait
+    cy.wait(5000).then(() =>
+      cy.url().then(newUrl => {
+        expect(newUrl).to.include(`tests/${newTestId}/versioned/old/${oldTestId}`);
+      })
+    );
 }

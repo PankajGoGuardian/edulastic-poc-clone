@@ -14,20 +14,23 @@ const SortableItem = SortableElement(
     const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
     const handleCheck = e => onCheck(indx, e.target.checked);
     return (
-      <TestItemWrapper>
+      <TestItemWrapper data-cy={metaInfoData.id}>
         {mobile ? (
           <FlexContainer flexDirection="column" alignItems="flex-start">
             <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
               <FlexContainer flexDirection="column" justifyContent="center">
                 <DragHandle />
-                <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
               </FlexContainer>
 
               <FlexContainer>
-                <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
+                <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
+                  Preview
+                </PreviewButton>
                 <FlexContainer flexDirection="column">
                   <PointsLabel>Points</PointsLabel>
                   <PointsInput
+                    data-cy="points"
                     size="large"
                     type="number"
                     value={points}

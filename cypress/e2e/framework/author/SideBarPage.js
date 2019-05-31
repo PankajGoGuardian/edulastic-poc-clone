@@ -37,9 +37,11 @@ export default class TeacherSideBar {
       .click({ force: true })
       .click({ force: true });
 
-  clickOnTestLibrary = () =>
+  clickOnTestLibrary = () => {
+    cy.wait(5000); // waiting for mongo to elastic search sync delay
     this.menuItems()
       .eq(6)
       .click({ force: true })
       .click({ force: true });
+  };
 }

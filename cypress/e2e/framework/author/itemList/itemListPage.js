@@ -80,6 +80,8 @@ class ItemListPage {
       }
     });
   };
+
+  getItemIdByURL = () => cy.url().then(url => url.split("/").reverse()[1]);
 }
 
 export default ItemListPage;

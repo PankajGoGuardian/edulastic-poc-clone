@@ -41,7 +41,7 @@ class Header {
 
   clickOnPublishItem = () => {
     cy.get('[data-cy="publishItem"]').click();
-    cy.wait("@saveItem");
+    cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
   };
 
   clickOnEditItem = () => cy.get('[data-cy="editItem"]').click();

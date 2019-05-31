@@ -32,6 +32,7 @@ const ReviewSummary = ({
 
     <MainTitle>Grade</MainTitle>
     <SummarySelect
+      data-cy="gradesSelect"
       mode="multiple"
       size="large"
       style={{ width: "100%" }}
@@ -48,6 +49,7 @@ const ReviewSummary = ({
 
     <MainTitle>Subject</MainTitle>
     <SummarySelect
+      data-cy="subjectSelect"
       mode="multiple"
       size="large"
       style={{ width: "100%" }}
@@ -65,11 +67,11 @@ const ReviewSummary = ({
     <MainTitle>Summary</MainTitle>
     <FlexContainer justifyContent="space-between">
       <SummaryInfoContainer>
-        <SummaryInfoNumber>{questionsCount}</SummaryInfoNumber>
+        <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
         <SummaryInfoTitle>Questions</SummaryInfoTitle>
       </SummaryInfoContainer>
       <SummaryInfoContainer>
-        <SummaryInfoNumber>{totalPoints}</SummaryInfoNumber>
+        <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
         <SummaryInfoTitle>Points</SummaryInfoTitle>
       </SummaryInfoContainer>
     </FlexContainer>

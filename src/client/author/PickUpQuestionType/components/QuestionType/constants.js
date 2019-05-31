@@ -1184,14 +1184,13 @@ export const getCards = onSelectQuestionType => {
       onSelectQuestionType
     },
     {
-      stimulus: "Which color has the smallest walvelenght?",
       type: "graphing",
       cardImage: GRGraphing,
       data: {
         title: "Graphing",
         type: questionType.GRAPH,
         graphType: "quadrants",
-        stimulus: "Which color has the smallest walvelenght?",
+        stimulus: "[This is the stem]",
         firstMount: true,
         canvas: {
           x_max: 10.4,
@@ -1277,7 +1276,7 @@ export const getCards = onSelectQuestionType => {
         title: "Graphing in the 1st quadrant",
         type: questionType.GRAPH,
         graphType: "firstQuadrant",
-        stimulus: "[This is the stem2.]",
+        stimulus: "[This is the stem]",
         firstMount: true,
         canvas: {
           x_max: 10.4,
@@ -1363,7 +1362,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Number line with plot",
         type: questionType.GRAPH,
-        stimulus: "[This is the stem3.]",
+        stimulus: "[This is the stem]",
         firstMount: true,
         graphType: "axisSegments",
         canvas: {
@@ -1493,6 +1492,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.GRAPH,
         firstMount: true,
         graphType: "axisLabels",
+        stimulus: "[This is the stem]",
         list: [
           {
             text: "Option 1",
@@ -1517,7 +1517,6 @@ export const getCards = onSelectQuestionType => {
           stimulus_review: "",
           instructor_stimulus: ""
         },
-        stimulus: "[This is the stem. axisLabels]",
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,

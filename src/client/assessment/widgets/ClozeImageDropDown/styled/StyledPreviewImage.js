@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const StyledPreviewImage = styled.img`
-  width: ${({ width, maxWidth }) => (!maxWidth ? width || "auto" : width < maxWidth ? `${width}px` : "min-content")};
-  height: ${({ smallSize, height }) => (!height ? (smallSize ? "100%" : "auto") : "auto")};
+  width: ${({ width }) => width || "auto"};
+  height: ${({ smallSize, height }) => (!height ? (smallSize ? "100%" : "auto") : height)};
   max-height: ${({ maxHeight }) => (!maxHeight ? null : maxHeight)};
   max-width: ${({ maxWidth }) => (!maxWidth ? null : maxWidth)};
   user-select: none;

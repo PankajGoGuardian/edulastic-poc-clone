@@ -165,7 +165,7 @@ class Display extends Component {
           style={{
             userSelect: "none",
             pointerEvents: "none",
-            width: !maxWidth ? imageWidth || "auto" : "min-content",
+            width: !maxWidth ? imageWidth || "auto" : imageWidth,
             height: !maxWidth ? null : "auto",
             maxHeight: !maxHeight ? null : maxHeight,
             maxWidth: !maxWidth ? null : maxWidth
@@ -210,7 +210,9 @@ class Display extends Component {
             position: "relative",
             top: 0,
             left: 0,
-            width: "auto"
+            width: "auto",
+            minWidth: maxWidth,
+            minHeight: maxHeight
           }}
         >
           {renderImage()}
@@ -313,7 +315,7 @@ class Display extends Component {
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         image={renderImage()}
-        imageWidth
+        imageWidth={imageWidth}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
@@ -326,7 +328,7 @@ class Display extends Component {
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-
+    console.log("image width passed to display", imageWidth);
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}

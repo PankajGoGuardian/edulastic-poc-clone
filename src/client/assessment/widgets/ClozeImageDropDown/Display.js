@@ -81,7 +81,7 @@ class Display extends Component {
       maxHeight,
       maxWidth
     } = this.props;
-
+    console.log("imageWidth passed to display", imageWidth);
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
     let newOptions;
@@ -104,25 +104,17 @@ class Display extends Component {
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
         <StyledPreviewContainer
           smallSize={smallSize}
-          width={
-            !maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : imageWidth < maxWidth ? imageWidth : maxWidth
-          }
+          width={!maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : maxWidth}
           height={maxHeight}
           maxWidth={maxWidth}
         >
           <StyledPreviewImage
             src={imageUrl || ""}
-            width={
-              !maxWidth
-                ? calculateRatio(imagescale, fontsize, imageWidth)
-                : imageWidth < maxWidth
-                ? imageWidth
-                : maxWidth
-            }
+            width={!maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : imageWidth}
             alt={imageAlterText}
             maxHeight={maxHeight}
             maxWidth={maxWidth}
-            height={maxHeight}
+            height={"auto"}
           />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {

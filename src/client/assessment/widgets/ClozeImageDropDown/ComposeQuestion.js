@@ -296,7 +296,7 @@ class ComposeQuestion extends Component {
                   </PointerSelect>
                 </PointerContainer>
               </ControlBar>
-              <ImageFlexView size={1}>
+              <ImageFlexView size={1} alignItems={"flex-start"}>
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
@@ -338,26 +338,28 @@ class ComposeQuestion extends Component {
                     </Dragger>
                   )}
                 </ImageContainer>
-                <CheckContainer>
-                  <Checkbox
-                    data-cy="drag-drop-image-aria-check"
-                    defaultChecked={isEditAriaLabels}
-                    onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-                  >
-                    {t("component.cloze.imageDropDown.editAriaLabels")}
-                  </Checkbox>
-                </CheckContainer>
-                {item.imageUrl && (
-                  <Dragger
-                    className="super-dragger"
-                    {...draggerProps}
-                    style={{ padding: 0 }}
-                    onChange={this.handleImageUpload}
-                    showUploadList={false}
-                  >
-                    <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-                  </Dragger>
-                )}
+                <FlexContainer>
+                  {item.imageUrl && (
+                    <Dragger
+                      className="super-dragger"
+                      {...draggerProps}
+                      style={{ padding: 0, marginRight: "20px" }}
+                      onChange={this.handleImageUpload}
+                      showUploadList={false}
+                    >
+                      <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                    </Dragger>
+                  )}
+                  <CheckContainer position={"unset"} alignSelf={"center"}>
+                    <Checkbox
+                      data-cy="drag-drop-image-aria-check"
+                      defaultChecked={isEditAriaLabels}
+                      onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+                    >
+                      {t("component.cloze.imageDropDown.editAriaLabels")}
+                    </Checkbox>
+                  </CheckContainer>
+                </FlexContainer>
               </ImageFlexView>
             </FlexContainer>
             <PaddingDiv>

@@ -3,7 +3,7 @@ import { FlexView } from "../../../styled/FlexView";
 
 export const ImageFlexView = styled(FlexView)`
   flex-direction: column;
-  align-items: center;
+  align-items: ${({ alignItems }) => (!alignItems ? "center" : alignItems)};
   background: ${props => props.theme.widgets.clozeImageDropDown.imageFlexViewBgColor};
   border-right: 1px solid ${props => props.theme.widgets.clozeImageDropDown.imageFlexViewBorderColor};
   border-bottom: 1px solid ${props => props.theme.widgets.clozeImageDropDown.imageFlexViewBorderColor};

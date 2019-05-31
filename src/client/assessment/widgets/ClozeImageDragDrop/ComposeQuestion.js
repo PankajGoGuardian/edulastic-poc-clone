@@ -340,8 +340,7 @@ class ComposeQuestion extends Component {
             size={1}
             style={{
               flexDirection: "column",
-              alignItems: "center",
-              marginLeft: 20,
+              alignItems: "flex-start",
               overflowX: "auto",
               overflowY: "hidden"
             }}
@@ -380,33 +379,35 @@ class ComposeQuestion extends Component {
                 </Dragger>
               )}
             </ImageContainer>
-            <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
-              <Checkbox
-                data-cy="drag-drop-image-dashboard-check"
-                defaultChecked={responseLayout && responseLayout.showdashedborder}
-                onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
-              >
-                {t("component.cloze.imageDragDrop.showdashedborder")}
-              </Checkbox>
-              <Checkbox
-                data-cy="drag-drop-image-aria-check"
-                defaultChecked={isEditAriaLabels}
-                onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-              >
-                {t("component.cloze.imageDragDrop.editAriaLabels")}
-              </Checkbox>
-            </PaddingDiv>
-            {item.imageUrl && (
-              <Dragger
-                className="super-dragger"
-                {...draggerProps}
-                style={{ padding: 0 }}
-                onChange={this.handleImageUpload}
-                showUploadList={false}
-              >
-                <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-              </Dragger>
-            )}
+            <FlexContainer>
+              {item.imageUrl && (
+                <Dragger
+                  className="super-dragger"
+                  {...draggerProps}
+                  style={{ padding: 0, marginRight: "20px" }}
+                  onChange={this.handleImageUpload}
+                  showUploadList={false}
+                >
+                  <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                </Dragger>
+              )}
+              <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
+                <Checkbox
+                  data-cy="drag-drop-image-dashboard-check"
+                  defaultChecked={responseLayout && responseLayout.showdashedborder}
+                  onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
+                >
+                  {t("component.cloze.imageDragDrop.showdashedborder")}
+                </Checkbox>
+                <Checkbox
+                  data-cy="drag-drop-image-aria-check"
+                  defaultChecked={isEditAriaLabels}
+                  onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+                >
+                  {t("component.cloze.imageDragDrop.editAriaLabels")}
+                </Checkbox>
+              </PaddingDiv>
+            </FlexContainer>
           </FlexView>
         </FlexContainer>
         <PaddingDiv>

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const CheckContainer = styled.div`
-  position: absolute;
+  position: ${({ position }) => (!position ? "absolute" : position)};
   left: 60px;
   bottom: 20px;
-  align-self: flex-start;
+  align-self: ${({ alignSelf }) => (!alignSelf ? "flex-start" : alignSelf)};
 `;

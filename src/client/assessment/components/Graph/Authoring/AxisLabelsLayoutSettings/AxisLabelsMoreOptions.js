@@ -7,15 +7,7 @@ import { Select } from "antd";
 
 import { RENDERING_BASE, FRACTIONS_FORMAT } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
-import {
-  MoreOptionsContainer,
-  MoreOptionsColumn,
-  MoreOptionsRow,
-  MoreOptionsLabel,
-  MoreOptionsInput,
-  MoreOptionsSubHeading,
-  MoreOptionsColumnContainer
-} from "../../common/styled_components";
+import { MoreOptionsInput } from "../../common/styled_components";
 
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";

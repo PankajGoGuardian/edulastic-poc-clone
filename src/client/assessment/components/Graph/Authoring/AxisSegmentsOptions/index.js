@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import AxisSegmentsMoreOptions from "./AxisSegmentsMoreOptions";
-import { RENDERING_BASE } from "../../Builder/config/constants";
+import { FRACTIONS_FORMAT, RENDERING_BASE } from "../../Builder/config/constants";
 
 const AxisSegmentsOptions = ({
   setCanvas,
@@ -14,10 +14,9 @@ const AxisSegmentsOptions = ({
   graphData,
   setValidation,
   setControls,
-  setExtras,
   advancedAreOpen
 }) => {
-  const getFontSizeList = () => [
+  const fontSizeList = [
     {
       id: "small",
       label: "Small",
@@ -50,12 +49,30 @@ const AxisSegmentsOptions = ({
     }
   ];
 
-  const getOrientationList = () => [
-    { value: "horizontal", label: "Horizontal" },
-    { value: "vertical", label: "Vertical" }
+  const orientationList = [{ value: "horizontal", label: "Horizontal" }, { value: "vertical", label: "Vertical" }];
+
+  const fractionsFormatList = [
+    {
+      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
+      value: "Not normalized and mixed fractions",
+      label: "Not normalized and mixed fractions",
+      selected: true
+    },
+    {
+      id: FRACTIONS_FORMAT.NORMALIZED,
+      value: "Normalized and mixed fractions",
+      label: "Normalized and mixed fractions",
+      selected: false
+    },
+    {
+      id: FRACTIONS_FORMAT.IMPROPER,
+      value: "Improper fractions",
+      label: "Improper fractions",
+      selected: false
+    }
   ];
 
-  const getRenderingBaseList = () => [
+  const renderingBaseList = [
     {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
       value: "Line minimum value",
@@ -70,27 +87,20 @@ const AxisSegmentsOptions = ({
     }
   ];
 
-  const { canvas, ui_style, numberlineAxis, extra_options } = graphData;
-
   return (
     <Fragment>
       <AxisSegmentsMoreOptions
-        extra_options={extra_options}
-        setExtras={setExtras}
-        options={ui_style}
         setCanvas={setCanvas}
-        canvasConfig={canvas}
         setOptions={setOptions}
-        toolbar={graphData.toolbar}
         setControls={setControls}
         fillSections={fillSections}
         cleanSections={cleanSections}
         setNumberline={setNumberline}
-        numberlineAxis={numberlineAxis}
-        fontSizeList={getFontSizeList()}
-        orientationList={getOrientationList()}
-        renderingBaseList={getRenderingBaseList()}
         setValidation={setValidation}
+        fontSizeList={fontSizeList}
+        orientationList={orientationList}
+        renderingBaseList={renderingBaseList}
+        fractionsFormatList={fractionsFormatList}
         graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />
@@ -106,7 +116,6 @@ AxisSegmentsOptions.propTypes = {
   setOptions: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setValidation: PropTypes.func.isRequired,
-  setExtras: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool
 };

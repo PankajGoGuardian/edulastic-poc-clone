@@ -1,24 +1,25 @@
 import JXG from "jsxgraph";
 import { CONSTANT } from "./config";
-import Point from "./elements/Point";
 import { defaultConfig as lineConfig } from "./elements/Line";
 import rayConfig from "./elements/Ray";
 import segmentConfig from "./elements/Segment";
 import vectorConfig from "./elements/Vector";
 import Polygon from "./elements/Polygon";
-// import { JXG } from './index';
 
-export const findAvailableStackedSegmentPosition = (board, segments, stackResponsesSpacing) => {
-  const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const [xMeasure, yMeasure] = calcMeasure(0, stackResponsesSpacing, board);
+// Calculate amount of units in chosen amount of pixels
+export const calcMeasure = (x, y, board) => [x / board.$board.unitX, y / board.$board.unitY];
+
+export const findAvailableStackedSegmentPosition = board => {
+  const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const [, yMeasure] = calcMeasure(0, board.stackResponsesSpacing, board);
   const lineY = 0.5 - (y / 100) * 75;
-  let calcedYPosition = lineY + yMeasure;
+  const calcedYPosition = lineY + yMeasure;
 
-  for (let i = 0; i <= segments.length; i++) {
+  for (let i = 0; i <= board.elements.length; i++) {
     const yPosition = Math.round((lineY + yMeasure * (i + 1)) * 10) / 10;
     let isPositionAvailable = true;
 
-    segments.forEach(segment => {
+    board.elements.forEach(segment => {
       if (segment.elType === "point") {
         if (segment.Y() === yPosition) {
           isPositionAvailable = false;
@@ -29,28 +30,11 @@ export const findAvailableStackedSegmentPosition = (board, segments, stackRespon
     });
 
     if (isPositionAvailable) {
-      return (calcedYPosition = yPosition);
+      return yPosition;
     }
   }
 
   return calcedYPosition;
-};
-
-export const findSegmentPosition = (board, coords) => {
-  const position = board.getCoords(coords);
-  return Math.round(position.usrCoords[1]);
-};
-
-// Pass points of segment
-// Function placing smallest element to the first place
-export const orderPoints = points => {
-  if (points[0] === points[1]) {
-    return points;
-  }
-  if (points[0] < points[1]) {
-    return points;
-  }
-  return [points[1], points[0]];
 };
 
 export const lineLabelCoord = (firstPoint, secondPoint) => {
@@ -122,9 +106,6 @@ export const calcUnitX = (xMin, xMax, layoutWidth) => {
   const unitLength = -xMin + xMax;
   return !layoutWidth ? 1 : layoutWidth / unitLength;
 };
-
-// Calculate amount of units in chosen amount of pixels
-export const calcMeasure = (x, y, board) => [x / board.$board.unitX, y / board.$board.unitY];
 
 function compareKeys(config, props) {
   return Object.keys(config).every(k => !!props[k] === !!config[k]);
@@ -292,21 +273,6 @@ export function updateAxe(line, parameters, axe) {
   }
 }
 
-// Update numberline axis settings
-export const updateNumberline = (numberline, settings) => {
-  if ("showTicks" in settings) {
-    numberline.ticks[0].setAttribute({ visible: settings.showTicks });
-  }
-  if ("ticksDistance" in settings) {
-    numberline.ticks[0].setAttribute({
-      ticksDistance: settings.ticksDistance
-    });
-  }
-  if ("fontSize" in settings) {
-    numberline.ticks[1].labels.forEach(label => label.setAttribute({ fontSize: settings.fontSize }));
-  }
-};
-
 export function updateGrid(grids, parameters) {
   const grid = grids[0];
   if (!grid) {
@@ -414,14 +380,31 @@ export function flat2nestedConfig(config) {
 export default getLineTypeByProp;
 
 /**
+ * Returns array of ticks
+ * @param {object} axis - jsxgraph axis object with special ticks
+ * @return {array} array of number(s)
+ * */
+function getSpecialTicks(axis) {
+  const ticks = axis.ticks.filter(t => t.fixedTicks !== null);
+  let fixedTicks = [];
+  ticks.forEach(t => {
+    fixedTicks = fixedTicks.concat(t.fixedTicks);
+  });
+  return fixedTicks;
+}
+
+/**
  * Returns closest number from array "ticks" to given number "pointX"
  * @param {number} pointX - any number
- * @param {array} ticks - array of numbers
+ * @param {object} axis - jsxgraph axis object with special ticks
  * */
-export function getClosestTick(pointX, ticks) {
+export function getClosestTick(pointX, axis) {
+  const ticks = getSpecialTicks(axis);
+
   function dist(x, t) {
     return Math.abs(x - t);
   }
+
   let minDist = dist(pointX, ticks[0]);
   let closestTick = ticks[0];
   for (let i = 1; i < ticks.length; i++) {
@@ -434,18 +417,40 @@ export function getClosestTick(pointX, ticks) {
   return closestTick;
 }
 
-/**
- * Returns array of ticks
- * @param {object} axis - jsxgraph axis object with special ticks
- * @return {array} array of number(s)
- * */
-export function getSpecialTicks(axis) {
-  const ticks = axis.ticks.filter(t => t.fixedTicks !== null);
-  let fixedTicks = [];
-  ticks.forEach(t => {
-    fixedTicks = fixedTicks.concat(t.fixedTicks);
-  });
-  return fixedTicks;
+export function getAvailablePositions(board, element, isStacked) {
+  const result = [{ start: board.numberlineAxis.point1.X() }];
+
+  if (!isStacked) {
+    const otherElements = element !== null ? board.elements.filter(item => item.id !== element.id) : board.elements;
+
+    const notAvailablePositions = otherElements
+      .map(item =>
+        item.elType === "point"
+          ? item.X()
+          : item.point1.X() < item.point2.X()
+          ? [item.point1.X(), item.point2.X()]
+          : [item.point2.X(), item.point1.X()]
+      )
+      .sort((a, b) => {
+        const val1 = Array.isArray(a) ? a[0] : a;
+        const val2 = Array.isArray(b) ? b[0] : b;
+        return val1 - val2;
+      });
+
+    notAvailablePositions.forEach((item, i) => {
+      if (Array.isArray(item)) {
+        result[i].end = item[0];
+        result.push({ start: item[1] });
+      } else {
+        result[i].end = item;
+        result.push({ start: item });
+      }
+    });
+  }
+
+  result[result.length - 1].end = board.numberlineAxis.point2.X();
+
+  return result;
 }
 
 export function fixLatex(latex) {

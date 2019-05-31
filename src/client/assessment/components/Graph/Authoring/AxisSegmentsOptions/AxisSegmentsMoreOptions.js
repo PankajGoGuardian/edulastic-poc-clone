@@ -5,17 +5,9 @@ import { withNamespaces } from "@edulastic/localization";
 import { Checkbox } from "@edulastic/common";
 import { Select } from "antd";
 
-import { RENDERING_BASE } from "../../Builder/config/constants";
+import { FRACTIONS_FORMAT, RENDERING_BASE } from "../../Builder/config/constants";
 import Extras from "../../../../containers/Extras";
-import {
-  MoreOptionsContainer,
-  MoreOptionsInput,
-  MoreOptionsLabel,
-  MoreOptionsRow,
-  MoreOptionsSubHeading,
-  MoreOptionsColumnContainer,
-  MoreOptionsColumn
-} from "../../common/styled_components";
+import { MoreOptionsInput } from "../../common/styled_components";
 
 import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
@@ -28,6 +20,12 @@ class AxisSegmentsMoreOptions extends Component {
   state = {
     layout: "horizontal",
     minWidth: "550px",
+    currentFractionItem: {
+      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
+      value: "Not normalized and mixed fractions",
+      label: "Not normalized and mixed fractions",
+      selected: true
+    },
     currentRenderingBaseItem: {
       id: RENDERING_BASE.LINE_MINIMUM_VALUE,
       value: "Line minimum value",
@@ -43,7 +41,8 @@ class AxisSegmentsMoreOptions extends Component {
   ];
 
   handleNumberlineCheckboxChange = (name, checked) => {
-    const { numberlineAxis, setNumberline } = this.props;
+    const { graphData, setNumberline } = this.props;
+    const { numberlineAxis } = graphData;
     setNumberline({ ...numberlineAxis, [name]: !checked });
   };
 
@@ -51,9 +50,9 @@ class AxisSegmentsMoreOptions extends Component {
     const {
       target: { name, value }
     } = event;
-
-    const { numberlineAxis, setNumberline } = this.props;
-    if (name !== "specificPoints" && !value) {
+    const { graphData, setNumberline } = this.props;
+    const { numberlineAxis } = graphData;
+    if (name !== "specificPoints" && name !== "ticksDistance" && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 });
     } else {
       setNumberline({ ...numberlineAxis, [name]: value });
@@ -64,13 +63,12 @@ class AxisSegmentsMoreOptions extends Component {
     const {
       target: { name, value }
     } = event;
-
-    const { canvasConfig, setCanvas } = this.props;
-
+    const { graphData, setCanvas } = this.props;
+    const { canvas } = graphData;
     if (!value) {
-      setCanvas({ ...canvasConfig, [name]: 0 });
+      setCanvas({ ...canvas, [name]: 0 });
     } else {
-      setCanvas({ ...canvasConfig, [name]: value });
+      setCanvas({ ...canvas, [name]: value });
     }
   };
 
@@ -78,25 +76,25 @@ class AxisSegmentsMoreOptions extends Component {
     const {
       target: { name, value }
     } = event;
+    const { graphData, setOptions } = this.props;
+    const { ui_style } = graphData;
 
-    const { options, setOptions } = this.props;
     if (!value) {
-      setOptions({ ...options, [name]: 0 });
+      setOptions({ ...ui_style, [name]: 0 });
     } else {
-      setOptions({ ...options, [name]: parseInt(value, 10) });
+      setOptions({ ...ui_style, [name]: parseInt(value, 10) });
     }
   };
 
   getFontSizeItem = () => {
-    const { fontSizeList, numberlineAxis } = this.props;
-    const selectedItem = fontSizeList.find(item => item.value === parseInt(numberlineAxis.fontSize, 10));
-
-    return selectedItem;
+    const { fontSizeList, graphData } = this.props;
+    const { numberlineAxis } = graphData;
+    return fontSizeList.find(item => item.value === parseInt(numberlineAxis.fontSize, 10));
   };
 
   changeFontSize = event => {
-    const { setNumberline, numberlineAxis } = this.props;
-
+    const { setNumberline, graphData } = this.props;
+    const { numberlineAxis } = graphData;
     setNumberline({ ...numberlineAxis, fontSize: event });
   };
 
@@ -119,8 +117,25 @@ class AxisSegmentsMoreOptions extends Component {
     this.setState({ [name]: value });
   };
 
+  changeFractionsFormat = e => {
+    const { setNumberline, graphData, fractionsFormatList } = this.props;
+    const { numberlineAxis } = graphData;
+    const findItem = fractionsFormatList.find(fractionItem => fractionItem.value.toLowerCase() === e.toLowerCase());
+
+    if (findItem) {
+      findItem.selected = true;
+
+      setNumberline({ ...numberlineAxis, fractionsFormat: findItem.id });
+
+      this.setState(() => ({
+        currentFractionItem: findItem
+      }));
+    }
+  };
+
   changeRenderingBase = e => {
-    const { setNumberline, numberlineAxis, renderingBaseList } = this.props;
+    const { setNumberline, graphData, renderingBaseList } = this.props;
+    const { numberlineAxis } = graphData;
     const findItem = renderingBaseList.find(renderingItem => renderingItem.value.toLowerCase() === e.toLowerCase());
 
     if (findItem) {
@@ -140,19 +155,18 @@ class AxisSegmentsMoreOptions extends Component {
       orientationList,
       fontSizeList,
       renderingBaseList,
-      canvasConfig,
-      options,
-      numberlineAxis,
+      fractionsFormatList,
       fillSections,
       cleanSections,
       setValidation,
       graphData,
-      toolbar,
       setControls,
       advancedAreOpen
     } = this.props;
 
-    const { layout, minWidth, currentRenderingBaseItem } = this.state;
+    const { layout, minWidth, currentRenderingBaseItem, currentFractionItem } = this.state;
+
+    const { canvas, ui_style, numberlineAxis, toolbar } = graphData;
 
     return (
       <Fragment>
@@ -204,7 +218,7 @@ class AxisSegmentsMoreOptions extends Component {
                   type="text"
                   name="layout_width"
                   onChange={this.handleOptionsInputChange}
-                  value={options.layout_width}
+                  value={ui_style.layout_width}
                 />
               </Col>
             )}
@@ -222,7 +236,7 @@ class AxisSegmentsMoreOptions extends Component {
                   type="text"
                   name="layout_height"
                   onChange={this.handleOptionsInputChange}
-                  value={options.layout_height}
+                  value={ui_style.layout_height}
                 />
               </Col>
             </Row>
@@ -235,7 +249,7 @@ class AxisSegmentsMoreOptions extends Component {
                 type="text"
                 name="margin"
                 placeholder="0"
-                value={canvasConfig.margin === 0 ? null : canvasConfig.margin}
+                value={canvas.margin === 0 ? null : canvas.margin}
                 onChange={this.handleCanvasInputChange}
               />
             </Col>
@@ -321,8 +335,9 @@ class AxisSegmentsMoreOptions extends Component {
             <Col md={12}>
               <Label>{t("component.graphing.ticksoptions.tickdistance")}</Label>
               <MoreOptionsInput
-                type="number"
+                type="text"
                 name="ticksDistance"
+                placeholder="1, 1/2, 1 1/2"
                 onChange={this.handleNumberlineInputChange}
                 value={numberlineAxis.ticksDistance}
               />
@@ -339,8 +354,8 @@ class AxisSegmentsMoreOptions extends Component {
           </Row>
           <Row gutter={60}>
             <Col md={12}>
-              <Row gutter={60}>
-                <Col md={24}>
+              <Row>
+                <Col md={24} marginBottom="0px">
                   <Checkbox
                     label={t("component.graphing.ticksoptions.showticks")}
                     name="showTicks"
@@ -348,7 +363,7 @@ class AxisSegmentsMoreOptions extends Component {
                     checked={numberlineAxis.showTicks}
                   />
                 </Col>
-                <Col md={24}>
+                <Col md={24} marginBottom="0px">
                   <Checkbox
                     label={t("component.graphing.labelsoptions.showmax")}
                     name="showMax"
@@ -364,21 +379,47 @@ class AxisSegmentsMoreOptions extends Component {
                     checked={numberlineAxis.showMin}
                   />
                 </Col>
+                <Col md={12} marginBottom="0px">
+                  <Checkbox
+                    label={t("component.graphing.ticksoptions.snaptoticks")}
+                    name="snapToTicks"
+                    onChange={() => this.handleNumberlineCheckboxChange("snapToTicks", numberlineAxis.snapToTicks)}
+                    checked={numberlineAxis.snapToTicks}
+                  />
+                </Col>
               </Row>
             </Col>
             <Col md={12}>
-              <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
-              <Select
-                style={{ width: "100%" }}
-                onChange={this.changeRenderingBase}
-                value={currentRenderingBaseItem.value}
-              >
-                {renderingBaseList.map(option => (
-                  <Select.Option data-cy={option.value} key={option.value}>
-                    {t(option.label)}
-                  </Select.Option>
-                ))}
-              </Select>
+              <Row>
+                <Col md={24}>
+                  <Label>{t("component.graphing.ticksoptions.fractionsformat")}</Label>
+                  <Select
+                    style={{ width: "100%" }}
+                    onChange={this.changeFractionsFormat}
+                    value={currentFractionItem.label}
+                  >
+                    {fractionsFormatList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+                <Col md={24}>
+                  <Label>{t("component.graphing.ticksoptions.renderingbase")}</Label>
+                  <Select
+                    style={{ width: "100%" }}
+                    onChange={this.changeRenderingBase}
+                    value={currentRenderingBaseItem.label}
+                  >
+                    {renderingBaseList.map(option => (
+                      <Select.Option data-cy={option.value} key={option.value}>
+                        {t(option.label)}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Col>
+              </Row>
             </Col>
           </Row>
         </QuestionSection>
@@ -443,26 +484,20 @@ AxisSegmentsMoreOptions.propTypes = {
   t: PropTypes.func.isRequired,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
-  numberlineAxis: PropTypes.object.isRequired,
-  canvasConfig: PropTypes.object.isRequired,
-  options: PropTypes.object.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,
-  orientationList: PropTypes.array,
-  fontSizeList: PropTypes.array,
-  renderingBaseList: PropTypes.array,
+  orientationList: PropTypes.array.isRequired,
+  fontSizeList: PropTypes.array.isRequired,
+  renderingBaseList: PropTypes.array.isRequired,
+  fractionsFormatList: PropTypes.array.isRequired,
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setControls: PropTypes.func.isRequired,
-  toolbar: PropTypes.object.isRequired,
   advancedAreOpen: PropTypes.bool
 };
 
 AxisSegmentsMoreOptions.defaultProps = {
-  orientationList: [],
-  fontSizeList: [],
-  renderingBaseList: [],
   advancedAreOpen: false
 };
 

@@ -300,7 +300,7 @@ class GraphDisplay extends Component {
         yMax: parseFloat(canvas.y_max),
         numberline: true,
         margin: parseFloat(canvas.margin),
-        responsesAllowed: parseInt(canvas.responsesAllowed, 10),
+        responsesAllowed: parseInt(canvas.responsesAllowed, 10) || 1,
         title: canvas.title
       },
       numberlineAxis: {
@@ -310,12 +310,13 @@ class GraphDisplay extends Component {
         snapToTicks: numberlineAxis && numberlineAxis.snapToTicks,
         showMin: numberlineAxis && numberlineAxis.showMin,
         showMax: numberlineAxis && numberlineAxis.showMax,
-        ticksDistance: numberlineAxis && parseFloat(numberlineAxis.ticksDistance),
+        ticksDistance: numberlineAxis && numberlineAxis.ticksDistance,
         fontSize: numberlineAxis && parseInt(numberlineAxis.fontSize, 10),
         stackResponses: numberlineAxis && numberlineAxis.stackResponses,
         stackResponsesSpacing: numberlineAxis && parseInt(numberlineAxis.stackResponsesSpacing, 10),
         renderingBase: numberlineAxis && numberlineAxis.renderingBase,
         specificPoints: numberlineAxis && numberlineAxis.specificPoints,
+        fractionsFormat: numberlineAxis && numberlineAxis.fractionsFormat,
         minorTicks: numberlineAxis && parseFloat(numberlineAxis.minorTicks),
         showLabels: numberlineAxis && numberlineAxis.showLabels,
         labelShowMax: numberlineAxis && numberlineAxis.labelShowMax,

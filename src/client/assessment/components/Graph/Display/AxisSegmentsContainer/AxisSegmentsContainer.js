@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { Rnd } from "react-rnd";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphPoint as IconPoint,
@@ -243,10 +242,11 @@ class AxisSegmentsContainer extends PureComponent {
       this._graph.updateStackSettings(
         numberlineAxis.stackResponses,
         numberlineAxis.stackResponsesSpacing,
-        canvas.responsesAllowed
+        canvas.responsesAllowed,
+        layout.width
       );
 
-      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
+      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
 
       this._graph.makeNumberlineAxis(
         canvas,
@@ -263,6 +263,8 @@ class AxisSegmentsContainer extends PureComponent {
       this._graph.setPointParameters({
         snapSizeX: numberlineAxis.ticksDistance
       });
+
+      this._graph.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
 
       this.setElementsToGraph();
     }
@@ -297,7 +299,7 @@ class AxisSegmentsContainer extends PureComponent {
     const { selectedTool } = this.state;
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
       this.setDefaultToolState();
-      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
     }
     if (this._graph) {
       if (
@@ -343,16 +345,12 @@ class AxisSegmentsContainer extends PureComponent {
         this._graph.updateStackSettings(
           numberlineAxis.stackResponses,
           numberlineAxis.stackResponsesSpacing,
-          canvas.responsesAllowed
+          canvas.responsesAllowed,
+          layout.width
         );
-        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT, graphType, canvas.responsesAllowed);
-      }
-
-      if (
-        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
-        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
-      ) {
-        this._graph.updateGraphSettings(numberlineAxis);
+        this._graph.segmentsReset();
+        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
+        this.updateValues();
       }
 
       if (
@@ -449,10 +447,13 @@ class AxisSegmentsContainer extends PureComponent {
         numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks ||
         numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase ||
         numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints ||
+        numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat ||
         numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
         numberlineAxis.showLabels !== prevProps.numberlineAxis.showLabels ||
         numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
-        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
+        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin ||
+        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
+        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphParameters(
           canvas,
@@ -473,11 +474,11 @@ class AxisSegmentsContainer extends PureComponent {
         );
       }
 
-      this.setElementsToGraph(prevProps);
+      this.setElementsToGraph();
     }
   }
 
-  onSelectTool = ({ name, index, groupIndex }, graphType, responsesAllowed) => {
+  onSelectTool = ({ name, index, groupIndex }, graphType) => {
     if (name === "undo") {
       this.onUndo();
       return;
@@ -488,7 +489,7 @@ class AxisSegmentsContainer extends PureComponent {
     }
 
     this.setState({ selectedTool: { name, index, groupIndex } });
-    this._graph.setTool(name, graphType, responsesAllowed);
+    this._graph.setTool(name, graphType);
   };
 
   onUndo = () => {
@@ -536,7 +537,7 @@ class AxisSegmentsContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.updateValues());
   };
 
-  setElementsToGraph = (prevProps = {}) => {
+  setElementsToGraph = () => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
 
     if (checkAnswer || showAnswer) {
@@ -561,7 +562,7 @@ class AxisSegmentsContainer extends PureComponent {
 
       this._graph.segmentsReset();
       this._graph.loadSegments(coloredElements);
-    } else if (!isEqual(prevProps.elements, this._graph.getSegments())) {
+    } else if (!isEqual(elements, this._graph.getSegments())) {
       this._graph.segmentsReset();
       this._graph.resetAnswers();
       this._graph.loadSegments(elements);

@@ -22,8 +22,8 @@ function createMinorTicks(minorCount, majorTicksSorted) {
 }
 
 const onHandler = (board, xMin, xMax, settings, lineSettings) => {
-  const [x, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const calcY = lineSettings.yMax - (y / 100) * lineSettings.position;
+  const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
+  const calcY = +(lineSettings.yMax - (y / 100) * lineSettings.position).toFixed(4);
   const axisPadding = ((-xMin + xMax) / 100) * 3.5;
 
   const newAxis = board.$board.create(
@@ -39,7 +39,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       lastArrow: settings.rightArrow === true ? { size: 10 } : false,
       strokeColor: "#d6d6d6",
       highlightStrokeColor: "#d6d6d6",
-      drawZero: false
+      drawZero: false,
+      ticks: { visible: false }
     }
   );
 
@@ -53,7 +54,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     ticksDistance = parseFloat(ticksDistance);
   }
 
-  newAxis.removeAllTicks();
+  // newAxis.removeAllTicks();
   /**
    * Major ticks
    * */
@@ -113,7 +114,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     board.$board.create("ticks", [newAxis, minors], {
       strokeColor: "#d6d6d6",
       highlightStrokeColor: "#d6d6d6",
-      majorHeight: 10
+      majorHeight: 10,
+      visible: settings.showTicks
     });
   }
   /**
@@ -181,13 +183,9 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   }
 
   board.$board.create("ticks", [newAxis, ticks], {
-    straightFirst: false,
-    straightLast: false,
-    firstArrow: settings.leftArrow === true ? { size: 10 } : false,
-    lastArrow: settings.rightArrow === true ? { size: 10 } : false,
     strokeColor: "#d6d6d6",
     highlightStrokeColor: "#d6d6d6",
-    visible: true,
+    visible: settings.showTicks,
     anchor: "middle",
     insertTicks: false,
     drawZero: false,

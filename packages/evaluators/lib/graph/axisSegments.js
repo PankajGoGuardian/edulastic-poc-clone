@@ -32,7 +32,10 @@ var shapesAreEqual = function shapesAreEqual(shape1, shape2) {
     case _constants.AxisSegmentsShapeTypes.SEGMENT_LEFT_POINT_HOLLOW:
     case _constants.AxisSegmentsShapeTypes.SEGMENT_RIGHT_POINT_HOLLOW:
     case _constants.AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_HOLLOW:
-      return shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2;
+      return (
+        (shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2) ||
+        (shape1.point1 === shape2.point2 && shape1.point2 === shape2.point1)
+      );
 
     default:
       return false;

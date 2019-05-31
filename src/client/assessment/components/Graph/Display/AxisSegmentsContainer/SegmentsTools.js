@@ -62,12 +62,12 @@ const SegmentsTools = ({
 
   const getToolClickHandler = uiTool => {
     if (serviceTools.includes(uiTool.name)) {
-      return () => onSelect(uiTool, graphType, responsesAllowed);
+      return () => onSelect(uiTool, graphType);
     }
     if (elementsNumber >= responsesAllowed) {
       return null;
     }
-    return () => onSelect(uiTool, graphType, responsesAllowed);
+    return () => onSelect(uiTool, graphType);
   };
 
   const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);

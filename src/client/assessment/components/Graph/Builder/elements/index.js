@@ -9,7 +9,6 @@ export { default as Logarithm } from "./Logarithm";
 export { default as Mark } from "./Mark";
 export { default as Numberline } from "./Numberline";
 export { default as NumberlineSegment } from "./NumberlineSegment";
-export { default as NumberlineTrash } from "./NumberlineTrash";
 export { default as NumberlinePoint } from "./NumberlinePoint";
 export { default as NumberlineVector } from "./NumberlineVector";
 export { default as Point } from "./Point";

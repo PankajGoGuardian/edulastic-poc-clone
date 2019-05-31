@@ -14,7 +14,6 @@ const AxisLabelsOptions = ({
   fillSections,
   cleanSections,
   setValidation,
-  setExtras,
   advancedAreOpen
 }) => {
   const fontSizeList = [
@@ -90,17 +89,16 @@ const AxisLabelsOptions = ({
     <Fragment>
       <AxisLabelsMoreOptions
         t={t}
-        setExtras={setExtras}
         setCanvas={setCanvas}
-        graphData={graphData}
         setOptions={setOptions}
-        fontSizeList={fontSizeList}
         fillSections={fillSections}
         cleanSections={cleanSections}
         setNumberline={setNumberline}
+        setValidation={setValidation}
+        fontSizeList={fontSizeList}
         renderingBaseList={renderingBaseList}
         fractionsFormatList={fractionsFormatList}
-        setValidation={setValidation}
+        graphData={graphData}
         advancedAreOpen={advancedAreOpen}
       />
     </Fragment>
@@ -116,7 +114,6 @@ AxisLabelsOptions.propTypes = {
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setValidation: PropTypes.func.isRequired,
-  setExtras: PropTypes.func.isRequired,
   advancedAreOpen: PropTypes.bool
 };
 

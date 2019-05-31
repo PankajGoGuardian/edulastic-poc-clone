@@ -16,7 +16,6 @@ import {
   NumberlinePoint,
   NumberlineVector,
   NumberlineSegment,
-  NumberlineTrash,
   Title,
   Tangent,
   Secant,
@@ -83,6 +82,8 @@ class Board {
     this.numberlineTitle = null;
 
     this.marksContainer = null;
+
+    this.numberlineSnapToTicks = true;
     /**
      * Board settings
      */
@@ -96,7 +97,7 @@ class Board {
 
     this.stackResponsesSpacing = 30;
 
-    this.responsesAllowed = 2;
+    this.responsesAllowed = null;
 
     this.events = _events();
 
@@ -158,7 +159,7 @@ class Board {
    * Constants/Tools
    * @param {string} tool
    */
-  setTool(tool, graphType, responsesAllowed) {
+  setTool(tool, graphType) {
     if (graphType === "axisLabels") {
       return;
     }
@@ -171,7 +172,7 @@ class Board {
     this.currentTool = tool;
     switch (tool) {
       case CONSTANT.TOOLS.POINT:
-        this.setCreatingHandler(Point.onHandler, responsesAllowed);
+        this.setCreatingHandler(Point.onHandler);
         return;
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
@@ -222,28 +223,19 @@ class Board {
         this.setCreatingHandler(Area.onHandler());
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
-        this.setCreatingHandler(
-          NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing, tool),
-          responsesAllowed
-        );
+        this.setCreatingHandler(NumberlinePoint.onHandler);
         return;
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-        this.setCreatingHandler(
-          NumberlineSegment.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
-          responsesAllowed
-        );
+        this.setCreatingHandler(NumberlineSegment.onHandler);
         return;
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-        this.setCreatingHandler(
-          NumberlineVector.onHandler(tool, this.stackResponses, this.stackResponsesSpacing),
-          responsesAllowed
-        );
+        this.setCreatingHandler(NumberlineVector.onHandler);
         return;
       case CONSTANT.TOOLS.TRASH:
         this.setCreatingHandler();
@@ -293,30 +285,26 @@ class Board {
    * Add event 'Up'
    * @param {Function} handler
    */
-  setCreatingHandler(handler, responsesAllowed = null) {
+  setCreatingHandler(handler) {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
       if (this.dragged) {
         this.dragged = false;
         return;
       }
+
       if (this.currentTool === CONSTANT.TOOLS.TRASH) {
         if (this.removeObjectsUnderMouse(event)) {
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE);
         }
-      } else {
-        let newElement;
+        return;
+      }
 
-        if (responsesAllowed !== null) {
-          const elementsLength = this.elements.filter(
-            element => element.elType === "segment" || element.elType === "point"
-          ).length;
-          if (elementsLength < responsesAllowed) {
-            newElement = handler(this, event);
-          }
-        } else if (!this.isAnyElementsHasFocus(true)) {
-          newElement = handler(this, event);
-        }
+      if (this.responsesAllowed !== null && this.elements.length >= this.responsesAllowed) {
+        return;
+      }
 
+      if (!this.isAnyElementsHasFocus(true)) {
+        const newElement = handler(this, event);
         if (newElement) {
           this.elements.push(newElement);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
@@ -325,22 +313,14 @@ class Board {
     });
   }
 
-  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed) {
-    if (
-      this.stackResponses !== stackResponses ||
-      this.responsesAllowed !== responsesAllowed ||
-      this.stackResponsesSpacing !== stackResponsesSpacing
-    ) {
-      NumberlineTrash.cleanBoard(this);
-    }
-
+  updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed, width) {
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
       const newHeight = 150 + responsesAllowed * stackResponsesSpacing;
-      this.resizeContainer(this.$board.canvasWidth, newHeight);
+      this.resizeContainer(width, newHeight);
     }
 
     if (stackResponsesSpacing < 1 || !stackResponses) {
-      this.resizeContainer(this.$board.canvasWidth, 150);
+      this.resizeContainer(width, 150);
     }
 
     this.stackResponses = stackResponses;
@@ -374,6 +354,8 @@ class Board {
 
   // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
   updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
+    this.setNumberlineSnapToTicks(settings.snapToTicks);
+
     graphParameters.margin = Math.min(graphParameters.margin, layout.width);
     const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
     this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
@@ -392,24 +374,11 @@ class Board {
       setValue();
     }
 
-    if (graphType === "axisSegments") {
-      const points = this.elements.filter(element => element.elType === "point");
-      this.elements = this.elements.filter(element => element.elType !== "point");
-
-      points.forEach(p => this.removeObject(p));
-      points.forEach(p => {
-        const newPoint = NumberlinePoint.onHandler(this.stackResponses, this.stackResponsesSpacing)(this, p.X());
-        this.elements.push(newPoint);
-      });
-    }
-
     this.$board.fullUpdate();
   }
 
-  // Update numberline axis settings (such as ticks visibility, font size and etc.)
-  updateGraphSettings(settings) {
-    updateNumberline(this.numberlineAxis, settings);
-    this.$board.fullUpdate();
+  setNumberlineSnapToTicks(snapToTicks) {
+    this.numberlineSnapToTicks = !!snapToTicks;
   }
 
   // Render marks
@@ -417,16 +386,7 @@ class Board {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(
-        Mark.onHandler(
-          this,
-          markCoord,
-          mark,
-          graphParameters,
-          settings.snapToTicks,
-          setValue,
-          lineSettings,
-          containerSettings
-        )
+        Mark.onHandler(this, markCoord, mark, graphParameters, setValue, lineSettings, containerSettings)
       );
     });
 
@@ -473,7 +433,8 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#removeObject
    */
   segmentsReset() {
-    NumberlineTrash.cleanBoard(this);
+    this.elements.map(this.removeObject.bind(this));
+    this.elements = [];
   }
 
   cleanToolTempPoints() {
@@ -791,7 +752,6 @@ class Board {
             { ...markCoord, fixed: true },
             mark,
             graphParameters,
-            settings.snapToTicks,
             setValue,
             lineSettings,
             containerSettings
@@ -881,78 +841,34 @@ class Board {
       ...elements.map(element => {
         switch (element.type) {
           case CONSTANT.TOOLS.SEGMENTS_POINT:
-            return NumberlinePoint.loadPoint(this, element, this.stackResponses);
+            return NumberlinePoint.loadPoint(this, element);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-            return NumberlineSegment.loadSegment(
-              this,
-              element,
-              true,
-              true,
-              CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED,
-              this.stackResponses
-            );
+            return NumberlineSegment.loadSegment(this, element, true, true, CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED);
           case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(
-              this,
-              element,
-              false,
-              false,
-              CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW,
-              this.stackResponses
-            );
+            return NumberlineSegment.loadSegment(this, element, false, false, CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW);
           case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(
-              this,
-              element,
-              false,
-              true,
-              CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW,
-              this.stackResponses
-            );
+            return NumberlineSegment.loadSegment(this, element, false, true, CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW);
           case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-            return NumberlineSegment.loadSegment(
-              this,
-              element,
-              true,
-              false,
-              CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW,
-              this.stackResponses
-            );
+            return NumberlineSegment.loadSegment(this, element, true, false, CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW);
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-            return NumberlineVector.loadVector(
-              this,
-              element,
-              true,
-              false,
-              CONSTANT.TOOLS.RAY_LEFT_DIRECTION,
-              this.stackResponses
-            );
+            return NumberlineVector.loadVector(this, element, true, false, CONSTANT.TOOLS.RAY_LEFT_DIRECTION);
           case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
               element,
               false,
               false,
-              CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW,
-              this.stackResponses
+              CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW
             );
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-            return NumberlineVector.loadVector(
-              this,
-              element,
-              true,
-              true,
-              CONSTANT.TOOLS.RAY_RIGHT_DIRECTION,
-              this.stackResponses
-            );
+            return NumberlineVector.loadVector(this, element, true, true, CONSTANT.TOOLS.RAY_RIGHT_DIRECTION);
           case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
             return NumberlineVector.loadVector(
               this,
               element,
               false,
               true,
-              CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW,
-              this.stackResponses
+              CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW
             );
           default:
             throw new Error("Unknown element:", element);

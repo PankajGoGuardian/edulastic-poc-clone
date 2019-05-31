@@ -18,7 +18,10 @@ const shapesAreEqual = (shape1, shape2) => {
     case AxisSegmentsShapeTypes.SEGMENT_LEFT_POINT_HOLLOW:
     case AxisSegmentsShapeTypes.SEGMENT_RIGHT_POINT_HOLLOW:
     case AxisSegmentsShapeTypes.SEGMENT_BOTH_POINT_HOLLOW:
-      return shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2;
+      return (
+        (shape1.point1 === shape2.point1 && shape1.point2 === shape2.point2) ||
+        (shape1.point1 === shape2.point2 && shape1.point2 === shape2.point1)
+      );
     default:
       return false;
   }

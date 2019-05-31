@@ -1588,7 +1588,7 @@ export const getCards = onSelectQuestionType => {
           xAxisLabel: "X",
           yAxisLabel: "Y",
           title_position: 55,
-          line_position: 33,
+          line_position: 34,
           point_box_position: 60
         },
         background_image: {

@@ -2,31 +2,26 @@ import JXG from "jsxgraph";
 import { Quill } from "react-quill";
 import { calcMeasure, getClosestTick } from "../utils";
 
-const snapMark = (mark, graphParameters, snapToTicks, setValue, lineSettings, containerSettings, board) => {
+const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
     const setCoords = JXG.COORDS_BY_USER;
     let x;
     let y;
 
-    const axis = board.numberlineAxis;
-    const ticks = axis.ticks
-      .map(t => t.fixedTicks !== null && t.fixedTicks)
-      .reduce((previousValue, currentValue) => previousValue.concat(currentValue))
-      .sort();
     const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
     const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
     const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
     if (mark.Y() >= containerY && mark.X() < graphParameters.xMin) {
       y = lineY;
-      x = getClosestTick(mark.X(), ticks);
+      x = getClosestTick(mark.X(), board.numberlineAxis);
     } else if (mark.Y() >= containerY && mark.X() > graphParameters.xMax) {
       y = lineY;
-      x = getClosestTick(mark.X(), ticks);
+      x = getClosestTick(mark.X(), board.numberlineAxis);
     } else if (mark.Y() >= containerY && mark.X() < graphParameters.xMax && mark.X() > graphParameters.xMin) {
       y = lineY;
-      if (snapToTicks) {
-        x = getClosestTick(mark.X(), ticks);
+      if (board.numberlineSnapToTicks) {
+        x = getClosestTick(mark.X(), board.numberlineAxis);
       } else {
         x = mark.X();
       }
@@ -50,7 +45,7 @@ const snapMark = (mark, graphParameters, snapToTicks, setValue, lineSettings, co
   });
 };
 
-const onHandler = (board, coords, data, graphParameters, snapToTicks, setValue, lineSettings, containerSettings) => {
+const onHandler = (board, coords, data, graphParameters, setValue, lineSettings, containerSettings) => {
   const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
   const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
@@ -86,7 +81,7 @@ const onHandler = (board, coords, data, graphParameters, snapToTicks, setValue, 
   mark.labelHTML = data.text;
 
   if (!coords || !coords.fixed) {
-    snapMark(mark, graphParameters, snapToTicks, setValue, lineSettings, containerSettings, board);
+    snapMark(mark, graphParameters, setValue, lineSettings, containerSettings, board);
   }
 
   let cssClass = `mark ${coords && coords.className ? coords.className : ""}`;

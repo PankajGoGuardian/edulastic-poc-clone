@@ -137,6 +137,8 @@ class AxisLabelsContainer extends PureComponent {
         }
       );
 
+      this._graph.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
+
       this.setElementsToGraph();
 
       setElementsStash(this._graph.getMarks(), this.getStashId());
@@ -154,8 +156,7 @@ class AxisLabelsContainer extends PureComponent {
       graphType,
       gridParams,
       list,
-      setValue,
-      setElementsStash
+      setValue
     } = this.props;
 
     if (this._graph) {
@@ -192,13 +193,6 @@ class AxisLabelsContainer extends PureComponent {
           yMax: canvas.yMax,
           yMin: canvas.yMin
         });
-      }
-
-      if (
-        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
-        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
-      ) {
-        this._graph.updateGraphSettings(numberlineAxis);
       }
 
       if (
@@ -302,7 +296,9 @@ class AxisLabelsContainer extends PureComponent {
         numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat ||
         numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
         numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
-        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin
+        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin ||
+        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
+        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
       ) {
         this._graph.updateGraphParameters(
           canvas,

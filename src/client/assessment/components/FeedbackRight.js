@@ -165,7 +165,7 @@ class FeedbackRight extends Component {
     }
 
     return (
-      <StyledCardTwo bordered={isStudentName} disabled={this.props.disabled} title={title}>
+      <StyledCardTwo bordered={isStudentName} disabled={this.props.disabled || !activity} title={title}>
         <StyledDivSec>
           <ScoreInputWrapper>
             <ScoreInput

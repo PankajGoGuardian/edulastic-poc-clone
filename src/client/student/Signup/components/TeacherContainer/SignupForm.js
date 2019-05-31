@@ -144,7 +144,7 @@ class Signup extends React.Component {
                               rules: [
                                 {
                                   type: "email",
-                                  message: t("common.validation.validemail")
+                                  message: t("component.signup.teacher.validemail")
                                 },
                                 {
                                   required: true,

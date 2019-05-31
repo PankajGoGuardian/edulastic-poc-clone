@@ -1,7 +1,7 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { message } from "antd";
-import { get, findIndex } from "lodash";
+import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
@@ -197,6 +197,17 @@ const updateStudent = (state, { payload }) => {
   }
 };
 
+const removeStudentsSuccess = (state, { payload: studentIds }) => {
+  // creating a hashmap of studentIds to reduce the loop complexity from n^2 to 2n
+  const studentIdHash = keyBy(studentIds);
+  // here we are mutuating the enrollment status to 0 for all the deleted students so that table is refreshed
+  state.studentsList.forEach((student, index) => {
+    if (studentIdHash[student._id]) {
+      state.studentsList[index].enrollmentStatus = "0";
+    }
+  });
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -215,7 +226,8 @@ export default createReducer(initialState, {
   [ADD_STUDENT_SUCCESS]: addStudentSuccess,
   [ADD_STUDENT_FAILED]: addStudentFailed,
   [SELECT_STUDENTS]: selectStudent,
-  [UPDATE_STUDENT_SUCCESS]: updateStudent
+  [UPDATE_STUDENT_SUCCESS]: updateStudent,
+  [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess
 });
 
 // sagas boi
@@ -324,7 +336,7 @@ function* removeStudentsRequest({ payload }) {
     const result = yield call(enrollmentApi.removeStudents, payload);
     const { result: msg } = result.data;
     message.success(msg);
-    yield put(removeStudentsSuccessAction(result.data));
+    yield put(removeStudentsSuccessAction(payload.studentIds));
   } catch (error) {
     yield put(removeStudentsFaildedAction(error));
   }

@@ -16,6 +16,8 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
   };
 
   const empty = isEmpty(students);
+  // here only students without enrollmentStatus as "0" are shown
+  const filteredStudents = students.filter(student => student.enrollmentStatus !== "0");
 
   const columns = [
     {
@@ -67,7 +69,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
             columns={columns}
             bordered
             rowSelection={rowSelection}
-            dataSource={students}
+            dataSource={filteredStudents}
             rowKey={rowKey}
             pagination={size(students) > 10 ? students : false}
           />

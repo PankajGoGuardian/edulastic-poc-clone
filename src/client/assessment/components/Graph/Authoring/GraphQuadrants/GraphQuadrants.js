@@ -77,6 +77,7 @@ class GraphQuadrants extends Component {
           label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={true}
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
           <QuestionTextArea
@@ -91,6 +92,7 @@ class GraphQuadrants extends Component {
           label="Graph Parameters"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={true}
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.graphparameters")}</Subtitle>
@@ -172,7 +174,13 @@ class GraphQuadrants extends Component {
             </Row>
           </PaddingDiv>
         </QuestionSection>
-        <QuestionSection section="main" label="Tools" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="main"
+          label="Tools"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={true}
+        >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.tools")}</Subtitle>
             <GraphToolsParams

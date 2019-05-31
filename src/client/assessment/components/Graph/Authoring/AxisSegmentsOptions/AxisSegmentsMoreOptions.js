@@ -148,9 +148,12 @@ class AxisSegmentsMoreOptions extends Component {
       setValidation,
       graphData,
       toolbar,
-      setControls
+      setControls,
+      advancedAreOpen
     } = this.props;
+
     const { layout, minWidth, currentRenderingBaseItem } = this.state;
+
     return (
       <Fragment>
         <QuestionSection
@@ -159,11 +162,23 @@ class AxisSegmentsMoreOptions extends Component {
           label="Scoring"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
         >
-          <ScoreSettings scoringTypes={this.scoringTypes} setValidation={setValidation} graphData={graphData} />
+          <ScoreSettings
+            scoringTypes={this.scoringTypes}
+            setValidation={setValidation}
+            graphData={graphData}
+            advancedAreOpen={advancedAreOpen}
+          />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Layout" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Layout"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
 
           <Row gutter={60}>
@@ -284,11 +299,23 @@ class AxisSegmentsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Toolbar" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Toolbar"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <SegmentsToolsSettings onChange={setControls} toolbar={toolbar} />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Ticks" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Ticks"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.ticksoptionstitle")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -356,7 +383,13 @@ class AxisSegmentsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Labels" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Labels"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.labelstitle")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -397,20 +430,10 @@ class AxisSegmentsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection
-          section="advanced"
-          label={t("component.options.extras")}
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          marginLast={0}
-          padding="0px"
-          bgColor="none"
-        >
-          <Extras isSection>
-            <Extras.Distractors />
-            <Extras.Hints />
-          </Extras>
-        </QuestionSection>
+        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
       </Fragment>
     );
   }
@@ -432,13 +455,15 @@ AxisSegmentsMoreOptions.propTypes = {
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setControls: PropTypes.func.isRequired,
-  toolbar: PropTypes.object.isRequired
+  toolbar: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool
 };
 
 AxisSegmentsMoreOptions.defaultProps = {
   orientationList: [],
   fontSizeList: [],
-  renderingBaseList: []
+  renderingBaseList: [],
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

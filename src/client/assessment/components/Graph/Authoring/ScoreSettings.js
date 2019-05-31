@@ -15,19 +15,34 @@ const types = [
 
 class ScoreSettings extends Component {
   render() {
-    const { scoringTypes, showSelect } = this.props;
-    return <Scoring showSelect={showSelect} scoringTypes={scoringTypes} isSection />;
+    const { scoringTypes, showSelect, cleanSections, fillSections, advancedAreOpen } = this.props;
+    return (
+      <Scoring
+        showSelect={showSelect}
+        scoringTypes={scoringTypes}
+        cleanSections={cleanSections}
+        fillSections={fillSections}
+        advancedAreOpen={advancedAreOpen}
+        isSection
+      />
+    );
   }
 }
 
 ScoreSettings.propTypes = {
   scoringTypes: PropTypes.array,
-  showSelect: PropTypes.bool
+  showSelect: PropTypes.bool,
+  cleanSections: PropTypes.func,
+  fillSections: PropTypes.func,
+  advancedAreOpen: PropTypes.bool
 };
 
 ScoreSettings.defaultProps = {
   scoringTypes: types,
-  showSelect: true
+  showSelect: true,
+  cleanSections: () => {},
+  fillSections: () => {},
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

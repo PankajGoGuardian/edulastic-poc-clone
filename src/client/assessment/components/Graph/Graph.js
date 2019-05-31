@@ -111,7 +111,7 @@ class Graph extends Component {
   };
 
   getQuadrantsOptionsProps = () => {
-    const { item, fillSections, cleanSections } = this.props;
+    const { item, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     return {
       stemNumerationList: getStemNumerationList(),
@@ -124,12 +124,13 @@ class Graph extends Component {
       graphData: item,
       setAnnotation: this.handleAnnotationChange,
       fillSections,
-      cleanSections
+      cleanSections,
+      advancedAreOpen
     };
   };
 
   getAxisLabelsOptionsProps = () => {
-    const { item, fillSections, cleanSections } = this.props;
+    const { item, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     return {
       setOptions: this.handleOptionsChange,
@@ -138,12 +139,13 @@ class Graph extends Component {
       graphData: item,
       fillSections,
       cleanSections,
+      advancedAreOpen,
       setValidation: this.handleValidationChange
     };
   };
 
   getAxisSegmentsOptionsProps = () => {
-    const { item, fillSections, cleanSections } = this.props;
+    const { item, fillSections, cleanSections, advancedAreOpen } = this.props;
 
     return {
       setOptions: this.handleOptionsChange,
@@ -153,6 +155,7 @@ class Graph extends Component {
       graphData: item,
       fillSections,
       cleanSections,
+      advancedAreOpen,
       setValidation: this.handleValidationChange
     };
   };
@@ -263,6 +266,7 @@ class Graph extends Component {
       evaluation,
       fillSections,
       cleanSections,
+      advancedAreOpen,
       isSidebarCollapsed,
       ...restProps
     } = this.props;
@@ -282,6 +286,7 @@ class Graph extends Component {
                 canvas={item.canvas}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
+                advancedAreOpen={true}
                 setCanvas={this.handleCanvasChange}
               />
               <QuestionSection
@@ -290,7 +295,7 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 fillSections={fillSections}
                 deskHeight={ui_style.layout_height}
-                a
+                advancedAreOpen={true}
               >
                 <React.Fragment>
                   <CorrectAnswers
@@ -347,10 +352,11 @@ class Graph extends Component {
                 label="Annotations"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
+                advancedAreOpen={true}
               >
                 <Annotations editable />
               </QuestionSection>
-              <MoreOptionsComponent {...this.getMoreOptionsProps()} />
+              <MoreOptionsComponent advancedAreOpen={advancedAreOpen} {...this.getMoreOptionsProps()} />
             </ContentArea>
           </React.Fragment>
         )}
@@ -438,7 +444,8 @@ Graph.propTypes = {
   evaluation: PropTypes.any,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
-  isSidebarCollapsed: PropTypes.bool.isRequired
+  isSidebarCollapsed: PropTypes.bool.isRequired,
+  advancedAreOpen: PropTypes.bool
 };
 
 Graph.defaultProps = {
@@ -447,7 +454,8 @@ Graph.defaultProps = {
   testItem: false,
   userAnswer: [],
   changePreviewTab: () => {},
-  evaluation: null
+  evaluation: null,
+  advancedAreOpen: false
 };
 
 const enhance = compose(

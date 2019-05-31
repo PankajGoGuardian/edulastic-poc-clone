@@ -6,7 +6,6 @@ import AxisSegmentsMoreOptions from "./AxisSegmentsMoreOptions";
 import { RENDERING_BASE } from "../../Builder/config/constants";
 
 const AxisSegmentsOptions = ({
-  t,
   setCanvas,
   setOptions,
   setNumberline,
@@ -16,7 +15,7 @@ const AxisSegmentsOptions = ({
   setValidation,
   setControls,
   setExtras,
-  toolbar
+  advancedAreOpen
 }) => {
   const getFontSizeList = () => [
     {
@@ -93,20 +92,27 @@ const AxisSegmentsOptions = ({
         renderingBaseList={getRenderingBaseList()}
         setValidation={setValidation}
         graphData={graphData}
+        advancedAreOpen={advancedAreOpen}
       />
     </Fragment>
   );
 };
 
 AxisSegmentsOptions.propTypes = {
-  t: PropTypes.func.isRequired,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  setValidation: PropTypes.func.isRequired
+  setValidation: PropTypes.func.isRequired,
+  setExtras: PropTypes.func.isRequired,
+  setControls: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool
+};
+
+AxisSegmentsOptions.defaultProps = {
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

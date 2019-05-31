@@ -22,9 +22,9 @@ class QuestionSection extends Component {
   }
 
   render() {
-    const { children, marginLast, padding, bgColor } = this.props;
+    const { children, marginLast, padding, bgColor, advancedAreOpen } = this.props;
     return (
-      <Section marginLast={marginLast} bgColor={bgColor} padding={padding}>
+      <Section marginLast={marginLast} bgColor={bgColor} padding={padding} advancedAreOpen={advancedAreOpen}>
         {children}
       </Section>
     );
@@ -38,7 +38,8 @@ QuestionSection.propTypes = {
   padding: PropTypes.string,
   bgColor: PropTypes.string,
   cleanSections: PropTypes.func.isRequired,
-  fillSections: PropTypes.func.isRequired
+  fillSections: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool.isRequired
 };
 
 const Section = styled.section`
@@ -46,6 +47,7 @@ const Section = styled.section`
   margin-bottom: 30px;
   border-radius: 4px;
   background-color: ${props => (props.bgColor ? props.bgColor : `#f8f8f8`)};
+  display: ${props => (props.advancedAreOpen ? "block" : `none`)};
 
   &:last-of-type {
     margin-bottom: ${props => (props.marginLast ? `${props.marginLast}px` : "30px")};

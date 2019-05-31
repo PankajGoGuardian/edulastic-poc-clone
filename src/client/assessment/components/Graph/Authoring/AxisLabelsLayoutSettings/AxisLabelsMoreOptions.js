@@ -156,7 +156,8 @@ class AxisLabelsMoreOptions extends Component {
       fillSections,
       cleanSections,
       graphData,
-      setValidation
+      setValidation,
+      advancedAreOpen
     } = this.props;
 
     const { canvas, ui_style, numberlineAxis } = graphData;
@@ -169,11 +170,23 @@ class AxisLabelsMoreOptions extends Component {
           label="Scoring"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
         >
-          <ScoreSettings scoringTypes={this.scoringTypes} setValidation={setValidation} graphData={graphData} />
+          <ScoreSettings
+            scoringTypes={this.scoringTypes}
+            setValidation={setValidation}
+            graphData={graphData}
+            advancedAreOpen={advancedAreOpen}
+          />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Layout" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Layout"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
 
           <Row gutter={60}>
@@ -300,7 +313,13 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Ticks" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Ticks"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.ticksoptionstitle")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -395,7 +414,13 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Labels" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Labels"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.labelstitle")}</Subtitle>
 
           <Row gutter={60}>
@@ -436,20 +461,10 @@ class AxisLabelsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection
-          section="advanced"
-          label={t("component.options.extras")}
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          marginLast={0}
-          padding="0px"
-          bgColor="none"
-        >
-          <Extras isSection>
-            <Extras.Distractors />
-            <Extras.Hints />
-          </Extras>
-        </QuestionSection>
+        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
       </Fragment>
     );
   }
@@ -466,7 +481,12 @@ AxisLabelsMoreOptions.propTypes = {
   setOptions: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
-  setValidation: PropTypes.func.isRequired
+  setValidation: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool
+};
+
+AxisLabelsMoreOptions.defaultProps = {
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

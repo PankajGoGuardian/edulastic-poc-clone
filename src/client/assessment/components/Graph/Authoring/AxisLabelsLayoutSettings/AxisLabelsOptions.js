@@ -14,7 +14,8 @@ const AxisLabelsOptions = ({
   fillSections,
   cleanSections,
   setValidation,
-  setExtras
+  setExtras,
+  advancedAreOpen
 }) => {
   const fontSizeList = [
     {
@@ -100,6 +101,7 @@ const AxisLabelsOptions = ({
         renderingBaseList={renderingBaseList}
         fractionsFormatList={fractionsFormatList}
         setValidation={setValidation}
+        advancedAreOpen={advancedAreOpen}
       />
     </Fragment>
   );
@@ -113,7 +115,13 @@ AxisLabelsOptions.propTypes = {
   setOptions: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
-  setValidation: PropTypes.func.isRequired
+  setValidation: PropTypes.func.isRequired,
+  setExtras: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool
+};
+
+AxisLabelsOptions.defaultProps = {
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

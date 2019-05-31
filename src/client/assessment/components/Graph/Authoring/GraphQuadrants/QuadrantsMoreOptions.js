@@ -64,7 +64,8 @@ class QuadrantsMoreOptions extends Component {
       cleanSections,
       setControls,
       setAnnotation,
-      setValidation
+      setValidation,
+      advancedAreOpen
     } = this.props;
 
     const { ui_style, background_image, controlbar, annotation } = graphData;
@@ -109,11 +110,23 @@ class QuadrantsMoreOptions extends Component {
           label="Scoring"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
         >
-          <ScoreSettings showSelect={false} setValidation={setValidation} graphData={graphData} />
+          <ScoreSettings
+            showSelect={false}
+            setValidation={setValidation}
+            graphData={graphData}
+            advancedAreOpen={advancedAreOpen}
+          />
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Layout" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Layout"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -216,7 +229,13 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Grid" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Grid"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <Subtitle>{t("component.graphing.grid_options.grid")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -420,7 +439,13 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="advanced" label="Controls" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="advanced"
+          label="Controls"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
+        >
           <ControlsSettings onChange={setControls} controlbar={controlbar} />
         </QuestionSection>
 
@@ -429,6 +454,7 @@ class QuadrantsMoreOptions extends Component {
           label="Annotation"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
         >
           <AnnotationSettings annotation={annotation} setAnnotation={setAnnotation} />
         </QuestionSection>
@@ -438,6 +464,7 @@ class QuadrantsMoreOptions extends Component {
           label="Background Image"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={advancedAreOpen}
         >
           <Subtitle>{t("component.graphing.background_options.background_image")}</Subtitle>
           <Row gutter={60}>
@@ -526,6 +553,7 @@ class QuadrantsMoreOptions extends Component {
           cleanSections={cleanSections}
           fillSections={fillSections}
           deskHeight={graphData.ui_style.layout_height}
+          advancedAreOpen={advancedAreOpen}
         >
           <Subtitle>{t("component.graphing.background_shapes")}</Subtitle>
           <Row>
@@ -541,20 +569,10 @@ class QuadrantsMoreOptions extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection
-          section="advanced"
-          label={t("component.options.extras")}
-          cleanSections={cleanSections}
-          fillSections={fillSections}
-          marginLast="0"
-          padding="0px"
-          bgColor="none"
-        >
-          <Extras isSection>
-            <Extras.Distractors />
-            <Extras.Hints />
-          </Extras>
-        </QuestionSection>
+        <Extras isSection cleanSections={cleanSections} fillSections={fillSections} advancedAreOpen={advancedAreOpen}>
+          <Extras.Distractors />
+          <Extras.Hints />
+        </Extras>
       </Fragment>
     );
   }
@@ -572,12 +590,14 @@ QuadrantsMoreOptions.propTypes = {
   setBgShapes: PropTypes.func.isRequired,
   setControls: PropTypes.func.isRequired,
   setAnnotation: PropTypes.func.isRequired,
-  setValidation: PropTypes.func.isRequired
+  setValidation: PropTypes.func.isRequired,
+  advancedAreOpen: PropTypes.bool
 };
 
 QuadrantsMoreOptions.defaultProps = {
   fontSizeList: [],
-  stemNumerationList: []
+  stemNumerationList: [],
+  advancedAreOpen: false
 };
 
 const enhance = compose(withNamespaces("assessment"));

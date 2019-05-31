@@ -91,6 +91,7 @@ class GraphAxisLabels extends Component {
           label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={true}
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
           <QuestionTextArea
@@ -101,7 +102,13 @@ class GraphAxisLabels extends Component {
           />
         </QuestionSection>
 
-        <QuestionSection section="main" label="Line" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="main"
+          label="Line"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={true}
+        >
           <Subtitle>{t("component.graphing.graphline")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
@@ -137,7 +144,13 @@ class GraphAxisLabels extends Component {
           </Row>
         </QuestionSection>
 
-        <QuestionSection section="main" label="Title" cleanSections={cleanSections} fillSections={fillSections}>
+        <QuestionSection
+          section="main"
+          label="Title"
+          cleanSections={cleanSections}
+          fillSections={fillSections}
+          advancedAreOpen={true}
+        >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.title")}</Subtitle>
             <TitleTextInput type="text" name="title" value={canvas.title} onChange={this.handleCanvasChange} />
@@ -149,6 +162,7 @@ class GraphAxisLabels extends Component {
           label="Possible Responses"
           cleanSections={cleanSections}
           fillSections={fillSections}
+          advancedAreOpen={true}
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.possibleresponses")}</Subtitle>

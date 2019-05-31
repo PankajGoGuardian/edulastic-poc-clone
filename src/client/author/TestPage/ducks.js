@@ -136,6 +136,7 @@ export const initialTestState = {
   shuffleAnswers: false,
   calcType: test.calculatorKeys[0],
   answerOnPaper: false,
+  maxAnswerChecks: 0,
   status: "draft",
   thumbnail: "https://fakeimg.pl/500x135/",
   createdBy: {

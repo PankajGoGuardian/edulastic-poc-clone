@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Col, Radio, Select, Row, Icon, Checkbox } from "antd";
+import { Col, Radio, Select, Row, Icon, Checkbox, Input } from "antd";
 import { test } from "@edulastic/constants";
 import {
   AlignRight,
@@ -109,7 +109,8 @@ const Settings = ({
     shuffleAnswers = tempTestSettings.shuffleAnswers,
     calcType = tempTestSettings.calcType,
     showQuestionsAfterSubmission = tempTestSettings.showQuestionsAfterSubmission,
-    answerOnPaper = tempTestSettings.answerOnPaper
+    answerOnPaper = tempTestSettings.answerOnPaper,
+    maxAnswerChecks = tempTestSettings.maxAnswerChecks
   } = assignmentSettings;
 
   return (
@@ -292,6 +293,21 @@ const Settings = ({
           </Col>
         </StyledRowSettings>
         {/* Require Password */}
+
+        {/* Check Answer Tries Per Question */}
+        <StyledRowSettings gutter={16}>
+          <Col span={16}>Check Answer Tries Per Question</Col>
+          <Col span={8}>
+            <Input
+              onChange={e => overRideSettings("maxAnswerChecks", e.target.value)}
+              size="large"
+              value={maxAnswerChecks}
+              type={"number"}
+              placeholder="Number of tries"
+            />
+          </Col>
+        </StyledRowSettings>
+        {/* Check Answer Tries Per Question */}
 
         {/* Evaluation Method */}
         <StyledRowSettings gutter={16}>

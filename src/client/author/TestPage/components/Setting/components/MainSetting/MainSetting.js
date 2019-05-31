@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Anchor, Input, Row, Col, Radio, Switch, List, Select } from "antd";
 
-import { Paper } from "@edulastic/common";
 import { test } from "@edulastic/constants";
 import { lightBlueSecondary } from "@edulastic/colors";
 import { IconCaretDown } from "@edulastic/icons";
@@ -31,7 +30,8 @@ import {
   TestTypeSelect,
   GenerateReportSelect,
   ActivityInput,
-  Container
+  Container,
+  MaxAnswerChecksInput
 } from "./styled";
 import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
@@ -118,15 +118,17 @@ class MainSetting extends Component {
       if (value === ASSESSMENT) {
         setMaxAttempts(1);
         setTestData({
-          releaseScore: releaseGradeLabels.DONT_RELEASE
+          releaseScore: releaseGradeLabels.DONT_RELEASE,
+          generateReport: true,
+          maxAnswerChecks: 0
         });
-        setTestData({ generateReport: true });
       } else {
         setMaxAttempts(3);
         setTestData({
-          releaseScore: releaseGradeLabels.WITH_ANSWERS
+          releaseScore: releaseGradeLabels.WITH_ANSWERS,
+          generateReport: false,
+          maxAnswerChecks: 3
         });
-        setTestData({ generateReport: false });
       }
     }
     if (key === "safeBrowser" && value === false) {
@@ -177,6 +179,7 @@ class MainSetting extends Component {
       shuffleAnswers,
       answerOnPaper,
       requirePassword,
+      maxAnswerChecks,
       testType,
       generateReport,
       calcType
@@ -394,6 +397,18 @@ class MainSetting extends Component {
                 </Body>
               </Block>
             </FeaturesSwitch>
+            <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
+              <Title>Check Answer Tries Per Question</Title>
+              <Body smallSize={isSmallSize}>
+                <MaxAnswerChecksInput
+                  onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
+                  size="large"
+                  value={maxAnswerChecks}
+                  type="number"
+                  placeholder="Number of tries"
+                />
+              </Body>
+            </Block>
             <FeaturesSwitch inputFeatures="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
               <Block id="evaluation-method" smallSize={isSmallSize}>
                 <Title>Evaluation Method</Title>

@@ -189,6 +189,10 @@ export const InputPassword = styled(Input)`
   margin-left: 30px;
 `;
 
+export const MaxAnswerChecksInput = styled(Input)`
+  width: 40%;
+`;
+
 export const AdvancedSettings = styled.div``;
 
 export const AdvancedButton = styled(Button)`

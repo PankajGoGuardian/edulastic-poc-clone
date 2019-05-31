@@ -5,7 +5,7 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item, width, showIndex = true }) => {
+const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData }) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -26,7 +26,12 @@ const DropArea = ({ updateData, item, width, showIndex = true }) => {
     e.stopPropagation();
     const newItem = cloneDeep(item);
     newItem.responses.splice(index, 1);
-    updateData(newItem.responses);
+    newItem.validation.valid_response.value.splice(index, 1);
+    newItem.validation.alt_responses = newItem.validation.alt_responses.map(resp => {
+      resp.value.pop();
+      return resp;
+    });
+    setQuestionData(newItem);
   };
 
   const _click = index => () => {

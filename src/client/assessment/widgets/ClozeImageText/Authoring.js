@@ -100,14 +100,6 @@ class Authoring extends Component {
         setQuestionData(newItem);
       }
     }
-    if (newItem.responses.length - pastItem.responses.length === 1) {
-      pastItem.validation.valid_response.value.pop();
-      pastItem.validation.alt_responses = pastItem.validation.alt_responses.map(resp => {
-        resp.value.pop();
-        return resp;
-      });
-      setQuestionData(pastItem);
-    }
   }
 
   onChangeQuestion = stimulus => {
@@ -241,7 +233,7 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme, maxWidth, maxHeight } = this.props;
+    const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
@@ -373,6 +365,7 @@ class Authoring extends Component {
                         key={item}
                         width={maxWidth}
                         showIndex={false}
+                        setQuestionData={setQuestionData}
                       />
                     </React.Fragment>
                   )}

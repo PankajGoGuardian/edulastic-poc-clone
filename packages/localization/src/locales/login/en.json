@@ -42,7 +42,7 @@
         "signupidlabel": "Email",
         "signupteacher": "SIGN UP AS TEACHER",
         "forteacher": "for Teachers",
-        "validinputname": "Please input Teacher Name!",
+        "validinputname": "Please provide your full name.",
         "validpassword": "Please provide a valid password.",
         "validemail": "Please provide valid Username or Email id."
       },

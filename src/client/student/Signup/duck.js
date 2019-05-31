@@ -2,7 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { get } from "lodash";
 import { message } from "antd";
 import { takeLatest, call, put } from "redux-saga/effects";
-import { schoolApi, userApi } from "@edulastic/api";
+import { schoolApi, userApi, settingsApi } from "@edulastic/api";
 import { signupSuccessAction } from "../Login/ducks";
 
 // Types
@@ -21,6 +21,10 @@ const CREATE_SCHOOL_FAILED = "[signup] create a school failed";
 const JOIN_SCHOOL_REQUEST = "[signup] update with school request";
 const JOIN_SCHOOL_FAILED = "[signup] update with school failed";
 
+const SAVE_SUBJECTGRADE_REQUEST = "[signup] save with subject and grade request";
+const SAVE_SUBJECTGRADE_SUCCESS = "[signup] save with subject and grade success";
+const SAVE_SUBJECTGRADE_FAILED = "[signup] save with subject and grade failed";
+
 // Actions
 export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST);
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS);
@@ -35,6 +39,8 @@ export const createSchoolSuccessAction = createAction(CREATE_SCHOOL_SUCCESS);
 export const createSchoolFailedAction = createAction(CREATE_SCHOOL_FAILED);
 
 export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
+
+export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 
 // Reducers
 const initialState = {
@@ -126,9 +132,20 @@ function* joinSchoolSaga({ payload = {} }) {
   }
 }
 
+function* saveSubjectGradeSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.saveInterestedStandards, payload);
+    yield call(message.success, SAVE_SUBJECTGRADE_SUCCESS);
+    yield put(signupSuccessAction(result));
+  } catch (err) {
+    yield call(message.error, SAVE_SUBJECTGRADE_FAILED);
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolSaga);
   yield takeLatest(SEARCH_DISTRICTS_REQUEST, searchDistrictsSaga);
   yield takeLatest(CREATE_SCHOOL_REQUEST, createSchoolSaga);
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
+  yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
 }

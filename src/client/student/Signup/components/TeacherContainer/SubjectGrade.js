@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty, filter } from "lodash";
+import { isEmpty, filter, map, pick, find, mapKeys } from "lodash";
 import { Row, Col, Select, Form, Button } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
@@ -11,6 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
 import { getDictCurriculumsAction } from "../../../../author/src/actions/dictionaries";
+import { saveSubjectGradeAction } from "../../duck";
 // selectors
 import { getCurriculumsListSelector } from "../../../../author/src/selectors/dictionaries";
 
@@ -25,6 +26,8 @@ class SubjectGrade extends React.Component {
   static propTypes = {
     form: PropTypes.object.isRequired,
     getCurriculums: PropTypes.func.isRequired,
+    userInfo: PropTypes.object.isRequired,
+    saveSubjectGrade: PropTypes.func.isRequired,
     curriculums: PropTypes.arrayOf(
       PropTypes.shape({
         _id: PropTypes.string.isRequired,
@@ -48,11 +51,32 @@ class SubjectGrade extends React.Component {
   };
 
   handleSubmit = e => {
+    const { form, userInfo, saveSubjectGrade } = this.props;
+    const isSignUp = true;
     e.preventDefault();
-    const { form } = this.props;
     form.validateFields((err, values) => {
       if (!err) {
-        console.log(values);
+        const { curriculums } = this.props;
+
+        const data = {
+          orgId: userInfo._id,
+          orgType: userInfo.role,
+          districtId: userInfo.districtId,
+          isSignUp,
+          curriculums: []
+        };
+
+        map(values.standard, id => {
+          const filterData = find(curriculums, el => el._id === id);
+          data.curriculums.push(
+            mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
+              if (key === "curriculum") key = "name";
+              return key;
+            })
+          );
+        });
+
+        saveSubjectGrade({ ...data });
       }
     });
   };
@@ -103,7 +127,6 @@ class SubjectGrade extends React.Component {
                         <GradeSelect
                           size="large"
                           placeholder="Select a subject"
-                          mode="multiple"
                           onSelect={this.updateSubject}
                           showArrow
                         >
@@ -152,7 +175,8 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state)
     }),
     {
-      getCurriculums: getDictCurriculumsAction
+      getCurriculums: getDictCurriculumsAction,
+      saveSubjectGrade: saveSubjectGradeAction
     }
   )
 );

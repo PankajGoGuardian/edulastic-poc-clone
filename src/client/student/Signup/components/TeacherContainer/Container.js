@@ -26,7 +26,7 @@ const Container = ({ user, logout }) => {
     <>
       <Header userInfo={userInfo} logout={logout} />
       {signupStatus === 1 && <JoinSchool userInfo={userInfo} />}
-      {signupStatus === 2 && <SubjectGradeForm />}
+      {signupStatus === 2 && <SubjectGradeForm userInfo={userInfo} />}
     </>
   );
 };

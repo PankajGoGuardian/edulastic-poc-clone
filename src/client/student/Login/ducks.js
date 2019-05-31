@@ -164,7 +164,7 @@ function* signup({ payload }) {
             yield put(push("/author/assignments"));
             break;
           default:
-            yield put(push("/"));
+            yield put(push("/author/assignments"));
         }
       }
     }

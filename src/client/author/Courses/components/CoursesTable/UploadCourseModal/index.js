@@ -20,6 +20,7 @@ import {
   SuccessIcon,
   AlertIcon,
   ConfirmP,
+  SuccessP,
   AlertP,
   UploadedContent,
   StyledSpin,
@@ -27,6 +28,7 @@ import {
   StyledTableButton,
   StyledConfirmButton,
   AlertSuccess,
+  StatusDiv,
   AlertMsgDiv
 } from "./styled";
 
@@ -72,7 +74,8 @@ class UploadCourseModal extends React.Component {
         name: this.state.dataSource[i].courseName
       });
     }
-    this.props.uploadBulkCourse(uploadBulkCourseData);
+    const { uploadBulkCourse, searchData } = this.props;
+    uploadBulkCourse({ uploadBulkCourseData, searchData });
   };
 
   goBackUpload = () => {
@@ -110,12 +113,15 @@ class UploadCourseModal extends React.Component {
             return (
               <React.Fragment>
                 {record.status === "success" ? (
-                  <SuccessIcon type="check-circle" />
+                  <StatusDiv>
+                    <SuccessIcon type="check-circle" />
+                    <SuccessP>{record.status}</SuccessP>
+                  </StatusDiv>
                 ) : (
-                  <AlertMsgDiv>
+                  <StatusDiv>
                     <AlertIcon type="close-circle" />
                     <AlertP>{record.statusMessage}</AlertP>
-                  </AlertMsgDiv>
+                  </StatusDiv>
                 )}
               </React.Fragment>
             );

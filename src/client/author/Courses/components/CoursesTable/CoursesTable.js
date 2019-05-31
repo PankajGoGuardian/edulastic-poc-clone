@@ -64,7 +64,8 @@ class CoursesTable extends React.Component {
         order: "asc"
       },
       currentPage: 1,
-      isShowActive: true
+      isShowActive: true,
+      searchData: {}
     };
   }
 
@@ -78,6 +79,18 @@ class CoursesTable extends React.Component {
       order: "asc",
       search: {},
       active: 1
+    });
+
+    this.setState({
+      searchData: {
+        districtId: userOrgId,
+        page: 1,
+        limit: 25,
+        sortField: "name",
+        order: "asc",
+        search: {},
+        active: 1
+      }
     });
   }
 
@@ -270,9 +283,13 @@ class CoursesTable extends React.Component {
   };
 
   handleSearchName = e => {
+    this.setState({ searchByName: e.target.value });
+  };
+
+  onBlurSearchName = e => {
     const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e });
-    this.loadFilteredCourseList(filtersData, sortedInfo, e, currentPage);
+    this.setState({ searchByName: e.target.value });
+    this.loadFilteredCourseList(filtersData, sortedInfo, e.target.value, currentPage);
   };
 
   changePagination = pageNumber => {
@@ -311,6 +328,7 @@ class CoursesTable extends React.Component {
     };
 
     if (isActive) loadListJsonData.active = 1;
+    this.setState({ searchData: loadListJsonData });
     loadCourseListData(loadListJsonData);
   }
 
@@ -336,7 +354,8 @@ class CoursesTable extends React.Component {
       filtersData,
       sortedInfo,
       currentPage,
-      isShowActive
+      isShowActive,
+      searchData
     } = this.state;
 
     const { totalCourseCount, userOrgId } = this.props;
@@ -503,7 +522,11 @@ class CoursesTable extends React.Component {
             + Create Course
           </Button>
 
-          <StyledNameSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <StyledNameSearch
+            placeholder="Search by name"
+            onChange={this.handleSearchName}
+            onBlur={this.onBlurSearchName}
+          />
           <StyledActiveCheckbox defaultChecked={isShowActive} onChange={this.changeShowActiveCourse}>
             Show active courses only
           </StyledActiveCheckbox>
@@ -540,7 +563,11 @@ class CoursesTable extends React.Component {
           />
         )}
         {uploadCourseModalVisible && (
-          <UploadCourseModal modalVisible={uploadCourseModalVisible} closeModal={this.closeUploadCourseModal} />
+          <UploadCourseModal
+            modalVisible={uploadCourseModalVisible}
+            closeModal={this.closeUploadCourseModal}
+            searchData={searchData}
+          />
         )}
       </StyledTableContainer>
     );

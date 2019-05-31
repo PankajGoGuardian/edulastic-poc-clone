@@ -1,5 +1,6 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
+import { delay } from "redux-saga";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { courseApi } from "@edulastic/api";
 import { message } from "antd";
@@ -70,6 +71,7 @@ export const setUpdateModalPageStatusAction = createAction(SET_UPDATEMODAL_PAGE_
 export const setShowActiveStatusAction = createAction(SET_COURSE_SHOWACTIVE_STATUS);
 
 export const resetUploadModalStatusAction = createAction(RESET_COURSE_UPLOADMODAL_STATUS);
+
 // selectors
 const stateCourseSelector = state => state.coursesReducer;
 export const getCourseListSelector = createSelector(
@@ -82,10 +84,8 @@ const initialState = {
   data: [],
   loading: false,
   error: null,
-  update: {},
   updating: false,
   updateError: null,
-  create: { _id: -1 },
   creating: false,
   createError: null,
   delete: null,
@@ -101,12 +101,14 @@ const initialState = {
   saveingBulkCourse: false,
   saveBulkCourseError: {},
   totalCourseCount: 0,
-  isShowActive: true
+  isShowActive: true,
+  courseSearchData: {}
 };
 
 export const reducer = createReducer(initialState, {
-  [RECEIVE_COURSE_REQUEST]: state => {
+  [RECEIVE_COURSE_REQUEST]: (state, { payload }) => {
     state.loading = true;
+    state.courseSearchData = { ...payload };
   },
   [RECEIVE_COURSE_SUCCESS]: (state, { payload }) => {
     state.loading = false;
@@ -133,8 +135,7 @@ export const reducer = createReducer(initialState, {
       }
       return course;
     });
-
-    (state.update = payload), (state.updating = false), (state.data = courseData);
+    (state.updating = false), (state.data = courseData);
   },
   [UPDATE_COURSE_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -145,10 +146,51 @@ export const reducer = createReducer(initialState, {
   },
   [CREATE_COURSE_SUCCESS]: (state, { payload }) => {
     state.creating = false;
-    state.create = payload;
     payload.key = payload._id;
-    if (!payload.hasOwnProperty("classCount")) payload.classCount = 0;
-    state.data = [payload, ...state.data].slice(0, 25);
+    payload.classCount = 0;
+    const searchData = state.courseSearchData.search;
+    const keys = Object.keys(searchData);
+    let isFitFiltered = true;
+    for (let i = 0; i < keys.length; i++) {
+      if (searchData[keys[i]].type == "eq") {
+        if (payload[keys[i]].toString().toLowerCase() !== payload[keys[i]].value.toString().toLowerCase()) {
+          isFitFiltered = false;
+          break;
+        }
+      } else {
+        if (
+          payload[keys[i]]
+            .toString()
+            .toLowerCase()
+            .indexOf(searchData[keys[i]].value.toString().toLowerCase()) < 0
+        ) {
+          isFitFiltered = false;
+          break;
+        }
+      }
+    }
+
+    const { sortField, order } = state.courseSearchData;
+    if (isFitFiltered) {
+      const newdData = [payload, ...state.data].slice(0, 25);
+      state.data = newdData.sort((a, b) => {
+        const aValue = a[sortField];
+        const bValue = b[sortField];
+        let compareValue = 0;
+        if (aValue.toString().toLowerCase() < bValue.toString().toLowerCase()) {
+          compareValue = -1;
+        } else if (aValue.toString().toLowerCase() > bValue.toString().toLowerCase()) {
+          compareValue = 1;
+        }
+
+        if (compareValue != 0) {
+          if (order === "desc") {
+            compareValue = -compareValue;
+          }
+        }
+        return compareValue;
+      });
+    }
   },
   [CREATE_COURSE_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -315,8 +357,10 @@ function* receiveSearchCourseSaga({ payload }) {
 
 function* saveBulkCourseSaga({ payload }) {
   try {
-    const saveBulkCourse = yield call(courseApi.saveBulkCourse, payload);
+    const saveBulkCourse = yield call(courseApi.saveBulkCourse, payload.uploadBulkCourseData);
     yield put(saveBulkCourseSuccessAction(saveBulkCourse));
+    yield call(delay, 1000);
+    yield put(receiveCourseListAction(payload.searchData));
   } catch (err) {
     const errorMessage = "Saving Bulk Course failing";
     yield call(message.error, errorMessage);

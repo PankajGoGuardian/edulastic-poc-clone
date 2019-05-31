@@ -31,8 +31,8 @@ class Annotations extends Component {
           value: "",
           position,
           size: {
-            width: 50,
-            height: 50
+            width: 120,
+            height: 80
           }
         }
       ];

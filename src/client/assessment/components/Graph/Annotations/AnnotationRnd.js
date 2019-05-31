@@ -55,8 +55,8 @@ class AnnotationsRnd extends Component {
 
     question.annotations = oldAnnotations.map(annotation => {
       const { width: oldWidth, height: oldHeight } = annotation.size || {
-        width: 50,
-        height: 50
+        width: 120,
+        height: 80
       };
       if (annotationIndex === annotation.id) {
         const modifiedAnnotation = { ...annotation };
@@ -103,7 +103,7 @@ class AnnotationsRnd extends Component {
           .filter(a => a.value)
           .map((annotation, i) => {
             const { x, y } = annotation.position || { x: i * 50, y: 0 };
-            const { width = 50, height = 50 } = annotation.size || { width: 50, height: 50 };
+            const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
             const { value } = annotation;
 
             return (

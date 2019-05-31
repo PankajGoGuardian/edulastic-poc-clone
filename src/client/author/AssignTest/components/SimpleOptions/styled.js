@@ -100,6 +100,12 @@ export const SpaceDiv = styled.div`
   height: 32px;
 `;
 
+export const CheckBoxWrapper = styled.p`
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+`;
+
 export const SettingsWrapper = styled.div`
   margin-top: 48px;
   color: #434b5d;

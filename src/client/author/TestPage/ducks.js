@@ -137,6 +137,8 @@ export const initialTestState = {
   calcType: test.calculatorKeys[0],
   answerOnPaper: false,
   maxAnswerChecks: 0,
+  scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
+  penalty: false,
   status: "draft",
   thumbnail: "https://fakeimg.pl/500x135/",
   createdBy: {

@@ -16,13 +16,14 @@ import {
   StyledSelect,
   StyledTable,
   StyledDiv,
-  SpaceDiv
+  SpaceDiv,
+  CheckBoxWrapper
 } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const { calculatorKeys, calculators, releaseGradeTypes } = test;
-const evaluationtypes = ["All or Nothing", "Partial Credit", "Dont penalize for incorrect selection"];
+const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
+const { calculatorKeys, calculators, releaseGradeTypes, evalTypes, evalTypeLabels } = test;
 
 const Settings = ({
   testSettings,
@@ -33,7 +34,6 @@ const Settings = ({
   performanceBandData
 }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0);
-  const [type, setEvaluationType] = useState(0);
   const [showPassword, togglePasswordField] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
 
@@ -97,10 +97,6 @@ const Settings = ({
     setAssignmentCompletionType(e.target.value);
   };
 
-  const evalMethod = e => {
-    setEvaluationType(e.target.value);
-  };
-
   const {
     releaseScore = tempTestSettings.releaseScore,
     safeBrowser = tempTestSettings.safeBrowser,
@@ -110,7 +106,9 @@ const Settings = ({
     calcType = tempTestSettings.calcType,
     showQuestionsAfterSubmission = tempTestSettings.showQuestionsAfterSubmission,
     answerOnPaper = tempTestSettings.answerOnPaper,
-    maxAnswerChecks = tempTestSettings.maxAnswerChecks
+    maxAnswerChecks = tempTestSettings.maxAnswerChecks,
+    scoringType = tempTestSettings.scoringType,
+    penalty = tempTestSettings.penalty
   } = assignmentSettings;
 
   return (
@@ -313,13 +311,20 @@ const Settings = ({
         <StyledRowSettings gutter={16}>
           <Col span={6}>Evaluation Method</Col>
           <Col span={18}>
-            <AlignRight onChange={evalMethod} value={type}>
-              {evaluationtypes.map((item, index) => (
-                <Radio value={index} key={index}>
-                  {item}
+            <AlignRight onChange={e => overRideSettings("scoringType", e.target.value)} value={scoringType}>
+              {evalTypeKeys.map(item => (
+                <Radio value={item} key={item}>
+                  {evalTypes[item]}
                 </Radio>
               ))}
             </AlignRight>
+            {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
+              <CheckBoxWrapper>
+                <Checkbox checked={penalty === false} onChange={e => overRideSettings("penalty", !e.target.checked)}>
+                  {"Don’t penalize for incorrect selection"}
+                </Checkbox>
+              </CheckBoxWrapper>
+            )}
           </Col>
         </StyledRowSettings>
         {/* Evaluation Method */}

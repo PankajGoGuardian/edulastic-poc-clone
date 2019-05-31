@@ -36,6 +36,7 @@ module.exports = {
     "answer-on-paper": "assessmentSuperPowersAnswerOnPaper",
     "require-password": "assessmentSuperPowersRequirePassword",
     "evaluation-method": "assessmentSuperPowersEvaluationMethod",
+    "check-answer-tries-per-question": "assessmentSuperPowersCheckAnswerTries",
     "performance-bands": "performanceBands"
   },
   performanceBandsData: {
@@ -110,6 +111,10 @@ module.exports = {
   evalTypes: {
     ALL_OR_NOTHING: "All or Nothing",
     PARTIAL_CREDIT: "Partial Credit"
+  },
+  evalTypeLabels: {
+    ALL_OR_NOTHING: "ALL_OR_NOTHING",
+    PARTIAL_CREDIT: "PARTIAL_CREDIT"
   },
   accessibilities: {
     SHOW_COLOUR_SHCEME: "Show Color Scheme",

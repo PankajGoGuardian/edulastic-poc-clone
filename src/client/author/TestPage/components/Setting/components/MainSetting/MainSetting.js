@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Anchor, Input, Row, Col, Radio, Switch, List, Select } from "antd";
+import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox } from "antd";
 
 import { test } from "@edulastic/constants";
 import { lightBlueSecondary } from "@edulastic/colors";
@@ -46,6 +46,7 @@ const {
   calculators,
   calculatorKeys,
   evalTypes,
+  evalTypeLabels,
   accessibilities,
   releaseGradeTypes,
   releaseGradeLabels
@@ -77,7 +78,6 @@ class MainSetting extends Component {
 
     this.state = {
       markAsDoneValue: props.entity.markAsDoneValue,
-      evalType: props.entity.evalType,
       showPassword: false,
       enable: true,
       showAdvancedOption: false
@@ -114,33 +114,39 @@ class MainSetting extends Component {
 
   updateTestData = key => value => {
     const { setTestData, setMaxAttempts } = this.props;
-    if (key === "testType") {
-      if (value === ASSESSMENT) {
-        setMaxAttempts(1);
+    switch (key) {
+      case "testType":
+        if (value === ASSESSMENT) {
+          setMaxAttempts(1);
+          setTestData({
+            releaseScore: releaseGradeLabels.DONT_RELEASE,
+            generateReport: true,
+            maxAnswerChecks: 0
+          });
+        } else {
+          setMaxAttempts(3);
+          setTestData({
+            releaseScore: releaseGradeLabels.WITH_ANSWERS,
+            generateReport: false,
+            maxAnswerChecks: 3
+          });
+        }
+        break;
+      case "scoringType":
         setTestData({
-          releaseScore: releaseGradeLabels.DONT_RELEASE,
-          generateReport: true,
-          maxAnswerChecks: 0
+          penalty: false
         });
-      } else {
-        setMaxAttempts(3);
-        setTestData({
-          releaseScore: releaseGradeLabels.WITH_ANSWERS,
-          generateReport: false,
-          maxAnswerChecks: 3
-        });
-      }
+        break;
+      case "safeBrowser":
+        if (!value)
+          setTestData({
+            sebPassword: ""
+          });
+        break;
     }
-    if (key === "safeBrowser" && value === false) {
-      setTestData({
-        sebPassword: "",
-        [key]: value
-      });
-    } else {
-      setTestData({
-        [key]: value
-      });
-    }
+    setTestData({
+      [key]: value
+    });
   };
 
   updateFeatures = key => e => {
@@ -168,7 +174,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { markAsDoneValue, evalType, enable, showAdvancedOption, showPassword } = this.state;
+    const { markAsDoneValue, enable, showAdvancedOption, showPassword } = this.state;
     const { history, windowWidth, entity } = this.props;
 
     const {
@@ -180,6 +186,8 @@ class MainSetting extends Component {
       answerOnPaper,
       requirePassword,
       maxAnswerChecks,
+      scoringType,
+      penalty,
       testType,
       generateReport,
       calcType
@@ -397,29 +405,44 @@ class MainSetting extends Component {
                 </Body>
               </Block>
             </FeaturesSwitch>
-            <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
-              <Title>Check Answer Tries Per Question</Title>
-              <Body smallSize={isSmallSize}>
-                <MaxAnswerChecksInput
-                  onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
-                  size="large"
-                  value={maxAnswerChecks}
-                  type="number"
-                  placeholder="Number of tries"
-                />
-              </Body>
-            </Block>
+            <FeaturesSwitch inputFeatures="assessmentSuperPowersCheckAnswerTries" actionOnInaccessible="hidden">
+              <Block id="check-answer-tries-per-question" smallSize={isSmallSize}>
+                <Title>Check Answer Tries Per Question</Title>
+                <Body smallSize={isSmallSize}>
+                  <MaxAnswerChecksInput
+                    onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
+                    size="large"
+                    value={maxAnswerChecks}
+                    type="number"
+                    placeholder="Number of tries"
+                  />
+                </Body>
+              </Block>
+            </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="assessmentSuperPowersEvaluationMethod" actionOnInaccessible="hidden">
               <Block id="evaluation-method" smallSize={isSmallSize}>
                 <Title>Evaluation Method</Title>
                 <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup onChange={this.updateFeatures("evalType")} value={evalType}>
+                  <StyledRadioGroup
+                    onChange={e => this.updateTestData("scoringType")(e.target.value)}
+                    value={scoringType}
+                  >
                     {Object.keys(evalTypes).map(item => (
-                      <Radio value={evalTypes[item]} key={evalTypes[item]}>
+                      <Radio value={item} key={item}>
                         {evalTypes[item]}
                       </Radio>
                     ))}
                   </StyledRadioGroup>
+                  {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
+                    <p>
+                      <Checkbox
+                        checked={penalty === false}
+                        onChange={e => this.updateTestData("penalty")(!e.target.checked)}
+                      >
+                        {"Don’t penalize for incorrect selection"}
+                      </Checkbox>
+                    </p>
+                  )}
                   <Description>
                     {
                       "Choose if students should be awarded partial credit for their answers or not. If partial credit is allowed, then choose whether the student should be penalized for."

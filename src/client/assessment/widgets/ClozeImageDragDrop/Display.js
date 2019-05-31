@@ -419,7 +419,7 @@ class Display extends Component {
               className={`right responseboxContainer ${smallSize ? "small" : ""}`}
               style={{
                 height: "auto",
-                width: smallSize ? "120px" : "20%",
+                width: smallSize ? "120px" : "100%",
                 margin: smallSize ? 0 : 15,
                 borderRadius: smallSize ? 0 : 10,
                 background: theme.widgets.clozeImageDragDrop.responseBoxBgColor,

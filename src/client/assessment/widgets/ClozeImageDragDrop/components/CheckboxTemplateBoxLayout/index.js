@@ -67,8 +67,7 @@ const CheckboxTemplateBoxLayout = ({
           left: responseContainer.left,
           height: responseContainer.height,
           position: "absolute",
-          borderRadius: 5,
-          overflow: "hidden"
+          borderRadius: 5
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
           const { widthpx } = responsecontainerindividuals[dropTargetIndex];
@@ -108,7 +107,7 @@ const CheckboxTemplateBoxLayout = ({
                 ${status}`}
                 drop={drop}
               >
-                <div className="text container">
+                <div className="text container" style={{ height: "max-content" }}>
                   {userSelections[dropTargetIndex] &&
                     userSelections[dropTargetIndex].map((answer, user_select_index) => (
                       <DragItem
@@ -122,7 +121,6 @@ const CheckboxTemplateBoxLayout = ({
                           display: "inline-block",
                           width: "70%",
                           whiteSpace: "nowrap",
-                          overflow: "hidden",
                           textOverflow: "ellipsis"
                         }}
                         item={answer}
@@ -154,8 +152,27 @@ const CheckboxTemplateBoxLayout = ({
                   ${status} 
                   show-answer`}
               >
-                <span className="index index-box">{indexStr}</span>
-                <div className="text container">
+                <div
+                  className="text container"
+                  style={{
+                    display: "flex",
+                    height: "max-content",
+                    minHeight: "40px",
+                    paddingLeft: "0px"
+                  }}
+                >
+                  <div
+                    className="index index-box"
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      alignSelf: "stretch",
+                      height: "auto"
+                    }}
+                  >
+                    {indexStr}
+                  </div>
                   {userSelections[dropTargetIndex] &&
                     userSelections[dropTargetIndex].map((answer, user_select_index) => (
                       <div
@@ -167,16 +184,19 @@ const CheckboxTemplateBoxLayout = ({
                           display: "inline-block"
                         }}
                       >
-                        <div>
-                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
-                        </div>
+                        <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
                       </div>
                     ))}
+                  <IconWrapper>
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
+                      <RightIcon />
+                    )}
+                    {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && (
+                      <WrongIcon />
+                    )}
+                  </IconWrapper>
                 </div>
-                <IconWrapper>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
-                </IconWrapper>
+
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />

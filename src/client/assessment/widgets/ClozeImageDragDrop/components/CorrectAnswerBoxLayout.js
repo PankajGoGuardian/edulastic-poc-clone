@@ -36,20 +36,34 @@ const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, t, theme }) => {
               display: "inline-flex"
             }}
           >
-            <span className="index index-box" style={{ padding: 8 }}>
-              {index + 1}
-            </span>
-            <span
-              className="text container"
-              style={{
-                padding: "8px 15px",
-                fontWeight: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerFontWeight,
-                width: "auto",
-                background: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerBgColor
-              }}
-            >
-              <MathSpan dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />
-            </span>
+            <div style={{ display: "flex", height: "100%" }}>
+              <span
+                className="index index-box"
+                style={{
+                  padding: 8,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  alignSelf: "stretch",
+                  height: "auto"
+                }}
+              >
+                {index + 1}
+              </span>
+              <span
+                className="text container"
+                style={{
+                  padding: "8px 15px",
+                  fontWeight: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerFontWeight,
+                  width: "auto",
+                  background: theme.widgets.clozeImageDragDrop.correctAnswerBoxTextContainerBgColor,
+                  minHeight: "40px",
+                  minWidth: "35px"
+                }}
+              >
+                <MathSpan dangerouslySetInnerHTML={{ __html: result && result.join(", ") }} />
+              </span>
+            </div>
           </div>
         ))}
       </div>

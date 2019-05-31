@@ -40,6 +40,7 @@ export default function SubjectStandard({
     const { [edulasticSubject]: edulasticSubjects = { list: [] } } = curriculum;
     return (
       <Select
+        showSearch
         style={{ width: "100%" }}
         value={edulasticStandard}
         onChange={value => updateEdulasticStandardAction({ subject: item.subject, value })}
@@ -61,6 +62,7 @@ export default function SubjectStandard({
 
     return (
       <Select
+        showSearch
         style={{ width: "100%" }}
         value={edulasticSubject}
         onChange={value => updateEdulasticSubjectAction({ subject: item.subject, value })}
@@ -77,6 +79,7 @@ export default function SubjectStandard({
   function renderCleverSubject(item, _, index) {
     return (
       <Select
+        showSearch
         style={{ width: "100%" }}
         value={item.subject}
         onChange={value => updateCleverSubjectAction({ index, value, prevValue: item.subject })}

@@ -127,7 +127,7 @@ class ClassHeader extends Component {
       testActivityId,
       additionalData = {},
       showScore,
-      entity,
+      selectedStudentsKeys,
       classResponse = {}
     } = this.props;
     const { showDropdown, visible } = this.state;
@@ -237,10 +237,9 @@ class ClassHeader extends Component {
               onOk={this.onStudentReportCardModalOk}
               onCancel={this.onStudentReportCardModalCancel}
               groupId={classId}
-              testActivityId={this.props.selectedStudentsTestActivityId}
-              entity={entity}
-              assignmentId={assignmentId}
+              selectedStudentsKeys={selectedStudentsKeys}
               columnsFlags={this.state.studentReportCardModalColumnsFlags}
+              assignmentId={assignmentId}
             />
           ) : null}
         </>

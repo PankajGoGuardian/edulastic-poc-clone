@@ -21,7 +21,6 @@ export const getQuestions = author_classboard_testActivity => {
 export const getQuestionTableData = (studentResponse, questionArr) => {
   const questionActivities = get(studentResponse, "data.questionActivities", []);
   const questions = keyBy(questionArr, "id");
-
   let totalScore = 0;
   let obtainedScore = 0;
   const questionTableData = next(questionActivities, arr => {
@@ -29,11 +28,14 @@ export const getQuestionTableData = (studentResponse, questionArr) => {
       let item = arr[i];
       let q = questions[item.qid];
       let options = keyBy(q.options, "value");
-      let correctAnswers = q.validation.valid_response.value;
+      let correctAnswers = get(q, "validation.valid_response.value", []);
+      const userResponse = item.userResponse ? item.userResponse : [];
       item.question = item.correct;
       item.questionNumber = i + 1;
-      item.yourAnswer = item.userResponse.map((item, index) => options[item].label);
-      item.correctAnswer = correctAnswers.map((item, index) => options[item].label);
+      item.yourAnswer = Array.isArray(userResponse)
+        ? userResponse.map((item, index) => (options[item] ? options[item].label : ""))
+        : [];
+      item.correctAnswer = correctAnswers.map((item, index) => (options[item] ? options[item].label : ""));
       totalScore += item.maxScore;
       obtainedScore += item.score;
     }

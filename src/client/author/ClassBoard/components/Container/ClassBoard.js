@@ -252,9 +252,6 @@ class ClassBoard extends Component {
     const isMobile = this.isMobile();
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
-    const selectedStudentsKey = selectedStudentsKeys.length ? selectedStudentsKeys[0] : "";
-    let selectedStudentsEntity = this.props.entities.find(item => item.studentId === selectedStudentsKey);
-    selectedStudentsEntity = selectedStudentsEntity || {};
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     console.log("selectedQuestion", selectedQuestion);
@@ -269,8 +266,7 @@ class ClassBoard extends Component {
           assignmentId={assignmentId}
           additionalData={additionalData}
           testActivityId={testActivityId}
-          selectedStudentsTestActivityId={selectedStudentsEntity.testActivityId}
-          entity={selectedStudentsEntity}
+          selectedStudentsKeys={selectedStudentsKeys}
         />
         <StyledFlexContainer justifyContent="space-between">
           <PaginationInfo>

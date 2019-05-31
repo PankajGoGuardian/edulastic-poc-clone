@@ -230,7 +230,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         })
         .toArray();
 
-      onChange(val, responseIndexes, dropDownIndexes, inputIndexes);
+      onChange(valueToSave, responseIndexes, dropDownIndexes, inputIndexes);
     } else {
       onChange(valueToSave, []);
     }
@@ -248,8 +248,11 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       EditorRef.current.html.insert(
         `<span class="input__math" contenteditable="false" data-latex="${latex}">${mathHtml}</span> `
       );
-      EditorRef.current.undo.saveStep();
     }
+
+    // if html is inserted over using editor methods `saveStep` requires to be called
+    // to update teh editor. Otherwise `modalChange` wont be triggered!
+    EditorRef.current.undo.saveStep();
 
     setMathModal(false);
   };

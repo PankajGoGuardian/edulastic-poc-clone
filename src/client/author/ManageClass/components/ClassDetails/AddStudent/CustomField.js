@@ -39,6 +39,11 @@ const CustomField = ({
     email: [
       { validator: checkEmail, message: "User already part of this class section." },
       { required: true, message: "Please provide valid Username or Email id" },
+      {
+        // validation so that no white spaces are allowed
+        message: "Please provide valid Username or Email id",
+        pattern: /^\S*$/
+      },
       { max: 256, message: "Must less than 256 characters!" }
     ],
     fullName: [

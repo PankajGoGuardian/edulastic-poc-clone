@@ -155,8 +155,7 @@ const SchoolsTable = Form.create({ name: "bulkSubscribeForm" })(
         // if a certain subType is selected, all other subType rows are disabled
         disabled: !!(firstSchoolSubType && subType !== firstSchoolSubType),
         name: schoolId
-      }),
-      hideDefaultSelections: true
+      })
     };
 
     const renderActions = (subType = "free", record) => {

@@ -2007,7 +2007,8 @@ export const getCards = onSelectQuestionType => {
           template: ""
         },
         ui_style: {
-          type: "floating-keyboard"
+          type: "floating-keyboard",
+          min_width: 100
         },
         options: {},
         inputs: {},

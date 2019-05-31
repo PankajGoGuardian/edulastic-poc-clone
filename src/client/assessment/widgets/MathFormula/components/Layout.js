@@ -114,7 +114,12 @@ class Layout extends Component {
                 type="number"
                 style={{ width: 110 }}
                 value={uiStyle.min_width}
-                onChange={e => changeUiStyle("min_width", +e.target.value)}
+                onChange={e => {
+                  const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
+                  return changeUiStyle("min_width", val);
+                }}
+                max={400}
+                min={100}
               />
               <Label style={{ marginBottom: 0 }}>{t("component.options.responseMinimumWidth")}</Label>
             </FlexContainer>

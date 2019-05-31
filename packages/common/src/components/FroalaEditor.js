@@ -331,7 +331,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const dropDownCount = EditorRef.current.$el[0].querySelectorAll(".text-dropdown-btn").length;
+        const dropDownCount = this.$el[0].querySelectorAll(".text-dropdown-btn").length;
         this.html.insert(
           `<TextDropdown
             class="text-dropdown-btn"
@@ -356,7 +356,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const inputCount = EditorRef.current.$el[0].querySelectorAll(".text-input-btn").length;
+        const inputCount = this.$el[0].querySelectorAll(".text-input-btn").length;
         this.html.insert(
           `<TextInput
             class="text-input-btn"
@@ -380,7 +380,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const mathInputCount = EditorRef.current.$el[0].querySelectorAll(".math-input-btn").length;
+        const mathInputCount = this.$el[0].querySelectorAll(".math-input-btn").length;
         this.html.insert(
           `<MathInput
             class="math-input-btn"

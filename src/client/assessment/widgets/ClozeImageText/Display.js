@@ -86,7 +86,6 @@ class Display extends Component {
       maxHeight,
       maxWidth
     } = this.props;
-    console.log("props passed to display", maxHeight, maxWidth);
     const { userAnswers } = this.state;
     const width = !maxWidth
       ? item.imagescale
@@ -121,10 +120,10 @@ class Display extends Component {
             const dropTargetIndex = index;
             const btnStyle = {
               fontSize,
-              width: responseContainer.width,
-              top: responseContainer.top,
-              left: responseContainer.left,
-              height: responseContainer.height,
+              width: uiStyle.width || responseContainer.width,
+              top: uiStyle.top || responseContainer.top,
+              left: uiStyle.left || responseContainer.left,
+              height: uiStyle.height || responseContainer.height,
               border: showDashedBorder
                 ? `dashed 2px ${theme.widgets.clozeImageText.responseContainerDashedBorderColor}`
                 : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`,
@@ -134,8 +133,6 @@ class Display extends Component {
             };
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;
-            } else {
-              btnStyle.width = btnStyle.width;
             }
 
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);

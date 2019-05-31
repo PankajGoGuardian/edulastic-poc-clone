@@ -53,7 +53,7 @@ const Container = ({ t, onChange, uiStyle }) => {
             type="number"
             size="large"
             disabled={false}
-            onChange={e => onChange("width", +e.target.value)}
+            onChange={e => onChange("width", +e.target.value > 400 ? 400 : +e.target.value)}
             value={uiStyle.width}
           />
         </Col>

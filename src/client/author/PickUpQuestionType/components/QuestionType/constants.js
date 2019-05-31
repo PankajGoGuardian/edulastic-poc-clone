@@ -1153,6 +1153,9 @@ export const getCards = onSelectQuestionType => {
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         imageWidth: 0,
+        ui_style: {
+          width: 140
+        },
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

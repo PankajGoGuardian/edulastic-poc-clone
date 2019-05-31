@@ -5,7 +5,8 @@ import {
   SET_TEST_ID,
   RESET_CURRENT_TEST_ITEM,
   SET_RESUME_STATUS,
-  SET_TEST_LOADING_STATUS
+  SET_TEST_LOADING_STATUS,
+  COUNT_CHECK_ANSWER
 } from "../constants/actions";
 
 const initialState = {
@@ -15,7 +16,8 @@ const initialState = {
   currentItem: 0,
   title: "",
   loading: true,
-  settings: {}
+  settings: {},
+  answerCheckByItemId: {}
 };
 
 const test = (state = initialState, { payload, type }) => {
@@ -27,6 +29,7 @@ const test = (state = initialState, { payload, type }) => {
         title: payload.title,
         annotations: payload.annotations,
         docUrl: payload.docUrl,
+        answerCheckByItemId: payload.answerCheckByItemId,
         settings: {
           ...state.settings,
           ...payload.settings
@@ -64,6 +67,17 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         loading: payload
+      };
+    case COUNT_CHECK_ANSWER:
+      const answerCheckCount = state.answerCheckByItemId[payload.itemId]
+        ? state.answerCheckByItemId[payload.itemId]
+        : 0;
+      return {
+        ...state,
+        answerCheckByItemId: {
+          ...state.answerCheckByItemId,
+          [payload.itemId]: answerCheckCount + 1
+        }
       };
     default:
       return state;

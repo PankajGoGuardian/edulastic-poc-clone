@@ -67,7 +67,10 @@ function* loadTest({ payload }) {
       maxAnswerChecks:
         (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.maxAnswerChecks) || 0
     };
-
+    const answerCheckByItemId = {};
+    (testActivity.questionActivities || []).map(item => {
+      answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
+    });
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -75,7 +78,8 @@ function* loadTest({ payload }) {
         title: test.title,
         annotations: test.annotations,
         docUrl: test.docUrl,
-        settings
+        settings,
+        answerCheckByItemId
       }
     });
 

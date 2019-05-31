@@ -59,3 +59,19 @@ export const testLoadingSelector = createSelector(
   stateSelector,
   state => state.loading
 );
+
+export const answerChecksByIdSelector = createSelector(
+  stateSelector,
+  state => state.answerCheckByItemId
+);
+
+export const currentItemIdSelector = createSelector(
+  currentItemSelector,
+  state => state._id
+);
+
+export const currentItemAnswerChecksSelector = createSelector(
+  currentItemIdSelector,
+  answerChecksByIdSelector,
+  (current, answerCheckCounts) => answerCheckCounts[current]
+);

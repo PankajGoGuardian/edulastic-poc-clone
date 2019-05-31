@@ -10,10 +10,14 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
-const TestButton = ({ t, checkAnswerEvaluation, settings }) => (
+const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem }) => (
   <Container>
     {settings.maxAnswerChecks && (
-      <StyledButton onClick={checkAnswerEvaluation} data-cy="checkAnswer">
+      <StyledButton
+        onClick={checkAnswerEvaluation}
+        data-cy="checkAnswer"
+        disabled={answerChecksUsedForItem >= settings.maxAnswerChecks}
+      >
         <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
           {t("common.test.checkanswer")}
         </ButtonLink>
@@ -56,7 +60,12 @@ const StyledButton = styled(Button)`
   margin-right: 10px;
   background: transparent;
   height: 24px;
-
+  &[disabled] {
+    &:hover {
+      background: transparent;
+    }
+    background: transparent;
+  }
   &:hover {
     background: transparent;
   }

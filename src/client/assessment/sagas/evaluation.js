@@ -4,7 +4,7 @@ import { testItemsApi } from "@edulastic/api";
 import { getCurrentGroup } from "../../student/Login/ducks";
 
 // actions
-import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW } from "../constants/actions";
+import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW, COUNT_CHECK_ANSWER } from "../constants/actions";
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
 
 function* evaluateAnswers() {
@@ -47,6 +47,12 @@ function* evaluateAnswers() {
       type: ADD_ITEM_EVALUATION,
       payload: {
         ...result.evaluations
+      }
+    });
+    yield put({
+      type: COUNT_CHECK_ANSWER,
+      payload: {
+        itemId: id
       }
     });
     const msg = `score: ${result.score} / ${result.maxScore}`;

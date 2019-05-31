@@ -18,6 +18,7 @@ export const LOAD_TEST_ITEMS = "[test] load test items";
 export const LOAD_PREVIOUS_RESPONSES = "[test] load previouls responses";
 export const SET_RESUME_STATUS = "[test] set resume status";
 export const SET_TEST_LOADING_STATUS = "[test] set loading status";
+export const COUNT_CHECK_ANSWER = "[test] increase check answer count";
 
 // items
 export const RECEIVE_ITEMS_REQUEST = "[items] receive items request";

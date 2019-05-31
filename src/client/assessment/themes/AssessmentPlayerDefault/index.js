@@ -44,6 +44,7 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
 import { saveScratchPadAction } from "../../actions/userWork";
+import { currentItemAnswerChecksSelector } from "../../selectors/test";
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
@@ -101,7 +102,8 @@ class AssessmentPlayerDefault extends React.Component {
   changeTool = val => this.setState({ tool: val });
 
   changeTabItemState = value => {
-    const { checkAnswer, changePreview } = this.props;
+    const { checkAnswer, changePreview, answerChecksUsedForItem, settings } = this.props;
+    if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
     checkAnswer();
 
     changePreview(value);
@@ -248,7 +250,8 @@ class AssessmentPlayerDefault extends React.Component {
       gotoQuestion,
       settings,
       previewPlayer,
-      scratchPad
+      scratchPad,
+      answerChecksUsedForItem
     } = this.props;
 
     const {
@@ -383,7 +386,11 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton settings={settings} checkAnwser={() => this.changeTabItemState("check")} />
+                      <TestButton
+                        answerChecksUsedForItem={answerChecksUsedForItem}
+                        settings={settings}
+                        checkAnwser={() => this.changeTabItemState("check")}
+                      />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
                       <ToolBar
@@ -439,7 +446,8 @@ const enhance = compose(
       scratchPad: ownProps.items[ownProps.currentItem]
         ? state.userWork.present[ownProps.items[ownProps.currentItem]._id] || null
         : null,
-      settings: state.test.settings
+      settings: state.test.settings,
+      answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
     }),
     {
       checkAnswer: checkAnswerAction,

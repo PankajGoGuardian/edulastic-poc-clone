@@ -137,7 +137,7 @@ class Signup extends React.Component {
                                   message: t("component.signup.teacher.validinputname")
                                 }
                               ]
-                            })(<Input prefix={<img src={userIcon} alt="" />} />)}
+                            })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter your full name" />)}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                             {getFieldDecorator("email", {
@@ -151,7 +151,7 @@ class Signup extends React.Component {
                                   message: t("component.signup.teacher.validemail")
                                 }
                               ]
-                            })(<Input prefix={<img src={mailIcon} alt="" />} />)}
+                            })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter your school email" />)}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
                             {getFieldDecorator("password", {
@@ -161,7 +161,13 @@ class Signup extends React.Component {
                                   message: t("common.validation.emptypassword")
                                 }
                               ]
-                            })(<Input prefix={<img src={keyIcon} alt="" />} type="password" />)}
+                            })(
+                              <Input
+                                prefix={<img src={keyIcon} alt="" />}
+                                type="password"
+                                placeholder="Enter your password"
+                              />
+                            )}
                           </FormItem>
                           <FormItem>
                             <RegisterButton type="primary" htmlType="submit">

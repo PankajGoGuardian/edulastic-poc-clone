@@ -1,8 +1,8 @@
 import { createAction, createReducer } from "redux-starter-kit";
-import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { settingsApi } from "@edulastic/api";
 import { message } from "antd";
+import { get } from "lodash";
 
 // action types
 const RECEIVE_DISTRICT_POLICY_REQUEST = "[district policy] receive data request";
@@ -49,9 +49,9 @@ export const reducer = createReducer(initialState, {
     state.loading = false;
     state.data = {
       ...payload,
-      allowedDomainForStudents: payload.allowedDomainForStudents.toString(),
-      allowedDomainForTeachers: payload.allowedDomainForTeachers.toString(),
-      allowedDomainsForDistrict: payload.allowedDomainsForDistrict.toString()
+      allowedDomainForStudents: get(payload, ["allowedDomainForStudents"], "").toString(),
+      allowedDomainForTeachers: get(payload, ["allowedDomainForTeachers"], "").toString(),
+      allowedDomainsForDistrict: get(payload, ["allowedDomainsForDistrict"], "").toString()
     };
   },
   [RECEIVE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
@@ -65,9 +65,9 @@ export const reducer = createReducer(initialState, {
     state.updating = false;
     state.data = {
       ...payload,
-      allowedDomainForStudents: payload.allowedDomainForStudents.toString(),
-      allowedDomainForTeachers: payload.allowedDomainForTeachers.toString(),
-      allowedDomainsForDistrict: payload.allowedDomainsForDistrict.toString()
+      allowedDomainForStudents: get(payload, ["allowedDomainForStudents"], "").toString(),
+      allowedDomainForTeachers: get(payload, ["allowedDomainForTeachers"], "").toString(),
+      allowedDomainsForDistrict: get(payload, ["allowedDomainsForDistrict"], "").toString()
     };
   },
   [UPDATE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {

@@ -43,6 +43,7 @@ export const StyledUploadCSVDiv = styled.div`
 
 export const SuccessIcon = styled(Icon)`
   color: #52c41a;
+  margin-right: 10px;
 `;
 export const AlertMsgDiv = styled.div`
   display: flex;
@@ -57,6 +58,18 @@ export const AlertIcon = styled(Icon)`
 export const ConfirmP = styled.p`
   color: #1890ff
   margin-bottom: 10px;
+`;
+
+export const StatusDiv = styled.div`
+  display: flex;
+  align-items: center;
+  p {
+    margin: 0;
+  }
+`;
+
+export const SuccessP = styled.p`
+  color: #52c41a;
 `;
 
 export const AlertP = styled.p`

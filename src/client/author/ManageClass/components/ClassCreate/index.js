@@ -63,7 +63,7 @@ class ClassCreate extends React.Component {
     e.preventDefault();
     const { form, userId, userOrgData } = this.props;
     const { districtId } = userOrgData;
-    form.validateFields((err, values) => {
+    form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums } = this.props;
         const { standardSets, endDate, startDate, courseId, grade, subject } = values;

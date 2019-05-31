@@ -2,6 +2,7 @@ import { createAction, createReducer } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { delay } from "redux-saga";
 import { takeEvery, call, put, all } from "redux-saga/effects";
+
 import { courseApi } from "@edulastic/api";
 import { message } from "antd";
 import { groupBy, get } from "lodash";
@@ -297,8 +298,10 @@ function* receiveCourseListSaga({ payload }) {
 
 function* updateCourseSaga({ payload }) {
   try {
-    const updateCourse = yield call(courseApi.editCourse, payload);
+    const updateCourse = yield call(courseApi.editCourse, payload.uploadCSVData);
     yield put(updateCourseSuccessAction(updateCourse));
+    yield call(delay, 1000);
+    yield put(receiveCourseListAction(payload.searchData));
   } catch (err) {
     const errorMessage = "Update Course is failing";
     yield call(message.error, errorMessage);

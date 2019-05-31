@@ -266,10 +266,44 @@ class CoursesTable extends React.Component {
   };
 
   updateCourse = updatedCourseData => {
-    const { updateCourse } = this.props;
-    const { dataSource, editCourseKey } = this.state;
+    const { updateCourse, userOrgId } = this.props;
+    const { dataSource, editCourseKey, filtersData, sortedInfo, searchByName, currentPage, isShowActive } = this.state;
     const selectedSourceKey = dataSource.filter(item => item.key == editCourseKey);
-    updateCourse({ courseId: selectedSourceKey[0]._id, data: updatedCourseData });
+
+    let search = {};
+
+    if (searchByName.length > 0) {
+      search.name = { type: "cont", value: searchByName };
+    }
+
+    for (let i = 0; i < filtersData.length; i++) {
+      if (
+        filtersData[i].filtersColumn !== "" &&
+        filtersData[i].filtersValue !== "" &&
+        filtersData[i].filterStr !== ""
+      ) {
+        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+      }
+    }
+
+    const loadListJsonData = {
+      districtId: userOrgId,
+      limit: 25,
+      page: currentPage,
+      sortField: sortedInfo.columnKey,
+      order: sortedInfo.order,
+      search
+    };
+
+    if (isShowActive) loadListJsonData.active = 1;
+
+    updateCourse({
+      uploadCSVData: {
+        courseId: selectedSourceKey[0]._id,
+        data: updatedCourseData
+      },
+      searchData: loadListJsonData
+    });
 
     this.setState({
       editCourseModalVisible: false

@@ -14,25 +14,48 @@ class EditCourseModal extends React.Component {
         validateStatus: "success",
         validateMsg: ""
       },
-      showSpinName: false,
-      checkCourseExist: { totalCourses: 0, result: [] },
+      showSpin: false,
       numberValidate: {
         value: this.props.courseData.number,
         validateStatus: "success",
         validateMsg: ""
-      },
-      showSpinNumber: false,
-      checkCourseNumberExist: { totalCourses: 0, result: [] }
+      }
     };
   }
 
   onSaveCourse = async () => {
-    let { nameValidate, numberValidate, checkCourseNameExist, checkCourseNumberExist } = this.state;
+    let { nameValidate, numberValidate } = this.state;
+    const { courseData } = this.props;
+
+    if (nameValidate.value.length == 0) {
+      this.setState({
+        nameValidate: {
+          value: nameValidate.value,
+          validateMsg: "Please input course name",
+          validateStatus: "error"
+        }
+      });
+    }
+
+    if (numberValidate.value.length == 0) {
+      this.setState({
+        numberValidate: {
+          value: numberValidate.value,
+          validateMsg: "Please input course number",
+          validateStatus: "error"
+        }
+      });
+    }
 
     //check if name is exist
-    if (nameValidate.validateStatus === "success" && nameValidate.value.length > 0) {
-      this.setState({ showSpinName: true });
-      checkCourseNameExist = await courseApi.searchCourse({
+    if (
+      nameValidate.validateStatus === "success" &&
+      nameValidate.value.length > 0 &&
+      numberValidate.validateStatus === "success" &&
+      numberValidate.value.length > 0
+    ) {
+      this.setState({ showSpin: true });
+      const checkCourseExist = await courseApi.searchCourse({
         districtId: this.props.userOrgId,
         page: 1,
         limit: 25,
@@ -42,69 +65,35 @@ class EditCourseModal extends React.Component {
           name: {
             type: "eq",
             value: nameValidate.value
-          }
-        }
-      });
-      this.setState({ showSpinName: false, checkCourseNameExist });
-
-      if (checkCourseNameExist.totalCourses > 0 && checkCourseNameExist.result[0]._id !== this.props.courseData._id) {
-        nameValidate = {
-          value: nameValidate.value,
-          validateStatus: "error",
-          validateMsg: "Course name already exists"
-        };
-        this.setState({ nameValidate });
-      }
-    } else if (nameValidate.value.length == 0) {
-      nameValidate = {
-        value: nameValidate.value,
-        validateStatus: "error",
-        validateMsg: "Please input name"
-      };
-      this.setState({ nameValidate });
-    }
-
-    // check if course number exist
-    if (numberValidate.validateStatus === "success" && numberValidate.value.length > 0) {
-      this.setState({ showSpinNumber: true });
-      checkCourseNumberExist = await courseApi.searchCourse({
-        districtId: this.props.userOrgId,
-        page: 1,
-        limit: 25,
-        sortField: "number",
-        order: "asc",
-        search: {
+          },
           number: {
             type: "eq",
             value: numberValidate.value
           }
         }
       });
-      this.setState({ showSpinNumber: false, checkCourseNumberExist });
+
+      this.setState({ showSpin: false });
 
       if (
-        checkCourseNumberExist.totalCourses > 0 &&
-        checkCourseNumberExist.result[0]._id !== this.props.courseData._id
-      ) {
-        numberValidate = {
-          value: numberValidate.value,
-          validateStatus: "error",
-          validateMsg: "Course number already exists"
-        };
-        this.setState({ numberValidate });
+        checkCourseExist.totalCourses == 0 ||
+        (checkCourseExist.totalCourses == 1 && checkCourseExist.result[0]._id === courseData._id)
+      )
+        this.props.saveCourse({ name: nameValidate.value, number: numberValidate.value });
+      else {
+        this.setState({
+          nameValidate: {
+            value: nameValidate.value,
+            validateMsg: "Course name already exist",
+            validateStatus: "error"
+          },
+          numberValidate: {
+            value: numberValidate.value,
+            validateMsg: "Course number already exist",
+            validateStatus: "error"
+          }
+        });
       }
-    } else if (numberValidate.value.length == 0) {
-      numberValidate = {
-        value: numberValidate.value,
-        validateStatus: "error",
-        validateMsg: "Please input course number"
-      };
-      this.setState({ numberValidate });
-    }
-
-    if (nameValidate.validateStatus === "success" && numberValidate.validateStatus === "success") {
-      alert("Success");
-      // this.props.saveCourse({ name: nameValidate.value, number: numberValidate.value });
     }
   };
 
@@ -119,8 +108,7 @@ class EditCourseModal extends React.Component {
           value: e.target.value,
           validateStatus: "error",
           validateMsg: "Please input course name"
-        },
-        checkCourseExist: { totalCourses: 0, data: [] }
+        }
       });
     } else {
       this.setState({
@@ -128,8 +116,18 @@ class EditCourseModal extends React.Component {
           value: e.target.value,
           validateStatus: "success",
           validateMsg: ""
-        },
-        checkCourseExist: { totalCourses: 0, data: [] }
+        }
+      });
+    }
+
+    const numberValidate = { ...this.state.numberValidate };
+    if (numberValidate.value.length > 0) {
+      this.setState({
+        numberValidate: {
+          value: numberValidate.value,
+          validateStatus: "success",
+          validateMsg: ""
+        }
       });
     }
   };
@@ -141,8 +139,7 @@ class EditCourseModal extends React.Component {
           value: e.target.value,
           validateStatus: "error",
           validateMsg: "Please input course number"
-        },
-        checkCourseNumberExist: { totalCourses: 0, data: [] }
+        }
       });
     } else {
       this.setState({
@@ -150,15 +147,25 @@ class EditCourseModal extends React.Component {
           value: e.target.value,
           validateStatus: "success",
           validateMsg: ""
-        },
-        checkCourseNumberExist: { totalCourses: 0, data: [] }
+        }
+      });
+    }
+
+    const nameValidate = { ...this.state.nameValidate };
+    if (nameValidate.value.length > 0) {
+      this.setState({
+        nameValidate: {
+          value: nameValidate.value,
+          validateStatus: "success",
+          validateMsg: ""
+        }
       });
     }
   };
 
   render() {
     const { modalVisible, courseData } = this.props;
-    const { nameValidate, numberValidate, showSpinName, showSpinNumber } = this.state;
+    const { nameValidate, numberValidate, showSpin } = this.state;
     return (
       <Modal
         visible={modalVisible}
@@ -198,7 +205,7 @@ class EditCourseModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
-        {(showSpinName || showSpinNumber) && (
+        {showSpin && (
           <StyledSpinContainer>
             <StyledSpin size="large" />
           </StyledSpinContainer>

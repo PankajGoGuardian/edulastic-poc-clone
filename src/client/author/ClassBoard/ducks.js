@@ -111,6 +111,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
       score,
       maxScore
     } of questionActivities.filter(x => !x.disabled)) {
+      let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
@@ -136,13 +137,14 @@ export const getAggregateByQuestion = (entities, studentId) => {
         questionMap[_id].notStartedNum += 1;
       }
 
-      if (skipped) {
+      if (skipped && score === 0) {
         questionMap[_id].skippedNum += 1;
+        skippedx = true;
       }
 
       if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;
-      } else if (score === 0 && !notStarted && maxScore > 0) {
+      } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
         questionMap[_id].wrongNum += 1;
       }
 

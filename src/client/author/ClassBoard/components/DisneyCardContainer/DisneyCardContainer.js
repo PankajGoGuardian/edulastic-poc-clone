@@ -194,9 +194,9 @@ export default class DisneyCardContainer extends Component {
                   const weight = questionAct.weight;
                   if (questionAct.notStarted) {
                     return <SquareColorDisabled weight={weight} key={questionIndex} />;
-                  } else if (questionAct.skipped) {
+                  } else if (questionAct.skipped && questionAct.score === 0) {
                     return <SquareColorDivGray weight={weight} key={questionIndex} />;
-                  } else if (questionAct.score === questionAct.maxScore) {
+                  } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
                     return <SquareColorDivGreen weight={weight} key={questionIndex} />;
                   } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {
                     return <SquareColorDivYellow weight={weight} key={questionIndex} />;

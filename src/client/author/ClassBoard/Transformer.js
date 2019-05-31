@@ -32,7 +32,7 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             id: x.id,
             maxScore: index === 0 ? testItemsDataKeyed[testItemId].itemLevelScore : undefined,
             weight: questions.length,
-            disabled: x.scoringDisabled,
+            disabled: x.scoringDisabled || index > 0,
             testItemId,
             qids: questions.map(x => x.id)
           }))
@@ -104,7 +104,7 @@ export const transformGradeBookResponse = ({
   const testItemIds = test.testItems;
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
-
+  
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
 
   const studentTestActivities = keyBy(testActivities, "userId");
@@ -167,6 +167,9 @@ export const transformGradeBookResponse = ({
         }
         let { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
         const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+        if (score > 0 && skipped) {
+          skipped = false;
+        }
         if (_qids && _qids.length) {
           correct = score === questionMaxScore && score > 0;
           if (!correct) {

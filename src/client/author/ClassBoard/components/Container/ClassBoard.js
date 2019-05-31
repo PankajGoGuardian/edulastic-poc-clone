@@ -32,7 +32,7 @@ import Score from "../Score/Score";
 import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
 import Graph from "../ProgressGraph/ProgressGraph";
 import BarGraph from "../BarGraph/BarGraph";
-import ClassSelect from "../../../Shared/Components/ClassSelect/ClassSelect";
+import ClassSelect, { GenSelect } from "../../../Shared/Components/ClassSelect/ClassSelect";
 import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import HooksContainer from "../HooksContainer/HooksContainer";
@@ -257,6 +257,7 @@ class ClassBoard extends Component {
     selectedStudentsEntity = selectedStudentsEntity || {};
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
+    console.log("selectedQuestion", selectedQuestion);
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -414,14 +415,15 @@ class ClassBoard extends Component {
               itemId={this.state.itemId}
               question={{ id: this.state.selectedQid }}
             >
-              <ClassSelect
+              <GenSelect
                 classid="DI"
                 classname={
                   selectedTab === "Student"
                     ? classname
                     : firstQuestionEntities
-                        .filter(x => !(x.disabled || x.scoringDisabled))
-                        .map((x, index) => ({ name: `Q${index + 1}` }))
+                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled }))
+                        .filter(x => !x.disabled)
+                        .map(({ value }, index) => ({ value, name: `Q${index + 1}` }))
                 }
                 selected={selectedQuestion}
                 justifyContent="flex-end"

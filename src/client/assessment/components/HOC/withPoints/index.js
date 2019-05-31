@@ -23,6 +23,7 @@ export default WrappedComponent => {
               onChange={e => onChangePoints(+e.target.value)}
               style={{ width: 140, textAlign: "center", fontSize: 14 }}
               size="large"
+              min={0}
             />
             <PointsText>{t("component.correctanswers.points")}</PointsText>
           </Container>

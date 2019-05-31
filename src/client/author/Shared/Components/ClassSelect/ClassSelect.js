@@ -25,4 +25,25 @@ const ClassSelect = ({ classname, selected, handleChange, classid = "", justifyC
   );
 };
 
+export const GenSelect = ({ classname: nameValues, selected, handleChange, justifyContent }) => {
+  if (nameValues.length === 0) {
+    return null;
+  }
+  const selectedValue = selected < nameValues.length ? selected : 0;
+  return (
+    <FlexContainer justifyContent={justifyContent}>
+      <Container>
+        <StyledSelect value={`${selectedValue}`} onChange={handleChange}>
+          {nameValues.map(({ name, value }) => (
+            <Select.Option value={`${value}`} key={value}>
+              {/* {classid.length > 0 && <StyledClassID>{classid}</StyledClassID>} */}
+              {name}
+            </Select.Option>
+          ))}
+        </StyledSelect>
+      </Container>
+    </FlexContainer>
+  );
+};
+
 export default ClassSelect;

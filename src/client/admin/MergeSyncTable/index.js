@@ -163,7 +163,7 @@ function MergeSyncTable({
     cleverCountsInfo = {},
     edulasticCountsInfo = {}
   } = data;
-  const rosterSyncConfig = data.rosterSyncConfig ? data.rosterSyncConfig : {};
+  const rosterSyncConfig = data.rosterSyncConfig ? data.rosterSyncConfig : { orgId: districtId, orgType: "district" };
   return (
     <OuterDiv>
       <H2>Merge and Initialize Sync</H2>

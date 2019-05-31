@@ -80,6 +80,15 @@ class ChoicesForResponse extends Component {
       produce(item, draft => {
         if (draft.options[index] === undefined) draft.options[index] = [];
         draft.options[index][itemIndex] = e.target.value;
+        let maxLength = 0;
+        Object.keys(draft.options).forEach(option => {
+          draft.options[option].forEach(opt => {
+            maxLength = Math.max(maxLength, opt ? opt.length : 0);
+          });
+        });
+
+        const finalWidth = 40 + maxLength * 7;
+        draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);
       })
     );

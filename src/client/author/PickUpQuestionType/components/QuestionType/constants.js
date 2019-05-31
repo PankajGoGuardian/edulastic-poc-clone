@@ -1134,6 +1134,10 @@ export const getCards = onSelectQuestionType => {
           { top: 100, left: 120, width: 220, height: 40 },
           { top: 220, left: 200, width: 200, height: 40 }
         ],
+        ui_style: {
+          widthpx: 140,
+          responsecontainerindividuals: []
+        },
         stimulusReviewonly: "",
         instructorStimulus: "",
         rubricReference: "",

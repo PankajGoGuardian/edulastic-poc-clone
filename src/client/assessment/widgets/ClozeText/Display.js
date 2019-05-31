@@ -85,11 +85,9 @@ class ClozeTextDisplay extends Component {
   };
 
   selectChange = (value, index) => {
-    console.log("value", value, index);
     const { userAnswers: newAnswers } = this.state;
     const { onChange: changeAnswers } = this.props;
     newAnswers[index] = value;
-    console.log(newAnswers);
     this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
   };
@@ -119,7 +117,6 @@ class ClozeTextDisplay extends Component {
       }
       return;
     }
-
     this.selectChange(value, dropTargetIndex);
   };
 

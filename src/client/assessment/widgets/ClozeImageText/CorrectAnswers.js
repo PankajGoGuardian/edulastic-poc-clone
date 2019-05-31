@@ -77,6 +77,22 @@ class CorrectAnswers extends Component {
     );
   };
 
+  updateResponseBoxWidth = newData => {
+    let maxLength = 0;
+    newData.validation.valid_response.value.forEach(resp => {
+      maxLength = Math.max(maxLength, resp ? resp.length : 0);
+    });
+
+    newData.validation.alt_responses.forEach(arr => {
+      arr.value.forEach(resp => {
+        maxLength = Math.max(maxLength, resp ? resp.length : 0);
+      });
+    });
+    const finalWidth = 40 + maxLength * 7;
+    newData.ui_style.width = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+    return newData;
+  };
+
   updateCorrectValidationAnswers = answers => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
@@ -88,7 +104,8 @@ class CorrectAnswers extends Component {
       }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
-    setQuestionData(newData);
+    const updatedData = this.updateResponseBoxWidth(newData);
+    setQuestionData(updatedData);
   };
 
   updateAltCorrectValidationAnswers = (answers, tabIndex) => {
@@ -102,7 +119,8 @@ class CorrectAnswers extends Component {
     };
 
     newData.validation.alt_responses = updatedAltResponses;
-    setQuestionData(newData);
+    const updatedData = this.updateResponseBoxWidth(newData);
+    setQuestionData(updatedData);
   };
 
   handleUpdateCorrectScore = points => {

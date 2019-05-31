@@ -255,52 +255,53 @@ class Layout extends Component {
                 </SelectWrapper>
               </Col>
             </MarginRow>
-            {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
-              <Container key={index}>
-                <MarginRow gutter={20}>
-                  <Col md={12}>
-                    <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
-                  </Col>
-                  <Col md={12}>
-                    <Delete onClick={() => removeIndividual(index)}>X</Delete>
-                  </Col>
-                </MarginRow>
-                <MarginRow gutter={20}>
-                  <Col md={8}>
-                    <Label>{t("component.options.widthpx")}</Label>
-                    <Input
-                      type="number"
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
-                      value={responsecontainerindividual.widthpx}
-                    />
-                  </Col>
-                  <Col md={8}>
-                    <Label>{t("component.options.heightpx")}</Label>
-                    <Input
-                      type="number"
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
-                      value={responsecontainerindividual.heightpx}
-                    />
-                  </Col>
-                  <Col md={8}>
-                    <Label>{t("component.options.placeholder")}</Label>
-                    <Input
-                      size="large"
-                      disabled={false}
-                      containerStyle={{ width: 350 }}
-                      onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
-                      value={uiStyle.placeholder}
-                    />
-                  </Col>
-                </MarginRow>
-              </Container>
-            ))}
+            {uiStyle.responsecontainerindividuals &&
+              uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
+                <Container key={index}>
+                  <MarginRow gutter={20}>
+                    <Col md={12}>
+                      <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
+                    </Col>
+                    <Col md={12}>
+                      <Delete onClick={() => removeIndividual(index)}>X</Delete>
+                    </Col>
+                  </MarginRow>
+                  <MarginRow gutter={20}>
+                    <Col md={8}>
+                      <Label>{t("component.options.widthpx")}</Label>
+                      <Input
+                        type="number"
+                        size="large"
+                        disabled={false}
+                        containerStyle={{ width: 350 }}
+                        onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
+                        value={responsecontainerindividual.widthpx}
+                      />
+                    </Col>
+                    <Col md={8}>
+                      <Label>{t("component.options.heightpx")}</Label>
+                      <Input
+                        type="number"
+                        size="large"
+                        disabled={false}
+                        containerStyle={{ width: 350 }}
+                        onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
+                        value={responsecontainerindividual.heightpx}
+                      />
+                    </Col>
+                    <Col md={8}>
+                      <Label>{t("component.options.placeholder")}</Label>
+                      <Input
+                        size="large"
+                        disabled={false}
+                        containerStyle={{ width: 350 }}
+                        onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
+                        value={uiStyle.placeholder}
+                      />
+                    </Col>
+                  </MarginRow>
+                </Container>
+              ))}
             <MarginRow gutter={20}>
               <Col md={6}>
                 <Label>{t("component.options.responsecontainerindividual")}</Label>

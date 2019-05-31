@@ -13,7 +13,7 @@ const SortableItem = SortableElement(({ cyIndex, fontSize, columns = 1, value, d
     <FlexContainer style={{ flex: 1 }}>
       <div className="main">
         <DragHandle index={cyIndex} />
-        <div>
+        <div style={{ width: "100%" }}>
           <FocusInput
             style={{ background: "transparent", width: "100%" }}
             data-cy={`edit${cyIndex}`}

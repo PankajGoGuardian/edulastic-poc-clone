@@ -179,6 +179,7 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
+                    width: uiStyle.widthpx,
                     overflow: "hidden"
                   }}
                   className="imagelabeldragdrop-droppable active"

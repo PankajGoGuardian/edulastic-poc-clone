@@ -50,9 +50,10 @@ class CorrectAnswers extends Component {
           key={i}
           close
           type="primary"
-          onClose={() => {
+          onClose={event => {
+            event.stopPropagation();
             onRemoveAltResponses(i);
-            this.handleTabChange(0);
+            this.handleTabChange(i);
           }}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />

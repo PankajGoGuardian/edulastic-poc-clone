@@ -459,7 +459,6 @@ class CustomQuillComponent extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       active: false,
       firstFocus: !props.value,
@@ -678,6 +677,7 @@ class CustomQuillComponent extends React.Component {
       showDropdownBtn,
       showTextInputBtn
     } = this.props;
+    const { autoComplete, autoCorrect, spellCheck, autoCapitalize } = this.props;
     const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
     const numberPad = [
       "7",
@@ -702,7 +702,16 @@ class CustomQuillComponent extends React.Component {
       "="
     ];
     return (
-      <div id={inputId} data-cy="text-editor-container" className="text-editor" style={style}>
+      <div
+        id={inputId}
+        data-cy="text-editor-container"
+        autoComplete={autoComplete}
+        autoCorrect={autoCorrect}
+        spellCheck={spellCheck}
+        autoCapitalize={autoCapitalize}
+        className="text-editor"
+        style={style}
+      >
         {!custom && (
           <CustomToolbar
             key={`toolbar${quillKey}`}

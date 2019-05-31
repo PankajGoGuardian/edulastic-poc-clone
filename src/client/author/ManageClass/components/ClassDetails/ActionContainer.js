@@ -218,15 +218,17 @@ const ActionContainer = ({
 
   return (
     <>
-      <AddStudentModal
-        handleAdd={addStudent}
-        handleCancel={() => toggleModal("add")}
-        isOpen={isOpen.add}
-        submitted={submitted}
-        wrappedComponentRef={saveFormRef}
-        stds={selectedStudent}
-        isEdit={isEdit}
-      />
+      {isOpen.add && (
+        <AddStudentModal
+          handleAdd={addStudent}
+          handleCancel={() => toggleModal("add")}
+          isOpen={isOpen.add}
+          submitted={submitted}
+          wrappedComponentRef={saveFormRef}
+          stds={selectedStudent}
+          isEdit={isEdit}
+        />
+      )}
 
       <ResetPwd
         isOpen={isOpen.resetPwd}

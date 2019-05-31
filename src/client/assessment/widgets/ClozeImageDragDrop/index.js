@@ -137,9 +137,10 @@ class ClozeImageDragDrop extends Component {
       ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
-    const { showDraghandle, shuffleOptions, transparentResponses } = this.state;
-
     const duplicatedResponses = item.duplicated_responses || false;
+    const showDraghandle = item.show_draghandle || false;
+    const shuffleOptions = item.shuffle_options || false;
+    const transparentResponses = item.transparent_responses || false;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 

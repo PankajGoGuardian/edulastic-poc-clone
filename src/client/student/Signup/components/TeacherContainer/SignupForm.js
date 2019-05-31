@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { trim } from "lodash";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -49,7 +50,7 @@ class Signup extends React.Component {
         signup({
           password,
           email,
-          name,
+          name: trim(name),
           role: "teacher"
         });
       }

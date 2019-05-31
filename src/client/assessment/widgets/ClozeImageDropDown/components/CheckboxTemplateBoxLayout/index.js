@@ -71,6 +71,9 @@ const CheckboxTemplateBoxLayout = ({
         } else {
           btnStyle.width = btnStyle.widthpx;
         }
+        if (uiStyle.widthpx) {
+          btnStyle.width = `${uiStyle.widthpx}px`;
+        }
         let indexStr = "";
         switch (stemnumeration) {
           case "lowercase": {

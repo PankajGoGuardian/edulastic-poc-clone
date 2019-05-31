@@ -81,7 +81,6 @@ class Display extends Component {
       maxHeight,
       maxWidth
     } = this.props;
-    console.log("imageWidth passed to display", imageWidth);
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
     let newOptions;
@@ -171,7 +170,7 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
-                    width: uiStyle.widthpx,
+                    width: `${uiStyle.widthpx}px`,
                     overflow: "hidden"
                   }}
                   className="imagelabeldragdrop-droppable active"

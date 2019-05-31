@@ -147,6 +147,7 @@ export const reducer = createReducer(initialState, {
     state.creating = false;
     state.create = payload;
     payload.key = payload._id;
+    if (!payload.hasOwnProperty("classCount")) payload.classCount = 0;
     state.data = [payload, ...state.data].slice(0, 25);
   },
   [CREATE_COURSE_ERROR]: (state, { payload }) => {

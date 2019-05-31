@@ -341,8 +341,9 @@ class ComposeQuestion extends Component {
             style={{
               flexDirection: "column",
               alignItems: "flex-start",
-              overflowX: "auto",
-              overflowY: "hidden"
+              overflowX: "hidden",
+              overflowY: "hidden",
+              padding: "5px"
             }}
           >
             <ImageContainer

@@ -52,7 +52,7 @@ export const StyledTableButton = styled.a`
   }
 `;
 
-export const StyledFilterInput = styled(Input)`
+export const StyledFilterInput = styled(Input.Search)`
   margin-left: 20px;
   width: 300px;
 `;

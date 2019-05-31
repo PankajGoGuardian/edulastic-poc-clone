@@ -49,6 +49,7 @@ class SchoolsTable extends React.Component {
           filtersColumn: "",
           filtersValue: "",
           filterStr: "",
+          prevFilterStr: "",
           filterAdded: false
         }
       ],
@@ -125,15 +126,18 @@ class SchoolsTable extends React.Component {
 
   changeFilterColumn = (value, key) => {
     const filtersData = [...this.state.filtersData];
+    if (filtersData[key].filtersColumn === value) return;
+
     filtersData[key].filtersColumn = value;
-    if (value === "status") filtersData[key].filtersValue = "eq";
+    if (value === "status") {
+      filtersData[key].filtersValue = "eq";
+      filtersData[key].filterStr = "";
+      filtersData[key].prevFilterStr = "";
+    }
+
     this.setState({ filtersData });
 
-    if (
-      (filtersData[key].filterAdded || key == 2) &&
-      filtersData[key].filtersValue !== "" &&
-      filtersData[key].filterStr !== ""
-    ) {
+    if (filtersData[key].filtersValue !== "" && filtersData[key].filterStr !== "") {
       const { sortedInfo, searchByName, currentPage } = this.state;
       this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
     }
@@ -141,6 +145,8 @@ class SchoolsTable extends React.Component {
 
   changeFilterValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
+    if (filtersData[key].filtersValue === value) return;
+
     filtersData[key].filtersValue = value;
     this.setState({ filtersData });
 
@@ -154,15 +160,18 @@ class SchoolsTable extends React.Component {
     }
   };
 
-  onBlurFilterText = (e, key) => {
+  onSearchFilterText = (e, key) => {
     const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
+    if (e === filtersData[key].prevFilterStr) return;
+
+    filtersData[key].filterStr = e;
+    filtersData[key].prevFilterStr = e;
+    filtersData[key].filterAdded = true;
+
     this.setState({ filtersData });
 
-    if (filtersData[key].filterAdded || key == 2) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
-    }
+    const { sortedInfo, searchByName, currentPage } = this.state;
+    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   changeFilterText = (e, key) => {
@@ -173,7 +182,11 @@ class SchoolsTable extends React.Component {
 
   changeStatusValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
+
+    if (filtersData[key].filterStr === value) return;
+
     filtersData[key].filterStr = value;
+    filtersData.filterAdded = true;
     this.setState({ filtersData });
 
     if (filtersData[key].filterAdded || key == 2) {
@@ -183,19 +196,19 @@ class SchoolsTable extends React.Component {
   };
 
   addFilter = (e, key) => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+    const filtersData = [...this.state.filtersData];
     if (filtersData[key].filterAdded && filtersData.length == 3) return;
-    filtersData[key].filterAdded = true;
     if (filtersData.length < 3) {
       filtersData[key].filterAdded = true;
       filtersData.push({
         filtersColumn: "",
         filtersValue: "",
         filterStr: "",
+        prevFilterStr: "",
         filterAdded: false
       });
     }
-    this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage);
+    this.setState({ filtersData });
   };
 
   removeFilter = (e, key) => {
@@ -588,6 +601,12 @@ class SchoolsTable extends React.Component {
       const isAddFilterDisable =
         filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
 
+      let showRemoveButton = false;
+      if (i > 0) showRemoveButton = true;
+      else if (i == 0) {
+        showRemoveButton = !isAddFilterDisable && filtersData[i].filterAdded;
+      }
+
       const optValues = [];
       if (filtersData[i].filtersColumn === "status") {
         optValues.push(<Option value="eq">Equals</Option>);
@@ -624,10 +643,9 @@ class SchoolsTable extends React.Component {
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
+              onSearch={e => this.onSearchFilterText(e, i)}
               disabled={isFilterTextDisable}
               value={filtersData[i].filterStr}
-              onBlur={e => this.onBlurFilterText(e, i)}
             />
           ) : (
             <StyledFilterSelect
@@ -646,15 +664,17 @@ class SchoolsTable extends React.Component {
             <StyledFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
-              // disabled={isAddFilterDisable}
+              disabled={isAddFilterDisable || !filtersData[i].filterAdded || i < filtersData.length - 1}
             >
               + Add Filter
             </StyledFilterButton>
           )}
 
-          <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-            - Remove Filter
-          </StyledFilterButton>
+          {showRemoveButton && (
+            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+              - Remove Filter
+            </StyledFilterButton>
+          )}
         </StyledControlDiv>
       );
     }

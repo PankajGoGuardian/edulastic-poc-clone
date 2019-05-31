@@ -160,7 +160,7 @@ Extras.propTypes = {
 Extras.defaultProps = {
   children: null,
   isSection: false,
-  advancedAreOpen: false,
+  advancedAreOpen: true,
   fillSections: () => {},
   cleanSections: () => {}
 };

@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { SHOW } from "../../constants/constantsForQuestions";
-
 import ArrowPair from "./components/ArrowPair";
 import Crosses from "./components/Crosses";
 import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
-const LinePlot = ({ data, previewTab, validation, saveAnswer, gridParams, view }) => {
+const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
   const { width, height, margin } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);
@@ -29,10 +27,8 @@ const LinePlot = ({ data, previewTab, validation, saveAnswer, gridParams, view }
     }
   }, [data]);
 
-  const getPolylinePoints = () => {
-    const points = previewTab === SHOW ? validation.valid_response.value : localData;
-    return points.map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams)}`).join(" ");
-  };
+  const getPolylinePoints = () =>
+    localData.map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams)}`).join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -42,6 +38,9 @@ const LinePlot = ({ data, previewTab, validation, saveAnswer, gridParams, view }
       : null;
 
   const save = () => {
+    if (cursorY === null) {
+      return;
+    }
     setCursorY(null);
     setActiveIndex(null);
     setInitY(null);
@@ -90,11 +89,11 @@ const LinePlot = ({ data, previewTab, validation, saveAnswer, gridParams, view }
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
-        validation={validation}
-        bars={previewTab === SHOW ? validation.valid_response.value : localData}
+        bars={localData}
         view={view}
         onMouseDown={onMouseDown}
         gridParams={gridParams}
+        correct={correct}
       />
       <ArrowPair getActivePoint={getActivePoint} />
     </svg>
@@ -115,7 +114,7 @@ LinePlot.propTypes = {
   }).isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  validation: PropTypes.object.isRequired
+  correct: PropTypes.array.isRequired
 };
 
 export default withGrid(LinePlot);

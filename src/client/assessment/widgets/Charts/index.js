@@ -45,7 +45,7 @@ Chart.defaultProps = {
   item: {},
   userAnswer: [],
   testItem: false,
-  evaluation: "",
+  evaluation: null,
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {}

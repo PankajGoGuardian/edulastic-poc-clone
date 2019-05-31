@@ -1,12 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { get, cloneDeep } from "lodash";
+import { get } from "lodash";
 
 import { Paper, Stimulus, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { questionType } from "@edulastic/constants";
+import { charts as checkAnswerMethod } from "@edulastic/evaluators";
 
-import { CLEAR, PREVIEW } from "../../constants/constantsForQuestions";
+import { CLEAR, PREVIEW, CHECK, SHOW, EDIT } from "../../constants/constantsForQuestions";
 
 import { getFontSize } from "../../utils/helpers";
 import LineChart from "./LineChart";
@@ -16,11 +17,23 @@ import DotPlot from "./DotPlot";
 import LinePlot from "./LinePlot";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QuestionNumber";
 
-const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, view, showQuestionNumber, qIndex }) => {
+const ChartPreview = ({
+  item,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  previewTab,
+  view,
+  showQuestionNumber,
+  qIndex,
+  evaluation,
+  changePreviewTab
+}) => {
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
 
-  const { chart_data } = item;
+  const { chart_data, validation, ui_style } = item;
+  const { data } = chart_data;
 
   let CurrentChart = null;
 
@@ -44,17 +57,41 @@ const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, vie
     default:
   }
 
-  const passData =
-    userAnswer.length !== chart_data.data.length
-      ? {
-          ...chart_data,
-          gridParams: { ...item.ui_style }
-        }
-      : {
-          ...chart_data,
-          gridParams: { ...item.ui_style },
-          data: [...userAnswer]
-        };
+  const answerIsActual = () => {
+    if (userAnswer.length !== data.length) {
+      return false;
+    }
+    for (let i = 0; i < data.length; i++) {
+      if (data[i].x !== userAnswer[i].x) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const passData = {
+    ...chart_data
+  };
+  if (previewTab === SHOW) {
+    passData.data = validation.valid_response.value;
+  } else if (answerIsActual() || view === EDIT) {
+    passData.data = [...userAnswer];
+  }
+
+  const correct =
+    evaluation && evaluation.length && previewTab === CHECK
+      ? evaluation
+      : validation
+      ? checkAnswerMethod({
+          userResponse: passData.data,
+          validation
+        }).evaluation
+      : [];
+
+  const saveAnswerHandler = ans => {
+    changePreviewTab(CLEAR);
+    saveAnswer(ans);
+  };
 
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -65,10 +102,11 @@ const ChartPreview = ({ item, smallSize, saveAnswer, userAnswer, previewTab, vie
       </QuestionTitleWrapper>
       <CurrentChart
         {...passData}
+        gridParams={ui_style}
         view={view}
-        validation={cloneDeep(item.validation)}
         previewTab={previewTab}
-        saveAnswer={saveAnswer}
+        saveAnswer={saveAnswerHandler}
+        correct={correct}
       />
     </Paper>
   );
@@ -82,7 +120,9 @@ ChartPreview.propTypes = {
   userAnswer: PropTypes.array,
   view: PropTypes.string,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  evaluation: PropTypes.any,
+  changePreviewTab: PropTypes.func
 };
 
 ChartPreview.defaultProps = {
@@ -91,7 +131,9 @@ ChartPreview.defaultProps = {
   userAnswer: [],
   view: PREVIEW,
   qIndex: null,
-  showQuestionNumber: false
+  showQuestionNumber: false,
+  evaluation: null,
+  changePreviewTab: () => {}
 };
 
 export default withNamespaces("assessment")(ChartPreview);

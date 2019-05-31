@@ -24,6 +24,7 @@ const UiInputGroup = ({
         <Input
           size="large"
           type={firstInputType}
+          onBlur={onBlurFirstInput}
           value={firstFieldValue}
           onChange={e => onChange(firstAttr, firstInputType === "text" ? e.target.value : +e.target.value)}
         />

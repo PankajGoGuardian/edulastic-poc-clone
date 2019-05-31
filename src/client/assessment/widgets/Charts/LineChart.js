@@ -4,8 +4,6 @@ import { cloneDeep, isEqual } from "lodash";
 
 import { mainBlueColor } from "@edulastic/colors";
 
-import { SHOW } from "../../constants/constantsForQuestions";
-
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
@@ -13,7 +11,7 @@ import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 
-const LineChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }) => {
+const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
   const { width, height, margin } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -32,16 +30,10 @@ const LineChart = ({ data, previewTab, validation, saveAnswer, gridParams, view 
     }
   }, [data]);
 
-  useEffect(() => {
-    setLocalData(data);
-  }, []);
-
-  const getPolylinePoints = () => {
-    const points = previewTab === SHOW ? validation.valid_response.value : localData;
-    return points
+  const getPolylinePoints = () =>
+    localData
       .map((dot, index) => `${step * index + margin / 2 + padding},${convertUnitToPx(dot.y, gridParams)}`)
       .join(" ");
-  };
 
   const getActivePoint = index =>
     active !== null
@@ -51,6 +43,9 @@ const LineChart = ({ data, previewTab, validation, saveAnswer, gridParams, view 
       : null;
 
   const save = () => {
+    if (cursorY === null) {
+      return;
+    }
     setCursorY(null);
     setActiveIndex(null);
     setInitY(null);
@@ -105,11 +100,11 @@ const LineChart = ({ data, previewTab, validation, saveAnswer, gridParams, view 
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
-        validation={validation}
-        circles={previewTab === SHOW ? validation.valid_response.value : localData}
+        circles={localData}
         view={view}
         onMouseDown={onMouseDown}
         gridParams={gridParams}
+        correct={correct}
       />
     </svg>
   );
@@ -129,7 +124,7 @@ LineChart.propTypes = {
   }).isRequired,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
-  validation: PropTypes.object.isRequired
+  correct: PropTypes.array.isRequired
 };
 
 export default withGrid(LineChart);

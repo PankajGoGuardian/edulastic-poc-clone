@@ -8,9 +8,8 @@ import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
-import { SHOW } from "../../constants/constantsForQuestions";
 
-const BarChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }) => {
+const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
   const { width, height, margin } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -29,16 +28,10 @@ const BarChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }
     }
   }, [data]);
 
-  useEffect(() => {
-    setLocalData(data);
-  }, []);
-
-  const getPolylinePoints = () => {
-    const points = previewTab === SHOW ? validation.valid_response.value : localData;
-    return points
+  const getPolylinePoints = () =>
+    localData
       .map((dot, index) => `${step * index + margin / 2 + padding + step / 2},${convertUnitToPx(dot.y, gridParams)}`)
       .join(" ");
-  };
 
   const getActivePoint = index =>
     active !== null
@@ -48,6 +41,9 @@ const BarChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }
       : null;
 
   const save = () => {
+    if (cursorY === null) {
+      return;
+    }
     setCursorY(null);
     setActiveIndex(null);
     setInitY(null);
@@ -98,11 +94,11 @@ const BarChart = ({ data, previewTab, validation, saveAnswer, gridParams, view }
         activeIndex={activeIndex}
         onPointOver={setActive}
         previewTab={previewTab}
-        validation={validation}
-        bars={previewTab === SHOW ? validation.valid_response.value : localData}
+        bars={localData}
         view={view}
         onMouseDown={onMouseDown}
         gridParams={gridParams}
+        correct={correct}
       />
       <ArrowPair getActivePoint={getActivePoint} />
     </svg>
@@ -123,7 +119,7 @@ BarChart.propTypes = {
   }).isRequired,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
-  validation: PropTypes.object.isRequired
+  correct: PropTypes.array.isRequired
 };
 
 export default withGrid(BarChart);

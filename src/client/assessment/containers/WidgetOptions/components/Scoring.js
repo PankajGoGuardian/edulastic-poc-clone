@@ -292,7 +292,7 @@ Scoring.defaultProps = {
   noPaddingLeft: false,
   isSection: false,
   showSelect: true,
-  advancedAreOpen: false,
+  advancedAreOpen: true,
   fillSections: () => {},
   cleanSections: () => {}
 };

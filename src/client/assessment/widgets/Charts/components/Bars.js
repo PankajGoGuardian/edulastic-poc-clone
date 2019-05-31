@@ -1,15 +1,15 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
-import { isEqual } from "lodash";
 
 import { red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
+import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
+
 import { Bar, ActiveBar } from "../styled";
-import { EDIT, CLEAR } from "../../../constants/constantsForQuestions";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
-const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, validation, previewTab }) => {
+const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
   const { margin, yAxisMin } = gridParams;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
@@ -31,34 +31,14 @@ const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, v
     setHoveredIndex(index);
   };
 
-  const newValidation = [validation.valid_response, ...validation.alt_responses];
+  const renderValidationIcons = index => (
+    <g transform={`translate(${getCenterX(index) + (step * 0.8) / 2 - 6},${getCenterY(bars[index]) - 30})`}>
+      {correct[index] && <IconCheck color={green} width={12} height={12} />}
+      {!correct[index] && <IconClose color={red} width={12} height={12} />}
+    </g>
+  );
 
-  let matches = 0;
-  let validatingIndex = 0;
-
-  newValidation.forEach(({ value }, mainIndex) => {
-    const currentMatches = value.filter((ans, ind) => isEqual(ans.y.toFixed(4), bars[ind].y.toFixed(4))).length;
-    matches = Math.max(currentMatches, matches);
-    if (matches === currentMatches) {
-      validatingIndex = mainIndex;
-    }
-  });
-  const renderValidationIcons = index => {
-    if (isEqual(newValidation[validatingIndex].value[index].y.toFixed(4), bars[index].y.toFixed(4))) {
-      return (
-        <g transform={`translate(${getCenterX(index) + (step * 0.8) / 2 - 6},${getCenterY(bars[index]) - 30})`}>
-          <IconCheck color={green} width={12} height={12} />
-        </g>
-      );
-    }
-    return (
-      <g transform={`translate(${getCenterX(index) + (step * 0.8) / 2 - 6},${getCenterY(bars[index]) - 30})`}>
-        <IconClose color={red} width={12} height={12} />
-      </g>
-    );
-  };
-
-  const getBarHeight = y => convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams);
+  const getBarHeight = y => Math.abs(convertUnitToPx(yAxisMin, gridParams) - convertUnitToPx(y, gridParams));
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
@@ -66,7 +46,7 @@ const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, v
     <Fragment>
       {bars.map((dot, index) => (
         <Fragment>
-          {previewTab !== CLEAR && renderValidationIcons(index)}
+          {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
           <Bar
             onMouseEnter={() => setHoveredIndex(index)}
             onMouseLeave={() => setHoveredIndex(null)}
@@ -108,14 +88,10 @@ Bars.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired,
-  previewTab: PropTypes.string,
-  validation: PropTypes.object
+  correct: PropTypes.array.isRequired,
+  previewTab: PropTypes.string
 };
 Bars.defaultProps = {
-  previewTab: CLEAR,
-  validation: {
-    valid_response: { value: [] },
-    alt_responses: [{ value: [] }]
-  }
+  previewTab: CLEAR
 };
 export default Bars;

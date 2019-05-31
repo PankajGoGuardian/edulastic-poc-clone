@@ -122,6 +122,7 @@ const EssayRichTextPreview = ({
               maxHeight,
               fontSize
             }}
+            placeholder={placeholder}
             onChange={handleTextChange}
             defaultValue={
               smallSize ? t("component.essayText.rich.templateText") : Array.isArray(userAnswer) ? "" : userAnswer

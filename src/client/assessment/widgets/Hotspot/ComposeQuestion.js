@@ -39,8 +39,8 @@ class ComposeQuestion extends Component {
 
     const { image } = item;
 
-    const width = image ? image.width : 900;
-    const height = image ? image.height : 470;
+    const width = image ? image.width : 700;
+    const height = image ? image.height : 600;
     const altText = image ? image.altText : "";
     const file = image ? image.source : "";
 
@@ -56,7 +56,11 @@ class ComposeQuestion extends Component {
     const handleImageToolbarChange = prop => val => {
       setQuestionData(
         produce(item, draft => {
-          draft.image[prop] = val;
+          if (prop === "width") {
+            draft.image[prop] = val > 700 ? 700 : val;
+          } else if (prop === "height") {
+            draft.image[prop] = val > 600 ? 600 : val;
+          }
           updateVariables(draft);
         })
       );
@@ -113,7 +117,14 @@ class ComposeQuestion extends Component {
             >
               <input {...getInputProps()} />
 
-              <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
+              <StyledDropZone
+                style={{
+                  alignItems: "none"
+                }}
+                loading={loading}
+                isDragActive={isDragActive}
+                thumb={thumb}
+              />
             </div>
           )}
         </Dropzone>

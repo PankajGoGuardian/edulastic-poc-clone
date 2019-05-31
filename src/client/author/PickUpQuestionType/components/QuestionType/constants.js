@@ -571,9 +571,9 @@ export const getCards = onSelectQuestionType => {
         type: questionType.HOTSPOT,
         image: {
           source: "https://assets.learnosity.com/organisations/1/bead7655-fb71-41af-aeea-9e08a47eac68.png",
-          width: 900,
+          width: 700,
           altText: "",
-          height: 470
+          height: 600
         },
         areas: [],
         previewAreas,

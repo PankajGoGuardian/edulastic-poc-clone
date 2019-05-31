@@ -2,6 +2,8 @@ import styled from "styled-components";
 
 export const CanvasContainer = styled.div`
   position: relative;
+  height: ${({ height }) => (!height ? null : height)};
+  width: ${({ width }) => (!width ? null : width)};
   img {
     user-select: none;
   }

@@ -180,8 +180,8 @@ const HighlightImagePreview = ({
 
   const renderImage = () =>
     file ? (
-      <div style={{ width: width > 700 ? 650 : width - 50, height: "auto", paddingLeft: width > 650 ? "0px" : "20px" }}>
-        <img src={file} alt={altText} width={"100%"} height={"auto"} />
+      <div style={{ width: "100%", height: "100%", paddingLeft: width > 650 ? "0px" : "20px" }}>
+        <img src={file} alt={altText} style={{ width: "95%", height: "95%" }} />
       </div>
     ) : (
       <div style={{ width, height }} />
@@ -189,9 +189,9 @@ const HighlightImagePreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <div style={{ height: height + 10 }} ref={canvasContainerRef}>
-        <CanvasContainer>
-          <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
+      <div style={{ width, height, maxHeight: height, maxWidth: width }} ref={canvasContainerRef}>
+        <CanvasContainer height={"90%"} width={"90%"}>
+          <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
             {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}

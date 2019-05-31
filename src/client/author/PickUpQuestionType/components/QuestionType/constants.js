@@ -626,7 +626,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "[This is the stem.]",
         type: questionType.ESSAY_RICH_TEXT,
         show_word_count: true,
-        max_word: 5,
+        max_word: 1000,
         show_word_limit: ON_LIMIT,
         validation: { max_score: 1 },
         formatting_options: [
@@ -668,7 +668,7 @@ export const getCards = onSelectQuestionType => {
         show_copy: true,
         show_cut: true,
         show_paste: true,
-        max_word: 5,
+        max_word: 1000,
         show_word_limit: ON_LIMIT,
         show_word_count: true,
         ui_style: { min_height: 300 },

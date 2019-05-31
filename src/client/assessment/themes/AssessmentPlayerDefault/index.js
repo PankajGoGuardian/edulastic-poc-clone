@@ -383,7 +383,7 @@ class AssessmentPlayerDefault extends React.Component {
                       />
                     )}
                     {windowWidth >= MEDIUM_DESKTOP_WIDTH && (
-                      <TestButton checkAnwser={() => this.changeTabItemState("check")} />
+                      <TestButton settings={settings} checkAnwser={() => this.changeTabItemState("check")} />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
                       <ToolBar

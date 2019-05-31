@@ -63,7 +63,9 @@ function* loadTest({ payload }) {
 
     const settings = {
       calcType:
-        (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE
+        (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE,
+      maxAnswerChecks:
+        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.maxAnswerChecks) || 0
     };
 
     yield put({

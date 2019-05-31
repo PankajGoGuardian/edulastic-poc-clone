@@ -52,6 +52,8 @@ function* evaluateAnswers() {
     const msg = `score: ${result.score} / ${result.maxScore}`;
     yield call(message.success, msg, 0.5);
   } catch (err) {
+    if (err.status === 403) message.error("Check answer limit exceeded for the item");
+    else message.error("Check answer failed");
     console.log(err);
   }
 }

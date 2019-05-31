@@ -10,13 +10,16 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
-const TestButton = ({ t, checkAnswerEvaluation }) => (
+const TestButton = ({ t, checkAnswerEvaluation, settings }) => (
   <Container>
-    <StyledButton onClick={checkAnswerEvaluation} data-cy="checkAnswer">
-      <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
-        {t("common.test.checkanswer")}
-      </ButtonLink>
-    </StyledButton>
+    {settings.maxAnswerChecks && (
+      <StyledButton onClick={checkAnswerEvaluation} data-cy="checkAnswer">
+        <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
+          {t("common.test.checkanswer")}
+        </ButtonLink>
+      </StyledButton>
+    )}
+
     <StyledButton>
       <ButtonLink color="primary" icon={<IconLightBulb color={white} />} style={{ color: white }}>
         {t("common.test.hint")}

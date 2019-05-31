@@ -158,7 +158,7 @@ class Signup extends React.Component {
                               rules: [
                                 {
                                   required: true,
-                                  message: t("common.validation.emptypassword")
+                                  message: t("component.signup.teacher.validpassword")
                                 }
                               ]
                             })(

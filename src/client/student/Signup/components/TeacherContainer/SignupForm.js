@@ -49,7 +49,7 @@ class Signup extends React.Component {
       if (!err) {
         signup({
           password,
-          email,
+          email: trim(email),
           name: trim(name),
           role: "teacher"
         });
@@ -77,6 +77,8 @@ class Signup extends React.Component {
         xs: { span: 24 }
       }
     };
+
+    const changeValidValue = value => trim(value);
 
     return (
       <div>
@@ -143,6 +145,9 @@ class Signup extends React.Component {
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                             {getFieldDecorator("email", {
                               rules: [
+                                {
+                                  transform: changeValidValue
+                                },
                                 {
                                   type: "email",
                                   message: t("component.signup.teacher.validemail")

@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Form, Input, Button, Checkbox } from "antd";
 import styled from "styled-components";
 import { compose } from "redux";
+import { trim } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
@@ -34,7 +35,7 @@ class LoginContainer extends React.Component {
       if (!err) {
         login({
           password,
-          email
+          email: trim(email)
         });
       }
     });
@@ -87,10 +88,6 @@ class LoginContainer extends React.Component {
                     <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
                       {getFieldDecorator("email", {
                         rules: [
-                          {
-                            type: "email",
-                            message: t("common.validation.validemail")
-                          },
                           {
                             required: true,
                             message: t("common.validation.emptyemailid")

@@ -94,7 +94,7 @@ class Scoring extends Component {
     };
 
     const isAutomarkChecked = get(questionData, "validation.automarkable", false);
-    const maxScore = get(questionData, "validation.max_score", 0);
+    const maxScore = get(questionData, "validation.max_score", 1);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
     const ColWrapper = props => {

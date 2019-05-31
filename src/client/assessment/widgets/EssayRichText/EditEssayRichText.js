@@ -45,7 +45,13 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
         setQuestionData={setQuestionData}
       />
 
-      <FormattingOptions item={item} act={act} fillSections={fillSections} cleanSections={cleanSections} />
+      <FormattingOptions
+        item={item}
+        act={act}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Scoring

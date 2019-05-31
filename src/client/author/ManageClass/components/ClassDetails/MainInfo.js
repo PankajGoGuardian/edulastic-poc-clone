@@ -3,11 +3,10 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import * as moment from "moment";
 import { MainContainer, LeftWrapper, MidWrapper, RightWrapper, Image, FieldValue } from "./styled";
+import defaultImage from "../../../src/assets/manageclass/abstract.jpg";
 import selectsData from "../../../TestPage/components/common/selectsData";
 
 const { allGrades, allSubjects } = selectsData;
-
-const defaultImage = "https://fakeimg.pl/1000x300/";
 
 const MainInfo = ({ entity = {} }) => {
   // eslint-disable-next-line max-len

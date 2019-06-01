@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { connect } from "react-redux";
+import { updateVariables } from "../../utils/variables";
 
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -32,6 +33,7 @@ class ComposeQuestion extends Component {
       setQuestionData(
         produce(item, draft => {
           draft[prop] = uiStyle;
+          updateVariables(draft);
         })
       );
     };

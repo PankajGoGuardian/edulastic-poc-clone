@@ -120,7 +120,13 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
         cleanSections={cleanSections}
       />
 
-      <CanvasSubtitle item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
+      <CanvasSubtitle
+        item={item}
+        theme={theme}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        setQuestionData={setQuestionData}
+      />
 
       <ShadesSubtitle item={item} fillSections={fillSections} cleanSections={cleanSections} />
 

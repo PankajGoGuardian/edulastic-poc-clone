@@ -96,6 +96,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   const mathFieldRef = useRef(null);
 
   const [showMathModal, setMathModal] = useState(false);
+  const [mathModalMode, setMathModalMode] = useState("full");
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
@@ -121,6 +122,12 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
           if (closestMathParent) {
             this.selection.save();
             setCurrentLatex(closestMathParent.getAttribute("data-latex"));
+            const mqeditable = closestMathParent.getAttribute("mqeditable");
+            if (mqeditable === "false") {
+              setMathModalMode("readonly");
+            } else {
+              setMathModalMode("full");
+            }
             setCurrentMathEl(closestMathParent);
             setMathModal(true);
           } else {
@@ -362,6 +369,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   return (
     <>
       <MathModal
+        readOnly={mathModalMode === "readonly"}
         show={showMathModal}
         symbols={symbols}
         numberPad={numberPad}

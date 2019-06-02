@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
+import { Icon, Select, message, Button, Menu } from "antd";
 const Option = Select.Option;
 
 import {
@@ -23,6 +23,7 @@ import {
 
 import AddClassModal from "./AddClassModal/AddClassModal";
 import EditClassModal from "./EditClassModal/EditClassModal";
+import ArchiveClassModal from "./ArchiveClassModal/ArchiveClassModal";
 
 import {
   receiveClassListAction,
@@ -54,6 +55,7 @@ class ClassesTable extends React.Component {
       selectedRowKeys: [],
       addClassModalVisible: false,
       editClassModalVisible: false,
+      archiveClassModalVisible: false,
       editClassKey: "undefined",
       filters: {
         column: "",
@@ -61,7 +63,8 @@ class ClassesTable extends React.Component {
         text: ""
       },
       filterAdded: false,
-      currentPage: 1
+      currentPage: 1,
+      selectedArchiveClasses: []
     };
 
     this.columns = [
@@ -92,17 +95,16 @@ class ClassesTable extends React.Component {
       },
       {
         dataIndex: "operation",
+        width: "94px",
         render: (text, record) => {
           return (
             <React.Fragment>
               <StyledTableButton onClick={() => this.onEditClass(record.key)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledTableButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledTableButton>
-              </Popconfirm>
+              <StyledTableButton onClick={() => this.handleDelete(record.key)}>
+                <Icon type="delete" theme="twoTone" />
+              </StyledTableButton>
             </React.Fragment>
           );
         }
@@ -116,7 +118,7 @@ class ClassesTable extends React.Component {
     loadClassListData({
       districtId: userOrgId,
       page: 1,
-      limit: 10,
+      limit: 25,
       search: {
         institutionIds: [],
         codes: [],
@@ -154,14 +156,32 @@ class ClassesTable extends React.Component {
     });
   };
 
+  onArchiveClass = () => {
+    const { dataSource, selectedRowKeys } = this.state;
+    const selectedClasses = dataSource.filter(item => {
+      const selectedClass = selectedRowKeys.filter(row => row === item.key);
+      return selectedClass.length > 0;
+    });
+
+    for (let i = 0; i < selectedClasses.length; i++) {
+      if (selectedClasses[i].active != 0) {
+        message.error("Please select active classes");
+        return;
+      }
+    }
+
+    this.setState({
+      selectedArchiveClasses: selectedClasses,
+      archiveClassModalVisible: true
+    });
+  };
+
   handleDelete = key => {
-    const data = [...this.state.dataSource];
-    const { userOrgId } = this.props;
-
-    const selectedClass = data.filter(item => item.key === key);
-
-    const { deleteClass } = this.props;
-    deleteClass([{ groupId: selectedClass[0]._id, districtId: userOrgId }]);
+    const dataSource = [...this.state.dataSource];
+    this.setState({
+      selectedArchiveClasses: dataSource.filter(item => item.key === key),
+      archiveClassModalVisible: true
+    });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -264,7 +284,8 @@ class ClassesTable extends React.Component {
         message.error("Please select single class to edit.");
       }
     } else if (e.key === "archive selected class") {
-      console.log("archive selected class clicked");
+      if (selectedRowKeys.length > 0) this.onArchiveClass();
+      else message.error("Please select class to archive.");
     } else if (e.key === "bulk edit") {
       console.log("bulk edit clicked");
     }
@@ -333,6 +354,22 @@ class ClassesTable extends React.Component {
     loadClassListData({ districtId: userOrgId, limit: 10, page: pageNumber, search });
   };
 
+  archiveClass = () => {
+    const { selectedArchiveClasses } = this.state;
+    const { userOrgId, deleteClass } = this.props;
+
+    const selectedClass = [];
+    selectedArchiveClasses.map(row => {
+      selectedClass.push({ groupId: row._id, districtId: userOrgId });
+    });
+    this.setState({ archiveClassModalVisible: false });
+    deleteClass(selectedClass);
+  };
+
+  closeArchiveModal = () => {
+    this.setState({ archiveClassModalVisible: false });
+  };
+
   render() {
     const columns = this.columns.map(col => {
       return {
@@ -345,10 +382,12 @@ class ClassesTable extends React.Component {
       selectedRowKeys,
       addClassModalVisible,
       editClassModalVisible,
+      archiveClassModalVisible,
       editClassKey,
       filters,
       filterAdded,
-      currentPage
+      currentPage,
+      selectedArchiveClasses
     } = this.state;
 
     const rowSelection = {
@@ -462,13 +501,24 @@ class ClassesTable extends React.Component {
           />
         )}
 
-        <AddClassModal
-          modalVisible={addClassModalVisible}
-          addClass={this.addClass}
-          closeModal={this.closeAddClassModal}
-          schoolsData={schoolsData}
-          teacherList={teacherList}
-        />
+        {addClassModalVisible && (
+          <AddClassModal
+            modalVisible={addClassModalVisible}
+            addClass={this.addClass}
+            closeModal={this.closeAddClassModal}
+            schoolsData={schoolsData}
+            teacherList={teacherList}
+          />
+        )}
+
+        {archiveClassModalVisible && (
+          <ArchiveClassModal
+            modalVisible={archiveClassModalVisible}
+            archiveClass={this.archiveClass}
+            closeModal={this.closeArchiveModal}
+            classData={selectedArchiveClasses}
+          />
+        )}
       </StyledTableContainer>
     );
   }

@@ -128,15 +128,8 @@ export const reducer = createReducer(initialState, {
     state.deleting = true;
   },
   [DELETE_CLASS_SUCCESS]: (state, { payload }) => {
-    (state.delete = payload),
-      (state.deleting = false),
-      (state.data = state.data.filter(classData => {
-        let nMatchCount = 0;
-        for (let i = 0; i < payload.length; i++) {
-          if (payload[i].groupId === classData._id) nMatchCount++;
-        }
-        if (nMatchCount == 0) return classData;
-      }));
+    state.delete = payload;
+    state.deleting = false;
   },
   [DELETE_CLASS_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -209,6 +202,7 @@ function* deleteClassSaga({ payload }) {
       yield call(groupApi.deleteGroup, payload[i]);
     }
     yield put(deleteClassSuccessAction(payload));
+    yield put(receiveClassListAction());
   } catch (err) {
     const errorMessage = "Delete Class is failing";
     yield call(message.error, errorMessage);

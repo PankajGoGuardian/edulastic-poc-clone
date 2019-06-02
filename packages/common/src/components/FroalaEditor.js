@@ -5,7 +5,7 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { message } from "antd";
-import { debounce } from "lodash";
+import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
@@ -14,7 +14,6 @@ import "font-awesome/css/font-awesome.css";
 import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
-import { withMathFormula } from "../HOC/withMathFormula";
 
 import { replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
@@ -168,10 +167,8 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   };
 
   const getMathHtml = latex => {
-    if (!mathField) return latex;
-    mathField.latex(latex);
-
-    return mathFieldRef.current.outerHTML;
+    if (!katex) return latex;
+    return katex.renderToString(latex);
   };
 
   const setChange = val => {

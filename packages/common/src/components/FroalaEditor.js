@@ -5,7 +5,6 @@ import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { message } from "antd";
-import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 import "froala-editor/css/froala_style.min.css";
@@ -16,6 +15,7 @@ import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 
 import { replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { WithResources } from "../HOC/withResources";
 
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
@@ -398,4 +398,16 @@ CustomEditor.defaultProps = {
   readOnly: false
 };
 
-export default withMathFormula(CustomEditor);
+export default props => (
+  <WithResources
+    resources={[
+      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.css",
+      "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+    ]}
+    fallBack={<span />}
+    onLoaded={() => {}}
+  >
+    <CustomEditor {...props} />
+  </WithResources>
+);

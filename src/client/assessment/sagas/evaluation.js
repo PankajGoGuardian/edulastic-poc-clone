@@ -3,6 +3,7 @@ import { message } from "antd";
 import { testItemsApi } from "@edulastic/api";
 import { getCurrentGroup } from "../../student/Login/ducks";
 
+import { getQuestionIds } from "./items";
 // actions
 import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW, COUNT_CHECK_ANSWER } from "../constants/actions";
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
@@ -22,12 +23,27 @@ function* evaluateAnswers() {
     });
 
     const { items, currentItem } = yield select(state => state.test);
-    const id = items[currentItem]._id;
-    const result = yield call(testItemsApi.evaluation, id, {
+    const testItemId = items[currentItem]._id;
+    const shuffledOptions = yield select(state => state.shuffledOptions);
+    const questions = getQuestionIds(items[currentItem]);
+    const shuffles = {};
+    questions.forEach(question => {
+      if (shuffledOptions[question]) {
+        shuffles[question] = shuffledOptions[question];
+      }
+    });
+    const userWork = yield select(({ userWork }) => userWork.present[testItemId]);
+    const activity = {
       answers: userResponse,
       groupId,
-      testActivityId
-    });
+      testActivityId,
+      //TODO Need to pick as per the bookmark button status
+      reviewLater: false,
+      shuffledOptions: shuffles
+      //TODO timeSpent:{}
+    };
+    if (userWork) activity.userWork = userWork;
+    const result = yield call(testItemsApi.evaluation, testItemId, activity);
 
     yield put({
       type: CHANGE_PREVIEW,
@@ -52,7 +68,7 @@ function* evaluateAnswers() {
     yield put({
       type: COUNT_CHECK_ANSWER,
       payload: {
-        itemId: id
+        itemId: testItemId
       }
     });
     const msg = `score: ${result.score} / ${result.maxScore}`;

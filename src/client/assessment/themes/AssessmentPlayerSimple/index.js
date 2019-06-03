@@ -6,7 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 //actions
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
-
+import { currentItemAnswerChecksSelector } from "../../selectors/test";
 //components
 
 import { Container } from "../common";
@@ -52,8 +52,8 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   onCheckAnswer = () => {
-    const { checkAnswer } = this.props;
-    checkAnswer();
+    const { checkAnswer, settings, answerChecksUsedForItem } = this.props;
+    if (settings.maxAnswerChecks > answerChecksUsedForItem) checkAnswer();
   };
 
   openExitPopup = () => {
@@ -70,7 +70,7 @@ class AssessmentPlayerSimple extends React.Component {
   };
 
   render() {
-    const { theme, t, items, currentItem, view: previewTab, questions } = this.props;
+    const { theme, t, items, currentItem, view: previewTab, questions, answerChecksUsedForItem, settings } = this.props;
     const { showExitPopup } = this.state;
     const dropdownOptions = Array.isArray(items) ? items.map((item, index) => index) : [];
 
@@ -87,6 +87,8 @@ class AssessmentPlayerSimple extends React.Component {
             previewTab={previewTab}
             dropdownOptions={dropdownOptions}
             onCheckAnswer={this.onCheckAnswer}
+            answerChecksUsedForItem={answerChecksUsedForItem}
+            settings={settings}
             t={t}
             questions={questions}
           />
@@ -101,7 +103,9 @@ export default connect(
   state => ({
     evaluation: state.evaluation,
     preview: state.view.preview,
-    questions: state.assessmentplayerQuestions.byId
+    questions: state.assessmentplayerQuestions.byId,
+    settings: state.test.settings,
+    answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
   }),
   {
     checkAnswer: checkAnswerEvaluation

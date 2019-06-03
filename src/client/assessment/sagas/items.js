@@ -47,7 +47,7 @@ function* receiveItemSaga({ payload }) {
 }
 
 // fetch all questionIds from item
-const getQuestionIds = item => {
+export const getQuestionIds = item => {
   let questions = [];
   item.rows.forEach(row => {
     questions = [...questions, ...row.widgets.map(widget => widget.reference)].filter(q => !!q);

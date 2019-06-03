@@ -4,14 +4,25 @@ import { FlexContainer } from "../common";
 
 import { IPAD_PORTRAIT_WIDTH } from "../../constants/others";
 
-const PlayerFooter = ({ onCheckAnswer, isFirst, isLast, moveToPrev, moveToNext, t }) => {
+const PlayerFooter = ({
+  onCheckAnswer,
+  isFirst,
+  isLast,
+  moveToPrev,
+  moveToNext,
+  t,
+  settings,
+  answerChecksUsedForItem
+}) => {
   return (
     <MainFooter>
       <FlexContainer>
-        <CheckAnswerBtn onClick={onCheckAnswer}>
-          <CounterCircle>5</CounterCircle>
-          <span>{t("pagination.checkanswer")} </span>
-        </CheckAnswerBtn>
+        {settings.maxAnswerChecks && (
+          <CheckAnswerBtn onClick={onCheckAnswer} disabled={answerChecksUsedForItem >= settings.maxAnswerChecks}>
+            <CounterCircle>{settings.maxAnswerChecks - answerChecksUsedForItem}</CounterCircle>
+            <span>{t("pagination.checkanswer")} </span>
+          </CheckAnswerBtn>
+        )}
       </FlexContainer>
       <FlexContainer>
         <PrevButton disabled={isFirst()} onClick={moveToPrev}>

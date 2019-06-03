@@ -19,6 +19,8 @@ const PlayerContentArea = ({
   moveToPrev,
   moveToNext,
   questions,
+  answerChecksUsedForItem,
+  settings,
   t
 }) => {
   return (
@@ -33,6 +35,8 @@ const PlayerContentArea = ({
           moveToNext={moveToNext}
           moveToPrev={moveToPrev}
           onCheckAnswer={onCheckAnswer}
+          answerChecksUsedForItem={answerChecksUsedForItem}
+          settings={settings}
           t={t}
         />
       </MainWrapper>

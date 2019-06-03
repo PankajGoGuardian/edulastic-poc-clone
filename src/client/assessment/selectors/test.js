@@ -73,5 +73,5 @@ export const currentItemIdSelector = createSelector(
 export const currentItemAnswerChecksSelector = createSelector(
   currentItemIdSelector,
   answerChecksByIdSelector,
-  (current, answerCheckCounts) => answerCheckCounts[current]
+  (current, answerCheckCounts) => answerCheckCounts[current] || 0
 );

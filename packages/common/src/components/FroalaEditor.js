@@ -15,7 +15,7 @@ import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 
-import { replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
@@ -167,11 +167,6 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
-  };
-
-  const getMathHtml = latex => {
-    if (!katex) return latex;
-    return katex.renderToString(latex);
   };
 
   const setChange = val => {
@@ -359,7 +354,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
     if (prevValue === value) return;
     setPrevValue(value);
-    setContent(replaceLatexesWithMathHtml(value, getMathHtml));
+    setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
   return (

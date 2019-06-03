@@ -1,5 +1,10 @@
 /* global $ */
-export const replaceLatexesWithMathHtml = (val, getMathHtml) => {
+export const getMathHtml = latex => {
+  if (!katex) return latex;
+  return katex.renderToString(latex);
+};
+
+export const replaceLatexesWithMathHtml = val => {
   // Detecting latexes
   let jqueryEl = null;
   try {

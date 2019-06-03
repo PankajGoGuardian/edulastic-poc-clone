@@ -9,9 +9,9 @@ import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { createClassAction } from "../../ducks";
+import { createClassAction, getSelectedSubject, setSubjectAction } from "../../ducks";
 // selectors
-import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
+import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
 import { receiveSearchCourseAction } from "../../../Courses/ducks";
 
@@ -32,6 +32,15 @@ class ClassCreate extends React.Component {
         subject: PropTypes.string.isRequired
       })
     ).isRequired,
+    filteredCurriculums: PropTypes.arrayOf(
+      PropTypes.shape({
+        value: PropTypes.string.isRequired,
+        text: PropTypes.string,
+        disabled: PropTypes.bool
+      })
+    ).isRequired,
+    setSubject: PropTypes.func.isRequired,
+    selectedSubject: PropTypes.string.isRequired,
     form: PropTypes.object.isRequired,
     userId: PropTypes.string.isRequired,
     userOrgData: PropTypes.object.isRequired,
@@ -114,7 +123,18 @@ class ClassCreate extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, userOrgData, changeView, isSearching, creating, error } = this.props;
+    const {
+      form,
+      courseList,
+      userOrgData,
+      changeView,
+      isSearching,
+      creating,
+      error,
+      filteredCurriculums,
+      setSubject,
+      selectedSubject
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
     const { defaultSchool, schools } = userOrgData;
     const { submitted } = this.state;
@@ -135,7 +155,8 @@ class ClassCreate extends React.Component {
               </LeftContainer>
               <RightContainer>
                 <RightFields
-                  curriculums={curriculums}
+                  selectedSubject={selectedSubject}
+                  filteredCurriculums={filteredCurriculums}
                   getFieldDecorator={getFieldDecorator}
                   getFieldValue={getFieldValue}
                   defaultSchool={defaultSchool}
@@ -143,6 +164,7 @@ class ClassCreate extends React.Component {
                   schoolList={schools}
                   searchCourse={this.searchCourse}
                   isSearching={isSearching}
+                  setSubject={setSubject}
                 />
               </RightContainer>
             </FlexContainer>
@@ -158,19 +180,27 @@ const ClassCreateForm = Form.create()(ClassCreate);
 const enhance = compose(
   withNamespaces("classCreate"),
   connect(
-    state => ({
-      curriculums: getCurriculumsListSelector(state),
-      courseList: get(state, "coursesReducer.searchResult"),
-      isSearching: get(state, "coursesReducer.searching"),
-      userOrgData: getUserOrgData(state),
-      userId: get(state, "user.user._id"),
-      creating: get(state, "manageClass.creating"),
-      error: get(state, "manageClass.error")
-    }),
+    state => {
+      const selectedSubject = getSelectedSubject(state);
+      return {
+        curriculums: getCurriculumsListSelector(state),
+        courseList: get(state, "coursesReducer.searchResult"),
+        isSearching: get(state, "coursesReducer.searching"),
+        userOrgData: getUserOrgData(state),
+        userId: get(state, "user.user._id"),
+        creating: get(state, "manageClass.creating"),
+        error: get(state, "manageClass.error"),
+        filteredCurriculums: getFormattedCurriculumsSelector(state, {
+          subject: selectedSubject
+        }),
+        selectedSubject
+      };
+    },
     {
       getCurriculums: getDictCurriculumsAction,
       createClass: createClassAction,
-      searchCourseList: receiveSearchCourseAction
+      searchCourseList: receiveSearchCourseAction,
+      setSubject: setSubjectAction
     }
   )
 );

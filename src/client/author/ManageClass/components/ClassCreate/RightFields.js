@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { filter, isArray, isEmpty, debounce } from "lodash";
 
@@ -15,15 +15,16 @@ const endDate = moment().add(1, "years");
 
 // eslint-disable-next-line max-len
 const RightFields = ({
-  curriculums,
   defaultSchool,
   courseList,
   schoolList,
   searchCourse,
   isSearching,
+  filteredCurriculums,
+  setSubject,
+  selectedSubject,
   ...restProps
 }) => {
-  const [subject, setSubject] = useState("");
 
   const updateSubject = e => {
     setSubject(e);
@@ -39,7 +40,6 @@ const RightFields = ({
     }
   }
 
-  const standardSets = filter(curriculums, el => el.subject === subject);
   const grades = filter(allGrades, el => el.isContentGrade !== true);
   const subjects = filter(allSubjects, el => el.value !== "");
   return (
@@ -99,16 +99,22 @@ const RightFields = ({
           filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           placeholder="Select Standards"
         >
-          {isEmpty(standardSets) ? (
+          {!selectedSubject ? (
             <Select.Option key="subject_first" value="subject_first" disabled>
               <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
           ) : (
-            standardSets.map(el => (
-              <Select.Option key={el._id} value={el._id}>
-                {el.curriculum}
+            isEmpty(filteredCurriculums) ? (
+              <Select.Option key="loading" value="loading" disabled>
+                <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
               </Select.Option>
-            ))
+            ) : ( 
+              filteredCurriculums.map(el => (
+                <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                  {el.text}
+                </Select.Option>
+              ))
+            )
           )}
         </Select>
       </FieldLabel>
@@ -152,20 +158,15 @@ const RightFields = ({
 };
 
 RightFields.propTypes = {
-  curriculums: PropTypes.arrayOf(
-    PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      curriculum: PropTypes.string.isRequired,
-      grades: PropTypes.array.isRequired,
-      subject: PropTypes.string.isRequired
-    })
-  ).isRequired,
   defaultSchool: PropTypes.oneOfType([PropTypes.string, PropTypes.array]),
   courseList: PropTypes.array.isRequired,
   schoolList: PropTypes.array,
   searchCourse: PropTypes.func.isRequired,
   isSearching: PropTypes.bool.isRequired,
-  getFieldDecorator: PropTypes.func.isRequired
+  getFieldDecorator: PropTypes.func.isRequired,
+  filteredCurriculums: PropTypes.array.isRequired,
+  setSubject: PropTypes.func.isRequired,
+  selectedSubject: PropTypes.string.isRequired
 };
 
 RightFields.defaultProps = {

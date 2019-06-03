@@ -1,10 +1,18 @@
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put } from "redux-saga/effects";
+import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
 import { googleApi, groupApi, enrollmentApi, userApi } from "@edulastic/api";
 
 import { fetchGroupsAction, addGroupAction } from "../sharedDucks/groups";
+
+// selectors
+const manageClassSelector = state => state.manageClass;
+export const getSelectedSubject = createSelector(
+  manageClassSelector,
+  state => state.selectedSubject
+);
 
 // action types
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
@@ -48,6 +56,7 @@ export const UPDATE_STUDENT_REQUEST = "[manageClass] update student request";
 export const UPDATE_STUDENT_FAILDED = "[manageClass] update student failed";
 export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
 
+export const SET_SUBJECT = "[manageClass] set subject";
 // action creators
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);
@@ -89,6 +98,8 @@ export const removeStudentsSuccessAction = createAction(REMOVE_STUDENTS_SUCCESS)
 export const updateStudentRequestAction = createAction(UPDATE_STUDENT_REQUEST);
 export const updateStudentFaildedAction = createAction(UPDATE_STUDENT_FAILDED);
 export const updateStudentSuccessAction = createAction(UPDATE_STUDENT_SUCCESS);
+
+export const setSubjectAction = createAction(SET_SUBJECT);
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -101,7 +112,8 @@ const initialState = {
   loaded: true,
   entity: {},
   submitted: false,
-  added: false
+  added: false,
+  selectedSubject: ""
 };
 
 // reducers
@@ -208,6 +220,10 @@ const removeStudentsSuccess = (state, { payload: studentIds }) => {
   });
 };
 
+const setSubject = (state, { payload: subject }) => {
+  state.selectedSubject = subject;
+};
+
 // main reducer
 export default createReducer(initialState, {
   [SET_GOOGLE_COURSE_LIST]: setGoogleCourseList,
@@ -227,7 +243,8 @@ export default createReducer(initialState, {
   [ADD_STUDENT_FAILED]: addStudentFailed,
   [SELECT_STUDENTS]: selectStudent,
   [UPDATE_STUDENT_SUCCESS]: updateStudent,
-  [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess
+  [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
+  [SET_SUBJECT]: setSubject
 });
 
 // sagas boi

@@ -72,6 +72,7 @@ const ClassificationPreview = ({
     possible_response_groups = [],
     stimulus,
     imageUrl,
+    imageOptions,
     shuffle_options,
     transparent_possible_responses,
     duplicate_responses,
@@ -243,7 +244,7 @@ const ClassificationPreview = ({
       )}
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
-        <TableWrapper imageUrl={imageUrl}>
+        <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl}>
           <table style={{ width: "100%", flexGrow: 2 }}>
             <thead>
               {rowHeader && (

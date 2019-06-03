@@ -2,6 +2,7 @@ import React, { Fragment, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { arrayMove } from "react-sortable-hoc";
 import { connect } from "react-redux";
+import { Rnd } from "react-rnd";
 
 import { withTheme } from "styled-components";
 import { compose } from "redux";
@@ -30,8 +31,20 @@ import { Widget } from "../../styled/Widget";
 
 import ComposeQuestion from "./ComposeQuestion";
 import RowColumn from "./RowColumn";
+import { DropContainer } from "./styled/DropContainer";
 
 const OptionsList = withPoints(ClassificationPreview);
+
+const Enable = {
+  bottomLeft: true,
+  bottomRight: true,
+  topLeft: true,
+  topRight: true,
+  bottom: true,
+  left: true,
+  right: true,
+  top: true
+};
 
 const { Dragger } = Upload;
 
@@ -56,10 +69,13 @@ const EditClassification = ({
     shuffle_options,
     transparent_possible_responses,
     duplicate_responses,
+    imageOptions,
     ui_style: { show_drag_handle }
   } = item;
 
   const [correctTab, setCorrectTab] = useState(0);
+
+  const [dragItem, setDragItem] = useState(imageOptions || { width: 0, height: 0, x: 0, y: 0 });
 
   useEffect(
     () => () => {
@@ -70,12 +86,10 @@ const EditClassification = ({
 
   const getImageWidth = url => {
     const img = new Image();
-    const that = this;
     img.addEventListener("load", function() {
       const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (wid => {
-        that.onItemPropChange("imageWidth", wid);
-      })(width);
+      const height = this.naturalHeight >= 600 ? 600 : this.naturalHeight;
+      setDragItem({ ...dragItem, width, height });
     });
     img.src = url;
   };
@@ -341,6 +355,33 @@ const EditClassification = ({
     />
   );
 
+  const handleDrag = (e, d) => {
+    setDragItem({ ...dragItem, x: d.x, y: d.y });
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { ...{ ...dragItem, x: d.x, y: d.y } };
+        updateVariables(draft);
+      })
+    );
+  };
+
+  const handleResize = (e, direction, ref, delta, position) => {
+    setDragItem({
+      width: Number(ref.style.width.slice(-2)) >= 700 ? "700px" : ref.style.width,
+      height: Number(ref.style.height.slice(-2)) >= 600 ? "600px" : ref.style.height,
+      ...position
+    });
+  };
+
+  const handleDragAndResizeStop = () => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { ...dragItem };
+        updateVariables(draft);
+      })
+    );
+  };
+
   const handleImageUpload = info => {
     const { status, response } = info.file;
     if (status === "done") {
@@ -368,7 +409,19 @@ const EditClassification = ({
         <Widget>
           {item.imageUrl ? (
             <FlexContainer flexDirection="column">
-              <img src={item.imageUrl} alt="backgroundImage" />
+              <DropContainer>
+                <Rnd
+                  size={{ width: dragItem.width, height: dragItem.height }}
+                  enableResizing={Enable}
+                  style={{ zIndex: 10 }}
+                  position={{ x: dragItem.x, y: dragItem.y }}
+                  onDragStop={handleDrag}
+                  onResize={handleResize}
+                  onResizeStop={handleDragAndResizeStop}
+                >
+                  <img src={item.imageUrl} alt="backgroundImage" />
+                </Rnd>
+              </DropContainer>
               <EduButton
                 onClick={() => handleItemChangeChange("imageUrl", "")}
                 style={{ marginTop: 20 }}

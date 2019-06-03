@@ -7,7 +7,13 @@ import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
 import { replace, push } from "connected-react-router";
-import { loadQuestionsAction, addItemsQuestionAction, deleteQuestionAction } from "../sharedDucks/questions";
+import {
+  loadQuestionsAction,
+  addItemsQuestionAction,
+  deleteQuestionAction,
+  SET_QUESTION_SCORE
+} from "../sharedDucks/questions";
+import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 
 // constants
@@ -20,6 +26,7 @@ const testItemStatusConstants = {
 export const RECEIVE_ITEM_DETAIL_REQUEST = "[itemDetail] receive request";
 export const RECEIVE_ITEM_DETAIL_SUCCESS = "[itemDetail] receive success";
 export const RECEIVE_ITEM_DETAIL_ERROR = "[itemDetail] receive error";
+export const SET_ITEM_QIDS = "[itemDetail] set qids";
 
 export const UPDATE_ITEM_DETAIL_REQUEST = "[itemDetail] update by id request";
 export const UPDATE_ITEM_DETAIL_SUCCESS = "[itemDetail] update by id success";
@@ -337,6 +344,10 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, loading: true };
     case RECEIVE_ITEM_DETAIL_SUCCESS:
       return { ...state, item: payload, loading: false, error: null };
+
+    case SET_ITEM_QIDS:
+      return { ...state, qids: payload };
+
     case RECEIVE_ITEM_DETAIL_ERROR:
       return { ...state, loading: false, error: payload.error };
 
@@ -385,7 +396,6 @@ export function reducer(state = initialState, { type, payload }) {
 
     case UPDATE_ITEM_DETAIL_DIMENSION:
       return updateDimension(state, payload);
-
     case UPDATE_ITEM_DETAIL_REQUEST:
       return { ...state, updating: true };
     case UPDATE_ITEM_DETAIL_SUCCESS:
@@ -416,10 +426,17 @@ export function reducer(state = initialState, { type, payload }) {
 
 // saga
 
+function getQuestionsSelector(state) {
+  const authorQuestionsObj = state.authorQuestions.byId;
+  const qids = state.itemDetail.qids || [];
+  return qids.map(id => authorQuestionsObj[id]);
+}
+
 function* receiveItemSaga({ payload }) {
   try {
     const data = yield call(testItemsApi.getById, payload.id, payload.params);
     let questions = (data.data && data.data.questions) || [];
+    const questionsArr = (data.data && data.data.questions) || [];
     const resources = (data.data && data.data.resources) || [];
     questions = [...questions, ...resources];
     questions = _keyBy(questions, "id");
@@ -429,10 +446,16 @@ function* receiveItemSaga({ payload }) {
       yield put(loadQuestionsAction(questions));
     }
     const item = _omit(data, "data");
+    const qids = questionsArr.map(x => x.id);
+
     const { itemLevelScore, itemLevelScoring } = data;
     yield put({
       type: RECEIVE_ITEM_DETAIL_SUCCESS,
       payload: item
+    });
+    yield put({
+      type: SET_ITEM_QIDS,
+      payload: qids
     });
 
     let itemLevelScore1 = data.itemLevelScore;
@@ -468,6 +491,9 @@ export function* updateItemSaga({ payload }) {
     if (payload.testId) {
       data.testId = testId;
     }
+    data.data = {};
+    data.data.questions = yield select(getQuestionsSelector);
+
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
     console.log("update by id item itemId ", item._id, "payload.id", payload.id);
     if (payload.redirect && item._id !== payload.id) {

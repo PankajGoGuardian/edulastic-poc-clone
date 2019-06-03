@@ -323,11 +323,11 @@ function* saveQuestionSaga({ payload: modalItemId }) {
           }
         } else {
           if (draftData.data.questions[0].itemScore) {
-            const itemScore = draftData.data.questions[0].itemScore;
-            for (let [index] of draftData.data.questions.entries()) {
-              draftData.data.questions[index].validation.valid_response.score =
-                itemScore / draftData.data.questions.length;
-            }
+            // const itemScore = draftData.data.questions[0].itemScore;
+            // for (let [index] of draftData.data.questions.entries()) {
+            //   draftData.data.questions[index].validation.valid_response.score =
+            //     itemScore / draftData.data.questions.length;
+            // }
             delete draftData.data.questions[0].itemScore;
           }
         }

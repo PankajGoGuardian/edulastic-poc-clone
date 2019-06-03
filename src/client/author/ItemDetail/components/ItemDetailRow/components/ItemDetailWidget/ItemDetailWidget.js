@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import QuestionWrapper from "../../../../../../assessment/components/QuestionWrapper";
 import { Types } from "../../../../constants";
 import { setItemDetailDraggingAction, setItemLevelScoreAction, setItemLevelScoringAction } from "../../../../ducks";
-import { getQuestionByIdSelector } from "../../../../../sharedDucks/questions";
+import { getQuestionByIdSelector, setQuestionScoreAction } from "../../../../../sharedDucks/questions";
 import { Container, Buttons } from "./styled";
 import { InputNumber } from "antd";
 import { get } from "lodash";
@@ -30,6 +30,7 @@ const ItemDetailWidget = ({
   itemData,
   setItemLevelScoring,
   setItemLevelScore,
+  setQuestionScore,
   rowIndex
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout);
@@ -87,6 +88,7 @@ const ItemDetailWidget = ({
                     value={get(question, "validation.valid_response.score", 0)}
                     onChange={e => {
                       const v = parseFloat(e.target.value);
+                      setQuestionScore({ score: v, qid: question.id });
                       //
                     }}
                   />
@@ -159,7 +161,8 @@ const enhance = compose(
     {
       setItemDetailDragging: setItemDetailDraggingAction,
       setItemLevelScoring: setItemLevelScoringAction,
-      setItemLevelScore: setItemLevelScoreAction
+      setItemLevelScore: setItemLevelScoreAction,
+      setQuestionScore: setQuestionScoreAction
     }
   ),
   DragSource(Types.WIDGET, itemSource, collect)

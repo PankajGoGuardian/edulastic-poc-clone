@@ -6,6 +6,7 @@ import {
   intersection as _intersection,
   cloneDeep as _cloneDeep,
   get,
+  set,
   sortBy
 } from "lodash";
 
@@ -149,6 +150,11 @@ const removeAlignment = (state, { payload }) => {
   currentQuestion.alignment = currentQuestion.alignment.filter(item => item.curriculumId !== payload);
 };
 
+export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING = "[itemDetail] set item level scoring";
+export const SET_QUESTION_SCORE = "[author questions] set question score";
+export const setQuestionScoreAction = createAction(SET_QUESTION_SCORE);
+const module = "authorQuestions";
+
 // reducer
 export default createReducer(initialState, {
   [LOAD_QUESTIONS]: loadQuestions,
@@ -161,11 +167,24 @@ export default createReducer(initialState, {
   [CHANGE_CURRENT_QUESTION]: changeCurrent,
   [ADD_ALIGNMENT]: addAlignment,
   [REMOVE_ALIGNMENT]: removeAlignment,
-  [DELETE_QUESTION]: deleteQuestion
+  [DELETE_QUESTION]: deleteQuestion,
+  [SET_QUESTION_SCORE]: (state, { payload }) => {
+    const { qid, score } = payload;
+    set(state.byId[qid], "validation.valid_response.score", score);
+  },
+  [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
+    if (!payload) {
+      for (const key of Object.keys(state.byId)) {
+        const oldScore = get(state.byId, "validation.valid_response.score", 0);
+        if (oldScore === 0) {
+          set(state.byId[key], "validation.valid_response.score", 1);
+        }
+      }
+    }
+  }
 });
 
 // selectors
-const module = "authorQuestions";
 
 export const getCurrentQuestionIdSelector = state => state[module].current;
 export const getQuestionsSelector = state => state[module].byId;

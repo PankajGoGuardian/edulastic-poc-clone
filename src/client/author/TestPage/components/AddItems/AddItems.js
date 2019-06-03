@@ -81,13 +81,19 @@ class AddItems extends PureComponent {
 
   componentDidMount() {
     const { search } = this.state;
-    const { selectedItems, getCurriculums, receiveTestItems, limit } = this.props;
+    const { selectedItems, getCurriculums, receiveTestItems, limit, test, curriculums } = this.props;
+    const selectedSubjects = test.subjects.filter(item => !!item);
+    const newSearch = {
+      ...search,
+      grades: test.grades,
+      subject: selectedSubjects.length ? selectedSubjects[0] : ""
+    };
     this.setState({
-      selectedTestItems: selectedItems
+      selectedTestItems: selectedItems,
+      search: newSearch
     });
-
-    getCurriculums();
-    receiveTestItems(search, 1, limit);
+    if (!curriculums.length) getCurriculums();
+    receiveTestItems(newSearch, 1, limit);
   }
 
   handleSearch = () => {

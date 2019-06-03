@@ -188,6 +188,7 @@ class Container extends PureComponent {
             selectedItems={selectedItems}
             current={current}
             onSaveTestId={this.handleSaveTestId}
+            test={test}
           />
         );
       case "summary":

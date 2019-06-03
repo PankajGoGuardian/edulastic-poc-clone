@@ -124,6 +124,7 @@ function* evaluateAnswers() {
       const oldAnswers = yield select(state => _get(state, "answers", []));
       const entityId = yield select(state => _get(state, "question.entity.data.id", null));
       const allQuestions = yield select(state => _get(state, "authorQuestions.byId", []));
+      const { itemLevelScore, itemLevelScoring = false } = yield select(state => state.itemDetail.item);
 
       const answeredAndUnanswered = Object.keys(allQuestions).reduce((acc, currentId) => {
         acc[currentId] = [];
@@ -141,7 +142,13 @@ function* evaluateAnswers() {
         });
       }
       const questions = yield select(getQuestionsSelector);
-      const { evaluation, score, maxScore } = yield evaluateItem(_answeredAndUnanswered, questions);
+      let { evaluation, score, maxScore } = yield evaluateItem(
+        _answeredAndUnanswered,
+        questions,
+        itemLevelScoring,
+        itemLevelScore
+      );
+
       yield put({
         type: ADD_ITEM_EVALUATION,
         payload: {

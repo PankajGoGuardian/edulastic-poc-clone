@@ -6,7 +6,7 @@ import PropTypes from "prop-types";
 import { Progress, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
-import { Row, Col, InputNumber, Input, Layout } from "antd";
+import { Row, Col, Switch, Input, Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
@@ -360,6 +360,7 @@ class Container extends Component {
       setItemLevelScore,
       setItemLevelScoring
     } = this.props;
+    const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
     let showPublishButton = false;
     if (item) {
@@ -429,20 +430,18 @@ class Container extends Component {
         </ItemHeader>
         {windowWidth > MAX_MOBILE_WIDTH ? (
           <SecondHeadBar>
-            {item && item.itemLevelScoring && view !== "preview" && (
-              <Row type="flex" justify="end">
+            {item && view !== "preview" && qLength > 1 && (
+              <Row type="flex" justify="end" style={{ width: 250 }}>
+                <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
                 <Col>
-                  <InputGroup compact>
-                    <label>
-                      <b> Total Score :</b>
-                    </label>
-                    <InputNumber
-                      data-cy="itemTotalScore"
-                      min={1}
-                      value={item.itemLevelScore}
-                      onChange={v => setItemLevelScore(v)}
-                    />
-                  </InputGroup>
+                  <Switch
+                    checked={item.itemLevelScoring}
+                    checkedChildren="on"
+                    unCheckedChildren="off"
+                    onChange={v => {
+                      setItemLevelScoring(v);
+                    }}
+                  />
                 </Col>
               </Row>
             )}
@@ -458,6 +457,7 @@ class Container extends Component {
                   key={i}
                   row={row}
                   rowIndex={i}
+                  itemData={item}
                   count={rows.length}
                   onAdd={this.handleAdd}
                   windowWidth={windowWidth}

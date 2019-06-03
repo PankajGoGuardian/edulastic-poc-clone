@@ -68,7 +68,7 @@ class ScoreTable extends Component {
     return { columnData };
   }
 
-  getColumnsForTable = length => {
+  getColumnsForTable = (length, submittedLength) => {
     const { showQuestionModal } = this.props;
     const columns = [
       {
@@ -131,11 +131,11 @@ class ScoreTable extends Component {
           num++;
         }
       });
-      const averageScore = successScore / num;
+      const averageScore = successScore * submittedLength;
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={greenThird}>{`${round((averageScore / length) * 100, 1)}%`}</StyledText>({averageScore} /{" "}
-          {length})
+          <StyledText color={greenThird}>{`${round((averageScore / submittedLength) * 100, 1)}%`}</StyledText>
+          {round(averageScore, 1)} / {submittedLength}
         </StyledDivMid>
       );
 
@@ -177,8 +177,9 @@ class ScoreTable extends Component {
     const { columnData } = this.state;
     const { testActivity } = this.props;
     const columnsLength = testActivity && testActivity.length !== 0 ? testActivity[0].questionActivities.length : 0;
+    const submittedLength = testActivity.filter(x => x.status === "submitted").length;
     if (columnsLength) {
-      columnInfo = this.getColumnsForTable(columnsLength);
+      columnInfo = this.getColumnsForTable(columnsLength, submittedLength);
     }
 
     return (

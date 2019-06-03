@@ -10,9 +10,11 @@ import { withNamespaces } from "@edulastic/localization";
 
 import QuestionWrapper from "../../../../../../assessment/components/QuestionWrapper";
 import { Types } from "../../../../constants";
-import { setItemDetailDraggingAction } from "../../../../ducks";
+import { setItemDetailDraggingAction, setItemLevelScoreAction, setItemLevelScoringAction } from "../../../../ducks";
 import { getQuestionByIdSelector } from "../../../../../sharedDucks/questions";
 import { Container, Buttons } from "./styled";
+import { InputNumber } from "antd";
+import { get } from "lodash";
 
 const ItemDetailWidget = ({
   widget,
@@ -24,7 +26,11 @@ const ItemDetailWidget = ({
   t,
   widgetIndex,
   question,
-  flowLayout
+  flowLayout,
+  itemData,
+  setItemLevelScoring,
+  setItemLevelScore,
+  rowIndex
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout);
   const onMouseEnterHander = () => {
@@ -33,7 +39,6 @@ const ItemDetailWidget = ({
   const onMouseLeaveHander = () => {
     if (flowLayout) setShowButtons(false);
   };
-
   return (
     connectDragPreview &&
     connectDragSource &&
@@ -56,6 +61,38 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <Buttons>
+              {itemData.itemLevelScoring && widgetIndex === 0 && (
+                <div className="points">
+                  Points :{" "}
+                  <input
+                    className="ant-input"
+                    type="number"
+                    min={0}
+                    value={itemData.itemLevelScore}
+                    onChange={e => {
+                      const v = parseFloat(e.target.value);
+                      setItemLevelScore(v);
+                    }}
+                  />
+                </div>
+              )}
+
+              {!itemData.itemLevelScoring && (
+                <div className="points">
+                  Points :{" "}
+                  <input
+                    className="ant-input"
+                    type="number"
+                    min={0}
+                    value={get(question, "validation.valid_response.score", 0)}
+                    onChange={e => {
+                      const v = parseFloat(e.target.value);
+                      //
+                    }}
+                  />
+                </div>
+              )}
+
               {connectDragSource(
                 <div>
                   <Button title={t("move")} shape="circle">
@@ -119,7 +156,11 @@ const enhance = compose(
   withNamespaces("default"),
   connect(
     (state, { widget }) => ({ question: getQuestionByIdSelector(state, widget.reference) }),
-    { setItemDetailDragging: setItemDetailDraggingAction }
+    {
+      setItemDetailDragging: setItemDetailDraggingAction,
+      setItemLevelScoring: setItemLevelScoringAction,
+      setItemLevelScore: setItemLevelScoreAction
+    }
   ),
   DragSource(Types.WIDGET, itemSource, collect)
 );

@@ -171,11 +171,6 @@ class Container extends Component {
             onChange={onScrollingChange}
           />
         </Checkboxes>
-        {/**
-        TODO: put this text in i18n namespace
-        */}
-        <Heading>Scoring</Heading>
-        Question Level <Switch onChange={v => setItemLevelScoring(v)} checked={itemLevelScoring} /> Item Level
       </Content>
     );
   }

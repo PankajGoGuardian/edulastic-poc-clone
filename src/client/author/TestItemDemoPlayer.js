@@ -26,7 +26,12 @@ const ItemPlayer = ({ match, answers, addEvaluation, changePreview, evaluation, 
     try {
       const { questions = [] } = testItem.data;
       changePreview("check");
-      const { evaluation: evals, score, maxScore } = await evaluateItem(answers, KeyBy(questions, "id"));
+      const { evaluation: evals, score, maxScore } = await evaluateItem(
+        answers,
+        KeyBy(questions, "id"),
+        testItem.itemLevelScoring,
+        testItem.itemLevelScore
+      );
       addEvaluation(evals);
       message.success(`score: ${score}/${maxScore}`);
     } catch (e) {

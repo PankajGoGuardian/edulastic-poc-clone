@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
 
@@ -9,10 +9,37 @@ import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
 import { get } from "lodash";
 
+const transformItemRow = ([row], qid) => [
+  {
+    ...row,
+    widgets: row.widgets.filter(x => {
+      if (x.widgetType === "question") {
+        return x.reference === qid;
+      } else {
+        return true;
+      }
+    })
+  }
+];
+
+const splitItems = (item, testItem) => {
+  return testItem.data.questions.map(({ id: qid, ...qRest }) => ({
+    item: transformItemRow(item, qid),
+    question: { id: qid, ...qRest }
+  }));
+};
+
 const SortableItem = SortableElement(
-  ({ indx, selected, item, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
+  ({ indx, selected, item, testItem, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
+    console.log("questions", questions);
     const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
     const handleCheck = e => onCheck(indx, e.target.checked);
+    /**
+     * @type {{item:Object,question:Object}[]}
+     */
+    const items = testItem.itemLevelScoring
+      ? [{ item, question: testItem.data.questions[0] }]
+      : splitItems(item, testItem);
     return (
       <TestItemWrapper data-cy={metaInfoData.id}>
         {mobile ? (
@@ -52,36 +79,49 @@ const SortableItem = SortableElement(
             </FlexContainer>
           </FlexContainer>
         ) : (
-          <FlexContainer justifyContent="space-between" alignItems="flex-start">
-            <FlexContainer alignItems="flex-start">
-              <FlexContainer flexDirection="column" justifyContent="center">
-                <DragHandle />
-                <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
-              </FlexContainer>
+          items.map(({ item: _item, question }, index) => {
+            console.log("_item", _item, "item", item);
+            return (
+              <FlexContainer justifyContent="space-between" alignItems="flex-start">
+                <FlexContainer alignItems="flex-start">
+                  <FlexContainer
+                    style={{ visibility: index === 0 ? "visible" : "hidden" }}
+                    flexDirection="column"
+                    justifyContent="center"
+                  >
+                    {index === 0 && <DragHandle />}
+                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                  </FlexContainer>
 
-              <TestItemPreview
-                style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
-                cols={item}
-                previewTab="clear"
-                verticalDivider={item.verticalDivider}
-                scrolling={item.scrolling}
-                questions={questions}
-                windowWidth="100%"
-              />
-            </FlexContainer>
-            <FlexContainer>
-              <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>
-              <FlexContainer flexDirection="column">
-                <PointsLabel>Points</PointsLabel>
-                <PointsInput
-                  size="large"
-                  type="number"
-                  value={points}
-                  onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
-                />
+                  <TestItemPreview
+                    style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                    cols={_item}
+                    previewTab="clear"
+                    verticalDivider={item.verticalDivider}
+                    scrolling={item.scrolling}
+                    questions={questions}
+                    windowWidth="100%"
+                  />
+                </FlexContainer>
+                <FlexContainer>
+                  {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
+                  <FlexContainer flexDirection="column">
+                    <PointsLabel>Points</PointsLabel>
+                    <PointsInput
+                      size="large"
+                      type="number"
+                      value={
+                        testItem.itemLevelScoring
+                          ? testItem.itemLevelScore
+                          : get(question, ["validation", "valid_response", "score"], 0)
+                      }
+                      onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
+                    />
+                  </FlexContainer>
+                </FlexContainer>
               </FlexContainer>
-            </FlexContainer>
-          </FlexContainer>
+            );
+          })
         )}
         <FlexContainer style={{ margin: "20px 0" }}>
           <MetaInfoCell data={metaInfoData} />
@@ -105,6 +145,7 @@ const List = SortableContainer(
     questions,
     mobile
   }) => {
+    console.log("questions", questions);
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -145,6 +186,7 @@ const List = SortableContainer(
             index={i}
             indx={i}
             item={item}
+            testItem={testItems[i]}
             points={getPoints(i)}
             onCheck={handleCheckboxChange}
             onChangePoints={onChangePoints}

@@ -55,6 +55,7 @@ class Container extends Component {
       onEdit={this.onEditWidgetClick(widget, rowIndex)}
       onDelete={this.onDeleteWidgetClick(widgetIndex)}
       widgetIndex={widgetIndex}
+      itemData={this.props.itemData}
       rowIndex={rowIndex}
       flowLayout={flowLayout}
     />

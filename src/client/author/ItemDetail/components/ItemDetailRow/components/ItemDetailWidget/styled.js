@@ -24,6 +24,21 @@ export const Buttons = styled.div`
   flex-direction: column;
   align-items: center;
   transform: translateY(-50%);
+  oveflow-x: visible;
+
+  .points {
+    width: 300px;
+    text-align: right;
+    position: absolute;
+    right: 0;
+    top: -40px;
+
+    input {
+      width: 45px;
+      padding: 0;
+      text-align: center;
+    }
+  }
 
   .ant-btn-circle {
     background: ${white};

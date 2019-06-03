@@ -145,7 +145,20 @@ class EditItemPage {
     });
   }
 
-  getItemTotalScore = () => cy.get('[data-cy="itemTotalScore"]');
+  getItemTotalScore = () => {
+    cy.wait(500);
+    return cy
+      .get('[data-cy="question-container"]')
+      .first()
+      .parent()
+      .next()
+      .find(".ant-input");
+  };
+
+  updateItemLevelScore = score =>
+    this.getItemTotalScore()
+      .clear()
+      .type(score, { force: true });
 }
 
 export default EditItemPage;

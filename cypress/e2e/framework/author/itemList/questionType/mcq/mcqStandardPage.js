@@ -324,10 +324,7 @@ class MCQStandardPage {
 
         this.header.save();
 
-        item
-          .getItemTotalScore()
-          .clear()
-          .type(points);
+        item.updateItemLevelScore(points);
         item.header.save();
       }
     });

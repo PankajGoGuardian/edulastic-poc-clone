@@ -206,7 +206,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe.skip(" > verify standard based report", () => {
+  describe(" > verify standard based report", () => {
     before(() => {
       lcb.clickOnCardViewTab();
       lcb.header.clickOnStandardBasedReportTab();
@@ -217,7 +217,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe.skip(" > verify express grader", () => {
+  describe(" > verify express grader", () => {
     before(() => {
       lcb.header.clickOnExpressGraderTab();
     });

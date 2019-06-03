@@ -4,6 +4,7 @@ import { message } from "antd";
 import { takeLatest, call, put } from "redux-saga/effects";
 import { schoolApi, userApi, settingsApi } from "@edulastic/api";
 import { signupSuccessAction } from "../Login/ducks";
+import { push } from "connected-react-router";
 
 // Types
 const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
@@ -137,6 +138,7 @@ function* saveSubjectGradeSaga({ payload }) {
     const result = yield call(settingsApi.saveInterestedStandards, payload);
     yield call(message.success, SAVE_SUBJECTGRADE_SUCCESS);
     yield put(signupSuccessAction(result));
+    yield put(push("/author/manageClass"));
   } catch (err) {
     yield call(message.error, SAVE_SUBJECTGRADE_FAILED);
   }

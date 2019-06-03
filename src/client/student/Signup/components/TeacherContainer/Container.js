@@ -14,6 +14,7 @@ import { logoutAction } from "../../../Login/ducks";
 
 const Container = ({ user, logout }) => {
   const { isAuthenticated, signupStatus } = user;
+
   if (!isAuthenticated) {
     return (
       <>
@@ -22,6 +23,7 @@ const Container = ({ user, logout }) => {
     );
   }
   const userInfo = get(user, "user");
+
   return (
     <>
       <Header userInfo={userInfo} logout={logout} />

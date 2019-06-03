@@ -97,6 +97,14 @@ class CreateSchoolModal extends React.Component {
     });
   };
 
+  onCountryKeyDown = e => {
+    if (e.key === "Backspace" || e.key === "Enter") return true;
+
+    if (e.target.value.length >= 40) {
+      e.preventDefault();
+    }
+  };
+
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
@@ -176,6 +184,7 @@ class CreateSchoolModal extends React.Component {
                   showArrow={false}
                   filterOption={false}
                   notFoundContent={null}
+                  onInputKeyDown={this.onCountryKeyDown}
                 >
                   {CountryOptions}
                 </StyledSelect>

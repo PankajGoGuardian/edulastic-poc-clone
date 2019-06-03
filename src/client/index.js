@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import i18n, { I18nextProvider } from "@edulastic/localization";
 import { ConnectedRouter } from "connected-react-router";
+import "core-js/features/array/flat-map";
 
 import "font-awesome/css/font-awesome.css";
 import "antd/dist/antd.css";

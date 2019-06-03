@@ -25,8 +25,9 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
         });
 
         results[id] = evaluation;
+        console.log("evaluation ", evaluation, "score", score, "id", id);
         totalScore += score;
-        const [correct = false] = evaluation;
+        const correct = evaluation.every(x => x);
         if (correct) {
           correctNum++;
         }
@@ -39,13 +40,13 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
     }
   }
 
-  console.log("evaluation", { answerIds, itemLevelScore, itemLevelScoring, correctNum, answers });
+  console.log("evaluation", { answerIds, itemLevelScore, itemLevelScoring, correctNum, answers, validations });
 
   if (itemLevelScoring) {
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: itemLevelScore * (correctNum / answerIds.filter(x => x != "null").length)
+      score: itemLevelScore * (correctNum / Object.keys(validations).length)
     };
   } else {
     return { evaluation: results, maxScore: totalMaxScore, score: totalScore };

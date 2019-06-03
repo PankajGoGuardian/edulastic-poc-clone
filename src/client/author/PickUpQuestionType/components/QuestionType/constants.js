@@ -984,8 +984,9 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
+        templateMarkUp: `<p>Sample Template markup <span class="response-btn" contenteditable="false"><span class="text">Response</span></span>&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
-        stimulus: "",
+        stimulus: "[This is stem.]",
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",

@@ -23,9 +23,6 @@ import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Widget } from "../../styled/Widget";
 import { Label, Heading } from "./styled";
 
-const defaultTemplateMarkup =
-  '<p>Risus </p><p class="response-btn" contenteditable="false"><span class="text">Response</span></p><p>, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum. Nunc diam enim, porta sed eros vitae. </p><p class="response-btn" contenteditable="false"><span class="text">Response</span></p><p> dignissim, et tincidunt turpis facilisis. Curabitur eu nulla justo. Curabitur vulputate ut nisl et bibendum.</p>';
-
 class TemplateMarkup extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
@@ -258,7 +255,7 @@ class TemplateMarkup extends Component {
           placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
           onChange={this.onChangeMarkUp}
           showResponseBtn
-          value={item.templateMarkUp || defaultTemplateMarkup}
+          value={item.templateMarkUp}
         />
         <PaddingDiv>
           <Subtitle>

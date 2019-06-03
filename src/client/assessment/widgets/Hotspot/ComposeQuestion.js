@@ -120,7 +120,7 @@ class ComposeQuestion extends Component {
 
         <Dropzone
           onDrop={onDrop}
-          maxSize={1000000}
+          maxSize={2 * 1024 * 1024}
           accept="image/*"
           className="dropzone"
           activeClassName="active-dropzone"

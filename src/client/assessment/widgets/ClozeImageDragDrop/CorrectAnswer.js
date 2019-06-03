@@ -63,6 +63,7 @@ class CorrectAnswer extends Component {
       configureOptions,
       imageAlterText,
       imageWidth,
+      imageHeight,
       uiStyle,
       showDashedBorder,
       backgroundColor,
@@ -105,6 +106,7 @@ class CorrectAnswer extends Component {
           userSelections={response.value}
           imageAlterText={imageAlterText}
           imageWidth={imageWidth}
+          imageHeight={imageHeight}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
         />

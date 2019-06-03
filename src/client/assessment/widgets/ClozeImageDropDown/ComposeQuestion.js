@@ -164,16 +164,33 @@ class ComposeQuestion extends Component {
     );
   };
 
-  getImageWidth = url => {
+  getImageDimensions = url => {
+    const { maxWidth, maxHeight } = this.props;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (width => {
+      const maxheight = maxHeight.split("px")[0];
+      const maxwidth = maxWidth.split("px")[0];
+      const width = this.naturalWidth >= maxwidth ? maxwidth : this.naturalWidth;
+      const height = this.naturalHeight >= maxheight ? maxheight : this.naturalHeight;
+      ((width, height) => {
         that.onItemPropChange("imageWidth", width);
-      })(width);
+        that.onItemPropChange("imageHeight", height);
+      })(width, height);
     });
     img.src = url;
+  };
+
+  getHeight = () => {
+    const { item, maxHeight } = this.props;
+    return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
+  };
+
+  changeImageHeight = height => {
+    const { maxHeight } = this.props;
+    const limit = +maxHeight.split("px")[0];
+    const newHeight = height > 0 ? (height >= limit ? limit : height) : limit;
+    this.onItemPropChange("imageHeight", newHeight);
   };
 
   handleImageUpload = info => {
@@ -182,7 +199,7 @@ class ComposeQuestion extends Component {
     if (status === "done") {
       message.success(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadedSuccessfully")}.`);
       const imageUrl = response.result.fileUri;
-      this.getImageWidth(imageUrl);
+      this.getImageDimensions(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
     } else if (status === "error") {
       message.error(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadFailed")}.`);
@@ -191,7 +208,7 @@ class ComposeQuestion extends Component {
 
   render() {
     const { t, item, theme, maxWidth, maxHeight } = this.props;
-    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
+    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -228,6 +245,14 @@ class ComposeQuestion extends Component {
                 />
 
                 <PaddingDiv left={20}>{t("component.cloze.imageDropDown.widthpx")}</PaddingDiv>
+              </div>
+              <div style={{ alignItems: "center" }}>
+                <ImageWidthInput
+                  data-cy="image-height-input"
+                  value={this.getHeight()}
+                  onChange={this.changeImageHeight}
+                />
+                <PaddingDiv left={20}>{t("component.cloze.imageDropDown.heightpx")}</PaddingDiv>
               </div>
               <div style={{ alignItems: "center" }}>
                 <ImageAlterTextInput
@@ -308,7 +333,7 @@ class ComposeQuestion extends Component {
                       <PreviewImage
                         src={item.imageUrl}
                         width={imageWidth < 700 ? imageWidth : maxWidth}
-                        height={"auto"}
+                        height={imageHeight}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
                         alt="resp-preview"

@@ -146,7 +146,6 @@ class ClozeImageDragDrop extends Component {
 
     const maxWidth = "700px",
       maxHeight = "600px";
-
     return (
       <div>
         {view === "edit" && (
@@ -178,6 +177,7 @@ class ClozeImageDragDrop extends Component {
                     responses={item.responses}
                     imageUrl={item.imageUrl}
                     imageWidth={item.imageWidth}
+                    imageHeight={item.imageHeight}
                     question={previewStimulus}
                     showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                     uiStyle={uiStyle}
@@ -267,6 +267,7 @@ class ClozeImageDragDrop extends Component {
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
                 evaluation={evaluation}
               />
             )}
@@ -297,6 +298,7 @@ class ClozeImageDragDrop extends Component {
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
                 evaluation={evaluation}
                 {...restProps}
               />
@@ -321,6 +323,7 @@ class ClozeImageDragDrop extends Component {
                 responseContainers={item.responses}
                 imageUrl={item.imageUrl}
                 imageWidth={item.imageWidth}
+                imageHeight={item.imageHeight}
                 question={previewStimulus}
                 maxRespCount={item.maxRespCount}
                 showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}

@@ -70,6 +70,7 @@ class Display extends Component {
       responseContainers,
       imageAlterText,
       imageWidth,
+      imageHeight,
       imagescale,
       uiStyle: { fontsize },
       showDashedBorder,
@@ -113,7 +114,7 @@ class Display extends Component {
             alt={imageAlterText}
             maxHeight={maxHeight}
             maxWidth={maxWidth}
-            height={"auto"}
+            height={imageHeight}
           />
           {!smallSize &&
             responseContainers.map((responseContainer, index) => {
@@ -198,6 +199,7 @@ class Display extends Component {
         responseBtnStyle={responseBtnStyle}
         imageUrl={imageUrl || ""}
         imageWidth={imageWidth}
+        imageHeight={imageHeight}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
         stemnumeration={stemnumeration}

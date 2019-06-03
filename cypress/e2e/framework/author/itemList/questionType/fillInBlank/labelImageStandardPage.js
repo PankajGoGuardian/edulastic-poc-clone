@@ -120,7 +120,18 @@ class LabelImageStandardPage {
     return this;
   }
 
+  changeImageHeight(height) {
+    cy.get('[data-cy="image-height-input"]')
+      .click()
+      .clear()
+      .type(height)
+      .should("have.height", height);
+    return this;
+  }
+
   getImageWidth = () => cy.get('[data-cy="drag-drop-image-panel"]');
+
+  getImageHeight = () => cy.get('[data-cy="drag-drop-image-panel"]');
 
   // image alternate
 

@@ -215,6 +215,7 @@ class ClozeImageDropDown extends Component {
                       responses={item.responses}
                       imageUrl={item.imageUrl}
                       imageWidth={item.imageWidth}
+                      imageHeight={item.imageHeight || 0}
                       question={previewStimulus}
                       showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
                       uiStyle={uiStyle}
@@ -272,6 +273,7 @@ class ClozeImageDropDown extends Component {
               evaluation={evaluation}
               imageUrl={item.imageUrl}
               imageWidth={item.imageWidth}
+              imageHeight={item.imageHeight || 0}
               question={previewStimulus}
               showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
               uiStyle={uiStyle}

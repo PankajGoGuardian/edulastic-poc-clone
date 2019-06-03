@@ -27,6 +27,7 @@ const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 class Display extends Component {
   constructor(props) {
     super(props);
+    console.log("display", props);
     const userAnswers = new Array(props.responseContainers.length).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -128,6 +129,7 @@ class Display extends Component {
       responseContainers,
       imageAlterText,
       imageWidth,
+      imageHeight,
       imageTitle,
       showDashedBorder,
       backgroundColor,
@@ -166,7 +168,7 @@ class Display extends Component {
             userSelect: "none",
             pointerEvents: "none",
             width: !maxWidth ? imageWidth || "auto" : imageWidth,
-            height: !maxWidth ? null : "auto",
+            height: !maxHeight ? imageHeight || "auto" : imageHeight,
             maxHeight: !maxHeight ? null : maxHeight,
             maxWidth: !maxWidth ? null : maxWidth
           }}
@@ -192,7 +194,7 @@ class Display extends Component {
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
           width: !maxWidth ? imageWidth || "100%" : maxWidth,
-          height: !maxHeight ? null : maxHeight,
+          height: !maxHeight ? imageHeight || "100%" : maxHeight,
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
           position: "relative",

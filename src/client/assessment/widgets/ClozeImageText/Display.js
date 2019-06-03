@@ -94,7 +94,7 @@ class Display extends Component {
       : imageWidth < 700
       ? imageWidth
       : maxWidth;
-
+    const { imageHeight } = item;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemnumeration } = uiStyle;
@@ -111,7 +111,7 @@ class Display extends Component {
           <StyledPreviewImage
             src={imageUrl || ""}
             width={width}
-            height={maxHeight}
+            height={imageHeight}
             maxHeight={maxHeight}
             maxWidth={maxWidth}
             alt={imageAlterText}
@@ -120,7 +120,7 @@ class Display extends Component {
             const dropTargetIndex = index;
             const btnStyle = {
               fontSize,
-              width: uiStyle.width || responseContainer.width,
+              width: `${uiStyle.widthpx}px` || responseContainer.width,
               top: uiStyle.top || responseContainer.top,
               left: uiStyle.left || responseContainer.left,
               height: uiStyle.height || responseContainer.height,
@@ -134,7 +134,9 @@ class Display extends Component {
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;
             }
-
+            if (uiStyle.widthpx) {
+              btnStyle.width = `${uiStyle.widthpx}px`;
+            }
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
 
             return (
@@ -167,6 +169,7 @@ class Display extends Component {
         responseBtnStyle={responseBtnStyle}
         imageUrl={imageUrl || ""}
         imageWidth={width}
+        imageHeight={imageHeight}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
@@ -176,6 +179,7 @@ class Display extends Component {
         evaluation={evaluation}
         maxHeight={maxHeight}
         maxWidth={maxWidth}
+        uiStyle={uiStyle}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

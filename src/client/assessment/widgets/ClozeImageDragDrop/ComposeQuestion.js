@@ -39,6 +39,7 @@ class ComposeQuestion extends Component {
   constructor(props) {
     super(props);
     this.imageWidthEditor = React.createRef();
+    this.imageHeightEditor = React.createRef();
   }
 
   static propTypes = {
@@ -159,14 +160,17 @@ class ComposeQuestion extends Component {
     );
   };
 
-  getImageWidth = url => {
+  getImageDimensions = url => {
+    const { maxWidth, maxHeight } = this.props;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (wid => {
+      const width = this.naturalWidth >= maxWidth ? maxWidth : this.naturalWidth;
+      const height = this.naturalHeight >= maxHeight ? maxHeight : this.naturalWidth;
+      ((wid, heig) => {
         that.onItemPropChange("imageWidth", wid);
-      })(width);
+        that.onItemPropChange("imageHeight", heig);
+      })(width, height);
     });
     img.src = url;
   };
@@ -177,7 +181,7 @@ class ComposeQuestion extends Component {
     if (status === "done") {
       message.success(`${info.file.name} ${t("component.cloze.imageDragDrop.fileUploadedSuccessfully")}.`);
       const imageUrl = response.result.fileUri;
-      this.getImageWidth(imageUrl);
+      this.getImageDimensions(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
     } else if (status === "error") {
       message.error(`${info.file.name} ${t("component.cloze.imageDragDrop.fileUploadFailed")}.`);
@@ -187,7 +191,16 @@ class ComposeQuestion extends Component {
   render() {
     const { t, item, theme, maxWidth, maxHeight } = this.props;
 
-    const { maxRespCount, responseLayout, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
+    const {
+      maxRespCount,
+      responseLayout,
+      background,
+      imageAlterText,
+      isEditAriaLabels,
+      responses,
+      imageWidth,
+      imageHeight
+    } = item;
 
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
@@ -233,6 +246,18 @@ class ComposeQuestion extends Component {
             />
 
             <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.widthpx")}</PaddingDiv>
+          </div>
+          <div style={{ alignItems: "center" }}>
+            <InputNumber
+              ref={this.imageHeightEditor}
+              data-cy="image-height-input"
+              value={imageHeight > 0 ? (imageHeight >= 600 ? 600 : imageHeight) : 600}
+              onChange={event => {
+                this.onItemPropChange("imageHeight", event > 0 ? (event >= 600 ? 600 : event) : 600);
+              }}
+            />
+
+            <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.heightpx")}</PaddingDiv>
           </div>
           <div style={{ alignItems: "center" }}>
             <Input
@@ -350,14 +375,14 @@ class ComposeQuestion extends Component {
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
               width={!maxWidth ? imageWidth || null : maxWidth}
-              height={maxHeight}
+              height={!maxHeight ? imageHeight || null : maxHeight}
             >
               {item.imageUrl && (
                 <React.Fragment>
                   <PreviewImage
                     src={item.imageUrl}
                     width={imageWidth < 700 ? imageWidth : maxWidth}
-                    height={"auto"}
+                    height={imageHeight}
                     maxWidth={maxWidth}
                     maxHeight={maxHeight}
                     alt="resp-preview"

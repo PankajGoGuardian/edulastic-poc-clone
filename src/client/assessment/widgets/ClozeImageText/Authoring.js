@@ -196,14 +196,19 @@ class Authoring extends Component {
     );
   };
 
-  getImageWidth = url => {
+  getImageDimensions = url => {
+    const { maxWidth, maxHeight } = this.props;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const width = this.naturalWidth >= 700 ? 700 : this.naturalWidth;
-      (wid => {
-        that.onItemPropChange("imageWidth", wid);
-      })(width);
+      const maxheight = maxHeight.split("px")[0];
+      const maxwidth = maxWidth.split("px")[0];
+      const width = this.naturalWidth >= maxwidth ? maxwidth : this.naturalWidth;
+      const height = this.naturalHeight >= maxheight ? maxheight : this.naturalHeight;
+      ((width, height) => {
+        that.onItemPropChange("imageWidth", width);
+        that.onItemPropChange("imageHeight", height);
+      })(width, height);
     });
     img.src = url;
   };
@@ -214,7 +219,7 @@ class Authoring extends Component {
     if (status === "done") {
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
       const imageUrl = response.result.fileUri;
-      this.getImageWidth(imageUrl);
+      this.getImageDimensions(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
     } else if (status === "error") {
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
@@ -228,13 +233,24 @@ class Authoring extends Component {
 
   getWidth = () => {
     const { item } = this.props;
-
     return item.imageWidth > 0 ? (item.imageWidth >= 700 ? 700 : item.imageWidth) : 700;
+  };
+
+  getHeight = () => {
+    const { item, maxHeight } = this.props;
+    return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
+  };
+
+  changeImageHeight = height => {
+    const { maxHeight } = this.props;
+    const limit = +maxHeight.split("px")[0];
+    const newHeight = height > 0 ? (height >= limit ? limit : height) : limit;
+    this.onItemPropChange("imageHeight", newHeight);
   };
 
   render() {
     const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
-    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth } = item;
+    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight = 0 } = item;
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
@@ -246,7 +262,6 @@ class Authoring extends Component {
         authorization: TokenStorage.getAccessToken()
       }
     };
-
     return (
       <div>
         <PaddingDiv>
@@ -273,6 +288,15 @@ class Authoring extends Component {
                 />
 
                 <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
+              </div>
+
+              <div style={{ alignItems: "center" }}>
+                <ImageWidthInput
+                  data-cy="image-height-input"
+                  value={this.getHeight()}
+                  onChange={this.changeImageHeight}
+                />
+                <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
               </div>
               <div style={{ alignItems: "center" }}>
                 <ImageAlterTextInput
@@ -354,7 +378,7 @@ class Authoring extends Component {
                         id="mainImage"
                         src={item.imageUrl}
                         width={imageWidth < 700 ? imageWidth : maxWidth}
-                        height={"auto"}
+                        height={imageHeight}
                         maxWidth={maxWidth}
                         maxHeight={maxHeight}
                         alt="resp-preview"

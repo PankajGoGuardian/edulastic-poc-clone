@@ -139,6 +139,7 @@ class CorrectAnswers extends Component {
       stimulus,
       imageAlterText,
       imageWidth,
+      imageHeight,
       options,
       t,
       imageUrl,
@@ -182,6 +183,7 @@ class CorrectAnswers extends Component {
                 configureOptions={configureOptions}
                 imageAlterText={imageAlterText}
                 imageWidth={imageWidth}
+                imageHeight={imageHeight}
                 maxRespCount={maxRespCount}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}

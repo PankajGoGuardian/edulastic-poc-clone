@@ -19,6 +19,7 @@ const CheckboxTemplateBoxLayout = ({
   responseContainers,
   imageUrl,
   imageWidth,
+  imageHeight,
   imageAlterText,
   responsecontainerindividuals,
   responseBtnStyle,
@@ -39,12 +40,11 @@ const CheckboxTemplateBoxLayout = ({
     >
       <img
         src={imageUrl}
-        width="100%"
         style={{
-          height: "auto",
+          height: imageHeight + "px",
           maxWidth,
           maxHeight,
-          width: !maxWidth ? imageWidth : imageWidth < 700 ? imageWidth : "100%",
+          width: imageWidth,
           userSelect: "none",
           pointerEvents: "none"
         }}

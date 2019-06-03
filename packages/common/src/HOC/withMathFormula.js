@@ -14,17 +14,12 @@ export const withMathFormula = WrappedComponent => {
     const [loaded, setLoaded] = useState(false);
     const [newInnerHtml, setNewInnerHtml] = useState("");
 
-    const getMathHtml = latex => {
-      if (!katex) return latex;
-      return katex.renderToString(latex);
-    };
-
     useEffect(() => {
       if (!loaded) {
         setNewInnerHtml(dangerouslySetInnerHTML.__html);
         return;
       }
-      setNewInnerHtml(replaceLatexesWithMathHtml(dangerouslySetInnerHTML.__html, getMathHtml));
+      setNewInnerHtml(replaceLatexesWithMathHtml(dangerouslySetInnerHTML.__html));
     }, [dangerouslySetInnerHTML, loaded]);
 
     return (

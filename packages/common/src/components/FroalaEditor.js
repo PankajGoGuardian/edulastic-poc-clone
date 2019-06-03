@@ -15,7 +15,7 @@ import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";
 
-import { replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
@@ -96,6 +96,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
   const mathFieldRef = useRef(null);
 
   const [showMathModal, setMathModal] = useState(false);
+  const [mathModalIsEditable, setMathModalIsEditable] = useState(true);
   const [currentLatex, setCurrentLatex] = useState("");
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
@@ -121,6 +122,8 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
           if (closestMathParent) {
             this.selection.save();
             setCurrentLatex(closestMathParent.getAttribute("data-latex"));
+            const mqeditable = closestMathParent.getAttribute("mqeditable");
+            setMathModalIsEditable(mqeditable !== "false");
             setCurrentMathEl(closestMathParent);
             setMathModal(true);
           } else {
@@ -164,11 +167,6 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
-  };
-
-  const getMathHtml = latex => {
-    if (!katex) return latex;
-    return katex.renderToString(latex);
   };
 
   const setChange = val => {
@@ -356,12 +354,13 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
     if (prevValue === value) return;
     setPrevValue(value);
-    setContent(replaceLatexesWithMathHtml(value, getMathHtml));
+    setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
   return (
     <>
       <MathModal
+        isEditable={mathModalIsEditable}
         show={showMathModal}
         symbols={symbols}
         numberPad={numberPad}

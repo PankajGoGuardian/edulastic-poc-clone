@@ -107,6 +107,11 @@ const QuestionContainer = styled.div`
   .ql-indent-9.ql-direction-rtl.ql-align-right {
     padding-right: 27em;
   }
+
+  td {
+    border: 1px solid #dddddd;
+    padding: 5px;
+  }
 `;
 
 const getQuestion = type => {

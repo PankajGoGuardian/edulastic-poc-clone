@@ -25,7 +25,8 @@ const CheckboxTemplateBoxLayout = ({
   userSelections,
   stemNumeration,
   evaluation,
-  showIndex
+  showIndex,
+  uiStyle
 }) => {
   let responseIndex = 0;
   return (
@@ -76,6 +77,9 @@ const CheckboxTemplateBoxLayout = ({
           } else {
             btnStyle.height = btnStyle.heightpx;
           }
+          if (uiStyle.widthpx) {
+            btnStyle.width = uiStyle.widthpx;
+          }
           maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
           return (
             <span key={index}>
@@ -89,7 +93,17 @@ const CheckboxTemplateBoxLayout = ({
                   style={btnStyle}
                 >
                   &nbsp;<span className="index">{responseIndex}</span>
-                  <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
+                  <span
+                    className="text"
+                    style={{
+                      width: "100%",
+                      whiteSpace: "nowrap",
+                      textOverflow: "ellipsis",
+                      overflow: "hidden"
+                    }}
+                  >
+                    {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+                  </span>
                   &nbsp;
                   <IconWrapper>
                     {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
@@ -119,7 +133,7 @@ const CheckboxTemplateBoxLayout = ({
                   )}
                   <span
                     style={{
-                      width: "70%",
+                      width: "100%",
                       display: "block",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
@@ -161,7 +175,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
   showAnswer: PropTypes.bool,
-  showIndex: PropTypes.bool
+  showIndex: PropTypes.bool,
+  uiStyle: PropTypes.object
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

@@ -239,6 +239,7 @@ class ClozeTextDisplay extends Component {
         userSelections={userAnswers}
         evaluation={evaluation}
         showIndex={showAnswer}
+        uiStyle={uiStyle}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

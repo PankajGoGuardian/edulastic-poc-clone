@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get, isEmpty, find } from "lodash";
+import { get } from "lodash";
 import { Form } from "antd";
 import { Field } from "./styled";
 
@@ -27,8 +27,8 @@ const CustomField = ({
   };
 
   const checkEmail = (rule, value, callback) => {
-    const isExist = find(students, ({ email: _existingEmail }) => _existingEmail === value);
-    if (isEmpty(isExist)) {
+    const isExist = students.some(({ enrollmentStatus, email }) => enrollmentStatus === "1" && email === value);
+    if (!isExist) {
       callback();
     } else {
       callback(rule.message);

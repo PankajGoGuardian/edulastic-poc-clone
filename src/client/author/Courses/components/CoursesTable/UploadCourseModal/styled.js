@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Button, Modal, Icon, Spin, Table } from "antd";
+import { Button, Modal, Icon, Spin, Table, Alert } from "antd";
 
 export const StyledModal = styled(Modal)`
   .ant-modal-body {
@@ -112,4 +112,8 @@ export const StyledTable = styled(Table)`
 
 export const AlertSuccess = styled.p`
   margin-bottom: 10px;
+`;
+
+export const StyledAlert = styled(Alert)`
+  width: 100%;
 `;

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
-
 import { CSVLink } from "react-csv";
 
 import {
@@ -28,6 +27,7 @@ import {
   StyledTableButton,
   StyledConfirmButton,
   AlertSuccess,
+  StyledAlert,
   StatusDiv
 } from "./styled";
 
@@ -35,7 +35,8 @@ class UploadCourseModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: []
+      dataSource: [],
+      alertMsgStr: ""
     };
 
     this.columns = [];
@@ -61,8 +62,29 @@ class UploadCourseModal extends React.Component {
 
   handleCSVChange = event => {
     const file = event.target.files[0];
-    const { uploadCSVCourse } = this.props;
-    uploadCSVCourse(file);
+    const { uploadCSVCourse, setPageStatus } = this.props;
+
+    var fileReader = new FileReader();
+    const scope = this;
+
+    fileReader.onload = function(fileLoadedEvent) {
+      var textFromFileLoaded = fileLoadedEvent.target.result;
+      var lineArr = textFromFileLoaded.split("\n");
+      var headerArr = lineArr[0].split(",");
+      if (headerArr.length == 2) {
+        if (headerArr[0] === "course_id" && headerArr[1] === "course_name") {
+          uploadCSVCourse(file);
+        } else {
+          setPageStatus("upload-novalidate-csv");
+          scope.setState({ alertMsgStr: "Unsupported file format" });
+        }
+      } else {
+        setPageStatus("upload-novalidate-csv");
+        scope.setState({ alertMsgStr: "Unsupported file format" });
+      }
+    };
+
+    fileReader.readAsBinaryString(file, "UTF-8");
   };
 
   uploadCourse = () => {
@@ -83,7 +105,7 @@ class UploadCourseModal extends React.Component {
 
   render() {
     const { modalVisible, pageStatus, savingBulkCourse } = this.props;
-    const { dataSource } = this.state;
+    const { dataSource, alertMsgStr } = this.state;
 
     if (pageStatus === "uploaded") {
       this.columns = [
@@ -174,7 +196,10 @@ class UploadCourseModal extends React.Component {
           Done
         </StyledConfirmButton>
       ];
+    } else if (pageStatus === "upload-novalidate-csv") {
+      modalFooter = [<StyledConfirmButton onClick={this.goBackUpload}>Try your upload again</StyledConfirmButton>];
     }
+
     return (
       <StyledModal
         visible={modalVisible}
@@ -200,6 +225,12 @@ class UploadCourseModal extends React.Component {
             </StyledUploadCSVDiv>
             <StyledSpin isVisible={pageStatus === "uploading"} size="large" />
           </React.Fragment>
+        )}
+
+        {pageStatus === "upload-novalidate-csv" && (
+          <UploadedContent>
+            <StyledAlert message={alertMsgStr} type="error" />
+          </UploadedContent>
         )}
 
         {(pageStatus === "uploaded" || pageStatus === "bulk-success") && (

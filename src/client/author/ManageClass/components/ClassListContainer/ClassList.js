@@ -43,8 +43,16 @@ const ClassList = ({ groups, setEntity }) => {
         return tags.map((tag, index) => <span key={index}>{tag}, </span>);
       }
     },
-    { title: "Students" },
-    { title: "Assignments" }
+    {
+      title: "Students",
+      dataIndex: "studentCount",
+      render: (studentCount = 0) => studentCount
+    },
+    {
+      title: "Assignments",
+      dataIndex: "assignmentCount",
+      render: (assignmentCount = 0) => assignmentCount
+    }
   ];
 
   const rowKey = ({ _id }) => _id;

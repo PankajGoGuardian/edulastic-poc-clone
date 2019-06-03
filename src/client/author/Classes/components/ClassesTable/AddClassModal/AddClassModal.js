@@ -1,19 +1,37 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal } from "antd";
+import { get } from "lodash";
+import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
 const Option = Select.Option;
+
+import { schoolApi, userApi } from "@edulastic/api";
 
 import { ModalFormItem } from "./styled";
 
 class AddClassModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      schoolList: [],
+      fetchingSchool: false,
+      teacherList: [],
+      fetchingTeacher: []
+    };
+  }
+
   onAddClass = () => {
     this.props.form.validateFields((err, user) => {
       if (!err) {
+        const teacherArr = [];
+        for (let i = 0; i < user.teacher.length; i++) {
+          teacherArr.push(user.teacher[i].key);
+        }
         const createClassData = {
           name: user.name,
           type: "class",
-          owners: user.teacher,
-          institutionId: user.institutionId,
-          subject: user.subject
+          owners: teacherArr,
+          institutionId: user.institutionId.key,
+          subject: user.subject,
+          tags: user.tags
         };
 
         this.props.addClass(createClassData);
@@ -25,26 +43,52 @@ class AddClassModal extends React.Component {
     this.props.closeModal();
   };
 
-  render() {
-    const { schoolsData, teacherList, modalVisible } = this.props;
-    const schoolsOptions = [];
-    if (schoolsData.length !== undefined) {
-      schoolsData.map((row, index) => {
-        schoolsOptions.push(
-          <Option key={index} value={row._id}>
-            {row.name}
-          </Option>
-        );
-      });
-    }
+  fetchSchool = async value => {
+    this.setState({ schoolList: [], fetchingSchool: true });
+    const schoolListData = await schoolApi.getSchools({
+      districtId: this.props.userOrgId,
+      limit: 25,
+      page: 1,
+      sortField: "name",
+      order: "asc",
+      search: { name: { type: "cont", value } }
+    });
+    this.setState({ schoolList: schoolListData.data, fetchingSchool: false });
+  };
 
-    const teacherOptions = [];
-    if (teacherList.length !== undefined) {
-      teacherList.map(row => {
-        const name = `${row.firstName || ""}${row.lastName || ""}`;
-        teacherOptions.push(<Option value={row._id}>{name}</Option>);
-      });
-    }
+  handleSchoolChange = value => {
+    this.props.form.setFieldsValue({ institutionId: value });
+    this.setState({
+      schoolList: [],
+      fetchingSchool: false
+    });
+  };
+
+  fetchTeacher = async value => {
+    this.setState({ teacherList: [], fetchingTeacher: true });
+    const teacherListData = await userApi.fetchUsers({
+      districtId: this.props.userOrgId,
+      limit: 25,
+      page: 1,
+      type: "DISTRICT",
+      search: {
+        role: "teacher"
+      }
+    });
+    this.setState({ teacherList: teacherListData.data, fetchingTeacher: false });
+  };
+
+  handleTeacherChange = value => {
+    this.props.form.setFieldsValue({ teacher: value });
+    this.setState({
+      teacherList: [],
+      fetchingTeacher: false
+    });
+  };
+
+  render() {
+    const { modalVisible } = this.props;
+    const { fetchingSchool, schoolList, fetchingTeacher, teacherList } = this.state;
 
     const { getFieldDecorator } = this.props.form;
     return (
@@ -98,6 +142,20 @@ class AddClassModal extends React.Component {
         </Row>
         <Row>
           <Col span={24}>
+            <ModalFormItem label="Tags">
+              {getFieldDecorator("tags", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please select tags"
+                  }
+                ]
+              })(<Select placeholder="Select Tags" mode="tags" />)}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
             <ModalFormItem label="Teacher Name">
               {getFieldDecorator("teacher", {
                 rules: [
@@ -107,8 +165,20 @@ class AddClassModal extends React.Component {
                   }
                 ]
               })(
-                <Select mode="multiple" placeholder="Search by Username">
-                  {teacherOptions}
+                <Select
+                  mode="multiple"
+                  labelInValue
+                  placeholder="Search by Username"
+                  notFoundContent={fetchingTeacher ? <Spin size="small" /> : null}
+                  filterOption={false}
+                  onSearch={this.fetchTeacher}
+                  onChange={this.handleTeacherChange}
+                >
+                  {teacherList.map(teacher => (
+                    <Option key={teacher._id} value={teacher._id}>
+                      {get(teacher, ["_source", "firstName"], "") + " " + get(teacher, ["_source", "lastName"], "")}
+                    </Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>
@@ -116,7 +186,7 @@ class AddClassModal extends React.Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="School">
+            <ModalFormItem label="Select School">
               {getFieldDecorator("institutionId", {
                 rules: [
                   {
@@ -124,7 +194,23 @@ class AddClassModal extends React.Component {
                     message: "Please select school"
                   }
                 ]
-              })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
+              })(
+                <Select
+                  showSearch
+                  labelInValue
+                  placeholder="Please Select schools"
+                  notFoundContent={fetchingSchool ? <Spin size="small" /> : null}
+                  filterOption={false}
+                  onSearch={this.fetchSchool}
+                  onChange={this.handleSchoolChange}
+                >
+                  {schoolList.map(school => (
+                    <Option key={school._id} value={school._id}>
+                      {school._source.name}
+                    </Option>
+                  ))}
+                </Select>
+              )}
             </ModalFormItem>
           </Col>
         </Row>

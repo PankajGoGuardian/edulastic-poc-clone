@@ -63,7 +63,8 @@ const initialState = {
   deleteError: null,
   teacherLoading: false,
   teacherList: {},
-  teacherError: ""
+  teacherError: "",
+  totalClassCount: 0
 };
 
 export const reducer = createReducer(initialState, {

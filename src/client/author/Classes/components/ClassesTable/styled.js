@@ -1,6 +1,5 @@
 import styled from "styled-components";
-import { Button, Table, Select, Input, Dropdown, Pagination } from "antd";
-const Search = Input.Search;
+import { Button, Table, Select, Input, Dropdown, Pagination, Icon } from "antd";
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -53,12 +52,12 @@ export const StyledTableButton = styled.a`
   }
 `;
 
-export const StyledFilterInput = styled(Input)`
+export const StyledFilterInput = styled(Input.Search)`
   margin-left: 20px;
   width: 300px;
 `;
 
-export const StyledSearch = styled(Search)`
+export const StyledSearch = styled(Input.Search)`
   margin-left: 20px;
   width: 465px;
 `;
@@ -82,4 +81,35 @@ export const TeacherSpan = styled.span`
 export const StyledPagination = styled(Pagination)`
   margin-top: 15px;
   align-self: flex-end;
+`;
+
+export const StyledFilterButton = styled(Button)`
+  margin-left: 20px;
+`;
+
+export const StyledHeaderColumn = styled.div`
+  display: flex;
+  align-item: center;
+  cursor: pointer;
+`;
+
+export const StyledSortIconDiv = styled.div`
+  position: relative;
+  margin-left: 8px;
+  display: inline-block;
+  vertical-align: middle;
+  text-align: center;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.45);
+`;
+
+export const StyledSortIcon = styled(Icon)`
+  display: block;
+  height: 6px;
+  line-height: 0.5em;
+  cursor: pointer;
+  position: relative;
+  font-size: 11px;
+  margin-top: 0.125em;
+  color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
 `;

@@ -5,7 +5,7 @@ import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 import MathInput from "../MathInput";
 
-const MathModal = ({ value, symbols, readOnly, numberPad, showResponse, show, onSave, onClose }) => {
+const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, show, onSave, onClose }) => {
   const mathInputRef = useRef(null);
   const [latex, setLatex] = useState(value || "");
 
@@ -30,8 +30,8 @@ const MathModal = ({ value, symbols, readOnly, numberPad, showResponse, show, on
 
   return (
     <Modal visible={show} title="Edit Math" maskClosable={false} onOk={() => onSave(latex)} onCancel={() => onClose()}>
-      {readOnly && <BlockMath math={latex} />}
-      {!readOnly && (
+      {!isEditable && <BlockMath math={latex} />}
+      {isEditable && (
         <MathInput
           ref={mathInputRef}
           alwaysShowKeyboard
@@ -49,7 +49,7 @@ const MathModal = ({ value, symbols, readOnly, numberPad, showResponse, show, on
 
 MathModal.propTypes = {
   show: PropTypes.bool,
-  readOnly: PropTypes.bool,
+  isEditable: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
   showResponse: PropTypes.bool,
@@ -60,7 +60,7 @@ MathModal.propTypes = {
 
 MathModal.defaultProps = {
   show: false,
-  readOnly: false,
+  isEditable: true,
   value: "",
   showResponse: false,
   onSave: () => {},

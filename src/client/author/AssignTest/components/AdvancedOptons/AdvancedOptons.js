@@ -57,7 +57,7 @@ class AdvancedOptons extends React.Component {
   updateStudents = studentList => this.onChange("students", studentList);
 
   render() {
-    const { testSettings, assignment } = this.props;
+    const { testSettings, assignment, updateOptions } = this.props;
     const { showSettings, classIds } = this.state;
     const changeField = curry(this.onChange);
 

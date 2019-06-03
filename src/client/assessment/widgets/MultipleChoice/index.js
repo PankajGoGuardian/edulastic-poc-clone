@@ -38,7 +38,8 @@ const Divider = styled.div`
 
 class MultipleChoice extends Component {
   state = {
-    shuffledOptions: []
+    shuffledOptions: [],
+    correctTab: 0
   };
 
   componentWillReceiveProps(nextProps) {
@@ -97,6 +98,8 @@ class MultipleChoice extends Component {
 
   handleAddAltResponses = () => {
     const { setQuestionData, item } = this.props;
+    const { correctTab } = this.state;
+
     setQuestionData(
       produce(item, draft => {
         const response = {
@@ -111,10 +114,16 @@ class MultipleChoice extends Component {
         }
       })
     );
+
+    this.setState({
+      correctTab: correctTab + 1
+    });
   };
 
   handleRemoveAltResponses = index => {
     const { setQuestionData, item } = this.props;
+    const { correctTab } = this.state;
+
     setQuestionData(
       produce(item, draft => {
         if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
@@ -122,6 +131,10 @@ class MultipleChoice extends Component {
         }
       })
     );
+
+    this.setState({
+      correctTab: correctTab + 1
+    });
   };
 
   handleAddAnswer = qid => {
@@ -184,7 +197,7 @@ class MultipleChoice extends Component {
       flowLayout,
       ...restProps
     } = this.props;
-    const { shuffledOptions } = this.state;
+    const { shuffledOptions, correctTab } = this.state;
     const {
       previewStimulus,
       previewDisplayOptions,
@@ -219,6 +232,7 @@ class MultipleChoice extends Component {
                     styleType="primary"
                     fillSections={fillSections}
                     cleanSections={cleanSections}
+                    correctTab={correctTab}
                     {...restProps}
                   />
                   <Divider />

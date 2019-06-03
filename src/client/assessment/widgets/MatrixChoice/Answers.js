@@ -152,6 +152,8 @@ class Answers extends Component {
           draft.validation.alt_responses.splice(tabIndex, 1);
         })
       );
+
+      this.setCorrectTab(correctTab - 1);
     };
 
     const renderOptions = () => (

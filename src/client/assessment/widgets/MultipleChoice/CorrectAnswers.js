@@ -5,6 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
+import { newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, TabContainer, Tabs } from "@edulastic/common";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
@@ -13,15 +14,12 @@ import { Subtitle } from "../../styled/Subtitle";
 import { CorrectAnswersContainer } from "./styled/CorrectAnswers";
 
 import CorrectAnswer from "./CorrectAnswer";
-import { IconPlus } from "./styled/IconPlus";
 
 class CorrectAnswers extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      value: 0
-    };
-  }
+  state = {
+    tabs: 1,
+    value: 0
+  };
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
@@ -36,6 +34,16 @@ class CorrectAnswers extends Component {
     cleanSections();
   }
 
+  updateCountTabs = newCount => {
+    const { tabs } = this.state;
+
+    if (tabs !== newCount) {
+      this.setState({
+        tabs: newCount
+      });
+    }
+  };
+
   handleTabChange = value => {
     this.setState({ value });
   };
@@ -44,6 +52,8 @@ class CorrectAnswers extends Component {
     const { validation, t, onRemoveAltResponses } = this.props;
 
     if (validation.alt_responses && validation.alt_responses.length) {
+      this.updateCountTabs(validation.alt_responses.length + 1);
+
       return validation.alt_responses.map((res, i) => (
         <Tab
           IconPosition="right"
@@ -54,6 +64,7 @@ class CorrectAnswers extends Component {
             event.stopPropagation();
             onRemoveAltResponses(i);
             this.handleTabChange(i);
+            this.updateCountTabs(validation.alt_responses.length);
           }}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
@@ -63,19 +74,28 @@ class CorrectAnswers extends Component {
   };
 
   renderPlusButton = () => {
-    const { onAddAltResponses, validation } = this.props;
+    const { onAddAltResponses, validation, t } = this.props;
 
     return (
       <Button
-        style={{ minWidth: 20, minHeight: 20, width: 20, padding: 0, marginLeft: 20 }}
-        icon={<IconPlus data-cy="alternate" />}
+        style={{
+          background: "transparent",
+          color: newBlue,
+          borderRadius: 0,
+          padding: 0,
+          boxShadow: "none",
+          marginLeft: "auto"
+        }}
         onClick={() => {
           this.handleTabChange(validation.alt_responses.length + 1);
           onAddAltResponses();
         }}
         color="primary"
         variant="extendedFab"
-      />
+        data-cy="alternate"
+      >
+        {`+ ${t("component.correctanswers.alternativeAnswer")}`}
+      </Button>
     );
   };
 
@@ -126,20 +146,23 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { validation, stimulus, options, t, multipleResponses, uiStyle, styleType } = this.props;
-    const { value } = this.state;
+    const { validation, stimulus, options, t, multipleResponses, uiStyle, styleType, correctTab } = this.props;
+    const { value, tabs } = this.state;
 
     return (
       <div>
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <CorrectAnswersContainer>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            <Tab
-              style={{ borderRadius: validation.alt_responses <= 1 ? "4px" : "4px 0 0 4px" }}
-              IconPosition="right"
-              label={t("component.correctanswers.correct")}
-              type="primary"
-            />
+            {tabs > 1 && (
+              <Tab
+                type="primary"
+                data_cy="correct"
+                label={t("component.correctanswers.correct")}
+                borderRadius={tabs === 1}
+                active={correctTab === 0}
+              />
+            )}
             {this.renderAltResponses()}
           </Tabs>
           {value === 0 && (
@@ -196,7 +219,8 @@ CorrectAnswers.propTypes = {
   uiStyle: PropTypes.object.isRequired,
   styleType: PropTypes.string,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  correctTab: PropTypes.number.isRequired
 };
 
 CorrectAnswers.defaultProps = {

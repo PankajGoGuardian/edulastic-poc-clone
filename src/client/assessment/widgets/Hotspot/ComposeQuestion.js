@@ -7,7 +7,7 @@ import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Image } from "@edulastic/common";
+import { Image as ImageComponent } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
 
 import { updateVariables } from "../../utils/variables";
@@ -54,16 +54,33 @@ class ComposeQuestion extends Component {
     };
 
     const handleImageToolbarChange = prop => val => {
-      setQuestionData(
-        produce(item, draft => {
-          if (prop === "width") {
-            draft.image[prop] = val > 700 ? 700 : val;
-          } else if (prop === "height") {
-            draft.image[prop] = val > 600 ? 600 : val;
-          }
-          updateVariables(draft);
-        })
-      );
+      if (prop === "source") {
+        let image = new Image();
+        image.onload = () => {
+          setQuestionData(
+            produce(item, draft => {
+              draft.image.width = image.width > 700 ? 700 : image.width;
+              draft.image.height = image.height > 600 ? 600 : image.height;
+              draft.image.source = val;
+              updateVariables(draft);
+            })
+          );
+        };
+        image.src = val;
+      } else {
+        setQuestionData(
+          produce(item, draft => {
+            if (prop === "width") {
+              draft.image[prop] = val > 700 ? 700 : val;
+            } else if (prop === "height") {
+              draft.image[prop] = val > 600 ? 600 : val;
+            } else {
+              draft.image[prop] = val;
+            }
+            updateVariables(draft);
+          })
+        );
+      }
     };
 
     const onDrop = ([files]) => {
@@ -81,7 +98,7 @@ class ComposeQuestion extends Component {
       }
     };
 
-    const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
+    const thumb = file && <ImageComponent width={width} height={height} src={file} alt={altText} />;
 
     return (
       <Widget>

@@ -8,7 +8,7 @@ const BasicFields = ({ std, isEdit, ...restProps }) => {
   const emailFieldValue = restProps.getFieldValue("email");
   return (
     <>
-      <Field label="Username/Email" {...restProps} fiedlName="email" initialValue={email}>
+      <Field label="Username/Email" {...restProps} fiedlName="email" initialValue={email} isEdit={isEdit}>
         <Input placeholder="Enter Username" />
       </Field>
       {!isEdit && (

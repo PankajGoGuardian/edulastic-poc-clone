@@ -35,17 +35,22 @@ const CustomField = ({
     }
   };
 
+  const commonEmailValidations = [
+    { required: true, message: "Please provide valid Username or Email id" },
+    {
+      // validation so that no white spaces are allowed
+      message: "Please provide valid Username or Email id",
+      pattern: /^\S*$/
+    },
+    { max: 256, message: "Must less than 256 characters!" }
+  ];
+
+  const emailValidations = isEdit
+    ? [...commonEmailValidations]
+    : [{ validator: checkEmail, message: "User already part of this class section." }, ...commonEmailValidations];
+
   const validations = {
-    email: [
-      { validator: checkEmail, message: "User already part of this class section." },
-      { required: true, message: "Please provide valid Username or Email id" },
-      {
-        // validation so that no white spaces are allowed
-        message: "Please provide valid Username or Email id",
-        pattern: /^\S*$/
-      },
-      { max: 256, message: "Must less than 256 characters!" }
-    ],
+    email: emailValidations,
     fullName: [
       { required: true, message: "Please provide user full name" },
       { max: 128, message: "Must less than 128 characters!" }

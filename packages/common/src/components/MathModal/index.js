@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import { Modal } from "antd";
+import { Modal, Input } from "antd";
 import "katex/dist/katex.min.css";
 import { BlockMath } from "react-katex";
 import MathInput from "../MathInput";
@@ -29,8 +29,20 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, show, 
   };
 
   return (
-    <Modal visible={show} title="Edit Math" maskClosable={false} onOk={() => onSave(latex)} onCancel={() => onClose()}>
-      {!isEditable && <BlockMath math={latex} />}
+    <Modal
+      visible={show}
+      title="Edit Math"
+      className="math-modal"
+      maskClosable={false}
+      onOk={() => onSave(latex)}
+      onCancel={() => onClose()}
+    >
+      {!isEditable && (
+        <React.Fragment>
+          <Input value={latex} onChange={e => onInput(e.target.value)} />
+          <BlockMath>{latex}</BlockMath>
+        </React.Fragment>
+      )}
       {isEditable && (
         <MathInput
           ref={mathInputRef}

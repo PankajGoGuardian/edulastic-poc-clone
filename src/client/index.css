@@ -1940,3 +1940,11 @@ span.token.active-word {
 .fr-view table th {
   padding: 8px 0;
 }
+
+.math-modal .katex-display {
+  text-align: left !important;
+}
+
+.math-modal .katex-display .katex {
+  text-align: left !important;
+}

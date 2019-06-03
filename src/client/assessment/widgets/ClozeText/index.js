@@ -234,6 +234,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                showIndex
               />
             )}
             {previewTab === "show" && (
@@ -252,6 +253,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                showIndex
                 {...restProps}
               />
             )}
@@ -271,6 +273,7 @@ class ClozeText extends Component {
                 onChange={this.handleAddAnswer}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                showIndex={false}
               />
             )}
           </Wrapper>

@@ -193,7 +193,7 @@ const CustomInput = styled.div`
 `;
 
 const IndexBox = styled.div`
-  padding: 0 10px;
+  padding: 3px 10px;
   color: white;
   display: inline-flex;
   align-items: center;

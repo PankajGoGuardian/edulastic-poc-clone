@@ -133,7 +133,8 @@ class ClozeTextDisplay extends Component {
       instructorStimulus,
       item,
       showQuestionNumber,
-      qIndex
+      qIndex,
+      showIndex
     } = this.props;
     const { templateParts, userAnswers } = this.state;
     let responseIndex = 0;
@@ -213,6 +214,8 @@ class ClozeTextDisplay extends Component {
                     placeholder={btnStyle.placeholder}
                     type={btnStyle.inputtype}
                     item={item}
+                    showIndex={showIndex}
+                    indexNumber={responseIndex}
                   />
                 );
               }
@@ -238,7 +241,7 @@ class ClozeTextDisplay extends Component {
         showAnswer={showAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
-        showIndex={showAnswer}
+        showIndex={showIndex}
         uiStyle={uiStyle}
       />
     );

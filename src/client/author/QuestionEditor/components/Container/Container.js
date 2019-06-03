@@ -4,12 +4,14 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
+import { Row, Col } from "antd";
 
 import { withNamespaces } from "@edulastic/localization";
 import { ContentWrapper, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { desktopWidth } from "@edulastic/colors";
 
+import styled from "styled-components";
 import SourceModal from "../SourceModal/SourceModal";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
 import { getViewSelector } from "../../../src/selectors/view";
@@ -25,6 +27,7 @@ import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testIt
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
+
 class Container extends Component {
   state = {
     showModal: false,
@@ -196,7 +199,7 @@ class Container extends Component {
             onSave={this.handleSave}
             view={view}
             previewTab={previewTab}
-            renderRightSide={this.renderButtons}
+            renderRightSide={view === "edit" ? this.renderButtons : () => {}}
             withLabels
             renderExtra={() =>
               modalItemId && (
@@ -207,12 +210,18 @@ class Container extends Component {
             }
           />
         </ItemHeader>
-
-        {windowWidth > desktopWidth.replace("px", "") ? (
-          <SecondHeadBar breadcrumb={this.breadcrumb} />
-        ) : (
-          <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-        )}
+        <BreadCrumbBar>
+          <Col md={12}>
+            {windowWidth > desktopWidth.replace("px", "") ? (
+              <SecondHeadBar breadcrumb={this.breadcrumb} />
+            ) : (
+              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+            )}
+          </Col>
+          <RightActionButtons md={12}>
+            <div>{view === "preview" && this.renderButtons()}</div>
+          </RightActionButtons>
+        </BreadCrumbBar>
 
         <ContentWrapper>{this.renderQuestion()}</ContentWrapper>
       </div>
@@ -272,3 +281,13 @@ const enhance = compose(
 );
 
 export default enhance(Container);
+
+const BreadCrumbBar = styled(Row)`
+  padding: 10px 30px 10px 0px;
+`;
+
+const RightActionButtons = styled(Col)`
+  div {
+    float: right;
+  }
+`;

@@ -6,7 +6,7 @@ export const Container = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 4px 45px;
-  min-height: 53px;
+  min-height: 30px;
   position: ${props => props.position};
   z-index: ${props => props.zIndex};
   right: ${props => (props.showPublishButton ? "208px" : "101px")};

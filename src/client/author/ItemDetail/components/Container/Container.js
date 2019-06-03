@@ -3,6 +3,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
+import styled from "styled-components";
 import { Progress, withWindowSizes } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
@@ -425,30 +426,39 @@ class Container extends Component {
                 </ButtonClose>
               )
             }
-            renderRightSide={this.renderButtons}
+            renderRightSide={view === "edit" ? this.renderButtons : () => {}}
           />
         </ItemHeader>
-        {windowWidth > MAX_MOBILE_WIDTH ? (
-          <SecondHeadBar>
-            {item && view !== "preview" && qLength > 1 && (
-              <Row type="flex" justify="end" style={{ width: 250 }}>
-                <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
-                <Col>
-                  <Switch
-                    checked={item.itemLevelScoring}
-                    checkedChildren="on"
-                    unCheckedChildren="off"
-                    onChange={v => {
-                      setItemLevelScoring(v);
-                    }}
-                  />
-                </Col>
-              </Row>
+        <BreadCrumbBar>
+          <Col md={view === "preview" ? 12 : 24}>
+            {windowWidth > MAX_MOBILE_WIDTH ? (
+              <SecondHeadBar>
+                {item && view !== "preview" && qLength > 1 && (
+                  <Row type="flex" justify="end" style={{ width: 250 }}>
+                    <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
+                    <Col>
+                      <Switch
+                        checked={item.itemLevelScoring}
+                        checkedChildren="on"
+                        unCheckedChildren="off"
+                        onChange={v => {
+                          setItemLevelScoring(v);
+                        }}
+                      />
+                    </Col>
+                  </Row>
+                )}
+              </SecondHeadBar>
+            ) : (
+              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
             )}
-          </SecondHeadBar>
-        ) : (
-          <BackLink onClick={history.goBack}>Back to Item List</BackLink>
-        )}
+          </Col>
+          {view === "preview" && (
+            <RightActionButtons col={12}>
+              <div>{this.renderButtons()}</div>
+            </RightActionButtons>
+          )}
+        </BreadCrumbBar>
         {view === "edit" && (
           <ItemDetailWrapper>
             {rows &&
@@ -567,3 +577,13 @@ const enhance = compose(
 );
 
 export default enhance(Container);
+
+const BreadCrumbBar = styled(Row)`
+  padding: 10px 30px 10px 0px;
+`;
+
+const RightActionButtons = styled(Col)`
+  div {
+    float: right;
+  }
+`;

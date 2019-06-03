@@ -90,5 +90,4 @@ const Container = styled.button`
 const Text = styled.span`
   display: inline-block;
   padding-top: 1px;
-  padding-right: 20px;
 `;

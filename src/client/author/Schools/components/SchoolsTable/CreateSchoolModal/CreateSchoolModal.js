@@ -5,7 +5,7 @@ const Option = Select.Option;
 
 import { countryApi, schoolApi } from "@edulastic/api";
 
-class CreateSchoolModal extends React.Component {
+class CreateSchoolModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -14,8 +14,7 @@ class CreateSchoolModal extends React.Component {
       nameValidateStatus: "success",
       nameValidateMsg: "",
       showSpin: false,
-      countryValue: "",
-      checkSchoolExist: { totalSchools: 0, data: [] }
+      countryValue: ""
     };
     this.onCreateSchool = this.onCreateSchool.bind(this);
   }
@@ -31,38 +30,30 @@ class CreateSchoolModal extends React.Component {
 
   async onCreateSchool() {
     const { name, nameValidateStatus } = this.state;
-    let checkSchoolExist = { ...this.state.checkSchoolExist };
-
+    let checkSchoolExist;
     if (nameValidateStatus === "success" && name.length > 0) {
-      checkSchoolExist = await schoolApi.getSchools({
+      checkSchoolExist = await schoolApi.searchSchoolsByName({
         districtId: this.props.userOrgId,
-        search: {
-          name: {
-            type: "eq",
-            value: name
-          }
-        }
+        schoolName: name
       });
-      this.setState({ showSpin: false, checkSchoolExist });
+      this.setState({ showSpin: false });
 
-      if (checkSchoolExist.totalSchools > 0) {
+      if (checkSchoolExist.length > 0) {
         this.setState({
           nameValidateStatus: "error",
           nameValidateMsg: "School name already exists"
         });
       }
-    } else {
-      if (name.length == 0) {
-        this.setState({
-          nameValidateStatus: "error",
-          nameValidateMsg: "Please input school name"
-        });
-      }
+    } else if (!name.length) {
+      this.setState({
+        nameValidateStatus: "error",
+        nameValidateMsg: "Please input school name"
+      });
     }
 
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        if (checkSchoolExist.totalSchools > 0) return;
+        if (checkSchoolExist.length > 0) return;
         row.name = name;
         this.props.createSchool(row);
       }
@@ -78,15 +69,13 @@ class CreateSchoolModal extends React.Component {
       this.setState({
         name: e.target.value,
         nameValidateStatus: "error",
-        nameValidateMsg: "Please input school name",
-        checkSchoolExist: { totalSchools: 0, data: [] }
+        nameValidateMsg: "Please input school name"
       });
     } else {
       this.setState({
         name: e.target.value,
         nameValidateStatus: "success",
-        nameValidateMsg: "",
-        checkSchoolExist: { totalSchools: 0, data: [] }
+        nameValidateMsg: ""
       });
     }
   };

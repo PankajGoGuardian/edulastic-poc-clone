@@ -362,10 +362,7 @@ class ClassesTable extends React.Component {
         dataIndex: "teacherName",
         editable: true,
         render: (text, record) => {
-          const teachers = [];
-          record.owners.map(row => {
-            teachers.push(<TeacherSpan>{row.name}</TeacherSpan>);
-          });
+          const teachers = record.owners.map(row => <TeacherSpan>{row.name}</TeacherSpan>);   
           return <React.Fragment>{teachers}</React.Fragment>;
         }
       },

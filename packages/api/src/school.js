@@ -54,11 +54,23 @@ const searchDistricts = body =>
     data: body
   });
 
+const searchSchoolsByName = ({ districtId, schoolName }) =>
+  api
+    .callApi({
+      url: `${prefix}/${districtId}/searchByName`,
+      method: "get",
+      params: {
+        schoolName
+      }
+    })
+    .then(({ data }) => data.result);
+
 export default {
   getSchools,
   updateSchool,
   createSchool,
   deleteSchool,
   searchSchool,
-  searchDistricts
+  searchDistricts,
+  searchSchoolsByName
 };

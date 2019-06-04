@@ -64,7 +64,7 @@ class ComposeQuestion extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.cloze.imageDragDrop.composequestion"), node.offsetTop);
+    fillSections("main", t("component.cloze.imageDragDrop.composequestion"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

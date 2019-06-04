@@ -33,10 +33,18 @@ class ChoicesForResponse extends Component {
   };
 
   componentDidMount = () => {
-    const { fillSections, t, index } = this.props;
+    const { fillSections, t, index, item } = this.props;
     const node = ReactDOM.findDOMNode(this);
+    const deskHeight = item.ui_style.layout_height;
 
-    fillSections("main", `${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`, node.offsetTop);
+    fillSections(
+      "main",
+      `${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`,
+      node.offsetTop,
+      deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
+      deskHeight === true,
+      deskHeight
+    );
   };
 
   componentWillUnmount() {

@@ -78,7 +78,8 @@ class Authoring extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.cloze.imageText.composequestion"), node.offsetTop);
+
+    fillSections("main", t("component.cloze.imageText.composequestion"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

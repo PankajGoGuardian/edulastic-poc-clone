@@ -14,7 +14,6 @@ import PossibleResponses from "./PossibleResponses";
 class Authoring extends Component {
   static propTypes = {
     item: PropTypes.object.isRequired,
-    setQuestionData: PropTypes.func.isRequired,
     theme: PropTypes.object.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func

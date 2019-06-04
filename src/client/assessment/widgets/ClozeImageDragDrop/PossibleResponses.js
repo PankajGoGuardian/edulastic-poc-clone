@@ -37,7 +37,7 @@ class PossibleResponses extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.cloze.imageDragDrop.possibleresponses"), node.offsetTop);
+    fillSections("main", t("component.cloze.imageDragDrop.possibleresponses"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

@@ -134,6 +134,7 @@ class ClozeImageDragDrop extends Component {
       fillSections,
       cleanSections,
       isSidebarCollapsed,
+      setQuestionData,
       ...restProps
     } = this.props;
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
@@ -159,6 +160,7 @@ class ClozeImageDragDrop extends Component {
                   theme={theme}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  setQuestionData={setQuestionData}
                 />
                 <Widget>
                   <CorrectAnswers

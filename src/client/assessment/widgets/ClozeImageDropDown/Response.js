@@ -40,11 +40,18 @@ class Response extends Component {
     const { fillSections, t, index } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", `${t("component.cloze.imageDropDown.response")} ${index + 1}`, node.offsetTop);
+    fillSections(
+      "main",
+      `${t("component.cloze.imageDropDown.response")} ${index + 1}`,
+      node.offsetTop,
+      node.scrollHeight
+    );
   };
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
+
+    cleanSections();
   }
 
   onChangeQuestion = stimulus => {

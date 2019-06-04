@@ -22,6 +22,8 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import { RelativeContainer } from "../../styled/RelativeContainer";
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
+import { response } from "../../../../../packages/constants/const/dimensions";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
@@ -265,7 +267,10 @@ class Display extends Component {
                   ...btnStyle,
                   borderStyle: smallSize ? "dashed" : "solid",
                   height: "auto",
-                  minHeight: btnStyle.height
+                  minHeight: btnStyle.height,
+                  width: "max-content",
+                  minWidth: response.minWidth,
+                  maxWidth: response.maxWidth
                 }}
                 className="imagelabeldragdrop-droppable active"
                 drop={drop}
@@ -289,7 +294,7 @@ class Display extends Component {
                           margin: 5,
                           padding: 5,
                           display: "inline-block",
-                          width: "70%",
+                          width: "max-content",
                           whiteSpace: "nowrap",
                           overflow: "hidden",
                           textOverflow: "ellipsis"

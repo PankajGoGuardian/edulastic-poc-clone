@@ -15,6 +15,8 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
+import { response } from "../../../../../../../packages/constants/const/dimensions";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({
@@ -99,7 +101,12 @@ const CheckboxTemplateBoxLayout = ({
             {!showAnswer && (
               <DropContainer
                 index={index}
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  width: "max-content",
+                  minWidth: response.minWidth,
+                  maxWidth: response.maxWidth
+                }}
                 className={`
                 imagelabeldragdrop-droppable
                 active
@@ -119,15 +126,18 @@ const CheckboxTemplateBoxLayout = ({
                           margin: 5,
                           padding: 5,
                           display: "inline-block",
-                          width: "70%",
                           whiteSpace: "nowrap",
-                          textOverflow: "ellipsis"
+                          textOverflow: "ellipsis",
+                          width: "max-content",
+                          minWidth: response.minWidth,
+                          maxWidth: response.maxWidth,
+                          overflow: "hidden"
                         }}
                         item={answer}
                         onDrop={onDropHandler}
                       >
                         <div>
-                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
+                          <MathSpan whiteSpace={"nowrap"} dangerouslySetInnerHTML={{ __html: answer }} />
                         </div>
                       </DragItem>
                     ))}
@@ -144,7 +154,12 @@ const CheckboxTemplateBoxLayout = ({
             )}
             {showAnswer && (
               <div
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  width: "max-content",
+                  minWidth: response.minWidth,
+                  maxWidth: response.maxWidth
+                }}
                 className={`
                   imagelabeldragdrop-droppable 
                   active 
@@ -152,27 +167,8 @@ const CheckboxTemplateBoxLayout = ({
                   ${status} 
                   show-answer`}
               >
-                <div
-                  className="text container"
-                  style={{
-                    display: "flex",
-                    height: "max-content",
-                    minHeight: "40px",
-                    paddingLeft: "0px"
-                  }}
-                >
-                  <div
-                    className="index index-box"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      alignSelf: "stretch",
-                      height: "auto"
-                    }}
-                  >
-                    {indexStr}
-                  </div>
+                <div className="text container" style={{ paddingLeft: "0px" }}>
+                  <div className="index index-box">{indexStr}</div>
                   {userSelections[dropTargetIndex] &&
                     userSelections[dropTargetIndex].map((answer, user_select_index) => (
                       <div
@@ -181,7 +177,13 @@ const CheckboxTemplateBoxLayout = ({
                           border: `solid 1px ${theme.widgets.clozeImageDragDrop.answerBorderColor}`,
                           margin: 5,
                           padding: 5,
-                          display: "inline-block"
+                          display: "inline-block",
+                          whiteSpace: "nowrap",
+                          textOverflow: "ellipsis",
+                          width: "max-content",
+                          minWidth: response.minWidth,
+                          maxWidth: response.maxWidth,
+                          overflow: "hidden"
                         }}
                       >
                         <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />

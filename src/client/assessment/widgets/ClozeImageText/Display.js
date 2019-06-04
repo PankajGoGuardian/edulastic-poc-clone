@@ -167,6 +167,7 @@ class Display extends Component {
       <CheckboxTemplateBoxLayout
         responseContainers={responseContainers}
         responseBtnStyle={responseBtnStyle}
+        backgroundColor={item.background}
         imageUrl={imageUrl || ""}
         imageWidth={width}
         imageHeight={imageHeight}

@@ -22,6 +22,7 @@ const CheckboxTemplateBoxLayout = ({
   responseBtnStyle,
   fontSize,
   userSelections,
+  backgroundColor,
   stemnumeration,
   evaluation,
   maxHeight,
@@ -50,6 +51,7 @@ const CheckboxTemplateBoxLayout = ({
           left: responseContainer.left,
           height: responseContainer.height,
           position: "absolute",
+          backgroundColor,
           borderRadius: 5
         };
         if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {

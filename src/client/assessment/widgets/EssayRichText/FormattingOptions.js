@@ -23,7 +23,7 @@ class FormattingOptions extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.essayText.rich.formattingOptions"), node.offsetTop);
+    fillSections("main", t("component.essayText.rich.formattingOptions"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

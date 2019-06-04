@@ -19,7 +19,7 @@ class WordLimitAndCount extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    fillSections("advanced", t("component.essayText.scoring"), node.offsetTop);
+    fillSections("advanced", t("component.essayText.scoring"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -28,7 +28,7 @@ class WordLimitAndCount extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.essayText.scoring"), node.offsetTop);
+      fillSections("advanced", t("component.essayText.scoring"), node.offsetTop, node.scrollHeight);
     }
   }
 

@@ -17,7 +17,7 @@ class VideoPlayer extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.video.videoPlayer"), node.offsetTop);
+    fillSections("main", t("component.video.videoPlayer"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

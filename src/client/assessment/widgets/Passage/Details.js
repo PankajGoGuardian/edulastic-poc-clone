@@ -18,7 +18,7 @@ class Details extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.passage.details"), node.offsetTop);
+    fillSections("main", t("component.passage.details"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

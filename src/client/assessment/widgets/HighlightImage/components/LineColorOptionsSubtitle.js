@@ -18,7 +18,7 @@ class LineColorOptionsSubtitle extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.highlightImage.lineColorOptionsSubtitle"), node.offsetTop);
+    fillSections("main", t("component.highlightImage.lineColorOptionsSubtitle"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

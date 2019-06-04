@@ -15,7 +15,7 @@ class AreasBlockTitle extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.hotspot.areasBlockTitle"), node.offsetTop);
+    fillSections("main", t("component.hotspot.areasBlockTitle"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

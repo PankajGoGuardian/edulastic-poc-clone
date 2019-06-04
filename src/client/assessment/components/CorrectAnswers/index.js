@@ -21,7 +21,7 @@ class CorrectAnswers extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop);
+    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

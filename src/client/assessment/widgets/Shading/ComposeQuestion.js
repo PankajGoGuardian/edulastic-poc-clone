@@ -18,7 +18,7 @@ class ComposeQuestion extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.shading.composeQuestion"), node.offsetTop);
+    fillSections("main", t("component.shading.composeQuestion"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

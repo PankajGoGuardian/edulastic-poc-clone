@@ -628,7 +628,7 @@ export const getCards = onSelectQuestionType => {
         show_word_count: true,
         max_word: 1000,
         show_word_limit: ON_LIMIT,
-        validation: { max_score: 1 },
+        validation: { valid_response: { score: 1 }, max_score: 1 },
         formatting_options: [
           { id: "test1", value: "bold", active: true },
           { id: "test2", value: "italic", active: true },
@@ -672,7 +672,7 @@ export const getCards = onSelectQuestionType => {
         show_word_limit: ON_LIMIT,
         show_word_count: true,
         ui_style: { min_height: 300 },
-        validation: { max_score: 1 }
+        validation: { valid_response: { score: 1 }, max_score: 1 }
       },
       onSelectQuestionType
     },

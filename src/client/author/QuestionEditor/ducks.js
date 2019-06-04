@@ -316,9 +316,9 @@ function* saveQuestionSaga({ payload: modalItemId }) {
         if (data.itemLevelScoring && draftData.data.questions[0].validation.valid_response) {
           draftData.data.questions[0].itemScore = data.itemLevelScore;
           draftData.data.questions[0].validation.valid_response.score = data.itemLevelScore;
-          for (let [index] of draftData.data.questions.entries()) {
+          for (const [index] of draftData.data.questions.entries()) {
             if (index > 0) {
-              draftData.data.questions[index].validation.valid_response.score = 0;
+              set(draftData, ["data", "questions", index, "validation", "valid_response", "score"], 0);
             }
           }
         } else {

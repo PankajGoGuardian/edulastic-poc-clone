@@ -1,7 +1,9 @@
 /* global $ */
 export const getMathHtml = latex => {
   if (!katex) return latex;
-  return katex.renderToString(latex);
+  return katex.renderToString(latex, {
+    throwOnError: false
+  });
 };
 
 export const replaceLatexesWithMathHtml = val => {

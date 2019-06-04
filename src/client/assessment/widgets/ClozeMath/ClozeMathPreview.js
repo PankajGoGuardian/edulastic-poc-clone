@@ -26,7 +26,7 @@ const ClozeMathPreview = ({
   const [newHtml, setNewHtml] = useState("");
 
   const _getMathAnswers = () =>
-    item.validation.valid_response.value.map(res => {
+    (item.validation.valid_response || []).value.map(res => {
       const method = res[0];
       if (method) {
         return method.value;
@@ -34,9 +34,9 @@ const ClozeMathPreview = ({
       return "";
     });
 
-  const _getDropDownAnswers = () => item.validation.valid_dropdown.value.map(res => res || "");
+  const _getDropDownAnswers = () => (item.validation.valid_dropdown || []).value.map(res => res || "");
 
-  const _getTextInputAnswers = () => item.validation.valid_inputs.value.map(res => res || "");
+  const _getTextInputAnswers = () => (item.validation.valid_inputs || []).value.map(res => res || "");
 
   const handleAddAnswer = (answer, index, key) => {
     let newAnswers = cloneDeep(userAnswer);
@@ -54,6 +54,7 @@ const ClozeMathPreview = ({
     let temp = ` ${tmpl}`.slice(1);
     temp = temp.replace(/<hr>/g, "<hr/>");
     temp = temp.replace(/<br>/g, "<br/>");
+    temp = temp.replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
     temp = temp.replace(/"{{/g, "{");
     temp = temp.replace(/}}"/g, "}");
 

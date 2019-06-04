@@ -1,3 +1,4 @@
+/* eslint-disable no-template-curly-in-string */
 import { createAction, createReducer } from "redux-starter-kit";
 import { all, takeEvery, call, put } from "redux-saga/effects";
 import { createSelector } from "reselect";
@@ -273,13 +274,11 @@ function* fetchStudentsByClassId({ payload }) {
 function* receiveCreateClassRequest({ payload }) {
   try {
     const result = yield call(groupApi.createGroup, payload);
-    const successMessage = "Create Class is successed!";
-    yield call(message.success, successMessage);
+    message.success(`${result.name} is created. Please add students to your class and begin using Edulastic.`);
     yield put(createClassSuccessAction(result));
     yield put(addGroupAction(result));
-  } catch (error) {
-    const errorMessage = "creating a class failed";
-    yield call(message.error, errorMessage);
+  } catch ({ data: { message: errorMessage } }) {
+    message.error(errorMessage);
     yield put(createClassFailedAction({ message: errorMessage }));
   }
 }

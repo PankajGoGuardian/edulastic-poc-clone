@@ -98,11 +98,11 @@ class DeleteConfirm extends React.Component {
         <Description>
           Are you sure you want to remove the selected students from the class? <br />
           If yes type
-          {/* Here copy is not allowed, and user has to manually type in REMOVE */}
-          <BoldText onCopy={evt => evt.preventDefault()}>{defaultText}</BoldText> in the space given below and proceed.
+          <BoldText>{defaultText}</BoldText> in the space given below and proceed.
         </Description>
         <InputWrapper>
-          <StyledInput size="large" onChange={this.onChangeHandler} />
+          {/* Here paste is not allowed, and user has to manually type in REMOVE */}
+          <StyledInput size="large" onChange={this.onChangeHandler} onPaste={evt => evt.preventDefault()} />
         </InputWrapper>
       </StyledModal>
     );

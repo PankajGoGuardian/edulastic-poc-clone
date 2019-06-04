@@ -303,7 +303,7 @@ function* receiveAddStudentRequest({ payload }) {
     if (student) {
       const successMsg = "User added to class successfully.";
       yield call(message.success, successMsg);
-      yield put(addStudentSuccessAction(student));
+      yield put(addStudentSuccessAction({ ...student, enrollmentStatus: "1" }));
     } else {
       const msg = get(result, "data.message", "User already part of this class section");
       message.error(msg);

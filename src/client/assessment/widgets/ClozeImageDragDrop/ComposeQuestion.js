@@ -166,7 +166,7 @@ class ComposeQuestion extends Component {
     const that = this;
     img.addEventListener("load", function() {
       const width = this.naturalWidth >= maxWidth ? maxWidth : this.naturalWidth;
-      const height = this.naturalHeight >= maxHeight ? maxHeight : this.naturalWidth;
+      const height = this.naturalHeight >= maxHeight ? maxHeight : this.naturalHeight;
       ((wid, heig) => {
         that.onItemPropChange("imageWidth", wid);
         that.onItemPropChange("imageHeight", heig);

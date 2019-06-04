@@ -18,7 +18,7 @@ class GroupPossibleResponses extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.classification.possibleRespTitle"), node.offsetTop);
+    fillSections("main", t("component.classification.possibleRespTitle"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount = () => {

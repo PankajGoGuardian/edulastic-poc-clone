@@ -24,7 +24,7 @@ class ListComponent extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.orderlist.list"), node.offsetTop);
+    fillSections("main", t("component.orderlist.list"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

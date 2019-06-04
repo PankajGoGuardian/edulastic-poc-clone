@@ -33,7 +33,7 @@ class RowColumn extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
-    fillSections("main", t("component.classification.rowsSubtitle"), node.offsetTop);
+    fillSections("main", t("component.classification.rowsSubtitle"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount = () => {

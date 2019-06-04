@@ -170,12 +170,6 @@ class ClassHeader extends Component {
         </StyledTitle>
         <StyledTabContainer>
           <StyledTabs>
-            <StyledLink to={`/author/summary/${assignmentId}/${classId}`} data-cy="Summary">
-              <StyledAnchor isActive={active === "summary"}>
-                <IconSummaryBoard color={active === "summary" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                <LinkLabel>{t("common.summaryBoard")}</LinkLabel>
-              </StyledAnchor>
-            </StyledLink>
             <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
               <StyledAnchor isActive={active === "classboard"}>
                 <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />

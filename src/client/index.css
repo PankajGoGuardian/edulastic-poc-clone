@@ -1127,6 +1127,12 @@ input[type="checkbox"] {
   margin-bottom: 20px;
 }
 
+.clipText {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
 .super-dragger .ant-upload.ant-upload-drag {
   padding: 0;
 }

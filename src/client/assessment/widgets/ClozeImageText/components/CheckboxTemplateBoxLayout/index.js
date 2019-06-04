@@ -27,7 +27,8 @@ const CheckboxTemplateBoxLayout = ({
   evaluation,
   maxHeight,
   maxWidth,
-  imageHeight
+  imageHeight,
+  uiStyle
 }) => (
   <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
     <TemplateCover width={imageWidth} maxHeight={maxHeight} maxWidth={maxWidth}>
@@ -76,8 +77,12 @@ const CheckboxTemplateBoxLayout = ({
                   ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
                   ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
               >
-                <div className="text container">{userSelections[dropTargetIndex]}</div>
-                <IconWrapper>
+                <div className="text container" title={userSelections[dropTargetIndex]}>
+                  <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
+                    {userSelections[dropTargetIndex]}
+                  </div>
+                </div>
+                <IconWrapper rightPosition={20}>
                   {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
                   {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
@@ -98,7 +103,11 @@ const CheckboxTemplateBoxLayout = ({
                   show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
-                <div className="text container">{userSelections[dropTargetIndex]}</div>
+                <div className="text container" title={userSelections[dropTargetIndex]}>
+                  <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
+                    {userSelections[dropTargetIndex]}
+                  </div>
+                </div>
                 <IconWrapper>
                   {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
                   {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
@@ -127,7 +136,8 @@ CheckboxTemplateBoxLayout.propTypes = {
   showAnswer: PropTypes.bool.isRequired,
   imageUrl: PropTypes.string.isRequired,
   imageAlterText: PropTypes.string.isRequired,
-  imageWidth: PropTypes.number.isRequired
+  imageWidth: PropTypes.number.isRequired,
+  uiStyle: PropTypes.object
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

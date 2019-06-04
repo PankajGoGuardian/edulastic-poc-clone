@@ -1,6 +1,24 @@
 import JXG from "jsxgraph";
-import { Quill } from "react-quill";
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
+import { FroalaEditor } from "@edulastic/common";
 import { calcMeasure, getClosestTick } from "../utils";
+
+class Wrapper extends Component {
+  shouldComponentUpdate() {
+    return false;
+  }
+
+  render() {
+    const { text } = this.props;
+    return <FroalaEditor value={text} onChange={() => {}} readOnly />;
+  }
+}
+
+Wrapper.propTypes = {
+  text: PropTypes.string.isRequired
+};
 
 const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
@@ -64,20 +82,8 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
     fixed: coords && coords.fixed
   });
 
-  const selector = `[id*=${mark.id}]`;
-  mark.quillInput = new Quill(selector, {
-    theme: "bubble",
-    readOnly: true,
-    modules: {
-      toolbar: false
-    }
-  });
-
-  mark.quillInput.clipboard.matchers = mark.quillInput.clipboard.matchers.filter(
-    matcher => matcher[1].name !== "matchNewline"
-  );
-
-  mark.quillInput.clipboard.dangerouslyPasteHTML(0, data.text);
+  const content = <Wrapper text={data.text} />;
+  ReactDOM.render(content, mark.rendNode);
   mark.labelHTML = data.text;
 
   if (!coords || !coords.fixed) {

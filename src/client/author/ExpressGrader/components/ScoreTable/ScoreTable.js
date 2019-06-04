@@ -131,11 +131,11 @@ class ScoreTable extends Component {
           num++;
         }
       });
-      const averageScore = successScore * submittedLength;
+      const averageScore = successScore;
       const questionAvarageScore = (
         <StyledDivMid>
           <StyledText color={greenThird}>{`${round((averageScore / submittedLength) * 100, 1)}%`}</StyledText>
-          {round(averageScore, 1)} / {submittedLength}
+          {round(averageScore, 2)} / {submittedLength}
         </StyledDivMid>
       );
 

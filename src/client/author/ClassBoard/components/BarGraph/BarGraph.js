@@ -271,7 +271,7 @@ export default class BarGraph extends Component {
               yAxisId="left"
               stackId="a"
               dataKey="correctAttemps"
-              fill={green}
+              fill="#5eb500"
               shape={<RectangleBar dataKey="correctAttemps" />}
               onClick={this.handleClick}
             />
@@ -306,7 +306,7 @@ export default class BarGraph extends Component {
               stroke={blue}
               strokeWidth="3"
               type="monotone"
-              dot={{ stroke: white, strokeWidth: 6, fill: white }}
+              dot={{ stroke: blue, strokeWidth: 6, fill: white }}
             />
 
             <Tooltip content={<StyledCustomTooltip />} cursor={false} />

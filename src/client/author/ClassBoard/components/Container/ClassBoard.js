@@ -254,7 +254,8 @@ class ClassBoard extends Component {
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
-    console.log("selectedQuestion", selectedQuestion);
+    const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
+
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -323,8 +324,14 @@ class ClassBoard extends Component {
                 paddingRight={isMobile ? "5px" : "20px"}
               >
                 <CheckContainer>
-                  <StyledCheckbox checked={selectAll} onChange={this.onSelectAllChange}>
-                    {selectAll ? "UNSELECT ALL" : "SELECT ALL"}
+                  <StyledCheckbox
+                    checked={unselectedStudents.length === 0}
+                    indeterminate={
+                      unselectedStudents.length > 0 && unselectedStudents.length < this.props.entities.length
+                    }
+                    onChange={this.onSelectAllChange}
+                  >
+                    {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                   </StyledCheckbox>
                 </CheckContainer>
                 <PrintButton

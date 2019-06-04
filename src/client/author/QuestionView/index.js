@@ -4,16 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
-import {
-  green,
-  dropZoneTitleColor,
-  greyGraphstroke,
-  incorrect,
-  pCorrect,
-  graded,
-  blue,
-  white
-} from "@edulastic/colors";
+import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded, blue, white } from "@edulastic/colors";
 
 import {
   StyledFlexContainer,
@@ -32,6 +23,8 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
 import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
+
+const green = "#5eb500";
 
 const CustomTooltip = ({ label = "", payload }) => {
   const firstItem = head(payload) || {};

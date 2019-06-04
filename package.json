@@ -43,6 +43,7 @@
     "axios": "^0.18.0",
     "brace": "^0.11.1",
     "canvas": "^2.4.1",
+    "circular-dependency-plugin": "^5.0.2",
     "color": "^3.1.0",
     "connected-react-router": "^4.5.0",
     "core-js": "^3.1.3",

@@ -3,6 +3,7 @@ const BundleAnalyzer = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 const MomentLocalesPlugin = require("moment-locales-webpack-plugin");
 const port = process.env.PORT ? parseInt(process.env.PORT) : 3001;
 const webpack = require("webpack");
+const CircularDependencyPlugin = require("circular-dependency-plugin");
 
 console.log("port", port);
 let config = {
@@ -23,7 +24,8 @@ let config = {
     }
 
     chain.plugin("MomentsLocale").use(MomentLocalesPlugin);
-    chain.plugin("BannerPlugin").use(new webpack.BannerPlugin({ banner: `${Date()} Copyright Snapwiz` }));
+    chain.plugin("BannerPlugin").use(webpack.BannerPlugin, [{ banner: `${Date()} Copyright Snapwiz` }]);
+    // chain.plugin("CircularDependencyPlugin").use(CircularDependencyPlugin);
   }
 };
 if (process.env.PUBLIC_URL) {

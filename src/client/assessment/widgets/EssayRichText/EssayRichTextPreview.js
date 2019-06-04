@@ -5,19 +5,32 @@ import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, CustomQuillComponent } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
 import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
-import { ValidList } from "./constants/validList";
+import { ValidList, qlToFroalaMapping } from "./constants/validList";
 import { ReactQuillWrapper } from "./styled/ReactQuillWrapper";
+import FroalaEditorCustom from "@edulastic/common/src/components/FroalaEditor";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
+
+const getToolBarButtons = item =>
+  (item.formatting_options || [])
+    .filter(x => x.active)
+    .map(x => {
+      const key = `${x.value}${x.param ? x.param : ""}`;
+      if (qlToFroalaMapping[key]) {
+        return qlToFroalaMapping[key];
+      } else {
+        return key;
+      }
+    });
 
 const EssayRichTextPreview = ({
   view,
@@ -30,6 +43,8 @@ const EssayRichTextPreview = ({
   showQuestionNumber,
   qIndex
 }) => {
+  const toolbarButtons = getToolBarButtons(item);
+
   const [showCharacters, setShowCharacters] = useState(false);
   const [text, setText] = useState("");
   const [selection, setSelection] = useState({ start: 0, end: 0 });
@@ -110,24 +125,22 @@ const EssayRichTextPreview = ({
           )}
         </div>
         {!Array.isArray(userAnswer) && (
-          <CustomQuillComponent
-            custom
-            toolbarId={EssayRichTextPreview.modules(item.formatting_options)}
-            style={{
-              background:
-                item.max_word < wordCount
-                  ? theme.widgets.essayRichText.quillLimitedBgColor
-                  : theme.widgets.essayRichText.quillBgColor,
-              minHeight,
-              maxHeight,
-              fontSize
-            }}
-            placeholder={placeholder}
-            onChange={handleTextChange}
-            defaultValue={
-              smallSize ? t("component.essayText.rich.templateText") : Array.isArray(userAnswer) ? "" : userAnswer
+          <FroalaEditorCustom
+            //custom
+            backgroundColor={
+              item.max_word < wordCount
+                ? theme.widgets.essayRichText.quillLimitedBgColor
+                : theme.widgets.essayRichText.quillBgColor
             }
-            {...getSpellCheckAttributes(item.spellcheck)}
+            heightMin={minHeight}
+            heightMax={maxHeight}
+            onChange={handleTextChange}
+            value={userAnswer}
+            spellcheck={item.spellcheck}
+            toolbarInline={false}
+            initOnClick={false}
+            quickInsertTags={[]}
+            toolbarButtons={toolbarButtons}
           />
         )}
 

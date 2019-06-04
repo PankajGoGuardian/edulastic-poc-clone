@@ -13,6 +13,8 @@ import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 
 import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
+import headings from "./FroalaPlugins/headings";
+
 import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
@@ -100,6 +102,15 @@ const NoneDiv = styled.div`
   opacity: 0;
 `;
 
+const BackgroundStyleWrapper = styled.div`
+  .fr-box.fr-basic .fr-wrapper {
+    background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
+  }
+`;
+
+//adds h1 & h2 buttons commands to froala editor.
+headings(FroalaEditor);
+
 const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restOptions }) => {
   const mathFieldRef = useRef(null);
 
@@ -145,7 +156,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       toolbarVisibleWithoutSelection: true,
 
       events: {
-        click: function(evt) {
+        click: function (evt) {
           const closestMathParent = evt.currentTarget.closest("span.input__math");
           if (closestMathParent) {
             this.selection.save();
@@ -159,7 +170,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             setCurrentMathEl(null);
           }
         },
-        "image.beforeUpload": function(image) {
+        "image.beforeUpload": function (image) {
           this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.COURSE)
@@ -174,7 +185,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
           return false;
         },
-        "edit.on": function(e, editor) {
+        "edit.on": function (e, editor) {
           if (restOptions.readOnly === true) {
             EditorRef.current.edit.off();
           }
@@ -193,7 +204,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       try {
         setMathField(MQ.StaticMath(mathFieldRef.current));
         // eslint-disable-next-line no-empty
-      } catch (e) {}
+      } catch (e) { }
     }
   };
 
@@ -212,27 +223,27 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     ) {
       const responseIndexes = $(val)
         .find(".response-btn")
-        .map(function() {
+        .map(function () {
           return +$(this).text();
         })
         .toArray();
       const mathInputIndexes = $(val)
         .find(".math-input-btn")
-        .map(function() {
+        .map(function () {
           return +$(this).text();
         })
         .toArray();
 
       const dropDownIndexes = $(val)
         .find(".text-dropdown-btn")
-        .map(function() {
+        .map(function () {
           return +$(this).text();
         })
         .toArray();
 
       const inputIndexes = $(val)
         .find(".text-input-btn")
-        .map(function() {
+        .map(function () {
           return +$(this).text();
         })
         .toArray();
@@ -414,13 +425,15 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <Editor
-        tag={tag}
-        model={content}
-        onModelChange={setChange}
-        config={config}
-        onManualControllerReady={manualControl}
-      />
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+        <Editor
+          tag={tag}
+          model={content}
+          onModelChange={setChange}
+          config={config}
+          onManualControllerReady={manualControl}
+        />
+      </BackgroundStyleWrapper>
       <NoneDiv>
         <span ref={mathFieldRef} className="input__math__field" />
       </NoneDiv>

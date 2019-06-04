@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import { updateVariables } from "../../utils/variables";
 
-import QuestionTextArea from "../../components/QuestionTextArea";
+import FroalaEditorCustom from "@edulastic/common/src/components/FroalaEditor";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 
@@ -40,8 +40,9 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.essayText.enterQuestion")}
+
+        <FroalaEditorCustom
+          placeholderText={t("component.essayText.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />

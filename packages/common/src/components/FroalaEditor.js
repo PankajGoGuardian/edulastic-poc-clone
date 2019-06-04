@@ -4,6 +4,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import { cloneDeep } from "lodash";
 import { message } from "antd";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
@@ -55,7 +56,9 @@ FroalaEditor.DefineIconTemplate(
   `
 );
 
-FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="responses-boxes-btn">Response Boxes</span>`);
+FroalaEditor.DefineIconTemplate("responseTextInput", `<span class="responses-boxes-btn">Text Input</span>`);
+FroalaEditor.DefineIconTemplate("responseDropdown", `<span class="responses-boxes-btn">Text Dropdown</span>`);
+FroalaEditor.DefineIconTemplate("responseMathInput", `<span class="responses-boxes-btn">Math Input</span>`);
 
 const symbols = ["basic", "matrices", "general", "units_si", "units_us"];
 const numberPad = [
@@ -81,10 +84,16 @@ const numberPad = [
   "="
 ];
 
-const DEFAULT_TOOLBAR_BUTTONS = [
-  ["bold", "italic", "underline", "strikeThrough", "insertTable"],
-  ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"]
-];
+const DEFAULT_TOOLBAR_BUTTONS = {
+  moreText: {
+    buttons: ["bold", "italic", "underline", "strikeThrough", "insertTable"],
+    buttonsVisible: 5
+  },
+  moreParagraph: {
+    buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
+    buttonsVisible: 6
+  }
+};
 
 const NoneDiv = styled.div`
   position: absolute;
@@ -105,11 +114,31 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
   const EditorRef = useRef(null);
 
+  const toolbarButtons = Object.assign(DEFAULT_TOOLBAR_BUTTONS);
+  toolbarButtons.moreMisc = {
+    buttons: additionalToolbarOptions,
+    buttonsVisible: 3
+  };
+  const toolbarButtonsMD = cloneDeep(toolbarButtons);
+  toolbarButtonsMD.moreText.buttonsVisible = 3;
+  toolbarButtonsMD.moreParagraph.buttonsVisible = 3;
+
+  const toolbarButtonsSM = cloneDeep(toolbarButtons);
+  toolbarButtonsSM.moreText.buttonsVisible = 2;
+  toolbarButtonsSM.moreParagraph.buttonsVisible = 2;
+
+  const toolbarButtonsXS = cloneDeep(toolbarButtons);
+  toolbarButtonsXS.moreText.buttonsVisible = 1;
+  toolbarButtonsXS.moreParagraph.buttonsVisible = 1;
+
   const config = Object.assign(
     {
       key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
       initOnClick: true,
-      toolbarButtons: [...DEFAULT_TOOLBAR_BUTTONS, [...(additionalToolbarOptions || [])]],
+      toolbarButtons,
+      toolbarButtonsMD,
+      toolbarButtonsSM,
+      toolbarButtonsXS,
       tableResizerOffset: 10,
       tableResizingLimit: 50,
       toolbarInline: true,
@@ -246,6 +275,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     // sample extension of custom buttons
     initMathField();
 
+    // Math Input
     FroalaEditor.DefineIcon("math", { NAME: "math", template: "math" });
     FroalaEditor.RegisterCommand("math", {
       title: "Math",
@@ -258,11 +288,12 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         setCurrentLatex("");
         setCurrentMathEl(null);
         setMathModal(true);
+        this.undo.saveStep();
       }
     });
 
+    // Response Box
     FroalaEditor.DefineIcon("response", { NAME: "plus", template: "response" });
-
     FroalaEditor.RegisterCommand("response", {
       title: "Response",
       focus: true,
@@ -277,61 +308,76 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       }
     });
 
-    // Dropdown Toobar button for MathInput/TextDropDown/TextInput
-    FroalaEditor.DefineIcon("responseBoxes", { NAME: "responseBoxes", template: "responseBoxes" });
-    FroalaEditor.RegisterCommand("responseBoxes", {
-      type: "dropdown",
-      focus: false,
+    // Dropdown Toobar button for TextInput
+    FroalaEditor.DefineIcon("responseTextInput", { NAME: "responseTextInput", template: "responseTextInput" });
+    FroalaEditor.RegisterCommand("responseTextInput", {
+      title: "Response Text Input",
+      focus: true,
       undo: true,
       refreshAfterCallback: true,
-      options: {
-        textinput: "Text Input",
-        textdropdown: "Text Dropdown",
-        mathinput: "Math Input"
-      },
-      callback: function(_, op) {
-        if (op === "textinput") {
-          const inputCount = this.$el[0].querySelectorAll(".text-input-btn").length;
-          this.html.insert(
-            `<TextInput
-                class="text-input-btn"
-                contenteditable="false"
-                index={{${inputCount}}}
-                save={{save}}
-                evaluation={{evaluation}}
-                checked={{checked}}
-                answers={{answers}}
-              >Text Input</TextInput>`
-          );
-        } else if (op === "textdropdown") {
-          const dropDownCount = this.$el[0].querySelectorAll(".text-dropdown-btn").length;
-          this.html.insert(
-            `<TextDropdown
-              class="text-dropdown-btn"
+      callback() {
+        const inputCount = this.$el[0].querySelectorAll(".text-input-btn").length;
+        this.html.insert(
+          `<TextInput
+              class="text-input-btn"
               contenteditable="false"
+              index={{${inputCount}}}
               save={{save}}
-              options={{options}}
-              checked={{checked}}
               evaluation={{evaluation}}
+              checked={{checked}}
               answers={{answers}}
-              index={{${dropDownCount}}}
-              >Text Dropdown</TextDropdown>`
-          );
-        } else if (op === "mathinput") {
-          const mathInputCount = this.$el[0].querySelectorAll(".math-input-btn").length;
-          this.html.insert(
-            `<MathInput
-                class="math-input-btn"
-                contenteditable="false"
-                index={{${mathInputCount}}}
-                item={{item}}
-                save={{save}}
-                evaluation={{evaluation}}
-                checked={{checked}}
-                answers={{answers}}
-              >Math Input</MathInput>`
-          );
-        }
+            >Text Input</TextInput>`
+        );
+        this.undo.saveStep();
+      }
+    });
+
+    // Dropdown Toobar button for TextDropDown
+    FroalaEditor.DefineIcon("responseDropdown", { NAME: "responseDropdown", template: "responseDropdown" });
+    FroalaEditor.RegisterCommand("responseDropdown", {
+      title: "Response Text Dropdown",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        const dropDownCount = this.$el[0].querySelectorAll(".text-dropdown-btn").length;
+        this.html.insert(
+          `<TextDropdown
+            class="text-dropdown-btn"
+            contenteditable="false"
+            save={{save}}
+            options={{options}}
+            checked={{checked}}
+            evaluation={{evaluation}}
+            answers={{answers}}
+            index={{${dropDownCount}}}
+            >Text Dropdown</TextDropdown>`
+        );
+        this.undo.saveStep();
+      }
+    });
+
+    // Dropdown Toobar button for MathInput
+    FroalaEditor.DefineIcon("responseMathInput", { NAME: "responseMathInput", template: "responseMathInput" });
+    FroalaEditor.RegisterCommand("responseMathInput", {
+      title: "Response Math Input",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        const mathInputCount = this.$el[0].querySelectorAll(".math-input-btn").length;
+        this.html.insert(
+          `<MathInput
+              class="math-input-btn"
+              contenteditable="false"
+              index={{${mathInputCount}}}
+              item={{item}}
+              save={{save}}
+              evaluation={{evaluation}}
+              checked={{checked}}
+              answers={{answers}}
+            >Math Input</MathInput>`
+        );
         this.undo.saveStep();
       }
     });

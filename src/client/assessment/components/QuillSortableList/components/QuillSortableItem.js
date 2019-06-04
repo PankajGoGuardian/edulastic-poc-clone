@@ -11,21 +11,29 @@ import DragHandle from "./DragHandle";
 import QuestionTextArea from "../../QuestionTextArea";
 
 // TODO: rOnly is in use?
-const QuillSortableItem = SortableElement(({ value, onRemove, rOnly, onChange, columns, indx, label, fontSize }) => (
-  <SortableItemContainer fontSize={fontSize} columns={columns}>
-    {label && <Label>{label}</Label>}
-    <FlexContainer style={{ flex: 1 }}>
-      <div className="main" data-cy="quillSortableItem">
-        <DragHandle index={indx} />
+const QuillSortableItem = SortableElement(
+  ({ value, toolbarId, onRemove, rOnly, onChange, columns, indx, label, fontSize }) => (
+    <SortableItemContainer fontSize={fontSize} columns={columns}>
+      {label && <Label>{label}</Label>}
+      <FlexContainer style={{ flex: 1 }}>
+        <div className="main" data-cy="quillSortableItem">
+          <DragHandle index={indx} />
 
-        <QuestionTextArea value={value} onChange={onChange} style={{ width: "100%" }} />
-      </div>
-      {onRemove && <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />}
-    </FlexContainer>
-  </SortableItemContainer>
-));
+          <QuestionTextArea
+            value={value}
+            toolbarId={`${toolbarId}${indx}`}
+            onChange={onChange}
+            style={{ width: "100%" }}
+          />
+        </div>
+        {onRemove && <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />}
+      </FlexContainer>
+    </SortableItemContainer>
+  )
+);
 
 QuillSortableItem.propTypes = {
+  toolbarId: PropTypes.string,
   columns: PropTypes.number.isRequired,
   label: PropTypes.string.isRequired,
   rOnly: PropTypes.bool,
@@ -34,6 +42,7 @@ QuillSortableItem.propTypes = {
 };
 
 QuillSortableItem.defaultProps = {
+  toolbarId: "quill-sortable-item",
   rOnly: false,
   firstFocus: false,
   style: {}

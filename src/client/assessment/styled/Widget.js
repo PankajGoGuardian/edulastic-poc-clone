@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { desktopWidth, fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
 
 export const Widget = styled.div`
+  position: relative;
   padding: 30px;
   background: #f8f8fb;
   border-radius: 4px;

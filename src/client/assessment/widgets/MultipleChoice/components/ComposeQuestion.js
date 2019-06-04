@@ -13,6 +13,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
+import { FroalaContainer } from "../../../styled/FroalaContainer";
+import { ToolbarContainer } from "../../../styled/ToolbarContainer";
 import { Widget } from "../../../styled/Widget";
 import { updateVariables } from "../../../utils/variables";
 
@@ -20,12 +22,14 @@ class ComposeQuestion extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
+    toolbarId: PropTypes.object,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func,
     setQuestionData: PropTypes.func.isRequired
   };
 
   static defaultProps = {
+    toolbarId: "compose-question",
     fillSections: () => {},
     cleanSections: () => {}
   };
@@ -111,12 +115,20 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item } = this.props;
+    const { t, item, toolbarId } = this.props;
 
     return (
       <Widget data-cy="questiontext" questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <FroalaEditor tag="textarea" value={item.stimulus} onChange={this.onChangeQuestion} />
+        <FroalaContainer>
+          <ToolbarContainer toolbarId={toolbarId} />
+          <FroalaEditor
+            tag="textarea"
+            value={item.stimulus}
+            toolbarContainer={`div.froala-toolbar-container[toolbarId="${toolbarId}"]`}
+            onChange={this.onChangeQuestion}
+          />
+        </FroalaContainer>
       </Widget>
     );
   }

@@ -1940,3 +1940,10 @@ span.token.active-word {
 .fr-view table th {
   padding: 8px 0;
 }
+
+.responses-boxes-btn {
+  height: 27px !important;
+  padding: 5px 8px !important;
+  background: #cccccc;
+  border: 1px solid black;
+}

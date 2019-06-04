@@ -2,27 +2,33 @@ import React, { memo } from "react";
 import PropTypes from "prop-types";
 import { FroalaEditor } from "@edulastic/common";
 
+import { FroalaContainer } from "../styled/FroalaContainer";
+import { ToolbarContainer } from "../styled/ToolbarContainer";
+
 // TODO: decide what to do with first focus
-const QuestionTextArea = ({ onChange, value, style, placeholder, showResponseBtn }) => {
+const QuestionTextArea = ({ onChange, value, toolbarId, style, placeholder, showResponseBtn }) => {
   const additionalToolbarOptions = [];
 
   if (showResponseBtn) additionalToolbarOptions.push("response");
 
   return (
-    <div style={style} data-cy="compose-question-quill-component">
+    <FroalaContainer style={style} data-cy="compose-question-quill-component">
+      <ToolbarContainer toolbarId={toolbarId} />
       <FroalaEditor
         placeholder={placeholder}
         onChange={onChange}
         value={value}
+        toolbarContainer={`div.froala-toolbar-container[toolbarId="${toolbarId}"]`}
         additionalToolbarOptions={additionalToolbarOptions}
       />
-    </div>
+    </FroalaContainer>
   );
 };
 
 QuestionTextArea.propTypes = {
   onChange: PropTypes.func.isRequired,
   value: PropTypes.string.isRequired,
+  toolbarId: PropTypes.string,
   style: PropTypes.object,
   showResponseBtn: PropTypes.bool,
   placeholder: PropTypes.string
@@ -30,7 +36,7 @@ QuestionTextArea.propTypes = {
 
 QuestionTextArea.defaultProps = {
   style: {},
-
+  toolbarId: "question-text-area",
   showResponseBtn: false,
   placeholder: "Enter a question"
 };

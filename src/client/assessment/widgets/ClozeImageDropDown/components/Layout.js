@@ -22,6 +22,8 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
 
+import { response } from "../../../../../../packages/constants/const/dimensions";
+
 class Layout extends Component {
   componentDidMount = () => {
     const { fillSections, t } = this.props;
@@ -45,6 +47,24 @@ class Layout extends Component {
 
     cleanSections();
   }
+
+  handleWidthChange = () => {
+    const { onChange, uiStyle } = this.props;
+    const { minWidth, maxWidth } = response;
+    const width = uiStyle.widthpx;
+    if (width < minWidth) {
+      onChange("ui_style", {
+        ...uiStyle,
+        widthpx: minWidth
+      });
+    }
+    if (width > maxWidth) {
+      onChange("ui_style", {
+        ...uiStyle,
+        widthpx: maxWidth
+      });
+    }
+  };
 
   render() {
     const { questionData, onChange, uiStyle, advancedAreOpen, t } = this.props;
@@ -222,8 +242,11 @@ class Layout extends Component {
                   type="number"
                   size="large"
                   disabled={false}
+                  onBlur={this.handleWidthChange}
                   onChange={e => changeUiStyle("widthpx", e.target.value)}
                   value={uiStyle.widthpx}
+                  max={response.maxWidth}
+                  min={response.minWidth}
                 />
               </Col>
               <Col md={12}>

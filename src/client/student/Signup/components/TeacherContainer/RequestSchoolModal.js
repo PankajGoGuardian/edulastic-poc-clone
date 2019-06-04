@@ -9,7 +9,7 @@ import { Form, Modal, Button, Input, Select } from "antd";
 import { lightGrey3, linkColor, springGreen, white } from "@edulastic/colors";
 
 import { countryApi } from "@edulastic/api";
-import { searchDistrictsRequestAction, createSchoolRequestAction } from "../../duck";
+import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
 
 const { Option } = Select;
 
@@ -21,7 +21,7 @@ class RequestSchool extends React.Component {
     districts: PropTypes.array.isRequired,
     isSearching: PropTypes.bool.isRequired,
     searchDistrict: PropTypes.func.isRequired,
-    createSchool: PropTypes.func.isRequired
+    userInfo: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -42,7 +42,7 @@ class RequestSchool extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    const { form, handleCancel, districts, createSchool } = this.props;
+    const { form, handleCancel, districts, createAndJoinSchoolRequestAction } = this.props;
     const { keyword } = this.state;
     form.validateFields((err, values) => {
       if (!err) {
@@ -65,8 +65,18 @@ class RequestSchool extends React.Component {
         if (district.districtId) {
           body.districtId = district.districtId;
         }
-        createSchool(body);
-        handleCancel();
+
+        createAndJoinSchoolRequestAction({
+          createSchool: body,
+          joinSchool: {
+            data: {
+              currentSignUpState: "PREFERENCE_NOT_SELECTED",
+              email: this.props.userInfo.email,
+              firstName: this.props.userInfo.firstName
+            },
+            userId: this.props.userInfo._id
+          }
+        });
       }
     });
   };
@@ -210,7 +220,7 @@ const enhance = compose(
     }),
     {
       searchDistrict: searchDistrictsRequestAction,
-      createSchool: createSchoolRequestAction
+      createAndJoinSchoolRequestAction: createAndJoinSchoolRequestAction
     }
   )
 );

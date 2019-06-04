@@ -125,7 +125,7 @@ const JoinSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo, j
           </Row>
         </Col>
       </JoinSchoolBody>
-      <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} />
+      <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
     </>
   );
 };

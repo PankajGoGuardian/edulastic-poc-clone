@@ -26,6 +26,8 @@ const SAVE_SUBJECTGRADE_REQUEST = "[signup] save with subject and grade request"
 const SAVE_SUBJECTGRADE_SUCCESS = "[signup] save with subject and grade success";
 const SAVE_SUBJECTGRADE_FAILED = "[signup] save with subject and grade failed";
 
+const CREATE_AND_JOIN_SCHOOL_REQUEST = "[signup] create and join schoolrequest";
+
 // Actions
 export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST);
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS);
@@ -42,6 +44,8 @@ export const createSchoolFailedAction = createAction(CREATE_SCHOOL_FAILED);
 export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 
 export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
+
+export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
 
 // Reducers
 const initialState = {
@@ -124,6 +128,36 @@ function* createSchoolSaga({ payload = {} }) {
   }
 }
 
+function* createAndJoinSchoolSaga({ payload = {} }) {
+  const createSchoolPayload = payload.createSchool;
+  const joinSchoolPayload = payload.joinSchool;
+  let isCreateSchoolSuccessful = false;
+  let result;
+  try {
+    result = yield call(schoolApi.createSchool, createSchoolPayload);
+    yield put(createSchoolSuccessAction(result));
+    isCreateSchoolSuccessful = true;
+  } catch (err) {
+    console.log("err", err);
+    yield put(createSchoolFailedAction());
+  }
+
+  try {
+    if (isCreateSchoolSuccessful) {
+      joinSchoolPayload.data = {
+        ...joinSchoolPayload.data,
+        institutionIds: [result._id],
+        districtId: result.districtId
+      };
+      const _result = yield call(userApi.updateUser, joinSchoolPayload);
+      yield put(signupSuccessAction(_result));
+    }
+  } catch (err) {
+    console.log("_err", err);
+    yield call(message.error, JOIN_SCHOOL_FAILED);
+  }
+}
+
 function* joinSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(userApi.updateUser, payload);
@@ -150,4 +184,5 @@ export function* watcherSaga() {
   yield takeLatest(CREATE_SCHOOL_REQUEST, createSchoolSaga);
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
+  yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
 }

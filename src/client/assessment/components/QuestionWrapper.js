@@ -7,7 +7,7 @@ import { compose } from "redux";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
-import { withWindowSizes } from "@edulastic/common";
+import { withWindowSizes, WithResources } from "@edulastic/common";
 import { PaperWrapper } from "./Graph/common/styled_components";
 import { themes } from "../themes";
 import QuestionMenu from "./Graph/common/QuestionMenu";
@@ -106,11 +106,6 @@ const QuestionContainer = styled.div`
   }
   .ql-indent-9.ql-direction-rtl.ql-align-right {
     padding-right: 27em;
-  }
-
-  td {
-    border: 1px solid #dddddd;
-    padding: 5px;
   }
 `;
 
@@ -260,52 +255,66 @@ class QuestionWrapper extends Component {
       userAnswerProps.key = data.id;
     }
     return (
-      <ThemeProvider theme={themes.default}>
-        <QuestionContainer disabled={disabled} noPadding={noPadding} isFlex={isFlex} data-cy="question-container">
-          <PaperWrapper
+      <WithResources
+        resources={[
+          "https://cdneduv2.snapwiz.net/froala_editor.pkgd.min.css",
+          "https://cdneduv2.snapwiz.net/froala_editor.min.css"
+        ]}
+        fallBack={<span />}
+      >
+        <ThemeProvider theme={themes.default}>
+          <QuestionContainer
+            className="fr-view"
             disabled={disabled}
-            style={{
-              width: "-webkit-fill-available",
-              display: "flex",
-              boxShadow: "none"
-            }}
-            flowLayout={flowLayout}
+            noPadding={noPadding}
+            isFlex={isFlex}
+            data-cy="question-container"
           >
-            {view === "edit" && (
-              <QuestionMenu
-                activeTab={activeTab}
-                main={main}
-                advanced={advanced}
-                advancedAreOpen={advancedAreOpen}
-                handleAdvancedOpen={this.handleAdvancedOpen}
-              />
-            )}
-            <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
-              {timespent ? <Timespent timespent={timespent} view={view} /> : null}
-              <Question
-                {...restProps}
-                setQuestionData={setQuestionData}
-                item={data}
-                view={view}
-                changePreviewTab={changePreviewTab}
-                qIndex={qIndex}
-                advancedAreOpen={advancedAreOpen}
-                cleanSections={this.cleanSections}
-                fillSections={this.fillSections}
-                showQuestionNumber={showFeedback}
-                flowLayout={flowLayout}
-                {...userAnswerProps}
-              />
-            </div>
-          </PaperWrapper>
-          {showFeedback &&
-            (multiple ? (
-              <FeedbackBottom widget={data} disabled={disabled} studentName={studentName} />
-            ) : (
-              <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
-            ))}
-        </QuestionContainer>
-      </ThemeProvider>
+            <PaperWrapper
+              disabled={disabled}
+              style={{
+                width: "-webkit-fill-available",
+                display: "flex",
+                boxShadow: "none"
+              }}
+              flowLayout={flowLayout}
+            >
+              {view === "edit" && (
+                <QuestionMenu
+                  activeTab={activeTab}
+                  main={main}
+                  advanced={advanced}
+                  advancedAreOpen={advancedAreOpen}
+                  handleAdvancedOpen={this.handleAdvancedOpen}
+                />
+              )}
+              <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
+                {timespent ? <Timespent timespent={timespent} view={view} /> : null}
+                <Question
+                  {...restProps}
+                  setQuestionData={setQuestionData}
+                  item={data}
+                  view={view}
+                  changePreviewTab={changePreviewTab}
+                  qIndex={qIndex}
+                  advancedAreOpen={advancedAreOpen}
+                  cleanSections={this.cleanSections}
+                  fillSections={this.fillSections}
+                  showQuestionNumber={showFeedback}
+                  flowLayout={flowLayout}
+                  {...userAnswerProps}
+                />
+              </div>
+            </PaperWrapper>
+            {showFeedback &&
+              (multiple ? (
+                <FeedbackBottom widget={data} disabled={disabled} studentName={studentName} />
+              ) : (
+                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
+              ))}
+          </QuestionContainer>
+        </ThemeProvider>
+      </WithResources>
     );
   }
 }

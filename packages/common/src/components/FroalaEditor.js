@@ -8,9 +8,8 @@ import { message } from "antd";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
-import "froala-editor/css/froala_style.min.css";
-import "froala-editor/css/froala_editor.pkgd.min.css";
-import "font-awesome/css/font-awesome.css";
+// froala.min.css is loaded at index as it required for preview as well.
+
 import Editor from "react-froala-wysiwyg";
 import { uploadToS3 } from "../helpers";
 import MathModal from "./MathModal";

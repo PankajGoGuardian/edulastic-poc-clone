@@ -18,7 +18,7 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
     loadStudents({ classId });
   }
 
-  const handleEditeClick = () => {
+  const handleEditClick = () => {
     if (updateView) {
       updateView("update");
     }
@@ -33,9 +33,13 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
   const viewAssessmentHandler = () => {};
   return (
     <>
-      <Header onEdit={handleEditeClick} />
+      <Header onEdit={handleEditClick} />
       <Container>
-        <SubHeader {...selctedClass} viewAssessmentHandler={viewAssessmentHandler} backToView={() => updateView("")} />
+        <SubHeader
+          {...selctedClass}
+          viewAssessmentHandler={viewAssessmentHandler}
+          backToView={() => updateView("listView")}
+        />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
         <ActionContainer printPreview={printPreview} />

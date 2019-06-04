@@ -143,7 +143,7 @@ class ClassCreate extends React.Component {
     }
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => changeView("list")} />
+        <Header onCancel={() => changeView("listView")} />
         <Spin spinning={creating}>
           <Container>
             <Divider orientation="left">

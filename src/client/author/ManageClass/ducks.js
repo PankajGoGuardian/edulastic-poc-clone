@@ -58,6 +58,7 @@ export const UPDATE_STUDENT_FAILDED = "[manageClass] update student failed";
 export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
 
 export const SET_SUBJECT = "[manageClass] set subject";
+
 // action creators
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);

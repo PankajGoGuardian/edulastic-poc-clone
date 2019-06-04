@@ -14,11 +14,11 @@ import ClassEdit from "./ClassEdit";
 import PrintPreview from "./PrintPreview";
 
 const ManageClass = ({ fetchGroups, setClass, ...restProps }) => {
-  useEffect(() => {
-    fetchGroups();
-  }, []);
+  const [view, setView] = useState("listView");
 
-  const [view, setView] = useState("");
+  useEffect(() => {
+    if (view === "listView") fetchGroups();
+  }, [view]);
 
   const updateView = v => {
     setView(v);
@@ -30,6 +30,7 @@ const ManageClass = ({ fetchGroups, setClass, ...restProps }) => {
   };
 
   const renderView = () => {
+    // eslint-disable-next-line default-case
     switch (view) {
       case "create":
         return <ClassCreate changeView={updateView} />;
@@ -39,7 +40,7 @@ const ManageClass = ({ fetchGroups, setClass, ...restProps }) => {
         return <ClassDetails updateView={updateView} />;
       case "printview":
         return <PrintPreview />;
-      default:
+      case "listView":
         return <ClassListContainer {...restProps} onCreate={() => updateView("create")} setEntity={setEntity} />;
     }
   };

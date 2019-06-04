@@ -51,7 +51,7 @@ const menuItems = [
     path: "home/reports"
   },
   {
-    label: "Skill Report",
+    label: "Skill Reports",
     icon: IconBarChart,
     path: "home/skill-report"
   },

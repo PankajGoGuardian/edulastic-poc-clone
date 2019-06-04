@@ -34,24 +34,20 @@ const menuItems = [
     icon: IconClockDashboard
   },
   {
-    label: "PlayList Library",
-    icon: IconCurriculumSequence,
-    path: "author/playlists"
-  },
-  {
     label: "Assignments",
     icon: IconAssignment,
     path: "author/assignments"
   },
   {
-    label: "Report",
-    icon: IconBarChart,
-    path: "author/reports"
+    label: "PlayList Library",
+    icon: IconCurriculumSequence,
+    path: "author/playlists"
   },
+
   {
-    label: "Manage Class",
-    icon: IconManage,
-    path: "author/manageClass"
+    label: "Test Library",
+    icon: IconTestBank,
+    path: "author/tests"
   },
   {
     label: "Item Bank",
@@ -59,14 +55,21 @@ const menuItems = [
     path: "author/items"
   },
   {
-    label: "Test Library",
-    icon: IconTestBank,
-    path: "author/tests"
+    label: "Reports",
+    icon: IconBarChart,
+    path: "author/reports"
+  },
+  {
+    label: "Manage Class",
+    icon: IconManage,
+    path: "author/manageClass",
+    role: ["teacher"]
   },
   {
     label: "Manage District",
     icon: IconSettings,
-    path: "author/districtprofile"
+    path: "author/districtprofile",
+    role: ["edulastic-admin", "district-admin", "school-admin"]
   }
 ];
 class SideMenu extends Component {
@@ -222,12 +225,9 @@ class SideMenu extends Component {
               >
                 {this.MenuItems.map((menu, index) => {
                   const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
+                  const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
                   return (
-                    <MenuItem
-                      key={index.toString()}
-                      onClick={this.toggleMenu}
-                      visible={!(menu.label === "Manage District" && userRole !== "district-admin")}
-                    >
+                    <MenuItem key={index.toString()} onClick={this.toggleMenu} visible={isItemVisible}>
                       <MenuIcon />
                       {!isCollapsed && <LabelMenuItem>{menu.label}</LabelMenuItem>}
                     </MenuItem>

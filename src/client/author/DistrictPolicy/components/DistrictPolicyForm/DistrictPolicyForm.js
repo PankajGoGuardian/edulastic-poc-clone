@@ -42,7 +42,7 @@ function validURL(value) {
   };
 }
 
-class DistrictPolicyForm extends React.Component {
+class DistrictPolicyForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,34 +66,33 @@ class DistrictPolicyForm extends React.Component {
     loadDistrictPolicy({ orgId: userOrgId });
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.districtPolicy == null || Object.keys(nextProps.districtPolicy).length === 0) {
-      return {
-        districtPolicy: {
-          userNameAndPassword: true,
-          googleSignOn: true,
-          office365SignOn: true,
-          cleverSignOn: true,
+  static getDerivedStateFromProps(nextProps) {
+    const defaultDistrictPolicy = {
+      userNameAndPassword: true,
+      googleSignOn: true,
+      office365SignOn: true,
+      cleverSignOn: true,
 
-          teacherSignUp: true,
-          studentSignUp: true,
+      teacherSignUp: true,
+      studentSignUp: true,
 
-          googleUsernames: true,
-          office365Usernames: true,
-          firstNameAndLastName: true,
+      googleUsernames: true,
+      office365Usernames: true,
+      firstNameAndLastName: true,
 
-          allowedDomainForStudents: "",
-          allowedDomainForTeachers: "",
-          allowedDomainsForDistrict: "",
+      allowedDomainForStudents: "",
+      allowedDomainForTeachers: "",
+      allowedDomainsForDistrict: "",
 
-          googleClassroom: false,
-          canvas: false
-        }
-      };
-    } else
-      return {
-        districtPolicy: nextProps.districtPolicy
-      };
+      googleClassroom: false,
+      canvas: false
+    };
+    return {
+      districtPolicy: {
+        ...defaultDistrictPolicy,
+        ...nextProps.districtPolicy
+      }
+    };
   }
 
   change = (e, keyName) => {

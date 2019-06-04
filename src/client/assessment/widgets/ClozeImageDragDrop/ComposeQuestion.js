@@ -189,7 +189,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, maxWidth, maxHeight } = this.props;
+    const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
 
     const {
       maxRespCount,
@@ -387,7 +387,13 @@ class ComposeQuestion extends Component {
                     maxHeight={maxHeight}
                     alt="resp-preview"
                   />
-                  <DropArea updateData={this.updateData} item={item} width={"100%"} showIndex={false} />
+                  <DropArea
+                    setQuestionData={setQuestionData}
+                    updateData={this.updateData}
+                    item={item}
+                    width={"100%"}
+                    showIndex={false}
+                  />
                 </React.Fragment>
               )}
               {!item.imageUrl && (

@@ -63,6 +63,15 @@ class Signup extends React.Component {
     this.setState({ confirmDirty });
   };
 
+  checkPassword = (rule, value, callback) => {
+    if (value.length < 4) {
+      callback("Password is too short - must be at least 4 characters");
+    } else if (value.includes(" ")) {
+      callback("Password cannot include spaces");
+    }
+    callback();
+  };
+
   render() {
     const {
       form: { getFieldDecorator },
@@ -165,6 +174,9 @@ class Signup extends React.Component {
                                 {
                                   required: true,
                                   message: t("component.signup.teacher.validpassword")
+                                },
+                                {
+                                  validator: this.checkPassword
                                 }
                               ]
                             })(

@@ -35,7 +35,7 @@ const JoinSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo, j
   const handleSubmit = () => {
     const currentSignUpState = "PREFERENCE_NOT_SELECTED";
     const data = {
-      institutionIds: split(currentSchool.schoolId) || split(currentSchool._id) || "",
+      institutionIds: [currentSchool.schoolId || currentSchool._id || ""],
       districtId: currentSchool.districtId,
       currentSignUpState,
       email,

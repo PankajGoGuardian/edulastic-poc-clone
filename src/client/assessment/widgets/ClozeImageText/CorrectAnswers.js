@@ -158,7 +158,8 @@ class CorrectAnswers extends Component {
       maxRespCount,
       showDashedBorder,
       maxHeight,
-      maxWidth
+      maxWidth,
+      imagePosition
     } = this.props;
     const { value } = this.state;
     return (
@@ -189,6 +190,7 @@ class CorrectAnswers extends Component {
                 backgroundColor={backgroundColor}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
+                imagePosition={imagePosition}
               />
             </TabContainer>
           )}
@@ -217,6 +219,7 @@ class CorrectAnswers extends Component {
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       maxHeight={maxHeight}
                       maxWidth={maxWidth}
+                      imagePosition={imagePosition}
                     />
                   </TabContainer>
                 );
@@ -249,7 +252,8 @@ CorrectAnswers.propTypes = {
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  imagePosition: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
@@ -273,7 +277,8 @@ CorrectAnswers.defaultProps = {
     wordwrap: false
   },
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  imagePosition: {}
 };
 
 const enhance = compose(

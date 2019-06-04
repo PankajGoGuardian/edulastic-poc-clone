@@ -143,7 +143,8 @@ class CorrectAnswers extends Component {
       showDashedBorder,
       maxHeight,
       maxWidth,
-      imageHeight
+      imageHeight,
+      imagePosition
     } = this.props;
     const { value } = this.state;
     return (
@@ -176,6 +177,7 @@ class CorrectAnswers extends Component {
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
                 imageHeight={imageHeight}
+                imagePosition={imagePosition}
               />
             </TabContainer>
           )}
@@ -238,7 +240,8 @@ CorrectAnswers.propTypes = {
   maxRespCount: PropTypes.number,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  onRemoveAltResponses: PropTypes.func
+  onRemoveAltResponses: PropTypes.func,
+  imagePosition: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
@@ -264,7 +267,8 @@ CorrectAnswers.defaultProps = {
   },
   onRemoveAltResponses: () => {},
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  imagePosition: {}
 };
 
 const enhance = compose(

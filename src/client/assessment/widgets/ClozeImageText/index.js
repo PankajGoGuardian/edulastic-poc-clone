@@ -204,6 +204,7 @@ class ClozeImageText extends Component {
                       cleanSections={cleanSections}
                       maxHeight={maxHeight}
                       maxWidth={maxWidth}
+                      imagePosition={item.imagePosition}
                     />
 
                     <div style={{ marginTop: 40 }}>
@@ -267,6 +268,7 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
+                imagePosition={item.imagePosition}
               />
             )}
             {previewTab === "show" && (
@@ -293,6 +295,7 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
+                imagePosition={item.imagePosition}
                 {...restProps}
               />
             )}
@@ -324,6 +327,7 @@ class ClozeImageText extends Component {
                 qIndex={qIndex}
                 maxHeight={maxHeight}
                 maxWidth={maxWidth}
+                imagePosition={item.imagePosition}
               />
             )}
           </Wrapper>

@@ -227,6 +227,7 @@ class ClozeImageDropDown extends Component {
                       cleanSections={cleanSections}
                       maxHeight={maxHeight}
                       maxWidth={maxWidth}
+                      imagePosition={item.imagePosition}
                     />
                     <CorrectAnswerOptions>
                       <Checkbox
@@ -287,6 +288,7 @@ class ClozeImageDropDown extends Component {
               maxHeight={maxHeight}
               maxWidth={maxWidth}
               qIndex={qIndex}
+              imagePosition={item.imagePosition}
               {...restProps}
             />
           </Wrapper>

@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import ReactDOM from "react-dom";
+import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -36,6 +37,10 @@ const { Option } = Select;
 const { Dragger } = Upload;
 
 class ComposeQuestion extends Component {
+  state = {
+    isEditableResizeMove: false
+  };
+
   constructor(props) {
     super(props);
     this.imageWidthEditor = React.createRef();
@@ -118,6 +123,7 @@ class ComposeQuestion extends Component {
 
   onItemPropChange = (prop, value) => {
     const { item, setQuestionData } = this.props;
+
     setQuestionData(
       produce(item, draft => {
         draft[prop] = value;
@@ -188,8 +194,28 @@ class ComposeQuestion extends Component {
     }
   };
 
+  toggleIsMoveResizeEditable = () => {
+    this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
+  };
+
+  handleImagePosition = d => {
+    const { item, setQuestionData } = this.props;
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imagePosition = { top: d.y, left: d.x };
+      })
+    );
+  };
+
   render() {
     const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
+    const { isEditableResizeMove } = this.state;
+    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
+
+    const width = maxWidth;
+    const height = maxHeight;
+
 
     const {
       maxRespCount,
@@ -199,7 +225,8 @@ class ComposeQuestion extends Component {
       isEditAriaLabels,
       responses,
       imageWidth,
-      imageHeight
+      imageHeight,
+      imagePosition = {}
     } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -312,7 +339,7 @@ class ComposeQuestion extends Component {
               flexDirection: "column"
             }}
           >
-            <Button style={{ width: 100, height: 100, whiteSpace: "normal" }}>
+            <Button onClick={toggleIsMoveResizeEditable} style={{ width: 100, height: 100, whiteSpace: "normal" }}>
               <IconDrawResize />
               {t("component.cloze.imageDragDrop.drawresize")}
             </Button>
@@ -379,15 +406,28 @@ class ComposeQuestion extends Component {
             >
               {item.imageUrl && (
                 <React.Fragment>
-                  <PreviewImage
-                    src={item.imageUrl}
-                    width={imageWidth < 700 ? imageWidth : maxWidth}
-                    height={imageHeight}
-                    maxWidth={maxWidth}
-                    maxHeight={maxHeight}
-                    alt="resp-preview"
-                  />
+                  <Rnd
+                    style={{ overflow: "hidden" }}
+                    default={{
+                      x: imagePosition.left || 0,
+                      y: imagePosition.top || 0,
+                      width,
+                      height
+                    }}
+                    onDragStop={(evt, d) => handleImagePosition(d)}
+                  >
+                    <PreviewImage
+                      src={item.imageUrl}
+                      width={imageWidth < 700 ? imageWidth : maxWidth}
+                      height={imageHeight}
+                      maxWidth={maxWidth}
+                      maxHeight={maxHeight}
+                      alt="resp-preview"
+                      onDragStart={e => e.preventDefault()}
+                    />
+                  </Rnd>
                   <DropArea
+                    disable={isEditableResizeMove}
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}
                     item={item}

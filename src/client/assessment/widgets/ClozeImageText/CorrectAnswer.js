@@ -115,6 +115,7 @@ class CorrectAnswer extends Component {
           onChange={this.handleMultiSelect}
           maxHeight={maxHeight}
           maxWidth={maxWidth}
+          imagePosition={item.imagePosition}
         />
       </div>
     );

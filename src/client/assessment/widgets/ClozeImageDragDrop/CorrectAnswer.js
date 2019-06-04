@@ -24,7 +24,8 @@ class CorrectAnswer extends Component {
     showDashedBorder: PropTypes.bool.isRequired,
     backgroundColor: PropTypes.string.isRequired,
     imageAlterText: PropTypes.string.isRequired,
-    imageWidth: PropTypes.number.isRequired
+    imageWidth: PropTypes.number.isRequired,
+    imagePosition: PropTypes.object
   };
 
   static contextType = ItemLevelContext;
@@ -69,7 +70,8 @@ class CorrectAnswer extends Component {
       backgroundColor,
       maxRespCount,
       maxHeight,
-      maxWidth
+      maxWidth,
+      imagePosition = {}
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -109,6 +111,7 @@ class CorrectAnswer extends Component {
           imageHeight={imageHeight}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
+          imagePosition={imagePosition}
         />
       </div>
     );

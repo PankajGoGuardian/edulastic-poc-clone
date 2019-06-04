@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -70,6 +71,7 @@ class Authoring extends Component {
   };
 
   state = {
+    isEditableResizeMove: false,
     isColorPickerVisible: false,
     imageWidth:
       this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
@@ -249,11 +251,31 @@ class Authoring extends Component {
     this.onItemPropChange("imageHeight", newHeight);
   };
 
+  toggleIsMoveResizeEditable = () => {
+    this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
+  };
+
+  handleImagePosition = d => {
+    const { item, setQuestionData } = this.props;
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imagePosition = { top: d.y, left: d.x };
+      })
+    );
+  };
+
   render() {
     const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight = 0 } = item;
-    const { isColorPickerVisible } = this.state;
+    const { isColorPickerVisible, isEditableResizeMove } = this.state;
+
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
+    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
+
+    const { imagePosition = {} } = item;
+    const width = maxWidth;
+    const height = maxHeight;
 
     const draggerProps = {
       name: "file",
@@ -347,7 +369,7 @@ class Authoring extends Component {
               }}
             >
               <ControlBar>
-                <ControlButton>
+                <ControlButton onClick={toggleIsMoveResizeEditable}>
                   <IconDrawResize />
                   {t("component.cloze.imageText.drawresize")}
                 </ControlButton>
@@ -372,19 +394,33 @@ class Authoring extends Component {
                   imageUrl={item.imageUrl}
                   height={maxHeight}
                   width={maxWidth}
+                  onDragStart={e => e.preventDefault()}
                 >
                   {item.imageUrl && (
                     <React.Fragment>
-                      <PreviewImage
-                        id="mainImage"
-                        src={item.imageUrl}
-                        width={imageWidth < 700 ? imageWidth : maxWidth}
-                        height={imageHeight}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
-                        alt="resp-preview"
-                      />
+                      <Rnd
+                        style={{ overflow: "hidden" }}
+                        default={{
+                          x: imagePosition.left || 0,
+                          y: imagePosition.top || 0,
+                          width,
+                          height
+                        }}
+                        onDragStop={(evt, d) => handleImagePosition(d)}
+                      >
+                        <PreviewImage
+                          id="mainImage"
+                          src={item.imageUrl}
+                          width={imageWidth < 700 ? imageWidth : maxWidth}
+                          height={imageHeight}
+                          maxWidth={maxWidth}
+                          maxHeight={maxHeight}
+                          alt="resp-preview"
+                          onDragStart={e => e.preventDefault()}
+                        />
+                      </Rnd>
                       <DropArea
+                        disable={isEditableResizeMove}
                         updateData={this.updateData}
                         item={item}
                         key={item}

@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import { Rnd } from "react-rnd";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -67,7 +68,8 @@ class ComposeQuestion extends Component {
   };
 
   state = {
-    isColorPickerVisible: false
+    isColorPickerVisible: false,
+    isEditableResizeMove: false
   };
 
   componentDidMount = () => {
@@ -206,11 +208,32 @@ class ComposeQuestion extends Component {
     }
   };
 
+  toggleIsMoveResizeEditable = () => {
+    this.setState(prevState => ({ isEditableResizeMove: !prevState.isEditableResizeMove }));
+  };
+
+  handleImagePosition = d => {
+    const { item, setQuestionData } = this.props;
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imagePosition = { top: d.y, left: d.x };
+      })
+    );
+  };
+
   render() {
     const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight } = item;
-    const { isColorPickerVisible } = this.state;
+    const { isColorPickerVisible, isEditableResizeMove } = this.state;
+
+    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
+
+    const { imagePosition = {} } = item;
+
+    const width = maxWidth;
+    const height = maxHeight;
 
     const draggerProps = {
       name: "file",
@@ -302,7 +325,7 @@ class ComposeQuestion extends Component {
               }}
             >
               <ControlBar>
-                <ControlButton>
+                <ControlButton onClick={toggleIsMoveResizeEditable}>
                   <IconDrawResize />
                   {t("component.cloze.imageDropDown.drawresize")}
                 </ControlButton>
@@ -330,15 +353,28 @@ class ComposeQuestion extends Component {
                 >
                   {item.imageUrl && (
                     <React.Fragment>
-                      <PreviewImage
-                        src={item.imageUrl}
-                        width={imageWidth < 700 ? imageWidth : maxWidth}
-                        height={imageHeight}
-                        maxWidth={maxWidth}
-                        maxHeight={maxHeight}
-                        alt="resp-preview"
-                      />
+                      <Rnd
+                        style={{ overflow: "hidden" }}
+                        default={{
+                          x: imagePosition.left || 0,
+                          y: imagePosition.top || 0,
+                          width,
+                          height
+                        }}
+                        onDragStop={(evt, d) => handleImagePosition(d)}
+                      >
+                        <PreviewImage
+                          src={item.imageUrl}
+                          width={imageWidth < 700 ? imageWidth : maxWidth}
+                          height={imageHeight}
+                          maxWidth={maxWidth}
+                          maxHeight={maxHeight}
+                          alt="resp-preview"
+                          onDragStart={e => e.preventDefault()}
+                        />
+                      </Rnd>
                       <DropArea
+                        disable={isEditableResizeMove}
                         setQuestionData={setQuestionData}
                         updateData={this.updateData}
                         item={item}

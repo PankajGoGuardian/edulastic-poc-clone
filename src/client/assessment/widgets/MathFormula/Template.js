@@ -21,7 +21,7 @@ class Template extends Component {
     const { fillSections, t, item } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop);
+    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

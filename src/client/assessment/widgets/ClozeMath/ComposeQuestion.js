@@ -13,7 +13,7 @@ class ComposeQuestion extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("main", t("component.math.composequestion"), node.offsetTop);
+    fillSections("main", t("component.math.composequestion"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

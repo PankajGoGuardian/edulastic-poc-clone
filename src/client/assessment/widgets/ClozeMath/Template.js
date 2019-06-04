@@ -25,7 +25,7 @@ class Template extends Component {
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
-    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop);
+    if (item.templateDisplay) fillSections("main", t("component.math.template"), node.offsetTop, node.scrollHeight);
   };
 
   componentWillUnmount() {

@@ -67,16 +67,16 @@ export default class ExpressGraderPage extends LiveClassboardPage {
   getEditResponseToggle = () => cy.get("button.ant-switch");
 
   clickOnExit = (updated = false) => {
-    if (updated) {
-      cy.get("#react-app").then(() => {
-        if (Cypress.$('[data-cy="exitbutton"]').length === 1) {
+    cy.get("#react-app").then(() => {
+      if (Cypress.$('[data-cy="exitbutton"]').length === 1) {
+        if (updated) {
           cy.server();
           cy.route("GET", "**/test-activity").as("test-activity");
           cy.get('[data-cy="exitbutton"]').click({ force: true });
           cy.wait("@test-activity");
-        }
-      });
-    } else cy.get('[data-cy="exitbutton"]').click({ force: true });
+        } else cy.get('[data-cy="exitbutton"]').click({ force: true });
+      }
+    });
   };
 
   verifyScoreAndPerformance = (score, perf) => {

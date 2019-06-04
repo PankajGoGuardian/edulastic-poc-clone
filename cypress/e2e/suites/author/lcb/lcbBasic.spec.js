@@ -245,6 +245,11 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       beforeEach(() => {
         expressg.clickOnExit();
       });
+
+      after(() => {
+        expressg.clickOnExit();
+      });
+
       submittedStudentList.forEach(studentName => {
         //  ["Student01"].forEach(studentName => {
         it(` > using button for student :: ${studentName}`, () => {

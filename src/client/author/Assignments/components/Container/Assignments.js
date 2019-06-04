@@ -43,7 +43,6 @@ import {
   Main,
   StyledCard,
   ViewSwitch,
-  TestButton,
   SwitchWrapper,
   SwitchLabel,
   FilterButton,
@@ -142,9 +141,6 @@ class Assignments extends Component {
         <ViewSwitch checked={isAdvancedView} size="small" onChange={this.SwitchView} />
         <SwitchLabel>ADVANCED</SwitchLabel>
       </SwitchWrapper>
-      <TestButton onClick={() => {}} color="secondary" variant="test" shadow="none">
-        {isAdvancedView ? "CREATE TEST" : "AUTHOR TEST"}
-      </TestButton>
     </SwitchWrapper>
   );
 
@@ -175,6 +171,7 @@ class Assignments extends Component {
       <div>
         <ListHeader
           onCreate={this.handleCreate}
+          createAssignment={true}
           title={t("common.assignmentsTitle")}
           btnTitle="AUTHOR TEST"
           renderFilter={this.renderSwitch}

@@ -2,12 +2,19 @@ import React from "react";
 import PropTypes from "prop-types";
 
 import OptionPDF from "../OptionPDF/OptionPDF";
-import { OptionsContainer } from "./styled";
-
+import OptionScratch from "../OptionScratch/OptionScratch";
+import BodyWrapper from "../../../AssignmentCreate/common/BodyWrapper";
+import ContainerWrapper from "../../../AssignmentCreate/common/ContainerWrapper";
+import FlexWrapper from "../../../AssignmentCreate/common/FlexWrapper";
 const CreationOptions = ({ onUploadPDF }) => (
-  <OptionsContainer>
-    <OptionPDF onClick={onUploadPDF} />
-  </OptionsContainer>
+  <ContainerWrapper>
+    <BodyWrapper>
+      <FlexWrapper>
+        <OptionScratch />
+        <OptionPDF onClick={onUploadPDF} />
+      </FlexWrapper>
+    </BodyWrapper>
+  </ContainerWrapper>
 );
 
 CreationOptions.propTypes = {

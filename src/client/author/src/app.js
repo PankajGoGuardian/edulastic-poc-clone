@@ -13,6 +13,7 @@ const AssignTest = lazy(() => import("../AssignTest"));
 const AssignmentAdvanced = lazy(() => import("../AssignmentAdvanced"));
 const Regrade = lazy(() => import("../Regrade"));
 const AssessmentCreate = lazy(() => import("../AssessmentCreate"));
+const AssignmentCreate = lazy(() => import("../AssignmentCreate"));
 const AssessmentPage = lazy(() => import("../AssessmentPage"));
 const ClassBoard = lazy(() => import("../ClassBoard"));
 const StudentReportCardPrintPreviewContainer = lazy(() =>
@@ -75,6 +76,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               />
               <Route exact path={`${match.url}/assignments/:testId`} component={props => <AssignTest {...props} />} />
               <Route exact path={`${match.url}/assessments/create`} component={AssessmentCreate} />
+              <Route exact path={`${match.url}/assessments/createAssignment`} component={AssignmentCreate} />
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route

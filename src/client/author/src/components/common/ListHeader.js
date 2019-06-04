@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { compose } from "redux";
@@ -11,7 +12,8 @@ import {
   darkBlueSecondary,
   white,
   lightBlueSecondary,
-  newBlue
+  newBlue,
+  blue
 } from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
@@ -20,6 +22,7 @@ import { toggleSideBarAction } from "../../actions/toggleMenu";
 
 const ListHeader = ({
   onCreate,
+  createAssignment,
   t,
   title,
   btnTitle,
@@ -49,16 +52,22 @@ const ListHeader = ({
         (renderButton ? (
           renderButton()
         ) : (
-          <CreateButton
-            onClick={onCreate}
-            color="secondary"
-            variant="create"
-            shadow="none"
-            icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
-          >
+          <CreateButton onClick={onCreate} color="secondary" variant="create" shadow="none">
             {btnTitle && btnTitle.length ? btnTitle : t("component.itemlist.header.create")}
           </CreateButton>
         ))}
+      {createAssignment && (
+        <Link to={"/author/assessments/createAssignment"}>
+          <TestButton
+            color="secondary"
+            variant="test"
+            shadow="none"
+            icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
+          >
+            NEW ASSIGNMENT
+          </TestButton>
+        </Link>
+      )}
       {renderExtra()}
     </RightButtonWrapper>
   </Container>
@@ -66,6 +75,7 @@ const ListHeader = ({
 
 ListHeader.propTypes = {
   onCreate: PropTypes.func,
+  createAssignment: PropTypes.bool,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
@@ -83,6 +93,7 @@ ListHeader.defaultProps = {
   renderExtra: () => null,
   renderFilter: () => null,
   onCreate: () => {},
+  createAssignment: false,
   renderButton: null,
   isAdvancedView: false,
   hasButton: true,
@@ -112,16 +123,16 @@ const Container = styled(HeaderWrapper)`
   z-index: 1;
 `;
 
-const CreateButton = styled(Button)`
-  position: relative;
-  width: 194px;
+export const TestButton = styled(Button)`
   height: 45px;
-  color: ${lightBlueSecondary};
+  color: ${blue};
   border-radius: 3px;
+  margin-left: 25px;
   background: ${white};
-  justify-content: space-around;
-  margin-left: 20px;
-
+  padding: 5px 30px;
+  span {
+    margin-left: 15px;
+  }
   @media (max-width: ${desktopWidth}) {
     width: 44px;
     height: 44px;
@@ -143,6 +154,18 @@ const CreateButton = styled(Button)`
     min-height: 40px;
     margin-left: 5px;
   }
+`;
+
+const CreateButton = styled(Button)`
+  position: relative;
+  min-width: auto;
+  padding: 5px 30px;
+  height: 45px;
+  color: ${lightBlueSecondary};
+  border-radius: 3px;
+  background: ${white};
+  justify-content: space-around;
+  margin-left: 20px;
 `;
 
 const IconPlusStyled = styled(IconPlusCircle)`

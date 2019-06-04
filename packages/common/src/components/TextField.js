@@ -14,14 +14,16 @@ class TextField extends Component {
   };
 
   render() {
-    const { icon, height, style, containerStyle, onChange, onBlur, ...restProps } = this.props;
+    const { icon, height, style, containerStyle, onChange, onBlur, type, minimum, maximum, ...restProps } = this.props;
     const { referenceEditable } = this.state;
     return (
       <Container height={height} style={containerStyle}>
         <Field
           disabled={!referenceEditable}
-          type="text"
+          type={!type ? "text" : type}
           style={style}
+          min={!minimum ? null : minimum}
+          max={!maximum ? null : maximum}
           referenceEditable={referenceEditable}
           {...restProps}
           onChange={onChange}

@@ -851,10 +851,6 @@ input[type="checkbox"] {
   display: inline;
 }
 
-.response-btn.show-answer {
-  top: -8px;
-}
-
 .ql-toolbar.ql-snow .ql-formats {
   background: white;
   padding: 2px;

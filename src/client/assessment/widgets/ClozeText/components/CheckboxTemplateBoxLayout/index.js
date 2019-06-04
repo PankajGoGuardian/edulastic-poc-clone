@@ -94,12 +94,15 @@ const CheckboxTemplateBoxLayout = ({
                 >
                   &nbsp;<span className="index">{responseIndex}</span>
                   <span
+                    title={userSelections[dropTargetIndex]}
                     className="text"
                     style={{
                       width: "100%",
+                      display: "block",
                       whiteSpace: "nowrap",
                       textOverflow: "ellipsis",
-                      overflow: "hidden"
+                      overflow: "hidden",
+                      lineHeight: 2.5
                     }}
                   >
                     {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
@@ -132,6 +135,7 @@ const CheckboxTemplateBoxLayout = ({
                     </Fragment>
                   )}
                   <span
+                    title={userSelections[dropTargetIndex]}
                     style={{
                       width: "100%",
                       display: "block",

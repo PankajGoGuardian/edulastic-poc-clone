@@ -9,6 +9,8 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import ClozeTextInput from "../../components/ClozeTextInput";
 
+import { response } from "../../../../../packages/constants/const/dimensions";
+
 const MathSpan = WithMathFormula(styled.span`
   user-select: none;
   line-height: ${props => props.lineHeight};
@@ -207,7 +209,7 @@ class ClozeTextDisplay extends Component {
                 return (
                   <ClozeTextInput
                     value={userAnswers[dropTargetIndex]}
-                    style={{ height: btnStyle.height, minWidth: 100 }}
+                    style={{ height: btnStyle.height, minWidth: uiStyle.widthpx || response.minWidth }}
                     btnStyle={btnStyle}
                     dropTargetIndex={dropTargetIndex}
                     onChange={this._changeInput}

@@ -21,6 +21,7 @@ import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
 
+import { response } from "../../../../../packages/constants/const/dimensions";
 class Layout extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,
@@ -80,6 +81,24 @@ class Layout extends Component {
     this.setState({
       input: +e.target.value
     });
+  };
+
+  handleBlur = () => {
+    const { onChange, uiStyle } = this.props;
+    const { minWidth, maxWidth } = response;
+    const width = uiStyle.widthpx;
+    if (width < minWidth) {
+      onChange("ui_style", {
+        ...uiStyle,
+        widthpx: minWidth
+      });
+    }
+    if (width > maxWidth) {
+      onChange("ui_style", {
+        ...uiStyle,
+        widthpx: maxWidth
+      });
+    }
   };
 
   render() {
@@ -224,10 +243,12 @@ class Layout extends Component {
                 ref={ref => {
                   this.widthInput = ref;
                 }}
-                onFocus={onFocusHandler()}
-                onBlur={onWidthInputBlur()}
-                onChange={this.handleInputChange}
-                value={getMainWidthInputValue()}
+                // onFocus={onFocusHandler()}
+                onBlur={this.handleBlur}
+                onChange={e => changeUiStyle("widthpx", +e.target.value)}
+                value={uiStyle.widthpx}
+                minimum={response.minWidth}
+                maximum={response.maxWidth}
               />
             </Col>
             <Col md={12}>

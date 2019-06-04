@@ -7,11 +7,7 @@ export const getMathHtml = latex => {
 export const replaceLatexesWithMathHtml = val => {
   // Detecting latexes
   let jqueryEl = null;
-  try {
-    jqueryEl = $(val);
-  } catch (err) {
-    jqueryEl = $(`<p>${val}</p>`);
-  }
+  jqueryEl = $(`<p>${val}</p>`);
   if (!jqueryEl) return val;
 
   let newVal = ` ${val}`.slice(1);

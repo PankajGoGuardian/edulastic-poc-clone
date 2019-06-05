@@ -7,9 +7,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 
-import { CustomQuillComponent } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -32,6 +32,7 @@ class ComposeQuestion extends Component {
 
   componentDidMount = () => {
     const { fillSections, t, item } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
     const deskHeight = item.ui_style.layout_height;
 
@@ -67,14 +68,10 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.text.composequestion")}</Subtitle>
-        <CustomQuillComponent
-          toolbarId="stimulus"
-          wrappedRef={instance => {
-            this.stimulus = instance;
-          }}
+        <QuestionTextArea
+          inputId="stimulusInput"
           placeholder={t("component.cloze.text.thisisstem")}
           onChange={this.onChangeQuestion}
-          showResponseBtn={false}
           value={item.stimulus}
         />
       </Widget>

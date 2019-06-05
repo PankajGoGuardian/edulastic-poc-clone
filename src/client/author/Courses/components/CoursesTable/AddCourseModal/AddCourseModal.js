@@ -56,7 +56,7 @@ class AddCourseModal extends React.Component {
       numberValidate.validateStatus === "success" &&
       numberValidate.value.length > 0
     ) {
-          this.props.addCourse({ name: nameValidate.value, number: numberValidate.value });
+      this.props.addCourse({ name: nameValidate.value, number: numberValidate.value });
     }
   };
 

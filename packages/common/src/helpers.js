@@ -1,3 +1,5 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 
@@ -88,10 +90,57 @@ export const uploadToS3 = async (file, folder) => {
   return `${url}/${fields.key}`;
 };
 
+function addProps() {
+  $(this).attr("resprops", "{{resProps}}");
+  const text = $("<div>")
+    .append($(this).clone())
+    .html();
+  $(this).replaceWith(text);
+}
+
+const parseTemplate = tmpl => {
+  let temp = ` ${tmpl}`.slice(1);
+  if (!window.$) {
+    return temp;
+  }
+
+  const parsedHTML = $.parseHTML(temp);
+
+  $(parsedHTML)
+    .find("textinput")
+    .each(addProps);
+
+  $(parsedHTML)
+    .find("mathinput")
+    .each(addProps);
+
+  $(parsedHTML)
+    .find("textdropdown")
+    .each(addProps);
+
+  $(parsedHTML)
+    .find(".input__math")
+    .each(function() {
+      const latex = $(this).attr("data-latex");
+      $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
+    });
+
+  temp = $("<div />")
+    .append(parsedHTML)
+    .html();
+
+  temp = temp.replace(/<hr>/g, "<hr/>");
+  temp = temp.replace(/<br>/g, "<br/>");
+  temp = temp.replace(/"{{/g, "{");
+  temp = temp.replace(/}}"/g, "}");
+  return temp;
+};
+
 export default {
   getDisplayName,
   getPaginationInfo,
   getNumeration,
   isEmpty,
-  uploadToS3
+  uploadToS3,
+  parseTemplate
 };

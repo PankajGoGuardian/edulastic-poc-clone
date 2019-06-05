@@ -2,12 +2,9 @@ import React, { useRef, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Input } from "antd";
-import { compose } from "redux";
-import { connect } from "react-redux";
 
 import NumberPad from "./NumberPad";
 import { getInputSelection } from "../utils/helpers";
-import { getQuestionDataSelector } from "../../author/QuestionEditor/ducks";
 
 const { TextArea } = Input;
 
@@ -72,24 +69,17 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({
-  value,
-  btnStyle,
-  item,
-  dropTargetIndex,
-  onChange,
-  style,
-  placeholder,
-  type,
-  indexNumber,
-  showIndex = true
-}) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
+  const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
+  const value = userAnswers[dropTargetIndex];
   const ref = useRef();
   const MInput = item.multiple_line ? TextArea : Input;
   const [selection, setSelection] = useState({
     start: 0,
     end: 0
   });
+
+  const [answer, setAnswer] = useState(value);
 
   const _getValue = val => {
     const newStr = value.split("");
@@ -119,20 +109,28 @@ const ClozeTextInput = ({
     });
   };
 
+  const onBlurHanlder = () => {
+    if (type === "number" && Number.isNaN(+answer.value)) {
+      return;
+    }
+    if (value !== answer) {
+      _change({
+        value: answer,
+        dropTargetIndex
+      });
+    }
+  };
+
   return (
-    <CustomInput title={value} style={style}>
-      {showIndex && indexNumber && <IndexBox>{indexNumber}</IndexBox>}
+    <CustomInput style={style}>
+      {showIndex && <IndexBox>{dropTargetIndex + 1}</IndexBox>}
       <MInput
         ref={ref}
-        onChange={e => {
-          _change({
-            value: e.target.value,
-            dropTargetIndex
-          });
-        }}
+        onChange={e => setAnswer(e.target.value)}
+        onBlur={onBlurHanlder}
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
-        value={value}
+        value={answer}
         key={`input_${dropTargetIndex}`}
         style={{
           ...btnStyle,
@@ -165,30 +163,15 @@ const ClozeTextInput = ({
 };
 
 ClozeTextInput.propTypes = {
-  btnStyle: PropTypes.object.isRequired,
-  dropTargetIndex: PropTypes.number.isRequired,
-  item: PropTypes.object.isRequired,
-  onChange: PropTypes.func.isRequired,
-  placeholder: PropTypes.string,
-  type: PropTypes.string,
-  style: PropTypes.object,
-  value: PropTypes.string,
-  indexNumber: PropTypes.any
-};
-
-ClozeTextInput.defaultProps = {
-  value: "",
-  style: {},
-  placeholder: "",
-  type: "text",
-  indexNumber: null
+  resprops: PropTypes.object.isRequired,
+  index: PropTypes.number.isRequired
 };
 
 export default ClozeTextInput;
 
 const CustomInput = styled.div`
   display: inline-flex;
-  margin: 12px 20px;
+  margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
 `;

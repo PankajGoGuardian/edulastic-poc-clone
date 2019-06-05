@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import "react-quill/dist/quill.snow.css";
 
-import { CustomQuillComponent } from "@edulastic/common";
+import { FroalaEditor } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -15,9 +15,6 @@ import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
-
-const defaultTemplateMarkup =
-  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -35,6 +32,7 @@ class TemplateMarkup extends Component {
 
   componentDidMount = () => {
     const { fillSections, t, item } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
     const deskHeight = item.ui_style.layout_height;
 
@@ -80,16 +78,11 @@ class TemplateMarkup extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.text.templatemarkup")}</Subtitle>
-        <CustomQuillComponent
-          toolbarId="templatemarkup"
-          wrappedRef={instance => {
-            this.templatemarkup = instance;
-          }}
-          placeholder={t("component.cloze.text.templatemarkupplaceholder")}
+        <FroalaEditor
+          data-cy="templateBox"
           onChange={this.onChangeMarkUp}
-          firstFocus={!item.templateMarkUp}
-          showResponseBtn
-          value={item.templateMarkUp || defaultTemplateMarkup}
+          value={item.templateMarkUp}
+          additionalToolbarOptions={["textinput"]}
         />
       </Widget>
     );

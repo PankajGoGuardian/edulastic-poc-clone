@@ -13,6 +13,18 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
       results[userAnswer.group].push(userAnswer.data);
     });
   } else {
+    if (altAnswers && altAnswers.length > 0) {
+      userAnswers = userAnswers.map((ans, index) => {
+        const final = [ans];
+        for (const altAnswer of altAnswers) {
+          const { value } = altAnswer;
+          if (value[index] && value[index] !== "") {
+            final.push(value[index]);
+          }
+        }
+        return final;
+      });
+    }
     results = userAnswers;
   }
   return (
@@ -25,8 +37,8 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer">
-                  &nbsp;<span className="index">{index + 1}</span>
-                  <span className="text">{value}</span>&nbsp;
+                  <span className="index">{index + 1}</span>
+                  <span className="text">{value}</span>
                 </div>
               ))}
             </div>
@@ -34,8 +46,8 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
         {!hasGroupResponses &&
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
-              &nbsp;<span className="index">{index + 1}</span>
-              <span className="text">{typeof result === "string" ? result : result.join(", ")}</span>&nbsp;
+              <span className="index">{index + 1}</span>
+              <span className="text">{typeof result === "string" ? result : result.join(", ")}</span>
             </div>
           ))}
       </div>
@@ -55,7 +67,8 @@ CorrectAnswerBoxLayout.defaultProps = {
   hasGroupResponses: false,
   groupResponses: [],
   fontSize: "13px",
-  userAnswers: []
+  userAnswers: [],
+  altAnswers: []
 };
 
 export default React.memo(CorrectAnswerBoxLayout);

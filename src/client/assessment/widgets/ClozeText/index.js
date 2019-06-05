@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep, isEqual } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
-import { Paper, Checkbox } from "@edulastic/common";
+import { Paper, Checkbox, WithResources } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -160,7 +160,11 @@ class ClozeText extends Component {
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
-      <div>
+      <WithResources
+        resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
         {view === "edit" && (
           <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
@@ -278,7 +282,7 @@ class ClozeText extends Component {
             )}
           </Wrapper>
         )}
-      </div>
+      </WithResources>
     );
   }
 }

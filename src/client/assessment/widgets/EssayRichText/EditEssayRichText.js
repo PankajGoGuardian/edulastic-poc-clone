@@ -102,8 +102,8 @@ EditEssayRichText.propTypes = {
 
 EditEssayRichText.defaultProps = {
   advancedAreOpen: false,
-  fillSections: () => { },
-  cleanSections: () => { }
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 const enhance = compose(

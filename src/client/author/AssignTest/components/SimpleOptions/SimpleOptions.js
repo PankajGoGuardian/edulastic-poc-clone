@@ -22,7 +22,6 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
 
-
 class SimpleOptions extends React.Component {
   static propTypes = {
     group: PropTypes.array.isRequired,

@@ -1052,7 +1052,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>"It\'s all clear" he</p><p class="response-btn"><span class="index">1</span><span class="text">Response</span></p><p><br/> Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
+          '<p>"It\'s all clear" he</p><textinput index={{0}} contentEditable="false" resprops={{resProps}}>Text Input</textinput><p><br/> Have you the </p><textinput index={{1}} contentEditable="false" resprops={{resProps}} >Text Input</textinput><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",

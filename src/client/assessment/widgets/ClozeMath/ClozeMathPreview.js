@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep } from "lodash";
-import { WithResources, Stimulus } from "@edulastic/common";
+import { WithResources, Stimulus, helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
 import AnswerBox from "./AnswerBox";
@@ -50,19 +50,8 @@ const ClozeMathPreview = ({
     saveAnswer(newAnswers);
   };
 
-  const getPreviewTemplate = tmpl => {
-    let temp = ` ${tmpl}`.slice(1);
-    temp = temp.replace(/<hr>/g, "<hr/>");
-    temp = temp.replace(/<br>/g, "<br/>");
-    temp = temp.replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
-    temp = temp.replace(/"{{/g, "{");
-    temp = temp.replace(/}}"/g, "}");
-
-    return temp;
-  };
-
   useEffect(() => {
-    setNewHtml(getPreviewTemplate(template));
+    setNewHtml(helpers.parseTemplate(template));
   }, [template]);
 
   return (
@@ -74,7 +63,7 @@ const ClozeMathPreview = ({
       ]}
       fallBack={<span />}
       onLoaded={() => {
-        setNewHtml(getPreviewTemplate(template));
+        setNewHtml(helpers.parseTemplate(template));
       }}
     >
       <QuestionTitleWrapper>

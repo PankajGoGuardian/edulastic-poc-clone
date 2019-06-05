@@ -15,6 +15,7 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
+import striptags from "striptags";
 import { response } from "../../../../../../../packages/constants/const/dimensions";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -118,33 +119,40 @@ const CheckboxTemplateBoxLayout = ({
                 >
                   <div className="text container" style={{ height: "max-content" }}>
                     {userSelections[dropTargetIndex] &&
-                      userSelections[dropTargetIndex].map((answer, user_select_index) => (
-                        <DragItem
-                          key={user_select_index}
-                          index={user_select_index}
-                          data={`${answer}_${dropTargetIndex}_fromResp`}
-                          style={{
-                            border: `${
-                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-                            }`,
-                            margin: 5,
-                            padding: 5,
-                            display: "inline-block",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                            width: "max-content",
-                            minWidth: response.minWidth,
-                            maxWidth: response.maxWidth,
-                            overflow: "hidden"
-                          }}
-                          item={answer}
-                          onDrop={onDropHandler}
-                        >
-                          <div>
-                            <MathSpan whiteSpace={"nowrap"} dangerouslySetInnerHTML={{ __html: answer }} />
-                          </div>
-                        </DragItem>
-                      ))}
+                      userSelections[dropTargetIndex].map((answer, user_select_index) => {
+                        const title = striptags(answer);
+                        return (
+                          <DragItem
+                            key={user_select_index}
+                            index={user_select_index}
+                            data={`${answer}_${dropTargetIndex}_fromResp`}
+                            style={{
+                              border: `${
+                                showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                              }`,
+                              margin: 5,
+                              padding: 5,
+                              display: "inline-block",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                              width: "max-content",
+                              minWidth: response.minWidth,
+                              maxWidth: response.maxWidth,
+                              overflow: "hidden"
+                            }}
+                            item={answer}
+                            onDrop={onDropHandler}
+                          >
+                            <div title={title}>
+                              <MathSpan
+                                dangerouslySetInnerHTML={{
+                                  __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                                }}
+                              />
+                            </div>
+                          </DragItem>
+                        );
+                      })}
                   </div>
                   <IconWrapper>
                     {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
@@ -187,27 +195,35 @@ const CheckboxTemplateBoxLayout = ({
                       {indexStr}
                     </div>
                     {userSelections[dropTargetIndex] &&
-                      userSelections[dropTargetIndex].map((answer, user_select_index) => (
-                        <div
-                          key={user_select_index}
-                          style={{
-                            border: `${
-                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-                            }`,
-                            margin: 5,
-                            padding: 5,
-                            display: "inline-block",
-                            whiteSpace: "nowrap",
-                            textOverflow: "ellipsis",
-                            width: "max-content",
-                            minWidth: response.minWidth,
-                            maxWidth: response.maxWidth,
-                            overflow: "hidden"
-                          }}
-                        >
-                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
-                        </div>
-                      ))}
+                      userSelections[dropTargetIndex].map((answer, user_select_index) => {
+                        const title = striptags(answer) || null;
+                        return (
+                          <div
+                            title={title}
+                            key={user_select_index}
+                            style={{
+                              border: `${
+                                showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                              }`,
+                              margin: 5,
+                              padding: 5,
+                              display: "inline-block",
+                              whiteSpace: "nowrap",
+                              textOverflow: "ellipsis",
+                              width: "max-content",
+                              minWidth: response.minWidth,
+                              maxWidth: response.maxWidth,
+                              overflow: "hidden"
+                            }}
+                          >
+                            <MathSpan
+                              dangerouslySetInnerHTML={{
+                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                              }}
+                            />
+                          </div>
+                        );
+                      })}
                     <IconWrapper>
                       {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
                         <RightIcon />

@@ -24,12 +24,13 @@ import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
 import { response } from "../../../../../packages/constants/const/dimensions";
 
+import striptags from "striptags";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
   constructor(props) {
     super(props);
-    console.log("display", props);
     const userAnswers = new Array(props.responseContainers.length).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -287,30 +288,38 @@ class Display extends Component {
                 )}
                 <div className="container">
                   {userAnswers[dropTargetIndex] &&
-                    userAnswers[dropTargetIndex].map((answer, item_index) => (
-                      <DragItem
-                        key={item_index}
-                        showDashedBorder={showDashedBorder}
-                        index={item_index}
-                        item={answer}
-                        data={`${answer}_${dropTargetIndex}_${item_index}`}
-                        style={{
-                          border: `${
-                            showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-                          }`,
-                          margin: 5,
-                          padding: 5,
-                          display: "inline-block",
-                          width: "max-content",
-                          whiteSpace: "nowrap",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis"
-                        }}
-                        onDrop={this.onDrop}
-                      >
-                        <MathSpan dangerouslySetInnerHTML={{ __html: answer || "" }} />
-                      </DragItem>
-                    ))}
+                    userAnswers[dropTargetIndex].map((answer, item_index) => {
+                      const title = striptags(answer) || null;
+                      return (
+                        <DragItem
+                          title={title}
+                          key={item_index}
+                          showDashedBorder={showDashedBorder}
+                          index={item_index}
+                          item={answer}
+                          data={`${answer}_${dropTargetIndex}_${item_index}`}
+                          style={{
+                            border: `${
+                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                            }`,
+                            margin: 5,
+                            padding: 5,
+                            display: "inline-block",
+                            width: "max-content",
+                            whiteSpace: "nowrap",
+                            overflow: "hidden",
+                            textOverflow: "ellipsis"
+                          }}
+                          onDrop={this.onDrop}
+                        >
+                          <MathSpan
+                            dangerouslySetInnerHTML={{
+                              __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                            }}
+                          />
+                        </DragItem>
+                      );
+                    })}
                 </div>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />

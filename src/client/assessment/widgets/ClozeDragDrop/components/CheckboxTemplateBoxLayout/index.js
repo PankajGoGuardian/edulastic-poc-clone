@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 import { MathSpan } from "@edulastic/common";
 import Draggable from "../Draggable";
@@ -6,6 +6,8 @@ import Droppable from "../Droppable";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
+
+import striptags from "striptags";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -20,25 +22,9 @@ const CheckboxTemplateBoxLayout = ({
   userSelections,
   stemNumeration,
   evaluation,
-  onDropHandler,
-  showIndex
+  onDropHandler
 }) => {
   let responseIndex = 0;
-
-  console.log("props passed to the component", {
-    showAnswer,
-    templateParts,
-    options,
-    hasGroupResponses,
-    responsecontainerindividuals,
-    responseBtnStyle,
-    fontSize,
-    userSelections,
-    stemNumeration,
-    evaluation,
-    onDropHandler,
-    showIndex
-  });
 
   const getLabel = dropTargetIndex => {
     let formulaLabel = "";
@@ -60,7 +46,13 @@ const CheckboxTemplateBoxLayout = ({
         }
       }
     }
-    return <MathSpan dangerouslySetInnerHTML={{ __html: formulaLabel }} />;
+    return (
+      <MathSpan
+        clas={"clipText"}
+        title={striptags(formulaLabel) || null}
+        dangerouslySetInnerHTML={{ __html: formulaLabel }}
+      />
+    );
   };
 
   return (
@@ -157,11 +149,7 @@ const CheckboxTemplateBoxLayout = ({
                       ${status}`}
                       style={btnStyle}
                     >
-                      {showIndex && (
-                        <Fragment>
-                          &nbsp;<span className="index">{responseIndex}</span>
-                        </Fragment>
-                      )}
+                      &nbsp;<span className="index">{responseIndex}</span>
                       <span className="text">{getLabel(dropTargetIndex)}</span>
                       &nbsp;
                       <IconWrapper>
@@ -180,11 +168,7 @@ const CheckboxTemplateBoxLayout = ({
                       ${status}`}
                       style={btnStyle}
                     >
-                      {showIndex && (
-                        <Fragment>
-                          &nbsp;<span className="index">{responseIndex}</span>
-                        </Fragment>
-                      )}
+                      &nbsp;<span className="index">{responseIndex}</span>
                       <span className="text">{getLabel(dropTargetIndex)}</span>
                       &nbsp;
                       <IconWrapper>
@@ -215,8 +199,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemNumeration: PropTypes.string,
   evaluation: PropTypes.array,
   showAnswer: PropTypes.bool,
-  onDropHandler: PropTypes.func,
-  showIndex: PropTypes.bool
+  onDropHandler: PropTypes.func
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {
@@ -230,7 +213,6 @@ CheckboxTemplateBoxLayout.defaultProps = {
   stemNumeration: "numerical",
   evaluation: [],
   showAnswer: false,
-  showIndex: true,
   onDropHandler: () => {}
 };
 

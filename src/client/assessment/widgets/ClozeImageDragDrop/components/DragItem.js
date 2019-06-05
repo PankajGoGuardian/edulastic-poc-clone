@@ -41,10 +41,11 @@ const specSource = {
   }
 };
 
-const DragItem = ({ connectDragSource, data, children, style }) =>
+const DragItem = ({ connectDragSource, data, children, style, title }) =>
   data &&
   connectDragSource(
     <div
+      title={!title ? null : title}
       style={{
         ...style
       }}

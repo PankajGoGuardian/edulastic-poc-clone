@@ -175,6 +175,7 @@ class ClozeDropDownDisplay extends Component {
               maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
               return (
                 <Select
+                  getPopupContainer={() => document.querySelector(".template_box")}
                   value={userAnswers[dropTargetIndex]}
                   style={{
                     ...btnStyle,

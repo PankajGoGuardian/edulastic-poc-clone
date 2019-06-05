@@ -13,7 +13,7 @@ import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
 import RequestSchoolModal from "./RequestSchoolModal";
 
-import { searchSchoolRequestAction, joinSchoolRequestAction } from "../../duck";
+import { searchSchoolRequestAction, joinSchoolRequestAction, updateUserWithSchoolLoadingSelector } from "../../duck";
 
 const { Option } = Select;
 
@@ -21,7 +21,15 @@ const schoolFilter = {
   ipZipCode: "10001"
 };
 
-const JoinSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo, joinSchool }) => {
+const JoinSchool = ({
+  isSearching,
+  searchSchool,
+  schools,
+  newSchool,
+  userInfo,
+  joinSchool,
+  updateUserWithSchoolLoading
+}) => {
   const { email, firstName } = userInfo;
   const [selected, setSchool] = useState("");
   const [showModal, setShowModal] = useState(false);
@@ -117,7 +125,9 @@ const JoinSchool = ({ isSearching, searchSchool, schools, newSchool, userInfo, j
                 {selected && (
                   <>
                     <TeacherCarousel />
-                    <ProceedBtn onClick={handleSubmit}>Proceed</ProceedBtn>
+                    <ProceedBtn onClick={handleSubmit} disabled={updateUserWithSchoolLoading}>
+                      Proceed
+                    </ProceedBtn>
                   </>
                 )}
               </SelectForm>
@@ -145,7 +155,8 @@ const enhance = compose(
     state => ({
       isSearching: get(state, "signup.isSearching", false),
       schools: get(state, "signup.schools", []),
-      newSchool: get(state, "signup.newSchool", {})
+      newSchool: get(state, "signup.newSchool", {}),
+      updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state)
     }),
     { searchSchool: searchSchoolRequestAction, joinSchool: joinSchoolRequestAction }
   )

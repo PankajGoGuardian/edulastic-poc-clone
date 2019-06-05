@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import selectsData from "../../../../author/TestPage/components/common/selectsData";
 // actions
 import { getDictCurriculumsAction } from "../../../../author/src/actions/dictionaries";
-import { saveSubjectGradeAction } from "../../duck";
+import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../duck";
 // selectors
 import { getCurriculumsListSelector } from "../../../../author/src/selectors/dictionaries";
 
@@ -83,9 +83,10 @@ class SubjectGrade extends React.Component {
 
   render() {
     const { subject } = this.state;
-    const { curriculums, form } = this.props;
+    const { curriculums, form, saveSubjectGradeloading } = this.props;
     const standardSets = filter(curriculums, el => el.subject === subject);
     const { getFieldDecorator } = form;
+
     return (
       <>
         <SubjectGradeBody type="flex" align="middle">
@@ -153,7 +154,7 @@ class SubjectGrade extends React.Component {
                     </Form.Item>
                   </FlexItems>
 
-                  <ProceedBtn type="primary" htmlType="submit">
+                  <ProceedBtn type="primary" htmlType="submit" disabled={saveSubjectGradeloading}>
                     Get Started
                   </ProceedBtn>
                 </SelectForm>
@@ -172,7 +173,8 @@ const enhance = compose(
   withNamespaces("choose_subject_grade"),
   connect(
     state => ({
-      curriculums: getCurriculumsListSelector(state)
+      curriculums: getCurriculumsListSelector(state),
+      saveSubjectGradeloading: saveSubjectGradeloadingSelector(state)
     }),
     {
       getCurriculums: getDictCurriculumsAction,

@@ -1,4 +1,4 @@
-import { createAction, createReducer } from "redux-starter-kit";
+import { createAction, createReducer, createSelector } from "redux-starter-kit";
 import { get } from "lodash";
 import { message } from "antd";
 import { takeLatest, call, put } from "redux-saga/effects";
@@ -28,6 +28,18 @@ const SAVE_SUBJECTGRADE_FAILED = "[signup] save with subject and grade failed";
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = "[signup] create and join schoolrequest";
 
+// Selectors
+
+export const saveSubjectGradeloadingSelector = createSelector(
+  ["signup.saveSubjectGradeloading"],
+  subState => subState
+);
+
+export const updateUserWithSchoolLoadingSelector = createSelector(
+  ["signup.updateUserWithSchoolLoading"],
+  subState => subState
+);
+
 // Actions
 export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST);
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS);
@@ -52,7 +64,9 @@ const initialState = {
   isSearching: false,
   schools: [],
   districts: [],
-  newSchool: {}
+  newSchool: {},
+  saveSubjectGradeloading: false,
+  updateUserWithSchoolLoading: false
 };
 
 const searchSchool = state => {
@@ -93,7 +107,19 @@ export default createReducer(initialState, {
   [SEARCH_DISTRICTS_REQUEST]: searchDistricts,
   [SEARCH_DISTRICTS_SUCCESS]: receivedDistricts,
   [SEARCH_DISTRICTS_FAILED]: failedDistricts,
-  [CREATE_SCHOOL_SUCCESS]: createSchoolSuccess
+  [CREATE_SCHOOL_SUCCESS]: createSchoolSuccess,
+  [SAVE_SUBJECTGRADE_REQUEST]: (state, { payload }) => {
+    state.saveSubjectGradeloading = true;
+  },
+  [SAVE_SUBJECTGRADE_FAILED]: (state, { payload }) => {
+    state.saveSubjectGradeloading = false;
+  },
+  [JOIN_SCHOOL_REQUEST]: (state, { payload }) => {
+    state.updateUserWithSchoolLoading = true;
+  },
+  [JOIN_SCHOOL_FAILED]: (state, { payload }) => {
+    state.updateUserWithSchoolLoading = false;
+  }
 });
 
 // Sagas
@@ -163,6 +189,10 @@ function* joinSchoolSaga({ payload = {} }) {
     const result = yield call(userApi.updateUser, payload);
     yield put(signupSuccessAction(result));
   } catch (err) {
+    yield put({
+      type: JOIN_SCHOOL_FAILED,
+      payload: {}
+    });
     yield call(message.error, JOIN_SCHOOL_FAILED);
   }
 }
@@ -174,6 +204,10 @@ function* saveSubjectGradeSaga({ payload }) {
     yield put(signupSuccessAction(result));
     yield put(push("/author/manageClass"));
   } catch (err) {
+    yield put({
+      type: SAVE_SUBJECTGRADE_FAILED,
+      payload: {}
+    });
     yield call(message.error, SAVE_SUBJECTGRADE_FAILED);
   }
 }

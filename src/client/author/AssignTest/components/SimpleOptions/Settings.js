@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { Col, Radio, Select, Row, Icon, Checkbox, Input } from "antd";
+import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
 import { test } from "@edulastic/constants";
 import {
   AlignRight,
@@ -12,14 +12,12 @@ import {
   StyledRowSelect,
   SettingsWrapper,
   Password,
-  StyledRowLabel,
   StyledSelect,
   StyledTable,
   StyledDiv,
   SpaceDiv,
   CheckBoxWrapper
 } from "./styled";
-import selectsData from "../../../TestPage/components/common/selectsData";
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
@@ -114,49 +112,7 @@ const Settings = ({
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
-        {!isAdvanced && (
-          <>
-            <StyledRowLabel gutter={16}>
-              <Col span={12}>Open Policy</Col>
-              <Col span={12}>Close Policy</Col>
-            </StyledRowLabel>
-            <Row gutter={32}>
-              <Col span={12}>
-                <StyledSelect
-                  data-cy="selectOpenPolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignmentSettings.openPolicy}
-                  onChange={changeField("openPolicy")}
-                >
-                  {selectsData.openPolicy.map(({ value, text }, index) => (
-                    <Select.Option key={index} value={value} data-cy="open">
-                      {text}
-                    </Select.Option>
-                  ))}
-                </StyledSelect>
-              </Col>
-              <Col span={12}>
-                <StyledSelect
-                  data-cy="selectClosePolicy"
-                  placeholder="Please select"
-                  cache="false"
-                  value={assignmentSettings.closePolicy}
-                  onChange={changeField("closePolicy")}
-                >
-                  {selectsData.closePolicy.map(({ value, text }, index) => (
-                    <Select.Option data-cy="class" key={index} value={value}>
-                      {text}
-                    </Select.Option>
-                  ))}
-                </StyledSelect>
-              </Col>
-            </Row>
-          </>
-        )}
-
         {/* Mark as done */}
-        {!isAdvanced && <SpaceDiv />}
         <StyledRowSettings gutter={16}>
           <Col span={8}>Mark as Done</Col>
           <Col span={16}>

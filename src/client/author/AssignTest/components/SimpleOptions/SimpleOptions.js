@@ -1,15 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Col, Icon, message } from "antd";
+import { connect } from "react-redux";
+import { Col, Icon, message, Row, Select } from "antd";
 import { curry, keyBy, groupBy, get } from "lodash";
 import produce from "immer";
 import ClassSelector from "./ClassSelector";
 import StudentSelector from "./StudentSelector";
 import DateSelector from "./DateSelector";
 import Settings from "./Settings";
-import { OptionConationer, InitOptions, StyledRowButton, SettingsBtn } from "./styled";
+import {
+  OptionConationer,
+  InitOptions,
+  StyledRowButton,
+  SettingsBtn,
+  StyledRowSettings,
+  StyledRowLabel,
+  StyledSelect
+} from "./styled";
 import { getListOfStudents } from "../../utils";
+import selectsData from "../../../TestPage/components/common/selectsData";
+import { getUserRole } from "../../../src/selectors/user";
 import * as moment from "moment";
+
 
 class SimpleOptions extends React.Component {
   static propTypes = {
@@ -100,8 +112,14 @@ class SimpleOptions extends React.Component {
 
   render() {
     const { showSettings, classIds, studentList } = this.state;
-    const { group, fetchStudents, students, testSettings, assignment, updateOptions } = this.props;
+    const { group, fetchStudents, students, testSettings, assignment, updateOptions, userRole } = this.props;
     const changeField = curry(this.onChange);
+    let openPolicy = selectsData.openPolicy;
+    let closePolicy = selectsData.closePolicy;
+    if (userRole === "district-admin" || userRole === "school-admin") {
+      openPolicy = selectsData.openPolicyForAdmin;
+      closePolicy = selectsData.closePolicyForAdmin;
+    }
     const studentOfSelectedClass = getListOfStudents(students, classIds);
     return (
       <OptionConationer>
@@ -121,6 +139,44 @@ class SimpleOptions extends React.Component {
           />
 
           <DateSelector startDate={assignment.startDate} endDate={assignment.endDate} changeField={changeField} />
+
+          <StyledRowLabel gutter={16}>
+            <Col span={12}>Open Policy</Col>
+            <Col span={12}>Close Policy</Col>
+          </StyledRowLabel>
+
+          <Row gutter={32}>
+            <Col span={12}>
+              <StyledSelect
+                data-cy="selectOpenPolicy"
+                placeholder="Please select"
+                cache="false"
+                value={assignment.openPolicy}
+                onChange={changeField("openPolicy")}
+              >
+                {openPolicy.map(({ value, text }, index) => (
+                  <Select.Option key={index} value={value} data-cy="open">
+                    {text}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+            </Col>
+            <Col span={12}>
+              <StyledSelect
+                data-cy="selectClosePolicy"
+                placeholder="Please select"
+                cache="false"
+                value={assignment.closePolicy}
+                onChange={changeField("closePolicy")}
+              >
+                {closePolicy.map(({ value, text }, index) => (
+                  <Select.Option data-cy="class" key={index} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+              </StyledSelect>
+            </Col>
+          </Row>
 
           <StyledRowButton gutter={16}>
             <Col>
@@ -145,4 +201,6 @@ class SimpleOptions extends React.Component {
   }
 }
 
-export default SimpleOptions;
+export default connect(state => ({
+  userRole: getUserRole(state)
+}))(SimpleOptions);

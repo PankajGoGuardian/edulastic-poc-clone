@@ -52,11 +52,21 @@ const allAuthorDifficulty = [
 
 const openPolicy = [
   { value: "Automatically on Start Date", text: "Automatically on Start Date" },
-  { value: "Open Manually by Admin", text: "Open Manually by Admin" },
-  { value: "Open Manually by Teacher", text: "Open Manually by Teacher" }
+  { value: "Open Manually in Class", text: "Open Manually in Class" }
+];
+
+const openPolicyForAdmin = [
+  { value: "Automatically on Start Date", text: "Automatically on Start Date" },
+  { value: "Open Manually by Teacher", text: "Open Manually by Teacher" },
+  { value: "Open Manually by Admin", text: "Open Manually by Admin" }
 ];
 
 const closePolicy = [
+  { value: "Automatically on Due Date", text: "Automatically on Due Date" },
+  { value: "Close Manually in Class", text: "Close Manually in Class" }
+];
+
+const closePolicyForAdmin = [
   { value: "Automatically on Due Date", text: "Automatically on Due Date" },
   { value: "Close Manually by Admin", text: "Close Manually by Admin" }
 ];
@@ -77,6 +87,8 @@ export default {
   allDepthOfKnowledge,
   allAuthorDifficulty,
   openPolicy,
+  openPolicyForAdmin,
   closePolicy,
+  closePolicyForAdmin,
   testTypes
 };

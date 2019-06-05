@@ -23,6 +23,7 @@ const TableRow = ({
   validArray,
   dragHandle,
   isTransparent,
+  isBackgroundImageTransparent,
   width,
   height,
   theme
@@ -34,7 +35,7 @@ const TableRow = ({
       width,
       minHeight: height,
       borderRadius: 4,
-      backgroundColor: isTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
+      backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
   };
 
@@ -108,6 +109,7 @@ TableRow.propTypes = {
   arrayOfRows: PropTypes.object.isRequired,
   rowTitles: PropTypes.array.isRequired,
   isTransparent: PropTypes.any.isRequired,
+  isBackgroundImageTransparent: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
   answers: PropTypes.array.isRequired,
   preview: PropTypes.bool.isRequired,

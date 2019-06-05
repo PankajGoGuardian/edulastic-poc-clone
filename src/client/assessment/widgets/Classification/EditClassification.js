@@ -68,6 +68,7 @@ const EditClassification = ({
     firstMount,
     shuffle_options,
     transparent_possible_responses,
+    transparent_background_image = true,
     duplicate_responses,
     imageOptions,
     ui_style: { show_drag_handle }
@@ -485,6 +486,12 @@ const EditClassification = ({
               onChange={() => handleItemChangeChange("transparent_possible_responses", !transparent_possible_responses)}
               label={t("component.cloze.imageDragDrop.transparentpossibleresponses")}
               checked={!!transparent_possible_responses}
+            />
+            <Checkbox
+              className="additional-options"
+              onChange={() => handleItemChangeChange("transparent_background_image", !transparent_background_image)}
+              label={t("component.cloze.imageDragDrop.transparentbackgroundimage")}
+              checked={!!transparent_background_image}
             />
           </div>
         </Widget>

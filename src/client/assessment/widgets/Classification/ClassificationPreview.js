@@ -75,6 +75,7 @@ const ClassificationPreview = ({
     imageOptions,
     shuffle_options,
     transparent_possible_responses,
+    transparent_background_image = true,
     duplicate_responses,
     ui_style: {
       column_count: colCount,
@@ -267,6 +268,7 @@ const ClassificationPreview = ({
                   arrayOfRows.has(ind) && (
                     <TableRow
                       key={ind}
+                      isBackgroundImageTransparent={transparent_background_image}
                       isTransparent={transparent_possible_responses}
                       startIndex={ind}
                       width={get(item, "ui_style.row_titles_width", "100%")}

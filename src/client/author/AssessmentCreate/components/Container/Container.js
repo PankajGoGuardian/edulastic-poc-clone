@@ -1,5 +1,6 @@
 import React from "react";
 import { withRouter } from "react-router";
+import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -28,10 +29,25 @@ const breadcrumbs = [
   },
   {
     title: "Author Test",
-    to: ""
+    to: "/author/assignments/test/select"
   }
 ];
 
+const testBreadcrumbs = [
+  {
+    title: "TEST LIBRARY",
+    to: "/author/tests"
+  },
+  {
+    title: "Author Test",
+    to: "/author/tests/select"
+  }
+];
+
+const snapquizBreadcrumb = {
+  title: "Snapquiz",
+  to: ""
+};
 const creationMethods = {
   SCRATCH: "scratch",
   LIBRARY: "library",
@@ -82,9 +98,16 @@ class Container extends React.Component {
   };
 
   render() {
-    const { method } = this.state;
-    const { creating, assessmentLoading } = this.props;
-
+    let { method } = this.state;
+    let newBreadcrumb = [...breadcrumbs];
+    const { creating, location, assessmentLoading } = this.props;
+    if (location && location.pathname && location.pathname.includes("tests")) {
+      newBreadcrumb = [...testBreadcrumbs];
+    }
+    if (location && location.pathname && location.pathname.includes("snapquiz")) {
+      method = creationMethods.PDF;
+      newBreadcrumb.push(snapquizBreadcrumb);
+    }
     if (assessmentLoading) {
       return <Spin />;
     }
@@ -92,11 +115,16 @@ class Container extends React.Component {
     return (
       <>
         <HeaderWrapper>
-          <Title>Author Test</Title>
+          <Title>New Test</Title>
         </HeaderWrapper>
-        <Breadcrumb data={breadcrumbs} style={breadcrumbStyle} />
+        <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
         {creating && <Spin />}
-        {!method && <CreationOptions onUploadPDF={this.handleSetMethod(creationMethods.PDF)} />}
+        {!method && (
+          <Link to={"/author/tests/snapquiz"}>
+            {" "}
+            <CreationOptions />{" "}
+          </Link>
+        )}
         {method === creationMethods.PDF && (
           <DropArea
             loading={creating}

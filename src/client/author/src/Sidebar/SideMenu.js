@@ -150,7 +150,9 @@ class SideMenu extends Component {
     const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
-    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem => `/${menuItem.path}` === history.location.pathname);
+    const defaultSelectedMenu = this.MenuItems.findIndex(menuItem =>
+      history.location.pathname.includes(`/${menuItem.path}`)
+    );
 
     const footerDropdownMenu = (
       <FooterDropDown isVisible={isVisible} isCollapsed={isCollapsed}>

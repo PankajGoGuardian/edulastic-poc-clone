@@ -11,9 +11,10 @@ import {
   IconShare,
   IconSource,
   IconDiskette,
-  IconDescription
+  IconDescription,
+  IconRedo
 } from "@edulastic/icons";
-import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus } from "./styled";
+import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus, TitleWrapper } from "./styled";
 
 import TestPageNav from "../TestPageNav/TestPageNav";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -85,36 +86,53 @@ const TestPageHeader = ({
 }) => {
   return windowWidth > 993 ? (
     <HeaderWrapper>
-      <Title>
-        {title}{" "}
+      <TitleWrapper>
+        <Title title={title}>{title} </Title>
         <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
-      </Title>
+      </TitleWrapper>
 
       <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />
 
-      <FlexContainer justifyContent="space-between">
-        <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
-          <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
-        </EduButton>
+      <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
+        {showShareButton && false && (
+          <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
+            <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
+          </EduButton>
+        )}
         {showShareButton && (
-          <EduButton data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
+          <EduButton title={"Share"} data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
             <IconShare color="#1774F0" />
           </EduButton>
         )}
-        <EduButton data-cy="save" style={{ width: 42, padding: 0 }} disabled={creating} size="large" onClick={onSave}>
-          <IconDiskette color="#1774F0" />
-        </EduButton>
-        {!isPlaylist && (
+        {showShareButton && (
+          <EduButton
+            title={"Save as Draft"}
+            data-cy="save"
+            style={{ width: 42, padding: 0 }}
+            disabled={creating}
+            size="large"
+            onClick={onSave}
+          >
+            <IconDiskette color="#1774F0" />
+          </EduButton>
+        )}
+        {showShareButton && showPublishButton && testStatus === "draft" && (
+          <EduButton
+            title={"Publish Test"}
+            data-cy="publish"
+            style={{ width: 42, padding: 0 }}
+            size="large"
+            onClick={onPublish}
+          >
+            <IconRedo color="#1774F0" />
+          </EduButton>
+        )}
+        {showShareButton && !isPlaylist && (
           <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
             Assign
           </EduButton>
         )}
-        {showPublishButton && testStatus === "draft" && (
-          <EduButton data-cy="publish" style={{ width: 120 }} size="large" onClick={onPublish}>
-            Publish
-          </EduButton>
-        )}
-        {!showPublishButton && (
+        {showShareButton && !showPublishButton && (
           <EduButton data-cy="edit" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
             Edit
           </EduButton>
@@ -168,6 +186,7 @@ TestPageHeader.propTypes = {
   onEnableEdit: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  testId: PropTypes.string,
   onAssign: PropTypes.func.isRequired
 };
 

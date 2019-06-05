@@ -45,6 +45,7 @@ export const UPDATE_ENTITY_DATA = "[test] update entity data";
 export const RECEIVE_SHARED_USERS_LIST = "[test] receive shared users list";
 export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
 export const DELETE_SHARED_USER = "[test] delete share user from list";
+export const SET_TEST_DATA_AND_SAVE = "[test] set test data and update test";
 // actions
 
 export const receiveTestByIdAction = id => ({
@@ -96,6 +97,11 @@ export const setTestDataAction = data => ({
   type: SET_TEST_DATA,
   payload: { data }
 });
+
+export const setTestDataAndUpdateAction = data => ({
+  type: SET_TEST_DATA_AND_SAVE,
+  payload: { data }
+});
 export const clearTestDataAction = () => ({
   type: CLEAR_TEST_DATA
 });
@@ -124,7 +130,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
 export const initialTestState = {
-  title: "Author Test",
+  title: "Untitled Test",
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
@@ -444,6 +450,24 @@ function* deleteSharedUserSaga({ payload }) {
   }
 }
 
+function* setTestDataAndUpdateSaga({ payload }) {
+  try {
+    yield put(setTestDataAction(payload.data));
+    const entity = yield call(testsApi.create, payload.data);
+    yield put({
+      type: UPDATE_ENTITY_DATA,
+      payload: {
+        entity
+      }
+    });
+    yield put(replace(`/author/tests/${entity._id}`));
+    yield call(message.success, `Your work is automatically saved as a draft assessment named ${entity.title}`);
+  } catch (e) {
+    const errorMessage = "Auto Save of Test is failing";
+    yield call(message.error, errorMessage);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -453,6 +477,7 @@ export function* watcherSaga() {
     yield takeEvery(TEST_SHARE, shareTestSaga),
     yield takeEvery(TEST_PUBLISH, publishTestSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
+    yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
     yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
   ]);
 }

@@ -19,7 +19,6 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: space-between;
   background: ${darkBlueSecondary};
   align-items: center;
 `;
@@ -29,13 +28,21 @@ export const Title = styled.div`
   margin: 0;
   word-break: break-all;
   font-weight: bold;
+  max-width: 300px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   font-style: normal;
   font-stretch: normal;
   line-height: 1.36;
   letter-spacing: normal;
   color: ${white};
-  display: flex;
   align-items: center;
+`;
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  flex-basis: 450px;
 `;
 
 export const ShareIcon = styled(IconShare)`

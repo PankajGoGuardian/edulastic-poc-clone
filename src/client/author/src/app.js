@@ -64,6 +64,10 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
+              <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
+              <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
+              <Route exact path={`${match.url}/assignments/test/select`} component={AssessmentCreate} />
+              <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
               <Route
                 exact
                 path={`${match.url}/assignments/:districtId/:testId`}
@@ -75,8 +79,6 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 component={Regrade}
               />
               <Route exact path={`${match.url}/assignments/:testId`} component={props => <AssignTest {...props} />} />
-              <Route exact path={`${match.url}/assessments/create`} component={AssessmentCreate} />
-              <Route exact path={`${match.url}/assessments/createAssignment`} component={AssignmentCreate} />
               <Route exact path={`${match.url}/assessments/:assessmentId`} component={AssessmentPage} />
               <Route exact path={`${match.url}/classboard/:assignmentId/:classId`} component={ClassBoard} />
               <Route

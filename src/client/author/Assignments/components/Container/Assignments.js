@@ -105,7 +105,7 @@ class Assignments extends Component {
 
   handleCreate = () => {
     const { history } = this.props;
-    history.push("/author/assessments/create");
+    history.push("/author/assignments/test/select");
   };
 
   onOpenReleaseScoreSettings = (testId, assignmentId) => {

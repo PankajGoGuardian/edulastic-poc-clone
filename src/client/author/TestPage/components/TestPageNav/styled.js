@@ -8,6 +8,7 @@ export const Container = styled.div`
   overflow-y: hidden;
   overflow-x: scroll;
   justify-content: center;
+  flex-basis:600px;
 
   @media screen and (min-width: ${desktopWidth}) {
     height: 60px

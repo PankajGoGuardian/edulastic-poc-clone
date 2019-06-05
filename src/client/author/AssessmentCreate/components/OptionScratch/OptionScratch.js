@@ -22,7 +22,7 @@ const OptionScratch = () => (
     <TextWrapper>{descriptionBottom}</TextWrapper>
     <Link to="/author/tests/create">
       <ButtonComponent type="primary" block>
-        CREATE ASSIGNMENT
+        CREATE TEST
       </ButtonComponent>
     </Link>
   </CardComponent>

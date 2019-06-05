@@ -57,7 +57,7 @@ const ListHeader = ({
           </CreateButton>
         ))}
       {createAssignment && (
-        <Link to={"/author/assessments/createAssignment"}>
+        <Link to={"/author/assignments/select"}>
           <TestButton
             color="secondary"
             variant="test"

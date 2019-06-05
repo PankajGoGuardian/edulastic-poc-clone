@@ -45,7 +45,7 @@ class Container extends Component {
     return (
       <div>
         <HeaderWrapper>
-          <Title>New Assignments</Title>
+          <Title>New Assignment</Title>
         </HeaderWrapper>
         <ContainerWrapper>
           <SecondHeader>
@@ -81,7 +81,7 @@ class Container extends Component {
               </CardComponent>
             </FlexWrapper>
             <FlexWrapper>
-              <Link to="/author/tests/create">
+              <Link to="/author/assignments/test/select">
                 <LinkWrapper> Or Author a Test >></LinkWrapper>
               </Link>
             </FlexWrapper>

@@ -12,7 +12,7 @@ import { cloneDeep, uniq as _uniq } from "lodash";
 
 import Tags from "../../../../src/components/common/Tags";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
-import { setTestDataAction, getTestSelector } from "../../../ducks";
+import { setTestDataAction, getTestSelector, setTestDataAndUpdateAction } from "../../../ducks";
 
 import {
   setTestItemsAction,
@@ -44,6 +44,7 @@ class MetaInfoCell extends Component {
     const {
       setSelectedTests,
       setTestItems,
+      setDataAndSave,
       getItemsSubjectAndGrade,
       selectedRows,
       setTestData,
@@ -95,6 +96,9 @@ class MetaInfoCell extends Component {
       subjects: _uniq([...subjects, ...questionSubjects]),
       grades: _uniq([...grades, ...questionGrades])
     });
+    if (!test._id) {
+      setDataAndSave(newTest);
+    }
     setTestData(newTest);
   };
 
@@ -261,6 +265,7 @@ const enhance = compose(
     {
       setTestItems: setTestItemsAction,
       setTestData: setTestDataAction,
+      setDataAndSave: setTestDataAndUpdateAction,
       getItemsSubjectAndGrade: getItemsSubjectAndGradeAction
     }
   )

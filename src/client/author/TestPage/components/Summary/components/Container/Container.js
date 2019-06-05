@@ -65,7 +65,7 @@ const Summary = ({
     <Container>
       <SecondHeader>
         <Breadcrumb data={isPlaylist ? playlistBreadcrumbData : breadcrumbData} style={{ position: "unset" }} />
-        {!isPlaylist && (
+        {!isPlaylist && false && (
           <Button>
             <ButtonLink
               onClick={onShowSource}

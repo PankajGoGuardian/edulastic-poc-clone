@@ -280,7 +280,7 @@ class TestList extends Component {
   handleCreate = () => {
     const { history, clearSelectedItems, clearTestData, mode } = this.props;
     if (mode !== "embedded") {
-      history.push("/author/tests/create");
+      history.push("/author/tests/select");
     }
     clearTestData();
     clearSelectedItems();

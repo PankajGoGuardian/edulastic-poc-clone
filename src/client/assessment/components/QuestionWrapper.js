@@ -257,8 +257,8 @@ class QuestionWrapper extends Component {
     return (
       <WithResources
         resources={[
-          "https://cdneduv2.snapwiz.net/froala_editor.pkgd.min.css",
-          "https://cdneduv2.snapwiz.net/froala_editor.min.css"
+          "https://cdneduv2.snapwiz.net/JS/froala/v0/froala_editor.pkgd.min.css",
+          "https://cdneduv2.snapwiz.net/JS/froala/v0/froala_editor.min.css"
         ]}
         fallBack={<span />}
       >

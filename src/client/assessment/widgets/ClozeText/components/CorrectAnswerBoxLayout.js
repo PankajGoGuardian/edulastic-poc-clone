@@ -13,18 +13,6 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
       results[userAnswer.group].push(userAnswer.data);
     });
   } else {
-    if (altAnswers && altAnswers.length > 0) {
-      userAnswers = userAnswers.map((ans, index) => {
-        const final = [ans];
-        for (let altAnswer of altAnswers) {
-          const { value } = altAnswer;
-          if (value[index] && value[index] !== "") {
-            final.push(value[index]);
-          }
-        }
-        return final;
-      });
-    }
     results = userAnswers;
   }
   return (

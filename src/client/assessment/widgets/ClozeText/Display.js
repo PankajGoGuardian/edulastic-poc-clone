@@ -7,6 +7,7 @@ import { InstructorStimulus, WithMathFormula, PreWrapper } from "@edulastic/comm
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
+import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
 import ClozeTextInput from "../../components/ClozeTextInput";
 
 import { response } from "../../../../../packages/constants/const/dimensions";
@@ -249,12 +250,16 @@ class ClozeTextDisplay extends Component {
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
-        altAnswers={validation.hasOwnProperty("alt_responses") && validation.alt_responses}
-      />
+      <React.Fragment>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={validation.valid_response && validation.valid_response.value}
+        />
+        {validation.alt_responses && (
+          <AlternateAnswerBoxLayout altAnswers={validation.alt_responses} fontSize={fontSize} />
+        )}
+      </React.Fragment>
     ) : (
       <div />
     );

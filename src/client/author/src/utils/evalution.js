@@ -26,11 +26,10 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
         });
 
         results[id] = evaluation;
-        console.log("evaluation ", evaluation, "score", score, "id", id);
         totalScore += score;
         let correct = false;
         if (isArray(evaluation)) {
-          correct = evaluation.every(x => x);
+          correct = evaluation.length && evaluation.every(x => x);
         }
         if (correct) {
           correctNum++;
@@ -43,8 +42,6 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
       results[id] = [];
     }
   }
-
-  console.log("evaluation", { answerIds, itemLevelScore, itemLevelScoring, correctNum, answers, validations });
 
   if (itemLevelScoring) {
     return {

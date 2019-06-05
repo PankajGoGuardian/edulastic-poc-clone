@@ -3,12 +3,10 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 
-import { MoveLink, FlexContainer } from "@edulastic/common";
-import { greenDark, white, grey } from "@edulastic/colors";
+import { MoveLink } from "@edulastic/common";
 
-import Tags from "../../../../src/components/common/Tags";
+import ItemTypes from "../../../../ItemList/components/Item/ItemTypes";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
-
 class MainInfoCell extends React.Component {
   constructor(props) {
     super(props);
@@ -29,24 +27,11 @@ class MainInfoCell extends React.Component {
   render() {
     const { data, testId } = this.props;
     const { isShowPreviewModal } = this.state;
-
     return (
       <div>
-        <MoveLink onClick={() => this.previewItem()}>{data.title}</MoveLink>
-        <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+        <MoveLink onClick={() => this.previewItem()}>{data.stimulus}</MoveLink>
         <TypeContainer>
-          {data.standards && !!data.standards.length && (
-            <FlexContainer>
-              <Tags
-                tags={data.standards}
-                labelStyle={{
-                  color: greenDark,
-                  background: "#d1f9eb",
-                  border: "none"
-                }}
-              />
-            </FlexContainer>
-          )}
+          <ItemTypes item={data.item} />
         </TypeContainer>
         <PreviewModal
           isVisible={isShowPreviewModal}
@@ -66,15 +51,9 @@ MainInfoCell.propTypes = {
 
 export default withRouter(MainInfoCell);
 
-const STIMULUS = styled.div`
-  font-size: 13px;
-  color: #444444;
-  margin-top: 3px;
-`;
-
 const TypeContainer = styled.div`
   margin-top: 31px;
-
+  width: 30%;
   .ant-tag {
     background: rgba(0, 176, 255, 0.2);
     color: rgb(0, 131, 190);

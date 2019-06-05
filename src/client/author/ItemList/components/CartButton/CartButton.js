@@ -5,21 +5,24 @@ import { PropTypes } from "prop-types";
 import { getSelectedItemSelector } from "../../../TestPage/components/AddItems/ducks";
 import { Container, CartButtonWrapper, ItemsAmount } from "./styled";
 
-const CartButton = ({ amountOfSelectedItems, onClick }) => (
-  <Container onClick={onClick} disabled={!amountOfSelectedItems}>
-    <CartButtonWrapper>Author Test</CartButtonWrapper>
-    <ItemsAmount>{amountOfSelectedItems}</ItemsAmount>
-  </Container>
-);
+const CartButton = ({ SelectedItems, onClick }) => {
+  const numberOfSelectedItems = SelectedItems && SelectedItems.data && SelectedItems.data.length;
+  return (
+    <Container onClick={onClick} disabled={!numberOfSelectedItems}>
+      <CartButtonWrapper>Author Test</CartButtonWrapper>
+      <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
+    </Container>
+  );
+};
 
 CartButton.propTypes = {
-  amountOfSelectedItems: PropTypes.number.isRequired,
+  SelectedItems: PropTypes.number.isRequired,
   onClick: PropTypes.func.isRequired
 };
 
 export default connect(
   state => ({
-    amountOfSelectedItems: getSelectedItemSelector(state).data.length
+    SelectedItems: getSelectedItemSelector(state)
   }),
   null
 )(CartButton);

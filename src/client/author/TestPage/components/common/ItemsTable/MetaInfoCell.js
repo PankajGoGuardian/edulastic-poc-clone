@@ -6,11 +6,11 @@ import { Button, Tag, message } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, MoveLink } from "@edulastic/common";
 import { IconShare, IconHeart, IconUser, IconHash } from "@edulastic/icons";
-import { greenDark, grey, white } from "@edulastic/colors";
+import { greenDark } from "@edulastic/colors";
 import styled from "styled-components";
 import { cloneDeep, uniq as _uniq } from "lodash";
 
-import Tags from "../../../../src/components/common/Tags";
+import Standards from "../../../../ItemList/components/Item/Standards";
 import PreviewModal from "../../../../src/components/common/PreviewModal";
 import { setTestDataAction, getTestSelector, setTestDataAndUpdateAction } from "../../../ducks";
 
@@ -119,7 +119,7 @@ class MetaInfoCell extends Component {
   };
 
   mobileRender = () => {
-    const { data } = this.props;
+    const { data, search } = this.props;
     return (
       <div style={{ padding: "5px 10px" }}>
         <div style={{ marginBottom: 15 }}>
@@ -127,30 +127,7 @@ class MetaInfoCell extends Component {
           <STIMULUS dangerouslySetInnerHTML={{ __html: data.stimulus }} />
         </div>
         <TypeContainer>
-          {data.standards && !!data.standards.length && (
-            <FlexContainer>
-              <Tags
-                tags={data.standards}
-                labelStyle={{
-                  color: greenDark,
-                  background: white,
-                  border: `1px solid ${grey}`
-                }}
-              />
-            </FlexContainer>
-          )}
-          {data.types && !!data.types.length && (
-            <FlexContainer flexDirection="column" alignItems="self-start">
-              <CategoryTitle style={{ marginBottom: 5 }}>Type: </CategoryTitle>
-              <FlexContainer style={{ width: "100%", flexWrap: "wrap" }}>
-                {data.types.map(type => (
-                  <Tag color="cyan" key={type} style={{ marginTop: 7 }}>
-                    {type}
-                  </Tag>
-                ))}
-              </FlexContainer>
-            </FlexContainer>
-          )}
+          <Standards item={data.item} search={search} />
         </TypeContainer>
         <FlexContainer style={{ flexWrap: "wrap" }} justifyContent="space-between">
           <CategoryDiv>
@@ -187,7 +164,7 @@ class MetaInfoCell extends Component {
 
   render() {
     const { isShowPreviewModal = false } = this.state;
-    const { data, windowWidth } = this.props;
+    const { data, windowWidth, search } = this.props;
 
     return (
       <Container>
@@ -211,6 +188,9 @@ class MetaInfoCell extends Component {
                 </div>
               )}
               <FlexContainer>
+                <MetaWrapper>
+                  <Standards item={data.item} search={search} />
+                </MetaWrapper>
                 <MetaWrapper>
                   <IconUser color="#bbbfc4" width={11} height={14} />
                   <FirstText>{data.by}</FirstText>

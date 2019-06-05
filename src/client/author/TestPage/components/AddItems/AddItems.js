@@ -260,6 +260,7 @@ class AddItems extends PureComponent {
                     selectedTests={selectedTestItems}
                     onAddItems={onAddItems}
                     testId={this.props.match.params.id}
+                    search={search}
                   />
                 )}
                 {!loading && this.renderPagination()}

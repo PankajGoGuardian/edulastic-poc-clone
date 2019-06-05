@@ -142,7 +142,8 @@ class Display extends Component {
       item,
       maxHeight,
       maxWidth,
-      imageOptions
+      imageOptions,
+      showBorder
     } = this.props;
 
     const questionId = item && item.id;
@@ -294,7 +295,9 @@ class Display extends Component {
                         item={answer}
                         data={`${answer}_${dropTargetIndex}_${item_index}`}
                         style={{
-                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
+                          border: `${
+                            showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                          }`,
                           margin: 5,
                           padding: 5,
                           display: "inline-block",
@@ -336,10 +339,10 @@ class Display extends Component {
         onDropHandler={this.onDrop}
         maxHeight={maxHeight}
         maxWidth={maxWidth}
+        showBorder={showBorder}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    console.log("image width passed to display", imageWidth);
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}

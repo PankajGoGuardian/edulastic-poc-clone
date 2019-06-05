@@ -112,6 +112,7 @@ class CorrectAnswer extends Component {
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
           imageOptions={imageOptions}
+          showBorder={false}
         />
       </div>
     );

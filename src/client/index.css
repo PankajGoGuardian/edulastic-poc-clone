@@ -1086,6 +1086,8 @@ input[type="checkbox"] {
   height: 100%;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
+  display: flex;
+  min-height: 35px;
 }
 
 .imagelabeldragdrop-droppable.noAnswer {
@@ -1100,7 +1102,8 @@ input[type="checkbox"] {
 }
 
 .imagelabeldragdrop-droppable img,
-.responses_box img {
+.responses_box img,
+.main img {
   max-width: 151.5px;
   max-height: 100px;
   width: auto !important;

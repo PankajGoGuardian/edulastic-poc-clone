@@ -34,161 +34,118 @@ const CheckboxTemplateBoxLayout = ({
   onDropHandler,
   theme,
   maxHeight,
-  maxWidth
-}) => (
-  <div
-    className="imagedragdrop_template_box"
-    style={{
-      fontSize,
-      padding: 20,
-      width: !maxWidth ? imageWidth || "100%" : maxWidth,
-      height: !maxHeight ? null : maxHeight,
-      margin: "auto",
-      maxHeight: !maxHeight ? null : maxHeight,
-      maxWidth: !maxWidth ? null : maxWidth
-    }}
-  >
+  maxWidth,
+  showBorder
+}) => {
+  return (
     <div
+      className="imagedragdrop_template_box"
       style={{
-        position: "relative",
-        top: 0,
-        left: 0,
-        width: imageWidth,
+        fontSize,
+        padding: 20,
+        width: !maxWidth ? imageWidth || "100%" : maxWidth,
+        height: !maxHeight ? null : maxHeight,
         margin: "auto",
-        minWidth: 600,
-        maxWidth: "100%"
+        maxHeight: !maxHeight ? null : maxHeight,
+        maxWidth: !maxWidth ? null : maxWidth
       }}
     >
-      {image}
-      {responseContainers.map((responseContainer, index) => {
-        const dropTargetIndex = index;
-        const btnStyle = {
-          widthpx: responseContainer.width,
-          width: responseContainer.width,
-          top: responseContainer.top,
-          left: responseContainer.left,
-          height: responseContainer.height,
-          position: "absolute",
-          borderRadius: 5
-        };
-        if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-          const { widthpx } = responsecontainerindividuals[dropTargetIndex];
-          btnStyle.width = widthpx;
-          btnStyle.widthpx = widthpx;
-        }
-        if (btnStyle && btnStyle.width === 0) {
-          btnStyle.width = responseBtnStyle.widthpx;
-        } else {
-          btnStyle.width = btnStyle.widthpx;
-        }
-        let indexStr = "";
-        switch (stemnumeration) {
-          case "lowercase": {
-            indexStr = ALPHABET[dropTargetIndex];
-            break;
+      <div
+        style={{
+          position: "relative",
+          top: 0,
+          left: 0,
+          width: imageWidth,
+          margin: "auto",
+          minWidth: 600,
+          maxWidth: "100%"
+        }}
+      >
+        {image}
+        {responseContainers.map((responseContainer, index) => {
+          const dropTargetIndex = index;
+          const btnStyle = {
+            widthpx: responseContainer.width,
+            width: responseContainer.width,
+            top: responseContainer.top,
+            left: responseContainer.left,
+            height: responseContainer.height,
+            position: "absolute",
+            borderRadius: 5
+          };
+          if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+            const { widthpx } = responsecontainerindividuals[dropTargetIndex];
+            btnStyle.width = widthpx;
+            btnStyle.widthpx = widthpx;
           }
-          case "uppercase": {
-            indexStr = ALPHABET[dropTargetIndex].toUpperCase();
-            break;
+          if (btnStyle && btnStyle.width === 0) {
+            btnStyle.width = responseBtnStyle.widthpx;
+          } else {
+            btnStyle.width = btnStyle.widthpx;
           }
-          default:
-            indexStr = dropTargetIndex + 1;
-        }
-        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+          let indexStr = "";
+          switch (stemnumeration) {
+            case "lowercase": {
+              indexStr = ALPHABET[dropTargetIndex];
+              break;
+            }
+            case "uppercase": {
+              indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+              break;
+            }
+            default:
+              indexStr = dropTargetIndex + 1;
+          }
+          const status = evaluation[dropTargetIndex] ? "right" : "wrong";
 
-        return (
-          <React.Fragment key={index}>
-            {!showAnswer && (
-              <DropContainer
-                index={index}
-                style={{
-                  ...btnStyle,
-                  width: "max-content",
-                  minWidth: response.minWidth,
-                  maxWidth: response.maxWidth
-                }}
-                className={`
+          return (
+            <React.Fragment key={index}>
+              {!showAnswer && (
+                <DropContainer
+                  index={index}
+                  style={{
+                    ...btnStyle,
+                    width: "max-content",
+                    minWidth: response.minWidth,
+                    maxWidth: response.maxWidth
+                  }}
+                  className={`
                 imagelabeldragdrop-droppable
                 active
                 ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}  
                 ${status}`}
-                drop={drop}
-              >
-                <div className="text container" style={{ height: "max-content" }}>
-                  {userSelections[dropTargetIndex] &&
-                    userSelections[dropTargetIndex].map((answer, user_select_index) => (
-                      <DragItem
-                        key={user_select_index}
-                        index={user_select_index}
-                        data={`${answer}_${dropTargetIndex}_fromResp`}
-                        style={{
-                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}`,
-                          margin: 5,
-                          padding: 5,
-                          display: "inline-block",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                          width: "max-content",
-                          minWidth: response.minWidth,
-                          maxWidth: response.maxWidth,
-                          overflow: "hidden"
-                        }}
-                        item={answer}
-                        onDrop={onDropHandler}
-                      >
-                        <div>
-                          <MathSpan whiteSpace={"nowrap"} dangerouslySetInnerHTML={{ __html: answer }} />
-                        </div>
-                      </DragItem>
-                    ))}
-                </div>
-                <IconWrapper>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
-                </IconWrapper>
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </DropContainer>
-            )}
-            {showAnswer && (
-              <div
-                style={{
-                  ...btnStyle,
-                  width: "max-content",
-                  minWidth: response.minWidth,
-                  maxWidth: response.maxWidth
-                }}
-                className={`
-                  imagelabeldragdrop-droppable 
-                  active 
-                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
-                  ${status} 
-                  show-answer`}
-              >
-                <div className="text container" style={{ paddingLeft: "0px" }}>
-                  <div className="index index-box">{indexStr}</div>
-                  {userSelections[dropTargetIndex] &&
-                    userSelections[dropTargetIndex].map((answer, user_select_index) => (
-                      <div
-                        key={user_select_index}
-                        style={{
-                          border: `solid 1px ${theme.widgets.clozeImageDragDrop.answerBorderColor}`,
-                          margin: 5,
-                          padding: 5,
-                          display: "inline-block",
-                          whiteSpace: "nowrap",
-                          textOverflow: "ellipsis",
-                          width: "max-content",
-                          minWidth: response.minWidth,
-                          maxWidth: response.maxWidth,
-                          overflow: "hidden"
-                        }}
-                      >
-                        <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
-                      </div>
-                    ))}
+                  drop={drop}
+                >
+                  <div className="text container" style={{ height: "max-content" }}>
+                    {userSelections[dropTargetIndex] &&
+                      userSelections[dropTargetIndex].map((answer, user_select_index) => (
+                        <DragItem
+                          key={user_select_index}
+                          index={user_select_index}
+                          data={`${answer}_${dropTargetIndex}_fromResp`}
+                          style={{
+                            border: `${
+                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                            }`,
+                            margin: 5,
+                            padding: 5,
+                            display: "inline-block",
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                            width: "max-content",
+                            minWidth: response.minWidth,
+                            maxWidth: response.maxWidth,
+                            overflow: "hidden"
+                          }}
+                          item={answer}
+                          onDrop={onDropHandler}
+                        >
+                          <div>
+                            <MathSpan whiteSpace={"nowrap"} dangerouslySetInnerHTML={{ __html: answer }} />
+                          </div>
+                        </DragItem>
+                      ))}
+                  </div>
                   <IconWrapper>
                     {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
                       <RightIcon />
@@ -197,20 +154,83 @@ const CheckboxTemplateBoxLayout = ({
                       <WrongIcon />
                     )}
                   </IconWrapper>
-                </div>
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
+                </DropContainer>
+              )}
+              {showAnswer && (
+                <div
+                  style={{
+                    ...btnStyle,
+                    width: "max-content",
+                    height: "auto",
+                    minWidth: response.minWidth,
+                    maxWidth: response.maxWidth
+                  }}
+                  className={`
+                  imagelabeldragdrop-droppable 
+                  active 
+                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                  ${status} 
+                  show-answer`}
+                >
+                  <div className="text container" style={{ paddingLeft: "0px" }}>
+                    <div
+                      style={{
+                        alignSelf: "stretch",
+                        height: "auto"
+                      }}
+                      className="index index-box"
+                    >
+                      {indexStr}
+                    </div>
+                    {userSelections[dropTargetIndex] &&
+                      userSelections[dropTargetIndex].map((answer, user_select_index) => (
+                        <div
+                          key={user_select_index}
+                          style={{
+                            border: `${
+                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
+                            }`,
+                            margin: 5,
+                            padding: 5,
+                            display: "inline-block",
+                            whiteSpace: "nowrap",
+                            textOverflow: "ellipsis",
+                            width: "max-content",
+                            minWidth: response.minWidth,
+                            maxWidth: response.maxWidth,
+                            overflow: "hidden"
+                          }}
+                        >
+                          <MathSpan dangerouslySetInnerHTML={{ __html: answer }} />
+                        </div>
+                      ))}
+                    <IconWrapper>
+                      {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && (
+                        <RightIcon />
+                      )}
+                      {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && (
+                        <WrongIcon />
+                      )}
+                    </IconWrapper>
+                  </div>
 
-                <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
-                  <Point />
-                  <Triangle />
-                </Pointer>
-              </div>
-            )}
-          </React.Fragment>
-        );
-      })}
+                  <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
+                    <Point />
+                    <Triangle />
+                  </Pointer>
+                </div>
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 CheckboxTemplateBoxLayout.propTypes = {
   responsecontainerindividuals: PropTypes.array.isRequired,

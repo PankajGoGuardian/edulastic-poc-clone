@@ -87,10 +87,14 @@ class ChoicesForResponse extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index][itemIndex] = e.target.value;
-        if (draft.validation.valid_response && draft.validation.valid_response.value) {
+        if (
+          draft.validation.valid_response &&
+          draft.validation.valid_response.value.length &&
+          draft.options[index][itemIndex] === draft.validation.valid_response.value[index]
+        ) {
           draft.validation.valid_response.value[index] = e.target.value;
         }
+        draft.options[index][itemIndex] = e.target.value;
         let maxLength = 0;
         Object.keys(draft.options).forEach(option => {
           draft.options[option].forEach(opt => {

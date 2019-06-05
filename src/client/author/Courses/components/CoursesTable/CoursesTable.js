@@ -95,17 +95,10 @@ class CoursesTable extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.courseList.length === undefined) {
-      return {
-        dataSource: [],
-        selectedRowKeys: []
-      };
-    } else {
-      return {
-        dataSource: nextProps.courseList,
-        selectedRowKeys: nextProps.selectedRowKeys
-      };
-    }
+    return {
+      dataSource: nextProps.courseList,
+      selectedRowKeys: nextProps.selectedRowKeys
+    };
   }
 
   onHeaderCell = colName => {
@@ -509,7 +502,7 @@ class CoursesTable extends React.Component {
         filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
 
       SearchRows.push(
-        <StyledControlDiv>
+        <StyledControlDiv key={`${filtersData[i].filtersColumn}${i}`}>
           <StyledFilterSelect
             placeholder="Select a column"
             onChange={e => this.changeFilterColumn(e, i)}
@@ -632,7 +625,7 @@ export default enhance(CoursesTable);
 
 CoursesTable.propTypes = {
   userOrgId: PropTypes.string.isRequired,
-  courseList: PropTypes.object.isRequired,
+  courseList: PropTypes.array.isRequired,
   loadCourseListData: PropTypes.func.isRequired,
   createCourse: PropTypes.func.isRequired,
   updateCourse: PropTypes.func.isRequired,

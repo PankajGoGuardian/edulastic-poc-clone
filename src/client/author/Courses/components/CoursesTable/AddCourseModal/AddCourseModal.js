@@ -56,43 +56,7 @@ class AddCourseModal extends React.Component {
       numberValidate.validateStatus === "success" &&
       numberValidate.value.length > 0
     ) {
-      this.setState({ showSpin: true });
-      const checkCourseExist = await courseApi.searchCourse({
-        districtId: this.props.userOrgId,
-        page: 1,
-        limit: 25,
-        sortField: "name",
-        order: "asc",
-        search: {
-          name: {
-            type: "eq",
-            value: nameValidate.value
-          },
-          number: {
-            type: "eq",
-            value: numberValidate.value
-          }
-        }
-      });
-
-      this.setState({ showSpin: false });
-
-      if (checkCourseExist.totalCourses == 0)
-        this.props.addCourse({ name: nameValidate.value, number: numberValidate.value });
-      else {
-        this.setState({
-          nameValidate: {
-            value: nameValidate.value,
-            validateMsg: "Course name already exist",
-            validateStatus: "error"
-          },
-          numberValidate: {
-            value: numberValidate.value,
-            validateMsg: "Course number already exist",
-            validateStatus: "error"
-          }
-        });
-      }
+          this.props.addCourse({ name: nameValidate.value, number: numberValidate.value });
     }
   };
 

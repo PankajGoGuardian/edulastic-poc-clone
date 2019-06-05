@@ -42,9 +42,7 @@ export const receiveTeacherListErrorAction = createAction(RECEIVE_TEACHERLIST_ER
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
   stateClassSelector,
-  state => {
-    return state.data;
-  }
+  state => state.data
 );
 
 // reducers

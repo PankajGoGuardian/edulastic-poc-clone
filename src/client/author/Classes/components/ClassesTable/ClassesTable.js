@@ -91,15 +91,9 @@ class ClassesTable extends React.Component {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.classList.length === undefined) {
-      return {
-        dataSource: []
-      };
-    } else {
-      return {
-        dataSource: nextProps.classList
-      };
-    }
+    return {
+      dataSource: nextProps.classList
+    };
   }
 
   onEditClass = key => {
@@ -362,7 +356,7 @@ class ClassesTable extends React.Component {
         dataIndex: "teacherName",
         editable: true,
         render: (text, record) => {
-          const teachers = record.owners.map(row => <TeacherSpan>{row.name}</TeacherSpan>);   
+          const teachers = record.owners.map(row => <TeacherSpan>{row.name}</TeacherSpan>);
           return <React.Fragment>{teachers}</React.Fragment>;
         }
       },
@@ -580,7 +574,7 @@ const enhance = compose(
 export default enhance(ClassesTable);
 
 ClassesTable.propTypes = {
-  classList: PropTypes.object.isRequired,
+  classList: PropTypes.array.isRequired,
   loadClassListData: PropTypes.func.isRequired,
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,

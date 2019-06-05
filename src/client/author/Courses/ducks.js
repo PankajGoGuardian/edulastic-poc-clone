@@ -311,8 +311,12 @@ function* updateCourseSaga({ payload }) {
 
 function* createCourseSaga({ payload }) {
   try {
-    const saveCourse = yield call(courseApi.saveCourse, payload);
-    yield put(createCourseSuccessAction(saveCourse));
+    const { success, course, message: errorMessage } = yield call(courseApi.saveCourse, payload);
+    if (success) {
+      yield put(createCourseSuccessAction(course));
+    } else {
+      message.error(errorMessage);
+    }
   } catch (err) {
     const errorMessage = "Create Course is failing";
     yield call(message.error, errorMessage);

@@ -30,7 +30,7 @@ const saveCourse = data =>
       method: "post",
       data
     })
-    .then(result => result.data.result);
+    .then(({ data: { result } }) => result);
 
 const editCourse = ({ courseId, data }) =>
   api

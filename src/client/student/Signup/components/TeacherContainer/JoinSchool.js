@@ -14,12 +14,9 @@ import TeacherCarousel from "./TeacherCarousel";
 import RequestSchoolModal from "./RequestSchoolModal";
 
 import { searchSchoolRequestAction, joinSchoolRequestAction, updateUserWithSchoolLoadingSelector } from "../../duck";
+import { getUserIPZipCode } from "../../../../author/src/selectors/user";
 
 const { Option } = Select;
-
-const schoolFilter = {
-  ipZipCode: "10001"
-};
 
 const JoinSchool = ({
   isSearching,
@@ -28,7 +25,8 @@ const JoinSchool = ({
   newSchool,
   userInfo,
   joinSchool,
-  updateUserWithSchoolLoading
+  updateUserWithSchoolLoading,
+  ipZipCode
 }) => {
   const { email, firstName } = userInfo;
   const [selected, setSchool] = useState("");
@@ -54,14 +52,14 @@ const JoinSchool = ({
 
   const fetchSchool = searchText => {
     if (searchText) {
-      searchSchool({ ...schoolFilter, email, searchText });
+      searchSchool({ ipZipCode, email, searchText });
     }
   };
 
   const handleSearch = debounce(keyword => fetchSchool(keyword), 500);
 
   useEffect(() => {
-    searchSchool({ ...schoolFilter, email });
+    searchSchool({ ipZipCode, email });
   }, []);
 
   useEffect(() => {
@@ -156,7 +154,8 @@ const enhance = compose(
       isSearching: get(state, "signup.isSearching", false),
       schools: get(state, "signup.schools", []),
       newSchool: get(state, "signup.newSchool", {}),
-      updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state)
+      updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
+      ipZipCode: getUserIPZipCode(state)
     }),
     { searchSchool: searchSchoolRequestAction, joinSchool: joinSchoolRequestAction }
   )

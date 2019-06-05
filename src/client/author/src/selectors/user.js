@@ -34,6 +34,11 @@ export const getUserRole = createSelector(
   state => state.user.role
 );
 
+export const getUserIPZipCode = createSelector(
+  stateSelector,
+  state => state.user.ipZipCode
+);
+
 export const getUser = createSelector(
   stateSelector,
   state => state.user

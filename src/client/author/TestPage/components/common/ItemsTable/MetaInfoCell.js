@@ -62,14 +62,12 @@ class MetaInfoCell extends Component {
       keys[keys.length] = row.id;
       setSelectedTests(keys);
       setTestItems(keys);
-      message.info(`${row.id} was added`, 2);
       const testToAdd = tests.find(el => row.id === el._id);
       newTest.testItems.push(testToAdd);
     } else {
       keys = keys.filter(item => item !== row.id);
       setSelectedTests(keys);
       setTestItems(keys);
-      message.info(`${row.id} was removed`, 2);
       newTest.testItems = newTest.testItems.filter(el => row.id !== el._id);
     }
 

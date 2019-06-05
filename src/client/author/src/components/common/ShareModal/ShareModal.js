@@ -180,7 +180,7 @@ class ShareModal extends React.Component {
 
   render() {
     const { sharedType, permission } = this.state;
-    const { isVisible, onClose, userList = [], fetching, sharedUsersList, currentUserId } = this.props;
+    const { isVisible, onClose, userList = [], fetching, sharedUsersList, currentUserId, isPublished } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
@@ -232,7 +232,7 @@ class ShareModal extends React.Component {
             <RadioBtnWrapper>
               <Radio.Group value={sharedType} onChange={e => this.radioHandler(e)}>
                 {shareTypeKeys.map(item => (
-                  <Radio value={item} key={item}>
+                  <Radio value={item} key={item} disabled={!isPublished && item !== shareTypeKeys[3]}>
                     {shareTypes[item]}
                   </Radio>
                 ))}
@@ -279,11 +279,6 @@ class ShareModal extends React.Component {
                 <IconShare color={white} /> SHARE
               </ShareButton>
             </FlexContainer>
-            <FlexContainer flex={1} justifyContent="center" style={{ marginTop: 20 }}>
-              <DoneButton type="primary" onClick={onClose}>
-                DONE
-              </DoneButton>
-            </FlexContainer>
           </PeopleBlock>
         </ModalContainer>
       </Modal>
@@ -295,6 +290,7 @@ ShareModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   isPlaylist: PropTypes.bool,
+  isPublished: PropTypes.bool,
   test: PropTypes.object
 };
 

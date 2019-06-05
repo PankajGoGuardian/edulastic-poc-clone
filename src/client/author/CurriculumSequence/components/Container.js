@@ -72,6 +72,12 @@ import ShareModal from "../../src/components/common/ShareModal";
  */
 
 /** @extends Component<CurriculumProps> */
+const statusConstants = {
+  DRAFT: "draft",
+  ARCHIVED: "archived",
+  PUBLISHED: "published"
+};
+
 class CurriculumContainer extends Component {
   state = {
     expandedModules: [],
@@ -205,6 +211,7 @@ class CurriculumContainer extends Component {
       <>
         <ShareModal
           isVisible={showShareModal}
+          isPublished={destinationCurriculumSequence.status === statusConstants.PUBLISHED}
           testId={destinationCurriculumSequence._id}
           isPlaylist={true}
           onClose={onShareModalChange}

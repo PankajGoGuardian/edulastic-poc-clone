@@ -343,13 +343,19 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, playlist, testStatus } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId } = playlist || {};
+    const { _id: testId, status } = playlist || {};
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (
       <>
         {this.renderModal()}
-        <ShareModal isVisible={showShareModal} testId={testId} isPlaylist={true} onClose={this.onShareModalChange} />
+        <ShareModal
+          isVisible={showShareModal}
+          testId={testId}
+          isPlaylist={true}
+          isPublished={status === statusConstants.PUBLISHED}
+          onClose={this.onShareModalChange}
+        />
         <TestPageHeader
           onChangeNav={this.handleNavChange}
           current={current}

@@ -358,6 +358,7 @@
     },
     "cloze": {
       "correctAnswer": "Correct Answer",
+      "altAnswers": "Alternate Answers",
       "moveBackgroundImage": "Move Background Image",
       "dragDrop": {
         "templatemarkup": "Template Markup",

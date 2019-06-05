@@ -225,11 +225,21 @@ class ClozeDropDownDisplay extends Component {
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
     const correctAnswerBoxLayout = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={item.validation.valid_response && item.validation.valid_response.value}
-      />
+      <React.Fragment>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={item.validation.valid_response && item.validation.valid_response.value}
+        />
+        {item.validation.alt_responses.length && (
+          <CorrectAnswerBoxLayout
+            fontSize={fontSize}
+            groupResponses={options}
+            userAnswers={item.validation.valid_response && item.validation.valid_response.value}
+            altResponses={item.validation.alt_responses}
+          />
+        )}
+      </React.Fragment>
     ) : (
       <div />
     );

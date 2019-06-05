@@ -7,18 +7,34 @@ import { withNamespaces } from "@edulastic/localization";
 import { StyledCorrectAnswerbox } from "./styled/StyledCorrectAnswerbox";
 import { CorrectAnswerTitle } from "./styled/CorrectAnswerTitle";
 
-const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, cleanValue, groupResponses, t }) => {
+const CorrectAnswerBoxLayout = ({
+  hasGroupResponses,
+  fontSize,
+  userAnswers,
+  altResponses,
+  cleanValue,
+  groupResponses,
+  t
+}) => {
   let results;
-  if (hasGroupResponses) {
-    results = {};
-    userAnswers.forEach(userAnswer => {
-      if (results[userAnswer.group] === undefined) {
-        results[userAnswer.group] = [];
-      }
-      results[userAnswer.group].push(userAnswer.data);
-    });
+  if (altResponses) {
+    results = [];
+    for (let i = 0; i < userAnswers.length; i++) {
+      const res = altResponses.flatMap(ans => ans.value[i]);
+      results.push(res.join(","));
+    }
   } else {
-    results = userAnswers;
+    if (hasGroupResponses) {
+      results = {};
+      userAnswers.forEach(userAnswer => {
+        if (results[userAnswer.group] === undefined) {
+          results[userAnswer.group] = [];
+        }
+        results[userAnswer.group].push(userAnswer.data);
+      });
+    } else {
+      results = userAnswers;
+    }
   }
 
   const getLabel = value => {
@@ -40,7 +56,9 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, clea
 
   return (
     <StyledCorrectAnswerbox fontSize={fontSize}>
-      <CorrectAnswerTitle>{t("component.cloze.correctAnswer")}</CorrectAnswerTitle>
+      <CorrectAnswerTitle>
+        {altResponses ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
+      </CorrectAnswerTitle>
       <div>
         {hasGroupResponses &&
           Object.keys(results).map((key, index) => (

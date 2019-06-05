@@ -38,9 +38,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       firstArrow: settings.leftArrow === true ? { size: 10 } : false,
       lastArrow: settings.rightArrow === true ? { size: 10 } : false,
       strokeColor: "#d6d6d6",
-      highlightStrokeColor: "#d6d6d6",
-      drawZero: false,
-      ticks: { visible: false }
+      highlightStrokeColor: "#d6d6d6"
     }
   );
 
@@ -54,7 +52,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     ticksDistance = parseFloat(ticksDistance);
   }
 
-  // newAxis.removeAllTicks();
+  newAxis.removeAllTicks();
   /**
    * Major ticks
    * */
@@ -188,10 +186,8 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
     visible: settings.showTicks,
     anchor: "middle",
     insertTicks: false,
-    drawZero: false,
     tickEndings: [1, 1],
-    majorHeight: settings.showTicks ? 25 : 0,
-    minorHeight: settings.showTicks ? 15 : 0,
+    majorHeight: 25,
     drawLabels: true,
     ticksDistance,
     label: {

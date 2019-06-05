@@ -36,7 +36,6 @@ import {
 import {
   updatePointParameters,
   updateAxe,
-  updateNumberline,
   updateGrid,
   getImageCoordsByPercent,
   flatConfig,

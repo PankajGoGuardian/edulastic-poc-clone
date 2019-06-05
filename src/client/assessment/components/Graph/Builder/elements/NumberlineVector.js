@@ -86,9 +86,8 @@ const drawPoint = (board, x, pointIncluded, fixed, colors, yPosition) => {
 const drawVectorPoint = (board, toRightDirection, yPosition) => {
   const xMin = board.numberlineAxis.point1.X();
   const xMax = board.numberlineAxis.point2.X();
-  const axisPadding = ((xMax - xMin) / 100) * 3.5;
 
-  return board.$board.create("point", [toRightDirection ? xMax + axisPadding : xMin - axisPadding, yPosition], {
+  return board.$board.create("point", [toRightDirection ? xMax : xMin, yPosition], {
     snapToGrid: false,
     visible: false,
     fixed: true

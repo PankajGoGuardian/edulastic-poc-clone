@@ -1,5 +1,7 @@
+/* global katex */
 import JXG from "jsxgraph";
-import { Quill } from "react-quill";
+import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
+
 import { calcMeasure, getClosestTick } from "../utils";
 
 const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettings, board) => {
@@ -57,34 +59,23 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
     y = Number.isNaN(Number.parseFloat(coords.y)) ? lineY : coords.y;
   }
 
-  const mark = board.$board.create("text", [x, y, ""], {
+  const content = replaceLatexesWithMathHtml(data.text, latex => {
+    if (!katex) return latex;
+    return katex.renderToString(latex);
+  });
+
+  const mark = board.$board.create("text", [x, y, content], {
     id: coords && coords.fixed ? null : data.id,
     anchorX: "middle",
     anchorY: "bottom",
     fixed: coords && coords.fixed
   });
 
-  const selector = `[id*=${mark.id}]`;
-  mark.quillInput = new Quill(selector, {
-    theme: "bubble",
-    readOnly: true,
-    modules: {
-      toolbar: false
-    }
-  });
-
-  mark.quillInput.clipboard.matchers = mark.quillInput.clipboard.matchers.filter(
-    matcher => matcher[1].name !== "matchNewline"
-  );
-
-  mark.quillInput.clipboard.dangerouslyPasteHTML(0, data.text);
-  mark.labelHTML = data.text;
-
   if (!coords || !coords.fixed) {
     snapMark(mark, graphParameters, setValue, lineSettings, containerSettings, board);
   }
 
-  let cssClass = `mark ${coords && coords.className ? coords.className : ""}`;
+  let cssClass = `fr-box mark ${coords && coords.className ? coords.className : ""}`;
   if (mark.Y() >= containerY) {
     cssClass += " mounted";
   }
@@ -93,6 +84,8 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
     cssClass,
     highlightCssClass: cssClass
   });
+
+  mark.labelHTML = data.text;
 
   return mark;
 };
@@ -158,8 +151,8 @@ const alignMarks = (board, settings, containerSettings, lineSettings) => {
     const y = offsetY - (marginTop + height);
     mark.setPosition(setCoords, [x, y]);
     mark.setAttribute({
-      cssClass: "mark",
-      highlightCssClass: "mark"
+      cssClass: "fr-box mark",
+      highlightCssClass: "fr-box mark"
     });
 
     offsetX = x + width / 2;

@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Stimulus } from "@edulastic/common";
 
 import { QuadrantsContainer } from "./QuadrantsContainer";
-import { AxisLabelsContainer } from "./AxisLabelsContainer";
+import { AxisLabelsContainerWithResources } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 
 const QuestionTitleWrapper = styled.div`
@@ -152,7 +152,7 @@ class GraphDisplay extends Component {
       case "axisSegments":
         return AxisSegmentsContainer;
       case "axisLabels":
-        return AxisLabelsContainer;
+        return AxisLabelsContainerWithResources;
       case "quadrants":
       case "firstQuadrant":
       default:

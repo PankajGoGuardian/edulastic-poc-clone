@@ -9,10 +9,6 @@ class AdminHeader extends Component {
     active: PropTypes.object.isRequired
   };
 
-  constructor(props) {
-    super(props);
-  }
-
   onHeaderTabClick = (key, e) => {
     const { history } = this.props;
     switch (key) {

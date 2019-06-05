@@ -1,13 +1,12 @@
 import React, { Component } from "react";
-import { get } from "lodash";
+import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
-const Option = Select.Option;
-
 import { schoolApi, userApi } from "@edulastic/api";
-
 import { ModalFormItem } from "./styled";
 
-class AddClassModal extends React.Component {
+const { Option } = Select;
+
+class AddClassModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,6 +15,8 @@ class AddClassModal extends React.Component {
       teacherList: [],
       fetchingTeacher: []
     };
+    this.fetchSchool = debounce(this.fetchSchool, 1000);
+    this.fetchTeacher = debounce(this.fetchTeacher, 1000);
   }
 
   onAddClass = () => {
@@ -44,6 +45,8 @@ class AddClassModal extends React.Component {
   };
 
   fetchSchool = async value => {
+    // here searchParams is added only when value exists
+    const searchParam = value ? { search: { name: { type: "cont", value } } } : {};
     this.setState({ schoolList: [], fetchingSchool: true });
     const schoolListData = await schoolApi.getSchools({
       districtId: this.props.userOrgId,
@@ -51,13 +54,15 @@ class AddClassModal extends React.Component {
       page: 1,
       sortField: "name",
       order: "asc",
-      search: { name: { type: "cont", value } }
+      ...searchParam
     });
     this.setState({ schoolList: schoolListData.data, fetchingSchool: false });
   };
 
   handleSchoolChange = value => {
-    this.props.form.setFieldsValue({ institutionId: value });
+    // this code was commented out since the form handles setting of fields automatically, and
+    // there is no need to manually set fields
+    // this.props.form.setFieldsValue({ institutionId: value });
     this.setState({
       schoolList: [],
       fetchingSchool: false
@@ -72,14 +77,17 @@ class AddClassModal extends React.Component {
       page: 1,
       type: "DISTRICT",
       search: {
-        role: "teacher"
+        role: "teacher",
+        searchString: value
       }
     });
     this.setState({ teacherList: teacherListData.data, fetchingTeacher: false });
   };
 
   handleTeacherChange = value => {
-    this.props.form.setFieldsValue({ teacher: value });
+    // this code was commented out since the form handles setting of fields automatically, and
+    // there is no need to manually set fields
+    //this.props.form.setFieldsValue({ teacher: value });
     this.setState({
       teacherList: [],
       fetchingTeacher: false
@@ -150,7 +158,7 @@ class AddClassModal extends React.Component {
                     message: "Please select tags"
                   }
                 ]
-              })(<Select placeholder="Select Tags" mode="tags" />)}
+              })(<Select placeholder="Please enter 2 or more characters" mode="tags" />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -168,15 +176,16 @@ class AddClassModal extends React.Component {
                 <Select
                   mode="multiple"
                   labelInValue
-                  placeholder="Search by Username"
+                  placeholder="Search by Username - Please enter 3 or more characters"
                   notFoundContent={fetchingTeacher ? <Spin size="small" /> : null}
                   filterOption={false}
                   onSearch={this.fetchTeacher}
+                  onFocus={this.fetchTeacher}
                   onChange={this.handleTeacherChange}
                 >
                   {teacherList.map(teacher => (
                     <Option key={teacher._id} value={teacher._id}>
-                      {get(teacher, ["_source", "firstName"], "") + " " + get(teacher, ["_source", "lastName"], "")}
+                      {`${get(teacher, ["_source", "firstName"], "")} ${get(teacher, ["_source", "lastName"], "")}`}
                     </Option>
                   ))}
                 </Select>
@@ -203,6 +212,7 @@ class AddClassModal extends React.Component {
                   filterOption={false}
                   onSearch={this.fetchSchool}
                   onChange={this.handleSchoolChange}
+                  onFocus={this.fetchSchool}
                 >
                   {schoolList.map(school => (
                     <Option key={school._id} value={school._id}>

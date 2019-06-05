@@ -31,7 +31,8 @@ import {
   GenerateReportSelect,
   ActivityInput,
   Container,
-  MaxAnswerChecksInput
+  MaxAnswerChecksInput,
+  CompletionTypeRadio
 } from "./styled";
 import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
@@ -77,10 +78,10 @@ class MainSetting extends Component {
     super(props);
 
     this.state = {
-      markAsDoneValue: props.entity.markAsDoneValue,
       showPassword: false,
       enable: true,
-      showAdvancedOption: false
+      showAdvancedOption: false,
+      showRequirePassword: false
     };
 
     this._releaseGradeKeys = releaseGradeKeys;
@@ -91,6 +92,10 @@ class MainSetting extends Component {
 
   handleShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }));
+  };
+
+  handleShowRequirePassword = () => {
+    this.setState(state => ({ showRequirePassword: !state.showRequirePassword }));
   };
 
   enableHandler = e => {
@@ -174,7 +179,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { markAsDoneValue, enable, showAdvancedOption, showPassword } = this.state;
+    const { enable, showAdvancedOption, showPassword, showRequirePassword } = this.state;
     const { history, windowWidth, entity } = this.props;
 
     const {
@@ -184,13 +189,15 @@ class MainSetting extends Component {
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
-      requirePassword,
+      requirePassword = false,
       maxAnswerChecks,
       scoringType,
       penalty,
       testType,
       generateReport,
-      calcType
+      calcType,
+      assignmentPassword,
+      markAsDone
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
     return (
@@ -267,11 +274,11 @@ class MainSetting extends Component {
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>
                 <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup onChange={this.updateFeatures("markAsDoneValue")} value={markAsDoneValue}>
+                  <StyledRadioGroup onChange={this.updateFeatures("markAsDone")} value={markAsDone}>
                     {Object.keys(completionTypes).map(item => (
-                      <Radio value={completionTypes[item]} key={completionTypes[item]}>
+                      <CompletionTypeRadio value={completionTypes[item]} key={completionTypes[item]}>
                         {completionTypes[item]}
-                      </Radio>
+                      </CompletionTypeRadio>
                     ))}
                   </StyledRadioGroup>
                   <Description>
@@ -396,7 +403,22 @@ class MainSetting extends Component {
               <Block id="require-password" smallSize={isSmallSize}>
                 <Title>Require Password</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={requirePassword} onChange={this.updateTestData("shuffleAns")} />
+                  <Switch defaultChecked={requirePassword} onChange={this.updateTestData("requirePassword")} />
+                  {requirePassword && (
+                    <InputPassword
+                      prefix={
+                        <i
+                          className={`fa fa-eye${showRequirePassword ? "-slash" : ""}`}
+                          onClick={this.handleShowRequirePassword}
+                        />
+                      }
+                      onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
+                      size="large"
+                      value={assignmentPassword}
+                      type={showRequirePassword ? "text" : "password"}
+                      placeholder="Password"
+                    />
+                  )}
                   <Description>
                     {
                       "Require your students to type a password when opening the assessment. Password ensures that your students can access this assessment only in the classroom."

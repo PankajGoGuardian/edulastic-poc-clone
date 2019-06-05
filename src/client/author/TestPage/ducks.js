@@ -135,6 +135,7 @@ export const initialTestState = {
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
   testType: test.type.ASSESSMENT,
+  markAsDone: test.completionTypes.AUTOMATICALLY,
   generateReport: true,
   safeBrowser: false,
   sebPassword: "",

@@ -127,7 +127,9 @@ export const StyledRadioGroup = styled(Radio.Group)`
     white-space: normal;
   }
 `;
-
+export const CompletionTypeRadio = styled(Radio)`
+  text-transform: capitalize;
+`;
 export const RadioGroup = styled(Radio.Group)`
   span {
     font-size: 13px;

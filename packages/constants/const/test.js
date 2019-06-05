@@ -82,7 +82,7 @@ module.exports = {
     "Acknowledgements",
     "Table of Contents"
   ],
-  completionTypes: { AUTOMATICALLY: "Automatically", MANUALLY: "Manually" },
+  completionTypes: { AUTOMATICALLY: "automatically", MANUALLY: "manually" },
   releaseGradeTypes: {
     DONT_RELEASE: "Do not release scores or responses",
     SCORE_ONLY: "Release scores only",

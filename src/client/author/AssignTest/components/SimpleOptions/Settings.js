@@ -21,7 +21,8 @@ import {
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
 const evalTypeKeys = ["ALL_OR_NOTHING", "PARTIAL_CREDIT"];
-const { calculatorKeys, calculators, releaseGradeTypes, evalTypes, evalTypeLabels } = test;
+const completionTypeKeys = ["AUTOMATICALLY", "MANUALLY"];
+const { calculatorKeys, calculators, releaseGradeTypes, evalTypes, evalTypeLabels, completionTypes } = test;
 
 const Settings = ({
   testSettings,
@@ -31,9 +32,9 @@ const Settings = ({
   changeField,
   performanceBandData
 }) => {
-  const [isAutomatic, setAssignmentCompletionType] = useState(0);
-  const [showPassword, togglePasswordField] = useState(false);
+  const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
+  const [showRequirePassword, setShowRequirePassword] = useState(false);
 
   const { performanceBand = [] } = performanceBandData;
 
@@ -91,11 +92,8 @@ const Settings = ({
     updateAssignmentSettings(newSettingsState);
   };
 
-  const updateMarkAsDone = e => {
-    setAssignmentCompletionType(e.target.value);
-  };
-
   const {
+    markAsDone = tempTestSettings.markAsDone,
     releaseScore = tempTestSettings.releaseScore,
     safeBrowser = tempTestSettings.safeBrowser,
     sebPassword = tempTestSettings.sebPassword,
@@ -106,7 +104,9 @@ const Settings = ({
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     scoringType = tempTestSettings.scoringType,
-    penalty = tempTestSettings.penalty
+    penalty = tempTestSettings.penalty,
+    requirePassword = tempTestSettings.requirePassword,
+    assignmentPassword = tempTestSettings.assignmentPassword
   } = assignmentSettings;
 
   return (
@@ -116,9 +116,12 @@ const Settings = ({
         <StyledRowSettings gutter={16}>
           <Col span={8}>Mark as Done</Col>
           <Col span={16}>
-            <AlignRight onChange={updateMarkAsDone} value={isAutomatic}>
-              <Radio value={0}>Automatically</Radio>
-              <Radio value={1}>Manually</Radio>
+            <AlignRight onChange={e => overRideSettings("markAsDone", e.target.value)} value={markAsDone}>
+              {completionTypeKeys.map(item => (
+                <Radio value={completionTypes[item]} key={item}>
+                  {completionTypes[item]}
+                </Radio>
+              ))}
             </AlignRight>
           </Col>
         </StyledRowSettings>
@@ -156,7 +159,13 @@ const Settings = ({
             />
             {safeBrowser && (
               <Password
-                suffix={<Icon type="eye" theme="filled" onClick={() => togglePasswordField(!showPassword)} />}
+                suffix={
+                  <Icon
+                    type={showPassword ? "eye-invisible" : "eye"}
+                    theme="filled"
+                    onClick={() => setShowSebPassword(prevState => !prevState)}
+                  />
+                }
                 onChange={e => overRideSettings("sebPassword", e.target.value)}
                 size="large"
                 value={sebPassword}
@@ -237,13 +246,29 @@ const Settings = ({
 
         {/* Require Password */}
         <StyledRowSettings gutter={16}>
-          <Col span={8}>Require Password</Col>
-          <Col span={16}>
+          <Col span={16}>Require Password</Col>
+          <Col span={8}>
             <AlignSwitchRight
               defaultChecked
               size="small"
               onChange={value => overRideSettings("requirePassword", value)}
             />
+            {requirePassword && (
+              <Password
+                suffix={
+                  <Icon
+                    type={showRequirePassword ? "eye-invisible" : "eye"}
+                    theme="filled"
+                    onClick={() => setShowRequirePassword(prevState => !prevState)}
+                  />
+                }
+                onChange={e => overRideSettings("assignmentPassword", e.target.value)}
+                size="large"
+                value={assignmentPassword}
+                type={showRequirePassword ? "text" : "password"}
+                placeholder="Password"
+              />
+            )}
           </Col>
         </StyledRowSettings>
         {/* Require Password */}

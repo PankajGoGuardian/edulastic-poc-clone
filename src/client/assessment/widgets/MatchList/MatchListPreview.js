@@ -89,7 +89,7 @@ const MatchListPreview = ({
         : Array.from({ length: list.length }).fill(null)
     );
     setDragItems(possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer)));
-  }, [userAnswer]);
+  }, [userAnswer, possible_responses]);
 
   if (editCorrectAnswers.length > 0) {
     if (

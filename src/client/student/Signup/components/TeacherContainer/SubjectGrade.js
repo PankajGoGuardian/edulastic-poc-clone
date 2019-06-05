@@ -86,6 +86,7 @@ class SubjectGrade extends React.Component {
     const { curriculums, form, saveSubjectGradeloading } = this.props;
     const standardSets = filter(curriculums, el => el.subject === subject);
     const { getFieldDecorator } = form;
+    const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
 
     return (
       <>
@@ -111,7 +112,7 @@ class SubjectGrade extends React.Component {
                         mode="multiple"
                         showArrow
                       >
-                        {allGrades.map(el => (
+                        {filteredAllGrades.map(el => (
                           <Option key={el.value} value={el.value}>
                             {el.text}
                           </Option>

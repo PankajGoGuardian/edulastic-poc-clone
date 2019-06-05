@@ -8,16 +8,15 @@ import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./sty
 
 const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, closePolicy }) => {
   const [endOpen, setEndOpen] = useState(false);
-
-  const disabledStartDate = sDate => {
-    if (!sDate || !endDate) {
+  const disabledStartDate = startDate => {
+    if (!startDate || !endDate) {
       return false;
     }
-    return startDate.valueOf() > endDate.valueOf();
+    return startDate.valueOf() < new Date();
   };
 
-  const disabledEndDate = eDate => {
-    if (!eDate || !startDate) {
+  const disabledEndDate = endDate => {
+    if (!endDate || !startDate) {
       return false;
     }
     return endDate.valueOf() <= startDate.valueOf();

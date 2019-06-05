@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import snapwizQuiz from "../../../src/assets/snap-quiz.png";
@@ -19,9 +20,11 @@ const OptionPDF = ({ onClick }) => (
     <TitleWrapper>Create from PDF</TitleWrapper>
 
     <TextWrapper>{descriptionBottom}</TextWrapper>
-    <ButtonComponent type="primary" onClick={onClick} block>
-      Upload PDF
-    </ButtonComponent>
+    <Link to={"/author/tests/snapquiz"}>
+      <ButtonComponent type="primary" block>
+        Upload PDF
+      </ButtonComponent>
+    </Link>
   </CardComponent>
 );
 

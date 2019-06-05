@@ -1,6 +1,5 @@
 import React from "react";
 import { withRouter } from "react-router";
-import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -119,12 +118,7 @@ class Container extends React.Component {
         </HeaderWrapper>
         <Breadcrumb data={newBreadcrumb} style={breadcrumbStyle} />
         {creating && <Spin />}
-        {!method && (
-          <Link to={"/author/tests/snapquiz"}>
-            {" "}
-            <CreationOptions />{" "}
-          </Link>
-        )}
+        {!method && <CreationOptions />}
         {method === creationMethods.PDF && (
           <DropArea
             loading={creating}

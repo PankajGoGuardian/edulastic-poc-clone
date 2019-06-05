@@ -7,6 +7,7 @@ import ClassList from "./ClassList";
 import DatePolicySelector from "./DatePolicySelector";
 import Settings from "../SimpleOptions/Settings";
 import { OptionConationer, InitOptions, StyledRowLabel, SettingsBtn, ClassSelectorLabel } from "./styled";
+import * as moment from "moment";
 
 class AdvancedOptons extends React.Component {
   static propTypes = {
@@ -43,12 +44,22 @@ class AdvancedOptons extends React.Component {
     }
     if (field === "endDate") {
       const { startDate } = assignment;
-      const diff = startDate.diff(value);
-      if (diff > 0) {
-        return message.error("Close date should be less than Open date!");
+      if (value === null) {
+        value = moment(startDate).add("days", 7);
       }
     }
+
     const nextAssignment = produce(assignment, state => {
+      if (field === "startDate") {
+        const { endDate } = assignment;
+        if (value === null) {
+          value = moment();
+        }
+        const diff = value.diff(endDate);
+        if (diff > 0) {
+          state.endDate = moment(value).add("days", 7);
+        }
+      }
       state[field] = value;
     });
     updateOptions(nextAssignment);

@@ -421,10 +421,10 @@ template {
 }
 
 .response-btn .index {
-  padding: 4px 8px;
+  padding: 6px 8px;
   background: darkgray;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
   min-width: 30px;
   display: flex;
   justify-content: center;
@@ -442,7 +442,6 @@ template {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   min-width: 93.25px;
-  padding: 0 40px 0 10px !important;
   margin-right: 0 !important;
 }
 
@@ -614,7 +613,7 @@ table.quill-table td {
 }
 
 .template_box > div {
-  display: inline;
+  display: inline-flex;
   align-self: center;
 }
 
@@ -800,26 +799,31 @@ input[type="checkbox"] {
 .check-answer.wrong .text {
   background: #fce0e8;
   color: #878282;
+  padding: 7px;
 }
 
 .check-answer.right .index {
   background: #1fe3a1 !important;
   color: white;
+  padding: 7px;
 }
 
 .check-answer.right .text {
   background: #e1fbf2;
   color: #878282;
+  padding: 7px;
 }
 
 .check-answer.showanswer .index {
   background: #00b0ff;
   color: white;
+  padding: 7px;
 }
 
 .check-answer.showanswer .text {
   background: #fff;
   color: #878282;
+  padding: 7px;
 }
 
 .correctanswer-box {
@@ -876,8 +880,8 @@ input[type="checkbox"] {
   margin: 5px !important;
 } */
 
-mathinput,
 .response-btn,
+mathinput,
 textdropdown,
 textinput {
   padding: 2px 12px 2px 0;
@@ -892,17 +896,18 @@ textinput {
   margin: 0 4px;
   position: relative;
   display: inline-flex;
+  align-items: center;
+  min-height: 35px;
 }
 
-mathinput span,
 .response-btn span,
+mathinput span,
 textdropdown span,
 textinput span {
   background: darkgray;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
-  padding: 3px 8px;
-  margin-right: 8px;
+  padding: 6px 8px;
 }
 
 textdropdown {
@@ -920,7 +925,7 @@ textdropdown::after {
   margin-left: 5px;
   position: absolute;
   right: 5px;
-  top: 10px;
+  top: 15px;
 }
 
 .response-btn .text,
@@ -929,17 +934,10 @@ textinput .input-text {
   padding: 0 8px;
 }
 
-.response-btn .index,
-textdropdown .dropdown-index,
-textinput .text-input-index {
-  padding: 0 8px;
-  margin-right: 0 !important;
-}
-
 textdropdown .dropdown-index {
   background: #d3d3d3;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
   border: 1px #777 solid;
   border-right: 0;
 }
@@ -976,8 +974,8 @@ textdropdown:hover .dropdown-index {
 
 textinput .text-input-index {
   background: #d3d3d3;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
   border: 1px #777 solid;
   border-right: 0;
 }
@@ -1075,8 +1073,8 @@ textinput:hover .text-input-index {
   align-items: center;
   height: 100%;
   background: #878282;
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
 }
 
 .imagelabeldragdrop-droppable.active .index-box {
@@ -1954,6 +1952,12 @@ span.token.active-word {
 
 .jsx-parser .mq-math-mode {
   padding: 2px 4px;
+}
+
+.jsx-parser p {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
 }
 
 #docBasedModalOverlay {

@@ -1019,6 +1019,8 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
+        templateMarkUp:
+          '<p>"It\'s all clear" he</p><textdropdown index={{0}} contentEditable="false" resprops={{resProps}}>Text Input</textdropdown><p><br/> Have you the </p><textdropdown index={{1}} contentEditable="false" resprops={{resProps}} >Text Input</textdropdown><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
         stimulus: "",
         ui_style: {
           responsecontainerposition: "bottom",

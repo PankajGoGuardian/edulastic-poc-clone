@@ -34,6 +34,7 @@ class ChoicesForResponse extends Component {
 
   componentDidMount = () => {
     const { fillSections, t, index, item } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
     const deskHeight = item.ui_style.layout_height;
 

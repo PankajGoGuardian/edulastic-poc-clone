@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, WithResources } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -137,7 +137,11 @@ class ClozeDropDown extends Component {
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
-      <div>
+      <WithResources
+        resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
         {view === "edit" && (
           <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
@@ -145,7 +149,7 @@ class ClozeDropDown extends Component {
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
                 <Widget>
                   <CorrectAnswers
-                    key={"shuffleOptions"}
+                    key="shuffleOptions"
                     validation={item.validation}
                     configureOptions={{
                       shuffleOptions
@@ -162,7 +166,7 @@ class ClozeDropDown extends Component {
                   <CorrectAnswerOptions>
                     <Checkbox
                       className="additional-options"
-                      key={"shuffleOptions"}
+                      key="shuffleOptions"
                       onChange={() => this.handleOptionsChange("shuffleOptions", !shuffleOptions)}
                       label={t("component.cloze.dropDown.shuffleoptions")}
                       checked={shuffleOptions}
@@ -209,7 +213,7 @@ class ClozeDropDown extends Component {
             />
           </Wrapper>
         )}
-      </div>
+      </WithResources>
     );
   }
 }

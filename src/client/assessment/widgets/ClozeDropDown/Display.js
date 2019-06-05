@@ -1,81 +1,38 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { Select } from "antd";
 import { isUndefined, mapValues, cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
+import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, WithMathFormula } from "@edulastic/common";
+import { InstructorStimulus, helpers } from "@edulastic/common";
 
-import { PreWrapper } from "@edulastic/common";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
+import MathSpanWrapper from "../../components/MathSpanWrapper";
 
-const { Option } = Select;
-
-const defaultTemplateMarkup =
-  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p><br/>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
-
-const MathSpan = WithMathFormula(styled.span`
-  user-select: none;
-  line-height: ${props => props.lineHeight};
-`);
-
-const QuestionTitleWrapper = styled.div`
-  display: flex;
-`;
-
-const QuestionNumber = styled.div`
-  font-weight: 700;
-  margin-right: 4px;
-`;
+import ChoicesBox from "./ChoicesBox";
 
 class ClozeDropDownDisplay extends Component {
-  constructor(props) {
-    super(props);
-    const { templateMarkUp } = props;
-    const { templateParts, respLength } = this.getTemplateParts(templateMarkUp);
-    const userAnswers = new Array(respLength).fill(false);
-    props.userSelections.map((userSelection, index) => {
-      userAnswers[index] = userSelection;
-      return 0;
-    });
-    this.state = {
-      templateParts,
-      userAnswers
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const { templateMarkUp } = nextProps;
-    if (this.state !== undefined) {
-      const { templateParts } = this.getTemplateParts(templateMarkUp);
-      this.setState({
-        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
-        templateParts
-      });
-    }
-  }
-
-  getTemplateParts = templateMarkUp => {
-    let templateMarkUpStr = templateMarkUp;
-    if (!templateMarkUpStr) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
-    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
-    const respLength = responseParts !== null ? responseParts.length : 0;
-    return { templateParts, respLength };
+  state = {
+    parsedTemplate: ""
   };
 
+  static getDerivedStateFromProps({ templateMarkUp }) {
+    return { parsedTemplate: helpers.parseTemplate(templateMarkUp) };
+  }
+
+  componentDidMount() {
+    const { templateMarkUp } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp) });
+  }
+
   selectChange = (value, index) => {
-    const { userAnswers: newAnswers } = this.state;
-    const { onChange: changeAnswers } = this.props;
+    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
     newAnswers[index] = value;
-    this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
   };
 
@@ -96,6 +53,47 @@ class ClozeDropDownDisplay extends Component {
       return data[key];
     });
 
+  getBtnStyle = () => {
+    const { uiStyle } = this.props;
+    const { placeholder } = uiStyle;
+    // responsecontainerindividuals;
+
+    const responseBtnStyle = {
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
+    };
+
+    const btnStyle = {
+      width: 0,
+      height: 0,
+      widthpx: 0,
+      heightpx: 0,
+      placeholder
+    };
+    // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+    //   const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
+    //   btnStyle.width = widthpx;
+    //   btnStyle.height = heightpx;
+    //   btnStyle.widthpx = widthpx;
+    //   btnStyle.heightpx = heightpx;
+    //   btnStyle.placeholder = placeholder;
+    // }
+    if (btnStyle && btnStyle.width === 0) {
+      btnStyle.width = responseBtnStyle.widthpx;
+    } else {
+      btnStyle.width = btnStyle.widthpx;
+    }
+    if (btnStyle && btnStyle.height === 0) {
+      btnStyle.height = responseBtnStyle.heightpx;
+    } else {
+      btnStyle.height = btnStyle.heightpx;
+    }
+    if (btnStyle && btnStyle.placeholder === undefined) {
+      btnStyle.placeholder = responseBtnStyle.placeholder;
+    }
+    return { btnStyle, responseBtnStyle };
+  };
+
   render() {
     const {
       qIndex,
@@ -109,13 +107,12 @@ class ClozeDropDownDisplay extends Component {
       checkAnswer,
       evaluation,
       instructorStimulus,
-      theme,
       item,
-      showQuestionNumber
+      showQuestionNumber,
+      userSelections
     } = this.props;
-    const { templateParts, userAnswers } = this.state;
+    const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
-    let responseIndex = 0;
     let responses = cloneDeep(options);
     if (preview && shuffleOptions) {
       responses = this.shuffleGroup(responses);
@@ -123,128 +120,42 @@ class ClozeDropDownDisplay extends Component {
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { placeholder, responsecontainerindividuals, stemnumeration } = uiStyle;
-
-    const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto"
-    };
+    const { btnStyle, responseBtnStyle } = this.getBtnStyle();
 
     let maxLineHeight = smallSize ? 50 : 40;
+    maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
-    const previewTemplateBoxLayout = (
-      <PreWrapper>
-        <div
-          className={`template_box ${smallSize ? "dropdown-small" : ""}`}
-          style={{
-            fontSize: smallSize ? theme.widgets.clozeDropDown.previewTemplateBoxSmallFontSize : fontSize,
-            padding: smallSize ? 0 : 20
-          }}
-        >
-          {templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
-              responseIndex++;
-              const btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                placeholder
-              };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx, heightpx } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.height = heightpx;
-                btnStyle.widthpx = widthpx;
-                btnStyle.heightpx = heightpx;
-                btnStyle.placeholder = placeholder;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle.height = responseBtnStyle.heightpx;
-              } else {
-                btnStyle.height = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.placeholder === undefined) {
-                btnStyle.placeholder = responseBtnStyle.placeholder;
-              }
-              maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
-              return (
-                <Select
-                  getPopupContainer={() => document.querySelector(".template_box")}
-                  value={userAnswers[dropTargetIndex]}
-                  style={{
-                    ...btnStyle,
-                    minWidth: 100,
-                    overflow: "hidden"
-                  }}
-                  data-cy="drop_down_select"
-                  onChange={value => this.selectChange(value, dropTargetIndex)}
-                  key={index}
-                >
-                  <Option value="**default_value**" disabled>
-                    {placeholder}
-                  </Option>
-                  {responses &&
-                    responses[dropTargetIndex] &&
-                    responses[dropTargetIndex].map((response, respID) => (
-                      <Option value={response} key={respID}>
-                        {response}
-                      </Option>
-                    ))}
-                </Select>
-              );
-            }
-            return (
-              <MathSpan
-                lineHeight={`${maxLineHeight}px`}
-                key={index}
-                dangerouslySetInnerHTML={{ __html: templatePart }}
-              />
-            );
-          })}
-        </div>
-      </PreWrapper>
-    );
-
-    const checkboxTemplateBoxLayout = (
-      <CheckboxTemplateBoxLayout
-        showIndex={showAnswer}
-        templateParts={templateParts}
-        responsecontainerindividuals={responsecontainerindividuals}
-        responseBtnStyle={responseBtnStyle}
-        stemNumeration={stemnumeration}
+    const answerBox = showAnswer ? (
+      <CorrectAnswerBoxLayout
         fontSize={fontSize}
-        showAnswer={showAnswer}
-        userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
-        evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
+        groupResponses={options}
+        userAnswers={item.validation.valid_response && item.validation.valid_response.value}
       />
-    );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
-    const correctAnswerBoxLayout = showAnswer ? (
-      <React.Fragment>
-        <CorrectAnswerBoxLayout
-          fontSize={fontSize}
-          groupResponses={options}
-          userAnswers={item.validation.valid_response && item.validation.valid_response.value}
-        />
-        {item.validation.alt_responses.length && (
-          <CorrectAnswerBoxLayout
-            fontSize={fontSize}
-            groupResponses={options}
-            userAnswers={item.validation.valid_response && item.validation.valid_response.value}
-            altResponses={item.validation.alt_responses}
-          />
-        )}
-      </React.Fragment>
     ) : (
       <div />
     );
-    const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
+
+    const resProps =
+      showAnswer || checkAnswer
+        ? {
+            showIndex: showAnswer || checkAnswer,
+            responsecontainerindividuals,
+            responseBtnStyle,
+            stemNumeration: stemnumeration,
+            fontSize,
+            showAnswer,
+            userSelections:
+              item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
+            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+          }
+        : {
+            userAnswers: userSelections || [],
+            btnStyle,
+            placeholder,
+            responses,
+            onChange: this.selectChange
+          };
+
     return (
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
@@ -252,7 +163,15 @@ class ClozeDropDownDisplay extends Component {
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <div style={{ margin: smallSize ? "-10px -20px" : 0, borderRadius: 0 }}>{templateBoxLayout}</div>
+        <JsxParser
+          bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
+          showWarnings
+          components={{
+            textdropdown: showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : ChoicesBox,
+            mathspan: MathSpanWrapper
+          }}
+          jsx={parsedTemplate}
+        />
         {answerBox}
       </div>
     );
@@ -270,10 +189,9 @@ ClozeDropDownDisplay.propTypes = {
   templateMarkUp: PropTypes.string,
   question: PropTypes.string.isRequired,
   configureOptions: PropTypes.object,
-  evaluation: PropTypes.object,
+  evaluation: PropTypes.array,
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string.isRequired,
-  theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool
@@ -284,10 +202,10 @@ ClozeDropDownDisplay.defaultProps = {
   onChange: () => {},
   preview: true,
   showAnswer: false,
-  evaluation: {},
+  evaluation: [],
   checkAnswer: false,
   userSelections: [],
-  templateMarkUp: defaultTemplateMarkup,
+  templateMarkUp: "",
   smallSize: false,
   configureOptions: {
     shuffleOptions: false
@@ -305,3 +223,12 @@ ClozeDropDownDisplay.defaultProps = {
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));
+
+const QuestionTitleWrapper = styled.div`
+  display: flex;
+`;
+
+const QuestionNumber = styled.div`
+  font-weight: 700;
+  margin-right: 4px;
+`;

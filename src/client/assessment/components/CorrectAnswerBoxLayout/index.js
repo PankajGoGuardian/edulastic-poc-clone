@@ -66,9 +66,8 @@ const CorrectAnswerBoxLayout = ({
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
               {results[key].map((value, itemId) => (
                 <div key={itemId} className="response-btn check-answer showanswer">
-                  &nbsp;<span className="index">{index + 1}</span>
+                  <span className="index">{index + 1}</span>
                   <span className="text">{Array.isArray(groupResponses) && !cleanValue ? getLabel(value) : value}</span>
-                  &nbsp;
                 </div>
               ))}
             </div>
@@ -76,11 +75,10 @@ const CorrectAnswerBoxLayout = ({
         {!hasGroupResponses &&
           results.map((result, index) => (
             <div key={index} className="response-btn check-answer showanswer">
-              &nbsp;<span className="index">{index + 1}</span>
+              <span className="index">{index + 1}</span>
               <span className="text">
                 {Array.isArray(groupResponses) && groupResponses.length > 0 && !cleanValue ? getLabel(result) : result}
               </span>
-              &nbsp;
             </div>
           ))}
       </div>

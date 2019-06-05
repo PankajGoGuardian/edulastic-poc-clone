@@ -20,6 +20,7 @@ class CorrectAnswers extends Component {
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
     fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);

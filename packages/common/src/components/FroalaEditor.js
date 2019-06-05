@@ -146,6 +146,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     {
       key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
+      imageDefaultDisplay: "inline",
       initOnClick: true,
       toolbarButtons,
       toolbarButtonsMD,

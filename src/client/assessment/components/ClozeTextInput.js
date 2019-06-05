@@ -120,7 +120,7 @@ const ClozeTextInput = ({
   };
 
   return (
-    <CustomInput style={style}>
+    <CustomInput title={value} style={style}>
       {showIndex && indexNumber && <IndexBox>{indexNumber}</IndexBox>}
       <MInput
         ref={ref}

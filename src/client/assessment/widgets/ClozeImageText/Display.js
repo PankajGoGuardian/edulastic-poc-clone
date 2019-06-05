@@ -146,7 +146,16 @@ class Display extends Component {
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
 
             return (
-              <div style={btnStyle}>
+              <div
+                title={
+                  userAnswers[dropTargetIndex]
+                    ? userAnswers[dropTargetIndex].length > 0
+                      ? userAnswers[dropTargetIndex]
+                      : null
+                    : null
+                }
+                style={btnStyle}
+              >
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
                   <Triangle />

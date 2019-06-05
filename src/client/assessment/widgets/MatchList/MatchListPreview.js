@@ -176,7 +176,8 @@ const MatchListPreview = ({
 
   const wrapperStyle = {
     display: "flex",
-    flexDirection: getDirection(listPosition)
+    flexDirection: getDirection(listPosition),
+    alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
   };
 
   return (
@@ -189,7 +190,15 @@ const MatchListPreview = ({
       </QuestionTitleWrapper>
 
       <div data-cy="previewWrapper" style={wrapperStyle}>
-        <FlexContainer style={{ flexGrow: 10 }} flexDirection="column" alignItems="flex-start">
+        <FlexContainer
+          style={{
+            flex: 3,
+            marginRight: listPosition === "right" ? 20 : 0,
+            marginLeft: listPosition === "left" ? 20 : 0
+          }}
+          flexDirection="column"
+          alignItems="flex-start"
+        >
           {list.map((ite, i) => (
             <AnswerItem
               key={i}

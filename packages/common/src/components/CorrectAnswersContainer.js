@@ -29,7 +29,7 @@ const Container = styled.div`
   min-height: 206px;
   border-radius: 10px;
   background-color: ${dashBorderColor};
-  flex-grow: 1;
+  flex: 2;
   img {
     max-height: 120px;
     z-index: 100;

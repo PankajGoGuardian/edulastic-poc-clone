@@ -15,6 +15,7 @@ import { withTheme } from "styled-components";
 import { PaddingDiv, CustomQuillComponent, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
+import { newBlue } from "@edulastic/colors";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -27,6 +28,7 @@ import { ColorPickerContainer } from "./styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { IconDrawResize } from "./styled/IconDrawResize";
+import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
@@ -203,7 +205,7 @@ class ComposeQuestion extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.imagePosition = { top: d.y, left: d.x };
+        draft.imageOptions = { x: d.x, y: d.y };
       })
     );
   };
@@ -216,7 +218,6 @@ class ComposeQuestion extends Component {
     const width = maxWidth;
     const height = maxHeight;
 
-
     const {
       maxRespCount,
       responseLayout,
@@ -226,7 +227,7 @@ class ComposeQuestion extends Component {
       responses,
       imageWidth,
       imageHeight,
-      imagePosition = {}
+      imageOptions = {}
     } = item;
 
     const { isColorPickerVisible } = this.state;
@@ -339,11 +340,23 @@ class ComposeQuestion extends Component {
               flexDirection: "column"
             }}
           >
-            <Button onClick={toggleIsMoveResizeEditable} style={{ width: 100, height: 100, whiteSpace: "normal" }}>
+            <Button style={{ width: 100, height: 100, whiteSpace: "normal" }}>
               <IconDrawResize />
               {t("component.cloze.imageDragDrop.drawresize")}
             </Button>
-
+            <Button
+              onClick={toggleIsMoveResizeEditable}
+              style={{
+                width: 100,
+                height: 100,
+                whiteSpace: "normal",
+                marginTop: 10,
+                boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+              }}
+            >
+              <IconMoveResize />
+              {t("component.cloze.moveBackgroundImage")}
+            </Button>
             <div
               style={{
                 position: "relative",
@@ -409,8 +422,8 @@ class ComposeQuestion extends Component {
                   <Rnd
                     style={{ overflow: "hidden" }}
                     default={{
-                      x: imagePosition.left || 0,
-                      y: imagePosition.top || 0,
+                      x: imageOptions.x || 0,
+                      y: imageOptions.y || 0,
                       width,
                       height
                     }}

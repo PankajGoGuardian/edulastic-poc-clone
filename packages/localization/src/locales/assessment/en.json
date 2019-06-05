@@ -358,6 +358,7 @@
     },
     "cloze": {
       "correctAnswer": "Correct Answer",
+      "moveBackgroundImage": "Move Background Image",
       "dragDrop": {
         "templatemarkup": "Template Markup",
         "thisisstem": "[This is the stem.]",

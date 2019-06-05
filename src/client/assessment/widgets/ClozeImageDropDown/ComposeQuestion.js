@@ -7,6 +7,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
+import { newBlue } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
@@ -40,6 +41,7 @@ import { ImageContainer } from "./styled/ImageContainer";
 import { PreviewImage } from "./styled/PreviewImage";
 import { CheckContainer } from "./styled/CheckContainer";
 import { IconDrawResize } from "./styled/IconDrawResize";
+import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
@@ -217,7 +219,7 @@ class ComposeQuestion extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.imagePosition = { top: d.y, left: d.x };
+        draft.imageOptions = { x: d.x, y: d.y };
       })
     );
   };
@@ -230,7 +232,7 @@ class ComposeQuestion extends Component {
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
-    const { imagePosition = {} } = item;
+    const { imageOptions = {} } = item;
 
     const width = maxWidth;
     const height = maxHeight;
@@ -325,11 +327,23 @@ class ComposeQuestion extends Component {
               }}
             >
               <ControlBar>
-                <ControlButton onClick={toggleIsMoveResizeEditable}>
+                <ControlButton>
                   <IconDrawResize />
                   {t("component.cloze.imageDropDown.drawresize")}
                 </ControlButton>
-
+                <ControlButton
+                  onClick={toggleIsMoveResizeEditable}
+                  style={{
+                    width: 100,
+                    height: 100,
+                    whiteSpace: "normal",
+                    marginTop: 10,
+                    boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                  }}
+                >
+                  <IconMoveResize />
+                  {t("component.cloze.moveBackgroundImage")}
+                </ControlButton>
                 <PointerContainer className="controls-bar">
                   <ControlButton disabled={!hasActive}>
                     <IconPin />
@@ -356,8 +370,8 @@ class ComposeQuestion extends Component {
                       <Rnd
                         style={{ overflow: "hidden" }}
                         default={{
-                          x: imagePosition.left || 0,
-                          y: imagePosition.top || 0,
+                          x: imageOptions.x || 0,
+                          y: imageOptions.y || 0,
                           width,
                           height
                         }}

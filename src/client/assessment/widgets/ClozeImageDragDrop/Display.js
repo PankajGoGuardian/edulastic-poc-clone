@@ -142,7 +142,7 @@ class Display extends Component {
       item,
       maxHeight,
       maxWidth,
-      imagePosition
+      imageOptions
     } = this.props;
 
     const questionId = item && item.id;
@@ -171,8 +171,8 @@ class Display extends Component {
             position: "absolute",
             userSelect: "none",
             pointerEvents: "none",
-            top: imagePosition.top || 0,
-            left: imagePosition.left || 0,
+            top: imageOptions.y || 0,
+            left: imageOptions.x || 0,
             width: !maxWidth ? imageWidth || "auto" : imageWidth,
             height: !maxHeight ? imageHeight || "auto" : imageHeight,
             maxHeight: !maxHeight ? null : maxHeight,
@@ -473,7 +473,7 @@ Display.propTypes = {
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
-  imagePosition: PropTypes.object
+  imageOptions: PropTypes.object
 };
 
 Display.defaultProps = {
@@ -510,7 +510,7 @@ Display.defaultProps = {
     responsecontainerindividuals: []
   },
   instructorStimulus: "",
-  imagePosition: {}
+  imageOptions: {}
 };
 
 export default withTheme(withCheckAnswerButton(Display));

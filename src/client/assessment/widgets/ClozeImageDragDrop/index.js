@@ -189,7 +189,7 @@ class ClozeImageDragDrop extends Component {
                     fillSections={fillSections}
                     cleanSections={cleanSections}
                     questionId={item.id}
-                    imagePosition={item.imagePosition}
+                    imageOptions={item.imageOptions}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -272,7 +272,7 @@ class ClozeImageDragDrop extends Component {
                 imageWidth={item.imageWidth}
                 imageHeight={item.imageHeight}
                 evaluation={evaluation}
-                imagePosition={item.imagePosition}
+                imageOptions={item.imageOptions}
               />
             )}
             {previewTab === "show" && (
@@ -304,7 +304,7 @@ class ClozeImageDragDrop extends Component {
                 imageWidth={item.imageWidth}
                 imageHeight={item.imageHeight}
                 evaluation={evaluation}
-                imagePosition={item.imagePosition}
+                imageOptions={item.imageOptions}
                 {...restProps}
               />
             )}
@@ -339,7 +339,7 @@ class ClozeImageDragDrop extends Component {
                 userSelections={userAnswer}
                 userAnswer={userAnswer}
                 onChange={this.handleAddAnswer}
-                imagePosition={item.imagePosition}
+                imageOptions={item.imageOptions}
               />
             )}
           </Wrapper>

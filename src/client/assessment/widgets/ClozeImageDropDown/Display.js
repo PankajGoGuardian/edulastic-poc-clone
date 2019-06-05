@@ -81,7 +81,7 @@ class Display extends Component {
       qIndex,
       maxHeight,
       maxWidth,
-      imagePosition
+      imageOptions
     } = this.props;
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -118,8 +118,8 @@ class Display extends Component {
             height={imageHeight}
             style={{
               position: "absolute",
-              top: imagePosition.top || 0,
-              left: imagePosition.left || 0
+              top: imageOptions.y || 0,
+              left: imageOptions.x || 0
             }}
           />
           {!smallSize &&
@@ -270,7 +270,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  imagePosition: PropTypes.object
+  imageOptions: PropTypes.object
 };
 
 Display.defaultProps = {
@@ -299,7 +299,7 @@ Display.defaultProps = {
   },
   showQuestionNumber: false,
   qIndex: null,
-  imagePosition: {}
+  imageOptions: {}
 };
 
 export default withTheme(Display);

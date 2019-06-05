@@ -175,8 +175,21 @@ class ComposeQuestion extends Component {
     img.addEventListener("load", function() {
       const maxheight = maxHeight.split("px")[0];
       const maxwidth = maxWidth.split("px")[0];
-      const width = this.naturalWidth >= maxwidth ? maxwidth : this.naturalWidth;
-      const height = this.naturalHeight >= maxheight ? maxheight : this.naturalHeight;
+      let height, width;
+      if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
+        const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
+        const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
+        if (fitWidth > maxwidth) {
+          width = maxwidth;
+          height = fitHeight;
+        } else {
+          height = maxHeight;
+          width = fitWidth;
+        }
+      } else {
+        width = this.naturalWidth;
+        height = this.naturalHeight;
+      }
       ((width, height) => {
         that.onItemPropChange("imageWidth", width);
         that.onItemPropChange("imageHeight", height);

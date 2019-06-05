@@ -156,7 +156,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       toolbarVisibleWithoutSelection: true,
 
       events: {
-        click: function (evt) {
+        click: function(evt) {
           const closestMathParent = evt.currentTarget.closest("span.input__math");
           if (closestMathParent) {
             this.selection.save();
@@ -170,7 +170,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
             setCurrentMathEl(null);
           }
         },
-        "image.beforeUpload": function (image) {
+        "image.beforeUpload": function(image) {
           this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.COURSE)
@@ -185,10 +185,28 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 
           return false;
         },
-        "edit.on": function (e, editor) {
+        "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
-            EditorRef.current.edit.off();
+            this.edit.off();
           }
+        },
+        "toolbar.hide": function() {
+          if (this.hasFocus) {
+            return false;
+          } else {
+            return true;
+          }
+        },
+        initialized: function() {
+          this.hasFocus = false;
+        },
+        focus: function() {
+          this.hasFocus = true;
+          this.toolbar.show();
+        },
+        blur: function() {
+          this.hasFocus = false;
+          this.toolbar.hide();
         }
       }
     },
@@ -204,7 +222,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       try {
         setMathField(MQ.StaticMath(mathFieldRef.current));
         // eslint-disable-next-line no-empty
-      } catch (e) { }
+      } catch (e) {}
     }
   };
 
@@ -223,27 +241,27 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
     ) {
       const responseIndexes = $(val)
         .find(".response-btn")
-        .map(function () {
+        .map(function() {
           return +$(this).text();
         })
         .toArray();
       const mathInputIndexes = $(val)
         .find(".math-input-btn")
-        .map(function () {
+        .map(function() {
           return +$(this).text();
         })
         .toArray();
 
       const dropDownIndexes = $(val)
         .find(".text-dropdown-btn")
-        .map(function () {
+        .map(function() {
           return +$(this).text();
         })
         .toArray();
 
       const inputIndexes = $(val)
         .find(".text-input-btn")
-        .map(function () {
+        .map(function() {
           return +$(this).text();
         })
         .toArray();
@@ -311,7 +329,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const responseCount = EditorRef.current.$el[0].querySelectorAll(".response-btn").length;
+        const responseCount = this.$el[0].querySelectorAll(".response-btn").length;
         this.html.insert(
           ` <span class="response-btn" contenteditable="false"><span class="text">Response</span></span> `
         );

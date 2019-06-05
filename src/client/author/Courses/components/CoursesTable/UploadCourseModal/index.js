@@ -31,6 +31,10 @@ import {
   StatusDiv
 } from "./styled";
 
+const UPLOAD_FILE_TEMPLATE_ERROR =
+  "Template format incorrect. Please check the sample template, to know the exact format.";
+const UPLOAD_FILE_UNSUPPORTED_FORMAT_ERROR = "Unsupported file format";
+
 class UploadCourseModal extends React.Component {
   constructor(props) {
     super(props);
@@ -61,30 +65,29 @@ class UploadCourseModal extends React.Component {
   };
 
   handleCSVChange = event => {
-    const file = event.target.files[0];
     const { uploadCSVCourse, setPageStatus } = this.props;
+    const file = event.target.files[0];
+    if (file.type === "text/csv") {
+      const fileReader = new FileReader();
+      const scope = this;
 
-    var fileReader = new FileReader();
-    const scope = this;
-
-    fileReader.onload = function(fileLoadedEvent) {
-      var textFromFileLoaded = fileLoadedEvent.target.result;
-      var lineArr = textFromFileLoaded.split("\n");
-      var headerArr = lineArr[0].split(",");
-      if (headerArr.length == 2) {
-        if (headerArr[0] === "course_id" && headerArr[1] === "course_name") {
+      fileReader.onload = fileLoadedEvent => {
+        const textFromFileLoaded = fileLoadedEvent.target.result;
+        const lineArr = textFromFileLoaded.split("\n");
+        const headerArr = lineArr[0].split(",");
+        if (headerArr.length === 2 && headerArr[0] === "course_id" && headerArr[1] === "course_name") {
           uploadCSVCourse(file);
         } else {
           setPageStatus("upload-novalidate-csv");
-          scope.setState({ alertMsgStr: "Unsupported file format" });
+          scope.setState({ alertMsgStr: UPLOAD_FILE_TEMPLATE_ERROR });
         }
-      } else {
-        setPageStatus("upload-novalidate-csv");
-        scope.setState({ alertMsgStr: "Unsupported file format" });
-      }
-    };
+      };
 
-    fileReader.readAsBinaryString(file, "UTF-8");
+      fileReader.readAsBinaryString(file, "UTF-8");
+    } else {
+      setPageStatus("upload-novalidate-csv");
+      this.setState({ alertMsgStr: UPLOAD_FILE_UNSUPPORTED_FORMAT_ERROR });
+    }
   };
 
   uploadCourse = () => {

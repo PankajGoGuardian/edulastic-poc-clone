@@ -137,7 +137,9 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
     display: "flex",
-    width: flag === "dragItems" ? "auto" : "100%",
+    width: "auto",
+    maxWidth: "220px",
+    maxHeight: "140px",
     alignItems: "center",
     justifyContent: preview ? "space-between" : "center",
     margin: flag === "dragItems" ? "10px 15px 10px 15px" : "10px 0px 10px 0",
@@ -149,6 +151,7 @@ const MatchListPreview = ({
     border: `1px solid ${theme.widgets.matchList.dragItemBorderColor}`,
     padding: preview ? 0 : "0 40px",
     cursor: "pointer",
+    alignSelf: "stretch",
     borderRadius: 4,
     fontWeight: theme.widgets.matchList.dragItemFontWeight,
     color: theme.widgets.matchList.dragItemColor,

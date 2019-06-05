@@ -88,6 +88,9 @@ class ChoicesForResponse extends Component {
       produce(item, draft => {
         if (draft.options[index] === undefined) draft.options[index] = [];
         draft.options[index][itemIndex] = e.target.value;
+        if (draft.validation.valid_response && draft.validation.valid_response.value) {
+          draft.validation.valid_response.value[index] = e.target.value;
+        }
         let maxLength = 0;
         Object.keys(draft.options).forEach(option => {
           draft.options[option].forEach(opt => {

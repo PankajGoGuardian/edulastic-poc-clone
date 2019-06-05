@@ -56,9 +56,6 @@ class ClozeDragDropDisplay extends Component {
 
   getTemplateParts = templateMarkUp => {
     let templateMarkUpStr = templateMarkUp;
-    if (!templateMarkUpStr) {
-      templateMarkUpStr = defaultTemplateMarkup;
-    }
     const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
     const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
     const respLength = responseParts !== null ? responseParts.length : 0;
@@ -277,81 +274,82 @@ class ClozeDragDropDisplay extends Component {
             fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
-          {templateParts.map((templatePart, index) => {
-            if (templatePart.indexOf('class="response-btn"') !== -1) {
-              const dropTargetIndex = responseIndex;
+          {templateParts &&
+            templateParts.map((templatePart, index) => {
+              if (templatePart.indexOf('class="response-btn"') !== -1) {
+                const dropTargetIndex = responseIndex;
 
-              responseIndex++;
-              const btnStyle = {
-                width: 0,
-                height: 0,
-                widthpx: 0,
-                heightpx: 0,
-                whiteSpace: undefined,
-                wordwrap: undefined
-              };
-              if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
-                btnStyle.width = widthpx;
-                btnStyle.height = heightpx;
-                btnStyle.whiteSpace = wordwrap;
-                btnStyle.widthpx = widthpx;
-                btnStyle.heightpx = heightpx;
-                btnStyle.wordwrap = wordwrap;
-              }
-              if (btnStyle && btnStyle.width === 0) {
-                btnStyle.width = responseBtnStyle.widthpx;
-              } else {
-                btnStyle.width = btnStyle.widthpx;
-              }
-              if (btnStyle && btnStyle.height === 0) {
-                btnStyle.height = responseBtnStyle.heightpx;
-              } else {
-                btnStyle.height = btnStyle.heightpx;
-              }
-              if (btnStyle && btnStyle.whiteSpace === undefined) {
-                btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
-              } else {
-                btnStyle.whiteSpace = btnStyle.wordwrap;
-              }
-              return (
-                <Droppable drop={() => ({ dropTargetIndex })}>
-                  {!hasGroupResponses && (
-                    <ResponseContainer
-                      id={`response-container-${dropTargetIndex}`}
-                      style={btnStyle}
-                      smallSize={smallSize}
-                    >
-                      <Draggable
-                        title={striptags(this.getLabel(dropTargetIndex)) || ""}
-                        className="content"
-                        onDrop={this.onDrop}
-                        data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
+                responseIndex++;
+                const btnStyle = {
+                  width: 0,
+                  height: 0,
+                  widthpx: 0,
+                  heightpx: 0,
+                  whiteSpace: undefined,
+                  wordwrap: undefined
+                };
+                if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+                  const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
+                  btnStyle.width = widthpx;
+                  btnStyle.height = heightpx;
+                  btnStyle.whiteSpace = wordwrap;
+                  btnStyle.widthpx = widthpx;
+                  btnStyle.heightpx = heightpx;
+                  btnStyle.wordwrap = wordwrap;
+                }
+                if (btnStyle && btnStyle.width === 0) {
+                  btnStyle.width = responseBtnStyle.widthpx;
+                } else {
+                  btnStyle.width = btnStyle.widthpx;
+                }
+                if (btnStyle && btnStyle.height === 0) {
+                  btnStyle.height = responseBtnStyle.heightpx;
+                } else {
+                  btnStyle.height = btnStyle.heightpx;
+                }
+                if (btnStyle && btnStyle.whiteSpace === undefined) {
+                  btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
+                } else {
+                  btnStyle.whiteSpace = btnStyle.wordwrap;
+                }
+                return (
+                  <Droppable drop={() => ({ dropTargetIndex })}>
+                    {!hasGroupResponses && (
+                      <ResponseContainer
+                        id={`response-container-${dropTargetIndex}`}
+                        style={btnStyle}
+                        smallSize={smallSize}
                       >
-                        <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
-                      </Draggable>
-                      &nbsp;
-                    </ResponseContainer>
-                  )}
-                  {hasGroupResponses && (
-                    <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                      <Draggable
-                        title={striptags(this.getLabel(dropTargetIndex)) || ""}
-                        className="content"
-                        onDrop={this.onDrop}
-                        data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
-                          userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-                      >
-                        <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
-                      </Draggable>
-                      &nbsp;
-                    </ResponseContainer>
-                  )}
-                </Droppable>
-              );
-            }
-            return <MathSpan key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
-          })}
+                        <Draggable
+                          title={striptags(this.getLabel(dropTargetIndex)) || ""}
+                          className="content"
+                          onDrop={this.onDrop}
+                          data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
+                        >
+                          <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
+                        </Draggable>
+                        &nbsp;
+                      </ResponseContainer>
+                    )}
+                    {hasGroupResponses && (
+                      <ResponseContainer style={btnStyle} smallSize={smallSize}>
+                        <Draggable
+                          title={striptags(this.getLabel(dropTargetIndex)) || ""}
+                          className="content"
+                          onDrop={this.onDrop}
+                          data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
+                            userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
+                        >
+                          <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
+                        </Draggable>
+                        &nbsp;
+                      </ResponseContainer>
+                    )}
+                  </Droppable>
+                );
+              }
+              return <MathSpan key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
+            })}
         </div>
       </PreWrapper>
     );

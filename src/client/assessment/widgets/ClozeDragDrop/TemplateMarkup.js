@@ -59,15 +59,6 @@ class TemplateMarkup extends Component {
     cleanSections();
   }
 
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      hasGroupResponses: false,
-      groupResponses: []
-    };
-  }
-
   onChangeQuestion = stimulus => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -134,24 +125,7 @@ class TemplateMarkup extends Component {
 
   groupResponsesHandler = e => {
     const { item, setQuestionData } = this.props;
-    const { groupResponses } = this.state;
     const hasGroupResponses = e.target.checked;
-    if (e.target.checked) {
-      this.setState({
-        hasGroupResponses,
-        groupResponses:
-          groupResponses.length === 0 && item.options
-            ? [
-                {
-                  title: "",
-                  options: [...item.options]
-                }
-              ]
-            : groupResponses
-      });
-    } else {
-      this.setState({ hasGroupResponses });
-    }
 
     setQuestionData(
       produce(item, draft => {
@@ -162,10 +136,12 @@ class TemplateMarkup extends Component {
   };
 
   addGroup = () => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
+
     groupResponses.push({ title: "", options: [{ value: uuid(), label: "" }] });
     const newGroupResponses = groupResponses.slice();
-    this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -177,10 +153,11 @@ class TemplateMarkup extends Component {
   };
 
   removeGroup = index => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
     groupResponses.splice(index, 1);
     const newGroupResponses = groupResponses.slice();
-    this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -192,10 +169,11 @@ class TemplateMarkup extends Component {
   };
 
   changeGroupRespTitle = (index, e) => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].title = e.target.value;
-    this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -207,7 +185,9 @@ class TemplateMarkup extends Component {
   };
 
   addNewGroupOption = index => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].options.push({ value: uuid(), label: "" });
 
@@ -221,11 +201,12 @@ class TemplateMarkup extends Component {
   };
 
   editGroupOptions = (index, itemIndex, val) => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
 
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].options[itemIndex].label = val;
-    this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -237,10 +218,11 @@ class TemplateMarkup extends Component {
   };
 
   removeGroupOptions = (index, itemIndex) => {
-    const { groupResponses } = this.state;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
     const newGroupResponses = groupResponses.slice();
     newGroupResponses[index].options.splice(itemIndex, 1);
-    this.setState({ groupResponses: newGroupResponses });
 
     const { item, setQuestionData } = this.props;
     setQuestionData(
@@ -255,7 +237,6 @@ class TemplateMarkup extends Component {
 
   render() {
     const { t, item, theme } = this.props;
-    const { hasGroupResponses, groupResponses } = this.state;
     return (
       <Widget>
         <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
@@ -267,11 +248,16 @@ class TemplateMarkup extends Component {
         />
         <PaddingDiv>
           <Subtitle>
-            <input id="groupResponseCheckbox" type="checkbox" onChange={e => this.groupResponsesHandler(e)} />
+            <input
+              checked={item.hasGroupResponses}
+              id="groupResponseCheckbox"
+              type="checkbox"
+              onChange={e => this.groupResponsesHandler(e)}
+            />
             <Label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</Label>
           </Subtitle>
         </PaddingDiv>
-        {!hasGroupResponses && (
+        {!item.hasGroupResponses && (
           <PaddingDiv>
             <Heading>{t("component.cloze.dragDrop.choicesforresponse")}</Heading>
             <QuillSortableList
@@ -288,9 +274,10 @@ class TemplateMarkup extends Component {
             </div>
           </PaddingDiv>
         )}
-        {hasGroupResponses &&
-          groupResponses.length > 0 &&
-          groupResponses.map((group, index) => (
+        {item.hasGroupResponses &&
+          item.groupResponses &&
+          item.groupResponses.length > 0 &&
+          item.groupResponses.map((group, index) => (
             <div key={index}>
               <fieldset
                 style={{
@@ -341,7 +328,7 @@ class TemplateMarkup extends Component {
               </fieldset>
             </div>
           ))}
-        {hasGroupResponses && (
+        {item.hasGroupResponses && (
           <Button
             type="primary"
             onClick={this.addGroup}

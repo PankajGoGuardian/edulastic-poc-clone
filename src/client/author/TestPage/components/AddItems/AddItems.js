@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
-import { Pagination, Spin } from "antd";
+import { Pagination, Spin, message } from "antd";
 
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -123,7 +123,10 @@ class AddItems extends PureComponent {
   };
 
   handleCreateNewItem = () => {
-    const { onSaveTestId, createTestItem } = this.props;
+    const { onSaveTestId, createTestItem, test } = this.props;
+    if (!test.title) {
+      return message.error("Name field cannot be empty");
+    }
     const defaultWidgets = {
       rows: [
         {

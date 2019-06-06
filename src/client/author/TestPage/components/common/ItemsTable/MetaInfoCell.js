@@ -51,6 +51,9 @@ class MetaInfoCell extends Component {
       test,
       tests
     } = this.props;
+    if (!test.title) {
+      return message.error("Name field cannot be empty");
+    }
     const newTest = cloneDeep(test);
     let keys = [];
     if (selectedRows !== undefined) {

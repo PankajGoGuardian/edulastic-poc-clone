@@ -128,10 +128,15 @@ class Container extends PureComponent {
 
   handleAssign = () => {
     const { test, history, match } = this.props;
+    const { status } = test;
     if (this.validateTest(test)) {
-      const { id } = match.params;
-      if (id) {
-        history.push(`/author/assignments/${id}`);
+      if (status !== statusConstants.PUBLISHED) {
+        this.handlePublishTest(true);
+      } else {
+        const { id } = match.params;
+        if (id) {
+          history.push(`/author/assignments/${id}`);
+        }
       }
     }
   };
@@ -221,8 +226,8 @@ class Container extends PureComponent {
     }
   };
 
-  handleSave = async () => {
-    const { selectedRows, user, test, updateTest, createTest, itemsSubjectAndGrade, editAssigned } = this.props;
+  modifyTest = () => {
+    const { selectedRows, user, test, itemsSubjectAndGrade } = this.props;
     const testItems = selectedRows.data;
     const newTest = cloneDeep(test);
 
@@ -247,7 +252,15 @@ class Container extends PureComponent {
       }
       return foundItem;
     });
+    return newTest;
+  };
 
+  handleSave = async () => {
+    const { test, updateTest, createTest, editAssigned } = this.props;
+    if (!test.title) {
+      return message.error("Name field is required");
+    }
+    const newTest = this.modifyTest();
     if (test._id) {
       if (editAssigned) {
         newTest.versioned = true;
@@ -264,8 +277,11 @@ class Container extends PureComponent {
   };
 
   validateTest = test => {
-    const { subjects, grades } = test;
-
+    const { title, subjects, grades } = test;
+    if (!title) {
+      message.error("Name field cannot be empty");
+      return false;
+    }
     if (isEmpty(grades)) {
       message.error("Grade field cannot be empty");
       return false;
@@ -302,17 +318,14 @@ class Container extends PureComponent {
     });
   };
 
-  handlePublishTest = () => {
+  handlePublishTest = (assignFlow = false) => {
     const { publishTest, test, match } = this.props;
-    const { grades = [], subjects = [], _id } = test;
-    if (!grades.length) {
-      return message.error("Grade field cannot be empty");
+    const { _id } = test;
+    if (this.validateTest(test)) {
+      const newTest = this.modifyTest();
+      publishTest({ _id, oldId: match.params.oldId, test: newTest, assignFlow });
+      this.setState({ editEnable: false });
     }
-    if (!subjects.length) {
-      return message.error("Subject field cannot be empty");
-    }
-    publishTest({ _id, oldId: match.params.oldId });
-    this.setState({ editEnable: false });
   };
 
   onEnableEdit = () => {

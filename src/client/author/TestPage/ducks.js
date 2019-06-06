@@ -130,7 +130,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
 export const initialTestState = {
-  title: "Untitled Test",
+  title: "",
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
@@ -321,8 +321,11 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const { _id: oldId, versioned: regrade = false } = payload.data;
+  const { _id: oldId, versioned: regrade = false, title } = payload.data;
   try {
+    if (!title) {
+      return yield call(message.error(" Name field cannot be empty "));
+    }
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);
     yield put({
@@ -367,14 +370,13 @@ function* updateTestSaga({ payload }) {
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
 
     const entity = yield call(testsApi.update, payload);
-
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     if (oldId != newId && newId) {
       yield call(message.success, "Test versioned");
       yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {
-      yield call(message.success, "Update Successful");
+      yield call(message.success, "Test saved as Draft");
     }
 
     if (payload.updateLocal) {
@@ -410,14 +412,19 @@ function* shareTestSaga({ payload }) {
 
 function* publishTestSaga({ payload }) {
   try {
-    const { _id: id } = payload;
+    let { _id: id, test, assignFlow } = payload;
+    yield call(updateTestSaga, { payload: { id, data: test } });
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
     yield call(message.success, "Successfully published");
     const oldId = yield select(state => state.tests.regradeTestId);
-    if (oldId) {
-      yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
-      yield put(setRegradeOldIdAction(undefined));
+    if (assignFlow) {
+      yield put(push(`/author/assignments/${id}`));
+    } else {
+      if (oldId) {
+        yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
+        yield put(setRegradeOldIdAction(undefined));
+      }
     }
   } catch (e) {
     const errorMessage = "publish failed";
@@ -454,6 +461,10 @@ function* deleteSharedUserSaga({ payload }) {
 function* setTestDataAndUpdateSaga({ payload }) {
   try {
     yield put(setTestDataAction(payload.data));
+    const { title } = payload.data;
+    if (!title) {
+      return yield call(message.error("Name field cannot be empty"));
+    }
     const entity = yield call(testsApi.create, payload.data);
     yield put({
       type: UPDATE_ENTITY_DATA,

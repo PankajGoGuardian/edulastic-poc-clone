@@ -87,7 +87,7 @@ const TestPageHeader = ({
   return windowWidth > 993 ? (
     <HeaderWrapper>
       <TitleWrapper>
-        <Title title={title}>{title} </Title>
+        <Title title={title}>{title || "Untitled Test"} </Title>
         <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
       </TitleWrapper>
 

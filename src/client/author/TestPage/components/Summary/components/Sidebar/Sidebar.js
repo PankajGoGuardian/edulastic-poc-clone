@@ -36,7 +36,7 @@ const Sidebar = ({
         data-cy="testname"
         onChange={e => onChangeField("title", e.target.value)}
         size="large"
-        placeholder={isPlaylist ? `Enter a playlist name` : `Enter an assessment name`}
+        placeholder={isPlaylist ? `Enter a playlist name` : `Enter the test name`}
       />
 
       <MainTitle>Grade</MainTitle>

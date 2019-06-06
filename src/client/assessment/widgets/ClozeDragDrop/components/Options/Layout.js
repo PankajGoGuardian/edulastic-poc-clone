@@ -124,6 +124,10 @@ class Layout extends Component {
       }
     };
 
+    const textFieldStyles = {
+      maxWidth: 280
+    };
+
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.layout")}</Subtitle>
@@ -177,7 +181,7 @@ class Layout extends Component {
             />
           </Col>
         </Row>
-        <Row>
+        <Row marginTop={13}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerglobal")}</Label>
           </Col>
@@ -192,6 +196,7 @@ class Layout extends Component {
               }}
               disabled={false}
               containerStyle={{ width: 350 }}
+              style={textFieldStyles}
               onFocus={onFocusHandler()}
               onBlur={onWidthInputBlur()}
               onChange={this.handleInputChange}
@@ -204,6 +209,7 @@ class Layout extends Component {
               type="number"
               disabled={false}
               containerStyle={{ width: 350 }}
+              style={textFieldStyles}
               onChange={e => changeUiStyle("heightpx", +e.target.value)}
               value={uiStyle.heightpx}
             />
@@ -218,7 +224,7 @@ class Layout extends Component {
             />
           </Col>
         </Row>
-        <Row>
+        <Row marginTop={13}>
           <Col md={12}>
             <Label>{t("component.options.responsecontainerindividuals")}</Label>
           </Col>
@@ -226,11 +232,11 @@ class Layout extends Component {
         {uiStyle.responsecontainerindividuals.map((responsecontainerindividual, index) => (
           <Container key={index}>
             <Delete onClick={() => removeIndividual(index)}>X</Delete>
-            <div>
+            <Row>
               <Col md={12}>
                 <Label>{`${t("component.options.responsecontainerindividual")} ${index + 1}`}</Label>
               </Col>
-            </div>
+            </Row>
             <Row>
               <Col md={6}>
                 <Label>{t("component.options.widthpx")}</Label>
@@ -241,6 +247,7 @@ class Layout extends Component {
                   }}
                   disabled={false}
                   containerStyle={{ width: 350 }}
+                  style={textFieldStyles}
                   onFocus={onFocusHandler(responsecontainerindividual, index)}
                   onBlur={onWidthInputBlur(index)}
                   onChange={this.handleInputChange}
@@ -253,6 +260,7 @@ class Layout extends Component {
                   type="number"
                   disabled={false}
                   containerStyle={{ width: 350 }}
+                  style={textFieldStyles}
                   onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                   value={responsecontainerindividual.heightpx}
                 />

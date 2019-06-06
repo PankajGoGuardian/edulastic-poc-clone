@@ -74,6 +74,10 @@ class Layout extends Component {
       });
     };
 
+    const textFieldStyles = {
+      maxWidth: 280
+    };
+
     return (
       <Widget>
         <Block style={{ paddingTop: 0 }}>
@@ -116,7 +120,7 @@ class Layout extends Component {
               </SelectWrapper>
             </Col>
           </Row>
-          <Row>
+          <Row marginTop={13}>
             <Col md={24}>
               <Label>{t("component.options.responsecontainerglobal")}</Label>
             </Col>
@@ -128,6 +132,7 @@ class Layout extends Component {
                 type="number"
                 disabled={false}
                 containerStyle={{ width: 350 }}
+                style={textFieldStyles}
                 onChange={e => changeUiStyle("widthpx", +e.target.value)}
                 value={uiStyle.widthpx}
               />
@@ -138,23 +143,23 @@ class Layout extends Component {
                 type="number"
                 disabled={false}
                 containerStyle={{ width: 350 }}
+                style={textFieldStyles}
                 onChange={e => changeUiStyle("heightpx", +e.target.value)}
                 value={uiStyle.heightpx}
               />
             </Col>
-          </Row>
-          <Row gutter={20}>
             <Col md={8}>
               <Label>{t("component.options.placeholder")}</Label>
               <TextField
                 disabled={false}
                 containerStyle={{ width: 350 }}
+                style={textFieldStyles}
                 onChange={e => changeUiStyle("placeholder", e.target.value)}
                 value={uiStyle.placeholder}
               />
             </Col>
           </Row>
-          <Row>
+          <Row marginTop={13}>
             <Col md={24}>
               <Label>{t("component.options.responsecontainerindividuals")}</Label>
             </Col>
@@ -176,6 +181,7 @@ class Layout extends Component {
                     type="number"
                     disabled={false}
                     containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
                     onChange={e => changeIndividualUiStyle("widthpx", +e.target.value, index)}
                     value={responsecontainerindividual.widthpx}
                   />
@@ -186,6 +192,7 @@ class Layout extends Component {
                     type="number"
                     disabled={false}
                     containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
                     onChange={e => changeIndividualUiStyle("heightpx", +e.target.value, index)}
                     value={responsecontainerindividual.heightpx}
                   />
@@ -195,6 +202,7 @@ class Layout extends Component {
                   <TextField
                     disabled={false}
                     containerStyle={{ width: 350 }}
+                    style={textFieldStyles}
                     onChange={e => changeIndividualUiStyle("placeholder", e.target.value, index)}
                     value={uiStyle.placeholder}
                   />

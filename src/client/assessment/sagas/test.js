@@ -71,17 +71,6 @@ function* loadTest({ payload }) {
     (testActivity.questionActivities || []).map(item => {
       answerCheckByItemId[item.testItemId] = item.answerChecksUsedForItem;
     });
-    yield put({
-      type: LOAD_TEST_ITEMS,
-      payload: {
-        items: testItems,
-        title: test.title,
-        annotations: test.annotations,
-        docUrl: test.docUrl,
-        settings,
-        answerCheckByItemId
-      }
-    });
 
     // if testActivity is present.
     if (!preview) {
@@ -156,6 +145,20 @@ function* loadTest({ payload }) {
         });
       }
     }
+
+    // test items are put into store after shuffling questions sometimes..
+    // hence dont frigging move this, and this better stay at the end!
+    yield put({
+      type: LOAD_TEST_ITEMS,
+      payload: {
+        items: testItems,
+        title: test.title,
+        annotations: test.annotations,
+        docUrl: test.docUrl,
+        settings,
+        answerCheckByItemId
+      }
+    });
 
     yield put({
       type: SET_TEST_LOADING_STATUS,

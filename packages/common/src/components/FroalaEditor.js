@@ -485,14 +485,16 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <Editor
-        backgroundColor={config.backgroundColor || "#fff"}
-        tag={tag}
-        model={content}
-        onModelChange={setChange}
-        config={config}
-        onManualControllerReady={manualControl}
-      />
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+        {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
+        <Editor
+          tag={tag}
+          model={content}
+          onModelChange={setChange}
+          config={config}
+          onManualControllerReady={manualControl}
+        />
+      </BackgroundStyleWrapper>
       <NoneDiv>
         <span ref={mathFieldRef} className="input__math__field" />
       </NoneDiv>

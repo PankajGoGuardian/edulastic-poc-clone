@@ -77,7 +77,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   );
   MenuItems.push(
     <Menu.Item key="view-details">
-      <Link to={`/author/tests/${currentTestId}`} rel="noopener noreferrer">
+      <Link to={`/author/tests/${currentTestId}#review`} rel="noopener noreferrer">
         <img alt="icon" src={infomationIcon} />
         <SpaceElement />
         View Details

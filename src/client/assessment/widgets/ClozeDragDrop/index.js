@@ -7,7 +7,7 @@ import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, WithResources } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { ContentArea } from "../../styled/ContentArea";
 
@@ -128,7 +128,11 @@ class ClozeDragDrop extends Component {
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
     return (
-      <div>
+      <WithResources
+        resources={["https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"]}
+        fallBack={<span />}
+        onLoaded={() => null}
+      >
         {view === "edit" && (
           <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
             <React.Fragment>
@@ -258,7 +262,7 @@ class ClozeDragDrop extends Component {
             )}
           </Wrapper>
         )}
-      </div>
+      </WithResources>
     );
   }
 }

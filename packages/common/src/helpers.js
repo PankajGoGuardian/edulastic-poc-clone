@@ -119,6 +119,10 @@ const parseTemplate = tmpl => {
     .each(addProps);
 
   $(parsedHTML)
+    .find("response")
+    .each(addProps);
+
+  $(parsedHTML)
     .find(".input__math")
     .each(function() {
       const latex = $(this).attr("data-latex");

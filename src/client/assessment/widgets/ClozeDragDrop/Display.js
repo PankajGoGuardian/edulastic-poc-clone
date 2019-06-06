@@ -1,32 +1,33 @@
+/* eslint-disable no-undef */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { cloneDeep } from "lodash";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
-import striptags from "striptags";
 
-import { InstructorStimulus, MathSpan, PreWrapper } from "@edulastic/common";
+import JsxParser from "react-jsx-parser";
+
+import { InstructorStimulus, PreWrapper, helpers } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
-import Droppable from "./components/Droppable";
-import Draggable from "./components/Draggable";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
-import { ResponseContainer } from "./styled/ResponseContainer";
+import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
+import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 const defaultTemplateMarkup =
-  '<p>"It\'s all clear" he</p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p>Have you the </p><p class="response-btn" contenteditable="false"><span class="index">1</span><span class="text">Response</span></p><p> and the bags? <br /> Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>';
+  '<p>Sample Template markup&nbsp;<span class="input__math" data-latex="xy^2"></span> &nbsp;<response contenteditable="false" index="{{0}}">Response</response> <response contenteditable="false" index="{{1}}">Response</response></p>';
 
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
     const { templateMarkUp } = props;
-    const { templateParts, respLength } = this.getTemplateParts(templateMarkUp);
+    const respLength = this.getResponsesCount(templateMarkUp);
     const userAnswers = new Array(respLength).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -35,31 +36,33 @@ class ClozeDragDropDisplay extends Component {
     const possibleResponses = this.getInitialResponses(props);
 
     this.state = {
-      templateParts,
       userAnswers,
       possibleResponses
     };
   }
 
+  componentDidMount() {
+    const { templateMarkUp } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp || defaultTemplateMarkup) });
+  }
+
   componentWillReceiveProps(nextProps) {
-    const { templateMarkUp } = nextProps;
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps);
-      const { templateParts } = this.getTemplateParts(templateMarkUp);
+      const parsedTemplate = helpers.parseTemplate(nextProps.templateMarkUp);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
-        templateParts
+        parsedTemplate
       });
     }
   }
 
-  getTemplateParts = templateMarkUp => {
-    let templateMarkUpStr = templateMarkUp;
-    const templateParts = templateMarkUpStr.match(/(<p.*?<\/p>)|(<span.*?><\/span>)/g);
-    const responseParts = templateMarkUpStr.match(/<p class="response-btn.*?<\/p>/g);
-    const respLength = responseParts !== null ? responseParts.length : 0;
-    return { templateParts, respLength };
+  getResponsesCount = templateMarkUp => {
+    if (!window.$) {
+      return 0;
+    }
+    return $($.parseHTML(templateMarkUp)).find("response").length;
   };
 
   onDrop = (data, index) => {
@@ -195,32 +198,51 @@ class ClozeDragDropDisplay extends Component {
     return possibleResps;
   };
 
-  getLabel = dropTargetIndex => {
-    const { options } = this.props;
-    const { userAnswers } = this.state;
-    if (userAnswers[dropTargetIndex]) {
-      const foundedItem = options.find(option => option.value === userAnswers[dropTargetIndex]);
-      if (foundedItem) {
-        return foundedItem.label;
-      }
-    }
-  };
+  getBtnStyles = () => {
+    const { uiStyle } = this.props;
 
-  getLabelForGroup = dropTargetIndex => {
-    const { options } = this.props;
-    const { userAnswers } = this.state;
+    const btnStyle = {
+      width: 0,
+      height: 0,
+      widthpx: 0,
+      heightpx: 0,
+      whiteSpace: undefined,
+      wordwrap: undefined
+    };
 
-    if (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data) {
-      const foundedGroup = options.find(option =>
-        option.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data)
-      );
-      if (foundedGroup) {
-        const foundItem = foundedGroup.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data);
-        if (foundItem) {
-          return foundItem.label;
-        }
-      }
+    const responseBtnStyle = {
+      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
+      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto",
+      whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
+    };
+
+    // if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
+    //   const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
+    //   btnStyle.width = widthpx;
+    //   btnStyle.height = heightpx;
+    //   btnStyle.whiteSpace = wordwrap;
+    //   btnStyle.widthpx = widthpx;
+    //   btnStyle.heightpx = heightpx;
+    //   btnStyle.wordwrap = wordwrap;
+    // }
+
+    if (btnStyle && btnStyle.width === 0) {
+      btnStyle.width = responseBtnStyle.widthpx;
+    } else {
+      btnStyle.width = btnStyle.widthpx;
     }
+    if (btnStyle && btnStyle.height === 0) {
+      btnStyle.height = responseBtnStyle.heightpx;
+    } else {
+      btnStyle.height = btnStyle.heightpx;
+    }
+    if (btnStyle && btnStyle.whiteSpace === undefined) {
+      btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
+    } else {
+      btnStyle.whiteSpace = btnStyle.wordwrap;
+    }
+
+    return { btnStyle, responseBtnStyle };
   };
 
   render() {
@@ -242,10 +264,11 @@ class ClozeDragDropDisplay extends Component {
       qIndex
     } = this.props;
 
-    const { templateParts, userAnswers, possibleResponses } = this.state;
+    const { userAnswers, possibleResponses, parsedTemplate } = this.state;
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions;
 
-    let responseIndex = 0;
+    const { btnStyle, responseBtnStyle } = this.getBtnStyles();
+
     let responses = cloneDeep(possibleResponses);
 
     if (preview && shuffleOptions) {
@@ -260,13 +283,24 @@ class ClozeDragDropDisplay extends Component {
     const fontSize = getFontSize(uiStyle.fontsize);
     const { responsecontainerposition, responsecontainerindividuals, stemnumeration } = uiStyle;
 
-    const responseBtnStyle = {
-      widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
-      heightpx: uiStyle.heightpx !== 0 ? uiStyle.heightpx : "auto",
-      whiteSpace: uiStyle.wordwrap ? "inherit" : "nowrap"
-    };
+    const templateBoxLayout = showAnswer || checkAnswer ? CheckboxTemplateBoxLayout : TemplateBox;
 
-    const previewTemplateBoxLayout = (
+    const resProps =
+      showAnswer || checkAnswer
+        ? {
+            options,
+            responsecontainerindividuals,
+            responseBtnStyle,
+            stemnumeration,
+            hasGroupResponses,
+            showAnswer,
+            userSelections: userAnswers,
+            evaluation,
+            onDropHandler: this.onDrop
+          }
+        : { hasGroupResponses, btnStyle, smallSize, options, userAnswers, onDrop: this.onDrop };
+
+    const templateBoxLayoutContainer = (
       <PreWrapper>
         <div
           className={`template_box ${smallSize ? "small" : ""}`}
@@ -274,102 +308,18 @@ class ClozeDragDropDisplay extends Component {
             fontSize: smallSize ? theme.widgets.clozeDragDrop.previewTemplateBoxSmallFontSize : fontSize
           }}
         >
-          {templateParts &&
-            templateParts.map((templatePart, index) => {
-              if (templatePart.indexOf('class="response-btn"') !== -1) {
-                const dropTargetIndex = responseIndex;
-
-                responseIndex++;
-                const btnStyle = {
-                  width: 0,
-                  height: 0,
-                  widthpx: 0,
-                  heightpx: 0,
-                  whiteSpace: undefined,
-                  wordwrap: undefined
-                };
-                if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-                  const { widthpx, heightpx, wordwrap } = responsecontainerindividuals[dropTargetIndex];
-                  btnStyle.width = widthpx;
-                  btnStyle.height = heightpx;
-                  btnStyle.whiteSpace = wordwrap;
-                  btnStyle.widthpx = widthpx;
-                  btnStyle.heightpx = heightpx;
-                  btnStyle.wordwrap = wordwrap;
-                }
-                if (btnStyle && btnStyle.width === 0) {
-                  btnStyle.width = responseBtnStyle.widthpx;
-                } else {
-                  btnStyle.width = btnStyle.widthpx;
-                }
-                if (btnStyle && btnStyle.height === 0) {
-                  btnStyle.height = responseBtnStyle.heightpx;
-                } else {
-                  btnStyle.height = btnStyle.heightpx;
-                }
-                if (btnStyle && btnStyle.whiteSpace === undefined) {
-                  btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
-                } else {
-                  btnStyle.whiteSpace = btnStyle.wordwrap;
-                }
-                return (
-                  <Droppable drop={() => ({ dropTargetIndex })}>
-                    {!hasGroupResponses && (
-                      <ResponseContainer
-                        id={`response-container-${dropTargetIndex}`}
-                        style={btnStyle}
-                        smallSize={smallSize}
-                      >
-                        <Draggable
-                          title={striptags(this.getLabel(dropTargetIndex)) || ""}
-                          className="content"
-                          onDrop={this.onDrop}
-                          data={`${this.getLabel(dropTargetIndex)}_${dropTargetIndex}_fromResp`}
-                        >
-                          <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
-                        </Draggable>
-                        &nbsp;
-                      </ResponseContainer>
-                    )}
-                    {hasGroupResponses && (
-                      <ResponseContainer style={btnStyle} smallSize={smallSize}>
-                        <Draggable
-                          title={striptags(this.getLabel(dropTargetIndex)) || ""}
-                          className="content"
-                          onDrop={this.onDrop}
-                          data={`${this.getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
-                            userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
-                        >
-                          <MathSpan dangerouslySetInnerHTML={{ __html: this.getLabel(dropTargetIndex) || "" }} />
-                        </Draggable>
-                        &nbsp;
-                      </ResponseContainer>
-                    )}
-                  </Droppable>
-                );
-              }
-              return <MathSpan key={index} dangerouslySetInnerHTML={{ __html: templatePart }} />;
-            })}
+          <JsxParser
+            bindings={{ resProps }}
+            showWarnings
+            components={{
+              response: templateBoxLayout,
+              mathspan: MathSpanWrapper
+            }}
+            jsx={parsedTemplate}
+          />
         </div>
       </PreWrapper>
     );
-
-    const checkboxTemplateBoxLayout = (
-      <CheckboxTemplateBoxLayout
-        templateParts={templateParts}
-        options={options}
-        responsecontainerindividuals={responsecontainerindividuals}
-        responseBtnStyle={responseBtnStyle}
-        stemNumeration={stemnumeration}
-        hasGroupResponses={hasGroupResponses}
-        fontSize={fontSize}
-        showAnswer={showAnswer}
-        userSelections={userAnswers}
-        evaluation={evaluation}
-        onDropHandler={this.onDrop}
-      />
-    );
-    const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;
 
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
@@ -404,7 +354,7 @@ class ClozeDragDropDisplay extends Component {
           {responsecontainerposition === "top" && (
             <React.Fragment>
               <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
-              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
             </React.Fragment>
           )}
           {responsecontainerposition === "bottom" && (
@@ -417,7 +367,7 @@ class ClozeDragDropDisplay extends Component {
               >
                 <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
-                {templateBoxLayout}
+                {templateBoxLayoutContainer}
               </div>
               <div
                 style={{
@@ -445,12 +395,12 @@ class ClozeDragDropDisplay extends Component {
               >
                 {responseBoxLayout}
               </div>
-              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>{templateBoxLayout}</div>
+              <div style={{ margin: 15, borderRadius: 10, flex: 1 }}>{templateBoxLayoutContainer}</div>
             </AnswerContainer>
           )}
           {responsecontainerposition === "right" && (
             <AnswerContainer position={responsecontainerposition}>
-              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>{templateBoxLayout}</div>
+              <div style={{ flex: 1, margin: 15, borderRadius: 10 }}>{templateBoxLayoutContainer}</div>
               <div
                 hidden={checkAnswer || showAnswer}
                 style={{

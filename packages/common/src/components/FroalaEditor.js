@@ -23,9 +23,9 @@ FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-command-id");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-block-id");
-FroalaEditor.DEFAULTS.htmlAllowedEmptyTags.push("span", "textinput", "textdropdown", "mathinput");
+FroalaEditor.DEFAULTS.htmlAllowedEmptyTags.push("span", "textinput", "textdropdown", "mathinput", "response");
 
-FroalaEditor.DEFAULTS.htmlAllowedTags.push("textinput", "textdropdown", "mathinput");
+FroalaEditor.DEFAULTS.htmlAllowedTags.push("textinput", "textdropdown", "mathinput", "response");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("index");
 
 // register custom math buttton
@@ -44,6 +44,7 @@ FroalaEditor.DefineIconTemplate(
   `
 );
 
+FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Response</span>`);
 FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-btn">Response Boxes</span>`);
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
@@ -228,12 +229,12 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       restOptions.toolbarButtons.includes("textdropdown") || // toolbarButtons prop contains dropdown
       restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
     ) {
-      // const responseIndexes = $(val)
-      //   .find(".response-btn")
-      //   .map(function() {
-      //     return +$(this).text();
-      //   })
-      //   .toArray();
+      const responseIndexes = $(val)
+        .find("response")
+        .map(function() {
+          return +$(this).text();
+        })
+        .toArray();
       const mathInputIndexes = $(val)
         .find("mathinput")
         .map(function() {
@@ -306,6 +307,20 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         setCurrentLatex("");
         setCurrentMathEl(null);
         setMathModal(true);
+        this.undo.saveStep();
+      }
+    });
+
+    // Register response commnad for Response Button
+    FroalaEditor.DefineIcon("response", { NAME: "response", template: "response" });
+    FroalaEditor.RegisterCommand("response", {
+      title: "Response",
+      focus: true,
+      undo: true,
+      refreshAfterCallback: true,
+      callback() {
+        const responseCount = this.$el[0].querySelectorAll("response").length;
+        this.html.insert(`<Response index={{${responseCount}}} contentEditable="false">Response</Response>`);
         this.undo.saveStep();
       }
     });

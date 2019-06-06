@@ -421,7 +421,7 @@ template {
 }
 
 .response-btn .index {
-  padding: 6px 8px;
+  padding: 7px 8px;
   background: darkgray;
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
@@ -627,6 +627,7 @@ table.quill-table td {
   text-overflow: ellipsis;
   overflow: hidden;
   height: 100%;
+  text-align: center;
 }
 
 .imagedragdrop_template_box {
@@ -799,7 +800,7 @@ input[type="checkbox"] {
 .check-answer.wrong .text {
   background: #fce0e8;
   color: #878282;
-  padding: 7px;
+  padding: 7px 16px 7px 7px;
 }
 
 .check-answer.right .index {
@@ -811,7 +812,7 @@ input[type="checkbox"] {
 .check-answer.right .text {
   background: #e1fbf2;
   color: #878282;
-  padding: 7px;
+  padding: 7px 16px 7px 7px;
 }
 
 .check-answer.showanswer .index {
@@ -900,7 +901,6 @@ textinput {
   min-height: 35px;
 }
 
-.response-btn span,
 mathinput span,
 textdropdown span,
 textinput span {
@@ -997,6 +997,19 @@ textinput:hover .input-text {
 textinput:hover .text-input-index {
   background: #12a6e8;
   color: white;
+}
+
+response {
+  min-width: 120px;
+  min-height: 30px;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 8px;
+  margin: 0 2px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px black dotted;
+  justify-content: center;
 }
 
 *,
@@ -1122,8 +1135,8 @@ textinput:hover .text-input-index {
 }
 
 .imagelabeldragdrop-droppable img,
-.responses_box img,
-.main img {
+.main img,
+.responses_box img {
   max-width: 151.5px;
   max-height: 100px;
   width: auto !important;

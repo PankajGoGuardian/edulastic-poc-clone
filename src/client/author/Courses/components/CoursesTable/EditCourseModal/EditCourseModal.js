@@ -179,7 +179,7 @@ class EditCourseModal extends React.Component {
         maskClosable={false}
         footer={[
           <Button type="primary" key="submit" onClick={this.onSaveCourse}>
-            Save Course >
+            Update Course >
           </Button>
         ]}
       >

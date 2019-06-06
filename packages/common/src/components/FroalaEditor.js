@@ -4,7 +4,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
@@ -91,16 +91,50 @@ const NoneDiv = styled.div`
 `;
 
 const BackgroundStyleWrapper = styled.div`
+  position: relative;
+  width: 100%;
+  display: block;
+
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
+  }
+`;
+
+export const ToolbarContainer = styled.div.attrs({
+  className: "froala-toolbar-container",
+  toolbarId: props => props.toolbarId
+})`
+  position: absolute;
+  top: -50px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+
+  .fr-toolbar .fr-command.fr-btn {
+    margin: 0 2px !important;
+  }
+
+  .fr-toolbar.fr-top {
+    border-radius: 2px !important;
+    border: 1px solid #cccccc !important;
   }
 `;
 
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor);
 
-const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restOptions }) => {
+const getFixedPostion = el => {
+  return {
+    top: $(el).offset().top - $(window).scrollTop(),
+    left: $(el).offset().left - $(window).scrollLeft(),
+    width: $(el).width(),
+    height: $(el).height()
+  };
+};
+
+const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOptions, ...restOptions }) => {
   const mathFieldRef = useRef(null);
+  const toolbarContainerRef = useRef(null);
 
   const [showMathModal, setMathModal] = useState(false);
   const [mathModalIsEditable, setMathModalIsEditable] = useState(true);
@@ -144,6 +178,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
       tableResizingLimit: 50,
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
+      toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
 
       events: {
         click: function(evt) {
@@ -386,6 +421,36 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         this.commands.exec(op);
       }
     });
+
+    if (toolbarId) {
+      const onScroll = debounce(e => {
+        const toolbarPosInfo = getFixedPostion(toolbarContainerRef.current);
+        const editorPosInfo = getFixedPostion(EditorRef.current.$el);
+
+        if (editorPosInfo.top > 150) {
+          if ($(toolbarContainerRef.current).css("position") === "fixed") {
+            $(toolbarContainerRef.current).css("position", "");
+            $(toolbarContainerRef.current).css("top", "");
+            $(toolbarContainerRef.current).css("left", "");
+            $(toolbarContainerRef.current).css("width", "");
+            $(toolbarContainerRef.current).css("height", "");
+          }
+        } else {
+          if ($(toolbarContainerRef.current).css("position") !== "fixed") {
+            $(toolbarContainerRef.current).css("position", "fixed");
+            $(toolbarContainerRef.current).css("top", "100px");
+            $(toolbarContainerRef.current).css("left", toolbarPosInfo.left);
+            $(toolbarContainerRef.current).css("width", toolbarPosInfo.width);
+            $(toolbarContainerRef.current).css("height", toolbarPosInfo.height);
+          }
+        }
+      }, 100);
+      window.addEventListener("scroll", onScroll);
+
+      return () => {
+        window.removeEventListener("scroll", onScroll);
+      };
+    }
   }, []);
 
   useEffect(() => {
@@ -420,6 +485,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
         onClose={closeMathModal}
       />
       <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+        {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}
           model={content}
@@ -438,6 +504,7 @@ const CustomEditor = ({ value, onChange, tag, additionalToolbarOptions, ...restO
 CustomEditor.propTypes = {
   tag: PropTypes.string,
   value: PropTypes.string.isRequired,
+  toolbarId: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool
@@ -445,6 +512,7 @@ CustomEditor.propTypes = {
 
 CustomEditor.defaultProps = {
   tag: "textarea",
+  toolbarId: null,
   additionalToolbarOptions: [],
   readOnly: false
 };

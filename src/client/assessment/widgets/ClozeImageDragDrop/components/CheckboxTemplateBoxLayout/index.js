@@ -16,7 +16,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 import striptags from "striptags";
-import { response } from "../../../../../../../packages/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -106,7 +106,8 @@ const CheckboxTemplateBoxLayout = ({
                   index={index}
                   style={{
                     ...btnStyle,
-                    width: "max-content",
+                    width: responseContainer.width || "max-content",
+                    height: responseContainer.height,
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}
@@ -172,8 +173,8 @@ const CheckboxTemplateBoxLayout = ({
                 <div
                   style={{
                     ...btnStyle,
-                    width: "max-content",
-                    height: "auto",
+                    width: responseContainer.width || "max-content",
+                    height: responseContainer.height || "auto",
                     minWidth: response.minWidth,
                     maxWidth: response.maxWidth
                   }}

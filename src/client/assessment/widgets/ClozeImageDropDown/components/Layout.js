@@ -49,30 +49,77 @@ class Layout extends Component {
   }
 
   handleWidthChange = () => {
-    const { onChange, uiStyle } = this.props;
+    const { onChange, uiStyle, responses } = this.props;
     const { minWidth, maxWidth } = response;
-    const width = uiStyle.widthpx;
+    const width = parseInt(uiStyle.widthpx);
+    let updatedResponses;
     if (width < minWidth) {
-      onChange("ui_style", {
-        ...uiStyle,
-        widthpx: minWidth
-      });
+      updatedResponses = responses.map(response => ({
+        ...response,
+        width: minWidth
+      }));
     }
+
     if (width > maxWidth) {
-      onChange("ui_style", {
-        ...uiStyle,
-        widthpx: maxWidth
-      });
+      updatedResponses = responses.map(response => ({
+        ...response,
+        width: maxWidth
+      }));
     }
+
+    updatedResponses = responses.map(response => ({
+      ...response,
+      width
+    }));
+    onChange("responses", updatedResponses);
+  };
+
+  handleHeightChange = () => {
+    const { onChange, uiStyle, responses } = this.props;
+    const { minHeight, maxHeight } = response;
+    const height = parseInt(uiStyle.heightpx);
+    let updatedResponses;
+
+    if (height < minHeight) {
+      updatedResponses = responses.map(response => ({
+        ...response,
+        height: minHeight
+      }));
+    }
+
+    if (height > maxHeight) {
+      updatedResponses = responses.map(response => ({
+        ...response,
+        height: maxHeight
+      }));
+    }
+
+    updatedResponses = responses.map(response => ({
+      ...response,
+      height
+    }));
+    onChange("responses", updatedResponses);
   };
 
   render() {
     const { questionData, onChange, uiStyle, advancedAreOpen, t } = this.props;
 
     const changeUiStyle = (prop, value) => {
+      const { maxHeight, maxWidth } = response;
+      let newValue = value;
+      if (prop === "widthpx") {
+        if (+value > maxWidth) {
+          newValue = maxWidth;
+        }
+      }
+      if (prop === "heightpx") {
+        if (+value > maxHeight) {
+          newValue = maxHeight;
+        }
+      }
       onChange("ui_style", {
         ...uiStyle,
-        [prop]: value
+        [prop]: newValue
       });
     };
 
@@ -255,8 +302,11 @@ class Layout extends Component {
                   type="number"
                   size="large"
                   disabled={false}
+                  onBlur={this.handleHeightChange}
                   onChange={e => changeUiStyle("heightpx", e.target.value)}
                   value={uiStyle.heightpx}
+                  max={response.maxHeight}
+                  min={response.minHeight}
                 />
               </Col>
             </MarginRow>

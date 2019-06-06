@@ -231,6 +231,7 @@ class ClozeImageDragDrop extends Component {
               <Options
                 onChange={this.handleOptionsChange}
                 uiStyle={uiStyle}
+                responses={item.responses}
                 outerStyle={{
                   padding: "30px 120px"
                 }}
@@ -316,6 +317,7 @@ class ClozeImageDragDrop extends Component {
                 maxWidth={maxWidth}
                 preview
                 item={itemForPreview}
+                responses={item.responses}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 validation={itemForPreview.validation}
                 configureOptions={{

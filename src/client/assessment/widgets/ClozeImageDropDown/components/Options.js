@@ -11,7 +11,16 @@ import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
 import Extras from "../../../containers/Extras";
 
-const Options = ({ questionData, onChange, uiStyle, outerStyle, advancedAreOpen, fillSections, cleanSections }) => (
+const Options = ({
+  questionData,
+  responses,
+  onChange,
+  uiStyle,
+  outerStyle,
+  advancedAreOpen,
+  fillSections,
+  cleanSections
+}) => (
   <WidgetOptions
     outerStyle={outerStyle}
     advancedAreOpen={advancedAreOpen}
@@ -25,6 +34,7 @@ const Options = ({ questionData, onChange, uiStyle, outerStyle, advancedAreOpen,
       advancedAreOpen={advancedAreOpen}
       fillSections={fillSections}
       cleanSections={cleanSections}
+      responses={responses}
     />
     <Extras advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections}>
       <Extras.Distractors />

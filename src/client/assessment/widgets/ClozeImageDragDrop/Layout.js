@@ -4,14 +4,16 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 
 import { Select } from "@edulastic/common";
-import { withNamespaces } from "@edulastic/localization";
+import { Input } from "antd";
 
+import { withNamespaces } from "@edulastic/localization";
 import { Block } from "../../styled/WidgetOptions/Block";
 import { Row } from "../../styled/WidgetOptions/Row";
 import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
+import { response } from "@edulastic/constants/const/dimensions";
 
 class Layout extends Component {
   static propTypes = {
@@ -60,6 +62,41 @@ class Layout extends Component {
 
     cleanSections();
   }
+
+  handleWidthChange = () => {
+    const { onChange, uiStyle, responses } = this.props;
+    const { minWidth, maxWidth } = response;
+    let width = uiStyle.widthpx;
+    let updatedResponses;
+    if (width < minWidth) {
+      width = minWidth;
+    } else if (width > maxWidth) {
+      width = maxWidth;
+    }
+    updatedResponses = responses.map(response => ({
+      ...response,
+      width: `${width}px`
+    }));
+    onChange("responses", updatedResponses);
+  };
+
+  handleHeightChange = () => {
+    const { onChange, uiStyle, responses } = this.props;
+    const { minHeight, maxHeight } = response;
+    let height = uiStyle.heightpx;
+    let updatedResponses;
+    if (height < minHeight) {
+      height = minHeight;
+    } else if (height > maxHeight) {
+      height = maxHeight;
+    }
+
+    updatedResponses = responses.map(response => ({
+      ...response,
+      height: `${height}px`
+    }));
+    onChange("responses", updatedResponses);
+  };
 
   render() {
     const { onChange, uiStyle, advancedAreOpen, t } = this.props;
@@ -125,6 +162,34 @@ class Layout extends Component {
                   value={uiStyle.fontsize}
                 />
               </SelectWrapper>
+            </Col>
+          </Row>
+          <Row gutter={20}>
+            <Col md={12}>
+              <Label>{t("component.options.widthpx")}</Label>
+              <Input
+                type="number"
+                size="large"
+                disabled={false}
+                onBlur={this.handleWidthChange}
+                onChange={e => changeUiStyle("widthpx", e.target.value)}
+                value={uiStyle.widthpx}
+                min={response.minWidth}
+                max={response.maxWidth}
+              />
+            </Col>
+            <Col md={12}>
+              <Label>{t("component.options.heightpx")}</Label>
+              <Input
+                type="number"
+                size="large"
+                disabled={false}
+                onBlur={this.handleHeightChange}
+                onChange={e => changeUiStyle("heightpx", e.target.value)}
+                value={uiStyle.heightpx}
+                min={response.minHeight}
+                max={response.maxHeight}
+              />
             </Col>
           </Row>
         </Block>

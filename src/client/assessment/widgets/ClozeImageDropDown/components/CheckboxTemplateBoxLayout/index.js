@@ -30,7 +30,9 @@ const CheckboxTemplateBoxLayout = ({
   imagescale,
   evaluation,
   maxHeight,
-  maxWidth
+  maxWidth,
+  minWidth,
+  minHeight
 }) => (
   <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
     <TemplateCover
@@ -53,11 +55,10 @@ const CheckboxTemplateBoxLayout = ({
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
-          widthpx: responseContainer.width,
-          width: responseContainer.width,
+          width: `${parseInt(responseContainer.width)}px`,
           top: responseContainer.top,
           left: responseContainer.left,
-          height: responseContainer.height,
+          height: `${parseInt(responseContainer.height)}px`,
           position: "absolute",
           borderRadius: 5
         };
@@ -70,9 +71,6 @@ const CheckboxTemplateBoxLayout = ({
           btnStyle.width = responseBtnStyle.widthpx;
         } else {
           btnStyle.width = btnStyle.widthpx;
-        }
-        if (uiStyle.widthpx) {
-          btnStyle.width = `${uiStyle.widthpx}px`;
         }
         let indexStr = "";
         switch (stemnumeration) {
@@ -92,7 +90,13 @@ const CheckboxTemplateBoxLayout = ({
           <React.Fragment key={index}>
             {!showAnswer && (
               <div
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  height: `${parseInt(responseContainer.height)}px`,
+                  width: `${parseInt(responseContainer.width)}px`,
+                  minWidth,
+                  minHeight
+                }}
                 className={`
                 imagelabeldragdrop-droppable 
                 active 
@@ -112,7 +116,13 @@ const CheckboxTemplateBoxLayout = ({
             )}
             {showAnswer && (
               <div
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  height: `${parseInt(responseContainer.height)}px`,
+                  width: `${parseInt(responseContainer.width)}px`,
+                  minWidth,
+                  minHeight
+                }}
                 className={`
                 imagelabeldragdrop-droppable 
                 active

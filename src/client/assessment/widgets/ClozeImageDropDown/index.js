@@ -209,6 +209,7 @@ class ClozeImageDropDown extends Component {
                         shuffleOptions,
                         transparentResponses
                       }}
+                      item={item}
                       imagescale={imagescale}
                       options={previewDisplayOptions}
                       imageAlterText={item.imageAlterText}
@@ -248,6 +249,7 @@ class ClozeImageDropDown extends Component {
                   advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  responses={item.responses}
                 />
               </OptionsContainer>
             </React.Fragment>

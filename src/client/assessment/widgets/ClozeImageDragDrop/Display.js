@@ -129,6 +129,7 @@ class Display extends Component {
       validation,
       evaluation,
       imageUrl,
+      responses: userRespos,
       responseContainers,
       imageAlterText,
       imageWidth,
@@ -272,9 +273,9 @@ class Display extends Component {
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? "dashed" : "solid",
-                  height: "auto",
+                  height: responseContainer.height || "auto",
                   minHeight: btnStyle.height,
-                  width: "max-content",
+                  width: responseContainer.width || "max-content",
                   minWidth: response.minWidth,
                   maxWidth: response.maxWidth
                 }}

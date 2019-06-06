@@ -7,6 +7,7 @@ import { SelectContainer } from "./styled/SelectContainer";
 const AnswerDropdown = ({ responseIndex, style, onChange, options, defaultValue }) => (
   <SelectContainer style={style}>
     <Select
+      style={style}
       data-cy={`dropdown-res-${responseIndex}`}
       defaultValue={defaultValue}
       onChange={value => {

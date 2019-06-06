@@ -144,7 +144,8 @@ class CorrectAnswers extends Component {
       maxHeight,
       maxWidth,
       imageHeight,
-      imageOptions
+      imageOptions,
+      item
     } = this.props;
     const { value } = this.state;
     return (
@@ -178,6 +179,7 @@ class CorrectAnswers extends Component {
                 maxWidth={maxWidth}
                 imageHeight={imageHeight}
                 imageOptions={imageOptions}
+                item={item}
               />
             </TabContainer>
           )}

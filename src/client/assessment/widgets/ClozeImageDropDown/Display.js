@@ -16,6 +16,8 @@ import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer"
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, calculateRatio, fromStringToNumberPx } from "../../utils/helpers";
 
+import { response } from "@edulastic/constants";
+
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
@@ -145,7 +147,6 @@ class Display extends Component {
                   ? `dashed 2px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`
                   : `solid 1px ${theme.widgets.clozeImageDropDown.responseContainerDashedBorderColor}`,
                 position: "absolute",
-                background: backgroundColor,
                 borderRadius: 5
               };
               if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
@@ -177,15 +178,21 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
-                    width: `${uiStyle.widthpx}px`,
-                    overflow: "hidden"
+                    width: `${parseInt(responseContainer.width)}px`,
+                    overflow: "hidden",
+                    height: `${parseInt(responseContainer.height)}px`,
+                    minWidth: response.minWidth,
+                    minHeight: response.minHeight
                   }}
                   className="imagelabeldragdrop-droppable active"
                 >
                   {!smallSize && (
                     <AnswerDropdown
                       responseIndex={dropTargetIndex}
-                      style={{ width: "100%", height: "100%" }}
+                      style={{
+                        width: `${parseInt(responseContainer.width)}px`,
+                        height: `${parseInt(responseContainer.height)}px`
+                      }}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}
@@ -215,6 +222,8 @@ class Display extends Component {
         options={newOptions}
         maxHeight={maxHeight}
         maxWidth={maxWidth}
+        minWidth={response.minWidth}
+        minHeight={response.minHeight}
         userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
         evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
       />

@@ -3,7 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { schoolApi } from "@edulastic/api";
 import { message } from "antd";
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 
 const RECEIVE_SCHOOLS_REQUEST = "[school] receive data request";
 const RECEIVE_SCHOOLS_SUCCESS = "[school] receive data success";
@@ -35,9 +35,7 @@ export const deleteSchoolsErrorAction = createAction(DELETE_SCHOOLS_ERROR);
 const stateSchoolsSelector = state => state.schoolsReducer;
 export const getSchoolsSelector = createSelector(
   stateSchoolsSelector,
-  state => {
-    return state.data;
-  }
+  state => state.data
 );
 
 // reducers
@@ -200,16 +198,19 @@ export const reducer = createReducer(initialState, {
   [DELETE_SCHOOLS_REQUEST]: state => {
     state.deleting = true;
   },
-  [DELETE_SCHOOLS_SUCCESS]: (state, { payload }) => {
-    state.delete = payload;
+  [DELETE_SCHOOLS_SUCCESS]: (state, { payload: schoolIds }) => {
+    // state.delete = payload;
     state.deleting = false;
-    state.data = state.data.filter(school => {
-      let nMatchCount = 0;
-      payload.map(row => {
-        if (row.schoolId === school._id) nMatchCount++;
-      });
-      if (nMatchCount == 0) return school;
-    });
+
+    // here we have to update the status of all the deleted schools to 0
+    // hence, we create a hashmap of all the students, then update the status of each to 0, then
+    // create back the array and store it back.
+    // this reduces the complexity from n^2 to 3n
+    const schoolListHash = keyBy(state.data, "key");
+    for (let i = 0; i < schoolIds.length; i++) {
+      schoolListHash[schoolIds[i]].status = 0;
+    }
+    state.data = Object.values(schoolListHash);
   },
   [DELETE_SCHOOLS_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -259,10 +260,10 @@ function* createSchoolsSaga({ payload }) {
 
 function* deleteSchoolsSaga({ payload }) {
   try {
-    for (let i = 0; i < payload.length; i++) {
-      yield call(schoolApi.deleteSchool, payload[i]);
-    }
-    yield put(deleteSchoolsSuccessAction(payload));
+    // for (let i = 0; i < payload.length; i++) {
+    const result = yield call(schoolApi.deleteSchool, payload);
+    message.success(result);
+    yield put(deleteSchoolsSuccessAction(payload.schoolIds));
   } catch (err) {
     const errorMessage = "Delete School is failing";
     yield call(message.error, errorMessage);

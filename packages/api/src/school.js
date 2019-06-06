@@ -30,13 +30,14 @@ const createSchool = data =>
     })
     .then(result => result.data.result);
 
-const deleteSchool = ({ schoolId, orgId }) =>
+const deleteSchool = data =>
   api
     .callApi({
-      url: `${prefix}/${schoolId}?districtId=${orgId}`,
-      method: "delete"
+      url: `${prefix}`,
+      method: "delete",
+      data
     })
-    .then(result => result.data.result);
+    .then(({ data: { result } }) => result);
 
 const searchSchool = body =>
   api

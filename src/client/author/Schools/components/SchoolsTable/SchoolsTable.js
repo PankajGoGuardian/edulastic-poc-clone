@@ -106,12 +106,8 @@ class SchoolsTable extends React.Component {
   };
 
   handleDelete = key => {
-    const data = [...this.state.dataSource];
-    this.setState({ dataSource: data.filter(item => item.key !== key) });
-    const selectedSchool = data.filter(item => item.key == key);
-
-    const { deleteSchool } = this.props;
-    deleteSchool([{ schoolId: selectedSchool[0]._id, orgId: selectedSchool[0].districtId }]);
+    const { userOrgId: districtId, deleteSchool } = this.props;
+    deleteSchool({ schoolIds: [key], districtId });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -230,6 +226,7 @@ class SchoolsTable extends React.Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { userOrgId: districtId, deleteSchool } = this.props;
 
     if (e.key === "edit school") {
       if (selectedRowKeys.length == 0) {
@@ -241,19 +238,7 @@ class SchoolsTable extends React.Component {
       }
     } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
-        const data = [...this.state.dataSource];
-        this.setState({
-          dataSource: data.filter(item => {
-            if (selectedRowKeys.indexOf(item.key) == -1) return item;
-          })
-        });
-
-        const selectedSchoolsData = [];
-        selectedRowKeys.map(value => {
-          selectedSchoolsData.push({ schoolId: value, orgId: this.props.userOrgId });
-        });
-        const { deleteSchool } = this.props;
-        deleteSchool(selectedSchoolsData);
+        deleteSchool({ schoolIds: selectedRowKeys, districtId });
       } else {
         message.error("Please select schools to delete.");
       }

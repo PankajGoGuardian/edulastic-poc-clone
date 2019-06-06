@@ -19,9 +19,9 @@ class EditSchoolAdminModal extends React.Component {
   };
 
   render() {
-    const { schoolsData } = this.props;
+    const { modalVisible, schoolAdminData, schoolsList } = this.props;
     const schoolsOptions = [];
-    schoolsData.map((row, index) => {
+    schoolsList.map((row, index) => {
       schoolsOptions.push(
         <Option key={index} value={row._id}>
           {row.name}
@@ -30,7 +30,6 @@ class EditSchoolAdminModal extends React.Component {
     });
 
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, schoolAdminData } = this.props;
     return (
       <StyledModal
         visible={modalVisible}

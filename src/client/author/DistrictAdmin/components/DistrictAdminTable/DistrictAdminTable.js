@@ -100,18 +100,16 @@ class DistrictAdminTable extends React.Component {
   }
 
   componentDidMount() {
-    const { loadDistrictAdminData } = this.props;
+    const { loadDistrictAdminData, userOrgId } = this.props;
     loadDistrictAdminData({
-      type: "DISTRICT",
-      search: {
-        role: "district-admin"
-      }
+      districtId: userOrgId,
+      role: "district-admin",
+      limit: 10000 // TODO: Remove limit after pagination done properly
     });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.districtAdminData.length === undefined) return { dataSource: [] };
-    else return { dataSource: nextProps.districtAdminData };
+    return { dataSource: nextProps.districtAdminData };
   }
 
   onEditDistrictAdmin = key => {
@@ -242,8 +240,13 @@ class DistrictAdminTable extends React.Component {
       editDistrictAdminModaVisible: false
     });
 
-    const { updateDistrictAdmin } = this.props;
-    updateDistrictAdmin({ userId: newData[index]._id, data: updatedDistrictAdminData });
+    const { updateDistrictAdmin, userOrgId } = this.props;
+    updateDistrictAdmin({
+      userId: newData[index]._id,
+      data: Object.assign(updatedDistrictAdminData, {
+        districtId: userOrgId
+      })
+    });
   };
 
   closeEditDistrictAdminModal = () => {
@@ -382,6 +385,5 @@ DistrictAdminTable.propTypes = {
   deleteDistrictAdmin: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
-  districtAdminData: PropTypes.array.isRequired,
   userOrgId: PropTypes.string.isRequired
 };

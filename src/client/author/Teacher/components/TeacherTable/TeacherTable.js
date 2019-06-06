@@ -102,12 +102,11 @@ class TeacherTable extends React.Component {
   }
 
   componentDidMount() {
-    const { loadTeachersListData } = this.props;
+    const { loadTeachersListData, userOrgId } = this.props;
     loadTeachersListData({
-      type: "DISTRICT",
-      search: {
-        role: "teacher"
-      }
+      districtId: userOrgId,
+      role: "teacher",
+      limit: 10000 // TODO: Remove limit after pagination done properly
     });
   }
 
@@ -247,8 +246,13 @@ class TeacherTable extends React.Component {
       editTeacherModaVisible: false
     });
 
-    const { updateTeacher } = this.props;
-    updateTeacher({ userId: newData[index]._id, data: updatedTeacherData });
+    const { updateTeacher, userOrgId } = this.props;
+    updateTeacher({
+      userId: newData[index]._id,
+      data: Object.assign(updatedTeacherData, {
+        districtId: userOrgId
+      })
+    });
   };
 
   closeEditTeacherModal = () => {
@@ -397,7 +401,7 @@ const enhance = compose(
     {
       createTeacher: createTeacherAction,
       updateTeacher: updateTeacherAction,
-      deleteTeacher: deleteTeacherAction,
+      deleteTeachers: deleteTeacherAction,
       loadTeachersListData: receiveTeachersListAction,
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction
@@ -412,7 +416,7 @@ TeacherTable.propTypes = {
   loadTeachersListData: PropTypes.func.isRequired,
   createTeacher: PropTypes.func.isRequired,
   updateTeacher: PropTypes.func.isRequired,
-  deleteTeacher: PropTypes.func.isRequired,
+  deleteTeachers: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired

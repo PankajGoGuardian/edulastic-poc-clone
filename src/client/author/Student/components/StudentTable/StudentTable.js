@@ -108,13 +108,13 @@ class StudentTable extends React.Component {
 
   componentDidMount() {
     const { loadSchoolsData, userOrgId, loadStudentsListData, loadClassList } = this.props;
-    loadSchoolsData({ body: { districtId: userOrgId } });
-
+    loadSchoolsData({
+      districtId: userOrgId
+    });
     loadStudentsListData({
-      type: "DISTRICT",
-      search: {
-        role: "student"
-      }
+      districtId: userOrgId,
+      role: "student",
+      limit: 10000 // TODO: Remove limit after pagination done properly
     });
 
     loadClassList({
@@ -274,8 +274,13 @@ class StudentTable extends React.Component {
       editStudentModaVisible: false
     });
 
-    const { updateStudent } = this.props;
-    updateStudent({ userId: newData[index]._id, data: updatedStudentData });
+    const { updateStudent, userOrgId } = this.props;
+    updateStudent({
+      userId: newData[index]._id,
+      data: Object.assign(updatedStudentData, {
+        districtId: userOrgId
+      })
+    });
   };
 
   closeEditStudentModal = () => {
@@ -437,7 +442,7 @@ const enhance = compose(
     {
       createStudent: createStudentAction,
       updateStudent: updateStudentAction,
-      deleteStudent: deleteStudentAction,
+      deleteStudents: deleteStudentAction,
       loadStudentsListData: receiveStudentsListAction,
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
@@ -452,14 +457,14 @@ const enhance = compose(
 export default enhance(StudentTable);
 
 StudentTable.propTypes = {
-  studentsList: PropTypes.object.isRequired,
+  studentsList: PropTypes.array.isRequired,
   loadStudentsListData: PropTypes.func.isRequired,
   updateStudent: PropTypes.func.isRequired,
-  deleteStudent: PropTypes.func.isRequired,
+  deleteStudents: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
-  schoolsData: PropTypes.object.isRequired,
-  loadClassList: PropTypes.object.isRequired
+  schoolsData: PropTypes.array.isRequired,
+  loadClassList: PropTypes.func.isRequired
 };

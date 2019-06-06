@@ -86,7 +86,7 @@ export const getDistrictAdminSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},
@@ -204,7 +204,7 @@ export const reducer = createReducer(initialState, {
 function* receiveDistrictAdminSaga({ payload }) {
   try {
     const districtAdmin = yield call(userApi.fetchUsers, payload);
-    yield put(receiveDistrictAdminSuccessAction(districtAdmin.data));
+    yield put(receiveDistrictAdminSuccessAction(districtAdmin));
   } catch (err) {
     const errorMessage = "Receive DistrictAdmins is failing!";
     yield call(message.error, errorMessage);
@@ -215,6 +215,7 @@ function* receiveDistrictAdminSaga({ payload }) {
 function* updateDistrictAdminSaga({ payload }) {
   try {
     const updateDistrictAdmin = yield call(userApi.updateUser, payload);
+    message.success("District admin updated successfully");
     yield put(updateDistrictAdminSuccessAction(updateDistrictAdmin));
   } catch (err) {
     const errorMessage = "Update DistrictAdmin is failing";
@@ -239,6 +240,7 @@ function* deleteDistrictAdminSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
+    message.success("District admin removed successfully");
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete DistrictAdmin is failing";

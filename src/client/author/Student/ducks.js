@@ -96,7 +96,7 @@ export const getStudentsListSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},
@@ -126,7 +126,7 @@ export const reducer = createReducer(initialState, {
     const studentsList = [];
     for (let i = 0; i < payload.length; i++) {
       let studentData = payload[i];
-      studentData.key = index;
+      studentData.key = i;
       if (studentData.hasOwnProperty("_source")) {
         const source = studentData._source;
         Object.keys(source).map((key, value) => {
@@ -235,7 +235,7 @@ export const reducer = createReducer(initialState, {
 function* receiveStudentsListSaga({ payload }) {
   try {
     const studentsList = yield call(userApi.fetchUsers, payload);
-    yield put(receiveStudentsListSuccessAction(studentsList.data));
+    yield put(receiveStudentsListSuccessAction(studentsList));
   } catch (err) {
     const errorMessage = "Receive Students is failing!";
     yield call(message.error, errorMessage);
@@ -246,6 +246,7 @@ function* receiveStudentsListSaga({ payload }) {
 function* updateStudentSaga({ payload }) {
   try {
     const updateStudentData = yield call(userApi.updateUser, payload);
+    message.success("Student updated successfully");
     yield put(updateStudentSuccessAction(updateStudentData));
   } catch (err) {
     const errorMessage = "Update Student is failing";
@@ -270,6 +271,7 @@ function* deleteStudentSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
+    message.success("Student removed successfully");
     yield put(deleteStudentSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Student is failing";

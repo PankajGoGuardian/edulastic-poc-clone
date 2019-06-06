@@ -206,7 +206,7 @@ export const reducer = createReducer(initialState, {
 function* receiveTeachersListSaga({ payload }) {
   try {
     const teachersList = yield call(userApi.fetchUsers, payload);
-    yield put(receiveTeachersListSuccessAction(teachersList.data));
+    yield put(receiveTeachersListSuccessAction(teachersList));
   } catch (err) {
     const errorMessage = "Receive Teachers is failing!";
     yield call(message.error, errorMessage);
@@ -217,6 +217,7 @@ function* receiveTeachersListSaga({ payload }) {
 function* updateTeacherSaga({ payload }) {
   try {
     const updateTeacherdData = yield call(userApi.updateUser, payload);
+    message.success("Teacher updated successfully");
     yield put(updateTeacherSuccessAction(updateTeacherdData));
   } catch (err) {
     const errorMessage = "Update Teacher is failing";
@@ -241,6 +242,7 @@ function* deleteTeacherSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
+    message.success("Teacher removed successfully");
     yield put(deleteTeacherSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete Teacher is failing";

@@ -102,7 +102,7 @@ export const getSchoolAdminSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: {},
+  data: [],
   loading: false,
   error: null,
   update: {},
@@ -220,7 +220,7 @@ export const reducer = createReducer(initialState, {
 function* receiveSchoolAdminSaga({ payload }) {
   try {
     const schoolAdmin = yield call(userApi.fetchUsers, payload);
-    yield put(receiveSchoolAdminSuccessAction(schoolAdmin.data));
+    yield put(receiveSchoolAdminSuccessAction(schoolAdmin));
   } catch (err) {
     const errorMessage = "Receive SchoolAdmins is failing!";
     yield call(message.error, errorMessage);
@@ -231,6 +231,7 @@ function* receiveSchoolAdminSaga({ payload }) {
 function* updateSchoolAdminSaga({ payload }) {
   try {
     const updateSchoolAdmin = yield call(userApi.updateUser, payload);
+    message.success("School admin updated successfully");
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
   } catch (err) {
     const errorMessage = "Update SchoolAdmin is failing";
@@ -255,6 +256,7 @@ function* deleteSchoolAdminSaga({ payload }) {
     for (let i = 0; i < payload.length; i++) {
       yield call(userApi.deleteUser, payload[i]);
     }
+    message.success("School admin removed successfully");
     yield put(deleteSchoolAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";

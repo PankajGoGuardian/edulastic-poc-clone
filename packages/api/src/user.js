@@ -34,7 +34,7 @@ const getSwitchedToken = role =>
 const fetchUsers = data =>
   api
     .callApi({
-      url: `${prefix}/search`,
+      url: `search/users`,
       method: "post",
       data
     })
@@ -61,7 +61,7 @@ const updateUser = ({ data, userId }) =>
 const deleteUser = data =>
   api
     .callApi({
-      url: `${prefix}/:${data.userId}?districtId:${data.districtId}`,
+      url: `${prefix}/${data.userId}?districtId=${data.districtId}`,
       method: "delete"
     })
     .then(result => result.data.result);

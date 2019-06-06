@@ -29,7 +29,7 @@ import {
   setSearchNameAction,
   setFiltersAction
 } from "../../ducks";
-
+import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 import { getSchoolAdminSelector } from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -81,20 +81,17 @@ class SchoolAdminTable extends React.Component {
       },
       {
         title: "School",
-        dataIndex: "institutionIds",
-        render: (text, record) => {
-          const schools = [];
-          if (record.hasOwnProperty("institutionIds")) {
-            record.institutionIds.map(row => {
-              schools.push(
-                <React.Fragment>
-                  <span>{row}</span>
-                  <br />
-                </React.Fragment>
-              );
-            });
+        dataIndex: "institutionDetails",
+        render: (institutionDetails, record) => {
+          if (institutionDetails) {
+            return institutionDetails.map(row => (
+              <React.Fragment key={row.id}>
+                <span>{row.name}</span>
+                <br />
+              </React.Fragment>
+            ));
           }
-          return <React.Fragment>{schools}</React.Fragment>;
+          return null;
         }
       },
       {
@@ -118,25 +115,21 @@ class SchoolAdminTable extends React.Component {
   }
 
   componentDidMount() {
-    const { loadSchoolAdminData } = this.props;
+    const { loadSchoolAdminData, loadSchoolsData, userOrgId } = this.props;
+    loadSchoolsData({
+      districtId: userOrgId
+    });
     loadSchoolAdminData({
-      type: "SCHOOL",
-      search: {
-        role: "school-admin"
-      }
+      districtId: userOrgId,
+      role: "school-admin",
+      limit: 10000 // TODO: Remove limit after pagination done properly
     });
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.schoolAdminData.length === undefined) {
-      return {
-        dataSource: []
-      };
-    } else {
-      return {
-        dataSource: nextProps.schoolAdminData
-      };
-    }
+    return {
+      dataSource: nextProps.schoolAdminData
+    };
   }
 
   onEditSchoolAdmin = key => {
@@ -272,8 +265,13 @@ class SchoolAdminTable extends React.Component {
       editSchoolAdminModaVisible: false
     });
 
-    const { updateSchoolAdmin } = this.props;
-    updateSchoolAdmin({ userId: newData[index]._id, data: updatedSchoolAdminData });
+    const { updateSchoolAdmin, userOrgId } = this.props;
+    updateSchoolAdmin({
+      userId: newData[index]._id,
+      data: Object.assign(updatedSchoolAdminData, {
+        districtId: userOrgId
+      })
+    });
   };
 
   closeEditSchoolAdminModal = () => {
@@ -309,7 +307,7 @@ class SchoolAdminTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { userOrgId } = this.props;
+    const { userOrgId, schoolsData } = this.props;
     const selectedSchoolAdmin = dataSource.filter(item => item.key == editSchoolAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
@@ -386,6 +384,7 @@ class SchoolAdminTable extends React.Component {
             saveSchoolAdmin={this.updateSchoolAdmin}
             closeModal={this.closeEditSchoolAdminModal}
             userOrgId={userOrgId}
+            schoolsList={schoolsData}
           />
         )}
       </StyledTableContainer>
@@ -397,7 +396,8 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      schoolAdminData: getSchoolAdminSelector(state)
+      schoolAdminData: getSchoolAdminSelector(state),
+      schoolsData: getSchoolsSelector(state)
     }),
     {
       createSchoolAdmin: createSchoolAdminAction,
@@ -405,7 +405,8 @@ const enhance = compose(
       deleteSchoolAdmin: deleteSchoolAdminAction,
       loadSchoolAdminData: receiveSchoolAdminAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction
+      setFilters: setFiltersAction,
+      loadSchoolsData: receiveSchoolsAction
     }
   )
 );
@@ -413,7 +414,6 @@ const enhance = compose(
 export default enhance(SchoolAdminTable);
 
 SchoolAdminTable.propTypes = {
-  schoolAdminData: PropTypes.array.isRequired,
   loadSchoolAdminData: PropTypes.func.isRequired,
   createSchoolAdmin: PropTypes.func.isRequired,
   updateSchoolAdmin: PropTypes.func.isRequired,
@@ -421,5 +421,6 @@ SchoolAdminTable.propTypes = {
   setSearchName: PropTypes.func.isRequired,
   setFilters: PropTypes.func.isRequired,
   schoolAdminData: PropTypes.array.isRequired,
-  userOrgId: PropTypes.string.isRequired
+  userOrgId: PropTypes.string.isRequired,
+  loadSchoolsData: PropTypes.func.isRequired
 };

@@ -25,7 +25,7 @@ class EditCourseModal extends React.Component {
 
   onSaveCourse = async () => {
     let { nameValidate, numberValidate } = this.state;
-    const { courseData } = this.props;
+    const { courseData, userOrgId: districtId } = this.props;
 
     if (nameValidate.value.length == 0) {
       this.setState({
@@ -56,7 +56,7 @@ class EditCourseModal extends React.Component {
     ) {
       this.setState({ showSpin: true });
       const checkCourseExist = await courseApi.searchCourse({
-        districtId: this.props.userOrgId,
+        districtId,
         page: 1,
         limit: 25,
         sortField: "name",
@@ -79,7 +79,11 @@ class EditCourseModal extends React.Component {
         checkCourseExist.totalCourses == 0 ||
         (checkCourseExist.totalCourses == 1 && checkCourseExist.result[0]._id === courseData._id)
       )
-        this.props.saveCourse({ name: nameValidate.value, number: numberValidate.value });
+        this.props.saveCourse({
+          name: nameValidate.value,
+          number: numberValidate.value,
+          districtId
+        });
       else {
         this.setState({
           nameValidate: {

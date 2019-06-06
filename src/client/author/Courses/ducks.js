@@ -300,6 +300,7 @@ function* updateCourseSaga({ payload }) {
   try {
     const updateCourse = yield call(courseApi.editCourse, payload.uploadCSVData);
     yield put(updateCourseSuccessAction(updateCourse));
+    message.success("Course updated successfully");
     yield call(delay, 1000);
     yield put(receiveCourseListAction(payload.searchData));
   } catch (err) {

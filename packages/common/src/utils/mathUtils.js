@@ -1,4 +1,6 @@
 /* global $ */
+import Helpers from "../helpers";
+
 export const getMathHtml = latex => {
   if (!katex) return latex;
   return katex.renderToString(latex, {
@@ -8,35 +10,29 @@ export const getMathHtml = latex => {
 
 export const replaceLatexesWithMathHtml = val => {
   // Detecting latexes
-  let jqueryEl = null;
-  jqueryEl = $(`<p>${val}</p>`);
-  if (!jqueryEl) return val;
-
-  let newVal = ` ${val}`.slice(1);
+  const jqueryEl = $(`<p/>`).append(val);
   const latexHtmls = jqueryEl.find("span.input__math");
   if (!latexHtmls.length) return val;
 
-  for (let i = 0; i < latexHtmls.length; i++) {
-    const latexHtml = latexHtmls[i];
-    const latex = latexHtml.getAttribute("data-latex");
-    newVal = newVal.replace(
-      latexHtml.outerHTML,
-      `<span class="input__math" contenteditable="false" data-latex="${latex}">${getMathHtml(latex)}</span> `
-    );
-  }
+  jqueryEl.find("span.input__math").each(function() {
+    const katexHtml = getMathHtml($(this).attr("data-latex"));
+    $(this)
+      .attr("contenteditable", "false")
+      .html(katexHtml);
+  });
 
-  return newVal;
+  return Helpers.sanitizeSelfClosingTags(jqueryEl.html());
 };
 
 export const replaceMathHtmlWithLatexes = val => {
-  let workstr = ` ${val}`.slice(1);
-  const mathHtmls = $(val).find("span.input__math");
+  const jqueryEl = $(`<p/>`).append(val);
+  const mathHtmls = jqueryEl.find("span.input__math");
   if (!mathHtmls.length) return val;
 
-  for (let i = 0; i < mathHtmls.length; i++) {
-    const mathHtml = mathHtmls[i];
-    const latex = mathHtml.getAttribute("data-latex");
-    workstr = workstr.replace(mathHtml.outerHTML, `<span class="input__math" data-latex="${latex}"></span>`);
-  }
-  return workstr;
+  jqueryEl.find("span.input__math").each(function() {
+    $(this)
+      .removeAttr("contenteditable")
+      .html("");
+  });
+  return Helpers.sanitizeSelfClosingTags(jqueryEl.html());
 };

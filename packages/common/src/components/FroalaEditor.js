@@ -20,6 +20,7 @@ import MathModal from "./MathModal";
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
+FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mqeditable");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-command-id");
 FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-block-id");

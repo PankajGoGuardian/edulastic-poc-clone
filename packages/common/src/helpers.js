@@ -98,6 +98,14 @@ function addProps() {
   $(this).replaceWith(text);
 }
 
+const sanitizeSelfClosingTags = inputString =>
+  inputString
+    .replace(/<hr>/g, "<hr/>")
+    .replace(/<br>/g, "<br/>")
+    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
+    .replace(/"{{/g, "{")
+    .replace(/}}"/g, "}");
+
 const parseTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
@@ -133,15 +141,11 @@ const parseTemplate = tmpl => {
     .append(parsedHTML)
     .html();
 
-  temp = temp.replace(/<hr>/g, "<hr/>");
-  temp = temp.replace(/<br>/g, "<br/>");
-  temp = temp.replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
-  temp = temp.replace(/"{{/g, "{");
-  temp = temp.replace(/}}"/g, "}");
-  return temp;
+  return sanitizeSelfClosingTags(temp);
 };
 
 export default {
+  sanitizeSelfClosingTags,
   getDisplayName,
   getPaginationInfo,
   getNumeration,

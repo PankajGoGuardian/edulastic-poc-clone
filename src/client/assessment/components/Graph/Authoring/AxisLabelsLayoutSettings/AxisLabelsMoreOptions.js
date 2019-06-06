@@ -1,11 +1,13 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import { Select, message } from "antd";
+import { isString } from "lodash";
 import { Checkbox } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { Select } from "antd";
 
 import { RENDERING_BASE, FRACTIONS_FORMAT } from "../../Builder/config/constants";
+import { getFraction } from "../../Builder/fraction";
 import Extras from "../../../../containers/Extras";
 import { MoreOptionsInput } from "../../common/styled_components";
 
@@ -17,20 +19,31 @@ import { Subtitle } from "../../../../styled/Subtitle";
 import { QuestionSection, ScoreSettings } from "..";
 
 class AxisLabelsMoreOptions extends Component {
-  state = {
-    currentFractionItem: {
-      id: FRACTIONS_FORMAT.NOT_NORMALIZED,
-      value: "Not normalized and mixed fractions",
-      label: "Not normalized and mixed fractions",
-      selected: true
-    },
-    currentRenderingBaseItem: {
-      id: RENDERING_BASE.LINE_MINIMUM_VALUE,
-      value: "Line minimum value",
-      label: "Line minimum value",
-      selected: true
-    }
-  };
+  constructor(props) {
+    super(props);
+
+    const {
+      graphData: {
+        numberlineAxis: { ticksDistance }
+      }
+    } = this.props;
+
+    this.state = {
+      currentFractionItem: {
+        id: FRACTIONS_FORMAT.NOT_NORMALIZED,
+        value: "Not normalized and mixed fractions",
+        label: "Not normalized and mixed fractions",
+        selected: true
+      },
+      currentRenderingBaseItem: {
+        id: RENDERING_BASE.LINE_MINIMUM_VALUE,
+        value: "Line minimum value",
+        label: "Line minimum value",
+        selected: true
+      },
+      ticksDistance
+    };
+  }
 
   scoringTypes = [
     { label: "Exact match", value: "exactMatch" },
@@ -44,13 +57,55 @@ class AxisLabelsMoreOptions extends Component {
     setNumberline({ ...numberlineAxis, [name]: !checked });
   };
 
+  handleTicksDistanceInputChange = event => {
+    const {
+      target: { value }
+    } = event;
+    this.setState({ ticksDistance: value });
+  };
+
+  handleTicksDistanceInputBlur = () => {
+    const { ticksDistance: value } = this.state;
+    const { graphData, setNumberline } = this.props;
+    const {
+      numberlineAxis,
+      canvas: { x_min: xMin, x_max: xMax }
+    } = graphData;
+
+    let parsedValue = null;
+    if (isString(value) && value.indexOf("/") !== -1) {
+      const fracTicksDistance = getFraction(value);
+      parsedValue = fracTicksDistance ? fracTicksDistance.decim : NaN;
+    } else {
+      parsedValue = parseFloat(value);
+    }
+
+    if (Number.isNaN(parsedValue)) {
+      setNumberline({ ...numberlineAxis, ticksDistance: value });
+      return;
+    }
+
+    if (Math.abs(xMax - xMin) / parsedValue > 20) {
+      const ticksDistance = +(Math.abs(xMax - xMin) / 20).toFixed(1);
+      message.warn(
+        `For the range from "${xMin}" to "${xMax}" the minimum tick distance "${ticksDistance}" is recommended`
+      );
+      this.setState({ ticksDistance });
+      setNumberline({ ...numberlineAxis, ticksDistance });
+      return;
+    }
+
+    setNumberline({ ...numberlineAxis, ticksDistance: value });
+  };
+
   handleNumberlineInputChange = event => {
     const {
       target: { name, value }
     } = event;
     const { graphData, setNumberline } = this.props;
     const { numberlineAxis } = graphData;
-    if (name !== "specificPoints" && name !== "ticksDistance" && !value) {
+
+    if (name !== "specificPoints" && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 });
     } else {
       setNumberline({ ...numberlineAxis, [name]: value });
@@ -138,7 +193,7 @@ class AxisLabelsMoreOptions extends Component {
   };
 
   render() {
-    const { currentFractionItem, currentRenderingBaseItem } = this.state;
+    const { currentFractionItem, currentRenderingBaseItem, ticksDistance } = this.state;
 
     const {
       t,
@@ -320,8 +375,9 @@ class AxisLabelsMoreOptions extends Component {
                 type="text"
                 name="ticksDistance"
                 placeholder="1, 1/2, 1 1/2"
-                onChange={this.handleNumberlineInputChange}
-                value={numberlineAxis.ticksDistance}
+                onChange={this.handleTicksDistanceInputChange}
+                onBlur={this.handleTicksDistanceInputBlur}
+                value={ticksDistance}
               />
             </Col>
             <Col md={12}>

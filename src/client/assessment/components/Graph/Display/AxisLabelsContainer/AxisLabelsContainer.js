@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
 import { graph as checkAnswerMethod } from "@edulastic/evaluators";
+import { WithResources } from "@edulastic/common";
 import { GraphWrapper, JSXBox } from "./styled";
 import {
   defaultAxesParameters,
@@ -75,6 +76,10 @@ class AxisLabelsContainer extends PureComponent {
 
     this._graphId = `jxgbox${Math.random().toString(36)}`;
     this._graph = null;
+
+    this.state = {
+      resourcesLoaded: false
+    };
   }
 
   componentDidMount() {
@@ -360,10 +365,15 @@ class AxisLabelsContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
+    const { resourcesLoaded } = this.state;
+    if (!resourcesLoaded) {
+      return;
+    }
+
     const { elements, checkAnswer, showAnswer, evaluation, validation, list } = this.props;
 
     if (checkAnswer || showAnswer) {
-      if (showAnswer && !prevProps.showAnswer) {
+      if (showAnswer) {
         this._graph.removeMarksAnswers();
         this._graph.loadMarksAnswers(
           list,
@@ -446,11 +456,30 @@ class AxisLabelsContainer extends PureComponent {
     }
   };
 
+  resourcesOnLoaded = () => {
+    const { resourcesLoaded } = this.state;
+    if (resourcesLoaded) {
+      return;
+    }
+    this.setState({ resourcesLoaded: true });
+    this.setElementsToGraph();
+  };
+
   render() {
     const { layout, numberlineAxis, questionId } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
+        <WithResources
+          resources={[
+            "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+            "https://cdn.jsdelivr.net/npm/katex@0.10.2/dist/katex.min.js"
+          ]}
+          fallBack={<span />}
+          onLoaded={this.resourcesOnLoaded}
+        >
+          <span />
+        </WithResources>
         <GraphWrapper>
           <Tools
             controls={this.controls}

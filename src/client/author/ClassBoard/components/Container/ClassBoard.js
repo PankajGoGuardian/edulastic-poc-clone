@@ -241,8 +241,7 @@ class ClassBoard extends Component {
       allStudents,
       history,
       testQuestionActivities,
-      qActivityByStudent,
-      assignmentStatus
+      qActivityByStudent
     } = this.props;
     const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup, selectedStudentId } = this.state;
     const { assignmentId, classId } = match.params;
@@ -267,7 +266,6 @@ class ClassBoard extends Component {
           assignmentId={assignmentId}
           additionalData={additionalData}
           testActivityId={testActivityId}
-          status={assignmentStatus}
           selectedStudentsKeys={selectedStudentsKeys}
         />
         <StyledFlexContainer justifyContent="space-between">
@@ -458,8 +456,7 @@ const enhance = compose(
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       entities: get(state, ["author_classboard_testActivity", "entities"], []),
-      qActivityByStudent: stateStudentResponseSelector(state),
-      assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], "")
+      qActivityByStudent: stateStudentResponseSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

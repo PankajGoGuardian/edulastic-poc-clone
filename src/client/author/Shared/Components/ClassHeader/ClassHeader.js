@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { message, Menu, Dropdown, Button, Modal } from "antd";
 import moment from "moment";
+import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import {
   IconSummaryBoard,
@@ -264,7 +265,8 @@ const enhance = compose(
   connect(
     state => ({
       showScore: showScoreSelector(state),
-      classResponse: getClassResponseSelector(state)
+      classResponse: getClassResponseSelector(state),
+      status: get(state, ["author_classboard_testActivity", "data", "status"], "")
     }),
     {
       setReleaseScore: releaseScoreAction

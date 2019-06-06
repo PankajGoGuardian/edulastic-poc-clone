@@ -11,11 +11,10 @@ import MatchListEdit from "./MatchListEdit";
 const MatchList = props => {
   const { item, view } = props;
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-
   return (
     <Fragment>
       {view === PREVIEW && itemForPreview && itemForPreview.possible_response_groups && (
-        <MatchListPreview {...props} item={itemForPreview} />
+        <MatchListPreview {...props} showBorder={false} item={itemForPreview} />
       )}
       {view === EDIT && <MatchListEdit {...props} />}
     </Fragment>

@@ -56,7 +56,8 @@ const MatchListPreview = ({
   editCorrectAnswers,
   theme,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  showBorder
 }) => {
   const { possible_responses: posResponses, possible_response_groups, group_possible_responses, stimulus, list } = item;
 
@@ -148,7 +149,7 @@ const MatchListPreview = ({
         ? theme.widgets.matchList.dragItemCorrectBgColor
         : theme.widgets.matchList.dragItemIncorrectBgColor
       : theme.widgets.matchList.dragItemBgColor,
-    border: `1px solid ${theme.widgets.matchList.dragItemBorderColor}`,
+    border: showBorder ? `1px solid ${theme.widgets.matchList.dragItemBorderColor}` : "unset",
     padding: preview ? 0 : "0 40px",
     cursor: "pointer",
     alignSelf: "stretch",

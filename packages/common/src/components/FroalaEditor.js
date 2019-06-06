@@ -147,7 +147,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = Object.assign(DEFAULT_TOOLBAR_BUTTONS);
+  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS);
   toolbarButtons.moreMisc = {
     buttons: additionalToolbarOptions,
     buttonsVisible: 3

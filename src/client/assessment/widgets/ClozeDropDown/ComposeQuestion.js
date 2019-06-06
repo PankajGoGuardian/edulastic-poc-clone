@@ -69,7 +69,7 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
         <QuestionTextArea
-          inputId="stimulusInput"
+          toolbarId="stimulus-input"
           placeholder={t("component.cloze.text.thisisstem")}
           onChange={this.onChangeQuestion}
           value={item.stimulus}

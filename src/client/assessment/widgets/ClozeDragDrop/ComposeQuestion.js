@@ -92,6 +92,7 @@ class ComposeQuestion extends Component {
         <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
+          toolbarId="stimulus-input"
           value={item.stimulus}
         />
       </Widget>

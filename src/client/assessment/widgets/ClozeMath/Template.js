@@ -83,13 +83,11 @@ class Template extends Component {
       <Widget>
         <Subtitle data-cy="template">{t("component.math.template")}</Subtitle>
         <FroalaEditor
-          // These options are required for tutorials, cypress: We should have to add this to QuestionTextArea component
-          // inputId="templateInput"
-          // toolbarid="template"
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.template}
-          additionalToolbarOptions={["responseTextInput", "responseDropdown", "responseMathInput"]}
+          toolbarId="cloze-math-template"
+          additionalToolbarOptions={["textinput", "textdropdown", "mathinput"]}
         />
       </Widget>
     );

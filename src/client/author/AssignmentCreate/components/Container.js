@@ -81,7 +81,7 @@ class Container extends Component {
               </CardComponent>
             </FlexWrapper>
             <FlexWrapper>
-              <Link to="/author/assignments/test/select">
+              <Link to="/author/tests/select">
                 <LinkWrapper> Or Author a Test >></LinkWrapper>
               </Link>
             </FlexWrapper>

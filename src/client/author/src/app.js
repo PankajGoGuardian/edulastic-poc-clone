@@ -67,7 +67,6 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
               <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
-              <Route exact path={`${match.url}/assignments/test/select`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
               <Route
                 exact

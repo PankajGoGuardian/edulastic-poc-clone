@@ -21,17 +21,6 @@ const breadcrumbStyle = {
   position: "static"
 };
 
-const breadcrumbs = [
-  {
-    title: "Assignments",
-    to: "/author/assignments"
-  },
-  {
-    title: "Author Test",
-    to: "/author/assignments/test/select"
-  }
-];
-
 const testBreadcrumbs = [
   {
     title: "TEST LIBRARY",
@@ -98,11 +87,8 @@ class Container extends React.Component {
 
   render() {
     let { method } = this.state;
-    let newBreadcrumb = [...breadcrumbs];
+    let newBreadcrumb = [...testBreadcrumbs];
     const { creating, location, assessmentLoading } = this.props;
-    if (location && location.pathname && location.pathname.includes("tests")) {
-      newBreadcrumb = [...testBreadcrumbs];
-    }
     if (location && location.pathname && location.pathname.includes("snapquiz")) {
       method = creationMethods.PDF;
       newBreadcrumb.push(snapquizBreadcrumb);

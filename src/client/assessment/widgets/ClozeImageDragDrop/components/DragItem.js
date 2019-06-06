@@ -1,6 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
+import striptags from "striptags";
 
 function collectSource(connector, monitor) {
   return {
@@ -21,14 +22,11 @@ const specSource = {
     }
 
     const itemCurrent = monitor.getItem();
-
     const itemTo = monitor.getDropResult();
-    const data = props.data || "";
+    const data = striptags(props.data) || "";
     let [, fromContainerIndex, fromRespIndex] = data.split("_");
-
     fromContainerIndex = parseInt(fromContainerIndex, 10);
     fromRespIndex = parseInt(fromRespIndex, 10);
-
     props.onDrop(
       {
         fromContainerIndex: Number.isNaN(fromContainerIndex) ? undefined : fromContainerIndex,

@@ -19,16 +19,6 @@ import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
 
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("data-latex");
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mqeditable");
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("class");
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-command-id");
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("mathquill-block-id");
-FroalaEditor.DEFAULTS.htmlAllowedEmptyTags.push("span", "textinput", "textdropdown", "mathinput", "response");
-
-FroalaEditor.DEFAULTS.htmlAllowedTags.push("textinput", "textdropdown", "mathinput", "response");
-FroalaEditor.DEFAULTS.htmlAllowedAttrs.push("index");
-
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
   "math",
@@ -180,6 +170,27 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
       toolbarContainer: toolbarId ? `div.froala-toolbar-container[toolbarId="${toolbarId}"]` : undefined,
+      htmlAllowedEmptyTags: [
+        "textarea",
+        "a",
+        "iframe",
+        "object",
+        "video",
+        "style",
+        "script",
+        ".fa",
+        "span",
+        "p",
+        "path",
+        "line",
+        "textinput",
+        "textdropdown",
+        "mathinput",
+        "response"
+      ],
+      htmlAllowedTags: [".*"],
+      htmlAllowedAttrs: [".*"],
+      htmlRemoveTags: ["script"],
 
       events: {
         click: function(evt) {

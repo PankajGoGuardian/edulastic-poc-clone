@@ -96,8 +96,9 @@ class MetaInfoCell extends Component {
     });
     if (!test._id) {
       setDataAndSave(newTest);
+    } else {
+      setTestData(newTest);
     }
-    setTestData(newTest);
   };
 
   get isAddOrRemove() {

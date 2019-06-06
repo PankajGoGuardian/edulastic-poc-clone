@@ -8,7 +8,7 @@ import { questionType } from "@edulastic/constants";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
-import { setTestDataAction, getTestEntitySelector } from "../TestPage/ducks";
+import { setTestDataAction, getTestEntitySelector, setTestDataAndUpdateAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import { push } from "connected-react-router";
 import {
@@ -364,12 +364,16 @@ function* saveQuestionSaga({ payload: modalItemId }) {
       yield put(setTestItemsAction(nextTestItems));
 
       const testEntity = yield select(getTestEntitySelector);
+
       const updatedTestEntity = {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-
-      yield put(setTestDataAction(updatedTestEntity));
+      if (!testEntity._id) {
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      } else {
+        yield put(setTestDataAction(updatedTestEntity));
+      }
       return;
     }
 

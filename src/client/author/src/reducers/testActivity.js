@@ -119,7 +119,7 @@ const reducer = (state = initialState, { type, payload }) => {
                 _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
               }
             }
-            if (score) {
+            if (score || score === 0) {
               _st.entities[entityIndex].score = _st.entities[entityIndex].questionActivities.reduce(
                 (acc, x) => acc + (x.score || 0),
                 0

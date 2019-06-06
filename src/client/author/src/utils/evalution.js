@@ -1,6 +1,7 @@
-import { isArray } from "lodash";
+import { isArray, set, round } from "lodash";
 import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
+import produce from "immer";
 
 export const evaluateItem = async (answers, validations, itemLevelScoring = false, itemLevelScore = 0) => {
   const answerIds = Object.keys(answers);
@@ -9,31 +10,35 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0;
   let correctNum = 0;
 
+  console.log("validations", validations);
   /* eslint-disable no-restricted-syntax */
+  const questionsNum = Object.keys(validations).length;
   for (const id of answerIds) {
     const answer = answers[id];
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id]);
       const evaluator = evaluators[validation.type];
-
       if (!evaluator) {
         results[id] = [];
       } else {
         const { evaluation, score, maxScore } = await evaluator({
           userResponse: answer,
           hasGroupResponses: validation.hasGroupResponses,
-          validation: validation.validation
+          validation: itemLevelScoring
+            ? produce(validation.validation, v => {
+              set(v, "valid_response.score", itemLevelScore / questionsNum);
+            })
+            : validation.validation
         });
 
         results[id] = evaluation;
-        totalScore += score;
-        let correct = false;
-        if (isArray(evaluation)) {
-          correct = evaluation.length && evaluation.every(x => x);
+        console.log("evaluation ", { validation, score });
+        if (itemLevelScoring) {
+          totalScore += round(score, 2);
+        } else {
+          totalScore += score;
         }
-        if (correct) {
-          correctNum++;
-        }
+
         if (!itemLevelScoring) {
           totalMaxScore += maxScore;
         }
@@ -47,7 +52,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
     return {
       evaluation: results,
       maxScore: itemLevelScore,
-      score: itemLevelScore * (correctNum / Object.keys(validations).length)
+      score: totalScore > itemLevelScore ? itemLevelScore : totalScore
     };
   }
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore };

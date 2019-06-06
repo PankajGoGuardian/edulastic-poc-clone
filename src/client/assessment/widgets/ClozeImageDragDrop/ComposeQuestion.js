@@ -271,6 +271,7 @@ class ComposeQuestion extends Component {
         authorization: TokenStorage.getAccessToken()
       }
     };
+
     return (
       <Widget>
         <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
@@ -454,9 +455,18 @@ class ComposeQuestion extends Component {
                     style={{ overflow: "hidden" }}
                     default={{
                       x: imageOptions.x || 0,
-                      y: imageOptions.y || 0,
-                      width,
-                      height
+                      y: imageOptions.y || 0
+                    }}
+                    bounds="parent"
+                    enableResizing={{
+                      bottom: false,
+                      bottomLeft: false,
+                      bottomRight: false,
+                      left: false,
+                      right: false,
+                      top: false,
+                      topLeft: false,
+                      topRight: false
                     }}
                     onDragStop={(evt, d) => handleImagePosition(d)}
                   >

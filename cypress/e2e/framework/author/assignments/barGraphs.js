@@ -54,10 +54,10 @@ export default class BarGraph {
 
   getToolTip = () => cy.get(".recharts-tooltip-wrapper");
 
-  verifyXAxisTicks = questions => {
+  verifyXAxisTicks = items => {
     this.getXAxis();
     this.getAxisScale().then(scale => {
-      expect(questions).to.eql(scale);
+      expect(items).to.eql(scale);
     });
   };
 

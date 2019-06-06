@@ -211,6 +211,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         const { attempt } = statsMap[studentName];
         lcb.verifyStudentCentricCard(studentName, attempt, questionTypeMap);
       });
+
+      it(` > verify questions on bar x axis for student :: ${studentName}`, () => {
+        bargraph.verifyXAxisTicks(queList);
+      });
     });
   });
 
@@ -222,6 +226,10 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       it(` > verify question centric view for :: ${queNumber}`, () => {
         const attempt = queCentric[queNumber];
         lcb.verifyQuestionCentricCard(queNumber, attempt, questionTypeMap);
+      });
+
+      it(` > verify students on bar x axis for que :: ${queNumber}`, () => {
+        bargraph.verifyXAxisTicks(submittedInprogressStudentList);
       });
     });
   });

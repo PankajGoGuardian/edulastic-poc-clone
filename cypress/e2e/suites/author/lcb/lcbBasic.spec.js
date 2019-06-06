@@ -7,6 +7,7 @@ import { studentSide, teacherSide } from "../../../framework/constants/assignmen
 import ExpressGraderPage from "../../../framework/author/assignments/expressGraderPage";
 import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
 import TestLibrary from "../../../framework/author/tests/testLibraryPage";
+import BarGraph from "../../../framework/author/assignments/barGraphs";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -101,7 +102,9 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
   const expressg = new ExpressGraderPage();
   const sbrPage = new StandardBasedReportPage();
   const testLibrary = new TestLibrary();
+  const bargraph = new BarGraph();
   const queList = Object.keys(lcb.getQuestionCentricData(attemptsData, queCentric));
+  const queBarData = bargraph.getQueBarData(queList, attemptsData);
 
   lcb.getQuestionCentricData(attemptsData, submittedQueCentric, true);
 
@@ -178,6 +181,23 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       it(` > verify student cards for :: ${studentName}`, () => {
         const { status, score, perf, attempt } = statsMap[studentName];
         lcb.verifyStudentCard(studentName, status, score, perf, attempt);
+      });
+    });
+
+    describe("verify bar graphs", () => {
+      it("verify question bars", () => {
+        bargraph.verifyXAxisTicks(queList);
+      });
+
+      it("verify left axis scale value", () => {
+        bargraph.veryLeftYAxisScale(submittedInprogressStudentList.length);
+      });
+
+      queList.forEach((que, index) => {
+        it(`verify bar tool tip for question ${que}`, () => {
+          console.log("queBarData", queBarData);
+          bargraph.verifyQueToolTip(que, index, queBarData[que]);
+        });
       });
     });
   });

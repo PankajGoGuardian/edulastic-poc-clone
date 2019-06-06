@@ -206,11 +206,23 @@ class QuestionViewContainer extends Component {
                   orientation="right"
                   stroke={greyGraphstroke}
                 />
-                <Bar stackId="a" dataKey="correct" fill={green} onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="wrong" fill={incorrect} onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="pCorrect" fill={pCorrect} onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="skipped" fill={dropZoneTitleColor} onClick={this.onClickChart} />
-                <Bar stackId="a" dataKey="manuallyGraded" fill={graded} onClick={this.onClickChart} />
+                <Bar className="correct" stackId="a" dataKey="correct" fill={green} onClick={this.onClickChart} />
+                <Bar className="wrong" stackId="a" dataKey="wrong" fill={incorrect} onClick={this.onClickChart} />
+                <Bar className="pCorrect" stackId="a" dataKey="pCorrect" fill={pCorrect} onClick={this.onClickChart} />
+                <Bar
+                  className="skipped"
+                  stackId="a"
+                  dataKey="skipped"
+                  fill={dropZoneTitleColor}
+                  onClick={this.onClickChart}
+                />
+                <Bar
+                  className="manuallyGraded"
+                  stackId="a"
+                  dataKey="manuallyGraded"
+                  fill={graded}
+                  onClick={this.onClickChart}
+                />
                 <Line
                   dataKey="avgTimeSpent"
                   stroke={blue}

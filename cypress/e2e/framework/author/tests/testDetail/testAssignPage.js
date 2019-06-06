@@ -50,6 +50,8 @@ export default class TestAssignPage {
     cy.server();
     cy.route("POST", "**/assignments").as("assigned");
     cy.contains("ASSIGN").click();
-    cy.wait("@assigned").then(xhr => expect(xhr.status).to.eq(200));
+    cy.wait("@assigned").then(xhr => {
+      expect(xhr.status).to.eq(200);
+    });
   };
 }

@@ -268,6 +268,7 @@ export default class BarGraph extends Component {
               tickFormatter={val => Math.round(val / 1000)}
             />
             <Bar
+              className="correctAttemps"
               yAxisId="left"
               stackId="a"
               dataKey="correctAttemps"
@@ -276,6 +277,7 @@ export default class BarGraph extends Component {
               onClick={this.handleClick}
             />
             <Bar
+              className="incorrectAttemps"
               yAxisId="left"
               stackId="a"
               dataKey="incorrectAttemps"
@@ -284,6 +286,7 @@ export default class BarGraph extends Component {
               onClick={this.handleClick}
             />
             <Bar
+              className="partialAttempts"
               yAxisId="left"
               stackId="a"
               dataKey="partialAttempts"
@@ -292,6 +295,7 @@ export default class BarGraph extends Component {
               onClick={this.handleClick}
             />
             <Bar
+              className="skippedNum"
               yAxisId="left"
               stackId="a"
               dataKey="skippedNum"

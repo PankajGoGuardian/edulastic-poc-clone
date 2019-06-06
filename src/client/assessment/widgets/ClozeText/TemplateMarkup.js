@@ -82,6 +82,7 @@ class TemplateMarkup extends Component {
           data-cy="templateBox"
           onChange={this.onChangeMarkUp}
           value={item.templateMarkUp}
+          toolbarId="cloze-text-template"
           additionalToolbarOptions={["textinput"]}
         />
       </Widget>

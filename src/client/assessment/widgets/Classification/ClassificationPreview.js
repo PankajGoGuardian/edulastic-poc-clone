@@ -17,7 +17,7 @@ import {
 import { withNamespaces } from "@edulastic/localization";
 
 import DropContainer from "../../components/DropContainer";
-import { PREVIEW, SHOW, CLEAR, CHECK } from "../../constants/constantsForQuestions";
+import { PREVIEW, SHOW, CLEAR, CHECK, EDIT } from "../../constants/constantsForQuestions";
 
 import DragItem from "./components/DragItem";
 import { IndexBox } from "./styled/IndexBox";
@@ -283,6 +283,8 @@ const ClassificationPreview = ({
                       preview={preview}
                       possible_responses={possible_responses}
                       onDrop={onDrop}
+                      isResizable={view === EDIT}
+                      item={item}
                     />
                   )
               )}

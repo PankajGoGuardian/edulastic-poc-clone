@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, get } from "lodash";
 import { WithResources, Stimulus, helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
@@ -11,6 +11,7 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
 import ClozeInput from "./ClozeMathBlock/ClozeInput";
 import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
+import MathSpanWrapper from "../../components/MathSpanWrapper";
 
 const ClozeMathPreview = ({
   type,
@@ -26,7 +27,7 @@ const ClozeMathPreview = ({
   const [newHtml, setNewHtml] = useState("");
 
   const _getMathAnswers = () =>
-    (item.validation.valid_response || []).value.map(res => {
+    get(item, "validation.valid_response.value", []).map(res => {
       const method = res[0];
       if (method) {
         return method.value;
@@ -34,9 +35,9 @@ const ClozeMathPreview = ({
       return "";
     });
 
-  const _getDropDownAnswers = () => (item.validation.valid_dropdown || []).value.map(res => res || "");
+  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []).map(res => res || "");
 
-  const _getTextInputAnswers = () => (item.validation.valid_inputs || []).value.map(res => res || "");
+  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []).map(res => res || "");
 
   const handleAddAnswer = (answer, index, key) => {
     let newAnswers = cloneDeep(userAnswer);
@@ -82,6 +83,7 @@ const ClozeMathPreview = ({
         }}
         showWarnings
         components={{
+          mathspan: MathSpanWrapper,
           textdropdown: ClozeDropDown,
           textinput: ClozeInput,
           mathinput: ClozeMathInput

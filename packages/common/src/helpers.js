@@ -131,6 +131,7 @@ const parseTemplate = tmpl => {
 
   temp = temp.replace(/<hr>/g, "<hr/>");
   temp = temp.replace(/<br>/g, "<br/>");
+  temp = temp.replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
   temp = temp.replace(/"{{/g, "{");
   temp = temp.replace(/}}"/g, "}");
   return temp;

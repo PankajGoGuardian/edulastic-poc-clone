@@ -20,6 +20,7 @@ import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, A
 
 const { releaseGradeLabels } = test;
 const { duplicateAssignment } = assignmentApi;
+
 const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   const showRleaseGrade =
     currentAssignment.releaseScore === releaseGradeLabels.DONT_RELEASE || !currentAssignment.releaseScore;
@@ -76,11 +77,11 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
   );
   MenuItems.push(
     <Menu.Item key="view-details">
-      <StyledLink target="_blank" rel="noopener noreferrer">
+      <Link to={`/author/tests/${currentTestId}`} rel="noopener noreferrer">
         <img alt="icon" src={infomationIcon} />
         <SpaceElement />
         View Details
-      </StyledLink>
+      </Link>
     </Menu.Item>
   );
   {

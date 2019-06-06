@@ -64,7 +64,8 @@ class StudentSignup extends React.Component {
             password,
             email,
             name,
-            role: "student"
+            role: "student",
+            classCode
           });
         }
       }
@@ -97,7 +98,7 @@ class StudentSignup extends React.Component {
                 message: t("component.signup.student.validclasscode")
               }
             ]
-          })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" />)}
+          })(<Input prefix={<img src={hashIcon} alt="" />} data-cy="classCode" placeholder="Class code" />)}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.signupnamelabel")}>
           {getFieldDecorator("name", {
@@ -107,7 +108,7 @@ class StudentSignup extends React.Component {
                 message: t("component.signup.student.validinputname")
               }
             ]
-          })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} />)}
+          })(<Input data-cy="name" prefix={<img src={userIcon} alt="" />} placeholder="Name" />)}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.student.signupidlabel")}>
           {getFieldDecorator("email", {
@@ -121,7 +122,7 @@ class StudentSignup extends React.Component {
                 message: t("common.validation.emptyemailid")
               }
             ]
-          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
+          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} placeholder="Email" />)}
         </FormItem>
         <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
           {getFieldDecorator("password", {
@@ -131,7 +132,7 @@ class StudentSignup extends React.Component {
                 message: t("common.validation.emptypassword")
               }
             ]
-          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
+          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" placeholder="Password" />)}
         </FormItem>
       </>
     );

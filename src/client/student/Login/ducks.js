@@ -119,7 +119,7 @@ function* login({ payload }) {
 
 function* signup({ payload }) {
   try {
-    const { name, email, password, role } = payload;
+    const { name, email, password, role, classCode } = payload;
     const nameList = name.split(" ");
     let firstName;
     let lastName;
@@ -142,8 +142,14 @@ function* signup({ payload }) {
       lastName,
       role
     };
+
+    if (classCode) {
+      obj.code = classCode;
+    }
+
     const response = yield call(authApi.signup, obj);
     const { message: _responseMsg, result } = response;
+
     if (_responseMsg && !result) {
       yield call(message.error, _responseMsg);
     } else {
@@ -166,6 +172,8 @@ function* signup({ payload }) {
           default:
             yield put(push("/author/assignments"));
         }
+      } else if (user.role === roleuser.STUDENT) {
+        yield put(push("/home/assignments"));
       }
     }
   } catch (err) {

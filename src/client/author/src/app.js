@@ -6,6 +6,7 @@ import { Layout } from "antd";
 import { connect } from "react-redux";
 import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
+import DragScroll, { DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
 import Sidebar from "./Sidebar/SideMenu";
 /* lazy load routes */
 const Assignments = lazy(() => import("../Assignments"));
@@ -285,6 +286,16 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
               <Route exact path="/author/settings/interested-standards" component={InterestedStandards} />
             </Switch>
           </Suspense>
+          <DragScroll
+            style={{
+              position: "fixed",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 50
+            }}
+            direction={DOWNWARDS}
+          />
         </Wrapper>
       </MainContainer>
     </StyledLayout>

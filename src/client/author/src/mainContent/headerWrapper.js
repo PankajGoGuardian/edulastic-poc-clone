@@ -3,33 +3,26 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { newBlue, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
+import DragScroll, { UPWARDS } from "@edulastic/common/src/components/DragScroll";
 
 class HeaderWrapper extends Component {
-  containerRef = createRef();
-
-  dragToScrollUp = () => {
-    window.scrollBy(0, -1);
-  };
-
-  componentDidMount() {
-    /** @type {HTMLElement} */
-    const containerEl = this.containerRef.current;
-    containerEl.addEventListener("dragover", this.dragToScrollUp);
-  }
-
-  componentWillUnmount() {
-    /** @type {HTMLElement} */
-    const containerEl = this.containerRef.current;
-    containerEl.removeEventListener("dragover", this.dragToScrollUp);
-  }
-
   render = () => {
     const { children, type } = this.props;
 
     return (
-      <HeaderContainer innerRef={this.containerRef} type={type}>
+      <HeaderContainer type={type}>
         <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
           <Container type={type}>{children}</Container>
+          <DragScroll
+            style={{
+              position: "absolute",
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0
+            }}
+            direction={UPWARDS}
+          />
         </Affix>
       </HeaderContainer>
     );

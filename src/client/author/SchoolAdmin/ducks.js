@@ -177,7 +177,8 @@ export const reducer = createReducer(initialState, {
       lastName: payload.lastName,
       role: payload.role,
       email: payload.email,
-      institutionIds: payload.institutionIds
+      institutionIds: payload.institutionIds,
+      institutionDetails: payload.institutionDetails
     };
 
     state.creating = false;

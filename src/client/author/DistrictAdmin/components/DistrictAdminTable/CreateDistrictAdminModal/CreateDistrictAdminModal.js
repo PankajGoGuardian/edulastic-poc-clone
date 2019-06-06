@@ -3,7 +3,7 @@ import { Form, Input, Row, Col, Button, Select, Modal, Spin } from "antd";
 const Option = Select.Option;
 import { ModalFormItem } from "./styled";
 
-import { authApi, schoolApi } from "@edulastic/api";
+import { authApi } from "@edulastic/api";
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
@@ -12,7 +12,6 @@ class CreateDistrictAdminModal extends React.Component {
       emailValidateStatus: "success",
       emailValidateMsg: "",
       email: "",
-      schoolList: [],
       fetching: false
     };
   }
@@ -60,18 +59,11 @@ class CreateDistrictAdminModal extends React.Component {
           const lastNameIndex = firstName[0].length + 1;
           lastName = row.name.substr(lastNameIndex, row.name.length);
         }
-
-        const institutionIds = [];
-        for (let i = 0; i < row.institutionIds.length; i++) {
-          institutionIds.push(row.institutionIds[i].key);
-        }
-
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email: this.state.email,
-          institutionIds: institutionIds
+          email: this.state.email
         };
         this.props.createDistrictAdmin(newUser);
       }
@@ -111,31 +103,10 @@ class CreateDistrictAdminModal extends React.Component {
     return re.test(String(strEmail).toLowerCase());
   }
 
-  fetchSchool = async value => {
-    this.setState({ schoolList: [], fetching: true });
-    const schoolListData = await schoolApi.getSchools({
-      districtId: this.props.userOrgId,
-      limit: 25,
-      page: 1,
-      sortField: "name",
-      order: "asc",
-      search: { name: { type: "cont", value } }
-    });
-    this.setState({ schoolList: schoolListData.data, fetching: false });
-  };
-
-  handleChange = value => {
-    this.props.form.setFieldsValue({ institutionIds: value });
-    this.setState({
-      schoolList: [],
-      fetching: false
-    });
-  };
-
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
-    const { emailValidateStatus, emailValidateMsg, fetching, schoolList } = this.state;
+    const { emailValidateStatus, emailValidateMsg, fetching } = this.state;
 
     return (
       <Modal
@@ -191,36 +162,6 @@ class CreateDistrictAdminModal extends React.Component {
                   }
                 ]
               })(<Input placeholder="Password" type="password" autocomplete="new-password" />)}
-            </ModalFormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
-            <ModalFormItem label="Select School">
-              {getFieldDecorator("institutionIds", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select school"
-                  }
-                ]
-              })(
-                <Select
-                  mode="multiple"
-                  labelInValue
-                  placeholder="Please Select schools"
-                  notFoundContent={fetching ? <Spin size="small" /> : null}
-                  filterOption={false}
-                  onSearch={this.fetchSchool}
-                  onChange={this.handleChange}
-                >
-                  {schoolList.map(school => (
-                    <Option key={school._id} value={school._id}>
-                      {school._source.name}
-                    </Option>
-                  ))}
-                </Select>
-              )}
             </ModalFormItem>
           </Col>
         </Row>

@@ -6,8 +6,6 @@ import { Col } from "antd";
 import { StyledRow, StyledRowLabel, StyledDatePicker } from "./styled";
 
 const DateSelector = ({ startDate, endDate, changeField }) => {
-  const [endOpen, setEndOpen] = useState(false);
-
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
       return false;
@@ -20,14 +18,6 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
       return false;
     }
     return endDate.valueOf() <= startDate.valueOf();
-  };
-
-  const handleStartOpenChange = open => {
-    if (!open) setEndOpen(true);
-  };
-
-  const handleEndOpenChange = open => {
-    setEndOpen(open);
   };
 
   return (
@@ -48,7 +38,6 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             value={moment(startDate)}
             placeholder="Open Date"
             onChange={changeField("startDate")}
-            onOpenChange={handleStartOpenChange}
           />
         </Col>
         <Col span={12}>
@@ -62,8 +51,6 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             value={moment(endDate)}
             placeholder="Close Date"
             onChange={changeField("endDate")}
-            open={endOpen}
-            onOpenChange={handleEndOpenChange}
           />
         </Col>
       </StyledRow>

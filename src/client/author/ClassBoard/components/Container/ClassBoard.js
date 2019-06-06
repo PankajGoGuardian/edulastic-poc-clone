@@ -241,7 +241,8 @@ class ClassBoard extends Component {
       allStudents,
       history,
       testQuestionActivities,
-      qActivityByStudent
+      qActivityByStudent,
+      assignmentStatus
     } = this.props;
     const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup, selectedStudentId } = this.state;
     const { assignmentId, classId } = match.params;
@@ -255,7 +256,6 @@ class ClassBoard extends Component {
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
-
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -267,6 +267,7 @@ class ClassBoard extends Component {
           assignmentId={assignmentId}
           additionalData={additionalData}
           testActivityId={testActivityId}
+          status={assignmentStatus}
           selectedStudentsKeys={selectedStudentsKeys}
         />
         <StyledFlexContainer justifyContent="space-between">
@@ -457,7 +458,8 @@ const enhance = compose(
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       entities: get(state, ["author_classboard_testActivity", "entities"], []),
-      qActivityByStudent: stateStudentResponseSelector(state)
+      qActivityByStudent: stateStudentResponseSelector(state),
+      assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], "")
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

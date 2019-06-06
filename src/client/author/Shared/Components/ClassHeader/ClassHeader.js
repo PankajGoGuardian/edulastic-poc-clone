@@ -128,7 +128,8 @@ class ClassHeader extends Component {
       additionalData = {},
       showScore,
       selectedStudentsKeys,
-      classResponse = {}
+      classResponse = {},
+      status
     } = this.props;
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
@@ -165,7 +166,7 @@ class ClassHeader extends Component {
         <StyledTitle>
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
-            Done(Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {status} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>

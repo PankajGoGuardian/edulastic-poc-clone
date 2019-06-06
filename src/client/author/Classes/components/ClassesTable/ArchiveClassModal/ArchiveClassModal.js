@@ -36,8 +36,11 @@ class ArchiveClassModal extends React.Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
+          <Button onClick={this.onCloseModal} ghost type="primary">
+            No, Cancel
+          </Button>,
           <Button type="primary" onClick={this.onArchiveClass} disabled={textArchive.toLowerCase() !== "archive"}>
-            Yes Archive >
+            Yes, Archive >
           </Button>
         ]}
       >
@@ -52,7 +55,12 @@ class ArchiveClassModal extends React.Component {
         </Row>
         <Row>
           <StyledCol span={24}>
-            <StyledInput value={textArchive} onChange={this.onChangeInput} />
+            <StyledInput
+              value={textArchive}
+              onChange={this.onChangeInput}
+              // here paste is not allowed, and user has to manually type in ARCHIVE
+              onPaste={evt => evt.preventDefault()}
+            />
           </StyledCol>
         </Row>
       </Modal>

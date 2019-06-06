@@ -14,10 +14,6 @@ const title = "Manage District";
 const menuActive = { mainMenu: "Courses", subMenu: "" };
 
 class Courses extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const { loading, updating, deleting, creating, uploadingCSV, history } = this.props;
     const showSpin = loading || updating || deleting || creating || uploadingCSV;

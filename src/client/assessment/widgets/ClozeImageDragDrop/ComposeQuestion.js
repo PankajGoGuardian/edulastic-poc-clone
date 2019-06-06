@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 import produce from "immer";
 import ReactDOM from "react-dom";
@@ -38,7 +38,12 @@ import { Widget } from "../../styled/Widget";
 const { Option } = Select;
 const { Dragger } = Upload;
 
+const IMAGE_WIDTH_PROP = "imageWidth";
+const IMAGE_HEIGHT_PROP = "imageHeight";
+
 class ComposeQuestion extends Component {
+  imageRndRef = createRef();
+
   state = {
     isEditableResizeMove: false
   };
@@ -128,6 +133,14 @@ class ComposeQuestion extends Component {
 
     setQuestionData(
       produce(item, draft => {
+        // This is when the image gets uploaded so
+        // we reset the image to the starting position on canvas
+        // we need the updatePosition to nudge the rnd component to re-render
+        if (prop === IMAGE_WIDTH_PROP || prop === IMAGE_HEIGHT_PROP) {
+          draft.imageOptions = { x: 0, y: 0 };
+          this.imageRndRef.current.updatePosition({ x: 0, y: 0 });
+        }
+
         draft[prop] = value;
         updateVariables(draft);
       })
@@ -244,6 +257,8 @@ class ComposeQuestion extends Component {
       imageHeight,
       imageOptions = {}
     } = item;
+
+    console.log("IMAGEOPTIONS", imageOptions);
 
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
@@ -435,6 +450,7 @@ class ComposeQuestion extends Component {
               {item.imageUrl && (
                 <React.Fragment>
                   <Rnd
+                    ref={this.imageRndRef}
                     style={{ overflow: "hidden" }}
                     default={{
                       x: imageOptions.x || 0,

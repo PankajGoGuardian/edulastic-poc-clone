@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { Rnd } from "react-rnd";
@@ -52,7 +52,12 @@ import SortableList from "../../components/SortableList";
 const { Option } = Select;
 const { Dragger } = Upload;
 
+const IMAGE_WIDTH_PROP = "imageWidth";
+const IMAGE_HEIGHT_PROP = "imageHeight";
+
 class Authoring extends Component {
+  imageRndRef = createRef();
+
   constructor(props) {
     super(props);
     this.imageWidthEditor = React.createRef();
@@ -161,6 +166,13 @@ class Authoring extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
+        // This is when the image gets uploaded so
+        // we reset the image to the starting position on canvas
+        // we need the updatePosition to nudge the rnd component to re-render
+        if (prop === IMAGE_WIDTH_PROP || prop === IMAGE_HEIGHT_PROP) {
+          draft.imageOptions = { x: 0, y: 0 };
+          this.imageRndRef.current.updatePosition({ x: 0, y: 0 });
+        }
         draft[prop] = value;
         updateVariables(draft);
       })
@@ -426,6 +438,7 @@ class Authoring extends Component {
                   {item.imageUrl && (
                     <React.Fragment>
                       <Rnd
+                        ref={this.imageRndRef}
                         style={{ overflow: "hidden" }}
                         default={{
                           x: imageOptions.x || 0,

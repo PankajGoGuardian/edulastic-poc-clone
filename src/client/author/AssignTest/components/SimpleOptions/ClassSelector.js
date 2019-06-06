@@ -11,14 +11,17 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
     <StyledRow>
       <Col span={24}>
         <StyledSelect
+          showSearch
           data-cy="selectClass"
           placeholder="Please select"
           mode="multiple"
+          optionFilterProp="children"
           cache="false"
           onChange={onChange}
           onSelect={classId => {
             fetchStudents({ classId });
           }}
+          filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
           value={selectedGroups}
         >
           {group.map(data => (

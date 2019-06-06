@@ -50,7 +50,7 @@ class Layout extends Component {
   }
 
   render() {
-    const { item, t, changeItem, setQuestionData, advancedAreOpen } = this.props;
+    const { item, t, changeItem, setQuestionData, advancedAreOpen, responses } = this.props;
 
     const mapValues = val => (Number.isNaN(+val) ? "" : val);
 
@@ -73,6 +73,15 @@ class Layout extends Component {
           }
 
           draft.ui_style[prop] = value;
+        })
+      );
+    };
+
+    const changeStyle = (prop, value) => {
+      setQuestionData(
+        produce(item, draft => {
+          draft[prop] = draft[prop] || [];
+          draft[prop] = value;
         })
       );
     };
@@ -125,7 +134,13 @@ class Layout extends Component {
                 />
               </Col>
             </Row>
-            <Container onChange={changeUiStyle} t={t} uiStyle={get(item, "ui_style", {})} />
+            <Container
+              responses={responses}
+              onChange={changeUiStyle}
+              changeStyle={changeStyle}
+              t={t}
+              uiStyle={get(item, "ui_style", {})}
+            />
           </Block>
         </Widget>
       </React.Fragment>

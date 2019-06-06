@@ -140,11 +140,7 @@ class Display extends Component {
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;
             }
-            if (uiStyle.widthpx) {
-              btnStyle.width = `${uiStyle.widthpx}px`;
-            }
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
-
             return (
               <div
                 title={
@@ -154,7 +150,11 @@ class Display extends Component {
                       : null
                     : null
                 }
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  height: `${parseInt(responseContainer.height)}px`,
+                  width: `${parseInt(responseContainer.width)}px`
+                }}
               >
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -163,7 +163,7 @@ class Display extends Component {
                 <ClozeTextInput
                   index={dropTargetIndex}
                   resprops={{
-                    btnStyle,
+                    btnStyle: {},
                     item,
                     onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
                     placeholder: uiStyle.placeholder,

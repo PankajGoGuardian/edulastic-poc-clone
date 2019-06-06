@@ -9,7 +9,9 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { OptionSelect } from "../styled/OptionSelect";
 
-const Container = ({ t, onChange, uiStyle }) => {
+import { response } from "@edulastic/constants";
+
+const Container = ({ t, onChange, uiStyle, responses, changeStyle }) => {
   const inputtypeOptions = [
     { value: "text", label: t("component.options.text") },
     { value: "number", label: t("component.options.number") }
@@ -53,8 +55,19 @@ const Container = ({ t, onChange, uiStyle }) => {
             type="number"
             size="large"
             disabled={false}
-            onChange={e => onChange("width", +e.target.value > 400 ? 400 : +e.target.value)}
-            value={uiStyle.width}
+            onBlur={() =>
+              changeStyle(
+                "responses",
+                responses.map(response => ({
+                  ...response,
+                  width: parseInt(uiStyle.widthpx)
+                }))
+              )
+            }
+            onChange={e =>
+              onChange("widthpx", +e.target.value > response.maxWidth ? response.maxWidth : +e.target.value)
+            }
+            value={uiStyle.widthpx}
           />
         </Col>
         <Col md={12}>
@@ -63,8 +76,19 @@ const Container = ({ t, onChange, uiStyle }) => {
             type="number"
             size="large"
             disabled={false}
-            onChange={e => onChange("height", +e.target.value)}
-            value={uiStyle.height}
+            onBlur={() =>
+              changeStyle(
+                "responses",
+                responses.map(response => ({
+                  ...response,
+                  height: parseInt(uiStyle.heightpx)
+                }))
+              )
+            }
+            onChange={e =>
+              onChange("heightpx", +e.target.value > response.maxHeight ? response.maxHeight : +e.target.value)
+            }
+            value={uiStyle.heightpx}
           />
         </Col>
       </Row>

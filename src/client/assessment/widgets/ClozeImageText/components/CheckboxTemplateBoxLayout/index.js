@@ -70,7 +70,11 @@ const CheckboxTemplateBoxLayout = ({
           <React.Fragment key={index}>
             {!showAnswer && (
               <div
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  height: `${parseInt(responseContainer.height)}px`,
+                  width: `${parseInt(responseContainer.width)}px`
+                }}
                 className={`
                   imagelabeldragdrop-droppable 
                   active 
@@ -94,7 +98,11 @@ const CheckboxTemplateBoxLayout = ({
             )}
             {showAnswer && (
               <div
-                style={btnStyle}
+                style={{
+                  ...btnStyle,
+                  height: `${parseInt(responseContainer.height)}px`,
+                  width: `${parseInt(responseContainer.width)}px`
+                }}
                 className={`
                   imagelabeldragdrop-droppable 
                   active 

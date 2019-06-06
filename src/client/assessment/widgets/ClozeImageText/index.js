@@ -237,6 +237,7 @@ class ClozeImageText extends Component {
                   advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  responses={item.responses}
                 />
               </OptionsContainer>
             </React.Fragment>

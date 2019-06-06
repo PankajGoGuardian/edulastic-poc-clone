@@ -272,7 +272,7 @@ class ClozeImageDragDrop extends Component {
                 imageWidth={item.imageWidth}
                 imageHeight={item.imageHeight}
                 evaluation={evaluation}
-                imageOptions={item.imagePosition}
+                imageOptions={item.imageOptions}
                 showBorder={false}
               />
             )}
@@ -305,7 +305,7 @@ class ClozeImageDragDrop extends Component {
                 imageWidth={item.imageWidth}
                 imageHeight={item.imageHeight}
                 evaluation={evaluation}
-                imageOptions={item.imagePosition}
+                imageOptions={item.imageOptions}
                 showBorder={false}
                 {...restProps}
               />
@@ -341,7 +341,7 @@ class ClozeImageDragDrop extends Component {
                 userSelections={userAnswer}
                 userAnswer={userAnswer}
                 onChange={this.handleAddAnswer}
-                imageOptions={item.imagePosition}
+                imageOptions={item.imageOptions}
                 showBorder={false}
               />
             )}

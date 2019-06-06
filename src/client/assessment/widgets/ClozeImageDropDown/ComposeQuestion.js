@@ -23,7 +23,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import DropArea from "../../containers/DropArea";
 import { Subtitle } from "../../styled/Subtitle";
 
-import { StyledQuestionTextArea } from "./styled/StyledCustomQuill";
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
@@ -189,7 +189,8 @@ class ComposeQuestion extends Component {
     img.addEventListener("load", function() {
       const maxheight = maxHeight.split("px")[0];
       const maxwidth = maxWidth.split("px")[0];
-      let height, width;
+      let height;
+      let width;
       if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
         const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
         const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
@@ -278,10 +279,11 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
-            <StyledQuestionTextArea
+            <QuestionTextArea
+              toolbarId="stimulus"
+              inputId="stimulusInput"
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
-              showResponseBtn={false}
               value={item.stimulus}
             />
             <PaddingDiv />
@@ -385,7 +387,7 @@ class ComposeQuestion extends Component {
                   </PointerSelect>
                 </PointerContainer>
               </ControlBar>
-              <ImageFlexView size={1} alignItems={"flex-start"}>
+              <ImageFlexView size={1} alignItems="flex-start">
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
@@ -429,7 +431,7 @@ class ComposeQuestion extends Component {
                         setQuestionData={setQuestionData}
                         updateData={this.updateData}
                         item={item}
-                        width={"100%"}
+                        width="100%"
                         showIndex={false}
                       />
                     </React.Fragment>
@@ -468,7 +470,7 @@ class ComposeQuestion extends Component {
                       <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
                     </Dragger>
                   )}
-                  <CheckContainer position={"unset"} alignSelf={"center"}>
+                  <CheckContainer position="unset" alignSelf="center">
                     <Checkbox
                       data-cy="drag-drop-image-aria-check"
                       defaultChecked={isEditAriaLabels}

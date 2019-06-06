@@ -24,7 +24,7 @@ import DropArea from "../../containers/DropArea";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 import { Subtitle } from "../../styled/Subtitle";
 
-import { StyledCustomQuill } from "./styled/StyledCustomQuill";
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
@@ -220,7 +220,8 @@ class Authoring extends Component {
     img.addEventListener("load", function() {
       const maxheight = maxHeight.split("px")[0];
       const maxwidth = maxWidth.split("px")[0];
-      let height, width;
+      let height;
+      let width;
       if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
         const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
         const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
@@ -317,14 +318,11 @@ class Authoring extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
-            <StyledCustomQuill
+            <QuestionTextArea
               toolbarId="stimulus"
-              wrappedRef={instance => {
-                this.stimulus = instance;
-              }}
+              inputId="stimulusInput"
               placeholder={t("component.cloze.imageText.thisisstem")}
               onChange={this.onChangeQuestion}
-              showResponseBtn={false}
               value={item.stimulus}
             />
             <PaddingDiv />
@@ -427,7 +425,7 @@ class Authoring extends Component {
                   </PointerSelect>
                 </PointerContainer>
               </ControlBar>
-              <ImageFlexView size={1} leftAlign={true}>
+              <ImageFlexView size={1} leftAlign>
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
@@ -524,7 +522,7 @@ class Authoring extends Component {
                     </Dragger>
                   )}
 
-                  <CheckContainer position={"unset"} alignSelf={"center"}>
+                  <CheckContainer position="unset" alignSelf="center">
                     <Checkbox
                       data-cy="drag-drop-image-aria-check"
                       defaultChecked={isEditAriaLabels}

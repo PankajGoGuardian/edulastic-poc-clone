@@ -12,10 +12,11 @@ import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from "a
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 
-import { PaddingDiv, CustomQuillComponent, EduButton } from "@edulastic/common";
+import { PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { newBlue } from "@edulastic/colors";
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -188,7 +189,8 @@ class ComposeQuestion extends Component {
     img.addEventListener("load", function() {
       const maxheight = maxHeight.split("px")[0];
       const maxwidth = maxWidth.split("px")[0];
-      let height, width;
+      let height;
+      let width;
       if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
         const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
         const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
@@ -275,15 +277,11 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
-        <CustomQuillComponent
+        <QuestionTextArea
           toolbarId="stimulus"
-          firstFocus={item.firstMount}
-          wrappedRef={instance => {
-            this.stimulus = instance;
-          }}
+          inputId="stimulusInput"
           placeholder={t("component.cloze.imageDragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
-          showResponseBtn={false}
           value={item.stimulus}
         />
         <PaddingDiv top={30} />
@@ -485,7 +483,7 @@ class ComposeQuestion extends Component {
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}
                     item={item}
-                    width={"100%"}
+                    width="100%"
                     showIndex={false}
                   />
                 </React.Fragment>

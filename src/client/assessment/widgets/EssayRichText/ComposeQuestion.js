@@ -5,9 +5,10 @@ import ReactDOM from "react-dom";
 
 import { withNamespaces } from "@edulastic/localization";
 
+import QuestionTextArea from "../../components/QuestionTextArea";
+
 import { updateVariables } from "../../utils/variables";
 
-import FroalaEditorCustom from "@edulastic/common/src/components/FroalaEditor";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 
@@ -40,11 +41,11 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
-
-        <FroalaEditorCustom
-          placeholderText={t("component.essayText.enterQuestion")}
+        <QuestionTextArea
+          placeholder={t("component.essayText.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          toolbarId="compose-question"
         />
       </Widget>
     );

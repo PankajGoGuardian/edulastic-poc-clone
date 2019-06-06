@@ -94,7 +94,11 @@ class Template extends Component {
         </Tabs>
 
         {templateTab === 0 && (
-          <QuestionTextArea onChange={val => handleItemChangeChange("template", val)} value={item.template} />
+          <QuestionTextArea
+            onChange={val => handleItemChangeChange("template", val)}
+            value={item.template}
+            toolbarId="tokens-template"
+          />
         )}
 
         {templateTab === 1 && (

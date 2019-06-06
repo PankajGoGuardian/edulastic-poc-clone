@@ -44,6 +44,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.essayText.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          toolbarId="compose-question"
         />
       </Widget>
     );

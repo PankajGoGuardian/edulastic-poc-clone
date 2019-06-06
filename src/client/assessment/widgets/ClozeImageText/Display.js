@@ -161,15 +161,18 @@ class Display extends Component {
                   <Triangle />
                 </Pointer>
                 <ClozeTextInput
-                  value={userAnswers[dropTargetIndex]}
-                  style={{ width: "100%", height: "100%", margin: 0, fontSize }}
-                  dropTargetIndex={dropTargetIndex}
-                  onChange={({ value }) => this.selectChange(value, dropTargetIndex)}
-                  placeholder={uiStyle.placeholder}
-                  type={uiStyle.inputtype}
-                  indexNumber={indexNumber}
-                  item={item}
-                  showIndex={false}
+                  index={dropTargetIndex}
+                  resprops={{
+                    btnStyle,
+                    item,
+                    onChange: ({ value }) => this.selectChange(value, dropTargetIndex),
+                    placeholder: uiStyle.placeholder,
+                    type: uiStyle.inputtype,
+                    showIndex: false,
+                    indexNumber,
+                    style: { width: "100%", height: "100%", margin: 0, fontSize },
+                    userAnswers
+                  }}
                 />
               </div>
             );

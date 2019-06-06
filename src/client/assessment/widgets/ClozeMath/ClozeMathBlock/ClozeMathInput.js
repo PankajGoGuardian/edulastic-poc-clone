@@ -8,12 +8,8 @@ import CheckedBlock from "./CheckedBlock";
 
 export default class ClozeMathInput extends React.Component {
   static propTypes = {
-    item: PropTypes.object.isRequired,
     index: PropTypes.number.isRequired,
-    save: PropTypes.func.isRequired,
-    checked: PropTypes.bool.isRequired,
-    evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-    answers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+    resprops: PropTypes.object.isRequired
   };
 
   state = {
@@ -29,7 +25,8 @@ export default class ClozeMathInput extends React.Component {
   }
 
   componentDidMount() {
-    const { answers, index } = this.props;
+    const { resprops, index } = this.props;
+    const { answers } = resprops;
     const { math: _userAnwers = [] } = answers;
 
     const _this = this;
@@ -112,7 +109,8 @@ export default class ClozeMathInput extends React.Component {
   };
 
   saveAnswer = () => {
-    const { save, index } = this.props;
+    const { resprops, index } = this.props;
+    const { save } = resprops;
     const { latex, showKeyboard } = this.state;
     if (showKeyboard) {
       save(latex, index, "math");
@@ -120,7 +118,8 @@ export default class ClozeMathInput extends React.Component {
   };
 
   render() {
-    const { item, answers, evaluation, checked, index } = this.props;
+    const { resprops, index } = this.props;
+    const { item, answers, evaluation, checked } = resprops;
     const { showKeyboard } = this.state;
 
     const { math: _mathAnswers = [] } = answers;

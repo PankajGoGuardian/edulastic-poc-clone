@@ -74,12 +74,14 @@ const ClozeMathPreview = ({
 
       <JsxParser
         bindings={{
-          options,
-          evaluation,
-          save: handleAddAnswer,
-          answers: userAnswer,
-          item,
-          checked: type === CHECK || type === SHOW
+          resProps: {
+            options,
+            evaluation,
+            save: handleAddAnswer,
+            answers: userAnswer,
+            item,
+            checked: type === CHECK || type === SHOW
+          }
         }}
         showWarnings
         components={{

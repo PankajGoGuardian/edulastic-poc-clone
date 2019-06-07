@@ -8,7 +8,6 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
-import { FlexContainer } from "@edulastic/common";
 
 import KeyPadOptions from "../../../components/KeyPadOptions";
 
@@ -92,7 +91,7 @@ class Layout extends Component {
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.layout")}</Subtitle>
 
-        <Row>
+        <Row gutter={70}>
           <Col md={6}>
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
@@ -109,24 +108,22 @@ class Layout extends Component {
             </Select>
           </Col>
           <Col md={6}>
-            <FlexContainer>
-              <Input
-                type="number"
-                style={{ width: 110 }}
-                value={uiStyle.min_width}
-                onChange={e => {
-                  const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
-                  return changeUiStyle("min_width", val);
-                }}
-                max={400}
-                min={100}
-              />
-              <Label style={{ marginBottom: 0 }}>{t("component.options.responseMinimumWidth")}</Label>
-            </FlexContainer>
+            <Label>{t("component.options.responseMinimumWidth")}</Label>
+            <Input
+              type="number"
+              size="large"
+              value={uiStyle.min_width}
+              onChange={e => {
+                const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
+                return changeUiStyle("min_width", val);
+              }}
+              max={400}
+              min={100}
+            />
           </Col>
         </Row>
 
-        <Row>
+        <Row gutter={70}>
           <Col md={6}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>

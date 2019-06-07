@@ -46,7 +46,7 @@ class CorrectAnswers extends Component {
     const { tabs } = this.state;
 
     const renderLabel = index => (
-      <FlexContainer>
+      <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
         <span>
           {t("component.correctanswers.alternate")} {index + 1}
         </span>

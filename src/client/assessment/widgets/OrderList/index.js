@@ -181,7 +181,6 @@ const OrderList = ({
             onCloseTab={handleDeleteAltAnswers}
             fillSections={fillSections}
             cleanSections={cleanSections}
-            marginBottom="-50px"
           />
           <Options advancedAreOpen={advancedAreOpen} fillSections={fillSections} cleanSections={cleanSections} />
         </ContentArea>

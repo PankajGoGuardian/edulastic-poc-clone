@@ -12,6 +12,7 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem }) => (
   <Container>
+
     {settings.maxAnswerChecks > 0 && (
       <StyledButton
         onClick={checkAnswerEvaluation}
@@ -22,6 +23,8 @@ const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForIte
           {t("common.test.checkanswer")}
         </ButtonLink>
       </StyledButton>
+    ) : (
+      ""
     )}
 
     <StyledButton>

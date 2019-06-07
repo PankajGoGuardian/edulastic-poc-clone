@@ -20,7 +20,7 @@ import {
   toggleAssignmentViewAction
 } from "../../../src/actions/assignments";
 import { receiveFolderAction } from "../../../src/actions/folder";
-
+import TestPreviewModal from "./TestPreviewModal";
 import {
   getAssignmentsSummary,
   getAssignmentsByTestSelector,
@@ -63,7 +63,9 @@ class Assignments extends Component {
     showFilter: false,
     selectedRows: [],
     filterState: initialFilterState,
-    defaultFilters: {}
+    defaultFilters: {},
+    isPreviewModalVisible: false,
+    currentTestId: ""
   };
 
   componentDidMount() {
@@ -101,6 +103,14 @@ class Assignments extends Component {
 
   setFilterState = filterState => {
     this.setState({ filterState });
+  };
+
+  hidePreviewModal = () => {
+    this.setState({ isPreviewModalVisible: false });
+  };
+
+  showPreviewModal = testId => {
+    this.setState({ isPreviewModalVisible: true, currentTestId: testId });
   };
 
   handleCreate = () => {
@@ -164,11 +174,16 @@ class Assignments extends Component {
       districtId,
       isAdvancedView
     } = this.props;
-    const { showFilter, selectedRows, filterState } = this.state;
+    const { showFilter, selectedRows, filterState, isPreviewModalVisible, currentTestId } = this.state;
     const tabletWidth = 768;
 
     return (
       <div>
+        <TestPreviewModal
+          isModalVisible={isPreviewModalVisible}
+          testId={currentTestId}
+          hideModal={this.hidePreviewModal}
+        />
         <ListHeader
           onCreate={this.handleCreate}
           createAssignment={true}
@@ -210,6 +225,7 @@ class Assignments extends Component {
                           selectedRows={selectedRows}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
                           filters={filterState}
+                          showPreviewModal={this.showPreviewModal}
                         />
                       ) : (
                         <TableList
@@ -219,6 +235,7 @@ class Assignments extends Component {
                           selectedRows={selectedRows}
                           // renderFilter={this.renderFilter}
                           onOpenReleaseScoreSettings={this.onOpenReleaseScoreSettings}
+                          showPreviewModal={this.showPreviewModal}
                         />
                       )}
                     </StyledCard>

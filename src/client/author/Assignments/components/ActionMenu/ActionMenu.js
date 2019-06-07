@@ -6,6 +6,7 @@ import { Menu } from "antd";
 import { test } from "@edulastic/constants";
 import { Link } from "react-router-dom";
 import { assignmentApi } from "@edulastic/api";
+
 import simpleIcon from "../../assets/icon.svg";
 import classIcon from "../../assets/manage-class.svg";
 import copyItem from "../../assets/copy-item.svg";
@@ -21,7 +22,7 @@ import { Container, StyledMenu, StyledLink, SpaceElement, ActionButtonWrapper, A
 const { releaseGradeLabels } = test;
 const { duplicateAssignment } = assignmentApi;
 
-const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
+const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, showPreviewModal) => {
   const showRleaseGrade =
     currentAssignment.releaseScore === releaseGradeLabels.DONT_RELEASE || !currentAssignment.releaseScore;
   const currentTestId = currentAssignment.testId;
@@ -67,7 +68,7 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history) => {
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item key="preview">
+    <Menu.Item key="preview" onClick={() => showPreviewModal(currentTestId)}>
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={viewIcon} />
         <SpaceElement />

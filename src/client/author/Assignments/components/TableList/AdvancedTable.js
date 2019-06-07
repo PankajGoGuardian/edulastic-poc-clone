@@ -79,7 +79,8 @@ class AdvancedTable extends Component {
       history,
       onOpenReleaseScoreSettings,
       selectedRows,
-      folderData
+      folderData,
+      showPreviewModal
     } = this.props;
     const { perPage, current } = this.state;
     const columns = [
@@ -156,7 +157,7 @@ class AdvancedTable extends Component {
         render: (_, row) => (
           <ActionDiv>
             <Dropdown
-              overlay={ActionMenu(onOpenReleaseScoreSettings, row, history)}
+              overlay={ActionMenu(onOpenReleaseScoreSettings, row, history, showPreviewModal)}
               placement="bottomCenter"
               trigger={["click"]}
             >

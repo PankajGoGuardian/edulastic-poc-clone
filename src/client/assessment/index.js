@@ -13,7 +13,7 @@ const AssessmentPlayer = ({ defaultAP, loadTest, match, preview = false, testId,
     const { utaId: testActivityId } = match.params;
 
     loadTest({ testId, testActivityId, preview, demo });
-  }, []);
+  }, [testId]);
 
   if (preview) {
     return <ThemeContainer defaultAP preview />;

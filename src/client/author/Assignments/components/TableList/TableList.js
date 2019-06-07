@@ -177,8 +177,10 @@ class TableList extends Component {
       t,
       onSelectRow,
       selectedRows,
-      folderData
+      folderData,
+      showPreviewModal
     } = this.props;
+
     const { details } = this.state;
     const columns = [
       {
@@ -259,7 +261,7 @@ class TableList extends Component {
         render: (_, row) => (
           <ActionDiv>
             <Dropdown
-              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history)}
+              overlay={ActionMenu(onOpenReleaseScoreSettings, row.currentAssignment, history, showPreviewModal)}
               placement="bottomCenter"
               trigger={["click"]}
               onClick={e => e.stopPropagation()}

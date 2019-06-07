@@ -2,14 +2,16 @@ import React from "react";
 import { Form, Button as AntdButton, Select, Input } from "antd";
 import moment from "moment";
 import { IconAddItems, IconTrash } from "@edulastic/icons";
+import { grades } from "@edulastic/constants";
 import { HeadingSpan } from "../Common/StyledComponents/upgradePlan";
 import DatesNotesFormItem from "../Common/Form/DatesNotesFormItem";
-import { GRADES_LIST, SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from "../Data";
+import { SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from "../Data";
 import { useUpdateEffect } from "../Common/Utils";
 import { Button, Table } from "../Common/StyledComponents";
 
 const { Option } = Select;
 const { Column } = Table;
+const { GRADES_LIST } = grades;
 
 const ManageSubscriptionByUserSegments = Form.create({ name: "searchUsersByEmailIdsForm" })(
   ({

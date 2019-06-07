@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
 
 import { Icon, Select, message, Button, Menu } from "antd";
-const Option = Select.Option;
 
 import {
   StyledTableContainer,
@@ -18,22 +16,27 @@ import {
   StyledActionDropDown,
   TeacherSpan,
   StyledPagination,
-  StyledFilterButton,
-  StyledHeaderColumn,
-  StyledSortIconDiv,
-  StyledSortIcon
+  StyledFilterButton
 } from "./styled";
 
 import AddClassModal from "./AddClassModal/AddClassModal";
 import EditClassModal from "./EditClassModal/EditClassModal";
 import ArchiveClassModal from "./ArchiveClassModal/ArchiveClassModal";
 
-import { receiveClassListAction, createClassAction, updateClassAction, deleteClassAction } from "../../ducks";
+import {
+  receiveClassListAction,
+  createClassAction,
+  updateClassAction,
+  deleteClassAction,
+  getClassListSelector
+} from "../../ducks";
 
-import { getClassListSelector } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
+import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 
-class ClassesTable extends React.Component {
+const { Option } = Select;
+
+class ClassesTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -389,14 +392,13 @@ class ClassesTable extends React.Component {
       addClassModalVisible,
       editClassModalVisible,
       filtersData,
-      sortedInfo,
       archiveClassModalVisible,
       editClassKey,
       currentPage,
       selectedArchiveClasses
     } = this.state;
 
-    const { userOrgId } = this.props;
+    const { userOrgId, searchCourseList, coursesForDistrictList } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -540,6 +542,8 @@ class ClassesTable extends React.Component {
             addClass={this.addClass}
             closeModal={this.closeAddClassModal}
             userOrgId={userOrgId}
+            searchCourseList={searchCourseList}
+            coursesForDistrictList={coursesForDistrictList}
           />
         )}
 
@@ -560,13 +564,15 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      classList: getClassListSelector(state)
+      classList: getClassListSelector(state),
+      coursesForDistrictList: getCoursesForDistrictSelector(state)
     }),
     {
       createClass: createClassAction,
       updateClass: updateClassAction,
       deleteClass: deleteClassAction,
-      loadClassListData: receiveClassListAction
+      loadClassListData: receiveClassListAction,
+      searchCourseList: receiveSearchCourseAction
     }
   )
 );
@@ -579,5 +585,7 @@ ClassesTable.propTypes = {
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,
   deleteClass: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired
+  userOrgId: PropTypes.string.isRequired,
+  searchCourseList: PropTypes.func.isRequired,
+  coursesForDistrictList: PropTypes.array.isRequired
 };

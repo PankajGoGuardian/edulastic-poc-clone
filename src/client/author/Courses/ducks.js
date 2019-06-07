@@ -80,6 +80,11 @@ export const getCourseListSelector = createSelector(
   state => state.data
 );
 
+export const getCoursesForDistrictSelector = createSelector(
+  stateCourseSelector,
+  state => state.searchResult
+);
+
 // reducers
 const initialState = {
   data: [],

@@ -1,10 +1,12 @@
 import React, { Component } from "react";
 import { get, debounce } from "lodash";
 import { Form, Input, Row, Col, Select, Button, Modal, Spin } from "antd";
+import { grades } from "@edulastic/constants";
 import { schoolApi, userApi } from "@edulastic/api";
 import { ModalFormItem } from "./styled";
 
 const { Option } = Select;
+const { GRADES_LIST } = grades;
 
 class AddClassModal extends Component {
   constructor(props) {
@@ -17,24 +19,28 @@ class AddClassModal extends Component {
     };
     this.fetchSchool = debounce(this.fetchSchool, 1000);
     this.fetchTeacher = debounce(this.fetchTeacher, 1000);
+    this.fetchCoursesForDistrict = debounce(this.fetchCoursesForDistrict, 1000);
   }
 
   onAddClass = () => {
-    this.props.form.validateFields((err, user) => {
+    this.props.form.validateFieldsAndScroll((err, user) => {
       if (!err) {
+        const { teacher, name, institutionId, subject, tags, courseId, grade } = user;
         const teacherArr = [];
-        for (let i = 0; i < user.teacher.length; i++) {
-          teacherArr.push(user.teacher[i].key);
+        for (let i = 0; i < teacher.length; i++) {
+          teacherArr.push(teacher[i].key);
         }
         const createClassData = {
-          name: user.name,
+          name,
           type: "class",
           owners: teacherArr,
-          institutionId: user.institutionId.key,
-          subject: user.subject,
-          tags: user.tags
+          institutionId: institutionId.key,
+          subject,
+          tags,
+          courseId,
+          // here multiple grades has to be sent as a comma separated string
+          grade: grade.join(",")
         };
-
         this.props.addClass(createClassData);
       }
     });
@@ -59,7 +65,7 @@ class AddClassModal extends Component {
     this.setState({ schoolList: schoolListData.data, fetchingSchool: false });
   };
 
-  handleSchoolChange = value => {
+  handleSchoolChange = () => {
     // this code was commented out since the form handles setting of fields automatically, and
     // there is no need to manually set fields
     // this.props.form.setFieldsValue({ institutionId: value });
@@ -67,6 +73,20 @@ class AddClassModal extends Component {
       schoolList: [],
       fetchingSchool: false
     });
+  };
+
+  fetchCoursesForDistrict = value => {
+    const { userOrgId: districtId, searchCourseList } = this.props;
+    const searchTerms = {
+      districtId,
+      search: {
+        name: { type: "cont", value }
+      },
+      active: 1,
+      page: 0,
+      limit: 50
+    };
+    searchCourseList(searchTerms);
   };
 
   fetchTeacher = async value => {
@@ -95,7 +115,7 @@ class AddClassModal extends Component {
   };
 
   render() {
-    const { modalVisible } = this.props;
+    const { modalVisible, coursesForDistrictList } = this.props;
     const { fetchingSchool, schoolList, fetchingTeacher, teacherList } = this.state;
 
     const { getFieldDecorator } = this.props.form;
@@ -128,6 +148,24 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
+            <ModalFormItem label="Course">
+              {getFieldDecorator("courseId")(
+                <Select
+                  showSearch
+                  onSearch={this.fetchCoursesForDistrict}
+                  notFoundContent={null}
+                  placeholder="Please enter 1 or more characters"
+                >
+                  {coursesForDistrictList.map(course => (
+                    <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
+                  ))}
+                </Select>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
             <ModalFormItem label="Subject">
               {getFieldDecorator("subject", {
                 rules: [
@@ -143,6 +181,28 @@ class AddClassModal extends Component {
                   <Option value="Science">Science</Option>
                   <Option value="Social Studies">Social Studies</Option>
                   <Option value="Other Subjects">Other Subjects</Option>
+                </Select>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="Grades">
+              {getFieldDecorator("grade", {
+                rules: [
+                  {
+                    required: true,
+                    message: "Please select grades"
+                  }
+                ]
+              })(
+                <Select mode="multiple" placeholder="Select Grades">
+                  {GRADES_LIST.map(({ value, label }) => (
+                    <Option key={value} value={value}>
+                      {label}
+                    </Option>
+                  ))}
                 </Select>
               )}
             </ModalFormItem>

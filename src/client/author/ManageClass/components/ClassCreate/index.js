@@ -13,7 +13,7 @@ import { createClassAction, getSelectedSubject, setSubjectAction } from "../../d
 // selectors
 import { getCurriculumsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
-import { receiveSearchCourseAction } from "../../../Courses/ducks";
+import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
 
 // componentes
 import Header from "./Header";
@@ -109,7 +109,7 @@ class ClassCreate extends React.Component {
     if (keyword) {
       const { searchCourseList, userOrgData } = this.props;
       const { districtId } = userOrgData;
-      const serachTerms = {
+      const searchTerms = {
         districtId,
         search: {
           name: { type: "cont", value: keyword }
@@ -118,7 +118,7 @@ class ClassCreate extends React.Component {
         page: 0,
         limit: 50
       };
-      searchCourseList(serachTerms);
+      searchCourseList(searchTerms);
     }
   };
 
@@ -184,7 +184,7 @@ const enhance = compose(
       const selectedSubject = getSelectedSubject(state);
       return {
         curriculums: getCurriculumsListSelector(state),
-        courseList: get(state, "coursesReducer.searchResult"),
+        courseList: getCoursesForDistrictSelector(state),
         isSearching: get(state, "coursesReducer.searching"),
         userOrgData: getUserOrgData(state),
         userId: get(state, "user.user._id"),

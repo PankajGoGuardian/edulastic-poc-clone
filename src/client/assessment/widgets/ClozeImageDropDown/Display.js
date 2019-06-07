@@ -193,6 +193,7 @@ class Display extends Component {
                         width: `${parseInt(responseContainer.width)}px`,
                         height: `${parseInt(responseContainer.height)}px`
                       }}
+                      backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
                       defaultValue={userAnswers[dropTargetIndex]}

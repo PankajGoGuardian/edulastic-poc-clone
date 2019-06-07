@@ -4,8 +4,8 @@ import { Select } from "antd";
 
 import { SelectContainer } from "./styled/SelectContainer";
 
-const AnswerDropdown = ({ responseIndex, style, onChange, options, defaultValue }) => (
-  <SelectContainer style={style}>
+const AnswerDropdown = ({ responseIndex, style, backgroundColor, onChange, options, defaultValue }) => (
+  <SelectContainer style={style} backgroundColor={backgroundColor}>
     <Select
       style={style}
       data-cy={`dropdown-res-${responseIndex}`}

@@ -20,7 +20,7 @@ export const SelectContainer = styled.div`
     padding-left: 10px;
     border: 1px solid;
     border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};
-
+    background: ${props => props.backgroundColor}
     &:hover {
       border: 1px solid;
       border-color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionBorderColor};

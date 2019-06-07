@@ -12,7 +12,7 @@ import { Button, Checkbox, Input, InputNumber, Select, Upload, message } from "a
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 
-import { PaddingDiv } from "@edulastic/common";
+import { PaddingDiv, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { newBlue } from "@edulastic/colors";
@@ -348,13 +348,10 @@ class ComposeQuestion extends Component {
               data-cy="drag-drop-image-max-res"
               min={1}
               max={10}
-              style={{ width: 100 }}
               defaultValue={maxRespCount}
               onChange={val => this.onItemPropChange("maxRespCount", val)}
             />
-            <PaddingDiv left={20} style={{ width: 160 }}>
-              {t("component.cloze.imageDragDrop.maximumresponses")}
-            </PaddingDiv>
+            <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
           </div>
         </FlexContainer>
         <PaddingDiv top={30} />

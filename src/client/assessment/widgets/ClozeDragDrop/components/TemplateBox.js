@@ -51,13 +51,13 @@ const TemplateBox = ({ index: dropTargetIndex, resprops }) => {
       {hasGroupResponses && (
         <ResponseContainer style={btnStyle} smallSize={smallSize}>
           <Draggable
-            title={striptags(getLabel(dropTargetIndex)) || ""}
+            title={striptags(getLabelForGroup(dropTargetIndex)) || ""}
             className="content"
             onDrop={onDrop}
             data={`${getLabelForGroup(dropTargetIndex)}_${userAnswers[dropTargetIndex] &&
               userAnswers[dropTargetIndex].group}_${dropTargetIndex}_fromResp`}
           >
-            <MathSpan dangerouslySetInnerHTML={{ __html: getLabel(dropTargetIndex) || "" }} />
+            <MathSpan dangerouslySetInnerHTML={{ __html: getLabelForGroup(dropTargetIndex) || "" }} />
           </Draggable>
           &nbsp;
         </ResponseContainer>

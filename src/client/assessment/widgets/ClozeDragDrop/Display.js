@@ -195,6 +195,7 @@ class ClozeDragDropDisplay extends Component {
         }
       }
     }
+
     return possibleResps;
   };
 

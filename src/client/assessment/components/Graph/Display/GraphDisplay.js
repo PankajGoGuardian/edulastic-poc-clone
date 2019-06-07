@@ -198,7 +198,8 @@ class GraphDisplay extends Component {
       controlbar,
       validation,
       annotation,
-      id
+      id,
+      graphType
     } = graphData;
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
@@ -271,6 +272,7 @@ class GraphDisplay extends Component {
       showAnswer,
       checkAnswer,
       changePreviewTab,
+      graphType,
       bgShapes,
       annotation,
       questionId: id,

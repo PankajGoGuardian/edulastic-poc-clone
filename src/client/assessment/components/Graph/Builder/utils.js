@@ -16,7 +16,7 @@ export const findAvailableStackedSegmentPosition = board => {
   const calcedYPosition = lineY + yMeasure;
 
   for (let i = 0; i <= board.elements.length; i++) {
-    const yPosition = Math.round((lineY + yMeasure * (i + 1)) * 10) / 10;
+    const yPosition = +(lineY + yMeasure * (i + 1)).toFixed(2);
     let isPositionAvailable = true;
 
     board.elements.forEach(segment => {

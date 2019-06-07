@@ -164,10 +164,11 @@ class GraphContainer extends PureComponent {
       bgImgOptions,
       backgroundShapes,
       tools,
-      setElementsStash
+      setElementsStash,
+      graphType
     } = this.props;
 
-    this._graph = makeBorder(this._graphId);
+    this._graph = makeBorder(this._graphId, graphType);
 
     this._graph.setTool(tools[0]);
 
@@ -624,6 +625,7 @@ GraphContainer.propTypes = {
   backgroundShapes: PropTypes.object,
   evaluation: PropTypes.any,
   tools: PropTypes.array.isRequired,
+  graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,

@@ -94,7 +94,7 @@ class AxisLabelsContainer extends PureComponent {
       graphType,
       setElementsStash
     } = this.props;
-    this._graph = makeBorder(this._graphId);
+    this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
       this._graph.resizeContainer(layout.width, layout.height);
@@ -120,29 +120,9 @@ class AxisLabelsContainer extends PureComponent {
         ...gridParams
       });
 
-      this._graph.renderTitle({
-        position: layout.titlePosition,
-        title: canvas.title,
-        xMin: canvas.xMin,
-        xMax: canvas.xMax,
-        yMax: canvas.yMax,
-        yMin: canvas.yMin
-      });
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true, this.setMarks);
 
-      this._graph.makeNumberlineAxis(
-        canvas,
-        numberlineAxis,
-        layout,
-        graphType,
-        { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-        {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        }
-      );
-
-      this._graph.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
+      this._graph.setMarksDeleteHandler(this.setMarks);
 
       this.setElementsToGraph();
 
@@ -151,177 +131,15 @@ class AxisLabelsContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      canvas,
-      numberlineAxis,
-      pointParameters,
-      xAxesParameters,
-      yAxesParameters,
-      layout,
-      graphType,
-      gridParams,
-      list,
-      setValue
-    } = this.props;
+    const { canvas, numberlineAxis, layout, list, setValue } = this.props;
 
     if (this._graph) {
       if (
-        canvas.xMin !== prevProps.canvas.xMin ||
-        canvas.xMax !== prevProps.canvas.xMax ||
-        canvas.yMin !== prevProps.canvas.yMin ||
-        canvas.yMax !== prevProps.canvas.yMax ||
-        canvas.margin !== prevProps.canvas.margin ||
-        canvas.title !== prevProps.canvas.title
+        !isEqual(canvas, prevProps.canvas) ||
+        !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
+        !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-        this._graph.updateTitle({
-          position: layout.titlePosition,
-          title: canvas.title,
-          xMin: canvas.xMin,
-          xMax: canvas.xMax,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        });
-      }
-
-      if (
-        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
-        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
-        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
-        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
-        pointParameters.withLabel !== prevProps.pointParameters.withLabel
-      ) {
-        this._graph.setPointParameters({
-          ...defaultPointParameters(),
-          ...pointParameters
-        });
-      }
-
-      if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
-        xAxesParameters.name !== prevProps.xAxesParameters.name ||
-        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
-        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
-        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
-        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
-        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
-        xAxesParameters.strokeColor !== prevProps.xAxesParameters.strokeColor ||
-        xAxesParameters.tickEndings !== prevProps.xAxesParameters.tickEndings ||
-        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
-        yAxesParameters.name !== prevProps.yAxesParameters.name ||
-        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
-        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
-        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
-        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
-        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.visible !== prevProps.yAxesParameters.visible
-      ) {
-        this._graph.setAxesParameters({
-          x: {
-            ...defaultAxesParameters(),
-            ...xAxesParameters
-          },
-          y: {
-            ...defaultAxesParameters(),
-            ...yAxesParameters
-          }
-        });
-      }
-
-      if (
-        layout.width !== prevProps.layout.width ||
-        layout.height !== prevProps.layout.height ||
-        layout.titlePosition !== prevProps.layout.titlePosition ||
-        layout.linePosition !== prevProps.layout.linePosition ||
-        layout.pointBoxPosition !== prevProps.layout.pointBoxPosition
-      ) {
-        this._graph.resizeContainer(layout.width, layout.height);
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-        this._graph.updateTitle({
-          position: layout.titlePosition,
-          title: canvas.title,
-          xMin: canvas.xMin,
-          xMax: canvas.xMax,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        });
-      }
-
-      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
-        this._graph.setGridParameters({
-          ...defaultGridParameters(),
-          ...gridParams
-        });
-      }
-
-      if (
-        numberlineAxis.showMin !== prevProps.numberlineAxis.showMin ||
-        numberlineAxis.showMax !== prevProps.numberlineAxis.showMax ||
-        numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance ||
-        numberlineAxis.labelsFrequency !== prevProps.numberlineAxis.labelsFrequency ||
-        numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks ||
-        numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow ||
-        numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow ||
-        numberlineAxis.separationDistanceX !== prevProps.numberlineAxis.separationDistanceX ||
-        numberlineAxis.separationDistanceY !== prevProps.numberlineAxis.separationDistanceY ||
-        numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase ||
-        numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints ||
-        numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat ||
-        numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
-        numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
-        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin ||
-        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
-        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
-      ) {
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          this.setMarks,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false, this.setMarks);
       }
 
       this.setElementsToGraph(prevProps);

@@ -43,6 +43,7 @@ const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettin
     });
 
     mark.setPosition(setCoords, [x, y]);
+
     setValue();
   });
 };
@@ -59,10 +60,21 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
     y = Number.isNaN(Number.parseFloat(coords.y)) ? lineY : coords.y;
   }
 
-  const content = replaceLatexesWithMathHtml(data.text, latex => {
-    if (!katex) return latex;
-    return katex.renderToString(latex);
+  let content = replaceLatexesWithMathHtml("<span>" + data.text + "</span>", latex => {
+    if (!katex) return "<span>" + latex + "</span>";
+    return "<span>" + katex.renderToString(latex) + "</span>";
   });
+
+  content +=
+    '<svg id="' +
+    data.id +
+    '" className="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702"><g id="' +
+    data.id +
+    '" transform="translate(-40.782 .5)"><path id="' +
+    data.id +
+    '" d="M48.889.522V0H45.4v.522h-4.12v2.112h11.73V.522z" /><path id="' +
+    data.id +
+    '" d="M57.546 80.756h8.939l.642-12.412H56.9zm5.486-9.511h1.107v6.325h-1.107zm-3.14 0H61v6.325h-1.108z"transform="translate(-14.87 -65.054)"/></g></svg>';
 
   const mark = board.$board.create("text", [x, y, content], {
     id: coords && coords.fixed ? null : data.id,
@@ -119,16 +131,22 @@ const getConfig = mark => ({
   id: mark.id
 });
 
-const alignMarks = (board, settings, containerSettings, lineSettings) => {
+const alignMarks = board => {
+  const {
+    numberlineAxis: { separationDistanceX, separationDistanceY },
+    canvas,
+    layout: { linePosition, pointBoxPosition }
+  } = board.numberlineSettings;
+
   const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
-  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
+  const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
+  const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
 
   const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox();
   const pxInUnitX = board.$board.canvasWidth / (xMax - xMin);
   const pxInUnitY = board.$board.canvasHeight / (yMax - yMin);
-  const marginLeft = settings.separationDistanceX / pxInUnitX;
-  const marginTop = settings.separationDistanceY / pxInUnitY;
+  const marginLeft = separationDistanceX / pxInUnitX;
+  const marginTop = separationDistanceY / pxInUnitY;
 
   let offsetX = xMin; // right side of previous mark
   let offsetY = containerY; // bottom side of previous marks line

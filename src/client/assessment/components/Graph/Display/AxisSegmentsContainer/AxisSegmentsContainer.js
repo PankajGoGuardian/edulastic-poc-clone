@@ -213,7 +213,7 @@ class AxisSegmentsContainer extends PureComponent {
       setElementsStash
     } = this.props;
 
-    this._graph = makeBorder(this._graphId);
+    this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
       this._graph.resizeContainer(layout.width, layout.height);
@@ -239,44 +239,16 @@ class AxisSegmentsContainer extends PureComponent {
         ...gridParams
       });
 
-      this._graph.updateStackSettings(
-        numberlineAxis.stackResponses,
-        numberlineAxis.stackResponsesSpacing,
-        canvas.responsesAllowed,
-        layout.width
-      );
+      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT);
 
-      this._graph.setTool(CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
-
-      this._graph.makeNumberlineAxis(
-        canvas,
-        numberlineAxis,
-        layout,
-        graphType,
-        { position: layout.linePosition, yMax: canvas.yMax, yMin: canvas.yMin },
-        {
-          position: layout.pointBoxPosition,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        }
-      );
       this._graph.setPointParameters({
         snapSizeX: numberlineAxis.ticksDistance
       });
 
-      this._graph.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true);
 
       this.setElementsToGraph();
     }
-
-    this._graph.renderTitle({
-      position: layout.titlePosition,
-      title: canvas.title,
-      xMin: canvas.xMin,
-      xMax: canvas.xMax,
-      yMax: canvas.yMax,
-      yMin: canvas.yMin
-    });
 
     this.setGraphUpdateEventHandler();
 
@@ -284,201 +256,38 @@ class AxisSegmentsContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const {
-      canvas,
-      numberlineAxis,
-      pointParameters,
-      xAxesParameters,
-      yAxesParameters,
-      layout,
-      gridParams,
-      graphType,
-      tools
-    } = this.props;
+    const { canvas, numberlineAxis, layout, tools } = this.props;
 
     const { selectedTool } = this.state;
+
     if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
       this.setDefaultToolState();
-      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
+      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT);
     }
     if (this._graph) {
-      if (
-        canvas.xMin !== prevProps.canvas.xMin ||
-        canvas.xMax !== prevProps.canvas.xMax ||
-        canvas.yMin !== prevProps.canvas.yMin ||
-        canvas.yMax !== prevProps.canvas.yMax ||
-        canvas.margin !== prevProps.canvas.margin ||
-        canvas.title !== prevProps.canvas.title
-      ) {
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          null,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-        this._graph.updateTitle({
-          position: layout.titlePosition,
-          title: canvas.title,
-          xMin: canvas.xMin,
-          xMax: canvas.xMax,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        });
-      }
-
       if (
         numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
         numberlineAxis.stackResponsesSpacing !== prevProps.numberlineAxis.stackResponsesSpacing ||
         canvas.responsesAllowed !== prevProps.canvas.responsesAllowed
       ) {
-        this._graph.updateStackSettings(
-          numberlineAxis.stackResponses,
-          numberlineAxis.stackResponsesSpacing,
-          canvas.responsesAllowed,
-          layout.width
-        );
         this._graph.segmentsReset();
-        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT, graphType);
+        this._graph.setTool(selectedTool.name || CONSTANT.TOOLS.SEGMENTS_POINT);
         this.updateValues();
       }
 
       if (
-        pointParameters.snapToGrid !== prevProps.pointParameters.snapToGrid ||
-        pointParameters.snapSizeX !== prevProps.pointParameters.snapSizeX ||
-        pointParameters.snapSizeY !== prevProps.pointParameters.snapSizeY ||
-        pointParameters.showInfoBox !== prevProps.pointParameters.showInfoBox ||
-        pointParameters.withLabel !== prevProps.pointParameters.withLabel
+        !isEqual(canvas, prevProps.canvas) ||
+        !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
+        !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.setPointParameters({
-          ...defaultPointParameters(),
-          ...pointParameters
-        });
-      }
-
-      if (
-        xAxesParameters.ticksDistance !== prevProps.xAxesParameters.ticksDistance ||
-        xAxesParameters.name !== prevProps.xAxesParameters.name ||
-        xAxesParameters.showTicks !== prevProps.xAxesParameters.showTicks ||
-        xAxesParameters.drawLabels !== prevProps.xAxesParameters.drawLabels ||
-        xAxesParameters.maxArrow !== prevProps.xAxesParameters.maxArrow ||
-        xAxesParameters.minArrow !== prevProps.xAxesParameters.minArrow ||
-        xAxesParameters.commaInLabel !== prevProps.xAxesParameters.commaInLabel ||
-        xAxesParameters.strokeColor !== prevProps.xAxesParameters.strokeColor ||
-        xAxesParameters.tickEndings !== prevProps.xAxesParameters.tickEndings ||
-        yAxesParameters.ticksDistance !== prevProps.yAxesParameters.ticksDistance ||
-        yAxesParameters.name !== prevProps.yAxesParameters.name ||
-        yAxesParameters.showTicks !== prevProps.yAxesParameters.showTicks ||
-        yAxesParameters.drawLabels !== prevProps.yAxesParameters.drawLabels ||
-        yAxesParameters.maxArrow !== prevProps.yAxesParameters.maxArrow ||
-        yAxesParameters.minArrow !== prevProps.yAxesParameters.minArrow ||
-        yAxesParameters.commaInLabel !== prevProps.yAxesParameters.commaInLabel ||
-        yAxesParameters.visible !== prevProps.yAxesParameters.visible
-      ) {
-        this._graph.setAxesParameters({
-          x: {
-            ...defaultAxesParameters(),
-            ...xAxesParameters
-          },
-          y: {
-            ...defaultAxesParameters(),
-            ...yAxesParameters
-          }
-        });
-      }
-
-      if (
-        layout.width !== prevProps.layout.width ||
-        layout.height !== prevProps.layout.height ||
-        layout.titlePosition !== prevProps.layout.titlePosition
-      ) {
-        this._graph.resizeContainer(layout.width, layout.height);
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          null,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
-        this._graph.updateTitle({
-          position: layout.titlePosition,
-          title: canvas.title,
-          xMin: canvas.xMin,
-          xMax: canvas.xMax,
-          yMax: canvas.yMax,
-          yMin: canvas.yMin
-        });
-      }
-
-      if (gridParams.gridY !== prevProps.gridParams.gridY || gridParams.gridX !== prevProps.gridParams.gridX) {
-        this._graph.setGridParameters({
-          ...defaultGridParameters(),
-          ...gridParams
-        });
-      }
-
-      if (
-        numberlineAxis.showMin !== prevProps.numberlineAxis.showMin ||
-        numberlineAxis.showMax !== prevProps.numberlineAxis.showMax ||
-        numberlineAxis.rightArrow !== prevProps.numberlineAxis.rightArrow ||
-        numberlineAxis.leftArrow !== prevProps.numberlineAxis.leftArrow ||
-        numberlineAxis.stackResponses !== prevProps.numberlineAxis.stackResponses ||
-        numberlineAxis.ticksDistance !== prevProps.numberlineAxis.ticksDistance ||
-        numberlineAxis.snapToTicks !== prevProps.numberlineAxis.snapToTicks ||
-        numberlineAxis.renderingBase !== prevProps.numberlineAxis.renderingBase ||
-        numberlineAxis.specificPoints !== prevProps.numberlineAxis.specificPoints ||
-        numberlineAxis.fractionsFormat !== prevProps.numberlineAxis.fractionsFormat ||
-        numberlineAxis.minorTicks !== prevProps.numberlineAxis.minorTicks ||
-        numberlineAxis.showLabels !== prevProps.numberlineAxis.showLabels ||
-        numberlineAxis.labelShowMax !== prevProps.numberlineAxis.labelShowMax ||
-        numberlineAxis.labelShowMin !== prevProps.numberlineAxis.labelShowMin ||
-        numberlineAxis.showTicks !== prevProps.numberlineAxis.showTicks ||
-        numberlineAxis.fontSize !== prevProps.numberlineAxis.fontSize
-      ) {
-        this._graph.updateGraphParameters(
-          canvas,
-          numberlineAxis,
-          layout,
-          graphType,
-          null,
-          {
-            position: layout.linePosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          },
-          {
-            position: layout.pointBoxPosition,
-            yMax: canvas.yMax,
-            yMin: canvas.yMin
-          }
-        );
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false);
       }
 
       this.setElementsToGraph();
     }
   }
 
-  onSelectTool = ({ name, index, groupIndex }, graphType) => {
+  onSelectTool = ({ name, index, groupIndex }) => {
     if (name === "undo") {
       this.onUndo();
       return;
@@ -489,7 +298,7 @@ class AxisSegmentsContainer extends PureComponent {
     }
 
     this.setState({ selectedTool: { name, index, groupIndex } });
-    this._graph.setTool(name, graphType);
+    this._graph.setTool(name);
   };
 
   onUndo = () => {
@@ -661,7 +470,7 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, graphType, canvas, elements, tools, questionId } = this.props;
+    const { layout, canvas, elements, tools, questionId } = this.props;
     const { selectedTool } = this.state;
 
     return (
@@ -678,7 +487,6 @@ class AxisSegmentsContainer extends PureComponent {
             getIconByToolName={this.getIconByToolName}
             onSelect={this.onSelectTool}
             fontSize={layout.fontSize}
-            graphType={graphType}
             responsesAllowed={canvas.responsesAllowed}
           />
         </GraphWrapper>

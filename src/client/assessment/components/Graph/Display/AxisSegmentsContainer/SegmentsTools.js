@@ -2,16 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { GraphToolbar, SegmentsToolBtn, SegmentsToolbarItem, ToolbarItemIcon } from "./styled";
 
-const SegmentsTools = ({
-  tool,
-  onSelect,
-  fontSize,
-  getIconByToolName,
-  graphType,
-  responsesAllowed,
-  elementsNumber,
-  toolbar
-}) => {
+const SegmentsTools = ({ tool, onSelect, fontSize, getIconByToolName, responsesAllowed, elementsNumber, toolbar }) => {
   const segmentsTools = [
     "segments_point",
     "segment_both_point_included",
@@ -62,12 +53,12 @@ const SegmentsTools = ({
 
   const getToolClickHandler = uiTool => {
     if (serviceTools.includes(uiTool.name)) {
-      return () => onSelect(uiTool, graphType);
+      return () => onSelect(uiTool);
     }
     if (elementsNumber >= responsesAllowed) {
       return null;
     }
-    return () => onSelect(uiTool, graphType);
+    return () => onSelect(uiTool);
   };
 
   const getIconTemplate = (toolName = "point", options) => getIconByToolName(toolName, options);
@@ -119,7 +110,6 @@ const SegmentsTools = ({
 
 SegmentsTools.propTypes = {
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
-  graphType: PropTypes.string.isRequired,
   responsesAllowed: PropTypes.number.isRequired,
   getIconByToolName: PropTypes.func.isRequired,
   onSelect: PropTypes.func.isRequired,

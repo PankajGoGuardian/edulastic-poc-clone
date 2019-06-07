@@ -1,3 +1,4 @@
+import JXG from "jsxgraph";
 import { union, isString, uniq } from "lodash";
 import { calcMeasure } from "../utils";
 import { RENDERING_BASE } from "../config/constants";
@@ -21,35 +22,63 @@ function createMinorTicks(minorCount, majorTicksSorted) {
   return minorTicks;
 }
 
-const onHandler = (board, xMin, xMax, settings, lineSettings) => {
+const onHandler = board => {
+  const {
+    numberlineAxis: {
+      showMin,
+      showMax,
+      leftArrow,
+      rightArrow,
+      ticksDistance,
+      renderingBase,
+      showTicks,
+      specificPoints,
+      fontSize,
+      fractionsFormat,
+      showLabels,
+      labelShowMax,
+      labelShowMin,
+      minorTicks,
+      labelsFrequency
+    },
+    canvas: { xMin, xMax, yMax },
+    layout: { linePosition, width }
+  } = board.numberlineSettings;
+
+  if (width < 10) {
+    return;
+  }
+
   const [, y] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const calcY = +(lineSettings.yMax - (y / 100) * lineSettings.position).toFixed(4);
+  const calcY = yMax - (y / 100) * linePosition;
   const axisPadding = ((-xMin + xMax) / 100) * 3.5;
 
   const newAxis = board.$board.create(
     "axis",
     [
-      [settings.showMin ? xMin - axisPadding : xMin + axisPadding, calcY],
-      [settings.showMax ? xMax + axisPadding : xMax - axisPadding, calcY]
+      [showMin ? xMin - axisPadding : xMin + axisPadding, calcY],
+      [showMax ? xMax + axisPadding : xMax - axisPadding, calcY]
     ],
     {
       straightFirst: false,
       straightLast: false,
-      firstArrow: settings.leftArrow === true ? { size: 10 } : false,
-      lastArrow: settings.rightArrow === true ? { size: 10 } : false,
+      firstArrow: leftArrow === true ? { size: 10 } : false,
+      lastArrow: rightArrow === true ? { size: 10 } : false,
       strokeColor: "#d6d6d6",
       highlightStrokeColor: "#d6d6d6"
     }
   );
 
-  let { ticksDistance } = settings;
-  const { fractionsFormat, showLabels, labelShowMax, labelShowMin, minorTicks, labelsFrequency } = settings;
+  newAxis.point1.coords.setCoordinates(JXG.COORDS_BY_SCREEN, newAxis.point1.coords.scrCoords);
+  newAxis.point2.coords.setCoordinates(JXG.COORDS_BY_SCREEN, newAxis.point2.coords.scrCoords);
+
+  let _ticksDistance = ticksDistance;
   let fracTicksDistance = null;
-  if (isString(ticksDistance) && ticksDistance.indexOf("/") !== -1) {
-    fracTicksDistance = getFraction(ticksDistance);
-    ticksDistance = fracTicksDistance ? fracTicksDistance.decim : NaN;
+  if (isString(_ticksDistance) && _ticksDistance.indexOf("/") !== -1) {
+    fracTicksDistance = getFraction(_ticksDistance);
+    _ticksDistance = fracTicksDistance ? fracTicksDistance.decim : NaN;
   } else {
-    ticksDistance = parseFloat(ticksDistance);
+    _ticksDistance = parseFloat(ticksDistance);
   }
 
   newAxis.removeAllTicks();
@@ -57,10 +86,10 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
    * Major ticks
    * */
   let ticks = [];
-  if (ticksDistance === 0) {
+  if (_ticksDistance === 0) {
     ticks.push(xMin);
     ticks.push(xMax);
-  } else if (settings.renderingBase === RENDERING_BASE.ZERO_BASED) {
+  } else if (renderingBase === RENDERING_BASE.ZERO_BASED) {
     ticks.push(xMin);
     let startPoint = 0;
     if (xMin > 0) {
@@ -68,38 +97,38 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       let i = startPoint;
       while (i < xMax) {
         ticks.push(i);
-        i += ticksDistance;
+        i += _ticksDistance;
       }
     } else if (xMax < 0) {
       do {
-        startPoint -= ticksDistance;
+        startPoint -= _ticksDistance;
       } while (startPoint > xMax);
 
       let i = startPoint;
       while (i > xMin) {
         ticks.push(i);
-        i -= ticksDistance;
+        i -= _ticksDistance;
       }
     } else {
       // startPoint === 0
       let i = startPoint;
       while (i < xMax) {
         ticks.push(i);
-        i += ticksDistance;
+        i += _ticksDistance;
       }
       i = startPoint;
-      i -= ticksDistance;
+      i -= _ticksDistance;
       while (i > xMin) {
         ticks.push(i);
-        i -= ticksDistance;
+        i -= _ticksDistance;
       }
     }
     ticks.push(xMax);
-  } else if (settings.renderingBase === RENDERING_BASE.LINE_MINIMUM_VALUE) {
+  } else if (renderingBase === RENDERING_BASE.LINE_MINIMUM_VALUE) {
     let i = xMin;
     while (i < xMax) {
       ticks.push(i);
-      i += ticksDistance;
+      i += _ticksDistance;
     }
     ticks.push(xMax);
   }
@@ -113,14 +142,14 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       strokeColor: "#d6d6d6",
       highlightStrokeColor: "#d6d6d6",
       majorHeight: 10,
-      visible: settings.showTicks
+      visible: showTicks
     });
   }
   /**
    * Specific points
    * */
-  if (isString(settings.specificPoints)) {
-    const tickArr = settings.specificPoints
+  if (isString(specificPoints)) {
+    const tickArr = specificPoints
       .split(",")
       .map(s => parseFloat(s))
       .filter(num => isNaN(num) === false);
@@ -142,7 +171,7 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
       }
       return res;
     } else {
-      const tickArr = settings.specificPoints
+      const tickArr = specificPoints
         .split(",")
         .map(s => parseFloat(s))
         .filter(num => isNaN(num) === false);
@@ -183,18 +212,18 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   board.$board.create("ticks", [newAxis, ticks], {
     strokeColor: "#d6d6d6",
     highlightStrokeColor: "#d6d6d6",
-    visible: settings.showTicks,
+    visible: showTicks,
     anchor: "middle",
     insertTicks: false,
     tickEndings: [1, 1],
     majorHeight: 25,
     drawLabels: true,
-    ticksDistance,
+    _ticksDistance,
     label: {
       offset: [0, -15],
       anchorX: "middle",
       anchorY: "top",
-      fontSize: settings.fontSize,
+      fontSize,
       display: "html",
       cssClass: "numberline-fraction",
       highlightCssClass: "numberline-fraction"
@@ -241,10 +270,9 @@ const onHandler = (board, xMin, xMax, settings, lineSettings) => {
   return newAxis;
 };
 
-const updateCoords = (board, xMin, xMax, settings, lineSettings) => {
+const updateCoords = board => {
   board.$board.removeObject(board.numberlineAxis);
-  board.numberlineAxis = onHandler(board, xMin, xMax, settings, lineSettings);
-  board.$board.fullUpdate();
+  board.numberlineAxis = onHandler(board);
 };
 
 export default {

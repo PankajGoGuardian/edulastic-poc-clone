@@ -1,4 +1,6 @@
 .mark {
+  display: flex;
+  justify-content: center;
   min-width: 40px;
   height: 40px !important;
   padding: 5px;
@@ -15,12 +17,22 @@
   opacity: 1;
 }
 
+.mark span {
+  position: relative;
+  left: 10px;
+  /* padding-left: 15px; */
+}
+
 .mark.fr-box {
   width: unset;
 }
 
 .mark.mounted {
   transform: translate(0, -15px);
+}
+
+.mark.mounted svg {
+  opacity: 1;
 }
 
 .mark:hover {
@@ -81,4 +93,18 @@
   color: #444444;
   opacity: 1;
   z-index: 8 !important;
+}
+
+.mark svg {
+  opacity: 0;
+  position: relative;
+  height: 15px;
+  width: 15px;
+  bottom: 20px;
+  left: 10px;
+  transition: 0.2s ease opacity, 0.2s ease fill;
+}
+
+.mark svg:hover {
+  fill: red;
 }

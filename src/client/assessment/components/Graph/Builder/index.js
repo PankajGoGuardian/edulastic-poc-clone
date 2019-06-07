@@ -54,7 +54,8 @@ import "../common/Mark.css";
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
  */
 class Board {
-  constructor(id, config = {}) {
+  constructor(id, graphType, config = {}) {
+    this.graphType = graphType;
     /**
      * Elements on the board
      */
@@ -91,6 +92,8 @@ class Board {
      * Current tool
      */
     this.currentTool = null;
+
+    this.numberlineSettings = null;
 
     this.stackResponses = false;
 
@@ -158,12 +161,12 @@ class Board {
    * Constants/Tools
    * @param {string} tool
    */
-  setTool(tool, graphType) {
-    if (graphType === "axisLabels") {
+  setTool(tool) {
+    if (this.graphType === "axisLabels") {
       return;
     }
     if (this.currentTool !== tool) {
-      if (graphType !== "axisSegments") {
+      if (this.graphType !== "axisSegments") {
         this.abortTool();
       }
     }
@@ -312,9 +315,62 @@ class Board {
     });
   }
 
+  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue) {
+    this.numberlineSettings = {
+      canvas,
+      numberlineAxis,
+      layout,
+      setValue
+    };
+
+    Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
+
+    if (this.graphType === "axisLabels") {
+      this.resizeContainer(layout.width, layout.height);
+    } else {
+      this.updateStackSettings(
+        numberlineAxis.stackResponses,
+        numberlineAxis.stackResponsesSpacing,
+        canvas.responsesAllowed,
+        layout.width
+      );
+    }
+
+    this.setNumberlineSnapToTicks(numberlineAxis.snapToTicks);
+
+    const margin = Math.min(canvas.margin, layout.width);
+    const xMargin = margin / calcUnitX(canvas.xMin, canvas.xMax, layout.width);
+    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(canvas, xMargin));
+
+    Numberline.updateCoords(this);
+
+    if (this.graphType === "axisLabels") {
+      Mark.updateMarksContainer(this, canvas.xMin - xMargin, canvas.xMax + xMargin, {
+        position: layout.pointBoxPosition,
+        yMax: canvas.yMax,
+        yMin: canvas.yMin
+      });
+      if (!first) {
+        Mark.alignMarks(this);
+        setValue();
+      }
+    }
+
+    this.updateTitle({
+      position: layout.titlePosition,
+      title: canvas.title,
+      xMin: canvas.xMin,
+      xMax: canvas.xMax,
+      yMax: canvas.yMax,
+      yMin: canvas.yMin
+    });
+
+    this.$board.fullUpdate();
+  }
+
   updateStackSettings(stackResponses, stackResponsesSpacing, responsesAllowed, width) {
     if (stackResponses && responsesAllowed > 0 && stackResponsesSpacing > 0) {
-      const newHeight = 150 + responsesAllowed * stackResponsesSpacing;
+      const newHeight = Math.max(150, 75 + (responsesAllowed + 1) * stackResponsesSpacing);
       this.resizeContainer(width, newHeight);
     }
 
@@ -327,57 +383,20 @@ class Board {
     this.responsesAllowed = responsesAllowed;
   }
 
-  // Set calculated bounding box (xMin - margin and xMax + margin), render numberline axis
-  makeNumberlineAxis(graphParameters, settings, layout, graphType, lineSettings, containerSettings) {
-    Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
-    const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
-
-    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
-    this.numberlineAxis = Numberline.onHandler(
-      this,
-      graphParameters.xMin,
-      graphParameters.xMax,
-      settings,
-      lineSettings
-    );
-
-    if (graphType === "axisLabels") {
-      Mark.updateMarksContainer(
-        this,
-        graphParameters.xMin - xMargin,
-        graphParameters.xMax + xMargin,
-        containerSettings
-      );
-    }
-  }
-
-  // Update bounding box, marks container, rerender numberline axis, update mark's snap handler
-  updateGraphParameters(graphParameters, settings, layout, graphType, setValue, lineSettings, containerSettings) {
-    this.setNumberlineSnapToTicks(settings.snapToTicks);
-
-    graphParameters.margin = Math.min(graphParameters.margin, layout.width);
-    const xMargin = graphParameters.margin / calcUnitX(graphParameters.xMin, graphParameters.xMax, layout.width);
-    this.$board.setBoundingBox(numberlineGraphParametersToBoundingbox(graphParameters, xMargin));
-
-    Numberline.updateCoords(this, graphParameters.xMin, graphParameters.xMax, settings, lineSettings);
-
-    if (graphType === "axisLabels") {
-      Mark.updateMarksContainer(
-        this,
-        graphParameters.xMin - xMargin,
-        graphParameters.xMax + xMargin,
-        containerSettings
-      );
-
-      Mark.alignMarks(this, settings, containerSettings, lineSettings);
-      setValue();
-    }
-
-    this.$board.fullUpdate();
-  }
-
   setNumberlineSnapToTicks(snapToTicks) {
     this.numberlineSnapToTicks = !!snapToTicks;
+  }
+
+  setMarksDeleteHandler(setValue) {
+    this.$board.on("up", event => {
+      if (event.target.nodeName === ("path" || "svg")) {
+        const mark = this.elements.find(element => element.id === event.target.id);
+        const setCoords = JXG.COORDS_BY_USER;
+        mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
+        Mark.alignMarks(this);
+        setValue();
+      }
+    });
   }
 
   // Render marks
@@ -389,7 +408,7 @@ class Board {
       );
     });
 
-    Mark.alignMarks(this, settings, containerSettings, lineSettings);
+    Mark.alignMarks(this);
   }
 
   removeMarks() {
@@ -753,7 +772,8 @@ class Board {
             graphParameters,
             setValue,
             lineSettings,
-            containerSettings
+            containerSettings,
+            settings
           )
         );
       });
@@ -1779,8 +1799,8 @@ class Board {
   }
 }
 
-export function makeBorder(id, config) {
-  return new Board(id, config);
+export function makeBorder(id, graphType, config) {
+  return new Board(id, graphType, config);
 }
 
 export default Board;

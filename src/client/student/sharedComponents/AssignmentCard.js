@@ -20,7 +20,21 @@ import Attempt from "./Attempt";
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
 
-const SafeBrowserButton = ({ testId, testType, assignmentId, testActivityId, btnName }) => {
+const isSEB = () => window.navigator.userAgent.includes("SEB");
+
+const SafeBrowserButton = ({
+  testId,
+  testType,
+  assignmentId,
+  testActivityId,
+  startDate,
+  t,
+  startTest,
+  attempted,
+  resume
+}) => {
+  const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
+
   const token = TokenStorage.getAccessToken();
   let url;
   if (process.env.POI_APP_API_URI.startsWith("http")) {
@@ -41,7 +55,7 @@ const SafeBrowserButton = ({ testId, testType, assignmentId, testActivityId, btn
   }
 
   url += `/token/${token}/settings.seb`;
-  return <SafeStartAssignButton href={url}>{btnName}</SafeStartAssignButton>;
+  return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
 const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type }) => {
@@ -140,13 +154,19 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
             </AttemptDetails>
           )}
           {type === "assignment" ? (
-            safeBrowser ? (
+            safeBrowser && !(new Date(startDate) > new Date()) && !isSEB() ? (
               <SafeBrowserButton
+                data-cy="start"
                 testId={testId}
                 testType={testType}
                 testActivityId={lastAttempt._id}
                 assignmentId={assignmentId}
                 btnName={t("common.startAssignment")}
+                startDate={startDate}
+                t={t}
+                startTest={startTest}
+                attempted={attempted}
+                resume={resume}
               />
             ) : (
               <StartButton

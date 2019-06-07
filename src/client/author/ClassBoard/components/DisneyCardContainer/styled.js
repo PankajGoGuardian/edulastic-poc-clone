@@ -112,6 +112,7 @@ export const PaginationInfoS = styled(StyledFlexContainer)`
 
 export const PaginationInfoT = styled(StyledFlexContainer)`
   flex-wrap: wrap;
+  justify-content: flex-start;
 `;
 
 export const CircularDiv = styled.div`

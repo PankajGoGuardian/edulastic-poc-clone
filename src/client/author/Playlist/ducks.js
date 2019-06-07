@@ -65,7 +65,7 @@ function* receivePlaylistsSaga({ payload: { search = {}, page = 1, limit = 10 } 
 function* receiveLastPlayListSaga() {
   try {
     const result = yield call(userContextApi.getLastPlayList);
-    yield put(updateLastPlayListAction(result));
+    yield put(updateLastPlayListAction(result ? result : {}));
   } catch (err) {
     const errorMessage = "Receive last playslist is failing";
     yield call(message.error, errorMessage);

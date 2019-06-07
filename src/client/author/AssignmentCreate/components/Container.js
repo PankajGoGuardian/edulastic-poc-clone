@@ -38,7 +38,7 @@ class Container extends Component {
 
     const { lastPlayList = {} } = this.props;
     let toLinkForPlaylist = "/author/playlists";
-    if (lastPlayList.value && lastPlayList.value._id) {
+    if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
       toLinkForPlaylist = `/author/playlists/${lastPlayList.value._id}/use-this`;
     }
 

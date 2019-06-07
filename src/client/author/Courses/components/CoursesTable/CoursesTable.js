@@ -607,7 +607,7 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       courseList: getCourseListSelector(state),
       selectedRowKeys: get(state, ["coursesReducer", "selectedRowKeys"], []),
-      totalCourseCount: get(state, ["courseReducer", "totalCourseCount"], 0)
+      totalCourseCount: get(state, ["coursesReducer", "totalCourseCount"], 0)
     }),
     {
       createCourse: createCourseAction,

@@ -114,7 +114,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
   }
   for (const entity of entities) {
     const { questionActivities } = entity;
-    for (const {
+    for (let {
       _id,
       notStarted,
       skipped,
@@ -149,12 +149,19 @@ export const getAggregateByQuestion = (entities, studentId) => {
       if (!notStarted) {
         questionMap[_id].attemptsNum += 1;
       } else {
-        questionMap[_id].notStartedNum += 1;
+        if (score > 0) {
+          notStarted = false;
+        } else {
+          questionMap[_id].notStartedNum += 1;
+        }
       }
 
       if (skipped && score === 0) {
         questionMap[_id].skippedNum += 1;
         skippedx = true;
+      }
+      if (score > 0) {
+        skipped = false;
       }
 
       if (score === maxScore && !notStarted && score > 0) {

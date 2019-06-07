@@ -90,6 +90,12 @@ function* receiveFeedbackResponseSaga({ payload }) {
   yield delay(1000);
   try {
     const feedbackResponse = yield call(classResponseApi.feedbackResponse, payload);
+    const {
+      testActivityId,
+      body: { groupId }
+    } = payload;
+
+    yield put({ type: RECEIVE_STUDENT_RESPONSE_REQUEST, payload: { testActivityId, groupId } });
 
     yield put({
       type: RECEIVE_FEEDBACK_RESPONSE_SUCCESS,

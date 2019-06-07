@@ -31,7 +31,7 @@ import {
   StyledParaSSS,
   RightAlignedCol
 } from "./styled";
-
+import { getAvatarName } from "../../Transformer";
 export default class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
@@ -54,38 +54,6 @@ export default class DisneyCardContainer extends Component {
       classId: props.classId
     };
   }
-
-  getAvatarName = studentName => {
-    let firstLetter = "";
-    let secondLetter = "";
-
-    if (studentName.length > 0) {
-      if (studentName.indexOf(" ") >= 0) {
-        firstLetter = studentName.substring(0, 1);
-        secondLetter = studentName.substring(studentName.indexOf(" "), 1);
-      } else if (this.countUpperCaseChars(studentName) >= 2) {
-        firstLetter = studentName.match(/^[A-Z]{4}/);
-        secondLetter = studentName.substring(
-          studentName.indexOf(firstLetter),
-          studentName.length - studentName.indexOf(firstLetter)
-        );
-        secondLetter = secondLetter.match(/^[A-Z]{4}/);
-      } else if (studentName.length >= 2) {
-        return studentName.substring(0, 2).toUpperCase();
-      }
-
-      return `${firstLetter}${secondLetter}`.toUpperCase();
-    }
-  };
-
-  countUpperCaseChars = str => {
-    let count = 0;
-    const len = str.length;
-    for (let i = 0; i < len; i++) {
-      if (/[A-Z]/.test(str.charAt(i))) count++;
-    }
-    return count;
-  };
 
   render() {
     const { testActivity } = this.state;
@@ -126,7 +94,7 @@ export default class DisneyCardContainer extends Component {
         const studentData = (
           <StyledCard data-cy={`student-card-${student.studentName}`} bordered={false} key={index}>
             <PaginationInfoF>
-              <CircularDiv>{this.getAvatarName(student.studentName)}</CircularDiv>
+              <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
                 <StyledParaF data-cy="studentName">{student.studentName ? student.studentName : "-"}</StyledParaF>
                 {student.present ? (

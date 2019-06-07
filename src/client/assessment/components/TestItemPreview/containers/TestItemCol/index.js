@@ -50,6 +50,10 @@ class TestItemCol extends Component {
       return <div />;
     }
 
+    if (question.activity && question.activity.filtered) {
+      return <div />;
+    }
+
     return (
       <Tabs.TabContainer>
         <QuestionWrapper

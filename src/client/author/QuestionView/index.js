@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { Bar, ComposedChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Line } from "recharts";
 import { head, get, isEmpty, round, sumBy } from "lodash";
 import { dropZoneTitleColor, greyGraphstroke, incorrect, pCorrect, graded, blue, white } from "@edulastic/colors";
+import { getAvatarName } from "../ClassBoard/Transformer";
 
 import {
   StyledFlexContainer,
@@ -118,6 +119,8 @@ class QuestionViewContainer extends Component {
         .map(st => {
           const stData = {
             name: st.studentName,
+            avatarName: getAvatarName(st.studentName),
+
             avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
             attempts: st.questionActivities.length,
             correct: 0,
@@ -182,7 +185,7 @@ class QuestionViewContainer extends Component {
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>
               <ComposedChart barGap={1} barSize={36} data={data}>
-                <XAxis dataKey="name" tickSize={0} />
+                <XAxis dataKey="avatarName" tickSize={0} />
                 <YAxis
                   dataKey="attempts"
                   yAxisId={0}

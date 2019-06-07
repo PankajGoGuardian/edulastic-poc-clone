@@ -94,6 +94,38 @@ const getMaxScoreFromItem = testItem => {
   return total;
 };
 
+const countUpperCaseChars = str => {
+  let count = 0;
+  const len = str.length;
+  for (let i = 0; i < len; i++) {
+    if (/[A-Z]/.test(str.charAt(i))) count++;
+  }
+  return count;
+};
+
+export const getAvatarName = studentName => {
+  let firstLetter = "";
+  let secondLetter = null;
+
+  if (studentName.length > 0) {
+    if (studentName.indexOf(" ") >= 0) {
+      firstLetter = studentName.substring(0, 1);
+      secondLetter = studentName.substring(studentName.indexOf(" "), 1);
+    } else if (countUpperCaseChars(studentName) >= 2) {
+      firstLetter = studentName.match(/^[A-Z]{4}/);
+      secondLetter = studentName.substring(
+        studentName.indexOf(firstLetter),
+        studentName.length - studentName.indexOf(firstLetter)
+      );
+      secondLetter = secondLetter.match(/^[A-Z]{4}/);
+    } else if (studentName.length >= 2) {
+      return studentName.substring(0, 2).toUpperCase();
+    }
+
+    return `${firstLetter}${secondLetter}`.toUpperCase();
+  }
+};
+
 export const transformGradeBookResponse = ({
   test,
   testItemsData,
@@ -104,7 +136,7 @@ export const transformGradeBookResponse = ({
   const testItemIds = test.testItems;
   const testItemsDataKeyed = keyBy(testItemsData, "_id");
   const qids = getAllQidsAndWeight(testItemIds, testItemsDataKeyed);
-  
+
   const testMaxScore = testItemsData.reduce((prev, cur) => prev + getMaxScoreFromItem(cur), 0);
 
   const studentTestActivities = keyBy(testActivities, "userId");

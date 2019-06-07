@@ -80,11 +80,10 @@ export default class BarGraph extends Component {
 
     let { itemsSummary } = gradebook;
     if (studentview && studentId) {
-      const filtered = getAggregateByQuestion(testActivity, studentId);
+      const filtered = _getAggregateByQuestion(testActivity, studentId);
       if (filtered) {
         itemsSummary = filtered.itemsSummary;
       }
-      console.log("studentId selected", studentId, "itemsummary", itemsSummary);
     }
 
     let chartData = [];

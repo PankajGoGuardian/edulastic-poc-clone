@@ -67,6 +67,8 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
     }
   });
 class StudentViewContainer extends Component {
+  state = { filter: null };
+
   static getDerivedStateFromProps(nextProps, preState) {
     const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
     const { selectedStudent: _selectedStudent } = preState || {};
@@ -90,7 +92,7 @@ class StudentViewContainer extends Component {
   render() {
     const { classResponse, studentItems, studentResponse, selectedStudent, variableSetIds, testActivity } = this.props;
 
-    const { loading } = this.state;
+    const { loading, filter } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
@@ -104,10 +106,18 @@ class StudentViewContainer extends Component {
       <React.Fragment>
         <StyledFlexContainer justifyContent="space-between">
           <StudentButtonDiv>
-            <AllButton active>ALL</AllButton>
-            <CorrectButton>CORRECT</CorrectButton>
-            <WrongButton>WRONG</WrongButton>
-            <PartiallyCorrectButton>PARTIALLY CORRECT</PartiallyCorrectButton>
+            <AllButton active={filter === null} onClick={() => this.setState({ filter: null })}>
+              ALL
+            </AllButton>
+            <CorrectButton active={filter === "correct"} onClick={() => this.setState({ filter: "correct" })}>
+              CORRECT
+            </CorrectButton>
+            <WrongButton active={filter === "wrong"} onClick={() => this.setState({ filter: "wrong" })}>
+              WRONG
+            </WrongButton>
+            <PartiallyCorrectButton active={filter === "partial"} onClick={() => this.setState({ filter: "partial" })}>
+              PARTIALLY CORRECT
+            </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton active>GIVE OVERALL FEEDBACK</GiveOverallFeedBackButton>
         </StyledFlexContainer>
@@ -117,6 +127,7 @@ class StudentViewContainer extends Component {
             questionActivities={studentResponse.questionActivities}
             classResponse={classResponseProcessed}
             testItemsOrder={this.props.testItemsOrder}
+            studentViewFilter={filter}
           />
         )}
       </React.Fragment>

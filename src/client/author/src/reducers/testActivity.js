@@ -53,10 +53,6 @@ const reducer = (state = initialState, { type, payload }) => {
           _st.entities[index].status = "inProgress";
           _st.entities[index].score = 0;
           _st.entities[index].testActivityId = entity.testActivityId;
-          _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(({ _id }) => ({
-            _id,
-            notStarted: true
-          }));
         } else {
           console.warn(`can't find any testactivity for studentId ${entity.studentId}`);
         }
@@ -111,20 +107,23 @@ const reducer = (state = initialState, { type, payload }) => {
             const itemIndex = _st.entities[entityIndex].questionActivities.findIndex(x => x._id == questionItem._id);
             if (itemIndex == -1) {
               _st.entities[entityIndex].questionActivities.push(questionItem);
-              // console.warn(`can't find any questionItem for id ${testActivityId}`);
             } else {
               if (!maxScore && (score || score === 0)) {
                 delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
                 const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
                 _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
-                console.log("updating for", { entityIndex, itemIndex, score });
               } else {
                 delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
                 const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
                 if (oldQAct.timeSpent) {
                   questionItem.timeSpent = (questionItem.timeSpent || 0) + oldQAct.timeSpent;
                 }
-                _st.entities[entityIndex].questionActivities[itemIndex] = { ...questionItem, score, maxScore };
+                _st.entities[entityIndex].questionActivities[itemIndex] = {
+                  ...oldQAct,
+                  ...questionItem,
+                  score,
+                  maxScore
+                };
               }
             }
             if (score || score === 0) {

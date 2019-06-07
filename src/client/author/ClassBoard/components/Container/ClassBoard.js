@@ -219,7 +219,6 @@ class ClassBoard extends Component {
   onClickBarGraph = (data, selectedQuestion) => {
     const questions = this.getQuestions();
     const index = questions.findIndex(x => x.id === data.qid);
-    console.log("onclick bargraph", data, "index", index, "questions", questions);
     this.setState({ selectedQuestion: index, selectedQid: data.qid, itemId: data.itemId, selectedTab: "questionView" });
   };
 

@@ -14,6 +14,7 @@ const Options = ({ t, fillSections, cleanSections, advancedAreOpen }) => (
   <WidgetOptions
     fillSections={fillSections}
     cleanSections={cleanSections}
+    showVariables={false}
     advancedAreOpen={advancedAreOpen}
     title={t("common.options.title")}
   >

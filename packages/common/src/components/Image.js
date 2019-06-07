@@ -1,8 +1,8 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Image = styled.img`
-  width: ${({ width }) => (width ? `${width}px` : '100%')};
-  height: ${({ height }) => height || 616}px;
+  width: ${({ width }) => (width ? `${width}px` : "auto")};
+  height: ${({ height }) => (height ? `${height}px` : "auto")};
   max-height: 100%;
   max-width: 100%;
 `;

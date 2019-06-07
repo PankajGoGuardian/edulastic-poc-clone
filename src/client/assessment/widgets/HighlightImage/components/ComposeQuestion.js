@@ -41,8 +41,8 @@ class ComposeQuestion extends Component {
 
     const { image } = item;
 
-    const width = image ? image.width : 900;
-    const height = image ? image.height : 470;
+    const width = image ? image.width : 700;
+    const height = image ? image.height : 600;
     const altText = image ? image.altText : "";
     const file = image ? image.source : "";
 
@@ -58,7 +58,15 @@ class ComposeQuestion extends Component {
     const handleImageToolbarChange = prop => val => {
       setQuestionData(
         produce(item, draft => {
-          draft.image[prop] = val;
+          let value = val;
+
+          if (prop === "height") {
+            value = value < 600 ? value : 600;
+          } else if (prop === "width") {
+            value = value < 700 ? value : 700;
+          }
+
+          draft.image[prop] = value;
           updateVariables(draft);
         })
       );
@@ -79,7 +87,9 @@ class ComposeQuestion extends Component {
       }
     };
 
-    const thumb = file && <Image width={width} height={height} src={file} alt={altText} />;
+    const thumb = file && (
+      <Image width={width < 700 ? width : 700} height={height < 600 ? height : 600} src={file} alt={altText} />
+    );
 
     return (
       <Widget>
@@ -93,7 +103,7 @@ class ComposeQuestion extends Component {
         <DropZoneToolbar
           width={+width}
           height={+height}
-          maxWidth={1097}
+          maxWidth={700}
           altText={altText}
           handleChange={handleImageToolbarChange}
         />

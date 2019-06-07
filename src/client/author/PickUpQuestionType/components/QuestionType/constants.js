@@ -522,8 +522,8 @@ export const getCards = onSelectQuestionType => {
         title: "Highlight Image",
         image: {
           source: "",
-          width: 900,
-          height: 470,
+          width: 700,
+          height: 600,
           altText: ""
         },
         line_color: [mainBlueColor],

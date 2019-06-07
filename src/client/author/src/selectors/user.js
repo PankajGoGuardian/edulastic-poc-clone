@@ -51,7 +51,7 @@ export const getCurrentTerm = createSelector(
 
 export const getInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
-  state => state.interestedCurriculums
+  state => _get(state, "interestedCurriculums", [])
 );
 
 export const getUserOrgId = createSelector(

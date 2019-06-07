@@ -1,10 +1,12 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
-import { get } from "lodash";
+import { get, pick } from "lodash";
 import { message } from "antd";
-import { takeLatest, call, put } from "redux-saga/effects";
-import { schoolApi, userApi, settingsApi } from "@edulastic/api";
+import { takeLatest, call, put, select } from "redux-saga/effects";
+import { schoolApi, userApi, settingsApi, TokenStorage } from "@edulastic/api";
 import { signupSuccessAction } from "../Login/ducks";
 import { push } from "connected-react-router";
+import { getUser } from "../../author/src/selectors/user";
+import produce from "immer";
 
 // Types
 const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
@@ -176,7 +178,21 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
         districtId: result.districtId
       };
       const _result = yield call(userApi.updateUser, joinSchoolPayload);
-      yield put(signupSuccessAction(_result));
+      if (_result && _result.token) {
+        TokenStorage.storeAccessToken(_result.token, _result._id, _result.role, true);
+        TokenStorage.selectAccessToken(_result._id, _result.role);
+      }
+      const user = pick(_result, [
+        "_id",
+        "firstName",
+        "lastName",
+        "email",
+        "role",
+        "orgData",
+        "features",
+        "currentSignUpState"
+      ]);
+      yield put(signupSuccessAction(user));
     }
   } catch (err) {
     console.log("_err", err);
@@ -187,7 +203,21 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
 function* joinSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(userApi.updateUser, payload);
-    yield put(signupSuccessAction(result));
+    if (result && result.token) {
+      TokenStorage.storeAccessToken(result.token, result._id, result.role, true);
+      TokenStorage.selectAccessToken(result._id, result.role);
+    }
+    const user = pick(result, [
+      "_id",
+      "firstName",
+      "lastName",
+      "email",
+      "role",
+      "orgData",
+      "features",
+      "currentSignUpState"
+    ]);
+    yield put(signupSuccessAction(user));
   } catch (err) {
     yield put({
       type: JOIN_SCHOOL_FAILED,
@@ -199,9 +229,18 @@ function* joinSchoolSaga({ payload = {} }) {
 
 function* saveSubjectGradeSaga({ payload }) {
   try {
-    const result = yield call(settingsApi.saveInterestedStandards, payload);
+    const result = yield call(settingsApi.saveInterestedStandards, payload) || {};
     yield call(message.success, SAVE_SUBJECTGRADE_SUCCESS);
-    yield put(signupSuccessAction(result));
+    const user = yield select(getUser);
+    const newUser = produce(user, draft => {
+      if (!draft.orgData) {
+        draft.orgData = {};
+      }
+      draft.orgData.interestedCurriculums = result ? result.curriculums : [];
+      delete draft.currentSignUpState;
+      return draft;
+    });
+    yield put(signupSuccessAction(newUser));
     yield put(push("/author/manageClass"));
   } catch (err) {
     yield put({

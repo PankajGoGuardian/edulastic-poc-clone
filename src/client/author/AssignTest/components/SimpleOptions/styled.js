@@ -143,26 +143,21 @@ export const StyledSelect = styled(Select)`
   width: 100%;
   .ant-select-selection {
     background: #f8f8f8;
-    height: 40px;
-    padding: 0px;
+    min-height: 40px;
+    margin-bottom: 10px;
+    padding: 3px;
     border-radius: 2px;
     border: 1px #e1e1e1 solid;
 
     .ant-select-selection__rendered {
       height: 100%;
       > ul {
-        height: 100%;
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        > li {
-          margin-top: 0px;
-        }
       }
     }
 
     .ant-select-selection__choice {
       border-radius: 5px;
+      margin: 4px;
       border: solid 1px ${fadedBlue};
       background-color: ${fadedBlue};
       height: 23.5px;

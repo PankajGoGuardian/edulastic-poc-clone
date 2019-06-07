@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { Popconfirm, Icon, Select, message, Button, Menu, Checkbox } from "antd";
 
-import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
-const Option = Select.Option;
+const { Option } = Select;
 
 import {
   StyledTableContainer,
@@ -30,7 +30,7 @@ import {
   setFiltersAction
 } from "../../ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
-import { getSchoolAdminSelector } from "../../ducks";
+import { getSchoolAdminSelector, getShowActiveCoursesSelector, setShowActiveCoursesAction } from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -44,7 +44,7 @@ function compareByAlph(a, b) {
   return 0;
 }
 
-class SchoolAdminTable extends React.Component {
+class SchoolAdminTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -114,22 +114,36 @@ class SchoolAdminTable extends React.Component {
     ];
   }
 
+  fetchSchoolAdminData = showActiveCourses => {
+    const { loadSchoolAdminData, userOrgId: districtId } = this.props;
+    const statusParams = showActiveCourses ? { status: 1 } : {};
+    loadSchoolAdminData({
+      districtId,
+      role: "school-admin",
+      ...statusParams,
+      limit: 10000 // TODO: Remove limit after pagination done properly
+    });
+  };
+
   componentDidMount() {
-    const { loadSchoolAdminData, loadSchoolsData, userOrgId } = this.props;
+    const { loadSchoolsData, userOrgId, showActiveCourses } = this.props;
     loadSchoolsData({
       districtId: userOrgId
     });
-    loadSchoolAdminData({
-      districtId: userOrgId,
-      role: "school-admin",
-      limit: 10000 // TODO: Remove limit after pagination done properly
-    });
+    this.fetchSchoolAdminData(showActiveCourses);
   }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
       dataSource: nextProps.schoolAdminData
     };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { showActiveCourses } = this.props;
+    if (showActiveCourses !== prevProps.showActiveCourses) {
+      this.fetchSchoolAdminData(showActiveCourses);
+    }
   }
 
   onEditSchoolAdmin = key => {
@@ -307,7 +321,7 @@ class SchoolAdminTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { userOrgId, schoolsData } = this.props;
+    const { userOrgId, schoolsData, setShowActiveCourses, showActiveCourses } = this.props;
     const selectedSchoolAdmin = dataSource.filter(item => item.key == editSchoolAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
@@ -334,7 +348,9 @@ class SchoolAdminTable extends React.Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-
+          <Checkbox checked={showActiveCourses} onChange={evt => setShowActiveCourses(evt.target.checked)}>
+            Show active courses only
+          </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
             <Button>
               Actions <Icon type="down" />
@@ -397,7 +413,8 @@ const enhance = compose(
     state => ({
       userOrgId: getUserOrgId(state),
       schoolAdminData: getSchoolAdminSelector(state),
-      schoolsData: getSchoolsSelector(state)
+      schoolsData: getSchoolsSelector(state),
+      showActiveCourses: getShowActiveCoursesSelector(state)
     }),
     {
       createSchoolAdmin: createSchoolAdminAction,
@@ -406,7 +423,8 @@ const enhance = compose(
       loadSchoolAdminData: receiveSchoolAdminAction,
       setSearchName: setSearchNameAction,
       setFilters: setFiltersAction,
-      loadSchoolsData: receiveSchoolsAction
+      loadSchoolsData: receiveSchoolsAction,
+      setShowActiveCourses: setShowActiveCoursesAction
     }
   )
 );
@@ -422,5 +440,6 @@ SchoolAdminTable.propTypes = {
   setFilters: PropTypes.func.isRequired,
   schoolAdminData: PropTypes.array.isRequired,
   userOrgId: PropTypes.string.isRequired,
-  loadSchoolsData: PropTypes.func.isRequired
+  loadSchoolsData: PropTypes.func.isRequired,
+  showActiveCourses: PropTypes.bool.isRequired
 };

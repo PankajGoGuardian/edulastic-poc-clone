@@ -38,7 +38,7 @@ const fetchUsers = data =>
       method: "post",
       data
     })
-    .then(result => result.data.result);
+    .then(({ data: response }) => response);
 
 const createUser = data =>
   api

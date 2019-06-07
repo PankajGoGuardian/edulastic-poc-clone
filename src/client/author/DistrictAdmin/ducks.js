@@ -203,7 +203,7 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveDistrictAdminSaga({ payload }) {
   try {
-    const districtAdmin = yield call(userApi.fetchUsers, payload);
+    const { result: districtAdmin } = yield call(userApi.fetchUsers, payload);
     yield put(receiveDistrictAdminSuccessAction(districtAdmin));
   } catch (err) {
     const errorMessage = "Receive DistrictAdmins is failing!";

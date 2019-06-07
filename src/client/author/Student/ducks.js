@@ -234,7 +234,7 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveStudentsListSaga({ payload }) {
   try {
-    const studentsList = yield call(userApi.fetchUsers, payload);
+    const { result: studentsList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveStudentsListSuccessAction(studentsList));
   } catch (err) {
     const errorMessage = "Receive Students is failing!";

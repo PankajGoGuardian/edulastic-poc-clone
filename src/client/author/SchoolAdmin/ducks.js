@@ -19,6 +19,7 @@ const DELETE_SCHOOLADMIN_ERROR = "[schooladmin] delete data error";
 
 const SET_SCHOOLADMIN_SEARCHNAME = "[schooladmin] set search name";
 const SET_SCHOOLADMIN_SETFILTERS = "[schooladmin] set filters";
+const SET_SHOW_ACTIVE_COURSES = "[schooladmin] set showActiveCourses flag";
 
 export const receiveSchoolAdminAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
@@ -35,6 +36,7 @@ export const deleteSchoolAdminErrorAction = createAction(DELETE_SCHOOLADMIN_ERRO
 
 export const setSearchNameAction = createAction(SET_SCHOOLADMIN_SEARCHNAME);
 export const setFiltersAction = createAction(SET_SCHOOLADMIN_SETFILTERS);
+export const setShowActiveCoursesAction = createAction(SET_SHOW_ACTIVE_COURSES);
 
 //selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
@@ -100,6 +102,11 @@ export const getSchoolAdminSelector = createSelector(
   }
 );
 
+export const getShowActiveCoursesSelector = createSelector(
+  stateSchoolAdminSelector,
+  ({ showActiveCourses }) => showActiveCourses
+);
+
 // reducers
 const initialState = {
   data: [],
@@ -117,7 +124,8 @@ const initialState = {
   searchName: "",
   filtersColumn: "",
   filtersValue: "",
-  filtersText: ""
+  filtersText: "",
+  showActiveCourses: false
 };
 
 export const reducer = createReducer(initialState, {
@@ -214,14 +222,17 @@ export const reducer = createReducer(initialState, {
     state.filtersColumn = payload.column;
     state.filtersValue = payload.value;
     state.filtersText = payload.text;
+  },
+  [SET_SHOW_ACTIVE_COURSES]: (state, { payload: bool }) => {
+    state.showActiveCourses = bool;
   }
 });
 
 // sagas
 function* receiveSchoolAdminSaga({ payload }) {
   try {
-    const schoolAdmin = yield call(userApi.fetchUsers, payload);
-    yield put(receiveSchoolAdminSuccessAction(schoolAdmin));
+    const { result } = yield call(userApi.fetchUsers, payload);
+    yield put(receiveSchoolAdminSuccessAction(result));
   } catch (err) {
     const errorMessage = "Receive SchoolAdmins is failing!";
     yield call(message.error, errorMessage);

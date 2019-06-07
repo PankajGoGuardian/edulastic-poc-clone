@@ -44,7 +44,7 @@ export default createReducer(initialState, {
 function* fetchAllUsersSaga({ payload }) {
   try {
     yield put(getFetchingAction(true));
-    const userList = yield call(userApi.fetchUsers, payload);
+    const { result: userList } = yield call(userApi.fetchUsers, payload);
     yield put(updateUsersListAction(userList));
   } catch (e) {
     const errorMessage = "Search failed";

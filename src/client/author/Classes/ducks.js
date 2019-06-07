@@ -211,7 +211,7 @@ function* deleteClassSaga({ payload }) {
 
 function* receiveTeachersListSaga({ payload }) {
   try {
-    const teachersList = yield call(userApi.fetchUsers, payload);
+    const { result: teachersList } = yield call(userApi.fetchUsers, payload);
     yield put(receiveTeacherListSuccessAction(teachersList));
   } catch (err) {
     const errorMessage = "Receive Teachers is failing!";

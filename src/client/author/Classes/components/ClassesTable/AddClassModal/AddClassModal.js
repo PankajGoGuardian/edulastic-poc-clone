@@ -91,7 +91,7 @@ class AddClassModal extends Component {
 
   fetchTeacher = async value => {
     this.setState({ teacherList: [], fetchingTeacher: true });
-    const teacherListData = await userApi.fetchUsers({
+    const { result: teacherListData } = await userApi.fetchUsers({
       districtId: this.props.userOrgId,
       limit: 25,
       page: 1,

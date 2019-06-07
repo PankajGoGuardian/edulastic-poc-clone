@@ -63,7 +63,7 @@ const AssessmentContainer = ({
 }) => {
   const qid = preview ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
-
+  saveUserAnswer(currentItem, 0);
   gotoItem(currentItem);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;

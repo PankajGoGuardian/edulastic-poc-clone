@@ -12,7 +12,7 @@ import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
 const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem }) => (
   <Container>
-    {settings.maxAnswerChecks && (
+    {settings.maxAnswerChecks > 0 && (
       <StyledButton
         onClick={checkAnswerEvaluation}
         data-cy="checkAnswer"

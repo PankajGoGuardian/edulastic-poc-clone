@@ -126,7 +126,9 @@ function* loadTest({ payload }) {
           }
         });
       }
-
+      if (lastAttendedQuestion !== test.testItems.length - 1) {
+        lastAttendedQuestion++;
+      }
       // load previous responses
       yield put({
         type: LOAD_ANSWERS,

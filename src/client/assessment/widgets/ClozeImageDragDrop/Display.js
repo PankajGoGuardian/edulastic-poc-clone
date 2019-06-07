@@ -176,8 +176,8 @@ class Display extends Component {
             pointerEvents: "none",
             top: imageOptions.y || 0,
             left: imageOptions.x || 0,
-            width: !maxWidth ? imageWidth || "auto" : imageWidth,
-            height: !maxHeight ? imageHeight || "auto" : imageHeight,
+            width: `${!maxWidth ? imageWidth || "auto" : imageWidth}px`,
+            height: `${!maxHeight ? imageHeight || "auto" : imageHeight}px`,
             maxHeight: !maxHeight ? null : maxHeight,
             maxWidth: !maxWidth ? null : maxWidth
           }}

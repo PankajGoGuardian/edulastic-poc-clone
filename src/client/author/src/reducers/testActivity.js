@@ -1,7 +1,8 @@
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
-  RECEIVE_TESTACTIVITY_ERROR
+  RECEIVE_TESTACTIVITY_ERROR,
+  UPDATE_ASSIGNMENT_STATUS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -159,6 +160,15 @@ const reducer = (state = initialState, { type, payload }) => {
       return nextState;
     case RECEIVE_TESTACTIVITY_ERROR:
       return { ...state, loading: false, error: payload.error };
+
+    case UPDATE_ASSIGNMENT_STATUS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          status: payload
+        }
+      };
     default:
       return state;
   }

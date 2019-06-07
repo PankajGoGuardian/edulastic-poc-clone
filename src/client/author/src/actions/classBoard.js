@@ -9,7 +9,9 @@ import {
   UPDATE_RELEASE_SCORE,
   SET_SHOW_SCORE,
   RECEIVE_STUDENT_QUESTION_REQUEST,
-  RECEIVE_CLASS_QUESTION_REQUEST
+  RECEIVE_CLASS_QUESTION_REQUEST,
+  SET_MARK_AS_DONE,
+  UPDATE_ASSIGNMENT_STATUS
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -64,4 +66,14 @@ export const receiveStudentQuestionAction = (assignmentId, classId, questionId, 
 export const receiveAnswersAction = (assignmentId, classId, questionId, itemId) => ({
   type: RECEIVE_CLASS_QUESTION_REQUEST,
   payload: { assignmentId, classId, questionId, itemId }
+});
+
+export const markAsDoneAction = (assignmentId, classId) => ({
+  type: SET_MARK_AS_DONE,
+  payload: { assignmentId, classId }
+});
+
+export const updateAssignmentStatusAction = status => ({
+  type: UPDATE_ASSIGNMENT_STATUS,
+  payload: status
 });

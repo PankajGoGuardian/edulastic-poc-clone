@@ -4,7 +4,7 @@ import { message } from "antd";
 import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
 
-import { setShowScoreAction } from "../src/actions/classBoard";
+import { setShowScoreAction, updateAssignmentStatusAction } from "../src/actions/classBoard";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -13,7 +13,8 @@ import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
-  UPDATE_RELEASE_SCORE
+  UPDATE_RELEASE_SCORE,
+  SET_MARK_AS_DONE
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -66,11 +67,26 @@ function* releaseScoreSaga({ payload }) {
   }
 }
 
+function* markAsDoneSaga({ payload }) {
+  try {
+    const response = yield call(classBoardApi.markAsDone, payload);
+    yield put(updateAssignmentStatusAction("DONE"));
+    yield call(message.success, "Successfully marked as done");
+  } catch (err) {
+    if (err && err.status == 422) {
+      yield call(message.error, err.message);
+    } else {
+      yield call(message.error, "Mark as done is failed");
+    }
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
     yield takeEvery(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
-    yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga)
+    yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
+    yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga)
   ]);
 }
 
@@ -182,6 +198,27 @@ export const getTestActivitySelector = createSelector(
 export const getAdditionalDataSelector = createSelector(
   stateTestActivitySelector,
   state => state.additionalData
+);
+
+export const getCanMarkAssignmentSelector = createSelector(
+  getAdditionalDataSelector,
+  state => get(state, "canMarkAssignment", false)
+);
+
+export const getClassesCanBeMarkedSelector = createSelector(
+  getAdditionalDataSelector,
+  state => get(state, "classesCanBeMarked", [])
+);
+
+export const getCurrentClassIdSelector = createSelector(
+  getAdditionalDataSelector,
+  state => get(state, "classId", "")
+);
+
+export const getMarkAsDoneEnableSelector = createSelector(
+  getClassesCanBeMarkedSelector,
+  getCurrentClassIdSelector,
+  (classes, currentClass) => classes.includes(currentClass)
 );
 
 export const getTestItemsDataSelector = createSelector(

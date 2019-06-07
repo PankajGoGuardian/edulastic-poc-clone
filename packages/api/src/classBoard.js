@@ -28,8 +28,17 @@ const releaseScore = ({ assignmentId, classId, isReleaseScore }) =>
     })
     .then(result => result.data);
 
+const markAsDone = ({ assignmentId, classId }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}`
+    })
+    .then(result => result.data);
+
 export default {
   gradebook,
   testActivity,
-  releaseScore
+  releaseScore,
+  markAsDone
 };

@@ -33,8 +33,8 @@ import { StudentReportCardMenuModal } from "./components/studentReportCardMenuMo
 import { StudentReportCardModal } from "./components/studentReportCardModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import { releaseScoreAction } from "../../../src/actions/classBoard";
-import { showScoreSelector, getClassResponseSelector } from "../../../ClassBoard/ducks";
+import { releaseScoreAction, markAsDoneAction } from "../../../src/actions/classBoard";
+import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -88,6 +88,11 @@ class ClassHeader extends Component {
     this.toggleDropdown();
   };
 
+  handleMarkAsDone = () => {
+    const { setMarkAsDone, assignmentId, classId } = this.props;
+    setMarkAsDone(assignmentId, classId);
+  };
+
   onStudentReportCardsClick = () => {
     this.setState(state => {
       return { ...this.state, studentReportCardMenuModalVisibility: true };
@@ -130,7 +135,8 @@ class ClassHeader extends Component {
       showScore,
       selectedStudentsKeys,
       classResponse = {},
-      status
+      status,
+      enableMarkAsDone
     } = this.props;
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
@@ -139,7 +145,6 @@ class ClassHeader extends Component {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
       subject: classResponse.metadata ? classResponse.metadata.subjects : []
     };
-
     const menu = (
       <Menu>
         <FeaturesSwitch
@@ -147,7 +152,13 @@ class ClassHeader extends Component {
           actionOnInaccessible="hidden"
           gradeSubject={gradeSubject}
         >
-          <Menu.Item key="key1">Mark as Done</Menu.Item>
+          <Menu.Item
+            key="key1"
+            onClick={this.handleMarkAsDone}
+            disabled={!enableMarkAsDone || status.toLowerCase() === "done"}
+          >
+            Mark as Done
+          </Menu.Item>
         </FeaturesSwitch>
         <Menu.Item
           key="key2"
@@ -266,10 +277,12 @@ const enhance = compose(
     state => ({
       showScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
-      status: get(state, ["author_classboard_testActivity", "data", "status"], "")
+      status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      enableMarkAsDone: getMarkAsDoneEnableSelector(state)
     }),
     {
-      setReleaseScore: releaseScoreAction
+      setReleaseScore: releaseScoreAction,
+      setMarkAsDone: markAsDoneAction
     }
   )
 );

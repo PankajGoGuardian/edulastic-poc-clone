@@ -77,6 +77,7 @@ const FeaturesSwitch = props => {
   const _children = React.Children.map(children, (child, index) => {
     return React.cloneElement(child, {
       ...props,
+      ...child.props,
       children: child.props.children,
       actionOnInaccessible,
       isAccessible: isAccessible

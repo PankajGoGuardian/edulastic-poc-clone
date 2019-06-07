@@ -8,4 +8,7 @@ export const Content = WithMathFormula(styled(FlexRow)`
   padding-left: 16px;
   white-space: normal;
   display: flex !important;
+  img {
+    width: auto !important;
+  }
 `);

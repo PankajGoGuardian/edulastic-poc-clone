@@ -59,7 +59,20 @@ const MatchListPreview = ({
   qIndex,
   showBorder
 }) => {
-  const { possible_responses: posResponses, possible_response_groups, group_possible_responses, stimulus, list } = item;
+  const {
+    possible_responses: posResponses,
+    possible_response_groups,
+    group_possible_responses,
+    stimulus,
+    list,
+    validation
+  } = item;
+
+  const { alt_responses = [] } = validation;
+
+  const altResponsesValid = alt_responses.map(a => a.value);
+
+  console.log(altResponsesValid);
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
@@ -307,18 +320,38 @@ const MatchListPreview = ({
       </div>
 
       {previewTab === SHOW && (
-        <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
-          {list.map((ite, i) => (
-            <FlexContainer key={i} alignItems="center">
-              <CorTitle>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
-              </CorTitle>
-              <CorItem index={i}>
-                <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: validArray[i] }} />
-              </CorItem>
-            </FlexContainer>
-          ))}
-        </CorrectAnswersContainer>
+        <Fragment>
+          <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
+            {list.map((ite, i) => (
+              <FlexContainer key={i} alignItems="center">
+                <CorTitle>
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                </CorTitle>
+                <Separator smallSize={smallSize} />
+                <CorItem index={i}>
+                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+                </CorItem>
+              </FlexContainer>
+            ))}
+          </CorrectAnswersContainer>
+          <CorrectAnswersContainer title={t("component.matchList.altAnswers")}>
+            {altResponsesValid
+              .filter((a, i) => i === 0)
+              .map(altItem =>
+                list.map((item, itemIndex) => (
+                  <FlexContainer key={itemIndex} alignItems="center">
+                    <CorTitle>
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
+                    </CorTitle>
+                    <Separator smallSize={smallSize} />
+                    <CorItem index={itemIndex}>
+                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: altItem[itemIndex] }} />
+                    </CorItem>
+                  </FlexContainer>
+                ))
+              )}
+          </CorrectAnswersContainer>
+        </Fragment>
       )}
     </Paper>
   );

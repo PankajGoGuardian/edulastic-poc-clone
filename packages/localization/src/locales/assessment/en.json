@@ -272,7 +272,8 @@
       "list": "List",
       "addNew": "Add new",
       "dragItemsTitle": "Drag & Drop the answer",
-      "correctAnswers": "Correct Answers"
+      "correctAnswers": "Correct Answers",
+      "altAnswers": "Alternate Answers"
     },
     "classification": {
       "addBackImage": "Add Background Image",

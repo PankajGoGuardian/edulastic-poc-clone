@@ -146,6 +146,7 @@ class SideMenu extends Component {
   };
 
   render() {
+    console.log("HERE");
     const { broken, isVisible } = this.state;
     const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
     const isCollapsed = isSidebarCollapsed;
@@ -342,7 +343,7 @@ const FixedSidebar = styled.div`
   left: 0px;
   top: 0px;
   bottom: 0px;
-  z-index: 1000;
+  z-index: 10002;
   cursor: ${props => (props.isCollapsed ? "pointer" : "initial")};
   .scrollbar-container {
     max-height: 100vh;

@@ -17,32 +17,56 @@ const StyledDropZone = ({
   style,
   dropzoneSettings: { name, allowedFiles, maxSize },
   children
-}) => (
-  <Container
-    style={style}
-    isDragActive={isDragActive}
-    childMarginRight={0}
-    justifyContent="center"
-    flexDirection="column"
-  >
-    {loading ? (
-      <Loading type="loading" />
-    ) : (
-      thumb || (
-        <Fragment>
-          <IconUpload isDragActive={isDragActive} />
-          <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
-          <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
-          <ZoneTitle isComment>
-            {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
-            {maxSize}KB MAX.)
-          </ZoneTitle>
-          {children}
-        </Fragment>
-      )
-    )}
-  </Container>
-);
+}) => {
+  return (
+    <Container
+      style={style}
+      isDragActive={isDragActive}
+      childMarginRight={0}
+      justifyContent="center"
+      flexDirection="column"
+    >
+      {loading ? (
+        <div
+          style={{
+            margin: "0 auto",
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%"
+          }}
+        >
+          <Loading type="loading" />
+        </div>
+      ) : (
+        thumb || (
+          <Fragment>
+            <div
+              style={{
+                margin: "0 auto",
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%"
+              }}
+            >
+              <IconUpload isDragActive={isDragActive} />
+              <ZoneTitle>{t("component.dropZone.dragDrop")}</ZoneTitle>
+              <ZoneTitle altColor>{t(`component.dropZone.yourOwn${name}`)}</ZoneTitle>
+              <ZoneTitle isComment>
+                {t("component.dropZone.or")} <Underlined>{t("component.dropZone.browse")}</Underlined>: {allowedFiles} (
+                {maxSize}KB MAX.)
+              </ZoneTitle>
+            </div>
+            {children}
+          </Fragment>
+        )
+      )}
+    </Container>
+  );
+};
 
 StyledDropZone.propTypes = {
   thumb: PropTypes.any,

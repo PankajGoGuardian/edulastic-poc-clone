@@ -3,8 +3,8 @@ import { FlexContainer } from "@edulastic/common";
 
 export const Container = styled(FlexContainer)`
   height: 616px;
-  align-items: normal;
-  justify-content: flex-start;
+  align-items: ${({ style }) => (!style ? "normal" : style.alignItems)};
+  justify-content: ${({ style }) => (!style ? "flex-start" : style.justifyContent)};
   width: 100%;
   border: ${({ theme, isDragActive }) =>
     isDragActive

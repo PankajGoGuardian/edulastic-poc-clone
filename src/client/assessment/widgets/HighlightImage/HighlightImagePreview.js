@@ -18,6 +18,8 @@ import { AdaptiveButtonList } from "./styled/AdaptiveButtonList";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
+import { canvasDimensions } from "@edulastic/constants";
+
 const { Option } = Select;
 
 const HighlightImagePreview = ({
@@ -79,25 +81,9 @@ const HighlightImagePreview = ({
   };
 
   useEffect(() => {
-    if (canvasContainerRef) {
-      if (image && image.width) {
-        if (image.width >= canvasContainerRef.current.clientWidth) {
-          setWidth("100%");
-          setHeight("auto");
-        } else {
-          setHeight(image.height);
-          setWidth(image.width);
-        }
-      } else {
-        setWidth("auto");
-      }
-    }
-  }, [windowWidth]);
-
-  useEffect(() => {
     if (canvas) {
-      canvas.current.width = width;
-      canvas.current.height = height;
+      canvas.current.width = 700;
+      canvas.current.height = 600;
       const context = canvas.current.getContext("2d");
       context.lineWidth = item.line_width || 5;
       context.lineJoin = "round";
@@ -181,7 +167,7 @@ const HighlightImagePreview = ({
   const renderImage = () =>
     file ? (
       <div style={{ width: "100%", height: "100%", paddingLeft: width > 650 ? "0px" : "20px" }}>
-        <img src={file} alt={altText} style={{ width: "95%", height: "95%" }} />
+        <img src={file} alt={altText} style={{ width, height }} />
       </div>
     ) : (
       <div style={{ width, height }} />
@@ -189,8 +175,8 @@ const HighlightImagePreview = ({
 
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
-      <div style={{ width, height, maxHeight: height, maxWidth: width }} ref={canvasContainerRef}>
-        <CanvasContainer height={"90%"} width={"90%"}>
+      <div ref={canvasContainerRef}>
+        <CanvasContainer height={canvasDimensions.maxHeight} width={canvasDimensions.maxWidth}>
           <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>

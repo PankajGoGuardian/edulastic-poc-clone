@@ -9,7 +9,7 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
-import { Image } from "@edulastic/common";
+import { Image as Img } from "@edulastic/common";
 import { fileApi } from "@edulastic/api";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
@@ -20,7 +20,9 @@ import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
 import DropZoneToolbar from "../../../components/DropZoneToolbar";
 import StyledDropZone from "../../../components/StyledDropZone";
-import { SOURCE } from "../../../constants/constantsForQuestions";
+import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
+
+import { canvasDimensions } from "@edulastic/constants";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -38,13 +40,12 @@ class ComposeQuestion extends Component {
 
   render() {
     const { item, setQuestionData, loading, setLoading, t } = this.props;
-
     const { image } = item;
+    const { maxWidth, maxHeight } = canvasDimensions;
 
-    const width = image ? image.width : 700;
-    const height = image ? image.height : 600;
+    const width = image ? image.width : maxWidth;
+    const height = image ? image.height : maxHeight;
     const altText = image ? image.altText : "";
-    const file = image ? image.source : "";
 
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
@@ -53,6 +54,12 @@ class ComposeQuestion extends Component {
           updateVariables(draft);
         })
       );
+    };
+
+    const updateImage = imagePassed => {
+      const newItem = { ...item };
+      newItem.image = { ...newItem.image, ...imagePassed };
+      setQuestionData(newItem);
     };
 
     const handleImageToolbarChange = prop => val => {
@@ -72,24 +79,50 @@ class ComposeQuestion extends Component {
       );
     };
 
+    const getImageDimensions = url => {
+      const uploadedImage = new Image();
+      uploadedImage.addEventListener("load", function() {
+        let height, width;
+        if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+          const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+          const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+          if (fitWidth > maxWidth) {
+            width = maxWidth;
+            height = fitHeight;
+          } else {
+            height = maxHeight;
+            width = fitWidth;
+          }
+        } else {
+          width = this.naturalWidth;
+          height = this.naturalHeight;
+        }
+        const obj = {};
+        obj[WIDTH] = width;
+        obj[HEIGHT] = height;
+        obj[SOURCE] = url;
+        updateImage(obj);
+        setLoading(false);
+      });
+      uploadedImage.src = url;
+    };
+
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
         fileApi
           .upload({ file: files })
           .then(({ fileUri }) => {
-            handleImageToolbarChange(SOURCE)(fileUri);
-            setLoading(false);
+            getImageDimensions(fileUri);
           })
-          .catch(() => {
+          .catch(err => {
+            console.error("error in uploading image", err);
             setLoading(false);
           });
       }
     };
 
-    const thumb = file && (
-      <Image width={width < 700 ? width : 700} height={height < 600 ? height : 600} src={file} alt={altText} />
-    );
+    const thumb = image[SOURCE] && <Img width={width} height={height} src={image[SOURCE]} alt={altText} />;
 
     return (
       <Widget>
@@ -124,7 +157,15 @@ class ComposeQuestion extends Component {
             >
               <input {...getInputProps()} />
 
-              <StyledDropZone loading={loading} isDragActive={isDragActive} thumb={thumb} />
+              <StyledDropZone
+                style={{
+                  justifyContent: "flex-start !important",
+                  alignItems: "flex-start !important"
+                }}
+                loading={loading}
+                isDragActive={isDragActive}
+                thumb={thumb}
+              />
             </div>
           )}
         </Dropzone>

@@ -21,6 +21,7 @@ const playlists = require("./const/playlists");
 const signUpState = require("./const/signUpState");
 const grades = require("./const/grades");
 const response = require("./const/dimensions");
+const canvasDimensions = require("./const/canvas");
 
 module.exports = {
   questionType,
@@ -45,5 +46,6 @@ module.exports = {
   aws,
   signUpState,
   grades,
-  response
+  response,
+  canvasDimensions
 };

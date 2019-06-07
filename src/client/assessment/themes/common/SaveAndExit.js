@@ -1,22 +1,13 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
 import { Button } from "antd";
 import { white } from "@edulastic/colors";
 import { IconSave, IconPause, IconLogout } from "@edulastic/icons";
 
 const SaveAndExit = ({ finishTest }) => (
   <Container>
-    <StyledButton>
-      <SaveIcon />
-    </StyledButton>
-    <Link to="/home/assignments">
-      <StyledButton>
-        <PauseIcon />
-      </StyledButton>
-    </Link>
-    <StyledButton data-cy="finishTest" onClick={finishTest}>
+    <StyledButton title={"Save & Exit"} data-cy="finishTest" onClick={finishTest}>
       <LogoutIcon />
     </StyledButton>
   </Container>

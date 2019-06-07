@@ -27,7 +27,6 @@ import {
   LogoCompact,
   TestButton,
   ToolBar,
-  Clock,
   SaveAndExit,
   SavePauseMobile,
   CalculatorContainer
@@ -116,10 +115,6 @@ class AssessmentPlayerDefault extends React.Component {
 
   closeSavePauseModal = () => {
     this.setState({ isSavePauseModalVisible: false });
-  };
-
-  openSavePauseModal = () => {
-    this.setState({ isSavePauseModalVisible: true });
   };
 
   openSubmitConfirmation = () => {
@@ -325,15 +320,6 @@ class AssessmentPlayerDefault extends React.Component {
           )}
           <Affix>
             <Header>
-              <HeaderLeftMenu>
-                <LogoCompact />
-                {windowWidth <= IPAD_PORTRAIT_WIDTH && (
-                  <Fragment>
-                    <Clock />
-                    <SavePauseMobile openSavePauseModal={this.openSavePauseModal} isVisible={isSavePauseModalVisible} />
-                  </Fragment>
-                )}
-              </HeaderLeftMenu>
               <HeaderMainMenu skin>
                 <FlexContainer
                   style={{
@@ -362,16 +348,7 @@ class AssessmentPlayerDefault extends React.Component {
                       disabled={isFirst()}
                       onClick={moveToPrev}
                     />
-                    <ControlBtn
-                      next
-                      skin
-                      type="primary"
-                      data-cy="next"
-                      icon={!isLast() && "right"}
-                      onClick={moveToNext}
-                    >
-                      {isLast() && <IconSend />}
-                    </ControlBtn>
+                    <ControlBtn next skin type="primary" data-cy="next" icon={"right"} onClick={moveToNext} />
                     {windowWidth < LARGE_DESKTOP_WIDTH && (
                       <ToolButton
                         next
@@ -402,7 +379,6 @@ class AssessmentPlayerDefault extends React.Component {
                         changeTool={this.changeTool}
                       />
                     )}
-                    {windowWidth >= MAX_MOBILE_WIDTH && <Clock />}
                     {windowWidth >= MAX_MOBILE_WIDTH && !previewPlayer && (
                       <SaveAndExit finishTest={() => this.openSubmitConfirmation()} />
                     )}

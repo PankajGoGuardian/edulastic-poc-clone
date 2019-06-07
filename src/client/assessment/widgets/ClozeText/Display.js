@@ -11,7 +11,7 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-import { response } from "../../../../../packages/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 
 class ClozeTextDisplay extends Component {
   state = {
@@ -62,7 +62,8 @@ class ClozeTextDisplay extends Component {
     const btnStyle = {
       width: widthpx || 140,
       height: 0,
-      minWidth: 100,
+      minWidth: `${response.minWidth}px`,
+      minHeight: `${response.minHeight}px`,
       widthpx: widthpx || 140,
       heightpx: 0,
       placeholder,

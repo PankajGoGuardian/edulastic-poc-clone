@@ -12,6 +12,8 @@ import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
+import { response } from "@edulastic/constants";
+
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
   responseContainers,
@@ -73,7 +75,9 @@ const CheckboxTemplateBoxLayout = ({
                 style={{
                   ...btnStyle,
                   height: `${parseInt(responseContainer.height)}px`,
-                  width: `${parseInt(responseContainer.width)}px`
+                  width: `${parseInt(responseContainer.width)}px`,
+                  minHeight: `${response.minHeight}px`,
+                  minWidth: `${response.minWidth}px`
                 }}
                 className={`
                   imagelabeldragdrop-droppable 
@@ -101,7 +105,9 @@ const CheckboxTemplateBoxLayout = ({
                 style={{
                   ...btnStyle,
                   height: `${parseInt(responseContainer.height)}px`,
-                  width: `${parseInt(responseContainer.width)}px`
+                  width: `${parseInt(responseContainer.width)}px`,
+                  minHeight: `${response.minHeight}px`,
+                  minWidth: `${response.minWidth}px`
                 }}
                 className={`
                   imagelabeldragdrop-droppable 

@@ -1,6 +1,8 @@
 import styled from "styled-components";
 import { Rnd } from "react-rnd";
 
+import { response } from "@edulastic/constants";
+
 const CustomRnd = styled(Rnd)`
   top: 100px;
   left: 120px;
@@ -9,6 +11,8 @@ const CustomRnd = styled(Rnd)`
   background: rgb(255, 255, 255);
   border-radius: 5px;
   background: ${props => props.background};
+  min-height: ${response.minHeight}px;
+  min-width: ${response.minWidth}px;
 
   :after {
     content: "";

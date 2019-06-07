@@ -190,8 +190,8 @@ class Display extends Component {
                     <AnswerDropdown
                       responseIndex={dropTargetIndex}
                       style={{
-                        width: `${parseInt(responseContainer.width)}px`,
-                        height: `${parseInt(responseContainer.height)}px`
+                        width: `100%`,
+                        height: `100%`
                       }}
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}

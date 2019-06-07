@@ -22,7 +22,7 @@ import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButto
 import { RelativeContainer } from "../../styled/RelativeContainer";
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
-import { response } from "../../../../../packages/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 
 import striptags from "striptags";
 

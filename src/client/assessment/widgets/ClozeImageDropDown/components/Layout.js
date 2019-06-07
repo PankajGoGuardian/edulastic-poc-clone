@@ -22,7 +22,7 @@ import { Block } from "../../../styled/WidgetOptions/Block";
 import { Subtitle } from "../../../styled/Subtitle";
 import { Widget } from "../../../styled/Widget";
 
-import { response } from "../../../../../../packages/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 
 class Layout extends Component {
   componentDidMount = () => {
@@ -106,6 +106,7 @@ class Layout extends Component {
 
     const changeUiStyle = (prop, value) => {
       const { maxHeight, maxWidth } = response;
+      console.log("prop", prop, "value", value);
       let newValue = value;
       if (prop === "widthpx") {
         if (+value > maxWidth) {

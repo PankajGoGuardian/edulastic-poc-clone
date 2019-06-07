@@ -21,7 +21,7 @@ import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
 
-import { response } from "../../../../../packages/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 class Layout extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,

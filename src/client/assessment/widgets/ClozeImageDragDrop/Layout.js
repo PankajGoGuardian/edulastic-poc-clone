@@ -13,7 +13,7 @@ import { Col } from "../../styled/WidgetOptions/Col";
 import { Label } from "../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
-import { response } from "@edulastic/constants/const/dimensions";
+import { response } from "@edulastic/constants";
 
 class Layout extends Component {
   static propTypes = {

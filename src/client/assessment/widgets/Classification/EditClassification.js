@@ -419,6 +419,7 @@ const EditClassification = ({
                   onDragStop={handleDrag}
                   onResize={handleResize}
                   onResizeStop={handleDragAndResizeStop}
+                  bounds="parent"
                 >
                   <img src={item.imageUrl} alt="backgroundImage" />
                 </Rnd>

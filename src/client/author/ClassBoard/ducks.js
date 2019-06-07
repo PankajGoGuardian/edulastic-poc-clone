@@ -83,14 +83,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
   }
   const total = entities.length;
   let submittedEntities = entities.filter(x => x.status === "submitted");
+  const activeEntities = entities.filter(x => x.status === "inProgress" || x.status === "submitted");
 
   const submittedNumber = submittedEntities.length;
   // TODO: handle absent
   const absentNumber = 0;
-  const submittedScores = submittedEntities
-    .map(({ score, maxScore }) => score / maxScore)
-    .reduce((prev, cur) => prev + cur, 0);
-  const submittedScoresAverage = submittedNumber > 0 ? submittedScores / submittedNumber : 0;
+  const scores = activeEntities.map(({ score, maxScore }) => score / maxScore).reduce((prev, cur) => prev + cur, 0);
+  const submittedScoresAverage = activeEntities.length > 0 ? scores / activeEntities.length : 0;
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
   const questionMap = {};
   if (studentId) {

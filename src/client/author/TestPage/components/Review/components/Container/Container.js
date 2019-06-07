@@ -18,15 +18,17 @@ import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
 
-const getTotalScore = testItems =>
-  testItems
-    .map(item =>
-      get(item, "data.questions", []).reduce(
-        (acc, q) => acc + (q.scoringDisabled ? 0 : get(q, ["validation", "valid_response", "score"], 0)),
-        0
-      )
-    )
-    .reduce((total, s) => total + s, 0);
+const scoreOfItem = item => {
+  if (item.itemLevelScoring) {
+    return item.itemLevelScore;
+  } else {
+    return get(item, "data.questions", []).reduce(
+      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0)
+    );
+  }
+};
+
+const getTotalScore = testItems => testItems.map(item => scoreOfItem(item)).reduce((total, s) => total + s, 0);
 
 // TODO rewrite into  class component and mobile view
 class Review extends PureComponent {

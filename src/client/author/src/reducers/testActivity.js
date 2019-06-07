@@ -113,10 +113,17 @@ const reducer = (state = initialState, { type, payload }) => {
               // console.warn(`can't find any questionItem for id ${testActivityId}`);
             } else {
               if (!maxScore && (score || score === 0)) {
-                _st.entities[entityIndex].questionActivities[itemIndex].score = score;
+                delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
+                const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
+                _st.entities[entityIndex].questionActivities[itemIndex] = { ...oldQAct, ...questionItem, score };
                 console.log("updating for", { entityIndex, itemIndex, score });
               } else {
-                _st.entities[entityIndex].questionActivities[itemIndex] = questionItem;
+                delete _st.entities[entityIndex].questionActivities[itemIndex].notStarted;
+                const oldQAct = _st.entities[entityIndex].questionActivities[itemIndex];
+                if (oldQAct.timeSpent) {
+                  questionItem.timeSpent = (questionItem.timeSpent || 0) + oldQAct.timeSpent;
+                }
+                _st.entities[entityIndex].questionActivities[itemIndex] = { ...questionItem, score, maxScore };
               }
             }
             if (score || score === 0) {

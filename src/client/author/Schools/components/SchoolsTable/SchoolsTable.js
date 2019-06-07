@@ -31,6 +31,7 @@ import { receiveSchoolsAction, createSchoolsAction, updateSchoolsAction, deleteS
 
 import { getSchoolsSelector } from "../../ducks";
 import { getUserOrgId } from "../../../src/selectors/user";
+import DeactivateSchoolModal from "./DeactivateSchoolModal/DeactivateSchoolModal";
 
 class SchoolsTable extends React.Component {
   constructor(props) {
@@ -42,6 +43,8 @@ class SchoolsTable extends React.Component {
       selectedRowKeys: [],
       createSchoolModalVisible: false,
       editSchoolModaVisible: false,
+      deactivateSchoolModalVisible: false,
+      selectedDeactivateSchools: [],
       editSchoolKey: "",
       searchByName: "",
       filtersData: [
@@ -106,8 +109,29 @@ class SchoolsTable extends React.Component {
   };
 
   handleDelete = key => {
-    const { userOrgId: districtId, deleteSchool } = this.props;
-    deleteSchool({ schoolIds: [key], districtId });
+    const { dataSource } = this.state;
+    this.setState({
+      selectedDeactivateSchools: dataSource.filter(item => item.key === key),
+      deactivateSchoolModalVisible: true
+    });
+  };
+
+  onDeactivateSchool = () => {
+    const { dataSource, selectedRowKeys } = this.state;
+    const selectedSchools = dataSource.filter(item => {
+      const selectedSchool = selectedRowKeys.filter(row => row === item.key);
+      return selectedSchool.length > 0;
+    });
+    for (let i = 0; i < selectedSchools.length; i++) {
+      if (selectedSchools[i].status != 1) {
+        message.error("Please select active schools only");
+        return;
+      }
+    }
+    this.setState({
+      selectedDeactivateSchools: selectedSchools,
+      deactivateSchoolModalVisible: true
+    });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -238,7 +262,7 @@ class SchoolsTable extends React.Component {
       }
     } else if (e.key === "deactivate school") {
       if (selectedRowKeys.length > 0) {
-        deleteSchool({ schoolIds: selectedRowKeys, districtId });
+        this.onDeactivateSchool();
       } else {
         message.error("Please select schools to delete.");
       }
@@ -324,6 +348,22 @@ class SchoolsTable extends React.Component {
     this.loadFilteredSchoolList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
+  deactivateSchool = () => {
+    const { selectedDeactivateSchools } = this.state;
+    const { userOrgId, deleteSchool } = this.props;
+
+    const schoolIds = [];
+    selectedDeactivateSchools.map(row => {
+      schoolIds.push(row._id);
+    });
+    this.setState({ deactivateSchoolModalVisible: false });
+    deleteSchool({ districtId: userOrgId, schoolIds });
+  };
+
+  closeDeactivateSchoolModal = () => {
+    this.setState({ deactivateSchoolModalVisible: false });
+  };
+
   loadFilteredSchoolList(filtersData, sortedInfo, searchByName, currentPage) {
     const { loadSchoolsData, userOrgId } = this.props;
     let search = {};
@@ -358,6 +398,8 @@ class SchoolsTable extends React.Component {
       selectedRowKeys,
       createSchoolModalVisible,
       editSchoolModaVisible,
+      deactivateSchoolModalVisible,
+      selectedDeactivateSchools,
       editSchoolKey,
       filtersData,
       sortedInfo,
@@ -707,6 +749,15 @@ class SchoolsTable extends React.Component {
             userOrgId={userOrgId}
           />
         )}
+
+        {deactivateSchoolModalVisible && (
+          <DeactivateSchoolModal
+            modalVisible={deactivateSchoolModalVisible}
+            deactivateSchool={this.deactivateSchool}
+            closeModal={this.closeDeactivateSchoolModal}
+            schoolData={selectedDeactivateSchools}
+          />
+        )}
       </StyledTableContainer>
     );
   }
@@ -732,7 +783,7 @@ const enhance = compose(
 export default enhance(EditableSchoolsTable);
 
 SchoolsTable.propTypes = {
-  schoolList: PropTypes.object.isRequired,
+  schoolList: PropTypes.array.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
   updateSchool: PropTypes.func.isRequired,

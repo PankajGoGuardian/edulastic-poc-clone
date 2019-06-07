@@ -30,6 +30,7 @@ export const SelectContainer = styled.div`
     font-size: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontSize};
     font-weight: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionFontWeight};
     letter-spacing: 0.2px;
+    width:176px;
     color: ${props => props.theme.widgets.clozeImageDropDown.antSelectSelectionColor};
   }
   .anticon-down {

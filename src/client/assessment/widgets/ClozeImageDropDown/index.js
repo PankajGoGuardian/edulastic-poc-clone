@@ -37,7 +37,6 @@ class ClozeImageDropDown extends Component {
     const { item: templateItem, history, view } = this.props;
     const itemForPreview = replaceVariables(templateItem);
     const item = view === EDIT ? templateItem : itemForPreview;
-
     const locationState = history.location.state;
     const isDetailPage = locationState !== undefined ? locationState.itemDetail : false;
     const previewDisplayOptions = item.options;
@@ -280,7 +279,7 @@ class ClozeImageDropDown extends Component {
               question={previewStimulus}
               showDashedBorder={item.responseLayout && item.responseLayout.showdashedborder}
               uiStyle={uiStyle}
-              backgroundColor={item.background}
+              backgroundColor={item.background || "#fff"}
               key={previewDisplayOptions && previewStimulus && uiStyle}
               smallSize={smallSize}
               templateMarkUp={itemForPreview.templateMarkUp}

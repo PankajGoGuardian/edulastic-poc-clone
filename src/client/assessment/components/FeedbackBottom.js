@@ -85,6 +85,7 @@ class FeedbackBottom extends Component {
                 defaultValue={score}
                 onChange={this.onChangeScore}
                 onBlur={this.onSaveFeedback}
+                pattern="[0-9]+([\.,][0-9]+)?"
               />
               <ScoreLine />
               <MaxScore>{maxScore}</MaxScore>

@@ -108,8 +108,6 @@ class ScoreTable extends Component {
       }
     ];
 
-    console.log("testActivity", this.props.testActivity[0]);
-
     for (let index = 0; index < length; index++) {
       let successScore = 0;
       let num = 0;
@@ -117,7 +115,6 @@ class ScoreTable extends Component {
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
       const isQids = qids && qids.length > 0;
-      console.log("for index ", index, " qids ", qids);
       const title = (
         <StyledDivMid>
           {`Q${index + 1}`}
@@ -134,7 +131,9 @@ class ScoreTable extends Component {
       const averageScore = successScore;
       const questionAvarageScore = (
         <StyledDivMid>
-          <StyledText color={greenThird}>{`${round((averageScore / submittedLength) * 100, 1)}%`}</StyledText>
+          <StyledText color={greenThird}>{`${
+            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) : 0
+          }%`}</StyledText>
           {round(averageScore, 2)} / {submittedLength}
         </StyledDivMid>
       );

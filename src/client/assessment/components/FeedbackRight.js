@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router-dom";
 import { get, isUndefined, toNumber, isNaN } from "lodash";
-import { Avatar, Card, Button, Input, message } from "antd";
+import { Avatar, Card, Button, Input, InputNumber, message } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
@@ -70,8 +70,12 @@ class FeedbackRight extends Component {
 
   onFeedbackSubmit() {
     const { score, feedback, maxScore } = this.state;
+    console.log("score", { score }, "isNan", isNaN(score));
+    if (isNaN(score)) {
+      message.warn("Score should be a valid numerical");
+      return;
+    }
     const _score = toNumber(score);
-
     if (_score > maxScore) {
       return;
     }
@@ -109,7 +113,10 @@ class FeedbackRight extends Component {
   };
 
   onChangeScore = e => {
-    this.setState({ score: e.target.value, changed: true });
+    const value = e.target.value;
+    if (!window.isNaN(value)) {
+      this.setState({ score: value, changed: true });
+    }
   };
 
   onChangeFeedback = e => {
@@ -176,6 +183,7 @@ class FeedbackRight extends Component {
               disabled={!activity}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
+              pattern="[0-9]+([\.,][0-9]+)?"
             />
             <TextPara>{maxScore}</TextPara>
           </ScoreInputWrapper>

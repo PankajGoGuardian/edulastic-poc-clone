@@ -35,12 +35,15 @@ const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, grou
           Object.keys(results).map((key, index) => (
             <div key={index}>
               <h3>{groupResponses[key] && groupResponses[key].title}</h3>
-              {results[key].map((value, itemId) => (
-                <div key={itemId} className="response-btn check-answer showanswer">
-                  <span className="index">{index + 1}</span>
-                  <span className="text">{value}</span>
-                </div>
-              ))}
+              {results[key].map(
+                (value, itemId) =>
+                  value && (
+                    <div key={itemId} className="response-btn check-answer showanswer">
+                      <span className="index">{index + 1}</span>
+                      <span className="text">{value}</span>
+                    </div>
+                  )
+              )}
             </div>
           ))}
         {!hasGroupResponses &&

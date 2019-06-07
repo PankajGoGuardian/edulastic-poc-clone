@@ -7,7 +7,7 @@ import { get, debounce, find } from "lodash";
 import styled from "styled-components";
 import { Form, Modal, Button, Input, Select } from "antd";
 import { lightGrey3, linkColor, springGreen, white } from "@edulastic/colors";
-
+import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 import { countryApi } from "@edulastic/api";
 import { searchDistrictsRequestAction, createAndJoinSchoolRequestAction } from "../../duck";
 
@@ -36,6 +36,7 @@ class RequestSchool extends React.Component {
   async componentDidMount() {
     const countryList = await countryApi.getCountries();
     this.setState({
+      ...this.state,
       countryList
     });
   }
@@ -81,16 +82,14 @@ class RequestSchool extends React.Component {
     });
   };
 
-  handleTyping = debounce(keyword => {
-    if (keyword.length > 0) {
-      this.setState({ keyword });
-    }
+  handleTyping = keyword => {
+    this.setState({ ...this.state, keyword });
     this.onSearch(keyword);
-  }, 500);
+  };
 
   onSearch = searchText => {
-    const { searchDistrict } = this.props;
-    if (searchDistrict && searchText.length >= 2) {
+    const { searchDistrict, isSearching } = this.props;
+    if (!isSearching && searchText.length > 2) {
       searchDistrict({ searchText });
     }
   };
@@ -99,6 +98,11 @@ class RequestSchool extends React.Component {
     const { isOpen, handleCancel, form, districts, isSearching } = this.props;
     const { getFieldDecorator } = form;
     const { keyword, countryList } = this.state;
+
+    const _districts = districts.map(item => ({
+      title: item.districtName,
+      key: item.districtId
+    }));
 
     const title = (
       <Title>
@@ -141,28 +145,26 @@ class RequestSchool extends React.Component {
           </Form.Item>
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
-              rules: [{ required: true, message: "Please input district name" }]
+              initialValue: { title: "" },
+              rules: [
+                { required: true, message: "Please input district name" },
+                {
+                  validator: (rule, value, callback) => {
+                    if (value.title.length === 0) {
+                      callback("Please input district name");
+                      return;
+                    }
+                    callback();
+                  }
+                }
+              ]
             })(
-              <Select
-                showSearch
-                placeholder="Enter your school district name"
-                onSearch={this.handleTyping}
-                loading={isSearching}
-              >
-                {keyword && (
-                  <Option value="**createNew**">
-                    <CreateDistrict>
-                      {keyword}
-                      <div>Create New</div>
-                    </CreateDistrict>
-                  </Option>
-                )}
-                {districts.map(district => (
-                  <Option value={district.districtId} key={district.districtId}>
-                    {district.districtName || district.districtId}
-                  </Option>
-                ))}
-              </Select>
+              <RemoteAutocompleteDropDown
+                by={keyword}
+                data={_districts}
+                onSearchTextChange={this.handleTyping}
+                iconType={"down"}
+              />
             )}
           </Form.Item>
           <Form.Item label="Address">
@@ -266,6 +268,21 @@ const StyledModal = styled(Modal)`
     div:nth-child(1) {
       display: block;
       text-align: left;
+    }
+  }
+
+  .ant-form > .ant-form-item:nth-child(2) {
+    .ant-form-item-control-wrapper {
+      display: flex;
+      justify-content: left;
+      align-items: center;
+      .ant-form-item-control {
+        width: 100%;
+        .remote-autocomplete-dropdown {
+          display: flex;
+          margin: 0;
+        }
+      }
     }
   }
 `;

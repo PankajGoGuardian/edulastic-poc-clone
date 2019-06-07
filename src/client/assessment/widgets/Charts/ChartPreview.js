@@ -32,8 +32,8 @@ const ChartPreview = ({
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const chartType = get(item, "ui_style.chart_type");
 
-  const { chart_data, validation, ui_style } = item;
-  const { data } = chart_data;
+  const { chart_data = {}, validation, ui_style } = item;
+  const { data = [] } = chart_data;
 
   let CurrentChart = null;
 
@@ -52,9 +52,8 @@ const ChartPreview = ({
       break;
 
     case questionType.LINE_PLOT:
-      CurrentChart = LinePlot;
-      break;
     default:
+      CurrentChart = LinePlot;
   }
 
   const answerIsActual = () => {

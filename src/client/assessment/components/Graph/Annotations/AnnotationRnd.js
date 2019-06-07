@@ -120,6 +120,7 @@ class AnnotationsRnd extends Component {
                 style={{ zIndex: 10 }}
                 enableResizing={view === "preview" ? resizeDisable : resizeEnable}
                 disableDragging={view === "preview"}
+                bounds=".imagedragdrop_template_box"
               >
                 <FroalaInput {...this.props} isRnd>
                   <FroalaEditor

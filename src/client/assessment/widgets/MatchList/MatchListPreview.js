@@ -1,6 +1,8 @@
-import React, { useState, Fragment, useEffect } from "react";
+import React, { useState, Fragment, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, isEqual, get } from "lodash";
+import produce from "immer";
+import { connect } from "react-redux";
+import { cloneDeep, isEqual, get, shuffle } from "lodash";
 import { withTheme } from "styled-components";
 import { compose } from "redux";
 import {
@@ -11,7 +13,8 @@ import {
   Subtitle,
   CorItem,
   InstructorStimulus,
-  MathFormulaDisplay
+  MathFormulaDisplay,
+  Checkbox
 } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
@@ -24,6 +27,7 @@ import { CorTitle } from "./styled/CorTitle";
 import { AnswerItem } from "./styled/AnswerItem";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, getDirection } from "../../utils/helpers";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const styles = {
   dropContainerStyle: smallSize => ({
@@ -57,7 +61,8 @@ const MatchListPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
-  showBorder
+  showBorder,
+  setQuestionData
 }) => {
   const {
     possible_responses: posResponses,
@@ -65,14 +70,13 @@ const MatchListPreview = ({
     group_possible_responses,
     stimulus,
     list,
-    validation
+    validation,
+    shuffleOptions = false
   } = item;
 
   const { alt_responses = [] } = validation;
 
   const altResponsesValid = alt_responses.map(a => a.value);
-
-  console.log(altResponsesValid);
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
@@ -92,7 +96,7 @@ const MatchListPreview = ({
       : Array.from({ length: list.length }).fill(null)
   );
 
-  const [dragItems, setDragItems] = useState(
+  let [dragItems, setDragItems] = useState(
     possible_responses.filter(answer => Array.isArray(userAnswer) && !userAnswer.includes(answer))
   );
 
@@ -149,6 +153,14 @@ const MatchListPreview = ({
     saveAnswer(answers);
   };
 
+  const handleShuffleChange = useCallback(() => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.shuffleOptions = !item.shuffleOptions;
+      })
+    );
+  }, [shuffleOptions]);
+
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
     display: "flex",
     width: "auto",
@@ -196,6 +208,10 @@ const MatchListPreview = ({
     flexDirection: getDirection(listPosition),
     alignItems: listPosition === "right" || listPosition === "left" ? "center" : "initial"
   };
+
+  if (shuffleOptions === true) {
+    dragItems = shuffle(dragItems);
+  }
 
   return (
     <Paper data-cy="matchListPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -318,7 +334,15 @@ const MatchListPreview = ({
           </DropContainer>
         </CorrectAnswersContainer>
       </div>
-
+      {view === "edit" && (
+        <Checkbox
+          className="additional-options"
+          key={`shuffleOptions_${item.shuffleOptions}`}
+          onChange={handleShuffleChange}
+          label={t("component.cloze.dragDrop.shuffleoptions")}
+          checked={item.shuffleOptions}
+        />
+      )}
       {previewTab === SHOW && (
         <Fragment>
           <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
@@ -382,7 +406,11 @@ MatchListPreview.defaultProps = {
 
 const enhance = compose(
   withNamespaces("assessment"),
-  withTheme
+  withTheme,
+  connect(
+    null,
+    { setQuestionData: setQuestionDataAction }
+  )
 );
 
 export default enhance(MatchListPreview);

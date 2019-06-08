@@ -4,11 +4,20 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { arrayMove } from "react-sortable-hoc";
 import { get } from "lodash";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import produce from "immer";
 
 import { withNamespaces } from "@edulastic/localization";
-import { Paper, InstructorStimulus } from "@edulastic/common";
+import {
+  Paper,
+  InstructorStimulus,
+  CorrectAnswersContainer,
+  FlexContainer,
+  MathFormulaDisplay
+} from "@edulastic/common";
+
+import { Text } from "./styled/Text";
+import { Index } from "./styled/Index";
 
 import CorrectAnswers from "../../components/CorrectAnswers";
 import QuillSortableList from "../../components/QuillSortableList";
@@ -26,6 +35,8 @@ import { ContentArea } from "../../styled/ContentArea";
 
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
+import { CorrectAnswerItem } from "./components/OrderListReport/styled/CorrectAnswerItem";
+import { QuestionText } from "./styled/QuestionText";
 
 const EmptyWrapper = styled.div``;
 
@@ -55,7 +66,9 @@ const OrderList = ({
   isSidebarCollapsed,
   advancedAreOpen,
   fillSections,
-  cleanSections
+  cleanSections,
+  theme,
+  t
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -159,6 +172,7 @@ const OrderList = ({
   if (!item) return null;
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
+  const correctAnswers = get(itemForPreview, "validation.valid_response.value", []);
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
   return (
@@ -211,18 +225,35 @@ const OrderList = ({
           )}
 
           {previewTab === SHOW && (
-            <OrderListReport
-              onSortEnd={onSortPreviewEnd}
-              questionsList={itemForPreview.list}
-              previewIndexesList={userAnswer}
-              showAnswers
-              evaluation={evaluation}
-              validation={itemForPreview.validation}
-              list={itemForPreview.list}
-              listStyle={{ fontSize }}
-              axis={axis}
-              columns={columns}
-            />
+            <Fragment>
+              <OrderListReport
+                onSortEnd={onSortPreviewEnd}
+                questionsList={itemForPreview.list}
+                previewIndexesList={userAnswer}
+                evaluation={evaluation}
+                validation={itemForPreview.validation}
+                list={itemForPreview.list}
+                listStyle={{ fontSize }}
+                axis={axis}
+                columns={columns}
+              />
+              <CorrectAnswersContainer title={t("component.orderlist.correctanswer")}>
+                {correctAnswers.map((correctAnswer, i) => (
+                  <CorrectAnswerItem theme={theme}>
+                    <Text>
+                      <FlexContainer>
+                        <Index>{i}</Index>
+                        <QuestionText>
+                          <MathFormulaDisplay
+                            dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}
+                          />
+                        </QuestionText>
+                      </FlexContainer>
+                    </Text>
+                  </CorrectAnswerItem>
+                ))}
+              </CorrectAnswersContainer>
+            </Fragment>
           )}
 
           {previewTab === CLEAR && (
@@ -256,7 +287,9 @@ OrderList.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  theme: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 OrderList.defaultProps = {
@@ -273,6 +306,8 @@ OrderList.defaultProps = {
 };
 
 const enhance = compose(
+  withNamespaces("assessment"),
+  withTheme,
   withNamespaces("assessment"),
   connect(
     ({ authorUi }) => ({ isSidebarCollapsed: authorUi.isSidebarCollapsed }),

@@ -3,7 +3,7 @@ import { omitBy, flatten, isNumber, isString, round } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
-const url = "https://edulastic-poc.snapwiz.net/math-api/evaluate";
+const url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
 const evaluate = data =>
   axios

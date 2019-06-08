@@ -236,38 +236,16 @@ class MainSetting extends Component {
           <Col span={isSmallSize ? 24 : 18}>
             <Block id="test-type" smallSize={isSmallSize}>
               <Row>
-                <Col span={12}>
-                  <Title>Test Type</Title>
-                  <Body smallSize={isSmallSize}>
-                    <TestTypeSelect defaultValue={testType} onChange={this.updateTestData("testType")}>
-                      {Object.keys(testTypes).map(key => (
-                        <Option key={key} value={key}>
-                          {testTypes[key]}
-                        </Option>
-                      ))}
-                    </TestTypeSelect>
-                  </Body>
-                </Col>
-                <Col span={12}>
-                  {testType === PRACTICE && (
-                    <React.Fragment>
-                      {" "}
-                      <Title>Generate Report </Title>
-                      <Body smallSize={isSmallSize}>
-                        <GenerateReportSelect
-                          defaultValue={generateReport}
-                          onChange={this.updateTestData("generateReport")}
-                        >
-                          {Object.keys(generateReportTypes).map(key => (
-                            <Select.Option key={key} value={generateReportTypes[key].type}>
-                              {generateReportTypes[key].val}
-                            </Select.Option>
-                          ))}
-                        </GenerateReportSelect>
-                      </Body>
-                    </React.Fragment>
-                  )}
-                </Col>
+                <Title>Test Type</Title>
+                <Body smallSize={isSmallSize}>
+                  <TestTypeSelect defaultValue={testType} onChange={this.updateTestData("testType")}>
+                    {Object.keys(testTypes).map(key => (
+                      <Option key={key} value={key}>
+                        {testTypes[key]}
+                      </Option>
+                    ))}
+                  </TestTypeSelect>
+                </Body>
               </Row>
             </Block>
             <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">

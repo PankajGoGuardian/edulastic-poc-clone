@@ -150,7 +150,7 @@ export const GenerateReportSelect = styled(Select)`
   height: 40px;
 `;
 export const TestTypeSelect = styled(GenerateReportSelect)`
-  width: 80%;
+  width: 20%;
   margin-right: 30px;
 `;
 

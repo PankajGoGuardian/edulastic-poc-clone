@@ -83,7 +83,7 @@ class SideMenu extends Component {
   get MenuItems() {
     const { lastPlayList, isSidebarCollapsed } = this.props;
     if (!lastPlayList || !lastPlayList.value) return menuItems;
-    const [item1, ...rest] = menuItems;
+    const [item1, item2, ...rest] = menuItems;
     const { title = "Eureka Math", _id = "" } = lastPlayList.value || {};
     const [fT = "", lT = ""] = title.split(" ");
     const PlayListTextIcon = () => (
@@ -93,6 +93,7 @@ class SideMenu extends Component {
     );
     return [
       item1,
+      item2,
       {
         label: title,
         icon: PlayListTextIcon,

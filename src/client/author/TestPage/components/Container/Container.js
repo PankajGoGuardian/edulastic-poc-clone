@@ -75,7 +75,7 @@ class Container extends PureComponent {
   };
 
   state = {
-    current: "summary",
+    current: "description",
     showModal: false,
     editEnable: false,
     showShareModal: false
@@ -196,7 +196,7 @@ class Container extends PureComponent {
             test={test}
           />
         );
-      case "summary":
+      case "description":
         return (
           <Summary
             onShowSource={this.handleNavChange("source")}

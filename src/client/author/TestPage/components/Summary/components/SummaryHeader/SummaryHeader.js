@@ -11,22 +11,11 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail }) => 
   return (
     <Container>
       <Photo
-        height={windowWidth > 993 ? 240 : 100}
+        height={windowWidth > 993 ? 165 : 120}
         windowWidth={windowWidth}
         onChangeField={onChangeField}
         url={thumbnail}
       />
-      <AvatarContainer>
-        <FlexContainer alignItems="center">
-          <Avatar>{avatar}</Avatar>
-          <FlexContainer flexDirection="column" justifyContent="space-between" alignItems="flex-start">
-            <CreatedByTitle style={{ marginRight: 0 }}>Created by:</CreatedByTitle>
-            <CreatedByValue>
-              {createdBy && createdBy.firstName} {createdBy && createdBy.lastName}
-            </CreatedByValue>
-          </FlexContainer>
-        </FlexContainer>
-      </AvatarContainer>
     </Container>
   );
 };

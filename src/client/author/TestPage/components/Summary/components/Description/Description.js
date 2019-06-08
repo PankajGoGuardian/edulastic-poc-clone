@@ -8,10 +8,13 @@ import { SummaryTextArea, SummaryDiv, ColorBox, SummaryButton } from "../../comm
 import { Col } from "antd";
 import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
+import SummaryHeader from "../SummaryHeader/SummaryHeader";
 
 const Description = ({
   windowWidth,
   description,
+  createdBy,
+  thumbnail,
   onChangeField,
   textColor,
   backgroundColor,
@@ -21,6 +24,12 @@ const Description = ({
   isBackgroundColorPickerVisible
 }) => (
   <Container windowWidth={windowWidth}>
+    <SummaryHeader
+      createdBy={createdBy}
+      thumbnail={thumbnail}
+      windowWidth={windowWidth}
+      onChangeField={onChangeField}
+    />
     {isPlaylist && (
       <Col span={windowWidth > 993 ? 12 : 24}>
         <MainTitle>Text Color</MainTitle>

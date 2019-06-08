@@ -97,7 +97,7 @@ Photo.propTypes = {
 
 Photo.defaultProps = {
   url: defaultImage,
-  height: 240,
+  height: 165,
   onChangeField: () => null
 };
 

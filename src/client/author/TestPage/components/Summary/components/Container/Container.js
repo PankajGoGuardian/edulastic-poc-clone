@@ -78,12 +78,6 @@ const Summary = ({
         )}
       </SecondHeader>
       <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
-        <SummaryHeader
-          createdBy={test.createdBy}
-          thumbnail={test.thumbnail}
-          windowWidth={windowWidth}
-          onChangeField={handleChangeField}
-        />
         <Row gutter={32}>
           <Col span={windowWidth > 993 ? 12 : 24}>
             <Sidebar
@@ -104,6 +98,8 @@ const Summary = ({
           <Col span={windowWidth > 993 ? 12 : 24}>
             <Description
               textColor={textColor}
+              createdBy={test.createdBy}
+              thumbnail={test.thumbnail}
               backgroundColor={backgroundColor}
               windowWidth={windowWidth}
               isPlaylist={isPlaylist}

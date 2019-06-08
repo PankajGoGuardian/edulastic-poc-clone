@@ -66,7 +66,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={btnStyle}
+          style={{
+            ...btnStyle,
+            minWidth: `${btnStyle.widthpx}px`
+          }}
         >
           <span className="index">{dropTargetIndex + 1}</span>
           <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>
@@ -84,7 +87,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
             ${choiceAttempted ? "check-answer" : ""} 
             ${status} 
             ${showAnswer ? "show-answer" : ""}`}
-          style={btnStyle}
+          style={{
+            ...btnStyle,
+            minWidth: `${btnStyle.widthpx}px`
+          }}
         >
           <span className="index">{dropTargetIndex + 1}</span>
           <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>
@@ -107,7 +113,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
                 response-btn 
                 ${choiceAttempted ? "check-answer" : ""} 
                 ${status}`}
-            style={btnStyle}
+            style={{
+              ...btnStyle,
+              minWidth: `${btnStyle.widthpx}px`
+            }}
           >
             {showIndex && <span className="index">{dropTargetIndex + 1}</span>}
             <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex].data}</span>
@@ -124,7 +133,10 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
                 response-btn 
                 ${choiceAttempted ? "check-answer" : ""} 
                 ${status}`}
-            style={btnStyle}
+            style={{
+              ...btnStyle,
+              minWidth: `${btnStyle.widthpx}px`
+            }}
           >
             {showIndex && <span className="index">{dropTargetIndex + 1}</span>}
             <span className="text">{userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}</span>

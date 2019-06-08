@@ -20,7 +20,10 @@
 .mark span {
   position: relative;
   left: 10px;
-  /* padding-left: 15px; */
+}
+
+.mark.show span {
+  left: 0;
 }
 
 .mark.fr-box {

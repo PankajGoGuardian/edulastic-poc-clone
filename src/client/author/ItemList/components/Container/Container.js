@@ -72,13 +72,17 @@ class Contaier extends Component {
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      this.setState(prevState => ({
+      let updatedSearch = { ...search };
+      if (filter === filterMenuItems[0].filter) {
+        updatedSearch = { ...updatedSearch, status: "" };
+      }
+      this.setState({
         search: {
-          ...prevState.search,
+          ...updatedSearch,
           filter
         }
-      }));
-      receiveItems({ ...search, filter }, 1, limit);
+      });
+      receiveItems({ ...updatedSearch, filter }, 1, limit);
     } else {
       receiveItems(search, 1, limit);
     }
@@ -99,13 +103,20 @@ class Contaier extends Component {
     const { key: filterType } = e;
     const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-    this.setState(prevState => ({
+    let updatedSearch = { ...search };
+    if (filter === filterMenuItems[0].filter) {
+      updatedSearch = {
+        ...updatedSearch,
+        status: ""
+      };
+    }
+    this.setState({
       search: {
-        ...prevState.search,
+        ...updatedSearch,
         filter
       }
-    }));
-    receiveItems({ ...search, filter }, 1, limit);
+    });
+    receiveItems({ ...updatedSearch, filter }, 1, limit);
     history.push(`/author/items/filter/${filterType}`);
   };
 

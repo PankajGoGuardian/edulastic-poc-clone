@@ -177,17 +177,24 @@ class TestList extends Component {
       if (filterType) {
         const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
         const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-        this.setState(prevState => ({
+        let updatedSearch = { ...search };
+        if (filter === filterMenuItems[0].filter) {
+          updatedSearch = {
+            ...updatedSearch,
+            status: ""
+          };
+        }
+        this.setState({
           search: {
-            ...prevState.search,
+            ...updatedSearch,
             filter
           }
-        }));
+        });
         receiveTests({
           page: 1,
           limit,
           search: {
-            ...search,
+            ...updatedSearch,
             filter
           }
         });
@@ -496,20 +503,27 @@ class TestList extends Component {
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
     const { history, receiveTests, limit, mode } = this.props;
     const { search } = this.state;
+    let updatedKeys = { ...search };
     if (mode !== "embedded") {
       history.push(`/author/tests/filter/${filterType}`);
     }
-    this.setState(prevState => ({
+    if (filter === filterMenuItems[0].filter) {
+      updatedKeys = {
+        ...updatedKeys,
+        status: ""
+      };
+    }
+    this.setState({
       search: {
-        ...prevState.search,
+        ...updatedKeys,
         filter
       }
-    }));
+    });
     receiveTests({
       page: 1,
       limit,
       search: {
-        ...search,
+        ...updatedKeys,
         filter
       }
     });

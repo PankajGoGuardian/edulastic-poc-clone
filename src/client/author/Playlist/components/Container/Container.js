@@ -120,17 +120,24 @@ class TestList extends Component {
     if (filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
-      this.setState(prevState => ({
+      let updatedSearch = { ...search };
+      if (filter === filterMenuItems[0].filter) {
+        updatedSearch = {
+          ...updatedSearch,
+          status: ""
+        };
+      }
+      this.setState({
         search: {
-          ...prevState.search,
+          ...updatedSearch,
           filter
         }
-      }));
+      });
       receivePlaylists({
         page: 1,
         limit,
         search: {
-          ...search,
+          ...updatedSearch,
           filter
         }
       });
@@ -325,18 +332,25 @@ class TestList extends Component {
     const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
     const { history, receivePlaylists, limit } = this.props;
     const { search } = this.state;
+    let updatedSearch = { ...search };
+    if (filter === filterMenuItems[0].filter) {
+      updatedSearch = {
+        ...updatedSearch,
+        status: ""
+      };
+    }
     history.push(`/author/playlists/filter/${filterType}`);
-    this.setState(prevState => ({
+    this.setState({
       search: {
-        ...prevState.search,
+        ...updatedSearch,
         filter
       }
-    }));
+    });
     receivePlaylists({
       page: 1,
       limit,
       search: {
-        ...search,
+        ...updatedSearch,
         filter
       }
     });

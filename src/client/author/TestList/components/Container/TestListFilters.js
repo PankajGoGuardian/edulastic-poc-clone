@@ -28,7 +28,7 @@ const TestListFilters = ({
     const { filter } = search;
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
-      if (filter === filterMenuItems[1].filter) {
+      if (filter !== filterMenuItems[0].filter) {
         filterTitles.push("Status");
       }
       filterData1 = filterData.filter(o => filterTitles.includes(o.title));
@@ -44,7 +44,7 @@ const TestListFilters = ({
       ];
     }
 
-    const { curriculumId } = search;
+    const { curriculumId = "" } = search;
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
       text: `${item.identifier} : ${item.description}`
@@ -55,7 +55,7 @@ const TestListFilters = ({
       : 'Type to Search, for example "k.cc"';
 
     filterData1 = filterData;
-    if (filter !== filterMenuItems[1].filter) {
+    if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     return [

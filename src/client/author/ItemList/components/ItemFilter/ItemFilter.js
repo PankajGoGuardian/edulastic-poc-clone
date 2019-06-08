@@ -94,7 +94,7 @@ class ItemFilter extends Component {
                 <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
                 <Search
                   search={search}
-                  showStatus={search.filter === items[1].filter}
+                  showStatus={search.filter !== items[0].filter}
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}

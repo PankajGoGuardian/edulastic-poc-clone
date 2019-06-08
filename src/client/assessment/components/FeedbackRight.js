@@ -159,7 +159,7 @@ class FeedbackRight extends Component {
 
     if (isStudentName) {
       title = (
-        <TitleDiv data-cy="studentName" style={{ marginTop: 0 }}>
+        <TitleDiv data-cy="studentName" style={{ marginTop: 0, fontWeight: "bold" }}>
           <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: "#1774F0" }} size={34}>
             {studentName.charAt(0)}
           </Avatar>

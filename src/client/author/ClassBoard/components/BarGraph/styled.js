@@ -35,6 +35,10 @@ export const MainDiv = styled.div`
   @media (max-width: ${mobileWidth}) {
     margin-top: 25px;
   }
+
+  .recharts-rectangle {
+    cursor: pointer;
+  }
 `;
 
 export const StyledCustomTooltip = styled(CustomTooltip)`

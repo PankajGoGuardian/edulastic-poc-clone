@@ -31,6 +31,10 @@ export const StyledCard = styled(Card)`
   margin-bottom: 10px;
   .ant-card-body {
   }
+
+  .recharts-rectangle {
+    cursor: pointer;
+  }
 `;
 
 export const StyledTitle = styled.p`

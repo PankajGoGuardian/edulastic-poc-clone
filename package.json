@@ -20,7 +20,7 @@
     "format-check": "prettier --check 'src/client/**/*.js' !src/client/public/**/*.js",
     "execute": "ts-node --compiler-options '{react-outside-event\"lib\":[\"ESNext\"]}' ",
     "build": "node --max-old-space-size=4096 node_modules/poi/bin/cli.js --prod --parallel",
-    "start": "APP_MODE_DEV=1 poi --parallel --serve --open",
+    "start": "APP_MODE_DEV=1 poi --serve --open",
     "prod-serve": "serve -s dist -p 3001",
     "test": "jest --coverage && ava",
     "jest": "jest",

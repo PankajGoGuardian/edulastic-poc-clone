@@ -31,7 +31,7 @@ import {
   StyledParaSSS,
   RightAlignedCol
 } from "./styled";
-import { getAvatarName } from "../../Transformer";
+import { getAvatarName, getFirstName } from "../../Transformer";
 export default class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
@@ -96,7 +96,9 @@ export default class DisneyCardContainer extends Component {
             <PaginationInfoF>
               <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
-                <StyledParaF data-cy="studentName">{student.studentName ? student.studentName : "-"}</StyledParaF>
+                <StyledParaF data-cy="studentName" title={student.studentName}>
+                  {student.studentName ? getFirstName(student.studentName) : "-"}
+                </StyledParaF>
                 {student.present ? (
                   <StyledParaS data-cy="studentStatus" color={status.color}>
                     {status.status}

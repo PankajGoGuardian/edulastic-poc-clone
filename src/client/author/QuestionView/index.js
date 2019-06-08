@@ -27,10 +27,17 @@ import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../Class
 
 const green = "#5eb500";
 
-const CustomTooltip = ({ label = "", payload }) => {
+const CustomTooltip = ({ label = "", payload, ...rest }) => {
   const firstItem = head(payload) || {};
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
-  return <TooltipContainer title={label}>{`Time(seconds): ${timeSpent || 0}`}</TooltipContainer>;
+  const fullName = get(firstItem, "payload.name");
+  const score = get(firstItem, "payload.score");
+  console.log("payload", firstItem.payload);
+  return (
+    <TooltipContainer title={fullName}>
+      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score(points): ${score}`}
+    </TooltipContainer>
+  );
 };
 
 CustomTooltip.propTypes = {
@@ -127,7 +134,8 @@ class QuestionViewContainer extends Component {
             wrong: 0,
             pCorrect: 0,
             skipped: 0,
-            manuallyGraded: 0
+            manuallyGraded: 0,
+            score: 0
           };
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
@@ -141,6 +149,7 @@ class QuestionViewContainer extends Component {
               } else if (score === 0) {
                 stData.wrong += 1;
               }
+              stData.score = score;
               if (manuallyGraded) {
                 stData.manuallyGraded += 1;
               }
@@ -209,11 +218,33 @@ class QuestionViewContainer extends Component {
                   orientation="right"
                   stroke={greyGraphstroke}
                 />
-                <Bar className="correct" stackId="a" dataKey="correct" fill={green} onClick={this.onClickChart} />
-                <Bar className="wrong" stackId="a" dataKey="wrong" fill={incorrect} onClick={this.onClickChart} />
-                <Bar className="pCorrect" stackId="a" dataKey="pCorrect" fill={pCorrect} onClick={this.onClickChart} />
+                <Bar
+                  className="correct"
+                  style={{ cursor: "pointer" }}
+                  stackId="a"
+                  dataKey="correct"
+                  fill={green}
+                  onClick={this.onClickChart}
+                />
+                <Bar
+                  className="wrong"
+                  style={{ cursor: "pointer" }}
+                  stackId="a"
+                  dataKey="wrong"
+                  fill={incorrect}
+                  onClick={this.onClickChart}
+                />
+                <Bar
+                  className="pCorrect"
+                  style={{ cursor: "pointer" }}
+                  stackId="a"
+                  dataKey="pCorrect"
+                  fill={pCorrect}
+                  onClick={this.onClickChart}
+                />
                 <Bar
                   className="skipped"
+                  style={{ cursor: "pointer" }}
                   stackId="a"
                   dataKey="skipped"
                   fill={dropZoneTitleColor}
@@ -221,6 +252,7 @@ class QuestionViewContainer extends Component {
                 />
                 <Bar
                   className="manuallyGraded"
+                  style={{ cursor: "pointer" }}
                   stackId="a"
                   dataKey="manuallyGraded"
                   fill={graded}

@@ -315,7 +315,7 @@ class ClassBoard extends Component {
                 />
               </StyledCard>
             </GraphContainer>
-            {nCountTrue > 0 && (
+            {
               <StyledFlexContainer
                 justifyContent="space-between"
                 marginBottom="0px"
@@ -344,7 +344,7 @@ class ClassBoard extends Component {
                   REDIRECT
                 </RedirectButton>
               </StyledFlexContainer>
-            )}
+            }
             {flag ? (
               <DisneyCardContainer
                 selectedStudents={selectedStudents}

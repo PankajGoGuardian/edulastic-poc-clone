@@ -102,7 +102,8 @@ class ScoreTable extends Component {
               );
             },
             onFilter: (value, record) => record.score.indexOf(value) === 0,
-            sorter: (a, b) => (a.score.score > b.score.score ? 1 : -1)
+            sorter: (a, b) => (a.score.score > b.score.score ? 1 : -1),
+            sortDirections: []
           }
         ]
       }
@@ -163,7 +164,7 @@ class ScoreTable extends Component {
           }
         ],
         sorter: (a, b) => a[key].score - b[key].score,
-        sortDirections: ["descend"]
+        sortDirections: ["descend", "ascend"]
       };
 
       columns.push(column);

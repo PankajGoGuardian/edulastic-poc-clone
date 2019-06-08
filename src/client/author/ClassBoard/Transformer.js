@@ -94,36 +94,26 @@ const getMaxScoreFromItem = testItem => {
   return total;
 };
 
-const countUpperCaseChars = str => {
-  let count = 0;
-  const len = str.length;
-  for (let i = 0; i < len; i++) {
-    if (/[A-Z]/.test(str.charAt(i))) count++;
+export const getAvatarName = studentName => {
+  if (!studentName) {
+    console.warn("no name");
+    return "";
   }
-  return count;
+  const parts = studentName.split(" ");
+  if (parts.length > 1) {
+    return `${parts[0].trim().charAt(0)}${parts[0].trim().charAt(0)}`.toUpperCase();
+  } else {
+    const part = parts[0].trim();
+    return `${part.charAt(0)}${part.charAt(1)}`.toUpperCase();
+  }
 };
 
-export const getAvatarName = studentName => {
-  let firstLetter = "";
-  let secondLetter = null;
-
-  if (studentName.length > 0) {
-    if (studentName.indexOf(" ") >= 0) {
-      firstLetter = studentName.substring(0, 1);
-      secondLetter = studentName.substring(studentName.indexOf(" "), 1);
-    } else if (countUpperCaseChars(studentName) >= 2) {
-      firstLetter = studentName.match(/^[A-Z]{4}/);
-      secondLetter = studentName.substring(
-        studentName.indexOf(firstLetter),
-        studentName.length - studentName.indexOf(firstLetter)
-      );
-      secondLetter = secondLetter.match(/^[A-Z]{4}/);
-    } else if (studentName.length >= 2) {
-      return studentName.substring(0, 2).toUpperCase();
-    }
-
-    return `${firstLetter}${secondLetter}`.toUpperCase();
+export const getFirstName = studentName => {
+  if (!studentName) {
+    return "";
   }
+  const parts = studentName.trim().split(" ");
+  return parts[0];
 };
 
 export const transformGradeBookResponse = ({
@@ -154,11 +144,11 @@ export const transformGradeBookResponse = ({
   }));
 
   return studentNames
-    .map(({ _id: studentId, firstName: studentName }) => {
+    .map(({ _id: studentId, firstName: studentName, lastName }) => {
       if (!studentTestActivities[studentId]) {
         return {
           studentId,
-          studentName,
+          studentName: `${studentName}${lastName ? ` ${lastName}` : ""}`,
           present: true,
           status: "notStarted",
           maxScore: testMaxScore,

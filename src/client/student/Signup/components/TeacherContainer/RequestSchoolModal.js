@@ -95,14 +95,9 @@ class RequestSchool extends React.Component {
   };
 
   render() {
-    const { isOpen, handleCancel, form, districts, isSearching } = this.props;
+    const { isOpen, handleCancel, form, districts, isSearching, autocompleteDistricts } = this.props;
     const { getFieldDecorator } = form;
     const { keyword, countryList } = this.state;
-
-    const _districts = districts.map(item => ({
-      title: item.districtName,
-      key: item.districtId
-    }));
 
     const title = (
       <Title>
@@ -161,9 +156,12 @@ class RequestSchool extends React.Component {
             })(
               <RemoteAutocompleteDropDown
                 by={keyword}
-                data={_districts}
+                data={autocompleteDistricts}
                 onSearchTextChange={this.handleTyping}
                 iconType={"down"}
+                createNew={true}
+                createNewLabel="Create New District"
+                existingLabel="Districts"
               />
             )}
           </Form.Item>
@@ -218,7 +216,8 @@ const enhance = compose(
   connect(
     state => ({
       isSearching: get(state, "signup.isSearching", false),
-      districts: get(state, "signup.districts", [])
+      districts: get(state, "signup.districts", []),
+      autocompleteDistricts: get(state, "signup.autocompleteDistricts", [])
     }),
     {
       searchDistrict: searchDistrictsRequestAction,

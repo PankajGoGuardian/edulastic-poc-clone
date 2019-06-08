@@ -146,7 +146,6 @@ class SideMenu extends Component {
   };
 
   render() {
-    console.log("HERE");
     const { broken, isVisible } = this.state;
     const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
     const isCollapsed = isSidebarCollapsed;

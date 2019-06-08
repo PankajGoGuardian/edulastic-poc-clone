@@ -91,6 +91,10 @@ const searchDistricts = state => {
 const receivedDistricts = (state, { payload }) => {
   state.isSearching = false;
   state.districts = payload;
+  state.autocompleteDistricts = payload.map(item => ({
+    title: item.districtName,
+    key: item.districtId
+  }));
 };
 
 const failedDistricts = state => {

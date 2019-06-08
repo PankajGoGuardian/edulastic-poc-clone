@@ -10,6 +10,9 @@ import { black } from "@edulastic/colors";
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
 
+// IMPORTANT:
+// onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
+
 const RemoteAutocompleteDropDown = ({
   className,
   containerClassName = "",
@@ -20,14 +23,23 @@ const RemoteAutocompleteDropDown = ({
   data = [],
   comData,
   iconType = "caret-down",
-  onChange
+  onChange,
+  createNew = false,
+  createNewLabel = "Create New",
+  existingLabel = "Existing"
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
   const [text, setText] = useState(by.title);
   const [isDropDownVisible, setIsDropDownVisible] = useState(false);
+  const [addCreateNewOption, setAddCreateNewOption] = useState(false);
   const autoRef = useRef(null);
   const textChangeStatusRef = useRef(false);
+
+  const isItemPresent = (_data, isPresentItem) => {
+    const isItemPresentFlag = _data.find(_item => _item.title === isPresentItem.title);
+    return !!isItemPresentFlag;
+  };
 
   useInternalEffect(() => {
     let item = null;
@@ -46,6 +58,11 @@ const RemoteAutocompleteDropDown = ({
 
     setSelected(item);
     setDropDownData(data);
+    if (isItemPresent(data, { title: text }) && createNew) {
+      setAddCreateNewOption(false);
+    } else {
+      setAddCreateNewOption(true);
+    }
   }, [data]);
 
   useInternalEffect(() => {
@@ -65,41 +82,84 @@ const RemoteAutocompleteDropDown = ({
     }
 
     setSelected(item);
-  }, [by]);
+  }, []);
+
+  const onAddNewClick = event => {
+    triggerChange(event.currentTarget.attributes["data-title"].value);
+  };
 
   const buildDropDownData = datum => {
-    let arr = datum.map((item, index) => {
-      return (
-        <Option key={item.key} title={item.title}>
-          {item.title}
-        </Option>
-      );
-    });
+    let arr;
+    if (addCreateNewOption) {
+      let existingArr = datum.map((item, index) => {
+        return (
+          <Option key={item.key} title={item.title}>
+            {item.title}
+          </Option>
+        );
+      });
+      arr = [
+        <OptGroup key={"Create New"} label={createNewLabel}>
+          {[
+            <Option key="Add New Span" title={text}>
+              <p data-title={text} onClick={onAddNewClick} style={{ width: "100%", height: "100%" }}>
+                {text}
+              </p>
+            </Option>
+          ]}
+        </OptGroup>,
+        <OptGroup key={"Existing"} label={existingLabel}>
+          {[...existingArr]}
+        </OptGroup>
+      ];
+    } else {
+      arr = datum.map((item, index) => {
+        return (
+          <Option key={item.key} title={item.title}>
+            {item.title}
+          </Option>
+        );
+      });
+    }
+
     return arr;
   };
 
   const onSearch = value => {
     if (value.length > 2) {
+      let exactMatchFound = false;
       let regExp = new RegExp(`${value}`, "i");
       let searchedData = data.filter((item, index) => {
         if (regExp.test(item.title)) {
+          if (value === item.title) {
+            exactMatchFound = true;
+          }
           return true;
         } else {
           return false;
         }
       });
       setDropDownData(searchedData);
-      if (searchedData.length === 0) {
-        onSearchTextChange(value);
+
+      if (createNew && !exactMatchFound) {
+        setAddCreateNewOption(true);
+      } else {
+        setAddCreateNewOption(false);
       }
     } else {
       if (data.length !== dropDownData.length) {
         setDropDownData(data);
       }
+      if (createNew && !isItemPresent(data, { title: value })) {
+        setAddCreateNewOption(true);
+      } else {
+        setAddCreateNewOption(false);
+      }
     }
     setText(value);
     triggerChange(value);
     textChangeStatusRef.current = true;
+    onSearchTextChange(value);
   };
 
   const onBlur = key => {
@@ -130,6 +190,7 @@ const RemoteAutocompleteDropDown = ({
     setText("");
     triggerChange("");
     setDropDownData(data);
+    setAddCreateNewOption(false);
     textChangeStatusRef.current = true;
   };
 
@@ -199,9 +260,31 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
   .ant-select-dropdown-menu {
     display: flex;
     flex-direction: column;
-    .ant-select-dropdown-menu-item{
+
+    .ant-select-dropdown-menu-item {
       min-height: 30px;
     }
+
+    .ant-select-dropdown-menu-item-group {
+      display: flex;
+      flex-direction: column;
+      .ant-select-dropdown-menu-item-group-title {
+        font-weight: 900;
+        color: ${black};
+        cursor: default;
+      }
+
+      .ant-select-dropdown-menu-item-group-list {
+        overflow: auto;
+      }
+    }
+  }
+
+  .ant-select-dropdown-menu-item-disabled {
+    font-weight: 900;
+    color: ${black};
+    cursor: default;
+  }
 `;
 
 export { StyledRemoteAutocompleteDropDown as RemoteAutocompleteDropDown };

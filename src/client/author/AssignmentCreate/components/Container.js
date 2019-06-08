@@ -8,7 +8,7 @@ import BreadCrumb from "../../src/components/Breadcrumb";
 import ContainerWrapper from "../common/ContainerWrapper";
 import BodyWrapper from "../common/BodyWrapper";
 import CardComponent from "../common/CardComponent";
-import { IconTestBank, IconCurriculumSequence } from "@edulastic/icons";
+import { IconTestBank, IconPlaylist } from "@edulastic/icons";
 import TitleWrapper from "../common/TitleWrapper";
 import IconWrapper from "../common/IconWrapper";
 import TextWrapper from "../common/TextWrapper";
@@ -55,7 +55,7 @@ class Container extends Component {
             <FlexWrapper>
               <CardComponent>
                 <IconWrapper>
-                  <IconCurriculumSequence style={{ height: "40px", width: "40px" }} />
+                  <IconPlaylist style={{ height: "40px", width: "40px" }} />
                 </IconWrapper>
                 <TitleWrapper>Choose From Play List</TitleWrapper>
                 <TextWrapper> Select pre built tests from the Curriculum aligned assessment play list</TextWrapper>

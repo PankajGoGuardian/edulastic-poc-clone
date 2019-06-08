@@ -12,7 +12,7 @@ import {
   IconSource,
   IconDiskette,
   IconDescription,
-  IconRedo
+  IconSend
 } from "@edulastic/icons";
 import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus, TitleWrapper } from "./styled";
 
@@ -24,7 +24,7 @@ import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 export const navButtons = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
-    value: "summary",
+    value: "description",
     text: "Description"
   },
   {
@@ -124,7 +124,7 @@ const TestPageHeader = ({
             size="large"
             onClick={onPublish}
           >
-            <IconRedo color="#1774F0" />
+            <IconSend color="#1774F0" />
           </EduButton>
         )}
         {showShareButton && !isPlaylist && (

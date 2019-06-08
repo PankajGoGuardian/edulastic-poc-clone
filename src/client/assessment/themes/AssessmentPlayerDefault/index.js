@@ -7,7 +7,6 @@ import { ThemeProvider } from "styled-components";
 import { Affix } from "antd";
 import { ActionCreators } from "redux-undo";
 import { withWindowSizes } from "@edulastic/common";
-import { IconSend } from "@edulastic/icons";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
 import HeaderLeftMenu from "../common/HeaderLeftMenu";

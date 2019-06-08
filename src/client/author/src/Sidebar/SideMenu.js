@@ -19,7 +19,7 @@ import {
   IconQuestion,
   IconItemLibrary,
   IconTestBank,
-  IconCurriculumSequence,
+  IconPlaylist,
   IconSettings
 } from "@edulastic/icons";
 import { dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
@@ -40,7 +40,7 @@ const menuItems = [
   },
   {
     label: "PlayList Library",
-    icon: IconCurriculumSequence,
+    icon: IconPlaylist,
     path: "author/playlists"
   },
 

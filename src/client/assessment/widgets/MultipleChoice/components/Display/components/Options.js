@@ -4,7 +4,16 @@ import PropTypes from "prop-types";
 import { OptionsList } from "../styled/OptionsList";
 import Option from "./Option";
 
-const Options = ({ options, evaluation, uiStyle, onChange, validation, styleType, multipleResponse, ...restProps }) => {
+const Options = ({
+  options,
+  evaluation,
+  uiStyle,
+  onChange,
+  validation,
+  styleType,
+  multipleResponses,
+  ...restProps
+}) => {
   return (
     <OptionsList styleType={styleType}>
       {options.map((option, index) => (
@@ -17,7 +26,7 @@ const Options = ({ options, evaluation, uiStyle, onChange, validation, styleType
           onChange={() => onChange(option.value)}
           correct={evaluation}
           styleType={styleType}
-          multipleResponse={multipleResponse}
+          multipleResponses={multipleResponses}
           {...restProps}
         />
       ))}
@@ -36,7 +45,7 @@ Options.propTypes = {
   uiStyle: PropTypes.object.isRequired,
   evaluation: PropTypes.any.isRequired,
   styleType: PropTypes.string,
-  multipleResponse: PropTypes.bool
+  multipleResponses: PropTypes.bool
 };
 
 Options.defaultProps = {

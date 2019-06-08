@@ -148,7 +148,6 @@ class CorrectAnswers extends Component {
   render() {
     const { validation, stimulus, options, t, multipleResponses, uiStyle, styleType, correctTab } = this.props;
     const { value, tabs } = this.state;
-
     return (
       <div>
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>

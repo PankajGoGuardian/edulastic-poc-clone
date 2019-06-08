@@ -14,7 +14,7 @@ const Display = ({
   instructorStimulus,
   index,
   styleType,
-  multipleResponse,
+  multipleResponses,
   showQuestionNumber,
   flowLayout,
   ...restProps
@@ -36,7 +36,7 @@ const Display = ({
       question={question}
       uiStyle={uiStyle}
       styleType={styleType}
-      multipleResponse={multipleResponse}
+      multipleResponses={multipleResponses}
       {...restProps}
     />
   </div>
@@ -57,7 +57,7 @@ Display.propTypes = {
   qIndex: PropTypes.number.isRequired,
   index: PropTypes.number.isRequired,
   styleType: PropTypes.string,
-  multipleResponse: PropTypes.bool,
+  multipleResponses: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   flowLayout: PropTypes.bool
 };
@@ -81,7 +81,7 @@ Display.defaultProps = {
   showQuestionNumber: false,
   flowLayout: false,
   styleType: "default",
-  multipleResponse: false
+  multipleResponses: false
 };
 
 export default Display;

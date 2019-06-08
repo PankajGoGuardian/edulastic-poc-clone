@@ -209,7 +209,6 @@ class MultipleChoice extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     // const multi_response = this.props.item.multiple_responses;
-
     return (
       <React.Fragment>
         <PaddingDiv>
@@ -256,6 +255,7 @@ class MultipleChoice extends Component {
                   advancedAreOpen={advancedAreOpen}
                   fillSections={fillSections}
                   cleanSections={cleanSections}
+                  multipleResponses={multipleResponses}
                   {...restProps}
                 />
               </React.Fragment>
@@ -277,7 +277,7 @@ class MultipleChoice extends Component {
                   evaluation={evaluation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
-                  multipleResponse={multipleResponses}
+                  multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   {...restProps}
                 />
@@ -296,7 +296,7 @@ class MultipleChoice extends Component {
                   validation={item.validation}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
-                  multipleResponse={multipleResponses}
+                  multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   {...restProps}
                 />
@@ -314,7 +314,7 @@ class MultipleChoice extends Component {
                   onChange={this.handleAddAnswer}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
-                  multipleResponse={multipleResponses}
+                  multipleResponses={multipleResponses}
                   flowLayout={flowLayout}
                   {...restProps}
                 />

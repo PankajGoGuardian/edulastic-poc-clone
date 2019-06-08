@@ -68,7 +68,7 @@ export const CheckboxContainer = styled.div`
         display: ${props.smallSize ? "block" : "flex"};
         align-items: center;
         justify-content: center;
-        border-radius: ${props.multipleResponse ? "0" : "50%"};
+        border-radius: ${props.multipleResponses ? "0" : "50%"};
         background-color: ${params.backgroundCheck};
         border: ${params.borderWidthCheck}px solid ${params.borderColorCheck};
         -webkit-transition: all 0.6s;
@@ -82,7 +82,7 @@ export const CheckboxContainer = styled.div`
       & div {
         width: 100%;
         height: 100%;
-        border-radius: 50%;
+        border-radius: ${props.multipleResponses ? "0" : "50%"};
         display: ${props.smallSize ? "block" : "none"};
         background-color: ${props.theme.widgets.multipleChoice.checkboxContainerBgColor};
       }

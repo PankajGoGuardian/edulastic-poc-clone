@@ -26,7 +26,7 @@ const Option = props => {
     checkAnswer,
     validation,
     styleType,
-    multipleResponse
+    multipleResponses
   } = props;
   const [className, setClassName] = useState("");
   const isSelected = userSelections.includes(item.value);
@@ -92,14 +92,15 @@ const Option = props => {
       smallSize={smallSize}
       uiStyle={uiStyle}
       styleType={styleType}
-      multipleResponse={multipleResponse}
+      multipleResponses={multipleResponses}
     >
       <input type="checkbox" name="mcq_group" value={item.value} checked={isSelected} onChange={onChange} />
       <span
         style={{
           display: "flex",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          borderRadius: multipleResponses ? "0" : "50%"
         }}
       >
         {getLabel(index)}
@@ -179,7 +180,7 @@ Option.propTypes = {
   uiStyle: PropTypes.object.isRequired,
   correct: PropTypes.any.isRequired,
   styleType: PropTypes.string,
-  multipleResponse: PropTypes.bool
+  multipleResponses: PropTypes.bool
 };
 
 Option.defaultProps = {

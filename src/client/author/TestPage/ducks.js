@@ -143,6 +143,8 @@ export const initialTestState = {
   shuffleAnswers: false,
   calcType: test.calculatorKeys[0],
   answerOnPaper: false,
+  assignmentPassword: "",
+  requirePassword: false,
   maxAnswerChecks: 0,
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
@@ -368,7 +370,12 @@ function* updateTestSaga({ payload }) {
     }));
 
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
-
+    if (!payload.data.requirePassword) {
+      delete payload.data.assignmentPassword;
+    } else if (!payload.data.assignmentPassword) {
+      yield call(message.error, "Assignment password should not be empty when require password is checked");
+      return;
+    }
     const entity = yield call(testsApi.update, payload);
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
@@ -464,6 +471,12 @@ function* setTestDataAndUpdateSaga({ payload }) {
     const { title } = payload.data;
     if (!title) {
       return yield call(message.error("Name field cannot be empty"));
+    }
+    if (!payload.data.requirePassword) {
+      delete payload.data.assignmentPassword;
+    } else if (!payload.data.assignmentPassword) {
+      yield call(message.error, "Assignment password should not be empty when require password is checked");
+      return;
     }
     const entity = yield call(testsApi.create, payload.data);
     yield put({

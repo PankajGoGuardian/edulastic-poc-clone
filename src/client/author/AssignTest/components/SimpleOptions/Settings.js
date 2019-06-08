@@ -249,7 +249,7 @@ const Settings = ({
           <Col span={16}>Require Password</Col>
           <Col span={8}>
             <AlignSwitchRight
-              defaultChecked
+              defaultChecked={requirePassword}
               size="small"
               onChange={value => overRideSettings("requirePassword", value)}
             />

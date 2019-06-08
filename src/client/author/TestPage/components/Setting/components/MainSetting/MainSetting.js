@@ -189,7 +189,7 @@ class MainSetting extends Component {
       shuffleQuestions,
       shuffleAnswers,
       answerOnPaper,
-      requirePassword = false,
+      requirePassword,
       maxAnswerChecks,
       scoringType,
       penalty,

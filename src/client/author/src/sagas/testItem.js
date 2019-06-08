@@ -9,7 +9,7 @@ import createShowAnswerData from "../utils/showAnswer";
 import {
   CREATE_TEST_ITEM_REQUEST,
   CREATE_TEST_ITEM_ERROR,
-  CREATE_TEST_ITEM_SUCCESS,
+  RECEIVE_ITEM_DETAIL_SUCCESS,
   UPDATE_TEST_ITEM_REQUEST,
   UPDATE_TEST_ITEM_SUCCESS,
   UPDATE_TEST_ITEM_ERROR,
@@ -29,8 +29,8 @@ function* createTestItemSaga({ payload: { data, showModal } }) {
   try {
     const item = yield call(testItemsApi.create, data);
     yield put({
-      type: CREATE_TEST_ITEM_SUCCESS,
-      payload: { item: item.data }
+      type: RECEIVE_ITEM_DETAIL_SUCCESS,
+      payload: item
     });
 
     if (!showModal) {

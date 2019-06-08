@@ -214,6 +214,15 @@ class AddItems extends PureComponent {
     });
   };
 
+  setAuthoredByMeFilter = () => {
+    this.setState(prev => ({
+      search: {
+        ...prev.search,
+        filter: "AUTHORED_BY_ME"
+      }
+    }));
+  };
+
   render() {
     const {
       windowWidth,
@@ -271,7 +280,7 @@ class AddItems extends PureComponent {
             </ItemsTableContainer>
           </ListItems>
         </MainList>
-        {createTestItemModalVisible && <ModalCreateTestItem />}
+        {createTestItemModalVisible && <ModalCreateTestItem setAuthoredByMeFilter={this.setAuthoredByMeFilter} />}
       </Container>
     );
   }

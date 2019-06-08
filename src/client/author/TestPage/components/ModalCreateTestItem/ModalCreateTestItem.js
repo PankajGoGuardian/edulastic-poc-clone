@@ -26,8 +26,8 @@ const createTestItemModalTabs = {
   QUESTION_EDIT: "question_edit"
 };
 
-const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion }) => {
-  const [currentTab, setCurrentTab] = useState(createTestItemModalTabs.ITEM_DETAIL);
+const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion, setAuthoredByMeFilter }) => {
+  const [currentTab, setCurrentTab] = useState(createTestItemModalTabs.PICKUP_QUESTION_TYPE);
 
   const makeNavigateToTab = tab => event => {
     if (event) {
@@ -85,7 +85,13 @@ const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion }) =>
       case createTestItemModalTabs.PICKUP_QUESTION_TYPE:
         return <ConnectedPickUpQuestionType {...tabProps} />;
       case createTestItemModalTabs.QUESTION_EDIT:
-        return <ConnectedQuestionEditor {...tabProps} onCompleteItemCreation={handleCloseModal} />;
+        return (
+          <ConnectedQuestionEditor
+            {...tabProps}
+            onCompleteItemCreation={handleCloseModal}
+            setAuthoredByMeFilter={setAuthoredByMeFilter}
+          />
+        );
       default:
         return null;
     }

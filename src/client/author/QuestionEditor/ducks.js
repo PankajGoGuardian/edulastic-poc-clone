@@ -20,6 +20,7 @@ import {
 } from "../sharedDucks/questions";
 
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
+import { toggleCreateItemModalAction } from "../src/actions/testItem";
 
 // constants
 export const resourceTypeQuestions = {
@@ -374,6 +375,7 @@ function* saveQuestionSaga({ payload: modalItemId }) {
       } else {
         yield put(setTestDataAction(updatedTestEntity));
       }
+      yield put(toggleCreateItemModalAction(false));
       return;
     }
 
@@ -392,6 +394,9 @@ function* saveQuestionSaga({ payload: modalItemId }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Save question is failing";
+    if (modalItemId) {
+      yield put(toggleCreateItemModalAction(false));
+    }
     yield call(message.error, errorMessage);
     yield put({
       type: SAVE_QUESTION_ERROR,

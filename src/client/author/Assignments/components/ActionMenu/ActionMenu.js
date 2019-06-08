@@ -108,15 +108,6 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
     </Menu.Item>
   );
   MenuItems.push(
-    <Menu.Item key="embed">
-      <StyledLink target="_blank" rel="noopener noreferrer">
-        <img alt="icon" src={devIcon} />
-        <SpaceElement />
-        Embed
-      </StyledLink>
-    </Menu.Item>
-  );
-  MenuItems.push(
     <Menu.Item key="GClassroom">
       <StyledLink target="_blank" rel="noopener noreferrer">
         <img alt="icon" src={googleIcon} />

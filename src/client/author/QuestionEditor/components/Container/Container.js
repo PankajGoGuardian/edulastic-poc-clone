@@ -63,10 +63,10 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { saveQuestion, modalItemId, onCompleteItemCreation, removeAnswers } = this.props;
+    const { saveQuestion, modalItemId, removeAnswers, setAuthoredByMeFilter } = this.props;
     saveQuestion(modalItemId);
     removeAnswers();
-    onCompleteItemCreation();
+    if (setAuthoredByMeFilter) setAuthoredByMeFilter();
   };
 
   handleChangePreviewTab = previewTab => {

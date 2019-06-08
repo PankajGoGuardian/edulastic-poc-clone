@@ -9,15 +9,12 @@ export const FullScreenModal = styled.div`
   left: 100px;
   right: 0;
   background: ${mainBgColor};
-  z-index: 10001;
-  overflow: scroll;
-
-  .fixed-header {
-    left: 100px !important;
-  }
+  overflow: auto;
+  z-index: 999;
 `;
 
 export const ModalWrapper = styled.div`
   position: relative;
+  width: 100%;
   height: 100vh;
 `;

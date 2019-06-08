@@ -51,6 +51,7 @@ export const getClearSearchState = () => ({
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
+  status: "",
   grades: [],
   filter: filterMenuItems[0].filter
 });

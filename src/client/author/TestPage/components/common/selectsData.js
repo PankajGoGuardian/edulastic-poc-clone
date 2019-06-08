@@ -79,6 +79,11 @@ const testTypes = [
   { value: "teacherAssessment", text: "Teacher Assessments" }
 ];
 
+const allStatus = [
+  { value: "", text: "All" },
+  { value: "published", text: "Published" },
+  { value: "draft", text: "Draft" }
+];
 export default {
   allGrades,
   allSubjects,
@@ -90,5 +95,6 @@ export default {
   openPolicyForAdmin,
   closePolicy,
   closePolicyForAdmin,
+  allStatus,
   testTypes
 };

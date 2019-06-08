@@ -72,6 +72,7 @@ export const getClearSearchState = () => ({
   depthOfKnowledge: "",
   authorDifficulty: "",
   curriculumId: "",
+  status: "",
   grades: [],
   standardIds: [],
   tags: [],

@@ -24,9 +24,14 @@ const TestListFilters = ({
   filterMenuItems
 }) => {
   const getFilters = () => {
+    let filterData1 = [];
+    const { filter } = search;
     if (isPlaylist) {
       const filterTitles = ["Grades", "Subject"];
-      const filterData1 = filterData.filter(o => filterTitles.includes(o.title));
+      if (filter === filterMenuItems[1].filter) {
+        filterTitles.push("Status");
+      }
+      filterData1 = filterData.filter(o => filterTitles.includes(o.title));
       return [
         ...filterData1,
         {
@@ -49,8 +54,12 @@ const TestListFilters = ({
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
 
+    filterData1 = filterData;
+    if (filter !== filterMenuItems[1].filter) {
+      filterData1 = filterData1.filter(o => o.title !== "Status");
+    }
     return [
-      ...filterData,
+      ...filterData1,
       {
         size: "large",
         title: "Standard set",

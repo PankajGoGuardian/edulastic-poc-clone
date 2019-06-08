@@ -59,6 +59,7 @@ export const getClearSearchState = () => ({
   filter: filterMenuItems[0].filter,
   searchString: "",
   type: "",
+  status: "",
   collectionName: ""
 });
 

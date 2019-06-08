@@ -76,6 +76,7 @@ class ItemFilter extends Component {
                 {this.renderFullTextSearch()}
                 <Search
                   search={search}
+                  showStatus={search.filter === items[1].filter}
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
@@ -93,6 +94,7 @@ class ItemFilter extends Component {
                 <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />
                 <Search
                   search={search}
+                  showStatus={search.filter === items[1].filter}
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}

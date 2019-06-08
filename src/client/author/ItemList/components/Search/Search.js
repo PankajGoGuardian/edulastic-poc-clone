@@ -10,10 +10,11 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 class Search extends Component {
   render() {
     const {
-      search: { grades, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
+      search: { grades, status, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
       onSearchFieldChange,
       curriculumStandards,
       onStandardSearch,
+      showStatus = false,
       formattedCuriculums
     } = this.props;
     const isStandardsDisabled = !curriculumId;
@@ -129,6 +130,20 @@ class Search extends Component {
               </Select>
             </ItemBody>
           </Item>
+          {showStatus && (
+            <Item>
+              <ItemHeader>Status</ItemHeader>
+              <ItemBody>
+                <Select size="large" onSelect={onSearchFieldChange("status")} value={status}>
+                  {selectsData.allStatus.map(el => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </ItemBody>
+            </Item>
+          )}
           <Item>
             <ItemHeader>Author</ItemHeader>
             <ItemBody>
@@ -165,6 +180,7 @@ Search.propTypes = {
   ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
+  showStatus: PropTypes.bool,
   onStandardSearch: PropTypes.func.isRequired
 };
 

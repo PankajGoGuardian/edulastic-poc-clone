@@ -76,6 +76,12 @@ const filterData = [
       { value: "Medium", text: "Medium" },
       { value: "Hard", text: "Hard" }
     ]
+  },
+  {
+    size: "large",
+    title: "Status",
+    onChange: "status",
+    data: [{ value: "", text: "All" }, { value: "published", text: "Published" }, { value: "draft", text: "Draft" }]
   }
 ];
 

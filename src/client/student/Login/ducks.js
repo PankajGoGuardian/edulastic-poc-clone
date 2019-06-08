@@ -124,16 +124,17 @@ function* signup({ payload }) {
     let firstName;
     let lastName;
     let middleName;
-    if (nameList.length > 2) {
-      firstName = nameList.slice(0, -1).join(" ");
-      middleName = nameList.slice(1, -1).join(" ");
+    if (nameList.length === 1) {
+      firstName = nameList[0];
+    } else if (nameList.length === 2) {
+      firstName = nameList[0];
+      lastName = nameList[1];
+    } else if (nameList.length > 2) {
+      firstName = nameList[0];
+      middleName = nameList.slice(1, nameList.length - 1).join(" ");
       lastName = last(nameList);
-    } else if (nameList.length > 1) {
-      lastName = last(nameList);
-      firstName = nameList.slice(0, -1).join(" ");
-    } else {
-      firstName = name;
     }
+
     const obj = {
       password,
       email,

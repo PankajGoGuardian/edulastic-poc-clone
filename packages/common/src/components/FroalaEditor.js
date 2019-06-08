@@ -222,6 +222,9 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
 
           return false;
         },
+        "image.inserted": function($img, response) {
+          $img.css({ verticalAlign: "middle" });
+        },
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();

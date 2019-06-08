@@ -122,7 +122,9 @@ const TestPageHeader = ({
             data-cy="publish"
             style={{ width: 42, padding: 0 }}
             size="large"
-            onClick={onPublish}
+            onClick={() => {
+              onPublish();
+            }}
           >
             <IconSend color="#1774F0" />
           </EduButton>

@@ -380,10 +380,14 @@ function* updateTestSaga({ payload }) {
     yield put(updateTestSuccessAction(entity));
     const newId = entity._id;
     if (oldId != newId && newId) {
-      yield call(message.success, "Test versioned");
+      if (!payload.assignFlow) {
+        yield call(message.success, "Test versioned");
+      }
       yield put(push(`/author/tests/${newId}/versioned/old/${oldId}`));
     } else {
-      yield call(message.success, "Test saved as Draft");
+      if (!payload.assignFlow) {
+        yield call(message.success, "Test saved as Draft");
+      }
     }
 
     if (payload.updateLocal) {
@@ -420,10 +424,12 @@ function* shareTestSaga({ payload }) {
 function* publishTestSaga({ payload }) {
   try {
     let { _id: id, test, assignFlow } = payload;
-    yield call(updateTestSaga, { payload: { id, data: test } });
+    yield call(updateTestSaga, { payload: { id, data: test, assignFlow: true } });
     yield call(testsApi.publishTest, id);
     yield put(updateTestStatusAction(testItemStatusConstants.PUBLISHED));
-    yield call(message.success, "Successfully published");
+    if (!assignFlow) {
+      yield call(message.success, "Successfully published");
+    }
     const oldId = yield select(state => state.tests.regradeTestId);
     if (assignFlow) {
       yield put(push(`/author/assignments/${id}`));

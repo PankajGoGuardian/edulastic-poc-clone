@@ -33,6 +33,9 @@ import ComposeQuestion from "./ComposeQuestion";
 import RowColumn from "./RowColumn";
 import { DropContainer } from "./styled/DropContainer";
 
+import { uploadToS3 } from "../../../../client/author/src/utils/upload";
+import { aws } from "@edulastic/constants";
+
 const OptionsList = withPoints(ClassificationPreview);
 
 const Enable = {
@@ -383,24 +386,28 @@ const EditClassification = ({
     );
   };
 
-  const handleImageUpload = info => {
-    const { status, response } = info.file;
-    if (status === "done") {
-      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
-      const imageUrl = response.result.fileUri;
+  const handleChange = async info => {
+    try {
+      const { file } = info;
+      if (!file.type.match(/image/g)) {
+        message.error("Please upload files in image format");
+        return;
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
       getImageWidth(imageUrl);
       handleItemChangeChange("imageUrl", imageUrl);
-    } else if (status === "error") {
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+    } catch (e) {
+      console.log(e);
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
     }
   };
-  const draggerProps = {
-    name: "file",
-    action: `${API_CONFIG.api}/file/upload`,
-    headers: {
-      "X-Requested-With": null,
-      authorization: TokenStorage.getAccessToken()
-    }
+  const uploadProps = {
+    beforeUpload: () => false,
+    onChange: handleChange,
+    accept: "image/*",
+    multiple: false,
+    showUploadList: false
   };
 
   return (
@@ -412,7 +419,7 @@ const EditClassification = ({
             <FlexContainer flexDirection="column">
               <DropContainer>
                 <Rnd
-                  size={{ width: dragItem.width, height: dragItem.height }}
+                  size={{ width: dragItem.width || "100%", height: dragItem.height || "100%" }}
                   enableResizing={Enable}
                   style={{ zIndex: 10 }}
                   position={{ x: dragItem.x, y: dragItem.y }}
@@ -435,9 +442,8 @@ const EditClassification = ({
           ) : (
             <Dragger
               className="super-dragger styled-dragger"
-              {...draggerProps}
+              {...uploadProps}
               style={{ padding: 0, marginTop: 20, background: "transparent" }}
-              onChange={handleImageUpload}
               showUploadList={false}
             >
               <EduButton type="primary">{t("component.classification.addBackImage")}</EduButton>

@@ -46,6 +46,9 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
 
+import { uploadToS3 } from "../../../../client/author/src/utils/upload";
+import { aws } from "@edulastic/constants";
+
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -213,6 +216,24 @@ class ComposeQuestion extends Component {
     img.src = url;
   };
 
+  handleChange = async info => {
+    try {
+      const { t } = this.props;
+      const { file } = info;
+      if (!file.type.match(/image/g)) {
+        message.error("Please upload files in image format");
+        return;
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      this.getImageDimensions(imageUrl);
+      this.onItemPropChange("imageUrl", imageUrl);
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+    } catch (e) {
+      console.log(e);
+      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
+    }
+  };
+
   getHeight = () => {
     const { item, maxHeight } = this.props;
     return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
@@ -223,19 +244,6 @@ class ComposeQuestion extends Component {
     const limit = +maxHeight.split("px")[0];
     const newHeight = height > 0 ? (height >= limit ? limit : height) : limit;
     this.onItemPropChange("imageHeight", newHeight);
-  };
-
-  handleImageUpload = info => {
-    const { status, response } = info.file;
-    const { t } = this.props;
-    if (status === "done") {
-      message.success(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadedSuccessfully")}.`);
-      const imageUrl = response.result.fileUri;
-      this.getImageDimensions(imageUrl);
-      this.onItemPropChange("imageUrl", imageUrl);
-    } else if (status === "error") {
-      message.error(`${info.file.name} ${t("component.cloze.imageDropDown.fileUploadFailed")}.`);
-    }
   };
 
   toggleIsMoveResizeEditable = () => {
@@ -265,13 +273,12 @@ class ComposeQuestion extends Component {
     const width = maxWidth;
     const height = maxHeight;
 
-    const draggerProps = {
-      name: "file",
-      action: `${API_CONFIG.api}/file/upload`,
-      headers: {
-        "X-Requested-With": null,
-        authorization: TokenStorage.getAccessToken()
-      }
+    const uploadProps = {
+      beforeUpload: () => false,
+      onChange: this.handleChange,
+      accept: "image/*",
+      multiple: false,
+      showUploadList: false
     };
 
     return (
@@ -437,7 +444,7 @@ class ComposeQuestion extends Component {
                     </React.Fragment>
                   )}
                   {!item.imageUrl && (
-                    <Dragger {...draggerProps} onChange={this.handleImageUpload}>
+                    <Dragger {...uploadProps}>
                       <p className="ant-upload-drag-icon">
                         <IconUpload />
                       </p>
@@ -462,9 +469,8 @@ class ComposeQuestion extends Component {
                   {item.imageUrl && (
                     <Dragger
                       className="super-dragger"
-                      {...draggerProps}
+                      {...uploadProps}
                       style={{ padding: 0, marginRight: "20px" }}
-                      onChange={this.handleImageUpload}
                       showUploadList={false}
                     >
                       <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>

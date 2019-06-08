@@ -36,6 +36,9 @@ import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { Widget } from "../../styled/Widget";
 
+import { uploadToS3 } from "../../../../client/author/src/utils/upload";
+import { aws } from "@edulastic/constants";
+
 const { Option } = Select;
 const { Dragger } = Upload;
 
@@ -213,16 +216,21 @@ class ComposeQuestion extends Component {
     img.src = url;
   };
 
-  handleImageUpload = info => {
-    const { status, response } = info.file;
-    const { t } = this.props;
-    if (status === "done") {
-      message.success(`${info.file.name} ${t("component.cloze.imageDragDrop.fileUploadedSuccessfully")}.`);
-      const imageUrl = response.result.fileUri;
+  handleChange = async info => {
+    try {
+      const { t } = this.props;
+      const { file } = info;
+      if (!file.type.match(/image/g)) {
+        message.error("Please upload files in image format");
+        return;
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
       this.getImageDimensions(imageUrl);
       this.onItemPropChange("imageUrl", imageUrl);
-    } else if (status === "error") {
-      message.error(`${info.file.name} ${t("component.cloze.imageDragDrop.fileUploadFailed")}.`);
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+    } catch (e) {
+      console.log(e);
+      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
     }
   };
 
@@ -260,18 +268,15 @@ class ComposeQuestion extends Component {
       imageOptions = {}
     } = item;
 
-    console.log("IMAGEOPTIONS", imageOptions);
-
     const { isColorPickerVisible } = this.state;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
 
-    const draggerProps = {
-      name: "file",
-      action: `${API_CONFIG.api}/file/upload`,
-      headers: {
-        "X-Requested-With": null,
-        authorization: TokenStorage.getAccessToken()
-      }
+    const uploadProps = {
+      beforeUpload: () => false,
+      onChange: this.handleChange,
+      accept: "image/*",
+      multiple: false,
+      showUploadList: false
     };
 
     return (
@@ -486,7 +491,7 @@ class ComposeQuestion extends Component {
                 </React.Fragment>
               )}
               {!item.imageUrl && (
-                <Dragger {...draggerProps} onChange={this.handleImageUpload}>
+                <Dragger {...uploadProps}>
                   <p className="ant-upload-drag-icon">
                     <IconUpload />
                   </p>
@@ -504,9 +509,8 @@ class ComposeQuestion extends Component {
               {item.imageUrl && (
                 <Dragger
                   className="super-dragger"
-                  {...draggerProps}
+                  {...uploadProps}
                   style={{ padding: 0, marginRight: "20px" }}
-                  onChange={this.handleImageUpload}
                   showUploadList={false}
                 >
                   <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>

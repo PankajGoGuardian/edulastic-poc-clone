@@ -47,6 +47,9 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
 
+import { uploadToS3 } from "../../../../client/author/src/utils/upload";
+import { aws } from "@edulastic/constants";
+
 import SortableList from "../../components/SortableList";
 
 const { Option } = Select;
@@ -244,19 +247,6 @@ class Authoring extends Component {
     img.src = url;
   };
 
-  handleImageUpload = info => {
-    const { status, response } = info.file;
-    const { t } = this.props;
-    if (status === "done") {
-      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
-      const imageUrl = response.result.fileUri;
-      this.getImageDimensions(imageUrl);
-      this.onItemPropChange("imageUrl", imageUrl);
-    } else if (status === "error") {
-      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
-    }
-  };
-
   changeImageWidth = event => {
     const newWidth = event > 0 ? (event >= 700 ? 700 : event) : 700;
     this.onItemPropChange("imageWidth", newWidth);
@@ -293,6 +283,24 @@ class Authoring extends Component {
     );
   };
 
+  handleChange = async info => {
+    try {
+      const { t } = this.props;
+      const { file } = info;
+      if (!file.type.match(/image/g)) {
+        message.error("Please upload files in image format");
+        return;
+      }
+      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      this.getImageDimensions(imageUrl);
+      this.onItemPropChange("imageUrl", imageUrl);
+      message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
+    } catch (e) {
+      console.log(e);
+      message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
+    }
+  };
+
   render() {
     const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight = 0 } = item;
@@ -305,13 +313,12 @@ class Authoring extends Component {
     const width = maxWidth;
     const height = maxHeight;
 
-    const draggerProps = {
-      name: "file",
-      action: `${API_CONFIG.api}/file/upload`,
-      headers: {
-        "X-Requested-With": null,
-        authorization: TokenStorage.getAccessToken()
-      }
+    const uploadProps = {
+      beforeUpload: () => false,
+      onChange: this.handleChange,
+      accept: "image/*",
+      multiple: false,
+      showUploadList: false
     };
     return (
       <div>
@@ -478,7 +485,7 @@ class Authoring extends Component {
                     </React.Fragment>
                   )}
                   {!item.imageUrl && (
-                    <Dragger {...draggerProps} onChange={this.handleImageUpload}>
+                    <Dragger {...uploadProps}>
                       <p className="ant-upload-drag-icon">
                         <IconUpload />
                       </p>
@@ -513,9 +520,8 @@ class Authoring extends Component {
                   {item.imageUrl && (
                     <Dragger
                       className="super-dragger"
-                      {...draggerProps}
+                      {...uploadProps}
                       style={{ padding: 0, marginBottom: 20, marginTop: 20, marginRight: 20 }}
-                      onChange={this.handleImageUpload}
                       showUploadList={false}
                     >
                       <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>

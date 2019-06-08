@@ -67,7 +67,7 @@ class Signup extends React.Component {
     if (value.length < 4) {
       callback("Password is too short - must be at least 4 characters");
     } else if (value.includes(" ")) {
-      callback("Password cannot include spaces");
+      callback("Please provide a valid password");
     }
     callback();
   };

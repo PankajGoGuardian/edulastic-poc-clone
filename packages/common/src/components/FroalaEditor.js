@@ -35,6 +35,13 @@ FroalaEditor.DefineIconTemplate(
   `
 );
 
+FroalaEditor.DEFAULTS.specialCharacterSets = [
+  {
+    title: "spanish",
+    char: "&iexcl;"
+  }
+];
+
 FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Response</span>`);
 FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-btn">Response Boxes</span>`);
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
@@ -67,8 +74,21 @@ const numberPad = [
 
 const DEFAULT_TOOLBAR_BUTTONS = {
   moreText: {
-    buttons: ["bold", "italic", "underline", "strikeThrough", "insertTable"],
-    buttonsVisible: 5
+    buttons: [
+      "bold",
+      "italic",
+      "underline",
+      "backgroundColor",
+      "textColor",
+      "fontFamily",
+      "fontSize",
+      "strikeThrough",
+      "insertTable",
+      "indent",
+      "outdent",
+      "specialCharacters"
+    ],
+    buttonsVisible: 12
   },
   moreParagraph: {
     buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
@@ -187,6 +207,78 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "textdropdown",
         "mathinput",
         "response"
+      ],
+      specialCharactersSets: [
+        {
+          title: "spanish",
+          char: "s",
+          list: [
+            {
+              char: "&aacute;",
+              desc: "LATIN SMALL LETTER A WITH ACUTE"
+            },
+            {
+              char: "&Aacute;",
+              desc: "LATIN CAPITAL LETTER A WITH ACUTE"
+            },
+            {
+              char: "&eacute;",
+              desc: "LATIN SMALL LETTER E WITH ACUTE"
+            },
+            {
+              char: "&Eacute;",
+              desc: "LATIN CAPITAL LETTER E WITH ACUTE"
+            },
+            {
+              char: "&iacute;",
+              desc: "LATIN SMALL LETTER i WITH ACUTE"
+            },
+            {
+              char: "&Iacute;",
+              desc: "LATIN CAPITAL LETTER I WITH ACUTE"
+            },
+            {
+              char: "&ntilde;",
+              desc: "LATIN SMALL LETTER N WITH TILDE"
+            },
+            {
+              char: "&Ntilde;",
+              desc: "LATIN CAPITAL LETTER N WITH TILDE"
+            },
+            {
+              char: "&oacute;",
+              desc: "LATIN SMALL LETTER 0 WITH ACUTE"
+            },
+            {
+              char: "&Oacute;",
+              desc: "LATIN CAPITAL LETTER O WITH ACUTE"
+            },
+            {
+              char: "&uacute;",
+              desc: "LATIN SMALL LETTER u WITH ACUTE"
+            },
+            {
+              char: "&Uacute;",
+              desc: "LATIN CAPITAL LETTER U WITH ACUTE"
+            },
+            {
+              char: "&uuml;",
+              desc: "LATIN SMALL LETTER U WITH DIAERESIS"
+            },
+            {
+              char: "&Uuml;",
+              desc: "LATIN CAPITAL LETTER U WITH DIAERESIS"
+            },
+            {
+              char: "&iexcl;",
+              desc: "INVERTED EXCLAMATION MARK"
+            },
+            {
+              char: "&iquest;",
+              desc: "INVERTED QUESTION MARK"
+            }
+          ]
+        }
       ],
       htmlAllowedTags: [".*"],
       htmlAllowedAttrs: [".*"],

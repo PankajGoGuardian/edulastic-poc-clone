@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual, get, shuffle, uniq } from "lodash";
 import { compose } from "redux";
@@ -217,21 +217,16 @@ const ClassificationPreview = ({
     flexDirection: getDirection(listPosition)
   };
 
-  const verifiedDragItems = useMemo(
-    () =>
-      uniq(
-        shuffle_options
-          ? shuffle(duplicate_responses ? posResponses : dragItems)
-          : duplicate_responses
-          ? posResponses
-          : dragItems
-      ),
-    [shuffle_options, posResponses, duplicate_responses, possible_responses]
+  const verifiedDragItems = uniq(
+    shuffle_options
+      ? shuffle(duplicate_responses ? posResponses : dragItems)
+      : duplicate_responses
+      ? posResponses
+      : dragItems
   );
 
-  const verifiedGroupDragItems = useMemo(
-    () => possible_response_groups.map(obj => uniq(shuffle_options ? shuffle(obj.responses) : obj.responses)),
-    [shuffle_options, posResponses, duplicate_responses, possible_responses]
+  const verifiedGroupDragItems = possible_response_groups.map(obj =>
+    uniq(shuffle_options ? shuffle(obj.responses) : obj.responses)
   );
 
   return (

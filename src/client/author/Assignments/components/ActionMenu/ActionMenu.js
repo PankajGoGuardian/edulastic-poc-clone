@@ -97,25 +97,6 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
         </Menu.Item>
       );
   }
-
-  MenuItems.push(
-    <Menu.Item key="print">
-      <StyledLink target="_blank" rel="noopener noreferrer">
-        <img alt="icon" src={toolsIcon} />
-        <SpaceElement />
-        Print
-      </StyledLink>
-    </Menu.Item>
-  );
-  MenuItems.push(
-    <Menu.Item key="GClassroom">
-      <StyledLink target="_blank" rel="noopener noreferrer">
-        <img alt="icon" src={googleIcon} />
-        <SpaceElement />
-        GClassroom
-      </StyledLink>
-    </Menu.Item>
-  );
   return (
     <Container>
       <StyledMenu>{MenuItems}</StyledMenu>

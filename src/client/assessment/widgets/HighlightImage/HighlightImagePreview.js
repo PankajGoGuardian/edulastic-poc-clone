@@ -184,7 +184,7 @@ const HighlightImagePreview = ({
     );
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper width={"max-content"} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <div ref={canvasContainerRef}>
         <CanvasContainer
           height={"max-content"}

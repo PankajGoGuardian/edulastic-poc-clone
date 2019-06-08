@@ -167,12 +167,12 @@ class RequestSchool extends React.Component {
           </Form.Item>
           <Form.Item label="Address">
             {getFieldDecorator("address", {
-              rules: [{ required: true, message: "Please input school address" }]
+              rules: [{ required: false, message: "Please input school address" }]
             })(<Input placeholder="Enter your school address" />)}
           </Form.Item>
           <Form.Item label="City">
             {getFieldDecorator("city", {
-              rules: [{ required: true, message: "Please input school city" }]
+              rules: [{ required: false, message: "Please input school city" }]
             })(<Input placeholder="Enter your school city" />)}
           </Form.Item>
           <FlexItems>
@@ -183,7 +183,7 @@ class RequestSchool extends React.Component {
             </Form.Item>
             <Form.Item label="State">
               {getFieldDecorator("state", {
-                rules: [{ required: true, message: "Please input State" }]
+                rules: [{ required: false, message: "Please input State" }]
               })(<Input placeholder="Enter State" />)}
             </Form.Item>
           </FlexItems>

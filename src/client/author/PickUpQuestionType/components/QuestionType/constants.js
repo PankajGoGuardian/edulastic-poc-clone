@@ -653,7 +653,8 @@ export const getCards = onSelectQuestionType => {
           { id: "test23", value: "|", active: false },
           { id: "test24", value: "direction", param: "rtl", active: false },
           { id: "test26", value: "clean", active: false },
-          { id: "test27", value: "formula", active: true }
+          { id: "test27", value: "formula", active: true },
+          { id: "test28", value: "specialCharacters", active: true }
         ]
       },
       onSelectQuestionType

@@ -14,5 +14,6 @@ export const qlToFroalaMapping = {
   "indent-1": "outdent",
   directionrtl: "paragraphFormat",
   clean: "clearFormatting",
-  formula: "math"
+  formula: "math",
+  specialCharacters: "specialCharacters"
 };

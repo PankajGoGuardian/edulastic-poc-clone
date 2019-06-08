@@ -45,10 +45,13 @@ const fetchAssigned = groupId =>
     })
     .then(result => result.data.result);
 
-const fetchTeacherAssignments = ({ groupId = "", filters: { grades = [], subject = "", termId = "" } }) =>
+const fetchTeacherAssignments = ({
+  groupId = "",
+  filters: { grades = [], subject = "", termId = "", testType = "" }
+}) =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}`,
+      url: `${prefix}?groupId=${groupId}&grade=${grades}&subject=${subject}&termId=${termId}&testType=${testType}`,
       method: "get"
     })
     .then(result => result.data.result);

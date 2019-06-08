@@ -319,13 +319,7 @@ class LeftFilter extends React.Component {
               ))}
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
-            <Select
-              mode="default"
-              placeholder="All"
-              disabled={!isAdvancedView}
-              value={testType}
-              onChange={this.handleChange("testType")}
-            >
+            <Select mode="default" placeholder="All" value={testType} onChange={this.handleChange("testType")}>
               {testTypes.map(({ value, text }) => (
                 <Select.Option key={value} value={value}>
                   {text}

@@ -25,10 +25,9 @@ DeleteButton.defaultProps = {
 class Annotation extends Component {
   render() {
     const { removeAnnotation, updateAnnotation, index, value } = this.props;
-
     return (
       <div>
-        <Header>
+        <Header style={{ textTransform: "none" }}>
           <FroalaInput>
             <FroalaEditor
               value={value}

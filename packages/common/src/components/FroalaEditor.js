@@ -12,7 +12,7 @@ import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
 import Editor from "react-froala-wysiwyg";
-import { uploadToS3 } from "../helpers";
+import { uploadToS3, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -300,6 +300,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
           }
         },
         "image.beforeUpload": function(image) {
+          if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.COURSE)
@@ -445,6 +446,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: false,
       callback() {
         EditorRef.current = this;
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         this.selection.save();
         setCurrentLatex("");
         setCurrentMathEl(null);
@@ -462,6 +464,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         const responseCount = this.$el[0].querySelectorAll("response").length;
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         this.html.insert(`<Response index={{${responseCount}}} contentEditable="false">Response</Response>`);
         this.undo.saveStep();
       }
@@ -476,6 +479,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         const inputCount = this.$el[0].querySelectorAll("textinput").length;
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         this.html.insert(`<TextInput index={{${inputCount}}} contentEditable="false">Text Input</TextInput>`);
         this.undo.saveStep();
       }
@@ -490,6 +494,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         const dropDownCount = this.$el[0].querySelectorAll("textdropdown").length;
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         this.html.insert(
           `<TextDropdown index={{${dropDownCount}}} contentEditable="false">Text Dropdown</TextDropdown>`
         );
@@ -506,6 +511,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         const mathInputCount = this.$el[0].querySelectorAll("mathinput").length;
+        if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         this.html.insert(`<MathInput index={{${mathInputCount}}} contentEditable="false">Math Input</MathInput>`);
         this.undo.saveStep();
       }

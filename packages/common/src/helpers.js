@@ -143,7 +143,7 @@ const parseTemplate = tmpl => {
 
   return sanitizeSelfClosingTags(temp);
 };
-
+export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
   getDisplayName,
@@ -151,5 +151,6 @@ export default {
   getNumeration,
   isEmpty,
   uploadToS3,
-  parseTemplate
+  parseTemplate,
+  canInsert
 };

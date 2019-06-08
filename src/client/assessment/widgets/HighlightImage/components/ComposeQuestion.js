@@ -151,6 +151,11 @@ class ComposeQuestion extends Component {
         >
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div
+              style={{
+                maxWidth: canvasDimensions.maxWidth,
+                maxHeight: canvasDimensions.maxHeight,
+                margin: "0 auto"
+              }}
               data-cy="dropzone-image-container"
               {...getRootProps()}
               className={`dropzone ${isDragActive ? "dropzone--isActive" : ""}`}

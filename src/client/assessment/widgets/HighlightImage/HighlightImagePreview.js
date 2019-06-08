@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useLayoutEffect } from "react";
 import PropTypes from "prop-types";
 import { Select } from "antd";
 import { get } from "lodash";
@@ -93,15 +93,13 @@ const HighlightImagePreview = ({
     }
   }, [file]);
 
-  let shouldUpdate = useRef(true);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (canvasContainerRef.current) {
-      shouldUpdate.current = false;
       canvas.current.height = canvasContainerRef.current.clientHeight;
       const context = canvas.current.getContext("2d");
       context.lineWidth = item.line_width || 5;
     }
-  }, [shouldUpdate.current]);
+  }, [canvasContainerRef.current && canvasContainerRef.current.clientHeight]);
 
   const onCanvasMouseDown = e => {
     const bounded = canvas.current.getBoundingClientRect();
@@ -182,9 +180,8 @@ const HighlightImagePreview = ({
     ) : (
       <div style={{ width, height }} />
     );
-
   return (
-    <Paper width={"max-content"} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper style={{ width: "max-content" }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <div ref={canvasContainerRef}>
         <CanvasContainer
           height={"max-content"}

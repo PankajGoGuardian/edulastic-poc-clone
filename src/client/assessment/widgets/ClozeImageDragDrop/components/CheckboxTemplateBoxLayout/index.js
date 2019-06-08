@@ -57,7 +57,6 @@ const CheckboxTemplateBoxLayout = ({
           top: 0,
           left: 0,
           width: imageWidth,
-          margin: "auto",
           minWidth: 600,
           maxWidth: "100%"
         }}

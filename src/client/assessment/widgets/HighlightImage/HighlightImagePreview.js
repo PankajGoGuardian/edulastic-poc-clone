@@ -46,6 +46,7 @@ const HighlightImagePreview = ({
 
   const [width, setWidth] = useState(image ? image.width : "auto");
   const [height, setHeight] = useState(image ? image.height : 470);
+  const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
 
@@ -82,16 +83,25 @@ const HighlightImagePreview = ({
 
   useEffect(() => {
     if (canvas) {
-      canvas.current.width = 700;
-      canvas.current.height = 600;
+      canvas.current.width = canvasDimensions.maxWidth;
+      canvas.current.height = canvasHeight;
       const context = canvas.current.getContext("2d");
       context.lineWidth = item.line_width || 5;
       context.lineJoin = "round";
       context.lineCap = "round";
-
       drawImage(context);
     }
   }, [file]);
+
+  let shouldUpdate = useRef(true);
+  useEffect(() => {
+    if (canvasContainerRef.current) {
+      shouldUpdate.current = false;
+      canvas.current.height = canvasContainerRef.current.clientHeight;
+      const context = canvas.current.getContext("2d");
+      context.lineWidth = item.line_width || 5;
+    }
+  }, [shouldUpdate.current]);
 
   const onCanvasMouseDown = e => {
     const bounded = canvas.current.getBoundingClientRect();
@@ -176,7 +186,11 @@ const HighlightImagePreview = ({
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <div ref={canvasContainerRef}>
-        <CanvasContainer height={canvasDimensions.maxHeight} width={canvasDimensions.maxWidth}>
+        <CanvasContainer
+          height={"max-content"}
+          width={canvasDimensions.maxWidth}
+          minHeight={canvasDimensions.maxHeight}
+        >
           <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>

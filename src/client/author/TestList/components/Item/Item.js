@@ -22,7 +22,6 @@ import {
   CardIdWrapper,
   CardId,
   IconText,
-  ViewButton,
   ButtonWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
@@ -123,7 +122,7 @@ class Item extends Component {
         >
           <Inner>
             <Question>
-              <StyledLink title={title} onClick={this.moveToItem}>
+              <StyledLink title={title} onClick={isPlaylist ? this.moveToItem : this.openModal}>
                 {isPlaylist ? _source.title : title}
               </StyledLink>
             </Question>
@@ -134,7 +133,6 @@ class Item extends Component {
             </CardDescription>
             {!isPlaylist && <Tags tags={tags} />}
           </Inner>
-          {!isPlaylist && <ViewButton onClick={this.openModal}>VIEW</ViewButton>}
           <Footer>
             {authorName && (
               <Author>

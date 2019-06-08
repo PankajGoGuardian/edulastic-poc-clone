@@ -23,7 +23,6 @@ import {
   ViewButtonWrapper,
   ContentWrapper,
   TagsWrapper,
-  ViewButton,
   CardIdWrapper,
   CardId,
   Footer,
@@ -128,7 +127,7 @@ class ListItem extends Component {
               />
               <Inner>
                 <div>
-                  <StyledLink title={title} onClick={this.moveToItem}>
+                  <StyledLink title={title} onClick={isPlaylist ? this.moveToItem : this.openModal}>
                     {isPlaylist ? _source.title : title}
                   </StyledLink>
                   {mode && (
@@ -148,7 +147,6 @@ class ListItem extends Component {
             {!isPlaylist && (
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
-                <ViewButton onClick={this.openModal}>VIEW</ViewButton>
                 {!isTestAdded && mode === "embedded" && (
                   <AddButton windowWidth={windowWidth} onClick={e => addTestToPlaylist(item)}>
                     ADD

@@ -349,11 +349,11 @@ const MatchListPreview = ({
             {list.map((ite, i) => (
               <FlexContainer key={i} alignItems="center">
                 <CorTitle>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: ite }} />
+                  <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
                 <Separator smallSize={smallSize} />
                 <CorItem index={i}>
-                  <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: validArray[i] }} />
+                  <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
                 </CorItem>
               </FlexContainer>
             ))}

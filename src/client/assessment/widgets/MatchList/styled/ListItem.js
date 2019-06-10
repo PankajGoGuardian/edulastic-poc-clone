@@ -10,4 +10,10 @@ export const ListItem = styled.div`
   font-weight: ${props => props.theme.widgets.matchList.listItemFontWeight};
   color: ${props => props.theme.widgets.matchList.listItemColor};
   border: 1px solid ${props => props.theme.widgets.matchList.listItemBorderColor};
+
+  img {
+    max-width: 200px !important;
+    max-height: 120px !important;
+    width: auto !important;
+  }
 `;

@@ -1,9 +1,10 @@
 import styled from "styled-components";
 
 export const Index = styled.div`
-  height: 40px;
+  height: auto;
   width: 40px;
   display: flex;
+  align-self: stretch;
   align-items: center;
   justify-content: center;
   border-top-left-radius: 4px;

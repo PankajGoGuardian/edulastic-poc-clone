@@ -35,7 +35,11 @@ const specSource = {
 const DragItem = ({ connectDragSource, item, isDragging, flag, correct, preview, renderIndex, getStyles }) =>
   item
     ? connectDragSource(
-        <div data-cy={`drag-drop-item-${renderIndex}`} style={getStyles({ isDragging, flag, preview, correct })}>
+        <div
+          className="drag-drop-item-match-list"
+          data-cy={`drag-drop-item-${renderIndex}`}
+          style={getStyles({ isDragging, flag, preview, correct })}
+        >
           {preview && <Index correct={correct}>{renderIndex + 1}</Index>}
           <Wrapper>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />

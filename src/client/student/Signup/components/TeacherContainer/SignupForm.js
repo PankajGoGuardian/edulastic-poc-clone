@@ -140,7 +140,7 @@ class Signup extends React.Component {
                     <FormBody>
                       <Col span={20} offset={2}>
                         <h5 align="center">{t("component.signup.formboxheading")}</h5>
-                        <Form onSubmit={this.handleSubmit}>
+                        <Form onSubmit={this.handleSubmit} autoComplete="new-password">
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupnamelabel")}>
                             {getFieldDecorator("name", {
                               rules: [
@@ -149,7 +149,13 @@ class Signup extends React.Component {
                                   message: t("component.signup.teacher.validinputname")
                                 }
                               ]
-                            })(<Input prefix={<img src={userIcon} alt="" />} placeholder="Enter your full name" />)}
+                            })(
+                              <Input
+                                prefix={<img src={userIcon} alt="" />}
+                                placeholder="Enter your full name"
+                                autoComplete="new-password"
+                              />
+                            )}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                             {getFieldDecorator("email", {
@@ -166,7 +172,14 @@ class Signup extends React.Component {
                                   message: t("component.signup.teacher.validemail")
                                 }
                               ]
-                            })(<Input prefix={<img src={mailIcon} alt="" />} placeholder="Enter your school email" />)}
+                            })(
+                              <Input
+                                prefix={<img src={mailIcon} alt="" />}
+                                placeholder="Enter your school email"
+                                type="email"
+                                autoComplete="new-password"
+                              />
+                            )}
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
                             {getFieldDecorator("password", {
@@ -184,6 +197,7 @@ class Signup extends React.Component {
                                 prefix={<img src={keyIcon} alt="" />}
                                 type="password"
                                 placeholder="Enter your password"
+                                autoComplete="new-password"
                               />
                             )}
                           </FormItem>

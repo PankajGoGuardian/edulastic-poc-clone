@@ -150,7 +150,9 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
   useEffect(() => {
     const MQ = window.MathQuill.getInterface(2);
     if (mathFieldRef.current) {
-      setMathField(MQ.StaticMath(mathFieldRef.current));
+      try {
+        setMathField(MQ.StaticMath(mathFieldRef.current));
+      } catch (e) {}
       setTimeout(() => {
         setLatex(latex);
         setInnerFieldValues(innerValues);

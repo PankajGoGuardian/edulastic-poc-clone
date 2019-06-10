@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
+import { isEmpty } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
 
@@ -93,8 +94,8 @@ const MathFormulaPreview = ({
   }, [studentTemplate, userAnswer]);
 
   let statusColor = theme.widgets.mathFormula.inputColor;
-  if (previewType === SHOW || previewType === CHECK) {
-    statusColor = evaluation
+  if (!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
+    statusColor = !isEmpty(evaluation)
       ? evaluation.some(ie => ie)
         ? theme.widgets.mathFormula.inputCorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor
@@ -138,7 +139,7 @@ const MathFormulaPreview = ({
             style={{ background: statusColor, ...cssStyles }}
           />
         )}
-        {(previewType === SHOW || previewType === CHECK) && (
+        {!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
           <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
         )}
       </MathInputWrapper>

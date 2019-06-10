@@ -162,6 +162,7 @@ const OrderList = ({
         correctTab === 0 ? item.validation.valid_response.score : item.validation.alt_responses[correctTab - 1].score
       }
       onChangePoints={handleUpdatePoints}
+      canDelete={false}
     />
   );
 

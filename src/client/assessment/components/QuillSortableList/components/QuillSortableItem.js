@@ -12,7 +12,7 @@ import QuestionTextArea from "../../QuestionTextArea";
 
 // TODO: rOnly is in use?
 const QuillSortableItem = SortableElement(
-  ({ value, toolbarId, onRemove, rOnly, onChange, columns, indx, label, fontSize }) => (
+  ({ value, toolbarId, onRemove, rOnly, onChange, columns, indx, label, fontSize, canDelete }) => (
     <SortableItemContainer fontSize={fontSize} columns={columns}>
       {label && <Label>{label}</Label>}
       <FlexContainer style={{ flex: 1 }}>
@@ -24,9 +24,12 @@ const QuillSortableItem = SortableElement(
             toolbarId={`${toolbarId}${indx}`}
             onChange={onChange}
             style={{ width: "100%" }}
+            readOnly={rOnly}
           />
         </div>
-        {onRemove && <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />}
+        {canDelete && onRemove && (
+          <IconTrash data-cypress="deleteButton" data-cy={`delete${indx}`} onClick={onRemove} />
+        )}
       </FlexContainer>
     </SortableItemContainer>
   )

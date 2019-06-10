@@ -5,7 +5,18 @@ import QuillSortableItem from "./components/QuillSortableItem";
 
 // todo: union with SortableList
 const QuillSortableList = SortableContainer(
-  ({ items, readOnly, firstFocus, onRemove, onChange, fontSize = 14, prefix = "prefix", columns = 1, label = "" }) => (
+  ({
+    items,
+    readOnly,
+    firstFocus,
+    onRemove,
+    onChange,
+    fontSize = 14,
+    prefix = "prefix",
+    columns = 1,
+    label = "",
+    canDelete = true
+  }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
       {items.map((value, index) => (
         <QuillSortableItem
@@ -17,6 +28,7 @@ const QuillSortableList = SortableContainer(
           value={value}
           firstFocus={firstFocus}
           rOnly={readOnly}
+          canDelete={canDelete}
           columns={columns}
           onRemove={() => onRemove(index)}
           onChange={val => (typeof onChange === "function" ? onChange(index, val) : () => {})}

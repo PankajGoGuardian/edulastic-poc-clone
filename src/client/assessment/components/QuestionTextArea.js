@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { FroalaEditor } from "@edulastic/common";
 
 // TODO: decide what to do with first focus
-const QuestionTextArea = ({ onChange, value, toolbarId, placeholder, additionalToolbarOptions }) => (
+const QuestionTextArea = ({ onChange, value, toolbarId, placeholder, additionalToolbarOptions, readOnly = false }) => (
   <FroalaEditor
     placeholder={placeholder}
     onChange={onChange}
@@ -11,6 +11,7 @@ const QuestionTextArea = ({ onChange, value, toolbarId, placeholder, additionalT
     toolbarId={toolbarId}
     additionalToolbarOptions={additionalToolbarOptions}
     data-cy="compose-question-quill-component"
+    readOnly={readOnly}
   />
 );
 

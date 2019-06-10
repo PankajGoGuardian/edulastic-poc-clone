@@ -116,6 +116,7 @@
         "points": 1
       },
       "attemptData": {
+        "steams": ["true", "false"],
         "right": {
           "right-1": "true",
           "wrong-1": "false",
@@ -125,7 +126,7 @@
         "wrong": {
           "right-1": "false",
           "wrong-1": "true",
-          "wrong-2": "false",
+          "wrong-2": "true",
           "right-2": "false"
         }
       }
@@ -146,6 +147,7 @@
         "points": 1
       },
       "attemptData": {
+        "steams": ["true", "false"],
         "right": {
           "right-1": "true",
           "wrong-1": "false",
@@ -155,7 +157,7 @@
         "wrong": {
           "right-1": "false",
           "wrong-1": "true",
-          "wrong-2": "false",
+          "wrong-2": "true",
           "right-2": "false"
         }
       }
@@ -176,6 +178,7 @@
         "points": 1
       },
       "attemptData": {
+        "steams": ["true", "false"],
         "right": {
           "right-1": "true",
           "wrong-1": "false",
@@ -185,7 +188,7 @@
         "wrong": {
           "right-1": "false",
           "wrong-1": "true",
-          "wrong-2": "false",
+          "wrong-2": "true",
           "right-2": "false"
         }
       }

@@ -1,4 +1,4 @@
-import { questionTypeKey as queTypes, attemptTypes, queColor } from "../../constants/questionTypes";
+import { questionTypeKey as queTypes, attemptTypes, queColor, questionType } from "../../constants/questionTypes";
 
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
@@ -89,6 +89,22 @@ export default class QuestionResponsePage {
   // MCQ
   getLabels = qcard => qcard.find("label");
 
+  // CHOICE MATRIX
+
+  verifyAnseredMatrix = (answer, steams) => {
+    Object.keys(answer).forEach(chKey => {
+      this.getCorrectAnsTableRow()
+        .contains(chKey)
+        .closest("tr")
+        .then(ele => {
+          cy.wrap(ele)
+            .find("input")
+            .eq(steams.indexOf(answer[chKey]))
+            .should("be.checked");
+        });
+    });
+  };
+
   verifyNoQuestionResponseCard = studentName => {
     cy.get('[data-cy="studentName"]')
       .contains(studentName)
@@ -100,6 +116,8 @@ export default class QuestionResponsePage {
       ? this.getQuestionContainer(findKey).as("quecard")
       : this.getQuestionContainerByStudent(findKey).as("quecard");
 
+    const { right, wrong } = attemptData;
+
     switch (queTypeKey.split(".")[0]) {
       case queTypes.MULTIPLE_CHOICE_STANDARD:
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
@@ -107,7 +125,7 @@ export default class QuestionResponsePage {
         switch (attemptType) {
           case attemptTypes.RIGHT:
             this.getLabels(queCard)
-              .contains(attemptData[attemptTypes.RIGHT])
+              .contains(right)
               .closest("label")
               .find("input")
               .should("be.checked");
@@ -116,7 +134,7 @@ export default class QuestionResponsePage {
 
           case attemptTypes.WRONG:
             this.getLabels(queCard)
-              .contains(attemptData[attemptTypes.WRONG])
+              .contains(wrong)
               .closest("label")
               .should("have.class", attemptTypes.WRONG)
               .find("input")
@@ -131,7 +149,7 @@ export default class QuestionResponsePage {
             break;
         }
         this.getLabels(cy.get("@quecard"))
-          .contains(attemptData[attemptTypes.RIGHT])
+          .contains(right)
           .closest("label")
           .should("have.class", attemptTypes.RIGHT);
         break;
@@ -141,7 +159,7 @@ export default class QuestionResponsePage {
           case attemptTypes.RIGHT:
             expect(
               this.getLabels(queCard)
-                .contains(attemptData[attemptTypes.RIGHT])
+                .contains(right)
                 .closest("label")
                 .css("background-color")
             ).to.eq(queColor.BLUE);
@@ -151,7 +169,7 @@ export default class QuestionResponsePage {
 
           case attemptTypes.WRONG:
             this.getLabels(queCard)
-              .contains(attemptData[attemptTypes.WRONG])
+              .contains(wrong)
               .closest("label")
               .then($ele => {
                 cy.wrap($ele).should("have.class", attemptTypes.WRONG);
@@ -168,10 +186,32 @@ export default class QuestionResponsePage {
             break;
         }
         this.getLabels(cy.get("@quecard"))
-          .contains(attemptData[attemptTypes.RIGHT])
+          .contains(right)
           .closest("label")
           .should("have.class", attemptTypes.RIGHT);
         break;
+
+      case queTypes.CHOICE_MATRIX_STANDARD:
+      case questionType.CHOICE_MATRIX_INLINE:
+      case questionType.CHOICE_MATRIX_LABEL: {
+        const { steams } = attemptData;
+        switch (attemptType) {
+          case attemptTypes.RIGHT:
+            this.verifyAnseredMatrix(right, steams);
+            this.verifyScoreRight(cy.get("@quecard"), points);
+            break;
+
+          case attemptTypes.WRONG:
+            this.verifyAnseredMatrix(wrong, steams);
+            this.verifyScoreWrong(cy.get("@quecard"), points);
+
+            break;
+
+          default:
+            break;
+        }
+        break;
+      }
 
       default:
         break;

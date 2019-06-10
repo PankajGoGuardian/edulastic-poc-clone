@@ -145,6 +145,22 @@ class StudentTestPage {
     return this;
   };
 
+  // CHOICE MATRIX
+
+  checkAnsMatrix = (answer, steams) => {
+    Object.keys(answer).forEach(chKey => {
+      this.getCorrectAnsTableRow()
+        .contains(chKey)
+        .closest("tr")
+        .then(ele => {
+          cy.wrap(ele)
+            .find("input")
+            .eq(steams.indexOf(answer[chKey]))
+            .click();
+        });
+    });
+  };
+
   clickFirstRadioByTitle = title =>
     cy
       .contains("p", title)
@@ -567,6 +583,16 @@ class StudentTestPage {
           else this.clickOnChoice(attempts);
         }
         break;
+
+      case questionType.CHOICE_MATRIX_STANDARD:
+      case questionType.CHOICE_MATRIX_INLINE:
+      case questionType.CHOICE_MATRIX_LABEL: {
+        const { steams } = attemptData;
+        if (attemptType !== attemptTypes.SKIP) {
+          this.checkAnsMatrix(attempts, steams);
+        }
+        break;
+      }
 
       default:
         break;

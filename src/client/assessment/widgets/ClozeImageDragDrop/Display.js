@@ -20,6 +20,7 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import { RelativeContainer } from "../../styled/RelativeContainer";
+
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
 import { response } from "@edulastic/constants";
@@ -377,10 +378,6 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <AnnotationRnd
-          style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-          questionId={questionId}
-        />
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
@@ -388,13 +385,29 @@ class Display extends Component {
         </QuestionTitleWrapper>
         {responseposition === "top" && (
           <React.Fragment>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>
+              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+                <AnnotationRnd
+                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                  questionId={questionId}
+                />
+                {responseBoxLayout}
+              </RelativeContainer>
+            </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
           </React.Fragment>
         )}
         {responseposition === "bottom" && (
           <React.Fragment>
-            <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
+            <div style={{ margin: "15px 0", borderRadius: 10 }}>
+              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+                <AnnotationRnd
+                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                  questionId={questionId}
+                />
+                {templateBoxLayout}
+              </RelativeContainer>
+            </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
           </React.Fragment>
         )}
@@ -412,7 +425,13 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              {responseBoxLayout}
+              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+                <AnnotationRnd
+                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                  questionId={questionId}
+                />
+                {responseBoxLayout}
+              </RelativeContainer>
             </div>
             <div
               style={{
@@ -454,7 +473,13 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              {responseBoxLayout}
+              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+                <AnnotationRnd
+                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                  questionId={questionId}
+                />
+                {responseBoxLayout}
+              </RelativeContainer>
             </div>
           </div>
         )}

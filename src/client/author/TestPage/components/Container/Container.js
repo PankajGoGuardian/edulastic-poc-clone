@@ -59,7 +59,6 @@ class Container extends PureComponent {
     rows: PropTypes.array.isRequired,
     creating: PropTypes.bool.isRequired,
     windowWidth: PropTypes.number.isRequired,
-    selectedRows: PropTypes.object,
     test: PropTypes.object,
     user: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
@@ -70,7 +69,6 @@ class Container extends PureComponent {
 
   static defaultProps = {
     test: null,
-    selectedRows: {},
     user: {}
   };
 
@@ -227,8 +225,8 @@ class Container extends PureComponent {
   };
 
   modifyTest = () => {
-    const { selectedRows, user, test, itemsSubjectAndGrade } = this.props;
-    const testItems = selectedRows.data;
+    const { user, test, itemsSubjectAndGrade } = this.props;
+    const { testItems } = test;
     const newTest = cloneDeep(test);
 
     newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
@@ -390,7 +388,6 @@ const enhance = compose(
       test: getTestSelector(state),
       rows: getTestItemsRowsSelector(state),
       creating: getTestsCreatingSelector(state),
-      selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),

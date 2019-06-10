@@ -124,7 +124,8 @@ export const getAggregateByQuestion = (entities, studentId) => {
       testItemId,
       disabled,
       score,
-      maxScore
+      maxScore,
+      graded
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
@@ -139,7 +140,8 @@ export const getAggregateByQuestion = (entities, studentId) => {
           wrongNum: 0,
           partialNum: 0,
           notStartedNum: 0,
-          timeSpent: 0
+          timeSpent: 0,
+          manualGradedNum: 0
         };
       }
       if (testItemId) {
@@ -164,13 +166,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
         skipped = false;
       }
 
-      if (score === maxScore && !notStarted && score > 0) {
+      if (graded === false) {
+        questionMap[_id].manualGradedNum += 1;
+      } else if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;
       } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
         questionMap[_id].wrongNum += 1;
-      }
-
-      if (score > 0 && score < maxScore) {
+      } else if (score > 0 && score < maxScore) {
         questionMap[_id].partialNum += 1;
       }
       if (timeSpent && !notStarted) {

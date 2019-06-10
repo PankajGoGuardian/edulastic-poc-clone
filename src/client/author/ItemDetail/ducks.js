@@ -1,5 +1,5 @@
 import { createSelector } from "reselect";
-import { cloneDeep, keyBy as _keyBy, omit as _omit, get } from "lodash";
+import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "lodash";
 import { testItemsApi } from "@edulastic/api";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
@@ -282,10 +282,19 @@ const initialState = {
 };
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) => {
-  const newState = cloneDeep(state);
-  newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
+  return produce(state, newState => {
+    if (newState.item.itemLevelScoring) {
+      if (newState.qids.length === 1) {
+        newState.item.itemLevelScore = 0;
+      } else if (newState.item.itemLevelScore > 1) {
+        newState.item.itemLevelScore = newState.item.itemLevelScore - 1;
+      }
+    }
+    const qid = newState.item.rows[rowIndex].widgets[widgetIndex].reference;
+    newState.item.rows[rowIndex].widgets = newState.item.rows[rowIndex].widgets.filter((w, i) => i !== widgetIndex);
 
-  return newState;
+    pull(newState.qids, qid);
+  });
 };
 
 const updateDimension = (state, { left, right }) => {
@@ -331,11 +340,15 @@ const useFlowLayout = (state, { rowIndex, isUseFlowLayout }) => {
 };
 
 const moveWidget = (state, { from, to }) => {
-  const newState = cloneDeep(state);
-  const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
-  movedWidget.tabIndex = to.tabIndex || 0;
-  newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
-  return newState;
+  return produce(state, newState => {
+    const [movedWidget] = newState.item.rows[from.rowIndex].widgets.splice(from.widgetIndex, 1);
+    movedWidget.tabIndex = to.tabIndex || 0;
+    newState.item.rows[to.rowIndex].widgets.splice(to.widgetIndex, 0, movedWidget);
+    newState.qids = newState.item.rows
+      .flatMap(x => x.widgets)
+      .filter(widget => widget.widgetType === "question")
+      .map(x => x.reference);
+  });
 };
 
 export function reducer(state = initialState, { type, payload }) {
@@ -364,16 +377,6 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }
-      };
-
-    case REMOVE_QUESTION_BY_ID:
-      const currentScore = (state.item && state.item.itemLevelScore) || 0;
-      if (currentScore <= 1) {
-        return state;
-      }
-      return {
-        ...state,
-        item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) - 1 }
       };
 
     case DELETE_ITEM_DETAIL_WIDGET_APPLY:

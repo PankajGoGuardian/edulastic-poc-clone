@@ -104,6 +104,7 @@ export default class BarGraph extends Component {
           correctAttemps: item.correctNum,
           partialAttempts: item.partialNum || 0,
           incorrectAttemps: item.wrongNum,
+          manualGradedNum: item.manualGradedNum,
           avgTimeSpent: item.avgTimeSpent,
           itemLevelScoring: item.itemLevelScoring,
           skippedNum: item.skippedNum,
@@ -300,6 +301,16 @@ export default class BarGraph extends Component {
               dataKey="skippedNum"
               fill={dropZoneTitleColor}
               shape={<RectangleBar dataKey="skippedNum" />}
+              onClick={this.handleClick}
+            />
+
+            <Bar
+              className="manualGradedNum"
+              yAxisId="left"
+              stackId="a"
+              dataKey="manualGradedNum"
+              fill="rgb(56, 150, 190)"
+              shape={<RectangleBar dataKey="manualGradedNum" />}
               onClick={this.handleClick}
             />
 

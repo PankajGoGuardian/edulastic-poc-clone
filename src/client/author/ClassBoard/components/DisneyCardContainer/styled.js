@@ -167,6 +167,10 @@ export const SquareColorDivGray = styled(SquareColorDiv)`
   background-color: ${classBoardTheme.CardColor};
 `;
 
+export const SquareColorBlue = styled(SquareColorDiv)`
+  background-color: rgb(56, 150, 190);
+`;
+
 export const SquareColorDisabled = styled(SquareColorDiv)`
   background-color: ${classBoardTheme.CardColor};
 `;

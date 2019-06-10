@@ -101,7 +101,7 @@ export const getAvatarName = studentName => {
   }
   const parts = studentName.split(" ");
   if (parts.length > 1) {
-    return `${parts[0].trim().charAt(0)}${parts[0].trim().charAt(0)}`.toUpperCase();
+    return `${parts[0].trim().charAt(0)}${parts[1].trim().charAt(0)}`.toUpperCase();
   } else {
     const part = parts[0].trim();
     return `${part.charAt(0)}${part.charAt(1)}`.toUpperCase();
@@ -144,11 +144,13 @@ export const transformGradeBookResponse = ({
   }));
 
   return studentNames
-    .map(({ _id: studentId, firstName: studentName, lastName }) => {
+    .map(({ _id: studentId, firstName: studentName, lastName, email }) => {
+      const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
       if (!studentTestActivities[studentId]) {
         return {
           studentId,
-          studentName: `${studentName}${lastName ? ` ${lastName}` : ""}`,
+          studentName: fullName,
+          email,
           present: true,
           status: "notStarted",
           maxScore: testMaxScore,
@@ -159,7 +161,8 @@ export const transformGradeBookResponse = ({
       if (testActivity.redirect) {
         return {
           studentId,
-          studentName,
+          studentName: fullName,
+          email,
           present: true,
           status: "redirected",
           redirected: true,
@@ -170,7 +173,7 @@ export const transformGradeBookResponse = ({
       //TODO: for now always present
       const present = true;
       //TODO: no graded status now. using submitted as a substitute for graded
-      const graded = testActivity.status == testActivityStatus.SUBMITTED;
+      const graded = testActivity.graded === "GRADED";
       const submitted = testActivity.status == testActivityStatus.SUBMITTED;
       const redirected = testActivity.redirected;
       const testActivityId = testActivity._id;
@@ -187,7 +190,14 @@ export const transformGradeBookResponse = ({
         if (!questionActivitiesIndexed[el]) {
           return { _id, notStarted: true, weight, disabled, testItemId };
         }
-        let { skipped, correct, partiallyCorrect: partialCorrect, timeSpent, score } = questionActivitiesIndexed[el];
+        let {
+          skipped,
+          correct,
+          partiallyCorrect: partialCorrect,
+          timeSpent,
+          score,
+          graded
+        } = questionActivitiesIndexed[el];
         const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
         if (score > 0 && skipped) {
           skipped = false;
@@ -211,14 +221,25 @@ export const transformGradeBookResponse = ({
           disabled,
           testItemId,
           qids: _qids,
-          testActivityId
+          testActivityId,
+          graded
         };
       });
 
+      let displayStatus = "inProgress";
+      if (submitted) {
+        if (graded) {
+          displayStatus = "graded";
+        } else {
+          displayStatus = "submitted";
+        }
+      }
+
       return {
         studentId,
-        studentName,
-        status: submitted ? "submitted" : "inProgress",
+        studentName: fullName,
+        email,
+        status: displayStatus,
         present,
         check: false,
         graded,

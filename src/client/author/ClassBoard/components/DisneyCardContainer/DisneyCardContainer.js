@@ -19,6 +19,7 @@ import {
   CircularDiv,
   SquareColorDivGreen,
   SquareColorDivGray,
+  SquareColorBlue,
   SquareColorDisabled,
   SquareColorDivPink,
   SquareColorDivYellow,
@@ -78,6 +79,8 @@ export default class DisneyCardContainer extends Component {
         } else if (student.status === "redirected") {
           status.status = "REDIRECTED";
           status.color = greenSecondary;
+        } else if (student.status === "graded") {
+          status.status = "GRADED";
         }
 
         let correctAnswers = 0;
@@ -96,8 +99,8 @@ export default class DisneyCardContainer extends Component {
             <PaginationInfoF>
               <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
               <StyledName>
-                <StyledParaF data-cy="studentName" title={student.studentName}>
-                  {student.studentName ? getFirstName(student.studentName) : "-"}
+                <StyledParaF data-cy="studentName" title={student.email}>
+                  {student.studentName ? student.studentName : "-"}
                 </StyledParaF>
                 {student.present ? (
                   <StyledParaS data-cy="studentStatus" color={status.color}>
@@ -166,6 +169,8 @@ export default class DisneyCardContainer extends Component {
                     return <SquareColorDisabled weight={weight} key={questionIndex} />;
                   } else if (questionAct.skipped && questionAct.score === 0) {
                     return <SquareColorDivGray weight={weight} key={questionIndex} />;
+                  } else if (questionAct.graded === false) {
+                    return <SquareColorBlue weight={weight} key={questionIndex} />;
                   } else if (questionAct.score === questionAct.maxScore && questionAct.score > 0) {
                     return <SquareColorDivGreen weight={weight} key={questionIndex} />;
                   } else if (questionAct.score > 0 && questionAct.score < questionAct.maxScore) {

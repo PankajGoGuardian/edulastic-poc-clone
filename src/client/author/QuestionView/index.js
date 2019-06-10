@@ -32,10 +32,9 @@ const CustomTooltip = ({ label = "", payload, ...rest }) => {
   const timeSpent = get(firstItem, "payload.avgTimeSpent");
   const fullName = get(firstItem, "payload.name");
   const score = get(firstItem, "payload.score");
-  console.log("payload", firstItem.payload);
   return (
     <TooltipContainer title={fullName}>
-      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score(points): ${score}`}
+      {`Time(seconds): ${timeSpent || 0}`} <br /> {`Score: ${score}`}
     </TooltipContainer>
   );
 };
@@ -139,9 +138,11 @@ class QuestionViewContainer extends Component {
           };
           st.questionActivities
             .filter(({ notStarted, _id }) => !notStarted && _id === question.id)
-            .forEach(({ correct, partialCorrect, skipped, manuallyGraded, score, maxScore }) => {
+            .forEach(({ correct, partialCorrect, skipped, manuallyGraded, graded, score, maxScore }) => {
               if (skipped) {
                 stData.skipped += 1;
+              } else if (graded === false) {
+                stData.manuallyGraded += 1;
               } else if (score === maxScore && score > 0) {
                 stData.correct += 1;
               } else if (score > 0 && score < maxScore) {
@@ -150,9 +151,7 @@ class QuestionViewContainer extends Component {
                 stData.wrong += 1;
               }
               stData.score = score;
-              if (manuallyGraded) {
-                stData.manuallyGraded += 1;
-              }
+
               return null;
             });
           return stData;
@@ -186,7 +185,7 @@ class QuestionViewContainer extends Component {
                   <LegendLabel>SKIPPED</LegendLabel>
                 </LegendItem>
                 <LegendItem>
-                  <LegendIcon color={graded} />
+                  <LegendIcon color="rgb(56, 150, 190)" />
                   <LegendLabel>MANUALLY GRADED</LegendLabel>
                 </LegendItem>
               </LegendItems>
@@ -255,7 +254,7 @@ class QuestionViewContainer extends Component {
                   style={{ cursor: "pointer" }}
                   stackId="a"
                   dataKey="manuallyGraded"
-                  fill={graded}
+                  fill="rgb(56, 150, 190)"
                   onClick={this.onClickChart}
                 />
                 <Line

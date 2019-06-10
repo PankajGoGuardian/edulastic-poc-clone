@@ -20,3 +20,10 @@ export const StyledInput = styled(Input)`
 export const StyledP = styled.p`
   margin-bottom: 5px;
 `;
+
+export const StyledClassName = styled.p`
+  text-align: center;
+  color: #1890ff;
+  font-weight: bold;
+  margin-bottom: 5px;
+`;

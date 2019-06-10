@@ -163,7 +163,6 @@ class RequestSchool extends React.Component {
                 createNew={true}
                 createNewLabel="Create New District"
                 existingLabel="Districts"
-                // selectCB={this.selectCB}
               />
             )}
           </Form.Item>

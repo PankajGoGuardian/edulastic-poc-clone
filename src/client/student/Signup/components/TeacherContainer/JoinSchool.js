@@ -133,7 +133,7 @@ const JoinSchool = ({
           </Row>
         </Col>
       </JoinSchoolBody>
-      <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} />
+      {showModal ? <RequestSchoolModal isOpen={showModal} handleCancel={toggleModal} userInfo={userInfo} /> : null}
     </>
   );
 };

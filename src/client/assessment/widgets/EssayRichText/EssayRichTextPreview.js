@@ -5,7 +5,7 @@ import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus } from "@edulastic/common";
+import { Paper, Stimulus, FlexContainer, InstructorStimulus, FroalaEditor } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -13,10 +13,7 @@ import { Item } from "../../styled/Item";
 import { PREVIEW, ON_LIMIT, ALWAYS } from "../../constants/constantsForQuestions";
 
 import { ValidList, qlToFroalaMapping } from "./constants/validList";
-import { ReactQuillWrapper } from "./styled/ReactQuillWrapper";
-import FroalaEditorCustom from "@edulastic/common/src/components/FroalaEditor";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
-import { getSpellCheckAttributes, getFontSize } from "../../utils/helpers";
 import { Addon } from "../ShortText/styled/Addon";
 import CharacterMap from "../../components/CharacterMap";
 
@@ -27,9 +24,8 @@ const getToolBarButtons = item =>
       const key = `${x.value}${x.param ? x.param : ""}`;
       if (qlToFroalaMapping[key]) {
         return qlToFroalaMapping[key];
-      } else {
-        return key;
       }
+      return key;
     });
 
 const EssayRichTextPreview = ({
@@ -52,8 +48,7 @@ const EssayRichTextPreview = ({
 
   const minHeight = get(item, "ui_style.min_height", 200);
   const maxHeight = get(item, "ui_style.max_height", 300);
-  const placeholder = get(item, "placeholder", "");
-  const fontSize = getFontSize(get(item, "ui_style.fontsize"));
+
   const characterMap = get(item, "character_map", []);
 
   const [wordCount, setWordCount] = useState(
@@ -105,7 +100,7 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  return (
+  return item.id ? (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
@@ -126,8 +121,7 @@ const EssayRichTextPreview = ({
           )}
         </div>
         {!Array.isArray(userAnswer) && (
-          <FroalaEditorCustom
-            //custom
+          <FroalaEditor
             backgroundColor={
               item.max_word < wordCount
                 ? theme.widgets.essayRichText.quillLimitedBgColor
@@ -137,8 +131,7 @@ const EssayRichTextPreview = ({
             heightMax={maxHeight}
             onChange={handleTextChange}
             value={userAnswer}
-            readOnly={previewTab === "show"}
-            spellcheck={item.spellcheck}
+            spellcheck={!!item.spellcheck}
             toolbarInline={false}
             initOnClick={false}
             quickInsertTags={[]}
@@ -154,7 +147,7 @@ const EssayRichTextPreview = ({
         )}
       </div>
     </Paper>
-  );
+  ) : null;
 };
 
 EssayRichTextPreview.propTypes = {

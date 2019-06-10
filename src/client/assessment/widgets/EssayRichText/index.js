@@ -22,7 +22,7 @@ const EssayRichText = props => {
   const { item, view } = props;
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
-  console.log("setquestion", props.setQuestionData);
+
   return (
     <Fragment>
       {view === EDIT && <EditEssayRichText {...props} />}

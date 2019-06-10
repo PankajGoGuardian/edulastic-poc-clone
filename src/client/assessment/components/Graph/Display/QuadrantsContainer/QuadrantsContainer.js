@@ -606,7 +606,7 @@ class GraphContainer extends PureComponent {
               className="jxgbox"
               margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
             />
-            <AnnotationRnd questionId={questionId} />
+            <AnnotationRnd questionId={questionId} disableDragging={false} />
           </div>
         </GraphWrapper>
       </div>

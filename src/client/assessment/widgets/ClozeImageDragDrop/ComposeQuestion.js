@@ -35,6 +35,7 @@ import { IconUpload } from "./styled/IconUpload";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { Widget } from "../../styled/Widget";
+import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
 import { uploadToS3 } from "../../../../client/author/src/utils/upload";
 import { aws } from "@edulastic/constants";
@@ -448,6 +449,11 @@ class ComposeQuestion extends Component {
               width={!maxWidth ? imageWidth || null : maxWidth}
               height={!maxHeight ? imageHeight || null : maxHeight}
             >
+              <AnnotationRnd
+                style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                questionId={item.id}
+                disableDragging={false}
+              />
               {item.imageUrl && (
                 <React.Fragment>
                   <Rnd

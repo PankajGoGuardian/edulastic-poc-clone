@@ -307,7 +307,7 @@ class AxisLabelsContainer extends PureComponent {
             fontSize={numberlineAxis.fontSize}
           />
           <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
-          <AnnotationRnd questionId={questionId} />
+          <AnnotationRnd questionId={questionId} disableDragging={false} />
         </GraphWrapper>
       </div>
     );

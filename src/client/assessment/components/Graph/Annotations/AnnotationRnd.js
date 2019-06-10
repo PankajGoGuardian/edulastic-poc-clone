@@ -8,6 +8,7 @@ import { FroalaInput } from "./styled/styled_components";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { getViewSelector } from "../../../../author/src/selectors/view";
 import { getQuestionByIdSelector, getCurrentQuestionSelector } from "../../../../author/sharedDucks/questions";
+import produce from "immer";
 
 const resizeDisable = {
   bottom: false,
@@ -32,66 +33,70 @@ const resizeEnable = {
 };
 
 class AnnotationsRnd extends Component {
-  handleAnnotationPosition = (d, annotationIndex) => {
+  handleAnnotationPosition = (d, annotationIndex, disableDragging) => {
     const { setQuestionData, question } = this.props;
-    const oldAnnotations = question.annotations || [];
+    setQuestionData(
+      produce(question, draft => {
+        const oldAnnotations = draft.annotations || [];
+        draft.annotations = oldAnnotations.map(annotation => {
+          if (annotationIndex === annotation.id) {
+            const modifiedAnnotation = { ...annotation };
+            modifiedAnnotation.position = { x: d.x, y: d.y };
 
-    question.annotations = oldAnnotations.map(annotation => {
-      if (annotationIndex === annotation.id) {
-        const modifiedAnnotation = { ...annotation };
-        modifiedAnnotation.position = { x: d.x, y: d.y };
-
-        return modifiedAnnotation;
-      }
-      return annotation;
-    });
-
-    setQuestionData(question);
+            return modifiedAnnotation;
+          }
+          return annotation;
+        });
+      })
+    );
   };
 
   handleAnnotationSize = (size, annotationIndex) => {
     const { setQuestionData, question } = this.props;
-    const oldAnnotations = question.annotations || [];
+    setQuestionData(
+      produce(question, draft => {
+        const oldAnnotations = draft.annotations || [];
 
-    question.annotations = oldAnnotations.map(annotation => {
-      const { width: oldWidth, height: oldHeight } = annotation.size || {
-        width: 120,
-        height: 80
-      };
-      if (annotationIndex === annotation.id) {
-        const modifiedAnnotation = { ...annotation };
-        modifiedAnnotation.size = {
-          width: oldWidth + size.width,
-          height: oldHeight + size.height
-        };
+        draft.annotations = oldAnnotations.map(annotation => {
+          const { width: oldWidth, height: oldHeight } = annotation.size || {
+            width: 120,
+            height: 80
+          };
+          if (annotationIndex === annotation.id) {
+            const modifiedAnnotation = { ...annotation };
+            modifiedAnnotation.size = {
+              width: oldWidth + size.width,
+              height: oldHeight + size.height
+            };
 
-        return modifiedAnnotation;
-      }
-      return annotation;
-    });
-
-    setQuestionData(question);
+            return modifiedAnnotation;
+          }
+          return annotation;
+        });
+      })
+    );
   };
 
   updateAnnotation = (val, annotationIndex) => {
     const { setQuestionData, question } = this.props;
+    setQuestionData(
+      produce(question, draft => {
+        const oldAnnotations = draft.annotations || [];
+        draft.annotations = oldAnnotations.map(annotation => {
+          if (annotationIndex === annotation.id) {
+            const modifiedAnnotation = { ...annotation };
+            modifiedAnnotation.value = val;
 
-    const oldAnnotations = question.annotations || [];
-    question.annotations = oldAnnotations.map(annotation => {
-      if (annotationIndex === annotation.id) {
-        const modifiedAnnotation = { ...annotation };
-        modifiedAnnotation.value = val;
-
-        return modifiedAnnotation;
-      }
-      return annotation;
-    });
-
-    setQuestionData(question);
+            return modifiedAnnotation;
+          }
+          return annotation;
+        });
+      })
+    );
   };
 
   render() {
-    const { question, view } = this.props;
+    const { question, view, disableDragging } = this.props;
     if (!question || !question.annotations) return null;
 
     const { updateAnnotation } = this;
@@ -102,25 +107,27 @@ class AnnotationsRnd extends Component {
         {annotations
           .filter(a => a.value)
           .map((annotation, i) => {
-            const { x, y } = annotation.position || { x: i * 50, y: 0 };
+            let { x, y } = annotation.position || { x: i * 50, y: 0 };
             const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
             const { value } = annotation;
 
             return (
               <Rnd
                 key={annotation.id}
-                default={{
+                position={{
                   x,
-                  y,
-                  width,
-                  height
+                  y
+                }}
+                size={{
+                  height,
+                  width
                 }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
                 onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
                 style={{ zIndex: 10 }}
-                enableResizing={view === "preview" ? resizeDisable : resizeEnable}
-                disableDragging={view === "preview"}
-                bounds=".imagedragdrop_template_box"
+                enableResizing={disableDragging ? resizeDisable : resizeEnable}
+                disableDragging={disableDragging}
+                bounds={"parent"}
               >
                 <FroalaInput {...this.props} isRnd>
                   <FroalaEditor
@@ -144,11 +151,13 @@ AnnotationsRnd.propTypes = {
   question: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
-  questionId: PropTypes.string
+  questionId: PropTypes.string,
+  disableDragging: PropTypes.bool
 };
 
 AnnotationsRnd.defaultProps = {
-  questionId: ""
+  questionId: "",
+  disableDragging: true
 };
 
 const enhance = compose(

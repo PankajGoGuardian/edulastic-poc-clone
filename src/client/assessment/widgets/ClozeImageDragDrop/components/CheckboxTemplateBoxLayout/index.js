@@ -117,7 +117,7 @@ const CheckboxTemplateBoxLayout = ({
                 ${status}`}
                   drop={drop}
                 >
-                  <div className="text container" style={{ height: "max-content" }}>
+                  <div className="text container">
                     {userSelections[dropTargetIndex] &&
                       userSelections[dropTargetIndex].map((answer, user_select_index) => {
                         const title = striptags(answer);
@@ -184,7 +184,7 @@ const CheckboxTemplateBoxLayout = ({
                   ${status} 
                   show-answer`}
                 >
-                  <div className="text container" style={{ paddingLeft: "0px" }}>
+                  <div className="text container" style={{ padding: "0px" }}>
                     <div
                       style={{
                         alignSelf: "stretch",

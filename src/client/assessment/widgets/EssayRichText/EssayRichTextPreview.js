@@ -41,7 +41,8 @@ const EssayRichTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  previewTab
 }) => {
   const toolbarButtons = getToolBarButtons(item);
 
@@ -136,6 +137,7 @@ const EssayRichTextPreview = ({
             heightMax={maxHeight}
             onChange={handleTextChange}
             value={userAnswer}
+            readOnly={previewTab === "show"}
             spellcheck={item.spellcheck}
             toolbarInline={false}
             initOnClick={false}

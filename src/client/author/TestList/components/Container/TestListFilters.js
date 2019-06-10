@@ -44,7 +44,7 @@ const TestListFilters = ({
       ];
     }
 
-    const { curriculumId = "" } = search;
+    const { curriculumId = "", subject = "" } = search;
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
       text: `${item.identifier} : ${item.description}`
@@ -58,13 +58,15 @@ const TestListFilters = ({
     if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
+    let curriculumsList = [];
+    if (subject) curriculumsList = [...formattedCuriculums];
     return [
       ...filterData1,
       {
         size: "large",
         title: "Standard set",
         onChange: "curriculumId",
-        data: [{ value: "", text: "All Standard set" }, ...formattedCuriculums],
+        data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
         optionFilterProp: "children",
         filterOption: searchCurriculum,
         showSearch: true

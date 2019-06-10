@@ -67,11 +67,13 @@ class Search extends Component {
                 <Select.Option key="" value="">
                   All Standard set
                 </Select.Option>
-                {formattedCuriculums.map(el => (
-                  <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                    {el.text}
-                  </Select.Option>
-                ))}
+                {subject !== ""
+                  ? formattedCuriculums.map(el => (
+                      <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                        {el.text}
+                      </Select.Option>
+                    ))
+                  : ""}
               </Select>
             </ItemBody>
           </Item>

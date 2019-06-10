@@ -4,17 +4,17 @@ const Option = Select.Option;
 
 import { ModalFormItem } from "./styled";
 
-class EditClassModal extends React.Component {
+class EditClassModal extends Component {
   onSaveClass = () => {
     this.props.form.validateFields((err, row) => {
-      const { selClassData } = this.props;
+      const { selClassData: { _source: { parent, districtId } = {} } = {} } = this.props;
       if (!err) {
         const saveClassData = {
           name: row.name,
           type: "class",
           owners: row.teacher,
-          parent: selClassData.parent,
-          districtId: selClassData.districtId,
+          parent,
+          districtId,
           institutionId: row.institutionId,
           subject: row.subject,
           grade: row.grade
@@ -29,22 +29,20 @@ class EditClassModal extends React.Component {
   };
 
   render() {
-    const { schoolsData, teacherList, modalVisible, selClassData } = this.props;
-    const ownersData = [];
-    selClassData.owners.map(row => {
-      ownersData.push(row.id);
-    });
+    const { modalVisible, selClassData } = this.props;
+    const { _source: { owners = [], name, subject, grade, institutionId } = {} } = selClassData;
+    const ownersData = owners.map(row => row.id);
 
     const schoolsOptions = [];
-    if (schoolsData.length !== undefined) {
-      schoolsData.map((row, index) => {
-        schoolsOptions.push(
-          <Option key={index} value={row._id}>
-            {row.name}
-          </Option>
-        );
-      });
-    }
+    // if (schoolsData.length !== undefined) {
+    //   schoolsData.map((row, index) => {
+    //     schoolsOptions.push(
+    //       <Option key={index} value={row._id}>
+    //         {row.name}
+    //       </Option>
+    //     );
+    //   });
+    // }
 
     const gradeOptions = [];
     gradeOptions.push(<Option value={"0"}>KinderGarten</Option>);
@@ -52,11 +50,11 @@ class EditClassModal extends React.Component {
     gradeOptions.push(<Option value="other">Other</Option>);
 
     const teacherOptions = [];
-    if (teacherList.length !== undefined) {
-      teacherList.map(row => {
-        teacherOptions.push(<Option value={row._id}>{row.firstName + " " + row.lastName}</Option>);
-      });
-    }
+    // if (teacherList.length !== undefined) {
+    //   teacherList.map(row => {
+    //     teacherOptions.push(<Option value={row._id}>{row.firstName + " " + row.lastName}</Option>);
+    //   });
+    // }
 
     const { getFieldDecorator } = this.props.form;
     const {} = this.props;
@@ -83,7 +81,7 @@ class EditClassModal extends React.Component {
                     message: "Please input class name"
                   }
                 ],
-                initialValue: selClassData.name
+                initialValue: name
               })(<Input placeholder="Class name" />)}
             </ModalFormItem>
           </Col>
@@ -98,7 +96,7 @@ class EditClassModal extends React.Component {
                     message: "Please select subject"
                   }
                 ],
-                initialValue: selClassData.subject
+                initialValue: subject
               })(
                 <Select placeholder="Select Subject">
                   <Option value="Mathematics">Mathematics</Option>
@@ -121,7 +119,7 @@ class EditClassModal extends React.Component {
                     message: "Please select grade"
                   }
                 ],
-                initialValue: selClassData.grade
+                initialValue: grade
               })(<Select placeholder="Select Grade">{gradeOptions}</Select>)}
             </ModalFormItem>
           </Col>
@@ -155,7 +153,7 @@ class EditClassModal extends React.Component {
                     message: "Please select school"
                   }
                 ],
-                initialValue: selClassData.institutionId
+                initialValue: institutionId
               })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
             </ModalFormItem>
           </Col>

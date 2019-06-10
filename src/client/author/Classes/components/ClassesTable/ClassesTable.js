@@ -7,6 +7,7 @@ import { get } from "lodash";
 import { Icon, Select, message, Button, Menu } from "antd";
 
 import {
+  StyledClassName,
   StyledTableContainer,
   StyledControlDiv,
   StyledFilterSelect,
@@ -16,6 +17,7 @@ import {
   StyledSearch,
   StyledActionDropDown,
   TeacherSpan,
+  
   StyledPagination,
   StyledFilterButton
 } from "./styled";
@@ -41,7 +43,7 @@ class ClassesTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: [],
+      dataSource: {},
       selectedRowKeys: [],
       addClassModalVisible: false,
       editClassModalVisible: false,
@@ -108,29 +110,18 @@ class ClassesTable extends Component {
   };
 
   onArchiveClass = () => {
-    const { dataSource, selectedRowKeys } = this.state;
-    const selectedClasses = dataSource.filter(item => {
-      const selectedClass = selectedRowKeys.filter(row => row === item.key);
-      return selectedClass.length > 0;
-    });
-
-    for (let i = 0; i < selectedClasses.length; i++) {
-      if (selectedClasses[i].active != 1) {
-        message.error("Please select active classes");
-        return;
-      }
-    }
+    const { selectedRowKeys } = this.state;
 
     this.setState({
-      selectedArchiveClasses: selectedClasses,
+      selectedArchiveClasses: selectedRowKeys,
       archiveClassModalVisible: true
     });
   };
 
   handleDelete = key => {
-    const dataSource = [...this.state.dataSource];
+    // const dataSource = [...this.state.dataSource];
     this.setState({
-      selectedArchiveClasses: dataSource.filter(item => item.key === key),
+      selectedArchiveClasses: [key],
       archiveClassModalVisible: true
     });
   };
@@ -311,10 +302,10 @@ class ClassesTable extends Component {
 
   updateClass = updatedClassData => {
     const { updateClass } = this.props;
-    const { dataSource, editClassKey } = this.state;
-    const sameRow = dataSource.filter(item => item.key === editClassKey);
+    const { editClassKey } = this.state;
+    // const sameRow = dataSource.filter(item => item.key === editClassKey);
 
-    updateClass({ groupId: sameRow[0]._id, body: updatedClassData });
+    updateClass({ groupId: editClassKey, body: updatedClassData });
 
     this.setState({
       editClassModalVisible: false
@@ -329,14 +320,15 @@ class ClassesTable extends Component {
 
   archiveClass = () => {
     const { selectedArchiveClasses } = this.state;
-    const { userOrgId, deleteClass } = this.props;
+    const { userOrgId: districtId, deleteClass } = this.props;
 
-    const selectedClass = [];
-    selectedArchiveClasses.map(row => {
-      selectedClass.push({ groupId: row._id, districtId: userOrgId });
+    this.setState({
+      // here selectedRowKeys is set back to [], since all the previously selected rows would have been deleted,
+      // by the api call
+      selectedRowKeys: [],
+      archiveClassModalVisible: false
     });
-    this.setState({ archiveClassModalVisible: false });
-    deleteClass(selectedClass);
+    deleteClass({ groupIds: selectedArchiveClasses, districtId });
   };
 
   closeArchiveModal = () => {
@@ -347,12 +339,12 @@ class ClassesTable extends Component {
     const columnsData = [
       {
         title: "Class Name",
-        dataIndex: "name",
+        dataIndex: "_source.name",
         editable: true
       },
       {
         title: "Class Code",
-        dataIndex: "code",
+        dataIndex: "_source.code",
         editable: true
       },
       {
@@ -363,10 +355,12 @@ class ClassesTable extends Component {
       },
       {
         title: "Teacher",
-        dataIndex: "teacherName",
+        dataIndex: "_source.owners",
         editable: true,
-        render: (text, record) => {
-          const teachers = record.owners.map(row => <TeacherSpan>{row.name}</TeacherSpan>);
+        render: owners => {
+          const teachers = owners.map((owner, index) => (
+            <TeacherSpan key={`${owner.id}${index}`}>{owner.name}</TeacherSpan>
+          ));
           return <React.Fragment>{teachers}</React.Fragment>;
         }
       },
@@ -374,17 +368,17 @@ class ClassesTable extends Component {
         title: "Users",
         dataIndex: "_source.studentCount",
         editable: true,
-        render: studentCount => (studentCount ? studentCount : 0)
+        render: (studentCount = 0) => studentCount
       },
       {
-        dataIndex: "operation",
-        render: (text, record) => {
+        dataIndex: "_id",
+        render: id => {
           return (
             <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditClass(record.key)}>
+              <StyledTableButton onClick={() => this.onEditClass(id)}>
                 <Icon type="edit" theme="twoTone" />
               </StyledTableButton>
-              <StyledTableButton onClick={() => this.handleDelete(record.key)}>
+              <StyledTableButton onClick={() => this.handleDelete(id)}>
                 <Icon type="delete" theme="twoTone" />
               </StyledTableButton>
             </React.Fragment>
@@ -392,12 +386,6 @@ class ClassesTable extends Component {
         }
       }
     ];
-
-    const columns = columnsData.map(col => {
-      return {
-        ...col
-      };
-    });
 
     const {
       dataSource,
@@ -418,7 +406,7 @@ class ClassesTable extends Component {
       onChange: this.onSelectChange
     };
 
-    const selectedClass = dataSource.filter(item => item.key === editClassKey);
+    const selectedClass = dataSource[editClassKey];
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
@@ -550,10 +538,9 @@ class ClassesTable extends Component {
           total={totalClassCount}
           onChange={this.changePagination}
         />
-
         {editClassModalVisible && editClassKey !== "undefined" && (
           <EditClassModal
-            selClassData={selectedClass[0]}
+            selClassData={selectedClass}
             modalVisible={editClassModalVisible}
             saveClass={this.updateClass}
             closeModal={this.closeEditClassModal}
@@ -576,7 +563,10 @@ class ClassesTable extends Component {
             modalVisible={archiveClassModalVisible}
             archiveClass={this.archiveClass}
             closeModal={this.closeArchiveModal}
-            classData={selectedArchiveClasses}
+            classNames={selectedArchiveClasses.map(id => {
+              const { _source = {} } = dataSource[id];
+              return <StyledClassName key={id}>{_source.name}</StyledClassName>;
+            })}
           />
         )}
       </StyledTableContainer>
@@ -605,7 +595,7 @@ const enhance = compose(
 export default enhance(ClassesTable);
 
 ClassesTable.propTypes = {
-  classList: PropTypes.array.isRequired,
+  classList: PropTypes.object.isRequired,
   loadClassListData: PropTypes.func.isRequired,
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,

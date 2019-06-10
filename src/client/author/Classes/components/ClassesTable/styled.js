@@ -113,3 +113,10 @@ export const StyledSortIcon = styled(Icon)`
   margin-top: 0.125em;
   color: ${props => (props.colorValue ? "#1890ff" : "#bfbfbf")};
 `;
+
+export const StyledClassName = styled.p`
+  text-align: center;
+  color: #1890ff;
+  font-weight: bold;
+  margin-bottom: 5px;
+`;

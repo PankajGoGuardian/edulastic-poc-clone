@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Row, Col, Button, Modal } from "antd";
-import { StyledCol, StyledP, StyledClassName, StyledInput, LightBlueSpan } from "./styled";
+import { StyledCol, StyledP, StyledInput, LightBlueSpan } from "./styled";
 
-class ArchiveClassModal extends React.Component {
+class ArchiveClassModal extends Component {
   constructor(props) {
     super(props);
     this.state = { textArchive: "" };
@@ -21,12 +21,8 @@ class ArchiveClassModal extends React.Component {
   };
 
   render() {
-    const { modalVisible, classData } = this.props;
+    const { modalVisible, classNames } = this.props;
     const { textArchive } = this.state;
-    const classNames = [];
-    classData.map(row => {
-      classNames.push(<StyledClassName>{row.name}</StyledClassName>);
-    });
 
     return (
       <Modal

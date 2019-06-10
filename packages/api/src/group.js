@@ -18,7 +18,7 @@ const getGroups = body =>
       method: "post",
       data: body
     })
-    .then(result => result.data.result);
+    .then(({ data: { result } }) => result.data.hits);
 
 const editGroup = ({ groupId, body }) =>
   api
@@ -38,11 +38,12 @@ const createGroup = body =>
     })
     .then(result => result.data.result);
 
-const deleteGroup = ({ districtId, groupId }) =>
+const deleteGroup = data =>
   api
     .callApi({
-      url: `${prefix}/${groupId}?districtId=${districtId}`,
-      method: "delete"
+      url: `${prefix}`,
+      method: "delete",
+      data
     })
     .then(result => result.data.result);
 

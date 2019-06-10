@@ -3,6 +3,7 @@ import { createSelector } from "reselect";
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { groupApi, userApi } from "@edulastic/api";
 import { message } from "antd";
+import { keyBy } from "lodash";
 
 const RECEIVE_CLASSLIST_REQUEST = "[class] receive list request";
 const RECEIVE_CLASSLIST_SUCCESS = "[class] receive list success";
@@ -47,7 +48,7 @@ export const getClassListSelector = createSelector(
 
 // reducers
 const initialState = {
-  data: [],
+  data: {},
   loading: false,
   error: null,
   update: {},
@@ -69,24 +70,10 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_CLASSLIST_REQUEST]: state => {
     state.loading = true;
   },
-  [RECEIVE_CLASSLIST_SUCCESS]: (state, { payload }) => {
-    const classList = [];
-    for (let i = 0; i < payload.length; i++) {
-      let classData = {};
-      classData = payload[i];
-      classData.key = payload[i]._id;
-      if (classData.hasOwnProperty("_source")) {
-        const source = classData._source;
-        Object.keys(source).map((key, value) => {
-          classData[key] = source[key];
-        });
-      }
-      delete classData._source;
-      classList.push(classData);
-    }
+  [RECEIVE_CLASSLIST_SUCCESS]: (state, { payload : { hits, total } }) => {
     state.loading = false;
-    state.data = classList;
-    state.totalClassCount = payload.total;
+    state.data = keyBy(hits, "_id");
+    state.totalClassCount = total;
   },
   [RECEIVE_CLASSLIST_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -96,16 +83,9 @@ export const reducer = createReducer(initialState, {
     state.updating = true;
   },
   [UPDATE_CLASS_SUCCESS]: (state, { payload }) => {
-    const classList = state.data.map(classData => {
-      if (classData._id === payload._id) {
-        const newData = {
-          ...payload
-        };
-        return { ...classData, ...newData };
-      } else return classData;
-    });
-
-    (state.update = payload), (state.updating = false), (state.data = classList);
+    state.update = payload;
+    state.updating = false;
+    state.data[payload._id] = { ...state.data[payload._id], ...payload };
   },
   [UPDATE_CLASS_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -115,10 +95,16 @@ export const reducer = createReducer(initialState, {
     state.creating = true;
   },
   [CREATE_CLASS_SUCCESS]: (state, { payload }) => {
-    const createdStudent = { key: payload._id, ...payload };
+    // const createdStudent = { key: payload._id, ...payload };
     state.creating = false;
-    state.create = createdStudent;
-    state.data = [createdStudent, ...state.data];
+    state.create = payload;
+    const createdStudent = {
+      [payload._id]: payload
+    };
+    // here we use the spread operator for the created student, so that the created student
+    // appears first in the list
+    state.data = { ...createdStudent, ...state.data };
+    // state.data[payload._id] = payload;
   },
   [CREATE_CLASS_ERROR]: (state, { payload }) => {
     state.createError = payload.error;
@@ -165,8 +151,8 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveClassListSaga({ payload }) {
   try {
-    const { hits, total } = yield call(groupApi.getGroups, payload);
-    yield put(receiveClassListSuccessAction({ hits, total }));
+    const hits = yield call(groupApi.getGroups, payload);
+    yield put(receiveClassListSuccessAction(hits));
   } catch (err) {
     const errorMessage = "Receive Classes is failing!";
     yield call(message.error, errorMessage);
@@ -198,11 +184,20 @@ function* createClassSaga({ payload }) {
 
 function* deleteClassSaga({ payload }) {
   try {
-    for (let i = 0; i < payload.length; i++) {
-      yield call(groupApi.deleteGroup, payload[i]);
-    }
+    yield call(groupApi.deleteGroup, payload);
     yield put(deleteClassSuccessAction(payload));
-    yield put(receiveClassListAction());
+    // here after the delete operation is a success,
+    // the classes are fetched again to get the latest data
+    yield put(
+      receiveClassListAction({
+        page: 1,
+        limit: 25,
+        search: {
+          active: 1
+        },
+        districtId: payload.districtId
+      })
+    );
   } catch (err) {
     const errorMessage = "Delete Class is failing";
     yield call(message.error, errorMessage);

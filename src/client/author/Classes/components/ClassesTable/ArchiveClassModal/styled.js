@@ -6,13 +6,6 @@ export const LightBlueSpan = styled.span`
   font-weight: bold;
 `;
 
-export const StyledClassName = styled.p`
-  text-align: center;
-  color: #1890ff;
-  font-weight: bold;
-  margin-bottom: 5px;
-`;
-
 export const StyledCol = styled(Col)`
   justify-content: center;
   display: flex;

@@ -1141,8 +1141,8 @@ response {
 .imagelabeldragdrop-droppable img,
 .main img,
 .responses_box img {
-  max-width: 151.5px;
-  max-height: 100px;
+  max-width: 151.5px !important;
+  max-height: 100px !important;
   width: auto !important;
 }
 

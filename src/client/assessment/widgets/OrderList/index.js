@@ -175,6 +175,22 @@ const OrderList = ({
   const correctAnswers = get(itemForPreview, "validation.valid_response.value", []);
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
+
+  const hasAltAnswers = itemForPreview.validation.alt_responses && itemForPreview.validation.alt_responses.length > 0;
+
+  let alternateAnswers = {};
+  if (hasAltAnswers) {
+    const altAnswers = itemForPreview.validation.alt_responses;
+    altAnswers.forEach(altAnswer => {
+      altAnswer["value"].forEach((alt, index) => {
+        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
+        if (alt !== "") {
+          alternateAnswers[index + 1].push(itemForPreview.list[alt]);
+        }
+      });
+    });
+  }
+
   return (
     <Fragment>
       {view === EDIT && (
@@ -253,6 +269,25 @@ const OrderList = ({
                   </CorrectAnswerItem>
                 ))}
               </CorrectAnswersContainer>
+
+              {hasAltAnswers && (
+                <CorrectAnswersContainer title={t("component.orderlist.alternateAnswer")}>
+                  {Object.keys(alternateAnswers).map(key => (
+                    <CorrectAnswerItem theme={theme}>
+                      <Text>
+                        <FlexContainer>
+                          <Index>{key}</Index>
+                          <QuestionText>
+                            <MathFormulaDisplay
+                              dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }}
+                            />
+                          </QuestionText>
+                        </FlexContainer>
+                      </Text>
+                    </CorrectAnswerItem>
+                  ))}
+                </CorrectAnswersContainer>
+              )}
             </Fragment>
           )}
 

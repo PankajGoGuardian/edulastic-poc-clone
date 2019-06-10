@@ -336,6 +336,7 @@
       "addnewchoicebtn": "Add New Choice",
       " ": "[This is the stem.]",
       "correctanswer": "Correct Answer:",
+      "alternateAnswer": "Alternate Answer",
       "composeQuestion": "Question",
       "list": "List"
     },

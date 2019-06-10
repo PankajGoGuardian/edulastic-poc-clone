@@ -15,6 +15,7 @@ import {
   UPDATE_TEST_ITEM_ERROR,
   SHOW_ANSWER,
   CHECK_ANSWER,
+  CLEAR_ITEM_EVALUATION,
   ADD_ITEM_EVALUATION,
   CHANGE_VIEW
 } from "../constants/actions";
@@ -69,6 +70,11 @@ function* updateTestItemSaga({ payload }) {
 
 function* evaluateAnswers() {
   try {
+    // clear previous evaluation
+    yield put({
+      type: CLEAR_ITEM_EVALUATION
+    });
+
     // url path that the user is at
     const currentPath = yield select(state => _get(state, "router.location.pathname", ""));
 

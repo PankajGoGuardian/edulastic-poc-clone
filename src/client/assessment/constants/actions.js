@@ -57,6 +57,7 @@ export const REMOVE_ANSWERS = "[answers] remove answers";
 
 // Evalution
 export const ADD_ITEM_EVALUATION = "[evaluation] add evaluation";
+export const CLEAR_ITEM_EVALUATION = "[evaluation] clear evaluation";
 
 // testItem view
 export const CHANGE_PREVIEW = "[view] change view";

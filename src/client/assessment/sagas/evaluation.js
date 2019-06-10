@@ -5,11 +5,21 @@ import { getCurrentGroup } from "../../student/Login/ducks";
 
 import { getQuestionIds } from "./items";
 // actions
-import { CHECK_ANSWER_EVALUATION, ADD_ITEM_EVALUATION, CHANGE_PREVIEW, COUNT_CHECK_ANSWER } from "../constants/actions";
+import {
+  CHECK_ANSWER_EVALUATION,
+  ADD_ITEM_EVALUATION,
+  CLEAR_ITEM_EVALUATION,
+  CHANGE_PREVIEW,
+  COUNT_CHECK_ANSWER
+} from "../constants/actions";
 import { itemQuestionsSelector, answersForCheck } from "../selectors/test";
 
 function* evaluateAnswers() {
   try {
+    yield put({
+      type: CLEAR_ITEM_EVALUATION
+    });
+
     const questionIds = yield select(itemQuestionsSelector);
     const allAnswers = yield select(answersForCheck);
     const answerIds = Object.keys(allAnswers);

@@ -76,6 +76,7 @@ export const CHECK_ANSWER = "[testItem] evaluate test item";
 export const SHOW_ANSWER = "[testItem] show test item answer";
 
 export const ADD_ITEM_EVALUATION = "[evaluation] add evaluation";
+export const CLEAR_ITEM_EVALUATION = "[evaluation] clear evaluation";
 
 export const TOGGLE_CREATE_ITEM_MODAL = "[testItem] toggle create item modal";
 

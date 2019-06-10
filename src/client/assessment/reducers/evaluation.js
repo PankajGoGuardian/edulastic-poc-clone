@@ -1,4 +1,4 @@
-import { ADD_ITEM_EVALUATION } from "../constants/actions";
+import { ADD_ITEM_EVALUATION, CLEAR_ITEM_EVALUATION } from "../constants/actions";
 
 const initialState = {};
 
@@ -8,6 +8,8 @@ const evaluation = (state = initialState, { type, payload }) => {
       return {
         ...payload
       };
+    case CLEAR_ITEM_EVALUATION:
+      return initialState;
     default:
       return state;
   }

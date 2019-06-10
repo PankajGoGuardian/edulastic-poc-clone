@@ -29,7 +29,8 @@ const RemoteAutocompleteDropDown = ({
   onChange,
   createNew = false,
   createNewLabel = "Create New",
-  existingLabel = "Existing"
+  existingLabel = "Existing",
+  placeholder = ""
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -228,7 +229,7 @@ const RemoteAutocompleteDropDown = ({
               style={{ color: "#00ad50" }}
             />
           }
-          placeholder={selected.title}
+          placeholder={selected.title ? selected.title : placeholder}
         />
       </AutoComplete>
     </StyledDiv>

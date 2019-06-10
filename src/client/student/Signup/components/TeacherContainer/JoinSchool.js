@@ -28,7 +28,7 @@ const JoinSchool = ({
   updateUserWithSchoolLoading,
   ipZipCode
 }) => {
-  const { email, firstName } = userInfo;
+  const { email, firstName, middleName, lastName } = userInfo;
   const [selected, setSchool] = useState("");
   const [showModal, setShowModal] = useState(false);
 
@@ -45,7 +45,9 @@ const JoinSchool = ({
       districtId: currentSchool.districtId,
       currentSignUpState,
       email,
-      firstName
+      firstName,
+      middleName,
+      lastName
     };
     joinSchool({ data, userId: userInfo._id });
   };

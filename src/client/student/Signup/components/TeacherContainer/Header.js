@@ -8,12 +8,8 @@ import Profile from "../../../assets/Profile.png";
 
 const Header = ({ userInfo, logout }) => {
   const [isVisible, setVisible] = useState(false);
-  const { firstName, lastName, role } = userInfo;
-
-  let userName = firstName;
-  if (lastName) {
-    userName = `${firstName} ${lastName.charAt(0)}`;
-  }
+  const { firstName, middleName, lastName, role } = userInfo;
+  const userName = firstName + " " + (middleName ? middleName + " " : "") + (lastName ? lastName : "");
 
   const menu = (
     <Menu>
@@ -41,7 +37,7 @@ const Header = ({ userInfo, logout }) => {
             <div>
               <img src={Profile} alt="Profile" />
               <UserInfo>
-                <UserName>{userName}.</UserName>
+                <UserName>{userName}</UserName>
                 <UserType>{role}</UserType>
               </UserInfo>
               <IconDropdown
@@ -135,6 +131,10 @@ const UserInfo = styled.div`
 const UserName = styled.div`
   font-size: 14px;
   text-transform: capitalize;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 80px;
 `;
 
 const UserType = styled.div`

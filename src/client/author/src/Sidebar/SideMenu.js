@@ -148,7 +148,9 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, history, isSidebarCollapsed, firstName, logout, userRole } = this.props;
+    const { windowWidth, history, isSidebarCollapsed, firstName, middleName, lastName, logout, userRole } = this.props;
+    const userName = firstName + " " + (middleName ? middleName + " " : "") + (lastName ? lastName : "");
+
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
     const defaultSelectedMenu = this.MenuItems.findIndex(menuItem =>
@@ -266,7 +268,7 @@ class SideMenu extends Component {
                     <div>
                       <img src={Profile} alt="Profile" />
                       <div style={{ paddingLeft: 11 }}>
-                        {!isCollapsed && !isMobile && <UserName>{firstName || "Zack Oliver"}</UserName>}
+                        {!isCollapsed && !isMobile && <UserName>{userName || "Zack Oliver"}</UserName>}
                         {!isCollapsed && !isMobile && <UserType>Teacher</UserType>}
                       </div>
                       {!isCollapsed && !isMobile && (
@@ -305,6 +307,8 @@ const enhance = compose(
     state => ({
       isSidebarCollapsed: state.authorUi.isSidebarCollapsed,
       firstName: get(state.user, "user.firstName", ""),
+      middleName: get(state.user, "user.middleName", ""),
+      lastName: get(state.user, "user.lastName", ""),
       userRole: get(state.user, "user.role", ""),
       lastPlayList: getLastPlayListSelector(state)
     }),
@@ -585,6 +589,11 @@ const MenuItem = styled(AntMenu.Item)`
 const UserName = styled.div`
   font-size: 14px;
   color: #444;
+  text-transform: capitalize;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  width: 80px;
 `;
 
 const UserType = styled.div`

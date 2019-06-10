@@ -189,6 +189,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       const user = pick(_result, [
         "_id",
         "firstName",
+        "middleName",
         "lastName",
         "email",
         "role",
@@ -214,6 +215,7 @@ function* joinSchoolSaga({ payload = {} }) {
     const user = pick(result, [
       "_id",
       "firstName",
+      "middleName",
       "lastName",
       "email",
       "role",

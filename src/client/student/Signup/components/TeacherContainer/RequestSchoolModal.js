@@ -69,13 +69,16 @@ class RequestSchool extends React.Component {
           body.districtId = district.districtId;
         }
 
+        const { firstName, middleName, lastName } = this.props.userInfo;
         createAndJoinSchoolRequestAction({
           createSchool: body,
           joinSchool: {
             data: {
               currentSignUpState: "PREFERENCE_NOT_SELECTED",
               email: this.props.userInfo.email,
-              firstName: this.props.userInfo.firstName
+              firstName,
+              middleName,
+              lastName
             },
             userId: this.props.userInfo._id
           }

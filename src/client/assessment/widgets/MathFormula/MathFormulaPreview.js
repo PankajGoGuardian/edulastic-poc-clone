@@ -30,6 +30,8 @@ const MathFormulaPreview = ({
   const [latex, setLatex] = useState(studentTemplate);
   const [innerValues, setInnerValues] = useState([]);
 
+  const hasAltAnswers = item.validation.alt_responses && item.validation.alt_responses.length > 0;
+
   const onUserResponse = latexv => {
     if (isStatic) {
       saveAnswer(latexv);
@@ -143,6 +145,11 @@ const MathFormulaPreview = ({
 
       {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
         <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
+      )}
+      {hasAltAnswers && previewType === SHOW && (
+        <CorrectAnswerBox altAnswers>
+          {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
+        </CorrectAnswerBox>
       )}
     </div>
   );

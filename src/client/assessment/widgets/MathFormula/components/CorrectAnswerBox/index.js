@@ -7,7 +7,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { Wrapper } from "./styled/Wrapper";
 import { Answer } from "./styled/Answer";
 
-const CorrectAnswerBox = ({ children, t }) => {
+const CorrectAnswerBox = ({ children, t, altAnswers }) => {
   const answerRef = useRef();
 
   useEffect(() => {
@@ -16,7 +16,9 @@ const CorrectAnswerBox = ({ children, t }) => {
 
   return (
     <Wrapper>
-      <div>{t("component.math.correctAnswers")}:</div>
+      <h2 style={{ fontSize: 20 }}>
+        {!altAnswers ? t("component.math.correctAnswers") : t("component.math.alternateAnswers")}
+      </h2>
       <Answer>
         <div ref={answerRef} data-cy="correct-answer-box" />
       </Answer>
@@ -33,17 +35,19 @@ const enhance = compose(withNamespaces("assessment"));
 
 const CorrectAnswerBoxComponent = enhance(CorrectAnswerBox);
 
-const CorrectAnswerBoxWithResources = ({ ...props }) => (
-  <WithResources
-    resources={[
-      "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-      "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
-    ]}
-    fallBack={<span />}
-  >
-    <CorrectAnswerBoxComponent {...props} />
-  </WithResources>
-);
+const CorrectAnswerBoxWithResources = ({ ...props }) => {
+  return (
+    <WithResources
+      resources={[
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+      ]}
+      fallBack={<span />}
+    >
+      <CorrectAnswerBoxComponent {...props} />
+    </WithResources>
+  );
+};
 
 export default CorrectAnswerBoxWithResources;

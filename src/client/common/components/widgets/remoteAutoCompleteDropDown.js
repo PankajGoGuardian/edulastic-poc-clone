@@ -13,6 +13,9 @@ const OptGroup = AutoComplete.OptGroup;
 // IMPORTANT:
 // onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
 
+// IMPORTANT:
+// To see what bug exists in this, refer https://snapwiz.atlassian.net/browse/EV-4322
+
 const RemoteAutocompleteDropDown = ({
   className,
   containerClassName = "",
@@ -84,10 +87,6 @@ const RemoteAutocompleteDropDown = ({
     setSelected(item);
   }, []);
 
-  const onAddNewClick = event => {
-    triggerChange(event.currentTarget.attributes["data-title"].value);
-  };
-
   const buildDropDownData = datum => {
     let arr;
     if (addCreateNewOption) {
@@ -101,8 +100,8 @@ const RemoteAutocompleteDropDown = ({
       arr = [
         <OptGroup key={"Create New"} label={createNewLabel}>
           {[
-            <Option key="Add New Span" title={text}>
-              <p data-title={text} onClick={onAddNewClick} style={{ width: "100%", height: "100%" }}>
+            <Option key="Add New" title={text}>
+              <p data-title={text} style={{ width: "100%", height: "100%" }}>
                 {text}
               </p>
             </Option>
@@ -157,17 +156,13 @@ const RemoteAutocompleteDropDown = ({
       }
     }
     setText(value);
-    triggerChange(value);
     textChangeStatusRef.current = true;
     onSearchTextChange(value);
   };
 
-  const onBlur = key => {
-    let item = data.find(o => o.key === key);
-    if (!item) {
-      setText(selected.title);
-      triggerChange(selected.title);
-    }
+  const onBlur = title => {
+    setText(selected.title);
+    triggerChange(selected);
 
     textChangeStatusRef.current = false;
   };
@@ -176,6 +171,8 @@ const RemoteAutocompleteDropDown = ({
     let obj = { key: key, title: item.props.title };
     setSelected(obj);
     selectCB(obj, comData);
+
+    triggerChange(obj);
 
     textChangeStatusRef.current = false;
   };
@@ -188,7 +185,7 @@ const RemoteAutocompleteDropDown = ({
 
   const onFocus = () => {
     setText("");
-    triggerChange("");
+    triggerChange({ key: "", title: "" });
     setDropDownData(data);
     setAddCreateNewOption(false);
     textChangeStatusRef.current = true;
@@ -201,7 +198,7 @@ const RemoteAutocompleteDropDown = ({
   const triggerChange = changedValue => {
     if (onChange) {
       onChange({
-        title: changedValue
+        ...changedValue
       });
     }
   };

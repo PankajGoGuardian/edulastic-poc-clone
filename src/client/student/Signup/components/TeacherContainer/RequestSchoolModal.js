@@ -48,11 +48,13 @@ class RequestSchool extends React.Component {
     form.validateFields((err, values) => {
       if (!err) {
         const { name, districtId, address, city, country, state, zip } = values;
-        const district = find(districts, ({ districtId: _id }) => _id === districtId) || {};
+        const district = find(districts, ({ districtId: _id }) => _id === districtId.key) || {
+          districtName: districtId.title
+        };
         const { districtName } = district;
         const body = {
           name,
-          districtName: districtName || keyword,
+          districtName: districtName,
           location: {
             city,
             state,
@@ -83,7 +85,6 @@ class RequestSchool extends React.Component {
   };
 
   handleTyping = keyword => {
-    this.setState({ ...this.state, keyword });
     this.onSearch(keyword);
   };
 
@@ -140,12 +141,12 @@ class RequestSchool extends React.Component {
           </Form.Item>
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
-              initialValue: { title: "" },
+              initialValue: { key: "", title: "" },
               rules: [
                 { required: true, message: "Please input district name" },
                 {
                   validator: (rule, value, callback) => {
-                    if (value.title.length === 0) {
+                    if (value.title.length === 0 || value.key.length === 0) {
                       callback("Please input district name");
                       return;
                     }
@@ -162,6 +163,7 @@ class RequestSchool extends React.Component {
                 createNew={true}
                 createNewLabel="Create New District"
                 existingLabel="Districts"
+                // selectCB={this.selectCB}
               />
             )}
           </Form.Item>

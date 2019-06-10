@@ -15,8 +15,6 @@ export const Text = styled.div`
   justify-content: space-between;
   align-items: center;
   img {
-    max-width: 220px;
-    max-height: 100px;
-    width: auto !important;
+    width: 220px !important;
   }
 `;

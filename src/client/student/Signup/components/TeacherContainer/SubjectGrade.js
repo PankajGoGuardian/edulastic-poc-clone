@@ -122,39 +122,32 @@ class SubjectGrade extends React.Component {
                     )}
                   </Form.Item>
 
-                  <FlexItems>
-                    <Form.Item label="Subject">
-                      {getFieldDecorator("subject", {
-                        rules: [{ required: true, message: "Subject is not selected" }]
-                      })(
-                        <GradeSelect
-                          size="large"
-                          placeholder="Select a subject"
-                          onSelect={this.updateSubject}
-                          showArrow
-                        >
-                          {_allSubjects.map(el => (
-                            <Option key={el.value} value={el.value}>
-                              {el.text}
-                            </Option>
-                          ))}
-                        </GradeSelect>
-                      )}
-                    </Form.Item>
-                    <Form.Item>
-                      {getFieldDecorator("standard", {
-                        rules: [{ required: true, message: "standard Area is not selected" }]
-                      })(
-                        <GradeSelect size="large" placeholder="Select your standard sets" mode="multiple" showArrow>
-                          {standardSets.map(el => (
-                            <Option key={el._id} value={el._id}>
-                              {el.curriculum}
-                            </Option>
-                          ))}
-                        </GradeSelect>
-                      )}
-                    </Form.Item>
-                  </FlexItems>
+                  <Form.Item label="Subject">
+                    {getFieldDecorator("subject", {
+                      rules: [{ required: true, message: "Subject is not selected" }]
+                    })(
+                      <GradeSelect size="large" placeholder="Select a subject" onSelect={this.updateSubject} showArrow>
+                        {_allSubjects.map(el => (
+                          <Option key={el.value} value={el.value}>
+                            {el.text}
+                          </Option>
+                        ))}
+                      </GradeSelect>
+                    )}
+                  </Form.Item>
+                  <Form.Item label="Standard Sets">
+                    {getFieldDecorator("standard", {
+                      rules: [{ required: true, message: "standard Area is not selected" }]
+                    })(
+                      <GradeSelect size="large" placeholder="Select your standard sets" mode="multiple" showArrow>
+                        {standardSets.map(el => (
+                          <Option key={el._id} value={el._id}>
+                            {el.curriculum}
+                          </Option>
+                        ))}
+                      </GradeSelect>
+                    )}
+                  </Form.Item>
 
                   <ProceedBtn type="primary" htmlType="submit" disabled={saveSubjectGradeloading}>
                     Get Started
@@ -253,19 +246,5 @@ const ProceedBtn = styled(Button)`
   &:hover {
     background: ${springGreen};
     color: ${white};
-  }
-`;
-
-const FlexItems = styled.div`
-  display: flex;
-  align-items: flex-end;
-  .ant-form-item:nth-child(2) {
-    width: 65%;
-  }
-  .ant-form-item:nth-child(1) {
-    width: 35%;
-  }
-  .ant-form-item-label > label::after {
-    display: none;
   }
 `;

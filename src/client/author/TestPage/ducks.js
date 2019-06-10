@@ -375,8 +375,12 @@ function* updateTestSaga({ payload }) {
     payload.data.pageStructure = pageStructure.length ? pageStructure : undefined;
     if (!payload.data.requirePassword) {
       delete payload.data.assignmentPassword;
-    } else if (!payload.data.assignmentPassword) {
-      yield call(message.error, "Assignment password should not be empty when require password is checked");
+    } else if (
+      !payload.data.assignmentPassword ||
+      payload.data.assignmentPassword.length < 6 ||
+      !payload.data.assignmentPassword.length > 25
+    ) {
+      yield call(message.error, "Please add a valid password.");
       return;
     }
     const entity = yield call(testsApi.update, payload);

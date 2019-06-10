@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { get } from "lodash";
 import { Col, Radio, Select, Icon, Checkbox, Input } from "antd";
+import { green, red, blueBorder } from "@edulastic/colors";
 import { test } from "@edulastic/constants";
 import {
   AlignRight,
@@ -16,7 +17,8 @@ import {
   StyledTable,
   StyledDiv,
   SpaceDiv,
-  CheckBoxWrapper
+  CheckBoxWrapper,
+  MessageSpan
 } from "./styled";
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -34,7 +36,10 @@ const Settings = ({
 }) => {
   const [showPassword, setShowSebPassword] = useState(false);
   const [tempTestSettings, updateTempTestSettings] = useState({ ...testSettings });
-  const [showRequirePassword, setShowRequirePassword] = useState(false);
+  const [passwordStatus, setPasswordStatus] = useState({
+    color: blueBorder,
+    message: ""
+  });
 
   const { performanceBand = [] } = performanceBandData;
 
@@ -75,6 +80,37 @@ const Settings = ({
     }
   ];
 
+  const passwordValidationStatus = assignmentPassword => {
+    if (!assignmentPassword) {
+      setPasswordStatus({
+        color: blueBorder,
+        message: ""
+      });
+      return;
+    }
+    if (assignmentPassword.split(" ").length > 1) {
+      setPasswordStatus({
+        color: red,
+        message: "Password must not contain space"
+      });
+      return;
+    }
+    if (assignmentPassword.length >= 6 && assignmentPassword.length <= 25) {
+      setPasswordStatus({
+        color: green,
+        message: ""
+      });
+      return;
+    } else {
+      let validationMessage = "Password is too short";
+      if (assignmentPassword.length > 25) validationMessage = "Password is too long";
+      setPasswordStatus({
+        color: red,
+        message: validationMessage
+      });
+      return;
+    }
+  };
   const overRideSettings = (key, value) => {
     const newSettingsState = {
       ...assignmentSettings,
@@ -87,6 +123,9 @@ const Settings = ({
     if (key === "safeBrowser" && value === false) {
       delete newSettingsState.sebPassword;
       delete newTempTestSettingsState.sebPassword;
+    }
+    if (key === "assignmentPassword") {
+      passwordValidationStatus(value);
     }
     updateTempTestSettings(newTempTestSettingsState);
     updateAssignmentSettings(newSettingsState);
@@ -254,20 +293,17 @@ const Settings = ({
               onChange={value => overRideSettings("requirePassword", value)}
             />
             {requirePassword && (
-              <Password
-                suffix={
-                  <Icon
-                    type={showRequirePassword ? "eye-invisible" : "eye"}
-                    theme="filled"
-                    onClick={() => setShowRequirePassword(prevState => !prevState)}
-                  />
-                }
-                onChange={e => overRideSettings("assignmentPassword", e.target.value)}
-                size="large"
-                value={assignmentPassword}
-                type={showRequirePassword ? "text" : "password"}
-                placeholder="Password"
-              />
+              <>
+                <Password
+                  onChange={e => overRideSettings("assignmentPassword", e.target.value)}
+                  size="large"
+                  value={assignmentPassword}
+                  type={"text"}
+                  placeholder="Enter Password"
+                  color={passwordStatus.color}
+                />
+                <MessageSpan>{passwordStatus.message}</MessageSpan>
+              </>
             )}
           </Col>
         </StyledRowSettings>

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Row, Radio, Switch, Input, Select, DatePicker, Table } from "antd";
-import { white, secondaryTextColor, blue, fadedBlue } from "@edulastic/colors";
+import { white, secondaryTextColor, blue, fadedBlue, red, blueBorder } from "@edulastic/colors";
 
 const RadioGroup = Radio.Group;
 
@@ -120,9 +120,19 @@ export const MaxAttemptIInput = styled(Input)`
 `;
 
 export const Password = styled(Input)`
+  ${props => console.log(props)}
   width: 100%;
   float: right;
   margin-top: 5px;
+  border-color: ${props => (props.color ? props.color : blueBorder)};
+  &:hover,
+  &:focus {
+    border-color: ${props => (props.color ? props.color : blueBorder)};
+  }
+`;
+
+export const MessageSpan = styled.span`
+  color: ${red};
 `;
 
 export const SettingsBtn = styled.span`

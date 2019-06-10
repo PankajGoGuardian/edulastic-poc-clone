@@ -8,7 +8,9 @@ import {
   linkColor1,
   cardTitleColor,
   lightGreySecondary,
-  lightBlueSecondary
+  lightBlueSecondary,
+  red,
+  blueBorder
 } from "@edulastic/colors";
 import { Paper } from "@edulastic/common";
 
@@ -189,6 +191,15 @@ export const ActivityInput = styled(Input)`
 export const InputPassword = styled(Input)`
   width: 40%;
   margin-left: 30px;
+  margin-right: 10px;
+  border-color: ${props => (props.color ? props.color : blueBorder)};
+  &:hover,
+  &:focus {
+    border-color: ${props => (props.color ? props.color : blueBorder)};
+  }
+`;
+export const MessageSpan = styled.span`
+  color: ${red};
 `;
 
 export const MaxAnswerChecksInput = styled(Input)`

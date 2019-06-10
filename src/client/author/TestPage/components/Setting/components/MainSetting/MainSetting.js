@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox } from "antd";
+import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } from "antd";
 
 import { test } from "@edulastic/constants";
-import { lightBlueSecondary } from "@edulastic/colors";
+import { lightBlueSecondary, red, green, blueBorder } from "@edulastic/colors";
 import { IconCaretDown } from "@edulastic/icons";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -32,7 +32,8 @@ import {
   ActivityInput,
   Container,
   MaxAnswerChecksInput,
-  CompletionTypeRadio
+  CompletionTypeRadio,
+  MessageSpan
 } from "./styled";
 import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
 import { getUserFeatures } from "../../../../../../student/Login/ducks";
@@ -80,8 +81,7 @@ class MainSetting extends Component {
     this.state = {
       showPassword: false,
       enable: true,
-      showAdvancedOption: false,
-      showRequirePassword: false
+      showAdvancedOption: false
     };
 
     this._releaseGradeKeys = releaseGradeKeys;
@@ -92,10 +92,6 @@ class MainSetting extends Component {
 
   handleShowPassword = () => {
     this.setState(state => ({ showPassword: !state.showPassword }));
-  };
-
-  handleShowRequirePassword = () => {
-    this.setState(state => ({ showRequirePassword: !state.showRequirePassword }));
   };
 
   enableHandler = e => {
@@ -179,7 +175,7 @@ class MainSetting extends Component {
   };
 
   render() {
-    const { enable, showAdvancedOption, showPassword, showRequirePassword } = this.state;
+    const { enable, showAdvancedOption, showPassword } = this.state;
     const { history, windowWidth, entity } = this.props;
 
     const {
@@ -200,6 +196,23 @@ class MainSetting extends Component {
       markAsDone
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
+
+    let validationMessage = "";
+    const isPasswordValid = () => {
+      if (!assignmentPassword) return blueBorder;
+      if (assignmentPassword.split(" ").length > 1) {
+        validationMessage = "Password must not contain space";
+        return red;
+      }
+      if (assignmentPassword.length >= 6 && assignmentPassword.length <= 25) {
+        return green;
+      } else {
+        validationMessage = "Password is too short";
+        if (assignmentPassword.length > 25) validationMessage = "Password is too long";
+        return red;
+      }
+    };
+
     return (
       <Container>
         <Row style={{ padding: 0 }}>
@@ -383,19 +396,18 @@ class MainSetting extends Component {
                 <Body smallSize={isSmallSize}>
                   <Switch defaultChecked={requirePassword} onChange={this.updateTestData("requirePassword")} />
                   {requirePassword && (
-                    <InputPassword
-                      prefix={
-                        <i
-                          className={`fa fa-eye${showRequirePassword ? "-slash" : ""}`}
-                          onClick={this.handleShowRequirePassword}
-                        />
-                      }
-                      onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
-                      size="large"
-                      value={assignmentPassword}
-                      type={showRequirePassword ? "text" : "password"}
-                      placeholder="Password"
-                    />
+                    <>
+                      <InputPassword
+                        required
+                        color={isPasswordValid()}
+                        onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
+                        size="large"
+                        value={assignmentPassword}
+                        type={"text"}
+                        placeholder="Enter Password"
+                      />
+                      {validationMessage ? <MessageSpan>{validationMessage}</MessageSpan> : ""}
+                    </>
                   )}
                   <Description>
                     {

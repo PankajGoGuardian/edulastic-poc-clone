@@ -227,6 +227,7 @@ class Display extends Component {
         minHeight={response.minHeight}
         userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
         evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
+        imageOptions={imageOptions}
       />
     );
     const templateBoxLayout = showAnswer || checkAnswer ? checkboxTemplateBoxLayout : previewTemplateBoxLayout;

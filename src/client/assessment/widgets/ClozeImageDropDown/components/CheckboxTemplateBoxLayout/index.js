@@ -32,7 +32,8 @@ const CheckboxTemplateBoxLayout = ({
   maxHeight,
   maxWidth,
   minWidth,
-  minHeight
+  minHeight,
+  imageOptions
 }) => (
   <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
     <TemplateCover
@@ -43,10 +44,12 @@ const CheckboxTemplateBoxLayout = ({
       <img
         src={imageUrl}
         style={{
-          height: imageHeight + "px",
+          height: `${imageOptions.height}px`,
           maxWidth,
           maxHeight,
-          width: imageWidth,
+          width: `${imageOptions.width}px`,
+          top: imageOptions.y,
+          left: imageOptions.x,
           userSelect: "none",
           pointerEvents: "none"
         }}

@@ -80,6 +80,7 @@ const EditClassification = ({
   const [correctTab, setCorrectTab] = useState(0);
 
   const [dragItem, setDragItem] = useState(imageOptions || { width: 0, height: 0, x: 0, y: 0 });
+  const { width: dragItemWidth, height: dragItemHeight } = dragItem;
 
   useEffect(
     () => () => {
@@ -87,6 +88,15 @@ const EditClassification = ({
     },
     []
   );
+
+  useEffect(() => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { ...imageOptions, ...dragItem };
+        updateVariables(draft);
+      })
+    );
+  }, [dragItemWidth, dragItemHeight]);
 
   const getImageWidth = url => {
     const img = new Image();
@@ -113,6 +123,16 @@ const EditClassification = ({
           });
         }
         updateVariables(draft);
+      })
+    );
+  };
+
+  const deleteBgImg = () => {
+    setDragItem({ x: 0, y: 0, width: 0, height: 0 });
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { x: 0, y: 0, width: 0, height: 0 };
+        draft.imageUrl = "";
       })
     );
   };
@@ -431,11 +451,7 @@ const EditClassification = ({
                   <img src={item.imageUrl} alt="backgroundImage" />
                 </Rnd>
               </DropContainer>
-              <EduButton
-                onClick={() => handleItemChangeChange("imageUrl", "")}
-                style={{ marginTop: 20 }}
-                type="primary"
-              >
+              <EduButton onClick={deleteBgImg} style={{ marginTop: 20 }} type="primary">
                 {t("component.classification.deleteBackImage")}
               </EduButton>
             </FlexContainer>

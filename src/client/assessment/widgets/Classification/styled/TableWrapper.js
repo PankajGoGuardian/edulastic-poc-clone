@@ -6,6 +6,7 @@ export const TableWrapper = styled.div`
   width: 700px;
   margin: auto;
   background: ${({ imageUrl }) => (imageUrl ? `url('${imageUrl}')` : "inherit")};
+  background-size: ${({ isBgImageMaximized }) => (isBgImageMaximized ? "100% 100%" : "auto")};
   background-repeat: no-repeat;
   background-position: ${({ imageOptions }) => (imageOptions ? `${imageOptions.x}px ${imageOptions.y}px` : "inherit")};
   background-size: ${({ imageOptions }) => (imageOptions ? `${imageOptions.width} ${imageOptions.height}` : "inherit")};

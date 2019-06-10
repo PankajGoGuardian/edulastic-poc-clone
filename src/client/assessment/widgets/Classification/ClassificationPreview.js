@@ -228,6 +228,10 @@ const ClassificationPreview = ({
   const verifiedGroupDragItems = possible_response_groups.map(obj =>
     uniq(shuffle_options ? shuffle(obj.responses) : obj.responses)
   );
+  const imageOptionWidth = get(imageOptions, "width");
+  const imageOptionHeight = get(imageOptions, "height");
+
+  const isBgImageMaximized = imageOptionWidth >= 700 || imageOptionHeight >= 600;
 
   return (
     <Paper data-cy="classificationPreview" style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -240,7 +244,7 @@ const ClassificationPreview = ({
       )}
 
       <div data-cy="classificationPreviewWrapper" style={wrapperStyle}>
-        <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl}>
+        <TableWrapper imageOptions={imageOptions} imageUrl={imageUrl} isBgImageMaximized={isBgImageMaximized}>
           <table style={{ width: "100%", flexGrow: 2 }}>
             <thead>
               {rowHeader && (

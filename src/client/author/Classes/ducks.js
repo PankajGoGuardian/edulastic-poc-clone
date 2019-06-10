@@ -70,7 +70,7 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_CLASSLIST_REQUEST]: state => {
     state.loading = true;
   },
-  [RECEIVE_CLASSLIST_SUCCESS]: (state, { payload : { hits, total } }) => {
+  [RECEIVE_CLASSLIST_SUCCESS]: (state, { payload: { hits, total } }) => {
     state.loading = false;
     state.data = keyBy(hits, "_id");
     state.totalClassCount = total;

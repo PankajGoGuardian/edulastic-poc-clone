@@ -6,6 +6,7 @@ import { connect } from "react-redux";
 import { Select } from "antd";
 import { get, curry, isEmpty, remove, lowerCase, find } from "lodash";
 import { receiveClassListAction } from "../../../Classes/ducks";
+import { getClassListSelector } from "../../duck";
 import { getUserOrgId, getSchoolsByUserRoleSelector } from "../../../src/selectors/user";
 import { receiveSchoolsAction } from "../../../Schools/ducks";
 import { receiveCourseListAction, getCourseListSelector } from "../../../Courses/ducks";
@@ -103,6 +104,7 @@ class ClassList extends React.Component {
   render() {
     const { classList, schools, courseList, selectClass, selectedClasses } = this.props;
     const { searchTerms } = this.state;
+
     const tableData = classList.map(item => convertTableData(item));
     const changeField = curry(this.changeFilter);
 
@@ -229,7 +231,7 @@ const enhance = compose(
   connect(
     state => ({
       termsData: get(state, "user.user.orgData.terms", []),
-      classList: get(state, "classesReducer.data"),
+      classList: getClassListSelector(state),
       userOrgId: getUserOrgId(state),
       schools: getSchoolsByUserRoleSelector(state),
       courseList: getCourseListSelector(state),

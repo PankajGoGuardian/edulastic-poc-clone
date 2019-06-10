@@ -31,7 +31,8 @@ const Container = styled.div`
   background-color: ${dashBorderColor};
   flex: 2;
   img {
-    max-height: 120px;
+    max-height: 100px;
+    width: auto !important;
     z-index: 100;
     position: relative;
   }

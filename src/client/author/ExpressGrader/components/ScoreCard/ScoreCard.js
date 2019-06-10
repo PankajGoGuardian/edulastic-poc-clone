@@ -45,7 +45,7 @@ export default class ScoreCard extends Component {
     return (
       <React.Fragment>
         <StyledFlexContainer>
-          <TableTitle>Questions & Standards</TableTitle>
+          <TableTitle>Score Grid</TableTitle>
         </StyledFlexContainer>
         <StyledFlexContainer flexWrap>
           {questions.map((question, i) => (

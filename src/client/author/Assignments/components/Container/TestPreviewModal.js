@@ -5,7 +5,14 @@ import AssessmentPlayer from "../../../../assessment";
 
 const TestPreviewModal = ({ isModalVisible, hideModal, testId }) => {
   return (
-    <Modal visible={isModalVisible} title="Test Preview" onOk={hideModal} width={"80%"} style={{ top: 50 }}>
+    <Modal
+      visible={isModalVisible}
+      title="Test Preview"
+      onCancel={hideModal}
+      onOk={hideModal}
+      width={"80%"}
+      style={{ top: 50 }}
+    >
       <AssessmentPlayer testId={testId} preview />
     </Modal>
   );

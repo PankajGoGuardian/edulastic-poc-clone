@@ -72,7 +72,7 @@ class ScoreTable extends Component {
     const { showQuestionModal } = this.props;
     const columns = [
       {
-        title: <TableTitle>Questions & Standards</TableTitle>,
+        title: <TableTitle>Score Grid</TableTitle>,
         // TODO: find another way to determine fixed column by questions length
         fixed: window.innerWidth - 500 / length < 160,
         width: 230,

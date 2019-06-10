@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import { EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import MathFormulaAnswerMethod from "./MathFormulaAnswerMethod";
@@ -52,18 +51,15 @@ class MathFormulaAnswer extends Component {
             key={i}
             item={item}
             index={i}
+            answer={answer}
             onChange={handleChangeMethod(i)}
             showAdditionals={showAdditionals}
             handleChangeAdditionals={handleChangeAdditionals}
             clearAdditionals={clearAdditionals}
+            onAdd={onAdd}
             {...method}
           />
         ))}
-        {showAdditionals.length === 0 ? (
-          <EduButton onClick={onAdd} type="primary" size="large" data-cy="add-new-method">
-            {t("component.math.addComparison")}
-          </EduButton>
-        ) : null}
       </div>
     );
   }

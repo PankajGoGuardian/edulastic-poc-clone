@@ -84,6 +84,7 @@ const Container = styled.div`
   min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};
   text-align: center;
   border-radius: ${({ borderRadius }) => (borderRadius ? "4px" : 0)};
+  text-transform: uppercase;
 
   &:first-child {
     border-radius: 4px 0 0 4px;

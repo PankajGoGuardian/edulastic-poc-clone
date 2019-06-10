@@ -583,6 +583,7 @@ export const themes = {
         iconCloseColor: "#ee1658" // red
       },
       orderList: {
+        correctAnswerTextColor: "#000",
         textBorderColor: "#dfdfdf", // grey
         textSmallFontSize: "13px",
         textFontSize: "16px",
@@ -593,7 +594,7 @@ export const themes = {
         indexColor: "#444444", // mainTextColor
         incorrectIndexColor: "#878282", // textColor
         iconWrapperFontSize: "24px",
-        correctAnswerItemBgColor: "#dfdfdf", // grey
+        correctAnswerItemBgColor: "#fff",
         correctAnswerItemBorderColor: "#878282", // textColor
         correctContainerBgColor: "#e1fbf2", // lightGreen
         incorrectContainerBgColor: "#fbdfe7", // lightRed

@@ -242,7 +242,7 @@ const OrderList = ({
                   <CorrectAnswerItem theme={theme}>
                     <Text>
                       <FlexContainer>
-                        <Index>{i}</Index>
+                        <Index>{i + 1}</Index>
                         <QuestionText>
                           <MathFormulaDisplay
                             dangerouslySetInnerHTML={{ __html: itemForPreview.list[correctAnswer] }}

@@ -11,4 +11,8 @@ export const CorrectAnswerItem = styled.div`
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   border-left: 2px solid ${props => props.theme.widgets.orderList.correctAnswerItemBorderColor};
+  span,
+  p {
+    color: ${props => props.theme.widgets.orderList.correctAnswerTextColor};
+  }
 `;

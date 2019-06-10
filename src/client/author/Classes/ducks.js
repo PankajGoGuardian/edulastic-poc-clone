@@ -86,6 +86,7 @@ export const reducer = createReducer(initialState, {
     }
     state.loading = false;
     state.data = classList;
+    state.totalClassCount = payload.total;
   },
   [RECEIVE_CLASSLIST_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -164,8 +165,8 @@ export const reducer = createReducer(initialState, {
 // sagas
 function* receiveClassListSaga({ payload }) {
   try {
-    const classList = yield call(groupApi.getGroups, payload);
-    yield put(receiveClassListSuccessAction(classList.data));
+    const { hits, total } = yield call(groupApi.getGroups, payload);
+    yield put(receiveClassListSuccessAction({ hits, total }));
   } catch (err) {
     const errorMessage = "Receive Classes is failing!";
     yield call(message.error, errorMessage);

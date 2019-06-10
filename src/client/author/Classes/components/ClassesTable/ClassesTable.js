@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import { Icon, Select, message, Button, Menu } from "antd";
 
@@ -355,6 +356,12 @@ class ClassesTable extends Component {
         editable: true
       },
       {
+        title: "Course",
+        dataIndex: "_source.course",
+        editable: true,
+        render: course => (course ? course.name : "-")
+      },
+      {
         title: "Teacher",
         dataIndex: "teacherName",
         editable: true,
@@ -362,6 +369,12 @@ class ClassesTable extends Component {
           const teachers = record.owners.map(row => <TeacherSpan>{row.name}</TeacherSpan>);
           return <React.Fragment>{teachers}</React.Fragment>;
         }
+      },
+      {
+        title: "Users",
+        dataIndex: "_source.studentCount",
+        editable: true,
+        render: studentCount => (studentCount ? studentCount : 0)
       },
       {
         dataIndex: "operation",
@@ -398,7 +411,7 @@ class ClassesTable extends Component {
       selectedArchiveClasses
     } = this.state;
 
-    const { userOrgId, searchCourseList, coursesForDistrictList } = this.props;
+    const { userOrgId, searchCourseList, coursesForDistrictList, totalClassCount } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -457,8 +470,7 @@ class ClassesTable extends Component {
           >
             {optValues}
           </StyledFilterSelect>
-
-          {filtersData[i].filtersColumn === "subjects" && (
+          {filtersData[i].filtersColumn === "subjects" ? (
             <StyledFilterSelect
               placeholder="Select a value"
               onChange={e => this.changeStatusValue(e, i)}
@@ -472,9 +484,7 @@ class ClassesTable extends Component {
               <Option value="Social Studies">Social Studies</Option>
               <Option value="Other Subjects">Other Subjects</Option>
             </StyledFilterSelect>
-          )}
-
-          {filtersData[i].filtersColumn === "grades" && (
+          ) : filtersData[i].filtersColumn === "grades" ? (
             <StyledFilterSelect
               placeholder="Select a grade"
               onChange={e => this.changeStatusValue(e, i)}
@@ -483,9 +493,7 @@ class ClassesTable extends Component {
             >
               {gradeOptions}
             </StyledFilterSelect>
-          )}
-
-          {(filtersData[i].filtersColumn === "codes" || filtersData[i].filtersColumn === "institutionIds") && (
+          ) : (
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
@@ -494,16 +502,20 @@ class ClassesTable extends Component {
               value={filtersData[i].filterStr}
             />
           )}
-
           {i < 2 && (
-            <StyledFilterButton type="primary" onClick={e => this.addFilter(e, i)}>
+            <StyledFilterButton
+              type="primary"
+              onClick={e => this.addFilter(e, i)}
+              disabled={isAddFilterDisable || !filtersData[i].filterAdded || i < filtersData.length - 1}
+            >
               + Add Filter
             </StyledFilterButton>
           )}
-
-          <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
-            - Remove Filter
-          </StyledFilterButton>
+          {filtersData[i].filterAdded && (
+            <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
+              - Remove Filter
+            </StyledFilterButton>
+          )}
         </StyledControlDiv>
       );
     }
@@ -524,8 +536,20 @@ class ClassesTable extends Component {
           </StyledActionDropDown>
         </StyledControlDiv>
         {SearchRows}
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} pagination={false} />
-        <StyledPagination defaultCurrent={1} current={currentPage} total={100} onChange={this.changePagination} />
+        <StyledTable
+          rowKey={record => record._id}
+          rowSelection={rowSelection}
+          dataSource={Object.values(dataSource)}
+          columns={columnsData}
+          pagination={false}
+        />
+        <StyledPagination
+          defaultCurrent={1}
+          current={currentPage}
+          pageSize={25}
+          total={totalClassCount}
+          onChange={this.changePagination}
+        />
 
         {editClassModalVisible && editClassKey !== "undefined" && (
           <EditClassModal
@@ -565,7 +589,8 @@ const enhance = compose(
     state => ({
       userOrgId: getUserOrgId(state),
       classList: getClassListSelector(state),
-      coursesForDistrictList: getCoursesForDistrictSelector(state)
+      coursesForDistrictList: getCoursesForDistrictSelector(state),
+      totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0)
     }),
     {
       createClass: createClassAction,

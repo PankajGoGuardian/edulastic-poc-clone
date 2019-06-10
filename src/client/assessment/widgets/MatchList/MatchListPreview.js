@@ -70,13 +70,23 @@ const MatchListPreview = ({
     group_possible_responses,
     stimulus,
     list,
-    validation,
-    shuffleOptions = false
+    validation
   } = item;
 
-  const { alt_responses = [] } = validation;
+  const alternateAnswers = {};
+  if (validation.alt_responses && validation.alt_responses.length > 0) {
+    const { alt_responses: altAnswers } = validation;
+    altAnswers.forEach(altAnswer => {
+      altAnswer["value"].forEach((alt, index) => {
+        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
+        if (alt && alt !== "") {
+          alternateAnswers[index + 1].push(alt);
+        }
+      });
+    });
+  }
 
-  const altResponsesValid = alt_responses.map(a => a.value);
+  const hasAlternateAnswers = Object.keys(alternateAnswers).length > 0;
 
   const itemValidation = item.validation || {};
   let validArray = itemValidation.valid_response && itemValidation.valid_response.value;
@@ -351,30 +361,24 @@ const MatchListPreview = ({
                 <CorTitle>
                   <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>
-                <Separator smallSize={smallSize} />
                 <CorItem index={i}>
                   <MathFormulaDisplay choice dangerouslySetInnerHTML={{ __html: validArray[i] }} />
                 </CorItem>
               </FlexContainer>
             ))}
           </CorrectAnswersContainer>
-          <CorrectAnswersContainer title={t("component.matchList.altAnswers")}>
-            {altResponsesValid
-              .filter((a, i) => i === 0)
-              .map(altItem =>
-                list.map((item, itemIndex) => (
-                  <FlexContainer key={itemIndex} alignItems="center">
-                    <CorTitle>
-                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
-                    </CorTitle>
-                    <Separator smallSize={smallSize} />
-                    <CorItem index={itemIndex}>
-                      <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: altItem[itemIndex] }} />
-                    </CorItem>
-                  </FlexContainer>
-                ))
-              )}
-          </CorrectAnswersContainer>
+
+          {hasAlternateAnswers && (
+            <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
+              {Object.keys(alternateAnswers).map((key, i) => (
+                <FlexContainer key={i} alignItems="center">
+                  <CorItem index={i}>
+                    <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
+                  </CorItem>
+                </FlexContainer>
+              ))}
+            </CorrectAnswersContainer>
+          )}
         </Fragment>
       )}
     </Paper>

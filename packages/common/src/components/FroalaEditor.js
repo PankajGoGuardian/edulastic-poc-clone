@@ -299,6 +299,27 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
             setCurrentMathEl(null);
           }
         },
+        keydown: function(evt) {
+          if (evt.which === 8) {
+            const range = this.selection.ranges()[0];
+            const parent = range.commonAncestorContainer;
+            if (parent && range.startOffset === range.endOffset && parent.tagName === "P") {
+              const cursorEl = parent.childNodes[range.startOffset - 1];
+              if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
+                cursorEl.remove();
+                return;
+              }
+              if (
+                cursorEl.tagName === "SPAN" &&
+                $(cursorEl).hasClass("input__math") &&
+                $(cursorEl).attr("data-latex")
+              ) {
+                cursorEl.remove();
+                return;
+              }
+            }
+          }
+        },
         "image.beforeUpload": function(image) {
           if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();

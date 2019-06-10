@@ -52,7 +52,6 @@ class RowColumn extends Component {
             case actions.ADD:
               draft.ui_style[prop].push("");
               if (prop === "column_titles") {
-                draft.ui_style.column_count += 1;
                 Array.from({ length: draft.ui_style.row_count }).forEach(() => {
                   draft.validation.valid_response.value.push([]);
                 });
@@ -63,9 +62,6 @@ class RowColumn extends Component {
                   });
                 });
               } else if (prop === "row_titles") {
-                if (draft.ui_style.row_titles.length > draft.ui_style.row_count) {
-                  draft.ui_style.row_count += 1;
-                }
                 Array.from({ length: draft.ui_style.column_count }).forEach(() => {
                   draft.validation.valid_response.value.push([]);
                 });
@@ -89,13 +85,11 @@ class RowColumn extends Component {
                     array.splice(-1, draft.ui_style.row_count);
                   });
                 });
-                draft.ui_style.column_count -= 1;
               } else if (prop === "row_titles" && draft.ui_style.row_count !== 1) {
                 draft.validation.valid_response.value.splice(-1, draft.ui_style.column_titles);
                 draft.validation.alt_responses.forEach(valid => {
                   valid.value.splice(-1, draft.ui_style.column_titles);
                 });
-                draft.ui_style.row_count -= 1;
               }
               break;
 

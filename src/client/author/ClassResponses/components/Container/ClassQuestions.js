@@ -7,12 +7,12 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 
-function Preview({ item, qIndex }) {
+function Preview({ item, qIndex, studentId }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
   return (
-    <StyledFlexContainer key={item._id}>
+    <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
       <TestItemPreview
         showFeedback
         cols={rows}
@@ -111,7 +111,14 @@ class ClassQuestions extends Component {
   render() {
     const testItems = this.getTestItems();
     const { qIndex } = this.props;
-    return testItems.map((item, index) => <Preview key={index} item={item} qIndex={qIndex || index} />);
+    return testItems.map((item, index) => (
+      <Preview
+        studentId={(this.props.currentStudent || {}).studentId}
+        key={index}
+        item={item}
+        qIndex={qIndex || index}
+      />
+    ));
   }
 }
 

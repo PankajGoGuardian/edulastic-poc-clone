@@ -99,7 +99,9 @@ export const getAggregateByQuestion = (entities, studentId) => {
   }
   const total = entities.length;
   let submittedEntities = entities.filter(x => x.status === "submitted");
-  const activeEntities = entities.filter(x => x.status === "inProgress" || x.status === "submitted");
+  const activeEntities = entities.filter(
+    x => x.status === "inProgress" || (x.status === "submitted") | (x.status === "graded")
+  );
 
   const submittedNumber = submittedEntities.length;
   // TODO: handle absent

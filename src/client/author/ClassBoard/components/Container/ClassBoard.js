@@ -17,7 +17,9 @@ import {
   getAdditionalDataSelector,
   getClassResponseSelector,
   getTestQuestionActivitiesSelector,
-  stateStudentResponseSelector
+  stateStudentResponseSelector,
+  showScoreSelector,
+  getMarkAsDoneEnableSelector
 } from "../../ducks";
 
 import {
@@ -37,6 +39,12 @@ import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelec
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
+import { StudentReportCardMenuModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardMenuModal";
+import { StudentReportCardModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardModal";
+
+import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+
+import { releaseScoreAction, markAsDoneAction } from "../../../src/actions/classBoard";
 // icon images
 // import Stats from "../../assets/stats.svg";
 // import Ghat from "../../assets/graduation-hat.svg";
@@ -83,9 +91,43 @@ class ClassBoard extends Component {
       itemId: null,
       nCountTrue: 0,
       redirectPopup: false,
-      selectedStudentId: ""
+      selectedStudentId: "",
+      visible: false,
+      condition: true, // Whether meet the condition, if not show popconfirm.
+
+      studentReportCardMenuModalVisibility: false,
+      studentReportCardModalVisibility: false,
+      studentReportCardModalColumnsFlags: {}
     };
   }
+
+  changeCondition = value => {
+    this.setState({ condition: value });
+  };
+
+  confirm = () => {
+    this.setState({ visible: false });
+    message.success("Next step.");
+  };
+
+  cancel = () => {
+    this.setState({ visible: false });
+    message.error("Click on cancel.");
+  };
+
+  handleVisibleChange = visible => {
+    if (!visible) {
+      this.setState({ visible });
+      return;
+    }
+    const { condition } = this.state;
+    // Determining condition before show the popconfirm.
+    if (condition) {
+      this.confirm(); // next step
+    } else {
+      this.setState({ visible }); // show the popconfirm
+    }
+  };
 
   componentDidMount() {
     const { loadTestActivity, match, studentUnselectAll } = this.props;
@@ -224,13 +266,56 @@ class ClassBoard extends Component {
 
   isMobile = () => window.innerWidth < 480;
 
+  handleReleaseScore = () => {
+    const { classId, assignmentId, setReleaseScore, showScore } = this.props;
+    const isReleaseScore = !showScore;
+    setReleaseScore(assignmentId, classId, isReleaseScore);
+    this.toggleDropdown();
+  };
+
+  handleMarkAsDone = () => {
+    const { setMarkAsDone, assignmentId, classId } = this.props;
+    setMarkAsDone(assignmentId, classId);
+  };
+
+  onStudentReportCardsClick = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardMenuModalVisibility: true };
+    });
+  };
+
+  onStudentReportCardMenuModalOk = obj => {
+    this.setState(state => {
+      return {
+        ...this.state,
+        studentReportCardMenuModalVisibility: false,
+        studentReportCardModalVisibility: true,
+        studentReportCardModalColumnsFlags: { ...obj }
+      };
+    });
+  };
+
+  onStudentReportCardMenuModalCancel = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardMenuModalVisibility: false };
+    });
+  };
+
+  onStudentReportCardModalOk = () => {};
+
+  onStudentReportCardModalCancel = () => {
+    this.setState(state => {
+      return { ...this.state, studentReportCardModalVisibility: false };
+    });
+  };
+
   render() {
     const {
       gradebook,
       testActivity,
       creating,
       match,
-      classResponse,
+      classResponse = {},
       additionalData = {
         classes: []
       },
@@ -240,8 +325,14 @@ class ClassBoard extends Component {
       allStudents,
       history,
       testQuestionActivities,
-      qActivityByStudent
+      qActivityByStudent,
+      enableMarkAsDone,
+      showScore
     } = this.props;
+    const gradeSubject = {
+      grade: classResponse.metadata ? classResponse.metadata.grades : [],
+      subject: classResponse.metadata ? classResponse.metadata.subjects : []
+    };
     const { selectedTab, flag, selectedQuestion, selectAll, nCountTrue, redirectPopup, selectedStudentId } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -332,6 +423,7 @@ class ClassBoard extends Component {
                     {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                   </StyledCheckbox>
                 </CheckContainer>
+
                 <PrintButton
                   data-cy="printButton"
                   onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
@@ -343,8 +435,51 @@ class ClassBoard extends Component {
                   <img src={Elinks} alt="" />
                   REDIRECT
                 </RedirectButton>
+                <RedirectButton
+                  onClick={this.handleReleaseScore}
+                  style={{ textDecoration: showScore ? "line-through" : "none" }}
+                >
+                  Release Score
+                </RedirectButton>
+                <RedirectButton onClick={this.onStudentReportCardsClick}>Student Report Cards</RedirectButton>
+                <FeaturesSwitch
+                  inputFeatures="assessmentSuperPowersMarkAsDone"
+                  actionOnInaccessible="hidden"
+                  gradeSubject={gradeSubject}
+                >
+                  <RedirectButton
+                    onClick={this.handleMarkAsDone}
+                    disabled={!enableMarkAsDone || status.toLowerCase() === "done"}
+                  >
+                    Mark as Done
+                  </RedirectButton>
+                </FeaturesSwitch>
               </StyledFlexContainer>
             }
+
+            <>
+              {/* Modals */}
+              {this.state.studentReportCardMenuModalVisibility ? (
+                <StudentReportCardMenuModal
+                  title="Student Report Card"
+                  visible={this.state.studentReportCardMenuModalVisibility}
+                  onOk={this.onStudentReportCardMenuModalOk}
+                  onCancel={this.onStudentReportCardMenuModalCancel}
+                />
+              ) : null}
+              {this.state.studentReportCardModalVisibility ? (
+                <StudentReportCardModal
+                  visible={this.state.studentReportCardModalVisibility}
+                  onOk={this.onStudentReportCardModalOk}
+                  onCancel={this.onStudentReportCardModalCancel}
+                  groupId={classId}
+                  selectedStudentsKeys={selectedStudentsKeys}
+                  columnsFlags={this.state.studentReportCardModalColumnsFlags}
+                  assignmentId={assignmentId}
+                />
+              ) : null}
+            </>
+
             {flag ? (
               <DisneyCardContainer
                 selectedStudents={selectedStudents}
@@ -455,7 +590,10 @@ const enhance = compose(
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
       testItemsData: get(state, ["author_classboard_testActivity", "data", "testItemsData"], []),
       entities: get(state, ["author_classboard_testActivity", "entities"], []),
-      qActivityByStudent: stateStudentResponseSelector(state)
+      qActivityByStudent: stateStudentResponseSelector(state),
+      showScore: showScoreSelector(state),
+      enableMarkAsDone: getMarkAsDoneEnableSelector(state),
+      status: get(state, ["author_classboard_testActivity", "data", "status"], "")
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -463,7 +601,9 @@ const enhance = compose(
       studentSelect: gradebookSelectStudentAction,
       studentUnselect: gradebookUnSelectStudentAction,
       studentUnselectAll: gradebookUnSelectAllAction,
-      setSelected: gradebookSetSelectedAction
+      setSelected: gradebookSetSelectedAction,
+      setReleaseScore: releaseScoreAction,
+      setMarkAsDone: markAsDoneAction
     }
   )
 );

@@ -224,32 +224,7 @@ class ClassHeader extends Component {
             okText="Yes"
             cancelText="No"
           />
-          <Dropdown overlay={menu}>
-            <Button type="primary" shape="circle" icon="more" />
-          </Dropdown>
         </StyledDiv>
-        <>
-          {/* Modals */}
-          {this.state.studentReportCardMenuModalVisibility ? (
-            <StudentReportCardMenuModal
-              title="Student Report Card"
-              visible={this.state.studentReportCardMenuModalVisibility}
-              onOk={this.onStudentReportCardMenuModalOk}
-              onCancel={this.onStudentReportCardMenuModalCancel}
-            />
-          ) : null}
-          {this.state.studentReportCardModalVisibility ? (
-            <StudentReportCardModal
-              visible={this.state.studentReportCardModalVisibility}
-              onOk={this.onStudentReportCardModalOk}
-              onCancel={this.onStudentReportCardModalCancel}
-              groupId={classId}
-              selectedStudentsKeys={selectedStudentsKeys}
-              columnsFlags={this.state.studentReportCardModalColumnsFlags}
-              assignmentId={assignmentId}
-            />
-          ) : null}
-        </>
       </Container>
     );
   }

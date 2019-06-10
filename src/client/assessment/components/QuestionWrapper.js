@@ -264,7 +264,7 @@ class QuestionWrapper extends Component {
       >
         <ThemeProvider theme={themes.default}>
           <QuestionContainer
-            className="fr-view"
+            className={`fr-view question-container-id-${data.id}`}
             disabled={disabled}
             noPadding={noPadding}
             isFlex={isFlex}

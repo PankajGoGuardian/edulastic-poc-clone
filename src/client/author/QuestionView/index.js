@@ -24,6 +24,12 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
 import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
+import { scrollTo } from "@edulastic/common";
+
+/**
+ * @param {string} studentId
+ */
+const _scrollTo = studentId => scrollTo(document.querySelector(`.student-question-container-id-${studentId}`));
 
 const green = "#5eb500";
 
@@ -77,6 +83,10 @@ class QuestionViewContainer extends Component {
     return round(totalSpent / activities.length / 1000, 2);
   };
 
+  onClickChart = data => {
+    _scrollTo(data.id);
+  };
+
   render() {
     const {
       testActivity,
@@ -125,6 +135,7 @@ class QuestionViewContainer extends Component {
         .map(st => {
           const stData = {
             name: st.studentName,
+            id: st.studentId,
             avatarName: getAvatarName(st.studentName),
 
             avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
@@ -193,7 +204,15 @@ class QuestionViewContainer extends Component {
             </LegendContainer>
             <ResponsiveContainer width="100%" height={250}>
               <ComposedChart barGap={1} barSize={36} data={data}>
-                <XAxis dataKey="avatarName" tickSize={0} />
+                <XAxis
+                  dataKey="avatarName"
+                  tickSize={0}
+                  cursor="pointer"
+                  onClick={({ index }) => {
+                    const id = data[index].id;
+                    _scrollTo(id);
+                  }}
+                />
                 <YAxis
                   dataKey="attempts"
                   yAxisId={0}

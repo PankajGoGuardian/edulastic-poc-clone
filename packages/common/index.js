@@ -32,7 +32,7 @@ export { default as TabContainer } from "./src/components/Tabs/TabContainer";
 export { default as MathModal } from "./src/components/MathModal";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
-export { WithResources } from "./src/HOC/withResources";
+export { WithResources, useResources } from "./src/HOC/withResources";
 export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
-
+export { scrollTo, offset } from "./src/utils/DomUtils";
 export { default as helpers } from "./src/helpers";

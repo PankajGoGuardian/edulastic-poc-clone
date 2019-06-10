@@ -18,7 +18,12 @@ import { MainDiv, StyledCustomTooltip } from "./styled";
 import { StyledChartNavButton } from "../../../Reports/common/styled";
 import { getAggregateByQuestion } from "../../ducks";
 import memoizeOne from "memoize-one";
+import { scrollTo } from "@edulastic/common";
 
+/**
+ * @param {string} qid
+ */
+const _scrollTo = qid => scrollTo(document.querySelector(`.question-container-id-${qid}`));
 const _getAggregateByQuestion = memoizeOne(getAggregateByQuestion);
 
 const RectangleBar = ({ fill, x, y, width, height, dataKey, incorrectAttemps }) => {
@@ -192,9 +197,14 @@ export default class BarGraph extends Component {
   };
 
   handleClick = (data, index) => {
-    const { onClickHandler } = this.props;
-    if (onClickHandler) {
-      onClickHandler(data, index);
+    if (this.props.studentview) {
+      const { qid } = data;
+      _scrollTo(qid);
+    } else {
+      const { onClickHandler } = this.props;
+      if (onClickHandler) {
+        onClickHandler(data, index);
+      }
     }
   };
 
@@ -246,6 +256,10 @@ export default class BarGraph extends Component {
               dy={8}
               tick={{ fontSize: "10px", strokeWidth: 2, fill: secondaryTextColor }}
               padding={{ left: 20, right: 20 }}
+              cursor="pointer"
+              onClick={({ index }) => {
+                this.handleClick(renderData[index], index);
+              }}
             />
             <YAxis
               domain={[0, maxAttemps + Math.ceil((10 / 100) * maxAttemps)]}

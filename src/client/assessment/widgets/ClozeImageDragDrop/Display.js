@@ -211,10 +211,6 @@ class Display extends Component {
           maxWidth: !maxWidth ? null : maxWidth
         }}
       >
-        <AnnotationRnd
-          style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-          questionId={questionId}
-        />
         <div
           data-cy="drag-drop-board"
           style={{
@@ -380,6 +376,10 @@ class Display extends Component {
 
     return (
       <div style={{ fontSize }}>
+        <AnnotationRnd
+          style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+          questionId={questionId}
+        />
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}

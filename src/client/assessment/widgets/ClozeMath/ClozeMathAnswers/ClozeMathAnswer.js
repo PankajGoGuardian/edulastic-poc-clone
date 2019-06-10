@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { Collapse, Icon } from "antd";
-import { EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { white, darkGrey1, inputBorder } from "@edulastic/colors";
 
@@ -32,7 +31,7 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answer, onChange, onAdd, onDelete, item, t } = this.props;
+    const { answer, onChange, onAdd, onDelete, item } = this.props;
 
     const { showAdditionals } = this.state;
 
@@ -81,19 +80,17 @@ class ClozeMathAnswer extends Component {
                   key={methodIndex + i}
                   item={item}
                   index={methodIndex}
+                  answer={responseValue}
                   answerIndex={methodIndex}
                   onChange={_changeMethod(i, methodIndex)}
                   showAdditionals={showAdditionals}
                   handleChangeAdditionals={handleChangeAdditionals}
                   clearAdditionals={clearAdditionals}
+                  onAdd={onAdd}
+                  onAddIndex={i}
                   {...method}
                 />
               ))}
-              {showAdditionals.length === 0 ? (
-                <EduButton onClick={() => onAdd(i)} type="primary" size="large" data-cy="add-new-method">
-                  {t("component.math.addComparison")}
-                </EduButton>
-              ) : null}
             </Panel>
           ))}
         </Collapse>

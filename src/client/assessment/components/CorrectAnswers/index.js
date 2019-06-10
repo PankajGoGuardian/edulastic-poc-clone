@@ -83,6 +83,7 @@ class CorrectAnswers extends Component {
           padding: 0,
           boxShadow: "none",
           marginLeft: "auto",
+          minHeight: 28,
           marginBottom
         }}
         onClick={() => {
@@ -99,10 +100,10 @@ class CorrectAnswers extends Component {
 
     return (
       <Widget>
-        <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
+        <Subtitle margin="0 0 6px">{t("component.correctanswers.setcorrectanswers")}</Subtitle>
 
         <div>
-          <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 15 }}>
+          <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 10 }}>
             {tabs > 1 && (
               <Tab
                 type="primary"

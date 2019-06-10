@@ -2,22 +2,29 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Col, Select } from "antd";
 import { pick } from "lodash";
-import { MathInput } from "@edulastic/common";
+import { MathInput, withWindowSizes } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
+import { mobileWidth } from "@edulastic/colors";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
-import { AdditionalToggle, AdditionalContainer } from "./styled/Additional";
+import {
+  AdditionalToggle,
+  AdditionalContainer,
+  AdditionalCompareUsing,
+  AdditionalAddRule,
+  AdditionalContainerRule
+} from "./styled/Additional";
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
-import { AriaLabel, CheckOption, DecimalSeparator, Field, Rule, SignificantDecimalPlaces, Tolerance } from "./options";
+import { CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
 
-const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst, syntaxes: syntaxesConst } = math;
+const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
 const methods = Object.keys(methodsConst);
 
@@ -28,13 +35,15 @@ const MathFormulaAnswerMethod = ({
   onDelete,
   method,
   value,
-  aria_label,
   options,
   item,
   index,
   showAdditionals,
   handleChangeAdditionals,
-  clearAdditionals,
+  answer,
+  onAdd,
+  onAddIndex,
+  windowWidth,
   t
 }) => {
   useEffect(() => {
@@ -54,19 +63,6 @@ const MathFormulaAnswerMethod = ({
 
     if (!val) {
       delete newOptions[prop];
-    }
-
-    onChange("options", newOptions);
-  };
-
-  const handleChangeRule = val => {
-    const newOptions = {
-      ...options,
-      syntax: val
-    };
-
-    if (![syntaxesConst.DECIMAL, syntaxesConst.STANDARD_FORM].includes(val)) {
-      delete newOptions.argument;
     }
 
     onChange("options", newOptions);
@@ -119,31 +115,8 @@ const MathFormulaAnswerMethod = ({
             />
           </Col>
         )}
-        <Col span={index === 0 ? 12 : 11}>
-          <Label>{t("component.math.compareUsing")}</Label>
-          <Select
-            data-cy="method-selection-dropdown"
-            size="large"
-            value={method}
-            style={{ width: "100%", height: 42 }}
-            onChange={val => {
-              onChange("method", val);
-              clearAdditionals();
-            }}
-          >
-            {methods.map(methodKey => (
-              <Select.Option
-                data-cy={`method-selection-dropdown-list-${methodKey}`}
-                key={methodKey}
-                value={methodsConst[methodKey]}
-              >
-                {t(`component.math.${methodsConst[methodKey]}`)}
-              </Select.Option>
-            ))}
-          </Select>
-        </Col>
         {index > 0 ? (
-          <Col span={2} style={{ paddingTop: 37 }}>
+          <Col span={2} style={{ paddingTop: windowWidth >= mobileWidth.replace("px", "") ? 37 : 5 }}>
             {onDelete && <IconTrash data-cy="delete-answer-method" onClick={onDelete} width={22} height={22} />}
           </Col>
         ) : null}
@@ -165,11 +138,36 @@ const MathFormulaAnswerMethod = ({
             : handleChangeAdditionals(`${method}_${index}`, "push")
         }
       >
-        Additional Checks
+        {t("component.math.additionalOptions")}
       </AdditionalToggle>
 
       {showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0 ? (
         <AdditionalContainer>
+          <AdditionalCompareUsing>
+            <Col spn={index === 0 ? 12 : 11}>
+              <Label>{t("component.math.compareUsing")}</Label>
+              <Select
+                data-cy="method-selection-dropdown"
+                size="large"
+                value={method}
+                style={{ width: "100%", height: 42 }}
+                onChange={val => {
+                  onChange("method", val);
+                }}
+              >
+                {methods.map(methodKey => (
+                  <Select.Option
+                    data-cy={`method-selection-dropdown-list-${methodKey}`}
+                    key={methodKey}
+                    value={methodsConst[methodKey]}
+                  >
+                    {t(`component.math.${methodsConst[methodKey]}`)}
+                  </Select.Option>
+                ))}
+              </Select>
+            </Col>
+          </AdditionalCompareUsing>
+
           {(methodOptions.includes("isSimpleFraction") || methodOptions.includes("isMixedFraction")) && (
             <StyledRow gutter={32}>
               {methodOptions.includes("isSimpleFraction") && (
@@ -376,22 +374,12 @@ const MathFormulaAnswerMethod = ({
             </StyledRow>
           )}
 
-          {(methodOptions.includes("ariaLabel") || methodOptions.includes("rule")) && (
-            <StyledRow gutter={32}>
-              {methodOptions.includes("ariaLabel") && (
-                <Col span={12}>
-                  <AriaLabel value={aria_label} onChange={onChange} />
-                </Col>
-              )}
-              {methodOptions.includes("rule") && (
-                <Rule
-                  syntax={options.syntax}
-                  argument={options.argument}
-                  onChange={changeOptions}
-                  handleChangeRule={handleChangeRule}
-                />
-              )}
-            </StyledRow>
+          {index + 1 === answer.length && (
+            <AdditionalContainerRule>
+              <AdditionalAddRule onClick={onAddIndex >= 0 ? () => onAdd(onAddIndex) : onAdd} data-cy="add-new-method">
+                {`+ ${t("component.math.chainAnotherEvaluationRule")}`}
+              </AdditionalAddRule>
+            </AdditionalContainerRule>
           )}
         </AdditionalContainer>
       ) : null}
@@ -406,23 +394,23 @@ MathFormulaAnswerMethod.propTypes = {
   options: PropTypes.object,
   value: PropTypes.string,
   method: PropTypes.string,
-  aria_label: PropTypes.string,
   t: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   showAdditionals: PropTypes.object,
+  onAdd: PropTypes.func.isRequired,
   handleChangeAdditionals: PropTypes.func,
-  clearAdditionals: PropTypes.func
+  answer: PropTypes.object.isRequired,
+  onAddIndex: PropTypes.number.isRequired,
+  windowWidth: PropTypes.number.isRequired
 };
 
 MathFormulaAnswerMethod.defaultProps = {
-  aria_label: "",
   value: "",
   method: "",
   options: {},
   onDelete: undefined,
   showAdditionals: [],
-  handleChangeAdditionals: () => {},
-  clearAdditionals: () => {}
+  handleChangeAdditionals: () => {}
 };
 
-export default withNamespaces("assessment")(MathFormulaAnswerMethod);
+export default withWindowSizes(withNamespaces("assessment")(MathFormulaAnswerMethod));

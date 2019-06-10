@@ -8,8 +8,7 @@ class DragScroll extends Component {
   dragEnterRef = createRef();
 
   state = {
-    isDragging: false,
-    isMouseClicked: false
+    isDragging: false
   };
 
   intervalId;
@@ -36,52 +35,20 @@ class DragScroll extends Component {
     clearInterval(this.intervalId);
   };
 
-  handleMouseDown = () => {
-    this.setState({ isMouseClicked: true, isDragging: true });
-  };
-
-  handleMouseUp = () => {
-    this.setState({ isMouseClicked: false, isDragging: false });
-  };
-
-  handleMouseEnter = () => {
-    const { handleDragEnter } = this;
-    const { isMouseClicked } = this.state;
-    if (isMouseClicked) {
-      handleDragEnter();
-    }
-  };
-
-  handleMouseLeave = () => {
-    const { handleDragLeave } = this;
-
-    handleDragLeave();
-  };
-
   componentDidMount() {
     const dragEnterEl = this.dragEnterRef.current;
-    window.addEventListener("mousedown", this.handleMouseDown);
-    window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("dragstart", this.handleIsDragging);
     window.addEventListener("dragend", this.handleDragEnd);
-
     dragEnterEl.addEventListener("dragenter", this.handleDragEnter);
     dragEnterEl.addEventListener("dragleave", this.handleDragLeave);
-    dragEnterEl.addEventListener("mouseenter", this.handleMouseEnter);
-    dragEnterEl.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   componentWillUnmount() {
-    const dragEnterEl = this.dragEnterRef.current;
+    const containerEl = this.dragEnterRef.current;
     window.removeEventListener("dragstart", this.handleIsDragging);
     window.removeEventListener("dragend", this.handleDragEnd);
-    window.removeEventListener("mousedown", this.handleMouseDown);
-    window.removeEventListener("mouseup", this.handleMouseUp);
-
-    dragEnterEl.removeEventListener("dragenter", this.handleDragEnter);
-    dragEnterEl.removeEventListener("dragleave", this.handleDragLeave);
-    dragEnterEl.removeEventListener("mouseenter", this.handleMouseEnter);
-    dragEnterEl.removeEventListener("mouseleave", this.handleMouseLeave);
+    containerEl.removeEventListener("dragenter", this.handleDragEnter);
+    containerEl.removeEventListener("dragleave", this.handleDragLeave);
     clearInterval(this.intervalId);
   }
 

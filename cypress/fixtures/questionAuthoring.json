@@ -6,10 +6,10 @@
       "setAns": { "correct": "right-1", "points": 1 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" }
     },
-    "std_1": {
-      "quetext": "This is MCQ_STD.std_1 question",
+    "1": {
+      "quetext": "This is MCQ_STD.1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
-      "setAns": { "correct": "right-1", "points": 3 },
+      "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
       "standards": [
         {
@@ -20,8 +20,8 @@
         }
       ]
     },
-    "std_2": {
-      "quetext": "This is MCQ_STD.std_2 question",
+    "2": {
+      "quetext": "This is MCQ_STD.2 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": "right-1", "points": 2 },
       "attemptData": { "right": "right-1", "wrong": "wrong-1" },
@@ -41,6 +41,20 @@
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
       "setAns": { "correct": ["right-1", "right-2"], "points": 1 },
       "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" }
+    },
+    "1": {
+      "quetext": "This is MCQ_MULTI.1 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "setAns": { "correct": ["right-1", "right-2"], "points": 2 },
+      "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.B.4.a"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "MCQ_TF": {
@@ -49,6 +63,20 @@
       "choices": ["right", "wrong"],
       "setAns": { "correct": "right", "points": 1 },
       "attemptData": { "right": "right", "wrong": "wrong" }
+    },
+    "1": {
+      "quetext": "This is MCQ_TF.1 question",
+      "choices": ["right", "wrong"],
+      "setAns": { "correct": "right", "points": 2 },
+      "attemptData": { "right": "right", "wrong": "wrong" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "MCQ_BLOCK": {
@@ -57,6 +85,20 @@
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
       "setAns": { "correct": ["right-1"], "points": 1 },
       "attemptData": { "right": ["right-1"], "wrong": "wrong-1" }
+    },
+    "1": {
+      "quetext": "This is MCQ_BLOCK.1 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
+      "setAns": { "correct": ["right-1"], "points": 2 },
+      "attemptData": { "right": ["right-1"], "wrong": "wrong-1" },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.B.4.a"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "CHOICE_STD": {

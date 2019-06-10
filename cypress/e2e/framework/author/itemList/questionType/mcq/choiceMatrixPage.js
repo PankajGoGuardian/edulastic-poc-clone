@@ -37,9 +37,12 @@ class ChoiceMatrixStandardPage {
   }
 
   // question content
-  getQuestionEditor() {
-    return cy.get('[data-placeholder="Enter question"]');
-  }
+  getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
+
+  setQuestionEditorText = text =>
+    this.getQuestionEditor()
+      .clear({ force: true })
+      .type(text);
 
   markAnswerInput = (index, element, target) =>
     cy
@@ -52,11 +55,13 @@ class ChoiceMatrixStandardPage {
 
   // choices
   getChoiceByIndex(index) {
-    const selector = `#idlist1${index}`;
+    /*  const selector = `#idlist1${index}`;
     return cy
       .get(selector)
       .next()
       .find(".ql-editor");
+ */
+    return this.getallChoices().eq(index);
   }
 
   deleteChoiceByIndex(index) {
@@ -69,7 +74,8 @@ class ChoiceMatrixStandardPage {
     return cy
       .get('[data-cy="sortable-list-container"]')
       .first()
-      .find(".ql-editor");
+      .find(".fr-element");
+    // .find(".ql-editor");
   }
 
   addNewChoice() {
@@ -81,11 +87,12 @@ class ChoiceMatrixStandardPage {
 
   // steams
   getSteamByIndex(index) {
-    const selector = `#idlist2${index}`;
+    /*  const selector = `#idlist2${index}`;
     return cy
       .get(selector)
       .next()
-      .find(".ql-editor");
+      .find(".ql-editor"); */
+    return this.getallSteam().eq(index);
   }
 
   deleteSteamByIndex(index) {
@@ -98,7 +105,8 @@ class ChoiceMatrixStandardPage {
     return cy
       .get('[data-cy="sortable-list-container"]')
       .eq(1)
-      .find(".ql-editor");
+      .find(".fr-element");
+    // .find(".ql-editor");
   }
 
   addNewSteam() {
@@ -434,9 +442,7 @@ class ChoiceMatrixStandardPage {
 
       if (quetext) {
         const text = `Q${queIndex + 1} - ${quetext}`;
-        this.getQuestionEditor()
-          .clear()
-          .type(text);
+        this.setQuestionEditorText(text);
       }
 
       if (choices) {
@@ -483,10 +489,10 @@ class ChoiceMatrixStandardPage {
 
       if (setAns) {
         const { correct, points } = setAns;
-        this.getPoints()
+        /*  this.getPoints()
           .clear()
           .type(`{rightarrow}${points}`);
-
+ */
         Object.keys(correct).forEach(chKey => {
           this.getCorrectAnsTableRow()
             .contains(chKey)
@@ -498,9 +504,10 @@ class ChoiceMatrixStandardPage {
                 .click();
             });
         });
+        this.header.save();
+        item.updateItemLevelScore(points);
+        item.header.save(true);
       }
-
-      this.header.save();
     });
   }
 }

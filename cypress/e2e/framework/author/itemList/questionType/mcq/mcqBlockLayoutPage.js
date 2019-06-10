@@ -13,9 +13,7 @@ class MCQBlockLayoutPage extends MCQStandardPage {
 
       if (quetext) {
         const text = `Q${queIndex + 1} - ${quetext}`;
-        this.getQuestionEditor()
-          .clear()
-          .type(text);
+        this.setQuestionEditorText(text);
       }
 
       if (choices) {
@@ -33,26 +31,32 @@ class MCQBlockLayoutPage extends MCQStandardPage {
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
-              .clear()
-              .type(choice);
+              .clear({ force: true })
+              .type(choice, { force: true });
           });
         });
       }
 
       if (setAns) {
         const { correct, points } = setAns;
-        this.getPoints()
+        /* this.getPoints()
           .clear()
-          .type(points);
+          .type(points); */
+
+        this.getAllAnsChoicesLabel()
+          .find("input:checked")
+          .click({ force: true });
 
         correct.forEach(choice => {
           this.getAllAnsChoicesLabel()
             .contains(choice)
             .click();
         });
-      }
 
-      this.header.save();
+        this.header.save();
+        item.updateItemLevelScore(points);
+        item.header.save(true);
+      }
     });
   }
 }

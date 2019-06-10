@@ -11,4 +11,6 @@ export default class SearchFilters {
     cy.xpath("//li[text()='Authored by me']").click();
     this.waitForSearchResponse();
   };
+
+  clearAll = () => cy.contains("Clear all").click({ force: true });
 }

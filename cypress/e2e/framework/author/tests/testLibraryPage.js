@@ -16,10 +16,13 @@ export default class TestLibrary {
     this.assignPage = new TestAssignPage();
   }
 
-  clickOnNewAssignment = () => {
+  clickOnAuthorTest = () => {
     cy.get("button")
       .contains("Author Test")
-      .click();
+      .click()
+      .then(() => {
+        cy.contains("button", "CREATE TEST").click();
+      });
   };
 
   createTest = (key = "default") => {
@@ -37,7 +40,7 @@ export default class TestLibrary {
 
       // create new test
       this.sidebar.clickOnTestLibrary();
-      this.clickOnNewAssignment();
+      this.clickOnAuthorTest();
 
       // test description
       if (test.name) testSummary.setName(test.name);
@@ -54,6 +57,7 @@ export default class TestLibrary {
 
       // add items
       testSummary.header.clickOnAddItems();
+      this.searchFilters.clearAll();
       testAddItem.authoredByMe().then(() => {
         this.items.forEach(itemKey => {
           testAddItem.addItemById(itemKey);
@@ -61,7 +65,7 @@ export default class TestLibrary {
       });
 
       // save
-      testSummary.header.clickOnSaveButton();
+      testSummary.header.clickOnSaveButton(true);
       // publish
       testSummary.header.clickOnPublishButton();
 

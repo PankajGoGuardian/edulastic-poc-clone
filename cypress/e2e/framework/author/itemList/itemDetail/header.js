@@ -24,7 +24,7 @@ class Header {
     return new MetadataPage();
   }
 
-  save() {
+  save(onlyPointChange = false) {
     cy.server();
     cy.route("PUT", "**/testitem/**").as("saveItem");
     cy.route("GET", "**/testitem/**").as("reload");
@@ -34,8 +34,7 @@ class Header {
       .click();
 
     cy.wait("@saveItem");
-    cy.wait("@reload");
-
+    if (!onlyPointChange) cy.wait("@reload");
     return new EditItemPage();
   }
 

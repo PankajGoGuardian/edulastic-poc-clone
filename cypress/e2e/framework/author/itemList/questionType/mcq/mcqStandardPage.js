@@ -76,11 +76,16 @@ class MCQStandardPage {
   // question content
   getQuestionEditor = () => cy.get('[data-cy="questiontext"]').find('[contenteditable="true"]');
 
+  setQuestionEditorText = text =>
+    this.getQuestionEditor()
+      .clear({ force: true })
+      .type(text);
+
   // choices
   getChoiceByIndex = index => {
     // const selector = `#idprefix${index}`;
     return cy
-      .get('[data-cy="compose-question-quill-component"]')
+      .get('[data-cy="quillSortableItem"]')
       .eq(index)
       .find(".fr-element");
   };
@@ -285,9 +290,7 @@ class MCQStandardPage {
 
       if (quetext) {
         const text = `Q${queIndex + 1} - ${quetext}`;
-        this.getQuestionEditor()
-          .clear()
-          .type(text);
+        this.setQuestionEditorText(text);
       }
 
       if (choices) {
@@ -305,8 +308,8 @@ class MCQStandardPage {
           }
           choices.forEach((choice, index) => {
             this.getChoiceByIndex(index)
-              .clear()
-              .type(choice);
+              .clear({ force: true })
+              .type(choice, { force: true });
           });
         });
       }
@@ -323,9 +326,8 @@ class MCQStandardPage {
           .click();
 
         this.header.save();
-
         item.updateItemLevelScore(points);
-        item.header.save();
+        item.header.save(true);
       }
     });
   }

@@ -43,9 +43,7 @@ class AssignmentsPage {
       .should("be.visible")
       .click({ force: true });
 
-    cy.wait("@test-start");
-
-    return new StudentTestPage();
+    return cy.wait("@test-start").then(() => new StudentTestPage());
   }
 
   validateAssignment(name, status, assignmentButtonValue) {

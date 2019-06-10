@@ -9,7 +9,7 @@
     "name": "LCB Test Assessment 01",
     "grade": ["Kindergarten"],
     "subject": ["Math"],
-    "itemKeys": ["MCQ_STD.std_1", "MCQ_STD.std_2"]
+    "itemKeys": ["MCQ_STD.1", "MCQ_MULTI.1", "MCQ_TF.1", "MCQ_BLOCK.1"]
   },
   "EDIT_1": {
     "name": "Test Edit Flow",

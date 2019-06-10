@@ -29,7 +29,7 @@ export default class TestHeader {
 
     cy.get('[data-cy="save"]').click();
     return cy.wait("@saveTest").then(xhr => {
-      assert(xhr.status === 200, "Creating test failed");
+      assert(xhr.status === 200, "saving test");
       const testId = xhr.response.body.result._id;
       console.log("test created with _id : ", testId);
       cy.saveTestDetailToDelete(testId);

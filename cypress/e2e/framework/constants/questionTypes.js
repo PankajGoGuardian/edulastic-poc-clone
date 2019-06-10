@@ -21,13 +21,15 @@ export const questionTypeKey = {
 export const attemptTypes = {
   RIGHT: "right",
   WRONG: "wrong",
-  SKIP: "skip"
+  SKIP: "skip",
+  PARTIAL_CORRECT: "partialCorrect"
 };
 
 export const queColor = {
   RIGHT: "rgb(94, 181, 0)",
   WRONG: "rgb(243, 95, 95)",
-  SKIP: "rgb(229, 229, 229)"
+  SKIP: "rgb(229, 229, 229)",
+  BLUE: "rgb(23, 116, 240)"
 };
 
 export const questionGroup = {

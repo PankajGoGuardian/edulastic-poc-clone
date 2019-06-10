@@ -53,7 +53,7 @@ class ComposeQuestion extends Component {
     const { item, t } = this.props;
 
     return (
-      <Widget>
+      <Widget data-cy="questiontext">
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
         <QuestionTextArea
           placeholder={t("component.matrix.enterQuestion")}

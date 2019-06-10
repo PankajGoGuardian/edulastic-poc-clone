@@ -1,4 +1,4 @@
-import { questionTypeKey as queTypes, attemptTypes } from "../../constants/questionTypes";
+import { questionTypeKey as queTypes, attemptTypes, queColor } from "../../constants/questionTypes";
 
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
@@ -102,6 +102,8 @@ export default class QuestionResponsePage {
 
     switch (queTypeKey.split(".")[0]) {
       case queTypes.MULTIPLE_CHOICE_STANDARD:
+      case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+      case queTypes.TRUE_FALSE:
         switch (attemptType) {
           case attemptTypes.RIGHT:
             this.getLabels(queCard)
@@ -119,6 +121,43 @@ export default class QuestionResponsePage {
               .should("have.class", attemptTypes.WRONG)
               .find("input")
               .should("be.checked");
+            this.verifyScoreWrong(cy.get("@quecard"), points);
+            break;
+
+          case attemptTypes.SKIP:
+            break;
+
+          default:
+            break;
+        }
+        this.getLabels(cy.get("@quecard"))
+          .contains(attemptData[attemptTypes.RIGHT])
+          .closest("label")
+          .should("have.class", attemptTypes.RIGHT);
+        break;
+
+      case queTypes.MULTIPLE_CHOICE_BLOCK:
+        switch (attemptType) {
+          case attemptTypes.RIGHT:
+            expect(
+              this.getLabels(queCard)
+                .contains(attemptData[attemptTypes.RIGHT])
+                .closest("label")
+                .css("background-color")
+            ).to.eq(queColor.BLUE);
+
+            this.verifyScoreRight(cy.get("@quecard"), points);
+            break;
+
+          case attemptTypes.WRONG:
+            this.getLabels(queCard)
+              .contains(attemptData[attemptTypes.WRONG])
+              .closest("label")
+              .then($ele => {
+                cy.wrap($ele).should("have.class", attemptTypes.WRONG);
+                expect(cy.wrap($ele).css("background-color")).to.eq(queColor.BLUE);
+              });
+
             this.verifyScoreWrong(cy.get("@quecard"), points);
             break;
 

@@ -1,6 +1,6 @@
 import ReportsPage from "./reportsPage";
 import MathEditor from "./mathEditor";
-import { questionTypeKey as questionType } from "../constants/questionTypes";
+import { attemptTypes, questionTypeKey as questionType } from "../constants/questionTypes";
 
 class StudentTestPage {
   constructor() {
@@ -125,6 +125,12 @@ class StudentTestPage {
       });
     return this;
   };
+
+  clickOnChoice = ch =>
+    cy
+      .contains(ch)
+      .should("be.visible")
+      .click();
 
   checkHighLightUncheckedByAnswer = answer => {
     cy.contains(answer)
@@ -541,13 +547,24 @@ class StudentTestPage {
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
 
   attemptQuestion = (attemptQueType, attemptType, attemptData) => {
-    const { right, wrong } = attemptData;
+    cy.wait(1000); // double rendering issue causes choices to suffle and breaks test, hence waiting
+    const { right, wrong, partialCorrect } = attemptData;
+    const attempts =
+      attemptType === attemptTypes.RIGHT
+        ? right
+        : attemptType === attemptTypes.WRONG
+        ? wrong
+        : attemptType === attemptTypes.PARTIAL_CORRECT
+        ? partialCorrect
+        : undefined;
     switch (attemptQueType) {
       case questionType.MULTIPLE_CHOICE_STANDARD:
-        if (attemptType === this.attemptType.RIGHT) {
-          this.checkHighLightByAnswer(right);
-        } else if (attemptType === this.attemptType.WRONG) {
-          this.checkHighLightByAnswer(wrong);
+      case questionType.TRUE_FALSE:
+      case questionType.MULTIPLE_CHOICE_MULTIPLE:
+      case questionType.MULTIPLE_CHOICE_BLOCK:
+        if (attemptType !== attemptTypes.SKIP) {
+          if (Cypress._.isArray(attempts)) attempts.forEach(choice => this.clickOnChoice(choice));
+          else this.clickOnChoice(attempts);
         }
         break;
 

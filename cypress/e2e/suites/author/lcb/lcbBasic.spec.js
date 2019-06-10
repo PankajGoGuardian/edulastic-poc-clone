@@ -20,7 +20,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02",
-        attempt: { Q1: "right", Q2: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
         status: "SUBMITTED"
       }
     ],
@@ -28,7 +28,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01",
-        attempt: { Q1: "wrong", Q2: "wrong" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
         status: "SUBMITTED"
       }
     ],
@@ -36,38 +36,38 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01",
-        attempt: { Q1: "right", Q2: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02",
-        attempt: { Q1: "right", Q2: "wrong" },
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student03@yopmail.com",
         stuName: "Student03",
-        attempt: { Q1: "wrong", Q2: "right" },
+        attempt: { Q1: "wrong", Q2: "right", Q3: "right", Q4: "skip" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student04@yopmail.com",
         stuName: "Student04",
-        attempt: { Q1: "wrong", Q2: "skip" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student05@yopmail.com",
         stuName: "Student05",
-        attempt: { Q1: "right", Q2: "skip" },
+        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip" },
         status: "IN PROGRESS"
       },
       {
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip" }
       }
     ]
   };

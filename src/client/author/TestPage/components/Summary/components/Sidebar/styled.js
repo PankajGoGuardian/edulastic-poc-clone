@@ -94,3 +94,9 @@ export const AnalyticsContainer = styled(FlexContainer)`
 export const AnalyticsItem = styled(FlexContainer)`
   margin-right: 31px;
 `;
+
+export const ErrorWrapper = styled.div`
+  color: red;
+  margin-top: -6px;
+  margin-bottom: 15px;
+`;

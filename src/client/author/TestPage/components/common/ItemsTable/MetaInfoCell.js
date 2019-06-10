@@ -49,9 +49,11 @@ class MetaInfoCell extends Component {
       selectedRows,
       setTestData,
       test,
-      tests
+      tests,
+      gotoSummary
     } = this.props;
     if (!test.title) {
+      gotoSummary();
       return message.error("Name field cannot be empty");
     }
     const newTest = cloneDeep(test);
@@ -229,11 +231,13 @@ MetaInfoCell.propTypes = {
   selectedTests: PropTypes.array.isRequired,
   setTestItems: PropTypes.func.isRequired,
   selectedRows: PropTypes.object,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  gotoSummary: PropTypes.func
 };
 
 MetaInfoCell.defaultProps = {
-  selectedRows: {}
+  selectedRows: {},
+  gotoSummary: () => {}
 };
 
 const enhance = compose(

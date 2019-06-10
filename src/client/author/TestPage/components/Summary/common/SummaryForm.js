@@ -5,9 +5,12 @@ import { lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
 import { Button } from "@edulastic/common";
 
 export const SummaryInput = styled(Input)`
-  border: none;
+  border: ${props => (props.value ? "" : "1px solid red")};
   background: ${lightGreySecondary};
-  margin-bottom: 23px;
+  margin-bottom: ${props => (props.value ? "23px" : "5px")};
+  &:focus {
+    border: ${props => (props.value ? "" : "1px solid red")};
+  }
 `;
 
 export const SummaryButton = styled(Button)`

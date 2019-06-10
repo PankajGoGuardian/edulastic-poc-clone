@@ -113,12 +113,17 @@ class Container extends PureComponent {
   }
 
   handleNavChange = value => () => {
+    if (!this.props.test.title) {
+      return;
+    }
+
     if (value === "source") {
       this.setState({
         showModal: true
       });
       return;
     }
+
     this.setState({
       current: value
     });
@@ -192,6 +197,7 @@ class Container extends PureComponent {
             current={current}
             onSaveTestId={this.handleSaveTestId}
             test={test}
+            gotoSummary={this.handleNavChange("description")}
           />
         );
       case "description":

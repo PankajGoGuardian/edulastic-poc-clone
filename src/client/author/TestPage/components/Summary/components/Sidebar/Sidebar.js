@@ -7,7 +7,7 @@ import { FlexContainer } from "@edulastic/common";
 
 import { selectsData } from "../../../common";
 import { SummaryInput, SummarySelect } from "../../common/SummaryForm";
-import { Block, MainTitle, MetaTitle, AnalyticsContainer, AnalyticsItem } from "./styled";
+import { Block, MainTitle, MetaTitle, AnalyticsContainer, AnalyticsItem, ErrorWrapper } from "./styled";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
@@ -38,6 +38,7 @@ const Sidebar = ({
         size="large"
         placeholder={isPlaylist ? `Enter a playlist name` : `Enter the test name`}
       />
+      {!title && <ErrorWrapper>Test should have title</ErrorWrapper>}
 
       <MainTitle>Grade</MainTitle>
       <SummarySelect

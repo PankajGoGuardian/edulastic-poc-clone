@@ -67,7 +67,8 @@ class AddItems extends PureComponent {
     clearDictStandards: PropTypes.func.isRequired,
     onSaveTestId: PropTypes.func.isRequired,
     createTestItem: PropTypes.func.isRequired,
-    createTestItemModalVisible: PropTypes.bool
+    createTestItemModalVisible: PropTypes.bool,
+    gotoSummary: PropTypes.func.isRequired
   };
 
   static defaultProps = {
@@ -234,7 +235,8 @@ class AddItems extends PureComponent {
       onAddItems,
       t,
       createTestItemModalVisible,
-      count
+      count,
+      gotoSummary
     } = this.props;
 
     const { search, selectedTestItems } = this.state;
@@ -273,6 +275,7 @@ class AddItems extends PureComponent {
                     onAddItems={onAddItems}
                     testId={this.props.match.params.id}
                     search={search}
+                    gotoSummary={gotoSummary}
                   />
                 )}
                 {!loading && this.renderPagination()}

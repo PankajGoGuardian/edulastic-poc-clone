@@ -6,7 +6,7 @@ import { push, replace } from "connected-react-router";
 import { message } from "antd";
 import { keyBy as _keyBy, omit, get } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
-
+import moment from "moment";
 import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
 
@@ -129,8 +129,8 @@ export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIS
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
-export const initialTestState = {
-  title: "",
+export const createBlankTest = () => ({
+  title: `Untitled Test - ${moment().format("YY-MM-DD:HH:mm:ss")}`,
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
@@ -174,10 +174,10 @@ export const initialTestState = {
     usage: "0",
     likes: "0"
   }
-};
+});
 
 const initialState = {
-  entity: initialTestState,
+  entity: createBlankTest(),
   error: null,
   page: 1,
   limit: 20,
@@ -190,7 +190,7 @@ const initialState = {
 export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_DEFAULT_TEST_DATA:
-      return { ...state, entity: initialTestState };
+      return { ...state, entity: createBlankTest() };
     case RECEIVE_TEST_BY_ID_REQUEST:
       return { ...state, loading: true };
     case SET_TEST_EDIT_ASSIGNED:

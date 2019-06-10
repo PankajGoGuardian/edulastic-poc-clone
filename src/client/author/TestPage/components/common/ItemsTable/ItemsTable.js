@@ -21,8 +21,19 @@ const ItemsTable = ({
   standards,
   windowWidth,
   testId,
-  search
+  search,
+  gotoSummary
 }) => {
+  const columnProps = {
+    setSelectedTests,
+    selectedTests,
+    onAddItems,
+    windowWidth,
+    search,
+    testId,
+    gotoSummary
+  };
+
   const columns = [
     {
       title: "Main info",
@@ -35,16 +46,7 @@ const ItemsTable = ({
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => (
-        <MetaInfoCell
-          data={data}
-          setSelectedTests={setSelectedTests}
-          selectedTests={selectedTests}
-          onAddItems={onAddItems}
-          windowWidth={windowWidth}
-          search={search}
-        />
-      )
+      render: data => <MetaInfoCell data={data} {...columnProps} />
     }
   ];
 
@@ -53,17 +55,7 @@ const ItemsTable = ({
       title: "Meta info",
       dataIndex: "meta",
       key: "meta",
-      render: data => (
-        <MetaInfoCell
-          data={data}
-          setSelectedTests={setSelectedTests}
-          selectedTests={selectedTests}
-          onAddItems={onAddItems}
-          windowWidth={windowWidth}
-          testId={testId}
-          search={search}
-        />
-      )
+      render: data => <MetaInfoCell data={data} {...columnProps} />
     }
   ];
 

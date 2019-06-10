@@ -91,17 +91,20 @@ class AddClassModal extends Component {
 
   fetchTeacher = async value => {
     this.setState({ teacherList: [], fetchingTeacher: true });
-    const { result: teacherListData } = await userApi.fetchUsers({
+    const searchData = {
       districtId: this.props.userOrgId,
       limit: 25,
       page: 1,
-      type: "DISTRICT",
-      search: {
-        role: "teacher",
-        searchString: value
-      }
-    });
-    this.setState({ teacherList: teacherListData.data, fetchingTeacher: false });
+      role: "teacher"
+    };
+    value &&
+      Object.assign(searchData, {
+        search: {
+          username: { type: "con", value }
+        }
+      });
+    const { result: teacherListData } = await userApi.fetchUsers(searchData);
+    this.setState({ teacherList: teacherListData, fetchingTeacher: false });
   };
 
   handleTeacherChange = value => {

@@ -17,7 +17,6 @@ import {
   StyledSearch,
   StyledActionDropDown,
   TeacherSpan,
-  
   StyledPagination,
   StyledFilterButton
 } from "./styled";
@@ -357,7 +356,7 @@ class ClassesTable extends Component {
         title: "Teacher",
         dataIndex: "_source.owners",
         editable: true,
-        render: owners => {
+        render: (owners = []) => {
           const teachers = owners.map((owner, index) => (
             <TeacherSpan key={`${owner.id}${index}`}>{owner.name}</TeacherSpan>
           ));

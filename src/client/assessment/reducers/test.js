@@ -6,7 +6,9 @@ import {
   RESET_CURRENT_TEST_ITEM,
   SET_RESUME_STATUS,
   SET_TEST_LOADING_STATUS,
-  COUNT_CHECK_ANSWER
+  COUNT_CHECK_ANSWER,
+  SET_PASSWORD_VALIDATE_STATUS,
+  TEST_ACTIVITY_LOADING
 } from "../constants/actions";
 
 const initialState = {
@@ -17,7 +19,9 @@ const initialState = {
   title: "",
   loading: true,
   settings: {},
-  answerCheckByItemId: {}
+  answerCheckByItemId: {},
+  isPasswordValidated: false,
+  loadingTestActivity: true
 };
 
 const test = (state = initialState, { payload, type }) => {
@@ -78,6 +82,16 @@ const test = (state = initialState, { payload, type }) => {
           ...state.answerCheckByItemId,
           [payload.itemId]: answerCheckCount + 1
         }
+      };
+    case SET_PASSWORD_VALIDATE_STATUS:
+      return {
+        ...state,
+        isPasswordValidated: payload
+      };
+    case TEST_ACTIVITY_LOADING:
+      return {
+        ...state,
+        loadingTestActivity: payload
       };
     default:
       return state;

@@ -1,7 +1,8 @@
-import { testActivityApi, testsApi } from "@edulastic/api";
-import { takeEvery, call, all, put, select } from "redux-saga/effects";
+import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
+import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy } from "lodash";
+import { message } from "antd";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroup } from "../../student/Login/ducks";
@@ -14,9 +15,12 @@ import {
   LOAD_ANSWERS,
   SET_TEST_ACTIVITY_ID,
   LOAD_SCRATCH_PAD,
-  SET_TEST_LOADING_STATUS
+  SET_TEST_LOADING_STATUS,
+  GET_ASSIGNMENT_PASSWORD,
+  TEST_ACTIVITY_LOADING
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
+import { setPasswordValidateStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 
@@ -54,8 +58,33 @@ function* loadTest({ payload }) {
     const testRequest = !demo
       ? call(testsApi.getById, testId, { validation: true, data: true, groupId, testActivityId })
       : call(testsApi.getPublicTest, testId);
-    const [test, testActivity] = yield all([testRequest, getTestActivity]);
+    const [testActivity] = yield all([getTestActivity]);
+    if (!preview) {
+      let passwordValidated = !testActivity.assignmentSettings.requirePassword;
+      if (passwordValidated) {
+        yield put(setPasswordValidateStatusAction(true));
+      }
+      yield put({
+        type: TEST_ACTIVITY_LOADING,
+        payload: false
+      });
+      while (!passwordValidated) {
+        const { payload } = yield take(GET_ASSIGNMENT_PASSWORD);
+        const response = yield call(assignmentApi.validateAssignmentPassword, {
+          assignmentId: testActivity.testActivity.assignmentId,
+          password: payload
+        });
+        if (response === "successful") {
+          passwordValidated = true;
+        } else if (response === "unsuccessful") {
+          yield call(message.error, "incorrect password");
+        } else {
+          yield call(message.error, "validation failed");
+        }
+      }
+    }
 
+    const [test] = yield all([testRequest]);
     const questions = getQuestions(test.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
 
@@ -65,7 +94,9 @@ function* loadTest({ payload }) {
       calcType:
         (testActivity && testActivity.testActivity.calcType) || test.calcType || testContants.calculatorTypes.NONE,
       maxAnswerChecks:
-        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.maxAnswerChecks) || 0
+        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.maxAnswerChecks) || 0,
+      requirePassword:
+        (testActivity && testActivity.assignmentSettings && testActivity.assignmentSettings.requirePassword) || false
     };
     const answerCheckByItemId = {};
     (testActivity.questionActivities || []).map(item => {
@@ -161,6 +192,7 @@ function* loadTest({ payload }) {
         answerCheckByItemId
       }
     });
+    yield put(setPasswordValidateStatusAction(true));
 
     yield put({
       type: SET_TEST_LOADING_STATUS,

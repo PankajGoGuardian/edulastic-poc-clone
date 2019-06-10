@@ -116,6 +116,15 @@ const fetchAssignmentsClassList = ({ districtId, testId }) =>
     })
     .then(result => result.data.result);
 
+const validateAssignmentPassword = ({ assignmentId, password }) =>
+  api
+    .callApi({
+      url: `${prefix}/${assignmentId}/validate-password`,
+      method: "post",
+      data: { password }
+    })
+    .then(result => result.data);
+
 export default {
   create,
   update,
@@ -129,5 +138,6 @@ export default {
   getById,
   fetchTestActivities,
   duplicateAssignment,
-  redirect
+  redirect,
+  validateAssignmentPassword
 };

@@ -60,6 +60,10 @@ export const testLoadingSelector = createSelector(
   state => state.loading
 );
 
+export const testActivityLoadingSelector = createSelector(
+  stateSelector,
+  state => state.loadingTestActivity
+);
 export const answerChecksByIdSelector = createSelector(
   stateSelector,
   state => state.answerCheckByItemId

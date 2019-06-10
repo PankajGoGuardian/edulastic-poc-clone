@@ -323,10 +323,13 @@ function* receiveTestByIdSaga({ payload }) {
 }
 
 function* createTestSaga({ payload }) {
-  const { _id: oldId, versioned: regrade = false, title } = payload.data;
+  const { _id: oldId, versioned: regrade = false, title, requirePassword = false } = payload.data;
   try {
     if (!title) {
       return yield call(message.error(" Name field cannot be empty "));
+    }
+    if (!requirePassword) {
+      delete payload.data.assignmentPassword;
     }
     const dataToSend = omit(payload.data, ["assignments", "createdDate", "updatedDate"]);
     const entity = yield call(testsApi.create, dataToSend);

@@ -87,11 +87,12 @@ const JoinSchool = ({
             <Col md={12}>
               <SelectForm>
                 <SchoolSelect
-                  value={selected}
+                  value={selected ? selected : undefined}
                   onChange={changeSchool}
                   onSearch={handleSearch}
                   loading={isSearching}
                   showSearch
+                  placeholder="Search school by Zip, name or City"
                 >
                   {schools.map((school, i) => {
                     const { address, location } = school;

@@ -32,7 +32,7 @@ class ClozeInputAnswer extends Component {
   };
 
   render() {
-    const { answer } = this.props;
+    const { answers } = this.props;
 
     return (
       <AnswerContainer>
@@ -42,9 +42,9 @@ class ClozeInputAnswer extends Component {
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
-          {answer.map((inputValue, inputIndex) => (
-            <Panel header={`Text Input ${inputIndex + 1}`} key={inputIndex}>
-              <Input value={inputValue} onChange={e => this.onChangeHandler(e.target.value, inputIndex)} />
+          {answers.map(answer => (
+            <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
+              <Input value={answer.value} onChange={e => this.onChangeHandler(e.target.value, answer.targetIndex)} />
             </Panel>
           ))}
         </Collapse>
@@ -54,7 +54,7 @@ class ClozeInputAnswer extends Component {
 }
 
 ClozeInputAnswer.propTypes = {
-  answer: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };
 

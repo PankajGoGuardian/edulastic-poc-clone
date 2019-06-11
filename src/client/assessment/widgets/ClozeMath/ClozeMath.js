@@ -1,8 +1,8 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React, { Fragment, useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Paper } from "@edulastic/common";
+import { Paper, WithResources } from "@edulastic/common";
 import { isUndefined } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
@@ -38,8 +38,6 @@ const ClozeMath = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const [dropDowns, setDropDowns] = useState(0);
-
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
@@ -47,6 +45,16 @@ const ClozeMath = ({
     });
 
     setQuestionData(newItem);
+  };
+
+  const getDropdowns = tmpl => {
+    if (isUndefined(window.$)) {
+      return;
+    }
+    const temp = tmpl || "";
+    const parsedHTML = $.parseHTML(temp);
+    const _dropDowns = $(parsedHTML).find("textdropdown").length;
+    return _dropDowns;
   };
 
   const _setQuestionData = newItem => {
@@ -57,25 +65,19 @@ const ClozeMath = ({
     );
   };
 
-  const getDropdowns = tmpl => {
-    if (isUndefined(window.$)) {
-      return;
-    }
-    const temp = tmpl || "";
-    const parsedHTML = $.parseHTML(temp);
-    const _dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
-    return _dropDowns;
-  };
-
-  useEffect(() => {
-    const counts = getDropdowns(item.template);
-    setDropDowns(counts);
-  }, [item.template]);
-
   const itemForPreview = replaceVariables(item);
+  const dropDowns = getDropdowns(item.template);
   const dropDownsContainers = new Array(dropDowns).fill(true);
   return (
-    <Fragment>
+    <WithResources
+      resources={[
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+      ]}
+      fallBack={<span />}
+      onLoaded={() => {}}
+    >
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion
@@ -129,6 +131,7 @@ const ClozeMath = ({
             item={itemForPreview}
             template={item.template}
             options={item.options || {}}
+            responseIndexes={item.response_indexes}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}
@@ -137,7 +140,7 @@ const ClozeMath = ({
           />
         </Paper>
       )}
-    </Fragment>
+    </WithResources>
   );
 };
 

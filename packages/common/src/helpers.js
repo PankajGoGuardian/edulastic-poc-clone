@@ -1,5 +1,4 @@
-/* eslint-disable func-names */
-/* eslint-disable no-undef */
+/* eslint-disable */
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 
@@ -109,25 +108,13 @@ const sanitizeSelfClosingTags = inputString =>
 const parseTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
-    return temp;
+    return "";
   }
 
   const parsedHTML = $.parseHTML(temp);
 
   $(parsedHTML)
-    .find("textinput")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("mathinput")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("textdropdown")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("response")
+    .find("textinput, mathinput, textdropdown, response")
     .each(addProps);
 
   $(parsedHTML)
@@ -143,6 +130,40 @@ const parseTemplate = tmpl => {
 
   return sanitizeSelfClosingTags(temp);
 };
+
+export const getResponsesCount = element => {
+  return $(element).find("textinput, textdropdown, mathinput").length;
+};
+
+export const reIndexResponses = html => {
+  const parsedHTML = $.parseHTML(html);
+  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
+    return false;
+  }
+  $(parsedHTML)
+    .find("textinput, mathinput, textdropdown, response")
+    .each(function(index) {
+      $(this)
+        .find("span")
+        .remove("span");
+      $(this).attr("index", index);
+      let text = $(this).text();
+      $(this).html(`<span class="index">${index + 1}</span>${text}`);
+
+      text = $("<div>")
+        .append($(this).clone())
+        .html();
+
+      $(this).replaceWith(text);
+    });
+
+  const temp = $("<div />")
+    .append(parsedHTML)
+    .html();
+
+  return temp;
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -152,5 +173,6 @@ export default {
   isEmpty,
   uploadToS3,
   parseTemplate,
+  reIndexResponses,
   canInsert
 };

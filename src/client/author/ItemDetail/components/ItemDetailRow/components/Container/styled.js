@@ -7,7 +7,7 @@ export const Content = styled(Paper)`
   height: 100%;
   left: 0;
   right: 0;
-  overflow: auto;
+  /* overflow: auto; */
   padding: 25px;
   height: 100%;
 

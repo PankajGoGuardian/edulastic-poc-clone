@@ -1,5 +1,5 @@
 import axios from "axios";
-import { omitBy, flatten, isNumber, isString, round } from "lodash";
+import { omitBy, flatten, isNumber, isString, round, trim } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
@@ -154,10 +154,14 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     valid_dropdown,
     valid_inputs,
     alt_responses = [],
+    alt_dropdowns = [],
+    alt_inputs = [],
     scoring_type,
     min_score_if_attempted: attemptScore
   } = validation;
   const answers = [valid_response, ...alt_responses];
+
+  let _evaluation = [];
 
   const { dropDown: _dropDownResponse = [], inputs: _inputsResponse = [], math: _mathResponse = [] } = userResponse;
   let entered = _dropDownResponse.filter(response => response).length;
@@ -165,10 +169,10 @@ const evaluator = async ({ userResponse = {}, validation }) => {
   entered += _mathResponse.filter(response => response).length;
 
   const inputsResults = await clozeTextEvaluator({
-    userResponse: _inputsResponse,
+    userResponse: _inputsResponse.map(r => (r ? trim(r.value) : "")),
     validation: {
       scoring_type,
-      alt_responses: [],
+      alt_responses: alt_inputs,
       valid_response: {
         ...valid_inputs
       }
@@ -176,10 +180,10 @@ const evaluator = async ({ userResponse = {}, validation }) => {
   });
 
   const dropDownResults = await clozeTextEvaluator({
-    userResponse: _dropDownResponse,
+    userResponse: _dropDownResponse.map(r => (r ? trim(r.value) : "")),
     validation: {
       scoring_type,
-      alt_responses: [],
+      alt_responses: alt_dropdowns,
       valid_response: {
         ...valid_dropdown
       }
@@ -192,7 +196,7 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     case ScoringType.EXACT_MATCH:
     default:
       const checks = getChecks(validation);
-      mathResults = await exactMatchEvaluator(_mathResponse, answers, checks);
+      mathResults = await exactMatchEvaluator(_mathResponse.map(r => (r ? trim(r.value) : "")), answers, checks);
   }
 
   // if score for attempting is greater than current score
@@ -205,16 +209,33 @@ const evaluator = async ({ userResponse = {}, validation }) => {
   corrects += dropDownResults.evaluation.filter(answer => answer).length;
   corrects += mathResults.evaluation ? mathResults.evaluation.filter(answer => answer).length : 0;
 
-  const evaluation = {
-    mathResults,
-    inputsResults,
-    dropDownResults
-  };
+  // evaluation results to one list
+  dropDownResults.evaluation.map((r, i) => {
+    const uRes = _dropDownResponse[i];
+    if (uRes) {
+      _evaluation[uRes.index] = r;
+    }
+  });
+
+  inputsResults.evaluation.map((r, i) => {
+    const uRes = _inputsResponse[i];
+    if (uRes) {
+      _evaluation[uRes.index] = r;
+    }
+  });
+
+  mathResults.evaluation.map((r, i) => {
+    const uRes = _mathResponse[i];
+    if (uRes) {
+      _evaluation[uRes.index] = r;
+    }
+  });
+
   const score = round(corrects / entered, 2);
   const maxScore = 1;
 
   return {
-    evaluation,
+    evaluation: _evaluation,
     score,
     maxScore
   };

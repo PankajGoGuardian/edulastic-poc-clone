@@ -1,9 +1,11 @@
+/* eslint-disable func-names */
+/* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
 
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
-import { WithResources, Stimulus, helpers } from "@edulastic/common";
+import { Stimulus, helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
 import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
 import AnswerBox from "./AnswerBox";
@@ -22,7 +24,8 @@ const ClozeMathPreview = ({
   evaluation,
   showQuestionNumber,
   qIndex,
-  options
+  options,
+  responseIndexes
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
@@ -35,38 +38,76 @@ const ClozeMathPreview = ({
       return "";
     });
 
+  const _getAltMathAnswers = () =>
+    get(item, "validation.alt_responses", []).map(alt =>
+      get(alt, "value", []).map(res => {
+        const method = res[0];
+        if (method) {
+          return method.value;
+        }
+        return "";
+      })
+    );
+
   const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []).map(res => res || "");
+  const _getAltDropDownAnswers = () =>
+    get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []).map(res => res || ""));
 
   const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []).map(res => res || "");
+  const _getAltInputsAnswers = () =>
+    get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []).map(res => res || ""));
 
-  const handleAddAnswer = (answer, index, key) => {
+  const handleAddAnswer = (answer, index) => {
     let newAnswers = cloneDeep(userAnswer);
-    const answers = newAnswers[key] || [];
+    const answers = newAnswers[answer.type] || [];
     answers[index] = answer;
 
     newAnswers = {
       ...newAnswers,
-      [key]: answers
+      [answer.type]: answers
     };
     saveAnswer(newAnswers);
   };
 
+  const setTargetIndex = str => {
+    let temp = ` ${str}`.slice(1);
+    const parsedHTML = $.parseHTML(temp);
+    function addProps(i) {
+      $(this).attr("targetIndex", `{{${i}}}`);
+      const text = $("<div>")
+        .append($(this).clone())
+        .html();
+      $(this).replaceWith(text);
+    }
+
+    $(parsedHTML)
+      .find("textinput")
+      .each(addProps);
+
+    $(parsedHTML)
+      .find("mathinput")
+      .each(addProps);
+
+    $(parsedHTML)
+      .find("textdropdown")
+      .each(addProps);
+
+    temp = $("<div />")
+      .append(parsedHTML)
+      .html();
+
+    return temp;
+  };
+
   useEffect(() => {
-    setNewHtml(helpers.parseTemplate(template));
+    if (window.$) {
+      const _newHtml = setTargetIndex(template);
+      setNewHtml(helpers.parseTemplate(_newHtml));
+    }
   }, [template]);
 
   return (
-    <WithResources
-      resources={[
-        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
-        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
-      ]}
-      fallBack={<span />}
-      onLoaded={() => {
-        setNewHtml(helpers.parseTemplate(template));
-      }}
-    >
+    <div>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
         <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
@@ -98,9 +139,13 @@ const ClozeMathPreview = ({
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
           textInputAnswers={_getTextInputAnswers()}
+          responseIndexes={responseIndexes}
+          altMathAnswers={_getAltMathAnswers()}
+          altDropDowns={_getAltDropDownAnswers()}
+          altInputs={_getAltInputsAnswers()}
         />
       )}
-    </WithResources>
+    </div>
   );
 };
 
@@ -112,6 +157,7 @@ ClozeMathPreview.propTypes = {
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
+  responseIndexes: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };

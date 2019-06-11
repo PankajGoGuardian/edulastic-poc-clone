@@ -4,36 +4,114 @@ import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
-const AnswerBox = ({ mathAnswers, dropdownAnswers, textInputAnswers }) => (
-  <Wrapper>
-    <Title>Correct answers math field</Title>
-    {mathAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-    <Title>Correct answers dropdown field</Title>
-    {dropdownAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-    <Title>Correct answers input field</Title>
-    {textInputAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-  </Wrapper>
-);
+const AnswerBox = ({
+  mathAnswers,
+  dropdownAnswers,
+  textInputAnswers,
+  altMathAnswers,
+  altDropDowns,
+  altInputs,
+  responseIndexes
+}) => {
+  const { inputs, maths, dropDowns } = responseIndexes;
+  let validAnswers = [];
+
+  mathAnswers.map((answer, targetIndex) =>
+    validAnswers.push({
+      index: maths[targetIndex].index,
+      value: answer,
+      isMath: true
+    })
+  );
+
+  dropdownAnswers.map((answer, targetIndex) =>
+    validAnswers.push({
+      index: dropDowns[targetIndex].index,
+      value: answer,
+      isMath: false
+    })
+  );
+
+  textInputAnswers.map((answer, targetIndex) =>
+    validAnswers.push({
+      index: inputs[targetIndex].index,
+      value: answer,
+      isMath: false
+    })
+  );
+  validAnswers = validAnswers.sort((a, b) => a.index - b.index);
+
+  const altAnswers = altMathAnswers.map((alt, altIndex) => {
+    const _altAnswers = [];
+
+    alt.map((answer, targetIndex) =>
+      _altAnswers.push({
+        index: maths[targetIndex].index,
+        value: answer,
+        isMath: true
+      })
+    );
+
+    altDropDowns[altIndex].map((answer, targetIndex) =>
+      _altAnswers.push({
+        index: dropDowns[targetIndex].index,
+        value: answer,
+        isMath: false
+      })
+    );
+
+    altInputs[altIndex].map((answer, targetIndex) =>
+      _altAnswers.push({
+        index: inputs[targetIndex].index,
+        value: answer,
+        isMath: false
+      })
+    );
+
+    return _altAnswers.sort((a, b) => a.index - b.index);
+  });
+
+  return (
+    <Wrapper>
+      <Title>Correct answers</Title>
+      {validAnswers.map((answer, index) => (
+        <Answer key={index}>
+          <Label>{answer.index + 1}</Label>
+          <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
+        </Answer>
+      ))}
+
+      {altAnswers.map((altAnswer, altIndex) => (
+        <div key={altIndex}>
+          <Title>{`Alternate answers ${altIndex + 1}`}</Title>
+          {altAnswer.map((answer, index) => (
+            <Answer key={index}>
+              <Label>{answer.index + 1}</Label>
+              <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
+            </Answer>
+          ))}
+        </div>
+      ))}
+    </Wrapper>
+  );
+};
 
 AnswerBox.propTypes = {
   mathAnswers: PropTypes.array.isRequired,
+  altMathAnswers: PropTypes.array.isRequired,
   dropdownAnswers: PropTypes.array.isRequired,
-  textInputAnswers: PropTypes.array.isRequired
+  altDropDowns: PropTypes.array.isRequired,
+  textInputAnswers: PropTypes.array.isRequired,
+  altInputs: PropTypes.array.isRequired,
+  responseIndexes: PropTypes.object
+};
+
+AnswerBox.defaultProps = {
+  responseIndexes: {
+    dropDown: [],
+    inputs: [],
+    math: []
+  }
 };
 
 export default AnswerBox;

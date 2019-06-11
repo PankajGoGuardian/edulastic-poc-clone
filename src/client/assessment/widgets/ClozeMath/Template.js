@@ -1,13 +1,16 @@
+/* eslint-disable no-undef */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
-import { cloneDeep } from "lodash";
+import { cloneDeep, replace } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
 
+// import { ToolbarContainer } from "../../styled/ToolbarContainer";
+// import { FroalaContainer } from "../../styled/FroalaContainer";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
 
@@ -17,6 +20,12 @@ const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
   value: "",
   options: {}
+};
+
+const initResponseIndexes = {
+  inputs: [],
+  maths: [],
+  dropDowns: []
 };
 
 class Template extends Component {
@@ -40,15 +49,45 @@ class Template extends Component {
     const _reduceResponseButtons = (mathInputIndexes = [], value) =>
       mathInputIndexes.map(nextIndex => {
         const newArray = [initialMethod];
-        const response = value.find((_, i) => nextIndex === i + 1);
+        const response = value.find((_, i) => nextIndex === i);
         return response || cloneDeep(newArray);
       });
 
     const _reduceVlaues = (emIndexes = [], value) =>
-      emIndexes.map(emIndex => value.find((_, i) => emIndex === i + 1) || "");
+      emIndexes.map(emIndex => value.find((_, i) => emIndex === i) || "");
 
-    // important don't remove responseIndexes for now
-    const _updateTemplate = (val, responseIndexes, mathInputIndexes, dropDownIndexes, inputIndexes) => {
+    const _reduceResponseIndexes = tmpl => {
+      const newResponseIndexes = cloneDeep(initResponseIndexes);
+
+      if (!window.$) {
+        return newResponseIndexes;
+      }
+      const temp = tmpl || "";
+      const parsedHTML = $.parseHTML(temp);
+
+      function findResponseIndexes() {
+        let index = $(this).attr("index");
+        index = replace(index, "{{", "");
+        index = replace(index, "}}", "");
+        index = parseInt(index, 10);
+        const tagName = $(this)[0].tagName.toLowerCase();
+        if (tagName === "textinput") {
+          newResponseIndexes.inputs.push({ index });
+        } else if (tagName === "mathinput") {
+          newResponseIndexes.maths.push({ index });
+        } else if (tagName === "textdropdown") {
+          newResponseIndexes.dropDowns.push({ index });
+        }
+      }
+
+      $(parsedHTML)
+        .find("textinput, mathinput, textdropdown")
+        .each(findResponseIndexes);
+
+      return newResponseIndexes;
+    };
+
+    const _updateTemplate = (val, mathInputIndexes, dropDownIndexes, inputIndexes) => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
@@ -60,6 +99,8 @@ class Template extends Component {
         draft.validation.valid_dropdown.value = _reduceVlaues(dropDownIndexes, draft.validation.valid_dropdown.value);
 
         draft.validation.valid_inputs.value = _reduceVlaues(inputIndexes, draft.validation.valid_inputs.value);
+
+        draft.response_indexes = _reduceResponseIndexes(draft.template);
 
         if (Array.isArray(draft.validation.alt_responses)) {
           draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
@@ -86,8 +127,8 @@ class Template extends Component {
           data-cy="templateBox"
           onChange={_updateTemplate}
           value={item.template}
-          toolbarId="cloze-math-template"
-          additionalToolbarOptions={["textinput", "textdropdown", "mathinput"]}
+          additionalToolbarOptions={["responseBoxes"]}
+          toolbarId="template-markup-area"
         />
       </Widget>
     );

@@ -1,25 +1,27 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
+// import { isEmpty } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const { Option } = Select;
 
-const ClozeDropDown = ({ save, index, options, answers, evaluation, checked }) => {
+const ClozeDropDown = ({ index, targetindex, resprops = {} }) => {
+  const { save, options, answers = {}, evaluation = [], checked } = resprops;
   const { dropDown: _dropDownAnswers = [] } = answers;
 
-  const { dropDownResults: checkResult = {} } = evaluation;
-  const isChecked = checked && !isEmpty(checkResult);
+  const val = _dropDownAnswers[targetindex] ? _dropDownAnswers[targetindex].value : "";
 
-  return isChecked ? (
-    <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_dropDownAnswers[index]} index={index} />
+  // const isChecked = checked && !isEmpty(evaluation);
+
+  return checked ? (
+    <CheckedBlock isCorrect={evaluation[index]} userAnswer={_dropDownAnswers[targetindex]} index={index} />
   ) : (
-    <StyeldSelect onChange={text => save(text, index, "dropDown")} value={_dropDownAnswers[index]}>
+    <StyeldSelect onChange={text => save({ value: text, index, type: "dropDown" }, targetindex)} value={val}>
       {options &&
-        options[index] &&
-        options[index].map((response, respID) => (
+        options[targetindex] &&
+        options[targetindex].map((response, respID) => (
           <Option value={response} key={respID}>
             {response}
           </Option>
@@ -30,11 +32,8 @@ const ClozeDropDown = ({ save, index, options, answers, evaluation, checked }) =
 
 ClozeDropDown.propTypes = {
   index: PropTypes.number.isRequired,
-  options: PropTypes.object.isRequired,
-  save: PropTypes.func.isRequired,
-  checked: PropTypes.bool.isRequired,
-  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  answers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+  targetindex: PropTypes.number.isRequired,
+  resprops: PropTypes.object.isRequired
 };
 
 export default ClozeDropDown;

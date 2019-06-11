@@ -38,7 +38,7 @@ class ClozeDropDownAnswer extends Component {
   };
 
   render() {
-    const { answer, item } = this.props;
+    const { answers, item } = this.props;
     const { options } = item;
 
     return (
@@ -49,12 +49,12 @@ class ClozeDropDownAnswer extends Component {
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
-          {answer.map((dropDownValue, dropIndex) => {
-            const option = options[dropIndex];
+          {answers.map(answer => {
+            const option = options[answer.targetIndex];
 
             return (
-              <Panel header={`Text Dropdown ${dropIndex + 1}`} key={dropIndex}>
-                <AnswerSelect value={dropDownValue} onChange={text => this.selectChange(text, dropIndex)}>
+              <Panel header={`Text Dropdown ${answer.index + 1}`} key={answer.index}>
+                <AnswerSelect value={answer.value} onChange={text => this.selectChange(text, answer.targetIndex)}>
                   {option &&
                     option.map((op, opIndex) => (
                       <Option value={op} key={opIndex}>
@@ -72,7 +72,7 @@ class ClozeDropDownAnswer extends Component {
 }
 
 ClozeDropDownAnswer.propTypes = {
-  answer: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired
 };

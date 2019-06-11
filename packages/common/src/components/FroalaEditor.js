@@ -12,7 +12,7 @@ import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
 import Editor from "react-froala-wysiwyg";
-import { uploadToS3, canInsert } from "../helpers";
+import { uploadToS3, getResponsesCount, reIndexResponses, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -307,6 +307,10 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
                 cursorEl.remove();
+                const updatedHtml = reIndexResponses(this.html.get());
+                if (updatedHtml) {
+                  this.html.set(updatedHtml);
+                }
                 return;
               }
               if (
@@ -361,6 +365,14 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         blur: function() {
           this.hasFocus = false;
           this.toolbar.hide();
+        },
+        "commands.after": function(cmd) {
+          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput") {
+            const updatedHtml = reIndexResponses(this.html.get());
+            if (updatedHtml) {
+              this.html.set(updatedHtml);
+            }
+          }
         }
       }
     },
@@ -401,22 +413,22 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         .toArray();
       const mathInputIndexes = $(val)
         .find("mathinput")
-        .map(function() {
-          return +$(this).text();
+        .map(function(i) {
+          return +i;
         })
         .toArray();
 
       const dropDownIndexes = $(val)
         .find("textdropdown")
-        .map(function() {
-          return +$(this).text();
+        .map(function(i) {
+          return +i;
         })
         .toArray();
 
       const inputIndexes = $(val)
         .find("textinput")
-        .map(function() {
-          return +$(this).text();
+        .map(function(i) {
+          return +i;
         })
         .toArray();
       onChange(valueToSave, mathInputIndexes, dropDownIndexes, inputIndexes);
@@ -484,9 +496,12 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const responseCount = this.$el[0].querySelectorAll("response").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<Response index={{${responseCount}}} contentEditable="false">Response</Response>`);
+        const responseCount = this.$el[0].querySelectorAll("response").length;
+        this.html.insert(
+          `<Response index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+            1}</span>Response</Response>`
+        );
         this.undo.saveStep();
       }
     });
@@ -499,9 +514,12 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const inputCount = this.$el[0].querySelectorAll("textinput").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextInput index={{${inputCount}}} contentEditable="false">Text Input</TextInput>`);
+        const responseCount = getResponsesCount(this.$el[0]);
+        this.html.insert(
+          `<TextInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+            1}</span>Text Input</TextInput>`
+        );
         this.undo.saveStep();
       }
     });
@@ -514,10 +532,11 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const dropDownCount = this.$el[0].querySelectorAll("textdropdown").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
+        const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<TextDropdown index={{${dropDownCount}}} contentEditable="false">Text Dropdown</TextDropdown>`
+          `<TextDropdown index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+            1}</span>Text Dropdown</TextDropdown>`
         );
         this.undo.saveStep();
       }
@@ -531,9 +550,12 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const mathInputCount = this.$el[0].querySelectorAll("mathinput").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<MathInput index={{${mathInputCount}}} contentEditable="false">Math Input</MathInput>`);
+        const responseCount = getResponsesCount(this.$el[0]);
+        this.html.insert(
+          `<MathInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+            1}</span>Math Input</MathInput>`
+        );
         this.undo.saveStep();
       }
     });

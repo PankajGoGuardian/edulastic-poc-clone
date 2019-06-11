@@ -1,4 +1,4 @@
-import { trim, map, set, round } from "lodash";
+import { isArray, trim, map, set, round } from "lodash";
 import produce from "immer";
 import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
@@ -13,7 +13,11 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).length;
   for (const id of answerIds) {
-    const answer = map(answers[id], trim);
+    let answer = answers[id];
+    if (isArray(answer)) {
+      answer = map(answer, trim);
+    }
+
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id]);
       const evaluator = evaluators[validation.type];

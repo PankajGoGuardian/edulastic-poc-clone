@@ -7,7 +7,9 @@ import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
 const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
+  console.log(index);
   const filedRef = useRef();
+  index = parseInt(index, 10);
 
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current || !isMath) {
@@ -15,7 +17,7 @@ const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
     }
     const MQ = window.MathQuill.getInterface(2);
     const mQuill = MQ.StaticMath(filedRef.current);
-    mQuill.latex(userAnswer || "");
+    mQuill.latex(userAnswer.value || "");
   };
 
   useEffect(() => {
@@ -26,7 +28,7 @@ const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
     <CheckBox className={isCorrect ? "right" : "wrong"} key={`input_${index}`}>
       <span className="index">{index + 1}</span>
       <span className="value" ref={filedRef}>
-        {userAnswer}
+        {userAnswer.value}
       </span>
       <IconWrapper>{isCorrect ? <RightIcon /> : <WrongIcon />}</IconWrapper>
     </CheckBox>
@@ -36,7 +38,7 @@ const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
 CheckedBlock.propTypes = {
   isCorrect: PropTypes.bool,
   userAnswer: PropTypes.any,
-  index: PropTypes.number.isRequired,
+  index: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
   isMath: PropTypes.bool
 };
 

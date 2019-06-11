@@ -70,6 +70,7 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index].splice(itemIndex, 1);
+        draft.validation.valid_dropdown.value[index] = "";
         updateVariables(draft);
       })
     );
@@ -98,9 +99,13 @@ class ChoicesForDropDown extends Component {
 
   render() {
     const { t, item, index } = this.props;
+    const { response_indexes } = item;
+
     return (
       <Widget data-cy={`choice-dropdown-${index}`}>
-        <Subtitle>{`${t("component.math.choicesfordropdown")} ${index + 1}`}</Subtitle>
+        <Subtitle>
+          {`${t("component.math.choicesfordropdown")} ${response_indexes.dropDowns[index].index + 1}`}
+        </Subtitle>
         <SortableList
           items={item.options[index] || []}
           dirty={item.template}

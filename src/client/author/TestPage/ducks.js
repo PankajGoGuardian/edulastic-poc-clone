@@ -378,7 +378,7 @@ function* updateTestSaga({ payload }) {
     } else if (
       !payload.data.assignmentPassword ||
       payload.data.assignmentPassword.length < 6 ||
-      !payload.data.assignmentPassword.length > 25
+      payload.data.assignmentPassword.length > 25
     ) {
       yield call(message.error, "Please add a valid password.");
       return;

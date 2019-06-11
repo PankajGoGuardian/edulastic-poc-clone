@@ -81,7 +81,8 @@ class MainSetting extends Component {
     this.state = {
       showPassword: false,
       enable: true,
-      showAdvancedOption: false
+      showAdvancedOption: false,
+      inputBlur: false
     };
 
     this._releaseGradeKeys = releaseGradeKeys;
@@ -174,6 +175,10 @@ class MainSetting extends Component {
     });
   };
 
+  handleBlur = e => {
+    this.setState({ inputBlur: true });
+  };
+
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
     const { history, windowWidth, entity } = this.props;
@@ -199,7 +204,8 @@ class MainSetting extends Component {
 
     let validationMessage = "";
     const isPasswordValid = () => {
-      if (!assignmentPassword) return blueBorder;
+      const { inputBlur } = this.state;
+      if (!inputBlur) return blueBorder;
       if (assignmentPassword.split(" ").length > 1) {
         validationMessage = "Password must not contain space";
         return red;
@@ -400,6 +406,7 @@ class MainSetting extends Component {
                       <InputPassword
                         required
                         color={isPasswordValid()}
+                        onBlur={this.handleBlur}
                         onChange={e => this.updateTestData("assignmentPassword")(e.target.value)}
                         size="large"
                         value={assignmentPassword}

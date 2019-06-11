@@ -81,13 +81,6 @@ const Settings = ({
   ];
 
   const passwordValidationStatus = assignmentPassword => {
-    if (!assignmentPassword) {
-      setPasswordStatus({
-        color: blueBorder,
-        message: ""
-      });
-      return;
-    }
     if (assignmentPassword.split(" ").length > 1) {
       setPasswordStatus({
         color: red,

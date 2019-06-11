@@ -2,7 +2,6 @@ import { testActivityApi, testsApi, assignmentApi } from "@edulastic/api";
 import { takeEvery, call, all, put, select, take } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import { keyBy as _keyBy } from "lodash";
-import { message } from "antd";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
 import { getCurrentGroup } from "../../student/Login/ducks";
@@ -20,7 +19,7 @@ import {
   TEST_ACTIVITY_LOADING
 } from "../constants/actions";
 import { loadQuestionsAction } from "../actions/questions";
-import { setPasswordValidateStatusAction } from "../actions/test";
+import { setPasswordValidateStatusAction, setPasswordStatusAction } from "../actions/test";
 import { setShuffledOptions } from "../actions/shuffledOptions";
 import { SET_RESUME_STATUS } from "../../student/Assignments/ducks";
 
@@ -77,11 +76,12 @@ function* loadTest({ payload }) {
         if (response === "successful") {
           passwordValidated = true;
         } else if (response === "unsuccessful") {
-          yield call(message.error, "incorrect password");
+          yield put(setPasswordStatusAction("You have entered an invalid password"));
         } else {
-          yield call(message.error, "validation failed");
+          yield put(setPasswordStatusAction("validation failed"));
         }
       }
+      yield put(setPasswordStatusAction(""));
     }
 
     const [test] = yield all([testRequest]);

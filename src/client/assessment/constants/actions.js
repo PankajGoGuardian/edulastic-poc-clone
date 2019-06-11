@@ -22,6 +22,7 @@ export const COUNT_CHECK_ANSWER = "[test] increase check answer count";
 export const SET_PASSWORD_VALIDATE_STATUS = "[test] set password validated status";
 export const GET_ASSIGNMENT_PASSWORD = "[test] get assignment password";
 export const TEST_ACTIVITY_LOADING = "[test] loading test activity";
+export const SET_PASSWORD_STATUS_MESSAGE = "[test] set password status message";
 
 // items
 export const RECEIVE_ITEMS_REQUEST = "[items] receive items request";

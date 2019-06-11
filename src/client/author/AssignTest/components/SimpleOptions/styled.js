@@ -120,7 +120,6 @@ export const MaxAttemptIInput = styled(Input)`
 `;
 
 export const Password = styled(Input)`
-  ${props => console.log(props)}
   width: 100%;
   float: right;
   margin-top: 5px;

@@ -9,7 +9,7 @@ import { get } from "lodash";
 import { testsApi, testItemsApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 import { uploadToS3 } from "../src/utils/upload";
-import { initialTestState, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
+import { createBlankTest, getTestEntitySelector, setTestDataAction } from "../TestPage/ducks";
 import { getUserSelector } from "../src/selectors/user";
 
 export const CREATE_ASSESSMENT_REQUEST = "[assessmentPage] create assessment request";
@@ -24,6 +24,8 @@ const initialState = {
   creating: false,
   error: undefined
 };
+
+const initialTestState = createBlankTest();
 
 const createAssessmentRequest = state => ({
   ...state,

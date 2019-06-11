@@ -8,7 +8,8 @@ import {
   SET_TEST_LOADING_STATUS,
   COUNT_CHECK_ANSWER,
   SET_PASSWORD_VALIDATE_STATUS,
-  TEST_ACTIVITY_LOADING
+  TEST_ACTIVITY_LOADING,
+  SET_PASSWORD_STATUS_MESSAGE
 } from "../constants/actions";
 
 const initialState = {
@@ -21,7 +22,8 @@ const initialState = {
   settings: {},
   answerCheckByItemId: {},
   isPasswordValidated: false,
-  loadingTestActivity: true
+  loadingTestActivity: true,
+  passwordStatusMessage: ""
 };
 
 const test = (state = initialState, { payload, type }) => {
@@ -92,6 +94,11 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         loadingTestActivity: payload
+      };
+    case SET_PASSWORD_STATUS_MESSAGE:
+      return {
+        ...state,
+        passwordStatusMessage: payload
       };
     default:
       return state;

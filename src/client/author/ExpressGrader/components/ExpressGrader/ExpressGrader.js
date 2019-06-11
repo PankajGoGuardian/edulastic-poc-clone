@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { isEmpty, size } from "lodash";
+import { isEmpty, size, get } from "lodash";
 // actions
 import { receiveTestActivitydAction, clearFeedbackResponseAction } from "../../../src/actions/classBoard";
 
@@ -100,7 +100,13 @@ class ExpressGrader extends Component {
   isMobile = () => window.innerWidth < 480;
 
   render() {
-    const { testActivity: _testActivity = [], additionalData, match, classResponse = {} } = this.props;
+    const {
+      testActivity: _testActivity = [],
+      additionalData,
+      match,
+      classResponse = {},
+      isPresentationMode
+    } = this.props;
     const { isVisibleModal, record, tableData } = this.state;
     const { assignmentId, classId, testActivityId } = match.params;
     const isMobile = this.isMobile();
@@ -128,7 +134,13 @@ class ExpressGrader extends Component {
               {additionalData && <a>{additionalData.className}</a>}
             </PaginationInfo>
           </StyledFlexContainer>
-          {!isMobile && <ScoreTable testActivity={testActivity} showQuestionModal={this.showQuestionModal} />}
+          {!isMobile && (
+            <ScoreTable
+              testActivity={testActivity}
+              showQuestionModal={this.showQuestionModal}
+              isPresentationMode={isPresentationMode}
+            />
+          )}
 
           {isMobile && <ScoreCard testActivity={testActivity} />}
 
@@ -139,6 +151,7 @@ class ExpressGrader extends Component {
               isVisibleModal={isVisibleModal}
               showQuestionModal={this.showQuestionModal}
               hideQuestionModal={this.hideQuestionModal}
+              isPresentationMode={isPresentationMode}
             />
           )}
         </div>
@@ -153,7 +166,8 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       changedFeedback: getFeedbackResponseSelector(state),
-      classResponse: getClassResponseSelector(state)
+      classResponse: getClassResponseSelector(state),
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -170,7 +184,8 @@ ExpressGrader.propTypes = {
   testActivity: PropTypes.array,
   additionalData: PropTypes.object,
   loadTestActivity: PropTypes.func,
-  clearFeedbackResponse: PropTypes.func
+  clearFeedbackResponse: PropTypes.func,
+  isPresentationMode: PropTypes.bool
 };
 
 ExpressGrader.defaultProps = {
@@ -179,5 +194,6 @@ ExpressGrader.defaultProps = {
   testActivity: [],
   additionalData: {},
   loadTestActivity: () => {},
-  clearFeedbackResponse: () => {}
+  clearFeedbackResponse: () => {},
+  isPresentationMode: false
 };

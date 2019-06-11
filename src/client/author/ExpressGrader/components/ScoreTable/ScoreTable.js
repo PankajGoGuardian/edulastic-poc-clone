@@ -16,7 +16,8 @@ function getDataForTable(data) {
         const rowIndex = index;
         const studentInfo = {
           studentId: student.studentId,
-          studentName: student.studentName
+          studentName: student.studentName,
+          fakeName: student.fakeName
         };
         const testActivityId = student.testActivityId ? student.testActivityId : null;
         student.questionActivities.forEach((question, index1) => {
@@ -48,11 +49,13 @@ function getDataForTable(data) {
 class ScoreTable extends Component {
   static propTypes = {
     showQuestionModal: PropTypes.func.isRequired,
-    testActivity: PropTypes.array
+    testActivity: PropTypes.array,
+    isPresentationMode: PropTypes.bool
   };
 
   static defaultProps = {
-    testActivity: {}
+    testActivity: {},
+    isPresentationMode: false
   };
 
   constructor() {
@@ -69,7 +72,8 @@ class ScoreTable extends Component {
   }
 
   getColumnsForTable = (length, submittedLength) => {
-    const { showQuestionModal } = this.props;
+    const { showQuestionModal, isPresentationMode } = this.props;
+
     const columns = [
       {
         title: <TableTitle>Score Grid</TableTitle>,
@@ -83,7 +87,9 @@ class ScoreTable extends Component {
             dataIndex: "students",
             className: "th-border-bottom",
             render: record => (
-              <StyledDivMid style={{ textAlign: "left", paddingLeft: 15 }}>{record.studentName}</StyledDivMid>
+              <StyledDivMid style={{ textAlign: "left", paddingLeft: 15 }}>
+                {isPresentationMode ? record.fakeName : record.studentName}
+              </StyledDivMid>
             ),
             sorter: (a, b) => (a.students.studentName.toUpperCase() > b.students.studentName.toUpperCase() ? 1 : -1)
           },

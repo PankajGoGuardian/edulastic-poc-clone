@@ -129,7 +129,7 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData, record } = this.props;
+    const { isVisibleModal, tableData, record, isPresentationMode } = this.props;
     const { rowIndex, colIndex, loaded, row } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
@@ -156,7 +156,13 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <React.Fragment>
             <QuestionWrapper>
-              <Question record={question} key={question.id} qIndex={colIndex} student={student} />
+              <Question
+                record={question}
+                key={question.id}
+                qIndex={colIndex}
+                student={student}
+                isPresentationMode={isPresentationMode}
+              />
             </QuestionWrapper>
             <BottomNavigationWrapper>
               <BottomNavigation
@@ -180,7 +186,12 @@ QuestionModal.propTypes = {
   tableData: PropTypes.array.isRequired,
   isVisibleModal: PropTypes.bool.isRequired,
   showQuestionModal: PropTypes.func.isRequired,
-  hideQuestionModal: PropTypes.func.isRequired
+  hideQuestionModal: PropTypes.func.isRequired,
+  isPresentationMode: PropTypes.bool
+};
+
+QuestionModal.defaultProps = {
+  isPresentationMode: false
 };
 
 export default QuestionModal;

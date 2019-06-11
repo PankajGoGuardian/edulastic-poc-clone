@@ -134,6 +134,7 @@ const EssayRichTextPreview = ({
             spellcheck={!!item.spellcheck}
             toolbarInline={false}
             initOnClick={false}
+            readOnly={previewTab === "show"}
             quickInsertTags={[]}
             toolbarButtons={toolbarButtons}
           />

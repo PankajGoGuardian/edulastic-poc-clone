@@ -162,7 +162,7 @@ export const transformGradeBookResponse = ({
         };
       }
       const testActivity = studentTestActivities[studentId];
-      if (testActivity.redirect) {
+      if (testActivity.redirected) {
         return {
           studentId,
           studentName: fullName,
@@ -180,7 +180,7 @@ export const transformGradeBookResponse = ({
       //TODO: for now always present
       const present = true;
       //TODO: no graded status now. using submitted as a substitute for graded
-      const graded = testActivity.graded === "GRADED";
+      const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
       const submitted = testActivity.status == testActivityStatus.SUBMITTED;
       const redirected = testActivity.redirected;
       const testActivityId = testActivity._id;

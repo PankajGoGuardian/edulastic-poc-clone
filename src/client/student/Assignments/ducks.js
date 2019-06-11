@@ -81,7 +81,7 @@ const transformAssignmentForRedirect = (groupId, userId, assignment) => {
   let { endDate } = assignment;
   endDate = redirect.dueDate;
   maxAttempts += redirect.attempts;
-  return { ...assignment, endDate, maxAttempts };
+  return { ...assignment, endDate, maxAttempts, redir: true };
 };
 
 // sagas

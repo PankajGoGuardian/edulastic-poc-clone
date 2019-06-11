@@ -29,7 +29,7 @@ export const GenSelect = ({ classname: nameValues, selected, handleChange, justi
   if (nameValues.length === 0) {
     return null;
   }
-  const selectedValue = selected < nameValues.length ? selected : 0;
+  const selectedValue = selected;
   return (
     <FlexContainer justifyContent={justifyContent}>
       <Container>

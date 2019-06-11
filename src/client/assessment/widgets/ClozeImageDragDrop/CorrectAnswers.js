@@ -150,8 +150,6 @@ class CorrectAnswers extends Component {
       uiStyle,
       maxRespCount,
       showDashedBorder,
-      maxHeight,
-      maxWidth,
       imageOptions
     } = this.props;
     const { value } = this.state;
@@ -171,8 +169,6 @@ class CorrectAnswers extends Component {
           {value === 0 && (
             <TabContainer>
               <CorrectAnswer
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 key={options}
                 response={validation.valid_response}
                 stimulus={stimulus}
@@ -200,8 +196,6 @@ class CorrectAnswers extends Component {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       key={options}
                       response={alter}
                       stimulus={stimulus}

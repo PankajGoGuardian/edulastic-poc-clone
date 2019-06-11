@@ -26,6 +26,7 @@ import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 import { response } from "@edulastic/constants";
 
 import striptags from "striptags";
+import { canvasDimensions, clozeImage } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -143,8 +144,6 @@ class Display extends Component {
       showQuestionNumber,
       qIndex,
       item,
-      maxHeight,
-      maxWidth,
       imageOptions,
       showBorder
     } = this.props;
@@ -177,10 +176,10 @@ class Display extends Component {
             pointerEvents: "none",
             top: imageOptions.y || 0,
             left: imageOptions.x || 0,
-            width: `${!maxWidth ? imageWidth || "auto" : imageWidth}px`,
-            height: `${!maxHeight ? imageHeight || "auto" : imageHeight}px`,
-            maxHeight: !maxHeight ? null : maxHeight,
-            maxWidth: !maxWidth ? null : maxWidth
+            width: `${imageWidth}px`,
+            height: `${imageHeight}px`,
+            maxHeight: `${canvasDimensions.maxHeight}px`,
+            maxWidth: `${canvasDimensions.maxWidth}px`
           }}
           alt={imageAlterText}
           title={imageTitle}
@@ -203,13 +202,13 @@ class Display extends Component {
       <div
         className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
         style={{
-          width: !maxWidth ? imageWidth || "100%" : maxWidth,
-          height: !maxHeight ? imageHeight || "100%" : maxHeight,
+          width: `${canvasDimensions.maxWidth}px`,
+          height: `${canvasDimensions.maxHeight}px`,
           margin: "auto",
           fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
           position: "relative",
-          maxHeight: !maxHeight ? null : maxHeight,
-          maxWidth: !maxWidth ? null : maxWidth
+          maxHeight: `${canvasDimensions.maxHeight}px`,
+          maxWidth: `${canvasDimensions.maxWidth}px`
         }}
       >
         <div
@@ -219,8 +218,8 @@ class Display extends Component {
             top: 0,
             left: 0,
             width: "auto",
-            minWidth: maxWidth,
-            minHeight: maxHeight
+            minWidth: `${canvasDimensions.maxWidth}px`,
+            minHeight: `${canvasDimensions.maxHeight}px`
           }}
         >
           {renderImage()}
@@ -345,8 +344,6 @@ class Display extends Component {
         evaluation={evaluation}
         drop={drop}
         onDropHandler={this.onDrop}
-        maxHeight={maxHeight}
-        maxWidth={maxWidth}
         showBorder={showBorder}
       />
     );
@@ -386,7 +383,7 @@ class Display extends Component {
         {responseposition === "top" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+              <RelativeContainer>
                 <AnnotationRnd
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={questionId}
@@ -400,7 +397,7 @@ class Display extends Component {
         {responseposition === "bottom" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+              <RelativeContainer>
                 <AnnotationRnd
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={questionId}
@@ -425,7 +422,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+              <RelativeContainer>
                 <AnnotationRnd
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={questionId}
@@ -473,7 +470,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
+              <RelativeContainer>
                 <AnnotationRnd
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={questionId}

@@ -145,8 +145,6 @@ class ClozeImageDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     return (
       <div>
         {view === "edit" && (
@@ -154,8 +152,6 @@ class ClozeImageDragDrop extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring
-                  maxHeight={maxHeight}
-                  maxWidth={maxWidth}
                   item={itemForEdit}
                   theme={theme}
                   fillSections={fillSections}
@@ -164,8 +160,6 @@ class ClozeImageDragDrop extends Component {
                 />
                 <Widget>
                   <CorrectAnswers
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
                     configureOptions={{
@@ -246,8 +240,6 @@ class ClozeImageDragDrop extends Component {
           <Wrapper>
             {previewTab === "check" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 checkAnswer
                 item={itemForPreview}
                 options={previewDisplayOptions}
@@ -279,8 +271,6 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "show" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 showAnswer
                 item={itemForPreview}
                 instructorStimulus={itemForPreview.instructor_stimulus}
@@ -313,8 +303,6 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "clear" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 preview
                 item={itemForPreview}
                 responses={item.responses}

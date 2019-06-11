@@ -25,18 +25,11 @@ class Authoring extends Component {
   };
 
   render() {
-    const { item, theme, fillSections, cleanSections, maxHeight, maxWidth } = this.props;
+    const { item, theme, fillSections, cleanSections } = this.props;
 
     return (
       <React.Fragment>
-        <ComposeQuestion
-          maxHeight={maxHeight}
-          maxWidth={maxWidth}
-          item={item}
-          theme={theme}
-          fillSections={fillSections}
-          cleanSections={cleanSections}
-        />
+        <ComposeQuestion item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
         <PossibleResponses item={item} fillSections={fillSections} cleanSections={cleanSections} />
       </React.Fragment>
     );

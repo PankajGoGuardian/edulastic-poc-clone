@@ -16,7 +16,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 import striptags from "striptags";
-import { response } from "@edulastic/constants";
+import { response, canvasDimensions } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -34,21 +34,20 @@ const CheckboxTemplateBoxLayout = ({
   drop,
   onDropHandler,
   theme,
-  maxHeight,
-  maxWidth,
   showBorder
 }) => {
+  const { maxHeight, maxWidth } = canvasDimensions;
   return (
     <div
       className="imagedragdrop_template_box"
       style={{
         fontSize,
         padding: 20,
-        width: !maxWidth ? imageWidth || "100%" : maxWidth,
+        width: !maxWidth ? imageWidth || "100%" : `${maxWidth}px`,
         height: !maxHeight ? null : maxHeight,
         margin: "auto",
-        maxHeight: !maxHeight ? null : maxHeight,
-        maxWidth: !maxWidth ? null : maxWidth
+        maxHeight: !maxHeight ? null : `${maxHeight}px`,
+        maxWidth: !maxWidth ? null : `${maxWidth}px`
       }}
     >
       <div
@@ -57,7 +56,7 @@ const CheckboxTemplateBoxLayout = ({
           top: 0,
           left: 0,
           width: imageWidth,
-          minWidth: 600,
+          minWidth: `${maxWidth}px`,
           maxWidth: "100%"
         }}
       >

@@ -69,8 +69,6 @@ class CorrectAnswer extends Component {
       showDashedBorder,
       backgroundColor,
       maxRespCount,
-      maxHeight,
-      maxWidth,
       imageOptions = {}
     } = this.props;
     const { responseScore } = this.state;
@@ -92,8 +90,6 @@ class CorrectAnswer extends Component {
           </CorrectAnswerHeader>
         )}
         <Display
-          maxHeight={maxHeight}
-          maxWidth={maxWidth}
           preview
           setAnswers
           dragHandler

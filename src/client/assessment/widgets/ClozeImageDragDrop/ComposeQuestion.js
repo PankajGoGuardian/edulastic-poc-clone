@@ -46,6 +46,8 @@ const { Dragger } = Upload;
 const IMAGE_WIDTH_PROP = "imageWidth";
 const IMAGE_HEIGHT_PROP = "imageHeight";
 
+import { clozeImage, canvasDimensions } from "@edulastic/constants";
+
 class ComposeQuestion extends Component {
   imageRndRef = createRef();
 
@@ -187,19 +189,17 @@ class ComposeQuestion extends Component {
   };
 
   getImageDimensions = url => {
-    const { maxWidth, maxHeight } = this.props;
+    const { maxWidth, maxHeight } = clozeImage;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const maxheight = maxHeight.split("px")[0];
-      const maxwidth = maxWidth.split("px")[0];
       let height;
       let width;
-      if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
-        const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
-        const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
-        if (fitWidth > maxwidth) {
-          width = maxwidth;
+      if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+        const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+        const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+        if (fitWidth > maxWidth) {
+          width = maxWidth;
           height = fitHeight;
         } else {
           height = maxHeight;
@@ -250,12 +250,11 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
+    const { t, item, theme, setQuestionData } = this.props;
     const { isEditableResizeMove } = this.state;
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
 
-    const width = maxWidth;
-    const height = maxHeight;
+    const { maxWidth, maxHeight } = clozeImage;
 
     const {
       maxRespCount,
@@ -302,9 +301,9 @@ class ComposeQuestion extends Component {
             <InputNumber
               ref={this.imageWidthEditor}
               data-cy="image-width-input"
-              value={imageWidth > 0 ? (imageWidth >= 700 ? 700 : imageWidth) : 700}
+              value={imageWidth > 0 ? (imageWidth >= maxWidth ? maxWidth : imageWidth) : maxWidth}
               onChange={event => {
-                this.onItemPropChange("imageWidth", event > 0 ? (event >= 700 ? 700 : event) : 700);
+                this.onItemPropChange("imageWidth", event > 0 ? (event >= maxWidth ? maxWidth : event) : maxWidth);
               }}
             />
 
@@ -314,9 +313,9 @@ class ComposeQuestion extends Component {
             <InputNumber
               ref={this.imageHeightEditor}
               data-cy="image-height-input"
-              value={imageHeight > 0 ? (imageHeight >= 600 ? 600 : imageHeight) : 600}
+              value={imageHeight > 0 ? (imageHeight >= maxHeight ? maxHeight : imageHeight) : maxHeight}
               onChange={event => {
-                this.onItemPropChange("imageHeight", event > 0 ? (event >= 600 ? 600 : event) : 600);
+                this.onItemPropChange("imageHeight", event > 0 ? (event >= maxHeight ? maxHeight : event) : maxHeight);
               }}
             />
 
@@ -446,8 +445,8 @@ class ComposeQuestion extends Component {
             <ImageContainer
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
-              width={!maxWidth ? imageWidth || null : maxWidth}
-              height={!maxHeight ? imageHeight || null : maxHeight}
+              width={`${canvasDimensions.maxWidth}px`}
+              height={`${canvasDimensions.maxHeight}px`}
             >
               <AnnotationRnd
                 style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
@@ -478,7 +477,7 @@ class ComposeQuestion extends Component {
                   >
                     <PreviewImage
                       src={item.imageUrl}
-                      width={imageWidth < 700 ? imageWidth : maxWidth}
+                      width={imageWidth}
                       height={imageHeight}
                       maxWidth={maxWidth}
                       maxHeight={maxHeight}

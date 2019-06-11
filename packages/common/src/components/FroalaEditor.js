@@ -88,7 +88,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       "outdent",
       "specialCharacters"
     ],
-    buttonsVisible: 12
+    buttonsVisible: 6
   },
   moreParagraph: {
     buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],

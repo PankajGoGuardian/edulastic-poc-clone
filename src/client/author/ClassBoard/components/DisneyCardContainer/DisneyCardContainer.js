@@ -159,7 +159,7 @@ export default class DisneyCardContainer extends Component {
                     {round(student.score, 1) || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   <StyledParaSSS data-cy="studentPerformance">
-                    {student.score > 0 ? round((student.score / student.maxScore) * 100, 1) : 0}%
+                    {student.score > 0 ? round((student.score / student.maxScore) * 100) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
                 {student.testActivityId && (

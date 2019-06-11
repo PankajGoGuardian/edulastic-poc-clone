@@ -19,14 +19,16 @@ class MathInput extends React.PureComponent {
   mathFieldRef = React.createRef();
 
   componentWillUnmount() {
+    const { onBlur } = this.props;
     // make sure you remove the listener when the component is destroyed
     document.removeEventListener("click", this.handleClick, false);
     document.removeEventListener("click", this.handleChangeField, false);
     this.setState({ mathFieldFocus: false });
+    onBlur();
   }
 
   handleClick = e => {
-    const { onFocus } = this.props;
+    const { onFocus, onBlur } = this.props;
 
     if (e.target.nodeName === "LI" && e.target.attributes[0].nodeValue === "option") {
       return;
@@ -34,6 +36,7 @@ class MathInput extends React.PureComponent {
     if (this.containerRef.current && !this.containerRef.current.contains(e.target)) {
       onFocus(false);
       this.setState({ mathFieldFocus: false });
+      onBlur();
     }
   };
 
@@ -114,7 +117,9 @@ class MathInput extends React.PureComponent {
   };
 
   onClose = () => {
+    const { onBlur } = this.props;
     this.setState({ mathFieldFocus: false });
+    onBlur();
   };
 
   focus = () => {
@@ -129,7 +134,6 @@ class MathInput extends React.PureComponent {
       showResponse,
       style,
       onFocus,
-      onBlur,
       onKeyDown,
       symbols,
       numberPad,
@@ -144,9 +148,6 @@ class MathInput extends React.PureComponent {
           onFocus={() => {
             onFocus(true);
             this.setState({ mathFieldFocus: true });
-          }}
-          onBlur={() => {
-            onBlur();
           }}
           className="input"
         >

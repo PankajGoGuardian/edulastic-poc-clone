@@ -46,7 +46,8 @@ class Uploader extends React.Component {
 
     const props = {
       beforeUpload: () => false,
-      onChange: this.handleChange
+      onChange: this.handleChange,
+      showUploadList: false
     };
 
     return (

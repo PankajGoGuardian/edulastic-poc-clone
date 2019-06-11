@@ -11,7 +11,6 @@ const { allGrades, allSubjects } = selectsData;
 const MainInfo = ({ entity = {} }) => {
   // eslint-disable-next-line max-len
   const { thumbnail, tags, grade, subject, standardSets = [], course = {}, startDate, endDate } = entity;
-
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
 
@@ -21,9 +20,7 @@ const MainInfo = ({ entity = {} }) => {
         <Image src={thumbnail || defaultImage} alt="Class" />
         <FieldValue>
           <label>Tags :</label>
-          {tags.map((tag, index) => (
-            <span key={index}>{tag}</span>
-          ))}
+          {tags !== undefined && tags.map((tag, index) => <span key={index}>{tag}</span>)}
         </FieldValue>
       </LeftWrapper>
       <MidWrapper>

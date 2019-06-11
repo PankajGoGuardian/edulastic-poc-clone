@@ -155,7 +155,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
         dataIndex: "stem",
         key: "stem",
         width: uiStyle.stem_width || "auto",
-        render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
+        render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
       },
       {
         title: optionRowTitle,
@@ -169,7 +169,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
           title: "",
           dataIndex: "numeration",
           key: "numeration",
-          render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
+          render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
         },
         ...columns
       ];

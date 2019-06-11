@@ -12,7 +12,7 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 import { latexKeys } from "./constants";
 
@@ -45,11 +45,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.math.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.math.enterQuestion")}
+            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

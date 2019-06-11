@@ -6,13 +6,13 @@ import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
-import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { WidgetSubHeading } from "../../../styled/Widget";
 
 import { IconTrash } from "../styled/IconTrash";
 
 const TextBlocks = ({ blocks, onChange, onAdd, onDelete, t }) => (
   <Block>
-    <Heading>{t("component.options.textBlocks")}</Heading>
+    <WidgetSubHeading>{t("component.options.textBlocks")}</WidgetSubHeading>
 
     <Row gutter={32}>
       {blocks.map((block, index) => (

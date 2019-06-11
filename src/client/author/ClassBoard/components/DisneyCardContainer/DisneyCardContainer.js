@@ -74,13 +74,15 @@ export default class DisneyCardContainer extends Component {
           status.status = "IN PROGRESS";
           status.color = yellow;
         } else if (student.status === "submitted") {
-          status.status = "SUBMITTED";
+          if (student.graded) {
+            status.status = "GRADED";
+          } else {
+            status.status = "SUBMITTED";
+          }
           status.color = greenSecondary;
         } else if (student.status === "redirected") {
           status.status = "REDIRECTED";
           status.color = greenSecondary;
-        } else if (student.graded) {
-          status.status = "GRADED";
         }
 
         let correctAnswers = 0;

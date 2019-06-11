@@ -1997,3 +1997,11 @@ span.token.active-word {
   background: #cccccc;
   border: 1px solid black;
 }
+
+.ant-modal-wrap {
+  z-index: 1003;
+}
+
+.ant-modal-mask {
+  z-index: 1003;
+}

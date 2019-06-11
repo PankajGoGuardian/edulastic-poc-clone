@@ -103,7 +103,7 @@ class ScoreTable extends Component {
             },
             onFilter: (value, record) => record.score.indexOf(value) === 0,
             sorter: (a, b) => (a.score.score > b.score.score ? 1 : -1),
-            sortDirections: []
+            sortDirections: ["descend", "ascend"]
           }
         ]
       }
@@ -133,9 +133,9 @@ class ScoreTable extends Component {
       const questionAvarageScore = (
         <StyledDivMid>
           <StyledText color={greenThird}>{`${
-            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) : 0
+            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) || 0 : 0
           }%`}</StyledText>
-          {round(averageScore, 2)} / {submittedLength}
+          {round(averageScore, 2) || 0} / {submittedLength}
         </StyledDivMid>
       );
 

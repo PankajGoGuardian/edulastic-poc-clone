@@ -228,11 +228,7 @@ export const transformGradeBookResponse = ({
 
       let displayStatus = "inProgress";
       if (submitted) {
-        if (graded) {
-          displayStatus = "graded";
-        } else {
-          displayStatus = "submitted";
-        }
+        displayStatus = "submitted";
       }
 
       return {

@@ -70,14 +70,15 @@ const MatchListPreview = ({
     group_possible_responses,
     stimulus,
     list,
-    validation
+    validation,
+    shuffleOptions
   } = item;
 
   const alternateAnswers = {};
   if (validation.alt_responses && validation.alt_responses.length > 0) {
     const { alt_responses: altAnswers } = validation;
     altAnswers.forEach(altAnswer => {
-      altAnswer["value"].forEach((alt, index) => {
+      altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt && alt !== "") {
           alternateAnswers[index + 1].push(alt);

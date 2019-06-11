@@ -39,9 +39,9 @@ class GroupPossibleResponses extends Component {
                 {t("component.matchList.groupPossibleRespTitle")}
               </Checkbox>
             </div>
-            <Row gutter={60}>
+            <Row>
               {items.map((item, index) => (
-                <Col data-cy={`group-container-${index}`} key={index} span={12}>
+                <Col data-cy={`group-container-${index}`} key={index} span={24}>
                   <Group
                     prefix={`group${index}`}
                     item={item}

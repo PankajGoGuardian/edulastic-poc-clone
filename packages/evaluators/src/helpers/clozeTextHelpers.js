@@ -1,31 +1,32 @@
 import { isEqual } from "lodash";
 
-export const isLessThanOneMistake = (userAnswer, validAnswer, ignoreCase) => {
-  const userAnswerArray = [...userAnswer];
-  const validAnswerArray = [...validAnswer];
+const levenshteinDistance = (s, t) => {
+  if (!s.length) return t.length;
+  if (!t.length) return s.length;
 
-  let mistakesCount = 0;
+  return Math.min(
+    levenshteinDistance(s.substr(1), t) + 1,
+    levenshteinDistance(t.substr(1), s) + 1,
+    levenshteinDistance(s.substr(1), t.substr(1)) + (s[0] !== t[0] ? 1 : 0)
+  );
+};
+
+export const isLessThanOneMistake = (userAnswer, validAnswer, ignoreCase) => {
   if (ignoreCase) {
-    userAnswerArray.forEach((letter, index) => {
-      if (!validAnswerArray[index] || !letter || letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
-        mistakesCount++;
-      }
-    });
-  } else {
-    userAnswerArray.forEach((letter, index) => {
-      if (letter !== validAnswerArray[index]) {
-        mistakesCount++;
-      }
-    });
+    userAnswer = userAnswer.toLowerCase();
+    validAnswer = validAnswer.toLowerCase();
   }
 
-  return mistakesCount <= 1;
+  const mistakeCount = levenshteinDistance(userAnswer, validAnswer);
+  return mistakeCount < 2;
 };
 
 export const getClozeTextMatches = (response, answer, restOptions) =>
   response.filter((resp, index) => {
+    resp = (resp || "").trim();
+    const ans = (answer[index] || "").trim();
     if (restOptions.allowSingleLetterMistake) {
-      return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
+      return isLessThanOneMistake(ans, resp, restOptions.ignoreCase);
     }
     if (restOptions.ignoreCase) {
       return isEqual(
@@ -38,8 +39,10 @@ export const getClozeTextMatches = (response, answer, restOptions) =>
 
 export const getClozeTextEvaluation = (response, answer, restOptions) =>
   response.map((resp, index) => {
+    resp = (resp || "").trim();
+    const ans = (answer[index] || "").trim();
     if (restOptions.allowSingleLetterMistake) {
-      return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
+      return isLessThanOneMistake(ans, resp, restOptions.ignoreCase);
     }
     if (restOptions.ignoreCase) {
       return isEqual(

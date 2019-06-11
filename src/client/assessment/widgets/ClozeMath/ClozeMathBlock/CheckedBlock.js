@@ -7,7 +7,6 @@ import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
 const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
-  console.log(index);
   const filedRef = useRef();
   index = parseInt(index, 10);
 

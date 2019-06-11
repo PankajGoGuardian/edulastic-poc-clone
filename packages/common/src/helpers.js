@@ -102,8 +102,10 @@ const sanitizeSelfClosingTags = inputString =>
     .replace(/<hr>/g, "<hr/>")
     .replace(/<br>/g, "<br/>")
     .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
-    .replace(/"{{/g, "{")
-    .replace(/}}"/g, "}");
+    .replace(/"{{resProps/g, "{resProps")
+    .replace(/resProps}}"/g, "resProps}")
+    .replace(/"{{lineHeight/g, "{lineHeight")
+    .replace(/lineHeight}}"/g, "lineHeight}");
 
 const parseTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);

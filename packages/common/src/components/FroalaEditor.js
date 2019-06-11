@@ -498,10 +498,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = this.$el[0].querySelectorAll("response").length;
-        this.html.insert(
-          `<Response index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
-            1}</span>Response</Response>`
-        );
+        this.html.insert(`<Response index="${responseCount}" contentEditable="false">Response</Response>`);
         this.undo.saveStep();
       }
     });
@@ -517,7 +514,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<TextInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<TextInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Text Input</TextInput>`
         );
         this.undo.saveStep();
@@ -535,7 +532,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<TextDropdown index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<TextDropdown index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Text Dropdown</TextDropdown>`
         );
         this.undo.saveStep();
@@ -553,7 +550,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<MathInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<MathInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Math Input</MathInput>`
         );
         this.undo.saveStep();

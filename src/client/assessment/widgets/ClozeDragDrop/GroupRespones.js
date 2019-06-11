@@ -51,10 +51,10 @@ class GroupResponses extends React.Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index].label = value;
-        let maxLength = 0;
-        draft.options.forEach(option => {
-          maxLength = Math.max(maxLength, option ? option.label.length : 0);
-        });
+        const maxLength = 0;
+        // draft.options.forEach(option => {
+        //   maxLength = Math.max(maxLength, option ? option.label.length : 0);
+        // });
         const finalWidth = 40 + maxLength * 7;
         draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
-import { cloneDeep, replace } from "lodash";
+import { cloneDeep } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
@@ -67,8 +67,6 @@ class Template extends Component {
 
       function findResponseIndexes() {
         let index = $(this).attr("index");
-        index = replace(index, "{{", "");
-        index = replace(index, "}}", "");
         index = parseInt(index, 10);
         const tagName = $(this)[0].tagName.toLowerCase();
         if (tagName === "textinput") {

@@ -169,7 +169,7 @@ class MathKeyboard extends React.PureComponent {
 }
 
 MathKeyboard.propTypes = {
-  onClose: PropTypes.func.isRequired,
+  onClose: PropTypes.func,
   onInput: PropTypes.func.isRequired,
   showResponse: PropTypes.bool,
   symbols: PropTypes.array.isRequired,
@@ -177,7 +177,8 @@ MathKeyboard.propTypes = {
 };
 
 MathKeyboard.defaultProps = {
-  showResponse: false
+  showResponse: false,
+  onClose: () => {}
 };
 
 export default MathKeyboard;

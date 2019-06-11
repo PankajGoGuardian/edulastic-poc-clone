@@ -42,6 +42,11 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: true
     });
+    yield put({
+      type: TEST_ACTIVITY_LOADING,
+      payload: true
+    });
+    yield put(setPasswordValidateStatusAction(false));
 
     const { testActivityId, testId, preview = false, demo = false } = payload;
     yield put({

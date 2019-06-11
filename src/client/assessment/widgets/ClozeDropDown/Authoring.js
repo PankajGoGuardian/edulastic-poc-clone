@@ -30,7 +30,9 @@ class ClozeDropDownAuthoring extends Component {
     if (isUndefined(window.$)) {
       return;
     }
-    return $($.parseHTML(tmpl || "")).find("textdropdown").length;
+    return $("<div />")
+      .html(tmpl || "")
+      .find("textdropdown").length;
   };
 
   render() {

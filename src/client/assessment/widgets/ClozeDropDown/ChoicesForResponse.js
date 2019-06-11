@@ -78,6 +78,7 @@ class ChoicesForResponse extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index].splice(itemIndex, 1);
+        draft.validation.valid_response.value[index] = "";
         updateVariables(draft);
       })
     );

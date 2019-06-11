@@ -94,7 +94,8 @@ class QuestionViewContainer extends Component {
       question,
       classQuestion,
       children,
-      qIndex
+      qIndex,
+      isPresentationMode
     } = this.props;
     const { loading } = this.state;
 
@@ -134,7 +135,7 @@ class QuestionViewContainer extends Component {
         .filter(student => student.status != "notStarted")
         .map(st => {
           const stData = {
-            name: st.studentName,
+            name: isPresentationMode ? st.fakeName : st.studentName,
             id: st.studentId,
             avatarName: getAvatarName(st.studentName),
 
@@ -303,6 +304,7 @@ class QuestionViewContainer extends Component {
                 currentStudent={student}
                 classResponse={{ testItems: filterdItems, ...others }}
                 questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
+                isPresentationMode={isPresentationMode}
               />
             );
           })}

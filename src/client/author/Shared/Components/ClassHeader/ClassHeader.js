@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { message, Menu, Dropdown, Button, Modal } from "antd";
+import { message, Menu, Dropdown, Button, Modal, Icon, Switch } from "antd";
 import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
@@ -35,6 +35,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { releaseScoreAction, markAsDoneAction } from "../../../src/actions/classBoard";
 import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
+import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -136,8 +137,11 @@ class ClassHeader extends Component {
       selectedStudentsKeys,
       classResponse = {},
       status,
-      enableMarkAsDone
+      enableMarkAsDone,
+      togglePresentationMode,
+      isPresentationMode
     } = this.props;
+
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
@@ -213,6 +217,14 @@ class ClassHeader extends Component {
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
+
+            <Switch
+              checkedChildren={<Icon type="check"> presentation </Icon>}
+              unCheckedChildren={<Icon type="close" />}
+              value={isPresentationMode}
+              defaultChecked={isPresentationMode}
+              onClick={() => togglePresentationMode(!isPresentationMode)}
+            />
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>
@@ -253,12 +265,16 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
       status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      enableMarkAsDone: getMarkAsDoneEnableSelector(state)
+      enableMarkAsDone: getMarkAsDoneEnableSelector(state),
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       setReleaseScore: releaseScoreAction,
-      setMarkAsDone: markAsDoneAction
+      setMarkAsDone: markAsDoneAction,
+
+      togglePresentationMode: togglePresentationModeAction
     }
   )
 );
+
 export default enhance(ClassHeader);

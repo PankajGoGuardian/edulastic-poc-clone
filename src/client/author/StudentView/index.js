@@ -90,7 +90,15 @@ class StudentViewContainer extends Component {
   }
 
   render() {
-    const { classResponse, studentItems, studentResponse, selectedStudent, variableSetIds, testActivity } = this.props;
+    const {
+      classResponse,
+      studentItems,
+      studentResponse,
+      selectedStudent,
+      variableSetIds,
+      testActivity,
+      isPresentationMode
+    } = this.props;
 
     const { loading, filter } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
@@ -128,6 +136,7 @@ class StudentViewContainer extends Component {
             classResponse={classResponseProcessed}
             testItemsOrder={this.props.testItemsOrder}
             studentViewFilter={filter}
+            isPresentationMode={isPresentationMode}
           />
         )}
       </React.Fragment>
@@ -142,7 +151,8 @@ const enhance = compose(
       studentResponse: getStudentResponseSelector(state),
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
-      variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent)
+      variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       loadStudentResponses: receiveStudentResponseAction
@@ -155,8 +165,10 @@ StudentViewContainer.propTypes = {
   classResponse: PropTypes.object.isRequired,
   studentItems: PropTypes.array.isRequired,
   studentResponse: PropTypes.object.isRequired,
-  selectedStudent: PropTypes.string
+  selectedStudent: PropTypes.string,
+  isPresentationMode: PropTypes.bool
 };
 StudentViewContainer.defaultProps = {
-  selectedStudent: ""
+  selectedStudent: "",
+  isPresentationMode: false
 };

@@ -270,7 +270,6 @@ class ClassBoard extends Component {
     const { classId, assignmentId, setReleaseScore, showScore } = this.props;
     const isReleaseScore = !showScore;
     setReleaseScore(assignmentId, classId, isReleaseScore);
-    this.toggleDropdown();
   };
 
   handleMarkAsDone = () => {
@@ -327,7 +326,8 @@ class ClassBoard extends Component {
       testQuestionActivities,
       qActivityByStudent,
       enableMarkAsDone,
-      showScore
+      showScore,
+      isPresentationMode
     } = this.props;
     const gradeSubject = {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
@@ -491,6 +491,7 @@ class ClassBoard extends Component {
                 viewResponses={(e, selected) => {
                   this.onTabChange(e, "Student", selected);
                 }}
+                isPresentationMode={isPresentationMode}
               />
             ) : (
               <Score gradebook={gradebook} assignmentId={assignmentId} classId={classId} />
@@ -529,6 +530,7 @@ class ClassBoard extends Component {
                     handleChange={value => {
                       this.setState({ selectedStudentId: value });
                     }}
+                    isPresentationMode={isPresentationMode}
                   />
                 </BarGraph>
               </StyledCard>
@@ -538,6 +540,7 @@ class ClassBoard extends Component {
               testActivity={testActivity}
               studentItems={studentItems}
               selectedStudent={selectedStudentId}
+              isPresentationMode={isPresentationMode}
             />
           </React.Fragment>
         )}
@@ -550,6 +553,7 @@ class ClassBoard extends Component {
               qIndex={selectedQuestion}
               itemId={this.state.itemId}
               question={{ id: this.state.selectedQid }}
+              isPresentationMode={isPresentationMode}
             >
               <GenSelect
                 classid="DI"
@@ -593,7 +597,8 @@ const enhance = compose(
       qActivityByStudent: stateStudentResponseSelector(state),
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
-      status: get(state, ["author_classboard_testActivity", "data", "status"], "")
+      status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

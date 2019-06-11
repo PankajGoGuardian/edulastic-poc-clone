@@ -144,13 +144,17 @@ export const transformGradeBookResponse = ({
   }));
 
   return studentNames
-    .map(({ _id: studentId, firstName: studentName, lastName, email }) => {
+    .map(({ _id: studentId, firstName: studentName, lastName, email, fakeFirstName, fakeLastName, icon }) => {
       const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
+      const fakeName = `${fakeFirstName} ${fakeLastName}`;
       if (!studentTestActivities[studentId]) {
         return {
           studentId,
           studentName: fullName,
           email,
+          fakeName,
+          icon,
+          color: fakeFirstName,
           present: true,
           status: "notStarted",
           maxScore: testMaxScore,
@@ -163,6 +167,9 @@ export const transformGradeBookResponse = ({
           studentId,
           studentName: fullName,
           email,
+          fakeName,
+          icon,
+          color: fakeFirstName,
           present: true,
           status: "redirected",
           redirected: true,
@@ -235,6 +242,9 @@ export const transformGradeBookResponse = ({
         studentId,
         studentName: fullName,
         email,
+        fakeName,
+        icon,
+        color: fakeFirstName,
         status: displayStatus,
         present,
         check: false,

@@ -10,6 +10,7 @@ import { StyledFlexContainer } from "./styled";
 function Preview({ item, qIndex, studentId }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
+  console.log("questions here is at classQuestion", questions);
   const questionsKeyed = _keyBy(questions, "id");
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
@@ -34,8 +35,15 @@ Preview.propTypes = {
 };
 
 class ClassQuestions extends Component {
+  getStudentName = student => {
+    const { isPresentationMode, currentStudent } = this.props;
+    if (!currentStudent) return null;
+    const name = isPresentationMode ? currentStudent.fakeName : currentStudent.studentName;
+    return name;
+  };
+
   getTestItems() {
-    const { currentStudent, questionActivities, studentViewFilter: filter } = this.props;
+    const { currentStudent, questionActivities, studentViewFilter: filter, isPresentationMode } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
     }
@@ -72,6 +80,13 @@ class ClassQuestions extends Component {
           .map(question => {
             const { id } = question;
             let qActivities = questionActivities.filter(({ qid }) => qid === id);
+            qActivities = qActivities.map(q => ({
+              ...q,
+              studentName: this.getStudentName(),
+              icon: currentStudent.icon,
+              color: currentStudent.color
+            }));
+
             if (!item.itemLevelScoring && qActivities[0]) {
               if (filter === "correct" && qActivities[0].score < qActivities[0].maxScore) {
                 return false;
@@ -89,9 +104,8 @@ class ClassQuestions extends Component {
               if (userQuestion) {
                 q.timespent = userQuestion.timeSpent;
                 q.disabled = userQuestion.disabled;
-                q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
               }
-              q.studentName = currentStudent !== undefined ? currentStudent.studentName : null;
+
               return { ...q };
             });
             if (qActivities.length > 0) {
@@ -110,7 +124,8 @@ class ClassQuestions extends Component {
 
   render() {
     const testItems = this.getTestItems();
-    const { qIndex } = this.props;
+    const { qIndex, currentStudent } = this.props;
+
     return testItems.map((item, index) => (
       <Preview
         studentId={(this.props.currentStudent || {}).studentId}
@@ -128,8 +143,10 @@ ClassQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,
   questionActivities: PropTypes.array.isRequired,
   currentStudent: PropTypes.object.isRequired,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  isPresentationMode: PropTypes.bool
 };
 ClassQuestions.defaultProps = {
-  qIndex: null
+  qIndex: null,
+  isPresentationMode: false
 };

@@ -38,7 +38,8 @@ export default class DisneyCardContainer extends Component {
     selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
     studentUnselect: PropTypes.func.isRequired,
-    viewResponses: PropTypes.func.isRequired
+    viewResponses: PropTypes.func.isRequired,
+    isPresentationMode: PropTypes.bool
   };
 
   constructor(props) {
@@ -58,7 +59,7 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses } = this.props;
+    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode } = this.props;
     const styledCard = [];
 
     if (testActivity.length > 0) {
@@ -67,6 +68,7 @@ export default class DisneyCardContainer extends Component {
           color: "",
           status: ""
         };
+
         if (student.status === "notStarted") {
           status.status = "NOT STARTED";
           status.color = red;
@@ -95,14 +97,21 @@ export default class DisneyCardContainer extends Component {
         });
 
         const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
+        const name = isPresentationMode ? student.fakeName : student.studentName || "-";
 
         const studentData = (
-          <StyledCard data-cy={`student-card-${student.studentName}`} bordered={false} key={index}>
+          <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>
-              <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
+              {isPresentationMode ? (
+                <i style={{ color: student.color, fontSize: "32px" }} className={`fa fa-${student.icon}`}>
+                  {" "}
+                </i>
+              ) : (
+                <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
+              )}
               <StyledName>
                 <StyledParaF data-cy="studentName" title={student.email}>
-                  {student.studentName ? student.studentName : "-"}
+                  {name}
                 </StyledParaF>
                 {student.present ? (
                   <StyledParaS data-cy="studentStatus" color={status.color}>

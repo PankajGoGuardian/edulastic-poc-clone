@@ -236,13 +236,21 @@ class QuestionWrapper extends Component {
       qIndex,
       windowWidth,
       flowLayout,
+      isPresentationMode,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
+
     const studentName = data.activity && data.activity.studentName;
+    const presentationModeProps = {
+      isPresentationMode,
+      color: data.activity && data.activity.color,
+      icon: data.activity && data.activity.icon
+    };
+
     const userAnswerProps = {};
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
@@ -312,9 +320,14 @@ class QuestionWrapper extends Component {
             </PaperWrapper>
             {showFeedback &&
               (multiple ? (
-                <FeedbackBottom widget={data} disabled={disabled} studentName={studentName} />
+                <FeedbackBottom
+                  widget={data}
+                  disabled={disabled}
+                  studentName={studentName}
+                  {...presentationModeProps}
+                />
               ) : (
-                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} />
+                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} {...presentationModeProps} />
               ))}
           </QuestionContainer>
         </ThemeProvider>
@@ -325,6 +338,7 @@ class QuestionWrapper extends Component {
 
 QuestionWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
+  isPresentationMode: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
   showFeedback: PropTypes.bool,
@@ -364,7 +378,9 @@ const enhance = compose(
   withAnswerSave,
   withNamespaces("assessment"),
   connect(
-    null,
+    state => ({
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+    }),
     {
       setQuestionData: setQuestionDataAction
     }

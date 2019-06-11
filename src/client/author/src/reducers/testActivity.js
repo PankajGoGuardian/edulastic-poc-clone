@@ -1,13 +1,13 @@
+import { createAction } from "redux-starter-kit";
+import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
-  UPDATE_ASSIGNMENT_STATUS
+  UPDATE_ASSIGNMENT_STATUS,
+  TOGGLE_PRESENTATION_MODE
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
-
-import { createAction } from "redux-starter-kit";
-import { produce } from "immer";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
@@ -28,7 +28,8 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 const initialState = {
   entities: [],
   error: null,
-  loading: false
+  loading: false,
+  presentationMode: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -167,6 +168,11 @@ const reducer = (state = initialState, { type, payload }) => {
           ...state.data,
           status: payload
         }
+      };
+    case TOGGLE_PRESENTATION_MODE:
+      return {
+        ...state,
+        presentationMode: payload
       };
     default:
       return state;

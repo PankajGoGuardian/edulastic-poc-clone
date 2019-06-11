@@ -5,6 +5,7 @@ import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
 
 import { setShowScoreAction, updateAssignmentStatusAction } from "../src/actions/classBoard";
+import { createFakeData } from "./utils";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -39,6 +40,14 @@ function* receiveTestActivitySaga({ payload }) {
   try {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
+    const students = get(gradebookData, "students", []);
+    // attach fake data to students for presentation mode.
+    const fakeData = createFakeData(students.length);
+    gradebookData.students = students.map((student, index) => ({
+      ...student,
+      ...fakeData[index]
+    }));
+
     yield put({
       type: RECEIVE_TESTACTIVITY_SUCCESS,
       payload: { gradebookData, additionalData }
@@ -47,6 +56,7 @@ function* receiveTestActivitySaga({ payload }) {
     const releaseScore = additionalData.showScore;
     yield put(setShowScoreAction(releaseScore));
   } catch (err) {
+    console.log("err is", err);
     const errorMessage = "Receive tests is failing";
     yield call(message.error, errorMessage);
     yield put({
@@ -111,9 +121,9 @@ export const getAggregateByQuestion = (entities, studentId) => {
   // const startedEntities = entities.filter(x => x.status !== "notStarted");
   const questionMap = {};
   if (studentId) {
-    console.log("studentid selected", studentId);
     entities = entities.filter(x => x.studentId === studentId);
   }
+
   for (const entity of entities) {
     const { questionActivities } = entity;
     for (let {

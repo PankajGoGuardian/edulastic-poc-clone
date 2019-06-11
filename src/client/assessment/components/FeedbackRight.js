@@ -150,7 +150,10 @@ class FeedbackRight extends Component {
   render() {
     const {
       studentName,
-      widget: { activity }
+      widget: { activity },
+      isPresentationMode,
+      color,
+      icon
     } = this.props;
     const { score, maxScore, feedback, submitted } = this.state;
     const isError = maxScore < score;
@@ -160,9 +163,13 @@ class FeedbackRight extends Component {
     if (isStudentName) {
       title = (
         <TitleDiv data-cy="studentName" style={{ marginTop: 0, fontWeight: "bold" }}>
-          <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: "#1774F0" }} size={34}>
-            {studentName.charAt(0)}
-          </Avatar>
+          {isPresentationMode ? (
+            <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
+          ) : (
+            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: "#1774F0" }} size={34}>
+              {studentName.charAt(0)}
+            </Avatar>
+          )}
           &nbsp;
           {studentName}
         </TitleDiv>
@@ -216,11 +223,17 @@ FeedbackRight.propTypes = {
   user: PropTypes.object.isRequired,
   studentName: PropTypes.string,
   loadFeedbackResponses: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
+  isPresentationMode: PropTypes.bool,
+  color: PropTypes.string,
+  icon: PropTypes.string
 };
 
 FeedbackRight.defaultProps = {
-  studentName: ""
+  studentName: "",
+  isPresentationMode: false,
+  color: "",
+  icon: ""
 };
 
 const enhance = compose(

@@ -5,7 +5,7 @@ import { Select } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { Container, StyledSelect } from "./styled";
 
-const SortBar = ({ handleChange, students, selectedStudent }) => {
+const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }) => {
   const onSortChange = testActivityId => {
     if (testActivityId !== undefined) {
       if (handleChange) {
@@ -19,24 +19,29 @@ const SortBar = ({ handleChange, students, selectedStudent }) => {
     if (selectedStudent) {
       const selected = find(students, student => student.studentId === selectedStudent);
       if (selected) {
-        return selected.studentName;
+        return isPresentationMode ? selected.fakeName : selected.studentName;
       }
     }
-    return students[0].studentName;
+    return isPresentationMode ? students[0].fakeName : students[0].studentName;
   };
+
+  const defaultUser = getDefaultValue();
+
+  const selected = find(students, student => student.studentId === selectedStudent) || students[0];
+  const user = isPresentationMode ? selected.fakeName : selected.studentName;
 
   return (
     <Fragment>
       {students && students.length !== 0 && (
         <FlexContainer justifyContent="flex-end">
           <Container>
-            <StyledSelect defaultValue={getDefaultValue()} onChange={onSortChange}>
+            <StyledSelect value={user} onChange={onSortChange}>
               {students.map((student, index) => {
                 const testActivityId = student.testActivityId ? student.testActivityId : null;
                 const isActive = testActivityId === null;
                 return (
                   <Select.Option key={index} value={testActivityId} disabled={isActive}>
-                    {student.studentName}
+                    {isPresentationMode ? student.fakeName : student.studentName}
                   </Select.Option>
                 );
               })}
@@ -51,12 +56,14 @@ const SortBar = ({ handleChange, students, selectedStudent }) => {
 SortBar.propTypes = {
   handleChange: PropTypes.func,
   students: PropTypes.array.isRequired,
-  selectedStudent: PropTypes.string
+  selectedStudent: PropTypes.string,
+  isPresentationMode: PropTypes.bool
 };
 
 SortBar.defaultProps = {
   selectedStudent: "",
-  handleChange: () => {}
+  handleChange: () => {},
+  isPresentationMode: false
 };
 
 export default SortBar;

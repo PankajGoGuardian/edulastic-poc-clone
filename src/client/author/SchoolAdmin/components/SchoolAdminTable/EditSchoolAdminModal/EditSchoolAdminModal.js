@@ -4,12 +4,18 @@ const Option = Select.Option;
 
 import { StyledModal, ModalFormItem } from "./styled";
 
-class EditSchoolAdminModal extends React.Component {
+class EditSchoolAdminModal extends Component {
   onSaveSchoolAdmin = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        row.key = this.props.schoolAdminData.key;
-        this.props.saveSchoolAdmin(row);
+        const { schoolAdminData, updateSchoolAdmin, userOrgId } = this.props;
+        updateSchoolAdmin({
+          userId: schoolAdminData._id,
+          data: Object.assign(row, {
+            districtId: userOrgId
+          })
+        });
+        this.onCloseModal();
       }
     });
   };

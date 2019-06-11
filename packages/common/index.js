@@ -1,3 +1,5 @@
+import * as StyledComponents from "./src/components/StyledComponents";
+
 export { default as Paper } from "./src/components/Paper";
 export { default as Select } from "./src/components/Select";
 export { default as Progress } from "./src/components/Progress";
@@ -30,6 +32,8 @@ export { default as Tabs } from "./src/components/Tabs";
 export { default as Tab } from "./src/components/Tabs/Tab";
 export { default as TabContainer } from "./src/components/Tabs/TabContainer";
 export { default as MathModal } from "./src/components/MathModal";
+export { StyledComponents };
+export { default as TypeToConfirmModal } from "./src/components/TypeToConfirmModal";
 // HOC
 export { default as withWindowSizes } from "./src/HOC/withWindowSizes";
 export { WithResources, useResources } from "./src/HOC/withResources";

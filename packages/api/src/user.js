@@ -61,8 +61,9 @@ const updateUser = ({ data, userId }) =>
 const deleteUser = data =>
   api
     .callApi({
-      url: `${prefix}/${data.userId}?districtId=${data.districtId}`,
-      method: "delete"
+      url: `${prefix}`,
+      method: "delete",
+      data
     })
     .then(result => result.data.result);
 

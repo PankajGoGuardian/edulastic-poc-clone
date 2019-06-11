@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { Button, Table, Select, Input, Dropdown } from "antd";
-const Search = Input.Search;
+
+const { Search } = Input;
 
 export const StyledTableContainer = styled.div`
   display: flex;
@@ -40,7 +41,7 @@ export const StyledTableButton = styled.a`
   font-size: 20px;
 `;
 
-export const StyledFilterInput = styled(Input)`
+export const StyledFilterInput = styled(Search)`
   margin-left: 20px;
   width: 300px;
 `;
@@ -56,4 +57,11 @@ export const StyledActionDropDown = styled(Dropdown)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+`;
+
+export const StyledClassName = styled.p`
+  text-align: center;
+  color: #1890ff;
+  font-weight: bold;
+  margin-bottom: 5px;
 `;

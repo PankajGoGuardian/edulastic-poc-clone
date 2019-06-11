@@ -1,5 +1,5 @@
 import axios from "axios";
-import { omitBy, flatten, isNumber, isString, round, trim } from "lodash";
+import { omitBy, flatten, isNumber, isString, round, trim, isNaN } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
@@ -231,7 +231,12 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     }
   });
 
-  const score = round(corrects / entered, 2);
+  let score = round(corrects / entered, 2);
+
+  if (isNaN(score)) {
+    score = 0;
+  }
+
   const maxScore = 1;
 
   return {

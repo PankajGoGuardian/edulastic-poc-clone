@@ -26,7 +26,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, response, graphData, changePreviewTab, previewTab } = this.props;
+    const { t, response, graphData, changePreviewTab, previewTab, view } = this.props;
     const { responseScore } = this.state;
     return (
       <div>
@@ -44,6 +44,7 @@ class CorrectAnswer extends Component {
         </Header>
         <GraphDisplay
           changePreviewTab={changePreviewTab}
+          view={view}
           previewTab={previewTab}
           graphData={graphData}
           altAnswerId={response.id}
@@ -60,7 +61,10 @@ CorrectAnswer.propTypes = {
   onUpdatePoints: PropTypes.func.isRequired,
   onUpdateValidationValue: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
-  response: PropTypes.object.isRequired
+  response: PropTypes.object.isRequired,
+  changePreviewTab: PropTypes.func.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired
 };
 
 export default withNamespaces("assessment")(CorrectAnswer);

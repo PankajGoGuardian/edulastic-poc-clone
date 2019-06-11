@@ -1,18 +1,23 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Button } from "@edulastic/common";
+import { compose } from "redux";
 import { Select } from "antd";
-import { ToolSubTitle, SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
+
+import { Button } from "@edulastic/common";
+import { withNamespaces } from "@edulastic/localization";
+
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { ToolSubTitle, SelectWrapper, AddToolBtnWrapper, ToolSelect } from "../common/styled_components";
 import DeleteButton from "../common/DeleteButton";
 
 class GraphToolsParams extends Component {
   addTool = groupIndex => {
-    const { toolbar, onChange, options } = this.props;
+    const { toolbar, onChange, toolOptions } = this.props;
     const newTools = [...toolbar.tools];
     const areToolsArray = Array.isArray(toolbar.tools[groupIndex]);
-    const defaultOption = options && options[0] ? options[0].value : "";
+    const defaultOption = toolOptions && toolOptions[0] ? toolOptions[0].value : "";
 
     if (groupIndex !== undefined && areToolsArray) {
       newTools[groupIndex].push(defaultOption);
@@ -100,7 +105,7 @@ class GraphToolsParams extends Component {
   );
 
   renderSingleToolsInDefaultGroup = () => {
-    const { options, toolbar } = this.props;
+    const { toolOptions, toolbar } = this.props;
     const countOfSingleTools = toolbar.tools.filter(t => !Array.isArray(t)).length;
 
     return (
@@ -112,7 +117,7 @@ class GraphToolsParams extends Component {
               <ToolSelect>
                 <Tool
                   value={tool}
-                  options={options}
+                  options={toolOptions}
                   selectWidth="100%"
                   index={i}
                   countOfSingleTools={countOfSingleTools}
@@ -170,7 +175,7 @@ class GraphToolsParams extends Component {
   };
 
   renderGroupTools = () => {
-    const { options } = this.props;
+    const { toolOptions } = this.props;
     const toolGroups = this.getToolGroups();
 
     return (
@@ -196,7 +201,7 @@ class GraphToolsParams extends Component {
                   <Tool
                     countOfSingleTools={toolGroup.tools.length}
                     value={innerTool}
-                    options={options}
+                    options={toolOptions}
                     selectWidth="100%"
                     index={innerIndex}
                     isGroup
@@ -215,7 +220,22 @@ class GraphToolsParams extends Component {
     );
   };
 
+  handleSelectDrawingPrompt = drawingPrompt => {
+    const { toolbar, onChange } = this.props;
+
+    onChange({
+      ...toolbar,
+      drawingPrompt
+    });
+  };
+
   render() {
+    const {
+      t,
+      drawingPromptOptions,
+      toolbar: { drawingPrompt }
+    } = this.props;
+
     return (
       <React.Fragment>
         <Row gutter={60}>
@@ -228,14 +248,34 @@ class GraphToolsParams extends Component {
             {this.renderAddGroupBtn()}
           </Col>
         </Row>
+        <Row gutter={60} marginTop={30}>
+          <Col md={12}>
+            <Label>{t("component.graphing.drawingprompt")}</Label>
+            <Select
+              size="large"
+              onChange={this.handleSelectDrawingPrompt}
+              value={drawingPrompt}
+              data-cy="drawingPrompt"
+              style={{ width: "100%" }}
+            >
+              {drawingPromptOptions.map(option => (
+                <Select.Option data-cy={option.value} key={option.value}>
+                  {option.label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </Row>
       </React.Fragment>
     );
   }
 }
 
 GraphToolsParams.propTypes = {
+  t: PropTypes.func.isRequired,
   toolbar: PropTypes.object,
-  options: PropTypes.array.isRequired,
+  toolOptions: PropTypes.array.isRequired,
+  drawingPromptOptions: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };
 
@@ -243,7 +283,7 @@ GraphToolsParams.defaultProps = {
   toolbar: {
     default_tool: "",
     tools: [],
-    options: []
+    drawingPrompt: "byTools"
   }
 };
 
@@ -316,4 +356,6 @@ Tool.defaultProps = {
   isGroup: false
 };
 
-export default GraphToolsParams;
+const enhance = compose(withNamespaces("assessment"));
+
+export default enhance(GraphToolsParams);

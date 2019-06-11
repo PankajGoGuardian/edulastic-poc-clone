@@ -124,7 +124,8 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 1,
           snapTo: 1,
-          chart_type: "linePlot"
+          chart_type: "linePlot",
+          showGridlines: "y_only"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -211,7 +212,8 @@ export const getCards = onSelectQuestionType => {
           margin: 40,
           stepSize: 1,
           snapTo: 1,
-          chart_type: "dots"
+          chart_type: "dots",
+          showGridlines: "both"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -299,7 +301,9 @@ export const getCards = onSelectQuestionType => {
           stepSize: 5,
           snapTo: 5,
           chart_type: "histogram",
-          fractionFormat: "Decimal"
+          fractionFormat: "Decimal",
+          multicolorBars: true,
+          showGridlines: "y_only"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -387,7 +391,8 @@ export const getCards = onSelectQuestionType => {
           stepSize: 5,
           snapTo: 5,
           chart_type: "bar",
-          fractionFormat: "Decimal"
+          fractionFormat: "Decimal",
+          showGridlines: "y_only"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -475,7 +480,9 @@ export const getCards = onSelectQuestionType => {
           stepSize: 5,
           snapTo: 5,
           chart_type: "line",
-          fractionFormat: "Decimal"
+          fractionFormat: "Decimal",
+          pointStyle: "dot",
+          showGridlines: "both"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1210,7 +1217,9 @@ export const getCards = onSelectQuestionType => {
         },
         toolbar: {
           tools: ["point", "line"],
-          default_tool: "point"
+          default_tool: "point",
+          drawingPrompt: "byTools",
+          drawingObjects: []
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1296,7 +1305,9 @@ export const getCards = onSelectQuestionType => {
         },
         toolbar: {
           tools: ["point", "line"],
-          default_tool: "point"
+          default_tool: "point",
+          drawingPrompt: "byTools",
+          drawingObjects: []
         },
         validation: {
           scoring_type: EXACT_MATCH,

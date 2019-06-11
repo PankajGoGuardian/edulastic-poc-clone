@@ -66,6 +66,11 @@ class GraphQuadrants extends Component {
     { value: "label", label: "Label" }
   ];
 
+  getDrawingPromptOptions = () => [
+    { value: "byTools", label: "By drawing tools" },
+    { value: "byObjects", label: "By objects" }
+  ];
+
   render() {
     const { t, graphData, fillSections, cleanSections } = this.props;
     const { canvas } = graphData;
@@ -77,7 +82,7 @@ class GraphQuadrants extends Component {
           label="Compose Question"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
           <QuestionTextArea
@@ -92,7 +97,7 @@ class GraphQuadrants extends Component {
           label="Graph Parameters"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.graphparameters")}</Subtitle>
@@ -179,12 +184,13 @@ class GraphQuadrants extends Component {
           label="Tools"
           cleanSections={cleanSections}
           fillSections={fillSections}
-          advancedAreOpen={true}
+          advancedAreOpen
         >
           <PaddingDiv>
             <Subtitle>{t("component.graphing.tools")}</Subtitle>
             <GraphToolsParams
-              options={this.getToolOptions()}
+              toolOptions={this.getToolOptions()}
+              drawingPromptOptions={this.getDrawingPromptOptions()}
               toolbar={graphData.toolbar}
               onChange={this.handleToolsChange}
             />

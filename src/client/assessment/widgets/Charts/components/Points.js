@@ -6,11 +6,11 @@ import { red, green } from "@edulastic/colors";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
 
-import { Circle } from "../styled";
+import { Circle, Cross } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
-  const { margin } = gridParams;
+  const { margin, pointStyle } = gridParams;
 
   const { padding, step } = getGridVariables(circles, gridParams);
 
@@ -23,6 +23,8 @@ const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridPara
   const getCenterX = index => step * index + margin / 2 + padding;
 
   const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+
+  const getCrossD = (x, y) => `M ${x - 6},${y - 6} L ${x + 7},${y + 7} M ${x + 7},${y - 6} L ${x - 6},${y + 7}`;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) - 20},${getCenterY(circles[index]) - 20})`}>
@@ -38,14 +40,23 @@ const Points = ({ circles, onPointOver, onMouseDown, activeIndex, view, gridPara
           ((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
             <Fragment>
               {(previewTab === SHOW || previewTab === CHECK) && renderValidationIcons(index)}
-              <Circle
-                onMouseEnter={handleMouseAction(index)}
-                onMouseLeave={handleMouseAction(null)}
-                onMouseDown={onMouseDown(index)}
-                cx={getCenterX(index)}
-                cy={getCenterY(dot)}
-                r={6}
-              />
+              {pointStyle === "cross" ? (
+                <Cross
+                  d={getCrossD(getCenterX(index), getCenterY(dot))}
+                  onMouseEnter={handleMouseAction(index)}
+                  onMouseLeave={handleMouseAction(null)}
+                  onMouseDown={onMouseDown(index)}
+                />
+              ) : (
+                <Circle
+                  onMouseEnter={handleMouseAction(index)}
+                  onMouseLeave={handleMouseAction(null)}
+                  onMouseDown={onMouseDown(index)}
+                  cx={getCenterX(index)}
+                  cy={getCenterY(dot)}
+                  r={6}
+                />
+              )}
             </Fragment>
           )
       )}
@@ -66,7 +77,8 @@ Points.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
+    pointStyle: PropTypes.string
   }).isRequired,
   correct: PropTypes.array.isRequired,
   previewTab: PropTypes.string

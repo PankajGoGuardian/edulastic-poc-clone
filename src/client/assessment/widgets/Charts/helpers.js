@@ -1,3 +1,5 @@
+import { SHOW_GRIDLINES_BOTH, SHOW_GRIDLINES_X_ONLY, SHOW_GRIDLINES_Y_ONLY } from "./const";
+
 export const getYAxis = (yAxisMax, yAxisMin, stepSize) =>
   Array.from({ length: (yAxisMax - yAxisMin) / stepSize + 1 }, (v, k) => +(yAxisMin + k * stepSize).toFixed(2));
 
@@ -97,3 +99,8 @@ export const getFractionResult = (value, fractionFormat) => {
   result.main = value;
   return result;
 };
+
+export const displayVerticalLines = showGridlines =>
+  showGridlines === SHOW_GRIDLINES_X_ONLY || showGridlines === SHOW_GRIDLINES_BOTH;
+export const displayHorizontalLines = showGridlines =>
+  showGridlines === SHOW_GRIDLINES_Y_ONLY || showGridlines === SHOW_GRIDLINES_BOTH;

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
@@ -6,21 +6,43 @@ import { get } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withNamespaces } from "react-i18next";
+import { questionType } from "@edulastic/constants";
+import { Input } from "antd";
 
-import {
-  Layout,
-  FontSizeOption,
-  RowHeaderOption,
-  MaximumResponsesPerCellOption,
-  RowTitlesWidthOption,
-  RowMinHeightOption,
-  ResponseContainerPositionOption,
-  StemNumerationOption
-} from "../../../containers/WidgetOptions/components";
+import { Layout, FontSizeOption, StemNumerationOption } from "../../../containers/WidgetOptions/components";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../../author/QuestionEditor/ducks";
 import { Widget } from "../../../styled/Widget";
+import PointStyleOption from "./PointStyle";
+import MulticolorBarsOption from "./MulticolorBarsOption";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import GridlinesOption from "./GridlinesOption";
+import { SETTING_NAME_SHOW_GRIDLINES, SHOW_GRIDLINES_BOTH } from "../const";
+
+const InputField = ({ name, value, onChange, type = "number", t }) => (
+  <Fragment>
+    <Label>{t(`component.chart.${name}`)}</Label>
+    <Input
+      size="large"
+      type={type}
+      value={value}
+      onChange={e => onChange(name, type === "text" ? e.target.value : +e.target.value)}
+    />
+  </Fragment>
+);
+
+InputField.propTypes = {
+  name: PropTypes.string.isRequired,
+  value: PropTypes.any.isRequired,
+  t: PropTypes.func.isRequired,
+  onChange: PropTypes.func.isRequired,
+  type: PropTypes.string
+};
+
+InputField.defaultProps = {
+  type: "number"
+};
 
 class LayoutsComponent extends Component {
   componentDidMount = () => {
@@ -47,7 +69,8 @@ class LayoutsComponent extends Component {
   }
 
   render() {
-    const { item, setQuestionData, advancedAreOpen } = this.props;
+    const { item, setQuestionData, advancedAreOpen, t } = this.props;
+    const chartType = get(item, "ui_style.chart_type");
 
     const changeItem = (prop, val) => {
       setQuestionData(
@@ -68,62 +91,70 @@ class LayoutsComponent extends Component {
       );
     };
 
+    const getLayoutSettings = chart_type => {
+      const settings = [
+        <InputField
+          name="width"
+          value={parseInt(item.ui_style.width, 10) < 1 ? null : item.ui_style.width}
+          onChange={changeUIStyle}
+          type="number"
+          t={t}
+        />,
+        <InputField
+          name="height"
+          value={parseInt(item.ui_style.height, 10) < 1 ? null : item.ui_style.height}
+          onChange={changeUIStyle}
+          type="number"
+          t={t}
+        />,
+        <StemNumerationOption
+          onChange={val => changeUIStyle("validation_stem_numeration", val)}
+          value={get(item, "ui_style.validation_stem_numeration", "numerical")}
+        />,
+        <FontSizeOption
+          onChange={val => changeUIStyle("fontsize", val)}
+          value={get(item, "ui_style.fontsize", "normal")}
+        />,
+        <GridlinesOption
+          onChange={val => changeUIStyle(SETTING_NAME_SHOW_GRIDLINES, val)}
+          value={get(item, `ui_style.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
+        />
+      ];
+
+      if (chart_type === questionType.LINE_CHART) {
+        settings.push(
+          <PointStyleOption
+            onChange={val => changeUIStyle("pointStyle", val)}
+            value={get(item, "ui_style.pointStyle", "dot")}
+          />
+        );
+      } else if (chart_type === questionType.HISTOGRAM) {
+        settings.push(
+          <MulticolorBarsOption
+            onChange={val => changeUIStyle("multicolorBars", val)}
+            value={get(item, "ui_style.multicolorBars", true)}
+          />
+        );
+      }
+
+      return settings;
+    };
+
+    const settings = getLayoutSettings(chartType);
+
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Layout>
-          <Row gutter={36}>
-            <Col md={12}>
-              <ResponseContainerPositionOption
-                onChange={val => changeUIStyle("possibility_list_position", val)}
-                value={get(item, "ui_style.possibility_list_position", "bottom")}
-              />
-            </Col>
-            <Col md={12}>
-              <StemNumerationOption
-                onChange={val => changeUIStyle("validation_stem_numeration", val)}
-                value={get(item, "ui_style.validation_stem_numeration", "numerical")}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <RowTitlesWidthOption
-                onChange={val => changeUIStyle("row_titles_width", val)}
-                value={get(item, "ui_style.row_titles_width", "100%")}
-              />
-            </Col>
-            <Col md={12}>
-              <RowMinHeightOption
-                onChange={val => changeUIStyle("row_min_height", val)}
-                value={get(item, "ui_style.row_min_height", "100%")}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <RowHeaderOption
-                onChange={val => changeUIStyle("row_header", val)}
-                value={get(item, "ui_style.row_header", "")}
-              />
-            </Col>
-            <Col md={12}>
-              <MaximumResponsesPerCellOption
-                onChange={val => changeItem("max_response_per_cell", +val)}
-                value={get(item, "max_response_per_cell", 0)}
-              />
-            </Col>
-          </Row>
-
-          <Row gutter={36}>
-            <Col md={12}>
-              <FontSizeOption
-                onChange={val => changeUIStyle("fontsize", val)}
-                value={get(item, "ui_style.fontsize", "normal")}
-              />
-            </Col>
-          </Row>
+          {settings.map((setting, index) => (
+            <Fragment>
+              {index % 2 === 0 && (
+                <Row gutter={36}>
+                  <Col md={12}>{settings[index]}</Col>
+                  <Col md={12}>{settings[index + 1]}</Col>
+                </Row>
+              )}
+            </Fragment>
+          ))}
         </Layout>
       </Widget>
     );

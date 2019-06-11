@@ -290,3 +290,15 @@ export const Title = WithMathFormula(styled.div`
   display: block;
   padding: 1em 0;
 `);
+
+export const JSXBoxWrapper = styled.div`
+  position: relative;
+  overflow: auto;
+  width: ${props => `${props.width}px`};
+`;
+
+export const JSXBoxWithDrawingObjectsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+`;

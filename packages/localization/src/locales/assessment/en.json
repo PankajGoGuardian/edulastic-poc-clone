@@ -175,7 +175,11 @@
       "button": "Button",
       "list": "List",
       "listStyle": "List style",
-      "maximumWidth": "Maximum width"
+      "maximumWidth": "Maximum width",
+      "pointStyle": "Point style",
+      "dot": "Dot",
+      "cross": "Cross",
+      "multicolorBars": "Multicolor bars"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -227,7 +231,14 @@
       "value": "Value",
       "label": "Label",
       "chartTitle": "Chart Title",
-      "fractionFormat": "Fraction Format"
+      "fractionFormat": "Fraction Format",
+      "gridlines": "Gridlines",
+      "showGridlinesOptions": {
+        "both": "Display X and Y axes gridlines",
+        "x_only": "Display X axes gridlines only (Vertical)",
+        "y_only": "Display Y axes gridlines only (Horizontal)",
+        "none": "Don't display gridlines"
+      }
     },
     "hotspot": {
       "widthLabel": "Width (px)",
@@ -531,6 +542,7 @@
       "possibleresponses": "Possible responses",
       "graphparameters": "Graph parameters",
       "tools": "Tools",
+      "drawingprompt": "Drawing Prompt",
       "addnewpossibleresponsebtn": "Add",
       "optionstitle": "Advanced Options",
       "layoutoptionstitle": "Layout",

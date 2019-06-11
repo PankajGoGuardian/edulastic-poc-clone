@@ -24,9 +24,20 @@ import {
   defaultAxesParameters,
   defaultGridParameters
 } from "../../Builder/settings";
-import { GraphWrapper, JSXBox, LabelTop, LabelBottom, LabelLeft, LabelRight, Title } from "./styled";
+import {
+  GraphWrapper,
+  JSXBox,
+  LabelTop,
+  LabelBottom,
+  LabelLeft,
+  LabelRight,
+  Title,
+  JSXBoxWrapper,
+  JSXBoxWithDrawingObjectsWrapper
+} from "./styled";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 import Equations from "./Equations";
+import DrawingObjects from "./DrawingObjects";
 import AnnotationRnd from "../../Annotations/AnnotationRnd";
 
 const getColoredElems = (elements, compareResult) => {
@@ -131,7 +142,8 @@ class GraphContainer extends PureComponent {
     this._graph = null;
 
     this.state = {
-      selectedTool: this.getDefaultTool()
+      selectedTool: this.getDefaultTool(),
+      selectedDrawingObject: null
     };
 
     this.onSelectTool = this.onSelectTool.bind(this);
@@ -140,7 +152,8 @@ class GraphContainer extends PureComponent {
   }
 
   getDefaultTool() {
-    const { tools } = this.props;
+    const { toolbar } = this.props;
+    const { tools } = toolbar;
 
     return {
       name: tools[0],
@@ -163,10 +176,12 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      tools,
+      toolbar,
       setElementsStash,
       graphType
     } = this.props;
+
+    const { tools } = toolbar;
 
     this._graph = makeBorder(this._graphId, graphType);
 
@@ -215,10 +230,12 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      tools
+      toolbar
     } = this.props;
 
-    if (JSON.stringify(tools) !== JSON.stringify(prevProps.tools)) {
+    const { tools } = toolbar;
+
+    if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
       this.setDefaultToolState();
       this._graph.setTool(tools[0]);
     }
@@ -324,7 +341,8 @@ class GraphContainer extends PureComponent {
   }
 
   onReset() {
-    const { tools } = this.props;
+    const { toolbar } = this.props;
+    const { tools } = toolbar;
 
     this.setState({
       selectedTool: this.getDefaultTool()
@@ -560,8 +578,32 @@ class GraphContainer extends PureComponent {
 
   allControls = ["undo", "redo", "reset", "delete"];
 
+  drawingObjectsAreVisible = () => {
+    const { view, toolbar } = this.props;
+    const { drawingPrompt } = toolbar;
+    return view !== "edit" && drawingPrompt === "byObjects";
+  };
+
+  getDrawingObjects = () => {
+    const { toolbar, elements } = this.props;
+    const { drawingObjects } = toolbar;
+    const { selectedDrawingObject } = this.state;
+
+    return drawingObjects.map(item => ({
+      ...item,
+      disabled: elements.findIndex(el => el.id === item.id) > -1,
+      selected: !!(selectedDrawingObject && selectedDrawingObject.id === item.id)
+    }));
+  };
+
+  selectDrawingObject = drawingObject => {
+    console.log(drawingObject);
+    this.setState({ selectedDrawingObject: drawingObject });
+  };
+
   render() {
-    const { tools, layout, annotation, controls, bgShapes, elements, questionId } = this.props;
+    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId } = this.props;
+    const { tools } = toolbar;
     const { selectedTool } = this.state;
     const hasAnnotation =
       annotation && (annotation.labelTop || annotation.labelLeft || annotation.labelRight || annotation.labelBottom);
@@ -570,44 +612,48 @@ class GraphContainer extends PureComponent {
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
-          <Tools
-            tools={bgShapes ? this.allTools : tools}
-            controls={bgShapes ? this.allControls : controls}
-            tool={selectedTool}
-            bgShapes={bgShapes}
-            getIconByToolName={this.getIconByToolName}
-            getHandlerByControlName={this.getHandlerByControlName}
-            onSelect={this.onSelectTool}
-            fontSize={bgShapes ? 12 : layout.fontSize}
-          />
-          <Equations equations={equations} setEquations={this.setEquations} />
-          <div
-            style={{
-              position: "relative",
-              overflow: "auto",
-              width: `${+layout.width + 40}px`
-            }}
-          >
-            {annotation && annotation.labelTop && (
-              <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
-            )}
-            {annotation && annotation.labelRight && (
-              <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
-            )}
-            {annotation && annotation.labelLeft && (
-              <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
-            )}
-            {annotation && annotation.labelBottom && (
-              <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
-            )}
-            <JSXBox
-              data-cy="jxgbox"
-              id={this._graphId}
-              className="jxgbox"
-              margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
+          {!this.drawingObjectsAreVisible() && (
+            <Tools
+              tools={bgShapes ? this.allTools : tools}
+              controls={bgShapes ? this.allControls : controls}
+              tool={selectedTool}
+              bgShapes={bgShapes}
+              getIconByToolName={this.getIconByToolName}
+              getHandlerByControlName={this.getHandlerByControlName}
+              onSelect={this.onSelectTool}
+              fontSize={bgShapes ? 12 : layout.fontSize}
             />
-            <AnnotationRnd questionId={questionId} disableDragging={false} />
-          </div>
+          )}
+          {!this.drawingObjectsAreVisible() && <Equations equations={equations} setEquations={this.setEquations} />}
+          <JSXBoxWithDrawingObjectsWrapper>
+            {this.drawingObjectsAreVisible() && (
+              <DrawingObjects
+                selectDrawingObject={this.selectDrawingObject}
+                drawingObjects={this.getDrawingObjects()}
+              />
+            )}
+            <JSXBoxWrapper width={+layout.width + 40}>
+              {annotation && annotation.labelTop && (
+                <LabelTop dangerouslySetInnerHTML={{ __html: annotation.labelTop }} />
+              )}
+              {annotation && annotation.labelRight && (
+                <LabelRight dangerouslySetInnerHTML={{ __html: annotation.labelRight }} />
+              )}
+              {annotation && annotation.labelLeft && (
+                <LabelLeft dangerouslySetInnerHTML={{ __html: annotation.labelLeft }} />
+              )}
+              {annotation && annotation.labelBottom && (
+                <LabelBottom dangerouslySetInnerHTML={{ __html: annotation.labelBottom }} />
+              )}
+              <JSXBox
+                data-cy="jxgbox"
+                id={this._graphId}
+                className="jxgbox"
+                margin={layout.margin ? layout.margin : hasAnnotation ? 20 : 0}
+              />
+              <AnnotationRnd questionId={questionId} disableDragging={false} />
+            </JSXBoxWrapper>
+          </JSXBoxWithDrawingObjectsWrapper>
         </GraphWrapper>
       </div>
     );
@@ -624,7 +670,7 @@ GraphContainer.propTypes = {
   bgImgOptions: PropTypes.object.isRequired,
   backgroundShapes: PropTypes.object,
   evaluation: PropTypes.any,
-  tools: PropTypes.array.isRequired,
+  toolbar: PropTypes.object,
   graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
   validation: PropTypes.object.isRequired,
@@ -654,7 +700,12 @@ GraphContainer.defaultProps = {
   controls: [],
   stash: {},
   stashIndex: {},
-  altAnswerId: null
+  altAnswerId: null,
+  toolbar: {
+    tools: [],
+    drawingPrompt: "byTools",
+    drawingObjects: []
+  }
 };
 
 export default connect(

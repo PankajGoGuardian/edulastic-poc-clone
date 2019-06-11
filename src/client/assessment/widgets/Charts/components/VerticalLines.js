@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import { Line, Text } from "../styled";
 import { getGridVariables } from "../helpers";
 
-const VerticalLines = ({ lines, gridParams }) => {
+const VerticalLines = ({ lines, gridParams, displayAxisLabel, displayGridlines }) => {
   const { height, margin } = gridParams;
 
   const { padding, step } = getGridVariables(lines, gridParams);
@@ -15,16 +15,20 @@ const VerticalLines = ({ lines, gridParams }) => {
     <g>
       {lines.map((dot, index) => (
         <Fragment>
-          <Text textAnchor="middle" x={getConstantX(index)} y={height}>
-            {dot.x}
-          </Text>
-          <Line
-            x1={getConstantX(index)}
-            y1={margin / 4}
-            x2={getConstantX(index)}
-            y2={height - margin / 2}
-            strokeWidth={1}
-          />
+          {displayAxisLabel && (
+            <Text textAnchor="middle" x={getConstantX(index)} y={height}>
+              {dot.x}
+            </Text>
+          )}
+          {displayGridlines && (
+            <Line
+              x1={getConstantX(index)}
+              y1={margin / 4}
+              x2={getConstantX(index)}
+              y2={height - margin / 2}
+              strokeWidth={1}
+            />
+          )}
         </Fragment>
       ))}
     </g>
@@ -33,6 +37,8 @@ const VerticalLines = ({ lines, gridParams }) => {
 
 VerticalLines.propTypes = {
   lines: PropTypes.array.isRequired,
+  displayAxisLabel: PropTypes.bool,
+  displayGridlines: PropTypes.bool,
   gridParams: PropTypes.shape({
     width: PropTypes.number,
     height: PropTypes.number,
@@ -42,6 +48,11 @@ VerticalLines.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired
+};
+
+VerticalLines.defaultProps = {
+  displayAxisLabel: true,
+  displayGridlines: true
 };
 
 export default VerticalLines;

@@ -389,13 +389,15 @@ class Board {
 
   setMarksDeleteHandler(setValue) {
     this.$board.on("up", event => {
-      if (event.target.nodeName === ("path" || "svg")) {
-        const mark = this.elements.find(element => element.id === event.target.id);
-        const setCoords = JXG.COORDS_BY_USER;
-        mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
-        Mark.alignMarks(this);
-        setValue();
+      const mark = this.elements.find(element => `mark-delete-${element.id}` === event.target.id);
+      if (!mark) {
+        return;
       }
+
+      const setCoords = JXG.COORDS_BY_USER;
+      mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
+      Mark.alignMarks(this);
+      setValue();
     });
   }
 

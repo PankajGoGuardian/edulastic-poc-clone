@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Stimulus } from "@edulastic/common";
 
 import { QuadrantsContainer } from "./QuadrantsContainer";
-import { AxisLabelsContainerWithResources } from "./AxisLabelsContainer";
+import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 
 const QuestionTitleWrapper = styled.div`
@@ -152,7 +152,7 @@ class GraphDisplay extends Component {
       case "axisSegments":
         return AxisSegmentsContainer;
       case "axisLabels":
-        return AxisLabelsContainerWithResources;
+        return AxisLabelsContainer;
       case "quadrants":
       case "firstQuadrant":
       default:
@@ -178,6 +178,7 @@ class GraphDisplay extends Component {
 
   getQuadrantsProps = () => {
     const {
+      view,
       graphData,
       evaluation,
       onChange,
@@ -264,7 +265,7 @@ class GraphDisplay extends Component {
         showPoints: !!background_image.showShapePoints
       },
       evaluation,
-      tools: toolbar ? toolbar.tools : [],
+      toolbar,
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
       validation,
@@ -276,7 +277,8 @@ class GraphDisplay extends Component {
       bgShapes,
       annotation,
       questionId: id,
-      altAnswerId
+      altAnswerId,
+      view
     };
   };
 
@@ -517,6 +519,7 @@ class GraphDisplay extends Component {
 }
 
 GraphDisplay.propTypes = {
+  view: PropTypes.string.isRequired,
   graphData: PropTypes.object.isRequired,
   smallSize: PropTypes.bool,
   onChange: PropTypes.func,

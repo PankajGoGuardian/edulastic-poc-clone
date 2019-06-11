@@ -10,7 +10,7 @@ import { Bar, ActiveBar, Text } from "../styled";
 import { convertUnitToPx, getGridVariables } from "../helpers";
 
 const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, previewTab, correct }) => {
-  const { margin, yAxisMin, height } = gridParams;
+  const { margin, yAxisMin, height, multicolorBars } = gridParams;
 
   const { padding, step } = getGridVariables(bars, gridParams, true);
 
@@ -37,11 +37,24 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
     "#FBDEAD",
     "#5AD81C",
     "#A84A08",
-    "#025F1C",
+    "#02952b",
     "#5EB950",
     "#6494BF",
     "#C852BE",
     "#F325A1"
+  ];
+
+  const HoverColors = [
+    "#416102",
+    "#c54715",
+    "#c3a889",
+    "#4cae1a",
+    "#904108",
+    "#025F1C",
+    "#499846",
+    "#5179a2",
+    "#99408f",
+    "#bd1f7c"
   ];
 
   const renderValidationIcons = index => (
@@ -55,6 +68,16 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
 
   const isHovered = index => hoveredIndex === index || activeIndex === index;
 
+  const getColorForIndex = index => {
+    if (isHovered(index)) {
+      return HoverColors[index % 10];
+    }
+    if (multicolorBars) {
+      return Colors[index % 10];
+    }
+    return null;
+  };
+
   return (
     <Fragment>
       {bars.map((dot, index) => (
@@ -67,7 +90,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
             y={getCenterY(dot)}
             width={step - 2}
             height={getBarHeight(dot.y)}
-            color={Colors[index % 10]}
+            color={getColorForIndex(index)}
           />
           {((view !== EDIT && !dot.notInteractive) || view === EDIT) && (
             <ActiveBar
@@ -77,7 +100,7 @@ const Hists = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, 
               x={getCenterX(index)}
               y={getCenterY(dot)}
               width={step - 2}
-              color={Colors[index % 10]}
+              color={getColorForIndex(index)}
               hoverState={isHovered(index)}
               height={isHovered(index) ? 5 : 1}
             />
@@ -104,7 +127,8 @@ Hists.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
+    multicolorBars: PropTypes.bool
   }).isRequired,
   correct: PropTypes.array.isRequired,
   previewTab: PropTypes.string

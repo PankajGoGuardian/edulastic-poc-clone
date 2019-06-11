@@ -5,11 +5,18 @@ import { cloneDeep, isEqual } from "lodash";
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
+import {
+  convertPxToUnit,
+  convertUnitToPx,
+  getGridVariables,
+  displayHorizontalLines,
+  displayVerticalLines
+} from "./helpers";
 import Hists from "./components/Hists";
+import VerticalLines from "./components/VerticalLines";
 
 const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
-  const { width, height, margin } = gridParams;
+  const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
 
@@ -87,7 +94,14 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <HorizontalLines gridParams={gridParams} />
+      <VerticalLines
+        lines={data}
+        gridParams={gridParams}
+        displayAxisLabel={false}
+        displayGridlines={displayVerticalLines(showGridlines)}
+      />
+
+      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 
       <Hists
         activeIndex={activeIndex}

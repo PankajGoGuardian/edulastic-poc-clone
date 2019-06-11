@@ -1,6 +1,4 @@
 .mark {
-  display: flex;
-  justify-content: center;
   min-width: 40px;
   height: 40px !important;
   padding: 5px;
@@ -17,15 +15,6 @@
   opacity: 1;
 }
 
-.mark span {
-  position: relative;
-  left: 10px;
-}
-
-.mark.show span {
-  left: 0;
-}
-
 .mark.fr-box {
   width: unset;
 }
@@ -34,7 +23,7 @@
   transform: translate(0, -15px);
 }
 
-.mark.mounted svg {
+.mark.mounted .delete-mark {
   opacity: 1;
 }
 
@@ -98,16 +87,16 @@
   z-index: 8 !important;
 }
 
-.mark svg {
+.mark .delete-mark {
   opacity: 0;
-  position: relative;
+  position: absolute;
   height: 15px;
   width: 15px;
-  bottom: 20px;
-  left: 10px;
-  transition: 0.2s ease opacity, 0.2s ease fill;
+  top: -8px;
+  right: -8px;
+  transition: 0.2s ease fill;
 }
 
-.mark svg:hover {
+.mark .delete-mark:hover {
   fill: red;
 }

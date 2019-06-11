@@ -4,6 +4,14 @@ import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtil
 
 import { calcMeasure, getClosestTick } from "../utils";
 
+const deleteIconPattern =
+  '<svg id="{iconId}" class="delete-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
+  '<g id="{iconId}" transform="translate(-40.782 .5)">' +
+  '<path id="{iconId}" d="M48.889.522V0H45.4v.522h-4.12v2.112h11.73V.522z" />' +
+  '<path id="{iconId}" d="M57.546 80.756h8.939l.642-12.412H56.9zm5.486-9.511h1.107v6.325h-1.107zm-3.14 0H61v6.325h-1.108z"transform="translate(-14.87 -65.054)"/>' +
+  "</g>" +
+  "</svg>";
+
 const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettings, board) => {
   mark.on("up", () => {
     const setCoords = JXG.COORDS_BY_USER;
@@ -60,23 +68,15 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
     y = Number.isNaN(Number.parseFloat(coords.y)) ? lineY : coords.y;
   }
 
-  let content = replaceLatexesWithMathHtml("<span>" + data.text + "</span>", latex => {
-    if (!katex) return "<span>" + latex + "</span>";
-    return "<span>" + katex.renderToString(latex) + "</span>";
+  let content = replaceLatexesWithMathHtml(data.text, latex => {
+    if (!katex) return latex;
+    return katex.renderToString(latex);
   });
 
-  const deleteIcon =
-    '<svg id="' +
-    data.id +
-    '" className="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702"><g id="' +
-    data.id +
-    '" transform="translate(-40.782 .5)"><path id="' +
-    data.id +
-    '" d="M48.889.522V0H45.4v.522h-4.12v2.112h11.73V.522z" /><path id="' +
-    data.id +
-    '" d="M57.546 80.756h8.939l.642-12.412H56.9zm5.486-9.511h1.107v6.325h-1.107zm-3.14 0H61v6.325h-1.108z"transform="translate(-14.87 -65.054)"/></g></svg>';
-
-  content = !coords || (coords && coords.className !== "show") ? content + deleteIcon : content;
+  if (!coords || !coords.fixed) {
+    const deleteIconId = `mark-delete-${data.id}`;
+    content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
+  }
 
   const mark = board.$board.create("text", [x, y, content], {
     id: coords && coords.fixed ? null : data.id,

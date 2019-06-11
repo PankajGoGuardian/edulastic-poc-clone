@@ -9,10 +9,16 @@ import VerticalLines from "./components/VerticalLines";
 import Points from "./components/Points";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
+import {
+  convertPxToUnit,
+  convertUnitToPx,
+  displayHorizontalLines,
+  displayVerticalLines,
+  getGridVariables
+} from "./helpers";
 
 const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
-  const { width, height, margin } = gridParams;
+  const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
 
@@ -88,9 +94,9 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <VerticalLines lines={data} gridParams={gridParams} />
+      <VerticalLines lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
 
-      <HorizontalLines gridParams={gridParams} />
+      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 
       <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={mainBlueColor} />
 
@@ -120,7 +126,8 @@ LineChart.propTypes = {
     yAxisMax: PropTypes.number,
     yAxisMin: PropTypes.number,
     stepSize: PropTypes.number,
-    snapTo: PropTypes.number
+    snapTo: PropTypes.number,
+    pointStyle: PropTypes.string
   }).isRequired,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,

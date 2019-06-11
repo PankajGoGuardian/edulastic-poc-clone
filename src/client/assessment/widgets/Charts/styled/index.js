@@ -22,6 +22,7 @@ export const Bar = styled.rect`
   z-index: 0;
   stroke: ${({ color }) => color || mainBlueColor};
   fill: ${({ color }) => color || mainBlueColor};
+  transition: fill 0.25s linear;
 `;
 
 const getRightColor = (hoverState, color) => (hoverState ? darkBlue : color || mainBlueColor);
@@ -31,6 +32,7 @@ export const ActiveBar = styled.rect`
   z-index: 10;
   stroke: ${({ hoverState, color }) => getRightColor(hoverState, color)};
   fill: ${({ hoverState, color }) => getRightColor(hoverState, color)};
+  transition: fill 0.25s linear;
 `;
 
 export const StrokedRect = styled.rect`
@@ -66,4 +68,10 @@ export const IconTrash = styled(Icon)`
   width: 20px;
   height: 20px;
   cursor: pointer;
+`;
+
+export const Cross = styled.path`
+  stroke: ${mainBlueColor};
+  fill: ${mainBlueColor};
+  stroke-width: 4;
 `;

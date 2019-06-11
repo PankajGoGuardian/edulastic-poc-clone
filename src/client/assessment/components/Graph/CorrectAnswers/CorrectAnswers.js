@@ -81,8 +81,10 @@ class CorrectAnswers extends Component {
   updateValidationValue = value => {
     const { question, setQuestionData } = this.props;
     const { validation } = question;
+    const { toolbar } = question;
+    toolbar.drawingObjects = this.getDrawingObjects(value);
     validation.valid_response.value = value;
-    setQuestionData({ ...question, validation });
+    setQuestionData({ ...question, validation, toolbar });
   };
 
   updateAltValidationValue = (value, tabIndex) => {
@@ -101,8 +103,44 @@ class CorrectAnswers extends Component {
     setQuestionData(newData);
   };
 
+  getDrawingObjects = value => {
+    const allowedTypes = [
+      "point",
+      "line",
+      "ray",
+      "segment",
+      "vector",
+      "circle",
+      "ellipse",
+      "sine",
+      "tangent",
+      "secant",
+      "exponent",
+      "logarithm",
+      "polynom",
+      "hyperbola",
+      "polygon",
+      "parabola"
+    ];
+
+    const shapes = value.filter(elem => allowedTypes.includes(elem.type) && !elem.subElement);
+    return shapes.map(elem => {
+      const { id, type, label } = elem;
+      const result = { id, type, label };
+
+      if (type !== "point") {
+        result.pointLabels = Object.values(elem.subElementsIds).map(pointId => {
+          const point = value.find(item => item.id === pointId);
+          return point ? point.label : "";
+        });
+      }
+
+      return result;
+    });
+  };
+
   render() {
-    const { t, graphData, changePreviewTab, previewTab } = this.props;
+    const { t, graphData, changePreviewTab, previewTab, view } = this.props;
     const { validation } = graphData;
 
     const { value } = this.state;
@@ -119,6 +157,7 @@ class CorrectAnswers extends Component {
             <TabContainer>
               <CorrectAnswer
                 graphData={graphData}
+                view={view}
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 response={validation.valid_response}
@@ -135,6 +174,7 @@ class CorrectAnswers extends Component {
                   <TabContainer key={i}>
                     <CorrectAnswer
                       graphData={graphData}
+                      view={view}
                       response={alter}
                       previewTab={previewTab}
                       changePreviewTab={changePreviewTab}
@@ -158,7 +198,10 @@ CorrectAnswers.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   onRemoveAltResponses: PropTypes.func.isRequired,
-  question: PropTypes.object.isRequired
+  question: PropTypes.object.isRequired,
+  changePreviewTab: PropTypes.func.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  view: PropTypes.string.isRequired
 };
 
 const enhance = compose(

@@ -286,7 +286,7 @@ class Graph extends Component {
                 canvas={item.canvas}
                 fillSections={fillSections}
                 cleanSections={cleanSections}
-                advancedAreOpen={true}
+                advancedAreOpen
                 setCanvas={this.handleCanvasChange}
               />
               <QuestionSection
@@ -295,11 +295,12 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 fillSections={fillSections}
                 deskHeight={ui_style.layout_height}
-                advancedAreOpen={true}
+                advancedAreOpen
               >
                 <React.Fragment>
                   <CorrectAnswers
                     graphData={item}
+                    view={view}
                     previewTab={previewTab}
                     changePreviewTab={changePreviewTab}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
@@ -352,7 +353,7 @@ class Graph extends Component {
                 label="Annotations"
                 cleanSections={cleanSections}
                 fillSections={fillSections}
-                advancedAreOpen={true}
+                advancedAreOpen
               >
                 <Annotations editable />
               </QuestionSection>
@@ -369,6 +370,7 @@ class Graph extends Component {
               <GraphDisplay
                 checkAnswer
                 graphData={item}
+                view={view}
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 onChange={this.handleAddAnswer}
@@ -383,6 +385,7 @@ class Graph extends Component {
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
+                view={view}
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 evaluation={evaluation}
@@ -395,6 +398,7 @@ class Graph extends Component {
                 graphData={item}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
+                view={view}
                 previewTab={previewTab}
                 changePreviewTab={changePreviewTab}
                 {...restProps}

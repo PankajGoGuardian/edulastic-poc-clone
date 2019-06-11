@@ -5,12 +5,12 @@ import { cloneDeep, isEqual } from "lodash";
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
+import { convertPxToUnit, convertUnitToPx, displayHorizontalLines, getGridVariables } from "./helpers";
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
 const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
-  const { width, height, margin } = gridParams;
+  const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
 
@@ -88,7 +88,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) =
     >
       <BarsAxises lines={data} gridParams={gridParams} />
 
-      <HorizontalLines gridParams={gridParams} />
+      <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 
       <Bars
         activeIndex={activeIndex}

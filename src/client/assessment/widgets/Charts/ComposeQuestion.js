@@ -162,15 +162,6 @@ class ComposeQuestion extends Component {
 
         <UiInputGroup
           onChange={handleUiStyleChange}
-          firstAttr="width"
-          secondAttr="height"
-          firstFieldValue={parseInt(item.ui_style.width, 10) < 1 ? null : item.ui_style.width}
-          secondFieldValue={parseInt(item.ui_style.height, 10) < 1 ? null : item.ui_style.height}
-          t={t}
-        />
-
-        <UiInputGroup
-          onChange={handleUiStyleChange}
           firstAttr="yAxisMin"
           secondAttr="yAxisMax"
           onBlurFirstInput={onMinValueBlur}

@@ -31,7 +31,8 @@ const MathFormulaPreview = ({
   const [latex, setLatex] = useState(studentTemplate);
   const [innerValues, setInnerValues] = useState([]);
 
-  const hasAltAnswers = item.validation.alt_responses && item.validation.alt_responses.length > 0;
+  const hasAltAnswers =
+    item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
 
   const onUserResponse = latexv => {
     if (isStatic) {

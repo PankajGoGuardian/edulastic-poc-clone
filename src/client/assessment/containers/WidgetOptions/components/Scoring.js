@@ -92,7 +92,7 @@ class Scoring extends Component {
       setQuestionData(newData);
     };
 
-    const isAutomarkChecked = get(questionData, "validation.automarkable", false);
+    const isAutomarkChecked = get(questionData, "validation.automarkable", true);
     const maxScore = get(questionData, "validation.max_score", 1);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
@@ -125,7 +125,7 @@ class Scoring extends Component {
         )}
 
         {isAutomarkChecked && (
-          <Row gutter={60}>
+          <Row gutter={60} center>
             <Col md={12}>
               <Checkbox
                 data-cy="unscoredChk"
@@ -137,7 +137,7 @@ class Scoring extends Component {
               </Checkbox>
             </Col>
             <Col md={12}>
-              <FormGroup>
+              <FormGroup center>
                 <Input
                   type="number"
                   data-cy="penalty"
@@ -152,7 +152,7 @@ class Scoring extends Component {
           </Row>
         )}
         {isAutomarkChecked && (
-          <Row gutter={60}>
+          <Row gutter={60} center>
             <Col md={12}>
               <Checkbox
                 data-cy="checkAnswerButton"
@@ -164,7 +164,7 @@ class Scoring extends Component {
               </Checkbox>
             </Col>
             <Col md={12}>
-              <FormGroup>
+              <FormGroup center>
                 <Input
                   data-cy="checkAttempts"
                   type="number"
@@ -182,7 +182,7 @@ class Scoring extends Component {
         {isAutomarkChecked && !showSelect && (
           <Row gutter={60}>
             <Col md={12}>
-              <FormGroup>
+              <FormGroup center>
                 <Input
                   data-cy="minscore"
                   type="number"
@@ -219,7 +219,7 @@ class Scoring extends Component {
             </Col>
 
             <Col md={12}>
-              <FormGroup>
+              <FormGroup center>
                 <Input
                   data-cy="minscore"
                   type="number"
@@ -255,7 +255,7 @@ class Scoring extends Component {
         {!isAutomarkChecked && (
           <Row gutter={60}>
             <ColWrapper noPaddingLeft={noPaddingLeft}>
-              <FormGroup>
+              <FormGroup center>
                 <Input
                   data-cy="maxscore"
                   type="number"

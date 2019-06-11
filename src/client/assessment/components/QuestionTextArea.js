@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { FroalaEditor } from "@edulastic/common";
 
 // TODO: decide what to do with first focus
-const QuestionTextArea = ({ onChange, value, toolbarId, placeholder, additionalToolbarOptions, readOnly = false }) => (
+const QuestionTextArea = ({ onChange, value, toolbarId, placeholder, additionalToolbarOptions, readOnly }) => (
   <FroalaEditor
     placeholder={placeholder}
     onChange={onChange}
@@ -20,13 +20,15 @@ QuestionTextArea.propTypes = {
   value: PropTypes.string.isRequired,
   toolbarId: PropTypes.string,
   additionalToolbarOptions: PropTypes.array,
-  placeholder: PropTypes.string
+  placeholder: PropTypes.string,
+  readOnly: PropTypes.bool
 };
 
 QuestionTextArea.defaultProps = {
   toolbarId: "question-text-area",
   additionalToolbarOptions: [],
-  placeholder: "Enter a question"
+  placeholder: "Enter a question",
+  readOnly: false
 };
 
 export default memo(QuestionTextArea);

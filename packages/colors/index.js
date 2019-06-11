@@ -85,7 +85,7 @@ export const btnColor = "#bed8fa";
 
 export const title = "#434B5D";
 
-export const sectionBorder = "#e1e1e1";
+export const sectionBorder = "#e6e6e6";
 
 export const tabGrey = "#7C848E";
 

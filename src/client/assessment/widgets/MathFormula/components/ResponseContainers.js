@@ -6,7 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { EduButton, FlexContainer } from "@edulastic/common";
 
 import { Block } from "../../../styled/WidgetOptions/Block";
-import { Heading } from "../../../styled/WidgetOptions/Heading";
+import { WidgetSubHeading } from "../../../styled/Widget";
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
@@ -15,7 +15,7 @@ import { IconTrash } from "../styled/IconTrash";
 
 const ResponseContainers = ({ containers, onChange, onAdd, onDelete, t }) => (
   <Block>
-    <Heading>{t("component.options.responseContainer")}</Heading>
+    <WidgetSubHeading>{t("component.options.responseContainer")}</WidgetSubHeading>
 
     {containers.map(({ width = 0, height = 0 }, index) => (
       <Fragment>

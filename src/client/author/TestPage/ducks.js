@@ -488,7 +488,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
     if (!payload.data.requirePassword) {
       delete payload.data.assignmentPassword;
     } else if (!payload.data.assignmentPassword) {
-      yield call(message.error, "Assignment password should not be empty when require password is checked");
+      yield call(message.error, "Please add a valid password.");
       return;
     }
     const entity = yield call(testsApi.create, payload.data);

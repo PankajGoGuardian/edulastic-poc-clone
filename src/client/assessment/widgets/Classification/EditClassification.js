@@ -286,7 +286,7 @@ const EditClassification = ({
         }
         draft.validation.alt_responses.push({
           score: 1,
-          value: item.validation.valid_response.value
+          value: []
         });
 
         updateVariables(draft);

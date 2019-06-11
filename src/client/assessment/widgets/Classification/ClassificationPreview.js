@@ -109,32 +109,23 @@ const ClassificationPreview = ({
   const initialAnswers =
     editCorrectAnswers.length > 0
       ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-      : userAnswer.some(arr => arr.length !== 0)
+      : userAnswer && userAnswer.some(arr => arr.length !== 0)
       ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
       : createEmptyArrayOfArrays();
 
   const [answers, setAnswers] = useState(initialAnswers);
 
-  const [dragItems, setDragItems] = useState(
-    possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))
-  );
-
-  useEffect(() => {
-    setAnswers(uniq(initialAnswers));
-    setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
-  }, [userAnswer]);
+  const [dragItems, setDragItems] = useState(possible_responses);
 
   useEffect(() => {
     if (
-      answers.length !== createEmptyArrayOfArrays().length ||
-      (editCorrectAnswers.length > 0 && !isEqual(answers, initialAnswers)) ||
-      ((possible_responses.length !== dragItems.length && editCorrectAnswers.length > 0) ||
-        (editCorrectAnswers.length > 0 && !isEqual(possible_responses, dragItems)))
+      !isEqual(answers, initialAnswers) ||
+      (possible_responses.length !== dragItems.length || !isEqual(possible_responses, dragItems))
     ) {
       setAnswers(uniq(initialAnswers));
-      setDragItems(uniq(possible_responses));
+      setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
     }
-  });
+  }, [userAnswer, initialAnswers, possible_responses]);
 
   const boxes = createEmptyArrayOfArrays();
 

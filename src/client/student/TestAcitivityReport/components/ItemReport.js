@@ -17,7 +17,7 @@ const itemReport = ({ question, index }) => (
             <Total>{question.feedback && question.feedback.maxScore}</Total>
           </ScoreWrapper>
           <Feedback>
-            <FeedbackGiven>{question.feedback && question.feedback.feedback.text}</FeedbackGiven>
+            <FeedbackGiven>{question.feedback && question.feedback.text}</FeedbackGiven>
           </Feedback>
         </FeedbackContainer>
       </FeedbackWrapper>

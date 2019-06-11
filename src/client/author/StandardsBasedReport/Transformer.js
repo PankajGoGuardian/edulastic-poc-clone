@@ -26,10 +26,11 @@ export const getStandardWisePerformance = (testActivities, std) => {
   return performanceStudentWise;
 };
 
-export const getStandardWisePerformanceDetail = (testActivities, std) => {
+export const getStandardWisePerformanceDetail = (testActivities, std, isPresentationMode = false) => {
   const submittedTestActivities = testActivities.filter(x => x.status === "submitted");
-  const questionActivities = submittedTestActivities.flatMap(({ studentId, studentName, questionActivities }) =>
-    questionActivities.map(x => ({ ...x, studentId, studentName }))
+  const questionActivities = submittedTestActivities.flatMap(
+    ({ studentId, studentName, fakeName, questionActivities }) =>
+      questionActivities.map(x => ({ ...x, studentId, studentName, fakeName }))
   );
 
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
@@ -43,7 +44,7 @@ export const getStandardWisePerformanceDetail = (testActivities, std) => {
         performanceStudentWise[studentId] = {
           score: qAct.score / qAct.maxScore,
           maxScore: qAct.maxScore,
-          studentName: qAct.studentName
+          studentName: isPresentationMode ? qAct.fakeName : qAct.studentName
         };
       } else {
         performanceStudentWise[studentId].score =

@@ -18,7 +18,7 @@ const items = [
   },
   {
     name: "camera",
-    icon: "camera-o"
+    icon: "camera"
   },
   {
     name: "magnet",

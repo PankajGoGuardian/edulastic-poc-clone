@@ -4,6 +4,7 @@ import { Icon } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
+import { get } from "lodash";
 
 import { getTestActivitySelector, getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getStandardWisePerformanceDetailMemoized } from "../Transformer";
@@ -74,10 +75,14 @@ class DetailedDisplay extends Component {
   };
 
   displayData = () => {
-    const { additionalData } = this.props;
+    const { additionalData, isPresentationMode } = this.props;
     const assignmentMasteryArray = additionalData.assignmentMastery;
     assignmentMasteryArray.sort((a, b) => b.threshold - a.threshold);
-    const scoreStudentWise = getStandardWisePerformanceDetailMemoized(this.props.testActivity, this.props.data);
+    const scoreStudentWise = getStandardWisePerformanceDetailMemoized(
+      this.props.testActivity,
+      this.props.data,
+      isPresentationMode
+    );
 
     return Object.keys(scoreStudentWise).map((studentId, index) => {
       const score = scoreStudentWise[studentId] ? scoreStudentWise[studentId].score : 0;
@@ -129,7 +134,8 @@ class DetailedDisplay extends Component {
 const enhance = compose(
   connect(state => ({
     testActivity: getTestActivitySelector(state),
-    additionalData: getAdditionalDataSelector(state)
+    additionalData: getAdditionalDataSelector(state),
+    isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
   }))
 );
 

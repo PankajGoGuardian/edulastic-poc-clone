@@ -79,13 +79,18 @@ class AddClassModal extends Component {
     const { userOrgId: districtId, searchCourseList } = this.props;
     const searchTerms = {
       districtId,
-      search: {
-        name: { type: "cont", value }
-      },
       active: 1,
       page: 0,
       limit: 50
     };
+    value &&
+      Object.assign(searchTerms, {
+        search: {
+          name: { type: "cont", value },
+          number: { type: "cont", value },
+          operator: "or"
+        }
+      });
     searchCourseList(searchTerms);
   };
 
@@ -156,6 +161,7 @@ class AddClassModal extends Component {
                 <Select
                   showSearch
                   onSearch={this.fetchCoursesForDistrict}
+                  onFocus={this.fetchCoursesForDistrict}
                   notFoundContent={null}
                   placeholder="Please enter 1 or more characters"
                 >

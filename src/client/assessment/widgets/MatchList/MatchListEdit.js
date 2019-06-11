@@ -17,6 +17,7 @@ import MatchListPreview from "./MatchListPreview";
 import Options from "./components/Options";
 import { Widget } from "../../styled/Widget";
 import { ContentArea } from "../../styled/ContentArea";
+import { updateVariables } from "../../utils/variables";
 
 import ComposeQuestion from "./ComposeQuestion";
 import ListComponent from "./ListComponent";
@@ -26,8 +27,16 @@ const OptionsList = withPoints(MatchListPreview);
 const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, cleanSections }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
-  const handleAddResp = () => {
+  const _setQuestionData = questionData => {
     setQuestionData(
+      produce(questionData, draft => {
+        updateVariables(draft);
+      })
+    );
+  };
+
+  const handleAddResp = () => {
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_responses.push("");
       })
@@ -35,7 +44,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleRemoveResp = index => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value.splice(
           draft.validation.valid_response.value.indexOf(draft.possible_responses[index]),
@@ -52,7 +61,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleSortEndResp = ({ oldIndex, newIndex }) => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_responses = arrayMove(item.possible_responses, oldIndex, newIndex);
       })
@@ -60,7 +69,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleChangeResp = (index, value) => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value[
           draft.validation.valid_response.value.indexOf(draft.possible_responses[index])
@@ -75,7 +84,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleAddAnswer = () => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         if (!draft.validation.alt_responses) {
           draft.validation.alt_responses = [];
@@ -92,7 +101,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleCloseTab = tabIndex => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.validation.alt_responses.splice(tabIndex, 1);
 
@@ -102,7 +111,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handlePointsChange = val => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
           draft.validation.valid_response.score = val;
@@ -114,7 +123,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleAnswerChange = ans => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         if (correctTab === 0) {
           draft.validation.valid_response.value = ans;
@@ -126,7 +135,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const onGroupPossibleResp = e => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.group_possible_responses = e.target.checked;
       })
@@ -134,7 +143,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const onGroupTitleChange = (index, value) => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_response_groups[index].title = value;
       })
@@ -157,7 +166,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   );
 
   const onAddInner = index => () => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_response_groups[index].responses.push("");
       })
@@ -165,7 +174,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const onRemoveInner = ind => index => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value = Array.from({
           length: item.validation.valid_response.value.length
@@ -183,7 +192,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleGroupAdd = () => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_response_groups.push({ title: "", responses: [] });
       })
@@ -191,7 +200,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleGroupRemove = index => () => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.validation.valid_response.value = Array.from({
           length: item.validation.valid_response.value.length
@@ -209,7 +218,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleGroupSortEnd = index => ({ oldIndex, newIndex }) => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_response_groups[index].responses = arrayMove(
           draft.possible_response_groups[index].responses,
@@ -221,7 +230,7 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
   };
 
   const handleGroupChange = ind => (index, value) => {
-    setQuestionData(
+    _setQuestionData(
       produce(item, draft => {
         draft.possible_response_groups[ind].responses[index] = value;
       })
@@ -270,7 +279,6 @@ const MatchListEdit = ({ item, setQuestionData, advancedAreOpen, fillSections, c
 MatchListEdit.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool

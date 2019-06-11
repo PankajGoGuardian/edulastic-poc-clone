@@ -1,20 +1,19 @@
-import { isArray, set, round } from "lodash";
+import { trim, map, set, round } from "lodash";
+import produce from "immer";
 import evaluators from "./evaluators";
 import { replaceVariables } from "../../../assessment/utils/variables";
-import produce from "immer";
 
 export const evaluateItem = async (answers, validations, itemLevelScoring = false, itemLevelScore = 0) => {
   const answerIds = Object.keys(answers);
   const results = {};
   let totalScore = 0;
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0;
-  let correctNum = 0;
 
   console.log("validations", validations);
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).length;
   for (const id of answerIds) {
-    const answer = answers[id];
+    const answer = map(answers[id], trim);
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id]);
       const evaluator = evaluators[validation.type];
@@ -26,8 +25,8 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
           hasGroupResponses: validation.hasGroupResponses,
           validation: itemLevelScoring
             ? produce(validation.validation, v => {
-              set(v, "valid_response.score", itemLevelScore / questionsNum);
-            })
+                set(v, "valid_response.score", itemLevelScore / questionsNum);
+              })
             : validation.validation
         });
 

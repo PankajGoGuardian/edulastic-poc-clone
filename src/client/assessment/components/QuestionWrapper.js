@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, isUndefined } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
@@ -246,6 +246,10 @@ class QuestionWrapper extends Component {
     const userAnswerProps = {};
     if (userAnswer) {
       userAnswerProps.userAnswer = userAnswer;
+    }
+
+    if (isUndefined(restProps.userAnswer)) {
+      restProps.userAnswer = [];
     }
 
     if (data.id) {

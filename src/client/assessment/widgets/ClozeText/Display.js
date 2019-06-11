@@ -4,6 +4,7 @@ import styled from "styled-components";
 import JsxParser from "react-jsx-parser";
 
 import { InstructorStimulus, helpers } from "@edulastic/common";
+import { response } from "@edulastic/constants";
 
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -11,7 +12,6 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
 import ClozeTextInput from "../../components/ClozeTextInput";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
-import { response } from "@edulastic/constants";
 
 class ClozeTextDisplay extends Component {
   state = {

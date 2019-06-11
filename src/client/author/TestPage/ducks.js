@@ -130,7 +130,7 @@ export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
 // reducer
 
 export const createBlankTest = () => ({
-  title: `Untitled Test - ${moment().format("YY-MM-DD:HH:mm:ss")}`,
+  title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
   description: "",
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,

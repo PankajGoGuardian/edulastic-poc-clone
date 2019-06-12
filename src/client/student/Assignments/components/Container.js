@@ -20,7 +20,7 @@ const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
     <LayoutContent flag={flag}>
       <Wrapper>
         {assignments.map((item, index) => (
-          <AssignmentCard key={index} data={item} type="assignment" />
+          <AssignmentCard key={index} data={item} currentGroup={currentGroup} type="assignment" />
         ))}
       </Wrapper>
     </LayoutContent>

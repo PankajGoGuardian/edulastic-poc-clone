@@ -238,14 +238,17 @@ const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
 
-const isLiveAssignment = assignment => {
+const isLiveAssignment = (assignment, currentGroup) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   let maxAttempts = (assignment && assignment.maxAttempts) || 1;
   let attempts = (assignment.reports && assignment.reports.length) || 0;
   let lastAttempt = last(assignment.reports) || [];
-
-  const isLive = (maxAttempts > attempts || lastAttempt.status == "0") && new Date(assignment.endDate) > new Date();
+  let { endDate, class: clazz = [] } = assignment;
+  if (!endDate) {
+    endDate = _maxBy(clazz.filter(cl => cl._id === currentGroup) || [], "endDate").endDate;
+  }
+  const isLive = (maxAttempts > attempts || lastAttempt.status == "0") && endDate > Date.now();
   return isLive;
 };
 
@@ -265,7 +268,8 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  (assignmentsObj, reportsObj, filter) => {
+  getCurrentGroup,
+  (assignmentsObj, reportsObj, filter, currentGroup) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), "assignmentId");
     let assignments = values(assignmentsObj)
@@ -274,7 +278,7 @@ export const getAssignmentsSelector = createSelector(
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
-      .filter(isLiveAssignment)
+      .filter(assignment => isLiveAssignment(assignment, currentGroup))
       .filter(statusFilter(filter));
     return assignments;
   }

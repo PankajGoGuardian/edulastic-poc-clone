@@ -6,7 +6,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { last } from "lodash";
+import { last, maxBy } from "lodash";
 import { Row, Col, message } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
@@ -58,13 +58,13 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type }) => {
+const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup }) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
 
-  const {
+  let {
     test = {},
     reports = [],
     endDate,
@@ -73,11 +73,17 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     _id: assignmentId,
     safeBrowser,
     testType,
+    class: clazz = [],
     maxAttempts,
     title,
     thumbnail
   } = data;
 
+  if (!startDate && !endDate) {
+    const currentClass = maxBy(clazz.filter(cl => cl._id === currentGroup), "endDate");
+    startDate = currentClass.startDate;
+    endDate = currentClass.endDate;
+  }
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;

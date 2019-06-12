@@ -28,47 +28,39 @@ const Option = props => {
     styleType,
     multipleResponses
   } = props;
-  const [className, setClassName] = useState("");
+  let className = "";
   const isSelected = userSelections.includes(item.value);
   const isCorrect = correct[userSelections.indexOf(item.value)];
   const fontSize = getFontSize(uiStyle.fontsize);
 
-  useEffect(() => {
-    if (showAnswer) {
-      let validAnswers = [];
+  if (showAnswer) {
+    let validAnswers = [];
 
-      if (!isEmpty(validation)) {
-        validAnswers = [validation.valid_response, ...validation.alt_responses];
-      }
+    if (!isEmpty(validation)) {
+      validAnswers = [validation.valid_response, ...validation.alt_responses];
+    }
 
-      const correctAnswer = maxBy(validAnswers, "score").value;
-      if (correctAnswer.includes(item.value)) {
-        setClassName("right");
-      } else if (isSelected) {
-        if (validAnswers.some(ans => ans.value.includes(item.value))) {
-          setClassName("right");
-        } else {
-          setClassName("wrong");
-        }
-      }
-    } else if (checkAnswer) {
-      if (correct.length && checkAnswer) {
-        if (isCorrect && isSelected) {
-          setClassName("right");
-        } else if (isCorrect === false && isSelected) {
-          setClassName("wrong");
-        }
+    const correctAnswer = maxBy(validAnswers, "score").value;
+    if (correctAnswer.includes(item.value)) {
+      className = "right";
+    } else if (isSelected) {
+      if (validAnswers.some(ans => ans.value.includes(item.value))) {
+        className = "right";
       } else {
-        setClassName("");
+        className = "wrong";
       }
     }
-  }, [correct, showAnswer]);
-
-  useEffect(() => {
-    if (checkAnswer) {
-      setClassName("");
+  } else if (checkAnswer) {
+    if (correct.length && checkAnswer) {
+      if (isCorrect && isSelected) {
+        className = "right";
+      } else if (isCorrect === false && isSelected) {
+        className = "wrong";
+      }
+    } else {
+      className = "";
     }
-  }, [userSelections]);
+  }
 
   const getLabel = inx => {
     if (uiStyle.type === "block") {

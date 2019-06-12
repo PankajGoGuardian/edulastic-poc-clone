@@ -20,13 +20,13 @@ const DELETE_SCHOOLADMIN_SUCCESS = "[schooladmin] delete data success";
 const DELETE_SCHOOLADMIN_ERROR = "[schooladmin] delete data error";
 
 const SET_SCHOOLADMIN_SEARCHNAME = "[schooladmin] set search name";
-const SET_SCHOOLADMIN_SETFILTERS = "[schooladmin] set filters";
 const SET_SHOW_ACTIVE_COURSES = "[schooladmin] set showActiveCourses flag";
 const SET_PAGE_NO = "[schooladmin] set page number";
 const CHANGE_FILTER_COLUMN = "[schooladmin] change filter column";
 const CHANGE_FILTER_TYPE = "[schooladmin] change filter type";
 const CHANGE_FILTER_VALUE = "[schooladmin] change filter value";
 const ADD_FILTER_ACTION = "[schooladmin] add filter";
+const REMOVE_FILTER = "[schooladmin] remove filter";
 
 export const receiveSchoolAdminAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
@@ -43,12 +43,12 @@ export const deleteSchoolAdminErrorAction = createAction(DELETE_SCHOOLADMIN_ERRO
 export const changeFilterColumnAction = createAction(CHANGE_FILTER_COLUMN);
 
 export const setSearchNameAction = createAction(SET_SCHOOLADMIN_SEARCHNAME);
-export const setFiltersAction = createAction(SET_SCHOOLADMIN_SETFILTERS);
 export const setShowActiveCoursesAction = createAction(SET_SHOW_ACTIVE_COURSES);
 export const setPageNoAction = createAction(SET_PAGE_NO);
 export const changeFilterTypeAction = createAction(CHANGE_FILTER_TYPE);
 export const changeFilterValueAction = createAction(CHANGE_FILTER_VALUE);
 export const addFilterAction = createAction(ADD_FILTER_ACTION);
+export const removeFilterAction = createAction(REMOVE_FILTER);
 
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
@@ -56,64 +56,7 @@ const filterSelector = state => state.schoolAdminReducer.filters;
 
 export const getSchoolAdminSelector = createSelector(
   stateSchoolAdminSelector,
-  state => {
-    // if (state.data.length > 0) {
-    //   let searchByNameData = [];
-    //   if (state.searchName.length > 0) {
-    //     searchByNameData = state.data.filter(row => {
-    //       let name = row.firstName + " " + row.lastName;
-    //       if (name === state.searchName) return row;
-    //     });
-    //   } else {
-    //     searchByNameData = state.data;
-    //   }
-
-    //   let possibleFilterKey = [];
-
-    //   if (state.filtersColumn !== "") {
-    //     possibleFilterKey.push(state.filtersColumn);
-    //   } else {
-    //     possibleFilterKey = ["firstName", "lastName", "email", "school"];
-    //   }
-
-    //   const filterSource = searchByNameData.filter(row => {
-    //     if (state.filtersText === "") {
-    //       return row;
-    //     } else {
-    //       if (state.filtersValue === "equals") {
-    //         const equalKeys = possibleFilterKey.filter(key => {
-    //           if (key === "school") {
-    //             if (row[key].length > 0) {
-    //               for (let i = 0; i < row[key].length; i++) {
-    //                 if (row[key][i] === state.filtersText) return row;
-    //               }
-    //             }
-    //           } else {
-    //             if (row[key] === state.filtersText) return row;
-    //           }
-    //         });
-    //         if (equalKeys.length > 0) return row;
-    //       } else if (state.filtersValue === "contains" || state.filtersValue === "") {
-    //         const equalKeys = possibleFilterKey.filter(key => {
-    //           if (key === "school") {
-    //             if (row[key].length > 0) {
-    //               for (let i = 0; i < row[key].length; i++) {
-    //                 if (row[key][i].indexOf(state.filtersText) !== -1) return row;
-    //               }
-    //             }
-    //           } else {
-    //             if (row[key].toString().indexOf(state.filtersText) !== -1) return row;
-    //           }
-    //         });
-    //         if (equalKeys.length > 0) return row;
-    //       }
-    //     }
-    //   });
-    //   return filterSource;
-    // } else {
-    return state.data;
-    // }
-  }
+  state => state.data
 );
 
 export const getShowActiveCoursesSelector = createSelector(
@@ -166,21 +109,6 @@ export const reducer = createReducer(initialState, {
     state.loading = true;
   },
   [RECEIVE_SCHOOLADMIN_SUCCESS]: (state, { payload: { result, totalUsers } }) => {
-    // const schoolAdminData = [];
-    // payload.map((row, index) => {
-    //   let schoolAdmin = {};
-    //   schoolAdmin = row;
-    //   schoolAdmin.key = index;
-    //   if (row.hasOwnProperty("_source")) {
-    //     const source = row._source;
-    //     Object.keys(source).map((key, value) => {
-    //       schoolAdmin[key] = source[key];
-    //     });
-    //   }
-    //   delete schoolAdmin._source;
-    //   schoolAdminData.push(schoolAdmin);
-    // });
-
     state.loading = false;
     state.data.result = keyBy(result, "_id");
     state.data.totalUsers = totalUsers;
@@ -193,15 +121,6 @@ export const reducer = createReducer(initialState, {
     state.updating = true;
   },
   [UPDATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
-    // const schoolAdminData = state.data.map(schoolAdmin => {
-    //   if (schoolAdmin._id === payload._id) {
-    //     const newData = {
-    //       ...payload
-    //     };
-    //     return { ...schoolAdmin, ...newData };
-    //   } else return schoolAdmin;
-    // });
-
     state.update = payload;
     state.updating = false;
     // state.data = schoolAdminData;
@@ -214,17 +133,6 @@ export const reducer = createReducer(initialState, {
     state.creating = true;
   },
   [CREATE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
-    // const createdSchoolAdmin = {
-    //   key: state.data.length,
-    //   _id: payload._id,
-    //   firstName: payload.firstName,
-    //   lastName: payload.lastName,
-    //   role: payload.role,
-    //   email: payload.email,
-    //   institutionIds: payload.institutionIds,
-    //   institutionDetails: payload.institutionDetails
-    // };
-
     state.creating = false;
     state.create = payload;
     // state.data = [createdSchoolAdmin, ...state.data];
@@ -239,13 +147,6 @@ export const reducer = createReducer(initialState, {
   [DELETE_SCHOOLADMIN_SUCCESS]: (state, { payload }) => {
     state.delete = payload;
     state.deleting = false;
-    // (state.data = state.data.filter(schoolAdmin => {
-    //   let nMatchCount = 0;
-    //   payload.map(row => {
-    //     if (row.userId === schoolAdmin._id) nMatchCount++;
-    //   });
-    //   if (nMatchCount == 0) return schoolAdmin;
-    // }));
   },
   [DELETE_SCHOOLADMIN_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -253,11 +154,6 @@ export const reducer = createReducer(initialState, {
   },
   [SET_SCHOOLADMIN_SEARCHNAME]: (state, { payload }) => {
     state.searchName = payload;
-  },
-  [SET_SCHOOLADMIN_SETFILTERS]: (state, { payload }) => {
-    state.filtersColumn = payload.column;
-    state.filtersValue = payload.value;
-    state.filtersText = payload.text;
   },
   [SET_SHOW_ACTIVE_COURSES]: (state, { payload: bool }) => {
     state.showActiveCourses = bool;
@@ -286,6 +182,9 @@ export const reducer = createReducer(initialState, {
       type: "",
       value: ""
     };
+  },
+  [REMOVE_FILTER]: (state, { payload: filterKey }) => {
+    delete state.filters[filterKey];
   }
 });
 

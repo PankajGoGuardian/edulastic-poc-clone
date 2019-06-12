@@ -24,7 +24,6 @@ import {
   updateSchoolAdminAction,
   deleteSchoolAdminAction,
   setSearchNameAction,
-  setFiltersAction,
   getSchoolAdminSelector,
   getShowActiveCoursesSelector,
   setShowActiveCoursesAction,
@@ -34,7 +33,8 @@ import {
   changeFilterColumnAction,
   changeFilterTypeAction,
   changeFilterValueAction,
-  addFilterAction
+  addFilterAction,
+  removeFilterAction
 } from "../../ducks";
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 
@@ -61,12 +61,6 @@ class SchoolAdminTable extends Component {
       createSchoolAdminModalVisible: false,
       editSchoolAdminModaVisible: false,
       editSchoolAdminKey: "",
-      filters: {
-        column: "",
-        value: "",
-        text: ""
-      },
-      filterAdded: false,
       deactivateSchoolAdminModalVisible: false
     };
     this.columns = [
@@ -144,11 +138,6 @@ class SchoolAdminTable extends Component {
     });
   };
 
-  // cancel = key => {
-  //   const data = [...this.state.dataSource];
-  //   this.setState({ dataSource: data.filter(item => item.key !== key) });
-  // };
-
   confirmDeactivate = () => {
     const { deleteSchoolAdmin } = this.props;
     const { selectedSchoolsForDeactivate } = this.state;
@@ -159,7 +148,6 @@ class SchoolAdminTable extends Component {
   };
 
   handleDeleteSchoolAdmin = id => {
-    const { selectedSchoolsForDeactivate } = this.state;
     this.setState({
       selectedSchoolsForDeactivate: [id],
       deactivateSchoolAdminModalVisible: true
@@ -176,48 +164,8 @@ class SchoolAdminTable extends Component {
     });
   };
 
-  changeFilterColumn = value => {
-    const filtersData = this.state.filters;
-    filtersData.column = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterValue = value => {
-    const filtersData = this.state.filters;
-    filtersData.value = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterText = e => {
-    const filtersData = this.state.filters;
-    filtersData.text = e.target.value;
-    this.setState({ filters: filtersData });
-  };
-
-  addFilter = e => {
-    const { filters } = this.state;
-    const { setFilters } = this.props;
-    this.setState({ filterAdded: true });
-    setFilters(filters);
-  };
-
-  removeFilter = () => {
-    const filtersData = {
-      column: "",
-      value: "",
-      text: ""
-    };
-
-    this.setState({
-      filters: filtersData,
-      filterAdded: false
-    });
-    const { setFilters } = this.props;
-    setFilters(filtersData);
-  };
-
   changeActionMode = e => {
-    const { selectedRowKeys, selectedSchoolsForDeactivate } = this.state;
+    const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
       if (selectedRowKeys.length === 0) {
         message.error("Please select user to edit.");
@@ -252,35 +200,6 @@ class SchoolAdminTable extends Component {
     });
   };
 
-  // updateSchoolAdmin = updatedSchoolAdminData => {
-  //   // const newData = [...this.state.dataSource];
-  //   // const index = newData.findIndex(item => updatedSchoolAdminData.key === item.key);
-  //   // delete updatedSchoolAdminData.key;
-  //   // if (index > -1) {
-  //   //   const item = newData[index];
-  //   //   newData.splice(index, 1, {
-  //   //     ...item,
-  //   //     ...updatedSchoolAdminData
-  //   //   });
-  //   //   this.setState({ dataSource: newData });
-  //   // } else {
-  //   //   newData.push(updatedSchoolData);
-  //   //   this.setState({ dataSource: newData });
-  //   // }
-  //   this.setState({
-  //     // isChangeState: true,
-  //     editSchoolAdminModaVisible: false
-  //   });
-
-  //   const { updateSchoolAdmin, userOrgId } = this.props;
-  //   updateSchoolAdmin({
-  //     userId: newData[index]._id,
-  //     data: Object.assign(updatedSchoolAdminData, {
-  //       districtId: userOrgId
-  //     })
-  //   });
-  // };
-
   closeEditSchoolAdminModal = () => {
     this.setState({
       editSchoolAdminModaVisible: false
@@ -293,12 +212,6 @@ class SchoolAdminTable extends Component {
   };
 
   render() {
-    // const columns = this.columns.map(col => {
-    //   return {
-    //     ...col
-    //   };
-    // });
-
     const {
       selectedRowKeys,
       createSchoolAdminModalVisible,
@@ -340,6 +253,7 @@ class SchoolAdminTable extends Component {
 
     // const isFilterTextDisable = filters.column === "" || filters.value === "";
     // const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
+    const filterKeysArray = Object.keys(filters);
 
     return (
       <StyledTableContainer>
@@ -365,7 +279,7 @@ class SchoolAdminTable extends Component {
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        {Object.keys(filters).map(filterKey => {
+        {filterKeysArray.map(filterKey => {
           const { type, value } = filters[filterKey];
           return (
             <StyledControlDiv key={filterKey}>
@@ -374,9 +288,7 @@ class SchoolAdminTable extends Component {
                 onChange={filterColumn => changeFilterColumn({ prevKey: filterKey, newKey: filterColumn })}
                 value={filterKey}
               >
-                <Option value="other" disabled>
-                  Select a column
-                </Option>
+                <Option value="other">Select a column</Option>
                 <Option value="username">Username</Option>
                 <Option value="email">Email</Option>
               </StyledFilterSelect>
@@ -385,9 +297,7 @@ class SchoolAdminTable extends Component {
                 onChange={filterType => changeFilterType({ key: filterKey, value: filterType })}
                 value={type}
               >
-                <Option value="" disabled>
-                  Select a value
-                </Option>
+                <Option value="">Select a value</Option>
                 <Option value="eq">Equals</Option>
                 <Option value="cont">Contains</Option>
               </StyledFilterSelect>
@@ -403,8 +313,11 @@ class SchoolAdminTable extends Component {
               </StyledAddFilterButton>
               <StyledAddFilterButton
                 type="primary"
-                disabled={filterKey === "other"}
-                onClick={() => removeFilter(filterKey)}
+                disabled={filterKey === "other" || filterKeysArray.length === 1}
+                onClick={() => {
+                  removeFilter(filterKey);
+                  loadSchoolAdminData();
+                }}
               >
                 - Remove Filter
               </StyledAddFilterButton>
@@ -472,7 +385,6 @@ const enhance = compose(
       deleteSchoolAdmin: deleteSchoolAdminAction,
       loadSchoolAdminData: receiveSchoolAdminAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
       loadSchoolsData: receiveSchoolsAction,
       setShowActiveCourses: setShowActiveCoursesAction,
       setPageNo: setPageNoAction,
@@ -484,7 +396,8 @@ const enhance = compose(
       changeFilterColumn: changeFilterColumnAction,
       changeFilterType: changeFilterTypeAction,
       changeFilterValue: changeFilterValueAction,
-      addFilter: addFilterAction
+      addFilter: addFilterAction,
+      removeFilter: removeFilterAction
     }
   )
 );
@@ -497,7 +410,6 @@ SchoolAdminTable.propTypes = {
   updateSchoolAdmin: PropTypes.func.isRequired,
   deleteSchoolAdmin: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
   schoolAdminData: PropTypes.object.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
@@ -506,7 +418,9 @@ SchoolAdminTable.propTypes = {
   setPageNo: PropTypes.func.isRequired,
   setShowActiveCourses: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
+  changeFilterColumn: PropTypes.func.isRequired,
   changeFilterType: PropTypes.func.isRequired,
   changeFilterValue: PropTypes.func.isRequired,
-  addFilter: PropTypes.func.isRequired
+  addFilter: PropTypes.func.isRequired,
+  removeFilter: PropTypes.func.isRequired
 };

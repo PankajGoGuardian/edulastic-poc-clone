@@ -612,11 +612,6 @@ table.quill-table td {
   display: inline;
 }
 
-.template_box > div {
-  display: inline-flex;
-  align-self: center;
-}
-
 .response-btn > div {
   align-self: center;
 }

@@ -171,6 +171,10 @@ export const DetailTable = styled(Table)`
   @media (max-width: ${mobileWidth}) {
     padding: 0px;
   }
+  i.anticon.anticon-caret-up,
+  i.anticon.anticon-caret-down {
+    display: none;
+  }
 `;
 
 export const StudnetCell = styled.div`

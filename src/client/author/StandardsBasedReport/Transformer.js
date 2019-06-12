@@ -36,7 +36,7 @@ export const getStandardWisePerformanceDetail = (testActivities, std, isPresenta
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
   let performanceStudentWise = {};
   for (let qid of std.qIds) {
-    const questionActs = questionActivitiesByQid[qid];
+    const questionActs = questionActivitiesByQid[qid] || [];
 
     for (let qAct of questionActs) {
       const { studentId } = qAct;

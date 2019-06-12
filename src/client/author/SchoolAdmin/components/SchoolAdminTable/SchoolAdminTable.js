@@ -93,13 +93,7 @@ class SchoolAdminTable extends Component {
       {
         title: "School",
         dataIndex: "_source.institutionDetails",
-        render: (institutionDetails = []) =>
-          institutionDetails.map(row => (
-            <React.Fragment key={row.id}>
-              <span>{row.name}</span>
-              <br />
-            </React.Fragment>
-          ))
+        render: (schools = []) => schools.map(school => school.name)
       },
       {
         dataIndex: "_id",

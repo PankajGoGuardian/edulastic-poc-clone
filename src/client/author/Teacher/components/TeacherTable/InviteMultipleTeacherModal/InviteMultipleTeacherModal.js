@@ -4,14 +4,13 @@ import { StyledTextArea, PlaceHolderText } from "./styled";
 
 const FormItem = Form.Item;
 
-class InviteMultipleTeacherModal extends React.Component {
+class InviteMultipleTeacherModal extends Component {
   constructor(props) {
     super(props);
     this.state = { placeHolderVisible: true };
   }
 
-  onInviateTeachers = () => {
-    debugger;
+  onInviteTeachers = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
         this.props.inviteTeachers(row);
@@ -28,7 +27,6 @@ class InviteMultipleTeacherModal extends React.Component {
     else this.setState({ placeHolderVisible: true });
   };
 
-  onChange;
   render() {
     const { getFieldDecorator } = this.props.form;
     const { modalVisible } = this.props;
@@ -36,12 +34,12 @@ class InviteMultipleTeacherModal extends React.Component {
     return (
       <Modal
         visible={modalVisible}
-        title={"Bulk Add Teacher"}
-        onOk={this.onInviateTeachers}
+        title="Bulk Add Teacher"
+        onOk={this.onInviteTeachers}
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button type="primary" key="submit" onClick={this.onInviateTeachers}>
+          <Button type="primary" key="submit" onClick={this.onInviteTeachers}>
             Add Teachers
           </Button>
         ]}

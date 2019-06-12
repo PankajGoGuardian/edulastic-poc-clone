@@ -3,12 +3,18 @@ import { Form, Input, Row, Col, Button } from "antd";
 
 import { StyledEditTeacherModal, ModalFormItem } from "./styled";
 
-class EditTeacherModal extends React.Component {
+class EditTeacherModal extends Component {
   onSaveTeacher = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        row.key = this.props.teacherData.key;
-        this.props.saveTeacher(row);
+        const { teacherData, saveTeacher, userOrgId } = this.props;
+        saveTeacher({
+          userId: teacherData._id,
+          data: Object.assign(row, {
+            districtId: userOrgId
+          })
+        });
+        this.onCloseModal();
       }
     });
   };
@@ -18,8 +24,11 @@ class EditTeacherModal extends React.Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
-    const { modalVisible, teacherData } = this.props;
+    const {
+      modalVisible,
+      teacherData: { _source },
+      form: { getFieldDecorator }
+    } = this.props;
     return (
       <StyledEditTeacherModal
         visible={modalVisible}
@@ -47,7 +56,7 @@ class EditTeacherModal extends React.Component {
                     message: "Please input First Name"
                   }
                 ],
-                initialValue: teacherData.firstName
+                initialValue: _source.firstName
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
@@ -60,7 +69,7 @@ class EditTeacherModal extends React.Component {
                     message: "Please input Last Name"
                   }
                 ],
-                initialValue: teacherData.lastName
+                initialValue: _source.lastName
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -79,7 +88,7 @@ class EditTeacherModal extends React.Component {
                     message: "The input is not valid E-mail"
                   }
                 ],
-                initialValue: teacherData.email
+                initialValue: _source.email
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>

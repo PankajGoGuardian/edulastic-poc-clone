@@ -12,8 +12,9 @@ const FlexContainer = styled.div`
   & > *:last-child {
     margin-right: 0;
   }
-  margin-top: 6px;
-  margin-bottom: ${props => (props.marginBottom ? props.marginBottom : "6px")};
+  p {
+    padding: 6px 0px;
+  }
 `;
 
 export default FlexContainer;

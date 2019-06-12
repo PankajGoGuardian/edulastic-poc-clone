@@ -1141,7 +1141,8 @@ response {
 
 .imagelabeldragdrop-droppable img,
 .main img,
-.responses_box img {
+.responses_box img,
+img.fr-fic {
   max-width: 151.5px !important;
   max-height: 100px !important;
   width: auto !important;

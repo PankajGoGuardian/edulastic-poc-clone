@@ -259,10 +259,10 @@ class Display extends Component {
           {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <TemplateBoxContainer smallSize={smallSize}>
+        <TemplateBoxContainer smallSize={smallSize} flexDirection={"column"}>
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
+          {answerBox}
         </TemplateBoxContainer>
-        {answerBox}
       </StyledDisplayContainer>
     );
   }

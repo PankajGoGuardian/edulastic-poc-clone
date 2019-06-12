@@ -125,16 +125,26 @@ class ClozeDropDownDisplay extends Component {
     let maxLineHeight = smallSize ? 50 : 40;
     maxLineHeight = maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight;
 
+    const hasAltAnswers = item.validation.alt_responses && item.validation.alt_responses.length > 0;
+
     const answerBox = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={item.validation.valid_response && item.validation.valid_response.value}
-      />
+      <React.Fragment>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={item.validation.valid_response && item.validation.valid_response.value}
+        />
+        {hasAltAnswers && (
+          <CorrectAnswerBoxLayout
+            fontSize={fontSize}
+            groupResponses={options}
+            altResponses={item.validation.alt_responses}
+          />
+        )}
+      </React.Fragment>
     ) : (
       <div />
     );
-
     const resProps =
       showAnswer || checkAnswer
         ? {

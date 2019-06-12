@@ -216,9 +216,9 @@ export const reducer = createReducer(initialState, {
   },
   [ADD_MULTI_STUDENTS_SUCCESS]: (state, { payload }) => {
     state.multiStudentsAdding = false;
-    payload.map((row, index) => {
-      row.key = index;
-    });
+    // payload.map((row, index) => {
+    //   row.key = index;
+    // });
     state.multiStudents = payload;
     state.studentDetailsModalVisible = true;
   },

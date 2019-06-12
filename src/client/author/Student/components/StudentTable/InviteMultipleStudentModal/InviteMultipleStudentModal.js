@@ -166,7 +166,7 @@ class InviteMultipleStudentModal extends React.Component {
             <Select onChange={this.handleChange} defaultValue="google">
               <Option value="google">Google Usernames</Option>
               <Option value="mso">Office 365 Usernames</Option>
-              <Option value="fl">Frist Name and Last Name</Option>
+              <Option value="fl">First Name and Last Name</Option>
               <Option value="lf">Last Name and First Name</Option>
             </Select>
           </Col>

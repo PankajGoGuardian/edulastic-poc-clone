@@ -7,8 +7,14 @@ class EditStudentModal extends React.Component {
   onSaveStudent = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        row.key = this.props.studentData.key;
-        this.props.saveStudent(row);
+        const { studentData, saveStudent, userOrgId: districtId } = this.props;
+        saveStudent({
+          userId: studentData._id,
+          data: Object.assign(row, {
+            districtId
+          })
+        });
+        this.onCloseModal();
       }
     });
   };
@@ -19,7 +25,10 @@ class EditStudentModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, studentData } = this.props;
+    const {
+      modalVisible,
+      studentData: { _source }
+    } = this.props;
     return (
       <Modal
         visible={modalVisible}
@@ -47,7 +56,7 @@ class EditStudentModal extends React.Component {
                     message: "Please input First Name"
                   }
                 ],
-                initialValue: studentData.firstName
+                initialValue: _source.firstName
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
@@ -60,7 +69,7 @@ class EditStudentModal extends React.Component {
                     message: "Please input Last Name"
                   }
                 ],
-                initialValue: studentData.lastName
+                initialValue: _source.lastName
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -79,7 +88,7 @@ class EditStudentModal extends React.Component {
                     message: "The input is not valid E-mail"
                   }
                 ],
-                initialValue: studentData.email
+                initialValue: _source.email
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>

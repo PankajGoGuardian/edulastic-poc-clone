@@ -83,9 +83,9 @@ const SortableItem = SortableElement(
             console.log("_item", _item, "item", item);
             return (
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
-                <FlexContainer alignItems="flex-start">
+                <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
                   <FlexContainer
-                    style={{ visibility: index === 0 ? "visible" : "hidden" }}
+                    style={{ visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
                     flexDirection="column"
                     justifyContent="center"
                   >
@@ -94,7 +94,7 @@ const SortableItem = SortableElement(
                   </FlexContainer>
 
                   <TestItemPreview
-                    style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                    style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
                     cols={_item}
                     previewTab="clear"
                     verticalDivider={item.verticalDivider}
@@ -103,7 +103,7 @@ const SortableItem = SortableElement(
                     windowWidth="100%"
                   />
                 </FlexContainer>
-                <FlexContainer>
+                <FlexContainer style={{ flex: 1 }}>
                   {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}
                   <FlexContainer flexDirection="column">
                     <PointsLabel>Points</PointsLabel>

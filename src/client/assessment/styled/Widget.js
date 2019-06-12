@@ -97,3 +97,33 @@ export const WidgetFRContainer = styled.div`
     }
   }
 `;
+
+export const WidgetMethods = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  > div {
+    width: 50%;
+    margin-top: 26px;
+    order: 1;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-top: 0;
+    }
+  }
+
+  .ant-checkbox-wrapper {
+    width: 100%;
+  }
+
+  .ant-input {
+    margin-left: 35px;
+    width: calc(100% - 35px) !important;
+    max-width: 295px;
+  }
+`;
+
+export const WidgetSecondMethod = styled.div`
+  order: 2 !important;
+`;

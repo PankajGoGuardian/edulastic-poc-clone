@@ -153,7 +153,6 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
-  const [firstClick, setfirstClick] = useState(false);
 
   const [mathField, setMathField] = useState(null);
 
@@ -438,15 +437,6 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
     }
   };
 
-  const setFirstClick = () => {
-    if (!firstClick) {
-      setContent("");
-      setPrevValue("");
-
-      setfirstClick(true);
-    }
-  };
-
   // Math Modal related functions
   const saveMathModal = latex => {
     EditorRef.current.selection.restore();
@@ -647,7 +637,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} onClick={setFirstClick}>
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}

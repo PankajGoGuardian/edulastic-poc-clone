@@ -62,7 +62,7 @@ class Extras extends Component {
           {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
           {!isSection && <Subtitle>{t("component.options.extras")}</Subtitle>}
 
-          <Row gutter={60}>
+          <Row gutter={36}>
             <Col md={12}>
               <Label data-cy="acknowledgements">{t("component.options.acknowledgements")}</Label>
               <CustomQuillComponent
@@ -86,7 +86,7 @@ class Extras extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={36}>
             <Col md={12}>
               <Label data-cy="rubric_reference">{t("component.options.rubricreference")}</Label>
               <CustomQuillComponent
@@ -110,7 +110,7 @@ class Extras extends Component {
             </Col>
           </Row>
 
-          <Row gutter={60}>
+          <Row gutter={36}>
             <Col md={12}>
               <Label data-cy="instructor_stimulus">{t("component.options.instructorStimulus")}</Label>
               <CustomQuillComponent

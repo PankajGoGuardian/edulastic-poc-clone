@@ -91,13 +91,13 @@ class Layout extends Component {
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         <Subtitle>{t("component.options.layout")}</Subtitle>
 
-        <Row gutter={60}>
-          <Col md={12}>
+        <Row gutter={70}>
+          <Col md={6}>
             <Label>{t("component.options.templateFontScale")}</Label>
             <Select
               size="large"
               value={uiStyle.response_font_scale}
-              style={{ width: "100%" }}
+              style={{ width: "80%" }}
               onChange={val => changeUiStyle("response_font_scale", val)}
             >
               {math.templateFontScaleOption.map(({ value: val, label }) => (
@@ -107,7 +107,7 @@ class Layout extends Component {
               ))}
             </Select>
           </Col>
-          <Col md={12}>
+          <Col md={6}>
             <Label>{t("component.options.responseMinimumWidth")}</Label>
             <Input
               type="number"
@@ -123,12 +123,12 @@ class Layout extends Component {
           </Col>
         </Row>
 
-        <Row gutter={60}>
-          <Col md={12}>
+        <Row gutter={70}>
+          <Col md={6}>
             <FontSizeSelect onChange={val => changeUiStyle("fontsize", val)} value={uiStyle.fontsize} />
           </Col>
 
-          <Col md={12}>
+          <Col md={6}>
             <Checkbox
               checked={uiStyle.transparent_background}
               onChange={e => changeUiStyle("transparent_background", e.target.checked)}

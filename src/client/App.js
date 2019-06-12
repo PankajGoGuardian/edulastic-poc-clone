@@ -78,6 +78,7 @@ class App extends Component {
 
   render() {
     const { user, tutorial, location, history } = this.props;
+
     if (location.hash.includes("#renderResource/close/")) {
       const v1Id = location.hash.split("/")[2];
       history.push(`/d/ap?eAId=${v1Id}`);
@@ -88,44 +89,37 @@ class App extends Component {
       return <Loading />;
     }
 
-    const defaultRoute = "/author/assignments";
-    let redirectRoute = "";
+    let defaultRoute = "/author/assignments";
+
     if (!publicPath) {
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
           if (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus)) {
+            defaultRoute = "/author/assignments";
           } else {
-            redirectRoute = "/Signup";
+            defaultRoute = "/signup";
           }
         } else if (role === "edulastic-admin") {
-          redirectRoute = "/admin";
+          defaultRoute = "/admin";
         } else if (role === "student") {
-          redirectRoute = "/home/assignments";
+          defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
-          redirectRoute = "/author/assignments";
+          defaultRoute = "/author/assignments";
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
-      } else if (
-        this.props.location.pathname.toLocaleLowerCase() === "/getstarted" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup"
-      ) {
       } else {
-        redirectRoute = "/login";
+        defaultRoute = "/login";
       }
     }
+
     // signup routes hidden till org reference is not done
     return (
       <div>
         {tutorial && <Joyride continuous showProgress showSkipButton steps={tutorial} />}
         <Suspense fallback={<Loading />}>
           <Switch>
-            {this.props.location.pathname.toLocaleLowerCase() !== redirectRoute.toLocaleLowerCase() &&
-            redirectRoute !== "" ? (
-              <Redirect exact to={redirectRoute} />
-            ) : null}
+            <Redirect exact path="/" to={defaultRoute} />
             <Route path="/author" component={Author} />
             <Route path="/home" component={Dashboard} />
             <Route path="/admin" component={Admin} />
@@ -146,7 +140,6 @@ class App extends Component {
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />
             ))}
-            <Redirect exact to={defaultRoute} />
           </Switch>
         </Suspense>
       </div>

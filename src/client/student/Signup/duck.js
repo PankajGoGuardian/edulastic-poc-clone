@@ -234,12 +234,9 @@ function* joinSchoolSaga({ payload = {} }) {
 }
 
 function* saveSubjectGradeSaga({ payload }) {
-  let isSaveSubjectGradeSuccessful = false;
   try {
     const result = yield call(settingsApi.saveInterestedStandards, payload) || {};
     yield call(message.success, SAVE_SUBJECTGRADE_SUCCESS);
-    isSaveSubjectGradeSuccessful = true;
-
     const user = yield select(getUser);
     const newUser = produce(user, draft => {
       if (!draft.orgData) {
@@ -249,42 +246,14 @@ function* saveSubjectGradeSaga({ payload }) {
       delete draft.currentSignUpState;
       return draft;
     });
-    // setting user in store to put orgData in store
     yield put(signupSuccessAction(newUser));
+    yield put(push("/author/manageClass"));
   } catch (err) {
     yield put({
       type: SAVE_SUBJECTGRADE_FAILED,
       payload: {}
     });
     yield call(message.error, SAVE_SUBJECTGRADE_FAILED);
-
-    const errMsg = get(err, "data.message", "");
-    if (errMsg === "Settings already exist") {
-      isSaveSubjectGradeSuccessful = true;
-    }
-  }
-
-  try {
-    if (isSaveSubjectGradeSuccessful) {
-      const user = yield select(getUser);
-      const data = {
-        email: user.email,
-        districtId: user.orgData.districtId,
-        currentSignUpState: "DONE"
-      };
-      const _result = yield call(userApi.updateUser, { data, userId: user._id });
-      const finalUser = {
-        ..._result,
-        features: user.features,
-        orgData: user.orgData
-      };
-      // setting user in store to put updated currentSignupState in store
-      yield put(signupSuccessAction(finalUser));
-      yield put(push("/author/manageClass"));
-    }
-  } catch (err) {
-    console.log("_err", err);
-    yield call(message.error, "Failed to update user please try again.");
   }
 }
 

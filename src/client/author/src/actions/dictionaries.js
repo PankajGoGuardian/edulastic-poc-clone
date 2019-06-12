@@ -4,6 +4,7 @@ import {
   CLEAR_DICT_STANDARDS,
   ADD_NEW_ALIGNMENT,
   REMOVE_EXISTED_ALIGNMENT,
+  UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT
 } from "../constants/actions";
 
@@ -36,4 +37,9 @@ export const updateDictAlignmentAction = (alignmentIndex, payload) => ({
     index: alignmentIndex,
     changedFields: payload
   }
+});
+
+export const updateRecentStandardsAction = payload => ({
+  type: UPDATE_RECENT_STANDARDS,
+  payload
 });

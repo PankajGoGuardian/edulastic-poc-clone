@@ -4,15 +4,20 @@ import { Row, Col, Select } from "antd";
 import { pick as _pick, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { FlexContainer } from "@edulastic/common";
-import { getFormattedCurriculumsSelector } from "../../../author/src/selectors/dictionaries";
-import { clearDictStandardsAction } from "../../../author/src/actions/dictionaries";
+import {
+  getFormattedCurriculumsSelector,
+  getRecentStandardsListSelector
+} from "../../../author/src/selectors/dictionaries";
+import { clearDictStandardsAction, updateRecentStandardsAction } from "../../../author/src/actions/dictionaries";
 import BrowseButton from "./styled/BrowseButton";
 import { ItemBody } from "./styled/ItemBody";
 import selectsData from "../../../author/TestPage/components/common/selectsData";
 import CustomTreeSelect from "./CustomTreeSelect";
-import { IconTrash } from "./styled/IconTrash";
 import StandardsModal from "./StandardsModal";
 import { alignmentStandardsFromUIToMongo } from "../../utils/helpers";
+import StandardTags from "./styled/StandardTags";
+import StandardsWrapper from "./styled/StandardsWrapper";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const AlignmentRow = ({
   t,
@@ -28,16 +33,20 @@ const AlignmentRow = ({
   editAlignment,
   createUniqGradeAndSubjects,
   formattedCuriculums,
+  updateRecentStandardsList,
+  recentStandardsList = [],
   clearStandards
 }) => {
   const { subject, curriculumId, curriculum, grades, standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
+    storeInLocalStorage("defaultSubject", val);
     editAlignment(alignmentIndex, { subject: val, standards: [], curriculum: "" });
     clearStandards();
   };
 
   const setGrades = val => {
+    storeInLocalStorage("defaultGrades", val);
     editAlignment(alignmentIndex, { grades: val, standards: [] });
   };
 
@@ -50,6 +59,16 @@ const AlignmentRow = ({
 
   const handleSearchStandard = searchStr => {
     getCurriculumStandards({ id: curriculumId, grades, searchStr });
+  };
+
+  const updateRecentStandards = newStandard => {
+    recentStandardsList = recentStandardsList.filter(recentStandard => recentStandard._id !== newStandard._id);
+    recentStandardsList.unshift(newStandard);
+    if (recentStandardsList.length > 10) {
+      recentStandardsList.splice(0, 10);
+    }
+    updateRecentStandardsList({ recentStandards: recentStandardsList });
+    storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));
   };
 
   const handleStandardSelect = (chosenStandardsArr, option) => {
@@ -65,20 +84,7 @@ const AlignmentRow = ({
       "description"
     ]);
 
-    const newStandards = [...standards, newStandard];
-    let { subject } = alignment;
-    if (!subject) {
-      const curriculumFromStandard = (option.props.obj || {}).curriculumId
-        ? formattedCuriculums.find(curriculum => curriculum.value === option.props.obj.curriculumId)
-        : {};
-      subject = curriculumFromStandard.subject;
-    }
-    const alignmentGrades = alignment.grades;
-    const standardsGrades = newStandards.flatMap(standard => standard.grades);
-    createUniqGradeAndSubjects([...alignmentGrades, ...standardsGrades], subject);
-    editAlignment(alignmentIndex, {
-      standards: newStandards
-    });
+    handleAddStandard(newStandard);
   };
 
   const handleStandardDeselect = removedElement => {
@@ -103,7 +109,30 @@ const AlignmentRow = ({
       grades: data.grades,
       standards: data.eloStandards
     });
+
+    data.eloStandards &&
+      data.eloStandards.forEach(elo => {
+        updateRecentStandards(elo);
+      });
     setShowModal(false);
+  };
+
+  const handleAddStandard = newStandard => {
+    const newStandards = [...standards, newStandard];
+    let { subject } = alignment;
+    if (!subject) {
+      const curriculumFromStandard = (option.props.obj || {}).curriculumId
+        ? formattedCuriculums.find(curriculum => curriculum.value === option.props.obj.curriculumId)
+        : {};
+      subject = curriculumFromStandard.subject;
+    }
+    const alignmentGrades = alignment.grades;
+    const standardsGrades = newStandards.flatMap(standard => standard.grades);
+    createUniqGradeAndSubjects([...alignmentGrades, ...standardsGrades], subject);
+    editAlignment(alignmentIndex, {
+      standards: newStandards
+    });
+    updateRecentStandards(newStandard);
   };
 
   const handleStandardFocus = () => {
@@ -219,6 +248,8 @@ const AlignmentRow = ({
                   onDeselect={handleStandardDeselect}
                 >
                   {!curriculumStandardsLoading &&
+                    curriculumStandardsELO &&
+                    curriculumStandardsELO.length > 0 &&
                     curriculumStandardsELO.map(el => (
                       <Select.Option
                         title="true"
@@ -240,19 +271,26 @@ const AlignmentRow = ({
                     ))}
                 </Select>
               </ItemBody>
+              <StandardsWrapper>
+                Recently Used:
+                {recentStandardsList &&
+                  recentStandardsList.map(recentStandard => (
+                    <StandardTags
+                      onClick={() => {
+                        handleAddStandard(recentStandard);
+                      }}
+                    >
+                      {recentStandard.identifier}
+                    </StandardTags>
+                  ))}
+              </StandardsWrapper>
             </Col>
           </Row>
         </Col>
         <Col md={4}>
           <ItemBody>
             <FlexContainer>
-              <BrowseButton
-                disabled={!curriculumId || curriculumStandardsELO.length === 0}
-                onClick={handleShowBrowseModal}
-              >
-                {t("component.options.browse")}
-              </BrowseButton>
-              <IconTrash onClick={onDelete(curriculumId)} />
+              <BrowseButton onClick={handleShowBrowseModal}>{t("component.options.browse")}</BrowseButton>
             </FlexContainer>
           </ItemBody>
         </Col>
@@ -274,9 +312,11 @@ AlignmentRow.propTypes = {
 
 export default connect(
   (state, props) => ({
-    formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment)
+    formattedCuriculums: getFormattedCurriculumsSelector(state, props.alignment),
+    recentStandardsList: getRecentStandardsListSelector(state)
   }),
   {
+    updateRecentStandardsList: updateRecentStandardsAction,
     clearStandards: clearDictStandardsAction
   }
 )(AlignmentRow);

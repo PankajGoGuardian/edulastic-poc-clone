@@ -22,3 +22,15 @@ export function getAccessToken() {
   }
   return window.localStorage.getItem(tokenKey);
 }
+
+export function storeInLocalStorage(key, value) {
+  if (window && window.localStorage) {
+    window.localStorage.setItem(key, value);
+  }
+}
+
+export function getFromLocalStorage(key) {
+  if (window && window.localStorage) {
+    return window.localStorage.getItem(key);
+  }
+}

@@ -61,3 +61,7 @@ export const getStandardsListSelector = createSelector(
     tlo: state.tlo
   })
 );
+export const getRecentStandardsListSelector = createSelector(
+  stateSelector,
+  state => state.recentStandardsList
+);

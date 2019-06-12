@@ -12,7 +12,7 @@ export const replaceLatexesWithMathHtml = val => {
   // Detecting latexes
   const jqueryEl = $(`<p/>`).append(val);
   const latexHtmls = jqueryEl.find("span.input__math");
-  if (!latexHtmls.length) return val;
+  if (!latexHtmls.length) return Helpers.sanitizeSelfClosingTags(val);
 
   jqueryEl.find("span.input__math").each(function() {
     const katexHtml = getMathHtml($(this).attr("data-latex"));
@@ -27,7 +27,7 @@ export const replaceLatexesWithMathHtml = val => {
 export const replaceMathHtmlWithLatexes = val => {
   const jqueryEl = $(`<p/>`).append(val);
   const mathHtmls = jqueryEl.find("span.input__math");
-  if (!mathHtmls.length) return val;
+  if (!mathHtmls.length) return Helpers.sanitizeSelfClosingTags(val);
 
   jqueryEl.find("span.input__math").each(function() {
     $(this)

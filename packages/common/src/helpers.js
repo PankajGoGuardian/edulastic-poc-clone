@@ -101,7 +101,10 @@ const sanitizeSelfClosingTags = inputString =>
   inputString
     .replace(/<hr>/g, "<hr/>")
     .replace(/<br>/g, "<br/>")
-    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
+    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+
+const replaceForJsxParser = inputString =>
+  inputString
     .replace(/"{{resProps/g, "{resProps")
     .replace(/resProps}}"/g, "resProps}")
     .replace(/"{{lineHeight/g, "{lineHeight")
@@ -130,7 +133,7 @@ const parseTemplate = tmpl => {
     .append(parsedHTML)
     .html();
 
-  return sanitizeSelfClosingTags(temp);
+  return replaceForJsxParser(sanitizeSelfClosingTags(temp));
 };
 
 export const getResponsesCount = element => {

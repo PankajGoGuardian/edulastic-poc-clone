@@ -992,7 +992,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample Template markup<response contenteditable="false" index="{{0}}">Response</response></p>`,
+        templateMarkUp: `<p>Sample Template markup<response contenteditable="false" index="0">Response</response></p>`,
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "[This is stem.]",
         ui_style: {
@@ -1028,7 +1028,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>"It\'s all clear" he</p><textdropdown index={{0}} contentEditable="false" resprops={{resProps}}>Text Input</textdropdown><p><br/> Have you the </p><textdropdown index={{1}} contentEditable="false" resprops={{resProps}} >Text Input</textdropdown><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false" index="0"><span class="index">1</span>Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
         ui_style: {
           responsecontainerposition: "bottom",
@@ -1062,7 +1062,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>"It\'s all clear" he</p><textinput index={{0}} contentEditable="false" resprops={{resProps}}>Text Input</textinput><p><br/> Have you the </p><textinput index={{1}} contentEditable="false" resprops={{resProps}} >Text Input</textinput><p> and the bags ? <br/>  Great Scott!!! Jump, archie, jump, and I\'ll swing for it</p>',
+          '<p>sample template T1<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>, T2<textinput contenteditable="false" index="1"><span class="index">2</span>Text Input</textinput></p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -2022,7 +2022,7 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false" index="{{0}}"><span class="index">1</span>Text Input</textinput>,&nbsp;<textdropdown contenteditable="false" index="{{1}}"><span class="index">2</span>Text Dropdown</textdropdown>,<mathinput contenteditable="false" index="{{2}}"><span class="index">3</span>Math Input</mathinput></p>',
+          '<p>sample template markup -&nbsp;<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>,&nbsp;<textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown>,<mathinput contenteditable="false" index="2"><span class="index">3</span>Math Input</mathinput></p>',
         templateDisplay: true,
         type: questionType.CLOZE_MATH,
         response_indexes: {

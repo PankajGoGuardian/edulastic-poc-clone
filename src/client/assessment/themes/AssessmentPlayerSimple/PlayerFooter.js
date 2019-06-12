@@ -18,7 +18,10 @@ const PlayerFooter = ({
     <MainFooter>
       <FlexContainer>
         {settings.maxAnswerChecks && (
-          <CheckAnswerBtn onClick={onCheckAnswer} disabled={answerChecksUsedForItem >= settings.maxAnswerChecks}>
+          <CheckAnswerBtn
+            onClick={onCheckAnswer}
+            title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
+          >
             <CounterCircle>{settings.maxAnswerChecks - answerChecksUsedForItem}</CounterCircle>
             <span>{t("pagination.checkanswer")} </span>
           </CheckAnswerBtn>

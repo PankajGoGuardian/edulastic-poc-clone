@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, blue, newBlue, secondaryTextColor } from "@edulastic/colors";
+import { white, blue, newBlue, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 0 0 20px;
@@ -67,6 +67,18 @@ export const MainFilterItems = styled.div`
 
 export const Item = styled.div`
   margin-top: 10px;
+`;
+
+export const ItemRelative = styled(Item)`
+  position: relative;
+`;
+
+export const IconWrapper = styled.span`
+  position: absolute;
+  right: 10px;
+  top: 35px;
+  z-index: 1;
+  color: ${lightGrey4};
 `;
 
 export const ItemHeader = styled.span`

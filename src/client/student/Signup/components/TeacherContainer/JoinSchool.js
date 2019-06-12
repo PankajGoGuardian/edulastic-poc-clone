@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -15,8 +15,27 @@ import RequestSchoolModal from "./RequestSchoolModal";
 
 import { searchSchoolRequestAction, joinSchoolRequestAction, updateUserWithSchoolLoadingSelector } from "../../duck";
 import { getUserIPZipCode } from "../../../../author/src/selectors/user";
+import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 
 const { Option } = Select;
+
+const SchoolDropDownItemTemplate = ({ itemData: school }) => {
+  const { address, location } = school;
+  const schoolLocation = address || location;
+
+  return (
+    <OptionBody>
+      <SchoolInfo>
+        <span>{school.schoolName || school.name}</span>
+        {`${schoolLocation.city}, ${schoolLocation.state}, ${schoolLocation.zip}`}
+      </SchoolInfo>
+      <DistrictInfo>
+        <span>District:</span>
+        {school.districtName}
+      </DistrictInfo>
+    </OptionBody>
+  );
+};
 
 const JoinSchool = ({
   isSearching,
@@ -34,7 +53,7 @@ const JoinSchool = ({
 
   const toggleModal = () => setShowModal(!showModal);
 
-  const changeSchool = value => setSchool(value);
+  const changeSchool = value => setSchool(value.key);
 
   const currentSchool = find(schools, ({ schoolId, _id }) => schoolId === selected || _id === selected) || {};
 
@@ -70,6 +89,16 @@ const JoinSchool = ({
     }
   }, [newSchool]);
 
+  const dropdownSchoolData = useMemo(() => {
+    return schools.map(item => {
+      return {
+        ...item,
+        title: item.schoolName,
+        key: item.schoolId
+      };
+    });
+  }, [schools]);
+
   return (
     <>
       <JoinSchoolBody type="flex" align="middle">
@@ -86,33 +115,16 @@ const JoinSchool = ({
             </BannerText>
             <Col md={12}>
               <SelectForm>
-                <SchoolSelect
-                  value={selected ? selected : undefined}
-                  onChange={changeSchool}
-                  onSearch={handleSearch}
-                  loading={isSearching}
-                  showSearch
+                <StyledRemoteAutocompleteDropDown
+                  by={""}
+                  data={dropdownSchoolData}
+                  onSearchTextChange={handleSearch}
+                  iconType={"down"}
                   placeholder="Search school by Zip, name or City"
-                >
-                  {schools.map((school, i) => {
-                    const { address, location } = school;
-                    const schoolLocation = address || location;
-                    return (
-                      <Option value={school.schoolId || school._id} key={i}>
-                        <OptionBody>
-                          <SchoolInfo>
-                            <span>{school.schoolName || school.name}</span>
-                            {`${schoolLocation.city}, ${schoolLocation.state}, ${schoolLocation.zip}`}
-                          </SchoolInfo>
-                          <DistrictInfo>
-                            <span>District:</span>
-                            {school.districtName}
-                          </DistrictInfo>
-                        </OptionBody>
-                      </Option>
-                    );
-                  })}
-                </SchoolSelect>
+                  ItemTemplate={SchoolDropDownItemTemplate}
+                  minHeight="70px"
+                  selectCB={changeSchool}
+                />
                 <Actions>
                   <AnchorBtn> I want to homeschool</AnchorBtn>
                   <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
@@ -268,4 +280,8 @@ const DistrictInfo = styled.div`
   span {
     font-weight: 600;
   }
+`;
+
+const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
+  width: 100%;
 `;

@@ -39,7 +39,8 @@ var countExactMatchScores = function countExactMatchScores(compareFunction) {
         return;
       }
 
-      var matches = (0, _getMatches["default"])(existingResponse, answer, compareFunction) === answer.length;
+      var matchCount = (0, _getMatches["default"])(existingResponse, answer, compareFunction);
+      var matches = matchCount === answer.length;
 
       if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
         matches = (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions) === answer.length;

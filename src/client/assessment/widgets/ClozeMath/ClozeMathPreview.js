@@ -73,7 +73,7 @@ const ClozeMathPreview = ({
     let temp = ` ${str}`.slice(1);
     const parsedHTML = $.parseHTML(temp);
     function addProps(i) {
-      $(this).attr("targetIndex", `{{${i}}}`);
+      $(this).attr("targetIndex", `${i}`);
       const text = $("<div>")
         .append($(this).clone())
         .html();

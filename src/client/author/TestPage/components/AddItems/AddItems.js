@@ -142,7 +142,7 @@ class AddItems extends PureComponent {
   };
 
   handleSearchFieldChangeCurriculumId = value => {
-    const { clearDictStandards } = this.props;
+    const { clearDictStandards, getCurriculumStandards } = this.props;
     const { search } = this.state;
     clearDictStandards();
     this.setState(
@@ -157,6 +157,7 @@ class AddItems extends PureComponent {
         this.handleSearch();
       }
     );
+    getCurriculumStandards(value, search.grades, "");
   };
 
   handleSearchFieldChange = fieldName => value => {

@@ -11,6 +11,7 @@ import { WrongIcon } from "./styled/WrongIcon";
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({ index: dropTargetIndex, resprops }) => {
+  dropTargetIndex = parseInt(dropTargetIndex, 10);
   const {
     showAnswer,
     options = [],

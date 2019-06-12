@@ -4,7 +4,7 @@ import { takeLatest, put, call, all, select } from "redux-saga/effects";
 import { values, groupBy, last, partial } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { getCurrentSchool, fetchUserAction, fetchUser, getUserRole } from "../Login/ducks";
 

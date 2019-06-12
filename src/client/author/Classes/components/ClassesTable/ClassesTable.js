@@ -35,6 +35,8 @@ import {
 
 import { getUserOrgId } from "../../../src/selectors/user";
 import { receiveSearchCourseAction, getCoursesForDistrictSelector } from "../../../Courses/ducks";
+import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
+import { receiveTeachersListAction, getTeachersListSelector } from "../../../Teacher/ducks";
 
 const { Option } = Select;
 
@@ -102,6 +104,15 @@ class ClassesTable extends Component {
   }
 
   onEditClass = key => {
+    const { loadSchoolsData, userOrgId, loadTeachersListData } = this.props;
+    loadSchoolsData({
+      districtId: userOrgId
+    });
+    loadTeachersListData({
+      districtId: userOrgId,
+      role: "teacher",
+      limit: 10000
+    });
     this.setState({
       editClassModalVisible: true,
       editClassKey: key
@@ -398,7 +409,14 @@ class ClassesTable extends Component {
       selectedArchiveClasses
     } = this.state;
 
-    const { userOrgId, searchCourseList, coursesForDistrictList, totalClassCount } = this.props;
+    const {
+      userOrgId,
+      searchCourseList,
+      coursesForDistrictList,
+      totalClassCount,
+      schoolsData,
+      teacherList
+    } = this.props;
 
     const rowSelection = {
       selectedRowKeys,
@@ -543,6 +561,8 @@ class ClassesTable extends Component {
             modalVisible={editClassModalVisible}
             saveClass={this.updateClass}
             closeModal={this.closeEditClassModal}
+            schoolsData={schoolsData}
+            teacherList={teacherList}
           />
         )}
 
@@ -579,14 +599,18 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       classList: getClassListSelector(state),
       coursesForDistrictList: getCoursesForDistrictSelector(state),
-      totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0)
+      totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0),
+      teacherList: getTeachersListSelector(state),
+      schoolsData: getSchoolsSelector(state)
     }),
     {
       createClass: createClassAction,
       updateClass: updateClassAction,
       deleteClass: deleteClassAction,
       loadClassListData: receiveClassListAction,
-      searchCourseList: receiveSearchCourseAction
+      searchCourseList: receiveSearchCourseAction,
+      loadSchoolsData: receiveSchoolsAction,
+      loadTeachersListData: receiveTeachersListAction
     }
   )
 );
@@ -601,5 +625,7 @@ ClassesTable.propTypes = {
   deleteClass: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   searchCourseList: PropTypes.func.isRequired,
-  coursesForDistrictList: PropTypes.array.isRequired
+  coursesForDistrictList: PropTypes.array.isRequired,
+  loadSchoolsData: PropTypes.func.isRequired,
+  loadTeachersListData: PropTypes.func.isRequired
 };

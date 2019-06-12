@@ -26,6 +26,7 @@ const CheckboxTemplateBoxLayout = ({
   userSelections,
   backgroundColor,
   stemnumeration,
+  imageOptions,
   evaluation,
   maxHeight,
   maxWidth,
@@ -37,12 +38,9 @@ const CheckboxTemplateBoxLayout = ({
       <img
         src={imageUrl}
         style={{
-          userSelect: "none",
-          pointerEvents: "none",
-          height: !imageHeight ? "auto" : imageHeight,
-          maxWidth,
-          maxHeight,
-          width: !maxWidth ? imageWidth : imageWidth < 700 ? imageWidth : "100%"
+          position: "absolute",
+          top: imageOptions.y || 0,
+          left: imageOptions.x || 0
         }}
         alt={imageAlterText}
       />

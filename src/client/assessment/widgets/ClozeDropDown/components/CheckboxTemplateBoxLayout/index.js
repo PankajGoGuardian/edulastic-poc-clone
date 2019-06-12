@@ -22,7 +22,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
   } = resprops;
   // eslint-disable-next-line no-unused-vars
   let indexStr;
-  console.log(showIndex);
+  dropTargetIndex = parseInt(dropTargetIndex, 10);
   const status =
     userSelections.length > 0 && evaluation.length > 0 ? (evaluation[dropTargetIndex] ? "right" : "wrong") : "wrong";
   const choiceAttempted = userSelections.length > 0 ? !!userSelections[dropTargetIndex] : null;

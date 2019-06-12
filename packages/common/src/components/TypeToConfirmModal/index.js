@@ -29,10 +29,11 @@ class TypeToConfirmModal extends Component {
         onCancel={this.onCloseModal}
         maskClosable={false}
         footer={[
-          <Button onClick={this.onCloseModal} ghost type="primary">
+          <Button key="cancelButton" onClick={this.onCloseModal} ghost type="primary">
             No, Cancel
           </Button>,
           <Button
+            key="okButton"
             type="primary"
             onClick={handleOnOkClick}
             disabled={textValue.toLowerCase() !== wordToBeTyped.toLowerCase()}
@@ -79,6 +80,6 @@ TypeToConfirmModal.propTypes = {
   handleOnOkClick: PropTypes.func.isRequired,
   wordToBeTyped: PropTypes.string.isRequired,
   primaryLabel: PropTypes.string,
-  secondaryLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+  secondaryLabel: PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.arrayOf(PropTypes.element)]),
   closeModal: PropTypes.func.isRequired
 };

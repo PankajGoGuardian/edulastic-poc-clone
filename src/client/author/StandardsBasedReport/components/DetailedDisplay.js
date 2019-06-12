@@ -4,7 +4,7 @@ import { Icon } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
-import { get } from "lodash";
+import { get, round } from "lodash";
 
 import { getTestActivitySelector, getAdditionalDataSelector } from "../../ClassBoard/ducks";
 import { getStandardWisePerformanceDetailMemoized } from "../Transformer";
@@ -18,35 +18,43 @@ import {
   StudnetCell,
   PerformanceScore,
   PerformancePercent,
-  MasteryCell
+  MasteryCell,
+  MasterySummary
 } from "./styled";
+
+const sortAlphaNum = (a, b) => {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+};
 
 const columns = [
   {
     title: "Student",
     dataIndex: "student",
     key: "student",
-    sorter: (a, b) => a.age - b.age,
+    sorter: (a, b) => sortAlphaNum(a.student, b.student),
     render: text => <StudnetCell>{text}</StudnetCell>
   },
   {
     title: "Mastery",
     dataIndex: "mastery",
     key: "mastery",
-    sorter: (a, b) => a.age - b.age,
+    sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
     render: mastery => (
       <MasteryCell>
-        <span style={{ color: mastery.color }}>
-          {mastery.masteryLabel}
-          <Icon type={mastery.icon || "caret-up"} />
-        </span>
+        <span style={{ color: mastery.color }}>{mastery.masteryLabel}</span>
       </MasteryCell>
     )
   },
   {
     title: "Performance",
     dataIndex: "performance",
-    sorter: (a, b) => a.age - b.age,
+    sorter: (a, b) => sortAlphaNum(a.performance.split("@")[1], b.performance.split("@")[1]),
     key: "performance",
     render: text => {
       const strArr = text.split("@");
@@ -88,11 +96,10 @@ class DetailedDisplay extends Component {
       const score = scoreStudentWise[studentId] ? scoreStudentWise[studentId].score : 0;
       const perfomancePercentage = score * 100;
 
-      // TODO need to update `mastery'
+      // TODO: need to update `mastery'
       let mastery = {
         color: "#E61E54",
-        masteryLabel: "NM",
-        icon: "caret-down"
+        masteryLabel: "NM"
       };
 
       for (let i = 0; i < assignmentMasteryArray.length; i++) {
@@ -106,13 +113,13 @@ class DetailedDisplay extends Component {
         key: index + 1,
         student: scoreStudentWise[studentId].studentName,
         mastery,
-        performance: `${score}/${scoreStudentWise[studentId].maxScore}@(${perfomancePercentage}%)`
+        performance: `${round(score, 2)}/${scoreStudentWise[studentId].maxScore}@(${round(perfomancePercentage, 2)}%)`
       };
     });
   };
 
   render() {
-    const { data, onClose } = this.props;
+    const { data, onClose, performancePercentage } = this.props;
     return (
       <React.Fragment>
         <DetailCard>
@@ -123,6 +130,10 @@ class DetailedDisplay extends Component {
             </DetailCardTitle>
             <DetailCardSubTitle>{`Standard: ${data.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
+            <DetailCardSubTitle>MasterySummary</DetailCardSubTitle>
+            <MasterySummary percent={round(parseFloat(performancePercentage), 2) || 0} />
+            <DetailCardSubTitle>Performance summary % </DetailCardSubTitle>
+            <DetailCardDesc>{round(parseFloat(performancePercentage), 2) || 0}</DetailCardDesc>
           </DetailCardHeader>
           <DetailTable columns={columns} dataSource={this.displayData()} pagination={false} />
         </DetailCard>

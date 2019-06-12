@@ -108,6 +108,10 @@ class SubjectGrade extends React.Component {
                       rules: [{ required: true, message: "Grade is not selected" }]
                     })(
                       <GradeSelect
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         size="large"
                         placeholder="Select a grade or multiple grades"
                         mode="multiple"
@@ -139,7 +143,16 @@ class SubjectGrade extends React.Component {
                     {getFieldDecorator("standard", {
                       rules: [{ required: true, message: "standard Area is not selected" }]
                     })(
-                      <GradeSelect size="large" placeholder="Select your standard sets" mode="multiple" showArrow>
+                      <GradeSelect
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        size="large"
+                        placeholder="Select your standard sets"
+                        mode="multiple"
+                        showArrow
+                      >
                         {standardSets.map(el => (
                           <Option key={el._id} value={el._id}>
                             {el.curriculum}

@@ -70,10 +70,9 @@ const closePolicyForAdmin = [
 
 const testTypes = [
   { value: "", text: "All" },
-  { value: "common", text: "Common" },
   { value: "assessment", text: "Assessments" },
   { value: "practice", text: "Practice" },
-  { value: "teacherAssessment", text: "Teacher Assessments" }
+  { value: "common", text: "Common" }
 ];
 
 const allStatus = [

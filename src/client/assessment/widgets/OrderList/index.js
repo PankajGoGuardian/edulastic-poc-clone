@@ -177,7 +177,10 @@ const OrderList = ({
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
-  const hasAltAnswers = itemForPreview.validation.alt_responses && itemForPreview.validation.alt_responses.length > 0;
+  const hasAltAnswers =
+    itemForPreview.validation &&
+    itemForPreview.validation.alt_responses &&
+    itemForPreview.validation.alt_responses.length > 0;
 
   let alternateAnswers = {};
   if (hasAltAnswers) {

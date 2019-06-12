@@ -18,11 +18,16 @@ const CorrectAnswerBoxLayout = ({
 }) => {
   let results;
   if (altResponses) {
-    results = [];
-    for (let i = 0; i < userAnswers.length; i++) {
-      const res = altResponses.flatMap(ans => ans.value[i]);
-      results.push(res.join(","));
-    }
+    let alternateAnswers = {};
+    altResponses.forEach(altAnswer => {
+      altAnswer["value"].forEach((alt, index) => {
+        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
+        if (alt) {
+          alternateAnswers[index + 1].push(alt);
+        }
+      });
+    });
+    results = Object.keys(alternateAnswers).map(key => alternateAnswers[key].join());
   } else if (hasGroupResponses) {
     results = {};
     userAnswers.forEach(userAnswer => {

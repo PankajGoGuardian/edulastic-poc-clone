@@ -1,13 +1,14 @@
-import { newBlue } from "@edulastic/colors";
 import styled from "styled-components";
+
+import { newBlue, cardBg, cardBorder } from "@edulastic/colors";
 
 export const RoundDiv = styled.div`
   display: flex;
   flex-direction: column;
-  width: calc(25% - 20px);
-  margin: 0px 10px 20px 10px;
-  background-color: #f8f8fb;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  width: calc(25% - 18px);
+  margin: 0px 9px 18px;
+  background-color: ${cardBg};
+  border: 1px solid ${cardBorder};
   border-radius: 10px;
   cursor: pointer;
   overflow: hidden;
@@ -15,15 +16,14 @@ export const RoundDiv = styled.div`
   min-height: 270px;
 
   @media (max-width: 2048px) {
-    width: calc(33.3333% - 20px);
-    margin: 0px 10px 20px 10px;
+    width: calc(33.3333% - 18px);
   }
-  @media (max-width: 1460px) {
-    width: calc(33.3333% - 20px);
-    min-height: 240px;
+  @media (max-width: 1600px) {
+    width: calc(33.3333% - 18px);
+    min-height: 239px;
   }
   @media (max-width: 1024px) {
-    width: calc(50% - 20px);
+    width: calc(50% - 18px);
   }
   @media (max-width: 480px) {
     width: 100%;
@@ -50,15 +50,15 @@ export const Header = styled.div`
 `;
 
 export const Content = styled.div`
-  width: calc(100% + 3px);
-  padding: 11px 20px 20px;
+  width: 100%;
+  padding: 24px 18px 15px;
   user-select: none;
   position: relative;
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
-  margin: auto 0;
+  margin: 0 0 auto 0;
 `;
 
 export const StyledPreviewImage = styled.img`

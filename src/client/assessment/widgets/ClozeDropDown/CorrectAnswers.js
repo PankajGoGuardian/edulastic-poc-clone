@@ -129,6 +129,7 @@ class CorrectAnswers extends Component {
       stimulus,
       options,
       t,
+      item,
       templateMarkUp,
       hasGroupResponses,
       configureOptions,
@@ -155,6 +156,7 @@ class CorrectAnswers extends Component {
                 stimulus={stimulus}
                 options={options}
                 uiStyle={uiStyle}
+                item={item}
                 templateMarkUp={templateMarkUp}
                 configureOptions={configureOptions}
                 hasGroupResponses={hasGroupResponses}
@@ -174,6 +176,7 @@ class CorrectAnswers extends Component {
                       response={alter}
                       stimulus={stimulus}
                       options={options}
+                      item={item}
                       configureOptions={configureOptions}
                       hasGroupResponses={hasGroupResponses}
                       templateMarkUp={templateMarkUp}

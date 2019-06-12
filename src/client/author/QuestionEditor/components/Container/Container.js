@@ -23,7 +23,7 @@ import ItemHeader from "../ItemHeader/ItemHeader";
 import { saveQuestionAction, setQuestionDataAction } from "../../ducks";
 import { getItemIdSelector, getItemLevelScoringSelector } from "../../../ItemDetail/ducks";
 import { getCurrentQuestionSelector } from "../../../sharedDucks/questions";
-import { checkAnswerAction, showAnswerAction } from "../../../src/actions/testItem";
+import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import { removeUserAnswerAction } from "../../../../assessment/actions/answers";
 import { BackLink } from "./styled";
 import ItemLevelScoringContext from "./QuestionContext";
@@ -94,7 +94,6 @@ class Container extends Component {
       return <QuestionMetadata />;
     }
     if (questionType) {
-      console.log("itemLevelScoring", itemLevelScoring);
       return (
         <ItemLevelScoringContext.Provider value={itemLevelScoring}>
           <QuestionWrapper
@@ -113,18 +112,33 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { question, testItemId, modalItemId, navigateToPickupQuestionType, navigateToItemDetail } = this.props;
+    const {
+      question,
+      testItemId,
+      modalItemId,
+      navigateToPickupQuestionType,
+      navigateToItemDetail,
+      testName,
+      testId,
+      location,
+      toggleModalAction
+    } = this.props;
 
-    if (modalItemId) {
+    if (location.pathname.includes("author/tests")) {
+      const testPath = `/author/tests/${testId || "create"}`;
       return [
         {
-          title: "ITEM DETAIL",
-          to: "",
-          onClick: navigateToItemDetail
+          title: "TEST LIBRARY",
+          to: "/author/tests"
+        },
+        {
+          title: testName,
+          to: testPath,
+          onClick: toggleModalAction
         },
         {
           title: "SELECT A QUESTION TYPE",
-          to: "",
+          to: testPath,
           onClick: navigateToPickupQuestionType
         },
         {
@@ -135,6 +149,10 @@ class Container extends Component {
     }
 
     return [
+      {
+        title: "ITEM BANK",
+        to: "/author/items"
+      },
       {
         title: "ITEM DETAIL",
         to: `/author/items/${testItemId}/item-detail`
@@ -245,7 +263,11 @@ Container.propTypes = {
   navigateToPickupQuestionType: PropTypes.func,
   navigateToItemDetail: PropTypes.func,
   onCompleteItemCreation: PropTypes.func,
-  windowWidth: PropTypes.number.isRequired
+  windowWidth: PropTypes.number.isRequired,
+  location: PropTypes.object.isRequired,
+  testName: PropTypes.string.isRequired,
+  testId: PropTypes.string.isRequired,
+  toggleModalAction: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {
@@ -266,7 +288,9 @@ const enhance = compose(
       view: getViewSelector(state),
       question: getCurrentQuestionSelector(state),
       testItemId: getItemIdSelector(state),
-      itemLevelScoring: getItemLevelScoringSelector(state)
+      itemLevelScoring: getItemLevelScoringSelector(state),
+      testName: state.tests.entity.title,
+      testId: state.tests.entity._id
     }),
     {
       changeView: changeViewAction,
@@ -275,7 +299,8 @@ const enhance = compose(
       checkAnswer: checkAnswerAction,
       showAnswer: showAnswerAction,
       changePreview: changePreviewAction,
-      removeAnswers: removeUserAnswerAction
+      removeAnswers: removeUserAnswerAction,
+      toggleModalAction: toggleCreateItemModalAction
     }
   )
 );

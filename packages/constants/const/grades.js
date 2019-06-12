@@ -1,4 +1,4 @@
-export const GRADES_LIST = [
+const GRADES_LIST = [
   {
     label: "All",
     value: "All"
@@ -56,3 +56,7 @@ export const GRADES_LIST = [
     value: "12"
   }
 ];
+
+module.exports = {
+  GRADES_LIST
+};

@@ -1,4 +1,5 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
+import { push } from "connected-react-router";
 import { itemsApi, testItemActivityApi } from "@edulastic/api";
 import { getCurrentGroup } from "../../student/Login/ducks";
 import {
@@ -11,6 +12,7 @@ import {
   LOAD_USER_RESPONSE,
   LOAD_ANSWERS
 } from "../constants/actions";
+import { message } from "antd";
 
 function* receiveItemsSaga() {
   try {
@@ -62,6 +64,12 @@ function* saveUserResponse({ payload }) {
     const ts = payload.timeSpent || 0;
     const { autoSave } = payload;
     const itemIndex = payload.itemId;
+    const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
+    const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
+    if (assignmentsByIds && assignmentsByIds[assignmentId] && assignmentsByIds[assignmentId].endDate < Date.now()) {
+      yield call(message.error, "Test time ended");
+      return yield put(push("/home/assignments"));
+    }
     const items = yield select(state => state.test && state.test.items);
     const answers = yield select(state => state.answers);
     const userTestActivityId = yield select(state => state.test && state.test.testActivityId);
@@ -81,7 +89,6 @@ function* saveUserResponse({ payload }) {
     });
 
     const testItemId = currentItem._id;
-    const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
     const userWork = yield select(({ userWork }) => userWork.present[testItemId]);
     const groupId = yield select(getCurrentGroup);
 
@@ -98,7 +105,7 @@ function* saveUserResponse({ payload }) {
 
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {
-    console.log(err);
+    yield call(message.error, "Failed saving the Answer");
   }
 }
 
@@ -115,7 +122,7 @@ function* loadUserResponse({ payload }) {
       }
     });
   } catch (e) {
-    console.log(e);
+    yield call(message.error, "Failed loading the Answer");
   }
 }
 export default function* watcherSaga() {

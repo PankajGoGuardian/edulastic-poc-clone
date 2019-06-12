@@ -22,16 +22,6 @@ import Search from "../Search/Search";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class ItemFilter extends Component {
-  handleStandardSearch = searchStr => {
-    const {
-      getCurriculumStandards,
-      search: { grades, curriculumId }
-    } = this.props;
-    if (curriculumId && searchStr.length >= 2) {
-      getCurriculumStandards(curriculumId, grades, searchStr);
-    }
-  };
-
   renderFullTextSearch = () => {
     const { onSearch } = this.props;
     const placeholder = "Search by skills and keywords";
@@ -80,7 +70,6 @@ class ItemFilter extends Component {
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
-                  onStandardSearch={this.handleStandardSearch}
                 />
               </StyledModalContainer>
             </StyledModal>
@@ -98,7 +87,6 @@ class ItemFilter extends Component {
                   curriculums={curriculums}
                   onSearchFieldChange={onSearchFieldChange}
                   curriculumStandards={curriculumStandards}
-                  onStandardSearch={this.handleStandardSearch}
                 />
               </Affix>
             </MainFilter>

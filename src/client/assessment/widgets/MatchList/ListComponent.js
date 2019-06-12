@@ -10,7 +10,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import withAddButton from "../../components/HOC/withAddButton";
 import QuillSortableList from "../../components/QuillSortableList";
 import { Subtitle } from "../../styled/Subtitle";
-
+import { updateVariables } from "../../utils/variables";
 import { Widget } from "../../styled/Widget";
 
 const List = withAddButton(QuillSortableList);
@@ -36,6 +36,7 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.push("");
+          updateVariables(draft);
         })
       );
     };
@@ -44,6 +45,7 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list.splice(index, 1);
+          updateVariables(draft);
         })
       );
     };
@@ -51,6 +53,7 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list = arrayMove(item.list, oldIndex, newIndex);
+          updateVariables(draft);
         })
       );
     };
@@ -59,6 +62,7 @@ class ListComponent extends Component {
       setQuestionData(
         produce(item, draft => {
           draft.list[index] = value;
+          updateVariables(draft);
         })
       );
     };

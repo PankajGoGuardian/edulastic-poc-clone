@@ -29,20 +29,20 @@ class EditClassModal extends Component {
   };
 
   render() {
-    const { modalVisible, selClassData } = this.props;
+    const { modalVisible, selClassData, schoolsData, teacherList } = this.props;
     const { _source: { owners = [], name, subject, grade, institutionId } = {} } = selClassData;
     const ownersData = owners.map(row => row.id);
 
     const schoolsOptions = [];
-    // if (schoolsData.length !== undefined) {
-    //   schoolsData.map((row, index) => {
-    //     schoolsOptions.push(
-    //       <Option key={index} value={row._id}>
-    //         {row.name}
-    //       </Option>
-    //     );
-    //   });
-    // }
+    if (schoolsData.length !== undefined) {
+      schoolsData.map((row, index) => {
+        schoolsOptions.push(
+          <Option key={index} value={row._id}>
+            {row.name}
+          </Option>
+        );
+      });
+    }
 
     const gradeOptions = [];
     gradeOptions.push(<Option value={"0"}>KinderGarten</Option>);
@@ -50,11 +50,12 @@ class EditClassModal extends Component {
     gradeOptions.push(<Option value="other">Other</Option>);
 
     const teacherOptions = [];
-    // if (teacherList.length !== undefined) {
-    //   teacherList.map(row => {
-    //     teacherOptions.push(<Option value={row._id}>{row.firstName + " " + row.lastName}</Option>);
-    //   });
-    // }
+    if (teacherList.length !== undefined) {
+      teacherList.map(row => {
+        const teacherName = row.lastName ? `${row.firstName} ${row.lastName}` : `${row.firstName}`;
+        teacherOptions.push(<Option value={row._id}>{teacherName}</Option>);
+      });
+    }
 
     const { getFieldDecorator } = this.props.form;
     const {} = this.props;

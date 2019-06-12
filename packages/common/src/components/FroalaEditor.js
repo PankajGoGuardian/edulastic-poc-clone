@@ -307,7 +307,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
                 cursorEl.remove();
-                const updatedHtml = reIndexResponses(this.html.get());
+                this.selection.save();
+                const updatedHtml = reIndexResponses(this.html.get(true));
                 if (updatedHtml) {
                   this.html.set(updatedHtml);
                 }
@@ -346,6 +347,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
+            this.$el.find(".input__math").css("pointer-events", "none");
           }
         },
         "toolbar.hide": function() {
@@ -368,7 +370,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         },
         "commands.after": function(cmd) {
           if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput") {
-            const updatedHtml = reIndexResponses(this.html.get());
+            this.selection.save();
+            const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
               this.html.set(updatedHtml);
             }
@@ -405,12 +408,6 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       restOptions.toolbarButtons.includes("textdropdown") || // toolbarButtons prop contains dropdown
       restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
     ) {
-      const responseIndexes = $(val)
-        .find("response")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
       const mathInputIndexes = $(val)
         .find("mathinput")
         .map(function(i) {
@@ -498,10 +495,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = this.$el[0].querySelectorAll("response").length;
-        this.html.insert(
-          `<Response index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
-            1}</span>Response</Response>`
-        );
+        this.html.insert(`<Response index="${responseCount}" contentEditable="false">Response</Response>`);
         this.undo.saveStep();
       }
     });
@@ -517,7 +511,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<TextInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<TextInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Text Input</TextInput>`
         );
         this.undo.saveStep();
@@ -535,7 +529,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<TextDropdown index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<TextDropdown index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Text Dropdown</TextDropdown>`
         );
         this.undo.saveStep();
@@ -553,7 +547,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
         const responseCount = getResponsesCount(this.$el[0]);
         this.html.insert(
-          `<MathInput index={{${responseCount}}} contentEditable="false"><span class="index">${responseCount +
+          `<MathInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
             1}</span>Math Input</MathInput>`
         );
         this.undo.saveStep();

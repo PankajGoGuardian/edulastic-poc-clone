@@ -71,6 +71,7 @@ const characterMapButtons = [
 
 const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
+  dropTargetIndex = parseInt(dropTargetIndex, 10);
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
   const MInput = item.multiple_line ? TextArea : Input;

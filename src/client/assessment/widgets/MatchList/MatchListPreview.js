@@ -174,7 +174,7 @@ const MatchListPreview = ({
 
   const getStyles = ({ flag, preview, correct, isDragging }) => ({
     display: "flex",
-    width: "auto",
+    width: "100%",
     maxWidth: "220px",
     maxHeight: "140px",
     alignItems: "center",
@@ -373,6 +373,9 @@ const MatchListPreview = ({
             <CorrectAnswersContainer title={t("component.matchList.alternateAnswers")}>
               {Object.keys(alternateAnswers).map((key, i) => (
                 <FlexContainer key={i} alignItems="center">
+                  <CorTitle>
+                    <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: list[i] }} />
+                  </CorTitle>
                   <CorItem index={i}>
                     <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
                   </CorItem>

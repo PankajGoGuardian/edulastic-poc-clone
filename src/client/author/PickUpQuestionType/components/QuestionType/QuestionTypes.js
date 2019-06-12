@@ -21,10 +21,11 @@ const PickUpQuestionTypes = ({ onSelectQuestionType, questionType }) => (
 );
 
 const FlexContainer = styled.div`
-  width: 100%;
+  width: calc(100% + 18px);
   display: flex;
   flex-wrap: wrap;
   align-content: baseline;
+  margin: 0 -9px;
 `;
 
 PickUpQuestionTypes.propTypes = {

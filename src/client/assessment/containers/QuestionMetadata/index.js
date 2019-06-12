@@ -83,10 +83,6 @@ const QuestionMetadata = ({
     setQuestionData(newQuestionData);
   };
 
-  const handleAdd = () => {
-    addAlignment(getNewAlignmentState());
-  };
-
   const handleQuestionDataSelect = fieldName => value => {
     const newQuestionData = {
       ...questionData,
@@ -109,24 +105,6 @@ const QuestionMetadata = ({
       setSearchProps(searchObject);
       getCurriculumStandards(searchObject.id, searchObject.grades, searchObject.searchStr);
     }
-  };
-
-  const handleSubjectsChange = value => {
-    const subjects = value;
-    const newQuestionData = {
-      ...questionData,
-      subjects
-    };
-    setQuestionData(newQuestionData);
-  };
-
-  const handleGradesChange = value => {
-    const grades = value;
-    const newQuestionData = {
-      ...questionData,
-      grades
-    };
-    setQuestionData(newQuestionData);
   };
 
   const createUniqGradeAndSubjects = (grades, subject) => {
@@ -160,43 +138,6 @@ const QuestionMetadata = ({
               />
             ))}
           </ShowAlignmentRowsContainer>
-
-          <AddButtonContainer autoheight={true}>
-            <Button data-cy="newAligment" htmlType="button" type="primary" onClick={handleAdd}>
-              <span>{t("component.options.newAligment")}</span>
-            </Button>
-            <CustomSelect
-              mode="multiple"
-              placeholder="Select Grades"
-              key="grade"
-              defaultValue={[]}
-              value={selectedGrades}
-              onChange={handleGradesChange}
-            >
-              {selectsData.allGrades.map(grade => (
-                <Select.Option key={grade.value} value={grade.value}>
-                  {grade.text}
-                </Select.Option>
-              ))}
-            </CustomSelect>
-            <CustomSelect
-              mode="multiple"
-              placeholder="Select Subjects"
-              key="subject"
-              defaultValue={[]}
-              value={selectedSubjects}
-              onChange={handleSubjectsChange}
-            >
-              {selectsData.allSubjects.map(
-                subject =>
-                  subject.value && (
-                    <Select.Option key={subject.value} value={subject.value}>
-                      {subject.text}
-                    </Select.Option>
-                  )
-              )}
-            </CustomSelect>
-          </AddButtonContainer>
         </Container>
 
         <SecondBlock

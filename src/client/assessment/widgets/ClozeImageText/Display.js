@@ -192,6 +192,7 @@ class Display extends Component {
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
+        imageOptions={imageOptions}
         showAnswer={showAnswer}
         options={options}
         userSelections={userAnswers}

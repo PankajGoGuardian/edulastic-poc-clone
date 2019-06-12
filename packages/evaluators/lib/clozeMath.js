@@ -15,6 +15,8 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _isNaN2 = _interopRequireDefault(require("lodash/isNaN"));
+
 var _trim2 = _interopRequireDefault(require("lodash/trim"));
 
 var _round2 = _interopRequireDefault(require("lodash/round"));
@@ -590,6 +592,11 @@ var evaluator =
                   }
                 });
                 score = (0, _round2["default"])(corrects / entered, 2);
+
+                if ((0, _isNaN2["default"])(score)) {
+                  score = 0;
+                }
+
                 maxScore = 1;
                 return _context6.abrupt("return", {
                   evaluation: _evaluation,
@@ -597,7 +604,7 @@ var evaluator =
                   maxScore: maxScore
                 });
 
-              case 32:
+              case 33:
               case "end":
                 return _context6.stop();
             }

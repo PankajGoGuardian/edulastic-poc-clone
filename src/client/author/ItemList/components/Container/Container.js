@@ -131,7 +131,7 @@ class Contaier extends Component {
 
   handleSearchFieldChangeCurriculumId = value => {
     const { search } = this.state;
-    const { clearDictStandards } = this.props;
+    const { clearDictStandards, getCurriculumStandards } = this.props;
     clearDictStandards();
     this.setState(
       {
@@ -143,6 +143,7 @@ class Contaier extends Component {
       },
       this.handleSearch
     );
+    getCurriculumStandards(value, search.grades, "");
   };
 
   handleSearchFieldChange = fieldName => value => {

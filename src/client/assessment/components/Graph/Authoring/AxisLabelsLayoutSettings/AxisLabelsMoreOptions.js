@@ -45,11 +45,7 @@ class AxisLabelsMoreOptions extends Component {
     };
   }
 
-  scoringTypes = [
-    { label: "Exact match", value: "exactMatch" },
-    { label: "Partial match", value: "partialMatch" },
-    { label: "Partial match per response", value: "partialMatchV2" }
-  ];
+  scoringTypes = [{ label: "Exact match", value: "exactMatch" }, { label: "Partial match", value: "partialMatch" }];
 
   handleNumberlineCheckboxChange = (name, checked) => {
     const { graphData, setNumberline } = this.props;

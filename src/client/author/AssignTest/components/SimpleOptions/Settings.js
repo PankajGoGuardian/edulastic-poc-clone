@@ -105,6 +105,7 @@ const Settings = ({
     }
   };
   const overRideSettings = (key, value) => {
+    if (key === "maxAnswerChecks" && value < 0) value = 0;
     const newSettingsState = {
       ...assignmentSettings,
       [key]: value
@@ -311,6 +312,7 @@ const Settings = ({
               size="large"
               value={maxAnswerChecks}
               type={"number"}
+              min={0}
               placeholder="Number of tries"
             />
           </Col>

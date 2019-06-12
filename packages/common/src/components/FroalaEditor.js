@@ -347,6 +347,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
+            this.$el.find(".input__math").css("pointer-events", "none");
           }
         },
         "toolbar.hide": function() {

@@ -178,15 +178,17 @@ const OrderList = ({
   const Wrapper = testItem ? EmptyWrapper : Paper;
 
   const hasAltAnswers =
+    itemForPreview &&
     itemForPreview.validation &&
     itemForPreview.validation.alt_responses &&
     itemForPreview.validation.alt_responses.length > 0;
 
   let alternateAnswers = {};
+
   if (hasAltAnswers) {
     const altAnswers = itemForPreview.validation.alt_responses;
     altAnswers.forEach(altAnswer => {
-      altAnswer["value"].forEach((alt, index) => {
+      altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt !== "") {
           alternateAnswers[index + 1].push(itemForPreview.list[alt]);
@@ -237,7 +239,7 @@ const OrderList = ({
               onSortEnd={onSortPreviewEnd}
               questionsList={itemForPreview.list}
               previewIndexesList={userAnswer}
-              evaluation={evaluation}
+              evaluation={evaluation || (item && item.activity) ? item.activity.evaluation : evaluation}
               listStyle={{ fontSize }}
               axis={axis}
               columns={columns}
@@ -250,7 +252,7 @@ const OrderList = ({
                 onSortEnd={onSortPreviewEnd}
                 questionsList={itemForPreview.list}
                 previewIndexesList={userAnswer}
-                evaluation={evaluation}
+                evaluation={evaluation || (item && item.activity) ? item.activity.evaluation : evaluation}
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
                 listStyle={{ fontSize }}

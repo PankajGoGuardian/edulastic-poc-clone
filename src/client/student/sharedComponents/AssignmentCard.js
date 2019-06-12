@@ -7,7 +7,7 @@ import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
 import { last } from "lodash";
-import { Row, Col } from "antd";
+import { Row, Col, message } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
 //  components
@@ -91,6 +91,9 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const arrow = showAttempts ? "\u2193" : "\u2191";
 
   const startTest = () => {
+    if (endDate < Date.now()) {
+      return message.error("Test is expired");
+    }
     if (resume) {
       resumeAssignment({
         testId,

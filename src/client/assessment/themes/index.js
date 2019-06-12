@@ -63,8 +63,8 @@ const AssessmentContainer = ({
 }) => {
   const qid = preview ? 0 : match.params.qid || 0;
   const [currentItem, setCurrentItem] = useState(Number(qid));
-  saveUserAnswer(currentItem, 0);
   gotoItem(currentItem);
+  saveUserAnswer(currentItem, 0);
   const isLast = () => currentItem === items.length - 1;
   const isFirst = () => currentItem === 0;
 
@@ -87,8 +87,8 @@ const AssessmentContainer = ({
 
     const timeSpent = Date.now() - lastTime.current;
     history.push(`${url}/qid/${index}`);
-    saveUserAnswer(currentItem, timeSpent);
     changePreview("clear");
+    saveUserAnswer(currentItem, timeSpent);
   };
 
   const moveToNext = () => {
@@ -97,8 +97,8 @@ const AssessmentContainer = ({
     }
     if (isLast() && !preview) {
       const timeSpent = Date.now() - lastTime.current;
-      saveUserAnswer(currentItem, timeSpent);
       history.push("/student/test-summary");
+      saveUserAnswer(currentItem, timeSpent);
     }
   };
 
@@ -109,8 +109,8 @@ const AssessmentContainer = ({
 
   const gotoSummary = () => {
     const timeSpent = Date.now() - lastTime.current;
-    saveUserAnswer(currentItem, timeSpent);
     history.push("/student/test-summary");
+    saveUserAnswer(currentItem, timeSpent);
   };
 
   const moveToPrev = () => {

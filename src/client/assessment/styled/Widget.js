@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { desktopWidth, fadedBlack, extraDesktopWidthMax, white, dashBorderColor } from "@edulastic/colors";
+
+import { desktopWidth, fadedBlack, extraDesktopWidthMax, white, dashBorderColor, selectColor } from "@edulastic/colors";
 
 export const Widget = styled.div`
   position: relative;
@@ -37,6 +38,16 @@ export const Widget = styled.div`
     top: -75px !important;
     left: 0 !important;
     z-index: 5 !important;
+  }
+
+  .ant-select {
+    &-selection-selected-value {
+      font-size: 12px;
+      padding-left: 10px;
+      letter-spacing: 0.3px;
+      color: ${selectColor};
+      font-weight: 600;
+    }
   }
 
   @media (max-width: ${desktopWidth}) {

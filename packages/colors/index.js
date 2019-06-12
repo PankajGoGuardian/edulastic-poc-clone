@@ -92,6 +92,7 @@ export const tabGrey = "#7C848E";
 export const inputBgGrey = "#F8F8FB";
 export const redHeart = "#e35783";
 export const inputBorder = "#d9d9d9";
+export const selectColor = "#5a6171";
 
 export const cardBg = "#f8f8fb";
 export const cardBorder = "#e6e6e6";

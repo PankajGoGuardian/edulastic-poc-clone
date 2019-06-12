@@ -6,7 +6,7 @@ import produce from "immer";
 import { withNamespaces } from "react-i18next";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 import { Subtitle } from "../../styled/Subtitle";
 
 class ComposeQuestion extends Component {
@@ -37,15 +37,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.math.composequestion")}</Subtitle>
-
-        <WidgetFRContainer>
-          <QuestionTextArea
-            inputId="stimulusInput"
-            placeholder="Enter question"
-            onChange={stimulus => _itemChange("stimulus", stimulus)}
-            value={item.stimulus}
-          />
-        </WidgetFRContainer>
+        <QuestionTextArea
+          inputId="stimulusInput"
+          placeholder="Enter question"
+          onChange={stimulus => _itemChange("stimulus", stimulus)}
+          value={item.stimulus}
+        />
       </Widget>
     );
   }

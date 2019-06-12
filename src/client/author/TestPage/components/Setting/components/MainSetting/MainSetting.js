@@ -145,6 +145,9 @@ class MainSetting extends Component {
             sebPassword: ""
           });
         break;
+      case "maxAnswerChecks":
+        if (value < 0) value = 0;
+        break;
     }
     setTestData({
       [key]: value
@@ -433,6 +436,7 @@ class MainSetting extends Component {
                     size="large"
                     value={maxAnswerChecks}
                     type="number"
+                    min={0}
                     placeholder="Number of tries"
                   />
                 </Body>

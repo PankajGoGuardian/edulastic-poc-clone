@@ -14,9 +14,9 @@ const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForIte
   <Container>
     {settings.maxAnswerChecks > 0 && (
       <StyledButton
-        onClick={checkAnswerEvaluation}
+        onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswerEvaluation}
         data-cy="checkAnswer"
-        disabled={answerChecksUsedForItem >= settings.maxAnswerChecks}
+        title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
       >
         <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
           {t("common.test.checkanswer")}
@@ -61,6 +61,7 @@ const StyledButton = styled(Button)`
   background: transparent;
   height: 24px;
   &[disabled] {
+    cursor: pointer;
     &:hover {
       background: transparent;
     }

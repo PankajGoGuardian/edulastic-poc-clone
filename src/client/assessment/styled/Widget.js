@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { desktopWidth, fadedBlack, extraDesktopWidthMax } from "@edulastic/colors";
+import { desktopWidth, fadedBlack, extraDesktopWidthMax, white, dashBorderColor } from "@edulastic/colors";
 
 export const Widget = styled.div`
   position: relative;
@@ -9,6 +9,15 @@ export const Widget = styled.div`
 
   &:not(:first-child) {
     margin-top: 30px;
+  }
+
+  .ant-checkbox-wrapper + span,
+  .ant-checkbox + span {
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
   }
 
   .ql-editor {
@@ -53,5 +62,27 @@ export const WidgetSubHeading = styled.div`
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
+  }
+`;
+
+export const WidgetFRContainer = styled.div`
+  .fr {
+    &-box {
+      background: ${white};
+      min-height: 134px;
+      border-radius: 4px;
+      border: 1px solid ${dashBorderColor};
+      display: flex;
+    }
+    &-wrapper {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+    }
+    &-view {
+      width: 100%;
+      min-height: 100%;
+      padding: 20px 23px;
+    }
   }
 `;

@@ -98,10 +98,11 @@ const MathFormulaAnswerMethod = ({
   };
 
   const methodOptions = methodOptionsConst[method];
+  const isActive = showAdditionals.find(el => el === `${method}_${index}`);
 
   return (
     <Container data-cy="math-formula-answer">
-      <StyledRow gutter={32}>
+      <StyledRow gutter={60}>
         {!methodOptions.includes("noExpeced") && (
           <Col span={index === 0 ? 12 : 11}>
             <Label data-cy="answer-math-input">{t("component.math.expectedAnswer")}</Label>
@@ -123,7 +124,7 @@ const MathFormulaAnswerMethod = ({
       </StyledRow>
 
       {methodOptions.includes("field") && (
-        <StyledRow gutter={32}>
+        <StyledRow gutter={60}>
           <Col span={12}>
             <Field value={options.field} onChange={changeOptions} />
           </Col>
@@ -131,9 +132,9 @@ const MathFormulaAnswerMethod = ({
       )}
 
       <AdditionalToggle
-        active={showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0}
+        active={isActive}
         onClick={() =>
-          showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0
+          isActive
             ? handleChangeAdditionals(`${method}_${index}`, "pop")
             : handleChangeAdditionals(`${method}_${index}`, "push")
         }
@@ -153,6 +154,8 @@ const MathFormulaAnswerMethod = ({
                 style={{ width: "100%", height: 42 }}
                 onChange={val => {
                   onChange("method", val);
+                  handleChangeAdditionals(`${method}_${index}`, "pop");
+                  handleChangeAdditionals(`${val}_${index}`, "push");
                 }}
               >
                 {methods.map(methodKey => (
@@ -169,7 +172,7 @@ const MathFormulaAnswerMethod = ({
           </AdditionalCompareUsing>
 
           {(methodOptions.includes("isSimpleFraction") || methodOptions.includes("isMixedFraction")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("isSimpleFraction") && (
                 <CheckOption
                   dataCy="answer-is-simple-fraction"
@@ -192,7 +195,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("isExpanded") || methodOptions.includes("isFactorised")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("isExpanded") && (
                 <CheckOption
                   dataCy="answer-is-expanded"
@@ -215,7 +218,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("ignoreCoefficientOfOne") || methodOptions.includes("ignoreTrailingZeros")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("ignoreCoefficientOfOne") && (
                 <CheckOption
                   dataCy="answer-ignore-coefficient-of-one"
@@ -238,7 +241,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("ignoreLeadingAndTrailingSpaces") || methodOptions.includes("allowInterval")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("ignoreLeadingAndTrailingSpaces") && (
                 <CheckOption
                   dataCy="answer-ignore-leading-and-trailing-spaces"
@@ -261,7 +264,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("ignoreText") || methodOptions.includes("isDecimal")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("ignoreText") && (
                 <CheckOption
                   dataCy="answer-ignore-text"
@@ -284,7 +287,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("ignoreOrder") || methodOptions.includes("allowEulersNumber")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("ignoreOrder") && (
                 <CheckOption
                   dataCy="answer-ignore-order"
@@ -307,7 +310,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("compareSides") || methodOptions.includes("treatMultipleSpacesAsOne")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("compareSides") && (
                 <CheckOption
                   dataCy="answer-compare-sides"
@@ -330,7 +333,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {methodOptions.includes("inverseResult") && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               <CheckOption
                 dataCy="answer-inverse-result"
                 optionKey="inverseResult"
@@ -342,7 +345,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("tolerance") || methodOptions.includes("significantDecimalPlaces")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("tolerance") && (
                 <Col span={12}>
                   <Tolerance options={options} onChange={changeOptions} />
@@ -357,7 +360,7 @@ const MathFormulaAnswerMethod = ({
           )}
 
           {(methodOptions.includes("setThousandsSeparator") || methodOptions.includes("setDecimalSeparator")) && (
-            <StyledRow gutter={32}>
+            <StyledRow gutter={60}>
               {methodOptions.includes("setThousandsSeparator") && (
                 <ThousandsSeparators
                   separators={options.setThousandsSeparator}

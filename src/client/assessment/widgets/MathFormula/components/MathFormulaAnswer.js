@@ -24,7 +24,7 @@ class MathFormulaAnswer extends Component {
 
       switch (direction) {
         case "pop":
-          methods.splice(methods.findIndex(el => el === method));
+          methods.splice(methods.findIndex(el => el === method), 1);
           break;
         case "push":
         default:

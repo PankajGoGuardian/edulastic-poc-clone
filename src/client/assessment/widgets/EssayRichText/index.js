@@ -1,7 +1,7 @@
 import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-//import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+// import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
 import { replaceVariables } from "../../utils/variables";

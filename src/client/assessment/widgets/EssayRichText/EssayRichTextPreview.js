@@ -38,7 +38,8 @@ const EssayRichTextPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
-  previewTab
+  previewTab,
+  testItem
 }) => {
   const toolbarButtons = getToolBarButtons(item);
 
@@ -100,6 +101,8 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
+  const isReadOnly = previewTab === "show" || testItem;
+
   return item.id ? (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -134,7 +137,7 @@ const EssayRichTextPreview = ({
             spellcheck={!!item.spellcheck}
             toolbarInline={false}
             initOnClick={false}
-            readOnly={previewTab === "show"}
+            readOnly={isReadOnly}
             quickInsertTags={[]}
             toolbarButtons={toolbarButtons}
           />
@@ -159,6 +162,8 @@ EssayRichTextPreview.propTypes = {
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
+  previewTab: PropTypes.string.isRequired,
+  testItem: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };
@@ -166,6 +171,7 @@ EssayRichTextPreview.propTypes = {
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
   userAnswer: "",
+  testItem: false,
   showQuestionNumber: false,
   qIndex: null
 };

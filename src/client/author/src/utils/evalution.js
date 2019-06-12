@@ -13,10 +13,7 @@ export const evaluateItem = async (answers, validations, itemLevelScoring = fals
   /* eslint-disable no-restricted-syntax */
   const questionsNum = Object.keys(validations).length;
   for (const id of answerIds) {
-    let answer = answers[id];
-    if (isArray(answer)) {
-      answer = map(answer, trim);
-    }
+    const answer = answers[id];
 
     if (validations && validations[id]) {
       const validation = replaceVariables(validations[id]);

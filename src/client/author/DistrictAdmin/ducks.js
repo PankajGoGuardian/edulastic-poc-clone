@@ -109,20 +109,22 @@ export const reducer = createReducer(initialState, {
     state.loading = true;
   },
   [RECEIVE_DISTRICTADMIN_SUCCESS]: (state, { payload }) => {
-    const districtAdminData = [];
-    payload.map((row, index) => {
-      let districtAdmin = {};
-      districtAdmin = row;
-      districtAdmin.key = index;
-      if (row.hasOwnProperty("_source")) {
-        const source = row._source;
-        Object.keys(source).map((key, value) => {
-          districtAdmin[key] = source[key];
-        });
-      }
-      delete districtAdmin._source;
-      districtAdminData.push(districtAdmin);
-    });
+    const districtAdminData = payload.map(({ _source, ...rest }) => ({
+      ...rest,
+      ..._source
+    }));
+    //   let districtAdmin = {};
+    //   districtAdmin = row;
+    //   districtAdmin.key = index;
+    //   if (row.hasOwnProperty("_source")) {
+    //     const source = row._source;
+    //     Object.keys(source).map((key, value) => {
+    //       districtAdmin[key] = source[key];
+    //     });
+    //   }
+    //   delete districtAdmin._source;
+    //   districtAdminData.push(districtAdmin);
+    // });
 
     state.loading = false;
     state.data = districtAdminData;
@@ -176,15 +178,15 @@ export const reducer = createReducer(initialState, {
     state.deleting = true;
   },
   [DELETE_DISTRICTADMIN_SUCCESS]: (state, { payload }) => {
-    (state.delete = payload),
-      (state.deleting = false),
-      (state.data = state.data.filter(districtAdmin => {
-        let nMatchCount = 0;
-        payload.map(row => {
-          if (row.userId === districtAdmin._id) nMatchCount++;
-        });
-        if (nMatchCount == 0) return districtAdmin;
-      }));
+    state.delete = payload;
+    state.deleting = false;
+    // (state.data = state.data.filter(districtAdmin => {
+    //   let nMatchCount = 0;
+    //   payload.map(row => {
+    //     if (row.userId === districtAdmin._id) nMatchCount++;
+    //   });
+    //   if (nMatchCount == 0) return districtAdmin;
+    // }));
   },
   [DELETE_DISTRICTADMIN_ERROR]: (state, { payload }) => {
     state.deleting = false;
@@ -237,10 +239,10 @@ function* createDistrictAdminSaga({ payload }) {
 
 function* deleteDistrictAdminSaga({ payload }) {
   try {
-    for (let i = 0; i < payload.length; i++) {
-      yield call(userApi.deleteUser, payload[i]);
-    }
-    message.success("District admin removed successfully");
+    // for (let i = 0; i < payload.length; i++) {
+    const { result } = yield call(userApi.deleteUser, payload);
+    // }
+    message.success(result);
     yield put(deleteDistrictAdminSuccessAction(payload));
   } catch (err) {
     const errorMessage = "Delete DistrictAdmin is failing";

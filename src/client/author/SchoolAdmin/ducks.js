@@ -20,48 +20,56 @@ const DELETE_SCHOOLADMIN_SUCCESS = "[schooladmin] delete data success";
 const DELETE_SCHOOLADMIN_ERROR = "[schooladmin] delete data error";
 
 const SET_SCHOOLADMIN_SEARCHNAME = "[schooladmin] set search name";
-const SET_SHOW_ACTIVE_COURSES = "[schooladmin] set showActiveCourses flag";
+const SET_SCHOOLADMIN_SETFILTERS = "[schooladmin] set filters";
+const SET_SHOW_ACTIVE_COURSES = "[schooladmin] set showActiveUsers flag";
 const SET_PAGE_NO = "[schooladmin] set page number";
 const CHANGE_FILTER_COLUMN = "[schooladmin] change filter column";
 const CHANGE_FILTER_TYPE = "[schooladmin] change filter type";
 const CHANGE_FILTER_VALUE = "[schooladmin] change filter value";
 const ADD_FILTER_ACTION = "[schooladmin] add filter";
 const REMOVE_FILTER = "[schooladmin] remove filter";
+const SET_ROLE = "[schooladmin] set role";
 
-export const receiveSchoolAdminAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
+export const receiveAdminDataAction = createAction(RECEIVE_SCHOOLADMIN_REQUEST);
 export const receiveSchoolAdminSuccessAction = createAction(RECEIVE_SCHOOLADMIN_SUCCESS);
 export const receiveSchoolAdminErrorAction = createAction(RECEIVE_SCHOOLADMIN_ERROR);
-export const updateSchoolAdminAction = createAction(UPDATE_SCHOOLADMIN_REQUEST);
+export const updateAdminUserAction = createAction(UPDATE_SCHOOLADMIN_REQUEST);
 export const updateSchoolAdminSuccessAction = createAction(UPDATE_SCHOOLADMIN_SUCCESS);
 export const updateSchoolAdminErrorAction = createAction(UPDATE_SCHOOLADMIN_ERROR);
-export const createSchoolAdminAction = createAction(CREATE_SCHOOLADMIN_REQUEST);
+export const createAdminUserAction = createAction(CREATE_SCHOOLADMIN_REQUEST);
 export const createSchoolAdminSuccessAction = createAction(CREATE_SCHOOLADMIN_SUCCESS);
 export const createSchoolAdminErrorAction = createAction(CREATE_SCHOOLADMIN_ERROR);
-export const deleteSchoolAdminAction = createAction(DELETE_SCHOOLADMIN_REQUEST);
+export const deleteAdminUserAction = createAction(DELETE_SCHOOLADMIN_REQUEST);
 export const deleteSchoolAdminSuccessAction = createAction(DELETE_SCHOOLADMIN_SUCCESS);
 export const deleteSchoolAdminErrorAction = createAction(DELETE_SCHOOLADMIN_ERROR);
 export const changeFilterColumnAction = createAction(CHANGE_FILTER_COLUMN);
 
 export const setSearchNameAction = createAction(SET_SCHOOLADMIN_SEARCHNAME);
-export const setShowActiveCoursesAction = createAction(SET_SHOW_ACTIVE_COURSES);
+export const setFiltersAction = createAction(SET_SCHOOLADMIN_SETFILTERS);
+export const setShowActiveUsersAction = createAction(SET_SHOW_ACTIVE_COURSES);
 export const setPageNoAction = createAction(SET_PAGE_NO);
 export const changeFilterTypeAction = createAction(CHANGE_FILTER_TYPE);
 export const changeFilterValueAction = createAction(CHANGE_FILTER_VALUE);
 export const addFilterAction = createAction(ADD_FILTER_ACTION);
 export const removeFilterAction = createAction(REMOVE_FILTER);
+export const setRoleAction = createAction(SET_ROLE);
 
 // selectors
 const stateSchoolAdminSelector = state => state.schoolAdminReducer;
 const filterSelector = state => state.schoolAdminReducer.filters;
+const getRoleSelector = createSelector(
+  stateSchoolAdminSelector,
+  ({ role }) => role
+);
 
-export const getSchoolAdminSelector = createSelector(
+export const getAdminUsersDataSelector = createSelector(
   stateSchoolAdminSelector,
   state => state.data
 );
 
-export const getShowActiveCoursesSelector = createSelector(
+export const getShowActiveUsersSelector = createSelector(
   stateSchoolAdminSelector,
-  ({ showActiveCourses }) => showActiveCourses
+  ({ showActiveUsers }) => showActiveUsers
 );
 
 export const getPageNoSelector = createSelector(
@@ -94,14 +102,15 @@ const initialState = {
   filtersColumn: "",
   filtersValue: "",
   filtersText: "",
-  showActiveCourses: false,
+  showActiveUsers: true,
   pageNo: 1,
   filters: {
     other: {
       type: "",
       value: ""
     }
-  }
+  },
+  role: ""
 };
 
 export const reducer = createReducer(initialState, {
@@ -156,7 +165,7 @@ export const reducer = createReducer(initialState, {
     state.searchName = payload;
   },
   [SET_SHOW_ACTIVE_COURSES]: (state, { payload: bool }) => {
-    state.showActiveCourses = bool;
+    state.showActiveUsers = bool;
     // here we set back the page to 1, since for the current page the user is on,
     // with the active courses flag, we may get back zero results
     state.pageNo = 1;
@@ -185,20 +194,24 @@ export const reducer = createReducer(initialState, {
   },
   [REMOVE_FILTER]: (state, { payload: filterKey }) => {
     delete state.filters[filterKey];
+  },
+  [SET_ROLE]: (state, { payload: role }) => {
+    state.role = role;
   }
 });
 
 // sagas
 function* receiveSchoolAdminSaga() {
   try {
-    const showActiveCourses = yield select(getShowActiveCoursesSelector);
+    const showActiveUsers = yield select(getShowActiveUsersSelector);
     const districtId = yield select(getUserOrgId);
     const page = yield select(getPageNoSelector);
+    const role = yield select(getRoleSelector);
     const { other, ...rest } = yield select(getFiltersSelector);
-    const statusParams = showActiveCourses ? { status: 1 } : {};
+    const statusParams = showActiveUsers ? { status: 1 } : {};
     const payload = {
       districtId,
-      role: "school-admin",
+      role,
       limit: 25,
       page,
       ...statusParams,
@@ -221,7 +234,7 @@ function* updateSchoolAdminSaga({ payload }) {
     message.success("School admin updated successfully");
     yield put(updateSchoolAdminSuccessAction(updateSchoolAdmin));
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveSchoolAdminAction());
+    yield put(receiveAdminDataAction());
   } catch ({ data: { message: errMsg } }) {
     const errorMessage = "Update SchoolAdmin is failing";
     message.error(errMsg || errorMessage);
@@ -234,7 +247,7 @@ function* createSchoolAdminSaga({ payload }) {
     const createSchoolAdmin = yield call(userApi.createUser, payload);
     yield put(createSchoolAdminSuccessAction(createSchoolAdmin));
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveSchoolAdminAction());
+    yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Create SchoolAdmin is failing";
     yield call(message.error, errorMessage);
@@ -245,12 +258,12 @@ function* createSchoolAdminSaga({ payload }) {
 function* deleteSchoolAdminSaga({ payload }) {
   try {
     // for (let i = 0; i < payload.length; i++) {
-    yield call(userApi.deleteUser, payload);
+    const { result } = yield call(userApi.deleteUser, payload);
     // }
-    message.success("School admin removed successfully");
+    message.success(result);
     yield put(deleteSchoolAdminSuccessAction(payload));
     // here after an update/delete/create, the new data is fetched back again
-    yield put(receiveSchoolAdminAction());
+    yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Delete SchoolAdmin is failing";
     yield call(message.error, errorMessage);

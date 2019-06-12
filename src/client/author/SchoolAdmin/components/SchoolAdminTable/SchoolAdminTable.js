@@ -19,14 +19,14 @@ import CreateSchoolAdminModal from "./CreateSchoolAdminModal/CreateSchoolAdminMo
 import EditSchoolAdminModal from "./EditSchoolAdminModal/EditSchoolAdminModal";
 
 import {
-  receiveSchoolAdminAction,
-  createSchoolAdminAction,
-  updateSchoolAdminAction,
-  deleteSchoolAdminAction,
+  receiveAdminDataAction,
+  createAdminUserAction,
+  updateAdminUserAction,
+  deleteAdminUserAction,
   setSearchNameAction,
-  getSchoolAdminSelector,
-  getShowActiveCoursesSelector,
-  setShowActiveCoursesAction,
+  getAdminUsersDataSelector,
+  getShowActiveUsersSelector,
+  setShowActiveUsersAction,
   getPageNoSelector,
   setPageNoAction,
   getFiltersSelector,
@@ -34,8 +34,10 @@ import {
   changeFilterTypeAction,
   changeFilterValueAction,
   addFilterAction,
-  removeFilterAction
+  removeFilterAction,
+  setRoleAction
 } from "../../ducks";
+
 import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -61,7 +63,8 @@ class SchoolAdminTable extends Component {
       createSchoolAdminModalVisible: false,
       editSchoolAdminModaVisible: false,
       editSchoolAdminKey: "",
-      deactivateSchoolAdminModalVisible: false
+      deactivateAdminModalVisible: false,
+      selectedAdminsForDeactivate: []
     };
     this.columns = [
       {
@@ -96,7 +99,7 @@ class SchoolAdminTable extends Component {
             <OnHoverButton onClick={() => this.onEditSchoolAdmin(id)}>
               <Icon type="edit" theme="twoTone" />
             </OnHoverButton>
-            <OnHoverButton onClick={() => this.handleDeleteSchoolAdmin(id)}>
+            <OnHoverButton onClick={() => this.handleDeactivateAdmin(id)}>
               <Icon type="delete" theme="twoTone" />
             </OnHoverButton>
           </React.Fragment>
@@ -106,16 +109,17 @@ class SchoolAdminTable extends Component {
   }
 
   componentDidMount() {
-    const { loadSchoolAdminData, loadSchoolsData, userOrgId } = this.props;
+    const { loadAdminData, loadSchoolsData, userOrgId, setRole } = this.props;
     loadSchoolsData({
       districtId: userOrgId
     });
-    loadSchoolAdminData();
+    setRole("school-admin");
+    loadAdminData();
   }
 
   static getDerivedStateFromProps(nextProps, state) {
     const {
-      schoolAdminData: { result }
+      adminUsersData: { result }
     } = nextProps;
     return {
       selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
@@ -123,11 +127,11 @@ class SchoolAdminTable extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { loadSchoolAdminData, showActiveCourses, pageNo } = this.props;
-    // here when the ShowActiveCourses checkbox is toggled, or the page number changes,
+    const { loadAdminData, showActiveUsers, pageNo } = this.props;
+    // here when the showActiveUsers checkbox is toggled, or the page number changes,
     // an api call is fired to get the data
-    if (showActiveCourses !== prevProps.showActiveCourses || pageNo !== prevProps.pageNo) {
-      loadSchoolAdminData();
+    if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
+      loadAdminData();
     }
   }
 
@@ -139,18 +143,18 @@ class SchoolAdminTable extends Component {
   };
 
   confirmDeactivate = () => {
-    const { deleteSchoolAdmin } = this.props;
-    const { selectedSchoolsForDeactivate } = this.state;
-    deleteSchoolAdmin({ userIds: selectedSchoolsForDeactivate, role: "school-admin" });
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "school-admin" });
     this.setState({
-      deactivateSchoolAdminModalVisible: false
+      deactivateAdminModalVisible: false
     });
   };
 
-  handleDeleteSchoolAdmin = id => {
+  handleDeactivateAdmin = id => {
     this.setState({
-      selectedSchoolsForDeactivate: [id],
-      deactivateSchoolAdminModalVisible: true
+      selectedAdminsForDeactivate: [id],
+      deactivateAdminModalVisible: true
     });
   };
 
@@ -177,8 +181,8 @@ class SchoolAdminTable extends Component {
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
         this.setState({
-          selectedSchoolsForDeactivate: selectedRowKeys,
-          deactivateSchoolAdminModalVisible: true
+          selectedAdminsForDeactivate: selectedRowKeys,
+          deactivateAdminModalVisible: true
         });
       } else {
         message.error("Please select schools to delete.");
@@ -187,10 +191,10 @@ class SchoolAdminTable extends Component {
   };
 
   createSchoolAdmin = newSchoolAdminData => {
-    const { userOrgId, createSchoolAdmin } = this.props;
+    const { userOrgId, createAdminUser } = this.props;
     newSchoolAdminData.role = "school-admin";
     newSchoolAdminData.districtId = userOrgId;
-    createSchoolAdmin(newSchoolAdminData);
+    createAdminUser(newSchoolAdminData);
     this.setState({ createSchoolAdminModalVisible: false });
   };
 
@@ -217,8 +221,8 @@ class SchoolAdminTable extends Component {
       createSchoolAdminModalVisible,
       editSchoolAdminModaVisible,
       editSchoolAdminKey,
-      deactivateSchoolAdminModalVisible,
-      selectedSchoolsForDeactivate
+      deactivateAdminModalVisible,
+      selectedAdminsForDeactivate
     } = this.state;
 
     const rowSelection = {
@@ -228,18 +232,18 @@ class SchoolAdminTable extends Component {
 
     const {
       userOrgId,
-      schoolAdminData: { result = {}, totalUsers },
+      adminUsersData: { result = {}, totalUsers },
       schoolsData,
-      setShowActiveCourses,
-      showActiveCourses,
-      updateSchoolAdmin,
+      setShowActiveUsers,
+      showActiveUsers,
+      updateAdminUser,
       pageNo,
       setPageNo,
       filters,
       changeFilterColumn,
       changeFilterType,
       changeFilterValue,
-      loadSchoolAdminData,
+      loadAdminData,
       addFilter,
       removeFilter
     } = this.props;
@@ -270,8 +274,8 @@ class SchoolAdminTable extends Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-          <Checkbox checked={showActiveCourses} onChange={evt => setShowActiveCourses(evt.target.checked)}>
-            Show active courses only
+          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+            Show current users only
           </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
             <Button>
@@ -306,7 +310,7 @@ class SchoolAdminTable extends Component {
                 onChange={({ target }) => changeFilterValue({ key: filterKey, value: target.value })}
                 value={value}
                 disabled={!type}
-                onSearch={loadSchoolAdminData}
+                onSearch={loadAdminData}
               />
               <StyledAddFilterButton type="primary" onClick={addFilter} disabled={!!filters.other}>
                 + Add Filter
@@ -316,7 +320,7 @@ class SchoolAdminTable extends Component {
                 disabled={filterKey === "other" || filterKeysArray.length === 1}
                 onClick={() => {
                   removeFilter(filterKey);
-                  loadSchoolAdminData();
+                  loadAdminData();
                 }}
               >
                 - Remove Filter
@@ -340,26 +344,30 @@ class SchoolAdminTable extends Component {
           <EditSchoolAdminModal
             schoolAdminData={result[editSchoolAdminKey]}
             modalVisible={editSchoolAdminModaVisible}
-            updateSchoolAdmin={updateSchoolAdmin}
+            updateSchoolAdmin={updateAdminUser}
             closeModal={this.closeEditSchoolAdminModal}
             userOrgId={userOrgId}
             schoolsList={schoolsData}
           />
         )}
-        {deactivateSchoolAdminModalVisible && (
+        {deactivateAdminModalVisible && (
           <TypeToConfirmModal
-            modalVisible={deactivateSchoolAdminModalVisible}
+            modalVisible={deactivateAdminModalVisible}
             title="Deactivate"
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
             primaryLabel="Are you sure you want to deactivate the following school admin(s)?"
-            secondaryLabel={selectedSchoolsForDeactivate.map(id => {
+            secondaryLabel={selectedAdminsForDeactivate.map(id => {
               const { _source: { firstName, lastName } = {} } = result[id];
-              return <StyledClassName>{`${firstName} ${lastName}`}</StyledClassName>;
+              return (
+                <StyledClassName key={id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              );
             })}
             closeModal={() =>
               this.setState({
-                deactivateSchoolAdminModalVisible: false
+                deactivateAdminModalVisible: false
               })
             }
           />
@@ -373,20 +381,20 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      schoolAdminData: getSchoolAdminSelector(state),
+      adminUsersData: getAdminUsersDataSelector(state),
       schoolsData: getSchoolsSelector(state),
-      showActiveCourses: getShowActiveCoursesSelector(state),
+      showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state)
     }),
     {
-      createSchoolAdmin: createSchoolAdminAction,
-      updateSchoolAdmin: updateSchoolAdminAction,
-      deleteSchoolAdmin: deleteSchoolAdminAction,
-      loadSchoolAdminData: receiveSchoolAdminAction,
+      createAdminUser: createAdminUserAction,
+      updateAdminUser: updateAdminUserAction,
+      deleteAdminUser: deleteAdminUserAction,
+      loadAdminData: receiveAdminDataAction,
       setSearchName: setSearchNameAction,
       loadSchoolsData: receiveSchoolsAction,
-      setShowActiveCourses: setShowActiveCoursesAction,
+      setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
       /**
        * Action to set the filter Column.
@@ -397,7 +405,8 @@ const enhance = compose(
       changeFilterType: changeFilterTypeAction,
       changeFilterValue: changeFilterValueAction,
       addFilter: addFilterAction,
-      removeFilter: removeFilterAction
+      removeFilter: removeFilterAction,
+      setRole: setRoleAction
     }
   )
 );
@@ -405,22 +414,24 @@ const enhance = compose(
 export default enhance(SchoolAdminTable);
 
 SchoolAdminTable.propTypes = {
-  loadSchoolAdminData: PropTypes.func.isRequired,
-  createSchoolAdmin: PropTypes.func.isRequired,
-  updateSchoolAdmin: PropTypes.func.isRequired,
-  deleteSchoolAdmin: PropTypes.func.isRequired,
+  loadAdminData: PropTypes.func.isRequired,
+  createAdminUser: PropTypes.func.isRequired,
+  updateAdminUser: PropTypes.func.isRequired,
+  deleteAdminUser: PropTypes.func.isRequired,
   setSearchName: PropTypes.func.isRequired,
-  schoolAdminData: PropTypes.object.isRequired,
+  adminUsersData: PropTypes.object.isRequired,
   userOrgId: PropTypes.string.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
-  showActiveCourses: PropTypes.bool.isRequired,
+  showActiveUsers: PropTypes.bool.isRequired,
   pageNo: PropTypes.number.isRequired,
+  changeFilterColumn: PropTypes.func.isRequired,
   setPageNo: PropTypes.func.isRequired,
-  setShowActiveCourses: PropTypes.func.isRequired,
+  setShowActiveUsers: PropTypes.func.isRequired,
   filters: PropTypes.object.isRequired,
   changeFilterColumn: PropTypes.func.isRequired,
   changeFilterType: PropTypes.func.isRequired,
   changeFilterValue: PropTypes.func.isRequired,
   addFilter: PropTypes.func.isRequired,
-  removeFilter: PropTypes.func.isRequired
+  removeFilter: PropTypes.func.isRequired,
+  setRole: PropTypes.func.isRequired
 };

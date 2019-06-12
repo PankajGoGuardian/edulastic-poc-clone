@@ -65,7 +65,7 @@ const deleteUser = data =>
       method: "delete",
       data
     })
-    .then(result => result.data.result);
+    .then(({ data: response }) => response);
 
 const changeUserTTS = data =>
   api.callApi({

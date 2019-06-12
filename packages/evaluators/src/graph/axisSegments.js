@@ -81,7 +81,7 @@ const exactMatchEvaluator = (userResponse, answers) => {
   };
 };
 
-const partialMatchPerResponseEvaluator = (userResponse, answers, penaltyPoints) => {
+const partialMatchPerResponseEvaluator = (userResponse, answers, penalty) => {
   let score = 0;
   let maxScore = 1;
 
@@ -95,7 +95,7 @@ const partialMatchPerResponseEvaluator = (userResponse, answers, penaltyPoints) 
     };
 
     const trueShapesCount = answerResult.details.filter(item => item.result).length;
-    const penaltyScore = (answerResult.details.length - trueShapesCount) * penaltyPoints;
+    const penaltyScore = (answerResult.details.length - trueShapesCount) * penalty;
     const allIsTrue = trueShapesCount === answerResult.details.length;
     answerResult.result = answer.value.length === userResponse.length && allIsTrue;
 
@@ -113,7 +113,7 @@ const partialMatchPerResponseEvaluator = (userResponse, answers, penaltyPoints) 
   };
 };
 
-const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penaltyPoints) => {
+const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penalty) => {
   let score = 0;
   let maxScore = 1;
 
@@ -127,7 +127,7 @@ const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penaltyPoi
     };
 
     const trueShapesCount = answerResult.details.filter(item => item.result).length;
-    const penaltyScore = (answerResult.details.length - trueShapesCount) * penaltyPoints;
+    const penaltyScore = (answerResult.details.length - trueShapesCount) * penalty;
     const allIsTrue = trueShapesCount === answerResult.details.length;
     answerResult.result = answer.value.length === userResponse.length && allIsTrue;
 
@@ -135,7 +135,7 @@ const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penaltyPoi
     answerResult.score = roundingIsNone
       ? pointsPerOneShape * trueShapesCount
       : Math.floor(pointsPerOneShape * trueShapesCount);
-    answerResult.score = answerResult.score - penaltyScore;
+    answerResult.score -= penaltyScore;
 
     score = Math.max(answerResult.score, score);
     maxScore = Math.max(answer.score, maxScore);
@@ -150,7 +150,7 @@ const partialMatchEvaluator = (userResponse, answers, roundingIsNone, penaltyPoi
 };
 
 const evaluator = ({ userResponse, validation }) => {
-  const { valid_response, alt_responses, scoring_type, rounding, penaltyPoints } = validation;
+  const { valid_response, alt_responses, scoring_type, rounding, penalty = 0 } = validation;
 
   let answers = [valid_response];
   if (alt_responses) {
@@ -161,9 +161,9 @@ const evaluator = ({ userResponse, validation }) => {
 
   switch (scoring_type) {
     case ScoringType.PARTIAL_MATCH:
-      return partialMatchEvaluator(userResponse, answers, roundingIsNone, penaltyPoints);
+      return partialMatchEvaluator(userResponse, answers, roundingIsNone, penalty);
     case ScoringType.PARTIAL_MATCH_V2:
-      return partialMatchPerResponseEvaluator(userResponse, answers, penaltyPoints);
+      return partialMatchPerResponseEvaluator(userResponse, answers, penalty);
     case ScoringType.EXACT_MATCH:
     default:
       return exactMatchEvaluator(userResponse, answers);

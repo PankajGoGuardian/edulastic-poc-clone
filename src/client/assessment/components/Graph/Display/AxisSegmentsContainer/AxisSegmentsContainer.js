@@ -150,18 +150,18 @@ const getColoredAnswer = answerArr => {
 };
 
 const getCompareResult = evaluation => {
-  if (!evaluation && !evaluation.evaluation) {
+  if (!evaluation) {
     return null;
   }
 
   let compareResult = null;
 
-  Object.keys(evaluation.evaluation).forEach(key => {
+  Object.keys(evaluation).forEach(key => {
     if (compareResult) {
       return;
     }
-    if (evaluation.evaluation[key].commonResult) {
-      compareResult = evaluation.evaluation[key];
+    if (evaluation[key].commonResult) {
+      compareResult = evaluation[key];
     }
   });
 
@@ -169,7 +169,7 @@ const getCompareResult = evaluation => {
     return compareResult;
   }
 
-  return evaluation.evaluation[0];
+  return evaluation[0];
 };
 
 class AxisSegmentsContainer extends PureComponent {
@@ -351,16 +351,11 @@ class AxisSegmentsContainer extends PureComponent {
 
     if (checkAnswer || showAnswer) {
       let coloredElements;
-      if (evaluation && evaluation.length) {
+      if (evaluation && checkAnswer) {
         const compareResult = getCompareResult(evaluation);
         coloredElements = getColoredElems(elements, compareResult);
       } else {
-        const compareResult = getCompareResult(
-          checkAnswerMethod({
-            userResponse: elements,
-            validation
-          })
-        );
+        const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
         coloredElements = getColoredElems(elements, compareResult);
       }
 

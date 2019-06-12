@@ -1227,12 +1227,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          unscored: false,
-          penaltyPoints: 1,
-          checkAttempts: 2,
-          minScore: 1,
-          checkAnswerButton: true,
-          alt_responses: []
+          alt_responses: [],
+          ignore_labels: "yes"
         },
         extra_options: {
           rubric_reference: "",
@@ -1315,11 +1311,6 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          unscored: false,
-          penaltyPoints: 1,
-          checkAttempts: 2,
-          minScore: 1,
-          checkAnswerButton: true,
           alt_responses: [],
           ignore_labels: "yes"
         },
@@ -1469,17 +1460,11 @@ export const getCards = onSelectQuestionType => {
         validation: {
           graphType: "axisSegments",
           scoring_type: EXACT_MATCH,
-          unscored: false,
-          penaltyPoints: 1,
-          checkAttempts: 2,
-          minScore: 1,
-          checkAnswerButton: true,
           valid_response: {
             score: 1,
             value: []
           },
-          alt_responses: [],
-          ignore_labels: "yes"
+          alt_responses: []
         }
       },
       onSelectQuestionType
@@ -1535,11 +1520,6 @@ export const getCards = onSelectQuestionType => {
         validation: {
           graphType: "axisLabels",
           scoring_type: EXACT_MATCH,
-          unscored: false,
-          penaltyPoints: 1,
-          checkAttempts: 2,
-          minScore: 1,
-          checkAnswerButton: true,
           valid_response: {
             score: 1,
             value: []

@@ -387,7 +387,7 @@ class Board {
     this.numberlineSnapToTicks = !!snapToTicks;
   }
 
-  setMarksDeleteHandler(setValue) {
+  setMarksDeleteHandler() {
     this.$board.on("up", event => {
       const mark = this.elements.find(element => `mark-delete-${element.id}` === event.target.id);
       if (!mark) {
@@ -397,17 +397,15 @@ class Board {
       const setCoords = JXG.COORDS_BY_USER;
       mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
       Mark.alignMarks(this);
-      setValue();
+      this.numberlineSettings.setValue();
     });
   }
 
   // Render marks
-  renderMarks(marks, graphParameters, settings, setValue, lineSettings, containerSettings, markCoords = []) {
+  renderMarks(marks, markCoords = []) {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
-      this.elements.push(
-        Mark.onHandler(this, markCoord, mark, graphParameters, setValue, lineSettings, containerSettings)
-      );
+      this.elements.push(Mark.onHandler(this, markCoord, mark));
     });
 
     Mark.alignMarks(this);
@@ -561,7 +559,7 @@ class Board {
   }
 
   getMarks() {
-    return this.elements.map(mark => Mark.getConfig(mark));
+    return this.elements.map(mark => Mark.getConfig(mark)).filter(mark => mark.mounted);
   }
 
   getSegments() {
@@ -762,22 +760,11 @@ class Board {
     );
   }
 
-  loadMarksAnswers(marks, graphParameters, settings, setValue, lineSettings, containerSettings, markCoords) {
+  loadMarksAnswers(marks, markCoords) {
     if (markCoords) {
       marks.forEach(mark => {
         const markCoord = markCoords.find(el => el.id === mark.id);
-        this.answers.push(
-          Mark.onHandler(
-            this,
-            { ...markCoord, fixed: true },
-            mark,
-            graphParameters,
-            setValue,
-            lineSettings,
-            containerSettings,
-            settings
-          )
-        );
+        this.answers.push(Mark.onHandler(this, { ...markCoord, fixed: true }, mark));
       });
     }
   }

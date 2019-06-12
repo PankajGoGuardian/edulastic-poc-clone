@@ -5,11 +5,13 @@ import PropTypes from "prop-types";
 import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
 import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
+import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
 import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
-import { getUserOrgData } from "../../../src/selectors/user";
+import { addMultiStudentsRequestAction } from "../../../Student/ducks";
+import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 
 import {
   DividerDiv,
@@ -29,7 +31,9 @@ const modalStatus = {};
 const ActionContainer = ({
   addStudentRequest,
   selectedClass,
-  orgData,
+  userOrgId,
+  role,
+  addMultiStudents,
   submitted,
   added,
   printPreview,
@@ -41,7 +45,7 @@ const ActionContainer = ({
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
-
+  const [isAddMultipleStudentsModal, setIsAddMultipleStudentsModal] = useState(false);
   let formRef = null;
 
   const toggleModal = key => {
@@ -53,6 +57,22 @@ const ActionContainer = ({
     setReqStatus(false);
     setModalStatus(false);
   }
+
+  const handleAddMultipleStudent = () => {
+    setIsAddMultipleStudentsModal(true);
+  };
+  const closeInviteStudentModal = () => {
+    setIsAddMultipleStudentsModal(false);
+  };
+  const sendInviteStudent = inviteStudentList => {
+    setIsAddMultipleStudentsModal(false);
+    console.log("sending invite", role);
+    debugger;
+    if (role == "teacher") {
+      console.log("adding as teacher");
+      addMultiStudents({ districtId: userOrgId, data: inviteStudentList });
+    }
+  };
 
   const addStudent = () => {
     if (formRef) {
@@ -266,7 +286,15 @@ const ActionContainer = ({
               Actions <StyledIcon type="caret-down" theme="filled" size={16} />
             </ActionButton>
           </Dropdown>
-          <AddStudentButton>Add Multiple Students</AddStudentButton>
+          <AddStudentButton onClick={handleAddMultipleStudent}>Add Multiple Students</AddStudentButton>
+          {isAddMultipleStudentsModal && (
+            <InviteMultipleStudentModal
+              modalVisible={isAddMultipleStudentsModal}
+              inviteStudents={sendInviteStudent}
+              closeModal={closeInviteStudentModal}
+              userOrgId={userOrgId}
+            />
+          )}
         </ButtonsWrapper>
       </AddStudentDivider>
     </>
@@ -290,6 +318,8 @@ ActionContainer.defaultProps = {};
 
 export default connect(
   state => ({
+    role: getUserRole(state),
+    userOrgId: getUserOrgId(state),
     orgData: getUserOrgData(state),
     selectedClass: get(state, "manageClass.entity"),
     submitted: get(state, "manageClass.submitted"),
@@ -300,6 +330,7 @@ export default connect(
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
-    changeTTS: changeTTSRequestAction
+    changeTTS: changeTTSRequestAction,
+    addMultiStudents: addMultiStudentsRequestAction
   }
 )(ActionContainer);

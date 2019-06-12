@@ -43,7 +43,16 @@ const setUser = (state, { payload }) => {
 
 const getCurrentPath = () => {
   const { location } = window;
-  return `${location.pathname}${location.search}${location.hash}`;
+  if (
+    location.pathname.toLowerCase() === "/getstarted" ||
+    location.pathname.toLowerCase() === "/signup" ||
+    location.pathname.toLowerCase() === "/studentsignup" ||
+    location.pathname.toLowerCase() === "/adminsignup"
+  ) {
+    return "";
+  } else {
+    return `${location.pathname}${location.search}${location.hash}`;
+  }
 };
 
 export default createReducer(initialState, {
@@ -91,7 +100,16 @@ const routeSelector = state => state.router.location.pathname;
 function* login({ payload }) {
   try {
     const result = yield call(authApi.login, payload);
-    const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData", "features"]);
+    const user = pick(result, [
+      "_id",
+      "firstName",
+      "lastName",
+      "email",
+      "role",
+      "orgData",
+      "features",
+      "currentSignUpState"
+    ]);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
     yield put(setUserAction(user));
@@ -184,12 +202,26 @@ function* signup({ payload }) {
   }
 }
 
+const getLoggedOutUrl = () => {
+  if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
+    return "/getStarted";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
+    return "/signup";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/studentsignup") {
+    return "/studentsignup";
+  } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
+    return "/adminsignup";
+  } else {
+    return "/login";
+  }
+};
+
 export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
       localStorage.setItem("loginRedirectUrl", getCurrentPath());
-      yield put(push("/login"));
+      yield put(push(getLoggedOutUrl()));
       return;
     }
     const user = yield call(userApi.getUser);
@@ -205,7 +237,7 @@ export function* fetchUser() {
     console.log(e);
     yield call(message.error, "failed loading user data");
     window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
-    yield put(push("/login"));
+    yield put(push(getLoggedOutUrl()));
   }
 }
 

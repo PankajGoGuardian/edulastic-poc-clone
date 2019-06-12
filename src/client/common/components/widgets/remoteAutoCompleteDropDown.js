@@ -30,7 +30,9 @@ const RemoteAutocompleteDropDown = ({
   createNew = false,
   createNewLabel = "Create New",
   existingLabel = "Existing",
-  placeholder = ""
+  placeholder = "",
+  ItemTemplate = null,
+  minHeight = "30px"
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -64,7 +66,7 @@ const RemoteAutocompleteDropDown = ({
     setDropDownData(data);
     if (isItemPresent(data, { title: text }) && createNew) {
       setAddCreateNewOption(false);
-    } else {
+    } else if (createNew) {
       setAddCreateNewOption(true);
     }
   }, [data]);
@@ -94,7 +96,7 @@ const RemoteAutocompleteDropDown = ({
       let existingArr = datum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
-            {item.title}
+            {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
           </Option>
         );
       });
@@ -116,7 +118,7 @@ const RemoteAutocompleteDropDown = ({
       arr = datum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
-            {item.title}
+            {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
           </Option>
         );
       });
@@ -260,7 +262,7 @@ const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
     flex-direction: column;
 
     .ant-select-dropdown-menu-item {
-      min-height: 30px;
+      min-height: ${props => (props.minHeight ? props.minHeight : "30px")};
     }
 
     .ant-select-dropdown-menu-item-group {

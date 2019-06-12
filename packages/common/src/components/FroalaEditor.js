@@ -307,7 +307,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
                 cursorEl.remove();
-                const updatedHtml = reIndexResponses(this.html.get());
+                this.selection.save();
+                const updatedHtml = reIndexResponses(this.html.get(true));
                 if (updatedHtml) {
                   this.html.set(updatedHtml);
                 }
@@ -368,7 +369,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         },
         "commands.after": function(cmd) {
           if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput") {
-            const updatedHtml = reIndexResponses(this.html.get());
+            this.selection.save();
+            const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
               this.html.set(updatedHtml);
             }
@@ -405,12 +407,6 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       restOptions.toolbarButtons.includes("textdropdown") || // toolbarButtons prop contains dropdown
       restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
     ) {
-      const responseIndexes = $(val)
-        .find("response")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
       const mathInputIndexes = $(val)
         .find("mathinput")
         .map(function(i) {

@@ -6,6 +6,7 @@ import { compose } from "redux";
 import { Menu } from "antd";
 import { PaddingDiv, withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { withRouter } from "react-router";
 import { IconClose } from "@edulastic/icons";
 import QuestionTypes from "../QuestionType/QuestionTypes";
 import { getItemSelector } from "../../../src/selectors/items";
@@ -39,6 +40,7 @@ import {
   RulerIcon,
   PlayIcon
 } from "./styled";
+import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
 
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
@@ -121,6 +123,43 @@ class Container extends Component {
     });
   };
 
+  get breadcrumb() {
+    const { location, testName, modalItemId, navigateToItemDetail, toggleModalAction, testId } = this.props;
+
+    if (location.pathname.includes("author/tests")) {
+      const testPath = `/author/tests/${testId || "create"}`;
+      return [
+        {
+          title: "TEST LIBRARY",
+          to: "/author/tests"
+        },
+        {
+          title: testName,
+          to: testPath,
+          onClick: toggleModalAction
+        },
+        {
+          title: "SELECT A QUESTION TYPE",
+          to: ""
+        }
+      ];
+    }
+    return [
+      {
+        title: "ITEM BANK",
+        to: "/author/items"
+      },
+      {
+        title: "ITEM DETAIL",
+        to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
+      },
+      {
+        title: "SELECT A QUESTION TYPE",
+        to: ""
+      }
+    ];
+  }
+
   render() {
     const {
       t,
@@ -133,33 +172,6 @@ class Container extends Component {
       selectedTab
     } = this.props;
     const { mobileViewShow, isShowCategories } = this.state;
-
-    const breadcrumbData = modalItemId
-      ? [
-          {
-            title: "ITEM DETAIL",
-            to: "",
-            onClick: navigateToItemDetail
-          },
-          {
-            title: "SELECT A QUESTION TYPE",
-            to: ""
-          }
-        ]
-      : [
-          {
-            title: "ITEM BANK",
-            to: "/author/items"
-          },
-          {
-            title: "ITEM DETAIL",
-            to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`
-          },
-          {
-            title: "SELECT A QUESTION TYPE",
-            to: ""
-          }
-        ];
 
     return (
       <Content showMobileView={mobileViewShow}>
@@ -251,7 +263,7 @@ class Container extends Component {
         </LeftSide>
         <RightSide>
           <Breadcrumb
-            data={breadcrumbData}
+            data={this.breadcrumb}
             style={{
               position: "relative",
               top: 0,
@@ -360,18 +372,22 @@ class Container extends Component {
 const enhance = compose(
   withNamespaces("author"),
   withWindowSizes,
+  withRouter,
   connect(
     state => ({
       item: getItemSelector(state),
       selectedCategory: state.pickUpQuestion.selectedCategory,
-      selectedTab: state.pickUpQuestion.selectedTab
+      selectedTab: state.pickUpQuestion.selectedTab,
+      testName: state.tests.entity.title,
+      testId: state.tests.entity._id
     }),
     {
       setQuestion: setQuestionAction,
       addQuestion: addQuestionAction,
       toggleSideBar: toggleSideBarAction,
       setCategory: setQuestionCategory,
-      setTab: setQuestionTab
+      setTab: setQuestionTab,
+      toggleModalAction: toggleCreateItemModalAction
     }
   )
 );
@@ -391,7 +407,11 @@ Container.propTypes = {
   setCategory: PropTypes.func.isRequired,
   setTab: PropTypes.func.isRequired,
   selectedCategory: PropTypes.string.isRequired,
-  selectedTab: PropTypes.string.isRequired
+  selectedTab: PropTypes.string.isRequired,
+  location: PropTypes.object.isRequired,
+  testName: PropTypes.string.isRequired,
+  testId: PropTypes.string.isRequired,
+  toggleModalAction: PropTypes.string.isRequired
 };
 
 Container.defaultProps = {

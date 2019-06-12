@@ -71,7 +71,8 @@ class SchoolsTable extends React.Component {
       limit: 25,
       page: 1,
       sortField: "name",
-      order: "asc"
+      order: "asc",
+      includeStats: true
     });
   }
 
@@ -388,7 +389,8 @@ class SchoolsTable extends React.Component {
       page: currentPage,
       sortField: sortedInfo.columnKey,
       order: sortedInfo.order,
-      search
+      search,
+      includeStats: true
     });
   }
 

@@ -130,6 +130,43 @@
           "right-2": "false"
         }
       }
+    },
+    "1": {
+      "quetext": "This is CHOICE_STD.1 question",
+      "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
+      "steams": ["true", "false"],
+      "setAns": {
+        "correct": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "points": 2
+      },
+      "attemptData": {
+        "steams": ["true", "false"],
+        "right": {
+          "right-1": "true",
+          "wrong-1": "false",
+          "wrong-2": "false",
+          "right-2": "true"
+        },
+        "wrong": {
+          "right-1": "false",
+          "wrong-1": "true",
+          "wrong-2": "true",
+          "right-2": "false"
+        }
+      },
+      "standards": [
+        {
+          "subject": "Mathematics",
+          "standard": ["K.CC.A.1"],
+          "standardSet": "Math - Common Core",
+          "grade": "Kindergarten"
+        }
+      ]
     }
   },
   "CHOICE_INLINE": {

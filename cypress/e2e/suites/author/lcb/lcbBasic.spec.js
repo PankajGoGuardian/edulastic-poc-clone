@@ -8,6 +8,7 @@ import ExpressGraderPage from "../../../framework/author/assignments/expressGrad
 import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
 import TestLibrary from "../../../framework/author/tests/testLibraryPage";
 import BarGraph from "../../../framework/author/assignments/barGraphs";
+import Helpers from "../../../framework/util/Helpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -19,55 +20,55 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",
-        stuName: "Student02",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
+        stuName: "Student02 2nd",
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right" },
         status: "SUBMITTED"
       }
     ],
     redirectedData: [
       {
         email: "auto.lcb.student01@yopmail.com",
-        stuName: "Student01",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
+        stuName: "Student01 1st",
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong" },
         status: "SUBMITTED"
       }
     ],
     attemptsData: [
       {
         email: "auto.lcb.student01@yopmail.com",
-        stuName: "Student01",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
+        stuName: "Student01 1st",
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student02@yopmail.com",
-        stuName: "Student02",
-        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip" },
+        stuName: "Student02 2nd",
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip", Q5: "wrong" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student03@yopmail.com",
-        stuName: "Student03",
-        attempt: { Q1: "wrong", Q2: "right", Q3: "right", Q4: "skip" },
+        stuName: "Student03 3rd",
+        attempt: { Q1: "wrong", Q2: "right", Q3: "right", Q4: "skip", Q5: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student04@yopmail.com",
-        stuName: "Student04",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
+        stuName: "Student04 4th",
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student05@yopmail.com",
-        stuName: "Student05",
-        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip" },
+        stuName: "Student05 5th",
+        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip", Q5: "right" },
         status: "IN PROGRESS"
       },
       {
         email: "auto.lcb.student06@yopmail.com",
-        stuName: "Student06",
+        stuName: "Student06 6th",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip" }
       }
     ]
   };
@@ -129,6 +130,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
       testLibrary.header.clickOnAssign();
+      // cy.visit("/author/assignments/5cff5b54c949875787025732");
+      // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
     });
@@ -229,7 +232,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
 
       it(` > verify students on bar x axis for que :: ${queNumber}`, () => {
-        bargraph.verifyXAxisTicks(submittedInprogressStudentList);
+        bargraph.verifyXAxisTicks(submittedInprogressStudentList.map(studentName => Helpers.getShortName(studentName)));
       });
     });
   });

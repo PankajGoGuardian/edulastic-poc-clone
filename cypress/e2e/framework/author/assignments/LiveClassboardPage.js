@@ -261,7 +261,7 @@ class LiveClassboardPage {
     });
 
     score = `${totalScore} / ${maxScore}`;
-    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
+    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 1);
     perf = `${perfValue}%`;
     stats = { score, perf, perfValue };
     return stats;
@@ -284,7 +284,8 @@ class LiveClassboardPage {
     Object.keys(statsMap).forEach(studentName => {
       const { score, status } = statsMap[studentName];
       const [scored, max] = score.split("/");
-      if (status === asgnStatus.SUBMITTED || status === asgnStatus.GRADED) {
+      // if (status === asgnStatus.SUBMITTED || status === asgnStatus.GRADED) {
+      if (status !== asgnStatus.NOT_STARTED) {
         // submittedCount += 1;
         scoreObtain += parseFloat(scored);
         totalMaxScore += parseFloat(max);

@@ -149,7 +149,9 @@ class StudentTestPage {
 
   checkAnsMatrix = (answer, steams) => {
     Object.keys(answer).forEach(chKey => {
-      this.getCorrectAnsTableRow()
+      cy.get('[data-cy="matrixTable"]')
+        .children()
+        .find("tr.ant-table-row")
         .contains(chKey)
         .closest("tr")
         .then(ele => {

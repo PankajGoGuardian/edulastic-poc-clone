@@ -73,26 +73,46 @@ const numberPad = [
 ];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
-  moreText: {
-    buttons: [
-      "bold",
-      "italic",
-      "underline",
-      "backgroundColor",
-      "textColor",
-      "fontFamily",
-      "fontSize",
-      "strikeThrough",
-      "insertTable",
-      "indent",
-      "outdent",
-      "specialCharacters"
-    ],
-    buttonsVisible: 6
+  normal: {
+    moreText: {
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "backgroundColor",
+        "textColor",
+        "fontFamily",
+        "fontSize",
+        "strikeThrough",
+        "insertTable",
+        "indent",
+        "outdent",
+        "specialCharacters"
+      ],
+      buttonsVisible: 6
+    },
+    moreParagraph: {
+      buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
+      buttonsVisible: 6
+    }
   },
-  moreParagraph: {
-    buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
-    buttonsVisible: 6
+  md: {
+    moreMisc: {
+      buttons: ["bold", "italic", "underline", "table", "math", "insertImage", "paragraphFormat", "indent", "align"],
+      buttonsVisible: 6
+    }
+  },
+  sm: {
+    moreMisc: {
+      buttons: ["bold", "italic", "underline", "math", "paragraphFormat", "table", "indent", "align", "insertImage"],
+      buttonsVisible: 4
+    }
+  },
+  xs: {
+    moreMisc: {
+      buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage"],
+      buttonsVisible: 2
+    }
   }
 };
 
@@ -158,22 +178,20 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS);
+  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.normal);
   toolbarButtons.moreMisc = {
     buttons: additionalToolbarOptions,
     buttonsVisible: 3
   };
-  const toolbarButtonsMD = cloneDeep(toolbarButtons);
-  toolbarButtonsMD.moreText.buttonsVisible = 3;
-  toolbarButtonsMD.moreParagraph.buttonsVisible = 3;
 
-  const toolbarButtonsSM = cloneDeep(toolbarButtons);
-  toolbarButtonsSM.moreText.buttonsVisible = 2;
-  toolbarButtonsSM.moreParagraph.buttonsVisible = 2;
+  const toolbarButtonsMD = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.md);
+  toolbarButtonsMD.moreMisc.buttons = [...toolbarButtonsMD.moreMisc.buttons, ...additionalToolbarOptions];
 
-  const toolbarButtonsXS = cloneDeep(toolbarButtons);
-  toolbarButtonsXS.moreText.buttonsVisible = 1;
-  toolbarButtonsXS.moreParagraph.buttonsVisible = 1;
+  const toolbarButtonsSM = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.sm);
+  toolbarButtonsSM.moreMisc.buttons = [...toolbarButtonsSM.moreMisc.buttons, ...additionalToolbarOptions];
+
+  const toolbarButtonsXS = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.xs);
+  toolbarButtonsXS.moreMisc.buttons = [...toolbarButtonsXS.moreMisc.buttons, ...additionalToolbarOptions];
 
   const config = Object.assign(
     {

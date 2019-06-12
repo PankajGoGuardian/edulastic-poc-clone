@@ -7,6 +7,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+
 var _isBoolean2 = _interopRequireDefault(require("lodash/isBoolean"));
 
 var _difference2 = _interopRequireDefault(require("lodash/difference"));
@@ -27,6 +29,8 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
     evaluation = (0, _clozeTextHelpers.getClozeTextEvaluation)(response, answers[rightIndex].value, restOptions);
   } else {
     response.forEach(function(item, i) {
+      var ans = answers[rightIndex].value[i];
+
       switch (compareFunction) {
         case _constants.evaluatorTypes.INNER_DIFFERENCE:
           evaluation[i] =
@@ -35,7 +39,9 @@ var getEvaluation = function getEvaluation(response, answers, rightIndex, compar
           break;
 
         case _constants.evaluatorTypes.IS_EQUAL:
-          evaluation[i] = (0, _isEqual2["default"])(answers[rightIndex].value[i], item);
+          ans = (0, _isString2["default"])(ans) ? ans.trim() : ans;
+          item = (0, _isString2["default"])(item) ? item.trim() : item;
+          evaluation[i] = (0, _isEqual2["default"])(ans, item);
           break;
 
         case _constants.evaluatorTypes.MCQ_TYPE:

@@ -20,7 +20,9 @@ const countExactMatchScores = compareFunction => ({ answers, userResponse = [] }
       return;
     }
 
-    let matches = getMatches(existingResponse, answer, compareFunction) === answer.length;
+    const matchCount = getMatches(existingResponse, answer, compareFunction);
+
+    let matches = matchCount === answer.length;
 
     if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
       matches = getClozeTextMatches(existingResponse, answer, restOptions) === answer.length;

@@ -1,6 +1,13 @@
 import styled from "styled-components";
+import { clozeImage } from "@edulastic/constants";
 
-export const RelativeContainer = styled.div`
+const RelativeContainer = styled.div`
   margin: 0 auto;
   position: relative;
+  width: ${clozeImage.maxWidth}px;
+  height: ${clozeImage.maxHeight}px;
 `;
+
+RelativeContainer.displayName = "RelativeContainer";
+
+export { RelativeContainer };

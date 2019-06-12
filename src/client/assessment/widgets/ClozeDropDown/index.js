@@ -155,6 +155,7 @@ class ClozeDropDown extends Component {
                       shuffleOptions
                     }}
                     options={previewDisplayOptions}
+                    item={itemForPreview}
                     question={previewStimulus}
                     uiStyle={uiStyle}
                     templateMarkUp={itemForEdit.templateMarkUp}

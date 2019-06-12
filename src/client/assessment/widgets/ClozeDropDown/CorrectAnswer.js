@@ -48,7 +48,17 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, options, stimulus, response, templateMarkUp, hasGroupResponses, configureOptions, uiStyle } = this.props;
+    const {
+      t,
+      options,
+      stimulus,
+      response,
+      templateMarkUp,
+      hasGroupResponses,
+      item,
+      configureOptions,
+      uiStyle
+    } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -74,6 +84,7 @@ class CorrectAnswer extends Component {
           options={options}
           uiStyle={uiStyle}
           question={stimulus}
+          item={item}
           templateMarkUp={templateMarkUp}
           userSelections={response.value}
           configureOptions={configureOptions}

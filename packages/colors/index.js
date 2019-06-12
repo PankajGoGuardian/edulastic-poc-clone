@@ -93,6 +93,9 @@ export const inputBgGrey = "#F8F8FB";
 export const redHeart = "#e35783";
 export const inputBorder = "#d9d9d9";
 
+export const cardBg = "#f8f8fb";
+export const cardBorder = "#e6e6e6";
+
 // shadows
 export const boxShadowDefault = "0 2px 5px 0 rgba(0, 0, 0, 0.07)";
 

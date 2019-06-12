@@ -273,7 +273,7 @@ class Container extends Component {
               height: "auto",
               background: "#fff",
               borderRadius: "10px",
-              padding: windowWidth > SMALL_DESKTOP_WIDTH ? "35px" : "20px 15px 10px",
+              padding: windowWidth > SMALL_DESKTOP_WIDTH ? "34px" : "20px 15px 10px",
               boxShadow: "0 2px 5px 0 rgba(0, 0, 0, 0.07)",
               minHeight: "calc(100vh - 190px)"
             }}

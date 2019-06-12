@@ -26,14 +26,6 @@ export const AdditionalToggle = styled.span`
 
 export const AdditionalContainer = styled.div`
   margin-top: 34px;
-
-  .ant-checkbox-wrapper + span,
-  .ant-checkbox + span {
-    padding-left: 20px;
-    text-transform: uppercase;
-    font-size: 12px;
-    letter-spacing: 0.3px;
-  }
 `;
 
 export const AdditionalCompareUsing = styled.div`

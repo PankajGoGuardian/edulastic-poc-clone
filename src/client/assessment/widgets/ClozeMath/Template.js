@@ -12,7 +12,7 @@ import { FroalaEditor } from "@edulastic/common";
 // import { ToolbarContainer } from "../../styled/ToolbarContainer";
 // import { FroalaContainer } from "../../styled/FroalaContainer";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 const { methods } = math;
 
@@ -121,13 +121,16 @@ class Template extends Component {
     return (
       <Widget>
         <Subtitle data-cy="template">{t("component.math.template")}</Subtitle>
-        <FroalaEditor
-          data-cy="templateBox"
-          onChange={_updateTemplate}
-          value={item.template}
-          additionalToolbarOptions={["responseBoxes"]}
-          toolbarId="template-markup-area"
-        />
+
+        <WidgetFRContainer>
+          <FroalaEditor
+            data-cy="templateBox"
+            onChange={_updateTemplate}
+            value={item.template}
+            additionalToolbarOptions={["responseBoxes"]}
+            toolbarId="template-markup-area"
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

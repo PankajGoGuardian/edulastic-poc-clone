@@ -315,6 +315,16 @@ class Board {
     });
   }
 
+  resetOutOfLineMarks() {
+    const { canvas } = this.numberlineSettings;
+    this.elements.forEach(mark => {
+      if (mark.X() < canvas.xMin || mark.X() > canvas.xMax) {
+        const setCoords = JXG.COORDS_BY_USER;
+        mark.setPosition(setCoords, [this.numberlineAxis.point1.X(), -1]);
+      }
+    });
+  }
+
   updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue) {
     this.numberlineSettings = {
       canvas,
@@ -351,6 +361,7 @@ class Board {
         yMin: canvas.yMin
       });
       if (!first) {
+        this.resetOutOfLineMarks();
         Mark.alignMarks(this);
         setValue();
       }

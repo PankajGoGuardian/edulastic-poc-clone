@@ -3,7 +3,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { Paper, WithResources } from "@edulastic/common";
-import { isUndefined } from "lodash";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
@@ -47,16 +46,6 @@ const ClozeMath = ({
     setQuestionData(newItem);
   };
 
-  const getDropdowns = tmpl => {
-    if (isUndefined(window.$)) {
-      return;
-    }
-    const temp = tmpl || "";
-    const parsedHTML = $.parseHTML(temp);
-    const _dropDowns = $(parsedHTML).find("textdropdown").length;
-    return _dropDowns;
-  };
-
   const _setQuestionData = newItem => {
     setQuestionData(
       produce(newItem, draft => {
@@ -66,8 +55,7 @@ const ClozeMath = ({
   };
 
   const itemForPreview = replaceVariables(item);
-  const dropDowns = getDropdowns(item.template);
-  const dropDownsContainers = new Array(dropDowns).fill(true);
+
   return (
     <WithResources
       resources={[
@@ -99,15 +87,7 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          {dropDownsContainers.map((_, i) => (
-            <ChoicesForDropDown
-              key={i}
-              index={i}
-              item={item}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-            />
-          ))}
+          <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
           <MathFormulaOptions
             onChange={_itemChange}
@@ -131,7 +111,7 @@ const ClozeMath = ({
             item={itemForPreview}
             template={item.template}
             options={item.options || {}}
-            responseIndexes={item.response_indexes}
+            responseIds={item.response_ids}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}

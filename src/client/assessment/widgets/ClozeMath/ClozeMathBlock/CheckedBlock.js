@@ -1,15 +1,19 @@
 import React, { useRef, useEffect } from "react";
 import PropTypes from "prop-types";
+import { find } from "lodash";
 
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
-const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
+const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath }) => {
   const filedRef = useRef();
+  const { response_ids } = item;
+  let { index } = find(response_ids[type], res => res.id === id);
   index = parseInt(index, 10);
 
+  const isCorrect = evaluation[index];
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current || !isMath) {
       return;
@@ -21,7 +25,7 @@ const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
 
   useEffect(() => {
     replaceWithMathQuill();
-  }, [userAnswer, isCorrect, isMath]);
+  }, [userAnswer, evaluation, isMath]);
 
   return (
     <CheckBox className={isCorrect ? "right" : "wrong"} key={`input_${index}`}>
@@ -35,14 +39,15 @@ const CheckedBlock = ({ isCorrect, userAnswer, index, isMath }) => {
 };
 
 CheckedBlock.propTypes = {
-  isCorrect: PropTypes.bool,
+  evaluation: PropTypes.array.isRequired,
   userAnswer: PropTypes.any,
-  index: PropTypes.oneOfType(PropTypes.number, PropTypes.string).isRequired,
+  item: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired,
+  id: PropTypes.string.isRequired,
   isMath: PropTypes.bool
 };
 
 CheckedBlock.defaultProps = {
-  isCorrect: false,
   isMath: false,
   userAnswer: ""
 };

@@ -6,13 +6,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
+import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
 import Editor from "react-froala-wysiwyg";
-import { uploadToS3, getResponsesCount, reIndexResponses, canInsert } from "../helpers";
+import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -421,32 +422,15 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
 
     if (
       !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
-      restOptions.toolbarButtons.includes("mathinput") || // toolbarButtons prop contains mathInput
-      restOptions.toolbarButtons.includes("textdropdown") || // toolbarButtons prop contains dropdown
-      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
+      restOptions.toolbarButtons.includes("response") // toolbarButtons prop contains response
     ) {
-      const mathInputIndexes = $(val)
-        .find("mathinput")
-        .map(function(i) {
-          return +i;
+      const responseIndexes = $(val)
+        .find("response")
+        .map(function() {
+          return +$(this).text();
         })
         .toArray();
-
-      const dropDownIndexes = $(val)
-        .find("textdropdown")
-        .map(function(i) {
-          return +i;
-        })
-        .toArray();
-
-      const inputIndexes = $(val)
-        .find("textinput")
-        .map(function(i) {
-          return +i;
-        })
-        .toArray();
-      onChange(valueToSave, mathInputIndexes, dropDownIndexes, inputIndexes);
+      onChange(valueToSave, responseIndexes);
     } else {
       onChange(valueToSave, []);
     }
@@ -484,7 +468,9 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
   useEffect(() => {
     // sample extension of custom buttons
     initMathField();
-
+    if (value) {
+      setChange(reIndexResponses(value));
+    }
     // Math Input
     FroalaEditor.DefineIcon("math", { NAME: "math", template: "math" });
     FroalaEditor.RegisterCommand("math", {
@@ -527,11 +513,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        const responseCount = getResponsesCount(this.$el[0]);
-        this.html.insert(
-          `<TextInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
-            1}</span>Text Input</TextInput>`
-        );
+        this.html.insert(`<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>`);
         this.undo.saveStep();
       }
     });
@@ -545,11 +527,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        const responseCount = getResponsesCount(this.$el[0]);
-        this.html.insert(
-          `<TextDropdown index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
-            1}</span>Text Dropdown</TextDropdown>`
-        );
+        this.html.insert(`<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>`);
         this.undo.saveStep();
       }
     });
@@ -563,11 +541,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        const responseCount = getResponsesCount(this.$el[0]);
-        this.html.insert(
-          `<MathInput index="${responseCount}" contentEditable="false"><span class="index">${responseCount +
-            1}</span>Math Input</MathInput>`
-        );
+        this.html.insert(`<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>`);
         this.undo.saveStep();
       }
     });

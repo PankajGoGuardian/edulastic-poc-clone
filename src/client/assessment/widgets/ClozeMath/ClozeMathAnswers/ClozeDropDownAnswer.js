@@ -32,9 +32,9 @@ const AnswerSelect = styled(Select)`
 `;
 
 class ClozeDropDownAnswer extends Component {
-  selectChange = (value, dropIndex) => {
+  selectChange = (value, dropDownId) => {
     const { onChange: changeAnswers } = this.props;
-    changeAnswers({ value, dropIndex });
+    changeAnswers({ value, dropDownId });
   };
 
   render() {
@@ -50,11 +50,11 @@ class ClozeDropDownAnswer extends Component {
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
           {answers.map(answer => {
-            const option = options[answer.targetIndex];
+            const option = options[answer.id];
 
             return (
               <Panel header={`Text Dropdown ${answer.index + 1}`} key={answer.index}>
-                <AnswerSelect value={answer.value} onChange={text => this.selectChange(text, answer.targetIndex)}>
+                <AnswerSelect value={answer.value} onChange={text => this.selectChange(text, answer.id)}>
                   {option &&
                     option.map((op, opIndex) => (
                       <Option value={op} key={opIndex}>

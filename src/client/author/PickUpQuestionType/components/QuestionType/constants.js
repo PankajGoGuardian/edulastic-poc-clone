@@ -2002,13 +2002,13 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>,&nbsp;<textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown>,<mathinput contenteditable="false" index="2"><span class="index">3</span>Math Input</mathinput></p>',
+          '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
         templateDisplay: true,
         type: questionType.CLOZE_MATH,
-        response_indexes: {
-          inputs: [{ index: 0 }],
-          maths: [{ index: 2 }],
-          dropDowns: [{ index: 1 }]
+        response_ids: {
+          inputs: [],
+          maths: [],
+          dropDowns: []
         },
         response_container: {
           template: ""
@@ -2038,11 +2038,11 @@ export const getCards = onSelectQuestionType => {
           },
           valid_dropdown: {
             score: 1,
-            value: [""]
+            value: []
           },
           valid_inputs: {
             score: 1,
-            value: [""]
+            value: []
           }
         },
         is_math: true,

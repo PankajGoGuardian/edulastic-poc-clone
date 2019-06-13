@@ -1,5 +1,5 @@
 import axios from "axios";
-import { omitBy, flatten, isNumber, isString, round, trim, isNaN } from "lodash";
+import { omitBy, flatten, isNumber, isString, round, trim, isNaN, cloneDeep } from "lodash";
 import { ScoringType } from "./const/scoring";
 import clozeTextEvaluator from "./clozeText";
 
@@ -146,7 +146,24 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
   }
 };
 
-// const
+const sortResponses = (userResponse, validResponse) => {
+  const _userRes = [];
+  const _validRes = [];
+  if (userResponse) {
+    Object.keys(userResponse).map(id => {
+      const response = userResponse[id].value;
+      if (validResponse.value) {
+        const valid = validResponse.value.find(_valid => _valid.id === id);
+        _validRes.push(valid.value);
+      }
+      _userRes.push(response);
+    });
+  }
+  if (_validRes.length) {
+    validResponse.value = _validRes;
+  }
+  return { userResponse: _userRes, validResponse };
+};
 
 const evaluator = async ({ userResponse = {}, validation }) => {
   const {
@@ -159,44 +176,49 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     scoring_type,
     min_score_if_attempted: attemptScore
   } = validation;
+  let entered = 1;
   const answers = [valid_response, ...alt_responses];
-
-  let _evaluation = [];
-
-  const { dropDown: _dropDownResponse = [], inputs: _inputsResponse = [], math: _mathResponse = [] } = userResponse;
-  let entered = _dropDownResponse.filter(response => response).length;
-  entered += _inputsResponse.filter(response => response).length;
-  entered += _mathResponse.filter(response => response).length;
-
+  const { dropDowns = {}, inputs = {}, maths = {} } = userResponse;
+  const { userResponse: _inputsResponse = [], validResponse: validInputs } = sortResponses(
+    cloneDeep(inputs),
+    cloneDeep(valid_inputs)
+  );
+  entered += _inputsResponse.length;
   const inputsResults = await clozeTextEvaluator({
-    userResponse: _inputsResponse.map(r => (r ? trim(r.value) : "")),
+    userResponse: _inputsResponse,
     validation: {
       scoring_type,
       alt_responses: alt_inputs,
       valid_response: {
-        ...valid_inputs
+        ...validInputs
       }
     }
   });
 
+  const { userResponse: _dropDownResponse = [], validResponse: validDropDown } = sortResponses(
+    cloneDeep(dropDowns),
+    cloneDeep(valid_dropdown)
+  );
+  entered += _dropDownResponse.length;
   const dropDownResults = await clozeTextEvaluator({
-    userResponse: _dropDownResponse.map(r => (r ? trim(r.value) : "")),
+    userResponse: _dropDownResponse,
     validation: {
       scoring_type,
       alt_responses: alt_dropdowns,
       valid_response: {
-        ...valid_dropdown
+        ...validDropDown
       }
     }
   });
 
   let mathResults = {};
-
+  const { userResponse: _mathResponse = [] } = sortResponses(cloneDeep(maths), cloneDeep(answers));
+  entered += _mathResponse.length;
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
     default:
       const checks = getChecks(validation);
-      mathResults = await exactMatchEvaluator(_mathResponse.map(r => (r ? trim(r.value) : "")), answers, checks);
+      mathResults = await exactMatchEvaluator(_mathResponse.map(r => (r ? trim(r) : "")), answers, checks);
   }
 
   // if score for attempting is greater than current score
@@ -209,26 +231,19 @@ const evaluator = async ({ userResponse = {}, validation }) => {
   corrects += dropDownResults.evaluation.filter(answer => answer).length;
   corrects += mathResults.evaluation ? mathResults.evaluation.filter(answer => answer).length : 0;
 
-  // evaluation results to one list
-  dropDownResults.evaluation.map((r, i) => {
-    const uRes = _dropDownResponse[i];
-    if (uRes) {
-      _evaluation[uRes.index] = r;
-    }
+  // evaluation results to one list dropDown, inputs, maths
+  let _evaluation = [];
+
+  Object.keys(dropDowns).map((key, i) => {
+    _evaluation[dropDowns[key].index] = dropDownResults.evaluation[i];
   });
 
-  inputsResults.evaluation.map((r, i) => {
-    const uRes = _inputsResponse[i];
-    if (uRes) {
-      _evaluation[uRes.index] = r;
-    }
+  Object.keys(inputs).map((key, i) => {
+    _evaluation[inputs[key].index] = inputsResults.evaluation[i];
   });
 
-  mathResults.evaluation.map((r, i) => {
-    const uRes = _mathResponse[i];
-    if (uRes) {
-      _evaluation[uRes.index] = r;
-    }
+  Object.keys(maths).map((key, i) => {
+    _evaluation[maths[key].index] = mathResults.evaluation[i];
   });
 
   let score = round(corrects / entered, 2);

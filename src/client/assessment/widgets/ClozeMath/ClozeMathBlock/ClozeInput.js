@@ -1,24 +1,27 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-// import { isEmpty } from "lodash";
+import { find } from "lodash";
 import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
-const ClozeInput = ({ index, targetindex, resprops = {} }) => {
-  const { save, answers = {}, evaluation = [], checked } = resprops;
+const ClozeInput = ({ id, resprops = {} }) => {
+  const { save, answers = {}, evaluation = [], checked, item } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
-  const [val, setVal] = useState(_inputsAnwers[targetindex] ? _inputsAnwers[targetindex].value : "");
-
+  const [val, setVal] = useState(_inputsAnwers[id] ? _inputsAnwers[id].value : "");
+  const {
+    response_ids: { inputs }
+  } = item;
+  const { index } = find(inputs, res => res.id === id);
   // const isChecked = checked && !isEmpty(evaluation);
 
   return checked ? (
-    <CheckedBlock isCorrect={evaluation[index]} userAnswer={_inputsAnwers[targetindex]} index={index} />
+    <CheckedBlock evaluation={evaluation} userAnswer={_inputsAnwers[id]} id={id} item={item} type="inputs" />
   ) : (
     <InputDiv>
       <Input
         onChange={e => setVal(e.target.value)}
-        onBlur={() => save({ value: val, index, type: "inputs" }, targetindex)}
+        onBlur={() => save({ value: val, index }, "inputs", id)}
         value={val}
       />
     </InputDiv>
@@ -27,8 +30,7 @@ const ClozeInput = ({ index, targetindex, resprops = {} }) => {
 
 ClozeInput.propTypes = {
   resprops: PropTypes.object.isRequired,
-  targetindex: PropTypes.number.isRequired,
-  index: PropTypes.number.isRequired
+  id: PropTypes.string.isRequired
 };
 
 export default ClozeInput;

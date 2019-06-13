@@ -1,4 +1,5 @@
 /* eslint-disable */
+import uuid from "uuid/v4";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 
@@ -151,7 +152,12 @@ export const reIndexResponses = html => {
       $(this)
         .find("span")
         .remove("span");
-      $(this).attr("index", index);
+
+      const id = $(this).attr("id");
+      if (!id) {
+        $(this).attr("id", uuid());
+      }
+
       let text = $(this).text();
       $(this).html(`<span class="index">${index + 1}</span>${text}`);
 

@@ -5,6 +5,7 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { forEach, cloneDeep } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 
@@ -22,7 +23,6 @@ class ChoicesForDropDown extends Component {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
-    index: PropTypes.number.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
   };
@@ -33,11 +33,12 @@ class ChoicesForDropDown extends Component {
   };
 
   componentDidMount = () => {
-    const { fillSections, t, index } = this.props;
+    const { fillSections, t } = this.props;
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", `${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`, node.offsetTop);
+    if (node) {
+      fillSections("main", `${t("component.cloze.dropDown.choicesforresponse")} 1`, node.offsetTop);
+    }
   };
 
   componentWillUnmount() {
@@ -56,72 +57,80 @@ class ChoicesForDropDown extends Component {
     );
   };
 
-  onSortEnd = (index, { oldIndex, newIndex }) => {
+  onSortEnd = (dropDownId, { oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index] = arrayMove(draft.options[index], oldIndex, newIndex);
+        draft.options[dropDownId] = arrayMove(draft.options[dropDownId], oldIndex, newIndex);
       })
     );
   };
 
-  remove = (index, itemIndex) => {
+  remove = (dropDownId, itemIndex) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index].splice(itemIndex, 1);
-        draft.validation.valid_dropdown.value[index] = "";
+        draft.options[dropDownId].splice(itemIndex, 1);
+        const validDropDown = cloneDeep(draft.validation.valid_dropdown.value);
+        forEach(validDropDown, answer => {
+          if (answer.id === dropDownId) {
+            answer.value = "";
+          }
+        });
+        draft.validation.valid_dropdown.value = validDropDown;
         updateVariables(draft);
       })
     );
   };
 
-  editOptions = (index, itemIndex, e) => {
+  editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index][itemIndex] = e.target.value;
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        draft.options[dropDownId][itemIndex] = e.target.value;
         updateVariables(draft);
       })
     );
   };
 
-  addNewChoiceBtn = index => {
+  addNewChoiceBtn = dropDownId => {
     const { item, setQuestionData, t } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index].push(t("component.cloze.dropDown.newChoice"));
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        draft.options[dropDownId].push(t("component.cloze.dropDown.newChoice"));
       })
     );
   };
 
   render() {
-    const { t, item, index } = this.props;
-    const { response_indexes } = item;
+    const { t, item } = this.props;
+    const {
+      response_ids: { dropDowns = [] },
+      options,
+      template
+    } = item;
 
-    return (
-      <Widget data-cy={`choice-dropdown-${index}`}>
-        <Subtitle>
-          {`${t("component.math.choicesfordropdown")} ${response_indexes.dropDowns[index].index + 1}`}
-        </Subtitle>
+    return dropDowns.map(dropdown => (
+      <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
+        <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
         <SortableList
-          items={item.options[index] || []}
-          dirty={item.template}
-          onSortEnd={params => this.onSortEnd(index, params)}
+          items={options[dropdown.id] || []}
+          dirty={template}
+          onSortEnd={params => this.onSortEnd(dropdown.id, params)}
           useDragHandle
-          onRemove={itemIndex => this.remove(index, itemIndex)}
-          onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
+          onRemove={itemIndex => this.remove(dropdown.id, itemIndex)}
+          onChange={(itemIndex, e) => this.editOptions(dropdown.id, itemIndex, e)}
         />
 
         <div>
-          <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
+          <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
             {t("component.cloze.dropDown.addnewchoice")}
           </AddNewChoiceBtn>
         </div>
       </Widget>
-    );
+    ));
   }
 }
 

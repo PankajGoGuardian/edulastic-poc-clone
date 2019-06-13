@@ -392,7 +392,7 @@ export const getCards = onSelectQuestionType => {
           snapTo: 5,
           chart_type: "bar",
           fractionFormat: "Decimal",
-          showGridlines: "y_only"
+          showGridlines: "both"
         },
         validation: {
           scoring_type: EXACT_MATCH,

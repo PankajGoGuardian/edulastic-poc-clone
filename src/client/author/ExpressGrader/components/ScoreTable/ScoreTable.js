@@ -17,7 +17,9 @@ function getDataForTable(data) {
         const studentInfo = {
           studentId: student.studentId,
           studentName: student.studentName,
-          fakeName: student.fakeName
+          fakeName: student.fakeName,
+          icon: student.icon,
+          color: student.color
         };
         const testActivityId = student.testActivityId ? student.testActivityId : null;
         student.questionActivities.forEach((question, index1) => {

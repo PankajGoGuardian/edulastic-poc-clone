@@ -80,7 +80,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   } = data;
 
   if (!startDate && !endDate) {
-    const currentClass = maxBy(clazz.filter(cl => cl._id === currentGroup), "endDate");
+    const currentClass = maxBy(clazz.filter(cl => cl._id === currentGroup), "endDate") || {};
     startDate = currentClass.startDate;
     endDate = currentClass.endDate;
   }

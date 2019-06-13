@@ -85,7 +85,15 @@ export const reducer = createReducer(initialState, {
   [UPDATE_CLASS_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    state.data[payload._id] = { ...state.data[payload._id], ...payload };
+    const sourceObj = {
+      _source: {
+        ...payload
+      }
+    };
+    state.data[payload._id] = {
+      ...state.data[payload._id],
+      ...sourceObj
+    };
   },
   [UPDATE_CLASS_ERROR]: (state, { payload }) => {
     state.updating = false;

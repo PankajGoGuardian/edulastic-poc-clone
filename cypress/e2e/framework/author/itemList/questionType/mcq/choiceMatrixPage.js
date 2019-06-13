@@ -3,6 +3,7 @@ import Header from "../../itemDetail/header";
 import Helpers from "../../../../util/Helpers";
 import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup, questionTypeKey } from "../../../../constants/questionTypes";
+import { CypressHelper } from "../../../../util/cypressHelpers";
 
 class ChoiceMatrixStandardPage {
   constructor() {
@@ -191,7 +192,7 @@ class ChoiceMatrixStandardPage {
   // advance options
   clickOnAdvancedOptions() {
     cy.get("body")
-      .contains("span", "Advanced Options")
+      .contains("ADVANCED OPTIONS")
       .should("be.visible")
       .click();
     return this;
@@ -488,7 +489,7 @@ class ChoiceMatrixStandardPage {
       }
 
       if (setAns) {
-        const { correct, points } = setAns;
+        const { correct, points, evaluation } = setAns;
         /*  this.getPoints()
           .clear()
           .type(`{rightarrow}${points}`);
@@ -504,6 +505,14 @@ class ChoiceMatrixStandardPage {
                 .click();
             });
         });
+
+        this.clickOnAdvancedOptions();
+        // set evaluation type
+        if (evaluation) {
+          this.getEnableAutoScoring().click({ force: true });
+          CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
+        }
+
         this.header.save();
         item.updateItemLevelScore(points);
         item.header.save(true);

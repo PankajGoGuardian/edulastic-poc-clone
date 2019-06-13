@@ -1,4 +1,4 @@
-import { questionTypeKey as queTypes, attemptTypes, queColor, questionType } from "../../constants/questionTypes";
+import { questionTypeKey as queTypes, attemptTypes, queColor } from "../../constants/questionTypes";
 
 export default class QuestionResponsePage {
   getDropDown = () => cy.get(".ant-select-selection");
@@ -7,10 +7,54 @@ export default class QuestionResponsePage {
 
   getScoreInput = card => card.find('[data-cy="scoreInput"]');
 
-  verifyScore = (card, correct, points) => {
-    this.getScoreInput(card)
+  getScoreByAttempt = (attemptData, points, questionType, attemptType) => {
+    let score = 0;
+    const { right, partialCorrect } = attemptData;
+    switch (questionType) {
+      case queTypes.MULTIPLE_CHOICE_STANDARD:
+      case queTypes.TRUE_FALSE:
+      case queTypes.MULTIPLE_CHOICE_BLOCK:
+      case queTypes.MULTIPLE_CHOICE_MULTIPLE:
+        if (attemptType === attemptTypes.RIGHT) score = points;
+        else if (attemptType === attemptTypes.PARTIAL_CORRECT) {
+          let correctChoices = 0;
+          partialCorrect.forEach(ch => {
+            if (right.indexOf(ch) >= 0) correctChoices++;
+          });
+          score = Cypress._.round((correctChoices / right.length) * points, 2);
+        }
+        break;
+
+      case queTypes.CHOICE_MATRIX_STANDARD:
+      case queTypes.CHOICE_MATRIX_LABEL:
+      case queTypes.CHOICE_MATRIX_INLINE:
+        if (attemptType === attemptTypes.RIGHT) score = points;
+        else if (attemptType === attemptTypes.PARTIAL_CORRECT) {
+          let correctChoices = 0;
+          Object.keys(partialCorrect).forEach(ch => {
+            if (partialCorrect[ch] === right[ch]) correctChoices++;
+          });
+          score = Cypress._.round((correctChoices / Object.keys(right).length) * points, 2);
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    return score;
+  };
+
+  verifyScore = (card, points, attemptData, attemptType, questionType) => {
+    /* this.getScoreInput(card)
       .as("scoreinputbox")
       .should("have.value", correct ? points.toString() : "0");
+ */
+    const score = this.getScoreByAttempt(attemptData, points, questionType, attemptType);
+
+    this.getScoreInput(card)
+      .as("scoreinputbox")
+      .should("have.value", score.toString());
 
     // verify max score
     cy.get("@scoreinputbox")
@@ -143,9 +187,12 @@ export default class QuestionResponsePage {
       ? this.getQuestionContainer(findKey).as("quecard")
       : this.getQuestionContainerByStudent(findKey).as("quecard");
 
-    const { right, wrong } = attemptData;
+    const { right, wrong, partialCorrect } = attemptData;
+    const questionType = queTypeKey.split(".")[0];
 
-    switch (queTypeKey.split(".")[0]) {
+    this.verifyScore(cy.get("@quecard"), points, attemptData, attemptType, questionType);
+
+    switch (questionType) {
       case queTypes.MULTIPLE_CHOICE_STANDARD:
       case queTypes.MULTIPLE_CHOICE_MULTIPLE:
       case queTypes.TRUE_FALSE:
@@ -167,7 +214,7 @@ export default class QuestionResponsePage {
                 .should("be.checked");
             }
 
-            this.verifyScoreRight(cy.get("@quecard"), points);
+            // this.verifyScoreRight(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.WRONG:
@@ -188,10 +235,28 @@ export default class QuestionResponsePage {
                 .find("input")
                 .should("be.checked");
             }
-            this.verifyScoreWrong(cy.get("@quecard"), points);
+            // this.verifyScoreWrong(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.SKIP:
+            break;
+
+          case attemptTypes.PARTIAL_CORRECT:
+            if (Cypress._.isArray(partialCorrect))
+              partialCorrect.forEach(choice =>
+                this.getLabels(cy.get("@quecard"))
+                  .contains(choice)
+                  .closest("label")
+                  .find("input")
+                  .should("be.checked")
+              );
+            else {
+              this.getLabels(cy.get("@quecard"))
+                .contains(partialCorrect)
+                .closest("label")
+                .find("input")
+                .should("be.checked");
+            }
             break;
 
           default:
@@ -234,7 +299,7 @@ export default class QuestionResponsePage {
                   expect($ele.css("background-color")).to.eq(queColor.BLUE);
                 });
             }
-            this.verifyScoreRight(cy.get("@quecard"), points);
+            // this.verifyScoreRight(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.WRONG:
@@ -258,7 +323,7 @@ export default class QuestionResponsePage {
                 });
             }
 
-            this.verifyScoreWrong(cy.get("@quecard"), points);
+            // this.verifyScoreWrong(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.SKIP:
@@ -282,19 +347,23 @@ export default class QuestionResponsePage {
         break;
 
       case queTypes.CHOICE_MATRIX_STANDARD:
-      case questionType.CHOICE_MATRIX_INLINE:
-      case questionType.CHOICE_MATRIX_LABEL: {
+      case queTypes.CHOICE_MATRIX_INLINE:
+      case queTypes.CHOICE_MATRIX_LABEL: {
         const { steams } = attemptData;
         this.verifyCorrectAnseredMatrix(cy.get("@quecard"), right, steams);
         switch (attemptType) {
           case attemptTypes.RIGHT:
             this.verifyAnseredMatrix(cy.get("@quecard"), right, steams);
-            this.verifyScoreRight(cy.get("@quecard"), points);
+            // this.verifyScoreRight(cy.get("@quecard"), points);
             break;
 
           case attemptTypes.WRONG:
             this.verifyAnseredMatrix(cy.get("@quecard"), wrong, steams);
-            this.verifyScoreWrong(cy.get("@quecard"), points);
+            // this.verifyScoreWrong(cy.get("@quecard"), points);
+            break;
+
+          case attemptTypes.PARTIAL_CORRECT:
+            this.verifyAnseredMatrix(cy.get("@quecard"), partialCorrect, steams);
             break;
 
           default:

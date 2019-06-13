@@ -1,18 +1,19 @@
 import { studentSide } from "../../constants/assignmentStatus";
 import { attemptTypes } from "../../constants/questionTypes";
+import LiveClassboardPage from "./LiveClassboardPage";
 
-export default class StandardBasedReportPage {
+export default class StandardBasedReportPage extends LiveClassboardPage {
   getStandardRow = standard => cy.contains(standard).closest("tr");
 
-  getStandardPerformance = (attemptData, questionTypeMap) => {
+  getStandardPerformance = (stuAttemptData, questionTypeMap) => {
     const allStandardPerformance = {};
     const queList = Object.keys(questionTypeMap);
 
-    attemptData
+    stuAttemptData
       .filter(({ status }) => status === studentSide.SUBMITTED)
       .forEach(({ attempt, stuName }) => {
         queList.forEach(queNum => {
-          const { points, standards } = questionTypeMap[queNum];
+          const { points, standards, attemptData, queKey } = questionTypeMap[queNum];
           const attemptType = attempt[queNum];
           standards.forEach(({ standard }) => {
             standard.forEach(std => {
@@ -29,7 +30,13 @@ export default class StandardBasedReportPage {
                 maxScore = allStandardPerformance[std].students[stuName].max;
               }
               allStandardPerformance[std].questions = Cypress._.union(allStandardPerformance[std].questions, [queNum]);
-              if (attemptType === attemptTypes.RIGHT) scoreObtain += points;
+              // if (attemptType === attemptTypes.RIGHT) scoreObtain += points;
+              scoreObtain += this.questionResponsePage.getScoreByAttempt(
+                attemptData,
+                points,
+                queKey.split(".")[0],
+                attemptType
+              );
               maxScore += points;
               allStandardPerformance[std].students[stuName] = { obtain: scoreObtain, max: maxScore };
             });

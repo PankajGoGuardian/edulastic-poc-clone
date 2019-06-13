@@ -33,9 +33,9 @@ class Header {
       .should("be.visible")
       .click();
 
-    cy.wait("@saveItem");
+    cy.wait("@saveItem").then(xhr => expect(xhr.status).to.eq(200));
     if (!onlyPointChange) cy.wait("@reload");
-    return new EditItemPage();
+    // return new EditItemPage();
   }
 
   clickOnPublishItem = () => {

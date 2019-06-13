@@ -111,8 +111,9 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .should("contain", `(${score})`);
   };
 
-  verifyScoreForStudent = (queNum, points, attemptType) => {
-    const score = attemptType === attemptTypes.RIGHT ? points.toString() : "0";
+  verifyScoreForStudent = (queNum, points, attemptType, attemptData, queKey) => {
+    // const score = attemptType === attemptTypes.RIGHT ? points.toString() : "0";
+    const score = this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attemptType);
     this.getScoreforQueNum(queNum).should("have.text", score);
   };
 
@@ -123,9 +124,9 @@ export default class ExpressGraderPage extends LiveClassboardPage {
 
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
-      const { points } = questionTypeMap[queNum];
+      const { points, attemptData, queKey } = questionTypeMap[queNum];
       //   console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-      this.verifyScoreForStudent(queNum, points, attemptType);
+      this.verifyScoreForStudent(queNum, points, attemptType, attemptData, queKey);
     });
   }
 

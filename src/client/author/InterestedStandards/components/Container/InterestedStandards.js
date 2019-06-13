@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Row, Col, Button, Icon } from "antd";
+import { Row, Col, Button, Icon, Checkbox } from "antd";
 import {
   StyledContent,
   StyledLayout,
@@ -14,7 +14,8 @@ import {
   StyledSubjectTitle,
   StyledSubjectLine,
   StyledSubjectCloseButton,
-  StyledSubjectContent
+  StyledSubjectContent,
+  StyledCheckbox
 } from "./styled";
 
 import AdminHeader from "../../../src/components/common/AdminHeader/AdminHeader";
@@ -24,7 +25,8 @@ import {
   receiveInterestedStandardsAction,
   updateInterestedStandardsAction,
   saveInterestedStandardsAction,
-  deleteStandardAction
+  deleteStandardAction,
+  updateStandardsPreferencesAction
 } from "../../ducks";
 
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
@@ -65,19 +67,23 @@ class InterestedStandards extends Component {
   };
 
   saveInterestedStandards = () => {
-    const { updateInterestedStandards, interestedStaData } = this.props;
+    const { updateInterestedStandards, interestedStaData, userOrgId } = this.props;
+    const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
     let saveData = {
-      orgId: interestedStaData.orgId,
-      orgType: interestedStaData.orgType,
+      orgId: interestedStaData.orgId || userOrgId,
+      orgType: interestedStaData.orgType || "district",
+      showAllStandards,
+      includeOtherStandards,
       curriculums: []
     };
-
-    for (let i = 0; i < interestedStaData.curriculums.length; i++) {
-      saveData.curriculums.push({
-        _id: interestedStaData.curriculums[i]._id,
-        name: interestedStaData.curriculums[i].name,
-        subject: interestedStaData.curriculums[i].subject
-      });
+    if (interestedStaData.curriculums) {
+      for (let i = 0; i < interestedStaData.curriculums.length; i++) {
+        saveData.curriculums.push({
+          _id: interestedStaData.curriculums[i]._id,
+          name: interestedStaData.curriculums[i].name,
+          subject: interestedStaData.curriculums[i].subject
+        });
+      }
     }
 
     updateInterestedStandards(saveData);
@@ -116,11 +122,18 @@ class InterestedStandards extends Component {
     deleteStandard(id);
   };
 
+  updatePreferences = e => {
+    const { updateStandardsPreferences } = this.props;
+    const { checked, name } = e.target;
+    updateStandardsPreferences({ name, value: checked });
+  };
+
   render() {
     const { loading, updating, saving, history, curriculums, interestedStaData } = this.props;
     const showSpin = loading || updating || saving;
 
     const { standardSetsModalVisible } = this.state;
+    const { showAllStandards = true, includeOtherStandards = false } = interestedStaData;
     let isDisableSaveBtn = true;
     const subjectArray = ["Mathematics", "ELA", "Science", "Social Studies", "Other Subjects"];
     let selectedStandards = [],
@@ -170,6 +183,16 @@ class InterestedStandards extends Component {
             )}
             <Row>
               <Col span={12}>
+                <StyledCheckbox onChange={this.updatePreferences} name="showAllStandards" checked={showAllStandards}>
+                  Show all standards to the users
+                </StyledCheckbox>
+                <StyledCheckbox
+                  onChange={this.updatePreferences}
+                  name="includeOtherStandards"
+                  checked={includeOtherStandards}
+                >
+                  Include other standards opted by the users
+                </StyledCheckbox>
                 <Button type="primary" onClick={this.showMyStandardSetsModal} shape="round" ghost>
                   Select your standard sets
                 </Button>
@@ -213,7 +236,8 @@ const enhance = compose(
       updateInterestedStandards: updateInterestedStandardsAction,
       saveInterestedStandards: saveInterestedStandardsAction,
       getCurriculums: getDictCurriculumsAction,
-      deleteStandard: deleteStandardAction
+      deleteStandard: deleteStandardAction,
+      updateStandardsPreferences: updateStandardsPreferencesAction
     }
   )
 );

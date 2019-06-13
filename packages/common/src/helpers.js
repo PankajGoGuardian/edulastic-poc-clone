@@ -99,12 +99,14 @@ function addProps() {
 }
 
 const sanitizeSelfClosingTags = inputString =>
+  inputString &&
   inputString
     .replace(/<hr>/g, "<hr/>")
     .replace(/<br>/g, "<br/>")
     .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
 
 const replaceForJsxParser = inputString =>
+  inputString &&
   inputString
     .replace(/"{{resProps/g, "{resProps")
     .replace(/resProps}}"/g, "resProps}")

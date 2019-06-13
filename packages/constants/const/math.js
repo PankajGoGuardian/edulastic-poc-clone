@@ -6,6 +6,7 @@ const methods = {
   IS_FACTORISED: "isFactorised",
   IS_EXPANDED: "isExpanded",
   IS_TRUE: "isTrue",
+  IS_UNIT: "isUnit",
   STRING_MATCH: "stringMatch",
   EQUIV_SYNTAX: "equivSyntax"
 };
@@ -117,6 +118,7 @@ const methodOptions = {
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.IS_TRUE]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.IS_UNIT]: ["allowedUnits", "setThousandsSeparator", "inverseResult"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
 };
 

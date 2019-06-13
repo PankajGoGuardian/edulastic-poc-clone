@@ -39,8 +39,10 @@ const EssayRichTextPreview = ({
   showQuestionNumber,
   qIndex,
   previewTab,
-  testItem
+  testItem,
+  location
 }) => {
+  console.log(userAnswer, "userAnswer");
   const toolbarButtons = getToolBarButtons(item);
 
   const [showCharacters, setShowCharacters] = useState(false);
@@ -53,7 +55,11 @@ const EssayRichTextPreview = ({
   const characterMap = get(item, "character_map", []);
 
   const [wordCount, setWordCount] = useState(
-    Array.isArray(userAnswer) ? 0 : userAnswer.split(" ").filter(i => !!i.trim()).length
+    Array.isArray(userAnswer)
+      ? 0
+      : typeof userAnswer === "string"
+      ? userAnswer.split(" ").filter(i => !!i.trim()).length
+      : 0
   );
 
   useEffect(() => {
@@ -66,10 +72,13 @@ const EssayRichTextPreview = ({
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
-    const wordsCount = stripTags(val)
-      .split(" ")
-      .filter(i => !!i.trim()).length;
-    const mathInputCount = (val.match(/input__math/g) || []).length;
+    const wordsCount =
+      typeof val === "string"
+        ? stripTags(val)
+            .split(" ")
+            .filter(i => !!i.trim()).length
+        : 0;
+    const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
     setWordCount(wordsCount + mathInputCount);
     setText(val);
     saveAnswer(val);
@@ -101,7 +110,7 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  const isReadOnly = previewTab === "show" || testItem;
+  const isReadOnly = (previewTab === "show" || testItem) && !location.pathname.includes("student");
 
   return item.id ? (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>

@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import { AutoComplete, Input, Icon, Menu } from "antd";
 import styled from "styled-components";
+import { some } from "lodash";
 
 import { useInternalEffect } from "../../../author/Reports/common/hooks/useInternalEffect";
 
@@ -32,7 +33,8 @@ const RemoteAutocompleteDropDown = ({
   existingLabel = "Existing",
   placeholder = "",
   ItemTemplate = null,
-  minHeight = "30px"
+  minHeight = "30px",
+  filterKeys = ["title"]
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -91,9 +93,16 @@ const RemoteAutocompleteDropDown = ({
   }, []);
 
   const buildDropDownData = datum => {
+    let regExp = new RegExp(`${text}`, "i");
+    const searchedDatum = datum.filter(item => {
+      return some(filterKeys, fKey => {
+        let test = item[fKey] || item.title;
+        return regExp.test(test);
+      });
+    });
     let arr;
     if (addCreateNewOption) {
-      let existingArr = datum.map((item, index) => {
+      let existingArr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
@@ -115,7 +124,7 @@ const RemoteAutocompleteDropDown = ({
         </OptGroup>
       ];
     } else {
-      arr = datum.map((item, index) => {
+      arr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
@@ -132,14 +141,14 @@ const RemoteAutocompleteDropDown = ({
       let exactMatchFound = false;
       let regExp = new RegExp(`${value}`, "i");
       let searchedData = data.filter((item, index) => {
-        if (regExp.test(item.title)) {
-          if (value === item.title) {
-            exactMatchFound = true;
-          }
+        if (value === item.title) {
+          exactMatchFound = true;
           return true;
-        } else {
-          return false;
         }
+        return some(filterKeys, fKey => {
+          let test = item[fKey] || item.title;
+          return regExp.test(test);
+        });
       });
       setDropDownData(searchedData);
 
@@ -152,7 +161,7 @@ const RemoteAutocompleteDropDown = ({
       if (data.length !== dropDownData.length) {
         setDropDownData(data);
       }
-      if (createNew && !isItemPresent(data, { title: value })) {
+      if (createNew && !isItemPresent(data, { title: value }) && value) {
         setAddCreateNewOption(true);
       } else {
         setAddCreateNewOption(false);

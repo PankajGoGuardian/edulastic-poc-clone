@@ -94,7 +94,9 @@ const JoinSchool = ({
       return {
         ...item,
         title: item.schoolName,
-        key: item.schoolId
+        key: item.schoolId,
+        zip: item.address.zip,
+        city: item.address.city
       };
     });
   }, [schools]);
@@ -124,6 +126,7 @@ const JoinSchool = ({
                   ItemTemplate={SchoolDropDownItemTemplate}
                   minHeight="70px"
                   selectCB={changeSchool}
+                  filterKeys={["title", "zip", "city"]}
                 />
                 <Actions>
                   <AnchorBtn> I want to homeschool</AnchorBtn>

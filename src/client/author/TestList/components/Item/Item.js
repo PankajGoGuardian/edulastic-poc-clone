@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 
 import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
-import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
+import { IconHeart, IconShare, IconUser, IconId, IconDraft } from "@edulastic/icons";
 import { Button } from "antd";
 import { assignmentApi } from "@edulastic/api";
 import {
@@ -19,13 +19,14 @@ import {
   Question,
   LikeIcon,
   ShareIcon,
-  CardIdWrapper,
-  CardId,
+  AuthorWrapper,
   IconText,
-  ButtonWrapper
+  ButtonWrapper,
+  DraftIconWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
+import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 
 class Item extends Component {
   static propTypes = {
@@ -39,6 +40,8 @@ class Item extends Component {
   static defaultProps = {
     authorName: "",
     owner: {},
+    currentTestId: "",
+    isPreviewModalVisible: false,
     testItemId: ""
   };
 
@@ -74,6 +77,14 @@ class Item extends Component {
     this.setState({ isOpenModal: true });
   };
 
+  hidePreviewModal = () => {
+    this.setState({ isPreviewModalVisible: false });
+  };
+
+  showPreviewModal = testId => {
+    this.setState({ isPreviewModalVisible: true, currentTestId: testId });
+  };
+
   get name() {
     const {
       item: { createdBy = {} }
@@ -83,7 +94,7 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags = [], analytics, _source, _id },
+      item: { title, tags = [], analytics, _source, status, _id: testId, description },
       item,
       authorName,
       owner,
@@ -92,7 +103,7 @@ class Item extends Component {
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
-    const { isOpenModal } = this.state;
+    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
     return (
       <>
         <ViewModal
@@ -102,20 +113,37 @@ class Item extends Component {
           assign={this.assignTest}
           isPlaylist={isPlaylist}
         />
+        <TestPreviewModal
+          isModalVisible={isPreviewModalVisible}
+          testId={currentTestId}
+          hideModal={this.hidePreviewModal}
+        />
         <Container
           title={
             <Header src={isPlaylist ? _source.thumbnail : undefined}>
               <Stars />
               <ButtonWrapper className="showHover">
-                {owner && (
+                {owner && status === "draft" && (
                   <Button onClick={this.moveToItem} type="primary">
                     Edit
                   </Button>
                 )}
 
-                <Button type="primary" onClick={this.duplicate}>
-                  duplicate
-                </Button>
+                {status === "draft" && (
+                  <Button type="primary" onClick={this.duplicate}>
+                    duplicate
+                  </Button>
+                )}
+                {status === "published" && (
+                  <Button type="primary" onClick={() => this.showPreviewModal(testId)}>
+                    Preview
+                  </Button>
+                )}
+                {status === "published" && (
+                  <Button type="primary" onClick={this.assignTest}>
+                    Assign
+                  </Button>
+                )}
               </ButtonWrapper>
             </Header>
           }
@@ -127,32 +155,39 @@ class Item extends Component {
               </StyledLink>
             </Question>
             <CardDescription onClick={isPlaylist ? this.moveToItem : ""}>
-              {isPlaylist
-                ? _source.description
-                : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce sollicitudin congue metus ut pulvinar. Sed in nunc sollicitudin, sodales odio non, lobortis tellus"}
+              {isPlaylist ? _source.description : description}
             </CardDescription>
             {!isPlaylist && <Tags tags={tags} />}
           </Inner>
           <Footer>
             {authorName && (
               <Author>
-                <IconUser /> &nbsp;
-                <AuthorName title={authorName}>{authorName}</AuthorName>
+                <IconText>Created by</IconText>
+
+                <AuthorWrapper>
+                  <IconUser /> &nbsp;
+                  <AuthorName title={authorName}>{authorName}</AuthorName>
+                </AuthorWrapper>
               </Author>
             )}
-            <CardIdWrapper>
-              <IconId />
-              &nbsp;
-              <CardId>{testItemId}</CardId>
-            </CardIdWrapper>
-            <ShareIcon>
-              <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-              <IconText>{usage}</IconText>
-            </ShareIcon>
-            <LikeIcon>
-              <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-              <IconText>{likes}</IconText>
-            </LikeIcon>
+            {status !== "draft" && (
+              <>
+                <ShareIcon>
+                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{usage}</IconText>
+                </ShareIcon>
+                <LikeIcon>
+                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{likes}</IconText>
+                </LikeIcon>
+              </>
+            )}
+            {status === "draft" && (
+              <DraftIconWrapper>
+                <IconDraft /> &nbsp;
+                <IconText>In Draft</IconText>
+              </DraftIconWrapper>
+            )}
           </Footer>
         </Container>
       </>

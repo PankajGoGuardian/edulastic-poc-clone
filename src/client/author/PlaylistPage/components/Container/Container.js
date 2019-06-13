@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "../../../TestPage/components/Container/styled";
-
+import { get } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
   createPlaylistAction,
@@ -341,7 +341,7 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, playlist, testStatus } = this.props;
+    const { creating, windowWidth, playlist, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId, status } = playlist || {};
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
@@ -369,6 +369,7 @@ class Container extends PureComponent {
           testStatus={testStatus}
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
+          owner={playlist.authors && playlist.authors.find(x => x._id === userId)}
           onShowSource={this.handleNavChange("source")}
           isPlaylist={true}
         />
@@ -388,6 +389,7 @@ const enhance = compose(
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
+      userId: get(state, "user.user._id", ""),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)

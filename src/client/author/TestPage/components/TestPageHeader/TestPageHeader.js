@@ -82,6 +82,7 @@ const TestPageHeader = ({
   testStatus,
   onShowSource,
   isPlaylist,
+  owner,
   onAssign
 }) => {
   return windowWidth > 993 ? (
@@ -134,7 +135,7 @@ const TestPageHeader = ({
             Assign
           </EduButton>
         )}
-        {showShareButton && !showPublishButton && (
+        {showShareButton && !showPublishButton && owner && (
           <EduButton data-cy="edit" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
             Edit
           </EduButton>

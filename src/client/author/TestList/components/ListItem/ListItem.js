@@ -31,6 +31,7 @@ import {
 } from "./styled";
 import ViewModal from "../ViewModal";
 import { TestStatus } from "../../../TestPage/components/TestPageHeader/styled";
+import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
 
 class ListItem extends Component {
   static propTypes = {
@@ -45,6 +46,8 @@ class ListItem extends Component {
   static defaultProps = {
     authorName: "",
     owner: {},
+    currentTestId: "",
+    isPreviewModalVisible: false,
     testItemId: ""
   };
 
@@ -78,9 +81,17 @@ class ListItem extends Component {
     this.setState({ isOpenModal: true });
   };
 
+  hidePreviewModal = () => {
+    this.setState({ isPreviewModalVisible: false });
+  };
+
+  showPreviewModal = testId => {
+    this.setState({ isPreviewModalVisible: true, currentTestId: testId });
+  };
+
   render() {
     const {
-      item: { title, analytics, tags = [], _source, status: testStatus },
+      item: { title, analytics, tags = [], _source, _id: testId, status: testStatus, description },
       item,
       authorName,
       owner = false,
@@ -94,7 +105,8 @@ class ListItem extends Component {
       likes = analytics ? analytics[0].likes : "0",
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
-    const { isOpenModal } = this.state;
+    const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
+
     return (
       <>
         <ViewModal
@@ -104,6 +116,11 @@ class ListItem extends Component {
           assign={this.assignTest}
           isPlaylist={isPlaylist}
         />
+        <TestPreviewModal
+          isModalVisible={isPreviewModalVisible}
+          testId={currentTestId}
+          hideModal={this.hidePreviewModal}
+        />
         <Container onClick={isPlaylist ? this.moveToItem : ""}>
           <ContentWrapper>
             <Col span={18}>
@@ -112,15 +129,27 @@ class ListItem extends Component {
                   <Header src={isPlaylist ? _source.thumbnail : undefined}>
                     <Stars size="small" />
                     <ButtonWrapper className="showHover">
-                      {owner && (
+                      {owner && testStatus === "draft" && (
                         <Button type="primary" onClick={this.moveToItem}>
                           Edit
                         </Button>
                       )}
 
-                      <Button type="primary" onClick={this.duplicate}>
-                        duplicate
-                      </Button>
+                      {testStatus === "draft" && (
+                        <Button type="primary" onClick={this.duplicate}>
+                          duplicate
+                        </Button>
+                      )}
+                      {testStatus === "published" && (
+                        <Button type="primary" onClick={() => this.showPreviewModal(testId)}>
+                          Preview
+                        </Button>
+                      )}
+                      {testStatus === "published" && (
+                        <Button type="primary" onClick={this.assignTest}>
+                          Assign
+                        </Button>
+                      )}
                     </ButtonWrapper>
                   </Header>
                 }
@@ -137,9 +166,7 @@ class ListItem extends Component {
                   )}
                 </div>
                 <Description onClick={isPlaylist ? this.moveToItem : ""}>
-                  {isPlaylist
-                    ? _source.description
-                    : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean fermentum metus et luctus lacinia. Nullam vel tincidunt nibh. Duis ac eros nunc."}
+                  {isPlaylist ? _source.description : description}
                 </Description>
               </Inner>
             </Col>

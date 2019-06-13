@@ -190,7 +190,7 @@ class QuestionWrapper extends Component {
     }));
   };
 
-  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight) => {
+  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
     this.setState(state => {
       const sectionState = state[section];
       const found = sectionState.filter(el => el.label === label && el.offset !== offset);
@@ -212,14 +212,24 @@ class QuestionWrapper extends Component {
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight })
+        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight, id })
       };
     });
   };
 
-  cleanSections = () => {
-    this.setState({ main: [], advanced: [], activeTab: 0 });
+  cleanSections = sectionId => {
+    if (!sectionId) return;
+
+    this.setState(({ main }) => {
+      return { main: main.filter(item => item.id !== sectionId) };
+    });
   };
+
+  static getDerivedStateFromProps(props) {
+    if (props.view !== "edit") {
+      return { main: [], advanced: [], activeTab: 0, advancedAreOpen: false };
+    }
+  }
 
   render() {
     const {

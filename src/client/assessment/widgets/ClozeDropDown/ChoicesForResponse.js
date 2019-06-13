@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
+import uuid from "uuid/v4";
 import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
@@ -27,6 +28,10 @@ class ChoicesForResponse extends Component {
     cleanSections: PropTypes.func
   };
 
+  state = {
+    sectionId: uuid()
+  };
+
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
@@ -44,14 +49,15 @@ class ChoicesForResponse extends Component {
       node.offsetTop,
       deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
       deskHeight === true,
-      deskHeight
+      deskHeight,
+      this.state.sectionId
     );
   };
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
-    cleanSections();
+    cleanSections(this.state.sectionId);
   }
 
   onChangeQuestion = stimulus => {

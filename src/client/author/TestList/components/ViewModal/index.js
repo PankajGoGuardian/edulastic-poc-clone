@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
 import { darkGrey, blue } from "@edulastic/colors";
-import { IconHeart, IconShare, IconWorldWide } from "@edulastic/icons";
+import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription } from "@edulastic/icons";
 import {
   ModalTitle,
   ModalContainer,
@@ -23,7 +23,7 @@ import {
   IconText,
   TagGrade,
   ButtonContainer,
-  Button,
+  ButtonComponent,
   SummaryContainer,
   SummaryTitle,
   SummaryCardContainer,
@@ -35,7 +35,8 @@ import {
   ListRow,
   ListHeaderCell,
   ListCell,
-  SammaryMark
+  SammaryMark,
+  IconWrapper
 } from "./styled";
 
 export default class ViewModal extends React.Component {
@@ -43,11 +44,13 @@ export default class ViewModal extends React.Component {
     isShow: PropTypes.bool.isRequired,
     assign: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDuplicate: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired
   };
 
   render() {
-    const { isShow, close, item, assign, isPlaylist } = this.props;
+    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit } = this.props;
     const {
       title = "",
       description = "",
@@ -100,10 +103,31 @@ export default class ViewModal extends React.Component {
           </ModalColumn>
           <ModalColumn>
             <ButtonContainer>
-              <Button>TEST DETAILS</Button>
-              <Button bgColor={blue} onClick={assign}>
+              <ButtonComponent
+                onClick={() => {
+                  onEdit();
+                }}
+              >
+                <IconWrapper>
+                  <IconDescription color={blue} />
+                </IconWrapper>
+                DETAILS
+              </ButtonComponent>
+              <ButtonComponent
+                onClick={() => {
+                  onDuplicate();
+                }}
+              >
+                <IconWrapper>
+                  <IconCopy color={blue} />
+                </IconWrapper>
+                DUPLICATE
+              </ButtonComponent>
+            </ButtonContainer>
+            <ButtonContainer>
+              <ButtonComponent size={"large"} bgColor={blue} onClick={assign}>
                 ASSIGN
-              </Button>
+              </ButtonComponent>
             </ButtonContainer>
             <SummaryContainer>
               <SummaryTitle>Summary</SummaryTitle>

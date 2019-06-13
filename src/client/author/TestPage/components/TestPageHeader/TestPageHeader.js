@@ -12,7 +12,8 @@ import {
   IconSource,
   IconDiskette,
   IconDescription,
-  IconSend
+  IconSend,
+  IconPencilEdit
 } from "@edulastic/icons";
 import { Container, ShareIcon, Title, MenuIcon, MenuIconWrapper, TestStatus, TitleWrapper } from "./styled";
 
@@ -127,17 +128,17 @@ const TestPageHeader = ({
               onPublish();
             }}
           >
-            <IconSend color="#1774F0" />
+            <IconSend color="#1774F0" stroke="#1774F0" />
+          </EduButton>
+        )}
+        {showShareButton && !showPublishButton && owner && (
+          <EduButton title={"Edit Test"} data-cy="edit" style={{ width: 42 }} size="large" onClick={onEnableEdit}>
+            <IconPencilEdit color="#1774F0" />
           </EduButton>
         )}
         {showShareButton && !isPlaylist && (
           <EduButton data-cy="assign" style={{ width: 120 }} size="large" onClick={onAssign}>
             Assign
-          </EduButton>
-        )}
-        {showShareButton && !showPublishButton && owner && (
-          <EduButton data-cy="edit" style={{ width: 120 }} size="large" onClick={onEnableEdit}>
-            Edit
           </EduButton>
         )}
       </FlexContainer>

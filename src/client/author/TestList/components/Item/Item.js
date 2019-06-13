@@ -109,6 +109,8 @@ class Item extends Component {
         <ViewModal
           isShow={isOpenModal}
           close={this.closeModal}
+          onDuplicate={this.duplicate}
+          onEdit={this.moveToItem}
           item={item}
           assign={this.assignTest}
           isPlaylist={isPlaylist}

@@ -113,11 +113,12 @@ export const IconText = styled.span`
 
 export const ButtonContainer = styled.div`
   display: flex;
+  margin-bottom: 10px;
   justify-content: space-around;
 `;
 
-export const Button = styled.div`
-  width: 165px;
+export const ButtonComponent = styled.div`
+  width: ${({ size }) => (size === "large" ? "100%" : "165px")};
   float: right;
   font-size: 12px;
   color: ${({ bgColor }) => (bgColor ? white : blue)};
@@ -211,4 +212,10 @@ export const SammaryMark = styled.div`
   color: ${greenDark};
   background-color: #d1f9eb;
   font-weight: 700;
+`;
+
+export const IconWrapper = styled.span`
+  margin-right: 4px;
+  position: relative;
+  top: 3px;
 `;

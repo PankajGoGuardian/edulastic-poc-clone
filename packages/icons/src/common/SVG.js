@@ -5,7 +5,7 @@ const SVG = styled("svg")`
   height: ${({ height = 15 }) => height}px;
   fill: ${({ color = "#000" }) => (color === "#1774F0" ? color + " !important" : color)};
   left: ${({ left }) => left}px;
-
+  stroke: ${({ stroke }) => (stroke === "#1774F0" ? stroke + " !important" : stroke)};
   background: ${({ backgroundColor }) => backgroundColor};
 
   :hover {

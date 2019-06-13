@@ -5,12 +5,13 @@ import { cloneDeep, values, get, omit, set } from "lodash";
 import produce from "immer";
 import { message } from "antd";
 import { questionType } from "@edulastic/constants";
+import { helpers } from "@edulastic/common";
+import { push } from "connected-react-router";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
 import { setTestDataAction, getTestEntitySelector, setTestDataAndUpdateAction } from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
-import { push } from "connected-react-router";
 import {
   UPDATE_QUESTION,
   SET_FIRST_MOUNT,
@@ -322,15 +323,13 @@ function* saveQuestionSaga({ payload: modalItemId }) {
               set(draftData, ["data", "questions", index, "validation", "valid_response", "score"], 0);
             }
           }
-        } else {
-          if (draftData.data.questions[0].itemScore) {
-            // const itemScore = draftData.data.questions[0].itemScore;
-            // for (let [index] of draftData.data.questions.entries()) {
-            //   draftData.data.questions[index].validation.valid_response.score =
-            //     itemScore / draftData.data.questions.length;
-            // }
-            delete draftData.data.questions[0].itemScore;
-          }
+        } else if (draftData.data.questions[0].itemScore) {
+          // const itemScore = draftData.data.questions[0].itemScore;
+          // for (let [index] of draftData.data.questions.entries()) {
+          //   draftData.data.questions[index].validation.valid_response.score =
+          //     itemScore / draftData.data.questions.length;
+          // }
+          delete draftData.data.questions[0].itemScore;
         }
 
         draftData.data.questions.forEach((q, index) => {
@@ -340,6 +339,12 @@ function* saveQuestionSaga({ payload: modalItemId }) {
             } else {
               delete q.scoringDisabled;
             }
+          }
+          if (q.template) {
+            q.template = helpers.removeSpanFromTemplate(q.template);
+          }
+          if (q.templateMarkUp) {
+            q.templateMarkUp = helpers.removeSpanFromTemplate(q.templateMarkUp);
           }
         });
       }

@@ -532,7 +532,7 @@ export function* updateItemSaga({ payload }) {
     data.data.questions = yield select(getQuestionsSelector);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+
     if (payload.redirect && item._id !== payload.id) {
       yield put(
         replace(

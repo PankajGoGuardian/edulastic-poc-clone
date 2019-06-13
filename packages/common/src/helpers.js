@@ -177,6 +177,25 @@ export const reIndexResponses = html => {
   return temp;
 };
 
+export const removeSpanFromTemplate = tmpl => {
+  let temp = ` ${tmpl}`.slice(1);
+  if (!window.$) {
+    return temp;
+  }
+  const parsedHTML = $.parseHTML(temp);
+  $(parsedHTML)
+    .find("textinput, mathinput, textdropdown, response")
+    .each(function() {
+      $(this)
+        .find("span")
+        .remove("span");
+    });
+  temp = $("<div />")
+    .append(parsedHTML)
+    .html();
+  return temp;
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -187,5 +206,6 @@ export default {
   uploadToS3,
   parseTemplate,
   reIndexResponses,
-  canInsert
+  canInsert,
+  removeSpanFromTemplate
 };

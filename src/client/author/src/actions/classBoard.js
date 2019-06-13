@@ -11,7 +11,9 @@ import {
   RECEIVE_STUDENT_QUESTION_REQUEST,
   RECEIVE_CLASS_QUESTION_REQUEST,
   SET_MARK_AS_DONE,
-  UPDATE_ASSIGNMENT_STATUS
+  UPDATE_ASSIGNMENT_STATUS,
+  OPEN_ASSIGNMENT,
+  CLOSE_ASSIGNMENT
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -70,6 +72,16 @@ export const receiveAnswersAction = (assignmentId, classId, questionId, itemId) 
 
 export const markAsDoneAction = (assignmentId, classId) => ({
   type: SET_MARK_AS_DONE,
+  payload: { assignmentId, classId }
+});
+
+export const openAssignmentAction = (assignmentId, classId) => ({
+  type: OPEN_ASSIGNMENT,
+  payload: { assignmentId, classId }
+});
+
+export const closeAssignmentAction = (assignmentId, classId) => ({
+  type: CLOSE_ASSIGNMENT,
   payload: { assignmentId, classId }
 });
 

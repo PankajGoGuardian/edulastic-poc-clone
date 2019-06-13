@@ -3,11 +3,16 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { message } from "antd";
+import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 // actions
-import { receiveTestActivitydAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
+import {
+  receiveTestActivitydAction,
+  receiveClassResponseAction,
+  openAssignmentAction,
+  closeAssignmentAction
+} from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
 // ducks
@@ -267,13 +272,15 @@ class ClassBoard extends Component {
   isMobile = () => window.innerWidth < 480;
 
   handleReleaseScore = () => {
-    const { classId, assignmentId, setReleaseScore, showScore } = this.props;
+    const { match, setReleaseScore, showScore } = this.props;
+    const { assignmentId, classId } = match.params;
     const isReleaseScore = !showScore;
     setReleaseScore(assignmentId, classId, isReleaseScore);
   };
 
   handleMarkAsDone = () => {
-    const { setMarkAsDone, assignmentId, classId } = this.props;
+    const { setMarkAsDone, match } = this.props;
+    const { assignmentId, classId } = match.params;
     setMarkAsDone(assignmentId, classId);
   };
 
@@ -306,6 +313,18 @@ class ClassBoard extends Component {
     this.setState(state => {
       return { ...this.state, studentReportCardModalVisibility: false };
     });
+  };
+
+  handleOpenAssignment = () => {
+    const { openAssignment, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    openAssignment(assignmentId, classId);
+  };
+
+  handleCloseAssignment = () => {
+    const { closeAssignment, match } = this.props;
+    const { assignmentId, classId } = match.params;
+    closeAssignment(assignmentId, classId);
   };
 
   render() {
@@ -453,6 +472,24 @@ class ClassBoard extends Component {
                   >
                     Mark as Done
                   </RedirectButton>
+                  <Dropdown
+                    overlay={
+                      <Menu>
+                        <Menu.Item onClick={this.handleOpenAssignment}>
+                          <RedirectButton>Open</RedirectButton>
+                        </Menu.Item>
+                        <Menu.Item onClick={this.handleCloseAssignment}>
+                          <RedirectButton>Close</RedirectButton>
+                        </Menu.Item>
+                      </Menu>
+                    }
+                    placement="bottomLeft"
+                  >
+                    <RedirectButton>
+                      <i class="fa fa-bars" aria-hidden="true" />
+                      &nbsp; More
+                    </RedirectButton>
+                  </Dropdown>
                 </FeaturesSwitch>
               </StyledFlexContainer>
             }
@@ -608,7 +645,9 @@ const enhance = compose(
       studentUnselectAll: gradebookUnSelectAllAction,
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
-      setMarkAsDone: markAsDoneAction
+      setMarkAsDone: markAsDoneAction,
+      openAssignment: openAssignmentAction,
+      closeAssignment: closeAssignmentAction
     }
   )
 );

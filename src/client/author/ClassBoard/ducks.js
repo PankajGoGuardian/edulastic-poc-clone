@@ -15,7 +15,9 @@ import {
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
   UPDATE_RELEASE_SCORE,
-  SET_MARK_AS_DONE
+  SET_MARK_AS_DONE,
+  OPEN_ASSIGNMENT,
+  CLOSE_ASSIGNMENT
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -91,12 +93,32 @@ function* markAsDoneSaga({ payload }) {
   }
 }
 
+function* openAssignmentSaga({ payload }) {
+  try {
+    yield call(classBoardApi.openAssignment, payload);
+    yield call(message.success, "Success");
+  } catch (err) {
+    yield call(message.error, "Failed to open");
+  }
+}
+
+function* closeAssignmentSaga({ payload }) {
+  try {
+    yield call(classBoardApi.closeAssignment, payload);
+    yield call(message.success, "Success");
+  } catch (err) {
+    yield call(message.error, "Failed to close");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
     yield takeEvery(RECEIVE_TESTACTIVITY_REQUEST, receiveTestActivitySaga),
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
-    yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga)
+    yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
+    yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
+    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga)
   ]);
 }
 

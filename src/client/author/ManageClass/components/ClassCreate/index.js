@@ -165,6 +165,7 @@ class ClassCreate extends React.Component {
                   searchCourse={this.searchCourse}
                   isSearching={isSearching}
                   setSubject={setSubject}
+                  userOrgData={userOrgData}
                 />
               </RightContainer>
             </FlexContainer>

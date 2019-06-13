@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { filter, isArray, isEmpty, debounce } from "lodash";
 
@@ -11,7 +11,6 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 const { allGrades, allSubjects } = selectsData;
 
 const startDate = moment();
-const endDate = moment().add(1, "years");
 
 // eslint-disable-next-line max-len
 const RightFields = ({
@@ -23,9 +22,17 @@ const RightFields = ({
   filteredCurriculums,
   setSubject,
   selectedSubject,
+  userOrgData,
   ...restProps
 }) => {
-
+  const [defaultTermEndDate, setDefaultTermEndDate] = useState(null);
+  useEffect(() => {
+    userOrgData.terms.forEach(term => {
+      if (term.endDate > Date.now()) {
+        setDefaultTermEndDate(term.endDate);
+      }
+    });
+  }, []);
   const updateSubject = e => {
     setSubject(e);
   };
@@ -60,7 +67,13 @@ const RightFields = ({
         >
           <DatePicker data-cy="startDate" format="DD MMM, YYYY" placeholder="Open Date" />
         </FieldLabel>
-        <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
+        <FieldLabel
+          label="Class End Date"
+          optional
+          {...restProps}
+          fiedlName="endDate"
+          initialValue={moment(defaultTermEndDate)}
+        >
           <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
         </FieldLabel>
       </StyledFlexContainer>
@@ -103,18 +116,16 @@ const RightFields = ({
             <Select.Option key="subject_first" value="subject_first" disabled>
               <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
+          ) : isEmpty(filteredCurriculums) ? (
+            <Select.Option key="loading" value="loading" disabled>
+              <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
+            </Select.Option>
           ) : (
-            isEmpty(filteredCurriculums) ? (
-              <Select.Option key="loading" value="loading" disabled>
-                <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
+            filteredCurriculums.map(el => (
+              <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                {el.text}
               </Select.Option>
-            ) : ( 
-              filteredCurriculums.map(el => (
-                <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                  {el.text}
-                </Select.Option>
-              ))
-            )
+            ))
           )}
         </Select>
       </FieldLabel>
@@ -166,7 +177,8 @@ RightFields.propTypes = {
   getFieldDecorator: PropTypes.func.isRequired,
   filteredCurriculums: PropTypes.array.isRequired,
   setSubject: PropTypes.func.isRequired,
-  selectedSubject: PropTypes.string.isRequired
+  selectedSubject: PropTypes.string.isRequired,
+  userOrgData: PropTypes.object.isRequired
 };
 
 RightFields.defaultProps = {

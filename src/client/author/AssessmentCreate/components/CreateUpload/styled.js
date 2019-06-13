@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { grey, darkGrey } from "@edulastic/colors";
+import { darkGrey } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 
 export const UploadDescription = styled.p`
@@ -17,7 +17,6 @@ export const CreateUploadContainer = styled(FlexContainer)`
   flex-direction: column;
   width: 50%;
   height: 70%;
-  border-right: 1px dashed ${grey};
   /* todo: delete when upload icon is available */
   padding-bottom: 90px;
 `;

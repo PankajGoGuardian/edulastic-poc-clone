@@ -10,6 +10,7 @@ import { withNamespaces } from "@edulastic/localization";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Container, Element, ListItems, SpinContainer, PaginationContainer } from "./styled";
 import Item from "../Item/Item";
+import { uniq } from "lodash";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
 import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";
@@ -37,6 +38,13 @@ import { addItemToCartAction } from "../../ducks";
 import FilterButton from "../FilterButton/FilterButton";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import {
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  updateDefaultSubjectAction,
+  updateDefaultGradesAction
+} from "../../../ItemDetail/ducks";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -68,7 +76,17 @@ class Contaier extends Component {
 
   componentDidMount() {
     const { search } = this.state;
-    const { receiveItems, curriculums, getCurriculums, match = {}, limit, setDefaultTestData } = this.props;
+    const {
+      receiveItems,
+      curriculums,
+      getCurriculums,
+      match = {},
+      limit,
+      setDefaultTestData,
+      defaultGrades,
+      defaultSubject,
+      interestedCurriculums
+    } = this.props;
     const { params = {} } = match;
     setDefaultTestData();
     if (params.filterType) {
@@ -86,7 +104,30 @@ class Contaier extends Component {
       });
       receiveItems({ ...updatedSearch, filter }, 1, limit);
     } else {
-      receiveItems(search, 1, limit);
+      let grades = defaultGrades;
+      let subject = defaultSubject;
+      let filteredInterestedCurriculum;
+      if (!grades.length && !subject) {
+        filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
+        if (!filteredInterestedCurriculum.length) {
+          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
+          if (!filteredInterestedCurriculum.length) {
+            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+          }
+        }
+
+        grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
+        grades = grades.length ? uniq(grades.join(",").split(",")) : [];
+        subject = filteredInterestedCurriculum[0].subject || "";
+      }
+      this.setState({
+        search: {
+          ...search,
+          grades,
+          subject
+        }
+      });
+      receiveItems({ ...search, grades, subject }, 1, limit);
     }
     if (curriculums.length === 0) {
       getCurriculums();
@@ -150,6 +191,7 @@ class Contaier extends Component {
 
   handleSearchFieldChange = fieldName => value => {
     const { search } = this.state;
+    const { updateDefaultGrades, udpateDefaultSubject } = this.props;
     let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
@@ -158,6 +200,8 @@ class Contaier extends Component {
     if (fieldName === "subject") {
       const { clearDictStandards } = this.props;
       clearDictStandards();
+      storeInLocalStorage("defaultSubject", value);
+      udpateDefaultSubject(value);
       updatedKeys = {
         ...search,
         [fieldName]: value,
@@ -169,6 +213,10 @@ class Contaier extends Component {
         ...search,
         [fieldName]: value
       };
+    }
+    if (fieldName === "grades") {
+      updateDefaultGrades(value);
+      storeInLocalStorage("defaultGrades", value);
     }
     this.setState(
       {
@@ -400,6 +448,8 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       selectedCartItems: getSelectedItemSelector(state).data,
+      defaultGrades: getDefaultGradesSelector(state),
+      defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
@@ -409,6 +459,8 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       setDefaultTestData: setDefaultTestDataAction,
+      udpateDefaultSubject: updateDefaultSubjectAction,
+      updateDefaultGrades: updateDefaultGradesAction,
       addItemToCart: addItemToCartAction
     }
   )

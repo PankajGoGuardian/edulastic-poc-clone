@@ -10,7 +10,7 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-
+import { uniq } from "lodash";
 import {
   ScrollBox,
   Container,
@@ -34,7 +34,11 @@ import {
   getTestsLoadingSelector,
   getTestsCountSelector,
   getTestsLimitSelector,
-  getTestsPageSelector
+  getTestsPageSelector,
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
 } from "../../ducks";
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
@@ -56,6 +60,8 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -134,6 +140,9 @@ class TestList extends Component {
       location,
       playlist,
       mode,
+      defaultGrades,
+      defaultSubject,
+      interestedCurriculums = [],
       match: { params = {} }
     } = this.props;
     const { search } = this.state;
@@ -207,7 +216,29 @@ class TestList extends Component {
           search
         });
       } else {
-        receiveTests({ page: 1, limit, search });
+        let grades = defaultGrades;
+        let subject = defaultSubject;
+        let filteredInterestedCurriculum;
+        if (!grades.length && !subject) {
+          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
+          if (!filteredInterestedCurriculum.length) {
+            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
+            if (!filteredInterestedCurriculum.length) {
+              filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+            }
+          }
+          grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
+          grades = grades.length ? uniq(grades.join(",").split(",")) : [];
+          subject = filteredInterestedCurriculum[0].subject || "";
+        }
+        this.setState({
+          search: {
+            ...search,
+            grades,
+            subject
+          }
+        });
+        receiveTests({ page: 1, limit, search: { ...search, grades, subject } });
       }
     }
   }
@@ -264,12 +295,18 @@ class TestList extends Component {
         [name]: value,
         curriculumId: ""
       };
+      updateDefaultSubjectAction(value);
+      storeInLocalStorage("defaultSubject", value);
       clearDictStandards();
     } else {
       updatedKeys = {
         ...search,
         [name]: value
       };
+    }
+    if (name === "grades") {
+      updateDefaultGradesAction(value);
+      storeInLocalStorage("defaultGrades", value);
     }
     this.setState(
       {
@@ -702,6 +739,9 @@ const enhance = compose(
       count: getTestsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
+      defaultGrades: getDefaultGradesSelector(state),
+      defaultSubject: getDefaultSubjectSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),
@@ -713,6 +753,8 @@ const enhance = compose(
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
+      updateDefaultSubject: updateDefaultSubjectAction,
+      updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,
       clearTestData: clearTestDataAction
     }

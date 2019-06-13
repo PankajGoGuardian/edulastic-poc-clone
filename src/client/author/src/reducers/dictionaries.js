@@ -109,7 +109,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         alignments: [getNewAlignmentState()]
       };
     case SET_ALIGNMENT_FROM_QUESTION:
-      const authorAlignments = payload.filter(item => !item.isEquivalentStandard && item.curriculumId);
+      const authorAlignments = payload.filter(item => !item.isEquivalentStandard);
       return {
         ...state,
         alignments: authorAlignments

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round } from "lodash";
+import { round, shuffle } from "lodash";
 import { Col, Row } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
 
@@ -60,7 +60,7 @@ export default class DisneyCardContainer extends Component {
   render() {
     const { testActivity } = this.state;
     const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode } = this.props;
-    const styledCard = [];
+    let styledCard = [];
 
     if (testActivity.length > 0) {
       testActivity.map((student, index) => {
@@ -197,6 +197,9 @@ export default class DisneyCardContainer extends Component {
         styledCard.push(studentData);
         return null;
       });
+    }
+    if (isPresentationMode) {
+      styledCard = shuffle(styledCard);
     }
 
     return <StyledCardContiner>{styledCard}</StyledCardContiner>;

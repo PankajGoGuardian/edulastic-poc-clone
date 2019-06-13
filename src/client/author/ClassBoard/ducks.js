@@ -10,6 +10,8 @@ import {
   updateCloseAssignmentsAction,
   updateOpenAssignmentsAction
 } from "../src/actions/classBoard";
+import { togglePresentationModeAction } from "../src/actions/testActivity";
+
 import { createFakeData } from "./utils";
 
 import {
@@ -60,6 +62,7 @@ function* receiveTestActivitySaga({ payload }) {
       payload: { gradebookData, additionalData }
     });
 
+    yield put(togglePresentationModeAction(false));
     const releaseScore = additionalData.showScore;
     yield put(setShowScoreAction(releaseScore));
   } catch (err) {

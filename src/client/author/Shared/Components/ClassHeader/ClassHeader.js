@@ -100,6 +100,8 @@ class ClassHeader extends Component {
     });
   };
 
+
+
   onStudentReportCardMenuModalOk = obj => {
     this.setState(state => {
       return {
@@ -123,6 +125,14 @@ class ClassHeader extends Component {
     this.setState(state => {
       return { ...this.state, studentReportCardModalVisibility: false };
     });
+  };
+
+  toggleCurrentMode = () => {
+    const { togglePresentationMode, isPresentationMode } = this.props;
+    if (!isPresentationMode) {
+      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
+    }
+    togglePresentationMode(!isPresentationMode);
   };
 
   render() {
@@ -222,8 +232,7 @@ class ClassHeader extends Component {
               checkedChildren={<Icon type="check"> presentation </Icon>}
               unCheckedChildren={<Icon type="close" />}
               value={isPresentationMode}
-              defaultChecked={isPresentationMode}
-              onClick={() => togglePresentationMode(!isPresentationMode)}
+              onClick={this.toggleCurrentMode}
             />
           </StyledTabs>
         </StyledTabContainer>

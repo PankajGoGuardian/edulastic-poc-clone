@@ -266,7 +266,10 @@ const ActionContainer = ({
               Actions <StyledIcon type="caret-down" theme="filled" size={16} />
             </ActionButton>
           </Dropdown>
-          <AddStudentButton>Add Multiple Students</AddStudentButton>
+          <AddStudentButton>
+            <Icon type="plus" />
+            Add Multiple Students
+          </AddStudentButton>
         </ButtonsWrapper>
       </AddStudentDivider>
     </>

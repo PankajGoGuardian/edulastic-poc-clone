@@ -4,7 +4,12 @@ import { message } from "antd";
 import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
 
-import { setShowScoreAction, updateAssignmentStatusAction } from "../src/actions/classBoard";
+import {
+  setShowScoreAction,
+  updateAssignmentStatusAction,
+  updateCloseAssignmentsAction,
+  updateOpenAssignmentsAction
+} from "../src/actions/classBoard";
 import { createFakeData } from "./utils";
 
 import {
@@ -96,6 +101,7 @@ function* markAsDoneSaga({ payload }) {
 function* openAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.openAssignment, payload);
+    yield put(updateOpenAssignmentsAction(payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
     yield call(message.error, "Failed to open");
@@ -105,6 +111,7 @@ function* openAssignmentSaga({ payload }) {
 function* closeAssignmentSaga({ payload }) {
   try {
     yield call(classBoardApi.closeAssignment, payload);
+    yield put(updateCloseAssignmentsAction(payload.classId));
     yield call(message.success, "Success");
   } catch (err) {
     yield call(message.error, "Failed to close");

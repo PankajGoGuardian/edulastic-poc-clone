@@ -356,14 +356,15 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
-    const questions = this.getQuestions();
-    const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     const isMobile = this.isMobile();
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
     const firstStudentId = get(this.props.entities, [0, "studentId"]);
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
+    const { canOpenClass = [], canCloseClass = [] } = additionalData || {};
+    const canOpen = canOpenClass.includes(classId);
+    const canClose = canCloseClass.includes(classId);
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -475,12 +476,17 @@ class ClassBoard extends Component {
                   <Dropdown
                     overlay={
                       <Menu>
-                        <Menu.Item onClick={this.handleOpenAssignment}>
-                          <RedirectButton>Open</RedirectButton>
-                        </Menu.Item>
-                        <Menu.Item onClick={this.handleCloseAssignment}>
-                          <RedirectButton>Close</RedirectButton>
-                        </Menu.Item>
+                        {!canOpen && !canClose && <span>&nbsp; --------</span>}
+                        {canOpen && (
+                          <Menu.Item onClick={this.handleOpenAssignment}>
+                            <RedirectButton>Open</RedirectButton>
+                          </Menu.Item>
+                        )}
+                        {canClose && (
+                          <Menu.Item onClick={this.handleCloseAssignment}>
+                            <RedirectButton>Close</RedirectButton>
+                          </Menu.Item>
+                        )}
                       </Menu>
                     }
                     placement="bottomLeft"

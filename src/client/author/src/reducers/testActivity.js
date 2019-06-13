@@ -5,7 +5,9 @@ import {
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
   UPDATE_ASSIGNMENT_STATUS,
-  TOGGLE_PRESENTATION_MODE
+  TOGGLE_PRESENTATION_MODE,
+  UPDATE_OPEN_ASSIGNMENTS,
+  UPDATE_CLOSE_ASSIGNMENTS
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -173,6 +175,22 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         presentationMode: payload
+      };
+    case UPDATE_OPEN_ASSIGNMENTS:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
+        }
+      };
+    case UPDATE_CLOSE_ASSIGNMENTS:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
+        }
       };
     default:
       return state;

@@ -17,6 +17,7 @@ import {
   RadioGroup,
   InputTitle,
   InputPassword,
+  MaxAttempts,
   Body,
   Title,
   Block,
@@ -28,7 +29,6 @@ import {
   StyledRadioGroup,
   RadioWrapper,
   TestTypeSelect,
-  GenerateReportSelect,
   ActivityInput,
   Container,
   MaxAnswerChecksInput,
@@ -64,16 +64,7 @@ const testTypes = {
 };
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
-const generateReportTypes = {
-  YES: {
-    val: "Yes",
-    type: true
-  },
-  NO: {
-    val: "No",
-    type: false
-  }
-};
+
 class MainSetting extends Component {
   constructor(props) {
     super(props);
@@ -106,7 +97,9 @@ class MainSetting extends Component {
 
   updateAttempt = e => {
     const { setMaxAttempts } = this.props;
-    setMaxAttempts(e.target.value);
+    let { value = 0 } = e.target;
+    if (value < 0) value = 0;
+    setMaxAttempts(value);
   };
 
   setPassword = e => {
@@ -122,14 +115,12 @@ class MainSetting extends Component {
           setMaxAttempts(1);
           setTestData({
             releaseScore: releaseGradeLabels.DONT_RELEASE,
-            generateReport: true,
             maxAnswerChecks: 0
           });
         } else {
           setMaxAttempts(3);
           setTestData({
             releaseScore: releaseGradeLabels.WITH_ANSWERS,
-            generateReport: false,
             maxAnswerChecks: 3
           });
         }
@@ -198,10 +189,10 @@ class MainSetting extends Component {
       scoringType,
       penalty,
       testType,
-      generateReport,
       calcType,
       assignmentPassword,
-      markAsDone
+      markAsDone,
+      maxAttempts
     } = entity;
     const isSmallSize = windowWidth < 993 ? 1 : 0;
 
@@ -269,6 +260,19 @@ class MainSetting extends Component {
                   </TestTypeSelect>
                 </Body>
               </Row>
+            </Block>
+            <Block id="maximum-attempts-allowed">
+              <Title>Maximum Attempts Allowed </Title>
+              <Body>
+                <MaxAttempts
+                  type="number"
+                  size="large"
+                  value={maxAttempts}
+                  onChange={this.updateAttempt}
+                  min={1}
+                  step={1}
+                />
+              </Body>
             </Block>
             <FeaturesSwitch inputFeatures="assessmentSuperPowersMarkAsDone" actionOnInaccessible="hidden">
               <Block id="mark-as-done" smallSize={isSmallSize}>

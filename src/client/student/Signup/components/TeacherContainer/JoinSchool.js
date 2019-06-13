@@ -27,7 +27,9 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
     <OptionBody>
       <SchoolInfo>
         <span>{school.schoolName || school.name}</span>
-        {`${schoolLocation.city}, ${schoolLocation.state}, ${schoolLocation.zip}`}
+        {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
+          schoolLocation.state ? schoolLocation.state + ", " : ""
+        } ${schoolLocation.zip}`}
       </SchoolInfo>
       <DistrictInfo>
         <span>District:</span>

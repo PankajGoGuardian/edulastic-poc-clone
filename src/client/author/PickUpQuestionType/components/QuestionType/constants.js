@@ -2077,11 +2077,6 @@ export const getCards = onSelectQuestionType => {
       type: "math",
       cardImage: MTEssay,
       stimulus: "",
-      validation: {
-        valid_response: {
-          score: 1
-        }
-      },
       data: {
         title: "Math essay",
         stimulus: "",
@@ -2090,6 +2085,11 @@ export const getCards = onSelectQuestionType => {
           default_mode: "math",
           fontsize: "",
           text_formatting_options: ["bold", "italic", "underline", "unorderedList"]
+        },
+        validation: {
+          valid_response: {
+            score: 1
+          }
         },
         numberPad: [
           "7",

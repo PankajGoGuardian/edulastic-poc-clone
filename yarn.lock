@@ -13782,10 +13782,10 @@ react-joyride@^2.0.5:
     scrollparent "^2.0.1"
     tree-changes "^0.4.0"
 
-react-jsx-parser@^1.17.0:
-  version "1.17.0"
-  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.17.0.tgz#4410e2276d5a0c49e6e61907f9383bf69a7caa11"
-  integrity sha512-h/+UR4P3/SSWA1ndJBn2fP/CYdvoB1d+jwiN06FKy8gE5/qn9lqiR40OS07Wqu2TWjPFK+XZTRyj4fqPCBdk5w==
+react-jsx-parser@^1.18.0:
+  version "1.18.0"
+  resolved "https://registry.yarnpkg.com/react-jsx-parser/-/react-jsx-parser-1.18.0.tgz#705442f65e5dae79c4ff0a7e16114dc389536852"
+  integrity sha512-OJC7hg/Q3f7zPhQWTlTIiMBDI5BsFhIUIcNwgpp7L01lOKM+k3b9SdC7hSPIwWxTjQ3RnzDw0mSqHE/TZ1L/9g==
   dependencies:
     acorn-jsx "^4.1.1"
 

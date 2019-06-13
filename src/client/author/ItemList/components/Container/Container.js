@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
+import { debounce } from "lodash";
+
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
@@ -176,6 +178,23 @@ class Contaier extends Component {
     );
   };
 
+  searchDebounce = debounce(this.handleSearch, 500);
+
+  handleSearchInputChange = e => {
+    const { search } = this.state;
+    const searchString = e.target.value;
+    const updatedKeys = {
+      ...search,
+      searchString
+    };
+    this.setState(
+      {
+        search: updatedKeys
+      },
+      this.searchDebounce
+    );
+  };
+
   handleCreate = async () => {
     const { createItem } = this.props;
     createItem({
@@ -283,6 +302,7 @@ class Contaier extends Component {
         <Container>
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
+            onSearchInputChange={this.handleSearchInputChange}
             onSearch={this.handleSearch}
             onClearSearch={this.handleClearSearch}
             onLabelSearch={this.handleLabelSearch}

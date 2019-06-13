@@ -108,7 +108,8 @@ function* login({ payload }) {
       "role",
       "orgData",
       "features",
-      "currentSignUpState"
+      "currentSignUpState",
+      "ipZipCode"
     ]);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
@@ -172,7 +173,16 @@ function* signup({ payload }) {
     if (_responseMsg && !result) {
       yield call(message.error, _responseMsg);
     } else {
-      const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData", "currentSignUpState"]);
+      const user = pick(result, [
+        "_id",
+        "firstName",
+        "lastName",
+        "email",
+        "role",
+        "orgData",
+        "currentSignUpState",
+        "ipZipCode"
+      ]);
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
       yield put(signupSuccessAction(result));

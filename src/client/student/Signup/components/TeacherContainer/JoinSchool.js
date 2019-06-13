@@ -131,7 +131,8 @@ const JoinSchool = ({
                   filterKeys={["title", "zip", "city"]}
                 />
                 <Actions>
-                  <AnchorBtn> I want to homeschool</AnchorBtn>
+                  {/* I want to home school removed temporarily */}
+                  {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
                   <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
                   {selected && (
                     <DistrictName>

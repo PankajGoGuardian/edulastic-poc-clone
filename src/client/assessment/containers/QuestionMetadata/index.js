@@ -93,6 +93,9 @@ const QuestionMetadata = ({
 
   const handleUpdateQuestionAlignment = (index, alignment) => {
     const newAlignments = (questionData.alignment || []).map((c, i) => (i === index ? alignment : c));
+    if (!newAlignments.length) {
+      newAlignments.push(alignment);
+    }
     const newQuestionData = {
       ...questionData,
       alignment: newAlignments

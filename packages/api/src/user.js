@@ -40,6 +40,15 @@ const fetchUsers = data =>
     })
     .then(({ data: response }) => response);
 
+const fetchUsersForShare = data =>
+  api
+    .callApi({
+      url: `user/search`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
+
 const createUser = data =>
   api
     .callApi({
@@ -112,6 +121,7 @@ const validateClassCode = classCode =>
 export default {
   getUser,
   fetchUsers,
+  fetchUsersForShare,
   createUser,
   updateUser,
   deleteUser,

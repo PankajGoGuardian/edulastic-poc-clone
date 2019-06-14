@@ -41,15 +41,6 @@ const ActionMenu = (onOpenReleaseScoreSettings, currentAssignment, history, show
     </ActionButtonWrapper>
   );
   MenuItems.push(
-    <Menu.Item key="add-edit-Assignment">
-      <StyledLink target="_blank" rel="noopener noreferrer">
-        <img alt="icon" src={simpleIcon} />
-        <SpaceElement />
-        Add/Edit Assignment
-      </StyledLink>
-    </Menu.Item>
-  );
-  MenuItems.push(
     <Menu.Item key="edit-Assignment">
       <Link style={{ marginTop: 2 }} to={`/author/tests/${currentAssignment.testId}/editAssigned`}>
         <img alt="icon" src={classIcon} />

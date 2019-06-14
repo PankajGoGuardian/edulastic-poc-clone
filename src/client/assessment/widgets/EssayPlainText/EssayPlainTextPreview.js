@@ -27,6 +27,8 @@ const EssayPlainTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
+  location,
+  testItem,
   qIndex
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
@@ -49,9 +51,11 @@ const EssayPlainTextPreview = ({
 
   const handleTextChange = e => {
     const val = e.target.value;
-    setText(val);
-    setWordCount(val.split(" ").filter(i => !!i).length);
-    saveAnswer(val);
+    if (typeof val === "string") {
+      setText(val);
+      setWordCount(val.split(" ").filter(i => !!i).length);
+      saveAnswer(val);
+    }
   };
 
   const handleSelect = () => {
@@ -116,6 +120,12 @@ const EssayPlainTextPreview = ({
   const maxHeight = get(item, "ui_style.max_height", "inherit");
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
 
+  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
+
+  const isTestReview = qIndex !== null && testItem;
+
+  const isReadOnly = (isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
+
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -165,6 +175,7 @@ const EssayPlainTextPreview = ({
         onChange={handleTextChange}
         size="large"
         onPaste={preventEvent}
+        readOnly={isReadOnly}
         onCopy={preventEvent}
         onCut={preventEvent}
         placeholder={item.placeholder || ""}
@@ -189,11 +200,18 @@ EssayPlainTextPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any.isRequired,
+  showQuestionNumber: PropTypes.bool,
+  location: PropTypes.any.isRequired,
+  testItem: PropTypes.bool,
+  qIndex: PropTypes.number,
   theme: PropTypes.object.isRequired
 };
 
 EssayPlainTextPreview.defaultProps = {
-  smallSize: false
+  smallSize: false,
+  testItem: false,
+  showQuestionNumber: false,
+  qIndex: null
 };
 
 const enhance = compose(

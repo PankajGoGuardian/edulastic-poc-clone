@@ -630,7 +630,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSEssayRichText,
       data: {
         title: "Essay with rich text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_RICH_TEXT,
         show_word_count: true,
         max_word: 1000,
@@ -671,7 +671,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSEssayPlainText,
       data: {
         title: "Essay with plain text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_PLAIN_TEXT,
         show_copy: true,
         show_cut: true,
@@ -689,7 +689,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSShortText,
       data: {
         title: "Short text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.SHORT_TEXT,
         validation: {
           scoring_type: EXACT_MATCH,

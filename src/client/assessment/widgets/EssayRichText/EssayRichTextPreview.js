@@ -38,11 +38,10 @@ const EssayRichTextPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
-  previewTab,
   testItem,
-  location
+  location,
+  previewTab
 }) => {
-  console.log(userAnswer, "userAnswer");
   const toolbarButtons = getToolBarButtons(item);
 
   const [showCharacters, setShowCharacters] = useState(false);
@@ -63,7 +62,7 @@ const EssayRichTextPreview = ({
   );
 
   useEffect(() => {
-    if (Array.isArray(userAnswer)) {
+    if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
       setText("");
       saveAnswer("");
       setWordCount(0);
@@ -72,16 +71,18 @@ const EssayRichTextPreview = ({
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
-    const wordsCount =
-      typeof val === "string"
-        ? stripTags(val)
-            .split(" ")
-            .filter(i => !!i.trim()).length
-        : 0;
-    const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
-    setWordCount(wordsCount + mathInputCount);
-    setText(val);
-    saveAnswer(val);
+    if (typeof val === "string") {
+      const wordsCount =
+        typeof val === "string"
+          ? stripTags(val)
+              .split(" ")
+              .filter(i => !!i.trim()).length
+          : 0;
+      const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
+      setWordCount(wordsCount + mathInputCount);
+      setText(val);
+      saveAnswer(val);
+    }
   };
 
   const handleCharacterSelect = char => {
@@ -110,7 +111,12 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  const isReadOnly = (previewTab === "show" || testItem) && !location.pathname.includes("student");
+  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
+
+  const isTestReview = qIndex !== null && testItem;
+
+  const isReadOnly =
+    (previewTab === "show" || isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
 
   return item.id ? (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
@@ -172,8 +178,9 @@ EssayRichTextPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
-  testItem: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
+  location: PropTypes.any.isRequired,
+  testItem: PropTypes.bool,
   qIndex: PropTypes.number
 };
 

@@ -80,7 +80,7 @@ function* receiveLastPlayListSaga() {
 function* receiveRecentPlayListsSaga() {
   try {
     const result = yield call(userContextApi.getRecentPlayLists);
-    yield put(updateRecentPlayListsAction(result ? result.value : {}));
+    yield put(updateRecentPlayListsAction(result ? result.value : []));
   } catch (err) {
     const errorMessage = "Receive recent playlist is failing";
     yield call(message.error, errorMessage);

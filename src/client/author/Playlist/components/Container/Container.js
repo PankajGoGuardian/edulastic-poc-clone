@@ -173,7 +173,7 @@ class TestList extends Component {
 
         grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
         grades = grades.length ? uniq(grades.join(",").split(",")) : [];
-        subject = filteredInterestedCurriculum[0].subject || "";
+        subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
       }
       this.setState({
         search: {

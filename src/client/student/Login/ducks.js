@@ -139,7 +139,11 @@ function* login({ payload }) {
 function* signup({ payload }) {
   try {
     const { name, email, password, role, classCode } = payload;
-    const nameList = name.split(" ");
+    let nameList = name.split(" ");
+    nameList = nameList.filter(item => (item && item.trim() ? true : false));
+    if (!nameList.length) {
+      throw { message: "Please provide your full name." };
+    }
     let firstName;
     let lastName;
     let middleName;

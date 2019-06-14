@@ -141,7 +141,7 @@ class SubjectGrade extends React.Component {
 
                   <Form.Item label="Subject">
                     {getFieldDecorator("subject", {
-                      rules: [{ required: true, message: "Subject is not selected" }]
+                      rules: [{ required: true, message: "Subject Area is not selected" }]
                     })(
                       <GradeSelect size="large" placeholder="Select a subject" onSelect={this.updateSubject} showArrow>
                         {_allSubjects.map(el => (
@@ -154,7 +154,7 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator("standard", {
-                      rules: [{ required: true, message: "standard Area is not selected" }]
+                      rules: [{ required: false, message: "Standard Area is not selected" }]
                     })(
                       <GradeSelect
                         optionFilterProp="children"

@@ -101,9 +101,7 @@ const RemoteAutocompleteDropDown = ({
   }, []);
 
   useInternalEffect(() => {
-    if (isLoading === true) {
-      setDropDownData([...data]);
-    }
+    setDropDownData([...data]);
   }, [isLoading]);
 
   const buildDropDownData = datum => {
@@ -116,7 +114,7 @@ const RemoteAutocompleteDropDown = ({
     });
 
     let arr;
-    if (addCreateNewOption) {
+    if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
       let existingArr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>

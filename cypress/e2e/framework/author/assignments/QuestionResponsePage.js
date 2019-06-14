@@ -133,47 +133,64 @@ export default class QuestionResponsePage {
   // MCQ
   getLabels = qcard => qcard.find("label");
 
+  verifyLabelChecked = (quecard, choice) =>
+    this.getLabels(quecard)
+      .contains(choice)
+      .closest("label")
+      .find("input")
+      .should("be.checked");
+
+  verifyLabelClass = (quecard, choice, classs) =>
+    this.getLabels(quecard)
+      .contains(choice)
+      .closest("label")
+      .should("have.class", classs);
+
+  verifyLabelBackgroundColor = (quecard, choice, color) =>
+    this.getLabels(quecard)
+      .contains(choice)
+      .closest("label")
+      .should("have.css", "background-color", color);
+
   // CHOICE MATRIX
 
-  verifyAnseredMatrix = (card, answer, steams) => {
+  getMatrixTableRows = card =>
     card
       .find('[data-cy="matrixTable"]')
       .children()
-      .find("tr.ant-table-row")
-      .then(ele => {
-        Object.keys(answer).forEach(chKey => {
-          cy.wrap(ele)
-            .contains(chKey)
-            .closest("tr")
-            .then(row => {
-              cy.wrap(row)
-                .find("input")
-                .eq(steams.indexOf(answer[chKey]))
-                .should("be.checked");
-            });
-        });
+      .find("tr.ant-table-row");
+
+  verifyAnseredMatrix = (card, answer, steams) => {
+    this.getMatrixTableRows(card).then(ele => {
+      Object.keys(answer).forEach(chKey => {
+        cy.wrap(ele)
+          .contains(chKey)
+          .closest("tr")
+          .then(row => {
+            cy.wrap(row)
+              .find("input")
+              .eq(steams.indexOf(answer[chKey]))
+              .should("be.checked");
+          });
       });
+    });
   };
 
   verifyCorrectAnseredMatrix = (card, correct, steams) => {
-    card
-      .find('[data-cy="matrixTable"]')
-      .children()
-      .find("tr.ant-table-row")
-      .then(ele => {
-        Object.keys(correct).forEach(chKey => {
-          cy.wrap(ele)
-            .contains(chKey)
-            .closest("tr")
-            .then(row => {
-              cy.wrap(row)
-                .find("input")
-                .eq(steams.indexOf(correct[chKey]))
-                .closest("div")
-                .should("have.css", "background-color", queColor.CLEAR_DAY);
-            });
-        });
+    this.getMatrixTableRows(card).then(ele => {
+      Object.keys(correct).forEach(chKey => {
+        cy.wrap(ele)
+          .contains(chKey)
+          .closest("tr")
+          .then(row => {
+            cy.wrap(row)
+              .find("input")
+              .eq(steams.indexOf(correct[chKey]))
+              .closest("div")
+              .should("have.css", "background-color", queColor.CLEAR_DAY);
+          });
       });
+    });
   };
 
   verifyNoQuestionResponseCard = studentName => {
@@ -199,19 +216,21 @@ export default class QuestionResponsePage {
         switch (attemptType) {
           case attemptTypes.RIGHT:
             if (Cypress._.isArray(right))
-              right.forEach(choice =>
-                this.getLabels(cy.get("@quecard"))
+              right.forEach(
+                choice => this.verifyLabelChecked(cy.get("@quecard"), choice)
+                /*  this.getLabels(cy.get("@quecard"))
                   .contains(choice)
                   .closest("label")
                   .find("input")
-                  .should("be.checked")
+                  .should("be.checked") */
               );
             else {
-              this.getLabels(cy.get("@quecard"))
+              this.verifyLabelChecked(cy.get("@quecard"), right);
+              /* this.getLabels(cy.get("@quecard"))
                 .contains(right)
                 .closest("label")
                 .find("input")
-                .should("be.checked");
+                .should("be.checked"); */
             }
 
             // this.verifyScoreRight(cy.get("@quecard"), points);
@@ -219,21 +238,27 @@ export default class QuestionResponsePage {
 
           case attemptTypes.WRONG:
             if (Cypress._.isArray(wrong)) {
-              wrong.forEach(choice =>
-                this.getLabels(cy.get("@quecard"))
+              wrong.forEach(choice => {
+                this.verifyLabelChecked(cy.get("@quecard"), choice);
+                this.verifyLabelClass(cy.get("@quecard"), choice, attemptTypes.WRONG);
+
+                /*  this.getLabels(cy.get("@quecard"))
                   .contains(choice)
                   .closest("label")
                   .should("have.class", attemptTypes.WRONG)
                   .find("input")
-                  .should("be.checked")
-              );
+                  .should("be.checked") */
+              });
             } else {
-              this.getLabels(cy.get("@quecard"))
+              this.verifyLabelChecked(cy.get("@quecard"), wrong);
+              this.verifyLabelClass(cy.get("@quecard"), wrong, attemptTypes.WRONG);
+
+              /* this.getLabels(cy.get("@quecard"))
                 .contains(wrong)
                 .closest("label")
                 .should("have.class", attemptTypes.WRONG)
                 .find("input")
-                .should("be.checked");
+                .should("be.checked"); */
             }
             // this.verifyScoreWrong(cy.get("@quecard"), points);
             break;
@@ -244,18 +269,21 @@ export default class QuestionResponsePage {
           case attemptTypes.PARTIAL_CORRECT:
             if (Cypress._.isArray(partialCorrect))
               partialCorrect.forEach(choice =>
-                this.getLabels(cy.get("@quecard"))
+                /*  this.getLabels(cy.get("@quecard"))
                   .contains(choice)
                   .closest("label")
                   .find("input")
-                  .should("be.checked")
+                  .should("be.checked") */
+                this.verifyLabelChecked(cy.get("@quecard"), choice)
               );
             else {
+              this.verifyLabelChecked(cy.get("@quecard"), partialCorrect);
+              /* 
               this.getLabels(cy.get("@quecard"))
                 .contains(partialCorrect)
                 .closest("label")
                 .find("input")
-                .should("be.checked");
+                .should("be.checked"); */
             }
             break;
 
@@ -264,17 +292,19 @@ export default class QuestionResponsePage {
         }
 
         if (Cypress._.isArray(right)) {
-          right.forEach(choice =>
-            this.getLabels(cy.get("@quecard"))
+          right.forEach(
+            choice => this.verifyLabelClass(cy.get("@quecard"), choice, attemptTypes.RIGHT)
+            /* this.getLabels(cy.get("@quecard"))
               .contains(choice)
               .closest("label")
-              .should("have.class", attemptTypes.RIGHT)
+              .should("have.class", attemptTypes.RIGHT) */
           );
         } else {
-          this.getLabels(cy.get("@quecard"))
+          this.verifyLabelClass(cy.get("@quecard"), right, attemptTypes.RIGHT);
+          /* this.getLabels(cy.get("@quecard"))
             .contains(right)
             .closest("label")
-            .should("have.class", attemptTypes.RIGHT);
+            .should("have.class", attemptTypes.RIGHT); */
         }
 
         break;
@@ -283,21 +313,23 @@ export default class QuestionResponsePage {
         switch (attemptType) {
           case attemptTypes.RIGHT:
             if (Cypress._.isArray(right)) {
-              right.forEach(choice =>
-                this.getLabels(cy.get("@quecard"))
+              right.forEach(
+                choice => this.verifyLabelBackgroundColor(cy.get("@quecard"), choice, queColor.BLUE)
+                /* this.getLabels(cy.get("@quecard"))
                   .contains(choice)
                   .closest("label")
                   .then($ele => {
                     expect($ele.css("background-color")).to.eq(queColor.BLUE);
-                  })
+                  }) */
               );
             } else {
-              this.getLabels(cy.get("@quecard"))
+              this.verifyLabelBackgroundColor(cy.get("@quecard"), right, queColor.BLUE);
+              /*  this.getLabels(cy.get("@quecard"))
                 .contains(right)
                 .closest("label")
                 .then($ele => {
                   expect($ele.css("background-color")).to.eq(queColor.BLUE);
-                });
+                }); */
             }
             // this.verifyScoreRight(cy.get("@quecard"), points);
             break;
@@ -305,22 +337,26 @@ export default class QuestionResponsePage {
           case attemptTypes.WRONG:
             if (Cypress._.isArray(wrong)) {
               wrong.forEach(choice => {
-                this.getLabels(cy.get("@quecard"))
+                this.verifyLabelBackgroundColor(cy.get("@quecard"), choice, queColor.BLUE);
+                this.verifyLabelClass(cy.get("@quecard"), choice, attemptTypes.WRONG);
+                /* this.getLabels(cy.get("@quecard"))
                   .contains(choice)
                   .closest("label")
                   .then($ele => {
                     cy.wrap($ele).should("have.class", attemptTypes.WRONG);
                     expect(cy.wrap($ele).css("background-color")).to.eq(queColor.BLUE);
-                  });
+                  }); */
               });
             } else {
-              this.getLabels(cy.get("@quecard"))
+              this.verifyLabelBackgroundColor(cy.get("@quecard"), wrong, queColor.BLUE);
+              this.verifyLabelClass(cy.get("@quecard"), wrong, attemptTypes.WRONG);
+              /*  this.getLabels(cy.get("@quecard"))
                 .contains(wrong)
                 .closest("label")
                 .then($ele => {
                   cy.wrap($ele).should("have.class", attemptTypes.WRONG);
                   expect(cy.wrap($ele).css("background-color")).to.eq(queColor.BLUE);
-                });
+                }); */
             }
 
             // this.verifyScoreWrong(cy.get("@quecard"), points);
@@ -334,16 +370,18 @@ export default class QuestionResponsePage {
         }
         if (Cypress._.isArray(right)) {
           right.forEach(choice => {
-            this.getLabels(cy.get("@quecard"))
+            this.verifyLabelClass(cy.get("@quecard"), choice, attemptTypes.RIGHT);
+
+            /* this.getLabels(cy.get("@quecard"))
               .contains(choice)
               .closest("label")
-              .should("have.class", attemptTypes.RIGHT);
+              .should("have.class", attemptTypes.RIGHT); */
           });
-        } else
-          this.getLabels(cy.get("@quecard"))
+        } else this.verifyLabelClass(cy.get("@quecard"), right, attemptTypes.RIGHT);
+        /* this.getLabels(cy.get("@quecard"))
             .contains(right)
             .closest("label")
-            .should("have.class", attemptTypes.RIGHT);
+            .should("have.class", attemptTypes.RIGHT); */
         break;
 
       case queTypes.CHOICE_MATRIX_STANDARD:

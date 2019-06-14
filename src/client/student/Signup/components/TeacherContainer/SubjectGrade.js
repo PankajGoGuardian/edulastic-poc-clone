@@ -75,12 +75,12 @@ class SubjectGrade extends React.Component {
 
         map(values.standard, id => {
           const filterData = find(curriculums, el => el._id === id);
-          data.curriculums.push(
-            mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
-              if (key === "curriculum") key = "name";
-              return key;
-            })
-          );
+          let newCurriculum = mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
+            if (key === "curriculum") key = "name";
+            return key;
+          });
+          newCurriculum.grades = values.grade;
+          data.curriculums.push(newCurriculum);
         });
 
         saveSubjectGrade({ ...data });

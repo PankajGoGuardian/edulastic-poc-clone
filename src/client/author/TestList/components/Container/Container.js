@@ -227,6 +227,9 @@ class TestList extends Component {
             filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
             if (!filteredInterestedCurriculum.length) {
               filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+              if (!filteredInterestedCurriculum.length) {
+                filteredInterestedCurriculum = interestedCurriculums;
+              }
             }
           }
           grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);

@@ -89,7 +89,7 @@ const numberPad = [
 ];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
-  normal: {
+  STD: {
     moreText: {
       buttons: [
         "bold",
@@ -111,7 +111,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       buttonsVisible: 6
     }
   },
-  md: {
+  MD: {
     moreMisc: {
       buttons: [
         "bold",
@@ -128,7 +128,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       buttonsVisible: 6
     }
   },
-  sm: {
+  SM: {
     moreMisc: {
       buttons: [
         "bold",
@@ -145,7 +145,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       buttonsVisible: 4
     }
   },
-  xs: {
+  XS: {
     moreMisc: {
       buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
       buttonsVisible: 2
@@ -200,7 +200,29 @@ const getFixedPostion = el => {
   };
 };
 
-const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOptions, ...restOptions }) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
+  const sizeMap = {
+    STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
+    MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
+    SM: { STD: "SM", MD: "SM", SM: "SM", XS: "XS" },
+    XS: { STD: "XS", MD: "XS", SM: "XS", XS: "XS" }
+  };
+  const cSize = sizeMap[toolbarSize][size];
+
+  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
+  if (cSize === "STD") {
+    toolbarButtons.moreMisc = {
+      buttons: additionalToolbarOptions,
+      buttonsVisible: 3
+    };
+  } else {
+    toolbarButtons.moreMisc.buttons = [...toolbarButtons.moreMisc.buttons, ...additionalToolbarOptions];
+  }
+
+  return toolbarButtons;
+};
+
+const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additionalToolbarOptions, ...restOptions }) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
 
@@ -215,20 +237,10 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.normal);
-  toolbarButtons.moreMisc = {
-    buttons: additionalToolbarOptions,
-    buttonsVisible: 3
-  };
-
-  const toolbarButtonsMD = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.md);
-  toolbarButtonsMD.moreMisc.buttons = [...toolbarButtonsMD.moreMisc.buttons, ...additionalToolbarOptions];
-
-  const toolbarButtonsSM = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.sm);
-  toolbarButtonsSM.moreMisc.buttons = [...toolbarButtonsSM.moreMisc.buttons, ...additionalToolbarOptions];
-
-  const toolbarButtonsXS = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.xs);
-  toolbarButtonsXS.moreMisc.buttons = [...toolbarButtonsXS.moreMisc.buttons, ...additionalToolbarOptions];
+  const toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
 
   const config = Object.assign(
     {
@@ -674,6 +686,7 @@ CustomEditor.propTypes = {
   value: PropTypes.string.isRequired,
   toolbarId: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool
 };
@@ -681,6 +694,7 @@ CustomEditor.propTypes = {
 CustomEditor.defaultProps = {
   tag: "textarea",
   toolbarId: null,
+  toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false
 };

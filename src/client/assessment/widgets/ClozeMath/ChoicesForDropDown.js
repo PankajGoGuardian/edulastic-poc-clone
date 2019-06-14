@@ -18,6 +18,8 @@ import { Subtitle } from "../../styled/Subtitle";
 import { WidgetWrapper, Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
+import { response } from "@edulastic/constants";
+
 class ChoicesForDropDown extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
@@ -97,6 +99,7 @@ class ChoicesForDropDown extends Component {
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
         draft.options[dropDownId][itemIndex] = e.target.value;
+        draft.ui_style["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
         updateVariables(draft);
       })
     );

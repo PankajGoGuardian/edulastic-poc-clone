@@ -22,6 +22,7 @@ import {
 
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
+import { getNewAlignmentState } from "../src/reducers/dictionaries";
 
 // constants
 export const resourceTypeQuestions = {
@@ -497,7 +498,10 @@ function* loadQuestionSaga({ payload }) {
         }
       })
     );
-    const alignments = yield select(getAlignmentFromQuestionSelector);
+    let alignments = yield select(getAlignmentFromQuestionSelector);
+    if (!alignments.length) {
+      alignments = [getNewAlignmentState()];
+    }
     yield put(setDictAlignmentFromQuestion(alignments));
   } catch (e) {
     const errorMessage = "Loading Question is failing";

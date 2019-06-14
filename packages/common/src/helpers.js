@@ -146,7 +146,7 @@ export const getResponsesCount = element => {
 export const reIndexResponses = html => {
   const parsedHTML = $.parseHTML(html);
   if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
-    return false;
+    return html;
   }
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")

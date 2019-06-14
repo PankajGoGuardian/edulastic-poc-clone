@@ -63,6 +63,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   placeholder="Enter Acknowledgements"
                   toolbarId="acknowledgements"
+                  toolbarSize="SM"
                   onChange={value => _change("metadata.acknowledgements", value)}
                   showResponseBtn={false}
                   value={get(item, "metadata.acknowledgements", "")}
@@ -77,6 +78,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   placeholder="Enter distractor rationale"
                   toolbarId="distractor_rationale"
+                  toolbarSize="SM"
                   onChange={value => _change("metadata.distractor_rationale", value)}
                   showResponseBtn={false}
                   value={get(item, "metadata.distractor_rationale", "")}
@@ -93,6 +95,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   placeholder="Enter rubric reference"
                   toolbarId="rubric_reference"
+                  toolbarSize="SM"
                   onChange={value => _change("metadata.rubric_reference", value)}
                   value={get(item, "metadata.rubric_reference", "")}
                 />
@@ -106,6 +109,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   placeholder="Enter stimulus review"
                   toolbarId="stimulus_review"
+                  toolbarSize="SM"
                   onChange={value => _change("stimulus_review", value)}
                   value={get(item, "stimulus_review", "")}
                 />
@@ -120,6 +124,7 @@ class Extras extends Component {
               <WidgetFRInput>
                 <QuestionTextArea
                   toolbarId="instructor_stimulus"
+                  toolbarSize="SM"
                   placeholder="Enter instructor stimulus"
                   onChange={value => _change("instructor_stimulus", value)}
                   value={get(item, "instructor_stimulus", "")}
@@ -134,6 +139,7 @@ class Extras extends Component {
                 <QuestionTextArea
                   placeholder="Enter sample answer"
                   toolbarId="sample_answer"
+                  toolbarSize="SM"
                   onChange={value => _change("metadata.sample_answer", value)}
                   value={get(item, "metadata.sample_answer", "")}
                 />

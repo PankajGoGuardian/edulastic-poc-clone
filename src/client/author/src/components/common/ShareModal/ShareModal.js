@@ -180,11 +180,21 @@ class ShareModal extends React.Component {
 
   render() {
     const { sharedType, permission } = this.state;
-    const { isVisible, onClose, userList = [], fetching, sharedUsersList, currentUserId, isPublished } = this.props;
+    const {
+      isVisible,
+      onClose,
+      userList = [],
+      fetching,
+      sharedUsersList,
+      currentUserId,
+      isPublished,
+      testId,
+      isPlaylist
+    } = this.props;
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
-    const sharableURL = window.location.href.split("publish")[0];
+    const sharableURL = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${testId}`;
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>

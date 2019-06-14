@@ -11,6 +11,8 @@ import {
   AssignButton,
   SecondHeader,
   FlexContainerWrapper,
+  FlexContainerWrapperLeft,
+  FlexContainerWrapperRight,
   FlexTitle,
   FlexTextWrapper,
   FlexText,
@@ -19,13 +21,15 @@ import {
   FlexShareBox,
   FlexShareWithBox,
   IconWrapper,
-  TitleCopy
+  TitleCopy,
+  ImageWrapper
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
 import BreadCrumb from "../../../src/components/Breadcrumb";
 import { IconPencilEdit, IconLock } from "@edulastic/icons";
 import { blue } from "@edulastic/colors";
 import ShareModal from "../../../src/components/common/ShareModal";
+import { Divider } from "antd";
 
 const statusConstants = {
   DRAFT: "draft",
@@ -42,9 +46,8 @@ class SuccessPage extends React.Component {
   }
 
   componentDidMount() {
-    const { fetchTestByID, match, isPlaylist, fetchPlaylistById } = this.props;
+    const { fetchTestByID, match, isPlaylist, fetchPlaylistById, isAssignSuccess } = this.props;
     const { id: testId } = match.params;
-
     if (isPlaylist) {
       fetchPlaylistById(match.params.playlistId);
     } else {
@@ -55,9 +58,13 @@ class SuccessPage extends React.Component {
   }
 
   handleAssign = () => {
-    const { testItem, history } = this.props;
+    const { testItem, history, isAssignSuccess } = this.props;
     const { _id } = testItem;
-    history.push(`/author/assignments/${_id}`);
+    if (isAssignSuccess) {
+      history.push(`/author/assignments`);
+    } else {
+      history.push(`/author/assignments/${_id}`);
+    }
   };
 
   onShareModalChange = () => {
@@ -66,18 +73,29 @@ class SuccessPage extends React.Component {
     });
   };
 
-  renderHeaderButton = () => (
-    <AssignButton data-cy="assignButton" onClick={this.handleAssign} color="secondary" variant="create" shadow="none">
-      ASSIGN
-    </AssignButton>
-  );
+  renderHeaderButton = () => {
+    const { isAssignSuccess, isPlaylist } = this.props;
+    return (
+      !isPlaylist && (
+        <AssignButton
+          data-cy="assignButton"
+          onClick={this.handleAssign}
+          color="secondary"
+          variant="create"
+          shadow="none"
+        >
+          {isAssignSuccess ? "VIEW RESPONSE" : "ASSIGN"}
+        </AssignButton>
+      )
+    );
+  };
 
   render() {
-    const { testItem, isPlaylist, playlist } = this.props;
+    const { testItem, isPlaylist, playlist, isAssignSuccess } = this.props;
     const { isShareModalVisible } = this.state;
-    const { title, _id, sharing, status } = isPlaylist ? playlist : testItem;
+    const { title, _id, sharing, status, thumbnail, scoring = {} } = isPlaylist ? playlist : testItem;
     let sharedWith = ((sharing ? sharing[0] : {}) || {}).type;
-    let shareUrl = window.location.href.split("publish")[0];
+    let shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -88,7 +106,7 @@ class SuccessPage extends React.Component {
         to: `/author/playlists/${_id}`
       },
       {
-        title: `PUBLISH`,
+        title: `${isAssignSuccess ? "ASSIGN" : "PUBLISH"}`,
         to: ""
       }
     ];
@@ -103,7 +121,7 @@ class SuccessPage extends React.Component {
         to: `/author/tests/${_id}`
       },
       {
-        title: `PUBLISH`,
+        title: `${isAssignSuccess ? "ASSIGN" : "PUBLISH"}`,
         to: ""
       }
     ];
@@ -115,36 +133,60 @@ class SuccessPage extends React.Component {
           isPublished={status === statusConstants.PUBLISHED}
           onClose={this.onShareModalChange}
         />
-        <ListHeader title={title} btnTitle="ASSIGN" renderButton={this.renderHeaderButton} />
+        <ListHeader title={title} renderButton={this.renderHeaderButton} />
 
         <Container>
           <SecondHeader>
             <BreadCrumb data={isPlaylist ? playlistBreadCrumbData : breadCrumbData} style={{ position: "unset" }} />
           </SecondHeader>
-          <FlexContainerWrapper>
-            <FlexTitle>Share With Others</FlexTitle>
-            <FlexTextWrapper>
-              <b>{title}</b>&nbsp; has been added to your &nbsp;<b> Private Library</b>
-            </FlexTextWrapper>
-            <FlexText>
-              Click on &nbsp;<span style={{ color: blue }}>Edit</span>&nbsp; icon to share it with your colleagues
-            </FlexText>
-            <FlexShareContainer>
-              <FlexShareTitle>Shared With</FlexShareTitle>
-              <FlexShareWithBox>
-                <IconWrapper>
-                  <IconLock />
-                </IconWrapper>
-                <FlexText>{sharedWith || ""}</FlexText>
-                <IconWrapper onClick={this.onShareModalChange}>
-                  <IconPencilEdit color={blue} />
-                </IconWrapper>
-              </FlexShareWithBox>
-              <FlexShareTitle>Share</FlexShareTitle>
-              <FlexShareBox>
-                <TitleCopy copyable>{shareUrl}</TitleCopy>
-              </FlexShareBox>
-            </FlexShareContainer>
+          <FlexContainerWrapper isAssignSuccess={isAssignSuccess}>
+            {isAssignSuccess && (
+              <FlexContainerWrapperLeft>
+                <ImageWrapper imgUrl={thumbnail} />
+                <FlexShareWithBox width={"100%"}>
+                  <b>Total Points</b> &nbsp; {scoring.total}
+                </FlexShareWithBox>
+              </FlexContainerWrapperLeft>
+            )}
+            <FlexContainerWrapperRight isAssignSuccess={isAssignSuccess}>
+              {isAssignSuccess && (
+                <>
+                  <FlexTitle>Success!</FlexTitle>
+                  <FlexTextWrapper>
+                    <b>{title}</b>&nbsp; has been assigned in &nbsp;<b>{"In Progress"}</b> &nbsp; status
+                  </FlexTextWrapper>
+                  <FlexText>
+                    Your students can begin work on this assessment right away.You can monitor student progress and
+                    responses by clicking on the &nbsp;
+                    <span style={{ color: blue }}>View Response</span>&nbsp; button.
+                  </FlexText>
+                  <Divider />
+                </>
+              )}
+              <FlexTitle>Share With Others</FlexTitle>
+              <FlexTextWrapper>
+                <b>{title}</b>&nbsp; has been added to your &nbsp;<b> Private Library</b>.
+              </FlexTextWrapper>
+              <FlexText>
+                Click on &nbsp;<span style={{ color: blue }}>Edit</span>&nbsp; icon to share it with your colleagues.
+              </FlexText>
+              <FlexShareContainer>
+                <FlexShareTitle>Shared With</FlexShareTitle>
+                <FlexShareWithBox>
+                  <IconWrapper>
+                    <IconLock />
+                  </IconWrapper>
+                  <FlexText>{sharedWith || ""}</FlexText>
+                  <IconWrapper onClick={this.onShareModalChange}>
+                    <IconPencilEdit color={blue} />
+                  </IconWrapper>
+                </FlexShareWithBox>
+                <FlexShareTitle>Share</FlexShareTitle>
+                <FlexShareBox>
+                  <TitleCopy copyable>{shareUrl}</TitleCopy>
+                </FlexShareBox>
+              </FlexShareContainer>
+            </FlexContainerWrapperRight>
           </FlexContainerWrapper>
         </Container>
       </div>
@@ -169,6 +211,7 @@ export default enhance(SuccessPage);
 
 SuccessPage.propTypes = {
   match: PropTypes.object.isRequired,
+  isAssignSuccess: PropTypes.bool,
   testItem: PropTypes.object,
   playlist: PropTypes.object,
   fetchPlaylistById: PropTypes.func.isRequired,

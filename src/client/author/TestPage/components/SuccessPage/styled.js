@@ -49,12 +49,26 @@ export const FlexContainerWrapper = styled(FlexContainer)`
   @media (max-width: 770px) {
     width: 50%;
   }
-  width: 900px;
-  margin: 60px auto;
-  justify-content: center;
-  flex-direction: column;
-  height: 500px;
+  padding: 20px;
+  width: ${props => (props.isAssignSuccess ? "1000px" : "700px")};
+  margin: 40px auto;
+  height: ${props => (props.isAssignSuccess ? "600px" : "500px")};
   background-color: ${white};
+`;
+
+export const FlexContainerWrapperLeft = styled(FlexContainer)`
+  width: 300px;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: 550px;
+`;
+export const FlexContainerWrapperRight = styled(FlexContainer)`
+  width: 600px;
+  justify-content: ${props => (props.isAssignSuccess ? "flex-start" : "center")};
+  align-items: ${props => (props.isAssignSuccess ? "flex-start" : "")};
+  padding: 0px 20px;
+  flex-direction: column;
+  height: ${props => (props.isAssignSuccess ? "550px" : "500px")};
 `;
 
 export const StyledFlexContainer = styled(FlexContainer)`
@@ -111,11 +125,9 @@ export const FlexTextWrapper = styled.div`
   color: ${darkGrey};
 `;
 export const FlexText = styled.div`
-  display: flex;
   margin-bottom: 20px;
   color: ${darkGrey};
 `;
-export const linkWrapper = styled.span``;
 
 export const FlexShareContainer = styled.div`
   display: flex;
@@ -132,7 +144,7 @@ export const FlexShareWithBox = styled.div`
   display:flex;
   border: 1px solid ${lightGrey};
   height:40px;
-  width:500px; 
+  width:${props => props.width || "500px"}; 
   margin-bottom:10px;
   justify-content:space-between;
   padding:8px 10px
@@ -172,4 +184,17 @@ export const TitleCopy = styled(Paragraph)`
     height: 20px;
     color: ${blue};
   }
+`;
+
+export const ImageWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 150px;
+  margin-right: 0px;
+  border-radius: 5px;
+  background: url(${props => props.imgUrl || props.src});
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-bottom: 20px;
 `;

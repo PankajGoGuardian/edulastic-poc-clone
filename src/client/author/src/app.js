@@ -188,6 +188,24 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   </Suspense>
                 )}
               />
+              <Route
+                exact
+                path="/author/playlists/:id/publish"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} isPlaylist published />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/playlists/:id/assign"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} isPlaylist isAssignSuccess />
+                  </Suspense>
+                )}
+              />
 
               <Route
                 exact
@@ -261,7 +279,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 path="/author/tests/:id/assign"
                 render={props => (
                   <Suspense fallback={<Progress />}>
-                    <SuccessPage {...props} assigned />
+                    <SuccessPage {...props} isAssignSuccess />
                   </Suspense>
                 )}
               />

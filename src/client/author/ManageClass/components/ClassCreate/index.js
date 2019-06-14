@@ -106,20 +106,26 @@ class ClassCreate extends React.Component {
   };
 
   searchCourse = keyword => {
-    if (keyword) {
-      const { searchCourseList, userOrgData } = this.props;
-      const { districtId } = userOrgData;
-      const searchTerms = {
+    const { searchCourseList, userOrgData } = this.props;
+    const { districtId } = userOrgData;
+    let searchTerms,
+      key = keyword.trim();
+    if (keyword == "") {
+      searchTerms = {
+        districtId
+      };
+    } else {
+      searchTerms = {
         districtId,
         search: {
-          name: { type: "cont", value: keyword }
-        },
-        active: 1,
-        page: 0,
-        limit: 50
+          name: { type: "cont", value: key },
+          number: { type: "eq", value: key },
+          operator: "or"
+        }
       };
-      searchCourseList(searchTerms);
     }
+
+    searchCourseList(searchTerms);
   };
 
   render() {

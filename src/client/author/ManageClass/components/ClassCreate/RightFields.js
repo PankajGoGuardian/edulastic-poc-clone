@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { filter, isArray, isEmpty, debounce } from "lodash";
 
@@ -25,14 +25,7 @@ const RightFields = ({
   userOrgData,
   ...restProps
 }) => {
-  const [defaultTermEndDate, setDefaultTermEndDate] = useState(null);
-  useEffect(() => {
-    userOrgData.terms.forEach(term => {
-      if (term.endDate > Date.now()) {
-        setDefaultTermEndDate(term.endDate);
-      }
-    });
-  }, []);
+  const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
   const updateSubject = e => {
     setSubject(e);
   };
@@ -67,13 +60,7 @@ const RightFields = ({
         >
           <DatePicker data-cy="startDate" format="DD MMM, YYYY" placeholder="Open Date" />
         </FieldLabel>
-        <FieldLabel
-          label="Class End Date"
-          optional
-          {...restProps}
-          fiedlName="endDate"
-          initialValue={moment(defaultTermEndDate)}
-        >
+        <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
           <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
         </FieldLabel>
       </StyledFlexContainer>

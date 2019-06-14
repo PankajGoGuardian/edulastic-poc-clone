@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isUndefined } from "lodash";
+import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
@@ -250,6 +250,7 @@ class QuestionWrapper extends Component {
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
+    const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
@@ -311,7 +312,13 @@ class QuestionWrapper extends Component {
                 />
               )}
               <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
-                {timespent ? <Timespent timespent={timespent} view={view} /> : null}
+                {showFeedback && timeSpent && (
+                  <p style={{ fontSize: 19, color: "grey" }}>
+                    <i class="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
+                    {round(timeSpent / 1000, 1)}s
+                  </p>
+                )}
+
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}

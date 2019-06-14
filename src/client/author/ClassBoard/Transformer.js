@@ -97,6 +97,9 @@ export const getQuestionLabels = (testItemsData, testItems) => {
   const testItemsdataKeyed = keyBy(testItemsData, "_id");
   for (let i = 0; i < testItems.length; i++) {
     const item = testItemsdataKeyed[testItems[i]];
+    if (!item) {
+      continue;
+    }
     if (!(item.data && item.data.questions)) {
       continue;
     }

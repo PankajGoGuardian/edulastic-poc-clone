@@ -427,7 +427,7 @@ export const MasterySummary = styled(Progress)`
     .ant-progress-bg {
       height: 16px !important;
       border-radius: 4px 0px 0px 4px !important;
-      background-color: ${lightBlue5};
+      background-color: ${props => props.color};
     }
   }
   .ant-progress-outer {

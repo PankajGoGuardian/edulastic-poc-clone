@@ -94,7 +94,7 @@ class DetailedDisplay extends Component {
 
     return Object.keys(scoreStudentWise).map((studentId, index) => {
       const score = scoreStudentWise[studentId] ? scoreStudentWise[studentId].score : 0;
-      const perfomancePercentage = score * 100;
+      const perfomancePercentage = (score / scoreStudentWise[studentId].maxScore) * 100;
 
       // TODO: need to update `mastery'
       let mastery = {
@@ -103,7 +103,7 @@ class DetailedDisplay extends Component {
       };
 
       for (let i = 0; i < assignmentMasteryArray.length; i++) {
-        if (perfomancePercentage > assignmentMasteryArray[i].threshold) {
+        if (perfomancePercentage >= assignmentMasteryArray[i].threshold) {
           mastery = assignmentMasteryArray[i];
           break;
         }
@@ -131,9 +131,7 @@ class DetailedDisplay extends Component {
             <DetailCardSubTitle>{`Standard: ${data.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
             <DetailCardSubTitle>MasterySummary</DetailCardSubTitle>
-            <MasterySummary percent={round(parseFloat(performancePercentage), 2) || 0} />
-            <DetailCardSubTitle>Performance summary % </DetailCardSubTitle>
-            <DetailCardDesc>{round(parseFloat(performancePercentage), 2) || 0}</DetailCardDesc>
+            <MasterySummary strokeColor={this.props.color} percent={round(parseFloat(performancePercentage), 2) || 0} />
           </DetailCardHeader>
           <DetailTable columns={columns} dataSource={this.displayData()} pagination={false} />
         </DetailCard>

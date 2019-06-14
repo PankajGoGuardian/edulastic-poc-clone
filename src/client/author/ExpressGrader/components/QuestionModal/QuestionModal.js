@@ -94,6 +94,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 
@@ -115,6 +117,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 
@@ -125,7 +129,6 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: prevIndex, loaded: true });
       });
-    } else {
     }
   };
 

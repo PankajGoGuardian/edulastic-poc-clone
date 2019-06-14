@@ -153,7 +153,7 @@ class CorrectAnswers extends Component {
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <CorrectAnswersContainer>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>
-            {tabs > 1 && (
+            {tabs >= 1 && (
               <Tab
                 type="primary"
                 data_cy="correct"

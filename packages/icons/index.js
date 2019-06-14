@@ -146,3 +146,4 @@ export { default as IconItemLibrary } from "./src/IconItemLibrary";
 export { default as IconPlaylist } from "./src/IconPlaylist";
 export { default as IconNewFile } from "./src/IconNewFile";
 export { default as IconDraft } from "./src/IconDraft";
+export { default as IconLock } from "./src/IconLock";

@@ -444,6 +444,8 @@ function* publishTestSaga({ payload }) {
       if (oldId) {
         yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
         yield put(setRegradeOldIdAction(undefined));
+      } else {
+        yield put(push(`author/tests/${id}/publish`));
       }
     }
   } catch (e) {

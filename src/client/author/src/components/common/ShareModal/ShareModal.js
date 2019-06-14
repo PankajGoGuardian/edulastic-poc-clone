@@ -184,7 +184,7 @@ class ShareModal extends React.Component {
     const filteredUserList = userList.filter(
       user => sharedUsersList.every(people => user._id !== people._userId) && user._id !== currentUserId
     );
-    const sharableURL = window.location.href;
+    const sharableURL = window.location.href.split("publish")[0];
     return (
       <Modal open={isVisible} onClose={onClose} center styles={{ modal: { borderRadius: 5 } }}>
         <ModalContainer>

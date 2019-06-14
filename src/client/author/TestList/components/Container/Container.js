@@ -143,9 +143,12 @@ class TestList extends Component {
       defaultGrades,
       defaultSubject,
       interestedCurriculums = [],
-      match: { params = {} }
+      match: { params = {} },
+      getCurriculumStandards,
+      clearDictStandards
     } = this.props;
     const { search } = this.state;
+    const parsedQueryData = qs.parse(location.search);
     if (mode === "embedded") {
       let selectedTests = [];
       const { grades, subjects, tags, modules } = playlist;
@@ -178,7 +181,6 @@ class TestList extends Component {
         }
       });
     } else {
-      const parsedQueryData = qs.parse(location.search);
       if (!curriculums.length) {
         getCurriculums();
       }
@@ -241,6 +243,12 @@ class TestList extends Component {
         receiveTests({ page: 1, limit, search: { ...search, grades, subject } });
       }
     }
+    if (parsedQueryData.curriculumId) {
+      const { curriculumId, grades } = parsedQueryData;
+      const gradeArray = Array.isArray(grades) ? grades : [grades];
+      clearDictStandards();
+      getCurriculumStandards(curriculumId, gradeArray, "");
+    }
   }
 
   searchTest = debounce(() => {
@@ -271,23 +279,18 @@ class TestList extends Component {
     );
   };
 
-  handleStandardSearch = searchStr => {
-    const { getCurriculumStandards } = this.props;
-    this.setState({ standardQuery: searchStr });
-    const {
-      search: { grades, curriculumId }
-    } = this.state;
-    if (curriculumId && searchStr.length >= 2) {
-      getCurriculumStandards(curriculumId, grades, searchStr);
-    }
-  };
-
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page, mode } = this.props;
+    const { receiveTests, clearDictStandards, history, limit, page, mode, getCurriculumStandards } = this.props;
     let updatedKeys = {};
-    if (name === "curriculumId" && !value.length) {
+    if (name === "curriculumId") {
       clearDictStandards();
+      getCurriculumStandards(value, search.grades, "");
+      search.standardIds = [];
+    }
+    if (name === "grades" && search.curriculumId) {
+      clearDictStandards();
+      getCurriculumStandards(search.curriculumId, value, "");
     }
     if (name === "subject") {
       updatedKeys = {
@@ -485,7 +488,7 @@ class TestList extends Component {
     addTestToModule({ moduleIndex: index, testAdded });
   };
 
-  searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
     const { loading, tests, windowWidth, history, match, userId, mode } = this.props;
@@ -635,8 +638,7 @@ class TestList extends Component {
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
                 clearFilter={this.handleClearFilter}
-                searchCurriculum={this.searchCurriculum}
-                handleStandardSearch={this.handleStandardSearch}
+                searchFilterOption={this.searchFilterOption}
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
@@ -683,8 +685,7 @@ class TestList extends Component {
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
                         clearFilter={this.handleClearFilter}
-                        searchCurriculum={this.searchCurriculum}
-                        handleStandardSearch={this.handleStandardSearch}
+                        searchFilterOption={this.searchFilterOption}
                         filterMenuItems={filterMenuItems}
                       />
                     </ScrollBox>

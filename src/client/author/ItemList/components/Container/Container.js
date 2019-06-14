@@ -85,10 +85,12 @@ class Contaier extends Component {
       setDefaultTestData,
       defaultGrades,
       defaultSubject,
-      interestedCurriculums
+      interestedCurriculums,
+      clearDictStandards
     } = this.props;
     const { params = {} } = match;
     setDefaultTestData();
+    clearDictStandards();
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -191,11 +193,15 @@ class Contaier extends Component {
 
   handleSearchFieldChange = fieldName => value => {
     const { search } = this.state;
-    const { updateDefaultGrades, udpateDefaultSubject } = this.props;
+    const { updateDefaultGrades, udpateDefaultSubject, clearDictStandards, getCurriculumStandards } = this.props;
     let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
+    }
+    if (fieldName === "grades" && search.curriculumId) {
+      clearDictStandards();
+      getCurriculumStandards(search.curriculumId, value, "");
     }
     if (fieldName === "subject") {
       const { clearDictStandards } = this.props;

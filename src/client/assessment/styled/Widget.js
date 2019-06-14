@@ -51,7 +51,55 @@ export const Widget = styled.div`
       letter-spacing: 0.3px;
       color: ${selectColor};
       font-weight: 600;
+      max-height: 40px;
     }
+
+    &-lg {
+      .ant-select-selection__rendered {
+        max-height: 40px;
+        line-height: 42px;
+      }
+
+      .ant-select-selection--single {
+        height: 42px;
+      }
+    }
+  }
+
+  .ant-input {
+    font-size: 12px;
+    padding-left: 21px;
+    letter-spacing: 0.3px;
+    color: ${selectColor};
+    font-weight: 600;
+    min-height: 42px;
+  }
+
+  .ql-container {
+    font-size: 12px;
+    letter-spacing: 0.3px;
+    font-weight: 600;
+    margin-top: 6px !important;
+  }
+
+  .ql-editor {
+    padding-left: 6px !important;
+  }
+
+  .text-editor {
+    min-height: 42px !important;
+  }
+
+  .input__math {
+    padding: 12px 21px;
+  }
+
+  .mq-root-block,
+  .mq-math-mode .mq-root-block {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: ${selectColor};
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -98,6 +146,28 @@ export const WidgetFRContainer = styled.div`
       width: 100%;
       min-height: 100%;
       padding: 20px 23px;
+    }
+  }
+`;
+
+export const WidgetFRInput = styled.div`
+  .fr {
+    &-box {
+      background: ${white};
+      border-radius: 4px;
+      border: 1px solid ${dashBorderColor};
+      display: flex;
+      min-height: 42px;
+    }
+    &-wrapper {
+      width: 100%;
+      min-height: 100%;
+      display: flex;
+    }
+    &-view {
+      width: 100%;
+      min-height: 100%;
+      padding: 9px 21px;
     }
   }
 `;

@@ -2,6 +2,7 @@ export { default as IconPencilEdit } from "./src/IconPencilEdit";
 export { default as IconCarets } from "./src/IconCarets";
 export { default as IconCaretDown } from "./src/IconCaretDown";
 export { default as IconTrash } from "./src/IconTrash";
+export { default as IconTranslator } from "./src/IconTranslator";
 export { default as IconTrashAlt } from "./src/IconTrashAlt";
 export { default as IconMoveArrows } from "./src/IconMoveArrows";
 export { default as IconEye } from "./src/IconEye";

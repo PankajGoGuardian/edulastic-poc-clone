@@ -9,6 +9,7 @@ import { message } from "antd";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
+import { IconTranslator } from "@edulastic/icons";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
@@ -34,6 +35,20 @@ FroalaEditor.DefineIconTemplate(
     </g>
   </SVG>
   `
+);
+
+FroalaEditor.DefineIconTemplate(
+  "specialCharacters",
+  `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 469.333 469.333" style="enable-background:new 0 0 469.333 469.333;" xml:space="preserve">
+  <g>
+    <g>
+      <g>
+        <path d="M253.227,300.267L253.227,300.267L199.04,246.72l0.64-0.64c37.12-41.387,63.573-88.96,79.147-139.307h62.507V64H192     V21.333h-42.667V64H0v42.453h238.293c-14.4,41.173-36.907,80.213-67.627,114.347c-19.84-22.08-36.267-46.08-49.28-71.467H78.72     c15.573,34.773,36.907,67.627,63.573,97.28l-108.48,107.2L64,384l106.667-106.667l66.347,66.347L253.227,300.267z"/>
+        <path d="M373.333,192h-42.667l-96,256h42.667l24-64h101.333l24,64h42.667L373.333,192z M317.333,341.333L352,248.853     l34.667,92.48H317.333z"/>
+      </g>
+    </g>
+  </g>
+  </svg>`
 );
 
 FroalaEditor.DEFAULTS.specialCharacterSets = [
@@ -87,8 +102,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
         "strikeThrough",
         "insertTable",
         "indent",
-        "outdent",
-        "specialCharacters"
+        "outdent"
       ],
       buttonsVisible: 6
     },
@@ -99,19 +113,41 @@ const DEFAULT_TOOLBAR_BUTTONS = {
   },
   md: {
     moreMisc: {
-      buttons: ["bold", "italic", "underline", "table", "math", "insertImage", "paragraphFormat", "indent", "align"],
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "table",
+        "math",
+        "insertImage",
+        "paragraphFormat",
+        "indent",
+        "align",
+        "specialCharacters"
+      ],
       buttonsVisible: 6
     }
   },
   sm: {
     moreMisc: {
-      buttons: ["bold", "italic", "underline", "math", "paragraphFormat", "table", "indent", "align", "insertImage"],
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "math",
+        "paragraphFormat",
+        "table",
+        "indent",
+        "align",
+        "insertImage",
+        "specialCharacters"
+      ],
       buttonsVisible: 4
     }
   },
   xs: {
     moreMisc: {
-      buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage"],
+      buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
       buttonsVisible: 2
     }
   }
@@ -225,7 +261,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "textinput",
         "textdropdown",
         "mathinput",
-        "response"
+        "response",
+        "specialCharacters"
       ],
       specialCharactersSets: [
         {
@@ -473,6 +510,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
     }
     // Math Input
     FroalaEditor.DefineIcon("math", { NAME: "math", template: "math" });
+    FroalaEditor.DefineIcon("specialCharacters", { NAME: "specialCharacters", template: "specialCharacters" });
+
     FroalaEditor.RegisterCommand("math", {
       title: "Math",
       focus: false,

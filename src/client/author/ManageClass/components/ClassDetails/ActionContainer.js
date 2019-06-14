@@ -42,7 +42,7 @@ const ActionContainer = ({
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
 
-  let formRef = null;
+  // let formRef = null;
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -54,78 +54,82 @@ const ActionContainer = ({
     setModalStatus(false);
   }
 
-  const addStudent = () => {
-    if (formRef) {
-      const { form } = formRef.props;
-      form.validateFields((err, values) => {
-        if (!err) {
-          if (isEdit) {
-            if (values.dob) {
-              values.dob = moment(values.dob).format("x");
-            }
-            const std = { ...selectedStudent[0], ...values };
-            const userId = std._id || std.userId;
-            std.currentSignUpState = "DONE";
-            const stdData = pick(std, [
-              "districtId",
-              "dob",
-              "ellStatus",
-              "email",
-              "firstName",
-              "gender",
-              "institutionIds",
-              "lastName",
-              "race",
-              "sisId",
-              "studentNumber",
-              "frlStatus",
-              "iepStatus",
-              "sedStatus",
-              "username",
-              "contactEmails"
-            ]);
+  const addStudent = values => {
+    // all of the commented code below is moved into into the add student modal, since the validation
+    // encapsulation should be inside the addStudent and not here -
+    // this higher component should only be aware of the values and perform side effects
 
-            updateStudentRequest({
-              userId,
-              data: stdData
-            });
-            setModalStatus(false);
-          } else {
-            const { fullName } = values;
-            const tempName = split(fullName, " ");
-            const firstName = tempName[0];
-            const lastName = tempName[1];
+    // if (formRef) {
+    //   const { form } = formRef.props;
+    //   form.validateFields((err, values) => {
+    //     if (!err) {
+    if (isEdit) {
+      if (values.dob) {
+        values.dob = moment(values.dob).format("x");
+      }
+      const std = { ...selectedStudent[0], ...values };
+      const userId = std._id || std.userId;
+      std.currentSignUpState = "DONE";
+      const stdData = pick(std, [
+        "districtId",
+        "dob",
+        "ellStatus",
+        "email",
+        "firstName",
+        "gender",
+        "institutionIds",
+        "lastName",
+        "race",
+        "sisId",
+        "studentNumber",
+        "frlStatus",
+        "iepStatus",
+        "sedStatus",
+        "username",
+        "contactEmails"
+      ]);
 
-            values.classCode = selectedClass.code;
-            values.role = "student";
-            values.districtId = orgData.districtId;
-            values.institutionIds = orgData.institutionIds;
-            values.firstName = firstName;
-            values.lastName = lastName;
-
-            const contactEmails = get(values, "contactEmails");
-            if (contactEmails) {
-              values.contactEmails = [contactEmails];
-            }
-
-            if (values.dob) {
-              values.dob = moment(values.dob).format("x");
-            }
-
-            unset(values, ["confirmPwd"]);
-            unset(values, ["fullName"]);
-
-            addStudentRequest(pickBy(values, identity));
-            setReqStatus(true);
-          }
-        }
+      updateStudentRequest({
+        userId,
+        data: stdData
       });
+      setModalStatus(false);
+    } else {
+      const { fullName } = values;
+      const tempName = split(fullName, " ");
+      const firstName = tempName[0];
+      const lastName = tempName[1];
+
+      values.classCode = selectedClass.code;
+      values.role = "student";
+      values.districtId = orgData.districtId;
+      values.institutionIds = orgData.institutionIds;
+      values.firstName = firstName;
+      values.lastName = lastName;
+
+      const contactEmails = get(values, "contactEmails");
+      if (contactEmails) {
+        values.contactEmails = [contactEmails];
+      }
+
+      if (values.dob) {
+        values.dob = moment(values.dob).format("x");
+      }
+
+      unset(values, ["confirmPwd"]);
+      unset(values, ["fullName"]);
+
+      addStudentRequest(pickBy(values, identity));
+      setReqStatus(true);
     }
+    //     }
+    //   });
+    // }
   };
 
-  const saveFormRef = node => {
-    formRef = node;
-  };
+  // const saveFormRef = node => {
+  //   formRef = node;
+  // };
 
   const showMessage = (type, msg) => {
     message.open({ type, content: msg });
@@ -224,7 +228,7 @@ const ActionContainer = ({
           handleCancel={() => toggleModal("add")}
           isOpen={isOpen.add}
           submitted={submitted}
-          wrappedComponentRef={saveFormRef}
+          // wrappedComponentRef={saveFormRef}
           stds={selectedStudent}
           isEdit={isEdit}
         />

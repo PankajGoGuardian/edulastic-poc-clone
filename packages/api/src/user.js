@@ -90,6 +90,25 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
+const addStudentsToOtherClass = ({ classCode, userDetails }) =>
+  api
+    .callApi({
+      url: `${prefix}/${classCode}/class-students`,
+      method: "post",
+      data: {
+        userDetails
+      }
+    })
+    .then(({ data }) => data);
+
+const validateClassCode = classCode =>
+  api
+    .callApi({
+      url: `/group/${classCode}/validate`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
 export default {
   getUser,
   fetchUsers,
@@ -100,5 +119,7 @@ export default {
   getSwitchedToken,
   changeUserTTS,
   resetPassword,
-  addMultipleStudents
+  addMultipleStudents,
+  addStudentsToOtherClass,
+  validateClassCode
 };

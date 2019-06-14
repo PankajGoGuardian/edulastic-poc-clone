@@ -10,7 +10,6 @@ import { StyledFlexContainer } from "./styled";
 function Preview({ item, qIndex, studentId }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
-  console.log("questions here is at classQuestion", questions);
   const questionsKeyed = _keyBy(questions, "id");
   return (
     <StyledFlexContainer key={item._id} className={`student-question-container-id-${studentId}`}>
@@ -43,7 +42,13 @@ class ClassQuestions extends Component {
   };
 
   getTestItems() {
-    const { currentStudent, questionActivities, studentViewFilter: filter, isPresentationMode } = this.props;
+    const {
+      currentStudent,
+      questionActivities,
+      studentViewFilter: filter,
+      isPresentationMode,
+      labels = {}
+    } = this.props;
     if (!currentStudent || !questionActivities) {
       return [];
     }
@@ -86,7 +91,7 @@ class ClassQuestions extends Component {
               icon: currentStudent.icon,
               color: currentStudent.color
             }));
-
+            const label = labels[id];
             if (!item.itemLevelScoring && qActivities[0]) {
               if (filter === "correct" && qActivities[0].score < qActivities[0].maxScore) {
                 return false;
@@ -113,7 +118,7 @@ class ClassQuestions extends Component {
             } else {
               question.activity = undefined;
             }
-            return { ...question };
+            return { ...question, ...label };
           })
           .filter(x => x);
         return { ...others, rows, data: { questions } };

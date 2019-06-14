@@ -2,6 +2,7 @@
 import { keyBy, groupBy, get } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
+import produce from "immer";
 
 const getAllQids = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
@@ -16,8 +17,35 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
   return qids;
 };
 
+const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
+
 /**
- * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number}[]}
+ *
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
+ * @param {string[]} testItems
+ */
+export const markQuestionLabel = (_testItemsData, testItems) => {
+  const testItemsData = keyBy(_testItemsData, "_id");
+  for (let i = 0; i < testItems.length; i++) {
+    const item = testItemsData[testItems[i]];
+    if (!(item.data && item.data.questions)) {
+      continue;
+    }
+    if (item.data.questions.length === 1) {
+      item.data.questions[0].qLabel = `Q${i + 1}`;
+      item.data.questions[0].barLabel = `Q${i + 1}`;
+    } else {
+      item.data.questions = item.data.questions.map((q, qIndex) => ({
+        ...q,
+        qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+        barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+      }));
+    }
+  }
+};
+
+/**
+ * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number,qLabel:string,barLabel:string}[]}
  */
 const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
@@ -34,14 +62,58 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
-            qids: questions.map(x => x.id)
+            qids: questions.map(x => x.id),
+            qLabel: x.qLabel,
+            barLabel: x.barLabel
           }))
       ];
     } else {
-      qids = [...qids, ...questions.map(x => ({ id: x.id, weight: 1, qids: [x.id] }))];
+      qids = [
+        ...qids,
+        ...questions.map(x => ({
+          id: x.id,
+          weight: 1,
+          qids: [x.id],
+          qLabel: x.qLabel,
+          barLabel: x.barLabel
+        }))
+      ];
     }
   }
   return qids;
+};
+
+/**
+ *
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]} testItemsData
+ * @param {string[]} testItems
+ * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
+ */
+export const getQuestionLabels = (testItemsData, testItems) => {
+  /**
+   * @type {{[qid:string]:{qLabel:string, barLabel: string }  }}
+   */
+  const result = {};
+  const testItemsdataKeyed = keyBy(testItemsData, "_id");
+  for (let i = 0; i < testItems.length; i++) {
+    const item = testItemsdataKeyed[testItems[i]];
+    if (!(item.data && item.data.questions)) {
+      continue;
+    }
+    if (item.data.questions.length === 1) {
+      result[item.data.questions[0].id] = { qLabel: `Q${i + 1}`, barLabel: `Q${i + 1}` };
+    } else {
+      for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
+        const q = item.data.questions[qIndex];
+        result[q.id] = {
+          qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+          barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+        };
+      }
+    }
+  }
+
+  return result;
 };
 
 /**
@@ -140,7 +212,9 @@ export const transformGradeBookResponse = ({
     notStarted: true,
     disabled: x.disabled,
     testItemId: x.testItemId,
-    qids: x.qids
+    qids: x.qids,
+    qLabel: x.qLabel,
+    barLabel: x.barLabel
   }));
 
   return studentNames
@@ -191,47 +265,51 @@ export const transformGradeBookResponse = ({
 
       const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(({ id: el, weight, qids: _qids, disabled, testItemId, maxScore }, index) => {
-        const _id = el;
+      const questionActivities = qids.map(
+        ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
+          const _id = el;
 
-        if (!questionActivitiesIndexed[el]) {
-          return { _id, notStarted: true, weight, disabled, testItemId };
-        }
-        let {
-          skipped,
-          correct,
-          partiallyCorrect: partialCorrect,
-          timeSpent,
-          score,
-          graded
-        } = questionActivitiesIndexed[el];
-        const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
-        if (score > 0 && skipped) {
-          skipped = false;
-        }
-        if (_qids && _qids.length) {
-          correct = score === questionMaxScore && score > 0;
-          if (!correct) {
-            partialCorrect = score > 0 && score <= questionMaxScore;
+          if (!questionActivitiesIndexed[el]) {
+            return { _id, notStarted: true, weight, disabled, testItemId, barLabel, qLabel };
           }
-        }
+          let {
+            skipped,
+            correct,
+            partiallyCorrect: partialCorrect,
+            timeSpent,
+            score,
+            graded
+          } = questionActivitiesIndexed[el];
+          const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+          if (score > 0 && skipped) {
+            skipped = false;
+          }
+          if (_qids && _qids.length) {
+            correct = score === questionMaxScore && score > 0;
+            if (!correct) {
+              partialCorrect = score > 0 && score <= questionMaxScore;
+            }
+          }
 
-        return {
-          _id,
-          weight,
-          skipped,
-          correct,
-          partialCorrect,
-          score,
-          maxScore: questionMaxScore,
-          timeSpent,
-          disabled,
-          testItemId,
-          qids: _qids,
-          testActivityId,
-          graded
-        };
-      });
+          return {
+            _id,
+            weight,
+            skipped,
+            correct,
+            partialCorrect,
+            score,
+            maxScore: questionMaxScore,
+            timeSpent,
+            disabled,
+            testItemId,
+            qids: _qids,
+            testActivityId,
+            graded,
+            qLabel,
+            barLabel
+          };
+        }
+      );
 
       let displayStatus = "inProgress";
       if (submitted) {

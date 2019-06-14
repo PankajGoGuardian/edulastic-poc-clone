@@ -24,7 +24,8 @@ import {
   getTestQuestionActivitiesSelector,
   stateStudentResponseSelector,
   showScoreSelector,
-  getMarkAsDoneEnableSelector
+  getMarkAsDoneEnableSelector,
+  getQLabelsSelector
 } from "../../ducks";
 
 import {
@@ -359,7 +360,11 @@ class ClassBoard extends Component {
     const isMobile = this.isMobile();
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
-    const firstStudentId = get(this.props.entities, [0, "studentId"]);
+    const firstStudentId = get(
+      this.props.entities.filter(x => x.status != "notStarted" && x.present && x.status != "redirected"),
+      [0, "studentId"],
+      false
+    );
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
     const { canOpenClass = [], canCloseClass = [] } = additionalData || {};
@@ -389,6 +394,7 @@ class ClassBoard extends Component {
               CARD VIEW
             </BothButton>
             <StudentButton
+              disabled={!firstStudentId}
               active={selectedTab === "Student"}
               onClick={e => this.onTabChange(e, "Student", firstStudentId)}
             >
@@ -396,6 +402,7 @@ class ClassBoard extends Component {
             </StudentButton>
             <QuestionButton
               active={selectedTab === "questionView"}
+              disabled={!firstStudentId}
               onClick={e => {
                 const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
                 if (!firstQuestion) {
@@ -604,9 +611,9 @@ class ClassBoard extends Component {
                   selectedTab === "Student"
                     ? classname
                     : firstQuestionEntities
-                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled }))
+                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
                         .filter(x => !x.disabled)
-                        .map(({ value }, index) => ({ value, name: `Q${index + 1}` }))
+                        .map(({ value, id }, index) => ({ value, name: this.props.labels[id].barLabel }))
                 }
                 selected={selectedQuestion}
                 justifyContent="flex-end"
@@ -632,6 +639,7 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
@@ -641,7 +649,8 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      labels: getQLabelsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

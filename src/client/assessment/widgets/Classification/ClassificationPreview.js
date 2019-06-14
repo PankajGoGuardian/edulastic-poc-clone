@@ -229,7 +229,7 @@ const ClassificationPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
         </QuestionTitleWrapper>
       )}

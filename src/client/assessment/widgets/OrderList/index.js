@@ -226,7 +226,7 @@ const OrderList = ({
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}

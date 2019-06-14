@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
+import { message } from "antd";
 
 class QuestionModal extends React.Component {
   constructor() {
@@ -124,6 +125,7 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: prevIndex, loaded: true });
       });
+    } else {
     }
   };
 

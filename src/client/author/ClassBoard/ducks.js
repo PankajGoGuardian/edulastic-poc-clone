@@ -13,6 +13,7 @@ import {
 import { togglePresentationModeAction } from "../src/actions/testActivity";
 
 import { createFakeData } from "./utils";
+import { markQuestionLabel, getQuestionLabels } from "./Transformer";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -50,6 +51,8 @@ function* receiveTestActivitySaga({ payload }) {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
     const students = get(gradebookData, "students", []);
+    // this method mutates the gradebookData
+    markQuestionLabel(gradebookData.testItemsData, gradebookData.test.testItems);
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length);
     gradebookData.students = students.map((student, index) => ({
@@ -169,12 +172,16 @@ export const getAggregateByQuestion = (entities, studentId) => {
       disabled,
       score,
       maxScore,
-      graded
+      graded,
+      qLabel,
+      barLabel
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
+          qLabel,
+          barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,
@@ -368,7 +375,6 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    console.log("qid state", state);
     const testItemIds = get(state, "data.test.testItems", []);
     const testItemsData = get(state, "data.testItemsData", []);
     if (testItemIds.length === 0 && testItemsData.length === 0) {
@@ -377,5 +383,14 @@ export const getQIdsSelector = createSelector(
     const testItemsDataKeyed = keyBy(testItemsData, "_id");
     const qIds = getAllQids(testItemIds, testItemsDataKeyed);
     return qIds;
+  }
+);
+
+export const getQLabelsSelector = createSelector(
+  stateTestActivitySelector,
+  state => {
+    const testItemIds = get(state, "data.test.testItems", []);
+    const testItemsData = get(state, "data.testItemsData", []);
+    return getQuestionLabels(testItemsData, testItemIds);
   }
 );

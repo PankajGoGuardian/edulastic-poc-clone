@@ -108,7 +108,7 @@ const MathFormulaPreview = ({
   return (
     <div>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         <MathFormulaDisplay
           data-cy="preview-header"
           style={{ marginBottom: 15 }}

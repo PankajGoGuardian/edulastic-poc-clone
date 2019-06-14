@@ -2,7 +2,7 @@ import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { CircularDiv, ResponseCard, StyledFlexContainer, ResponseCardTitle } from "../../styled";
 
-const StudentResponse = ({ testActivity }) => (
+const StudentResponse = ({ testActivity, onClick }) => (
   <Fragment>
     <StyledFlexContainer>
       <ResponseCard>
@@ -10,7 +10,9 @@ const StudentResponse = ({ testActivity }) => (
         {testActivity
           .filter(({ status }) => status === "submitted")
           .map((student, index) => (
-            <CircularDiv key={index}>{student.studentName.toUpperCase().substr(0, 2)}</CircularDiv>
+            <CircularDiv onClick={() => onClick(student.studentId)} key={index}>
+              {student.studentName.toUpperCase().substr(0, 2)}
+            </CircularDiv>
           ))}
       </ResponseCard>
     </StyledFlexContainer>

@@ -29,14 +29,17 @@ import {
   getTestItemsOrderSelector
 } from "../ClassBoard/ducks";
 
+import { getQuestionLabels } from "../ClassBoard/Transformer";
+const _getquestionLabels = memoizeOne(getQuestionLabels);
+
 setAutoFreeze(false);
 /**
  *
  * @param {Object[]} testItems
  * @param {Object} variablesSetIds
  */
-const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
-  produce(classResponse, draft => {
+const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
+  return produce(classResponse, draft => {
     if (!draft.testItems) {
       return;
     }
@@ -66,6 +69,7 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
       }
     }
   });
+};
 class StudentViewContainer extends Component {
   state = { filter: null };
 
@@ -136,6 +140,7 @@ class StudentViewContainer extends Component {
             classResponse={classResponseProcessed}
             testItemsOrder={this.props.testItemsOrder}
             studentViewFilter={filter}
+            labels={_getquestionLabels(classResponse.testItems, this.props.testItemIds)}
             isPresentationMode={isPresentationMode}
           />
         )}
@@ -152,7 +157,8 @@ const enhance = compose(
       assignmentIdClassId: getAssignmentClassIdSelector(state),
       testItemsOrder: getTestItemsOrderSelector(state),
       variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", [])
     }),
     {
       loadStudentResponses: receiveStudentResponseAction

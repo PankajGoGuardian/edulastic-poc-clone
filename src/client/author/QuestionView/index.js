@@ -23,7 +23,7 @@ import ClassQuestions from "../ClassResponses/components/Container/ClassQuestion
 // actions
 import { receiveAnswersAction } from "../src/actions/classBoard";
 // selectors
-import { getAssignmentClassIdSelector, getClassQuestionSelector } from "../ClassBoard/ducks";
+import { getAssignmentClassIdSelector, getClassQuestionSelector, getQLabelsSelector } from "../ClassBoard/ducks";
 import { scrollTo } from "@edulastic/common";
 
 /**
@@ -290,7 +290,7 @@ class QuestionViewContainer extends Component {
             </ResponsiveContainer>
           </StyledCard>
         </StyledFlexContainer>
-        <StudentResponse testActivity={testActivity} />
+        <StudentResponse testActivity={testActivity} onClick={studentId => _scrollTo(studentId)} />
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {
@@ -305,6 +305,7 @@ class QuestionViewContainer extends Component {
                 classResponse={{ testItems: filterdItems, ...others }}
                 questionActivities={classQuestion.filter(({ userId }) => userId === student.studentId)}
                 isPresentationMode={isPresentationMode}
+                labels={this.props.labels}
               />
             );
           })}
@@ -317,7 +318,8 @@ const enhance = compose(
   connect(
     state => ({
       classQuestion: getClassQuestionSelector(state),
-      assignmentIdClassId: getAssignmentClassIdSelector(state)
+      assignmentIdClassId: getAssignmentClassIdSelector(state),
+      labels: getQLabelsSelector(state)
     }),
     {
       loadClassQuestionResponses: receiveAnswersAction

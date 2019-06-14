@@ -17,6 +17,7 @@ const Display = ({
   multipleResponses,
   showQuestionNumber,
   flowLayout,
+  qLabel,
   ...restProps
 }) => (
   <div>
@@ -24,7 +25,7 @@ const Display = ({
       <>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{qLabel}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
       </>

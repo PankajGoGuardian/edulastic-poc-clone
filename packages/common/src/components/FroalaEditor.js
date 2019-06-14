@@ -457,20 +457,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
     const valueToSave = replaceMathHtmlWithLatexes(val);
     setPrevValue(valueToSave);
 
-    if (
-      !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") // toolbarButtons prop contains response
-    ) {
-      const responseIndexes = $(val)
-        .find("response")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-      onChange(valueToSave, responseIndexes);
-    } else {
-      onChange(valueToSave, []);
-    }
+    onChange(valueToSave);
   };
 
   // Math Modal related functions

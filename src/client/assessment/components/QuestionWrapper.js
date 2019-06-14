@@ -255,6 +255,7 @@ class QuestionWrapper extends Component {
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
 
+    const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const studentName = data.activity && data.activity.studentName;
     const presentationModeProps = {
       isPresentationMode,
@@ -295,6 +296,7 @@ class QuestionWrapper extends Component {
           >
             <PaperWrapper
               disabled={disabled}
+              isV1Multipart={isV1Multipart}
               style={{
                 width: "-webkit-fill-available",
                 display: "flex",

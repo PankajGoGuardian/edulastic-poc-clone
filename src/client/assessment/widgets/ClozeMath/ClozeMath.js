@@ -6,6 +6,7 @@ import { Paper, WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
+import { get } from "lodash";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
@@ -37,6 +38,7 @@ const ClozeMath = ({
   advancedAreOpen,
   ...restProps
 }) => {
+  const { col } = restProps;
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
@@ -55,6 +57,7 @@ const ClozeMath = ({
   };
 
   const itemForPreview = replaceVariables(item);
+  const isV1Multipart = get(col, "isV1Multipart", false);
 
   return (
     <WithResources
@@ -105,7 +108,7 @@ const ClozeMath = ({
         </ContentArea>
       )}
       {view === PREVIEW && (
-        <Paper style={{ height: "100%", overflow: "visible" }}>
+        <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
           <ClozeMathPreview
             type={previewTab}
             item={itemForPreview}

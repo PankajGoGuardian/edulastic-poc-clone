@@ -29,6 +29,7 @@ const getToolBarButtons = item =>
     });
 
 const EssayRichTextPreview = ({
+  col,
   view,
   saveAnswer,
   t,
@@ -115,11 +116,13 @@ const EssayRichTextPreview = ({
 
   const isTestReview = qIndex !== null && testItem;
 
+  const isV1Multipart = get(col, "isV1Multipart", false);
+
   const isReadOnly =
     (previewTab === "show" || isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
 
   return item.id ? (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -181,7 +184,8 @@ EssayRichTextPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   location: PropTypes.any.isRequired,
   testItem: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {

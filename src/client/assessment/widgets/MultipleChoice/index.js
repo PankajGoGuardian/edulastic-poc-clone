@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, shuffle } from "lodash";
+import { get, cloneDeep, shuffle } from "lodash";
 import styled from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
@@ -28,8 +28,8 @@ const EmptyWrapper = styled.div``;
 const MutlChoiceWrapper = styled(Paper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
-  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px 43px")};
-  box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+  padding: ${props => (props.padding ? props.padding : props.isV1Multipart ? "0px 35px" : "35px 43px")};
+  box-shadow: ${props => (props.boxShadow ? props.boxShadow : props.isV1Multipart ? "none" : boxShadowDefault)};
 `;
 
 const Divider = styled.div`
@@ -181,6 +181,7 @@ class MultipleChoice extends Component {
 
   render() {
     const {
+      col,
       qIndex,
       view,
       previewTab,
@@ -206,6 +207,7 @@ class MultipleChoice extends Component {
       multipleResponses,
       shuffleOptions
     } = this.getRenderData();
+    const isV1Multipart = get(col, "isV1Multipart", false);
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     // const multi_response = this.props.item.multiple_responses;
@@ -262,7 +264,7 @@ class MultipleChoice extends Component {
             </ContentArea>
           )}
           {view === PREVIEW && (
-            <Wrapper flowLayout={flowLayout}>
+            <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
               {previewTab === CHECK && (
                 <Display
                   checkAnswer
@@ -347,7 +349,8 @@ MultipleChoice.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  col: PropTypes.object
 };
 
 MultipleChoice.defaultProps = {

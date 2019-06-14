@@ -19,6 +19,7 @@ import { preventEvent, getFontSize, getSpellCheckAttributes } from "../../utils/
 import Character from "./components/Character";
 
 const EssayPlainTextPreview = ({
+  col,
   view,
   saveAnswer,
   t,
@@ -118,6 +119,7 @@ const EssayPlainTextPreview = ({
 
   const minHeight = get(item, "ui_style.min_height", "inherit");
   const maxHeight = get(item, "ui_style.max_height", "inherit");
+  const isV1Multipart = get(col, "isV1Multipart", false);
   const fontSize = getFontSize(get(item, "ui_style.fontsize", "normal"));
 
   const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
@@ -127,7 +129,7 @@ const EssayPlainTextPreview = ({
   const isReadOnly = (isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
 
   return (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -194,6 +196,7 @@ const EssayPlainTextPreview = ({
 };
 
 EssayPlainTextPreview.propTypes = {
+  col: PropTypes.object,
   t: PropTypes.func.isRequired,
   smallSize: PropTypes.bool,
   item: PropTypes.object.isRequired,

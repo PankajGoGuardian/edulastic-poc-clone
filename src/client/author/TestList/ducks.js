@@ -54,8 +54,8 @@ const initialState = {
   page: 1,
   limit: 20,
   count: 0,
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : [],
-  defaultSubject: getFromLocalStorage("defaultSubject") || "",
+  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   loading: false
 };
 

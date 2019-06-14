@@ -109,7 +109,7 @@ class Contaier extends Component {
       let grades = defaultGrades;
       let subject = defaultSubject;
       let filteredInterestedCurriculum;
-      if (!grades.length && !subject) {
+      if (!grades && subject === null) {
         filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
         if (!filteredInterestedCurriculum.length) {
           filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
@@ -125,6 +125,7 @@ class Contaier extends Component {
         grades = grades.length ? uniq(grades.join(",").split(",")) : [];
         subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
       }
+      grades = grades || [];
       this.setState({
         search: {
           ...search,

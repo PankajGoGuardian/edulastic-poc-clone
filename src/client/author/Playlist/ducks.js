@@ -106,8 +106,8 @@ const initialState = {
   publishers: [],
   loading: false,
   recentPlayLists: [],
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : [],
-  defaultSubject: getFromLocalStorage("defaultSubject") || "",
+  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   lastPlayList: {}
 };
 

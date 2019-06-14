@@ -23,7 +23,8 @@ const scoreOfItem = item => {
     return item.itemLevelScore;
   } else {
     return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0)
+      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+      0
     );
   }
 };

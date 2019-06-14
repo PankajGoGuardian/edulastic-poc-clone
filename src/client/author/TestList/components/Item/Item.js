@@ -94,7 +94,7 @@ class Item extends Component {
 
   render() {
     const {
-      item: { title, tags = [], analytics, _source, status, _id: testId, description },
+      item: { title, tags = [], analytics, _source, thumbnail, status, _id: testId, description },
       item,
       authorName,
       owner,
@@ -122,7 +122,7 @@ class Item extends Component {
         />
         <Container
           title={
-            <Header src={isPlaylist ? _source.thumbnail : undefined}>
+            <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars />
               <ButtonWrapper className="showHover">
                 {owner && status === "draft" && (

@@ -149,7 +149,7 @@ export const createBlankTest = () => ({
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   status: "draft",
-  thumbnail: "https://fakeimg.pl/500x135/",
+  thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   createdBy: {
     id: "",
     firstName: "",

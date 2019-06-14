@@ -105,11 +105,10 @@ const RemoteAutocompleteDropDown = ({
   }, [isLoading]);
 
   const buildDropDownData = datum => {
-    let regExp = new RegExp(`${text}`, "i");
     const searchedDatum = datum.filter(item => {
       return some(filterKeys, fKey => {
         let test = item[fKey] || item.title;
-        return regExp.test(test);
+        return test.includes(text);
       });
     });
 

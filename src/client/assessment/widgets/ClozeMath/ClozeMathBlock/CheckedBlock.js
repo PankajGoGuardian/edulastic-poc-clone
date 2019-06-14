@@ -13,7 +13,12 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width })
   let { index } = find(response_ids[type], res => res.id === id);
   index = parseInt(index, 10);
 
-  const isCorrect = evaluation[index];
+  let checkBoxClass = "";
+
+  if (evaluation[index]) {
+    checkBoxClass = evaluation[index] ? "right" : "wrong";
+  }
+
   const replaceWithMathQuill = () => {
     if (!window.MathQuill || !filedRef.current || !isMath) {
       return;
@@ -28,12 +33,12 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width })
   }, [userAnswer, evaluation, isMath]);
 
   return (
-    <CheckBox width={width} className={isCorrect ? "right" : "wrong"} key={`input_${index}`}>
+    <CheckBox width={width} className={checkBoxClass} key={`input_${index}`}>
       <span className="index">{index + 1}</span>
       <span className="value" ref={filedRef}>
         {userAnswer.value}
       </span>
-      <IconWrapper>{isCorrect ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+      {evaluation[index] && <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>}
     </CheckBox>
   );
 };

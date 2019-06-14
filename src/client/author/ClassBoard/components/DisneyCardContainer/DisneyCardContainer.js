@@ -110,7 +110,7 @@ export default class DisneyCardContainer extends Component {
                 <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
               )}
               <StyledName>
-                <StyledParaF data-cy="studentName" title={student.email}>
+                <StyledParaF data-cy="studentName" title={isPresentationMode ? undefined : student.email}>
                   {name}
                 </StyledParaF>
                 {student.present ? (

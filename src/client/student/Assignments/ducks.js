@@ -247,6 +247,9 @@ const isLiveAssignment = (assignment, currentGroup) => {
   let { endDate, class: clazz = [] } = assignment;
   if (!endDate) {
     endDate = (_maxBy(clazz.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
+    if (!endDate) {
+      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+    }
   }
   const isLive = (maxAttempts > attempts || lastAttempt.status == "0") && endDate > Date.now();
   return isLive;

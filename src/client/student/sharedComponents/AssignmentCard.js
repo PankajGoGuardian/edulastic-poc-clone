@@ -83,6 +83,12 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     const currentClass = maxBy(clazz.filter(cl => cl._id === currentGroup), "endDate") || {};
     startDate = currentClass.startDate;
     endDate = currentClass.endDate;
+    if (!startDate) {
+      startDate = (maxBy(clazz.filter(cl => cl._id === groupId), "openDate") || {}).openDate;
+    }
+    if (!endDate) {
+      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+    }
   }
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.

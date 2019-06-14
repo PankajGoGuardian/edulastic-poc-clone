@@ -3,6 +3,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
+import moment from "moment";
 import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
@@ -80,6 +81,7 @@ import {
   PrintButton,
   StudentGrapContainer
 } from "./styled";
+import { getUserRole } from "../../../../student/Login/ducks";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -317,14 +319,19 @@ class ClassBoard extends Component {
   };
 
   handleOpenAssignment = () => {
-    const { openAssignment, match } = this.props;
+    const { openAssignment, match, additionalData, userRole } = this.props;
     const { assignmentId, classId } = match.params;
+    if (additionalData.testType === "common assessment" && userRole === "teacher") {
+      return message.error(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+    `);
+    }
     openAssignment(assignmentId, classId);
   };
 
   handleCloseAssignment = () => {
     const { closeAssignment, match } = this.props;
     const { assignmentId, classId } = match.params;
+
     closeAssignment(assignmentId, classId);
   };
 
@@ -347,7 +354,8 @@ class ClassBoard extends Component {
       qActivityByStudent,
       enableMarkAsDone,
       showScore,
-      isPresentationMode
+      isPresentationMode,
+      userRole
     } = this.props;
     const gradeSubject = {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
@@ -367,9 +375,11 @@ class ClassBoard extends Component {
     );
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
-    const { canOpenClass = [], canCloseClass = [] } = additionalData || {};
-    const canOpen = canOpenClass.includes(classId);
-    const canClose = canCloseClass.includes(classId);
+    const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData || {};
+    const canOpen =
+      canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
+    const canClose =
+      canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -650,7 +660,9 @@ const enhance = compose(
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      userRole: getUserRole(state),
       labels: getQLabelsSelector(state)
+
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

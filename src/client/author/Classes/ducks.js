@@ -107,7 +107,10 @@ export const reducer = createReducer(initialState, {
     state.creating = false;
     state.create = payload;
     const createdStudent = {
-      [payload._id]: payload
+      [payload._id]: {
+        _id: payload._id,
+        _source: payload
+      }
     };
     // here we use the spread operator for the created student, so that the created student
     // appears first in the list

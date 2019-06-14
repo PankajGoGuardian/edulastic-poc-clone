@@ -662,7 +662,6 @@ const enhance = compose(
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       userRole: getUserRole(state),
       labels: getQLabelsSelector(state)
-
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

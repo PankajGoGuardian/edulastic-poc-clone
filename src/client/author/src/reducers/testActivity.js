@@ -151,6 +151,7 @@ const reducer = (state = initialState, { type, payload }) => {
           for (let index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;
+            _st.entities[index].score = 0;
             _st.entities[index].testActivityId = undefined;
             _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(({ _id }) => ({
               _id,

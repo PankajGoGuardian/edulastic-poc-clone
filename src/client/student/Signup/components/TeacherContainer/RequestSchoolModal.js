@@ -167,6 +167,7 @@ class RequestSchool extends React.Component {
                 createNewLabel="Create New District"
                 existingLabel="Districts"
                 placeholder="Enter your district name"
+                isLoading={isSearching}
               />
             )}
           </Form.Item>

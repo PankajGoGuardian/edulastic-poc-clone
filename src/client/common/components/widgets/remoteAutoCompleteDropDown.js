@@ -34,7 +34,9 @@ const RemoteAutocompleteDropDown = ({
   placeholder = "",
   ItemTemplate = null,
   minHeight = "30px",
-  filterKeys = ["title"]
+  filterKeys = ["title"],
+  setSelectedOnDataChange = false,
+  isLoading = false
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -51,20 +53,22 @@ const RemoteAutocompleteDropDown = ({
 
   useInternalEffect(() => {
     let item = null;
-    if (data.length) {
-      item = data.find((item, index) => {
-        if (item.key === selected.key) {
-          return true;
+    if (setSelectedOnDataChange) {
+      if (data.length) {
+        item = data.find((item, index) => {
+          if (item.key === selected.key) {
+            return true;
+          }
+        });
+        if (!item) {
+          item = data[0];
         }
-      });
-      if (!item) {
-        item = data[0];
+      } else {
+        item = { key: "", title: "" };
       }
-    } else {
-      item = { key: "", title: "" };
+      setSelected(item);
     }
 
-    setSelected(item);
     setDropDownData(data);
     if (isItemPresent(data, { title: text }) && createNew) {
       setAddCreateNewOption(false);
@@ -89,8 +93,18 @@ const RemoteAutocompleteDropDown = ({
       item = { key: "", title: "" };
     }
 
-    setSelected(item);
+    if (setSelectedOnDataChange) {
+      setSelected(item);
+    } else {
+      setSelected({ key: "", title: "" });
+    }
   }, []);
+
+  useInternalEffect(() => {
+    if (isLoading === true) {
+      setDropDownData([...data]);
+    }
+  }, [isLoading]);
 
   const buildDropDownData = datum => {
     let regExp = new RegExp(`${text}`, "i");
@@ -100,6 +114,7 @@ const RemoteAutocompleteDropDown = ({
         return regExp.test(test);
       });
     });
+
     let arr;
     if (addCreateNewOption) {
       let existingArr = searchedDatum.map((item, index) => {
@@ -139,18 +154,11 @@ const RemoteAutocompleteDropDown = ({
   const onSearch = value => {
     if (value.length > 2) {
       let exactMatchFound = false;
-      let regExp = new RegExp(`${value}`, "i");
-      let searchedData = data.filter((item, index) => {
-        if (value === item.title) {
-          exactMatchFound = true;
-          return true;
-        }
-        return some(filterKeys, fKey => {
-          let test = item[fKey] || item.title;
-          return regExp.test(test);
-        });
-      });
-      setDropDownData(searchedData);
+      const searchItem = data.filter(item => item.title === value);
+      if (searchItem) {
+        exactMatchFound = true;
+      }
+      setDropDownData([...data]);
 
       if (createNew && !exactMatchFound) {
         setAddCreateNewOption(true);
@@ -235,7 +243,7 @@ const RemoteAutocompleteDropDown = ({
         <Input
           suffix={
             <Icon
-              type={iconType}
+              type={isLoading ? "loading" : iconType}
               className={`${isDropDownVisible ? "ant-input-suffix-icon-rotate-up" : ""}`}
               style={{ color: "#00ad50" }}
             />

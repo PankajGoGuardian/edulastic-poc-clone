@@ -281,7 +281,7 @@ class Container extends PureComponent {
   };
 
   validateTest = test => {
-    const { title, subjects, grades } = test;
+    const { title, subjects, grades, requirePassword = false, assignmentPassword = "" } = test;
     if (!title) {
       message.error("Name field cannot be empty");
       return false;
@@ -294,6 +294,13 @@ class Container extends PureComponent {
       message.error("Subject field cannot be empty");
       return false;
     }
+    if (requirePassword) {
+      if (assignmentPassword.length < 6 || assignmentPassword > 25) {
+        message.error("Please add a valid password.");
+        return false;
+      }
+    }
+
     return true;
   };
 

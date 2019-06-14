@@ -824,6 +824,7 @@ input[type="checkbox"] {
   background: #fff;
   color: #878282;
   padding: 7px;
+  min-height: 32px;
 }
 
 .correctanswer-box {

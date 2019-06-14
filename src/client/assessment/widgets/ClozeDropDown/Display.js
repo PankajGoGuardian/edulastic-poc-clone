@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { isUndefined, mapValues, cloneDeep } from "lodash";
+import { isUndefined, mapValues, cloneDeep, findIndex, find } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
 import { InstructorStimulus, helpers } from "@edulastic/common";
 
 import { QuestionHeader } from "../../styled/QuestionHeader";
-import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -30,10 +30,20 @@ class ClozeDropDownDisplay extends Component {
     this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp) });
   }
 
-  selectChange = (value, index) => {
+  selectChange = (value, index, id) => {
     const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    newAnswers[index] = value;
-    changeAnswers(newAnswers);
+    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
+    if (changedIndex !== -1) {
+      newAnswers[changedIndex] = { value, index, id };
+      changeAnswers(newAnswers);
+    } else {
+      const {
+        item: { response_ids }
+      } = this.props;
+      const response = find(response_ids, res => res.id === id);
+      newAnswers[response.index] = { value, index, id };
+      changeAnswers(newAnswers);
+    }
   };
 
   shuffle = arr => {
@@ -133,12 +143,14 @@ class ClozeDropDownDisplay extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={item.validation.valid_response && item.validation.valid_response.value}
+          responseIds={item.response_ids}
         />
         {hasAltAnswers && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
             altResponses={item.validation.alt_responses}
+            responseIds={item.response_ids}
           />
         )}
       </React.Fragment>
@@ -156,14 +168,16 @@ class ClozeDropDownDisplay extends Component {
             showAnswer,
             userSelections:
               item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
-            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation,
+            item
           }
         : {
             userAnswers: userSelections || [],
             btnStyle,
             placeholder,
-            responses,
-            onChange: this.selectChange
+            options: responses,
+            onChange: this.selectChange,
+            item
           };
 
     return (

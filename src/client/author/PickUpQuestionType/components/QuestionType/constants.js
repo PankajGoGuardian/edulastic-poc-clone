@@ -1028,8 +1028,9 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false" index="0"><span class="index">1</span>Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
+        response_ids: [],
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1039,10 +1040,7 @@ export const getCards = onSelectQuestionType => {
           wordwrap: false,
           responsecontainerindividuals: []
         },
-        options: {
-          0: ["A", "B"],
-          1: ["Choice A", "Choice B"]
-        },
+        options: {},
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {

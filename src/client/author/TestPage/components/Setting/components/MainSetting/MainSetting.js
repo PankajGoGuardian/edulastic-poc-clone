@@ -230,7 +230,8 @@ class MainSetting extends Component {
                 }
               })}
             </StyledAnchor>
-            <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
+            {/* Hiding temporarly for deploying */}
+            {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
               {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
               <IconCaretDown color={lightBlueSecondary} width={11} height={6} />
             </AdvancedButton>
@@ -244,7 +245,7 @@ class MainSetting extends Component {
                   />
                 ))}
               </StyledAnchor>
-            )}
+            )} */}
           </Col>
           <Col span={isSmallSize ? 24 : 18}>
             <Block id="test-type" smallSize={isSmallSize}>

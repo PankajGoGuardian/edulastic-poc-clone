@@ -484,6 +484,7 @@ var evaluator =
           alt_inputs,
           scoring_type,
           attemptScore,
+          entered,
           answers,
           _userResponse$dropDow,
           dropDowns,
@@ -491,7 +492,6 @@ var evaluator =
           inputs,
           _userResponse$maths,
           maths,
-          entered,
           _sortResponses,
           _sortResponses$userRe,
           _inputsResponse,
@@ -530,16 +530,14 @@ var evaluator =
                   (alt_inputs = _validation$alt_input === void 0 ? [] : _validation$alt_input),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
+                entered = 1;
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                console.log(validation);
-                console.log(userResponse);
                 (_userResponse$dropDow = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
                   (_userResponse$inputs = userResponse.inputs),
                   (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
                   (_userResponse$maths = userResponse.maths),
                   (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths);
-                entered = 0;
                 (_sortResponses = sortResponses(
                   (0, _cloneDeep2["default"])(inputs),
                   (0, _cloneDeep2["default"])(valid_inputs)
@@ -548,7 +546,7 @@ var evaluator =
                   (_inputsResponse = _sortResponses$userRe === void 0 ? [] : _sortResponses$userRe),
                   (validInputs = _sortResponses.validResponse);
                 entered += _inputsResponse.length;
-                _context6.next = 11;
+                _context6.next = 9;
                 return (0, _clozeText["default"])({
                   userResponse: _inputsResponse,
                   validation: {
@@ -558,7 +556,7 @@ var evaluator =
                   }
                 });
 
-              case 11:
+              case 9:
                 inputsResults = _context6.sent;
                 (_sortResponses2 = sortResponses(
                   (0, _cloneDeep2["default"])(dropDowns),
@@ -568,7 +566,7 @@ var evaluator =
                   (_dropDownResponse = _sortResponses2$userR === void 0 ? [] : _sortResponses2$userR),
                   (validDropDown = _sortResponses2.validResponse);
                 entered += _dropDownResponse.length;
-                _context6.next = 16;
+                _context6.next = 14;
                 return (0, _clozeText["default"])({
                   userResponse: _dropDownResponse,
                   validation: {
@@ -578,7 +576,7 @@ var evaluator =
                   }
                 });
 
-              case 16:
+              case 14:
                 dropDownResults = _context6.sent;
                 mathResults = {};
                 (_sortResponses3 = sortResponses(
@@ -589,12 +587,12 @@ var evaluator =
                   (_mathResponse = _sortResponses3$userR === void 0 ? [] : _sortResponses3$userR);
                 entered += _mathResponse.length;
                 _context6.t0 = scoring_type;
-                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 23 : 23;
+                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 21 : 21;
                 break;
 
-              case 23:
+              case 21:
                 checks = getChecks(validation);
-                _context6.next = 26;
+                _context6.next = 24;
                 return exactMatchEvaluator(
                   _mathResponse.map(function(r) {
                     return r ? (0, _trim2["default"])(r) : "";
@@ -603,10 +601,10 @@ var evaluator =
                   checks
                 );
 
-              case 26:
+              case 24:
                 mathResults = _context6.sent;
 
-              case 27:
+              case 25:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
@@ -648,7 +646,7 @@ var evaluator =
                   maxScore: maxScore
                 });
 
-              case 39:
+              case 37:
               case "end":
                 return _context6.stop();
             }

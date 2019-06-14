@@ -10,6 +10,8 @@ import DragScroll, { DOWNWARDS } from "@edulastic/common/src/components/DragScro
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 /* lazy load routes */
+
+const Dashboard = lazy(() => import("../Dashboard"));
 const Assignments = lazy(() => import("../Assignments"));
 const AssignTest = lazy(() => import("../AssignTest"));
 const AssignmentAdvanced = lazy(() => import("../AssignmentAdvanced"));
@@ -66,9 +68,13 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
+
               <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
+
+              <Route exact path={`/author/dashboard`} component={Dashboard} />
+
               <Route
                 exact
                 path={`${match.url}/assignments/:districtId/:testId`}

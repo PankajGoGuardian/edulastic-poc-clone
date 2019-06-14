@@ -49,6 +49,7 @@ import { interestedStandardsReducer } from "../../InterestedStandards";
 import { playlists } from "../../Playlist";
 import { playlist } from "../../PlaylistPage";
 import pickUpQuestion from "./pickUpQuestion";
+import { dashboardTeacher } from "../../Dashboard";
 
 const authorReducers = {
   authorUi,
@@ -101,7 +102,8 @@ const authorReducers = {
   playlist,
   playlists,
   interestedStandardsReducer,
-  pickUpQuestion
+  pickUpQuestion,
+  dashboardTeacher
 };
 
 export default authorReducers;

@@ -39,6 +39,7 @@ import folderSaga from "./folder";
 import { interestedStandardsSaga } from "../../InterestedStandards";
 import { playlistSaga } from "../../Playlist";
 import { playlistPageSaga } from "../../PlaylistPage";
+import { dashboardTeacherSaga } from "../../Dashboard";
 
 const authorSagas = [
   itemsSaga(),
@@ -81,7 +82,8 @@ const authorSagas = [
   folderSaga(),
   playlistSaga(),
   playlistPageSaga(),
-  interestedStandardsSaga()
+  interestedStandardsSaga(),
+  dashboardTeacherSaga()
 ];
 
 export default authorSagas;

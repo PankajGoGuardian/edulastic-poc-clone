@@ -35,7 +35,7 @@ function AddStudentsToOtherClass({
     });
   };
   return successData ? (
-    <Modal onOk={onCloseModal}>
+    <Modal visible={showModal} title="Student enrollment status" width="800px" onOk={onCloseModal}>
       <Table
         rowKey={record => record.username}
         columns={[

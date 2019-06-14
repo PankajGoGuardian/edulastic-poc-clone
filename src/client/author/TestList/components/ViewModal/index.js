@@ -57,8 +57,11 @@ export default class ViewModal extends React.Component {
       tags = [],
       grades = [],
       subjects = [],
+      thumbnail = "",
       analytics = [],
       testItems = [],
+      scoring = {},
+      sharing = [],
       _source
     } = item;
 
@@ -67,7 +70,7 @@ export default class ViewModal extends React.Component {
         <ModalTitle>{title}</ModalTitle>
         <ModalContainer>
           <ModalColumn>
-            <Image />
+            <Image src={thumbnail} />
 
             <AssessmentNameLabel>Assignment Name</AssessmentNameLabel>
             <AssessmentName>{title}</AssessmentName>
@@ -89,15 +92,15 @@ export default class ViewModal extends React.Component {
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} /> &nbsp;
-                <IconText>Public Library</IconText>
+                <IconText>{sharing[0] ? sharing[0].type : ""}</IconText>
               </FooterIcon>
-              <FooterIcon>
+              <FooterIcon rotate>
                 <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                {analytics && <IconText>{analytics.usage} 000</IconText>}
+                {analytics && <IconText>{analytics.usage || 0} </IconText>}
               </FooterIcon>
               <FooterIcon>
                 <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                {analytics && <IconText>{analytics.likes} 000</IconText>}
+                {analytics && <IconText>{analytics.likes || 0}</IconText>}
               </FooterIcon>
             </Footer>
           </ModalColumn>
@@ -139,7 +142,7 @@ export default class ViewModal extends React.Component {
                   <SummaryCardLabel>Questions</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard>
-                  <SummaryCardValue>3</SummaryCardValue>
+                  <SummaryCardValue>{scoring.total}</SummaryCardValue>
                   <SummaryCardLabel>Points</SummaryCardLabel>
                 </SummaryCard>
               </SummaryCardContainer>

@@ -28,11 +28,13 @@ export const ModalContainer = styled(Card)`
 
 export const Image = styled.div`
   min-height: 150px;
+  height: auto;
   width: 95%;
   position: relative;
-  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
+  background: ${props =>
+    props.src ? `url(${props.src})` : `url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg")`};
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   border-radius: 4px;
   margin-bottom: 15px;
 `;
@@ -101,8 +103,9 @@ export const FooterIcon = styled.div`
   &:first-child {
     margin-left: 0px;
   }
+
   svg {
-    transform: rotate(180deg);
+    transform: ${props => (props.rotate ? "rotate(180deg)" : "")};
   }
 `;
 

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { findIndex, isUndefined, get, keyBy } from "lodash";
 import produce, { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
+import { Modal, Button, Input, message } from "antd";
 
 import {
   StyledFlexContainer,
@@ -19,7 +20,7 @@ import {
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
 // actions
-import { receiveStudentResponseAction } from "../src/actions/classBoard";
+import { receiveStudentResponseAction, saveOverallFeedbackAction } from "../src/actions/classBoard";
 // selectors
 import {
   getAssignmentClassIdSelector,
@@ -71,8 +72,8 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
   });
 };
 class StudentViewContainer extends Component {
-  state = { filter: null };
-
+  state = { filter: null, showFeedbackPopup: false };
+  feedbackRef = React.createRef();
   static getDerivedStateFromProps(nextProps, preState) {
     const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
     const { selectedStudent: _selectedStudent } = preState || {};
@@ -92,6 +93,19 @@ class StudentViewContainer extends Component {
       loading: selectedStudent !== _selectedStudent
     };
   }
+  handleShowFeedbackPopup = value => {
+    this.setState({ showFeedbackPopup: value });
+  };
+
+  handleApply = () => {
+    const { saveOverallFeedback, assignmentIdClassId, studentResponse } = this.props;
+    const studentTestActivity = studentResponse && studentResponse.testActivity;
+    const testActivityId = studentTestActivity && studentTestActivity._id;
+    const feedback = this.feedbackRef.current.textAreaRef.value;
+    if (!feedback) return message.error("Please add your feedback before saving");
+    saveOverallFeedback(testActivityId, assignmentIdClassId.classId, { text: feedback });
+    this.setState({ showFeedbackPopup: false });
+  };
 
   render() {
     const {
@@ -104,7 +118,7 @@ class StudentViewContainer extends Component {
       isPresentationMode
     } = this.props;
 
-    const { loading, filter } = this.state;
+    const { loading, filter, showFeedbackPopup } = this.state;
     const classResponseProcessed = transformTestItemsForAlgoVariables(classResponse, variableSetIds);
     const userId = studentResponse.testActivity ? studentResponse.testActivity.userId : "";
     const currentStudent = studentItems.find(({ studentId }) => {
@@ -113,9 +127,31 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId;
     });
-
+    const studentTestActivity = studentResponse && studentResponse.testActivity;
+    const initFeedbackValue =
+      (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
     return (
       <React.Fragment>
+        {showFeedbackPopup && (
+          <Modal
+            centered
+            maskClosable={false}
+            visible={showFeedbackPopup}
+            title="Give Overall Feedback"
+            onCancel={() => this.handleShowFeedbackPopup(false)}
+            footer={[
+              <Button key="back" onClick={() => this.handleShowFeedbackPopup(false)}>
+                Cancel
+              </Button>,
+              <Button key="submit" type="primary" onClick={this.handleApply}>
+                Apply
+              </Button>
+            ]}
+          >
+            <p>Leave a feedback!</p>
+            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} />
+          </Modal>
+        )}
         <StyledFlexContainer justifyContent="space-between">
           <StudentButtonDiv>
             <AllButton active={filter === null} onClick={() => this.setState({ filter: null })}>
@@ -131,7 +167,9 @@ class StudentViewContainer extends Component {
               PARTIALLY CORRECT
             </PartiallyCorrectButton>
           </StudentButtonDiv>
-          <GiveOverallFeedBackButton active>GIVE OVERALL FEEDBACK</GiveOverallFeedBackButton>
+          <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
+            GIVE OVERALL FEEDBACK
+          </GiveOverallFeedBackButton>
         </StyledFlexContainer>
         {!loading && (
           <ClassQuestions
@@ -161,7 +199,8 @@ const enhance = compose(
       testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", [])
     }),
     {
-      loadStudentResponses: receiveStudentResponseAction
+      loadStudentResponses: receiveStudentResponseAction,
+      saveOverallFeedback: saveOverallFeedbackAction
     }
   )
 );

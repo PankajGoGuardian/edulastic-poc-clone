@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
@@ -25,7 +25,8 @@ import {
   UPDATE_RELEASE_SCORE,
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
-  CLOSE_ASSIGNMENT
+  CLOSE_ASSIGNMENT,
+  SAVE_OVERALL_FEEDBACK
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -124,6 +125,15 @@ function* closeAssignmentSaga({ payload }) {
   }
 }
 
+function* saveOverallFeedbackSaga({ payload }) {
+  try {
+    yield call(testActivityApi.saveOverallFeedback, payload);
+    yield call(message.success, "feedback saved");
+  } catch (err) {
+    yield call(message.error, "Saving failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -131,7 +141,8 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
-    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga)
+    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
+    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga)
   ]);
 }
 

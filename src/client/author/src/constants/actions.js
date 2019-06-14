@@ -148,6 +148,7 @@ export const OPEN_ASSIGNMENT = "[gradebook] open assignment";
 export const CLOSE_ASSIGNMENT = "[gradebook] close assignment";
 export const UPDATE_OPEN_ASSIGNMENTS = "[gradebook] update open assignments";
 export const UPDATE_CLOSE_ASSIGNMENTS = "[gradebook] update close assignments";
+export const SAVE_OVERALL_FEEDBACK = "[gradebook] save overall feedback";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";

@@ -46,10 +46,20 @@ const getById = (testActivityId, groupId) =>
     })
     .then(result => result.data.result);
 
+const saveOverallFeedback = ({ testActivityId, groupId, feedback: data }) =>
+  api
+    .callApi({
+      url: `${prefix}/${testActivityId}/overall-feedback?groupId=${groupId}`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
 export default {
   create,
   submit,
   fetchReports,
   getById,
-  previousResponses
+  previousResponses,
+  saveOverallFeedback
 };

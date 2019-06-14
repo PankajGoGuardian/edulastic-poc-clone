@@ -18,6 +18,13 @@ import { getCurriculumsListSelector } from "../../../../author/src/selectors/dic
 const { allGrades, allSubjects } = selectsData;
 
 const { Option } = Select;
+const defaultStandards = {
+  Mathematics: "Math - Common Core",
+  ELA: "ELA - Common Core",
+  Science: "Science - NGSS",
+  "Social Studies": "Social Studies",
+  "Other Subjects": ""
+};
 class SubjectGrade extends React.Component {
   state = {
     subject: ""
@@ -84,7 +91,13 @@ class SubjectGrade extends React.Component {
   render() {
     const { subject } = this.state;
     const { curriculums, form, saveSubjectGradeloading } = this.props;
-    const standardSets = filter(curriculums, el => el.subject === subject);
+    const standardSets = filter(curriculums, el => el.subject === subject).sort((a, b) =>
+      a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1
+    );
+    const findDefaultIndex = standardSets.findIndex(item => defaultStandards[subject] === item.curriculum);
+    if (findDefaultIndex > -1) {
+      [standardSets[0], standardSets[findDefaultIndex]] = [standardSets[findDefaultIndex], standardSets[0]];
+    }
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);

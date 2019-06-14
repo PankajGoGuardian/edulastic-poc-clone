@@ -24,13 +24,19 @@ import {
 import AddClassModal from "./AddClassModal/AddClassModal";
 import EditClassModal from "./EditClassModal/EditClassModal";
 import ArchiveClassModal from "./ArchiveClassModal/ArchiveClassModal";
+import BulkEditModal from "./BulkEditModal";
 
 import {
   receiveClassListAction,
   createClassAction,
   updateClassAction,
   deleteClassAction,
-  getClassListSelector
+  getClassListSelector,
+  setBulkEditVisibilityAction,
+  getBulkEditSelector,
+  setBulkEditModeAction,
+  setBulkEditUpdateViewAction,
+  bulkUpdateClassesAction
 } from "../../ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
@@ -49,7 +55,7 @@ class ClassesTable extends Component {
       addClassModalVisible: false,
       editClassModalVisible: false,
       archiveClassModalVisible: false,
-      editClassKey: "undefined",
+      editClassKey: "",
       searchByName: "",
       filtersData: [
         {
@@ -147,19 +153,25 @@ class ClassesTable extends Component {
   };
 
   changeFilterColumn = (value, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filtersColumn = value;
-    if (value === "subjects" || value === "grades") filtersData[key].filtersValue = "eq";
-    this.setState({ filtersData });
-
-    if (
-      (filtersData[key].filterAdded || key == 2) &&
-      filtersData[key].filtersValue !== "" &&
-      filtersData[key].filterStr !== ""
-    ) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    }
+    // here we need to use cloneDeep since a simple spread operator mutates the state
+    const filtersData = cloneDeep(this.state.filtersData);
+    filtersData[key] = {
+      filtersColumn: value,
+      filtersValue: "",
+      filterStr: ""
+    };
+    if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
+    // here we check if the filter chosen is active or if the previous value held by the select was active
+    // then according to this, we either disable or enable the checkbox
+    if (value === "active" || this.state.filtersData[key].filtersColumn === "active") {
+      this.setState(
+        {
+          disableActiveUsers: value === "active",
+          filtersData
+        },
+        () => this.afterSetState(key)
+      );
+    } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
   };
 
   changeFilterValue = (value, key) => {
@@ -290,7 +302,12 @@ class ClassesTable extends Component {
       if (selectedRowKeys.length > 0) this.onArchiveClass();
       else message.error("Please select class to archive.");
     } else if (e.key === "bulk edit") {
-      console.log("bulk edit clicked");
+      if (!selectedRowKeys.length) {
+        message.warning("Please select atleast 1 class");
+      } else {
+        const { setBulkEditVisibility } = this.props;
+        setBulkEditVisibility(true);
+      }
     }
   };
 
@@ -415,7 +432,12 @@ class ClassesTable extends Component {
       coursesForDistrictList,
       totalClassCount,
       schoolsData,
-      teacherList
+      teacherList,
+      bulkEditData,
+      setBulkEditVisibility,
+      setBulkEditMode,
+      setBulkEditUpdateView,
+      bulkUpdateClasses
     } = this.props;
 
     const rowSelection = {
@@ -555,7 +577,7 @@ class ClassesTable extends Component {
           total={totalClassCount}
           onChange={this.changePagination}
         />
-        {editClassModalVisible && editClassKey !== "undefined" && (
+        {editClassModalVisible && (
           <EditClassModal
             selClassData={selectedClass}
             modalVisible={editClassModalVisible}
@@ -588,6 +610,18 @@ class ClassesTable extends Component {
             })}
           />
         )}
+        <BulkEditModal
+          bulkEditData={bulkEditData}
+          districtId={userOrgId}
+          onCloseModal={() => setBulkEditVisibility(false)}
+          setBulkEditMode={setBulkEditMode}
+          setBulkEditUpdateView={setBulkEditUpdateView}
+          selectedIds={selectedRowKeys}
+          selectedClasses={selectedRowKeys.map(_id => dataSource[_id])}
+          bulkUpdateClasses={bulkUpdateClasses}
+          searchCourseList={searchCourseList}
+          coursesForDistrictList={coursesForDistrictList}
+        />
       </StyledTableContainer>
     );
   }
@@ -601,7 +635,8 @@ const enhance = compose(
       coursesForDistrictList: getCoursesForDistrictSelector(state),
       totalClassCount: get(state, ["classesReducer", "totalClassCount"], 0),
       teacherList: getTeachersListSelector(state),
-      schoolsData: getSchoolsSelector(state)
+      schoolsData: getSchoolsSelector(state),
+      bulkEditData: getBulkEditSelector(state)
     }),
     {
       createClass: createClassAction,
@@ -610,7 +645,11 @@ const enhance = compose(
       loadClassListData: receiveClassListAction,
       searchCourseList: receiveSearchCourseAction,
       loadSchoolsData: receiveSchoolsAction,
-      loadTeachersListData: receiveTeachersListAction
+      loadTeachersListData: receiveTeachersListAction,
+      setBulkEditVisibility: setBulkEditVisibilityAction,
+      setBulkEditMode: setBulkEditModeAction,
+      setBulkEditUpdateView: setBulkEditUpdateViewAction,
+      bulkUpdateClasses: bulkUpdateClassesAction
     }
   )
 );
@@ -627,5 +666,9 @@ ClassesTable.propTypes = {
   searchCourseList: PropTypes.func.isRequired,
   coursesForDistrictList: PropTypes.array.isRequired,
   loadSchoolsData: PropTypes.func.isRequired,
-  loadTeachersListData: PropTypes.func.isRequired
+  loadTeachersListData: PropTypes.func.isRequired,
+  setBulkEditVisibility: PropTypes.func.isRequired,
+  setBulkEditMode: PropTypes.func.isRequired,
+  setBulkEditUpdateView: PropTypes.func.isRequired,
+  bulkUpdateClasses: PropTypes.func.isRequired
 };

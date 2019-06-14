@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Form, Input, Row, Col, Select, Button, Modal } from "antd";
+import { Form, Input, Row, Col, Select, Button, Modal, DatePicker } from "antd";
 const Option = Select.Option;
 
 import { ModalFormItem } from "./styled";
@@ -17,7 +17,9 @@ class EditClassModal extends Component {
           districtId,
           institutionId: row.institutionId,
           subject: row.subject,
-          grade: row.grade
+          grade: row.grade,
+          tags: row.tags,
+          endDate: row.endDate.valueOf()
         };
         this.props.saveClass(saveClassData);
       }
@@ -30,7 +32,7 @@ class EditClassModal extends Component {
 
   render() {
     const { modalVisible, selClassData, schoolsData, teacherList } = this.props;
-    const { _source: { owners = [], name, subject, grade, institutionId } = {} } = selClassData;
+    const { _source: { owners = [], name, subject, institutionId, grade, tags, endDate } = {} } = selClassData;
     const ownersData = owners.map(row => row.id);
 
     const schoolsOptions = [];
@@ -112,7 +114,7 @@ class EditClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Grade">
+            <ModalFormItem label="Grades">
               {getFieldDecorator("grade", {
                 rules: [
                   {
@@ -121,7 +123,27 @@ class EditClassModal extends Component {
                   }
                 ],
                 initialValue: grade
-              })(<Select placeholder="Select Grade">{gradeOptions}</Select>)}
+              })(
+                <Select placeholder="Select Grade" mode="multiple">
+                  {gradeOptions}
+                </Select>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="Course">
+              {getFieldDecorator("courseId")(<Select showSearch placeholder="Please enter 1 or more characters" />)}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="Tags">
+              {getFieldDecorator("tags", {
+                initialValue: tags
+              })(<Select placeholder="Please enter 2 or more characters" mode="tags" />)}
             </ModalFormItem>
           </Col>
         </Row>
@@ -156,6 +178,15 @@ class EditClassModal extends Component {
                 ],
                 initialValue: institutionId
               })(<Select placeholder="Select School">{schoolsOptions}</Select>)}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label="End Date">
+              {getFieldDecorator("endDate", {
+                initialValue: endDate
+              })(<DatePicker />)}
             </ModalFormItem>
           </Col>
         </Row>

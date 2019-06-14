@@ -134,10 +134,11 @@ class QuestionViewContainer extends Component {
       data = testActivity
         .filter(student => student.status != "notStarted")
         .map(st => {
+          const name = isPresentationMode ? st.fakeName : st.studentName;
           const stData = {
-            name: isPresentationMode ? st.fakeName : st.studentName,
+            name,
             id: st.studentId,
-            avatarName: getAvatarName(st.studentName),
+            avatarName: getAvatarName(name),
 
             avgTimeSpent: this.calcTimeSpentAsSec(st.questionActivities.filter(x => x._id === question.id)),
             attempts: st.questionActivities.length,
@@ -290,7 +291,11 @@ class QuestionViewContainer extends Component {
             </ResponsiveContainer>
           </StyledCard>
         </StyledFlexContainer>
-        <StudentResponse testActivity={testActivity} onClick={studentId => _scrollTo(studentId)} />
+        <StudentResponse
+          testActivity={testActivity}
+          onClick={studentId => _scrollTo(studentId)}
+          isPresentationMode={isPresentationMode}
+        />
         {testActivity &&
           !loading &&
           testActivity.map((student, index) => {

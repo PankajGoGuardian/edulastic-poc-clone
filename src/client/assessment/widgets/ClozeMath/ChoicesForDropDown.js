@@ -8,6 +8,7 @@ import { connect } from "react-redux";
 import { forEach, cloneDeep } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
@@ -29,6 +30,10 @@ class ChoicesForDropDown extends Component {
     cleanSections: PropTypes.func
   };
 
+  state = {
+    sectionId: uuid()
+  };
+
   static defaultProps = {
     fillSections: () => {},
     cleanSections: () => {}
@@ -36,25 +41,37 @@ class ChoicesForDropDown extends Component {
 
   componentDidUpdate(prevProps) {
     const { item: prevItem } = prevProps;
-    const { item, fillSections } = this.props;
+    const { item, fillSections, cleanSections } = this.props;
     const {
-      response_ids: { dropDowns: next = [] }
+      response_ids: { dropDowns: current = [] }
     } = item;
     const {
       response_ids: { dropDowns: prev = [] }
     } = prevItem;
 
     // eslint-disable-next-line react/no-find-dom-node
+    if (current.length === 0) {
+      return cleanSections(this.state.sectionId);
+    }
+
     const node = ReactDOM.findDOMNode(this);
-    if (next.length !== prev.length) {
-      fillSections("main", "Choices for Dropdown(s)", node.offsetTop, node.scrollHeight);
+    if (current.length === 1 && prev.length !== 1) {
+      fillSections(
+        "main",
+        "Choices for Dropdown(s)",
+        node.offsetTop,
+        node.scrollHeight,
+        undefined,
+        undefined,
+        this.state.sectionId
+      );
     }
   }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
-    cleanSections();
+    cleanSections(this.state.sectionId);
   }
 
   onChangeQuestion = stimulus => {

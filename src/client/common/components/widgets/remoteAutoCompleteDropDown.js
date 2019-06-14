@@ -108,6 +108,7 @@ const RemoteAutocompleteDropDown = ({
     const searchedDatum = datum.filter(item => {
       return some(filterKeys, fKey => {
         let test = item[fKey] || item.title;
+        test = test + "";
         return test.includes(text);
       });
     });

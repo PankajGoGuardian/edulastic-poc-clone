@@ -23,6 +23,7 @@ import {
 import { SET_ALIGNMENT_FROM_QUESTION } from "../src/constants/actions";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import { getNewAlignmentState } from "../src/reducers/dictionaries";
+import changeViewAction from "../src/actions/view";
 
 // constants
 export const resourceTypeQuestions = {
@@ -382,6 +383,7 @@ function* saveQuestionSaga({ payload: modalItemId }) {
         yield put(setTestDataAction(updatedTestEntity));
       }
       yield put(toggleCreateItemModalAction(false));
+      yield put(changeViewAction("edit"));
       return;
     }
 

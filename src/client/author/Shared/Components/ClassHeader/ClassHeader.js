@@ -26,6 +26,7 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
+  PresentModeSwitch,
   StyledButton,
   MenuWrapper
 } from "./styled";
@@ -226,9 +227,17 @@ class ClassHeader extends Component {
               </StyledLink>
             </FeaturesSwitch>
             <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
-              <Switch
-                checkedChildren={<Icon type="check"> presentation </Icon>}
-                unCheckedChildren={<Icon type="close" />}
+              <PresentModeSwitch
+                checkedChildren={
+                  <div>
+                    <Icon type="bar-chart" /> Present
+                  </div>
+                }
+                unCheckedChildren={
+                  <div>
+                    <Icon type="pause" /> Reset
+                  </div>
+                }
                 value={isPresentationMode}
                 onClick={this.toggleCurrentMode}
               />

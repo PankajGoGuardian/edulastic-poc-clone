@@ -100,8 +100,6 @@ class ClassHeader extends Component {
     });
   };
 
-
-
   onStudentReportCardMenuModalOk = obj => {
     this.setState(state => {
       return {
@@ -227,13 +225,14 @@ class ClassHeader extends Component {
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
-
-            <Switch
-              checkedChildren={<Icon type="check"> presentation </Icon>}
-              unCheckedChildren={<Icon type="close" />}
-              value={isPresentationMode}
-              onClick={this.toggleCurrentMode}
-            />
+            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
+              <Switch
+                checkedChildren={<Icon type="check"> presentation </Icon>}
+                unCheckedChildren={<Icon type="close" />}
+                value={isPresentationMode}
+                onClick={this.toggleCurrentMode}
+              />
+            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>

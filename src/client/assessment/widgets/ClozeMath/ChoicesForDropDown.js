@@ -15,7 +15,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { WidgetWrapper, Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
 
 class ChoicesForDropDown extends Component {
@@ -32,14 +32,22 @@ class ChoicesForDropDown extends Component {
     cleanSections: () => {}
   };
 
-  componentDidMount = () => {
-    const { fillSections, t } = this.props;
+  componentDidUpdate(prevProps) {
+    const { item: prevItem } = prevProps;
+    const { item, fillSections } = this.props;
+    const {
+      response_ids: { dropDowns: next = [] }
+    } = item;
+    const {
+      response_ids: { dropDowns: prev = [] }
+    } = prevItem;
+
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
-    if (node) {
-      fillSections("main", `${t("component.cloze.dropDown.choicesforresponse")} 1`, node.offsetTop);
+    if (next.length !== prev.length) {
+      fillSections("main", "Choices for Dropdown(s)", node.offsetTop, node.scrollHeight);
     }
-  };
+  }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
@@ -112,25 +120,29 @@ class ChoicesForDropDown extends Component {
       template
     } = item;
 
-    return dropDowns.map(dropdown => (
-      <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
-        <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
-        <SortableList
-          items={options[dropdown.id] || []}
-          dirty={template}
-          onSortEnd={params => this.onSortEnd(dropdown.id, params)}
-          useDragHandle
-          onRemove={itemIndex => this.remove(dropdown.id, itemIndex)}
-          onChange={(itemIndex, e) => this.editOptions(dropdown.id, itemIndex, e)}
-        />
+    return (
+      <WidgetWrapper>
+        {dropDowns.map(dropdown => (
+          <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
+            <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
+            <SortableList
+              items={options[dropdown.id] || []}
+              dirty={template}
+              onSortEnd={params => this.onSortEnd(dropdown.id, params)}
+              useDragHandle
+              onRemove={itemIndex => this.remove(dropdown.id, itemIndex)}
+              onChange={(itemIndex, e) => this.editOptions(dropdown.id, itemIndex, e)}
+            />
 
-        <div>
-          <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
-            {t("component.cloze.dropDown.addnewchoice")}
-          </AddNewChoiceBtn>
-        </div>
-      </Widget>
-    ));
+            <div>
+              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
+                {t("component.cloze.dropDown.addnewchoice")}
+              </AddNewChoiceBtn>
+            </div>
+          </Widget>
+        ))}
+      </WidgetWrapper>
+    );
   }
 }
 

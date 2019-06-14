@@ -2,6 +2,10 @@ import styled from "styled-components";
 
 import { desktopWidth, fadedBlack, extraDesktopWidthMax, white, dashBorderColor, selectColor } from "@edulastic/colors";
 
+export const WidgetWrapper = styled.div`
+  margin-top: 30px;
+`;
+
 export const Widget = styled.div`
   position: relative;
   padding: 30px;

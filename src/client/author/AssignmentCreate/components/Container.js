@@ -1,5 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { connect } from "react-redux";
+import { compose } from "redux";
+import { IconTestBank, IconPlaylist } from "@edulastic/icons";
 import HeaderWrapper from "../../src/mainContent/headerWrapper";
 import Title from "../common/Title";
 import SubTitle from "../common/SubTitle";
@@ -8,7 +11,6 @@ import BreadCrumb from "../../src/components/Breadcrumb";
 import ContainerWrapper from "../common/ContainerWrapper";
 import BodyWrapper from "../common/BodyWrapper";
 import CardComponent from "../common/CardComponent";
-import { IconTestBank, IconPlaylist } from "@edulastic/icons";
 import TitleWrapper from "../common/TitleWrapper";
 import IconWrapper from "../common/IconWrapper";
 import TextWrapper from "../common/TextWrapper";
@@ -18,9 +20,6 @@ import Divider from "../common/Divider";
 import CountWrapper from "../common/CountWrapper";
 import LinkWrapper from "../common/LinkWrapper";
 import FlexWrapper from "../common/FlexWrapper";
-import { withRouter } from "react-router-dom";
-import { connect } from "react-redux";
-import { compose } from "redux";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 
 class Container extends Component {

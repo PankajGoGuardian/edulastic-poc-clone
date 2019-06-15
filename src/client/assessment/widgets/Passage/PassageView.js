@@ -29,7 +29,7 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) 
       )}
       {!flowLayout && (
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           {item.heading && <Heading dangerouslySetInnerHTML={{ __html: item.heading }} />}
         </QuestionTitleWrapper>
       )}

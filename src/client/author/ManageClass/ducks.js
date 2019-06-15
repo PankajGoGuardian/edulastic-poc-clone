@@ -14,6 +14,10 @@ export const getSelectedSubject = createSelector(
   manageClassSelector,
   state => state.selectedSubject
 );
+export const getSelectedClassName = createSelector(
+  manageClassSelector,
+  state => state.entity.name
+);
 
 // action types
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";

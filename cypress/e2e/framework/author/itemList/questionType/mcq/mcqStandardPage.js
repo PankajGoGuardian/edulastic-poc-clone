@@ -148,7 +148,7 @@ class MCQStandardPage {
 
   // advance options
   clickOnAdvancedOptions() {
-    cy.contains("span", "Advanced Options")
+    cy.contains("ADVANCED OPTIONS")
       .should("be.visible")
       .click();
     return this;
@@ -249,12 +249,12 @@ class MCQStandardPage {
 
   getCheckAnsAttempt = () => cy.get('[data-cy="checkAttempts"]').should("be.visible");
 
-  getEnableAutoScoring = () =>
-    cy
+  getEnableAutoScoring = () => cy.get('[data-cy="autoscoreChk"]');
+  /* cy
       .contains("Enable auto scoring")
       .children()
       .eq(0)
-      .should("be.visible");
+      .should("be.visible"); */
 
   getMinScore = () => cy.get("[data-cy=minscore]").should("be.visible");
 
@@ -326,8 +326,7 @@ class MCQStandardPage {
           .click();
 
         this.header.save();
-        item.updateItemLevelScore(points);
-        item.header.save(true);
+        item.updateItemLevelScore(points).then(() => item.header.save(true));
       }
     });
   }

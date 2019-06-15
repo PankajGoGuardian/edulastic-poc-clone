@@ -15,20 +15,14 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
     }
   };
 
-  const getDefaultValue = () => {
-    if (selectedStudent) {
-      const selected = find(students, student => student.studentId === selectedStudent);
-      if (selected) {
-        return isPresentationMode ? selected.fakeName : selected.studentName;
-      }
-    }
-    return isPresentationMode ? students[0].fakeName : students[0].studentName;
-  };
-
-  const defaultUser = getDefaultValue();
+  const studentIcon = student => (
+    <span>
+      <i className={`fa fa-${student.icon}`} style={{ color: student.color }} /> {student.fakeName}{" "}
+    </span>
+  );
 
   const selected = find(students, student => student.studentId === selectedStudent) || students[0];
-  const user = isPresentationMode ? selected.fakeName : selected.studentName;
+  const user = isPresentationMode ? studentIcon(selected) : selected.studentName;
 
   return (
     <Fragment>
@@ -41,7 +35,7 @@ const SortBar = ({ handleChange, students, selectedStudent, isPresentationMode }
                 const isActive = testActivityId === null;
                 return (
                   <Select.Option key={index} value={testActivityId} disabled={isActive}>
-                    {isPresentationMode ? student.fakeName : student.studentName}
+                    {isPresentationMode ? studentIcon(student) : student.studentName}
                   </Select.Option>
                 );
               })}

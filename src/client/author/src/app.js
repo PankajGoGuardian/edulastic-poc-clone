@@ -8,7 +8,10 @@ import { Progress } from "@edulastic/common";
 import { tabletWidth, mainBgColor } from "@edulastic/colors";
 import DragScroll, { DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
 import Sidebar from "./Sidebar/SideMenu";
+import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
 /* lazy load routes */
+
+const Dashboard = lazy(() => import("../Dashboard"));
 const Assignments = lazy(() => import("../Assignments"));
 const AssignTest = lazy(() => import("../AssignTest"));
 const AssignmentAdvanced = lazy(() => import("../AssignmentAdvanced"));
@@ -65,9 +68,13 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
           <Suspense fallback={<Progress />}>
             <Switch>
               <Route exact path={`${match.url}/assignments`} component={Assignments} />
+
               <Route exact path={`${match.url}/tests/select`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/tests/snapquiz`} component={AssessmentCreate} />
               <Route exact path={`${match.url}/assignments/select`} component={AssignmentCreate} />
+
+              <Route exact path={`/author/dashboard`} component={Dashboard} />
+
               <Route
                 exact
                 path={`${match.url}/assignments/:districtId/:testId`}
@@ -187,6 +194,24 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   </Suspense>
                 )}
               />
+              <Route
+                exact
+                path="/author/playlists/:id/publish"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} isPlaylist published />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/playlists/:id/assign"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} isPlaylist isAssignSuccess />
+                  </Suspense>
+                )}
+              />
 
               <Route
                 exact
@@ -242,6 +267,25 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 render={props => (
                   <Suspense fallback={<Progress />}>
                     <TestPage {...props} editAssigned />
+                  </Suspense>
+                )}
+              />
+
+              <Route
+                exact
+                path="/author/tests/:id/publish"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} published />
+                  </Suspense>
+                )}
+              />
+              <Route
+                exact
+                path="/author/tests/:id/assign"
+                render={props => (
+                  <Suspense fallback={<Progress />}>
+                    <SuccessPage {...props} isAssignSuccess />
                   </Suspense>
                 )}
               />

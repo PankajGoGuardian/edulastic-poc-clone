@@ -3,11 +3,17 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-import { message } from "antd";
+import moment from "moment";
+import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 // actions
-import { receiveTestActivitydAction, receiveClassResponseAction } from "../../../src/actions/classBoard";
+import {
+  receiveTestActivitydAction,
+  receiveClassResponseAction,
+  openAssignmentAction,
+  closeAssignmentAction
+} from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
 // ducks
@@ -19,7 +25,8 @@ import {
   getTestQuestionActivitiesSelector,
   stateStudentResponseSelector,
   showScoreSelector,
-  getMarkAsDoneEnableSelector
+  getMarkAsDoneEnableSelector,
+  getQLabelsSelector
 } from "../../ducks";
 
 import {
@@ -74,6 +81,7 @@ import {
   PrintButton,
   StudentGrapContainer
 } from "./styled";
+import { getUserRole } from "../../../../student/Login/ducks";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -267,13 +275,15 @@ class ClassBoard extends Component {
   isMobile = () => window.innerWidth < 480;
 
   handleReleaseScore = () => {
-    const { classId, assignmentId, setReleaseScore, showScore } = this.props;
+    const { match, setReleaseScore, showScore } = this.props;
+    const { assignmentId, classId } = match.params;
     const isReleaseScore = !showScore;
     setReleaseScore(assignmentId, classId, isReleaseScore);
   };
 
   handleMarkAsDone = () => {
-    const { setMarkAsDone, assignmentId, classId } = this.props;
+    const { setMarkAsDone, match } = this.props;
+    const { assignmentId, classId } = match.params;
     setMarkAsDone(assignmentId, classId);
   };
 
@@ -308,6 +318,23 @@ class ClassBoard extends Component {
     });
   };
 
+  handleOpenAssignment = () => {
+    const { openAssignment, match, additionalData, userRole } = this.props;
+    const { assignmentId, classId } = match.params;
+    if (additionalData.testType === "common assessment" && userRole === "teacher") {
+      return message.error(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+    `);
+    }
+    openAssignment(assignmentId, classId);
+  };
+
+  handleCloseAssignment = () => {
+    const { closeAssignment, match } = this.props;
+    const { assignmentId, classId } = match.params;
+
+    closeAssignment(assignmentId, classId);
+  };
+
   render() {
     const {
       gradebook,
@@ -327,7 +354,8 @@ class ClassBoard extends Component {
       qActivityByStudent,
       enableMarkAsDone,
       showScore,
-      isPresentationMode
+      isPresentationMode,
+      userRole
     } = this.props;
     const gradeSubject = {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
@@ -337,14 +365,21 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
     const classname = additionalData ? additionalData.classes : [];
-    const questions = this.getQuestions();
-    const questionsIds = questions.map((q, i) => ({ name: `Question ${i + 1}` }));
     const isMobile = this.isMobile();
 
     const selectedStudentsKeys = Object.keys(selectedStudents);
-    const firstStudentId = get(this.props.entities, [0, "studentId"]);
+    const firstStudentId = get(
+      this.props.entities.filter(x => x.status != "notStarted" && x.present && x.status != "redirected"),
+      [0, "studentId"],
+      false
+    );
     const firstQuestionEntities = get(this.props.entities, [0, "questionActivities"], []);
     const unselectedStudents = this.props.entities.filter(x => !selectedStudents[x.studentId]);
+    const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData || {};
+    const canOpen =
+      canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
+    const canClose =
+      canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
     return (
       <div>
         <HooksContainer classId={classId} assignmentId={assignmentId} />
@@ -369,6 +404,7 @@ class ClassBoard extends Component {
               CARD VIEW
             </BothButton>
             <StudentButton
+              disabled={!firstStudentId}
               active={selectedTab === "Student"}
               onClick={e => this.onTabChange(e, "Student", firstStudentId)}
             >
@@ -376,6 +412,7 @@ class ClassBoard extends Component {
             </StudentButton>
             <QuestionButton
               active={selectedTab === "questionView"}
+              disabled={!firstStudentId}
               onClick={e => {
                 const firstQuestion = get(this.props, ["entities", 0, "questionActivities", 0]);
                 if (!firstQuestion) {
@@ -453,6 +490,29 @@ class ClassBoard extends Component {
                   >
                     Mark as Done
                   </RedirectButton>
+                  <Dropdown
+                    overlay={
+                      <Menu>
+                        {!canOpen && !canClose && <span>&nbsp; --------</span>}
+                        {canOpen && (
+                          <Menu.Item onClick={this.handleOpenAssignment}>
+                            <RedirectButton>Open</RedirectButton>
+                          </Menu.Item>
+                        )}
+                        {canClose && (
+                          <Menu.Item onClick={this.handleCloseAssignment}>
+                            <RedirectButton>Close</RedirectButton>
+                          </Menu.Item>
+                        )}
+                      </Menu>
+                    }
+                    placement="bottomLeft"
+                  >
+                    <RedirectButton>
+                      <i class="fa fa-bars" aria-hidden="true" />
+                      &nbsp; More
+                    </RedirectButton>
+                  </Dropdown>
                 </FeaturesSwitch>
               </StyledFlexContainer>
             }
@@ -561,9 +621,9 @@ class ClassBoard extends Component {
                   selectedTab === "Student"
                     ? classname
                     : firstQuestionEntities
-                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled }))
+                        .map((x, index) => ({ value: index, disabled: x.disabled || x.scoringDisabled, id: x._id }))
                         .filter(x => !x.disabled)
-                        .map(({ value }, index) => ({ value, name: `Q${index + 1}` }))
+                        .map(({ value, id }, index) => ({ value, name: this.props.labels[id].barLabel }))
                 }
                 selected={selectedQuestion}
                 justifyContent="flex-end"
@@ -589,6 +649,7 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       classResponse: getClassResponseSelector(state),
       additionalData: getAdditionalDataSelector(state),
+
       testQuestionActivities: getTestQuestionActivitiesSelector(state),
       selectedStudents: get(state, ["author_classboard_gradebook", "selectedStudents"], {}),
       allStudents: get(state, ["author_classboard_testActivity", "data", "students"], []),
@@ -598,7 +659,9 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      userRole: getUserRole(state),
+      labels: getQLabelsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -608,7 +671,9 @@ const enhance = compose(
       studentUnselectAll: gradebookUnSelectAllAction,
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
-      setMarkAsDone: markAsDoneAction
+      setMarkAsDone: markAsDoneAction,
+      openAssignment: openAssignmentAction,
+      closeAssignment: closeAssignmentAction
     }
   )
 );

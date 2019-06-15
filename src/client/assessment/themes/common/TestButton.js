@@ -10,9 +10,9 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
-const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem }) => (
+const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem, isNonAutoGradable = false }) => (
   <Container>
-    {settings.maxAnswerChecks > 0 && (
+    {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
       <StyledButton
         onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswerEvaluation}
         data-cy="checkAnswer"

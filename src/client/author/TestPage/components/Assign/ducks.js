@@ -5,7 +5,7 @@ import { createReducer, createAction } from "redux-starter-kit";
 import { createSelector } from "reselect";
 import { assignmentApi, testsApi } from "@edulastic/api";
 import { all, call, put, takeEvery, select } from "redux-saga/effects";
-import { replace } from "connected-react-router";
+import { replace, push } from "connected-react-router";
 import { SET_ASSIGNMENT, SET_TEST_DATA, getTestSelector, getTestIdSelector } from "../../ducks";
 import { formatAssignment } from "./utils";
 import { getUserNameSelector } from "../../../src/selectors/user";
@@ -183,6 +183,13 @@ function* saveAssignment({ payload }) {
     const successMessage = `Assign ${payload.playlistModuleId ? "module" : "test"} is successed!`;
     yield call(message.success, successMessage);
     yield put(setAssignmentAction(assignment));
+    yield put(
+      push(
+        `/author/${payload.playlistModuleId ? "playlists" : "tests"}/${
+          payload.playlistModuleId ? payload.playlistId : testIds[0]
+        }/assign`
+      )
+    );
   } catch (err) {
     console.error(err);
   }

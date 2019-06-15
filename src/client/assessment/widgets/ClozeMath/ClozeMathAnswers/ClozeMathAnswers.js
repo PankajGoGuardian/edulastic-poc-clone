@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
-import { cloneDeep, set, get } from "lodash";
+import { cloneDeep, set, get, forEach, find } from "lodash";
 import { math } from "@edulastic/constants";
 
 import CorrectAnswers from "../../../components/CorrectAnswers";
@@ -37,21 +37,36 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
       newItem.validation.alt_dropdowns = [];
     }
 
-    const newInitialArray = [initialMethod];
-
+    let validAnswers = cloneDeep(get(newItem, "validation.valid_response.value", []));
+    validAnswers.map(answer =>
+      answer.map(method => {
+        method.value = "";
+        return method;
+      })
+    );
     newItem.validation.alt_responses.push({
       score: 1,
-      value: Array.from({ length: newItem.validation.valid_response.value.length }, () => cloneDeep(newInitialArray))
+      value: validAnswers
     });
 
+    validAnswers = cloneDeep(get(newItem, "validation.valid_inputs.value", []));
+    validAnswers.map(answer => {
+      answer.value = "";
+      return answer;
+    });
     newItem.validation.alt_inputs.push({
       score: 1,
-      value: new Array(newItem.validation.valid_inputs.value.length).fill("")
+      value: validAnswers
     });
 
+    validAnswers = cloneDeep(get(newItem, "validation.valid_dropdown.value", []));
+    validAnswers.map(answer => {
+      answer.value = "";
+      return answer;
+    });
     newItem.validation.alt_dropdowns.push({
       score: 1,
-      value: new Array(newItem.validation.valid_dropdown.value.length).fill("")
+      value: validAnswers
     });
 
     setQuestionData(newItem);
@@ -81,65 +96,113 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     setQuestionData(newItem);
   };
 
-  const _changeCorrectMethod = ({ methodValueIndex, methodIndex, prop, value }) => {
+  const _changeCorrectMethod = ({ methodId, methodIndex, prop, value }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.valid_response.value[methodValueIndex][methodIndex][prop] = value;
+    const validAnswers = get(newItem, "validation.valid_response.value", []);
+    forEach(validAnswers, answer => {
+      if (answer[0].id === methodId) {
+        answer[methodIndex][prop] = value;
+      }
+    });
+    set(newItem, `validation.valid_response.value`, validAnswers);
     setQuestionData(newItem);
   };
 
-  const _addCorrectMethod = methodValueIndex => {
+  const _addCorrectMethod = methodId => {
     const newItem = cloneDeep(item);
-    newItem.validation.valid_response.value[methodValueIndex].push(initialMethod);
+    const validAnswers = get(newItem, "validation.valid_response.value", []);
+    forEach(validAnswers, answer => {
+      if (answer[0].id === methodId) {
+        answer.push({ ...initialMethod, id: methodId });
+      }
+    });
+    set(newItem, `validation.valid_response.value`, validAnswers);
     setQuestionData(newItem);
   };
 
-  const _addAltMethod = answerIndex => methodValueIndex => {
+  const _addAltMethod = answerIndex => methodId => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_responses[answerIndex].value[methodValueIndex].push(initialMethod);
+    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+      if (answer[0].id === methodId) {
+        answer.push({ ...initialMethod, id: methodId });
+      }
+    });
     setQuestionData(newItem);
   };
 
-  const _deleteCorrectMethod = ({ methodIndex, methodValueIndex }) => {
+  const _deleteCorrectMethod = ({ methodIndex, methodId }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.valid_response.value[methodValueIndex].splice(methodIndex, 1);
+    forEach(newItem.validation.valid_response.value, answer => {
+      if (answer[0].id === methodId) {
+        answer.splice(methodIndex, 1);
+      }
+    });
     setQuestionData(newItem);
   };
 
-  const _deleteAltMethod = answerIndex => ({ methodIndex, methodValueIndex }) => {
+  const _deleteAltMethod = answerIndex => ({ methodIndex, methodId }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_responses[answerIndex].value[methodValueIndex].splice(methodIndex, 1);
+    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+      if (answer[0].id === methodId) {
+        answer.splice(methodIndex, 1);
+      }
+    });
     setQuestionData(newItem);
   };
 
-  const _updateDropDownCorrectAnswer = ({ value, dropIndex }) => {
+  const _updateDropDownCorrectAnswer = ({ value, dropDownId }) => {
     const newItem = cloneDeep(item);
-    set(newItem, `validation.valid_dropdown.value[${dropIndex}]`, value);
+    const validDropDownAnswers = get(newItem, "validation.valid_dropdown.value", []);
+    forEach(validDropDownAnswers, answer => {
+      if (answer.id === dropDownId) {
+        answer.value = value;
+      }
+    });
+    set(newItem, `validation.valid_dropdown.value`, validDropDownAnswers);
     setQuestionData(newItem);
   };
 
-  const _updateInputCorrectAnswer = ({ value, inputIndex }) => {
+  const _updateInputCorrectAnswer = ({ value, answerId }) => {
     const newItem = cloneDeep(item);
-    set(newItem, `validation.valid_inputs.value[${inputIndex}]`, value);
+    const validInputsAnswers = get(newItem, "validation.valid_inputs.value", []);
+    forEach(validInputsAnswers, answer => {
+      if (answer.id === answerId) {
+        answer.value = value;
+      }
+    });
+    set(newItem, `validation.valid_inputs.value`, validInputsAnswers);
     setQuestionData(newItem);
   };
 
   // -----|-----|-----|------ Alternate answers handlers -----|-----|-----|------ //
 
-  const _changeAltMethod = answerIndex => ({ methodValueIndex, methodIndex, prop, value }) => {
+  const _changeAltMethod = answerIndex => ({ methodId, methodIndex, prop, value }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_responses[answerIndex].value[methodValueIndex][methodIndex][prop] = value;
+    forEach(newItem.validation.alt_responses[answerIndex].value, answer => {
+      if (answer[0].id === methodId) {
+        answer[methodIndex][prop] = value;
+      }
+    });
     setQuestionData(newItem);
   };
 
-  const _changeAltInputMethod = answerIndex => ({ value, inputIndex }) => {
+  const _changeAltInputMethod = answerIndex => ({ value, answerId }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_inputs[answerIndex].value[inputIndex] = value;
+    forEach(newItem.validation.alt_inputs[answerIndex].value, answer => {
+      if (answer.id === answerId) {
+        answer.value = value;
+      }
+    });
     setQuestionData(newItem);
   };
 
-  const _changeAltDropDownMethod = answerIndex => ({ value, dropIndex }) => {
+  const _changeAltDropDownMethod = answerIndex => ({ value, dropDownId }) => {
     const newItem = cloneDeep(item);
-    newItem.validation.alt_dropdowns[answerIndex].value[dropIndex] = value;
+    forEach(newItem.validation.alt_dropdowns[answerIndex].value, answer => {
+      if (answer.id === dropDownId) {
+        answer.value = value;
+      }
+    });
     setQuestionData(newItem);
   };
 
@@ -151,21 +214,26 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
   const altInputs = get(item, "validation.alt_inputs", []);
   const altDropDowns = get(item, "validation.alt_dropdowns", []);
 
-  const { response_indexes: responseIndexes } = item;
+  const { response_ids: responseIds } = item;
 
   let orderedAnswers = [];
-  Object.keys(responseIndexes).map(key =>
-    responseIndexes[key].map((r, i) => {
-      if (key === "inputs") {
-        orderedAnswers.push({ value: inputAnswers[i], index: r.index, targetIndex: i, type: key });
-      } else if (key === "maths") {
-        orderedAnswers.push({ value: mathAnswers[i], index: r.index, targetIndex: i, type: key });
-      } else if (key === "dropDowns") {
-        orderedAnswers.push({ value: dropDownAnswers[i], index: r.index, targetIndex: i, type: key });
-      }
-      return null;
-    })
-  );
+  if (responseIds) {
+    Object.keys(responseIds).map(key =>
+      responseIds[key].map(r => {
+        if (key === "inputs") {
+          const _answer = find(inputAnswers, valid => valid.id === r.id);
+          orderedAnswers.push({ index: r.index, type: key, ..._answer });
+        } else if (key === "maths") {
+          const _answer = find(mathAnswers, valid => valid[0].id === r.id);
+          orderedAnswers.push({ value: _answer, index: r.index, type: key });
+        } else if (key === "dropDowns") {
+          const _answer = find(dropDownAnswers, valid => valid.id === r.id);
+          orderedAnswers.push({ index: r.index, type: key, ..._answer });
+        }
+        return null;
+      })
+    );
+  }
   orderedAnswers = orderedAnswers.sort((a, b) => a.index - b.index);
 
   const isAlt = item.validation.alt_responses && !!item.validation.alt_responses.length;
@@ -194,7 +262,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
             if (isAlt) {
               return altInputs.map((alter, i) => {
                 if (i + 1 === correctTab) {
-                  const altAnswer = { ...answer, value: alter.value[answer.targetIndex] };
+                  const altAnswer = { ...answer, ...find(alter.value, av => av.id === answer.id) };
                   return <InputAnswer key={i} onChange={_changeAltInputMethod(i)} answers={[altAnswer]} />;
                 }
                 return null;
@@ -216,7 +284,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
             if (isAlt) {
               return altMath.map((alter, i) => {
                 if (i + 1 === correctTab) {
-                  const altAnswer = { ...answer, value: alter.value[answer.targetIndex] };
+                  const altAnswer = { ...answer, value: find(alter.value, av => av[0].id === answer.value[0].id) };
                   return (
                     <MathFormulaAnswer
                       key={i}
@@ -241,7 +309,7 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
             if (isAlt) {
               return altDropDowns.map((alter, i) => {
                 if (i + 1 === correctTab) {
-                  const altAnswer = { ...answer, value: alter.value[answer.targetIndex] };
+                  const altAnswer = { ...answer, ...find(alter.value, av => av.id === answer.id) };
                   return (
                     <DropDownAnswer key={i} item={item} onChange={_changeAltDropDownMethod(i)} answers={[altAnswer]} />
                   );

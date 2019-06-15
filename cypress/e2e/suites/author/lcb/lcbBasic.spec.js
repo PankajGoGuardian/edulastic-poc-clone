@@ -21,7 +21,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02 2nd",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
         status: "SUBMITTED"
       }
     ],
@@ -29,7 +29,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01 1st",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
         status: "SUBMITTED"
       }
     ],
@@ -37,38 +37,46 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       {
         email: "auto.lcb.student01@yopmail.com",
         stuName: "Student01 1st",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right" },
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student02@yopmail.com",
         stuName: "Student02 2nd",
-        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip", Q5: "wrong" },
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip", Q5: "wrong", Q6: "skip", Q7: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student03@yopmail.com",
         stuName: "Student03 3rd",
-        attempt: { Q1: "wrong", Q2: "right", Q3: "right", Q4: "skip", Q5: "right" },
+        attempt: {
+          Q1: "wrong",
+          Q2: "partialCorrect",
+          Q3: "right",
+          Q4: "skip",
+          Q5: "partialCorrect",
+          Q6: "right",
+          Q7: "skip"
+        },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student04@yopmail.com",
         stuName: "Student04 4th",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong" },
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student05@yopmail.com",
         stuName: "Student05 5th",
-        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip", Q5: "right" },
+        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip", Q5: "right", Q6: "right", Q7: "skip" },
         status: "IN PROGRESS"
       },
       {
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06 6th",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "right", Q7: "right" }
       }
     ]
   };

@@ -106,7 +106,7 @@ class ComposeQuestion extends Component {
 
         <QuestionTextArea
           placeholder={t("component.hotspot.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+          onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
         />
 

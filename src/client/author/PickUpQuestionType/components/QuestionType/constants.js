@@ -392,7 +392,7 @@ export const getCards = onSelectQuestionType => {
           snapTo: 5,
           chart_type: "bar",
           fractionFormat: "Decimal",
-          showGridlines: "y_only"
+          showGridlines: "both"
         },
         validation: {
           scoring_type: EXACT_MATCH,
@@ -630,7 +630,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSEssayRichText,
       data: {
         title: "Essay with rich text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_RICH_TEXT,
         show_word_count: true,
         max_word: 1000,
@@ -671,7 +671,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSEssayPlainText,
       data: {
         title: "Essay with plain text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.ESSAY_PLAIN_TEXT,
         show_copy: true,
         show_cut: true,
@@ -689,7 +689,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: WSShortText,
       data: {
         title: "Short text",
-        stimulus: "[This is the stem.]",
+        stimulus: "<p>[This is the stem.]</p>",
         type: questionType.SHORT_TEXT,
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1028,8 +1028,9 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false" index="0"><span class="index">1</span>Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
+        response_ids: [],
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1039,10 +1040,7 @@ export const getCards = onSelectQuestionType => {
           wordwrap: false,
           responsecontainerindividuals: []
         },
-        options: {
-          0: ["A", "B"],
-          1: ["Choice A", "Choice B"]
-        },
+        options: {},
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1062,7 +1060,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>sample template T1<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>, T2<textinput contenteditable="false" index="1"><span class="index">2</span>Text Input</textinput></p>',
+          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -1072,10 +1070,6 @@ export const getCards = onSelectQuestionType => {
           responsecontainerposition: "bottom",
           stemnumeration: "",
           widthpx: 140
-        },
-        options: {
-          0: "",
-          1: ""
         },
         validation: {
           scoring_type: "exactMatch",
@@ -2002,13 +1996,13 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>,&nbsp;<textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown>,<mathinput contenteditable="false" index="2"><span class="index">3</span>Math Input</mathinput></p>',
+          '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
         templateDisplay: true,
         type: questionType.CLOZE_MATH,
-        response_indexes: {
-          inputs: [{ index: 0 }],
-          maths: [{ index: 2 }],
-          dropDowns: [{ index: 1 }]
+        response_ids: {
+          inputs: [],
+          maths: [],
+          dropDowns: []
         },
         response_container: {
           template: ""
@@ -2038,11 +2032,11 @@ export const getCards = onSelectQuestionType => {
           },
           valid_dropdown: {
             score: 1,
-            value: [""]
+            value: []
           },
           valid_inputs: {
             score: 1,
-            value: [""]
+            value: []
           }
         },
         is_math: true,
@@ -2077,11 +2071,6 @@ export const getCards = onSelectQuestionType => {
       type: "math",
       cardImage: MTEssay,
       stimulus: "",
-      validation: {
-        valid_response: {
-          score: 1
-        }
-      },
       data: {
         title: "Math essay",
         stimulus: "",
@@ -2090,6 +2079,11 @@ export const getCards = onSelectQuestionType => {
           default_mode: "math",
           fontsize: "",
           text_formatting_options: ["bold", "italic", "underline", "unorderedList"]
+        },
+        validation: {
+          valid_response: {
+            score: 1
+          }
         },
         numberPad: [
           "7",

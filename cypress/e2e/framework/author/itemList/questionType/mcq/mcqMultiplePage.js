@@ -1,6 +1,8 @@
 import MCQStandardPage from "./mcqStandardPage";
 import EditItemPage from "../../itemDetail/editPage";
 import { questionType, questionGroup } from "../../../../constants/questionTypes";
+import Helpers from "../../../../util/Helpers";
+import { CypressHelper } from "../../../../util/cypressHelpers";
 
 class MCQMultiplePage extends MCQStandardPage {
   // default question
@@ -38,7 +40,7 @@ class MCQMultiplePage extends MCQStandardPage {
       }
 
       if (setAns) {
-        const { correct, points } = setAns;
+        const { correct, points, evaluation } = setAns;
         // uncheck default ans
         this.getAllAnsChoicesLabel()
           .find("input:checked")
@@ -53,6 +55,13 @@ class MCQMultiplePage extends MCQStandardPage {
             .contains(choice)
             .click();
         });
+
+        this.clickOnAdvancedOptions();
+        // set evaluation type
+        if (evaluation) {
+          this.getEnableAutoScoring().click({ force: true });
+          CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
+        }
 
         this.header.save();
 

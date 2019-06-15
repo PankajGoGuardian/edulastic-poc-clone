@@ -42,7 +42,7 @@ export const Footer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 export const Author = styled.div`
@@ -50,8 +50,8 @@ export const Author = styled.div`
   font-weight: 600;
   color: ${darkGrey};
   display: inline-flex;
-  align-items: center;
-  max-width: 80px;
+  max-width: 110px;
+  flex-direction: column;
   svg {
     width: 14px;
     height: 14px;
@@ -68,7 +68,9 @@ export const AuthorName = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-
+export const AuthorWrapper = styled.span`
+  display: flex;
+`;
 export const LikeIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
@@ -182,4 +184,11 @@ export const StyledLink = styled.a`
 export const Question = styled.div`
   padding: 15px 0px 4px;
   text-align: center;
+`;
+
+export const DraftIconWrapper = styled.div`
+  max-width: 60px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 15px;
 `;

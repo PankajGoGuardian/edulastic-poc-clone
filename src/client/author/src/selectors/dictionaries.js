@@ -23,7 +23,9 @@ export const getFormattedCurriculumsSelector = (state, props) => {
   const interestedCurriculumByOrgType = groupBy(interestedCurriculumsBySubject, curriculum => curriculum.orgType);
   // return if teacher has selected curriculums
   if (interestedCurriculumByOrgType.teacher) {
-    return interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }));
+    return interestedCurriculumByOrgType.teacher
+      .map(item => ({ value: item._id, text: item.name }))
+      .sort((a, b) => (a.text.toUpperCase() <= b.text.toUpperCase() ? -1 : 1));
   }
   // break line only if interested curriculums are selected by admins and create uniq curriculums
   const uniqCurriculums = interestedCurriculumsBySubject.length
@@ -43,7 +45,7 @@ export const getFormattedCurriculumsSelector = (state, props) => {
     disabled: item.disabled || false
   }));
 
-  return mapCurriculumsByPropertyNameId;
+  return mapCurriculumsByPropertyNameId.sort((a, b) => (a.text.toUpperCase() <= b.text.toUpperCase() ? -1 : 1));
 };
 
 export const getDictionariesAlignmentsSelector = createSelector(
@@ -57,8 +59,8 @@ export const standardsSelector = createSelector(
 export const getStandardsListSelector = createSelector(
   standardsSelector,
   state => ({
-    elo: state.elo,
-    tlo: state.tlo
+    elo: state.elo.sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1)),
+    tlo: state.tlo.sort((a, b) => (a.identifier.toUpperCase() <= b.identifier.toUpperCase() ? -1 : 1))
   })
 );
 export const getRecentStandardsListSelector = createSelector(

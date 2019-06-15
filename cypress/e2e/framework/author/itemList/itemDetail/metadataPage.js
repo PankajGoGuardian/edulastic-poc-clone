@@ -79,7 +79,7 @@ class MetadataPage {
     standardMaps.forEach(standards => {
       console.log("standards", standards);
       const { subject, standard, standardSet, grade } = standards;
-      this.clickOnNewAllignmentButton();
+      // this.clickOnNewAllignmentButton();
       this.clickOnStandardSearchOption();
       this.selectSubject(subject);
       this.selectStandardSet(standardSet);

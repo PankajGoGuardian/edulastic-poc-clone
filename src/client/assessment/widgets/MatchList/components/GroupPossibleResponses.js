@@ -66,8 +66,8 @@ class GroupPossibleResponses extends Component {
                 {t("component.matchList.groupPossibleRespTitle")}
               </Checkbox>
             </div>
-            <Row gutter={60}>
-              <Col span={12}>
+            <Row>
+              <Col>
                 <List
                   prefix="group"
                   items={items}

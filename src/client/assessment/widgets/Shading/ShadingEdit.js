@@ -33,11 +33,11 @@ const ShadingEdit = ({ item, setQuestionData, theme, saveAnswer, advancedAreOpen
         }
         draft.validation.alt_responses.push({
           score: 1,
-          value: { ...draft.validation.valid_response.value }
+          value: { ...draft.validation.valid_response.value, value: [] }
         });
       })
     );
-    setCorrectTab(item.validation.alt_responses.length);
+    setCorrectTab(item.validation.alt_responses.length + 1);
   };
 
   const handlePointsChange = val => {

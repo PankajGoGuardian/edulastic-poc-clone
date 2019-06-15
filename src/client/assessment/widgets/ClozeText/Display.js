@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import styled from "styled-components";
+import { findIndex, find, isEmpty } from "lodash";
 import JsxParser from "react-jsx-parser";
 
 import { InstructorStimulus, helpers } from "@edulastic/common";
@@ -9,9 +10,8 @@ import { response } from "@edulastic/constants";
 import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
-import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
-import ClozeTextInput from "../../components/ClozeTextInput";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
+import ClozeTextInput from "./ClozeTextInput";
 
 class ClozeTextDisplay extends Component {
   state = {
@@ -26,12 +26,6 @@ class ClozeTextDisplay extends Component {
   static getDerivedStateFromProps({ templateMarkUp }) {
     return { parsedTemplate: helpers.parseTemplate(templateMarkUp) };
   }
-
-  selectChange = (value, index) => {
-    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    newAnswers[index] = value;
-    changeAnswers(newAnswers);
-  };
 
   getFontSize = size => {
     switch (size) {
@@ -107,15 +101,27 @@ class ClozeTextDisplay extends Component {
     return { btnStyle, responseBtnStyle };
   };
 
-  _changeInput = ({ value, dropTargetIndex, type }) => {
+  selectChange = (value, id) => {
+    const { onChange: changeAnswers, userSelections: newAnswers, responseIds } = this.props;
+    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
+    if (changedIndex !== -1) {
+      newAnswers[changedIndex].value = value;
+    } else {
+      const resbtn = find(responseIds, res => res.id === id);
+      newAnswers[resbtn.index] = { value, index: resbtn.index, id };
+    }
+    changeAnswers(newAnswers);
+  };
+
+  _changeInput = ({ value, id, type }) => {
     if (type === "number") {
       value = +value;
       if (typeof value === "number" && !Number.isNaN(value)) {
-        this.selectChange(value, dropTargetIndex);
+        this.selectChange(value, id);
       }
       return;
     }
-    this.selectChange(value, dropTargetIndex);
+    this.selectChange(value, id);
   };
 
   render() {
@@ -131,9 +137,9 @@ class ClozeTextDisplay extends Component {
       instructorStimulus,
       item,
       showQuestionNumber,
-      qIndex,
       showIndex,
-      userSelections
+      userSelections,
+      responseIds
     } = this.props;
     const { parsedTemplate } = this.state;
     // Layout Options
@@ -154,7 +160,8 @@ class ClozeTextDisplay extends Component {
             userSelections,
             evaluation,
             showIndex,
-            uiStyle
+            uiStyle,
+            responseIds
           }
         : {
             userAnswers: userSelections,
@@ -164,17 +171,27 @@ class ClozeTextDisplay extends Component {
             placeholder: btnStyle.placeholder,
             type: btnStyle.inputtype,
             item,
-            showIndex
+            showIndex,
+            responseIds
           };
 
     const answerBox = showAnswer ? (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={validation.valid_response && validation.valid_response.value}
-        // eslint-disable-next-line no-prototype-builtins
-        altAnswers={validation.hasOwnProperty("alt_responses") && validation.alt_responses}
-      />
+      <>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={validation.valid_response && validation.valid_response.value}
+          responseIds={responseIds}
+        />
+        {!isEmpty(item.validation.alt_responses) && (
+          <CorrectAnswerBoxLayout
+            fontSize={fontSize}
+            groupResponses={options}
+            altAnswers={item.validation.alt_responses}
+            responseIds={item.response_ids}
+          />
+        )}
+      </>
     ) : (
       <div />
     );
@@ -185,7 +202,7 @@ class ClozeTextDisplay extends Component {
           <InstructorStimulus dangerouslySetInnerHTML={{ __html: instructorStimulus }} />
         )}
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <JsxParser
@@ -218,12 +235,14 @@ ClozeTextDisplay.propTypes = {
   instructorStimulus: PropTypes.string,
   /* eslint-disable react/no-unused-prop-types */
   templateMarkUp: PropTypes.string,
+  responseIds: PropTypes.object,
   item: PropTypes.object,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };
 
 ClozeTextDisplay.defaultProps = {
+  responseIds: {},
   options: {},
   onChange: () => {},
   showAnswer: false,

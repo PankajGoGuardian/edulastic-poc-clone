@@ -25,7 +25,7 @@ const ProtractorView = ({ item, smallSize, showQuestionNumber, qIndex }) => {
           <FlexContainer>
             <img src={item.image ? item.image : ProtractorImg} alt="" width={16} height={16} />
             <QuestionTitleWrapper>
-              {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+              {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
               <span>{item.label}</span>
             </QuestionTitleWrapper>
           </FlexContainer>

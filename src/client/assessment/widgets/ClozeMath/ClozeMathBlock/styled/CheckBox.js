@@ -7,6 +7,7 @@ export const CheckBox = styled.div`
   display: inline-flex;
   position: relative;
   min-width: 130px;
+  width: ${({ width }) => (!width ? null : `${width}px`)}
   margin: 2px 4px;
   font-weight: 700;
   font-size: 13px;

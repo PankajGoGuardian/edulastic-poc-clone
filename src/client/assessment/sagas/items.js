@@ -70,7 +70,10 @@ function* saveUserResponse({ payload }) {
     const groupId = yield select(getCurrentGroup);
     let { endDate, class: clazz = [] } = assignmentsByIds[assignmentId] || {};
     if (!endDate && clazz.length) {
-      endDate = maxBy(clazz.filter(cl => cl._id === groupId), "endDate").endDate;
+      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
+      if (!endDate) {
+        endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+      }
     }
     if (endDate && endDate < Date.now()) {
       yield call(message.error, "Test time ended");

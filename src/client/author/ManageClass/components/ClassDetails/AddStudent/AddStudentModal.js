@@ -15,8 +15,20 @@ class AddStudentModal extends React.Component {
     keys: ["basic"]
   };
 
+  handleAddClick = () => {
+    const {
+      form: { validateFieldsAndScroll },
+      handleAdd
+    } = this.props;
+    validateFieldsAndScroll((err, values) => {
+      if (!err) {
+        handleAdd(values);
+      }
+    });
+  };
+
   render() {
-    const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit } = this.props;
+    const { form, handleCancel, isOpen, submitted, stds, isEdit } = this.props;
     const { keys } = this.state;
     const { getFieldDecorator, getFieldValue } = form;
 
@@ -34,7 +46,7 @@ class AddStudentModal extends React.Component {
         <ActionButton onClick={handleCancel} ghost type="primary">
           No, Cancel
         </ActionButton>
-        <ActionButton onClick={handleAdd} type="primary">
+        <ActionButton onClick={this.handleAddClick} type="primary">
           {isEdit ? "Yes, Update Student" : "Yes, Add Student"}
           <Icon type="right" />
         </ActionButton>
@@ -90,7 +102,7 @@ AddStudentModal.propTypes = {
   handleAdd: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired,
   form: PropTypes.object.isRequired,
-  submitted: PropTypes.bool.isRequired,
+  submitted: PropTypes.bool,
   isOpen: PropTypes.bool,
   stds: PropTypes.array,
   isEdit: PropTypes.bool
@@ -99,7 +111,8 @@ AddStudentModal.propTypes = {
 AddStudentModal.defaultProps = {
   isOpen: false,
   stds: [],
-  isEdit: false
+  isEdit: false,
+  submitted: false
 };
 
 const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal);

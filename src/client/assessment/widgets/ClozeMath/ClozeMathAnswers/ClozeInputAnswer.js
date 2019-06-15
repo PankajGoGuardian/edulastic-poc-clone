@@ -26,9 +26,9 @@ const AnswerContainer = styled.div`
 `;
 
 class ClozeInputAnswer extends Component {
-  onChangeHandler = (value, inputIndex) => {
+  onChangeHandler = (value, answerId) => {
     const { onChange: changeAnswers } = this.props;
-    changeAnswers({ value, inputIndex });
+    changeAnswers({ value, answerId });
   };
 
   render() {
@@ -44,7 +44,7 @@ class ClozeInputAnswer extends Component {
         >
           {answers.map(answer => (
             <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
-              <Input value={answer.value} onChange={e => this.onChangeHandler(e.target.value, answer.targetIndex)} />
+              <Input value={answer.value} onChange={e => this.onChangeHandler(e.target.value, answer.id)} />
             </Panel>
           ))}
         </Collapse>

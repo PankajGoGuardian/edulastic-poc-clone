@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { trim } from "lodash";
+import { trim, debounce } from "lodash";
 import { Row, Col, Form, Input, Button } from "antd";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -42,6 +42,8 @@ class Signup extends React.Component {
     confirmDirty: false
   };
 
+  regExp = new RegExp("^[A-Za-z0-9 ]+$");
+
   handleSubmit = e => {
     const { form, signup } = this.props;
     e.preventDefault();
@@ -64,12 +66,22 @@ class Signup extends React.Component {
   };
 
   checkPassword = (rule, value, callback) => {
+    const { t } = this.props;
     if (value.length < 4) {
-      callback("Password is too short - must be at least 4 characters");
+      callback(t("component.signup.teacher.shortpassword"));
     } else if (value.includes(" ")) {
-      callback("Please provide a valid password");
+      callback(t("component.signup.teacher.validpassword"));
     }
     callback();
+  };
+
+  checkName = (rule, value, callback) => {
+    const { t } = this.props;
+    if (!this.regExp.test(value.trim())) {
+      callback(t("component.signup.teacher.validinputname"));
+    } else {
+      callback();
+    }
   };
 
   render() {
@@ -143,10 +155,16 @@ class Signup extends React.Component {
                         <Form onSubmit={this.handleSubmit} autoComplete="new-password">
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupnamelabel")}>
                             {getFieldDecorator("name", {
+                              validateFirst: true,
+                              initialValue: "",
                               rules: [
                                 {
                                   required: true,
                                   message: t("component.signup.teacher.validinputname")
+                                },
+                                {
+                                  type: "string",
+                                  validator: this.checkName
                                 }
                               ]
                             })(
@@ -159,16 +177,17 @@ class Signup extends React.Component {
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
                             {getFieldDecorator("email", {
+                              validateFirst: true,
                               rules: [
                                 {
                                   transform: changeValidValue
                                 },
                                 {
-                                  type: "email",
+                                  required: true,
                                   message: t("component.signup.teacher.validemail")
                                 },
                                 {
-                                  required: true,
+                                  type: "email",
                                   message: t("component.signup.teacher.validemail")
                                 }
                               ]
@@ -183,6 +202,8 @@ class Signup extends React.Component {
                           </FormItem>
                           <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
                             {getFieldDecorator("password", {
+                              validateFirst: true,
+                              initialValue: "",
                               rules: [
                                 {
                                   required: true,

@@ -25,13 +25,12 @@ const RightFields = ({
   selectedSubject,
   ...restProps
 }) => {
-
   const updateSubject = e => {
     setSubject(e);
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
-
+  const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
 
   if (isDropdown) {
@@ -103,18 +102,16 @@ const RightFields = ({
             <Select.Option key="subject_first" value="subject_first" disabled>
               <StandardsValidationMSG>Please select subject first.</StandardsValidationMSG>
             </Select.Option>
+          ) : isEmpty(filteredCurriculums) ? (
+            <Select.Option key="loading" value="loading" disabled>
+              <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
+            </Select.Option>
           ) : (
-            isEmpty(filteredCurriculums) ? (
-              <Select.Option key="loading" value="loading" disabled>
-                <StandardsValidationMSG>Loading data...</StandardsValidationMSG>
+            filteredCurriculums.map(el => (
+              <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
+                {el.text}
               </Select.Option>
-            ) : ( 
-              filteredCurriculums.map(el => (
-                <Select.Option key={el.value} value={el.value} disabled={el.disabled}>
-                  {el.text}
-                </Select.Option>
-              ))
-            )
+            ))
           )}
         </Select>
       </FieldLabel>
@@ -127,6 +124,7 @@ const RightFields = ({
           showArrow={false}
           filterOption={false}
           onSearch={handleSearch}
+          onFocus={handleFocus}
           notFoundContent={null}
           loading={isSearching}
         >

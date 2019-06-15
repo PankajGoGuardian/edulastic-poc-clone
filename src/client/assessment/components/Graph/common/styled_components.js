@@ -355,7 +355,7 @@ export const Col = styled.div`
 `;
 
 export const PaperWrapper = styled(Paper)`
-  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px")};
+  padding: ${props => (props.flowLayout ? "0px" : props.isV1Multipart ? "0px 35px" : "35px")};
   @media (max-width: ${mobileWidth}) {
     padding: ${({ flowLayout }) => (flowLayout ? "0px" : "23px 20px;")};
     margin-bottom: 15px;

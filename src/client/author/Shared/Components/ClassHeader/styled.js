@@ -187,3 +187,30 @@ export const StyledTable = styled(Table)`
     display: none;
   }
 `;
+
+export const PresentModeSwitch = styled(Switch)`
+  border-radius: 4px;
+  min-width: 100px;
+  height: 26px;
+  line-height: 24px;
+  &:after {
+    border-radius: 4px;
+    width: 14px;
+    height: 22px;
+  }
+  &:not(.ant-switch-disabled):active::before,
+  &:not(.ant-switch-disabled):active::after {
+    width: 14px;
+  }
+  .ant-switch-inner {
+    margin-left: 20px;
+    margin-right: 6px;
+    font-size: 14px;
+  }
+  &.ant-switch-checked {
+    .ant-switch-inner {
+      margin-right: 20px;
+      margin-left: 6px;
+    }
+  }
+`;

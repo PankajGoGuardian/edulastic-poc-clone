@@ -149,7 +149,7 @@ export const createBlankTest = () => ({
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   status: "draft",
-  thumbnail: "https://fakeimg.pl/500x135/",
+  thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   createdBy: {
     id: "",
     firstName: "",
@@ -444,6 +444,8 @@ function* publishTestSaga({ payload }) {
       if (oldId) {
         yield put(push(`/author/assignments/regrade/new/${id}/old/${oldId}`));
         yield put(setRegradeOldIdAction(undefined));
+      } else {
+        yield put(push(`/author/tests/${id}/publish`));
       }
     }
   } catch (e) {

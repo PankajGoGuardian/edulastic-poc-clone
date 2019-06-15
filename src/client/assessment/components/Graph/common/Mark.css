@@ -100,3 +100,8 @@
 .mark .delete-mark:hover {
   fill: red;
 }
+
+.mark img.fr-dii {
+  max-height: 36px !important;
+  width: auto !important;
+}

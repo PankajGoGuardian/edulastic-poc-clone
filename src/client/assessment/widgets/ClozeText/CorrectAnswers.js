@@ -137,7 +137,8 @@ class CorrectAnswers extends Component {
       templateMarkUp,
       hasGroupResponses,
       configureOptions,
-      uiStyle
+      uiStyle,
+      responseIds
     } = this.props;
     const { value } = this.state;
     return (
@@ -165,6 +166,7 @@ class CorrectAnswers extends Component {
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                responseIds={responseIds}
               />
             </TabContainer>
           )}
@@ -180,6 +182,7 @@ class CorrectAnswers extends Component {
                       stimulus={stimulus}
                       options={options}
                       configureOptions={configureOptions}
+                      responseIds={responseIds}
                       hasGroupResponses={hasGroupResponses}
                       templateMarkUp={templateMarkUp}
                       uiStyle={uiStyle}
@@ -211,12 +214,14 @@ CorrectAnswers.propTypes = {
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responseIds: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
+  responseIds: {},
   validation: {},
   onRemoveAltResponses: () => {},
   hasGroupResponses: false,

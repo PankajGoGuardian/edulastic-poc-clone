@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
 
@@ -10,19 +11,23 @@ const SelectWrapper = styled.span`
   display: flex;
 `;
 
-const ChoicesBox = ({ resprops, index: dropTargetIndex }) => {
-  const { userAnswers, btnStyle, placeholder, responses, onChange: changeAnswers } = resprops;
+const ChoicesBox = ({ resprops, id }) => {
+  const { userAnswers, btnStyle, placeholder, options, onChange: changeAnswers, item } = resprops;
+  if (!id) return null;
+  const { response_ids } = item;
+  const { index } = find(response_ids, response => response.id === id);
+  const userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
 
   const selectChange = val => {
     if (changeAnswers) {
-      changeAnswers(val, dropTargetIndex);
+      changeAnswers(val, index, id);
     }
   };
 
   return (
     <SelectWrapper>
       <Select
-        value={userAnswers[dropTargetIndex]}
+        value={userAnswer ? userAnswer.value : ""}
         style={{
           ...btnStyle,
           minWidth: 100,
@@ -34,9 +39,9 @@ const ChoicesBox = ({ resprops, index: dropTargetIndex }) => {
         <Option value="**default_value**" disabled>
           {placeholder}
         </Option>
-        {responses &&
-          responses[dropTargetIndex] &&
-          responses[dropTargetIndex].map((response, respID) => (
+        {options &&
+          options[id] &&
+          options[id].map((response, respID) => (
             <Option value={response} key={respID}>
               {response}
             </Option>
@@ -48,7 +53,7 @@ const ChoicesBox = ({ resprops, index: dropTargetIndex }) => {
 
 ChoicesBox.propTypes = {
   resprops: PropTypes.object,
-  index: PropTypes.number.isRequired
+  id: PropTypes.string.isRequired
 };
 
 ChoicesBox.defaultProps = {

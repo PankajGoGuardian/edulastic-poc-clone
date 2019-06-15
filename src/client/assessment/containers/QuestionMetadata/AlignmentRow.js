@@ -118,7 +118,10 @@ const AlignmentRow = ({
   };
 
   const handleAddStandard = newStandard => {
-    const newStandards = [...standards, newStandard];
+    let newStandards = standards.filter(standard => {
+      return standard._id !== newStandard._id;
+    });
+    newStandards = [...newStandards, newStandard];
     let { subject } = alignment;
     if (!subject) {
       const curriculumFromStandard = (option.props.obj || {}).curriculumId

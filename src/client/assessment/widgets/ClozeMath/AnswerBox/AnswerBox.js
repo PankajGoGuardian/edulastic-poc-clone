@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { find } from "lodash";
 import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
@@ -11,62 +12,68 @@ const AnswerBox = ({
   altMathAnswers,
   altDropDowns,
   altInputs,
-  responseIndexes
+  responseIds
 }) => {
-  const { inputs, maths, dropDowns } = responseIndexes;
+  const { inputs, maths, dropDowns } = responseIds;
   let validAnswers = [];
 
-  mathAnswers.map((answer, targetIndex) =>
-    validAnswers.push({
-      index: maths[targetIndex].index,
-      value: answer,
+  mathAnswers.map(answer => {
+    const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer[0].value,
       isMath: true
-    })
-  );
+    });
+  });
 
-  dropdownAnswers.map((answer, targetIndex) =>
-    validAnswers.push({
-      index: dropDowns[targetIndex].index,
-      value: answer,
+  dropdownAnswers.map(answer => {
+    const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer.value,
       isMath: false
-    })
-  );
+    });
+  });
 
-  textInputAnswers.map((answer, targetIndex) =>
-    validAnswers.push({
-      index: inputs[targetIndex].index,
-      value: answer,
+  textInputAnswers.map(answer => {
+    const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer.value,
       isMath: false
-    })
-  );
+    });
+  });
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
   const altAnswers = altMathAnswers.map((alt, altIndex) => {
     const _altAnswers = [];
 
-    alt.map((answer, targetIndex) =>
-      _altAnswers.push({
-        index: maths[targetIndex].index,
-        value: answer,
+    alt.map(answer => {
+      const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
+      return _altAnswers.push({
+        index,
+        value: answer[0].value,
         isMath: true
-      })
-    );
+      });
+    });
 
-    altDropDowns[altIndex].map((answer, targetIndex) =>
-      _altAnswers.push({
-        index: dropDowns[targetIndex].index,
-        value: answer,
+    altDropDowns[altIndex].map(answer => {
+      const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
+      return _altAnswers.push({
+        index,
+        value: answer.value,
         isMath: false
-      })
-    );
+      });
+    });
 
-    altInputs[altIndex].map((answer, targetIndex) =>
-      _altAnswers.push({
-        index: inputs[targetIndex].index,
-        value: answer,
+    altInputs[altIndex].map(answer => {
+      const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
+      return _altAnswers.push({
+        index,
+        value: answer.value,
         isMath: false
-      })
-    );
+      });
+    });
 
     return _altAnswers.sort((a, b) => a.index - b.index);
   });
@@ -103,11 +110,11 @@ AnswerBox.propTypes = {
   altDropDowns: PropTypes.array.isRequired,
   textInputAnswers: PropTypes.array.isRequired,
   altInputs: PropTypes.array.isRequired,
-  responseIndexes: PropTypes.object
+  responseIds: PropTypes.object
 };
 
 AnswerBox.defaultProps = {
-  responseIndexes: {
+  responseIds: {
     dropDown: [],
     inputs: [],
     math: []

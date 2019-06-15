@@ -4,7 +4,7 @@ import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
 
 const IconShare = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" width="19.525" height="19.692" viewBox="0 0 19.525 19.692" {...props}>
+  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 19.525 19.692" {...props}>
     <g transform="translate(-2.006)">
       <g transform="translate(2.006)">
         <path

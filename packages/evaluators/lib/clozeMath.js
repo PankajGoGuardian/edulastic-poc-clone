@@ -15,6 +15,8 @@ var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
+var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
+
 var _isNaN2 = _interopRequireDefault(require("lodash/isNaN"));
 
 var _trim2 = _interopRequireDefault(require("lodash/trim"));
@@ -430,7 +432,37 @@ var exactMatchEvaluator =
     return function exactMatchEvaluator(_x2, _x3, _x4) {
       return _ref4.apply(this, arguments);
     };
-  })(); // const
+  })();
+
+var sortResponses = function sortResponses(userResponse, validResponse) {
+  var _userRes = [];
+  var _validRes = [];
+
+  if (userResponse) {
+    Object.keys(userResponse).map(function(id) {
+      var response = userResponse[id].value;
+
+      if (validResponse.value) {
+        var valid = validResponse.value.find(function(_valid) {
+          return _valid.id === id;
+        });
+
+        _validRes.push(valid.value);
+      }
+
+      _userRes.push(response);
+    });
+  }
+
+  if (_validRes.length) {
+    validResponse.value = _validRes;
+  }
+
+  return {
+    userResponse: _userRes,
+    validResponse: validResponse
+  };
+};
 
 var evaluator =
   /*#__PURE__*/
@@ -452,20 +484,31 @@ var evaluator =
           alt_inputs,
           scoring_type,
           attemptScore,
-          answers,
-          _evaluation,
-          _userResponse$dropDow,
-          _dropDownResponse,
-          _userResponse$inputs,
-          _inputsResponse,
-          _userResponse$math,
-          _mathResponse,
           entered,
+          answers,
+          _userResponse$dropDow,
+          dropDowns,
+          _userResponse$inputs,
+          inputs,
+          _userResponse$maths,
+          maths,
+          _sortResponses,
+          _sortResponses$userRe,
+          _inputsResponse,
+          validInputs,
           inputsResults,
+          _sortResponses2,
+          _sortResponses2$userR,
+          _dropDownResponse,
+          validDropDown,
           dropDownResults,
           mathResults,
+          _sortResponses3,
+          _sortResponses3$userR,
+          _mathResponse,
           checks,
           corrects,
+          _evaluation,
           score,
           maxScore;
 
@@ -487,71 +530,81 @@ var evaluator =
                   (alt_inputs = _validation$alt_input === void 0 ? [] : _validation$alt_input),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
+                entered = 1;
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                _evaluation = [];
-                (_userResponse$dropDow = userResponse.dropDown),
-                  (_dropDownResponse = _userResponse$dropDow === void 0 ? [] : _userResponse$dropDow),
+                (_userResponse$dropDow = userResponse.dropDowns),
+                  (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
                   (_userResponse$inputs = userResponse.inputs),
-                  (_inputsResponse = _userResponse$inputs === void 0 ? [] : _userResponse$inputs),
-                  (_userResponse$math = userResponse.math),
-                  (_mathResponse = _userResponse$math === void 0 ? [] : _userResponse$math);
-                entered = _dropDownResponse.filter(function(response) {
-                  return response;
-                }).length;
-                entered += _inputsResponse.filter(function(response) {
-                  return response;
-                }).length;
-                entered += _mathResponse.filter(function(response) {
-                  return response;
-                }).length;
-                _context6.next = 10;
+                  (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
+                  (_userResponse$maths = userResponse.maths),
+                  (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths);
+                (_sortResponses = sortResponses(
+                  (0, _cloneDeep2["default"])(inputs),
+                  (0, _cloneDeep2["default"])(valid_inputs)
+                )),
+                  (_sortResponses$userRe = _sortResponses.userResponse),
+                  (_inputsResponse = _sortResponses$userRe === void 0 ? [] : _sortResponses$userRe),
+                  (validInputs = _sortResponses.validResponse);
+                entered += _inputsResponse.length;
+                _context6.next = 9;
                 return (0, _clozeText["default"])({
-                  userResponse: _inputsResponse.map(function(r) {
-                    return r ? (0, _trim2["default"])(r.value) : "";
-                  }),
+                  userResponse: _inputsResponse,
                   validation: {
                     scoring_type: scoring_type,
                     alt_responses: alt_inputs,
-                    valid_response: (0, _objectSpread2["default"])({}, valid_inputs)
+                    valid_response: (0, _objectSpread2["default"])({}, validInputs)
                   }
                 });
 
-              case 10:
+              case 9:
                 inputsResults = _context6.sent;
-                _context6.next = 13;
+                (_sortResponses2 = sortResponses(
+                  (0, _cloneDeep2["default"])(dropDowns),
+                  (0, _cloneDeep2["default"])(valid_dropdown)
+                )),
+                  (_sortResponses2$userR = _sortResponses2.userResponse),
+                  (_dropDownResponse = _sortResponses2$userR === void 0 ? [] : _sortResponses2$userR),
+                  (validDropDown = _sortResponses2.validResponse);
+                entered += _dropDownResponse.length;
+                _context6.next = 14;
                 return (0, _clozeText["default"])({
-                  userResponse: _dropDownResponse.map(function(r) {
-                    return r ? (0, _trim2["default"])(r.value) : "";
-                  }),
+                  userResponse: _dropDownResponse,
                   validation: {
                     scoring_type: scoring_type,
                     alt_responses: alt_dropdowns,
-                    valid_response: (0, _objectSpread2["default"])({}, valid_dropdown)
+                    valid_response: (0, _objectSpread2["default"])({}, validDropDown)
                   }
                 });
 
-              case 13:
+              case 14:
                 dropDownResults = _context6.sent;
                 mathResults = {};
+                (_sortResponses3 = sortResponses(
+                  (0, _cloneDeep2["default"])(maths),
+                  (0, _cloneDeep2["default"])(answers)
+                )),
+                  (_sortResponses3$userR = _sortResponses3.userResponse),
+                  (_mathResponse = _sortResponses3$userR === void 0 ? [] : _sortResponses3$userR);
+                entered += _mathResponse.length;
                 _context6.t0 = scoring_type;
-                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 18 : 18;
+                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 21 : 21;
                 break;
 
-              case 18:
+              case 21:
                 checks = getChecks(validation);
-                _context6.next = 21;
+                _context6.next = 24;
                 return exactMatchEvaluator(
                   _mathResponse.map(function(r) {
-                    return r ? (0, _trim2["default"])(r.value) : "";
+                    return r ? (0, _trim2["default"])(r) : "";
                   }),
                   answers,
                   checks
                 );
 
-              case 21:
+              case 24:
                 mathResults = _context6.sent;
 
-              case 22:
+              case 25:
                 // if score for attempting is greater than current score
                 // let it be the score!
                 if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
@@ -568,28 +621,17 @@ var evaluator =
                   ? mathResults.evaluation.filter(function(answer) {
                       return answer;
                     }).length
-                  : 0; // evaluation results to one list
+                  : 0; // evaluation results to one list dropDown, inputs, maths
 
-                dropDownResults.evaluation.map(function(r, i) {
-                  var uRes = _dropDownResponse[i];
-
-                  if (uRes) {
-                    _evaluation[uRes.index] = r;
-                  }
+                _evaluation = [];
+                Object.keys(dropDowns).map(function(key, i) {
+                  _evaluation[dropDowns[key].index] = dropDownResults.evaluation[i];
                 });
-                inputsResults.evaluation.map(function(r, i) {
-                  var uRes = _inputsResponse[i];
-
-                  if (uRes) {
-                    _evaluation[uRes.index] = r;
-                  }
+                Object.keys(inputs).map(function(key, i) {
+                  _evaluation[inputs[key].index] = inputsResults.evaluation[i];
                 });
-                mathResults.evaluation.map(function(r, i) {
-                  var uRes = _mathResponse[i];
-
-                  if (uRes) {
-                    _evaluation[uRes.index] = r;
-                  }
+                Object.keys(maths).map(function(key, i) {
+                  _evaluation[maths[key].index] = mathResults.evaluation[i];
                 });
                 score = (0, _round2["default"])(corrects / entered, 2);
 
@@ -604,7 +646,7 @@ var evaluator =
                   maxScore: maxScore
                 });
 
-              case 33:
+              case 37:
               case "end":
                 return _context6.stop();
             }

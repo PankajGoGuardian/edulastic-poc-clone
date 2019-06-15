@@ -245,10 +245,21 @@ const isLiveAssignment = (assignment, currentGroup) => {
   let attempts = (assignment.reports && assignment.reports.length) || 0;
   let lastAttempt = last(assignment.reports) || [];
   let { endDate, class: clazz = [] } = assignment;
+  let open = false,
+    closed = false,
+    openDate = null;
   if (!endDate) {
-    endDate = _maxBy(clazz.filter(cl => cl._id === currentGroup) || [], "endDate").endDate;
+    endDate = (_maxBy(clazz.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
+    if (!endDate) {
+      const manualCloseAssignment = _maxBy(clazz.filter(cl => cl._id === currentGroup), "closedDate") || {};
+      const manualOpenAssignment = clazz.find(cl => cl._id === currentGroup) || {};
+      openDate = manualOpenAssignment.openDate;
+      open = manualOpenAssignment.open;
+      endDate = manualCloseAssignment.closeDate;
+      closed = manualCloseAssignment.closed;
+    }
   }
-  const isLive = (maxAttempts > attempts || lastAttempt.status == "0") && endDate > Date.now();
+  const isLive = ((maxAttempts > attempts || lastAttempt.status == "0") && endDate > Date.now()) || (open && !closed);
   return isLive;
 };
 

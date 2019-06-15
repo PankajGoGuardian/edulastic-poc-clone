@@ -1,15 +1,14 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-// import { isEmpty } from "lodash";
+import { find } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 import CheckedBlock from "./CheckedBlock";
 
 export default class ClozeMathInput extends React.Component {
   static propTypes = {
-    index: PropTypes.number.isRequired,
-    targetindex: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     resprops: PropTypes.object.isRequired
   };
 
@@ -26,9 +25,9 @@ export default class ClozeMathInput extends React.Component {
   }
 
   componentDidMount() {
-    const { resprops = {}, targetindex } = this.props;
+    const { resprops = {}, id } = this.props;
     const { answers = {} } = resprops;
-    const { math: _userAnwers = [] } = answers;
+    const { maths: _userAnwers = [] } = answers;
 
     const _this = this;
 
@@ -46,7 +45,7 @@ export default class ClozeMathInput extends React.Component {
 
       const mQuill = MQ.MathField(this.mathRef.current, config);
       this.setState({ currentMathQuill: mQuill });
-      mQuill.latex(_userAnwers[targetindex] ? _userAnwers[targetindex].value || "" : "");
+      mQuill.latex(_userAnwers[id] ? _userAnwers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
   }
@@ -110,24 +109,37 @@ export default class ClozeMathInput extends React.Component {
   };
 
   saveAnswer = () => {
-    const { resprops = {}, targetindex, index } = this.props;
+    const { resprops = {}, id } = this.props;
     const { latex, showKeyboard } = this.state;
-    const { save } = resprops;
+    const { save, item } = resprops;
+    const {
+      response_ids: { maths }
+    } = item;
+    const { index } = find(maths, res => res.id === id);
+
     if (showKeyboard) {
-      save({ value: latex, index, type: "math" }, targetindex);
+      save({ value: latex, index }, "maths", id);
     }
   };
 
   render() {
-    const { index, resprops = {}, targetindex } = this.props;
-    const { item, answers = {}, evaluation = [], checked } = resprops;
+    const { resprops = {}, id } = this.props;
+    const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
     const { showKeyboard } = this.state;
 
-    const { math: _mathAnswers = [] } = answers;
+    const { maths: _mathAnswers = [] } = answers;
     // const isChecked = checked && !isEmpty(evaluation);
 
     return checked ? (
-      <CheckedBlock isCorrect={evaluation[index]} userAnswer={_mathAnswers[targetindex]} index={index} isMath />
+      <CheckedBlock
+        evaluation={evaluation}
+        userAnswer={_mathAnswers[id]}
+        item={item}
+        id={id}
+        type="maths"
+        isMath
+        onInnerClick={onInnerClick}
+      />
     ) : (
       <span ref={this.wrappedRef}>
         <span ref={this.mathRef} onClick={this.showKeyboardModal} />

@@ -18,6 +18,13 @@ import { getCurriculumsListSelector } from "../../../../author/src/selectors/dic
 const { allGrades, allSubjects } = selectsData;
 
 const { Option } = Select;
+const defaultStandards = {
+  Mathematics: "Math - Common Core",
+  ELA: "ELA - Common Core",
+  Science: "Science - NGSS",
+  "Social Studies": "Social Studies",
+  "Other Subjects": ""
+};
 class SubjectGrade extends React.Component {
   state = {
     subject: ""
@@ -68,12 +75,12 @@ class SubjectGrade extends React.Component {
 
         map(values.standard, id => {
           const filterData = find(curriculums, el => el._id === id);
-          data.curriculums.push(
-            mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
-              if (key === "curriculum") key = "name";
-              return key;
-            })
-          );
+          let newCurriculum = mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
+            if (key === "curriculum") key = "name";
+            return key;
+          });
+          newCurriculum.grades = values.grade;
+          data.curriculums.push(newCurriculum);
         });
 
         saveSubjectGrade({ ...data });
@@ -84,7 +91,13 @@ class SubjectGrade extends React.Component {
   render() {
     const { subject } = this.state;
     const { curriculums, form, saveSubjectGradeloading } = this.props;
-    const standardSets = filter(curriculums, el => el.subject === subject);
+    const standardSets = filter(curriculums, el => el.subject === subject).sort((a, b) =>
+      a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1
+    );
+    const findDefaultIndex = standardSets.findIndex(item => defaultStandards[subject] === item.curriculum);
+    if (findDefaultIndex > -1) {
+      [standardSets[0], standardSets[findDefaultIndex]] = [standardSets[findDefaultIndex], standardSets[0]];
+    }
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);
@@ -128,7 +141,7 @@ class SubjectGrade extends React.Component {
 
                   <Form.Item label="Subject">
                     {getFieldDecorator("subject", {
-                      rules: [{ required: true, message: "Subject is not selected" }]
+                      rules: [{ required: true, message: "Subject Area is not selected" }]
                     })(
                       <GradeSelect size="large" placeholder="Select a subject" onSelect={this.updateSubject} showArrow>
                         {_allSubjects.map(el => (
@@ -141,7 +154,7 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator("standard", {
-                      rules: [{ required: true, message: "standard Area is not selected" }]
+                      rules: [{ required: false, message: "Standard Area is not selected" }]
                     })(
                       <GradeSelect
                         optionFilterProp="children"

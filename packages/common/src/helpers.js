@@ -1,4 +1,5 @@
 /* eslint-disable */
+import uuid from "uuid/v4";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 
@@ -98,12 +99,14 @@ function addProps() {
 }
 
 const sanitizeSelfClosingTags = inputString =>
+  inputString &&
   inputString
     .replace(/<hr>/g, "<hr/>")
     .replace(/<br>/g, "<br/>")
     .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
 
 const replaceForJsxParser = inputString =>
+  inputString &&
   inputString
     .replace(/"{{resProps/g, "{resProps")
     .replace(/resProps}}"/g, "resProps}")
@@ -143,15 +146,21 @@ export const getResponsesCount = element => {
 export const reIndexResponses = html => {
   const parsedHTML = $.parseHTML(html);
   if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
-    return false;
+    return html;
   }
+
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")
     .each(function(index) {
       $(this)
         .find("span")
         .remove("span");
-      $(this).attr("index", index);
+
+      const id = $(this).attr("id");
+      if (!id) {
+        $(this).attr("id", uuid());
+      }
+
       let text = $(this).text();
       $(this).html(`<span class="index">${index + 1}</span>${text}`);
 
@@ -169,6 +178,25 @@ export const reIndexResponses = html => {
   return temp;
 };
 
+export const removeSpanFromTemplate = tmpl => {
+  let temp = ` ${tmpl}`.slice(1);
+  if (!window.$) {
+    return temp;
+  }
+  const parsedHTML = $.parseHTML(temp);
+  $(parsedHTML)
+    .find("textinput, mathinput, textdropdown, response")
+    .each(function() {
+      $(this)
+        .find("span")
+        .remove("span");
+    });
+  temp = $("<div />")
+    .append(parsedHTML)
+    .html();
+  return temp;
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -179,5 +207,6 @@ export default {
   uploadToS3,
   parseTemplate,
   reIndexResponses,
-  canInsert
+  canInsert,
+  removeSpanFromTemplate
 };

@@ -5,8 +5,10 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
+import { forEach, cloneDeep } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
+import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
 import { updateVariables } from "../../utils/variables";
@@ -14,17 +16,22 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { WidgetWrapper, Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
+
+import { response } from "@edulastic/constants";
 
 class ChoicesForDropDown extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
-    index: PropTypes.number.isRequired,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func
+  };
+
+  state = {
+    sectionId: uuid()
   };
 
   static defaultProps = {
@@ -32,18 +39,39 @@ class ChoicesForDropDown extends Component {
     cleanSections: () => {}
   };
 
-  componentDidMount = () => {
-    const { fillSections, t, index } = this.props;
-    // eslint-disable-next-line react/no-find-dom-node
-    const node = ReactDOM.findDOMNode(this);
+  componentDidUpdate(prevProps) {
+    const { item: prevItem } = prevProps;
+    const { item, fillSections, cleanSections } = this.props;
+    const {
+      response_ids: { dropDowns: current = [] }
+    } = item;
+    const {
+      response_ids: { dropDowns: prev = [] }
+    } = prevItem;
 
-    fillSections("main", `${t("component.cloze.dropDown.choicesforresponse")} ${index + 1}`, node.offsetTop);
-  };
+    // eslint-disable-next-line react/no-find-dom-node
+    if (current.length === 0) {
+      return cleanSections(this.state.sectionId);
+    }
+
+    const node = ReactDOM.findDOMNode(this);
+    if (current.length === 1 && prev.length !== 1) {
+      fillSections(
+        "main",
+        "Choices for Dropdown(s)",
+        node.offsetTop,
+        node.scrollHeight,
+        undefined,
+        undefined,
+        this.state.sectionId
+      );
+    }
+  }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
 
-    cleanSections();
+    cleanSections(this.state.sectionId);
   }
 
   onChangeQuestion = stimulus => {
@@ -56,71 +84,84 @@ class ChoicesForDropDown extends Component {
     );
   };
 
-  onSortEnd = (index, { oldIndex, newIndex }) => {
+  onSortEnd = (dropDownId, { oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index] = arrayMove(draft.options[index], oldIndex, newIndex);
+        draft.options[dropDownId] = arrayMove(draft.options[dropDownId], oldIndex, newIndex);
       })
     );
   };
 
-  remove = (index, itemIndex) => {
+  remove = (dropDownId, itemIndex) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        draft.options[index].splice(itemIndex, 1);
-        draft.validation.valid_dropdown.value[index] = "";
+        draft.options[dropDownId].splice(itemIndex, 1);
+        const validDropDown = cloneDeep(draft.validation.valid_dropdown.value);
+        forEach(validDropDown, answer => {
+          if (answer.id === dropDownId) {
+            answer.value = "";
+          }
+        });
+        draft.validation.valid_dropdown.value = validDropDown;
         updateVariables(draft);
       })
     );
   };
 
-  editOptions = (index, itemIndex, e) => {
+  editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index][itemIndex] = e.target.value;
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        draft.options[dropDownId][itemIndex] = e.target.value;
+        draft.ui_style["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
         updateVariables(draft);
       })
     );
   };
 
-  addNewChoiceBtn = index => {
+  addNewChoiceBtn = dropDownId => {
     const { item, setQuestionData, t } = this.props;
     setQuestionData(
       produce(item, draft => {
-        if (draft.options[index] === undefined) draft.options[index] = [];
-        draft.options[index].push(t("component.cloze.dropDown.newChoice"));
+        if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        draft.options[dropDownId].push(t("component.cloze.dropDown.newChoice"));
       })
     );
   };
 
   render() {
-    const { t, item, index } = this.props;
-    const { response_indexes } = item;
+    const { t, item } = this.props;
+    const {
+      response_ids: { dropDowns = [] },
+      options,
+      template
+    } = item;
 
     return (
-      <Widget data-cy={`choice-dropdown-${index}`}>
-        <Subtitle>
-          {`${t("component.math.choicesfordropdown")} ${response_indexes.dropDowns[index].index + 1}`}
-        </Subtitle>
-        <SortableList
-          items={item.options[index] || []}
-          dirty={item.template}
-          onSortEnd={params => this.onSortEnd(index, params)}
-          useDragHandle
-          onRemove={itemIndex => this.remove(index, itemIndex)}
-          onChange={(itemIndex, e) => this.editOptions(index, itemIndex, e)}
-        />
+      <WidgetWrapper>
+        {dropDowns.map(dropdown => (
+          <Widget data-cy={`choice-dropdown-${dropdown.index}`}>
+            <Subtitle>{`${t("component.math.choicesfordropdown")} ${dropdown.index + 1}`}</Subtitle>
+            <SortableList
+              items={options[dropdown.id] || []}
+              dirty={template}
+              onSortEnd={params => this.onSortEnd(dropdown.id, params)}
+              useDragHandle
+              onRemove={itemIndex => this.remove(dropdown.id, itemIndex)}
+              onChange={(itemIndex, e) => this.editOptions(dropdown.id, itemIndex, e)}
+            />
 
-        <div>
-          <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(index)}>
-            {t("component.cloze.dropDown.addnewchoice")}
-          </AddNewChoiceBtn>
-        </div>
-      </Widget>
+            <div>
+              <AddNewChoiceBtn onClick={() => this.addNewChoiceBtn(dropdown.id)}>
+                {t("component.cloze.dropDown.addnewchoice")}
+              </AddNewChoiceBtn>
+            </div>
+          </Widget>
+        ))}
+      </WidgetWrapper>
     );
   }
 }

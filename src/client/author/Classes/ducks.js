@@ -17,6 +17,11 @@ const CREATE_CLASS_ERROR = "[class] create data error";
 const DELETE_CLASS_REQUEST = "[class] delete data request";
 const DELETE_CLASS_SUCCESS = "[class] delete data success";
 const DELETE_CLASS_ERROR = "[class] delete data error";
+const SET_BULK_EDIT_VISIBILITY = "[class] SET_BULK_EDIT_VISIBILITY";
+const SET_BULK_EDIT_MODE = "[class] SET_BULK_EDIT_MODE";
+const SET_BULK_EDIT_UPDATE_VIEW = "[class] SET_BULK_EDIT_UPDATE_VIEW";
+const BULK_UPDATE_CLASSES = "[class] BULK_UPDATE_CLASSES";
+const BULK_UPDATE_CLASSES_SUCCESS = "[class] BULK_UPDATE_CLASSES_SUCCESS";
 
 const RECEIVE_TEACHERLIST_REQUEST = "[teacher] receive data request";
 const RECEIVE_TEACHERLIST_SUCCESS = "[teacher] receive data success";
@@ -38,12 +43,21 @@ export const deleteClassErrorAction = createAction(DELETE_CLASS_ERROR);
 export const receiveTeacherListAction = createAction(RECEIVE_TEACHERLIST_REQUEST);
 export const receiveTeacherListSuccessAction = createAction(RECEIVE_TEACHERLIST_SUCCESS);
 export const receiveTeacherListErrorAction = createAction(RECEIVE_TEACHERLIST_ERROR);
-
+export const setBulkEditVisibilityAction = createAction(SET_BULK_EDIT_VISIBILITY);
+export const setBulkEditModeAction = createAction(SET_BULK_EDIT_MODE);
+export const setBulkEditUpdateViewAction = createAction(SET_BULK_EDIT_UPDATE_VIEW);
+export const bulkUpdateClassesAction = createAction(BULK_UPDATE_CLASSES);
+export const bulkUpdateClassesSuccessAction = createAction(BULK_UPDATE_CLASSES_SUCCESS);
 // selectors
 const stateClassSelector = state => state.classesReducer;
 export const getClassListSelector = createSelector(
   stateClassSelector,
   state => state.data
+);
+
+export const getBulkEditSelector = createSelector(
+  stateClassSelector,
+  ({ bulkEdit }) => bulkEdit
 );
 
 // reducers
@@ -63,7 +77,12 @@ const initialState = {
   teacherLoading: false,
   teacherList: {},
   teacherError: "",
-  totalClassCount: 0
+  totalClassCount: 0,
+  bulkEdit: {
+    showModal: false,
+    updateMode: "course",
+    updateView: false
+  }
 };
 
 export const reducer = createReducer(initialState, {
@@ -85,7 +104,15 @@ export const reducer = createReducer(initialState, {
   [UPDATE_CLASS_SUCCESS]: (state, { payload }) => {
     state.update = payload;
     state.updating = false;
-    state.data[payload._id] = { ...state.data[payload._id], ...payload };
+    const sourceObj = {
+      _source: {
+        ...payload
+      }
+    };
+    state.data[payload._id] = {
+      ...state.data[payload._id],
+      ...sourceObj
+    };
   },
   [UPDATE_CLASS_ERROR]: (state, { payload }) => {
     state.updating = false;
@@ -99,7 +126,10 @@ export const reducer = createReducer(initialState, {
     state.creating = false;
     state.create = payload;
     const createdStudent = {
-      [payload._id]: payload
+      [payload._id]: {
+        _id: payload._id,
+        _source: payload
+      }
     };
     // here we use the spread operator for the created student, so that the created student
     // appears first in the list
@@ -145,6 +175,23 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_TEACHERLIST_ERROR]: (state, { payload }) => {
     state.teacherLoading = false;
     state.teacherError = payload.error;
+  },
+  [SET_BULK_EDIT_VISIBILITY]: (state, { payload: visibility }) => {
+    state.bulkEdit.showModal = visibility;
+    state.bulkEdit.updateView = false;
+  },
+  [SET_BULK_EDIT_MODE]: (state, { payload: value }) => {
+    state.bulkEdit.updateMode = value;
+  },
+  [SET_BULK_EDIT_UPDATE_VIEW]: (state, { payload: visibility }) => {
+    state.bulkEdit.updateView = visibility;
+  },
+  [BULK_UPDATE_CLASSES_SUCCESS]: state => {
+    state.bulkEdit = {
+      showModal: false,
+      updateMode: "course",
+      updateView: false
+    };
   }
 });
 
@@ -216,10 +263,22 @@ function* receiveTeachersListSaga({ payload }) {
   }
 }
 
+function* bulkUpdateClassesSaga({ payload }) {
+  try {
+    const { result } = yield call(groupApi.bulkUpdateClasses, payload);
+    yield put(bulkUpdateClassesSuccessAction(result));
+    message.success(result.message);
+  } catch (err) {
+    const errorMessage = "Something went wrong. Please try again!";
+    message.error(errorMessage);
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_CLASSLIST_REQUEST, receiveClassListSaga)]);
   yield all([yield takeEvery(UPDATE_CLASS_REQUEST, updateClassSaga)]);
   yield all([yield takeEvery(CREATE_CLASS_REQUEST, createClassSaga)]);
   yield all([yield takeEvery(DELETE_CLASS_REQUEST, deleteClassSaga)]);
   yield all([yield takeEvery(RECEIVE_TEACHERLIST_REQUEST, receiveTeachersListSaga)]);
+  yield all([yield takeEvery(BULK_UPDATE_CLASSES, bulkUpdateClassesSaga)]);
 }

@@ -47,10 +47,20 @@ const deleteGroup = data =>
     })
     .then(result => result.data.result);
 
+const bulkUpdateClasses = data =>
+  api
+    .callApi({
+      url: `${prefix}`,
+      method: "put",
+      data
+    })
+    .then(({ data: response }) => response);
+
 export default {
   fetchMyGroups,
   getGroups,
   editGroup,
   createGroup,
-  deleteGroup
+  deleteGroup,
+  bulkUpdateClasses
 };

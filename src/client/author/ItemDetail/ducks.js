@@ -3,6 +3,7 @@ import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "l
 import { testItemsApi } from "@edulastic/api";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
@@ -52,6 +53,8 @@ export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY = "[itemDetail] delete widget apply";
+export const UPDATE_DEFAULT_GRADES = "[itemDetail] update default grades";
+export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 // actions
@@ -136,6 +139,16 @@ export const updateTestItemStatusAction = status => ({
   payload: status
 });
 
+export const updateDefaultSubjectAction = subject => ({
+  type: UPDATE_DEFAULT_SUBJECT,
+  payload: subject
+});
+
+export const updateDefaultGradesAction = grades => ({
+  type: UPDATE_DEFAULT_GRADES,
+  payload: grades
+});
+
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
 export const setItemLevelScoringAction = createAction(SET_ITEM_DETAIL_ITEM_LEVEL_SCORING);
@@ -151,6 +164,15 @@ export const saveCurrentEditingTestIdAction = id => ({
 // selectors
 
 export const stateSelector = state => state.itemDetail;
+
+export const getDefaultGradesSelector = createSelector(
+  stateSelector,
+  state => state.defaultGrades
+);
+export const getDefaultSubjectSelector = createSelector(
+  stateSelector,
+  state => state.defaultSubject
+);
 
 export const getItemDetailSelector = createSelector(
   stateSelector,
@@ -278,6 +300,8 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
+  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };
 
@@ -417,6 +441,16 @@ export function reducer(state = initialState, { type, payload }) {
           status: payload
         }
       };
+    case UPDATE_DEFAULT_SUBJECT:
+      return {
+        ...state,
+        defaultSubject: payload
+      };
+    case UPDATE_DEFAULT_GRADES:
+      return {
+        ...state,
+        defaultGrades: payload
+      };
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
         ...state,
@@ -498,7 +532,7 @@ export function* updateItemSaga({ payload }) {
     data.data.questions = yield select(getQuestionsSelector);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+
     if (payload.redirect && item._id !== payload.id) {
       yield put(
         replace(

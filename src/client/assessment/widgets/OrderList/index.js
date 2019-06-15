@@ -226,7 +226,7 @@ const OrderList = ({
           <InstructorStimulus>{itemForPreview.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
             <QuestionHeader
               qIndex={qIndex}
               smallSize={smallSize}
@@ -239,7 +239,7 @@ const OrderList = ({
               onSortEnd={onSortPreviewEnd}
               questionsList={itemForPreview.list}
               previewIndexesList={userAnswer}
-              evaluation={evaluation || (item && item.activity) ? item.activity.evaluation : evaluation}
+              evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
               listStyle={{ fontSize }}
               axis={axis}
               columns={columns}
@@ -252,7 +252,7 @@ const OrderList = ({
                 onSortEnd={onSortPreviewEnd}
                 questionsList={itemForPreview.list}
                 previewIndexesList={userAnswer}
-                evaluation={evaluation || (item && item.activity) ? item.activity.evaluation : evaluation}
+                evaluation={evaluation || (item && item.activity ? item.activity.evaluation : evaluation)}
                 validation={itemForPreview.validation}
                 list={itemForPreview.list}
                 listStyle={{ fontSize }}

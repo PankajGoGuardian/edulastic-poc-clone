@@ -5,9 +5,10 @@ import { MathKeyboard } from "@edulastic/common";
 import { MathInputStyles } from "./MathInputStyles";
 import { WithResources } from "../../HOC/withResources";
 
-const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerValues }) => {
+const StaticMath = ({ style, onBlur, onInput, onInnerFieldClick, symbols, numberPad, latex, innerValues }) => {
   const [mathField, setMathField] = useState(null);
-  const [innerField, setInnerField] = useState(null);
+  const [currentInnerField, setCurrentInnerField] = useState(null);
+  const [innerFields, setInnerFields] = useState([]);
   const [showKeyboard, setShowKeyboard] = useState(false);
 
   const containerRef = useRef(null);
@@ -39,6 +40,7 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
           .focus()
           .el()
           .click();
+        onInnerFieldClick(nextField);
       }
     };
 
@@ -71,7 +73,8 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
   };
 
   const onFocus = newInnerField => {
-    setInnerField(newInnerField);
+    setCurrentInnerField(newInnerField);
+    onInnerFieldClick(newInnerField);
     setShowKeyboard(true);
   };
 
@@ -82,6 +85,8 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
   const setLatex = newLatex => {
     if (!mathField) return;
     mathField.latex(newLatex);
+
+    setInnerFields(mathField.innerFields);
 
     for (let i = 0; i < mathField.innerFields.length; i++) {
       mathField.innerFields[i].el().id = `inner-${i}`;
@@ -100,37 +105,37 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
 
   const setInnerFieldValues = values => {
     if (!mathField || !mathField.innerFields) return;
-    for (let i = 0; i < mathField.innerFields.length; i++) {
-      if (!mathField.innerFields[i]) continue;
-      mathField.innerFields[i].latex("");
+    for (let i = 0; i < innerFields.length; i++) {
+      if (!innerFields[i]) continue;
+      innerFields[i].latex("");
       if (!values[i]) continue;
-      mathField.innerFields[i].write(values[i]);
+      innerFields[i].write(values[i]);
     }
   };
 
   const onInputKeyboard = (key, command = "cmd") => {
-    if (!innerField) return;
+    if (!currentInnerField) return;
 
     if (key === "left_move") {
-      innerField.keystroke("Left");
+      currentInnerField.keystroke("Left");
     } else if (key === "right_move") {
-      innerField.keystroke("Right");
+      currentInnerField.keystroke("Right");
     } else if (key === "ln--") {
-      innerField.write("ln\\left(\\right)");
+      currentInnerField.write("ln\\left(\\right)");
     } else if (key === "leftright3") {
-      innerField.write("\\sqrt[3]{}");
+      currentInnerField.write("\\sqrt[3]{}");
     } else if (key === "Backspace") {
-      innerField.keystroke("Backspace");
+      currentInnerField.keystroke("Backspace");
     } else if (key === "leftright2") {
-      innerField.write("^2");
+      currentInnerField.write("^2");
     } else if (key === "down_move") {
-      innerField.keystroke("Down");
+      currentInnerField.keystroke("Down");
     } else if (key === "up_move") {
-      innerField.keystroke("Up");
+      currentInnerField.keystroke("Up");
     } else {
-      innerField[command](key);
+      currentInnerField[command](key);
     }
-    innerField.focus();
+    currentInnerField.focus();
 
     onInput(getLatex());
   };
@@ -153,8 +158,8 @@ const StaticMath = ({ style, onBlur, onInput, symbols, numberPad, latex, innerVa
       try {
         setMathField(MQ.StaticMath(mathFieldRef.current));
       } catch (e) {}
+      setLatex(latex);
       setTimeout(() => {
-        setLatex(latex);
         setInnerFieldValues(innerValues);
       });
     }
@@ -195,6 +200,7 @@ StaticMath.propTypes = {
   style: PropTypes.object,
   onBlur: PropTypes.func.isRequired,
   onInput: PropTypes.func.isRequired,
+  onInnerFieldClick: PropTypes.func,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
   latex: PropTypes.string.isRequired,
@@ -203,7 +209,8 @@ StaticMath.propTypes = {
 
 StaticMath.defaultProps = {
   style: {},
-  innerValues: []
+  innerValues: [],
+  onInnerFieldClick: () => {}
 };
 
 const StaticMathWithResources = props => (

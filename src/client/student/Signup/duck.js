@@ -102,6 +102,14 @@ const failedDistricts = state => {
 };
 
 const createSchoolSuccess = (state, { payload }) => {
+  payload = {
+    ...payload,
+    address: { ...payload.location },
+    schoolName: payload.name,
+    schoolId: payload._id,
+    districtName: payload.district ? payload.district.name : ""
+  };
+
   state.schools.push(payload);
   state.newSchool = payload;
 };

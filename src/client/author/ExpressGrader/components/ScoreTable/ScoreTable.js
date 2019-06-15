@@ -17,7 +17,9 @@ function getDataForTable(data) {
         const studentInfo = {
           studentId: student.studentId,
           studentName: student.studentName,
-          fakeName: student.fakeName
+          fakeName: student.fakeName,
+          icon: student.icon,
+          color: student.color
         };
         const testActivityId = student.testActivityId ? student.testActivityId : null;
         student.questionActivities.forEach((question, index1) => {
@@ -121,13 +123,7 @@ class ScoreTable extends Component {
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
-      const isQids = qids && qids.length > 0;
-      const title = (
-        <StyledDivMid>
-          {`Q${index + 1}`}
-          <img src={InfoIcon} alt="help" />
-        </StyledDivMid>
-      );
+      const title = <StyledDivMid>{students[0].questionActivities[index].barLabel}</StyledDivMid>;
 
       students.forEach(student => {
         if (student && !student.questionActivities[index].notStarted) {

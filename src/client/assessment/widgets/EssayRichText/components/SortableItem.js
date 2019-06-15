@@ -7,6 +7,8 @@ import { FlexContainer } from "@edulastic/common";
 
 import { QlBlocks } from "../styled/QlBlocks";
 import { FlexCon } from "../styled/FlexCon";
+import { IconTranslator } from "@edulastic/icons";
+import renderEmpty from "antd/lib/config-provider/renderEmpty";
 
 const DragHandle = withTheme(
   SortableHandle(({ theme }) => (
@@ -39,7 +41,15 @@ const SortableItem = SortableElement(({ item, i, handleActiveChange, validList, 
           {...(validList.includes(value) ? { value: param } : {})}
           className={`ql-${value}`}
           type="button"
-        />
+        >
+          {value === "specialCharacters" && (
+            <IconTranslator
+              color={
+                active ? theme.widgets.essayRichText.qlBlocksActiveColor : theme.widgets.essayRichText.qlBlocksColor
+              }
+            />
+          )}
+        </QlBlocks>
       ) : (
         <QlBlocks
           active={active}

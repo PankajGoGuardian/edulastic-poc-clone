@@ -80,7 +80,6 @@ const ClozeTextInput = ({ resprops, id }) => {
   const { index } = find(responseIds, response => response.id === id);
   const { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
   const [selection, setSelection] = useState({ start: 0, end: 0 });
-  const [answer, setAnswer] = useState(value);
 
   const _getValue = val => {
     const newStr = value.split("");
@@ -110,28 +109,20 @@ const ClozeTextInput = ({ resprops, id }) => {
     });
   };
 
-  const onBlurHanlder = () => {
-    if (type === "number" && Number.isNaN(+answer.value)) {
-      return;
-    }
-    if (value !== answer) {
-      _change({
-        value: answer,
-        id
-      });
-    }
-  };
-
   return (
     <CustomInput style={style}>
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
-        onChange={e => setAnswer(e.target.value)}
-        onBlur={onBlurHanlder}
+        onChange={e =>
+          _change({
+            value: e.target.value,
+            id
+          })
+        }
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
-        value={answer}
+        value={value}
         key={`input_${index}`}
         style={{
           ...btnStyle,

@@ -61,7 +61,7 @@ class TemplateMarkup extends Component {
     const reduceResponseIds = tmpl => {
       const newResponseIds = [];
       if (!window.$) {
-        return newResponseId;
+        return newResponseIds;
       }
       const temp = tmpl || "";
       const parsedHTML = $.parseHTML(temp);

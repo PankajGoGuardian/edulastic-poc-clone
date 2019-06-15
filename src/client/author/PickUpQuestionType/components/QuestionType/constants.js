@@ -1060,7 +1060,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>sample template T1<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>, T2<textinput contenteditable="false" index="1"><span class="index">2</span>Text Input</textinput></p>',
+          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -1070,10 +1070,6 @@ export const getCards = onSelectQuestionType => {
           responsecontainerposition: "bottom",
           stemnumeration: "",
           widthpx: 140
-        },
-        options: {
-          0: "",
-          1: ""
         },
         validation: {
           scoring_type: "exactMatch",

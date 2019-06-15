@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { find } from "lodash";
 import PropTypes from "prop-types";
 
 import { IconWrapper } from "./styled/IconWrapper";
@@ -7,8 +8,10 @@ import { WrongIcon } from "./styled/WrongIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
-  dropTargetIndex = parseInt(dropTargetIndex, 10);
+const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
+  if (!id) {
+    return null;
+  }
   const {
     evaluation,
     showAnswer,
@@ -18,25 +21,26 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
     userSelections,
     stemNumeration,
     showIndex,
-    responsecontainerindividuals
+    responsecontainerindividuals,
+    responseIds
   } = resprops;
-
-  const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+  const { index } = find(responseIds, res => res.id === id);
+  const status = evaluation[index] ? "right" : "wrong";
 
   // eslint-disable-next-line no-unused-vars
   let indexStr = "";
 
   switch (stemNumeration) {
     case "lowercase": {
-      indexStr = ALPHABET[dropTargetIndex];
+      indexStr = ALPHABET[index];
       break;
     }
     case "uppercase": {
-      indexStr = ALPHABET[dropTargetIndex].toUpperCase();
+      indexStr = ALPHABET[index].toUpperCase();
       break;
     }
     case "numerical": {
-      indexStr = dropTargetIndex + 1;
+      indexStr = index + 1;
       break;
     }
     default:
@@ -49,8 +53,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
     heightpx: 0,
     position: "relative"
   };
-  if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
-    const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[dropTargetIndex];
+  if (responsecontainerindividuals && responsecontainerindividuals[index]) {
+    const { widthpx: widthpx1, heightpx: heightpx1 } = responsecontainerindividuals[index];
     btnStyle.width = widthpx1;
     btnStyle.height = heightpx1;
     btnStyle.widthpx = widthpx1;
@@ -76,12 +80,12 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
         <span
           className={`
                     response-btn 
-                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
+                    ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
           style={btnStyle}
         >
-          <span className="index">{dropTargetIndex + 1}</span>
+          <span className="index">{index + 1}</span>
           <span
             className="text"
             style={{
@@ -91,18 +95,18 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
               overflow: "hidden"
             }}
           >
-            {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+            {userSelections[index] && userSelections[index].value}
           </span>
           <IconWrapper>
-            {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-            {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
           </IconWrapper>
         </span>
       )}
       {!showAnswer && (
         <span
           className={`response-btn 
-                ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : ""} 
+                ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}
                 `}
           style={{
@@ -112,7 +116,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
         >
           {showIndex && (
             <Fragment>
-              <span className="index">{dropTargetIndex + 1}</span>
+              <span className="index">{index + 1}</span>
             </Fragment>
           )}
           <span
@@ -126,11 +130,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
             }}
             className="text"
           >
-            {userSelections[dropTargetIndex] && userSelections[dropTargetIndex]}
+            {userSelections[index] && userSelections[index].value}
           </span>
           <IconWrapper>
-            {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-            {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
+            {userSelections.length > 0 && userSelections[index] && status === "wrong" && <WrongIcon />}
           </IconWrapper>
         </span>
       )}
@@ -140,7 +144,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, index: dropTargetIndex }) => {
 
 CheckboxTemplateBoxLayout.propTypes = {
   resprops: PropTypes.object,
-  index: PropTypes.number.isRequired
+  id: PropTypes.string.isRequired
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

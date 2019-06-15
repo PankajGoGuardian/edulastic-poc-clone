@@ -124,14 +124,22 @@ export default class ClozeMathInput extends React.Component {
 
   render() {
     const { resprops = {}, id } = this.props;
-    const { item, answers = {}, evaluation = [], checked } = resprops;
+    const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
     const { showKeyboard } = this.state;
 
     const { maths: _mathAnswers = [] } = answers;
     // const isChecked = checked && !isEmpty(evaluation);
 
     return checked ? (
-      <CheckedBlock evaluation={evaluation} userAnswer={_mathAnswers[id]} item={item} id={id} type="maths" isMath />
+      <CheckedBlock
+        evaluation={evaluation}
+        userAnswer={_mathAnswers[id]}
+        item={item}
+        id={id}
+        type="maths"
+        isMath
+        onInnerClick={onInnerClick}
+      />
     ) : (
       <span ref={this.wrappedRef}>
         <span ref={this.mathRef} onClick={this.showKeyboardModal} />

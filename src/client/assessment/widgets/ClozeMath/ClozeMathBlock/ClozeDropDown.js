@@ -8,7 +8,7 @@ import CheckedBlock from "./CheckedBlock";
 const { Option } = Select;
 
 const ClozeDropDown = ({ resprops = {}, id }) => {
-  const { save, options, answers = {}, evaluation = [], checked, item } = resprops;
+  const { save, options, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
   const { dropDowns: _dropDownAnswers = [] } = answers;
 
   const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
@@ -25,6 +25,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       width={item.ui_style.widthpx}
       evaluation={evaluation}
       type="dropDowns"
+      onInnerClick={onInnerClick}
     />
   ) : (
     <StyeldSelect

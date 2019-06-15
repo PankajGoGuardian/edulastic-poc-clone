@@ -6,7 +6,7 @@ import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
-  const { save, answers = {}, evaluation = [], checked, item } = resprops;
+  const { save, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const [val, setVal] = useState(_inputsAnwers[id] ? _inputsAnwers[id].value : "");
   const {
@@ -16,7 +16,14 @@ const ClozeInput = ({ id, resprops = {} }) => {
   // const isChecked = checked && !isEmpty(evaluation);
 
   return checked ? (
-    <CheckedBlock evaluation={evaluation} userAnswer={_inputsAnwers[id]} id={id} item={item} type="inputs" />
+    <CheckedBlock
+      evaluation={evaluation}
+      userAnswer={_inputsAnwers[id]}
+      id={id}
+      item={item}
+      type="inputs"
+      onInnerClick={onInnerClick}
+    />
   ) : (
     <InputDiv>
       <Input

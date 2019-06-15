@@ -7,7 +7,7 @@ import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { CheckBox } from "./styled/CheckBox";
 
-const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width }) => {
+const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, onInnerClick }) => {
   const filedRef = useRef();
   const { response_ids } = item;
   let { index } = find(response_ids[type], res => res.id === id);
@@ -33,7 +33,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width })
   }, [userAnswer, evaluation, isMath]);
 
   return (
-    <CheckBox width={width} className={checkBoxClass} key={`input_${index}`}>
+    <CheckBox width={width} className={checkBoxClass} key={`input_${index}`} onClick={onInnerClick}>
       <span className="index">{index + 1}</span>
       <span className="value" ref={filedRef}>
         {userAnswer.value}
@@ -49,12 +49,14 @@ CheckedBlock.propTypes = {
   item: PropTypes.object.isRequired,
   type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
-  isMath: PropTypes.bool
+  isMath: PropTypes.bool,
+  onInnerClick: PropTypes.func
 };
 
 CheckedBlock.defaultProps = {
   isMath: false,
-  userAnswer: ""
+  userAnswer: "",
+  onInnerClick: () => {}
 };
 
 export default CheckedBlock;

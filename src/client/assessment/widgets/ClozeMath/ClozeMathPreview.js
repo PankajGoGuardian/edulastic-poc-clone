@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
 import { Stimulus, helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
-import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
+import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
@@ -25,7 +25,8 @@ const ClozeMathPreview = ({
   showQuestionNumber,
   qIndex,
   options,
-  responseIds
+  responseIds,
+  changePreviewTab
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
@@ -52,6 +53,12 @@ const ClozeMathPreview = ({
     saveAnswer(newAnswers);
   };
 
+  const onInnerClick = () => {
+    if (type === CHECK) {
+      changePreviewTab(CLEAR);
+    }
+  };
+
   useEffect(() => {
     if (window.$) {
       setNewHtml(helpers.parseTemplate(template));
@@ -73,7 +80,8 @@ const ClozeMathPreview = ({
             save: handleAddAnswer,
             answers: userAnswer,
             item,
-            checked: type === CHECK || type === SHOW
+            checked: type === CHECK || type === SHOW,
+            onInnerClick
           }
         }}
         showWarnings
@@ -106,6 +114,7 @@ ClozeMathPreview.propTypes = {
   item: PropTypes.object.isRequired,
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  changePreviewTab: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,

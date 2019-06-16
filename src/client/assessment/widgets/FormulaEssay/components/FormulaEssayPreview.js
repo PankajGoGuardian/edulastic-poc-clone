@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { MathFormulaDisplay } from "@edulastic/common";
 
 import { CLEAR } from "../../../constants/constantsForQuestions";
+import { MathEssayInputWrapper } from "./styled";
 
 import MathEssayInput from "./MathEssayInput";
 
@@ -26,7 +27,7 @@ const FormulaEssayPreview = ({
   }, [previewType, userAnswer]);
 
   return (
-    <div>
+    <MathEssayInputWrapper>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
         {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
@@ -42,7 +43,7 @@ const FormulaEssayPreview = ({
         setLines={setLines}
         onInput={latex => console.log(latex)}
       />
-    </div>
+    </MathEssayInputWrapper>
   );
 };
 

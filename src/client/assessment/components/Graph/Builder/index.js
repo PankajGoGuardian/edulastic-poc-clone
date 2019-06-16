@@ -24,7 +24,8 @@ import {
   Polynom,
   Equation,
   Annotation,
-  Area
+  Area,
+  DrawingObject
 } from "./elements";
 import {
   mergeParams,
@@ -105,8 +106,13 @@ class Board {
 
     this.dragged = false;
 
+    this.drawingObject = null;
+
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
+
+    this.creatingHandler = () => {};
+    this.setCreatingHandler();
   }
 
   isAnyElementsHasFocus(withPrepare = false) {
@@ -156,6 +162,14 @@ class Board {
     });
   }
 
+  setDrawingObject(drawingObject) {
+    this.drawingObject = drawingObject;
+    if (this.drawingObject) {
+      this.currentTool = null;
+      this.creatingHandler = DrawingObject.onHandler;
+    }
+  }
+
   /**
    * Assign element handler by const
    * Constants/Tools
@@ -170,77 +184,76 @@ class Board {
         this.abortTool();
       }
     }
-    this.$board.off(CONSTANT.EVENT_NAMES.UP);
     this.currentTool = tool;
     switch (tool) {
       case CONSTANT.TOOLS.POINT:
-        this.setCreatingHandler(Point.onHandler);
+        this.creatingHandler = Point.onHandler;
         return;
       case CONSTANT.TOOLS.LINE:
       case CONSTANT.TOOLS.RAY:
       case CONSTANT.TOOLS.SEGMENT:
       case CONSTANT.TOOLS.VECTOR:
-        this.setCreatingHandler(Line.onHandler(tool));
+        this.creatingHandler = Line.onHandler(tool);
         return;
       case CONSTANT.TOOLS.CIRCLE:
-        this.setCreatingHandler(Circle.onHandler());
+        this.creatingHandler = Circle.onHandler();
         return;
       case CONSTANT.TOOLS.SIN:
-        this.setCreatingHandler(Sin.onHandler());
+        this.creatingHandler = Sin.onHandler();
         return;
       case CONSTANT.TOOLS.POLYGON:
-        this.setCreatingHandler(Polygon.onHandler());
+        this.creatingHandler = Polygon.onHandler();
         return;
       case CONSTANT.TOOLS.PARABOLA:
-        this.setCreatingHandler(Parabola.onHandler());
+        this.creatingHandler = Parabola.onHandler();
         return;
       case CONSTANT.TOOLS.HYPERBOLA:
-        this.setCreatingHandler(Hyperbola.onHandler());
+        this.creatingHandler = Hyperbola.onHandler();
         return;
       case CONSTANT.TOOLS.ELLIPSE:
-        this.setCreatingHandler(Ellipse.onHandler());
+        this.creatingHandler = Ellipse.onHandler();
         return;
       case CONSTANT.TOOLS.TANGENT:
-        this.setCreatingHandler(Tangent.onHandler());
+        this.creatingHandler = Tangent.onHandler();
         break;
       case CONSTANT.TOOLS.SECANT:
-        this.setCreatingHandler(Secant.onHandler());
+        this.creatingHandler = Secant.onHandler();
         break;
       case CONSTANT.TOOLS.EXPONENT:
-        this.setCreatingHandler(Exponent.onHandler());
+        this.creatingHandler = Exponent.onHandler();
         break;
       case CONSTANT.TOOLS.LOGARITHM:
-        this.setCreatingHandler(Logarithm.onHandler());
+        this.creatingHandler = Logarithm.onHandler();
         break;
       case CONSTANT.TOOLS.POLYNOM:
-        this.setCreatingHandler(Polynom.onHandler());
+        this.creatingHandler = Polynom.onHandler();
         break;
       case CONSTANT.TOOLS.LABEL:
-        this.setCreatingHandler(Label.onHandler());
+        this.creatingHandler = Label.onHandler();
         return;
       case CONSTANT.TOOLS.ANNOTATION:
-        this.setCreatingHandler(Annotation.onHandler());
+        this.creatingHandler = Annotation.onHandler();
         return;
       case CONSTANT.TOOLS.AREA:
-        this.setCreatingHandler(Area.onHandler());
+        this.creatingHandler = Area.onHandler();
         return;
       case CONSTANT.TOOLS.SEGMENTS_POINT:
-        this.setCreatingHandler(NumberlinePoint.onHandler);
+        this.creatingHandler = NumberlinePoint.onHandler;
         return;
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
       case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
       case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-        this.setCreatingHandler(NumberlineSegment.onHandler);
+        this.creatingHandler = NumberlineSegment.onHandler;
         return;
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
       case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-        this.setCreatingHandler(NumberlineVector.onHandler);
+        this.creatingHandler = NumberlineVector.onHandler;
         return;
       case CONSTANT.TOOLS.TRASH:
-        this.setCreatingHandler();
+        this.creatingHandler = () => {};
         return;
       default:
         throw new Error("Unknown tool:", tool);
@@ -285,9 +298,8 @@ class Board {
 
   /**
    * Add event 'Up'
-   * @param {Function} handler
    */
-  setCreatingHandler(handler) {
+  setCreatingHandler() {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
       if (this.dragged) {
         this.dragged = false;
@@ -306,7 +318,7 @@ class Board {
       }
 
       if (!this.isAnyElementsHasFocus(true)) {
-        const newElement = handler(this, event);
+        const newElement = this.creatingHandler(this, event);
         if (newElement) {
           this.elements.push(newElement);
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW);
@@ -803,7 +815,7 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg) {
+  loadFromConfig(flatCfg, labelIsReadOnly = false) {
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
@@ -823,7 +835,7 @@ class Board {
           ],
           ...el.colors
         });
-        QuillInput(newElement, this).setLabel(el.label);
+        QuillInput(newElement, this).setLabel(el.label, labelIsReadOnly);
         return newElement;
       })
     );
@@ -914,7 +926,8 @@ class Board {
                 const point = this.createElement(name, points, {
                   ...props,
                   ...attrs,
-                  visible: true
+                  visible: true,
+                  id: el.id
                 });
                 point.on("up", () => {
                   if (point.dragged) {
@@ -953,7 +966,8 @@ class Board {
                   ],
                   {
                     ...Line.parseConfig(el.type),
-                    ...attrs
+                    ...attrs,
+                    id: el.id
                   }
                 );
                 handleSnap(line, Object.values(line.ancestors), this);
@@ -981,7 +995,8 @@ class Board {
                   ],
                   {
                     ...Circle.parseConfig(),
-                    ...attrs
+                    ...attrs,
+                    id: el.id
                   }
                 );
                 handleSnap(circle, Object.values(circle.ancestors), this);
@@ -1013,7 +1028,8 @@ class Board {
                   ],
                   {
                     ...Ellipse.parseConfig(),
-                    ...attrs
+                    ...attrs,
+                    id: el.id
                   }
                 );
                 handleSnap(newLine, Object.values(newLine.ancestors), this);
@@ -1037,7 +1053,8 @@ class Board {
                   ),
                   {
                     ...Polygon.parseConfig(),
-                    ...attrs
+                    ...attrs,
+                    id: el.id
                   }
                 );
                 handleSnap(polygon, Object.values(polygon.ancestors), this);
@@ -1084,7 +1101,8 @@ class Board {
                   ],
                   {
                     ...Hyperbola.parseConfig(),
-                    ...attrs
+                    ...attrs,
+                    id: el.id
                   }
                 );
                 newLine.type = 90;
@@ -1109,7 +1127,8 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
@@ -1138,7 +1157,8 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
@@ -1167,7 +1187,8 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
@@ -1196,7 +1217,8 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
@@ -1224,8 +1246,9 @@ class Board {
                   )
                 );
                 const newElem = this.createElement(name, makeFn(points), {
+                  ...props,
                   ...attrs,
-                  ...props
+                  id: el.id
                 });
                 newElem.type = 95;
                 newElem.addParents(points);
@@ -1251,7 +1274,8 @@ class Board {
                 );
                 const newElem = this.createElement(name, makeFn(points), {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
                 newElem.ancestors = {
                   [points[0].id]: points[0],
@@ -1280,7 +1304,8 @@ class Board {
 
                 return Parabola.renderElement(this, points, {
                   ...props,
-                  ...attrs
+                  ...attrs,
+                  id: el.id
                 });
               }
             })

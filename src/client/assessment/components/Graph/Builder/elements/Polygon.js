@@ -16,6 +16,32 @@ function isStart(startPointCoords, testPointCoords) {
 let points = [];
 let lines = [];
 
+function create(board, polygonPoints, id = null) {
+  const newPolygon = board.$board.create("polygon", polygonPoints, {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.POLYGON],
+    label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON),
+    id
+  });
+  handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
+  newPolygon.borders.forEach(border => {
+    border.on("up", () => {
+      if (border.dragged) {
+        border.dragged = false;
+        board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
+      }
+    });
+    border.on("drag", e => {
+      if (e.movementX === 0 && e.movementY === 0) {
+        return;
+      }
+      border.dragged = true;
+      board.dragged = true;
+    });
+  });
+  return newPolygon;
+}
+
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -36,27 +62,7 @@ function onHandler() {
         points.forEach(point => {
           point.isTemp = false;
         });
-        const newPolygon = board.$board.create("polygon", points, {
-          ...defaultConfig,
-          ...Colors.default[CONSTANT.TOOLS.POLYGON],
-          label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
-        });
-        handleSnap(newPolygon, Object.values(newPolygon.ancestors), board);
-        newPolygon.borders.forEach(border => {
-          border.on("up", () => {
-            if (border.dragged) {
-              border.dragged = false;
-              board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE);
-            }
-          });
-          border.on("drag", e => {
-            if (e.movementX === 0 && e.movementY === 0) {
-              return;
-            }
-            border.dragged = true;
-            board.dragged = true;
-          });
-        });
+        const newPolygon = create(board, points);
         points = [];
         lines = [];
         return newPolygon;
@@ -103,11 +109,9 @@ function flatConfigPoints(pointsConfig) {
 
 function parseConfig() {
   return {
-    highlightFillColor: "#ccc",
-    highlightStrokeColor: "#ccc",
     highlightFillOpacity: 0.3,
-    fillColor: "#ccc",
     ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.POLYGON],
     label: getLabelParameters(JXG.OBJECT_TYPE_POLYGON)
   };
 }
@@ -122,5 +126,6 @@ export default {
   parseConfig,
   clean,
   flatConfigPoints,
-  getPoints
+  getPoints,
+  create
 };

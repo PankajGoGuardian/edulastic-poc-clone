@@ -9,6 +9,18 @@ export const defaultConfig = { fixed: false };
 
 let points = [];
 
+function create(board, hypPoints, id = null) {
+  const newLine = board.$board.create("hyperbola", hypPoints, {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
+    label: getLabelParameters(jxgType),
+    id
+  });
+  newLine.type = jxgType;
+  handleSnap(newLine, Object.values(newLine.ancestors), board);
+  return newLine;
+}
+
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -18,17 +30,9 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = board.$board.create("hyperbola", points, {
-        ...defaultConfig,
-        ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
-        label: getLabelParameters(jxgType)
-      });
-      newLine.type = jxgType;
-      handleSnap(newLine, Object.values(newLine.ancestors), board);
-      if (newLine) {
-        points = [];
-        return newLine;
-      }
+      const newLine = create(board, points);
+      points = [];
+      return newLine;
     }
   };
 }
@@ -54,8 +58,8 @@ function getConfig(hyperbola) {
 
 function parseConfig() {
   return {
-    fillColor: "transparent",
-    highlightFillColor: "transparent",
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.HYPERBOLA],
     label: getLabelParameters(jxgType)
   };
 }
@@ -69,5 +73,6 @@ export default {
   getConfig,
   clean,
   parseConfig,
-  getPoints
+  getPoints,
+  create
 };

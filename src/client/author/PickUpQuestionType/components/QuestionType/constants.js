@@ -1637,7 +1637,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFormula,
       stimulus: "",
       data: {
-        title: "Expression",
+        title: "Expression & Formula",
         is_math: true,
         stimulus: "",
         type: questionType.MATH,
@@ -1692,7 +1692,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFractions,
       stimulus: "",
       data: {
-        title: "Numeric",
+        title: "Numeric Entry",
         is_math: true,
         stimulus: "",
         template: EMBED_RESPONSE,
@@ -1747,7 +1747,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFillInBlanks,
       stimulus: "",
       data: {
-        title: "Fill in the blanks",
+        title: "Complete the Equation",
         is_math: true,
         stimulus: "",
         template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,

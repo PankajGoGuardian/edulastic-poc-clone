@@ -238,29 +238,53 @@ const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;
 
+/**
+ *
+ * @param {*} assignment
+ * @param {*} currentGroup
+ * BOTH OPEN AND CLOSE ARE MANUAL
+ *  When both are manual endDate and startDate will not present in class object, hence use open and closed flags along with openDate and closedDate
+ * Once assignment is open no need to check for the startDate as it is opened manually by author but check for closedDate or closed variable
+ * ONLY OPEN MANUAL
+ *  In this case endDate will be present but we shouldn't display the assignment until open variable is true. Also hide when end date passed
+ * ONLY CLOSE MANUAL
+ *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
+ *
+ */
 const isLiveAssignment = (assignment, currentGroup) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   let maxAttempts = (assignment && assignment.maxAttempts) || 1;
   let attempts = (assignment.reports && assignment.reports.length) || 0;
   let lastAttempt = last(assignment.reports) || [];
-  let { endDate, class: clazz = [] } = assignment;
-  let open = false,
-    closed = false,
-    openDate = null;
+  let { endDate, class: groups = [] } = assignment;
+
+  //when attempts over no need to check for any other condition to hide assignment from assignments page
+  if (maxAttempts <= attempts && lastAttempt.status !== "0") return false;
   if (!endDate) {
-    endDate = (_maxBy(clazz.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
-    if (!endDate) {
-      const manualCloseAssignment = _maxBy(clazz.filter(cl => cl._id === currentGroup), "closedDate") || {};
-      const manualOpenAssignment = clazz.find(cl => cl._id === currentGroup) || {};
-      openDate = manualOpenAssignment.openDate;
-      open = manualOpenAssignment.open;
-      endDate = manualCloseAssignment.closeDate;
-      closed = manualCloseAssignment.closed;
+    endDate = (_maxBy(groups.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
+    const currentClass = groups.find(cl => cl._id === currentGroup) || {};
+    // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
+    if (
+      assignment.openPolicy !== "Automatically on Start Date" &&
+      assignment.closePolicy !== "Automatically on Due Date"
+    ) {
+      const isLive = currentClass.open && (!currentClass.closed || currentClass.closeDate > Date.now());
+      return isLive;
+    }
+    // IF MANUAL OPEN AND AUTO CLOSE
+    if (assignment.openPolicy !== "Automatically on Start Date") {
+      const isLive = currentClass.open && (!currentClass.closed || currentClass.endDate > Date.now());
+      return isLive;
+    }
+    // IF MANUAL CLOSE AND AUTO OPEN
+    if (assignment.openPolicy !== "Automatically on Due Date") {
+      const isLive =
+        currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
+      return isLive;
     }
   }
-  const isLive = ((maxAttempts > attempts || lastAttempt.status == "0") && endDate > Date.now()) || (open && !closed);
-  return isLive;
+  return endDate > Date.now();
 };
 
 const statusFilter = filterType => assignment => {

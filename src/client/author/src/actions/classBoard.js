@@ -16,7 +16,8 @@ import {
   CLOSE_ASSIGNMENT,
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
-  SAVE_OVERALL_FEEDBACK
+  SAVE_OVERALL_FEEDBACK,
+  UPDATE_OVERALL_FEEDBACK
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -106,4 +107,9 @@ export const updateCloseAssignmentsAction = classId => ({
 export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => ({
   type: SAVE_OVERALL_FEEDBACK,
   payload: { testActivityId, groupId, feedback }
+});
+
+export const updateOverallFeedbackAction = payload => ({
+  type: UPDATE_OVERALL_FEEDBACK,
+  payload
 });

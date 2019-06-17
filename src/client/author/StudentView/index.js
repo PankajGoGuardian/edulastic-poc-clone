@@ -20,7 +20,11 @@ import {
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
 
 // actions
-import { receiveStudentResponseAction, saveOverallFeedbackAction } from "../src/actions/classBoard";
+import {
+  receiveStudentResponseAction,
+  saveOverallFeedbackAction,
+  updateOverallFeedbackAction
+} from "../src/actions/classBoard";
 // selectors
 import {
   getAssignmentClassIdSelector,
@@ -98,12 +102,13 @@ class StudentViewContainer extends Component {
   };
 
   handleApply = () => {
-    const { saveOverallFeedback, assignmentIdClassId, studentResponse } = this.props;
+    const { saveOverallFeedback, assignmentIdClassId, studentResponse, updateOverallFeedback } = this.props;
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const testActivityId = studentTestActivity && studentTestActivity._id;
     const feedback = this.feedbackRef.current.textAreaRef.value;
     if (!feedback) return message.error("Please add your feedback before saving");
     saveOverallFeedback(testActivityId, assignmentIdClassId.classId, { text: feedback });
+    updateOverallFeedback({ text: feedback });
     this.setState({ showFeedbackPopup: false });
   };
 
@@ -200,7 +205,8 @@ const enhance = compose(
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,
-      saveOverallFeedback: saveOverallFeedbackAction
+      saveOverallFeedback: saveOverallFeedbackAction,
+      updateOverallFeedback: updateOverallFeedbackAction
     }
   )
 );

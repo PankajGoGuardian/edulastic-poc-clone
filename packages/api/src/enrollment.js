@@ -46,12 +46,13 @@ const removeStudents = data =>
     data
   });
 
-const addEnrolMultiStudents = ({ classId, data }) =>
-  api.callApi({
+const addEnrolMultiStudents = ({ classId, data }) => {
+  return api.callApi({
     url: `${prefix}/${classId}/students`,
     method: "post",
     data
   });
+};
 
 export default {
   fetch,

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import { get, unset, split, isEmpty, pick, pickBy, identity } from "lodash";
 import PropTypes from "prop-types";
-import { Menu, Dropdown, Tooltip, message, Icon } from "antd";
+import { Menu, Dropdown, Tooltip, message, Icon, Modal, Table, Spin } from "antd";
 import * as moment from "moment";
 import AddStudentModal from "./AddStudent/AddStudentModal";
 import InviteMultipleStudentModal from "../../../Student/components/StudentTable/InviteMultipleStudentModal/InviteMultipleStudentModal";
@@ -10,8 +10,10 @@ import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
-import { addMultiStudentsRequestAction } from "../../../Student/ducks";
+import { addMultipleStudentsRequestAction } from "../../ducks";
+import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
+import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
 import {
   DividerDiv,
@@ -25,6 +27,7 @@ import {
   MenuItem
 } from "./styled";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
+import { FaTruckMonster } from "react-icons/fa";
 
 const modalStatus = {};
 
@@ -46,6 +49,11 @@ const ActionContainer = ({
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
   const [isAddMultipleStudentsModal, setIsAddMultipleStudentsModal] = useState(false);
+  const [studentsInfo, setStudentsInfo] = useState({});
+  const [addMultipleInfoModal, setAddMultipleInfoModal] = useState({
+    visible: false,
+    data: []
+  });
   let formRef = null;
 
   const toggleModal = key => {
@@ -64,14 +72,14 @@ const ActionContainer = ({
   const closeInviteStudentModal = () => {
     setIsAddMultipleStudentsModal(false);
   };
-  const sendInviteStudent = inviteStudentList => {
+  const sendInviteStudent = async inviteStudentList => {
     setIsAddMultipleStudentsModal(false);
-    console.log("sending invite", role);
-    debugger;
-    if (role == "teacher") {
-      console.log("adding as teacher");
-      addMultiStudents({ districtId: userOrgId, data: inviteStudentList });
-    }
+    if (!result) <Spin />;
+    const result = await enrollmentApi.addEnrolMultiStudents({ classId: selectedClass._id, data: inviteStudentList });
+    setAddMultipleInfoModal({
+      visible: true,
+      data: result.data.result
+    });
   };
 
   const addStudent = () => {
@@ -238,6 +246,8 @@ const ActionContainer = ({
 
   return (
     <>
+      <AddMultipleStudentsInfoModal info={addMultipleInfoModal} setAddMultipleInfoModal={setAddMultipleInfoModal} />
+
       {isOpen.add && (
         <AddStudentModal
           handleAdd={addStudent}
@@ -293,6 +303,7 @@ const ActionContainer = ({
               inviteStudents={sendInviteStudent}
               closeModal={closeInviteStudentModal}
               userOrgId={userOrgId}
+              setAddMultipleInfoModal={setAddMultipleInfoModal}
             />
           )}
         </ButtonsWrapper>
@@ -331,6 +342,6 @@ export default connect(
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction,
-    addMultiStudents: addMultiStudentsRequestAction
+    addMultiStudents: addMultipleStudentsRequestAction
   }
 )(ActionContainer);

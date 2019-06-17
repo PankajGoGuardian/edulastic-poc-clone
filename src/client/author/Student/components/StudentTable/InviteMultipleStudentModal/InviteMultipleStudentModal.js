@@ -5,6 +5,7 @@ const { TabPane } = Tabs;
 const Search = Input.Search;
 import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv } from "./styled";
 import { userApi } from "@edulastic/api";
+import AddMultipleStudentsInfoModal from "../../../../ManageClass/components/ClassDetails/AddmultipleStduentsInfoModel";
 
 const Item = ({ item, moveItem }) => {
   const handleClick = () => {
@@ -28,18 +29,17 @@ class InviteMultipleStudentModal extends React.Component {
   }
 
   onInviteStudents = () => {
-    debugger;
     this.props.form.validateFields((err, row) => {
       if (!err) {
         const { curSel } = this.state;
         let studentsList = [];
         let provider = "fl";
-        const lines = row.students.split("\n");
-        debugger;
+        const lines = row.students.split(/;|\n/);
         for (let i = 0; i < lines.length; i++) {
-          studentsList.push(lines[i]);
+          if (lines[i] !== "") {
+            studentsList.push(lines[i]);
+          }
         }
-
         this.props.inviteStudents({
           userDetails: studentsList,
           provider: curSel
@@ -51,7 +51,6 @@ class InviteMultipleStudentModal extends React.Component {
   validateStudentsList = (rule, value, callback) => {
     const { curSel } = this.state;
     const lines = value.split("\n");
-    debugger;
     let isValidate = true;
     if (curSel === "fl" || curSel === "lf") {
       for (let i = 0; i < lines.length; i++) {
@@ -83,8 +82,8 @@ class InviteMultipleStudentModal extends React.Component {
   };
 
   checkValidEmail(strEmail) {
-    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(strEmail).toLowerCase());
+    var re1 = /^(([a-zA-Z0-9_\-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-zA-Z0-9\-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)(\s*;\s*|\s*$))*$/;
+    return re1.test(String(strEmail).toLowerCase());
   }
 
   onCloseModal = () => {
@@ -146,12 +145,11 @@ class InviteMultipleStudentModal extends React.Component {
       });
     }
   };
-  onAddMultipleStudents() {
-    console.log("search- adding multiple students");
-  }
+  onAddMultipleStudents = () => {};
   render() {
+    debugger;
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible } = this.props;
+    const { modalVisible, setAddMultipleInfoModal } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
 
     const allLists =
@@ -216,101 +214,103 @@ class InviteMultipleStudentModal extends React.Component {
     }
 
     return (
-      <Modal
-        visible={modalVisible}
-        onOk={this.onInviteStudents}
-        onCancel={this.onCloseModal}
-        maskClosable={false}
-        footer={null}
-      >
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Add students" key="1">
-            <Row>
-              <Col span={24}>
-                Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon t add
-                multiple students.
-              </Col>
-            </Row>
-            <SelUserKindDiv>
-              <Col span={8}>Add students by their:</Col>
-              <Col span={12} offset={1}>
-                <Select onChange={this.handleChange} defaultValue="google">
-                  <Option value="google">Google Usernames</Option>
-                  <Option value="mso">Office 365 Usernames</Option>
-                  <Option value="fl">Frist Name and Last Name</Option>
-                  <Option value="lf">Last Name and First Name</Option>
-                </Select>
-              </Col>
-            </SelUserKindDiv>
-            <Row>
-              <Col span={24}>
-                <FormItem>
-                  {placeHolderComponent}
-                  {getFieldDecorator("students", {
-                    rules: [
-                      {
-                        required: true,
-                        message: "Please input Students Username"
-                      },
-                      {
-                        validator: this.validateStudentsList
-                      }
-                    ]
-                  })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
-                </FormItem>
-              </Col>
-            </Row>
-
-            <Row>
-              <Col span={8} offset={16}>
-                <Button type="primary" shape="round" size="large" key="submit" onClick={this.onInviteStudents}>
-                  Add Student
-                </Button>
-              </Col>
-            </Row>
-          </TabPane>
-          <TabPane tab="Seach existing students and add" key="2">
-            <Row>Search and select existing students from your district and add</Row>
-            <Row>
-              <Search
-                placeholder="type student name or email"
-                style={{ width: 300, marginTop: "1rem", marginBottom: "1.5rem" }}
-                onSearch={this.handleSearch}
-                onChange={this.handleSearch}
-                enterButton
-              />
-            </Row>
-            {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
-              <Row type="flex" justify="space-between" align="middle">
-                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
-                  <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
-                </Col>
-                <Col span={2}>
-                  <Icon type="swap" style={{ padding: "1rem" }} />
-                </Col>
-                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
-                  <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
+      <>
+        <Modal
+          visible={modalVisible}
+          onOk={this.onInviteStudents}
+          onCancel={this.onCloseModal}
+          maskClosable={false}
+          footer={null}
+        >
+          <Tabs defaultActiveKey="1">
+            <TabPane tab="Add students" key="1">
+              <Row>
+                <Col span={24}>
+                  Add Students by typing or paste one or more student(s) names. User separate lines or semi-colon to add
+                  multiple students.
                 </Col>
               </Row>
-            )}
+              <SelUserKindDiv>
+                <Col span={8}>Add students by their:</Col>
+                <Col span={12} offset={1}>
+                  <Select onChange={this.handleChange} defaultValue="google">
+                    <Option value="google">Google Usernames</Option>
+                    <Option value="mso">Office 365 Usernames</Option>
+                    <Option value="fl">Frist Name and Last Name</Option>
+                    <Option value="lf">Last Name and First Name</Option>
+                  </Select>
+                </Col>
+              </SelUserKindDiv>
+              <Row>
+                <Col span={24}>
+                  <FormItem>
+                    {placeHolderComponent}
+                    {getFieldDecorator("students", {
+                      rules: [
+                        {
+                          required: true,
+                          message: "Please input Students Username"
+                        },
+                        {
+                          validator: this.validateStudentsList
+                        }
+                      ]
+                    })(<StyledTextArea row={10} onChange={this.handleChangeTextArea} />)}
+                  </FormItem>
+                </Col>
+              </Row>
 
-            <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
-              <Col>
-                <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
-                  No,Cancel
-                </Button>
-              </Col>
-              <Col>
-                <Button type="primary" shape="round" size="large" key="submit" onClick={this.onAddMultipleStudents}>
-                  Yes, Add to Class
-                  <Icon type="right" />
-                </Button>
-              </Col>
-            </Row>
-          </TabPane>
-        </Tabs>
-        ,
-      </Modal>
+              <Row>
+                <Col span={8} offset={16}>
+                  <Button type="primary" shape="round" size="large" key="submit" onClick={this.onInviteStudents}>
+                    Add Student
+                  </Button>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab="Seach existing students and add" key="2">
+              <Row>Search and select existing students from your district and add</Row>
+              <Row>
+                <Search
+                  placeholder="type student name or email"
+                  style={{ width: 300, marginTop: "1rem", marginBottom: "1.5rem" }}
+                  onSearch={this.handleSearch}
+                  onChange={this.handleSearch}
+                  enterButton
+                />
+              </Row>
+              {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
+                <Row type="flex" justify="space-between" align="middle">
+                  <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                    <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
+                  </Col>
+                  <Col span={2}>
+                    <Icon type="swap" style={{ padding: "1rem" }} />
+                  </Col>
+                  <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                    <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
+                  </Col>
+                </Row>
+              )}
+
+              <Row type="flex" justify="space-between" style={{ marginTop: "1rem" }}>
+                <Col>
+                  <Button shape="round" type="primary" size="large" key="submit" ghost onClick={this.onCloseModal}>
+                    No,Cancel
+                  </Button>
+                </Col>
+                <Col>
+                  <Button type="primary" shape="round" size="large" key="submit" onClick={this.onAddMultipleStudents}>
+                    Yes, Add to Class
+                    <Icon type="right" />
+                  </Button>
+                </Col>
+              </Row>
+            </TabPane>
+          </Tabs>
+          ,
+        </Modal>
+      </>
     );
   }
 }

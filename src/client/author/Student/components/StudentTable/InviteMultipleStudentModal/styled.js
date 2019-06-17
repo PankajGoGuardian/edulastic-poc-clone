@@ -30,3 +30,12 @@ export const SelUserKindDiv = styled(Row)`
     width: 100%;
   }
 `;
+export const ItemDiv = styled.div`
+  padding: 0.5rem;
+  background: #e3f2fd;
+  color: black;
+  text-align: center;
+  margin: 0.2rem;
+  cursor: pointer;
+  border-bottom: 0.1px solid lightgrey;
+`;

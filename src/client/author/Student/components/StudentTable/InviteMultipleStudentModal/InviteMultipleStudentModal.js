@@ -1,14 +1,17 @@
 import React, { Component } from "react";
-import { DragSource } from "react-dnd";
+import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
 const { TabPane } = Tabs;
 const Search = Input.Search;
-import { StyledTextArea, PlaceHolderText, SelUserKindDiv } from "./styled";
+import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv } from "./styled";
 import { userApi } from "@edulastic/api";
 
-// draggable,droppbale components
-import Item from "./DraggableComponent";
-import TargetContainer from "./DroppableComponent";
+const Item = ({ item, moveItem }) => {
+  const handleClick = () => {
+    moveItem(item);
+  };
+  return <ItemDiv onClick={handleClick}>{item._source.email}</ItemDiv>;
+};
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -122,6 +125,7 @@ class InviteMultipleStudentModal extends React.Component {
       });
     }
   };
+
   moveItem = item => {
     const email = item._source.email;
     const { allStudents, studentsToEnroll } = this.state;
@@ -131,13 +135,13 @@ class InviteMultipleStudentModal extends React.Component {
       this.setState({
         ...this.state,
         allStudents: newAllStudents,
-        studentsToEnroll: [...studentsToEnroll, item]
+        studentsToEnroll: [item, ...studentsToEnroll]
       });
     } else {
       const newStudentsToEnroll = studentsToEnroll.filter(std => std._source.email !== email);
       this.setState({
         ...this.state,
-        allStudents: [...allStudents, item],
+        allStudents: [item, ...allStudents],
         studentsToEnroll: newStudentsToEnroll
       });
     }
@@ -152,12 +156,12 @@ class InviteMultipleStudentModal extends React.Component {
 
     const allLists =
       allStudents.length > 0
-        ? allStudents.map(item => <Item key={item._id} item={item} handleDrop={item => this.moveItem(item)} />)
+        ? allStudents.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} />)
         : null;
 
     const toEnrollLists =
       studentsToEnroll.length > 0
-        ? studentsToEnroll.map(item => <Item key={item._id} item={item} handleDrop={item => this.moveItem(item)} />)
+        ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} />)
         : null;
 
     let placeHolderComponent;
@@ -278,14 +282,14 @@ class InviteMultipleStudentModal extends React.Component {
             </Row>
             {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
               <Row type="flex" justify="space-between" align="middle">
-                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", minHeight: "300px" }}>
-                  <TargetContainer>{allLists}</TargetContainer>
+                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                  <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
                 </Col>
                 <Col span={2}>
                   <Icon type="swap" style={{ padding: "1rem" }} />
                 </Col>
-                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center" }}>
-                  <TargetContainer>{toEnrollLists}</TargetContainer>
+                <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                  <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
                 </Col>
               </Row>
             )}

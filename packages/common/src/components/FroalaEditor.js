@@ -437,7 +437,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additional
           this.toolbar.hide();
         },
         "commands.after": function(cmd) {
-          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput") {
+          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
             this.selection.save();
             const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
@@ -536,8 +536,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additional
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        const responseCount = this.$el[0].querySelectorAll("response").length;
-        this.html.insert(`<Response index="${responseCount}" contentEditable="false">Response</Response>`);
+        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
         this.undo.saveStep();
       }
     });

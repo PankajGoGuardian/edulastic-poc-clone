@@ -19,4 +19,7 @@ export const ResponseContainer = styled.span`
     max-width: 100px;
     max-height: 100px;
   }
+  p {
+    margin-bottom: 0px;
+  }
 `;

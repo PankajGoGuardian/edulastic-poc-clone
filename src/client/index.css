@@ -1005,12 +1005,17 @@ response {
   min-height: 30px;
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
   margin: 0 2px;
   border-radius: 10px;
   overflow: hidden;
   border: 2px black dotted;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+response .index {
+  background: #d5d5d5;
+  padding: 4px 10px;
+  margin-right: 8px;
 }
 
 *,

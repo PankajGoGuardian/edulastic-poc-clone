@@ -64,7 +64,7 @@ class TemplateMarkup extends Component {
         return newResponseIds;
       }
       const temp = tmpl || "";
-      const parsedHTML = $.parseHTML(temp);
+      const parsedHTML = $("<div />").html(temp);
 
       $(parsedHTML)
         .find("textdropdown")

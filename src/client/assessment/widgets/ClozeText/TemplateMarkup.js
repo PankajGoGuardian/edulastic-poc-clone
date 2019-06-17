@@ -64,8 +64,7 @@ class TemplateMarkup extends Component {
       }
       const temp = tmpl || "";
       // eslint-disable-next-line no-undef
-      const parsedHTML = $.parseHTML(temp);
-
+      const parsedHTML = $("<div />").html(temp);
       // eslint-disable-next-line no-undef
       $(parsedHTML)
         .find("textinput")

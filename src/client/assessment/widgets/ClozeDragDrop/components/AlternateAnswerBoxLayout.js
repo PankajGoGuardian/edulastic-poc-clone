@@ -3,13 +3,19 @@ import PropTypes from "prop-types";
 
 class AlternateAnswerBoxLayout extends Component {
   render() {
-    const { altAnswers, fontSize } = this.props;
+    const { altAnswers, fontSize, groupResponses } = this.props;
+    const getLabel = value => {
+      const item = groupResponses.find(option => option.value === value);
+      if (item) {
+        return item.label;
+      }
+    };
     let alternateAnswers = {};
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt !== "") {
-          alternateAnswers[index + 1].push(alt);
+          alternateAnswers[index + 1].push(getLabel(alt));
         }
       });
     });
@@ -31,12 +37,14 @@ class AlternateAnswerBoxLayout extends Component {
 
 AlternateAnswerBoxLayout.propTypes = {
   altAnswers: PropTypes.array,
-  fontSize: PropTypes.string
+  fontSize: PropTypes.string,
+  groupResponses: PropTypes.array
 };
 
 AlternateAnswerBoxLayout.defaultProps = {
   fontSize: "13px",
-  altAnswers: []
+  altAnswers: [],
+  groupResponses: []
 };
 
 export default AlternateAnswerBoxLayout;

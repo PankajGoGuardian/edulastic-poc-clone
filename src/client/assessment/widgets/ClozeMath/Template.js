@@ -54,7 +54,7 @@ class Template extends Component {
         return newResponseId;
       }
       const temp = tmpl || "";
-      const parsedHTML = $.parseHTML(temp);
+      const parsedHTML = $("<div />").html(temp);
 
       function findResponseIndexes(index) {
         const id = $(this).attr("id");

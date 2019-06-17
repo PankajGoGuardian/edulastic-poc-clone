@@ -445,8 +445,8 @@ class ComposeQuestion extends Component {
             <ImageContainer
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
-              width={`${clozeImage.maxWidth}px`}
-              height={`${clozeImage.maxHeight}px`}
+              width={`${canvasDimensions.maxWidth}px`}
+              height={`${canvasDimensions.maxHeight}px`}
             >
               <AnnotationRnd
                 style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}

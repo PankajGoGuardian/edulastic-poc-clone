@@ -30,8 +30,12 @@ const SAVE_SUBJECTGRADE_FAILED = "[signup] save with subject and grade failed";
 
 const CREATE_AND_JOIN_SCHOOL_REQUEST = "[signup] create and join schoolrequest";
 
-// Selectors
+export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST =
+  "[signup] get district by short name and org type request";
+export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS =
+  "[signup] get district by short name and org type request success";
 
+// Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
   ["signup.saveSubjectGradeloading"],
   subState => subState
@@ -60,6 +64,7 @@ export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 
 export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
+export const getDistrictByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
 
 // Reducers
 const initialState = {
@@ -133,6 +138,9 @@ export default createReducer(initialState, {
   },
   [JOIN_SCHOOL_FAILED]: (state, { payload }) => {
     state.updateUserWithSchoolLoading = false;
+  },
+  [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS]: (state, { payload }) => {
+    state.generalSettings = payload;
   }
 });
 
@@ -296,6 +304,15 @@ function* saveSubjectGradeSaga({ payload }) {
   }
 }
 
+function* getDistrictByShortNameAndOrgTypeSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.getDistrictByShortNameAndOrgType, payload);
+    yield put({ type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS, payload: result });
+  } catch (e) {
+    yield call(message.error, "Failed to get district details.");
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolSaga);
   yield takeLatest(SEARCH_DISTRICTS_REQUEST, searchDistrictsSaga);
@@ -303,4 +320,5 @@ export function* watcherSaga() {
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
   yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
+  yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getDistrictByShortNameAndOrgTypeSaga);
 }

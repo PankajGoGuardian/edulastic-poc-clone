@@ -201,6 +201,16 @@ const updateInterestedStandards = body =>
     })
     .then(result => result.data.result);
 
+const getDistrictByShortNameAndOrgType = params =>
+  api
+    .callApi({
+      url: `/public/setting/org-data/`,
+      params: params
+    })
+    .then(result => {
+      return result.data.result;
+    });
+
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -223,5 +233,6 @@ export default {
   updatePerformanceBand,
   getInterestedStandards,
   saveInterestedStandards,
-  updateInterestedStandards
+  updateInterestedStandards,
+  getDistrictByShortNameAndOrgType
 };

@@ -8,6 +8,7 @@ import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
+import { getWordsInURLPathName } from "../../common/utils/helpers";
 
 // types
 export const LOGIN = "[auth] login";
@@ -43,11 +44,13 @@ const setUser = (state, { payload }) => {
 
 const getCurrentPath = () => {
   const { location } = window;
+  const path = getWordsInURLPathName(location.pathname.toLocaleLowerCase());
   if (
     location.pathname.toLowerCase() === "/getstarted" ||
     location.pathname.toLowerCase() === "/signup" ||
     location.pathname.toLowerCase() === "/studentsignup" ||
-    location.pathname.toLowerCase() === "/adminsignup"
+    location.pathname.toLowerCase() === "/adminsignup" ||
+    (path[0] && path[0] === "district")
   ) {
     return "";
   } else {
@@ -217,6 +220,7 @@ function* signup({ payload }) {
 }
 
 const getLoggedOutUrl = () => {
+  const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";
   } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
@@ -225,6 +229,8 @@ const getLoggedOutUrl = () => {
     return "/studentsignup";
   } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
     return "/adminsignup";
+  } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+    return "/district/" + path[1];
   } else {
     return "/login";
   }

@@ -87,7 +87,8 @@ class Signup extends React.Component {
   render() {
     const {
       form: { getFieldDecorator },
-      t
+      t,
+      image
     } = this.props;
 
     const formItemLayout = {
@@ -103,7 +104,7 @@ class Signup extends React.Component {
 
     return (
       <div>
-        <RegistrationWrapper>
+        <RegistrationWrapper image={image}>
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
@@ -260,7 +261,7 @@ const enhance = compose(
 export default enhance(SignupForm);
 
 const RegistrationWrapper = styled.div`
-  background: ${greyGraphstroke} url(${teacherBg});
+  background: ${greyGraphstroke} url(${props => props.image});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;

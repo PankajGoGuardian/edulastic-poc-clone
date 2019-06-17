@@ -47,7 +47,8 @@ const JoinSchool = ({
   userInfo,
   joinSchool,
   updateUserWithSchoolLoading,
-  ipZipCode
+  ipZipCode,
+  districtId
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
   const [selected, setSchool] = useState(null);

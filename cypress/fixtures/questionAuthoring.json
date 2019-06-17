@@ -14,7 +14,7 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.B.4.a", "K.CC.A.1"],
+          "standard": ["K.CC.A.1", "K.CC.A.2"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
@@ -45,12 +45,12 @@
     "1": {
       "quetext": "This is MCQ_MULTI.1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "right-2"],
-      "setAns": { "correct": ["right-1", "right-2"], "points": 2, "evaluation": "Partial match" },
+      "setAns": { "correct": ["right-1", "right-2"], "points": 3, "evaluation": "Partial match" },
       "attemptData": { "right": ["right-1", "right-2"], "wrong": "wrong-1", "partialCorrect": ["right-2"] },
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.B.4.a"],
+          "standard": ["K.CC.A.2"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
@@ -89,12 +89,12 @@
     "1": {
       "quetext": "This is MCQ_BLOCK.1 question",
       "choices": ["right-1", "wrong-1", "wrong-2", "wrong-3"],
-      "setAns": { "correct": ["right-1"], "points": 2 },
+      "setAns": { "correct": ["right-1"], "points": 3 },
       "attemptData": { "right": ["right-1"], "wrong": "wrong-1" },
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.B.4.a"],
+          "standard": ["K.CC.A.2"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }
@@ -216,7 +216,7 @@
           "wrong-2": "false",
           "right-2": "true"
         },
-        "points": 2
+        "points": 3
       },
       "attemptData": {
         "steams": ["true", "false"],
@@ -304,7 +304,7 @@
       "standards": [
         {
           "subject": "Mathematics",
-          "standard": ["K.CC.B.4.a"],
+          "standard": ["K.CC.A.1", "K.CC.A.2"],
           "standardSet": "Math - Common Core",
           "grade": "Kindergarten"
         }

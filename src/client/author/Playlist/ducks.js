@@ -4,6 +4,7 @@ import { call, put, all, takeEvery, takeLatest } from "redux-saga/effects";
 import { message } from "antd";
 import { curriculumSequencesApi, userContextApi } from "@edulastic/api";
 import { CREATE_PLAYLISTS_SUCCESS, UPDATE_PLAYLISTS_SUCCESS } from "../src/constants/actions";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 // types
 export const RECEIVE_PLAYLIST_REQUEST = "[playlists] receive list request";
@@ -15,6 +16,8 @@ export const UPDATE_RECENT_PLAYLISTS = "[playlists] update recent playlists";
 export const UPDATE_LAST_PLAYLIST = "[playlists] update last playlist";
 export const RECEIVE_RECENT_PLAYLISTS = "[playlists] receive recent playlists";
 export const RECEIVE_LAST_PLAYLIST = "[playlists] receive last playlist";
+export const UPDATE_DEFAULT_GRADES = "[playlists] update default grades";
+export const UPDATE_DEFAULT_SUBJECT = "[playlists] update default subject";
 
 // actions
 export const receivePlaylistsAction = createAction(RECEIVE_PLAYLIST_REQUEST);
@@ -28,6 +31,8 @@ export const updateRecentPlayListsAction = createAction(UPDATE_RECENT_PLAYLISTS)
 export const updateLastPlayListAction = createAction(UPDATE_LAST_PLAYLIST);
 export const receiveRecentPlayListsAction = createAction(RECEIVE_RECENT_PLAYLISTS);
 export const receiveLastPlayListAction = createAction(RECEIVE_LAST_PLAYLIST);
+export const updateDefaultSubjectAction = createAction(UPDATE_DEFAULT_SUBJECT);
+export const updateDefaultGradesAction = createAction(UPDATE_DEFAULT_GRADES);
 
 function* receivePublishersSaga() {
   try {
@@ -75,7 +80,7 @@ function* receiveLastPlayListSaga() {
 function* receiveRecentPlayListsSaga() {
   try {
     const result = yield call(userContextApi.getRecentPlayLists);
-    yield put(updateRecentPlayListsAction(result ? result.value : {}));
+    yield put(updateRecentPlayListsAction(result ? result.value : []));
   } catch (err) {
     const errorMessage = "Receive recent playlist is failing";
     yield call(message.error, errorMessage);
@@ -101,6 +106,8 @@ const initialState = {
   publishers: [],
   loading: false,
   recentPlayLists: [],
+  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   lastPlayList: {}
 };
 
@@ -139,6 +146,16 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         lastPlayList: payload
+      };
+    case UPDATE_DEFAULT_SUBJECT:
+      return {
+        ...state,
+        defaultSubject: payload
+      };
+    case UPDATE_DEFAULT_GRADES:
+      return {
+        ...state,
+        defaultGrades: payload
       };
     default:
       return state;
@@ -182,4 +199,13 @@ export const getLastPlayListSelector = createSelector(
 export const getRecentPlaylistSelector = createSelector(
   stateSelector,
   state => state.recentPlayLists
+);
+
+export const getDefaultGradesSelector = createSelector(
+  stateSelector,
+  state => state.defaultGrades
+);
+export const getDefaultSubjectSelector = createSelector(
+  stateSelector,
+  state => state.defaultSubject
 );

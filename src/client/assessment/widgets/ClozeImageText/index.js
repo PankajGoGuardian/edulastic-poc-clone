@@ -152,8 +152,6 @@ class ClozeImageText extends Component {
       ...restProps
     } = this.props;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
@@ -174,8 +172,6 @@ class ClozeImageText extends Component {
                     item={itemForEdit}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                     imageWidth={item.imageWidth}
                   />
                   <Widget>
@@ -202,8 +198,6 @@ class ClozeImageText extends Component {
                       onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       imageOptions={item.imageOptions}
                     />
 
@@ -267,8 +261,6 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
               />
             )}
@@ -294,8 +286,6 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
                 {...restProps}
               />
@@ -326,8 +316,6 @@ class ClozeImageText extends Component {
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
               />
             )}

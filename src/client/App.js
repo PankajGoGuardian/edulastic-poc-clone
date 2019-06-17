@@ -15,6 +15,7 @@ import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
+import { getWordsInURLPathName } from "./common/utils/helpers";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -91,6 +92,7 @@ class App extends Component {
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
+      const path = getWordsInURLPathName(this.props.location.pathname.toLocaleLowerCase());
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
@@ -111,7 +113,8 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase() === "/getstarted" ||
         this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
         this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
-        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup"
+        this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
+        (path[0] && path[0] === "district")
       ) {
       } else {
         redirectRoute = "/login";
@@ -132,6 +135,7 @@ class App extends Component {
             <Route path="/admin" component={Admin} />
 
             <Route path="/Signup" component={TeacherSignup} />
+            <Route path="/district/:districtShortName" component={TeacherSignup} />
             <Route path="/login" component={Auth} />
             <Route path="/GetStarted" component={GetStarted} />
             <Route path="/AdminSignup" component={AdminSignup} />

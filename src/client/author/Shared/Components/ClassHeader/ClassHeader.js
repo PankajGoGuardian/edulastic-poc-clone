@@ -26,6 +26,7 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
+  PresentModeSwitch,
   StyledButton,
   MenuWrapper
 } from "./styled";
@@ -125,6 +126,14 @@ class ClassHeader extends Component {
     });
   };
 
+  toggleCurrentMode = () => {
+    const { togglePresentationMode, isPresentationMode } = this.props;
+    if (!isPresentationMode) {
+      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
+    }
+    togglePresentationMode(!isPresentationMode);
+  };
+
   render() {
     const {
       t,
@@ -217,14 +226,22 @@ class ClassHeader extends Component {
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
-
-            <Switch
-              checkedChildren={<Icon type="check"> presentation </Icon>}
-              unCheckedChildren={<Icon type="close" />}
-              value={isPresentationMode}
-              defaultChecked={isPresentationMode}
-              onClick={() => togglePresentationMode(!isPresentationMode)}
-            />
+            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
+              <PresentModeSwitch
+                checkedChildren={
+                  <div>
+                    <Icon type="bar-chart" /> Present
+                  </div>
+                }
+                unCheckedChildren={
+                  <div>
+                    <Icon type="pause" /> Reset
+                  </div>
+                }
+                checked={isPresentationMode}
+                onClick={this.toggleCurrentMode}
+              />
+            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>

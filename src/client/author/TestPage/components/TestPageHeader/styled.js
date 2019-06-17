@@ -28,7 +28,7 @@ export const Title = styled.div`
   margin: 0;
   word-break: break-all;
   font-weight: bold;
-  max-width: 300px;
+  max-width: 330px;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
@@ -42,6 +42,7 @@ export const Title = styled.div`
 
 export const TitleWrapper = styled.div`
   display: flex;
+  flex-direction: column;
   flex-basis: 450px;
 `;
 
@@ -72,6 +73,7 @@ export const TestStatus = styled(Status)`
   color: ${props => (props.mode === "embedded" ? white : textColor)};
   background: ${props => (props.mode === "embedded" ? textColor : white)};
   font-weight: 600;
+  margin-left: 0px;
   &.draft {
     background: ${draftColor};
     color: white;

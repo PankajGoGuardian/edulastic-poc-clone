@@ -22,7 +22,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
   const testData = {
     edit1: { testname: "editedTest", grade: "Kindergarten", subject: "ELA" },
     edit2: { point: "3", question: "3" },
-    edit3: { point: "2", question: "2" }
+    edit3: { point: "2", question: "2" },
+    edit4: { testname: "editedTest", grade: "Grade 10" }
   };
 
   before("login and create new items and test", () => {
@@ -94,6 +95,27 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Test authoring flows`,
 
         testId = newTestId;
       });
+    });
+  });
+
+  it(" > verify logout , login and edit test", () => {
+    const { grade } = testData.edit4;
+    cy.login();
+    testLibraryPage.sidebar.clickOnTestLibrary();
+    testLibraryPage.clickOnEditTestById(testId);
+    // update the test summary
+    testSummayTab.selectGrade(grade);
+    testSummayTab.header.clickOnReview();
+
+    // save , publish and verify
+    testSummayTab.header.clickOnSaveButton(true).then(id => {
+      newTestId = id;
+      testLibraryPage.verifyVersionedURL(testId, newTestId);
+      testSummayTab.header.clickOnPublishButton();
+      testLibraryPage.sidebar.clickOnTestLibrary();
+      testLibraryPage.clickOnEditTestById(newTestId);
+      testSummayTab.verifyGrade(grade);
+      testId = newTestId;
     });
   });
 

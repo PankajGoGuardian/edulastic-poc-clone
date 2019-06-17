@@ -63,8 +63,8 @@ class GroupPossibleResponses extends Component {
           </Fragment>
         ) : (
           <Fragment>
-            <Row gutter={60}>
-              <Col span={12}>
+            <Row>
+              <Col>
                 <div style={{ marginBottom: 20 }}>
                   <Checkbox defaultChecked={checkboxVal} onChange={checkboxChange}>
                     {t("component.classification.groupPossibleRespTitle")}

@@ -19,17 +19,18 @@ class CorrectAnswer extends Component {
     hasGroupResponses: PropTypes.bool.isRequired,
     templateMarkUp: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
-    uiStyle: PropTypes.object.isRequired
+    uiStyle: PropTypes.object.isRequired,
+    item: PropTypes.object.isRequired
   };
 
   static contextType = ItemLevelContext;
 
   constructor(props) {
     super(props);
-    const userSelections = Array(props.options.length).fill(false);
-    props.response.value.forEach(answer => {
-      userSelections[answer] = true;
-    });
+    // const userSelections = Array(props.options.length).fill(false);
+    // props.response.value.forEach(answer => {
+    //   userSelections[answer] = true;
+    // });
     this.state = {
       responseScore: props.response.score
     };

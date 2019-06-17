@@ -58,7 +58,11 @@ const ClassList = ({ groups, setEntity }) => {
   const rowKey = ({ _id }) => _id;
 
   const onRow = record => ({
-    onClick: () => setEntity(record)
+    onClick: () => {
+      if (window.getSelection().toString() === "") {
+        setEntity(record);
+      }
+    }
   });
 
   return (

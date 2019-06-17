@@ -13,6 +13,7 @@ const UPDATE_INTERESTED_STANDARDS_ERROR = "[interested standards] update data er
 const SAVE_INTERESTED_STANDARDS_REQUEST = "[interested standards] save data request";
 const SAVE_INTERESTED_STANDARDS_SUCCESS = "[interested standards] save data success";
 const SAVE_INTERESTED_STANDARDS_ERROR = "[interested standards] save data error";
+const UPDATE_STANDARDS_PREFERENCES = "[interested standards] update standards preferences";
 
 const DELETE_STANDARD = "[interested standards] delete standard";
 
@@ -26,6 +27,7 @@ export const saveInterestedStandardsAction = createAction(SAVE_INTERESTED_STANDA
 export const saveInterestedStandardsSuccessAction = createAction(SAVE_INTERESTED_STANDARDS_SUCCESS);
 export const saveInterestedStandardsErrorAction = createAction(SAVE_INTERESTED_STANDARDS_ERROR);
 export const deleteStandardAction = createAction(DELETE_STANDARD);
+export const updateStandardsPreferencesAction = createAction(UPDATE_STANDARDS_PREFERENCES);
 
 // reducers
 const initialState = {
@@ -46,7 +48,7 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_INTERESTED_STANDARDS_SUCCESS]: (state, { payload }) => {
     state.loading = false;
-    state.data = payload;
+    state.data = payload || {};
   },
   [RECEIVE_INTERESTED_STANDARDS_ERROR]: (state, { payload }) => {
     state.loading = false;
@@ -79,6 +81,9 @@ export const reducer = createReducer(initialState, {
     const curriculums = interstedStandards.curriculums.filter(item => item._id !== payload);
     interstedStandards.curriculums = curriculums;
     state.data = interstedStandards;
+  },
+  [UPDATE_STANDARDS_PREFERENCES]: (state, { payload }) => {
+    state.data[payload.name] = payload.value;
   }
 });
 

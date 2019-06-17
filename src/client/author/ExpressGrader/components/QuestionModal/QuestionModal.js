@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
+import { message } from "antd";
 
 class QuestionModal extends React.Component {
   constructor() {
@@ -93,6 +94,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 
@@ -114,6 +117,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 

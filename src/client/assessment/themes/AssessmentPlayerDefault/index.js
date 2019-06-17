@@ -15,6 +15,7 @@ import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
+import { nonAutoGradableTypes } from "@edulastic/constants";
 
 import {
   ControlBtn,
@@ -102,6 +103,7 @@ class AssessmentPlayerDefault extends React.Component {
   changeTabItemState = value => {
     const { checkAnswer, changePreview, answerChecksUsedForItem, settings } = this.props;
     if (answerChecksUsedForItem >= settings.maxAnswerChecks) return;
+
     checkAnswer();
 
     changePreview(value);
@@ -270,6 +272,14 @@ class AssessmentPlayerDefault extends React.Component {
     if (!item) {
       return <div />;
     }
+    let isNonAutoGradable = false;
+    item.data &&
+      item.data.questions &&
+      item.data.questions.forEach(question => {
+        if (nonAutoGradableTypes.includes(question.type)) {
+          isNonAutoGradable = true;
+        }
+      });
 
     const scratchPadMode = tool === 5;
     return (
@@ -365,6 +375,7 @@ class AssessmentPlayerDefault extends React.Component {
                       <TestButton
                         answerChecksUsedForItem={answerChecksUsedForItem}
                         settings={settings}
+                        isNonAutoGradable={isNonAutoGradable}
                         checkAnwser={() => this.changeTabItemState("check")}
                       />
                     )}

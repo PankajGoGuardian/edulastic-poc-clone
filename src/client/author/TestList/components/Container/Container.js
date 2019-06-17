@@ -10,7 +10,7 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-
+import { uniq } from "lodash";
 import {
   ScrollBox,
   Container,
@@ -34,7 +34,11 @@ import {
   getTestsLoadingSelector,
   getTestsCountSelector,
   getTestsLimitSelector,
-  getTestsPageSelector
+  getTestsPageSelector,
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
 } from "../../ducks";
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
@@ -56,6 +60,8 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
+import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -134,9 +140,15 @@ class TestList extends Component {
       location,
       playlist,
       mode,
-      match: { params = {} }
+      defaultGrades,
+      defaultSubject,
+      interestedCurriculums = [],
+      match: { params = {} },
+      getCurriculumStandards,
+      clearDictStandards
     } = this.props;
     const { search } = this.state;
+    const parsedQueryData = qs.parse(location.search);
     if (mode === "embedded") {
       let selectedTests = [];
       const { grades, subjects, tags, modules } = playlist;
@@ -169,7 +181,6 @@ class TestList extends Component {
         }
       });
     } else {
-      const parsedQueryData = qs.parse(location.search);
       if (!curriculums.length) {
         getCurriculums();
       }
@@ -207,8 +218,40 @@ class TestList extends Component {
           search
         });
       } else {
-        receiveTests({ page: 1, limit, search });
+        let grades = defaultGrades;
+        let subject = defaultSubject;
+        let filteredInterestedCurriculum;
+        if (!grades && subject === null) {
+          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
+          if (!filteredInterestedCurriculum.length) {
+            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
+            if (!filteredInterestedCurriculum.length) {
+              filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+              if (!filteredInterestedCurriculum.length) {
+                filteredInterestedCurriculum = interestedCurriculums;
+              }
+            }
+          }
+          grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
+          grades = grades.length ? uniq(grades.join(",").split(",")) : [];
+          subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+        }
+        grades = grades || [];
+        this.setState({
+          search: {
+            ...search,
+            grades,
+            subject
+          }
+        });
+        receiveTests({ page: 1, limit, search: { ...search, grades, subject } });
       }
+    }
+    if (parsedQueryData.curriculumId) {
+      const { curriculumId, grades } = parsedQueryData;
+      const gradeArray = Array.isArray(grades) ? grades : [grades];
+      clearDictStandards();
+      getCurriculumStandards(curriculumId, gradeArray, "");
     }
   }
 
@@ -240,23 +283,18 @@ class TestList extends Component {
     );
   };
 
-  handleStandardSearch = searchStr => {
-    const { getCurriculumStandards } = this.props;
-    this.setState({ standardQuery: searchStr });
-    const {
-      search: { grades, curriculumId }
-    } = this.state;
-    if (curriculumId && searchStr.length >= 2) {
-      getCurriculumStandards(curriculumId, grades, searchStr);
-    }
-  };
-
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receiveTests, clearDictStandards, history, limit, page, mode } = this.props;
+    const { receiveTests, clearDictStandards, history, limit, page, mode, getCurriculumStandards } = this.props;
     let updatedKeys = {};
-    if (name === "curriculumId" && !value.length) {
+    if (name === "curriculumId") {
       clearDictStandards();
+      getCurriculumStandards(value, search.grades, "");
+      search.standardIds = [];
+    }
+    if (name === "grades" && search.curriculumId) {
+      clearDictStandards();
+      getCurriculumStandards(search.curriculumId, value, "");
     }
     if (name === "subject") {
       updatedKeys = {
@@ -264,12 +302,18 @@ class TestList extends Component {
         [name]: value,
         curriculumId: ""
       };
+      updateDefaultSubjectAction(value);
+      storeInLocalStorage("defaultSubject", value);
       clearDictStandards();
     } else {
       updatedKeys = {
         ...search,
         [name]: value
       };
+    }
+    if (name === "grades") {
+      updateDefaultGradesAction(value);
+      storeInLocalStorage("defaultGrades", value);
     }
     this.setState(
       {
@@ -448,7 +492,7 @@ class TestList extends Component {
     addTestToModule({ moduleIndex: index, testAdded });
   };
 
-  searchCurriculum = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+  searchFilterOption = (input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
 
   renderCardContent = () => {
     const { loading, tests, windowWidth, history, match, userId, mode } = this.props;
@@ -598,8 +642,7 @@ class TestList extends Component {
                 handleLabelSearch={this.handleLabelSearch}
                 onChange={this.handleFiltersChange}
                 clearFilter={this.handleClearFilter}
-                searchCurriculum={this.searchCurriculum}
-                handleStandardSearch={this.handleStandardSearch}
+                searchFilterOption={this.searchFilterOption}
                 filterMenuItems={filterMenuItems}
               />
             </SearchModalContainer>
@@ -646,8 +689,7 @@ class TestList extends Component {
                         handleLabelSearch={this.handleLabelSearch}
                         onChange={this.handleFiltersChange}
                         clearFilter={this.handleClearFilter}
-                        searchCurriculum={this.searchCurriculum}
-                        handleStandardSearch={this.handleStandardSearch}
+                        searchFilterOption={this.searchFilterOption}
                         filterMenuItems={filterMenuItems}
                       />
                     </ScrollBox>
@@ -702,6 +744,9 @@ const enhance = compose(
       count: getTestsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       curriculums: getCurriculumsListSelector(state),
+      defaultGrades: getDefaultGradesSelector(state),
+      defaultSubject: getDefaultSubjectSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),
@@ -713,6 +758,8 @@ const enhance = compose(
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
+      updateDefaultSubject: updateDefaultSubjectAction,
+      updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,
       clearTestData: clearTestDataAction
     }

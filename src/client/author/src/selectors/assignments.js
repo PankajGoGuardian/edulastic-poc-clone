@@ -63,3 +63,8 @@ export const getAssignmentViewSelector = createSelector(
   stateSelector,
   state => state.isAdvancedView
 );
+
+export const getAssignmentFilterSelector = createSelector(
+  stateSelector,
+  state => state.filter
+);

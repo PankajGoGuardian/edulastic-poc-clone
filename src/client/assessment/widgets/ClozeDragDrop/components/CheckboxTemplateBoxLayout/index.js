@@ -4,14 +4,14 @@ import striptags from "striptags";
 import { MathSpan } from "@edulastic/common";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
+import { CheckboxContainer } from "./styled/CheckboxContainer";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
-const CheckboxTemplateBoxLayout = ({ index: dropTargetIndex, resprops }) => {
-  dropTargetIndex = parseInt(dropTargetIndex, 10);
+const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const {
     showAnswer,
     options = [],
@@ -21,9 +21,10 @@ const CheckboxTemplateBoxLayout = ({ index: dropTargetIndex, resprops }) => {
     userSelections = [],
     stemNumeration = "numerical",
     evaluation = [],
-    onDropHandler = () => {}
+    onDropHandler = () => {},
+    responseIDs
   } = resprops;
-
+  const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
   const status =
     userSelections.length > 0 && evaluation.length > 0 ? (evaluation[dropTargetIndex] ? "right" : "wrong") : null;
 
@@ -81,11 +82,13 @@ const CheckboxTemplateBoxLayout = ({ index: dropTargetIndex, resprops }) => {
       }
     }
     return (
-      <MathSpan
-        clas="clipText"
-        title={striptags(formulaLabel) || null}
-        dangerouslySetInnerHTML={{ __html: formulaLabel }}
-      />
+      <CheckboxContainer>
+        <MathSpan
+          clas="clipText"
+          title={striptags(formulaLabel) || null}
+          dangerouslySetInnerHTML={{ __html: formulaLabel }}
+        />
+      </CheckboxContainer>
     );
   };
 
@@ -176,8 +179,8 @@ const CheckboxTemplateBoxLayout = ({ index: dropTargetIndex, resprops }) => {
 };
 
 CheckboxTemplateBoxLayout.propTypes = {
-  index: PropTypes.number.isRequired,
-  resprops: PropTypes.object.isRequired
+  resprops: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default React.memo(CheckboxTemplateBoxLayout);

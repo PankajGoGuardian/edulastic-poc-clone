@@ -1,27 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-// import { isEmpty } from "lodash";
+import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const { Option } = Select;
 
-const ClozeDropDown = ({ index, targetindex, resprops = {} }) => {
-  const { save, options, answers = {}, evaluation = [], checked } = resprops;
-  const { dropDown: _dropDownAnswers = [] } = answers;
+const ClozeDropDown = ({ resprops = {}, id }) => {
+  const { save, options, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
+  const { dropDowns: _dropDownAnswers = [] } = answers;
 
-  const val = _dropDownAnswers[targetindex] ? _dropDownAnswers[targetindex].value : "";
-
+  const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
+  const {
+    response_ids: { dropDowns }
+  } = item;
+  const { index } = find(dropDowns, res => res.id === id);
+  const { ui_style: uiStyle } = item;
+  const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
   // const isChecked = checked && !isEmpty(evaluation);
-
   return checked ? (
-    <CheckedBlock isCorrect={evaluation[index]} userAnswer={_dropDownAnswers[targetindex]} index={index} />
+    <CheckedBlock
+      item={item}
+      userAnswer={_dropDownAnswers[id]}
+      id={id}
+      width={width || "auto"}
+      evaluation={evaluation}
+      type="dropDowns"
+      onInnerClick={onInnerClick}
+    />
   ) : (
-    <StyeldSelect onChange={text => save({ value: text, index, type: "dropDown" }, targetindex)} value={val}>
+    <StyeldSelect onChange={text => save({ value: text, index }, "dropDowns", id)} value={val} width={width || "auto"}>
       {options &&
-        options[targetindex] &&
-        options[targetindex].map((response, respID) => (
+        options[id] &&
+        options[id].map((response, respID) => (
           <Option value={response} key={respID}>
             {response}
           </Option>
@@ -31,9 +43,8 @@ const ClozeDropDown = ({ index, targetindex, resprops = {} }) => {
 };
 
 ClozeDropDown.propTypes = {
-  index: PropTypes.number.isRequired,
-  targetindex: PropTypes.number.isRequired,
-  resprops: PropTypes.object.isRequired
+  resprops: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default ClozeDropDown;
@@ -41,4 +52,6 @@ export default ClozeDropDown;
 const StyeldSelect = styled(Select)`
   min-width: 80px;
   margin: 0px 4px;
+  width: ${({ width }) => (!width ? null : `${width}`)};
+  min-height: 35px;
 `;

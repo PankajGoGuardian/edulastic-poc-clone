@@ -8,6 +8,7 @@ import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
+import { getWordsInURLPathName } from "../../common/utils/helpers";
 
 // types
 export const LOGIN = "[auth] login";
@@ -43,11 +44,13 @@ const setUser = (state, { payload }) => {
 
 const getCurrentPath = () => {
   const { location } = window;
+  const path = getWordsInURLPathName(location.pathname.toLocaleLowerCase());
   if (
     location.pathname.toLowerCase() === "/getstarted" ||
     location.pathname.toLowerCase() === "/signup" ||
     location.pathname.toLowerCase() === "/studentsignup" ||
-    location.pathname.toLowerCase() === "/adminsignup"
+    location.pathname.toLowerCase() === "/adminsignup" ||
+    (path[0] && path[0] === "district")
   ) {
     return "";
   } else {
@@ -108,7 +111,8 @@ function* login({ payload }) {
       "role",
       "orgData",
       "features",
-      "currentSignUpState"
+      "currentSignUpState",
+      "ipZipCode"
     ]);
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
     TokenStorage.selectAccessToken(user._id, user.role);
@@ -138,7 +142,11 @@ function* login({ payload }) {
 function* signup({ payload }) {
   try {
     const { name, email, password, role, classCode } = payload;
-    const nameList = name.split(" ");
+    let nameList = name.split(" ");
+    nameList = nameList.filter(item => (item && item.trim() ? true : false));
+    if (!nameList.length) {
+      throw { message: "Please provide your full name." };
+    }
     let firstName;
     let lastName;
     let middleName;
@@ -172,7 +180,16 @@ function* signup({ payload }) {
     if (_responseMsg && !result) {
       yield call(message.error, _responseMsg);
     } else {
-      const user = pick(result, ["_id", "firstName", "lastName", "email", "role", "orgData", "currentSignUpState"]);
+      const user = pick(result, [
+        "_id",
+        "firstName",
+        "lastName",
+        "email",
+        "role",
+        "orgData",
+        "currentSignUpState",
+        "ipZipCode"
+      ]);
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
       yield put(signupSuccessAction(result));
@@ -203,6 +220,7 @@ function* signup({ payload }) {
 }
 
 const getLoggedOutUrl = () => {
+  const path = getWordsInURLPathName(window.location.pathname);
   if (window.location.pathname.toLocaleLowerCase() === "/getstarted") {
     return "/getStarted";
   } else if (window.location.pathname.toLocaleLowerCase() === "/signup") {
@@ -211,6 +229,8 @@ const getLoggedOutUrl = () => {
     return "/studentsignup";
   } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
     return "/adminsignup";
+  } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+    return "/district/" + path[1];
   } else {
     return "/login";
   }

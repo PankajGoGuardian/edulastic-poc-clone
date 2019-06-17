@@ -159,8 +159,8 @@ const Camera = styled.div`
   width: 40px;
   height: 40px;
   position: absolute;
-  right: 40px;
-  bottom: -20px;
+  left: 20px;
+  bottom: 10px;
   display: inline-flex;
   align-items: center;
   justify-content: center;

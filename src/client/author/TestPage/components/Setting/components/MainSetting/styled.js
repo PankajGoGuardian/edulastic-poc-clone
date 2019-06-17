@@ -148,12 +148,15 @@ export const RadioGroup = styled(Radio.Group)`
     margin-right: 40px;
   }
 `;
-export const GenerateReportSelect = styled(Select)`
+
+export const TestTypeSelect = styled(Select)`
   height: 40px;
-`;
-export const TestTypeSelect = styled(GenerateReportSelect)`
   width: 20%;
   margin-right: 30px;
+`;
+
+export const MaxAttempts = styled(Input)`
+  width: 20%;
 `;
 
 export const BlueText = styled.span`

@@ -302,13 +302,13 @@ export default {
       }
     },
     [TOOLS.CIRCLE]: {
-      fillColor: "#1fe3a1",
+      fillColor: "transparent",
       strokeColor: "#1fe3a1",
       highlightStrokeColor: "#1fe3a1",
       highlightFillColor: "transparent"
     },
     [TOOLS.ELLIPSE]: {
-      fillColor: "#1fe3a1",
+      fillColor: "transparent",
       strokeColor: "#1fe3a1",
       highlightStrokeColor: "#1fe3a1",
       highlightFillColor: "transparent"

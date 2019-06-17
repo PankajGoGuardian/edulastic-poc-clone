@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Affix } from "antd";
+import { Affix, Input } from "antd";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import {
   Container,
@@ -11,30 +11,30 @@ import {
   HeaderRow,
   MainFilter,
   MainFilterHeader,
-  SearchIcon,
   StyledModal,
   StyledModalContainer,
-  StyledModalTitle,
-  TextFieldSearch
+  StyledModalTitle
 } from "./styled";
+
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import Search from "../Search/Search";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 
 class ItemFilter extends Component {
   renderFullTextSearch = () => {
-    const { onSearch } = this.props;
-    const placeholder = "Search by skills and keywords";
+    const {
+      onSearchInputChange,
+      search: { searchString }
+    } = this.props;
 
     return (
       <Header>
         <HeaderRow>
-          <TextFieldSearch
-            onChange={e => onSearch(e.target.value)}
-            type="search"
-            icon={<SearchIcon type="search" />}
-            containerStyle={{ marginRight: 20 }}
-            placeholder={placeholder}
+          <Input.Search
+            placeholder="Search by skills and keywords"
+            onChange={onSearchInputChange}
+            size="large"
+            value={searchString}
           />
         </HeaderRow>
       </Header>
@@ -49,6 +49,7 @@ class ItemFilter extends Component {
       onLabelSearch,
       curriculums,
       onSearchFieldChange,
+      onSearchInputChange,
       curriculumStandards,
       t,
       items,
@@ -108,6 +109,7 @@ ItemFilter.propTypes = {
     })
   ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
+  onSearchInputChange: PropTypes.func.isRequired,
   onSearch: PropTypes.func.isRequired,
   onClearSearch: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Layout, Spin, Button, Row } from "antd";
+import { Layout, Spin, Button, Row, Checkbox } from "antd";
 
 const { Content } = Layout;
 
@@ -61,4 +61,7 @@ export const StyledSubjectLine = styled.div`
 export const StyledSubjectCloseButton = styled.a`
   margin-right: 20px;
   color: rgba(0, 0, 0, 0.25);
+`;
+export const StyledCheckbox = styled(Checkbox)`
+  margin: 0px 0px 10px 0px !important;
 `;

@@ -175,7 +175,7 @@ const TokenHighlightPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 

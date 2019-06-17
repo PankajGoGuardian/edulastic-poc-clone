@@ -255,8 +255,9 @@ class LiveClassboardPage {
 
     Object.keys(attempt).forEach(item => {
       const attempType = attempt[item];
-      const { points } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
-      if (attempType === attemptTypes.RIGHT) totalScore += points;
+      const { points, attemptData, queKey } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
+      // if (attempType === attemptTypes.RIGHT) totalScore += points;
+      totalScore += this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attempType);
       maxScore += points;
     });
 
@@ -271,8 +272,14 @@ class LiveClassboardPage {
     const score = {};
     Object.keys(feedbackMap).forEach(queNum => {
       const attempType = feedbackMap[queNum];
-      const { points } = queTypeMap[queNum];
-      score[queNum] = attempType === attemptTypes.RIGHT ? points : "0";
+      const { points, attemptData, queKey } = queTypeMap[queNum];
+      // score[queNum] = attempType === attemptTypes.RIGHT ? points : "0";
+      score[queNum] = this.questionResponsePage.getScoreByAttempt(
+        attemptData,
+        points,
+        queKey.split(".")[0],
+        attempType
+      );
     });
 
     return score;

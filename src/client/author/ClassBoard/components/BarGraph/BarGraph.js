@@ -104,7 +104,7 @@ export default class BarGraph extends Component {
           maxTimeSpent = item.avgTimeSpent;
         }
         return {
-          name: `Q${index + 1}`,
+          name: item.barLabel,
           totalAttemps: item.attemptsNum,
           correctAttemps: item.correctNum,
           partialAttempts: item.partialNum || 0,

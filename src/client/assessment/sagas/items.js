@@ -13,6 +13,7 @@ import {
   LOAD_ANSWERS
 } from "../constants/actions";
 import { message } from "antd";
+import { maxBy } from "lodash";
 
 function* receiveItemsSaga() {
   try {
@@ -66,7 +67,15 @@ function* saveUserResponse({ payload }) {
     const itemIndex = payload.itemId;
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    if (assignmentsByIds && assignmentsByIds[assignmentId] && assignmentsByIds[assignmentId].endDate < Date.now()) {
+    const groupId = yield select(getCurrentGroup);
+    let { endDate, class: clazz = [] } = assignmentsByIds[assignmentId] || {};
+    if (!endDate && clazz.length) {
+      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
+      if (!endDate) {
+        endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+      }
+    }
+    if (endDate && endDate < Date.now()) {
       yield call(message.error, "Test time ended");
       return yield put(push("/home/assignments"));
     }
@@ -90,7 +99,6 @@ function* saveUserResponse({ payload }) {
 
     const testItemId = currentItem._id;
     const userWork = yield select(({ userWork }) => userWork.present[testItemId]);
-    const groupId = yield select(getCurrentGroup);
 
     const activity = {
       answers: itemAnswers,
@@ -105,7 +113,8 @@ function* saveUserResponse({ payload }) {
 
     yield call(testItemActivityApi.create, activity, autoSave);
   } catch (err) {
-    yield call(message.error, "Failed saving the Answer");
+    console.log(err);
+    // yield call(message.error, "Failed saving the Answer");
   }
 }
 

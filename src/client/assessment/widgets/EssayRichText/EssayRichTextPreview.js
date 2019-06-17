@@ -29,6 +29,7 @@ const getToolBarButtons = item =>
     });
 
 const EssayRichTextPreview = ({
+  col,
   view,
   saveAnswer,
   t,
@@ -38,6 +39,8 @@ const EssayRichTextPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
+  testItem,
+  location,
   previewTab
 }) => {
   const toolbarButtons = getToolBarButtons(item);
@@ -52,11 +55,15 @@ const EssayRichTextPreview = ({
   const characterMap = get(item, "character_map", []);
 
   const [wordCount, setWordCount] = useState(
-    Array.isArray(userAnswer) ? 0 : userAnswer.split(" ").filter(i => !!i.trim()).length
+    Array.isArray(userAnswer)
+      ? 0
+      : typeof userAnswer === "string"
+      ? userAnswer.split(" ").filter(i => !!i.trim()).length
+      : 0
   );
 
   useEffect(() => {
-    if (Array.isArray(userAnswer)) {
+    if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
       setText("");
       saveAnswer("");
       setWordCount(0);
@@ -65,13 +72,18 @@ const EssayRichTextPreview = ({
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
-    const wordsCount = stripTags(val)
-      .split(" ")
-      .filter(i => !!i.trim()).length;
-    const mathInputCount = (val.match(/input__math/g) || []).length;
-    setWordCount(wordsCount + mathInputCount);
-    setText(val);
-    saveAnswer(val);
+    if (typeof val === "string") {
+      const wordsCount =
+        typeof val === "string"
+          ? stripTags(val)
+              .split(" ")
+              .filter(i => !!i.trim()).length
+          : 0;
+      const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
+      setWordCount(wordsCount + mathInputCount);
+      setText(val);
+      saveAnswer(val);
+    }
   };
 
   const handleCharacterSelect = char => {
@@ -100,12 +112,21 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
+  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
+
+  const isTestReview = qIndex !== null && testItem;
+
+  const isV1Multipart = get(col, "isV1Multipart", false);
+
+  const isReadOnly =
+    (previewTab === "show" || isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
+
   return item.id ? (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -134,7 +155,7 @@ const EssayRichTextPreview = ({
             spellcheck={!!item.spellcheck}
             toolbarInline={false}
             initOnClick={false}
-            readOnly={previewTab === "show"}
+            readOnly={isReadOnly}
             quickInsertTags={[]}
             toolbarButtons={toolbarButtons}
           />
@@ -159,13 +180,18 @@ EssayRichTextPreview.propTypes = {
   view: PropTypes.string.isRequired,
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
+  previewTab: PropTypes.string.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  location: PropTypes.any.isRequired,
+  testItem: PropTypes.bool,
+  qIndex: PropTypes.number,
+  col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {
   smallSize: false,
   userAnswer: "",
+  testItem: false,
   showQuestionNumber: false,
   qIndex: null
 };

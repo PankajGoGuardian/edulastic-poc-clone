@@ -155,10 +155,12 @@ class EditItemPage {
       .find(".ant-input");
   };
 
-  updateItemLevelScore = score =>
-    this.getItemTotalScore()
-      .clear()
+  updateItemLevelScore = score => {
+    cy.wait(300);
+    return this.getItemTotalScore()
+      .clear({ force: true })
       .type(score, { force: true });
+  };
 }
 
 export default EditItemPage;

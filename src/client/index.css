@@ -612,11 +612,6 @@ table.quill-table td {
   display: inline;
 }
 
-.template_box > div {
-  display: inline-flex;
-  align-self: center;
-}
-
 .response-btn > div {
   align-self: center;
 }
@@ -829,6 +824,7 @@ input[type="checkbox"] {
   background: #fff;
   color: #878282;
   padding: 7px;
+  min-height: 32px;
 }
 
 .correctanswer-box {
@@ -1009,12 +1005,17 @@ response {
   min-height: 30px;
   display: inline-flex;
   align-items: center;
-  padding: 4px 8px;
   margin: 0 2px;
   border-radius: 10px;
   overflow: hidden;
   border: 2px black dotted;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+response .index {
+  background: #d5d5d5;
+  padding: 4px 10px;
+  margin-right: 8px;
 }
 
 *,
@@ -1235,7 +1236,7 @@ img.fr-fic {
 }
 
 .template_box.dropdown .response-btn.check-answer {
-  top: -8px;
+  /* top: -8px; */
   padding: 0 !important;
 }
 
@@ -1940,24 +1941,6 @@ span.token.active-word {
 /* NOTE: Fix all inputs for Froala - show placeholder text */
 .fr-box {
   width: 100%;
-}
-
-.fr-box.fr-basic {
-  border: 1px solid #cccccc;
-  border-radius: 10px;
-}
-
-.fr-box.fr-basic .fr-toolbar.fr-top {
-  border: none !important;
-}
-
-.fr-box.fr-basic .fr-wrapper {
-  border: none !important;
-  border-radius: 10px;
-}
-
-.fr-box.fr-basic .second-toolbar {
-  border: none !important;
 }
 
 .jsx-parser table {

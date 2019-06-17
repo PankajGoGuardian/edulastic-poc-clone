@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { cloneDeep, get } from "lodash";
 import { Stimulus, helpers } from "@edulastic/common";
 import JsxParser from "react-jsx-parser";
-import { SHOW, CHECK } from "../../constants/constantsForQuestions"; //
+import { SHOW, CHECK, CLEAR } from "../../constants/constantsForQuestions";
 import AnswerBox from "./AnswerBox";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import ClozeDropDown from "./ClozeMathBlock/ClozeDropDown";
@@ -25,91 +25,50 @@ const ClozeMathPreview = ({
   showQuestionNumber,
   qIndex,
   options,
-  responseIndexes
+  responseIds,
+  changePreviewTab
 }) => {
   const [newHtml, setNewHtml] = useState("");
 
-  const _getMathAnswers = () =>
-    get(item, "validation.valid_response.value", []).map(res => {
-      const method = res[0];
-      if (method) {
-        return method.value;
-      }
-      return "";
-    });
+  const _getMathAnswers = () => get(item, "validation.valid_response.value", []);
 
   const _getAltMathAnswers = () =>
-    get(item, "validation.alt_responses", []).map(alt =>
-      get(alt, "value", []).map(res => {
-        const method = res[0];
-        if (method) {
-          return method.value;
-        }
-        return "";
-      })
-    );
+    get(item, "validation.alt_responses", []).map(alt => get(alt, "value", []).map(res => res));
 
-  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []).map(res => res || "");
-  const _getAltDropDownAnswers = () =>
-    get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []).map(res => res || ""));
+  const _getDropDownAnswers = () => get(item, "validation.valid_dropdown.value", []);
+  const _getAltDropDownAnswers = () => get(item, "validation.alt_dropdowns", []).map(alt => get(alt, "value", []));
 
-  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []).map(res => res || "");
-  const _getAltInputsAnswers = () =>
-    get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []).map(res => res || ""));
+  const _getTextInputAnswers = () => get(item, "validation.valid_inputs.value", []);
+  const _getAltInputsAnswers = () => get(item, "validation.alt_inputs", []).map(alt => get(alt, "value", []));
 
-  const handleAddAnswer = (answer, index) => {
+  const handleAddAnswer = (answer, answerType, id) => {
     let newAnswers = cloneDeep(userAnswer);
-    const answers = newAnswers[answer.type] || [];
-    answers[index] = answer;
+    const answers = newAnswers[answerType] || {};
+    answers[id] = answer;
 
     newAnswers = {
       ...newAnswers,
-      [answer.type]: answers
+      [answerType]: answers
     };
     saveAnswer(newAnswers);
   };
 
-  const setTargetIndex = str => {
-    let temp = ` ${str}`.slice(1);
-    const parsedHTML = $.parseHTML(temp);
-    function addProps(i) {
-      $(this).attr("targetIndex", `${i}`);
-      const text = $("<div>")
-        .append($(this).clone())
-        .html();
-      $(this).replaceWith(text);
+  const onInnerClick = () => {
+    if (type === CHECK) {
+      changePreviewTab(CLEAR);
     }
-
-    $(parsedHTML)
-      .find("textinput")
-      .each(addProps);
-
-    $(parsedHTML)
-      .find("mathinput")
-      .each(addProps);
-
-    $(parsedHTML)
-      .find("textdropdown")
-      .each(addProps);
-
-    temp = $("<div />")
-      .append(parsedHTML)
-      .html();
-
-    return temp;
   };
 
   useEffect(() => {
     if (window.$) {
-      const _newHtml = setTargetIndex(template);
-      setNewHtml(helpers.parseTemplate(_newHtml));
+      setNewHtml(helpers.parseTemplate(template));
     }
   }, [template]);
 
   return (
     <div>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
 
@@ -121,7 +80,8 @@ const ClozeMathPreview = ({
             save: handleAddAnswer,
             answers: userAnswer,
             item,
-            checked: type === CHECK || type === SHOW
+            checked: type === CHECK || type === SHOW,
+            onInnerClick
           }
         }}
         showWarnings
@@ -139,7 +99,7 @@ const ClozeMathPreview = ({
           mathAnswers={_getMathAnswers()}
           dropdownAnswers={_getDropDownAnswers()}
           textInputAnswers={_getTextInputAnswers()}
-          responseIndexes={responseIndexes}
+          responseIds={responseIds}
           altMathAnswers={_getAltMathAnswers()}
           altDropDowns={_getAltDropDownAnswers()}
           altInputs={_getAltInputsAnswers()}
@@ -154,10 +114,11 @@ ClozeMathPreview.propTypes = {
   item: PropTypes.object.isRequired,
   template: PropTypes.string.isRequired,
   saveAnswer: PropTypes.func.isRequired,
+  changePreviewTab: PropTypes.func.isRequired,
   userAnswer: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
-  responseIndexes: PropTypes.object.isRequired,
+  responseIds: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };

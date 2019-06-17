@@ -15,7 +15,7 @@ import {
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
-const getNewAlignmentState = () => ({
+export const getNewAlignmentState = () => ({
   curriculum: "",
   curriculumId: "",
   subject: getFromLocalStorage("defaultSubject") || "",
@@ -109,7 +109,7 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
         alignments: [getNewAlignmentState()]
       };
     case SET_ALIGNMENT_FROM_QUESTION:
-      const authorAlignments = payload.filter(item => !item.isEquivalentStandard && item.curriculumId);
+      const authorAlignments = payload.filter(item => !item.isEquivalentStandard);
       return {
         ...state,
         alignments: authorAlignments

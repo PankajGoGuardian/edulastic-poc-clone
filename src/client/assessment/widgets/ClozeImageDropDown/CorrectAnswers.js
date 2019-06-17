@@ -141,8 +141,6 @@ class CorrectAnswers extends Component {
       uiStyle,
       maxRespCount,
       showDashedBorder,
-      maxHeight,
-      maxWidth,
       imageHeight,
       imageOptions,
       item
@@ -175,8 +173,6 @@ class CorrectAnswers extends Component {
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 backgroundColor={backgroundColor}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageHeight={imageHeight}
                 imageOptions={imageOptions}
                 item={item}
@@ -207,8 +203,6 @@ class CorrectAnswers extends Component {
                       backgroundColor={backgroundColor}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                     />
                   </TabContainer>
                 );

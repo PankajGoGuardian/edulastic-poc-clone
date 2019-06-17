@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import Modal from "react-responsive-modal";
 import { darkGrey, blue } from "@edulastic/colors";
-import { IconHeart, IconShare, IconWorldWide } from "@edulastic/icons";
+import { IconHeart, IconShare, IconWorldWide, IconCopy, IconDescription } from "@edulastic/icons";
 import {
   ModalTitle,
   ModalContainer,
@@ -23,7 +23,7 @@ import {
   IconText,
   TagGrade,
   ButtonContainer,
-  Button,
+  ButtonComponent,
   SummaryContainer,
   SummaryTitle,
   SummaryCardContainer,
@@ -35,7 +35,8 @@ import {
   ListRow,
   ListHeaderCell,
   ListCell,
-  SammaryMark
+  SammaryMark,
+  IconWrapper
 } from "./styled";
 
 export default class ViewModal extends React.Component {
@@ -43,19 +44,24 @@ export default class ViewModal extends React.Component {
     isShow: PropTypes.bool.isRequired,
     assign: PropTypes.func.isRequired,
     close: PropTypes.func.isRequired,
+    onEdit: PropTypes.func.isRequired,
+    onDuplicate: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired
   };
 
   render() {
-    const { isShow, close, item, assign, isPlaylist } = this.props;
+    const { isShow, close, item, assign, isPlaylist, onDuplicate, onEdit } = this.props;
     const {
       title = "",
       description = "",
       tags = [],
       grades = [],
       subjects = [],
+      thumbnail = "",
       analytics = [],
       testItems = [],
+      scoring = {},
+      sharing = [],
       _source
     } = item;
 
@@ -64,7 +70,7 @@ export default class ViewModal extends React.Component {
         <ModalTitle>{title}</ModalTitle>
         <ModalContainer>
           <ModalColumn>
-            <Image />
+            <Image src={thumbnail} />
 
             <AssessmentNameLabel>Assignment Name</AssessmentNameLabel>
             <AssessmentName>{title}</AssessmentName>
@@ -86,24 +92,45 @@ export default class ViewModal extends React.Component {
             <Footer>
               <FooterIcon>
                 <IconWorldWide color={darkGrey} width={14} height={14} /> &nbsp;
-                <IconText>Public Library</IconText>
+                <IconText>{sharing[0] ? sharing[0].type : ""}</IconText>
               </FooterIcon>
-              <FooterIcon>
+              <FooterIcon rotate>
                 <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                {analytics && <IconText>{analytics.usage} 000</IconText>}
+                {analytics && <IconText>{analytics.usage || 0} </IconText>}
               </FooterIcon>
               <FooterIcon>
                 <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                {analytics && <IconText>{analytics.likes} 000</IconText>}
+                {analytics && <IconText>{analytics.likes || 0}</IconText>}
               </FooterIcon>
             </Footer>
           </ModalColumn>
           <ModalColumn>
             <ButtonContainer>
-              <Button>TEST DETAILS</Button>
-              <Button bgColor={blue} onClick={assign}>
+              <ButtonComponent
+                onClick={() => {
+                  onEdit();
+                }}
+              >
+                <IconWrapper>
+                  <IconDescription color={blue} />
+                </IconWrapper>
+                DETAILS
+              </ButtonComponent>
+              <ButtonComponent
+                onClick={() => {
+                  onDuplicate();
+                }}
+              >
+                <IconWrapper>
+                  <IconCopy color={blue} />
+                </IconWrapper>
+                DUPLICATE
+              </ButtonComponent>
+            </ButtonContainer>
+            <ButtonContainer>
+              <ButtonComponent size={"large"} bgColor={blue} onClick={assign}>
                 ASSIGN
-              </Button>
+              </ButtonComponent>
             </ButtonContainer>
             <SummaryContainer>
               <SummaryTitle>Summary</SummaryTitle>
@@ -115,7 +142,7 @@ export default class ViewModal extends React.Component {
                   <SummaryCardLabel>Questions</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard>
-                  <SummaryCardValue>3</SummaryCardValue>
+                  <SummaryCardValue>{scoring.total}</SummaryCardValue>
                   <SummaryCardLabel>Points</SummaryCardLabel>
                 </SummaryCard>
               </SummaryCardContainer>

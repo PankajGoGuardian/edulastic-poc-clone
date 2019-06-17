@@ -59,6 +59,7 @@ const StandardsModal = ({
       eloStandards: [],
       standard: { ...prevState.standard, curriculum: "" }
     }));
+    editAlignment(alignmentIndex, { subject: val });
     getCurriculumStandards({ id: "", grades: state.grades, searchStr: "" });
   };
 
@@ -87,11 +88,15 @@ const StandardsModal = ({
             <ItemBody>
               <div className="select-label">{t("component.options.subject")}</div>
               <Select style={{ width: "100%" }} value={state.subject} onChange={handleChangeSubject}>
-                {selectsData.allSubjects.map(({ text, value }) => (
-                  <Select.Option key={value} value={value}>
-                    {text}
-                  </Select.Option>
-                ))}
+                {selectsData.allSubjects.map(({ text, value }) =>
+                  value ? (
+                    <Select.Option key={value} value={value}>
+                      {text}
+                    </Select.Option>
+                  ) : (
+                    ""
+                  )
+                )}
               </Select>
             </ItemBody>
           </Col>

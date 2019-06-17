@@ -1,17 +1,29 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { Select } from "antd";
+import { Select, Col } from "antd";
 
 import { IconHeart, IconShare, IconWorldWide } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
 
 import { selectsData } from "../../../common";
-import { SummaryInput, SummarySelect } from "../../common/SummaryForm";
-import { Block, MainTitle, MetaTitle, AnalyticsContainer, AnalyticsItem, ErrorWrapper } from "./styled";
+import {
+  SummaryInput,
+  SummarySelect,
+  SummaryTextArea,
+  SummaryDiv,
+  ColorBox,
+  SummaryButton
+} from "../../common/SummaryForm";
+import { Block, MainTitle, MetaTitle, AnalyticsItem, ErrorWrapper } from "./styled";
+import { ChromePicker } from "react-color";
+
+import { ColorPickerContainer } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerContainer";
+import { ColorPickerWrapper } from "../../../../../../assessment/widgets/ClozeImageText/styled/ColorPickerWrapper";
+import SummaryHeader from "../SummaryHeader/SummaryHeader";
 
 export const renderAnalytics = (title, Icon) => (
   <AnalyticsItem>
-    <Icon color="#bbbfc4" width={15} height={15} />
+    <Icon color="#bbbfc4" width={20} height={20} />
     <MetaTitle>{title}</MetaTitle>
   </AnalyticsItem>
 );
@@ -26,10 +38,25 @@ const Sidebar = ({
   grades,
   isPlaylist,
   onChangeGrade,
+  description,
+  createdBy,
+  thumbnail,
+  textColor,
+  backgroundColor,
+  onChangeColor,
+  isTextColorPickerVisible,
+  isBackgroundColorPickerVisible,
   windowWidth
 }) => (
   <FlexContainer flexDirection="column">
     <Block>
+      <SummaryHeader
+        createdBy={createdBy}
+        thumbnail={thumbnail}
+        windowWidth={windowWidth}
+        analytics={analytics}
+        onChangeField={onChangeField}
+      />
       <MainTitle>{isPlaylist ? "Play List Name" : "Assessment Name"}</MainTitle>
       <SummaryInput
         value={title}
@@ -39,7 +66,14 @@ const Sidebar = ({
         placeholder={isPlaylist ? `Enter a playlist name` : `Enter the test name`}
       />
       {!title && <ErrorWrapper>Test should have title</ErrorWrapper>}
-
+      <MainTitle>Description</MainTitle>
+      <SummaryTextArea
+        value={description}
+        onChange={e => onChangeField("description", e.target.value)}
+        size="large"
+        placeholder="Enter a description"
+        isplaylist={isPlaylist}
+      />
       <MainTitle>Grade</MainTitle>
       <SummarySelect
         data-cy="gradeSelect"
@@ -74,10 +108,45 @@ const Sidebar = ({
         ))}
       </SummarySelect>
 
+      {isPlaylist && (
+        <div>
+          <Col span={windowWidth > 993 ? 12 : 24}>
+            <MainTitle>Text Color</MainTitle>
+            <SummaryDiv>
+              <ColorBox data-cy="image-text-box-color-picker" background={textColor} />
+              <SummaryButton onClick={() => onChangeColor("isTextColorPickerVisible", true)}>CHOOSE</SummaryButton>
+              {isTextColorPickerVisible && (
+                <ColorPickerContainer data-cy="image-text-box-color-panel">
+                  <ColorPickerWrapper onClick={() => onChangeColor("isTextColorPickerVisible", false)} />
+                  <ChromePicker color={textColor} onChangeComplete={color => onChangeColor("textColor", color.hex)} />
+                </ColorPickerContainer>
+              )}
+            </SummaryDiv>
+          </Col>
+          <Col span={windowWidth > 993 ? 12 : 24}>
+            <MainTitle>Background Color</MainTitle>
+            <SummaryDiv>
+              <ColorBox data-cy="image-text-box-color-picker" background={backgroundColor} />
+              <SummaryButton onClick={() => onChangeColor("isBackgroundColorPickerVisible", true)}>
+                CHOOSE
+              </SummaryButton>
+              {isBackgroundColorPickerVisible && (
+                <ColorPickerContainer data-cy="image-text-box-color-panel">
+                  <ColorPickerWrapper onClick={() => onChangeColor("isBackgroundColorPickerVisible", false)} />
+                  <ChromePicker
+                    color={backgroundColor}
+                    onChangeComplete={color => onChangeColor("backgroundColor", color.hex)}
+                  />
+                </ColorPickerContainer>
+              )}
+            </SummaryDiv>
+          </Col>
+        </div>
+      )}
       <MainTitle>Tags</MainTitle>
       <SummarySelect
         data-cy="tagsSelect"
-        mode="multiple"
+        mode="tags"
         size="large"
         style={{ marginBottom: 0 }}
         placeholder="Please select"
@@ -90,13 +159,26 @@ const Sidebar = ({
           </Select.Option>
         ))}
       </SummarySelect>
-    </Block>
-    <Block>
-      <AnalyticsContainer style={{ marginBottom: windowWidth > 993 ? "0" : "15px" }}>
-        {renderAnalytics("Public Library", IconWorldWide)}
-        {renderAnalytics((analytics && analytics.usage) || "N/A", IconShare)}
-        {renderAnalytics((analytics && analytics.likes) || "N/A", IconHeart)}
-      </AnalyticsContainer>
+      {/* to be done later */}
+      {false && (
+        <>
+          <MainTitle>Collection</MainTitle>
+          <SummarySelect
+            data-cy="CollectionSelect"
+            size="large"
+            style={{ width: "100%" }}
+            placeholder="Please select"
+            defaultValue={subjects}
+            onChange={""}
+          >
+            {selectsData.allCollections.map(({ value, text }) => (
+              <Select.Option key={value} value={value}>
+                {text}
+              </Select.Option>
+            ))}
+          </SummarySelect>
+        </>
+      )}
     </Block>
   </FlexContainer>
 );
@@ -110,6 +192,15 @@ Sidebar.propTypes = {
   onChangeGrade: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   subjects: PropTypes.array.isRequired,
+  description: PropTypes.string.isRequired,
+  textColor: PropTypes.string.isRequired,
+  createdBy: PropTypes.object,
+  thumbnail: PropTypes.string,
+  backgroundColor: PropTypes.string,
+  isPlaylist: PropTypes.bool,
+  onChangeColor: PropTypes.func,
+  isTextColorPickerVisible: PropTypes.bool,
+  isBackgroundColorPickerVisible: PropTypes.bool,
   onChangeSubjects: PropTypes.func.isRequired
 };
 

@@ -31,7 +31,8 @@ import Profile from "../assets/Profile.png";
 const menuItems = [
   {
     label: "Dashboard",
-    icon: IconClockDashboard
+    icon: IconClockDashboard,
+    path: "author/dashboard"
   },
   {
     label: "Assignments",

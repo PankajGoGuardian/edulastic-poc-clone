@@ -36,9 +36,27 @@ const markAsDone = ({ assignmentId, classId }) =>
     })
     .then(result => result.data);
 
+const openAssignment = ({ assignmentId, classId }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/open?groupId=${classId}`
+    })
+    .then(result => result.data);
+
+const closeAssignment = ({ assignmentId, classId }) =>
+  api
+    .callApi({
+      method: "put",
+      url: `${prefix}/${assignmentId}/close?groupId=${classId}`
+    })
+    .then(result => result.data);
+
 export default {
   gradebook,
   testActivity,
   releaseScore,
-  markAsDone
+  markAsDone,
+  openAssignment,
+  closeAssignment
 };

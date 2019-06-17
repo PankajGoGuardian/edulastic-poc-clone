@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -9,16 +9,29 @@ import Header from "./Header";
 import JoinSchool from "./JoinSchool";
 import SignupForm from "./SignupForm";
 import SubjectGradeForm from "./SubjectGrade";
+import teacherBg from "../../../assets/bg-teacher.png";
 
 import { logoutAction } from "../../../Login/ducks";
+import { getDistrictByShortNameAndOrgTypeAction } from "../../duck";
 
-const Container = ({ user, logout }) => {
+const Container = ({ user, generalSettings, logout, getDistrictByShortNameAndOrgTypeAction, match }) => {
   const { isAuthenticated, signupStatus } = user;
+  const { districtShortName } = match.params;
+
+  useEffect(() => {
+    if (districtShortName) {
+      getDistrictByShortNameAndOrgTypeAction({ shortName: districtShortName, orgType: "district" });
+    }
+  }, []);
 
   if (!isAuthenticated) {
     return (
       <>
-        <SignupForm />
+        <SignupForm
+          image={
+            generalSettings && districtShortName ? generalSettings.pageBackground : districtShortName ? "" : teacherBg
+          }
+        />
       </>
     );
   }
@@ -27,8 +40,12 @@ const Container = ({ user, logout }) => {
   return (
     <>
       <Header userInfo={userInfo} logout={logout} />
-      {signupStatus === 1 && <JoinSchool userInfo={userInfo} />}
-      {signupStatus === 2 && <SubjectGradeForm userInfo={userInfo} />}
+      {signupStatus === 1 && (
+        <JoinSchool userInfo={userInfo} districtId={districtShortName ? generalSettings : false} />
+      )}
+      {signupStatus === 2 && (
+        <SubjectGradeForm userInfo={userInfo} districtId={districtShortName ? generalSettings : false} />
+      )}
     </>
   );
 };
@@ -46,9 +63,10 @@ Container.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({ user: state.user }),
+    state => ({ user: state.user, generalSettings: get(state, "signup.generalSettings", null) }),
     {
-      logout: logoutAction
+      logout: logoutAction,
+      getDistrictByShortNameAndOrgTypeAction: getDistrictByShortNameAndOrgTypeAction
     }
   )
 );

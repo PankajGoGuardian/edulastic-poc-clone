@@ -27,7 +27,9 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
     <OptionBody>
       <SchoolInfo>
         <span>{school.schoolName || school.name}</span>
-        {`${schoolLocation.city}, ${schoolLocation.state}, ${schoolLocation.zip}`}
+        {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
+          schoolLocation.state ? schoolLocation.state + ", " : ""
+        } ${schoolLocation.zip}`}
       </SchoolInfo>
       <DistrictInfo>
         <span>District:</span>
@@ -45,23 +47,25 @@ const JoinSchool = ({
   userInfo,
   joinSchool,
   updateUserWithSchoolLoading,
-  ipZipCode
+  ipZipCode,
+  districtId
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
-  const [selected, setSchool] = useState("");
+  const [selected, setSchool] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = () => setShowModal(!showModal);
 
-  const changeSchool = value => setSchool(value.key);
-
-  const currentSchool = find(schools, ({ schoolId, _id }) => schoolId === selected || _id === selected) || {};
+  const changeSchool = value => {
+    const _school = find(schools, item => item.schoolId === value.key);
+    setSchool(_school);
+  };
 
   const handleSubmit = () => {
     const currentSignUpState = "PREFERENCE_NOT_SELECTED";
     const data = {
-      institutionIds: [currentSchool.schoolId || currentSchool._id || ""],
-      districtId: currentSchool.districtId,
+      institutionIds: [selected.schoolId || selected._id || ""],
+      districtId: selected.districtId,
       currentSignUpState,
       email,
       firstName,
@@ -94,7 +98,9 @@ const JoinSchool = ({
       return {
         ...item,
         title: item.schoolName,
-        key: item.schoolId
+        key: item.schoolId,
+        zip: item.address.zip,
+        city: item.address.city
       };
     });
   }, [schools]);
@@ -124,13 +130,16 @@ const JoinSchool = ({
                   ItemTemplate={SchoolDropDownItemTemplate}
                   minHeight="70px"
                   selectCB={changeSchool}
+                  filterKeys={["title", "zip", "city"]}
+                  isLoading={isSearching}
                 />
                 <Actions>
-                  <AnchorBtn> I want to homeschool</AnchorBtn>
+                  {/* I want to home school removed temporarily */}
+                  {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
                   <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
                   {selected && (
                     <DistrictName>
-                      <span>District:</span> {currentSchool.districtName}
+                      <span>District:</span> {selected.districtName}
                     </DistrictName>
                   )}
                 </Actions>

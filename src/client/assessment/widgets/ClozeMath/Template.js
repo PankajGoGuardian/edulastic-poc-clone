@@ -1,10 +1,11 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-undef */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
-import { cloneDeep } from "lodash";
+import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
@@ -19,10 +20,11 @@ const { methods } = math;
 const initialMethod = {
   method: methods.EQUIV_SYMBOLIC,
   value: "",
-  options: {}
+  options: {},
+  id: ""
 };
 
-const initResponseIndexes = {
+const initResponseId = {
   inputs: [],
   maths: [],
   dropDowns: []
@@ -46,35 +48,23 @@ class Template extends Component {
   render() {
     const { t, item, setQuestionData } = this.props;
 
-    const _reduceResponseButtons = (mathInputIndexes = [], value) =>
-      mathInputIndexes.map(nextIndex => {
-        const newArray = [initialMethod];
-        const response = value.find((_, i) => nextIndex === i);
-        return response || cloneDeep(newArray);
-      });
-
-    const _reduceVlaues = (emIndexes = [], value) =>
-      emIndexes.map(emIndex => value.find((_, i) => emIndex === i) || "");
-
-    const _reduceResponseIndexes = tmpl => {
-      const newResponseIndexes = cloneDeep(initResponseIndexes);
-
+    const _reduceResponseIds = tmpl => {
+      const newResponseId = cloneDeep(initResponseId);
       if (!window.$) {
-        return newResponseIndexes;
+        return newResponseId;
       }
       const temp = tmpl || "";
-      const parsedHTML = $.parseHTML(temp);
+      const parsedHTML = $("<div />").html(temp);
 
-      function findResponseIndexes() {
-        let index = $(this).attr("index");
-        index = parseInt(index, 10);
+      function findResponseIndexes(index) {
+        const id = $(this).attr("id");
         const tagName = $(this)[0].tagName.toLowerCase();
         if (tagName === "textinput") {
-          newResponseIndexes.inputs.push({ index });
+          newResponseId.inputs.push({ index, id });
         } else if (tagName === "mathinput") {
-          newResponseIndexes.maths.push({ index });
+          newResponseId.maths.push({ index, id });
         } else if (tagName === "textdropdown") {
-          newResponseIndexes.dropDowns.push({ index });
+          newResponseId.dropDowns.push({ index, id });
         }
       }
 
@@ -82,30 +72,121 @@ class Template extends Component {
         .find("textinput, mathinput, textdropdown")
         .each(findResponseIndexes);
 
-      return newResponseIndexes;
+      return newResponseId;
     };
 
-    const _updateTemplate = (val, mathInputIndexes, dropDownIndexes, inputIndexes) => {
+    const _reduceValidation = (responseIds, validation) => {
+      const _allIds = flattenDeep(_keys(responseIds).map(key => responseIds[key]));
+      const _validation = cloneDeep(validation);
+
+      // remove correct answer for deleted responseƒ
+      _keys(_validation).map(key => {
+        if (!isArray(_validation[key].value)) return;
+        _validation[key].value.map((val, index) => {
+          if (key === "valid_response") {
+            if (!val[0].id) {
+              _validation[key].value.splice(index, 1);
+            }
+            const isExist = find(_allIds, resId => resId.id === val[0].id);
+            if (!isExist) {
+              _validation[key].value.splice(index, 1);
+            }
+          } else {
+            if (!val.id) {
+              _validation[key].value.splice(index, 1);
+            }
+            const isExist = find(_allIds, resId => resId.id === val.id);
+            if (!isExist) {
+              _validation[key].value.splice(index, 1);
+            }
+          }
+        });
+      });
+
+      // add new correct answers with response id
+      _keys(responseIds).map(responsekey => {
+        responseIds[responsekey].map(res => {
+          if (responsekey === "inputs") {
+            const isExist = find(_validation.valid_inputs.value, valid => valid.id === res.id);
+            if (!isExist) {
+              _validation.valid_inputs.value.push({
+                value: "",
+                id: res.id
+              });
+            }
+          }
+          if (responsekey === "maths") {
+            const isExist = find(_validation.valid_response.value, valid => valid[0].id === res.id);
+            if (!isExist) {
+              const newArray = [{ ...initialMethod, id: res.id }];
+              _validation.valid_response.value.push(newArray);
+            }
+          }
+          if (responsekey === "dropDowns") {
+            const isExist = find(_validation.valid_dropdown.value, valid => valid.id === res.id);
+            if (!isExist) {
+              _validation.valid_dropdown.value.push({
+                value: "",
+                id: res.id
+              });
+            }
+          }
+        });
+      });
+
+      // reduce alternate answers
+      if (isArray(_validation.alt_responses)) {
+        _validation.alt_responses.map(alt_res => {
+          if (_validation.valid_response.value.length > alt_res.value.length) {
+            alt_res.value.push(last(_validation.valid_response.value));
+          }
+          alt_res.value.map((altAnswer, index) => {
+            const isExist = find(_allIds, resId => resId.id === altAnswer[0].id);
+            if (!isExist) {
+              alt_res.value.splice(index, 1);
+            }
+          });
+        });
+      }
+
+      if (isArray(_validation.alt_inputs)) {
+        _validation.alt_inputs.map(alt_res => {
+          if (_validation.valid_inputs.value.length > alt_res.value.length) {
+            alt_res.value.push(last(_validation.valid_inputs.value));
+          }
+          alt_res.value.map((altAnswer, index) => {
+            const isExist = find(_allIds, resId => resId.id === altAnswer.id);
+            if (!isExist) {
+              alt_res.value.splice(index, 1);
+            }
+          });
+        });
+      }
+
+      if (isArray(_validation.alt_dropdowns)) {
+        _validation.alt_dropdowns.map(alt_res => {
+          if (_validation.valid_dropdown.value.length > alt_res.value.length) {
+            alt_res.value.push(last(_validation.valid_dropdown.value));
+          }
+          alt_res.value.map((altAnswer, index) => {
+            const isExist = find(_allIds, resId => resId.id === altAnswer.id);
+            if (!isExist) {
+              alt_res.value.splice(index, 1);
+            }
+          });
+        });
+      }
+
+      return _validation;
+    };
+
+    const _updateTemplate = val => {
       const newItem = produce(item, draft => {
         draft.template = val;
 
-        draft.validation.valid_response.value = _reduceResponseButtons(
-          mathInputIndexes,
-          draft.validation.valid_response.value
-        );
+        draft.response_ids = _reduceResponseIds(draft.template);
 
-        draft.validation.valid_dropdown.value = _reduceVlaues(dropDownIndexes, draft.validation.valid_dropdown.value);
-
-        draft.validation.valid_inputs.value = _reduceVlaues(inputIndexes, draft.validation.valid_inputs.value);
-
-        draft.response_indexes = _reduceResponseIndexes(draft.template);
-
-        if (Array.isArray(draft.validation.alt_responses)) {
-          draft.validation.alt_responses = draft.validation.alt_responses.map(res => {
-            res.value = _reduceResponseButtons(mathInputIndexes, res.value);
-            return res;
-          });
-        }
+        draft.validation = _reduceValidation(draft.response_ids, draft.validation);
       });
 
       newItem.validation.valid_response.value.map(res => {

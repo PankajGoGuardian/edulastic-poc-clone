@@ -12,23 +12,29 @@ const deleteIconPattern =
   "</g>" +
   "</svg>";
 
-const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettings, board) => {
+const snapMark = (mark, board) => {
   mark.on("up", () => {
+    const {
+      canvas,
+      layout: { linePosition, pointBoxPosition },
+      setValue
+    } = board.numberlineSettings;
+
     const setCoords = JXG.COORDS_BY_USER;
     let x;
     let y;
 
     const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-    const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
-    const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
+    const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
+    const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
 
-    if (mark.Y() >= containerY && mark.X() < graphParameters.xMin) {
+    if (mark.Y() >= containerY && mark.X() < canvas.xMin) {
       y = lineY;
       x = getClosestTick(mark.X(), board.numberlineAxis);
-    } else if (mark.Y() >= containerY && mark.X() > graphParameters.xMax) {
+    } else if (mark.Y() >= containerY && mark.X() > canvas.xMax) {
       y = lineY;
       x = getClosestTick(mark.X(), board.numberlineAxis);
-    } else if (mark.Y() >= containerY && mark.X() < graphParameters.xMax && mark.X() > graphParameters.xMin) {
+    } else if (mark.Y() >= containerY && mark.X() < canvas.xMax && mark.X() > canvas.xMin) {
       y = lineY;
       if (board.numberlineSnapToTicks) {
         x = getClosestTick(mark.X(), board.numberlineAxis);
@@ -56,16 +62,21 @@ const snapMark = (mark, graphParameters, setValue, lineSettings, containerSettin
   });
 };
 
-const onHandler = (board, coords, data, graphParameters, setValue, lineSettings, containerSettings) => {
+const onHandler = (board, coords, data) => {
+  const {
+    canvas,
+    layout: { linePosition, pointBoxPosition }
+  } = board.numberlineSettings;
+
   const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
-  const lineY = lineSettings.yMax - (yMeasure / 100) * lineSettings.position;
-  const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
+  const lineY = canvas.yMax - (yMeasure / 100) * linePosition;
+  const containerY = canvas.yMax - (yMeasure / 100) * pointBoxPosition;
   const [xMin, , , yMin] = board.$board.getBoundingBox();
   let x = xMin;
   let y = yMin;
   if (coords) {
     x = coords.position;
-    y = Number.isNaN(Number.parseFloat(coords.y)) ? lineY : coords.y;
+    y = lineY;
   }
 
   let content = replaceLatexesWithMathHtml(data.text, latex => {
@@ -86,7 +97,7 @@ const onHandler = (board, coords, data, graphParameters, setValue, lineSettings,
   });
 
   if (!coords || !coords.fixed) {
-    snapMark(mark, graphParameters, setValue, lineSettings, containerSettings, board);
+    snapMark(mark, board);
   }
 
   let cssClass = `fr-box mark ${coords && coords.className ? coords.className : ""}`;
@@ -109,7 +120,7 @@ const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
   const containerY = containerSettings.yMax - (yMeasure / 100) * containerSettings.position;
 
   const polygonCoords = [[xMin, containerY], [xMin, -1.75], [xMax, -1.75], [xMax, containerY]];
-  const polygon = board.$board.create("polygon", polygonCoords, {
+  return board.$board.create("polygon", polygonCoords, {
     fixed: true,
     withLines: false,
     fillOpacity: 1,
@@ -118,7 +129,6 @@ const renderMarksContainer = (board, xMin, xMax, containerSettings) => {
       visible: false
     }
   });
-  return polygon;
 };
 
 const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
@@ -127,8 +137,8 @@ const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
 };
 
 const getConfig = mark => ({
+  mounted: mark.visProp.cssclass.includes("mounted"),
   position: mark.X(),
-  y: mark.Y(),
   point: mark.labelHTML,
   id: mark.id
 });

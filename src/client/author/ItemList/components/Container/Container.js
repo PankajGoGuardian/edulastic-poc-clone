@@ -2,12 +2,15 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
+import { debounce } from "lodash";
+
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Container, Element, ListItems, SpinContainer, PaginationContainer } from "./styled";
 import Item from "../Item/Item";
+import { uniq } from "lodash";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
 import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";
@@ -35,6 +38,13 @@ import { addItemToCartAction } from "../../ducks";
 import FilterButton from "../FilterButton/FilterButton";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
 import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import {
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  updateDefaultSubjectAction,
+  updateDefaultGradesAction
+} from "../../../ItemDetail/ducks";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -66,9 +76,21 @@ class Contaier extends Component {
 
   componentDidMount() {
     const { search } = this.state;
-    const { receiveItems, curriculums, getCurriculums, match = {}, limit, setDefaultTestData } = this.props;
+    const {
+      receiveItems,
+      curriculums,
+      getCurriculums,
+      match = {},
+      limit,
+      setDefaultTestData,
+      defaultGrades,
+      defaultSubject,
+      interestedCurriculums,
+      clearDictStandards
+    } = this.props;
     const { params = {} } = match;
     setDefaultTestData();
+    clearDictStandards();
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
       const { filter = "" } = (getMatchingObj.length && getMatchingObj[0]) || {};
@@ -84,7 +106,34 @@ class Contaier extends Component {
       });
       receiveItems({ ...updatedSearch, filter }, 1, limit);
     } else {
-      receiveItems(search, 1, limit);
+      let grades = defaultGrades;
+      let subject = defaultSubject;
+      let filteredInterestedCurriculum;
+      if (!grades && subject === null) {
+        filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
+        if (!filteredInterestedCurriculum.length) {
+          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
+          if (!filteredInterestedCurriculum.length) {
+            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+            if (!filteredInterestedCurriculum.length) {
+              filteredInterestedCurriculum = interestedCurriculums;
+            }
+          }
+        }
+
+        grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
+        grades = grades.length ? uniq(grades.join(",").split(",")) : [];
+        subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+      }
+      grades = grades || [];
+      this.setState({
+        search: {
+          ...search,
+          grades,
+          subject
+        }
+      });
+      receiveItems({ ...search, grades, subject }, 1, limit);
     }
     if (curriculums.length === 0) {
       getCurriculums();
@@ -148,14 +197,21 @@ class Contaier extends Component {
 
   handleSearchFieldChange = fieldName => value => {
     const { search } = this.state;
+    const { updateDefaultGrades, udpateDefaultSubject, clearDictStandards, getCurriculumStandards } = this.props;
     let updatedKeys = {};
     if (fieldName === "curriculumId") {
       this.handleSearchFieldChangeCurriculumId(value);
       return;
     }
+    if (fieldName === "grades" && search.curriculumId) {
+      clearDictStandards();
+      getCurriculumStandards(search.curriculumId, value, "");
+    }
     if (fieldName === "subject") {
       const { clearDictStandards } = this.props;
       clearDictStandards();
+      storeInLocalStorage("defaultSubject", value);
+      udpateDefaultSubject(value);
       updatedKeys = {
         ...search,
         [fieldName]: value,
@@ -168,11 +224,32 @@ class Contaier extends Component {
         [fieldName]: value
       };
     }
+    if (fieldName === "grades") {
+      updateDefaultGrades(value);
+      storeInLocalStorage("defaultGrades", value);
+    }
     this.setState(
       {
         search: updatedKeys
       },
       this.handleSearch
+    );
+  };
+
+  searchDebounce = debounce(this.handleSearch, 500);
+
+  handleSearchInputChange = e => {
+    const { search } = this.state;
+    const searchString = e.target.value;
+    const updatedKeys = {
+      ...search,
+      searchString
+    };
+    this.setState(
+      {
+        search: updatedKeys
+      },
+      this.searchDebounce
     );
   };
 
@@ -283,6 +360,7 @@ class Contaier extends Component {
         <Container>
           <ItemFilter
             onSearchFieldChange={this.handleSearchFieldChange}
+            onSearchInputChange={this.handleSearchInputChange}
             onSearch={this.handleSearch}
             onClearSearch={this.handleClearSearch}
             onLabelSearch={this.handleLabelSearch}
@@ -380,6 +458,8 @@ const enhance = compose(
       curriculums: getCurriculumsListSelector(state),
       curriculumStandards: getStandardsListSelector(state),
       selectedCartItems: getSelectedItemSelector(state).data,
+      defaultGrades: getDefaultGradesSelector(state),
+      defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {
@@ -389,6 +469,8 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       setDefaultTestData: setDefaultTestDataAction,
+      udpateDefaultSubject: updateDefaultSubjectAction,
+      updateDefaultGrades: updateDefaultGradesAction,
       addItemToCart: addItemToCartAction
     }
   )

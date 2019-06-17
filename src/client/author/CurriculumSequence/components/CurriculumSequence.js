@@ -319,7 +319,7 @@ class CurriculumSequence extends Component {
       history
     } = this.props;
 
-    const lastThreeRecentPlaylist = recentPlaylists.slice(0, 3);
+    const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit

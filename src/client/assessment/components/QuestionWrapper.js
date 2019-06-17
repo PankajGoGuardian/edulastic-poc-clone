@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isUndefined } from "lodash";
+import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
@@ -190,7 +190,7 @@ class QuestionWrapper extends Component {
     }));
   };
 
-  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight) => {
+  fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
     this.setState(state => {
       const sectionState = state[section];
       const found = sectionState.filter(el => el.label === label && el.offset !== offset);
@@ -212,14 +212,24 @@ class QuestionWrapper extends Component {
 
       // push of section to array
       return {
-        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight })
+        [section]: sectionState.concat({ label, offset, offsetBottom, haveDesk, deskHeight, id })
       };
     });
   };
 
-  cleanSections = () => {
-    this.setState({ main: [], advanced: [], activeTab: 0 });
+  cleanSections = sectionId => {
+    if (!sectionId) return;
+
+    this.setState(({ main }) => {
+      return { main: main.filter(item => item.id !== sectionId) };
+    });
   };
+
+  static getDerivedStateFromProps(props) {
+    if (props.view !== "edit") {
+      return { main: [], advanced: [], activeTab: 0, advancedAreOpen: false };
+    }
+  }
 
   render() {
     const {
@@ -240,10 +250,12 @@ class QuestionWrapper extends Component {
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
+    const timeSpent = get(data, "activity.timeSpent", false);
     const { main, advanced, activeTab, advancedAreOpen } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
 
+    const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const studentName = data.activity && data.activity.studentName;
     const presentationModeProps = {
       isPresentationMode,
@@ -284,6 +296,7 @@ class QuestionWrapper extends Component {
           >
             <PaperWrapper
               disabled={disabled}
+              isV1Multipart={isV1Multipart}
               style={{
                 width: "-webkit-fill-available",
                 display: "flex",
@@ -301,7 +314,13 @@ class QuestionWrapper extends Component {
                 />
               )}
               <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
-                {timespent ? <Timespent timespent={timespent} view={view} /> : null}
+                {showFeedback && timeSpent && (
+                  <p style={{ fontSize: 19, color: "grey" }}>
+                    <i class="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
+                    {round(timeSpent / 1000, 1)}s
+                  </p>
+                )}
+
                 <Question
                   {...restProps}
                   setQuestionData={setQuestionData}

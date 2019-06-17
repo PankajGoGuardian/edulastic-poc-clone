@@ -20,6 +20,8 @@ import { Pointer } from "../../styled/Pointer";
 import { Triangle } from "../../styled/Triangle";
 import { Point } from "../../styled/Point";
 
+import { clozeImage, canvasDimensions } from "@edulastic/constants";
+
 class Display extends Component {
   constructor(props) {
     super(props);
@@ -83,18 +85,9 @@ class Display extends Component {
       item,
       showQuestionNumber,
       qIndex,
-      maxHeight,
-      maxWidth,
       imageOptions
     } = this.props;
     const { userAnswers } = this.state;
-    const width = !maxWidth
-      ? item.imagescale
-        ? this.getEmWidth()
-        : imageWidth
-      : imageWidth < 700
-      ? imageWidth
-      : maxWidth;
     const { imageHeight } = item;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
@@ -107,14 +100,26 @@ class Display extends Component {
     };
 
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
-        <StyledPreviewContainer data-cy="image-text-answer-board" width={width} height={maxHeight} maxWidth={maxWidth}>
+      <StyledPreviewTemplateBox
+        fontSize={fontSize}
+        maxHeight={canvasDimensions.maxHeight}
+        height={canvasDimensions.maxHeight}
+        maxWidth={canvasDimensions.maxWidth}
+        width={canvasDimensions.maxWidth}
+      >
+        <StyledPreviewContainer
+          data-cy="image-text-answer-board"
+          width={canvasDimensions.maxWidth}
+          height={canvasDimensions.maxHeight}
+          maxWidth={canvasDimensions.maxWidth}
+        >
           <StyledPreviewImage
             src={imageUrl || ""}
-            width={width}
+            width={imageWidth}
             height={imageHeight}
-            maxHeight={maxHeight}
-            maxWidth={maxWidth}
+            heighcanvasDimensionst={imageHeight}
+            maxHeight={clozeImage.maxHeight}
+            maxWidth={clozeImage.maxWidth}
             alt={imageAlterText}
             style={{
               position: "absolute",
@@ -187,7 +192,7 @@ class Display extends Component {
         responseBtnStyle={responseBtnStyle}
         backgroundColor={item.background}
         imageUrl={imageUrl || ""}
-        imageWidth={width}
+        imageWidth={imageWidth}
         imageHeight={imageHeight}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
@@ -197,8 +202,6 @@ class Display extends Component {
         options={options}
         userSelections={userAnswers}
         evaluation={evaluation}
-        maxHeight={maxHeight}
-        maxWidth={maxWidth}
         uiStyle={uiStyle}
       />
     );
@@ -216,13 +219,13 @@ class Display extends Component {
     return (
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <TemplateBoxContainer>
+        <TemplateBoxContainer flexDirection={"column"}>
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>
+          {answerBox}
         </TemplateBoxContainer>
-        {answerBox}
       </StyledDisplayContainer>
     );
   }

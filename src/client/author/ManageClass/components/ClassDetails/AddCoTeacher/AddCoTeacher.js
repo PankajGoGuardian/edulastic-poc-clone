@@ -4,14 +4,12 @@ import PropTypes from "prop-types";
 import { get, isNull } from "lodash";
 import { Select, message } from "antd";
 import { StyledModal, Title, ActionButton, Description } from "./styled";
-import { receiveTeachersListAction } from "../../../../Teacher/ducks";
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
     handleCancel: PropTypes.func.isRequired,
     teachers: PropTypes.array.isRequired,
     selectedStudent: PropTypes.array.isRequired,
-    loadTeachers: PropTypes.func.isRequired,
     isOpen: PropTypes.bool
   };
 
@@ -22,16 +20,6 @@ class AddCoTeacher extends React.Component {
   state = {
     teacherIndex: null
   };
-
-  componentDidMount() {
-    const { loadTeachers } = this.props;
-    loadTeachers({
-      type: "DISTRICT",
-      search: {
-        role: "teacher"
-      }
-    });
-  }
 
   onChangeHandler = teacherIndex => this.setState({ teacherIndex });
 
@@ -81,23 +69,19 @@ class AddCoTeacher extends React.Component {
           onChange={this.onChangeHandler}
           notFoundContent="Please enter 3 or more characters"
         >
-          {teachers.map((el, index) => (
-            <Select.Option key={index} value={index}>
-              {`${el.firstName} ${el.lastName}`}
-            </Select.Option>
-          ))}
+          {teachers.length > 0 &&
+            teachers.map((el, index) => (
+              <Select.Option key={index} value={index}>
+                {`${el.firstName} ${el.lastName}`}
+              </Select.Option>
+            ))}
         </Select>
       </StyledModal>
     );
   }
 }
 
-export default connect(
-  state => ({
-    selectedStudent: get(state, "manageClass.selectedStudent", []),
-    teachers: get(state, "teacherReducer.data", [])
-  }),
-  {
-    loadTeachers: receiveTeachersListAction
-  }
-)(AddCoTeacher);
+export default connect(state => ({
+  selectedStudent: get(state, "manageClass.selectedStudent", []),
+  teachers: get(state, "teacherReducer.data", [])
+}))(AddCoTeacher);

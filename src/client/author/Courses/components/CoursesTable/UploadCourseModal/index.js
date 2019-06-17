@@ -67,7 +67,7 @@ class UploadCourseModal extends React.Component {
   handleCSVChange = event => {
     const { uploadCSVCourse, setPageStatus } = this.props;
     const file = event.target.files[0];
-    if (file.type === "text/csv") {
+    if (file.type === "text/csv" || file.name.indexOf(".csv") !== -1) {
       const fileReader = new FileReader();
       const scope = this;
 

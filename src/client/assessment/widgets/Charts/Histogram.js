@@ -14,6 +14,7 @@ import {
 } from "./helpers";
 import Hists from "./components/Hists";
 import VerticalLines from "./components/VerticalLines";
+import BarsAxises from "./components/BarsAxises";
 
 const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
   const { width, height, margin, showGridlines } = gridParams;
@@ -94,7 +95,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <VerticalLines
+      <BarsAxises
         lines={data}
         gridParams={gridParams}
         displayAxisLabel={false}

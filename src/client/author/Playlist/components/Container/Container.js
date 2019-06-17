@@ -10,7 +10,7 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-
+import { uniq } from "lodash";
 import {
   ScrollBox,
   Container,
@@ -35,7 +35,11 @@ import {
   getPlaylistsCountSelector,
   getPlaylistsLimitSelector,
   getPlaylistsPageSelector,
-  receivePublishersAction
+  receivePublishersAction,
+  getDefaultGradesSelector,
+  getDefaultSubjectSelector,
+  updateDefaultGradesAction,
+  updateDefaultSubjectAction
 } from "../../ducks";
 
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
@@ -43,6 +47,8 @@ import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
 import { receiveRecentPlayListsAction } from "../../ducks";
+import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -110,6 +116,9 @@ class TestList extends Component {
       receiveRecentPlayLists,
       limit,
       location,
+      interestedCurriculums,
+      defaultGrades,
+      defaultSubject,
       match: { params = {} }
     } = this.props;
 
@@ -150,7 +159,34 @@ class TestList extends Component {
         search
       });
     } else {
-      receivePlaylists({ page: 1, limit, search });
+      let grades = defaultGrades;
+      let subject = defaultSubject;
+      let filteredInterestedCurriculum;
+      if (!grades && subject === null) {
+        filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
+        if (!filteredInterestedCurriculum.length) {
+          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
+          if (!filteredInterestedCurriculum.length) {
+            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
+            if (!filteredInterestedCurriculum.length) {
+              filteredInterestedCurriculum = interestedCurriculums;
+            }
+          }
+        }
+
+        grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
+        grades = grades.length ? uniq(grades.join(",").split(",")) : [];
+        subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+      }
+      grades = grades || [];
+      this.setState({
+        search: {
+          ...search,
+          grades,
+          subject
+        }
+      });
+      receivePlaylists({ page: 1, limit, search: { ...search, grades, subject } });
     }
     receiveRecentPlayLists();
   }
@@ -184,13 +220,20 @@ class TestList extends Component {
 
   handleFiltersChange = (name, value) => {
     const { search } = this.state;
-    const { receivePlaylists, history, limit, page } = this.props;
+    const { receivePlaylists, history, limit, page, updateDefaultGrades, updateDefaultSubject } = this.props;
     let updatedKeys = {};
 
     updatedKeys = {
       ...search,
       [name]: value
     };
+    if (name === "subject") {
+      updateDefaultSubject(value);
+      storeInLocalStorage("defaultSubject", value);
+    } else if (name === "grades") {
+      updateDefaultGrades(value);
+      storeInLocalStorage("defaultGrades", value);
+    }
     this.setState(
       {
         search: updatedKeys
@@ -478,12 +521,17 @@ const enhance = compose(
       count: getPlaylistsCountSelector(state),
       creating: getTestsCreatingSelector(state),
       userId: get(state, "user.user._id", false),
+      defaultGrades: getDefaultGradesSelector(state),
+      defaultSubject: getDefaultSubjectSelector(state),
+      interestedCurriculums: getInterestedCurriculumsSelector(state),
       t: PropTypes.func.isRequired
     }),
     {
       receivePlaylists: receivePlaylistsAction,
       receivePublishers: receivePublishersAction,
       clearTestData: clearTestDataAction,
+      updateDefaultGrades: updateDefaultGradesAction,
+      updateDefaultSubject: updateDefaultSubjectAction,
       receiveRecentPlayLists: receiveRecentPlayListsAction
     }
   )

@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
@@ -19,12 +18,20 @@ import {
   StyledClassName
 } from "./styled";
 
-import AddStudentModal from "./AddStudentModal/AddStudentModal";
+import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import EditStudentModal from "./EditStudentModal/EditStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
+import AddStudentsToOtherClass from "./AddStudentToOtherClass";
 
-import { addMultiStudentsRequestAction, setStudentsDetailsModalVisibleAction } from "../../ducks";
+import {
+  addMultiStudentsRequestAction,
+  setStudentsDetailsModalVisibleAction,
+  getAddStudentsToOtherClassSelector,
+  setAddStudentsToOtherClassVisiblityAction,
+  addStudentsToOtherClassAction,
+  fetchClassDetailsUsingCodeAction
+} from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
 
@@ -48,7 +55,7 @@ import {
   setRoleAction
 } from "../../../SchoolAdmin/ducks";
 
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
+import { receiveSchoolsAction } from "../../../Schools/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
 
@@ -191,13 +198,14 @@ class StudentTable extends Component {
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { setAddStudentsToOtherClassVisiblity } = this.props;
     if (e.key === "add student") {
       this.setState({ addStudentModalVisible: true });
     }
     if (e.key === "edit user") {
-      if (selectedRowKeys.length == 0) {
+      if (selectedRowKeys.length === 0) {
         message.error("Please select user to edit.");
-      } else if (selectedRowKeys.length == 1) {
+      } else if (selectedRowKeys.length === 1) {
         this.onEditStudent(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
         message.error("Please select single user to edit.");
@@ -211,15 +219,26 @@ class StudentTable extends Component {
       } else {
         message.error("Please select users to delete.");
       }
-    } else if (e.key === "add students to another class") {
+    } else if (e.key === "addStudentsToAnotherClass") {
+      if (selectedRowKeys.length) {
+        setAddStudentsToOtherClassVisiblity(true);
+      } else {
+        message.error("Please select atleast 1 user");
+      }
     }
   };
 
-  addStudent = addStudentData => {
-    const { userOrgId, createAdminUser } = this.props;
-    addStudentData.role = "student";
-    addStudentData.districtId = userOrgId;
-    createAdminUser(addStudentData);
+  addStudent = ({ fullName, confirmPwd, ...rest }) => {
+    const { userOrgId: districtId, createAdminUser } = this.props;
+    const [firstName, lastName] = fullName.split(" ");
+    const data = {
+      role: "student",
+      districtId,
+      firstName,
+      lastName,
+      ...rest
+    };
+    createAdminUser(data);
     this.setState({ addStudentModalVisible: false });
   };
 
@@ -295,9 +314,13 @@ class StudentTable extends Component {
       loadAdminData,
       addFilter,
       removeFilter,
-      schoolsData,
-      classList,
-      studentDetailsModalVisible
+      // schoolsData,
+      // classList,
+      studentDetailsModalVisible,
+      addStudentsToOtherClassData,
+      setAddStudentsToOtherClassVisiblity,
+      putStudentsToOtherClass,
+      fetchClassDetailsUsingCode
     } = this.props;
 
     const actionMenu = (
@@ -305,7 +328,7 @@ class StudentTable extends Component {
         <Menu.Item key="add student">Add Student</Menu.Item>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
-        <Menu.Item key="add student to another class">Add student(s) to another class</Menu.Item>
+        <Menu.Item key="addStudentsToAnotherClass">Add student(s) to another class</Menu.Item>
       </Menu>
     );
 
@@ -328,7 +351,7 @@ class StudentTable extends Component {
           <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
             Show current users only
           </Checkbox>
-          <StyledActionDropDown overlay={actionMenu}>
+          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
             <Button>
               Actions <Icon type="down" />
             </Button>
@@ -402,11 +425,10 @@ class StudentTable extends Component {
         )}
         {addStudentModalVisible && (
           <AddStudentModal
-            modalVisible={addStudentModalVisible}
-            addStudent={this.addStudent}
-            closeModal={this.closeAddStudentModal}
-            schoolsData={schoolsData}
-            classData={classList}
+            handleAdd={this.addStudent}
+            handleCancel={this.closeAddStudentModal}
+            isOpen={addStudentModalVisible}
+            submitted={false}
           />
         )}
         {studentDetailsModalVisible && (
@@ -434,6 +456,12 @@ class StudentTable extends Component {
             }
           />
         )}
+        <AddStudentsToOtherClass
+          {...addStudentsToOtherClassData}
+          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
+          onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+        />
       </StyledTableContainer>
     );
   }
@@ -443,13 +471,14 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      schoolsData: getSchoolsSelector(state),
-      classList: get(state, ["classesReducer", "data"], []),
+      // schoolsData: getSchoolsSelector(state),
+      // classList: get(state, ["classesReducer", "data"], []),
       studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false),
       adminUsersData: getAdminUsersDataSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
-      filters: getFiltersSelector(state)
+      filters: getFiltersSelector(state),
+      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state)
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -473,22 +502,12 @@ const enhance = compose(
       changeFilterValue: changeFilterValueAction,
       addFilter: addFilterAction,
       removeFilter: removeFilterAction,
-      setRole: setRoleAction
+      setRole: setRoleAction,
+      setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
+      putStudentsToOtherClass: addStudentsToOtherClassAction,
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
     }
   )
 );
 
 export default enhance(StudentTable);
-
-// StudentTable.propTypes = {
-//   studentsList: PropTypes.array.isRequired,
-//   loadStudentsListData: PropTypes.func.isRequired,
-//   updateStudent: PropTypes.func.isRequired,
-//   deleteStudents: PropTypes.func.isRequired,
-//   setSearchName: PropTypes.func.isRequired,
-//   setFilters: PropTypes.func.isRequired,
-//   userOrgId: PropTypes.string.isRequired,
-//   loadSchoolsData: PropTypes.func.isRequired,
-//   schoolsData: PropTypes.array.isRequired,
-//   loadClassList: PropTypes.func.isRequired
-// };

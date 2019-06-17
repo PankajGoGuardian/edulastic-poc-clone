@@ -35,8 +35,8 @@ class ClozeMathAnswer extends Component {
 
     const { showAdditionals } = this.state;
 
-    const _changeMethod = (methodValueIndex, methodIndex) => (prop, val) => {
-      onChange({ methodValueIndex, methodIndex, prop, value: val });
+    const _changeMethod = (methodId, methodIndex) => (prop, val) => {
+      onChange({ methodId, methodIndex, prop, value: val });
     };
 
     const handleChangeAdditionals = (method, direction) => {
@@ -73,21 +73,21 @@ class ClozeMathAnswer extends Component {
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
           {answers.map(answer => (
-            <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.targetIndex}`}>
+            <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
               {answer.value.map((method, methodIndex) => (
                 <MathFormulaAnswerMethod
-                  onDelete={() => onDelete({ methodIndex, methodValueIndex: answer.targetIndex })}
+                  onDelete={() => onDelete({ methodIndex, methodId: method.id })}
                   key={methodIndex + answer.index}
                   item={item}
                   index={methodIndex}
                   answer={method.value}
                   answerIndex={methodIndex}
-                  onChange={_changeMethod(answer.targetIndex, methodIndex)}
+                  onChange={_changeMethod(method.id, methodIndex)}
                   showAdditionals={showAdditionals}
                   handleChangeAdditionals={handleChangeAdditionals}
                   clearAdditionals={clearAdditionals}
                   onAdd={onAdd}
-                  onAddIndex={answer.targetIndex}
+                  onAddIndex={method.id}
                   {...method}
                 />
               ))}

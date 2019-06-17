@@ -81,16 +81,15 @@ class ClozeText extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        const response = {
+        const validAnswers = cloneDeep(draft.validation.valid_response.value);
+        validAnswers.map(answer => {
+          answer.value = "";
+          return answer;
+        });
+        draft.validation.alt_responses.push({
           score: 1,
-          value: []
-        };
-
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
-        } else {
-          draft.validation.alt_responses = [response];
-        }
+          value: validAnswers
+        });
       })
     );
   };
@@ -181,6 +180,7 @@ class ClozeText extends Component {
                     question={previewStimulus}
                     uiStyle={uiStyle}
                     templateMarkUp={itemForEdit.templateMarkUp}
+                    responseIds={item.response_ids}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     cleanSections={cleanSections}
@@ -238,6 +238,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                responseIds={item.response_ids}
                 showIndex
               />
             )}
@@ -257,6 +258,7 @@ class ClozeText extends Component {
                 evaluation={evaluation}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                responseIds={item.response_ids}
                 showIndex
                 {...restProps}
               />
@@ -277,6 +279,7 @@ class ClozeText extends Component {
                 onChange={this.handleAddAnswer}
                 instructorStimulus={itemForPreview.instructor_stimulus}
                 item={itemForPreview}
+                responseIds={item.response_ids}
                 showIndex={false}
               />
             )}

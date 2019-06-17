@@ -11,7 +11,13 @@ import {
   RECEIVE_STUDENT_QUESTION_REQUEST,
   RECEIVE_CLASS_QUESTION_REQUEST,
   SET_MARK_AS_DONE,
-  UPDATE_ASSIGNMENT_STATUS
+  UPDATE_ASSIGNMENT_STATUS,
+  OPEN_ASSIGNMENT,
+  CLOSE_ASSIGNMENT,
+  UPDATE_OPEN_ASSIGNMENTS,
+  UPDATE_CLOSE_ASSIGNMENTS,
+  SAVE_OVERALL_FEEDBACK,
+  UPDATE_OVERALL_FEEDBACK
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -73,7 +79,37 @@ export const markAsDoneAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId }
 });
 
+export const openAssignmentAction = (assignmentId, classId) => ({
+  type: OPEN_ASSIGNMENT,
+  payload: { assignmentId, classId }
+});
+
+export const closeAssignmentAction = (assignmentId, classId) => ({
+  type: CLOSE_ASSIGNMENT,
+  payload: { assignmentId, classId }
+});
+
 export const updateAssignmentStatusAction = status => ({
   type: UPDATE_ASSIGNMENT_STATUS,
   payload: status
+});
+
+export const updateOpenAssignmentsAction = classId => ({
+  type: UPDATE_OPEN_ASSIGNMENTS,
+  payload: { classId }
+});
+
+export const updateCloseAssignmentsAction = classId => ({
+  type: UPDATE_CLOSE_ASSIGNMENTS,
+  payload: { classId }
+});
+
+export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => ({
+  type: SAVE_OVERALL_FEEDBACK,
+  payload: { testActivityId, groupId, feedback }
+});
+
+export const updateOverallFeedbackAction = payload => ({
+  type: UPDATE_OVERALL_FEEDBACK,
+  payload
 });

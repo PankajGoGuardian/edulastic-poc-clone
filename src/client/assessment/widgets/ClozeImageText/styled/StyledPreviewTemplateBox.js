@@ -5,6 +5,9 @@ export const StyledPreviewTemplateBox = styled.div.attrs({
 })`
   fontsize: ${props =>
     props.smallSize ? props.theme.widgets.clozeImageText.previewTemplateBoxSmallFontSize : props.fontSize};
-  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight} !important`)};
-  height: ${({ height }) => (!height ? null : height)};
+  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight}px`)};
+  max-width: ${({ maxWidth }) => (!maxWidth ? null : `${maxWidth}px`)};
+  height: ${({ height }) => (!height ? null : `${height}px`)};
+  width: ${({ width }) => (!width ? null : `${width}px`)};
+  margin: auto;
 `;

@@ -187,7 +187,7 @@ class FeedbackRight extends Component {
               onChange={this.onChangeScore}
               onBlur={this.preCheckSubmit}
               value={score}
-              disabled={!activity}
+              disabled={!activity || isPresentationMode}
               innerRef={this.scoreInput}
               onKeyDown={this.arrowKeyHandler}
               pattern="[0-9]+([\.,][0-9]+)?"
@@ -203,7 +203,7 @@ class FeedbackRight extends Component {
               onBlur={this.preCheckSubmit}
               value={feedback}
               style={{ height: 240, flexGrow: 2 }}
-              disabled={!activity}
+              disabled={!activity || isPresentationMode}
               onKeyDown={this.onKeyDownFeedback}
             />
           </Fragment>

@@ -156,6 +156,7 @@ class ClozeDragDrop extends Component {
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
+                    responseIDs={item.response_ids}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -217,6 +218,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
+                responseIDs={item.response_ids}
               />
             )}
             {previewTab === "show" && (
@@ -237,6 +239,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 validation={item.validation}
                 evaluation={evaluation}
+                responseIDs={item.response_ids}
                 {...restProps}
               />
             )}
@@ -258,6 +261,7 @@ class ClozeDragDrop extends Component {
                 templateMarkUp={itemForPreview.templateMarkUp}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
+                responseIDs={item.response_ids}
               />
             )}
           </Wrapper>

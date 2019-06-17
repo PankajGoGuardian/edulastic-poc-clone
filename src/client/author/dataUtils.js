@@ -10,7 +10,10 @@ export const getTestAuthorName = item => {
 
 export const getTestItemAuthorName = item => {
   const { owner = "", collectionName = "", authors = [] } = item;
-  if (collectionName) return collectionName;
+  if (collectionName) {
+    const collectionNameMap = { Great_Minds_DATA: "Eureka Math", PROGRESS_DATA: "PROGRESS Bank" };
+    return collectionNameMap[collectionName] ? collectionNameMap[collectionName] : collectionName;
+  }
   if (owner) {
     const author = authors.find(item => item._id === owner) || {};
     return author.name || authors[0].name;

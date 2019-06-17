@@ -1,22 +1,13 @@
 import React, { Fragment, useMemo } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-//import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { CLEAR, EDIT, PREVIEW } from "../../constants/constantsForQuestions";
 import { replaceVariables } from "../../utils/variables";
 
 import EditEssayRichText from "./EditEssayRichText";
 import EssayRichTextPreview from "./EssayRichTextPreview";
-
-/**
- * FIXME: undetectable circular dependency issues. for now putting the action definition directly
- */
-export const UPDATE_QUESTION = "[author questions] update questions";
-export const setQuestionDataAction = question => ({
-  type: UPDATE_QUESTION,
-  payload: question
-});
 
 const EssayRichText = props => {
   const { item, view } = props;

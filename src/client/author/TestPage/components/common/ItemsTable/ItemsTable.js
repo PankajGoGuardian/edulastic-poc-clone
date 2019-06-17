@@ -63,7 +63,7 @@ const ItemsTable = ({
     const stimulus =
       item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
         ? item.data.questions[0].stimulus
-        : item._id;
+        : "Click here to view the question detail.";
     const main = {
       title: item._id,
       id: item._id,

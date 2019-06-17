@@ -15,7 +15,7 @@ import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize, topAndLeftRatio, calculateRatio, fromStringToNumberPx } from "../../utils/helpers";
-
+import { clozeImage } from "@edulastic/constants";
 import { response } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
@@ -63,6 +63,7 @@ class Display extends Component {
       configureOptions,
       preview,
       options,
+
       uiStyle,
       showAnswer,
       checkAnswer,
@@ -81,12 +82,11 @@ class Display extends Component {
       theme,
       showQuestionNumber,
       qIndex,
-      maxHeight,
-      maxWidth,
       imageOptions
     } = this.props;
     const { userAnswers } = this.state;
     const { shuffleOptions } = configureOptions;
+    const { maxHeight, maxWidth } = clozeImage;
     let newOptions;
     if (preview && shuffleOptions) {
       newOptions = this.shuffle(options);
@@ -105,15 +105,10 @@ class Display extends Component {
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
-        <StyledPreviewContainer
-          smallSize={smallSize}
-          width={!maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : maxWidth}
-          height={maxHeight}
-          maxWidth={maxWidth}
-        >
+        <StyledPreviewContainer smallSize={smallSize} width={maxWidth} height={maxHeight} maxWidth={maxWidth}>
           <StyledPreviewImage
             src={imageUrl || ""}
-            width={!maxWidth ? calculateRatio(imagescale, fontsize, imageWidth) : imageWidth}
+            width={imageWidth}
             alt={imageAlterText}
             maxHeight={maxHeight}
             maxWidth={maxWidth}
@@ -256,7 +251,7 @@ class Display extends Component {
     return (
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer smallSize={smallSize} flexDirection={"column"}>

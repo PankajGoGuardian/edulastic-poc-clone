@@ -28,7 +28,8 @@ const ShortTextPreview = ({
   userAnswer,
   theme,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  evaluation
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? "" : userAnswer);
   const [showCharacterMap, setShowCharacterMap] = useState(false);
@@ -64,41 +65,13 @@ const ShortTextPreview = ({
     });
   };
 
-  const validate = () => {
-    let flag = false;
-
-    if (item.validation.valid_response.value === text) {
-      return true;
-    }
-
-    if (
-      item.validation.valid_response.matching_rule === CONTAINS &&
-      text &&
-      text.toLowerCase().includes(item.validation.valid_response.value.toLowerCase())
-    ) {
-      return true;
-    }
-
-    item.validation.alt_responses.forEach(ite => {
-      if (ite.value === text) {
-        flag = true;
-      }
-
-      if (ite.matching_rule === CONTAINS && text && text.toLowerCase().includes(ite.value.toLowerCase())) {
-        flag = true;
-      }
-    });
-
-    return flag;
-  };
-
   const preview = previewTab === CHECK || previewTab === SHOW;
 
   const style = {
     paddingRight: 35,
     fontSize: getFontSize(get(item, "ui_style.fontsize")),
     ...(preview
-      ? validate()
+      ? evaluation
         ? { background: theme.widgets.shortText.correctInputBgColor }
         : { background: theme.widgets.shortText.incorrectInputBgColor }
       : {})
@@ -111,7 +84,7 @@ const ShortTextPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 

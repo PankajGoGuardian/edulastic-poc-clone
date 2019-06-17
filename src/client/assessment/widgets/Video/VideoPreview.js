@@ -20,7 +20,7 @@ const { CurrentTime, Duration } = controls;
 const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
   <div>
     <QuestionTitleWrapper>
-      {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+      {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
     </QuestionTitleWrapper>
     {item.summary && <Label>{item.summary}</Label>}

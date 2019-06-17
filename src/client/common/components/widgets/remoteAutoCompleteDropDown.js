@@ -2,6 +2,7 @@
 import React, { useState, useRef } from "react";
 import { AutoComplete, Input, Icon, Menu } from "antd";
 import styled from "styled-components";
+import { some } from "lodash";
 
 import { useInternalEffect } from "../../../author/Reports/common/hooks/useInternalEffect";
 
@@ -32,7 +33,10 @@ const RemoteAutocompleteDropDown = ({
   existingLabel = "Existing",
   placeholder = "",
   ItemTemplate = null,
-  minHeight = "30px"
+  minHeight = "30px",
+  filterKeys = ["title"],
+  setSelectedOnDataChange = false,
+  isLoading = false
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -49,20 +53,22 @@ const RemoteAutocompleteDropDown = ({
 
   useInternalEffect(() => {
     let item = null;
-    if (data.length) {
-      item = data.find((item, index) => {
-        if (item.key === selected.key) {
-          return true;
+    if (setSelectedOnDataChange) {
+      if (data.length) {
+        item = data.find((item, index) => {
+          if (item.key === selected.key) {
+            return true;
+          }
+        });
+        if (!item) {
+          item = data[0];
         }
-      });
-      if (!item) {
-        item = data[0];
+      } else {
+        item = { key: "", title: "" };
       }
-    } else {
-      item = { key: "", title: "" };
+      setSelected(item);
     }
 
-    setSelected(item);
     setDropDownData(data);
     if (isItemPresent(data, { title: text }) && createNew) {
       setAddCreateNewOption(false);
@@ -87,13 +93,29 @@ const RemoteAutocompleteDropDown = ({
       item = { key: "", title: "" };
     }
 
-    setSelected(item);
+    if (setSelectedOnDataChange) {
+      setSelected(item);
+    } else {
+      setSelected({ key: "", title: "" });
+    }
   }, []);
 
+  useInternalEffect(() => {
+    setDropDownData([...data]);
+  }, [isLoading]);
+
   const buildDropDownData = datum => {
+    const searchedDatum = datum.filter(item => {
+      return some(filterKeys, fKey => {
+        let test = item[fKey] || item.title;
+        test = test + "";
+        return test.includes(text);
+      });
+    });
+
     let arr;
-    if (addCreateNewOption) {
-      let existingArr = datum.map((item, index) => {
+    if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
+      let existingArr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
@@ -115,7 +137,7 @@ const RemoteAutocompleteDropDown = ({
         </OptGroup>
       ];
     } else {
-      arr = datum.map((item, index) => {
+      arr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
             {!ItemTemplate ? item.title : <ItemTemplate itemData={item} />}
@@ -130,18 +152,11 @@ const RemoteAutocompleteDropDown = ({
   const onSearch = value => {
     if (value.length > 2) {
       let exactMatchFound = false;
-      let regExp = new RegExp(`${value}`, "i");
-      let searchedData = data.filter((item, index) => {
-        if (regExp.test(item.title)) {
-          if (value === item.title) {
-            exactMatchFound = true;
-          }
-          return true;
-        } else {
-          return false;
-        }
-      });
-      setDropDownData(searchedData);
+      const searchItem = data.filter(item => item.title === value);
+      if (searchItem) {
+        exactMatchFound = true;
+      }
+      setDropDownData([...data]);
 
       if (createNew && !exactMatchFound) {
         setAddCreateNewOption(true);
@@ -152,7 +167,7 @@ const RemoteAutocompleteDropDown = ({
       if (data.length !== dropDownData.length) {
         setDropDownData(data);
       }
-      if (createNew && !isItemPresent(data, { title: value })) {
+      if (createNew && !isItemPresent(data, { title: value }) && value) {
         setAddCreateNewOption(true);
       } else {
         setAddCreateNewOption(false);
@@ -226,7 +241,7 @@ const RemoteAutocompleteDropDown = ({
         <Input
           suffix={
             <Icon
-              type={iconType}
+              type={isLoading ? "loading" : iconType}
               className={`${isDropDownVisible ? "ant-input-suffix-icon-rotate-up" : ""}`}
               style={{ color: "#00ad50" }}
             />

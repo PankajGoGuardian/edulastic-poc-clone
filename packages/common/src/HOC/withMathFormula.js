@@ -35,6 +35,7 @@ export const withMathFormula = WrappedComponent => {
       >
         <WrappedComponent
           {...props}
+          style={{ width: "100%" }}
           data-cy="styled-wrapped-component"
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
         />

@@ -15,17 +15,17 @@ export const getCurriculumsListSelector = createSelector(
 export const getFormattedCurriculumsSelector = (state, props) => {
   const { subject = "" } = props;
   const interestedCurriculums = getInterestedCurriculumsSelector(state);
-  const interestedCurriculumsBySubject = interestedCurriculums.filter(item =>
-    !subject ? true : item.subject === subject
-  );
+  const interestedCurriculumsBySubject = interestedCurriculums
+    .filter(item => (!subject ? true : item.subject === subject))
+    .sort((a, b) => (a.name.toUpperCase() > b.name.toUpperCase() ? 1 : -1));
   const allCurriculums = getCurriculumsListSelector(state);
-  const allCurriculumsBySubject = allCurriculums.filter(item => (!subject ? true : item.subject === subject));
+  const allCurriculumsBySubject = allCurriculums
+    .filter(item => (!subject ? true : item.subject === subject))
+    .sort((a, b) => (a.curriculum.toUpperCase() > b.curriculum.toUpperCase() ? 1 : -1));
   const interestedCurriculumByOrgType = groupBy(interestedCurriculumsBySubject, curriculum => curriculum.orgType);
   // return if teacher has selected curriculums
-  if (interestedCurriculumByOrgType.teacher) {
-    return interestedCurriculumByOrgType.teacher
-      .map(item => ({ value: item._id, text: item.name }))
-      .sort((a, b) => (a.text.toUpperCase() <= b.text.toUpperCase() ? -1 : 1));
+  if (interestedCurriculumByOrgType.teacher && interestedCurriculumByOrgType.teacher.length) {
+    return interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }));
   }
   // break line only if interested curriculums are selected by admins and create uniq curriculums
   const uniqCurriculums = interestedCurriculumsBySubject.length
@@ -38,14 +38,12 @@ export const getFormattedCurriculumsSelector = (state, props) => {
         "_id"
       )
     : allCurriculumsBySubject;
-
   const mapCurriculumsByPropertyNameId = uniqCurriculums.map(item => ({
     value: item._id,
     text: item.name || item.curriculum,
     disabled: item.disabled || false
   }));
-
-  return mapCurriculumsByPropertyNameId.sort((a, b) => (a.text.toUpperCase() <= b.text.toUpperCase() ? -1 : 1));
+  return mapCurriculumsByPropertyNameId;
 };
 
 export const getDictionariesAlignmentsSelector = createSelector(

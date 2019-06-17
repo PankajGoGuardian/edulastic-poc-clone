@@ -95,8 +95,10 @@ class SubjectGrade extends React.Component {
       a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1
     );
     const findDefaultIndex = standardSets.findIndex(item => defaultStandards[subject] === item.curriculum);
-    if (findDefaultIndex > -1) {
-      [standardSets[0], standardSets[findDefaultIndex]] = [standardSets[findDefaultIndex], standardSets[0]];
+    if (findDefaultIndex > 0) {
+      const temp = standardSets[findDefaultIndex];
+      standardSets.splice(findDefaultIndex, 1);
+      standardSets.unshift(temp);
     }
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);

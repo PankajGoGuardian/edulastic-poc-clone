@@ -170,6 +170,11 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
         answer.value = value;
       }
     });
+    let uiStyle = get(newItem, `ui_style.${answerId}`, {});
+    const splitWidth = Math.max(value.split("").length * 9, 100);
+    const width = Math.min(splitWidth, 400);
+    uiStyle = { ...uiStyle, widthpx: width };
+    set(newItem, `ui_style.${answerId}`, uiStyle);
     set(newItem, `validation.valid_inputs.value`, validInputsAnswers);
     setQuestionData(newItem);
   };
@@ -257,13 +262,13 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
         {orderedAnswers.map(answer => {
           if (answer.type === "inputs") {
             if (correctTab === 0) {
-              return <InputAnswer onChange={_updateInputCorrectAnswer} answers={[answer]} />;
+              return <InputAnswer item={item} onChange={_updateInputCorrectAnswer} answers={[answer]} />;
             }
             if (isAlt) {
               return altInputs.map((alter, i) => {
                 if (i + 1 === correctTab) {
                   const altAnswer = { ...answer, ...find(alter.value, av => av.id === answer.id) };
-                  return <InputAnswer key={i} onChange={_changeAltInputMethod(i)} answers={[altAnswer]} />;
+                  return <InputAnswer item={item} key={i} onChange={_changeAltInputMethod(i)} answers={[altAnswer]} />;
                 }
                 return null;
               });

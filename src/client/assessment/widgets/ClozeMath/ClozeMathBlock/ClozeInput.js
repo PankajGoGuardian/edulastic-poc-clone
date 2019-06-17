@@ -14,7 +14,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
   } = item;
   const { index } = find(inputs, res => res.id === id);
   // const isChecked = checked && !isEmpty(evaluation);
-
+  const { ui_style: uiStyle } = item;
+  const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
   return checked ? (
     <CheckedBlock
       evaluation={evaluation}
@@ -23,6 +24,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
       item={item}
       type="inputs"
       onInnerClick={onInnerClick}
+      width={width || "auto"}
     />
   ) : (
     <InputDiv>
@@ -30,6 +32,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
         onChange={e => setVal(e.target.value)}
         onBlur={() => save({ value: val, index }, "inputs", id)}
         value={val}
+        style={{ width: width || "auto" }}
       />
     </InputDiv>
   );
@@ -44,7 +47,7 @@ export default ClozeInput;
 
 const InputDiv = styled.div`
   min-width: 80px;
-  max-width: 120px;
   display: inline-block;
   margin: 0px 4px;
+  min-height: 35px;
 `;

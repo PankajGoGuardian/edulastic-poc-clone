@@ -29,7 +29,7 @@ const AnswerContainer = styled.div`
 
 const AnswerSelect = styled(Select)`
   min-width: 120px;
-  width: ${({ width }) => (!width ? null : `${width}px`)};
+  width: ${({ width }) => (!width ? null : `${width}`)};
 `;
 
 class ClozeDropDownAnswer extends Component {
@@ -41,6 +41,7 @@ class ClozeDropDownAnswer extends Component {
   render() {
     const { answers, item } = this.props;
     const { options, ui_style } = item;
+
     return (
       <AnswerContainer>
         <Collapse
@@ -51,14 +52,10 @@ class ClozeDropDownAnswer extends Component {
         >
           {answers.map(answer => {
             const option = options[answer.id];
-
+            const width = ui_style[answer.id] ? `${ui_style[answer.id]["widthpx"]}px` : `${ui_style.min_width}px`;
             return (
               <Panel header={`Text Dropdown ${answer.index + 1}`} key={answer.index}>
-                <AnswerSelect
-                  value={answer.value}
-                  onChange={text => this.selectChange(text, answer.id)}
-                  width={ui_style.widthpx}
-                >
+                <AnswerSelect value={answer.value} onChange={text => this.selectChange(text, answer.id)} width={width}>
                   {option &&
                     option.map((op, opIndex) => (
                       <Option value={op} key={opIndex}>

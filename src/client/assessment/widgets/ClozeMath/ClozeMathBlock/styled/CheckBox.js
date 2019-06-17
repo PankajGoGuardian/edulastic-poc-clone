@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-import { white, textColor, fadedRed, red, lightGreen3, greenDark4 } from "@edulastic/colors";
+import { white, textColor, fadedRed, red, lightGreen3, greenDark4, inputBorder } from "@edulastic/colors";
 
 export const CheckBox = styled.div`
   min-height: 35px;
   display: inline-flex;
   position: relative;
   min-width: 130px;
-  width: ${({ width }) => (!width ? null : `${width}px`)}
+  width: ${({ width }) => (!width ? null : `${width}`)}
   margin: 2px 4px;
   font-weight: 700;
   font-size: 13px;
@@ -15,6 +15,7 @@ export const CheckBox = styled.div`
   align-items: center;
   border-radius: 5px;
   padding-right: 24px;
+  border: 1px solid ${inputBorder}
 
   &.wrong {
     background: ${fadedRed};

@@ -192,11 +192,15 @@ const AlignmentRow = ({
                   <ItemBody data-cy="subjectItem">
                     <div className="select-label">{t("component.options.subject")}</div>
                     <Select data-cy="subjectSelect" style={{ width: "100%" }} value={subject} onChange={setSubject}>
-                      {selectsData.allSubjects.map(({ text, value }) => (
-                        <Select.Option key={value} value={value}>
-                          {text}
-                        </Select.Option>
-                      ))}
+                      {selectsData.allSubjects.map(({ text, value }) =>
+                        value ? (
+                          <Select.Option key={value} value={value}>
+                            {text}
+                          </Select.Option>
+                        ) : (
+                          ""
+                        )
+                      )}
                     </Select>
                   </ItemBody>
                   <ItemBody data-cy="standardItem">

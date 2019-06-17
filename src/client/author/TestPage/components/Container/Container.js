@@ -295,7 +295,7 @@ class Container extends PureComponent {
       return false;
     }
     if (requirePassword) {
-      if (assignmentPassword.length < 6 || assignmentPassword > 25) {
+      if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
         message.error("Please add a valid password.");
         return false;
       }

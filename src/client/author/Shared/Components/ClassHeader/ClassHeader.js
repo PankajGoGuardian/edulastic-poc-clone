@@ -238,7 +238,7 @@ class ClassHeader extends Component {
                     <Icon type="pause" /> Reset
                   </div>
                 }
-                value={isPresentationMode}
+                checked={isPresentationMode}
                 onClick={this.toggleCurrentMode}
               />
             </FeaturesSwitch>

@@ -67,6 +67,14 @@ export const Widget = styled.div`
   }
 
   .ant-input {
+    border: 1px solid ${dashBorderColor};
+  }
+
+  div.main {
+    box-shadow: none !important;
+  }
+
+  .ant-input {
     font-size: 12px;
     padding-left: 21px;
     letter-spacing: 0.3px;

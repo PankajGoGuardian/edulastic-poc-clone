@@ -8,7 +8,7 @@ const { Option } = Select;
 
 const SelectWrapper = styled.span`
   margin: 0px 4px;
-  display: flex;
+  display: inline-flex;
 `;
 
 const ChoicesBox = ({ resprops, id }) => {

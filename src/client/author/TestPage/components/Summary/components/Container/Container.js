@@ -12,8 +12,6 @@ import { withNamespaces } from "@edulastic/localization";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { Container, ButtonLink } from "../../../../../src/components/common";
 import Sidebar from "../Sidebar/Sidebar";
-import SummaryHeader from "../SummaryHeader/SummaryHeader";
-import Description from "../Description/Description";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
@@ -77,9 +75,9 @@ const Summary = ({
           </Button>
         )}
       </SecondHeader>
-      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
+      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "700px" : "100%" }}>
         <Row gutter={32}>
-          <Col span={windowWidth > 993 ? 12 : 24}>
+          <Col>
             <Sidebar
               title={test.title}
               description={test.description}
@@ -93,18 +91,12 @@ const Summary = ({
               subjects={subjects}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
-            />
-          </Col>
-          <Col span={windowWidth > 993 ? 12 : 24}>
-            <Description
               textColor={textColor}
               createdBy={test.createdBy}
               thumbnail={test.thumbnail}
               backgroundColor={backgroundColor}
-              windowWidth={windowWidth}
               isPlaylist={isPlaylist}
               description={test.description}
-              onChangeField={handleChangeField}
               onChangeColor={onChangeColor}
               isTextColorPickerVisible={isTextColorPickerVisible}
               isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}

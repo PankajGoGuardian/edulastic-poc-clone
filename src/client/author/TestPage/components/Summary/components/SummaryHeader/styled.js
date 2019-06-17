@@ -5,12 +5,18 @@ import { greenDark, white } from "@edulastic/colors";
 export const Container = styled.div`
   position: relative;
   margin-bottom: 35px;
+  display: flex;
+`;
+
+export const ContainerLeft = styled.div`
+  width: 50%;
+`;
+export const ContainerRight = styled.div`
+  width: 50%;
 `;
 
 export const AvatarContainer = styled.div`
-  position: absolute;
-  left: 24px;
-  bottom: 20px;
+  padding: 20px 10px;
 `;
 
 export const Avatar = styled.div`
@@ -19,8 +25,8 @@ export const Avatar = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 60px;
+  height: 60px;
   background: ${greenDark};
   color: ${white};
   font-size: 24px;

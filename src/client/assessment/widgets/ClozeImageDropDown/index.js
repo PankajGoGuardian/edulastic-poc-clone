@@ -172,8 +172,6 @@ class ClozeImageDropDown extends Component {
       ...restProps
     } = this.props;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
@@ -195,8 +193,6 @@ class ClozeImageDropDown extends Component {
                     item={itemForEdit}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                   />
                   <Widget>
                     <CorrectAnswers
@@ -225,8 +221,6 @@ class ClozeImageDropDown extends Component {
                       onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       imageOptions={item.imageOptions}
                     />
                     <CorrectAnswerOptions>
@@ -286,8 +280,6 @@ class ClozeImageDropDown extends Component {
               userSelections={userAnswer}
               maxRespCount={item.maxRespCount}
               onChange={this.handleAddAnswer}
-              maxHeight={maxHeight}
-              maxWidth={maxWidth}
               qIndex={qIndex}
               imageOptions={item.imageOptions}
               {...restProps}

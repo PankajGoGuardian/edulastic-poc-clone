@@ -78,8 +78,6 @@ class CorrectAnswer extends Component {
       showDashedBorder,
       backgroundColor,
       maxRespCount,
-      maxHeight,
-      maxWidth,
       imageHeight,
       imageOptions
     } = this.props;
@@ -120,8 +118,6 @@ class CorrectAnswer extends Component {
           imageHeight={imageHeight}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
-          maxHeight={maxHeight}
-          maxWidth={maxWidth}
           imageOptions={imageOptions}
         />
       </div>

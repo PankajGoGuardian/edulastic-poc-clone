@@ -23,6 +23,8 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import DropArea from "../../containers/DropArea";
 import { Subtitle } from "../../styled/Subtitle";
 
+import { clozeImage, canvasDimensions } from "@edulastic/constants";
+
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
@@ -186,19 +188,17 @@ class ComposeQuestion extends Component {
   };
 
   getImageDimensions = url => {
-    const { maxWidth, maxHeight } = this.props;
+    const { maxWidth, maxHeight } = clozeImage;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const maxheight = maxHeight.split("px")[0];
-      const maxwidth = maxWidth.split("px")[0];
       let height;
       let width;
-      if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
-        const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
-        const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
-        if (fitWidth > maxwidth) {
-          width = maxwidth;
+      if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+        const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+        const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+        if (fitWidth > maxWidth) {
+          width = maxWidth;
           height = fitHeight;
         } else {
           height = maxHeight;
@@ -235,15 +235,14 @@ class ComposeQuestion extends Component {
   };
 
   getHeight = () => {
-    const { item, maxHeight } = this.props;
+    const { item } = this.props;
+    const { maxHeight } = clozeImage;
     return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
   };
 
   changeImageHeight = height => {
-    const { maxHeight } = this.props;
-    const limit = +maxHeight.split("px")[0];
-    const newHeight = height > 0 ? (height >= limit ? limit : height) : limit;
-    this.onItemPropChange("imageHeight", newHeight);
+    const { maxHeight } = clozeImage;
+    this.onItemPropChange("imageHeight", maxHeight);
   };
 
   toggleIsMoveResizeEditable = () => {
@@ -261,7 +260,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
+    const { t, item, theme, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight } = item;
     const { isColorPickerVisible, isEditableResizeMove } = this.state;
 
@@ -270,6 +269,7 @@ class ComposeQuestion extends Component {
 
     const { imageOptions = {} } = item;
 
+    const { maxHeight, maxWidth } = canvasDimensions;
     const width = maxWidth;
     const height = maxHeight;
 
@@ -398,7 +398,7 @@ class ComposeQuestion extends Component {
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  width={!maxWidth ? imageWidth || null : maxWidth}
+                  width={maxWidth}
                   height={maxHeight}
                 >
                   {item.imageUrl && (

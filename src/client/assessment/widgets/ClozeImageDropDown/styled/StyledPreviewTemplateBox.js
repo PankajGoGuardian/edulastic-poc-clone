@@ -5,6 +5,6 @@ export const StyledPreviewTemplateBox = styled.div.attrs({
 })`
   fontsize: ${props =>
     props.smallSize ? props.theme.widgets.clozeImageDropDown.previewTemplateBoxSmallFontSize : `${props.fontSize}px`};
-  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight} !important`)};
-  height: ${({ height }) => (!height ? null : height)};
+  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight}px !important`)};
+  height: ${({ height }) => (!height ? null : `${height}px`)};
 `;

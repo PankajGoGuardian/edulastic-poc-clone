@@ -167,6 +167,7 @@ export const RECEIVE_ASSIGNMENTS_SUMMARY_ERROR = "[assignmentsSummary] receive l
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST = "[assignment’s class list] receive list request";
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS = "[assignment’s class list] receive list success";
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] receive list error";
+export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";

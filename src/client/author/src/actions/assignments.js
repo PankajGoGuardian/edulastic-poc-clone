@@ -5,6 +5,7 @@ import {
   FETCH_CURRENT_EDITING_ASSIGNMENT,
   UPDATE_RELEASE_SCORE_SETTINGS,
   TOGGLE_RELEASE_GRADE_SETTINGS,
+  SET_ASSIGNMENT_FILTER,
   ADVANCED_ASSIGNMENT_VIEW
 } from "../constants/actions";
 
@@ -40,4 +41,9 @@ export const toggleReleaseScoreSettingsAction = payload => ({
 
 export const toggleAssignmentViewAction = () => ({
   type: ADVANCED_ASSIGNMENT_VIEW
+});
+
+export const setAssignmentFiltersAction = payload => ({
+  type: SET_ASSIGNMENT_FILTER,
+  payload
 });

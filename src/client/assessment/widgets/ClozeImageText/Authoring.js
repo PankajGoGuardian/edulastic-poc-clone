@@ -47,6 +47,8 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
 
+import { clozeImage, canvasDimensions } from "@edulastic/constants";
+
 import { uploadToS3 } from "../../../../client/author/src/utils/upload";
 import { aws } from "@edulastic/constants";
 
@@ -217,19 +219,17 @@ class Authoring extends Component {
   };
 
   getImageDimensions = url => {
-    const { maxWidth, maxHeight } = this.props;
+    const { maxWidth, maxHeight } = clozeImage;
     const img = new Image();
     const that = this;
     img.addEventListener("load", function() {
-      const maxheight = maxHeight.split("px")[0];
-      const maxwidth = maxWidth.split("px")[0];
       let height;
       let width;
-      if (this.naturalHeight > maxheight || this.naturalWidth > maxwidth) {
-        const fitHeight = Math.floor(maxwidth * (this.naturalHeight / this.naturalWidth));
-        const fitWidth = Math.floor(maxheight * (this.naturalWidth / this.naturalHeight));
-        if (fitWidth > maxwidth) {
-          width = maxwidth;
+      if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+        const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+        const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+        if (fitWidth > maxWidth) {
+          width = maxWidth;
           height = fitHeight;
         } else {
           height = maxHeight;
@@ -239,33 +239,35 @@ class Authoring extends Component {
         width = this.naturalWidth;
         height = this.naturalHeight;
       }
-      ((width, height) => {
-        that.onItemPropChange("imageWidth", width);
-        that.onItemPropChange("imageHeight", height);
+      ((wid, heig) => {
+        that.onItemPropChange("imageWidth", wid);
+        that.onItemPropChange("imageHeight", heig);
       })(width, height);
     });
     img.src = url;
   };
 
   changeImageWidth = event => {
-    const newWidth = event > 0 ? (event >= 700 ? 700 : event) : 700;
+    const { maxWidth } = clozeImage;
+    const newWidth = event > 0 ? (event >= maxWidth ? maxWidth : event) : maxWidth;
     this.onItemPropChange("imageWidth", newWidth);
   };
 
   getWidth = () => {
     const { item } = this.props;
-    return item.imageWidth > 0 ? (item.imageWidth >= 700 ? 700 : item.imageWidth) : 700;
+    const { maxWidth } = clozeImage;
+    return item.imageWidth > 0 ? (item.imageWidth >= maxWidth ? maxWidth : item.imageWidth) : maxWidth;
   };
 
   getHeight = () => {
-    const { item, maxHeight } = this.props;
+    const { item } = this.props;
+    const { maxHeight } = clozeImage;
     return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
   };
 
   changeImageHeight = height => {
-    const { maxHeight } = this.props;
-    const limit = +maxHeight.split("px")[0];
-    const newHeight = height > 0 ? (height >= limit ? limit : height) : limit;
+    const { maxHeight } = clozeImage;
+    const newHeight = height > 0 ? (height >= maxHeight ? maxHeight : height) : maxHeight;
     this.onItemPropChange("imageHeight", newHeight);
   };
 
@@ -302,16 +304,16 @@ class Authoring extends Component {
   };
 
   render() {
-    const { t, item, theme, maxWidth, maxHeight, setQuestionData } = this.props;
+    const { t, item, theme, setQuestionData } = this.props;
     const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight = 0 } = item;
     const { isColorPickerVisible, isEditableResizeMove } = this.state;
+
+    const { maxHeight, maxWidth } = canvasDimensions;
 
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
 
     const { imageOptions = {} } = item;
-    const width = maxWidth;
-    const height = maxHeight;
 
     const uploadProps = {
       beforeUpload: () => false,

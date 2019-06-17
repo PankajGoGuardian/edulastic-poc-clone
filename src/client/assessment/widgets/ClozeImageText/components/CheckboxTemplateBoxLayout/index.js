@@ -12,7 +12,7 @@ import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
-import { response } from "@edulastic/constants";
+import { response, canvasDimensions } from "@edulastic/constants";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -28,19 +28,31 @@ const CheckboxTemplateBoxLayout = ({
   stemnumeration,
   imageOptions,
   evaluation,
-  maxHeight,
-  maxWidth,
   imageHeight,
   uiStyle
 }) => (
-  <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
-    <TemplateCover width={imageWidth} maxHeight={maxHeight} maxWidth={maxWidth}>
+  <StyledTemplateBox
+    fontSize={fontSize}
+    height={canvasDimensions.maxHeight}
+    width={canvasDimensions.maxWidth}
+    maxHeight={canvasDimensions.maxHeight}
+    maxWidth={canvasDimensions.maxWidth}
+    margin={"0 auto"}
+  >
+    <TemplateCover
+      width={canvasDimensions.maxWidth}
+      maxHeight={canvasDimensions.maxHeight}
+      maxWidth={canvasDimensions.maxWidth}
+      height={canvasDimensions.maxHeight}
+    >
       <img
         src={imageUrl}
         style={{
           position: "absolute",
           top: imageOptions.y || 0,
-          left: imageOptions.x || 0
+          left: imageOptions.x || 0,
+          width: `${imageWidth}px`,
+          height: `${imageHeight}px`
         }}
         alt={imageAlterText}
       />

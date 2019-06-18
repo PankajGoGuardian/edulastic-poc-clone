@@ -186,9 +186,8 @@ class Container extends PureComponent {
       return <Spin />;
     }
     const { current } = this.state;
-    const { authors } = test;
-    const owner = authors && authors.some(x => x._id === userId);
-    console.log(owner);
+    const { authors, _id } = test;
+    const owner = (authors && authors.some(x => x._id === userId)) || !_id;
     if (!owner && (current === "addItems" || current === "description")) {
       this.setState({ current: "review" });
     }
@@ -367,7 +366,7 @@ class Container extends PureComponent {
     const { creating, windowWidth, test, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId, status, authors } = test;
-    const owner = authors && authors.some(x => x._id === userId);
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (

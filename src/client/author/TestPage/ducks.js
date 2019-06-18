@@ -151,7 +151,7 @@ export const createBlankTest = () => ({
   status: "draft",
   thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   createdBy: {
-    id: "",
+    _id: "",
     firstName: "",
     lastName: "",
     email: ""

@@ -15,9 +15,11 @@ import Sidebar from "../Sidebar/Sidebar";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
+import { getUser } from "../../../../../src/selectors/user";
 
 const Summary = ({
   setData,
+  currentUser,
   test,
   current,
   t,
@@ -92,7 +94,7 @@ const Summary = ({
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
               textColor={textColor}
-              createdBy={test.createdBy}
+              createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
               thumbnail={test.thumbnail}
               backgroundColor={backgroundColor}
               isPlaylist={isPlaylist}
@@ -137,6 +139,7 @@ const enhance = compose(
   connect(
     state => ({
       summary: getSummarySelector(state),
+      currentUser: getUser(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     null

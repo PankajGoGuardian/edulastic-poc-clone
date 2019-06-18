@@ -10,7 +10,7 @@ import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
-import { addMultipleStudentsRequestAction } from "../../ducks";
+// import { addMultipleStudentsRequestAction } from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
@@ -341,7 +341,7 @@ export default connect(
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
-    changeTTS: changeTTSRequestAction,
-    addMultiStudents: addMultipleStudentsRequestAction
+    changeTTS: changeTTSRequestAction
+    // addMultiStudents: addMultipleStudentsRequestAction
   }
 )(ActionContainer);

@@ -11,7 +11,16 @@ const Item = ({ item, moveItem }) => {
   const handleClick = () => {
     moveItem(item);
   };
-  return <ItemDiv onClick={handleClick}>{item._source.email}</ItemDiv>;
+  return (
+    <ItemDiv onClick={handleClick}>
+      <h4>
+        {item.firstName} {item.lastName}{" "}
+      </h4>
+      <p>
+        {item._source.email} {2 == 3 && <Icon type="check" />}
+      </p>
+    </ItemDiv>
+  );
 };
 
 const FormItem = Form.Item;

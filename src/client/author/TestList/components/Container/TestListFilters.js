@@ -11,6 +11,7 @@ import filterData from "./FilterData";
 import { getCollectionsSelector } from "../../../Playlist/ducks";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
 
+const filtersTitle = ["Grades", "Subject", "Status", "Tags"];
 const TestListFilters = ({
   isPlaylist,
   onChange,
@@ -55,38 +56,49 @@ const TestListFilters = ({
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
 
-    filterData1 = filterData;
+    filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     let curriculumsList = [];
     if (subject) curriculumsList = [...formattedCuriculums];
-    return [
-      ...filterData1,
-      {
-        size: "large",
-        title: "Standard set",
-        onChange: "curriculumId",
-        data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
-        optionFilterProp: "children",
-        filterOption: searchFilterOption,
-        showSearch: true
-      },
-      {
-        size: "large",
-        mode: "multiple",
-        placeholder: standardsPlaceholder,
-        title: "Standards",
-        filterOption: false,
-        disabled: !curriculumId.length || !formattedStandards.length,
-        onChange: "standardIds",
-        optionFilterProp: "children",
-        data: formattedStandards,
-        filterOption: searchFilterOption,
-        showSearch: true,
-        isStandardSelect: true
-      }
-    ];
+    filterData1.splice(
+      2,
+      0,
+      ...[
+        {
+          size: "large",
+          title: "Standard set",
+          onChange: "curriculumId",
+          data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
+          optionFilterProp: "children",
+          filterOption: searchFilterOption,
+          showSearch: true
+        },
+        {
+          size: "large",
+          mode: "multiple",
+          placeholder: standardsPlaceholder,
+          title: "Standards",
+          filterOption: false,
+          disabled: !curriculumId.length || !formattedStandards.length,
+          onChange: "standardIds",
+          optionFilterProp: "children",
+          data: formattedStandards,
+          filterOption: searchFilterOption,
+          showSearch: true,
+          isStandardSelect: true
+        },
+        {
+          title: "Collections",
+          placeholder: "Select Collection",
+          size: "large",
+          data: collections.map(o => ({ value: o, text: o })),
+          onChange: "collectionName"
+        }
+      ]
+    );
+    return filterData1;
   };
   const handleApply = standardIds => {
     onChange("standardIds", standardIds);

@@ -62,8 +62,20 @@ class AnnotationsRnd extends Component {
             width: 120,
             height: 80
           };
+
           if (annotationIndex === annotation.id) {
             const modifiedAnnotation = { ...annotation };
+
+            // const pmin = value.length * 14.5;
+            // const pt = width * height / 14.5;
+            // let hc = height;
+            // if (pmin > pt) {
+            //   hc = height / (pt / pmin) ;
+            //   this.handleAnnotationSize({}, annotation.id)
+            // }
+
+            console.log("MODA", modifiedAnnotation);
+
             modifiedAnnotation.size = {
               width: oldWidth + size.width,
               height: oldHeight + size.height
@@ -110,6 +122,14 @@ class AnnotationsRnd extends Component {
             let { x, y } = annotation.position || { x: i * 50, y: 0 };
             const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
             const { value } = annotation;
+
+            // const pmin = value.length * 14.5;
+            // const pt = width * height / 14.5;
+            // let hc = height;
+            // if (pmin > pt) {
+            //   hc = height / (pt / pmin) ;
+            //   this.handleAnnotationSize({}, annotation.id)
+            // }
 
             return (
               <Rnd

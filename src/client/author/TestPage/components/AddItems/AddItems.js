@@ -25,6 +25,7 @@ import { getCreateItemModalVisibleSelector } from "../../../src/selectors/testIt
 import {
   clearDictStandardsAction,
   getDictCurriculumsAction,
+  clearDictAlignmentAction,
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
 import { createTestItemAction } from "../../../src/actions/testItem";
@@ -124,7 +125,7 @@ class AddItems extends PureComponent {
   };
 
   handleCreateNewItem = () => {
-    const { onSaveTestId, createTestItem, test } = this.props;
+    const { onSaveTestId, createTestItem, test, clearDictAlignment } = this.props;
     if (!test.title) {
       return message.error("Name field cannot be empty");
     }
@@ -137,6 +138,7 @@ class AddItems extends PureComponent {
         }
       ]
     };
+    clearDictAlignment();
     onSaveTestId();
     createTestItem(defaultWidgets, true);
   };
@@ -310,6 +312,7 @@ const enhance = compose(
       getCurriculums: getDictCurriculumsAction,
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
+      clearDictAlignment: clearDictAlignmentAction,
       createTestItem: createTestItemAction
     }
   )

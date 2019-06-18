@@ -69,7 +69,9 @@ class MathFormulaPreview extends Component {
 
   isStatic() {
     const { studentTemplate } = this.props;
-    return studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
+    return (
+      studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1 && studentTemplate !== "\\MathQuillMathField{}"
+    );
   }
 
   updateStaticMathFromUserAnswer() {
@@ -171,7 +173,7 @@ class MathFormulaPreview extends Component {
             <MathInput
               symbols={item.symbols}
               numberPad={item.numberPad}
-              value={latex}
+              value={latex ? latex.replace("\\MathQuillMathField{}", "") : ""}
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}

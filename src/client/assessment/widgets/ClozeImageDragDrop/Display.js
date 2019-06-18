@@ -222,6 +222,12 @@ class Display extends Component {
             minHeight: `${canvasDimensions.maxHeight}px`
           }}
         >
+          <div style={{ position: "relative" }}>
+            <AnnotationRnd
+              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              questionId={questionId}
+            />
+          </div>
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -383,13 +389,7 @@ class Display extends Component {
         {responseposition === "top" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
           </React.Fragment>
@@ -397,13 +397,7 @@ class Display extends Component {
         {responseposition === "bottom" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {templateBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{templateBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
           </React.Fragment>
@@ -422,13 +416,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
@@ -470,13 +458,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}

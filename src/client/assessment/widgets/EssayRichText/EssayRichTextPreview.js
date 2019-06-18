@@ -5,7 +5,14 @@ import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, FroalaEditor } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  FroalaEditor,
+  MathFormulaDisplay
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -141,7 +148,7 @@ const EssayRichTextPreview = ({
             />
           )}
         </div>
-        {!Array.isArray(userAnswer) && (
+        {!Array.isArray(userAnswer) && !isReadOnly && (
           <FroalaEditor
             backgroundColor={
               item.max_word < wordCount
@@ -160,8 +167,11 @@ const EssayRichTextPreview = ({
             toolbarButtons={toolbarButtons}
           />
         )}
+        {!Array.isArray(userAnswer) && isReadOnly && (
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: userAnswer }} />
+        )}
 
-        {item.show_word_count && (
+        {item.show_word_count && (userAnswer || !isReadOnly) && (
           <Toolbar borderRadiusOnlyBottom>
             <FlexContainer />
             <Item style={wordCountStyle}>{displayWordCount}</Item>

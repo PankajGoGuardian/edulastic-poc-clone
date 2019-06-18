@@ -11,6 +11,14 @@ const fetchMyGroups = () =>
     })
     .then(result => result.data.result);
 
+const fetchMyArchiveGroups = () =>
+  api
+    .callApi({
+      url: `${prefix}/mygroups?active=0`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const getGroups = body =>
   api
     .callApi({
@@ -58,6 +66,7 @@ const bulkUpdateClasses = data =>
 
 export default {
   fetchMyGroups,
+  fetchMyArchiveGroups,
   getGroups,
   editGroup,
   createGroup,

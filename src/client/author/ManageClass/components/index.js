@@ -3,7 +3,12 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 // actions
-import { fetchGroupsAction, getGroupsSelector } from "../../sharedDucks/groups";
+import {
+  fetchGroupsAction,
+  fetchArchiveGroupsAction,
+  getGroupsSelector,
+  getArchiveGroupsSelector
+} from "../../sharedDucks/groups";
 import { setModalAction, syncClassAction, setClassAction } from "../ducks";
 // components
 
@@ -13,11 +18,14 @@ import ClassDetails from "./ClassDetails";
 import ClassEdit from "./ClassEdit";
 import PrintPreview from "./PrintPreview";
 
-const ManageClass = ({ fetchGroups, setClass, ...restProps }) => {
+const ManageClass = ({ fetchGroups, fetchArchiveGroups, setClass, ...restProps }) => {
   const [view, setView] = useState("listView");
 
   useEffect(() => {
-    if (view === "listView") fetchGroups();
+    if (view === "listView") {
+      fetchGroups();
+      fetchArchiveGroups();
+    }
   }, [view]);
 
   const updateView = v => {
@@ -61,11 +69,13 @@ ManageClass.propTypes = {
 export default connect(
   state => ({
     groups: getGroupsSelector(state),
+    archiveGroups: getArchiveGroupsSelector(state),
     isModalVisible: state.manageClass.showModal,
     googleCourseList: state.manageClass.googleCourseList
   }),
   {
     fetchGroups: fetchGroupsAction,
+    fetchArchiveGroups: fetchArchiveGroupsAction,
     setModal: setModalAction,
     syncClass: syncClassAction,
     setClass: setClassAction

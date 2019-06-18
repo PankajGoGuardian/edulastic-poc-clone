@@ -113,7 +113,7 @@ class CorrectAnswers extends Component {
 
         <div>
           <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 10 }}>
-            {tabs >= 1 && (
+            {tabs > 1 && (
               <Tab
                 type="primary"
                 data_cy="correct"

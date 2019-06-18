@@ -28,7 +28,8 @@ import {
   getTestsItemsPageSelector,
   getTestItemsLoadingSelector,
   receiveTestItemsAction,
-  getSelectedItemSelector
+  getSelectedItemSelector,
+  clearSelectedItemsAction
 } from "../../../TestPage/components/AddItems/ducks";
 import { setDefaultTestDataAction } from "../../../TestPage/ducks";
 import { getItemsTypesSelector } from "../../../TestPage/components/Review/ducks";
@@ -85,11 +86,13 @@ class Contaier extends Component {
       setDefaultTestData,
       defaultGrades,
       defaultSubject,
+      clearSelectedItems,
       interestedCurriculums,
       clearDictStandards
     } = this.props;
     const { params = {} } = match;
     setDefaultTestData();
+    clearSelectedItems();
     clearDictStandards();
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(item => item.path === params.filterType);
@@ -471,6 +474,7 @@ const enhance = compose(
       setDefaultTestData: setDefaultTestDataAction,
       udpateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
+      clearSelectedItems: clearSelectedItemsAction,
       addItemToCart: addItemToCartAction
     }
   )

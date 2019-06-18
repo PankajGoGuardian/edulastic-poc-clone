@@ -130,7 +130,6 @@ const EditSortList = ({ item, setQuestionData, advancedAreOpen, fillSections, cl
           onCloseTab={handleCloseTab}
           fillSections={fillSections}
           cleanSections={cleanSections}
-          marginBottom="-50px"
         />
       </Paper>
       <AdvancedOptions

@@ -14,7 +14,7 @@ const evaluate = data =>
 
 const getChecks = validation => {
   const altResponses = validation.alt_responses || [];
-  const flattenValidResponses = flatten(validation.valid_response.value);
+  const flattenValidResponses = flatten(validation.valid_response ? validation.valid_response.value : []);
   const flattenAltResponses = altResponses.reduce((acc, res) => [...acc, ...flatten(res.value)], []);
 
   const values = [...flattenValidResponses, ...flattenAltResponses];
@@ -108,7 +108,7 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
 
   try {
     const getAnswerCorrectMethods = answer => {
-      if (Array.isArray(answer.value)) {
+      if (Array.isArray(answer ? answer.value : null)) {
         return answer.value.map(val => val.map(({ value }) => value));
       }
       return [];
@@ -127,11 +127,11 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
       const isExact = element => element;
 
       if (valid.every(isExact)) {
-        score = Math.max(answer.score, score);
+        score = Math.max(answer ? answer.score : 1, score);
         correctIndex = answerIndex;
       }
 
-      maxScore = Math.max(answer.score, maxScore);
+      maxScore = Math.max(answer ? answer.score : 1, maxScore);
     });
 
     /* eslint-disable */
@@ -176,7 +176,7 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     scoring_type,
     min_score_if_attempted: attemptScore
   } = validation;
-  let entered = 1;
+  let entered = 0;
   const answers = [valid_response, ...alt_responses];
   const { dropDowns = {}, inputs = {}, maths = {} } = userResponse;
   const { userResponse: _inputsResponse = [], validResponse: validInputs } = sortResponses(

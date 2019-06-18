@@ -47,7 +47,9 @@ var evaluate = function evaluate(data) {
 
 var getChecks = function getChecks(validation) {
   var altResponses = validation.alt_responses || [];
-  var flattenValidResponses = (0, _flatten2["default"])(validation.valid_response.value);
+  var flattenValidResponses = (0, _flatten2["default"])(
+    validation.valid_response ? validation.valid_response.value : []
+  );
   var flattenAltResponses = altResponses.reduce(function(acc, res) {
     return [].concat(
       (0, _toConsumableArray2["default"])(acc),
@@ -304,7 +306,7 @@ var exactMatchEvaluator =
                   _context5.prev = 5;
 
                   getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
-                    if (Array.isArray(answer.value)) {
+                    if (Array.isArray(answer ? answer.value : null)) {
                       return answer.value.map(function(val) {
                         return val.map(function(_ref6) {
                           var value = _ref6.value;
@@ -378,11 +380,11 @@ var exactMatchEvaluator =
                                   };
 
                                   if (valid.every(isExact)) {
-                                    score = Math.max(answer.score, score);
+                                    score = Math.max(answer ? answer.score : 1, score);
                                     correctIndex = answerIndex;
                                   }
 
-                                  maxScore = Math.max(answer.score, maxScore);
+                                  maxScore = Math.max(answer ? answer.score : 1, maxScore);
 
                                 case 8:
                                 case "end":
@@ -530,7 +532,7 @@ var evaluator =
                   (alt_inputs = _validation$alt_input === void 0 ? [] : _validation$alt_input),
                   (scoring_type = validation.scoring_type),
                   (attemptScore = validation.min_score_if_attempted);
-                entered = 1;
+                entered = 0;
                 answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
                 (_userResponse$dropDow = userResponse.dropDowns),
                   (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),

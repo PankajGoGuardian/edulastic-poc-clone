@@ -80,6 +80,14 @@ const allStatus = [
   { value: "published", text: "Published" },
   { value: "draft", text: "Draft" }
 ];
+
+const defaultStandards = {
+  Mathematics: "Math - Common Core",
+  ELA: "ELA - Common Core",
+  Science: "Science - NGSS",
+  "Social Studies": "Social Studies"
+};
+
 export default {
   allGrades,
   allSubjects,
@@ -92,5 +100,6 @@ export default {
   closePolicy,
   closePolicyForAdmin,
   allStatus,
-  testTypes
+  testTypes,
+  defaultStandards
 };

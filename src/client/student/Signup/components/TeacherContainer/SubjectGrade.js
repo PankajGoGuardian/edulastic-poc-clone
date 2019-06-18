@@ -15,15 +15,10 @@ import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../d
 // selectors
 import { getCurriculumsListSelector } from "../../../../author/src/selectors/dictionaries";
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects, defaultStandards } = selectsData;
 
 const { Option } = Select;
-const defaultStandards = {
-  Mathematics: "Math - Common Core",
-  ELA: "ELA - Common Core",
-  Science: "Science - NGSS",
-  "Social Studies": "Social Studies"
-};
+
 class SubjectGrade extends React.Component {
   state = {
     subjects: [],

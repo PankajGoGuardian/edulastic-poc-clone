@@ -1390,8 +1390,8 @@ export const getCards = onSelectQuestionType => {
           instructor_stimulus: ""
         },
         numberlineAxis: {
-          leftArrow: false,
-          rightArrow: false,
+          leftArrow: true,
+          rightArrow: true,
           showTicks: true,
           snapToTicks: true,
           ticksDistance: 1,

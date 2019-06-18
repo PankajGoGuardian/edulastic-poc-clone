@@ -5,8 +5,7 @@ import PropTypes from "prop-types";
 import { findIndex, isUndefined, get, keyBy } from "lodash";
 import produce, { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
-import { Modal, Button, Input, message } from "antd";
-
+import { Modal, Button, Input, message, Tooltip } from "antd";
 import {
   StyledFlexContainer,
   AllButton,
@@ -14,7 +13,8 @@ import {
   WrongButton,
   PartiallyCorrectButton,
   GiveOverallFeedBackButton,
-  StudentButtonDiv
+  StudentButtonDiv,
+  EditIconStyled
 } from "./styled";
 
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
@@ -135,6 +135,14 @@ class StudentViewContainer extends Component {
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
       (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
+    const feedbackButtonToolTip = (
+      <div>
+        <p>
+          <b>Overall feedback</b>
+        </p>
+        <p>{initFeedbackValue}</p>
+      </div>
+    );
     return (
       <React.Fragment>
         {showFeedbackPopup && (
@@ -154,7 +162,7 @@ class StudentViewContainer extends Component {
             ]}
           >
             <p>Leave a feedback!</p>
-            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} />
+            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} maxlength="250" />
           </Modal>
         )}
         <StyledFlexContainer justifyContent="space-between">
@@ -173,7 +181,14 @@ class StudentViewContainer extends Component {
             </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
-            GIVE OVERALL FEEDBACK
+            {initFeedbackValue.length ? (
+              <Tooltip title={feedbackButtonToolTip}>
+                <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
+                <EditIconStyled />
+              </Tooltip>
+            ) : (
+              "GIVE OVERALL FEEDBACK"
+            )}
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
         {!loading && (

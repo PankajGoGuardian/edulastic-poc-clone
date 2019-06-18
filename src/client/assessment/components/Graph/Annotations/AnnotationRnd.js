@@ -53,7 +53,6 @@ class AnnotationsRnd extends Component {
   };
 
   handleAnnotationSize = (size, annotationIndex) => {
-    console.log("DELTA", size);
     const { setQuestionData, question } = this.props;
     setQuestionData(
       produce(question, draft => {
@@ -67,16 +66,6 @@ class AnnotationsRnd extends Component {
 
           if (annotationIndex === annotation.id) {
             const modifiedAnnotation = { ...annotation };
-
-            // const pmin = value.length * 14.5;
-            // const pt = width * height / 14.5;
-            // let hc = height;
-            // if (pmin > pt) {
-            //   hc = height / (pt / pmin) ;
-            //   this.handleAnnotationSize({}, annotation.id)
-            // }
-
-            console.log("MODA", modifiedAnnotation);
 
             modifiedAnnotation.size = {
               width: oldWidth + size.width,

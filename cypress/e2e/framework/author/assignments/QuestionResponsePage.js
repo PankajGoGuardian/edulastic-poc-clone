@@ -100,7 +100,7 @@ export default class QuestionResponsePage {
       .contains(studentName)
       .click();
 
-    if (studentName !== "Student01") cy.wait("@test-activity");
+    if (!studentName.includes("Student01")) cy.wait("@test-activity");
     this.getQuestionContainer(0).should("contain", studentName);
   };
 

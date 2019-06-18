@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06 6th",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "right", Q7: "right" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "skip", Q7: "skip" }
       }
     ]
   };
@@ -138,7 +138,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
       testLibrary.header.clickOnAssign();
-      // cy.visit("/author/assignments/5cff5b54c949875787025732");
+      // cy.visit("/author/assignments/5d03b20e1a45d47f9752fe02");
       // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
@@ -264,8 +264,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify for student :: ${studentName}`, () => {
-          const { attempt, score, perf } = statsMap[studentName];
-          expressg.verifyScoreGrid(studentName, attempt, score, perf, questionTypeMap);
+          const { attempt, score, perfValue } = statsMap[studentName];
+          expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
         });
       });
     });

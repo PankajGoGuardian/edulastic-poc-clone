@@ -429,9 +429,8 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
-  setElementsToGraph = () => {
+  setElementsToGraph = (prevProps = {}) => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
-
     if (checkAnswer || showAnswer) {
       let coloredElements;
       if (evaluation && checkAnswer) {
@@ -442,13 +441,15 @@ class GraphContainer extends PureComponent {
         coloredElements = getColoredElems(elements, compareResult);
       }
 
-      if (showAnswer) {
+      if (showAnswer && !prevProps.showAnswer) {
         this._graph.resetAnswers();
         this._graph.loadAnswersFromConfig(getColoredAnswer(validation ? validation.valid_response.value : []));
       }
 
-      this._graph.reset();
-      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
+      if (!isEqual(elements, prevProps.elements)) {
+        this._graph.reset();
+        this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
+      }
     } else if (!isEqual(elements, this._graph.getConfig())) {
       this._graph.reset();
       this._graph.resetAnswers();

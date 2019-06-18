@@ -1458,7 +1458,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         }
       },
       onSelectQuestionType
@@ -1518,7 +1519,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         },
         canvas: {
           x_max: 10,

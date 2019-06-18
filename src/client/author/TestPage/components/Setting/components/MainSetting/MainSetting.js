@@ -36,7 +36,7 @@ import {
   MessageSpan
 } from "./styled";
 import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
-import { getUserFeatures } from "../../../../../../student/Login/ducks";
+import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 
 const {
   settingCategories,
@@ -175,7 +175,7 @@ class MainSetting extends Component {
 
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
-    const { history, windowWidth, entity, owner } = this.props;
+    const { history, windowWidth, entity, owner, userRole } = this.props;
 
     const {
       releaseScore,
@@ -255,7 +255,11 @@ class MainSetting extends Component {
                   <TestTypeSelect defaultValue={testType} disabled={!owner} onChange={this.updateTestData("testType")}>
                     {Object.keys(testTypes).map(key => (
                       <Option key={key} value={key}>
-                        {testTypes[key]}
+                        {key === ASSESSMENT
+                          ? userRole === "teacher"
+                            ? "Class Assessment "
+                            : "Common Assessment "
+                          : testTypes[key]}
                       </Option>
                     ))}
                   </TestTypeSelect>
@@ -697,7 +701,8 @@ MainSetting.propTypes = {
 export default connect(
   state => ({
     entity: getTestEntitySelector(state),
-    features: getUserFeatures(state)
+    features: getUserFeatures(state),
+    userRole: getUserRole(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

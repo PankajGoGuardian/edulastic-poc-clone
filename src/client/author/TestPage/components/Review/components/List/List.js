@@ -30,7 +30,20 @@ const splitItems = (item, testItem) => {
 };
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, testItem, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
+  ({
+    indx,
+    selected,
+    item,
+    testItem,
+    onCheck,
+    points,
+    onChangePoints,
+    owner,
+    metaInfoData,
+    onPreview,
+    questions,
+    mobile
+  }) => {
     console.log("questions", questions);
     const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
     const handleCheck = e => onCheck(indx, e.target.checked);
@@ -60,6 +73,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
+                    disabled={!owner}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -110,6 +124,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
+                      disabled={!owner}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -142,6 +157,7 @@ const List = SortableContainer(
     standards,
     scoring,
     onPreview,
+    owner,
     questions,
     mobile
   }) => {
@@ -184,6 +200,7 @@ const List = SortableContainer(
               standards: standards[testItems[i]._id]
             }}
             index={i}
+            owner={owner}
             indx={i}
             item={item}
             testItem={testItems[i]}
@@ -211,11 +228,13 @@ List.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
+  owner: PropTypes.bool,
   questions: PropTypes.object.isRequired,
   mobile: PropTypes.bool
 };
 
 List.defaultProps = {
+  owner: false,
   mobile: false
 };
 

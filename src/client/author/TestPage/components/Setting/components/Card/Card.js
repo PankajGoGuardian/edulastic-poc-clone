@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Row, Col, Checkbox } from "antd";
 import { StyledCard, ColWrapper } from "./styled";
 
-const ListCard = ({ item, onPerformanceBandUpdate }) => (
+const ListCard = ({ item, onPerformanceBandUpdate, owner }) => (
   <StyledCard
     bodyStyle={{
       height: 52,
@@ -17,7 +17,7 @@ const ListCard = ({ item, onPerformanceBandUpdate }) => (
         {item.bands}
       </Col>
       <ColWrapper span={6}>
-        <Checkbox onChange={onPerformanceBandUpdate} />
+        <Checkbox disabled={!owner} onChange={onPerformanceBandUpdate} />
       </ColWrapper>
       <ColWrapper span={6}>{item.from}</ColWrapper>
       <ColWrapper span={6}>{item.bands}</ColWrapper>
@@ -26,6 +26,7 @@ const ListCard = ({ item, onPerformanceBandUpdate }) => (
 );
 
 ListCard.propTypes = {
+  owner: PropTypes.bool,
   item: PropTypes.object.isRequired
 };
 

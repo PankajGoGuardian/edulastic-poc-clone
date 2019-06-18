@@ -33,14 +33,14 @@ class Item extends Component {
     item: PropTypes.object.isRequired,
     history: PropTypes.object.isRequired,
     authorName: PropTypes.string,
-    owner: PropTypes.object,
+    owner: PropTypes.bool,
     testItemId: PropTypes.string
   };
 
   static defaultProps = {
     authorName: "",
-    owner: {},
     currentTestId: "",
+    owner: false,
     isPreviewModalVisible: false,
     testItemId: ""
   };
@@ -50,11 +50,11 @@ class Item extends Component {
   };
 
   moveToItem = () => {
-    const { history, item, isPlaylist } = this.props;
+    const { history, item, isPlaylist, owner } = this.props;
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}`);
+      history.push(`/author/playlists/${item._id}${!owner ? "#review" : ""}`);
     } else {
-      history.push(`/author/tests/${item._id}`);
+      history.push(`/author/tests/${item._id}${!owner ? "#review" : ""}`);
     }
   };
 
@@ -112,6 +112,7 @@ class Item extends Component {
           onDuplicate={this.duplicate}
           onEdit={this.moveToItem}
           item={item}
+          owner={owner}
           assign={this.assignTest}
           isPlaylist={isPlaylist}
         />

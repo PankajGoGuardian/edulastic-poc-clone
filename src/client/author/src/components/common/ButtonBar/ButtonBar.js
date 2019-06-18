@@ -41,13 +41,11 @@ class ButtonBar extends Component {
   handleMenuClick = view => {
     const { onChangeView } = this.props;
     onChangeView(view);
-    this.setState({ current: view });
   };
 
   optionHandler = key => {
     const { onChangeView } = this.props;
     onChangeView(key);
-    this.setState({ current: key });
   };
 
   render() {
@@ -76,22 +74,24 @@ class ButtonBar extends Component {
           <Container>
             <Menu
               mode="horizontal"
-              selectedKeys={[current]}
+              selectedKeys={[view]}
               style={{ marginLeft: 10, marginRight: 10, justifyContent: "center" }}
             >
-              <MenuItem
-                data-cy="editButton"
-                className={current === "edit" && "active"}
-                onClick={() => this.handleMenuClick("edit")}
-              >
-                <HeadIcon>
-                  <IconPencilEdit color={white} width={18} height={16} />
-                </HeadIcon>
-                Edit Mode
-              </MenuItem>
+              {hasAuthorPermission && (
+                <MenuItem
+                  data-cy="editButton"
+                  className={view === "edit" && "active"}
+                  onClick={() => this.handleMenuClick("edit")}
+                >
+                  <HeadIcon>
+                    <IconPencilEdit color={white} width={18} height={16} />
+                  </HeadIcon>
+                  Edit Mode
+                </MenuItem>
+              )}
               <MenuItem
                 data-cy="previewButton"
-                className={current === "preview" && "active"}
+                className={view === "preview" && "active"}
                 onClick={() => this.handleMenuClick("preview")}
               >
                 <HeadIcon>
@@ -101,7 +101,7 @@ class ButtonBar extends Component {
               </MenuItem>
               <MenuItem
                 data-cy="metadataButton"
-                className={current === "metadata" && "active"}
+                className={view === "metadata" && "active"}
                 onClick={() => this.handleMenuClick("metadata")}
               >
                 <HeadIcon>
@@ -140,10 +140,7 @@ class ButtonBar extends Component {
         ) : (
           <MobileContainer>
             <MobileFirstContainer>
-              <Button
-                onClick={() => this.optionHandler("edit")}
-                className={`btn-edit ${current === "edit" && "active"}`}
-              >
+              <Button onClick={() => this.optionHandler("edit")} className={`btn-edit ${view === "edit" && "active"}`}>
                 <HeadIcon>
                   <IconPencilEdit color={white} width={18} height={16} />
                 </HeadIcon>
@@ -151,7 +148,7 @@ class ButtonBar extends Component {
               </Button>
               <Button
                 onClick={() => this.optionHandler("preview")}
-                className={`btn-preview ${current === "preview" && "active"}`}
+                className={`btn-preview ${view === "preview" && "active"}`}
               >
                 <HeadIcon>
                   <IconPreview color={white} width={18} height={16} />
@@ -177,7 +174,7 @@ class ButtonBar extends Component {
                 {withLabels ? "Settings" : ""}
               </Button>
             </MobileFirstContainer>
-            {current === "preview" && (
+            {view === "preview" && (
               <MobileSecondContainer>
                 <Button
                   style={{

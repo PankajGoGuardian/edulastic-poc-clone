@@ -316,7 +316,7 @@ class Contaier extends Component {
         history={history}
         windowWidth={windowWidth}
         onToggleToCart={addItemToCart}
-        selectedToCart={selectedCartItems.includes(item._id)}
+        selectedToCart={selectedCartItems ? selectedCartItems.includes(item._id) : false}
         interestedCurriculums={interestedCurriculums}
         search={search}
       />

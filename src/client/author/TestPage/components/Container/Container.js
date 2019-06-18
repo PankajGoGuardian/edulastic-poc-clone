@@ -181,11 +181,17 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading } = this.props;
+    const { test, setData, rows, isTestLoading, userId } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { current } = this.state;
+    const { authors } = test;
+    const owner = authors && authors.some(x => x._id === userId);
+    console.log(owner);
+    if (!owner && (current === "addItems" || current === "description")) {
+      this.setState({ current: "review" });
+    }
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
@@ -218,11 +224,12 @@ class Container extends PureComponent {
             rows={rows}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            owner={owner}
             current={current}
           />
         );
       case "settings":
-        return <Setting current={current} onShowSource={this.handleNavChange("source")} />;
+        return <Setting current={current} onShowSource={this.handleNavChange("source")} owner={owner} />;
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -359,7 +366,8 @@ class Container extends PureComponent {
   render() {
     const { creating, windowWidth, test, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status } = test;
+    const { _id: testId, status, authors } = test;
+    const owner = authors && authors.some(x => x._id === userId);
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (
@@ -379,7 +387,7 @@ class Container extends PureComponent {
           onPublish={this.handlePublishTest}
           title={test.title}
           creating={creating}
-          owner={test.authors && test.authors.find(x => x._id === userId)}
+          owner={owner}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}

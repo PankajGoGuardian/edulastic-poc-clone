@@ -509,7 +509,7 @@ class TestList extends Component {
             <CardWrapper
               item={item}
               key={index}
-              owner={item.authors && item.authors.find(x => x._id === userId)}
+              owner={item.authors && item.authors.some(x => x._id === userId)}
               blockStyle="tile"
               windowWidth={windowWidth}
               history={history}
@@ -526,14 +526,14 @@ class TestList extends Component {
           tests.map((item, index) => (
             <CardWrapper
               key={index}
-              owner={item.authors && item.authors.find(x => x._id === userId)}
+              owner={item.authors && item.authors.some(x => x._id === userId)}
               item={item}
               windowWidth={windowWidth}
               history={history}
               match={match}
               mode={mode}
               removeTestFromPlaylist={this.handleRemoveTest}
-              isTestAdded={selectedTests.includes(item._id)}
+              isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
               addTestToPlaylist={this.handleAddTests}
             />
           ))}

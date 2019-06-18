@@ -110,7 +110,7 @@ class ClozeTextDisplay extends Component {
       const resbtn = find(responseIds, res => res.id === id);
       newAnswers[resbtn.index] = { value, index: resbtn.index, id };
     }
-    changeAnswers(newAnswers);
+    changeAnswers(newAnswers, id, Math.min(Math.max(value.length * 8, 100), 400));
   };
 
   _changeInput = ({ value, id, type }) => {
@@ -172,7 +172,8 @@ class ClozeTextDisplay extends Component {
             type: btnStyle.inputtype,
             item,
             showIndex,
-            responseIds
+            responseIds,
+            uiStyle
           };
 
     const answerBox = showAnswer ? (

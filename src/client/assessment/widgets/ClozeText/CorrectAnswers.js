@@ -82,7 +82,7 @@ class CorrectAnswers extends Component {
     );
   };
 
-  updateCorrectValidationAnswers = answers => {
+  updateCorrectValidationAnswers = (answers, id, widthpx) => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
@@ -93,6 +93,7 @@ class CorrectAnswers extends Component {
       }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
+    newData.ui_style[id] = { widthpx };
     setQuestionData(newData);
   };
 

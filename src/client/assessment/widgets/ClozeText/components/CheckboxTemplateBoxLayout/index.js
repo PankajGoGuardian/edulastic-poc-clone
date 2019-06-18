@@ -47,7 +47,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const btnStyle = {
-    width: showAnswer ? "auto" : 140,
+    width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140,
     height: 0,
     widthpx: showAnswer ? "auto" : 140,
     heightpx: 0,
@@ -83,7 +83,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
-          style={btnStyle}
+          style={{ ...btnStyle, width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140 }}
         >
           <span className="index">{index + 1}</span>
           <span
@@ -111,7 +111,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 `}
           style={{
             ...btnStyle,
-            overflow: "hidden"
+            overflow: "hidden",
+            width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140
           }}
         >
           {showIndex && (

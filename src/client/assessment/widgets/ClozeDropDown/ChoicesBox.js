@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useRef } from "react";
+import { findDOMNode } from "react-dom";
 import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
@@ -12,6 +13,7 @@ const SelectWrapper = styled.span`
 `;
 
 const ChoicesBox = ({ resprops, id }) => {
+  const selectWrapperRef = useRef(null);
   const { userAnswers, btnStyle, placeholder, options, onChange: changeAnswers, item } = resprops;
   if (!id) return null;
   const { response_ids } = item;
@@ -25,7 +27,7 @@ const ChoicesBox = ({ resprops, id }) => {
   };
 
   return (
-    <SelectWrapper>
+    <SelectWrapper ref={selectWrapperRef}>
       <Select
         value={userAnswer ? userAnswer.value : ""}
         style={{
@@ -33,6 +35,7 @@ const ChoicesBox = ({ resprops, id }) => {
           minWidth: 100,
           overflow: "hidden"
         }}
+        getPopupContainer={() => findDOMNode(selectWrapperRef.current)}
         data-cy="drop_down_select"
         onChange={selectChange}
       >

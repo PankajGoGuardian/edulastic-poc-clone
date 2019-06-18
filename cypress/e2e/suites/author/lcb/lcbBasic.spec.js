@@ -152,22 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
       statsMap[stuName].attempt = attempt;
       statsMap[stuName].status = status;
-
-      if (status !== "NOT STARTED") {
-        cy.login("student", email);
-        assignmentPage.clickOnAssignmentButton();
-        Object.keys(attempt).forEach(queNum => {
-          const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-          const { attemptData } = questionData[queType][questionKey];
-          test.attemptQuestion(queType, attempt[queNum], attemptData);
-          test.clickOnNext();
-        });
-
-        if (status !== "IN PROGRESS") {
-          test.submitTest();
-          cy.contains("Reports").should("be.visible");
-        }
-      }
+      test.attemptAssignment(email, status, attempt, questionTypeMap);
     });
   });
 
@@ -326,7 +311,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify redirect", () => {
+  describe.skip(" > verify redirect", () => {
     before("calculate redirected stats", () => {
       redirectedData.forEach(attempts => {
         const { attempt, stuName, status } = attempts;
@@ -393,24 +378,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       before(" > attempt by redirected students", () => {
         redirectedData.forEach(attempts => {
           const { attempt, email, status } = attempts;
-          if (status !== "NOT STARTED") {
-            cy.login("student", email);
-            assignmentPage.clickOnAssignmentButton();
-            Object.keys(attempt).forEach(queNum => {
-              const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-              const { attemptData } = questionData[queType][questionKey];
-              // console.log("attemptData ::", attemptData);
-              // console.log("attemptData queType ::", queType);
-              // console.log("attemptData attempt[queNum]::", attempt[queNum]);
-              test.attemptQuestion(queType, attempt[queNum], attemptData);
-              test.clickOnNext();
-            });
-
-            if (status !== "IN PROGRESS") {
-              test.submitTest();
-              cy.contains("Reports").should("be.visible");
-            }
-          }
+          test.attemptAssignment(email, status, attempt, questionTypeMap);
         });
       });
 
@@ -458,7 +426,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify score update", () => {
+  describe.skip(" > verify score update", () => {
     before("question centric view", () => {
       lcb.clickonQuestionsTab();
     });

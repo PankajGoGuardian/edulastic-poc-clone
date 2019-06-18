@@ -53,6 +53,13 @@ const addEnrolMultiStudents = ({ classId, data }) => {
     data
   });
 };
+const SearchAddEnrolMultiStudents = data => {
+  return api.callApi({
+    url: `${prefix}/student`,
+    method: "post",
+    data
+  });
+};
 
 export default {
   fetch,
@@ -60,5 +67,6 @@ export default {
   fetchByIds,
   addStudent,
   removeStudents,
-  addEnrolMultiStudents
+  addEnrolMultiStudents,
+  SearchAddEnrolMultiStudents
 };

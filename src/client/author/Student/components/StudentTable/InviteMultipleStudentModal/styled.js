@@ -36,6 +36,5 @@ export const ItemDiv = styled.div`
   color: black;
   text-align: center;
   margin: 0.2rem;
-  cursor: pointer;
   border-bottom: 0.1px solid lightgrey;
 `;

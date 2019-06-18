@@ -35,6 +35,8 @@ const ActionContainer = ({
   addStudentRequest,
   selectedClass,
   userOrgId,
+  orgData,
+  studentsList,
   role,
   addMultiStudents,
   submitted,
@@ -43,7 +45,9 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  updateStudentRequest
+  updateStudentRequest,
+  setForceUpdate,
+  forceUpdate
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -54,6 +58,7 @@ const ActionContainer = ({
     visible: false,
     data: []
   });
+
   let formRef = null;
 
   const toggleModal = key => {
@@ -74,8 +79,8 @@ const ActionContainer = ({
   };
   const sendInviteStudent = async inviteStudentList => {
     setIsAddMultipleStudentsModal(false);
-    if (!result) <Spin />;
     const result = await enrollmentApi.addEnrolMultiStudents({ classId: selectedClass._id, data: inviteStudentList });
+    setForceUpdate(!forceUpdate);
     setAddMultipleInfoModal({
       visible: true,
       data: result.data.result
@@ -304,6 +309,12 @@ const ActionContainer = ({
               closeModal={closeInviteStudentModal}
               userOrgId={userOrgId}
               setAddMultipleInfoModal={setAddMultipleInfoModal}
+              orgData={orgData}
+              studentsList={studentsList}
+              selectedClass={selectedClass}
+              setIsAddMultipleStudentsModal={setIsAddMultipleStudentsModal}
+              setForceUpdate={setForceUpdate}
+              forceUpdate={forceUpdate}
             />
           )}
         </ButtonsWrapper>
@@ -336,7 +347,8 @@ export default connect(
     submitted: get(state, "manageClass.submitted"),
     added: get(state, "manageClass.added"),
     studentLoaded: get(state, "manageClass.loaded"),
-    selectedStudent: get(state, "manageClass.selectedStudent", [])
+    selectedStudent: get(state, "manageClass.selectedStudent", []),
+    studentsList: get(state, "manageClass.studentsList", [])
   }),
   {
     addStudentRequest: addStudentRequestAction,

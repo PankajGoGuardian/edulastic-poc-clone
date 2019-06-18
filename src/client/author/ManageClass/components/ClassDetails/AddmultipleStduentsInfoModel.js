@@ -2,7 +2,10 @@ import React from "react";
 import { Modal, Table } from "antd";
 const AddMultipleStudentsInfoModal = ({ info, setAddMultipleInfoModal }) => {
   const handleCancel = () => {
-    setAddMultipleInfoModal(false);
+    setAddMultipleInfoModal({
+      visible: false,
+      data: []
+    });
   };
   const columns = [
     {
@@ -21,7 +24,6 @@ const AddMultipleStudentsInfoModal = ({ info, setAddMultipleInfoModal }) => {
       key: "status"
     }
   ];
-
   return (
     <Modal title="Student details" footer={null} visible={info.visible} onCancel={handleCancel}>
       <Table dataSource={info.data} columns={columns} pagination={false} />

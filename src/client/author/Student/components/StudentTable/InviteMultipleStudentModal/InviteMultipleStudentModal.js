@@ -3,21 +3,22 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
 const { TabPane } = Tabs;
 const Search = Input.Search;
+import { userApi, enrollmentApi } from "@edulastic/api";
 import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv } from "./styled";
-import { userApi } from "@edulastic/api";
 import AddMultipleStudentsInfoModal from "../../../../ManageClass/components/ClassDetails/AddmultipleStduentsInfoModel";
 
-const Item = ({ item, moveItem }) => {
+const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
     moveItem(item);
   };
+
   return (
-    <ItemDiv onClick={handleClick}>
+    <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
       <h4>
         {item.firstName} {item.lastName}{" "}
       </h4>
       <p>
-        {item._source.email} {2 == 3 && <Icon type="check" />}
+        {item._source.email} {isEnrolled && <Icon type="check" />}
       </p>
     </ItemDiv>
   );
@@ -113,7 +114,7 @@ class InviteMultipleStudentModal extends React.Component {
     const searchKey = e.target.value.trim();
     const searchData = {
       districtId,
-      limit: 50,
+      limit: 1000,
       page: 1,
       role: "student"
     };
@@ -137,7 +138,7 @@ class InviteMultipleStudentModal extends React.Component {
   moveItem = item => {
     const email = item._source.email;
     const { allStudents, studentsToEnroll } = this.state;
-    const inAllStudentsBox = allStudents.filter(std => std._source.email === email).length > 0 ? true : false;
+    const inAllStudentsBox = allStudents.filter(std => std._source.email === email).length > 0;
     if (inAllStudentsBox) {
       const newAllStudents = allStudents.filter(std => std._source.email !== email);
       this.setState({
@@ -154,21 +155,57 @@ class InviteMultipleStudentModal extends React.Component {
       });
     }
   };
-  onAddMultipleStudents = () => {};
+
+  onAddMultipleStudents = async (
+    setInfoModel,
+    students,
+    selClass,
+    setIsAddMultipleStudentsModal,
+    forceUpdate,
+    setForceUpdate,
+    orgData
+  ) => {
+    const data = {
+      classCode: selClass.code,
+      studentIds: students.map(std => std._id),
+      districtId: orgData.districtId
+    };
+    const result = await enrollmentApi.SearchAddEnrolMultiStudents(data);
+
+    setIsAddMultipleStudentsModal(false);
+    setForceUpdate(!forceUpdate);
+    setInfoModel({
+      visible: true,
+      data: result.data.result
+    });
+  };
   render() {
-    debugger;
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, setAddMultipleInfoModal } = this.props;
+    const {
+      modalVisible,
+      setIsAddMultipleStudentsModal,
+      setAddMultipleInfoModal,
+      orgData,
+      studentsList,
+      selectedClass,
+      setForceUpdate,
+      forceUpdate
+    } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
 
     const allLists =
       allStudents.length > 0
-        ? allStudents.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} />)
+        ? allStudents.map(item => {
+            const isEnrolled =
+              studentsList.filter(student => student.email === item._source.email && student.enrollmentStatus == 1)
+                .length > 0;
+            return <Item key={item._id} item={item} moveItem={this.moveItem} isEnrolled={isEnrolled} />;
+          })
         : null;
 
     const toEnrollLists =
       studentsToEnroll.length > 0
-        ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} />)
+        ? studentsToEnroll.map(item => <Item key={item._id} item={item} moveItem={this.moveItem} orgData={orgData} />)
         : null;
 
     let placeHolderComponent;
@@ -309,7 +346,23 @@ class InviteMultipleStudentModal extends React.Component {
                   </Button>
                 </Col>
                 <Col>
-                  <Button type="primary" shape="round" size="large" key="submit" onClick={this.onAddMultipleStudents}>
+                  <Button
+                    type="primary"
+                    shape="round"
+                    size="large"
+                    key="submit"
+                    disabled={!studentsToEnroll.length}
+                    onClick={this.onAddMultipleStudents.bind(
+                      this,
+                      setAddMultipleInfoModal,
+                      studentsToEnroll,
+                      selectedClass,
+                      setIsAddMultipleStudentsModal,
+                      forceUpdate,
+                      setForceUpdate,
+                      orgData
+                    )}
+                  >
                     Yes, Add to Class
                     <Icon type="right" />
                   </Button>

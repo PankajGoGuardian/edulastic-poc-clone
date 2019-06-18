@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
@@ -13,6 +13,8 @@ import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
 const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
+  const [forceUpdate, setForceUpdate] = useState(false);
+
   if (loadStudents) {
     const { _id: classId } = selctedClass;
     loadStudents({ classId });
@@ -42,7 +44,7 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
-        <ActionContainer printPreview={printPreview} />
+        <ActionContainer printPreview={printPreview} forceUpdate={forceUpdate} setForceUpdate={setForceUpdate} />
         <StudentsList selectStudent />
       </Container>
     </>

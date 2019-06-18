@@ -75,7 +75,7 @@ const MatchListPreview = ({
   } = item;
 
   const alternateAnswers = {};
-  if (validation.alt_responses && validation.alt_responses.length > 0) {
+  if (validation && validation.alt_responses && validation.alt_responses.length > 0) {
     const { alt_responses: altAnswers } = validation;
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {

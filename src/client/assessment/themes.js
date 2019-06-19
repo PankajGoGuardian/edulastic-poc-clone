@@ -481,6 +481,8 @@ export const themes = {
         subtitleColor: "#434b5d", // secondaryTextColor
         svgMapFillColor: "rgba(0, 176, 255, 0.19)", // svgMapFillColor
         svgMapStrokeColor: "rgba(0, 176, 255, 1)", // svgMapStrokeColor
+        svgMapRightFillColor: "rgba(31, 227, 161, 0.19)", // svgMapFillColor
+        svgMapRightStrokeColor: "rgba(31, 227, 161, 1)", // svgMapStrokeColor
         intersectStrokeColor: "#ee1658", // red
         intersectFillColor: "#fbdfe750",
         iconPlusColor: "#fff", // white

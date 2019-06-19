@@ -1161,7 +1161,7 @@ export const getCards = onSelectQuestionType => {
         type: questionType.CLOZE_IMAGE_TEXT,
         stimulus: "",
         options: [],
-        imageUrl: "https://s3.amazonaws.com/edureact-dev/course/fb44951a-2e24-4c2c-8a23-ffb52691e1a3.jpg",
+        imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         ui_style: {
           width: 140
         },

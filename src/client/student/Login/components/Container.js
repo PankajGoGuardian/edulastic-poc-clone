@@ -51,7 +51,10 @@ class LoginContainer extends React.Component {
     const {
       form: { getFieldDecorator },
       t,
-      Partners
+      Partners,
+      isSignupUsingDaURL,
+      districtPolicy,
+      districtShortName
     } = this.props;
 
     const formItemLayout = {
@@ -77,55 +80,63 @@ class LoginContainer extends React.Component {
                       <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
                     )}
                   </h3>
-                  <ThirdPartyLoginBtn span={20} offset={2}>
-                    <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
-                  </ThirdPartyLoginBtn>
-                  <ThirdPartyLoginBtn span={20} offset={2}>
-                    <img src={icon365} alt="" /> {t("common.office365signinbtn")}
-                  </ThirdPartyLoginBtn>
-                  <ThirdPartyLoginBtn span={20} offset={2}>
-                    <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
-                  </ThirdPartyLoginBtn>
+                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn span={20} offset={2}>
+                      <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
+                    </ThirdPartyLoginBtn>
+                  ) : null}
+                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) || !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn span={20} offset={2}>
+                      <img src={icon365} alt="" /> {t("common.office365signinbtn")}
+                    </ThirdPartyLoginBtn>
+                  ) : null}
+                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.cleverSignOn) || !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn span={20} offset={2}>
+                      <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
+                    </ThirdPartyLoginBtn>
+                  ) : null}
                 </FormHead>
-                <FormBody>
-                  <Col span={20} offset={2}>
-                    <h5 align="center">{t("common.formboxheading")}</h5>
-                    <Form onSubmit={this.handleSubmit}>
-                      <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
-                        {getFieldDecorator("email", {
-                          rules: [
-                            {
-                              required: true,
-                              message: t("common.validation.emptyemailid")
-                            }
-                          ]
-                        })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
-                      </FormItem>
-                      <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
-                        {getFieldDecorator("password", {
-                          rules: [
-                            {
-                              required: true,
-                              message: t("common.validation.emptypassword")
-                            }
-                          ]
-                        })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
-                      </FormItem>
-                      <FormItem>
-                        {getFieldDecorator("remember", {
-                          valuePropName: "checked",
-                          initialValue: true
-                        })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
-                        <ForgetPassword href="#" style={{ marginTop: 1 }}>
-                          {t("common.forgotpasswordtext")}
-                        </ForgetPassword>
-                        <LoginButton data-cy="login" type="primary" htmlType="submit">
-                          {t("common.signinbtn")}
-                        </LoginButton>
-                      </FormItem>
-                    </Form>
-                  </Col>
-                </FormBody>
+                {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) || !isSignupUsingDaURL ? (
+                  <FormBody>
+                    <Col span={20} offset={2}>
+                      <h5 align="center">{t("common.formboxheading")}</h5>
+                      <Form onSubmit={this.handleSubmit}>
+                        <FormItem {...formItemLayout} label={t("common.loginidinputlabel")}>
+                          {getFieldDecorator("email", {
+                            rules: [
+                              {
+                                required: true,
+                                message: t("common.validation.emptyemailid")
+                              }
+                            ]
+                          })(<Input data-cy="email" prefix={<img src={mailIcon} alt="" />} />)}
+                        </FormItem>
+                        <FormItem {...formItemLayout} label={t("common.loginpasswordinputlabel")}>
+                          {getFieldDecorator("password", {
+                            rules: [
+                              {
+                                required: true,
+                                message: t("common.validation.emptypassword")
+                              }
+                            ]
+                          })(<Input data-cy="password" prefix={<img src={keyIcon} alt="" />} type="password" />)}
+                        </FormItem>
+                        <FormItem>
+                          {getFieldDecorator("remember", {
+                            valuePropName: "checked",
+                            initialValue: true
+                          })(<RememberCheckBox>{t("common.remembermetext")}</RememberCheckBox>)}
+                          <ForgetPassword href="#" style={{ marginTop: 1 }}>
+                            {t("common.forgotpasswordtext")}
+                          </ForgetPassword>
+                          <LoginButton data-cy="login" type="primary" htmlType="submit">
+                            {t("common.signinbtn")}
+                          </LoginButton>
+                        </FormItem>
+                      </Form>
+                    </Col>
+                  </FormBody>
+                ) : null}
               </FormWrapper>
             </Col>
           </RegistrationBody>

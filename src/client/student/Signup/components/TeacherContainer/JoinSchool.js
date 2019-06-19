@@ -4,7 +4,7 @@ import { compose } from "redux";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { get, debounce, find, split } from "lodash";
-import { Row, Col, Select } from "antd";
+import { Row, Col, Select, message } from "antd";
 import styled from "styled-components";
 import { IconHeader } from "@edulastic/icons";
 import { springGreen, white, title, fadedGrey } from "@edulastic/colors";
@@ -48,7 +48,9 @@ const JoinSchool = ({
   joinSchool,
   updateUserWithSchoolLoading,
   ipZipCode,
-  districtId
+  districtId,
+  isSignupUsingDaURL,
+  districtPolicy
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
   const [selected, setSchool] = useState(null);
@@ -59,6 +61,11 @@ const JoinSchool = ({
   const changeSchool = value => {
     const _school = find(schools, item => item.schoolId === value.key);
     setSchool(_school);
+    if (isSignupUsingDaURL && districtPolicy.orgId !== _school.districtId) {
+      message.error(
+        "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+      );
+    }
   };
 
   const handleSubmit = () => {
@@ -72,6 +79,12 @@ const JoinSchool = ({
       middleName,
       lastName
     };
+    if (isSignupUsingDaURL && districtPolicy.orgId !== selected.districtId) {
+      message.error(
+        "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+      );
+      return;
+    }
     joinSchool({ data, userId: userInfo._id });
   };
 

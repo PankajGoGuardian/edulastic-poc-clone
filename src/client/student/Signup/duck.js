@@ -34,6 +34,8 @@ export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST =
   "[signup] get district by short name and org type request";
 export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS =
   "[signup] get district by short name and org type request success";
+export const GET_PUBLIC_DISTRICT_POLICY_REQUEST = "[signup] get public district policy request";
+export const GET_PUBLIC_DISTRICT_POLICY_SUCCESS = "[signup] get public district policy request success";
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -43,6 +45,16 @@ export const saveSubjectGradeloadingSelector = createSelector(
 
 export const updateUserWithSchoolLoadingSelector = createSelector(
   ["signup.updateUserWithSchoolLoading"],
+  subState => subState
+);
+
+export const signupDistrictPolicySelector = createSelector(
+  ["signup.districtPolicy"],
+  subState => subState
+);
+
+export const signupGeneralSettingsSelector = createSelector(
+  ["signup.generalSettings"],
   subState => subState
 );
 
@@ -64,7 +76,7 @@ export const joinSchoolRequestAction = createAction(JOIN_SCHOOL_REQUEST);
 export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 
 export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
-export const getDistrictByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
+export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
 
 // Reducers
 const initialState = {
@@ -141,6 +153,9 @@ export default createReducer(initialState, {
   },
   [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS]: (state, { payload }) => {
     state.generalSettings = payload;
+  },
+  [GET_PUBLIC_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
+    state.districtPolicy = payload;
   }
 });
 
@@ -304,12 +319,23 @@ function* saveSubjectGradeSaga({ payload }) {
   }
 }
 
-function* getDistrictByShortNameAndOrgTypeSaga({ payload }) {
+function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
   try {
-    const result = yield call(settingsApi.getDistrictByShortNameAndOrgType, payload);
-    yield put({ type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS, payload: result });
+    const result = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, payload);
+    const { generalSettings, districtPolicy } = result;
+    if (generalSettings) {
+      yield put({ type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS, payload: generalSettings });
+    } else {
+      throw { message: "Invalid Url." };
+    }
+    if (districtPolicy) {
+      yield put({ type: GET_PUBLIC_DISTRICT_POLICY_SUCCESS, payload: districtPolicy });
+    } else {
+      throw { message: "Failed to get district policy." };
+    }
   } catch (e) {
-    yield call(message.error, "Failed to get district details.");
+    yield call(message.error, e && e.message ? e.message : "Failed to get district details.");
+    yield put(push("/login"));
   }
 }
 
@@ -320,5 +346,5 @@ export function* watcherSaga() {
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
   yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
-  yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getDistrictByShortNameAndOrgTypeSaga);
+  yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getOrgDetailsByShortNameAndOrgTypeSaga);
 }

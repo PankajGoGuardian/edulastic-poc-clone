@@ -9,6 +9,7 @@ import { fetchAssignmentsAction } from "../Assignments/ducks";
 import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillReport/ducks";
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import { getWordsInURLPathName } from "../../common/utils/helpers";
+import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
 
 // types
 export const LOGIN = "[auth] login";
@@ -121,17 +122,16 @@ function* login({ payload }) {
       yield put(receiveLastPlayListAction());
       yield put(receiveRecentPlayListsAction());
     }
+
     const redirectUrl = localStorage.getItem("loginRedirectUrl");
 
     const isAuthUrl = /signup|login/gi.test(redirectUrl);
     if (redirectUrl && !isAuthUrl) {
       localStorage.removeItem("loginRedirectUrl");
       yield put(push(redirectUrl));
-    } else if (user.role === roleuser.STUDENT) {
-      yield put(push("/home/assignments"));
-    } else if (user.role === roleuser.ADMIN) {
-      yield put(push("/admin"));
-    } else yield put(push("/author/assignments"));
+    }
+    // Important redirection code removed, redirect code already present in /src/client/App.js
+    // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
     console.error(err);
     const errorMessage = "Invalid username or password";
@@ -139,7 +139,29 @@ function* login({ payload }) {
   }
 }
 
+const checkEmailPolicy = (policy, role, email) => {
+  if (!policy) {
+    return true;
+  }
+  let inputDomain = email.split("@")[1];
+  let allowedDomains;
+  if (role === "teacher") {
+    allowedDomains = policy.allowedDomainForTeachers;
+  } else if (role === "student") {
+    allowedDomains = policy.allowedDomainForStudents;
+  } else if (role === "da") {
+    allowedDomains = policy.allowedDomainsForDistrict;
+  }
+  if (allowedDomains.includes(inputDomain)) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 function* signup({ payload }) {
+  const districtPolicy = yield select(signupDistrictPolicySelector);
+
   try {
     const { name, email, password, role, classCode } = payload;
     let nameList = name.split(" ");
@@ -147,6 +169,12 @@ function* signup({ payload }) {
     if (!nameList.length) {
       throw { message: "Please provide your full name." };
     }
+    if (!checkEmailPolicy(districtPolicy, role, email)) {
+      throw {
+        message: "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+      };
+    }
+
     let firstName;
     let lastName;
     let middleName;
@@ -190,32 +218,19 @@ function* signup({ payload }) {
         "currentSignUpState",
         "ipZipCode"
       ]);
+
       TokenStorage.storeAccessToken(result.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);
       yield put(signupSuccessAction(result));
       localStorage.removeItem("loginRedirectUrl");
-      if (user.role === roleuser.TEACHER) {
-        switch (user.currentSignUpState) {
-          case signUpState.SCHOOL_NOT_SELECTED:
-            yield put(push("/signup"));
-            break;
-          case signUpState.PREFERENCE_NOTSELECTED:
-            yield put(push("/signup"));
-            break;
-          case signUpState.DONE:
-            yield put(push("/author/assignments"));
-            break;
-          default:
-            yield put(push("/author/assignments"));
-        }
-      } else if (user.role === roleuser.STUDENT) {
-        yield put(push("/home/assignments"));
-      }
+
+      // Important redirection code removed, redirect code already present in /src/client/App.js
+      // it receives new user props in each steps of teacher signup and for other roles
     }
   } catch (err) {
     console.error(err);
     const errorMessage = "Email already exist";
-    yield call(message.error, errorMessage);
+    yield call(message.error, err && err.message ? err.message : errorMessage);
   }
 }
 
@@ -230,7 +245,10 @@ const getLoggedOutUrl = () => {
   } else if (window.location.pathname.toLocaleLowerCase() === "/adminsignup") {
     return "/adminsignup";
   } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-    return "/district/" + path[1];
+    let arr = [...path];
+    arr.shift();
+    let restOfPath = arr.join("/");
+    return "/district/" + restOfPath;
   } else {
     return "/login";
   }

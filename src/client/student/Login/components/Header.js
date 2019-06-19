@@ -7,7 +7,7 @@ import { Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import { springGreen } from "@edulastic/colors";
 
-const Header = ({ t, Partners }) => (
+const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShortName }) => (
   <RegistrationHeader type="flex" align="middle">
     <Col span={12}>
       <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
@@ -15,7 +15,9 @@ const Header = ({ t, Partners }) => (
     </Col>
     <Col span={12} align="right">
       <span>{t("common.donthaveanaccount")}</span>
-      <Link to="/getstarted">{t("common.signupbtn")}</Link>
+      <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/getstarted" : "/getstarted"}>
+        {t("common.signupbtn")}
+      </Link>
     </Col>
   </RegistrationHeader>
 );

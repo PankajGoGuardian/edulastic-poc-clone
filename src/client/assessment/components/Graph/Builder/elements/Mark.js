@@ -89,6 +89,8 @@ const onHandler = (board, coords, data) => {
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId);
   }
 
+  content = `<div class='mark-content'>${content}</div>`;
+
   const mark = board.$board.create("text", [x, y, content], {
     id: coords && coords.fixed ? null : data.id,
     anchorX: "middle",

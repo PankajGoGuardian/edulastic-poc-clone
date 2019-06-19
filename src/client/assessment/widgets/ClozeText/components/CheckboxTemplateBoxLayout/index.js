@@ -24,9 +24,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responsecontainerindividuals,
     responseIds
   } = resprops;
-  const { index } = find(responseIds, res => res.id === id);
-  const status = evaluation[index] ? "right" : "wrong";
+  const { id: choiceId, index } = find(responseIds, res => res.id === id);
 
+  const status = evaluation[choiceId] ? "right" : "wrong";
   // eslint-disable-next-line no-unused-vars
   let indexStr = "";
 

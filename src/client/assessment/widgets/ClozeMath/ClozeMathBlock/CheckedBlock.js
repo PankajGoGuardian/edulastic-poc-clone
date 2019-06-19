@@ -10,8 +10,7 @@ import { CheckBox } from "./styled/CheckBox";
 const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, onInnerClick }) => {
   const filedRef = useRef();
   const { response_ids } = item;
-  let { index } = find(response_ids[type], res => res.id === id);
-  index = parseInt(index, 10);
+  const { index } = find(response_ids[type], res => res.id === id);
 
   let checkBoxClass = "";
 
@@ -50,13 +49,15 @@ CheckedBlock.propTypes = {
   type: PropTypes.string.isRequired,
   id: PropTypes.string.isRequired,
   isMath: PropTypes.bool,
-  onInnerClick: PropTypes.func
+  onInnerClick: PropTypes.func,
+  width: PropTypes.number
 };
 
 CheckedBlock.defaultProps = {
   isMath: false,
   userAnswer: "",
-  onInnerClick: () => {}
+  onInnerClick: () => {},
+  width: 120
 };
 
 export default CheckedBlock;

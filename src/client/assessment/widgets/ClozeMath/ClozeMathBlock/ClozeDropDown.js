@@ -50,7 +50,7 @@ ClozeDropDown.propTypes = {
 export default ClozeDropDown;
 
 const StyeldSelect = styled(Select)`
-  min-width: 80px;
+  min-width: 120px;
   margin: 0px 4px;
   width: ${({ width }) => (!width ? null : `${width}`)};
   min-height: 35px;

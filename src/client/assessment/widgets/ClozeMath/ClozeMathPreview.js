@@ -23,7 +23,6 @@ const ClozeMathPreview = ({
   saveAnswer,
   evaluation,
   showQuestionNumber,
-  qIndex,
   options,
   responseIds,
   changePreviewTab
@@ -119,13 +118,11 @@ ClozeMathPreview.propTypes = {
   evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
   options: PropTypes.object.isRequired,
   responseIds: PropTypes.object.isRequired,
-  showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  showQuestionNumber: PropTypes.bool
 };
 
 ClozeMathPreview.defaultProps = {
-  showQuestionNumber: false,
-  qIndex: null
+  showQuestionNumber: false
 };
 
 export default withCheckAnswerButton(ClozeMathPreview);

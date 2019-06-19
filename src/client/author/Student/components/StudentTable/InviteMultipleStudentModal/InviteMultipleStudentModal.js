@@ -166,11 +166,9 @@ class InviteMultipleStudentModal extends React.Component {
     orgData
   ) => {
     const data = {
-      classCode: selClass.code,
-      studentIds: students.map(std => std._id),
-      districtId: orgData.districtId
+      userDetails: students.map(std => std._id)
     };
-    const result = await enrollmentApi.SearchAddEnrolMultiStudents(data);
+    const result = await userApi.SearchAddEnrolMultiStudents(selClass.code, data);
     setIsAddMultipleStudentsModal(false);
     setForceUpdate(!forceUpdate);
     setInfoModel({

@@ -90,6 +90,14 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
+const SearchAddEnrolMultiStudents = (classCode, data) => {
+  return api.callApi({
+    url: `${prefix}/${classCode}/class-students`,
+    method: "post",
+    data
+  });
+};
+
 export default {
   getUser,
   fetchUsers,
@@ -100,5 +108,6 @@ export default {
   getSwitchedToken,
   changeUserTTS,
   resetPassword,
-  addMultipleStudents
+  addMultipleStudents,
+  SearchAddEnrolMultiStudents
 };

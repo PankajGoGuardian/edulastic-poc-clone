@@ -251,7 +251,9 @@ const ActionContainer = ({
 
   return (
     <>
-      <AddMultipleStudentsInfoModal info={addMultipleInfoModal} setAddMultipleInfoModal={setAddMultipleInfoModal} />
+      {addMultipleInfoModal.visible && (
+        <AddMultipleStudentsInfoModal info={addMultipleInfoModal} setAddMultipleInfoModal={setAddMultipleInfoModal} />
+      )}
 
       {isOpen.add && (
         <AddStudentModal

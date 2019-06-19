@@ -529,7 +529,9 @@ export function* updateItemSaga({ payload }) {
       data.testId = testId;
     }
     data.data = {};
-    data.data.questions = yield select(getQuestionsSelector);
+
+    const questions = yield select(getQuestionsSelector);
+    data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
 

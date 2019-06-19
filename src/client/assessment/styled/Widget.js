@@ -99,7 +99,7 @@ export const Widget = styled.div`
   }
 
   .input__math {
-    padding: 12px 21px;
+    padding: 12px 2px;
   }
 
   .mq-root-block,

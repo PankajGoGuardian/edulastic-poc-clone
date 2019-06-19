@@ -153,7 +153,7 @@ class Display extends Component {
           height={imageHeight > canvasDimensions.maxHeight ? imageHeight : canvasDimensions.maxHeight}
         >
           <StyledPreviewImage
-            src={imageUrl || ""}
+            imageSrc={imageUrl || ""}
             width={this.getWidth()}
             height={this.getHeight()}
             heighcanvasDimensionst={imageHeight}

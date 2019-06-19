@@ -39,7 +39,7 @@ import { PointerContainer } from "./styled/PointerContainer";
 import { PointerSelect } from "./styled/PointerSelect";
 import { ImageFlexView } from "./styled/ImageFlexView";
 import { ImageContainer } from "./styled/ImageContainer";
-import { PreivewImageWrapper, PreviewImage } from "./styled/PreviewImage";
+import { PreivewImage } from "./styled/PreviewImage";
 import { CheckContainer } from "./styled/CheckContainer";
 // import { IconDrawResize } from "./styled/IconDrawResize";
 import { IconMoveResize } from "./styled/IconMoveResize";
@@ -220,7 +220,7 @@ class Authoring extends Component {
     );
   };
 
-  getImageDimensions = url => {
+  getImageDimensions = (url, isNew) => {
     const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
     const img = new Image();
@@ -245,8 +245,10 @@ class Authoring extends Component {
       ((wid, heig) => {
         setQuestionData(
           produce(item, draft => {
-            draft.imageHeight = undefined;
-            draft.imageWidth = undefined;
+            if (isNew) {
+              draft.imageHeight = undefined;
+              draft.imageWidth = undefined;
+            }
             draft.imageUrl = url;
             draft.imageOriginalHeight = heig;
             draft.imageOriginalWidth = wid;
@@ -377,13 +379,26 @@ class Authoring extends Component {
         return;
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
-      this.getImageDimensions(imageUrl);
+      this.getImageDimensions(imageUrl, true);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
       // eslint-disable-next-line no-undef
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
     }
+  };
+
+  handleResize = resizeRef => {
+    const { width } = resizeRef.style;
+    const { height } = resizeRef.style;
+    const { item, setQuestionData } = this.props;
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageHeight = parseInt(height, 10);
+        draft.imageWidth = parseInt(width, 10);
+      })
+    );
   };
 
   render() {
@@ -404,12 +419,15 @@ class Authoring extends Component {
       showUploadList: false
     };
 
-    const imageWith = this.getWidth();
+    const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
     const imageTop = this.getTop();
     const imageLeft = this.getLeft();
-    const canvasWidth = imageWith < maxWidth ? maxWidth : imageWith;
+    const canvasWidth = imageWidth < maxWidth ? maxWidth : imageWidth;
     const canvasHeight = imageHeight < maxHeight ? maxHeight : imageHeight;
+    if (this.imageRndRef.current) {
+      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
+    }
 
     return (
       <div>
@@ -430,7 +448,7 @@ class Authoring extends Component {
                   <ImageWidthInput
                     ref={this.imageWidthEditor}
                     data-cy="image-width-input"
-                    value={imageWith}
+                    value={imageWidth}
                     onChange={this.changeImageWidth}
                   />
 
@@ -528,9 +546,9 @@ class Authoring extends Component {
                         position={{ x: imageOptions.x || 0, y: imageOptions.y || 0 }}
                         bounds="parent"
                         enableResizing={{
-                          bottom: false,
+                          bottom: true,
                           bottomLeft: false,
-                          bottomRight: false,
+                          bottomRight: true,
                           left: false,
                           right: false,
                           top: false,
@@ -538,29 +556,27 @@ class Authoring extends Component {
                           topRight: false
                         }}
                         onDragStop={(evt, d) => handleImagePosition(d)}
+                        // onResizeStop={(e, direction, ref) => this.handleResize(ref)}
+                        onResize={(e, direction, ref) => this.handleResize(ref)}
                       >
-                        <PreivewImageWrapper>
-                          <PreviewImage
-                            id="mainImage"
-                            src={item.imageUrl}
-                            width={imageWith}
-                            height={imageHeight}
-                            maxWidth={maxWidth}
-                            maxHeight={maxHeight}
-                            alt="resp-preview"
-                            onDragStart={e => e.preventDefault()}
-                          />
-                          {isEditableResizeMove && (
-                            <MoveControlButton
-                              onClick={toggleIsMoveResizeEditable}
-                              style={{
-                                boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
-                              }}
-                            >
-                              <IconMoveResize />
-                            </MoveControlButton>
-                          )}
-                        </PreivewImageWrapper>
+                        {isEditableResizeMove && (
+                          <MoveControlButton
+                            onClick={toggleIsMoveResizeEditable}
+                            style={{
+                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                            }}
+                          >
+                            <IconMoveResize />
+                          </MoveControlButton>
+                        )}
+                        <PreivewImage
+                          width={imageWidth}
+                          height={imageHeight}
+                          maxWidth={maxWidth}
+                          maxHeight={maxHeight}
+                          onDragStart={e => e.preventDefault()}
+                          imageSrc={item.imageUrl}
+                        />
                       </Rnd>
                       <DropArea
                         disable={isEditableResizeMove}
@@ -610,8 +626,8 @@ class Authoring extends Component {
                       style={{
                         boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
                       }}
-                      top={imageTop + imageHeight}
-                      left={imageLeft + imageWith}
+                      top={imageTop + imageHeight - 4}
+                      left={imageLeft + imageWidth - 4}
                     >
                       <IconMoveResize />
                     </MoveControlButton>

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { helpers } from "@edulastic/common";
 
+import { response, canvasDimensions } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
 import { Triangle } from "../../../../styled/Triangle";
@@ -11,8 +12,7 @@ import { StyledTemplateBox } from "./styled/StyledTemplateBox";
 import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
-
-import { response, canvasDimensions } from "@edulastic/constants";
+import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
@@ -31,30 +31,24 @@ const CheckboxTemplateBoxLayout = ({
   imageHeight,
   uiStyle
 }) => (
-  <StyledTemplateBox
-    fontSize={fontSize}
-    height={canvasDimensions.maxHeight}
-    width={canvasDimensions.maxWidth}
-    maxHeight={canvasDimensions.maxHeight}
-    maxWidth={canvasDimensions.maxWidth}
-    margin={"0 auto"}
-  >
+  <StyledTemplateBox fontSize={fontSize} margin="0 auto">
     <TemplateCover
       width={canvasDimensions.maxWidth}
       maxHeight={canvasDimensions.maxHeight}
       maxWidth={canvasDimensions.maxWidth}
       height={canvasDimensions.maxHeight}
     >
-      <img
-        src={imageUrl}
+      <StyledPreviewImage
+        imageSrc={imageUrl || ""}
+        width={imageWidth}
+        height={imageHeight}
+        heighcanvasDimensionst={imageHeight}
+        alt={imageAlterText}
         style={{
           position: "absolute",
           top: imageOptions.y || 0,
-          left: imageOptions.x || 0,
-          width: `${imageWidth}px`,
-          height: `${imageHeight}px`
+          left: imageOptions.x || 0
         }}
-        alt={imageAlterText}
       />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
@@ -90,10 +84,10 @@ const CheckboxTemplateBoxLayout = ({
                   minWidth: `${response.minWidth}px`
                 }}
                 className={`
-                  imagelabeldragdrop-droppable 
-                  active 
-                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
-                  ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
+                    imagelabeldragdrop-droppable 
+                    active 
+                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                    ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
               >
                 <div className="text container" title={userSelections[dropTargetIndex]}>
                   <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
@@ -120,11 +114,11 @@ const CheckboxTemplateBoxLayout = ({
                   minWidth: `${response.minWidth}px`
                 }}
                 className={`
-                  imagelabeldragdrop-droppable 
-                  active 
-                  ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}
-                  ${status} 
-                  show-answer`}
+                    imagelabeldragdrop-droppable 
+                    active 
+                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}
+                    ${status} 
+                    show-answer`}
               >
                 <span className="index index-box">{indexStr}</span>
                 <div className="text container" title={userSelections[dropTargetIndex]}>
@@ -148,7 +142,6 @@ const CheckboxTemplateBoxLayout = ({
     </TemplateCover>
   </StyledTemplateBox>
 );
-
 CheckboxTemplateBoxLayout.propTypes = {
   responsecontainerindividuals: PropTypes.array.isRequired,
   fontSize: PropTypes.string.isRequired,

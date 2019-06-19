@@ -424,6 +424,7 @@ const CustomEditor = ({
           if (restOptions.readOnly === true) {
             this.edit.off();
             this.$el.find(".input__math").css("pointer-events", "none");
+            this.$el.find("img").css("pointer-events", "none");
           }
         },
 

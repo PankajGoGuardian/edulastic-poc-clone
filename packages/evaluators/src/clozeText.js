@@ -5,7 +5,7 @@ import { get as levenshteinDistance } from "fast-levenshtein";
 const createAnswerObject = answers => {
   const responses = {};
   for (const ans of answers) {
-    responses[ans.id] = ans.value;
+    if (ans) responses[ans.id] = ans.value;
   }
   return responses;
 };

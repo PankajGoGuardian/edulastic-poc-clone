@@ -22,6 +22,7 @@ const Summary = ({
   currentUser,
   test,
   current,
+  owner,
   t,
   onShowSource,
   windowWidth,
@@ -89,6 +90,7 @@ const Summary = ({
               onChangeField={handleChangeField}
               windowWidth={windowWidth}
               grades={grades}
+              owner={owner}
               isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
@@ -111,11 +113,13 @@ const Summary = ({
 };
 
 Summary.defaultProps = {
+  owner: false,
   test: {}
 };
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
+  owner: PropTypes.bool,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,

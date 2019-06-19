@@ -1,8 +1,9 @@
 import styled from "styled-components";
 
 export const ControlButton = styled.button`
-  width: 100px;
-  height: 100px;
+  height: 32px;
+  padding-top: 5px;
+  margin-right: 8px;
   white-space: normal;
   border-radius: 4px;
   border: none;
@@ -22,5 +23,30 @@ export const ControlButton = styled.button`
   &:not([disabled]) {
     background: ${props => props.theme.widgets.clozeImageText.controlButtonNotDisabledBgColor};
     box-shadow: 0 3px 6px 0 ${props => props.theme.widgets.clozeImageText.controlButtonNotDisabledShadowColor};
+  }
+`;
+
+export const MoveControlButton = styled(ControlButton)`
+  width: 36px;
+  height: 36px;
+  position: absolute;
+  top: ${({ top }) => (top ? `${top - 36}px` : "unset")};
+  left: ${({ left }) => (left ? `${left - 36}px` : "unset")};
+  bottom: ${({ top }) => (top ? "unset" : "4px")};
+  right: ${({ left }) => (left ? "unset" : "5px")};
+  cursor: move;
+  z-index: 9000;
+  margin-right: 0px;
+
+  :after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 2px;
+    border-bottom: solid 2px #333;
+    border-right: solid 2px #333;
   }
 `;

@@ -90,26 +90,29 @@ class Display extends Component {
 
   getHeight = () => {
     const { item } = this.props;
-    const { imageHeight } = item;
+    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
     const { maxHeight } = clozeImage;
-
+    const imageWidth = this.getWidth();
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
+    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+    }
+
     if (!isUndefined(imageHeight)) {
       return imageHeight > 0 ? imageHeight : maxHeight;
     }
 
-    return "";
-    // if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
-    //   return imageOriginalHeight;
-    // }
-    // if (!isUndefined(imageOriginalHeight) && imageOriginalHeight >= maxHeight) {
-    //   if (isUndefined(imageHeight)) {
-    //     return maxHeight;
-    //   }
-    //   return imageHeight > 0 ? imageHeight : maxHeight;
-    // }
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
+      return imageOriginalHeight;
+    }
+
+    return maxHeight;
   };
 
   render() {

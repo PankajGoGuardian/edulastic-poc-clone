@@ -90,7 +90,8 @@ class Authoring extends Component {
   };
 
   componentDidMount = () => {
-    const { fillSections, t } = this.props;
+    const { fillSections, t, item } = this.props;
+    if (item.imageUrl) this.getImageDimensions(item.imageUrl);
     // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
@@ -262,21 +263,6 @@ class Authoring extends Component {
     const { imageOriginalWidth, imageWidth } = item;
     const { maxWidth } = clozeImage;
 
-    // On upload
-    // imageWidth = originalImageWidth;
-    // if (originalImageWidth > defaultCanvasWidth) {
-    //   imageWidth = defaultCanvasWidth;
-    //   // If keep aspect ratio = true
-    //   imageHeight = (originalImageHeight * imageWidth) / originalImageWidth;
-    // }
-    // canvasWidth = defaultCanvasWidth;
-    // canvasHeight = imageHeight > defaultCanvasHeight ? imageHeight : defaultCanvasHeight;
-
-    // // On resize
-    // imageHeight = (originalImageHeight * imageWidth) / originalImageWidth; // If keep aspect ratio = true
-    // canvasWidth = imageWidth > defaultCanvasWidth ? imageWidth : defaultCanvasWidth;
-    // canvasHeight = imageHeight > defaultCanvasHeight ? imageHeight : defaultCanvasHeight;
-
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
@@ -296,12 +282,17 @@ class Authoring extends Component {
 
   getHeight = () => {
     const { item } = this.props;
-    const { imageHeight } = item;
-    const { imageOriginalHeight, maxHeight } = clozeImage;
+    const { imageOriginalWidth, imageOriginalHeight, imageHeight, keepAspectRatio } = item;
+    const { maxHeight } = clozeImage;
+    const imageWidth = this.getWidth();
 
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
+    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+    }
+
     if (!isUndefined(imageHeight)) {
       return imageHeight > 0 ? imageHeight : maxHeight;
     }
@@ -309,6 +300,8 @@ class Authoring extends Component {
     if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
       return imageOriginalHeight;
     }
+
+    return maxHeight;
   };
 
   getLeft = () => {
@@ -411,7 +404,10 @@ class Authoring extends Component {
       showUploadList: false
     };
 
-    const canvasWidth = this.getWidth() < maxWidth ? maxWidth : this.getWidth();
+    const imageWith = this.getWidth();
+    const imageHeight = this.getHeight();
+    const canvasWidth = imageWith < maxWidth ? maxWidth : imageWith;
+    const canvasHeight = imageHeight < maxHeight ? maxHeight : imageHeight;
 
     return (
       <div>
@@ -432,7 +428,7 @@ class Authoring extends Component {
                   <ImageWidthInput
                     ref={this.imageWidthEditor}
                     data-cy="image-width-input"
-                    value={this.getWidth()}
+                    value={imageWith}
                     onChange={this.changeImageWidth}
                   />
 
@@ -440,11 +436,7 @@ class Authoring extends Component {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <ImageWidthInput
-                    data-cy="image-height-input"
-                    value={this.getHeight()}
-                    onChange={this.changeImageHeight}
-                  />
+                  <ImageWidthInput data-cy="image-height-input" value={imageHeight} onChange={this.changeImageHeight} />
                   <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
                 </FieldWrapper>
 
@@ -518,7 +510,7 @@ class Authoring extends Component {
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  height={this.getHeight() || maxHeight}
+                  height={canvasHeight}
                   width={canvasWidth}
                   onDragStart={e => e.preventDefault()}
                 >
@@ -549,8 +541,8 @@ class Authoring extends Component {
                           <PreviewImage
                             id="mainImage"
                             src={item.imageUrl}
-                            width={this.getWidth()}
-                            height={this.getHeight()}
+                            width={imageWith}
+                            height={imageHeight}
                             maxWidth={maxWidth}
                             maxHeight={maxHeight}
                             alt="resp-preview"

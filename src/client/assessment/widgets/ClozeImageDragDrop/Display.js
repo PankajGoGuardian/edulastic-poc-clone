@@ -69,11 +69,10 @@ class Display extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     const data = Array.isArray(sourceData) ? sourceData : [sourceData];
-
     newAnswers[index] = [...(newAnswers[index] || []), ...data];
 
     if (maxRespCount && newAnswers[index].length > maxRespCount) {
-      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1);
+      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1)[0];
       newResponses.push(last);
     }
 

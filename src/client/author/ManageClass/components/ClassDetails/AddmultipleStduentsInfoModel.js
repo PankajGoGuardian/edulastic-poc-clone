@@ -25,7 +25,7 @@ const AddMultipleStudentsInfoModal = ({ info, setAddMultipleInfoModal }) => {
     }
   ];
   return (
-    <Modal title="Student details" footer={null} visible={info.visible} onCancel={handleCancel}>
+    <Modal title="Student details" footer={null} visible={info.visible} onCancel={handleCancel} width={700}>
       <Table dataSource={info.data} columns={columns} pagination={false} />
     </Modal>
   );

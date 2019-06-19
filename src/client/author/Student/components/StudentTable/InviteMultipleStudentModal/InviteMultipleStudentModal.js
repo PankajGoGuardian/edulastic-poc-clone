@@ -4,7 +4,7 @@ import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
 const { TabPane } = Tabs;
 const Search = Input.Search;
 import { userApi, enrollmentApi } from "@edulastic/api";
-import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv } from "./styled";
+import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper } from "./styled";
 import AddMultipleStudentsInfoModal from "../../../../ManageClass/components/ClassDetails/AddmultipleStduentsInfoModel";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
@@ -14,12 +14,15 @@ const Item = ({ item, moveItem, isEnrolled }) => {
 
   return (
     <ItemDiv style={{ cursor: !isEnrolled && "pointer" }} onClick={!isEnrolled ? handleClick : null}>
-      <h4>
-        {item.firstName} {item.lastName}{" "}
-      </h4>
-      <p>
-        {item._source.email} {isEnrolled && <Icon type="check" />}
-      </p>
+      <Text>
+        {item.firstName} {item.lastName}
+      </Text>
+      <Row type="flex" align="middle">
+        <Col span={18}>
+          <Text>{item._source.email}</Text>
+        </Col>
+        <Col span={6}> {isEnrolled && <IconWrapper type="check" />}</Col>
+      </Row>
     </ItemDiv>
   );
 };
@@ -324,15 +327,15 @@ class InviteMultipleStudentModal extends React.Component {
               </Row>
               {(allStudents.length > 0 || studentsToEnroll.length > 0) && (
                 <Row type="flex" justify="space-between" align="middle">
-                  <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                  <ColWrapper span={11}>
                     <PerfectScrollbar>{allLists ? allLists : <div />}</PerfectScrollbar>
-                  </Col>
+                  </ColWrapper>
                   <Col span={2}>
                     <Icon type="swap" style={{ padding: "1rem" }} />
                   </Col>
-                  <Col span={11} style={{ border: "0.3px solid lightgrey", textAlign: "center", height: "200px" }}>
+                  <ColWrapper span={11}>
                     <PerfectScrollbar>{toEnrollLists ? toEnrollLists : <div />}</PerfectScrollbar>
-                  </Col>
+                  </ColWrapper>
                 </Row>
               )}
 

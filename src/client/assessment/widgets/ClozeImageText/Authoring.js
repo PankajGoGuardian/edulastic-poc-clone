@@ -550,7 +550,7 @@ class Authoring extends Component {
                           bottomLeft: false,
                           bottomRight: true,
                           left: false,
-                          right: false,
+                          right: true,
                           top: false,
                           topLeft: false,
                           topRight: false

@@ -6,12 +6,11 @@ export const PreivewImage = styled.div`
   border: 1px dotted ${black};
   border-radius: 4px;
   height: ${({ height, maxHeight }) => (!maxHeight ? "100%" : height ? `${height}px` : "auto")};
-  width: ${({ width, maxWidth }) => (!maxWidth ? "100%" : width < 700 ? `${width}px` : maxWidth)};
+  width: ${({ width, maxWidth }) => (!maxWidth ? "100%" : width ? `${width}px` : maxWidth)};
   user-select: none;
   pointer-events: none;
   max-width: unset !important;
-  background-size: ${({ width, maxWidth }) => (!maxWidth ? "100%" : width < 700 ? `${width}px` : maxWidth)}
-    ${({ height, maxHeight }) => (!maxHeight ? "100%" : height ? `${height}px` : "auto")};
+  background-size: ${({ height, width, maxWidth, maxHeight }) => `${width || maxWidth}px ${height || maxHeight}px`};
   background-repeat: no-repeat;
   background-image: url(${({ imageSrc }) => imageSrc || ""});
 `;

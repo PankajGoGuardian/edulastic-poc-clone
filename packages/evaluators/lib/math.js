@@ -75,7 +75,7 @@ var getChecks = function getChecks(validation) {
       } else if (key === "syntax") {
         acc += options.argument === undefined ? fieldVal : "".concat(fieldVal, "=").concat(options.argument);
       } else {
-        acc += "".concat(key, "=").concat(fieldVal);
+        acc += "".concat(fieldVal);
       }
 
       return "".concat(acc, ",");

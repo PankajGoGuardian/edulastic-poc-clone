@@ -1,3 +1,4 @@
+/* eslint-disable func-names */
 import React, { Component, createRef } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -12,11 +13,12 @@ import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
-import { cloneDeep } from "lodash";
+import { cloneDeep, isUndefined } from "lodash";
 
-import { API_CONFIG, TokenStorage } from "@edulastic/api";
+// import { API_CONFIG, TokenStorage } from "@edulastic/api";
 import { PaddingDiv, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { clozeImage, canvasDimensions, aws } from "@edulastic/constants";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
@@ -33,24 +35,21 @@ import { ColorPickerContainer } from "./styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
 import { MaxRespCountInput } from "./styled/MaxRespCountInput";
 import { FlexContainer } from "./styled/FlexContainer";
-import { ControlBar } from "./styled/ControlBar";
-import { ControlButton } from "./styled/ControlButton";
+import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
 import { PointerSelect } from "./styled/PointerSelect";
 import { ImageFlexView } from "./styled/ImageFlexView";
 import { ImageContainer } from "./styled/ImageContainer";
-import { PreviewImage } from "./styled/PreviewImage";
+import { PreivewImageWrapper, PreviewImage } from "./styled/PreviewImage";
 import { CheckContainer } from "./styled/CheckContainer";
-import { IconDrawResize } from "./styled/IconDrawResize";
+// import { IconDrawResize } from "./styled/IconDrawResize";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { Widget } from "../../styled/Widget";
+import { FieldWrapper } from "./styled/FieldWrapper";
 
-import { clozeImage, canvasDimensions } from "@edulastic/constants";
-
-import { uploadToS3 } from "../../../../client/author/src/utils/upload";
-import { aws } from "@edulastic/constants";
+import { uploadToS3 } from "../../../author/src/utils/upload";
 
 import SortableList from "../../components/SortableList";
 
@@ -84,13 +83,14 @@ class Authoring extends Component {
 
   state = {
     isEditableResizeMove: false,
-    isColorPickerVisible: false,
-    imageWidth:
-      this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
+    isColorPickerVisible: false
+    // imageWidth:
+    //   this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
 
     fillSections("main", t("component.cloze.imageText.composequestion"), node.offsetTop, node.scrollHeight);
@@ -104,7 +104,7 @@ class Authoring extends Component {
 
   componentDidUpdate(nextProps) {
     const { item, setQuestionData } = nextProps;
-    const { item: pastItem } = this.props;
+    // const { item: pastItem } = this.props;
 
     const newItem = cloneDeep(item);
     if (document.getElementById("mainImage") && item.imageUrl) {
@@ -219,9 +219,10 @@ class Authoring extends Component {
   };
 
   getImageDimensions = url => {
+    const { item, setQuestionData } = this.props;
     const { maxWidth, maxHeight } = clozeImage;
     const img = new Image();
-    const that = this;
+
     img.addEventListener("load", function() {
       let height;
       let width;
@@ -240,35 +241,108 @@ class Authoring extends Component {
         height = this.naturalHeight;
       }
       ((wid, heig) => {
-        that.onItemPropChange("imageWidth", wid);
-        that.onItemPropChange("imageHeight", heig);
+        setQuestionData(
+          produce(item, draft => {
+            draft.imageHeight = undefined;
+            draft.imageWidth = undefined;
+            draft.imageUrl = url;
+            draft.imageOriginalHeight = heig;
+            draft.imageOriginalWidth = wid;
+            updateVariables(draft);
+          })
+        );
       })(width, height);
     });
     img.src = url;
   };
 
-  changeImageWidth = event => {
-    const { maxWidth } = clozeImage;
-    const newWidth = event > 0 ? (event >= maxWidth ? maxWidth : event) : maxWidth;
-    this.onItemPropChange("imageWidth", newWidth);
-  };
-
   getWidth = () => {
     const { item } = this.props;
+    const { imageOriginalWidth, imageWidth } = item;
     const { maxWidth } = clozeImage;
-    return item.imageWidth > 0 ? (item.imageWidth >= maxWidth ? maxWidth : item.imageWidth) : maxWidth;
+
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+
+    if (!isUndefined(imageWidth)) {
+      return imageWidth > 0 ? imageWidth : maxWidth;
+    }
+
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
+      return imageOriginalWidth;
+    }
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
+      return maxWidth;
+    }
+    return maxWidth;
   };
 
   getHeight = () => {
     const { item } = this.props;
-    const { maxHeight } = clozeImage;
-    return item.imageHeight > 0 ? (item.imageHeight >= maxHeight ? maxHeight : item.imageHeight) : maxHeight;
+    const { imageHeight } = item;
+    const { imageOriginalHeight, maxHeight } = clozeImage;
+
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
+      return imageOriginalHeight;
+    }
+  };
+
+  getLeft = () => {
+    const {
+      item: { imageOptions = {} }
+    } = this.props;
+    const { x } = clozeImage;
+    return isUndefined(imageOptions.x) ? x : imageOptions.x || 0;
+  };
+
+  getTop = () => {
+    const {
+      item: { imageOptions = {} }
+    } = this.props;
+    const { y } = clozeImage;
+    return isUndefined(imageOptions.y) ? y : imageOptions.y || 0;
   };
 
   changeImageHeight = height => {
     const { maxHeight } = clozeImage;
-    const newHeight = height > 0 ? (height >= maxHeight ? maxHeight : height) : maxHeight;
+    const newHeight = height > 0 ? height : maxHeight;
     this.onItemPropChange("imageHeight", newHeight);
+  };
+
+  changeImageWidth = width => {
+    const { maxWidth } = clozeImage;
+    const newWidth = width > 0 ? width : maxWidth;
+    this.onItemPropChange("imageWidth", newWidth);
+  };
+
+  changeImageLeft = left => {
+    const { item, setQuestionData } = this.props;
+    const oldImageOption = cloneDeep(item.imageOptions);
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { ...oldImageOption, x: left };
+      })
+    );
+  };
+
+  chnageImageTop = top => {
+    const { item, setQuestionData } = this.props;
+    const oldImageOption = cloneDeep(item.imageOptions);
+
+    setQuestionData(
+      produce(item, draft => {
+        draft.imageOptions = { ...oldImageOption, y: top };
+      })
+    );
   };
 
   toggleIsMoveResizeEditable = () => {
@@ -295,25 +369,23 @@ class Authoring extends Component {
       }
       const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
       this.getImageDimensions(imageUrl);
-      this.onItemPropChange("imageUrl", imageUrl);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
       console.log(e);
+      // eslint-disable-next-line no-undef
       message.error(`${info.file.name} ${t("component.cloze.imageText.fileUploadFailed")}.`);
     }
   };
 
   render() {
     const { t, item, theme, setQuestionData } = this.props;
-    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageWidth, imageHeight = 0 } = item;
+    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
     const { isColorPickerVisible, isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = canvasDimensions;
 
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
-
-    const { imageOptions = {} } = item;
 
     const uploadProps = {
       beforeUpload: () => false,
@@ -322,6 +394,9 @@ class Authoring extends Component {
       multiple: false,
       showUploadList: false
     };
+
+    const canvasWidth = this.getWidth() < maxWidth ? maxWidth : this.getWidth();
+
     return (
       <div>
         <PaddingDiv>
@@ -335,96 +410,57 @@ class Authoring extends Component {
               value={item.stimulus}
             />
             <PaddingDiv />
-            <FormContainer>
-              <div style={{ alignItems: "center" }}>
-                <ImageWidthInput
-                  ref={this.imageWidthEditor}
-                  data-cy="image-width-input"
-                  value={this.getWidth()}
-                  onChange={this.changeImageWidth}
-                />
+            <FormContainer data-cy="top-toolbar-area">
+              <div data-cy="left-buttons">
+                <FieldWrapper>
+                  <ImageWidthInput
+                    ref={this.imageWidthEditor}
+                    data-cy="image-width-input"
+                    value={this.getWidth()}
+                    onChange={this.changeImageWidth}
+                  />
 
-                <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
+                  <PaddingDiv left={20}>{t("component.cloze.imageText.widthpx")}</PaddingDiv>
+                </FieldWrapper>
+
+                <FieldWrapper>
+                  <ImageWidthInput
+                    data-cy="image-height-input"
+                    value={this.getHeight()}
+                    onChange={this.changeImageHeight}
+                  />
+                  <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
+                </FieldWrapper>
+
+                <FieldWrapper>
+                  <ImageWidthInput data-cy="image-left-input" value={this.getLeft()} onChange={this.changeImageLeft} />
+                  <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
+                </FieldWrapper>
+
+                <FieldWrapper>
+                  <ImageWidthInput data-cy="image-top-input" value={this.getTop()} onChange={this.chnageImageTop} />
+                  <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
+                </FieldWrapper>
+
+                <CheckContainer position="unset" alignSelf="center">
+                  <Checkbox
+                    data-cy="drag-drop-image-aria-check"
+                    defaultChecked={isEditAriaLabels}
+                    onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
+                  >
+                    {t("component.cloze.imageText.keepAspectRatio")}
+                  </Checkbox>
+                </CheckContainer>
               </div>
 
-              <div style={{ alignItems: "center" }}>
-                <ImageWidthInput
-                  data-cy="image-height-input"
-                  value={this.getHeight()}
-                  onChange={this.changeImageHeight}
-                />
-                <PaddingDiv left={20}>{t("component.cloze.imageText.heightpx")}</PaddingDiv>
-              </div>
-              <div style={{ alignItems: "center" }}>
-                <ImageAlterTextInput
-                  data-cy="image-alternate-input"
-                  size="large"
-                  defaultValue={imageAlterText}
-                  onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
-                />
-                <PaddingDiv left={20}>{t("component.cloze.imageText.imagealtertext")}</PaddingDiv>
-              </div>
-              <div style={{ alignItems: "center" }}>
-                <ColorBox
-                  data-cy="image-text-box-color-picker"
-                  background={background}
-                  onClick={() => this.showColorPicker(true)}
-                />
-                {isColorPickerVisible && (
-                  <ColorPickerContainer data-cy="image-text-box-color-panel">
-                    <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
-                    <ChromePicker
-                      color={background}
-                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                    />
-                  </ColorPickerContainer>
-                )}
-                <PaddingDiv left={20}>{t("component.cloze.imageText.fillcolor")}</PaddingDiv>
-              </div>
-              <div style={{ alignItems: "center" }}>
-                <MaxRespCountInput
-                  data-cy="drag-drop-image-max-res"
-                  min={1}
-                  max={10}
-                  defaultValue={maxRespCount}
-                  onChange={val => this.onItemPropChange("maxRespCount", val)}
-                />
-                <PaddingDiv left={20} style={{ width: 160 }}>
-                  {t("component.cloze.imageText.maximumresponses")}
-                </PaddingDiv>
-              </div>
-            </FormContainer>
-            <FlexContainer
-              style={{
-                padding: 0,
-                background: theme.widgets.clozeImageText.controlBarContainerBgColor,
-                borderRadius: "0px 0px 10px 10px",
-                overflow: "hidden"
-              }}
-            >
-              <ControlBar>
-                <ControlButton>
-                  <IconDrawResize />
-                  {t("component.cloze.imageText.drawresize")}
-                </ControlButton>
-                <ControlButton
-                  onClick={toggleIsMoveResizeEditable}
-                  style={{
-                    width: 100,
-                    height: 100,
-                    whiteSpace: "normal",
-                    marginTop: 10,
-                    boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
-                  }}
-                >
-                  <IconMoveResize />
-                  {t("component.cloze.moveBackgroundImage")}
-                </ControlButton>
+              <div data-cy="right-buttons">
                 <PointerContainer className="controls-bar">
-                  <ControlButton disabled={!hasActive}>
-                    <IconPin />
-                    {t("component.cloze.imageText.pointers")}
-                  </ControlButton>
+                  <FieldWrapper>
+                    <ControlButton disabled={!hasActive}>
+                      <IconPin />
+                    </ControlButton>
+                    <span>{t("component.cloze.imageText.pointers")}</span>
+                  </FieldWrapper>
                   <PointerSelect disabled={!hasActive} defaultValue="none" onChange={this.handlePointersChange}>
                     <Option value="none">{t("component.cloze.imageText.none")}</Option>
                     <Option value="top">{t("component.cloze.imageText.top")}</Option>
@@ -433,13 +469,41 @@ class Authoring extends Component {
                     <Option value="right">{t("component.cloze.imageText.right")}</Option>
                   </PointerSelect>
                 </PointerContainer>
-              </ControlBar>
+
+                <FieldWrapper>
+                  <ColorBox
+                    data-cy="image-text-box-color-picker"
+                    background={background}
+                    onClick={() => this.showColorPicker(true)}
+                  />
+                  {isColorPickerVisible && (
+                    <ColorPickerContainer data-cy="image-text-box-color-panel">
+                      <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
+                      <ChromePicker
+                        color={background}
+                        onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                      />
+                    </ColorPickerContainer>
+                  )}
+                  <PaddingDiv left={20}>{t("component.cloze.imageText.fillcolor")}</PaddingDiv>
+                </FieldWrapper>
+              </div>
+            </FormContainer>
+
+            <FlexContainer
+              style={{
+                padding: 0,
+                background: theme.widgets.clozeImageText.controlBarContainerBgColor,
+                borderRadius: "0px 0px 10px 10px",
+                overflow: "hidden"
+              }}
+            >
               <ImageFlexView size={1} leftAlign>
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  height={maxHeight}
-                  width={maxWidth}
+                  height={this.getHeight() || maxHeight}
+                  width={canvasWidth}
                   onDragStart={e => e.preventDefault()}
                 >
                   {item.imageUrl && (
@@ -451,6 +515,7 @@ class Authoring extends Component {
                           x: imageOptions.x || 0,
                           y: imageOptions.y || 0
                         }}
+                        position={{ x: imageOptions.x || 0, y: imageOptions.y || 0 }}
                         bounds="parent"
                         enableResizing={{
                           bottom: false,
@@ -464,23 +529,33 @@ class Authoring extends Component {
                         }}
                         onDragStop={(evt, d) => handleImagePosition(d)}
                       >
-                        <PreviewImage
-                          id="mainImage"
-                          src={item.imageUrl}
-                          width={imageWidth < 700 ? imageWidth : maxWidth}
-                          height={imageHeight}
-                          maxWidth={maxWidth}
-                          maxHeight={maxHeight}
-                          alt="resp-preview"
-                          onDragStart={e => e.preventDefault()}
-                        />
+                        <PreivewImageWrapper>
+                          <PreviewImage
+                            id="mainImage"
+                            src={item.imageUrl}
+                            width={this.getWidth()}
+                            height={this.getHeight()}
+                            maxWidth={maxWidth}
+                            maxHeight={maxHeight}
+                            alt="resp-preview"
+                            onDragStart={e => e.preventDefault()}
+                          />
+                          <MoveControlButton
+                            onClick={toggleIsMoveResizeEditable}
+                            style={{
+                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                            }}
+                          >
+                            <IconMoveResize />
+                          </MoveControlButton>
+                        </PreivewImageWrapper>
                       </Rnd>
                       <DropArea
                         disable={isEditableResizeMove}
                         updateData={this.updateData}
                         item={item}
                         key={item}
-                        width={maxWidth}
+                        width={canvasWidth}
                         showIndex={false}
                         setQuestionData={setQuestionData}
                       />
@@ -518,29 +593,51 @@ class Authoring extends Component {
                     </Dragger>
                   )}
                 </ImageContainer>
-                <FlexContainer>
-                  {item.imageUrl && (
-                    <Dragger
-                      className="super-dragger"
-                      {...uploadProps}
-                      style={{ padding: 0, marginBottom: 20, marginTop: 20, marginRight: 20 }}
-                      showUploadList={false}
-                    >
-                      <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-                    </Dragger>
-                  )}
-
-                  <CheckContainer position="unset" alignSelf="center">
-                    <Checkbox
-                      data-cy="drag-drop-image-aria-check"
-                      defaultChecked={isEditAriaLabels}
-                      onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-                    >
-                      {t("component.cloze.imageText.editAriaLabels")}
-                    </Checkbox>
-                  </CheckContainer>
-                </FlexContainer>
               </ImageFlexView>
+            </FlexContainer>
+
+            <FlexContainer>
+              {item.imageUrl && (
+                <Dragger
+                  className="super-dragger"
+                  {...uploadProps}
+                  style={{ padding: 0, marginBottom: 20, marginTop: 20, marginRight: 20 }}
+                  showUploadList={false}
+                >
+                  <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
+                </Dragger>
+              )}
+              <CheckContainer position="unset" alignSelf="center">
+                <Checkbox
+                  data-cy="drag-drop-image-aria-check"
+                  defaultChecked={isEditAriaLabels}
+                  onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+                >
+                  {t("component.cloze.imageText.editAriaLabels")}
+                </Checkbox>
+              </CheckContainer>
+              <div style={{ alignItems: "center" }}>
+                <MaxRespCountInput
+                  data-cy="drag-drop-image-max-res"
+                  min={1}
+                  max={10}
+                  defaultValue={maxRespCount}
+                  onChange={val => this.onItemPropChange("maxRespCount", val)}
+                />
+                <PaddingDiv left={20} style={{ width: 160 }}>
+                  {t("component.cloze.imageText.maximumresponses")}
+                </PaddingDiv>
+              </div>
+
+              <div style={{ alignItems: "center" }}>
+                <ImageAlterTextInput
+                  data-cy="image-alternate-input"
+                  size="large"
+                  defaultValue={imageAlterText}
+                  onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
+                />
+                <PaddingDiv left={20}>{t("component.cloze.imageText.imagealtertext")}</PaddingDiv>
+              </div>
             </FlexContainer>
             <PaddingDiv>
               {isEditAriaLabels && (

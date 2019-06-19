@@ -46,6 +46,8 @@ import { CheckContainer } from "./styled/CheckContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
+import { FieldLabel } from "./styled/FieldLabel";
+import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
 import { Widget } from "../../styled/Widget";
 import { FieldWrapper } from "./styled/FieldWrapper";
 
@@ -260,6 +262,21 @@ class Authoring extends Component {
     const { item } = this.props;
     const { imageOriginalWidth, imageWidth } = item;
     const { maxWidth } = clozeImage;
+
+    // On upload
+    // imageWidth = originalImageWidth;
+    // if (originalImageWidth > defaultCanvasWidth) {
+    //   imageWidth = defaultCanvasWidth;
+    //   // If keep aspect ratio = true
+    //   imageHeight = (originalImageHeight * imageWidth) / originalImageWidth;
+    // }
+    // canvasWidth = defaultCanvasWidth;
+    // canvasHeight = imageHeight > defaultCanvasHeight ? imageHeight : defaultCanvasHeight;
+
+    // // On resize
+    // imageHeight = (originalImageHeight * imageWidth) / originalImageWidth; // If keep aspect ratio = true
+    // canvasWidth = imageWidth > defaultCanvasWidth ? imageWidth : defaultCanvasWidth;
+    // canvasHeight = imageHeight > defaultCanvasHeight ? imageHeight : defaultCanvasHeight;
 
     // If image uploaded is smaller than the max width, keep it as-is
     // If image is larger, compress it to max width (keep aspect-ratio by default)
@@ -628,29 +645,29 @@ class Authoring extends Component {
                   {t("component.cloze.imageText.maximumresponses")}
                 </PaddingDiv>
               </div>
-
-              <div style={{ alignItems: "center" }}>
-                <ImageAlterTextInput
-                  data-cy="image-alternate-input"
-                  size="large"
-                  defaultValue={imageAlterText}
-                  onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
-                />
-                <PaddingDiv left={20}>{t("component.cloze.imageText.imagealtertext")}</PaddingDiv>
-              </div>
             </FlexContainer>
             <PaddingDiv>
               {isEditAriaLabels && (
                 <React.Fragment>
                   <Subtitle>{t("component.cloze.imageText.editAriaLabels")}</Subtitle>
+
+                  <FieldLabel>{t("component.cloze.imageText.imagealtertext")}</FieldLabel>
+                  <ImageAlterTextInput
+                    data-cy="image-alternate-input"
+                    size="large"
+                    defaultValue={imageAlterText}
+                    onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
+                  />
+
+                  <FieldLabel>{t("component.cloze.imageText.responsesaltertext")}</FieldLabel>
                   {responses.map((responseContainer, index) => (
-                    <div className="imagelabelDropDown-droppable iseditablearialabel" key={index}>
+                    <ResponsTextInputWrapper key={index}>
                       <span className="index-box">{index + 1}</span>
                       <Input
                         defaultValue={responseContainer.label}
                         onChange={e => this.onResponseLabelChange(index, e.target.value)}
                       />
-                    </div>
+                    </ResponsTextInputWrapper>
                   ))}
                 </React.Fragment>
               )}

@@ -486,6 +486,7 @@
         "positionX": "Left (px)",
         "positionY": "Top (px)",
         "imagealtertext": "Image alternative text",
+        "responsesaltertext": "Responses alternative text",
         "fillcolor": "Fill color",
         "maximumresponses": "Maximum responses per container",
         "drawresize": "Draw & resize",

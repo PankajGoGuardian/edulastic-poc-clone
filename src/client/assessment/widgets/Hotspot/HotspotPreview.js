@@ -12,6 +12,7 @@ import { Svg } from "./styled/Svg";
 import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { ImageContainer } from "./styled/ImageContainer";
 
 const HotspotPreview = ({
   view,
@@ -87,7 +88,7 @@ const HotspotPreview = ({
       {!smallSize ? (
         <BlockContainer data-cy="hotspotMap" style={{ maxWidth }} justifyContent="center">
           <Svg data-cy="answer-container" width={+width} height={+height}>
-            <image href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
+            <ImageContainer href={source} width={+width} height={+height} preserveAspectRatio="none" x={0} y={0} />
             {areas &&
               areas.map((area, i) => (
                 <Polygon

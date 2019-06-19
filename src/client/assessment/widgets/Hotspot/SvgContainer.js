@@ -282,7 +282,21 @@ const SvgContainer = React.memo(({ width, height, imageSrc, history, changeHisto
         onMouseUp={handleCircleMouseUp}
         onClick={handleClick}
       >
-        <image ref={image} href={imageSrc} width={width} height={height} preserveAspectRatio="none" x={0} y={0} />
+        <image
+          style={{
+            width: width ? `${+width}px` : "auto",
+            height: width ? "auto" : height ? `${+height}px` : "auto",
+            maxHeight: 600,
+            maxWidth: 700
+          }}
+          ref={image}
+          href={imageSrc}
+          width={width}
+          height={height}
+          preserveAspectRatio="none"
+          x={0}
+          y={0}
+        />
 
         {points.map((point, i) => (
           <Circle

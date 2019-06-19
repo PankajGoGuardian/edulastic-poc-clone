@@ -7,472 +7,141 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports["default"] = void 0;
 
-var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
-
-var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
-
 var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
 
 var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/objectSpread"));
 
-var _cloneDeep2 = _interopRequireDefault(require("lodash/cloneDeep"));
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
-var _isNaN2 = _interopRequireDefault(require("lodash/isNaN"));
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
 
-var _trim2 = _interopRequireDefault(require("lodash/trim"));
+var _maxBy2 = _interopRequireDefault(require("lodash/maxBy"));
 
-var _round2 = _interopRequireDefault(require("lodash/round"));
+var _get2 = _interopRequireDefault(require("lodash/get"));
 
-var _isString2 = _interopRequireDefault(require("lodash/isString"));
+var _identity2 = _interopRequireDefault(require("lodash/identity"));
 
-var _isNumber2 = _interopRequireDefault(require("lodash/isNumber"));
+var _groupBy2 = _interopRequireDefault(require("lodash/groupBy"));
 
 var _flatten2 = _interopRequireDefault(require("lodash/flatten"));
 
-var _omitBy2 = _interopRequireDefault(require("lodash/omitBy"));
-
-var _axios = _interopRequireDefault(require("axios"));
-
-var _scoring = require("./const/scoring");
+var _math = require("./math");
 
 var _clozeText = _interopRequireDefault(require("./clozeText"));
 
-var url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
-
-var evaluate = function evaluate(data) {
-  return _axios["default"].post(url, (0, _objectSpread2["default"])({}, data)).then(function(result) {
-    return result.data;
-  });
-};
-
-var getChecks = function getChecks(validation) {
-  var altResponses = validation.alt_responses || [];
-  var flattenValidResponses = (0, _flatten2["default"])(
-    validation.valid_response ? validation.valid_response.value : []
-  );
-  var flattenAltResponses = altResponses.reduce(function(acc, res) {
-    return [].concat(
-      (0, _toConsumableArray2["default"])(acc),
-      (0, _toConsumableArray2["default"])((0, _flatten2["default"])(res.value))
-    );
-  }, []);
-  var values = [].concat(
-    (0, _toConsumableArray2["default"])(flattenValidResponses),
-    (0, _toConsumableArray2["default"])(flattenAltResponses)
-  );
-  return values.reduce(function(valAcc, val, valIndex) {
-    var options = val.options || {};
-    options = (0, _omitBy2["default"])(options, function(f) {
-      return f === false;
-    });
-    var midRes = Object.keys(options).reduce(function(acc, key, i) {
-      var fieldVal = options[key];
-      acc += i === 0 ? ":" : "";
-
-      if (key === "argument") {
-        return acc;
-      }
-
-      if (fieldVal === false) {
-        return acc;
-      }
-
-      if (key === "setThousandsSeparator") {
-        if (fieldVal.length) {
-          var stringArr = "[".concat(
-            fieldVal.map(function(f) {
-              return "'".concat(f, "'");
-            }),
-            "]"
-          );
-          acc += "".concat(key, "=").concat(stringArr);
-        } else {
-          return acc;
-        }
-      } else if (key === "setDecimalSeparator") {
-        acc += "".concat(key, "='").concat(fieldVal, "'");
-      } else if (key === "allowedUnits") {
-        acc += "".concat(key, "=[").concat(fieldVal, "]");
-      } else if (key === "syntax") {
-        acc += options.argument === undefined ? fieldVal : "".concat(fieldVal, "=").concat(options.argument);
-      } else {
-        acc += "".concat(key, "=").concat(fieldVal);
-      }
-
-      return "".concat(acc, ",");
-    }, val.method);
-
-    if (midRes[midRes.length - 1] === ",") {
-      midRes = midRes.slice(0, midRes.length - 1);
-    }
-
-    valAcc += midRes;
-    valAcc += valIndex + 1 === values.length ? "" : ";";
-    return valAcc;
-  }, "");
-};
-
-var checkCorrect =
+var mathEval =
   /*#__PURE__*/
   (function() {
     var _ref2 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
       _regenerator["default"].mark(function _callee(_ref) {
-        var correctAnswers,
-          userResponse,
-          checks,
-          valid,
-          _iteratorNormalCompletion,
-          _didIteratorError,
-          _iteratorError,
-          _iterator,
-          _step,
-          correct,
-          data,
-          _ref3,
-          result;
+        var userResponse, validation, validResponses, evaluation, _loop, _i, _Object$keys;
 
-        return _regenerator["default"].wrap(
-          function _callee$(_context) {
-            while (1) {
-              switch ((_context.prev = _context.next)) {
-                case 0:
-                  (correctAnswers = _ref.correctAnswers), (userResponse = _ref.userResponse), (checks = _ref.checks);
-                  valid = false;
-                  _iteratorNormalCompletion = true;
-                  _didIteratorError = false;
-                  _iteratorError = undefined;
-                  _context.prev = 5;
-                  _iterator = correctAnswers[Symbol.iterator]();
+        return _regenerator["default"].wrap(function _callee$(_context2) {
+          while (1) {
+            switch ((_context2.prev = _context2.next)) {
+              case 0:
+                (userResponse = _ref.userResponse), (validation = _ref.validation);
+                validResponses = (0, _groupBy2["default"])(
+                  (0, _flatten2["default"])(validation.valid_response.value),
+                  "id"
+                );
+                evaluation = {};
+                _loop =
+                  /*#__PURE__*/
+                  _regenerator["default"].mark(function _loop() {
+                    var id, checks, answers, requests, results, correct;
+                    return _regenerator["default"].wrap(function _loop$(_context) {
+                      while (1) {
+                        switch ((_context.prev = _context.next)) {
+                          case 0:
+                            id = _Object$keys[_i];
+                            checks = (0, _math.getChecks)({
+                              valid_response: {
+                                value: validResponses[id]
+                              }
+                            });
+                            answers = (validResponses[id] || []).map(function(item) {
+                              return item.value;
+                            });
+                            requests = answers.map(function(ans) {
+                              var data = {
+                                input: userResponse[id].value.replace(/\\ /g, " "),
+                                expected: ans ? ans.replace(/\\ /g, " ") : "",
+                                checks: checks
+                              };
+                              return (0, _math.evaluate)(data);
+                            });
+                            _context.next = 6;
+                            return Promise.all(requests);
 
-                case 7:
-                  if ((_iteratorNormalCompletion = (_step = _iterator.next()).done)) {
-                    _context.next = 26;
-                    break;
-                  }
+                          case 6:
+                            results = _context.sent;
+                            correct = results.some(function(item) {
+                              return item.result === "true";
+                            });
+                            evaluation[id] = correct;
 
-                  correct = _step.value;
-                  data = {
-                    input:
-                      (0, _isString2["default"])(userResponse) || (0, _isNumber2["default"])(userResponse)
-                        ? userResponse.replace(/\\ /g, " ")
-                        : "",
-                    expected: correct ? correct.replace(/\\ /g, " ") : ":",
-                    checks: checks
-                  };
-                  _context.prev = 10;
-                  _context.next = 13;
-                  return evaluate(data);
+                          case 9:
+                          case "end":
+                            return _context.stop();
+                        }
+                      }
+                    }, _loop);
+                  });
+                (_i = 0), (_Object$keys = Object.keys(userResponse));
 
-                case 13:
-                  _ref3 = _context.sent;
-                  result = _ref3.result;
-
-                  if (!(result === "true")) {
-                    _context.next = 18;
-                    break;
-                  }
-
-                  valid = true;
-                  return _context.abrupt("break", 26);
-
-                case 18:
-                  _context.next = 23;
+              case 5:
+                if (!(_i < _Object$keys.length)) {
+                  _context2.next = 10;
                   break;
+                }
 
-                case 20:
-                  _context.prev = 20;
-                  _context.t0 = _context["catch"](10);
-                  return _context.abrupt("continue", 23);
+                return _context2.delegateYield(_loop(), "t0", 7);
 
-                case 23:
-                  _iteratorNormalCompletion = true;
-                  _context.next = 7;
-                  break;
+              case 7:
+                _i++;
+                _context2.next = 5;
+                break;
 
-                case 26:
-                  _context.next = 32;
-                  break;
+              case 10:
+                return _context2.abrupt("return", evaluation);
 
-                case 28:
-                  _context.prev = 28;
-                  _context.t1 = _context["catch"](5);
-                  _didIteratorError = true;
-                  _iteratorError = _context.t1;
-
-                case 32:
-                  _context.prev = 32;
-                  _context.prev = 33;
-
-                  if (!_iteratorNormalCompletion && _iterator["return"] != null) {
-                    _iterator["return"]();
-                  }
-
-                case 35:
-                  _context.prev = 35;
-
-                  if (!_didIteratorError) {
-                    _context.next = 38;
-                    break;
-                  }
-
-                  throw _iteratorError;
-
-                case 38:
-                  return _context.finish(35);
-
-                case 39:
-                  return _context.finish(32);
-
-                case 40:
-                  return _context.abrupt("return", valid);
-
-                case 41:
-                case "end":
-                  return _context.stop();
-              }
+              case 11:
+              case "end":
+                return _context2.stop();
             }
-          },
-          _callee,
-          null,
-          [[5, 28, 32, 40], [10, 20], [33, , 35, 39]]
-        );
+          }
+        }, _callee);
       })
     );
 
-    return function checkCorrect(_x) {
+    return function mathEval(_x) {
       return _ref2.apply(this, arguments);
     };
-  })(); // exact match evaluator
-
-var exactMatchEvaluator =
-  /*#__PURE__*/
-  (function() {
-    var _ref4 = (0, _asyncToGenerator2["default"])(
-      /*#__PURE__*/
-      _regenerator["default"].mark(function _callee5(userResponse, answers, checks) {
-        var score, maxScore, evaluation, correctIndex, asyncForEach, getAnswerCorrectMethods;
-        return _regenerator["default"].wrap(
-          function _callee5$(_context5) {
-            while (1) {
-              switch ((_context5.prev = _context5.next)) {
-                case 0:
-                  score = 0;
-                  maxScore = 1;
-                  evaluation = [];
-                  correctIndex = 0;
-
-                  asyncForEach =
-                    /*#__PURE__*/
-                    (function() {
-                      var _ref5 = (0, _asyncToGenerator2["default"])(
-                        /*#__PURE__*/
-                        _regenerator["default"].mark(function _callee2(array, callback) {
-                          var index;
-                          return _regenerator["default"].wrap(function _callee2$(_context2) {
-                            while (1) {
-                              switch ((_context2.prev = _context2.next)) {
-                                case 0:
-                                  index = 0;
-
-                                case 1:
-                                  if (!(index < array.length)) {
-                                    _context2.next = 7;
-                                    break;
-                                  }
-
-                                  _context2.next = 4;
-                                  return callback(array[index], index, array);
-
-                                case 4:
-                                  index++;
-                                  _context2.next = 1;
-                                  break;
-
-                                case 7:
-                                case "end":
-                                  return _context2.stop();
-                              }
-                            }
-                          }, _callee2);
-                        })
-                      );
-
-                      return function asyncForEach(_x5, _x6) {
-                        return _ref5.apply(this, arguments);
-                      };
-                    })();
-
-                  _context5.prev = 5;
-
-                  getAnswerCorrectMethods = function getAnswerCorrectMethods(answer) {
-                    if (Array.isArray(answer ? answer.value : null)) {
-                      return answer.value.map(function(val) {
-                        return val.map(function(_ref6) {
-                          var value = _ref6.value;
-                          return value;
-                        });
-                      });
-                    }
-
-                    return [];
-                  };
-
-                  _context5.next = 9;
-                  return asyncForEach(
-                    answers,
-                    /*#__PURE__*/
-                    (function() {
-                      var _ref7 = (0, _asyncToGenerator2["default"])(
-                        /*#__PURE__*/
-                        _regenerator["default"].mark(function _callee4(answer, answerIndex) {
-                          var corrects, valid, isExact;
-                          return _regenerator["default"].wrap(function _callee4$(_context4) {
-                            while (1) {
-                              switch ((_context4.prev = _context4.next)) {
-                                case 0:
-                                  corrects = getAnswerCorrectMethods(answer);
-                                  valid = [];
-                                  _context4.next = 4;
-                                  return asyncForEach(
-                                    userResponse,
-                                    /*#__PURE__*/
-                                    (function() {
-                                      var _ref8 = (0, _asyncToGenerator2["default"])(
-                                        /*#__PURE__*/
-                                        _regenerator["default"].mark(function _callee3(userAns, index) {
-                                          var res;
-                                          return _regenerator["default"].wrap(function _callee3$(_context3) {
-                                            while (1) {
-                                              switch ((_context3.prev = _context3.next)) {
-                                                case 0:
-                                                  _context3.next = 2;
-                                                  return checkCorrect({
-                                                    correctAnswers: corrects[index],
-                                                    userResponse: userAns,
-                                                    checks: checks
-                                                  });
-
-                                                case 2:
-                                                  res = _context3.sent;
-                                                  valid.push(res);
-
-                                                case 4:
-                                                case "end":
-                                                  return _context3.stop();
-                                              }
-                                            }
-                                          }, _callee3);
-                                        })
-                                      );
-
-                                      return function(_x9, _x10) {
-                                        return _ref8.apply(this, arguments);
-                                      };
-                                    })()
-                                  );
-
-                                case 4:
-                                  evaluation.push([].concat(valid));
-
-                                  isExact = function isExact(element) {
-                                    return element;
-                                  };
-
-                                  if (valid.every(isExact)) {
-                                    score = Math.max(answer ? answer.score : 1, score);
-                                    correctIndex = answerIndex;
-                                  }
-
-                                  maxScore = Math.max(answer ? answer.score : 1, maxScore);
-
-                                case 8:
-                                case "end":
-                                  return _context4.stop();
-                              }
-                            }
-                          }, _callee4);
-                        })
-                      );
-
-                      return function(_x7, _x8) {
-                        return _ref7.apply(this, arguments);
-                      };
-                    })()
-                  );
-
-                case 9:
-                  _context5.next = 14;
-                  break;
-
-                case 11:
-                  _context5.prev = 11;
-                  _context5.t0 = _context5["catch"](5);
-                  console.error(_context5.t0);
-
-                case 14:
-                  _context5.prev = 14;
-                  return _context5.abrupt("return", {
-                    score: score,
-                    maxScore: maxScore,
-                    evaluation: evaluation[correctIndex]
-                  });
-
-                case 17:
-                case "end":
-                  return _context5.stop();
-              }
-            }
-          },
-          _callee5,
-          null,
-          [[5, 11, 14, 17]]
-        );
-      })
-    );
-
-    return function exactMatchEvaluator(_x2, _x3, _x4) {
-      return _ref4.apply(this, arguments);
-    };
   })();
+/**
+ * transform user repsonse for the clozeText type evaluator.
+ */
 
-var sortResponses = function sortResponses(userResponse, validResponse) {
-  var _userRes = [];
-  var _validRes = [];
-
-  if (userResponse) {
-    Object.keys(userResponse).map(function(id) {
-      var response = userResponse[id].value;
-
-      if (validResponse.value) {
-        var valid = validResponse.value.find(function(_valid) {
-          return _valid.id === id;
-        });
-
-        _validRes.push(valid.value);
-      }
-
-      _userRes.push(response);
-    });
-  }
-
-  if (_validRes.length) {
-    validResponse.value = _validRes;
-  }
-
-  return {
-    userResponse: _userRes,
-    validResponse: validResponse
-  };
+var transformUserResponse = function transformUserResponse(userResponse) {
+  return Object.keys(userResponse).map(function(id) {
+    return (0, _objectSpread2["default"])(
+      {
+        id: id
+      },
+      userResponse[id]
+    );
+  });
 };
 
 var evaluator =
   /*#__PURE__*/
   (function() {
-    var _ref10 = (0, _asyncToGenerator2["default"])(
+    var _ref4 = (0, _asyncToGenerator2["default"])(
       /*#__PURE__*/
-      _regenerator["default"].mark(function _callee6(_ref9) {
-        var _ref9$userResponse,
+      _regenerator["default"].mark(function _callee2(_ref3) {
+        var _ref3$userResponse,
           userResponse,
           validation,
           valid_response,
@@ -485,42 +154,44 @@ var evaluator =
           _validation$alt_input,
           alt_inputs,
           scoring_type,
-          attemptScore,
-          entered,
-          answers,
-          _userResponse$dropDow,
-          dropDowns,
+          min_score_if_attempted,
+          penalty,
           _userResponse$inputs,
           inputs,
+          _userResponse$dropDow,
+          dropDowns,
           _userResponse$maths,
           maths,
-          _sortResponses,
-          _sortResponses$userRe,
-          _inputsResponse,
-          validInputs,
-          inputsResults,
-          _sortResponses2,
-          _sortResponses2$userR,
-          _dropDownResponse,
-          validDropDown,
-          dropDownResults,
-          mathResults,
-          _sortResponses3,
-          _sortResponses3$userR,
-          _mathResponse,
-          checks,
-          corrects,
-          _evaluation,
+          mathAnswers,
+          dropDownAnswers,
+          textAnswers,
           score,
-          maxScore;
+          maxScore,
+          allEvaluations,
+          alterAnswersCount,
+          i,
+          dropDownValidation,
+          clozeTextValidation,
+          mathValidation,
+          questionScore,
+          currentScore,
+          evaluations,
+          dropDownEvaluation,
+          clozeTextEvaluation,
+          mathEvaluation,
+          correctCount,
+          wrongCount,
+          answersCount,
+          negativeScore,
+          selectedEvaluation;
 
-        return _regenerator["default"].wrap(function _callee6$(_context6) {
+        return _regenerator["default"].wrap(function _callee2$(_context3) {
           while (1) {
-            switch ((_context6.prev = _context6.next)) {
+            switch ((_context3.prev = _context3.next)) {
               case 0:
-                (_ref9$userResponse = _ref9.userResponse),
-                  (userResponse = _ref9$userResponse === void 0 ? {} : _ref9$userResponse),
-                  (validation = _ref9.validation);
+                (_ref3$userResponse = _ref3.userResponse),
+                  (userResponse = _ref3$userResponse === void 0 ? {} : _ref3$userResponse),
+                  (validation = _ref3.validation);
                 (valid_response = validation.valid_response),
                   (valid_dropdown = validation.valid_dropdown),
                   (valid_inputs = validation.valid_inputs),
@@ -531,134 +202,143 @@ var evaluator =
                   (_validation$alt_input = validation.alt_inputs),
                   (alt_inputs = _validation$alt_input === void 0 ? [] : _validation$alt_input),
                   (scoring_type = validation.scoring_type),
-                  (attemptScore = validation.min_score_if_attempted);
-                entered = 0;
-                answers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
-                (_userResponse$dropDow = userResponse.dropDowns),
-                  (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
-                  (_userResponse$inputs = userResponse.inputs),
+                  (min_score_if_attempted = validation.min_score_if_attempted),
+                  (penalty = validation.penalty);
+                (_userResponse$inputs = userResponse.inputs),
                   (inputs = _userResponse$inputs === void 0 ? {} : _userResponse$inputs),
+                  (_userResponse$dropDow = userResponse.dropDowns),
+                  (dropDowns = _userResponse$dropDow === void 0 ? {} : _userResponse$dropDow),
                   (_userResponse$maths = userResponse.maths),
                   (maths = _userResponse$maths === void 0 ? {} : _userResponse$maths);
-                (_sortResponses = sortResponses(
-                  (0, _cloneDeep2["default"])(inputs),
-                  (0, _cloneDeep2["default"])(valid_inputs)
-                )),
-                  (_sortResponses$userRe = _sortResponses.userResponse),
-                  (_inputsResponse = _sortResponses$userRe === void 0 ? [] : _sortResponses$userRe),
-                  (validInputs = _sortResponses.validResponse);
-                entered += _inputsResponse.length;
-                _context6.next = 9;
-                return (0, _clozeText["default"])({
-                  userResponse: _inputsResponse,
-                  validation: {
-                    scoring_type: scoring_type,
-                    alt_responses: alt_inputs,
-                    valid_response: (0, _objectSpread2["default"])({}, validInputs)
-                  }
-                });
+                mathAnswers = [valid_response].concat((0, _toConsumableArray2["default"])(alt_responses));
+                dropDownAnswers = [valid_dropdown].concat((0, _toConsumableArray2["default"])(alt_dropdowns));
+                textAnswers = [valid_inputs].concat((0, _toConsumableArray2["default"])(alt_inputs));
+                score = 0;
+                maxScore = 0;
+                allEvaluations = [];
+                alterAnswersCount = Math.max(mathAnswers.length, dropDownAnswers.length, textAnswers.length);
+                i = 0;
 
-              case 9:
-                inputsResults = _context6.sent;
-                (_sortResponses2 = sortResponses(
-                  (0, _cloneDeep2["default"])(dropDowns),
-                  (0, _cloneDeep2["default"])(valid_dropdown)
-                )),
-                  (_sortResponses2$userR = _sortResponses2.userResponse),
-                  (_dropDownResponse = _sortResponses2$userR === void 0 ? [] : _sortResponses2$userR),
-                  (validDropDown = _sortResponses2.validResponse);
-                entered += _dropDownResponse.length;
-                _context6.next = 14;
-                return (0, _clozeText["default"])({
-                  userResponse: _dropDownResponse,
-                  validation: {
-                    scoring_type: scoring_type,
-                    alt_responses: alt_dropdowns,
-                    valid_response: (0, _objectSpread2["default"])({}, validDropDown)
-                  }
-                });
-
-              case 14:
-                dropDownResults = _context6.sent;
-                mathResults = {};
-                (_sortResponses3 = sortResponses(
-                  (0, _cloneDeep2["default"])(maths),
-                  (0, _cloneDeep2["default"])(answers)
-                )),
-                  (_sortResponses3$userR = _sortResponses3.userResponse),
-                  (_mathResponse = _sortResponses3$userR === void 0 ? [] : _sortResponses3$userR);
-                entered += _mathResponse.length;
-                _context6.t0 = scoring_type;
-                _context6.next = _context6.t0 === _scoring.ScoringType.EXACT_MATCH ? 21 : 21;
-                break;
-
-              case 21:
-                checks = getChecks(validation);
-                _context6.next = 24;
-                return exactMatchEvaluator(
-                  _mathResponse.map(function(r) {
-                    return r ? (0, _trim2["default"])(r) : "";
-                  }),
-                  answers,
-                  checks
-                );
-
-              case 24:
-                mathResults = _context6.sent;
-
-              case 25:
-                // if score for attempting is greater than current score
-                // let it be the score!
-                if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
-                  mathResults.score = attemptScore;
+              case 11:
+                if (!(i < alterAnswersCount)) {
+                  _context3.next = 35;
+                  break;
                 }
 
-                corrects = inputsResults.evaluation.filter(function(answer) {
-                  return answer;
-                }).length;
-                corrects += dropDownResults.evaluation.filter(function(answer) {
-                  return answer;
-                }).length;
-                corrects += mathResults.evaluation
-                  ? mathResults.evaluation.filter(function(answer) {
-                      return answer;
-                    }).length
-                  : 0; // evaluation results to one list dropDown, inputs, maths
+                dropDownValidation = dropDownAnswers[i];
+                clozeTextValidation = textAnswers[i];
+                mathValidation = mathAnswers[i];
+                questionScore = textAnswers[i].score || 1;
+                currentScore = 0;
+                evaluations = {};
+                maxScore = Math.max(questionScore, maxScore);
 
-                _evaluation = [];
-                Object.keys(dropDowns).map(function(key, i) {
-                  _evaluation[dropDowns[key].index] = dropDownResults.evaluation[i];
-                });
-                Object.keys(inputs).map(function(key, i) {
-                  _evaluation[inputs[key].index] = inputsResults.evaluation[i];
-                });
-                Object.keys(maths).map(function(key, i) {
-                  _evaluation[maths[key].index] = mathResults.evaluation[i];
-                });
-                score = (0, _round2["default"])(corrects / entered, 2);
+                if (dropDownValidation) {
+                  dropDownEvaluation = (0, _clozeText["default"])({
+                    userResponse: transformUserResponse(dropDowns),
+                    validation: {
+                      scoring_type: "exactMatch",
+                      valid_response: dropDownValidation
+                    }
+                  }).evaluation;
+                  evaluations = (0, _objectSpread2["default"])({}, evaluations, dropDownEvaluation);
+                }
 
-                if ((0, _isNaN2["default"])(score)) {
+                if (clozeTextValidation) {
+                  clozeTextEvaluation = (0, _clozeText["default"])({
+                    userResponse: transformUserResponse(inputs),
+                    validation: {
+                      scoring_type: "exactMatch",
+                      valid_response: clozeTextValidation
+                    }
+                  }).evaluation;
+                  evaluations = (0, _objectSpread2["default"])({}, evaluations, clozeTextEvaluation);
+                }
+
+                if (!mathValidation) {
+                  _context3.next = 26;
+                  break;
+                }
+
+                _context3.next = 24;
+                return mathEval({
+                  userResponse: maths,
+                  validation: {
+                    scoring_type: "exactMatch",
+                    valid_response: mathValidation
+                  }
+                });
+
+              case 24:
+                mathEvaluation = _context3.sent;
+                evaluations = (0, _objectSpread2["default"])({}, evaluations, mathEvaluation);
+
+              case 26:
+                correctCount = Object.values(evaluations).filter(_identity2["default"]).length;
+                wrongCount = Object.values(evaluations).filter(function(x) {
+                  return !x;
+                }).length;
+                answersCount =
+                  (0, _get2["default"])(dropDownValidation, ["value", "length"], 0) +
+                  (0, _get2["default"])(mathValidation, ["value", "length"], 0) +
+                  (0, _get2["default"])(clozeTextValidation, ["value", "length"], 0);
+
+                if (scoring_type === "partialMatch") {
+                  currentScore = questionScore * (correctCount / answersCount);
+
+                  if (penalty) {
+                    negativeScore = penalty * wrongCount;
+                    currentScore -= negativeScore;
+                  }
+                } else if (correctCount === answersCount) {
+                  currentScore = questionScore;
+                }
+
+                score = Math.max(score, currentScore);
+                allEvaluations.push({
+                  evaluation: evaluations,
+                  score: currentScore
+                });
+
+              case 32:
+                i++;
+                _context3.next = 11;
+                break;
+
+              case 35:
+                selectedEvaluation = (0, _maxBy2["default"])(allEvaluations, "score");
+
+                if (score === 0) {
+                  selectedEvaluation = allEvaluations[0].evaluation;
+                } else {
+                  selectedEvaluation = selectedEvaluation.evaluation;
+                }
+
+                if (score < 0) {
                   score = 0;
                 }
 
-                maxScore = 1;
-                return _context6.abrupt("return", {
-                  evaluation: _evaluation,
+                if (min_score_if_attempted && score < min_score_if_attempted) {
+                  score = min_score_if_attempted;
+                }
+
+                return _context3.abrupt("return", {
                   score: score,
+                  evaluation: selectedEvaluation,
                   maxScore: maxScore
                 });
 
-              case 37:
+              case 40:
               case "end":
-                return _context6.stop();
+                return _context3.stop();
             }
           }
-        }, _callee6);
+        }, _callee2);
       })
     );
 
-    return function evaluator(_x11) {
-      return _ref10.apply(this, arguments);
+    return function evaluator(_x2) {
+      return _ref4.apply(this, arguments);
     };
   })();
 

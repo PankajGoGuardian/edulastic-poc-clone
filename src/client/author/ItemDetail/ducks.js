@@ -213,6 +213,7 @@ export const getTestItemStatusSelector = createSelector(
 );
 
 export const getRows = item =>
+  item.rows &&
   item.rows.map(row => ({
     ...row,
     widgets: row.widgets.map(widget => {
@@ -270,7 +271,7 @@ export const getItemDetailDraggingSelector = createSelector(
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
   state => {
-    if (!state) return "";
+    if (!state || !state.rows) return "";
     const left = state.rows[0].dimension.trim().slice(0, -1);
     const right = state.rows[1] ? state.rows[1].dimension.trim().slice(0, -1) : "100";
     return `${left}-${right}`;

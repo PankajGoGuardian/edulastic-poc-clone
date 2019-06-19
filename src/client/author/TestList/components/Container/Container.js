@@ -60,7 +60,11 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
-import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector
+} from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
@@ -142,7 +146,8 @@ class TestList extends Component {
       mode,
       defaultGrades,
       defaultSubject,
-      interestedCurriculums = [],
+      interestedGrades = [],
+      interestedSubjects = [],
       match: { params = {} },
       getCurriculumStandards,
       clearDictStandards
@@ -220,23 +225,12 @@ class TestList extends Component {
       } else {
         let grades = defaultGrades;
         let subject = defaultSubject;
-        let filteredInterestedCurriculum;
-        if (!grades && subject === null) {
-          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
-          if (!filteredInterestedCurriculum.length) {
-            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
-            if (!filteredInterestedCurriculum.length) {
-              filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
-              if (!filteredInterestedCurriculum.length) {
-                filteredInterestedCurriculum = interestedCurriculums;
-              }
-            }
-          }
-          grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
-          grades = grades.length ? uniq(grades.join(",").split(",")) : [];
-          subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+        if (!grades) {
+          grades = interestedGrades;
         }
-        grades = grades || [];
+        if (subject === null) {
+          subject = interestedSubjects[0] || "";
+        }
         this.setState({
           search: {
             ...search,
@@ -747,6 +741,8 @@ const enhance = compose(
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),

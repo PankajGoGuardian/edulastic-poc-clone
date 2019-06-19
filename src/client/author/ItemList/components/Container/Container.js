@@ -38,7 +38,11 @@ import { getCurriculumsListSelector, getStandardsListSelector } from "../../../s
 import { addItemToCartAction } from "../../ducks";
 import FilterButton from "../FilterButton/FilterButton";
 import { SMALL_DESKTOP_WIDTH } from "../../../src/constants/others";
-import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector
+} from "../../../src/selectors/user";
 import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
@@ -87,7 +91,8 @@ class Contaier extends Component {
       defaultGrades,
       defaultSubject,
       clearSelectedItems,
-      interestedCurriculums,
+      interestedGrades,
+      interestedSubjects,
       clearDictStandards
     } = this.props;
     const { params = {} } = match;
@@ -111,24 +116,12 @@ class Contaier extends Component {
     } else {
       let grades = defaultGrades;
       let subject = defaultSubject;
-      let filteredInterestedCurriculum;
-      if (!grades && subject === null) {
-        filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
-        if (!filteredInterestedCurriculum.length) {
-          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
-          if (!filteredInterestedCurriculum.length) {
-            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
-            if (!filteredInterestedCurriculum.length) {
-              filteredInterestedCurriculum = interestedCurriculums;
-            }
-          }
-        }
-
-        grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
-        grades = grades.length ? uniq(grades.join(",").split(",")) : [];
-        subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+      if (!grades) {
+        grades = interestedGrades;
       }
-      grades = grades || [];
+      if (subject === null) {
+        subject = interestedSubjects[0] || "";
+      }
       this.setState({
         search: {
           ...search,
@@ -463,6 +456,8 @@ const enhance = compose(
       selectedCartItems: getSelectedItemSelector(state).data,
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state)
     }),
     {

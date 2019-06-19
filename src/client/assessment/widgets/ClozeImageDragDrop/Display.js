@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan } from "@edulastic/common";
+import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
@@ -11,7 +11,6 @@ import DragItem from "./components/DragItem";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionHeader } from "../../styled/QuestionHeader";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
@@ -383,7 +382,7 @@ class Display extends Component {
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         {responseposition === "top" && (
           <React.Fragment>

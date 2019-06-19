@@ -1,9 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
-import { helpers } from "@edulastic/common";
-
-import { QuestionHeader } from "../../styled/QuestionHeader";
+import { helpers, Stimulus } from "@edulastic/common";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -220,7 +218,7 @@ class Display extends Component {
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer flexDirection={"column"}>
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>

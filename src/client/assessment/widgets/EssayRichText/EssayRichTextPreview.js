@@ -48,6 +48,7 @@ const EssayRichTextPreview = ({
   qIndex,
   testItem,
   location,
+  disableResponse,
   previewTab
 }) => {
   const toolbarButtons = getToolBarButtons(item);
@@ -119,14 +120,9 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
-
-  const isTestReview = qIndex !== null && testItem;
-
   const isV1Multipart = get(col, "isV1Multipart", false);
 
-  const isReadOnly =
-    (previewTab === "show" || isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
+  const isReadOnly = (previewTab === "show" || disableResponse) && !location.pathname.includes("student");
 
   return item.id ? (
     <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>

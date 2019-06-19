@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -15,6 +15,8 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
+import { FieldWrapper } from "./styled/FieldWrapper";
+import { MaxRespCountInput } from "./styled/MaxRespCountInput";
 import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
@@ -217,6 +219,16 @@ class ClozeImageText extends Component {
                         label={t("component.cloze.dropDown.allowsinglelettermistake")}
                         checked={!!allowSingleLetterMistake}
                       />
+                      <FieldWrapper style={{ marginTop: 16 }}>
+                        <MaxRespCountInput
+                          data-cy="drag-drop-image-max-res"
+                          min={1}
+                          max={10}
+                          defaultValue={item.maxRespCount}
+                          onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                        />
+                        <PaddingDiv left={20}>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
+                      </FieldWrapper>
                     </div>
                   </Widget>
                 </div>

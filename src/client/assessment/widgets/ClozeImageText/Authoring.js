@@ -33,7 +33,6 @@ import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
 import { ColorBox } from "./styled/ColorBox";
 import { ColorPickerContainer } from "./styled/ColorPickerContainer";
 import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
-import { MaxRespCountInput } from "./styled/MaxRespCountInput";
 import { FlexContainer } from "./styled/FlexContainer";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -396,7 +395,7 @@ class Authoring extends Component {
 
   render() {
     const { t, item, theme, setQuestionData } = this.props;
-    const { maxRespCount, background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
+    const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
     const { isColorPickerVisible, isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = canvasDimensions;
@@ -613,7 +612,7 @@ class Authoring extends Component {
               </ImageFlexView>
             </FlexContainer>
 
-            <FlexContainer>
+            <FlexContainer justifyContent="flex-start">
               {item.imageUrl && (
                 <Dragger
                   className="super-dragger"
@@ -633,18 +632,6 @@ class Authoring extends Component {
                   {t("component.cloze.imageText.editAriaLabels")}
                 </Checkbox>
               </CheckContainer>
-              <div style={{ alignItems: "center" }}>
-                <MaxRespCountInput
-                  data-cy="drag-drop-image-max-res"
-                  min={1}
-                  max={10}
-                  defaultValue={maxRespCount}
-                  onChange={val => this.onItemPropChange("maxRespCount", val)}
-                />
-                <PaddingDiv left={20} style={{ width: 160 }}>
-                  {t("component.cloze.imageText.maximumresponses")}
-                </PaddingDiv>
-              </div>
             </FlexContainer>
             <PaddingDiv>
               {isEditAriaLabels && (

@@ -6,6 +6,8 @@ import { getFraction, toFractionHTML, roundFracIfPossible } from "../fraction";
 
 import "../../common/Fraction.css";
 
+const ROUNDING_FACTOR = 100;
+
 function createMinorTicks(minorCount, majorTicksSorted) {
   const minorTicks = [];
   const segmentsCount = majorTicksSorted.length - 1;
@@ -152,7 +154,7 @@ const onHandler = board => {
     const tickArr = specificPoints
       .split(",")
       .map(s => parseFloat(s))
-      .filter(num => isNaN(num) === false);
+      .filter(num => !Number.isNaN(num));
     ticks = union(ticks, tickArr);
   }
 
@@ -165,31 +167,30 @@ const onHandler = board => {
       if (Number.isInteger(t)) {
         res = t;
       } else if (t >= 0) {
-        res = Math.floor(t * 100) / 100;
+        res = Math.round(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
       } else {
-        res = Math.ceil(t * 100) / 100;
+        res = Math.ceil(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
       }
       return res;
-    } else {
-      const tickArr = specificPoints
-        .split(",")
-        .map(s => parseFloat(s))
-        .filter(num => isNaN(num) === false);
-
-      if (t === xMin || t === xMax || tickArr.some(specTick => specTick === t)) {
-        let res = null;
-        if (Number.isInteger(t)) {
-          res = t;
-        } else if (t >= 0) {
-          res = Math.floor(t * 100) / 100;
-        } else {
-          res = Math.ceil(t * 100) / 100;
-        }
-        return res;
-      } else {
-        return "";
-      }
     }
+
+    const tickArr = specificPoints
+      .split(",")
+      .map(s => parseFloat(s))
+      .filter(num => !Number.isNaN(num));
+    if (t === xMin || t === xMax || tickArr.some(specTick => specTick === t)) {
+      let res = null;
+      if (Number.isInteger(t)) {
+        res = t;
+      } else if (t >= 0) {
+        res = Math.round(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+      } else {
+        res = Math.ceil(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+      }
+      return res;
+    }
+
+    return "";
   });
 
   if (fracTicksDistance) {

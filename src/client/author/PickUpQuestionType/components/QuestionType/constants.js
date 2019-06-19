@@ -1576,7 +1576,7 @@ export const getCards = onSelectQuestionType => {
           xTickDistance: 1,
           yTickDistance: 0,
           layout_width: 600,
-          layout_height: 250,
+          layout_height: "auto",
           layout_margin: 0,
           layout_snapto: "grid",
           xAxisLabel: "X",

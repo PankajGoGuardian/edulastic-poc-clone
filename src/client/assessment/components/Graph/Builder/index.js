@@ -1,5 +1,6 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
+import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
 import {
   Point,
   Line,
@@ -672,6 +673,11 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#resizeContainer
    */
   resizeContainer(canvasWidth, canvasHeight) {
+    if (canvasHeight === AUTO_VALUE) {
+      canvasHeight = AUTO_HEIGHT_VALUE;
+    } else if (isNaN(canvasHeight)) {
+      canvasHeight = 0;
+    }
     this.$board.resizeContainer(canvasWidth || 0, canvasHeight || 0);
   }
 

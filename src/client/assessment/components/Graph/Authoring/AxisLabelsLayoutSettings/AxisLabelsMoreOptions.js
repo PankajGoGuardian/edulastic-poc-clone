@@ -129,9 +129,9 @@ class AxisLabelsMoreOptions extends Component {
     const { ui_style } = graphData;
 
     if (!value) {
-      setOptions({ ...ui_style, [name]: 0 });
+      setOptions({ ...ui_style, [name]: "" });
     } else {
-      setOptions({ ...ui_style, [name]: parseInt(value, 10) });
+      setOptions({ ...ui_style, [name]: value });
     }
   };
 

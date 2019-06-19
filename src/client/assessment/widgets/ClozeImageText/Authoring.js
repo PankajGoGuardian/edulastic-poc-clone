@@ -365,7 +365,7 @@ class Authoring extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.imageOptions = { x: d.x, y: d.y };
+        draft.imageOptions = { x: Math.round(d.x), y: Math.round(d.y) };
       })
     );
   };

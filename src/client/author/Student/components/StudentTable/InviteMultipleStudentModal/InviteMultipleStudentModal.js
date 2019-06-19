@@ -171,7 +171,6 @@ class InviteMultipleStudentModal extends React.Component {
       districtId: orgData.districtId
     };
     const result = await enrollmentApi.SearchAddEnrolMultiStudents(data);
-
     setIsAddMultipleStudentsModal(false);
     setForceUpdate(!forceUpdate);
     setInfoModel({

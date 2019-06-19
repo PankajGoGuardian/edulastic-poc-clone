@@ -115,7 +115,7 @@ export default class ClozeMathInput extends React.Component {
     const {
       response_ids: { maths }
     } = item;
-    const { index } = find(maths, res => res.id === id);
+    const { index } = find(maths, res => res.id === id) || {};
 
     if (showKeyboard) {
       save({ value: latex, index }, "maths", id);

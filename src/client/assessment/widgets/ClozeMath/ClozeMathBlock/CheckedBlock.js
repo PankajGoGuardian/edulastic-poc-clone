@@ -15,8 +15,8 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
 
   let checkBoxClass = "";
 
-  if (evaluation[index] !== undefined) {
-    checkBoxClass = evaluation[index] ? "right" : "wrong";
+  if (evaluation[id] !== undefined) {
+    checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
   const replaceWithMathQuill = () => {

@@ -12,7 +12,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
   const {
     response_ids: { inputs }
   } = item;
-  const { index } = find(inputs, res => res.id === id);
+  const { index } = find(inputs, res => res.id === id) || {};
   // const isChecked = checked && !isEmpty(evaluation);
   const { ui_style: uiStyle } = item;
   const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;

@@ -15,7 +15,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const {
     response_ids: { dropDowns }
   } = item;
-  const { index } = find(dropDowns, res => res.id === id);
+  const { index } = find(dropDowns, res => res.id === id) || {};
   const { ui_style: uiStyle } = item;
   const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
   // const isChecked = checked && !isEmpty(evaluation);

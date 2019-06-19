@@ -1,169 +1,39 @@
-import axios from "axios";
-import { omitBy, flatten, isNumber, isString, round, trim, isNaN, cloneDeep } from "lodash";
-import { ScoringType } from "./const/scoring";
+import { flatten, groupBy, identity, get, maxBy } from "lodash";
+import { evaluate, getChecks } from "./math";
 import clozeTextEvaluator from "./clozeText";
 
-const url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
+const mathEval = async ({ userResponse, validation }) => {
+  const validResponses = groupBy(flatten(validation.valid_response.value), "id");
+  const evaluation = {};
+  for (const id of Object.keys(userResponse)) {
+    const checks = getChecks({ valid_response: { value: validResponses[id] } });
+    const answers = (validResponses[id] || []).map(item => item.value);
+    const requests = answers.map(ans => {
+      const data = {
+        input: userResponse[id].value.replace(/\\ /g, " "),
+        expected: ans ? ans.replace(/\\ /g, " ") : "",
+        checks
+      };
 
-const evaluate = data =>
-  axios
-    .post(url, {
-      ...data
-    })
-    .then(result => result.data);
-
-const getChecks = validation => {
-  const altResponses = validation.alt_responses || [];
-  const flattenValidResponses = flatten(validation.valid_response ? validation.valid_response.value : []);
-  const flattenAltResponses = altResponses.reduce((acc, res) => [...acc, ...flatten(res.value)], []);
-
-  const values = [...flattenValidResponses, ...flattenAltResponses];
-
-  return values.reduce((valAcc, val, valIndex) => {
-    let options = val.options || {};
-    options = omitBy(options, f => f === false);
-
-    let midRes = Object.keys(options).reduce((acc, key, i) => {
-      const fieldVal = options[key];
-
-      acc += i === 0 ? ":" : "";
-
-      if (key === "argument") {
-        return acc;
-      }
-
-      if (fieldVal === false) {
-        return acc;
-      }
-
-      if (key === "setThousandsSeparator") {
-        if (fieldVal.length) {
-          const stringArr = `[${fieldVal.map(f => `'${f}'`)}]`;
-          acc += `${key}=${stringArr}`;
-        } else {
-          return acc;
-        }
-      } else if (key === "setDecimalSeparator") {
-        acc += `${key}='${fieldVal}'`;
-      } else if (key === "allowedUnits") {
-        acc += `${key}=[${fieldVal}]`;
-      } else if (key === "syntax") {
-        acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
-      } else {
-        acc += `${key}=${fieldVal}`;
-      }
-
-      return `${acc},`;
-    }, val.method);
-
-    if (midRes[midRes.length - 1] === ",") {
-      midRes = midRes.slice(0, midRes.length - 1);
-    }
-
-    valAcc += midRes;
-
-    valAcc += valIndex + 1 === values.length ? "" : ";";
-
-    return valAcc;
-  }, "");
-};
-
-const checkCorrect = async ({ correctAnswers, userResponse, checks }) => {
-  let valid = false;
-
-  for (const correct of correctAnswers) {
-    const data = {
-      input: isString(userResponse) || isNumber(userResponse) ? userResponse.replace(/\\ /g, " ") : "",
-      expected: correct ? correct.replace(/\\ /g, " ") : ":",
-      checks
-    };
-
-    try {
-      const { result } = await evaluate(data);
-
-      if (result === "true") {
-        valid = true;
-        break;
-      }
-    } catch {
-      continue;
-    }
-  }
-
-  return valid;
-};
-
-// exact match evaluator
-const exactMatchEvaluator = async (userResponse, answers, checks) => {
-  let score = 0;
-  let maxScore = 1;
-  const evaluation = [];
-  let correctIndex = 0;
-
-  const asyncForEach = async (array, callback) => {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  };
-
-  try {
-    const getAnswerCorrectMethods = answer => {
-      if (Array.isArray(answer ? answer.value : null)) {
-        return answer.value.map(val => val.map(({ value }) => value));
-      }
-      return [];
-    };
-
-    await asyncForEach(answers, async (answer, answerIndex) => {
-      const corrects = getAnswerCorrectMethods(answer);
-
-      const valid = [];
-      await asyncForEach(userResponse, async (userAns, index) => {
-        const res = await checkCorrect({ correctAnswers: corrects[index], userResponse: userAns, checks });
-        valid.push(res);
-      });
-
-      evaluation.push([...valid]);
-      const isExact = element => element;
-
-      if (valid.every(isExact)) {
-        score = Math.max(answer ? answer.score : 1, score);
-        correctIndex = answerIndex;
-      }
-
-      maxScore = Math.max(answer ? answer.score : 1, maxScore);
+      return evaluate(data);
     });
 
-    /* eslint-disable */
-  } catch (e) {
-    console.error(e);
-  } finally {
-    return {
-      score,
-      maxScore,
-      evaluation: evaluation[correctIndex]
-    };
+    const results = await Promise.all(requests);
+    const correct = results.some(item => item.result === "true");
+    evaluation[id] = correct;
   }
+
+  return evaluation;
 };
 
-const sortResponses = (userResponse, validResponse) => {
-  const _userRes = [];
-  const _validRes = [];
-  if (userResponse) {
-    Object.keys(userResponse).map(id => {
-      const response = userResponse[id].value;
-      if (validResponse.value) {
-        const valid = validResponse.value.find(_valid => _valid.id === id);
-        _validRes.push(valid.value);
-      }
-      _userRes.push(response);
-    });
-  }
-  if (_validRes.length) {
-    validResponse.value = _validRes;
-  }
-  return { userResponse: _userRes, validResponse };
-};
+/**
+ * transform user repsonse for the clozeText type evaluator.
+ */
+const transformUserResponse = userResponse =>
+  Object.keys(userResponse).map(id => ({
+    id,
+    ...userResponse[id]
+  }));
 
 const evaluator = async ({ userResponse = {}, validation }) => {
   const {
@@ -174,91 +44,100 @@ const evaluator = async ({ userResponse = {}, validation }) => {
     alt_dropdowns = [],
     alt_inputs = [],
     scoring_type,
-    min_score_if_attempted: attemptScore
+    min_score_if_attempted,
+    penalty
   } = validation;
-  let entered = 0;
-  const answers = [valid_response, ...alt_responses];
-  const { dropDowns = {}, inputs = {}, maths = {} } = userResponse;
-  const { userResponse: _inputsResponse = [], validResponse: validInputs } = sortResponses(
-    cloneDeep(inputs),
-    cloneDeep(valid_inputs)
-  );
-  entered += _inputsResponse.length;
-  const inputsResults = await clozeTextEvaluator({
-    userResponse: _inputsResponse,
-    validation: {
-      scoring_type,
-      alt_responses: alt_inputs,
-      valid_response: {
-        ...validInputs
-      }
-    }
-  });
 
-  const { userResponse: _dropDownResponse = [], validResponse: validDropDown } = sortResponses(
-    cloneDeep(dropDowns),
-    cloneDeep(valid_dropdown)
-  );
-  entered += _dropDownResponse.length;
-  const dropDownResults = await clozeTextEvaluator({
-    userResponse: _dropDownResponse,
-    validation: {
-      scoring_type,
-      alt_responses: alt_dropdowns,
-      valid_response: {
-        ...validDropDown
-      }
-    }
-  });
+  const { inputs = {}, dropDowns = {}, maths = {} } = userResponse;
 
-  let mathResults = {};
-  const { userResponse: _mathResponse = [] } = sortResponses(cloneDeep(maths), cloneDeep(answers));
-  entered += _mathResponse.length;
-  switch (scoring_type) {
-    case ScoringType.EXACT_MATCH:
-    default:
-      const checks = getChecks(validation);
-      mathResults = await exactMatchEvaluator(_mathResponse.map(r => (r ? trim(r) : "")), answers, checks);
+  const mathAnswers = [valid_response, ...alt_responses];
+  const dropDownAnswers = [valid_dropdown, ...alt_dropdowns];
+  const textAnswers = [valid_inputs, ...alt_inputs];
+  let score = 0;
+  let maxScore = 0;
+  const allEvaluations = [];
+
+  const alterAnswersCount = Math.max(mathAnswers.length, dropDownAnswers.length, textAnswers.length);
+  for (let i = 0; i < alterAnswersCount; i++) {
+    const dropDownValidation = dropDownAnswers[i];
+    const clozeTextValidation = textAnswers[i];
+    const mathValidation = mathAnswers[i];
+    const questionScore = textAnswers[i].score || 1;
+    let currentScore = 0;
+    let evaluations = {};
+
+    maxScore = Math.max(questionScore, maxScore);
+
+    if (dropDownValidation) {
+      const dropDownEvaluation = clozeTextEvaluator({
+        userResponse: transformUserResponse(dropDowns),
+        validation: { scoring_type: "exactMatch", valid_response: dropDownValidation }
+      }).evaluation;
+
+      evaluations = { ...evaluations, ...dropDownEvaluation };
+    }
+
+    if (clozeTextValidation) {
+      const clozeTextEvaluation = clozeTextEvaluator({
+        userResponse: transformUserResponse(inputs),
+        validation: { scoring_type: "exactMatch", valid_response: clozeTextValidation }
+      }).evaluation;
+      evaluations = { ...evaluations, ...clozeTextEvaluation };
+    }
+
+    if (mathValidation) {
+      const mathEvaluation = await mathEval({
+        userResponse: maths,
+        validation: {
+          scoring_type: "exactMatch",
+          valid_response: mathValidation
+        }
+      });
+      evaluations = { ...evaluations, ...mathEvaluation };
+    }
+
+    const correctCount = Object.values(evaluations).filter(identity).length;
+    const wrongCount = Object.values(evaluations).filter(x => !x).length;
+
+    const answersCount =
+      get(dropDownValidation, ["value", "length"], 0) +
+      get(mathValidation, ["value", "length"], 0) +
+      get(clozeTextValidation, ["value", "length"], 0);
+
+    if (scoring_type === "partialMatch") {
+      currentScore = questionScore * (correctCount / answersCount);
+
+      if (penalty) {
+        const negativeScore = penalty * wrongCount;
+        currentScore -= negativeScore;
+      }
+    } else if (correctCount === answersCount) {
+      currentScore = questionScore;
+    }
+
+    score = Math.max(score, currentScore);
+    allEvaluations.push({ evaluation: evaluations, score: currentScore });
   }
 
-  // if score for attempting is greater than current score
-  // let it be the score!
-  if (!Number.isNaN(attemptScore) && attemptScore > mathResults.score) {
-    mathResults.score = attemptScore;
+  let selectedEvaluation = maxBy(allEvaluations, "score");
+  if (score === 0) {
+    selectedEvaluation = allEvaluations[0].evaluation;
+  } else {
+    selectedEvaluation = selectedEvaluation.evaluation;
   }
 
-  let corrects = inputsResults.evaluation.filter(answer => answer).length;
-  corrects += dropDownResults.evaluation.filter(answer => answer).length;
-  corrects += mathResults.evaluation ? mathResults.evaluation.filter(answer => answer).length : 0;
-
-  // evaluation results to one list dropDown, inputs, maths
-  let _evaluation = [];
-
-  Object.keys(dropDowns).map((key, i) => {
-    _evaluation[dropDowns[key].index] = dropDownResults.evaluation[i];
-  });
-
-  Object.keys(inputs).map((key, i) => {
-    _evaluation[inputs[key].index] = inputsResults.evaluation[i];
-  });
-
-  Object.keys(maths).map((key, i) => {
-    _evaluation[maths[key].index] = mathResults.evaluation[i];
-  });
-
-  let score = round(corrects / entered, 2);
-
-  if (isNaN(score)) {
+  if (score < 0) {
     score = 0;
   }
 
-  const maxScore = 1;
+  if (min_score_if_attempted && score < min_score_if_attempted) {
+    score = min_score_if_attempted;
+  }
 
   return {
-    evaluation: _evaluation,
     score,
+    evaluation: selectedEvaluation,
     maxScore
   };
 };
-
 export default evaluator;

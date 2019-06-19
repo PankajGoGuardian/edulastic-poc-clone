@@ -43,9 +43,9 @@ class CorrectAnswer extends Component {
     onUpdatePoints(parseFloat(e.target.value, 10));
   };
 
-  handleMultiSelect = answers => {
+  handleMultiSelect = (answers, id, widthpx) => {
     const { onUpdateValidationValue } = this.props;
-    onUpdateValidationValue(answers);
+    onUpdateValidationValue(answers, id, widthpx);
   };
 
   render() {

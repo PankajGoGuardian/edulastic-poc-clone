@@ -41,7 +41,7 @@ const Partners = {
   }
 };
 
-const Login = () => {
+const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
   let partnerCheck = "login";
   Object.keys(Partners).map(key => {
     if (key === urlParams[urlParams.length - 1]) {
@@ -49,12 +49,26 @@ const Login = () => {
     }
   });
 
+  if (partnerCheck === "login" && isSignupUsingDaURL) {
+    Partners.login.background = generalSettings ? generalSettings.pageBackground : "";
+  }
+
   return (
     <Wrapper>
       <LoginWrapper Partners={Partners[partnerCheck]}>
         {Partners[partnerCheck].name !== "login" && <Backdrop />}
-        <Header Partners={Partners[partnerCheck]} />
-        <LoginContainer Partners={Partners[partnerCheck]} />
+        <Header
+          Partners={Partners[partnerCheck]}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
+        <LoginContainer
+          Partners={Partners[partnerCheck]}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
       </LoginWrapper>
     </Wrapper>
   );

@@ -1457,7 +1457,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         }
       },
       onSelectQuestionType
@@ -1517,7 +1518,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         },
         canvas: {
           x_max: 10,
@@ -1997,7 +1999,7 @@ export const getCards = onSelectQuestionType => {
         template:
           '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
         templateDisplay: true,
-        type: questionType.CLOZE_MATH,
+        type: questionType.EXPRESSION_MULTIPART,
         response_ids: {
           inputs: [],
           maths: [],

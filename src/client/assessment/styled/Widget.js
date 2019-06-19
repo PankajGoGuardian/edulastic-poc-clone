@@ -67,6 +67,14 @@ export const Widget = styled.div`
   }
 
   .ant-input {
+    border: 1px solid ${dashBorderColor};
+  }
+
+  div.main {
+    box-shadow: none !important;
+  }
+
+  .ant-input {
     font-size: 12px;
     padding-left: 21px;
     letter-spacing: 0.3px;
@@ -91,7 +99,7 @@ export const Widget = styled.div`
   }
 
   .input__math {
-    padding: 12px 21px;
+    padding: 12px 2px;
   }
 
   .mq-root-block,

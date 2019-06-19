@@ -1,6 +1,8 @@
 import styled from "styled-components";
+
+import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, white } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -69,11 +71,22 @@ const StyledTabButton = styled.a`
 export const GiveOverallFeedBackButton = styled(StyledTabButton)`
   border-radius: 4px;
   display: flex;
-  padding: 20px 70px;
+  padding: 20px 10px;
   align-items: center;
+  min-width: 250px;
+  justify-content: center;
+  font-size: 12px;
   @media (max-width: ${mobileWidth}) {
     padding: 20px 20px;
     min-width: 175px;
     justify-content: center;
+  }
+`;
+
+export const EditIconStyled = styled(IconEdit)`
+  fill: ${white};
+  margin-left: 15px;
+  &:hover {
+    fill: ${white};
   }
 `;

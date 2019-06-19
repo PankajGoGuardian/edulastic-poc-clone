@@ -181,13 +181,14 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading, userId } = this.props;
+    const { test, setData, rows, isTestLoading, userId, match = {} } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
+    const { params = {} } = match;
     const { current } = this.state;
-    const { authors, _id } = test;
-    const owner = (authors && authors.some(x => x._id === userId)) || !_id;
+    const { authors } = test;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
     if (!owner && (current === "addItems" || current === "description")) {
       this.setState({ current: "review" });
     }
@@ -211,6 +212,7 @@ class Container extends PureComponent {
             onShowSource={this.handleNavChange("source")}
             setData={setData}
             test={test}
+            owner={owner}
             current={current}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}

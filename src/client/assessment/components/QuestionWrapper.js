@@ -168,6 +168,7 @@ const getQuestion = type => {
     case questionType.FORMULA_ESSAY:
       return FormulaEssay;
     case questionType.CLOZE_MATH:
+    case questionType.EXPRESSION_MULTIPART:
       return ClozeMath;
     case questionType.GRAPH:
       return Graph;

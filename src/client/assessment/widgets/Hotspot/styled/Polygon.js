@@ -4,7 +4,7 @@ import Color from "color";
 const getStroke = ({ stroke, selected, showAnswer, correct, theme }) =>
   showAnswer
     ? correct
-      ? theme.widgets.hotspot.svgMapStrokeColor
+      ? theme.widgets.hotspot.svgMapRightStrokeColor
       : theme.widgets.hotspot.intersectStrokeColor
     : selected
     ? Color(stroke)
@@ -15,7 +15,7 @@ const getStroke = ({ stroke, selected, showAnswer, correct, theme }) =>
 const getFill = ({ fill, selected, showAnswer, correct, theme }) =>
   showAnswer
     ? correct
-      ? theme.widgets.hotspot.svgMapFillColor
+      ? theme.widgets.hotspot.svgMapRightFillColor
       : theme.widgets.hotspot.intersectFillColor
     : selected
     ? Color(fill)

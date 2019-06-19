@@ -12,25 +12,20 @@ import SubjectGradeForm from "./SubjectGrade";
 import teacherBg from "../../../assets/bg-teacher.png";
 
 import { logoutAction } from "../../../Login/ducks";
-import { getDistrictByShortNameAndOrgTypeAction } from "../../duck";
 
-const Container = ({ user, generalSettings, logout, getDistrictByShortNameAndOrgTypeAction, match }) => {
+const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, logout, match }) => {
   const { isAuthenticated, signupStatus } = user;
-  const { districtShortName } = match.params;
-
-  useEffect(() => {
-    if (districtShortName) {
-      getDistrictByShortNameAndOrgTypeAction({ shortName: districtShortName, orgType: "district" });
-    }
-  }, []);
 
   if (!isAuthenticated) {
     return (
       <>
         <SignupForm
           image={
-            generalSettings && districtShortName ? generalSettings.pageBackground : districtShortName ? "" : teacherBg
+            generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : teacherBg
           }
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
         />
       </>
     );
@@ -41,7 +36,12 @@ const Container = ({ user, generalSettings, logout, getDistrictByShortNameAndOrg
     <>
       <Header userInfo={userInfo} logout={logout} />
       {signupStatus === 1 && (
-        <JoinSchool userInfo={userInfo} districtId={districtShortName ? generalSettings : false} />
+        <JoinSchool
+          userInfo={userInfo}
+          districtId={districtShortName ? generalSettings : false}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+        />
       )}
       {signupStatus === 2 && (
         <SubjectGradeForm userInfo={userInfo} districtId={districtShortName ? generalSettings : false} />
@@ -63,10 +63,11 @@ Container.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({ user: state.user, generalSettings: get(state, "signup.generalSettings", null) }),
+    state => ({
+      user: state.user
+    }),
     {
-      logout: logoutAction,
-      getDistrictByShortNameAndOrgTypeAction: getDistrictByShortNameAndOrgTypeAction
+      logout: logoutAction
     }
   )
 );

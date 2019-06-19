@@ -74,7 +74,18 @@ const ClozeTextInput = ({ resprops, id }) => {
   if (!id) {
     return null;
   }
-  const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers, responseIds } = resprops;
+  const {
+    btnStyle,
+    item,
+    onChange,
+    style,
+    uiStyle,
+    placeholder,
+    type,
+    showIndex = true,
+    userAnswers,
+    responseIds
+  } = resprops;
   const ref = useRef();
   const MInput = item.multiple_line ? TextArea : Input;
   const { index } = find(responseIds, response => response.id === id);
@@ -108,9 +119,8 @@ const ClozeTextInput = ({ resprops, id }) => {
       type
     });
   };
-
   return (
-    <CustomInput style={style}>
+    <CustomInput style={style} title={value.length ? value : null}>
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
@@ -132,7 +142,8 @@ const ClozeTextInput = ({ resprops, id }) => {
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
-          background: item.background
+          background: item.background,
+          width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : `100px`
         }}
         placeholder={placeholder}
       />

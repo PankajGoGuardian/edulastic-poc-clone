@@ -50,7 +50,8 @@ class ButtonAction extends Component {
       clearAnswers,
       showCheckButton,
       allowedAttempts,
-      showPublishButton
+      showPublishButton,
+      showSettingsButton
     } = this.props;
 
     return (
@@ -70,13 +71,15 @@ class ButtonAction extends Component {
                   style={{ color: newBlue }}
                 />
               </Button>
-              <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
-                <ButtonLink
-                  color="primary"
-                  icon={<IconSettings color={newBlue} width={20} height={20} />}
-                  style={{ color: newBlue }}
-                />
-              </Button>
+              {showSettingsButton && (
+                <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
+                  <ButtonLink
+                    color="primary"
+                    icon={<IconSettings color={newBlue} width={20} height={20} />}
+                    style={{ color: newBlue }}
+                  />
+                </Button>
+              )}
             </PreviewBar>
           )}
           {view === "preview" && (
@@ -152,13 +155,15 @@ ButtonAction.propTypes = {
   clearAnswers: PropTypes.func.isRequired,
   showCheckButton: PropTypes.bool,
   allowedAttempts: PropTypes.number,
-  showPublishButton: PropTypes.bool
+  showPublishButton: PropTypes.bool,
+  showSettingsButton: PropTypes.bool
 };
 
 ButtonAction.defaultProps = {
   showPublishButton: null,
   showCheckButton: null,
-  allowedAttempts: null
+  allowedAttempts: null,
+  showSettingsButton: true
 };
 
 const enhance = compose(

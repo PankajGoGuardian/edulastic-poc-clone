@@ -88,7 +88,10 @@ class Signup extends React.Component {
     const {
       form: { getFieldDecorator },
       t,
-      image
+      image,
+      isSignupUsingDaURL,
+      districtPolicy,
+      districtShortName
     } = this.props;
 
     const formItemLayout = {
@@ -111,7 +114,9 @@ class Signup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to="/login">{t("common.signinbtn")}</Link>
+              <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/login" : "/login"}>
+                {t("common.signinbtn")}
+              </Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody type="flex" align="middle">
@@ -121,12 +126,20 @@ class Signup extends React.Component {
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.teacher.forteacher")}
                   </h1>
-                  <LinkDiv>
-                    <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
-                  </LinkDiv>
-                  <LinkDiv>
-                    <Link to="/studentsignup">{t("component.signup.signupasstudent")}</Link>
-                  </LinkDiv>
+                  {!isSignupUsingDaURL ? (
+                    <LinkDiv>
+                      <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
+                    </LinkDiv>
+                  ) : null}
+                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.studentSignUp) || !isSignupUsingDaURL ? (
+                    <LinkDiv>
+                      <Link
+                        to={isSignupUsingDaURL ? "/district/" + districtShortName + "/studentsignup" : "/studentsignup"}
+                      >
+                        {t("component.signup.signupasstudent")}
+                      </Link>
+                    </LinkDiv>
+                  ) : null}
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
@@ -134,15 +147,23 @@ class Signup extends React.Component {
                       <h3 align="center">
                         <b>{t("component.signup.signupboxheading")}</b>
                       </h3>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
-                      </ThirdPartyLoginBtn>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
-                      </ThirdPartyLoginBtn>
-                      <ThirdPartyLoginBtn span={20} offset={2}>
-                        <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
-                      </ThirdPartyLoginBtn>
+                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
+                        <ThirdPartyLoginBtn span={20} offset={2}>
+                          <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+                        </ThirdPartyLoginBtn>
+                      ) : null}
+                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) ||
+                      !isSignupUsingDaURL ? (
+                        <ThirdPartyLoginBtn span={20} offset={2}>
+                          <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+                        </ThirdPartyLoginBtn>
+                      ) : null}
+                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.cleverSignOn) || !isSignupUsingDaURL ? (
+                        <ThirdPartyLoginBtn span={20} offset={2}>
+                          <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
+                        </ThirdPartyLoginBtn>
+                      ) : null}
+
                       <InfoBox span={20} offset={2}>
                         <InfoIcon span={3}>
                           <img src={lockIcon} alt="" />
@@ -150,87 +171,90 @@ class Signup extends React.Component {
                         <Col span={21}>{t("component.signup.infotext")}</Col>
                       </InfoBox>
                     </FormHead>
-                    <FormBody>
-                      <Col span={20} offset={2}>
-                        <h5 align="center">{t("component.signup.formboxheading")}</h5>
-                        <Form onSubmit={this.handleSubmit} autoComplete="new-password">
-                          <FormItem {...formItemLayout} label={t("component.signup.teacher.signupnamelabel")}>
-                            {getFieldDecorator("name", {
-                              validateFirst: true,
-                              initialValue: "",
-                              rules: [
-                                {
-                                  required: true,
-                                  message: t("component.signup.teacher.validinputname")
-                                },
-                                {
-                                  type: "string",
-                                  validator: this.checkName
-                                }
-                              ]
-                            })(
-                              <Input
-                                prefix={<img src={userIcon} alt="" />}
-                                placeholder="Enter your full name"
-                                autoComplete="new-password"
-                              />
-                            )}
-                          </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
-                            {getFieldDecorator("email", {
-                              validateFirst: true,
-                              rules: [
-                                {
-                                  transform: changeValidValue
-                                },
-                                {
-                                  required: true,
-                                  message: t("component.signup.teacher.validemail")
-                                },
-                                {
-                                  type: "email",
-                                  message: t("component.signup.teacher.validemail")
-                                }
-                              ]
-                            })(
-                              <Input
-                                prefix={<img src={mailIcon} alt="" />}
-                                placeholder="Enter your school email"
-                                type="email"
-                                autoComplete="new-password"
-                              />
-                            )}
-                          </FormItem>
-                          <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
-                            {getFieldDecorator("password", {
-                              validateFirst: true,
-                              initialValue: "",
-                              rules: [
-                                {
-                                  required: true,
-                                  message: t("component.signup.teacher.validpassword")
-                                },
-                                {
-                                  validator: this.checkPassword
-                                }
-                              ]
-                            })(
-                              <Input
-                                prefix={<img src={keyIcon} alt="" />}
-                                type="password"
-                                placeholder="Enter your password"
-                                autoComplete="new-password"
-                              />
-                            )}
-                          </FormItem>
-                          <FormItem>
-                            <RegisterButton type="primary" htmlType="submit">
-                              {t("component.signup.teacher.signupteacher")}
-                            </RegisterButton>
-                          </FormItem>
-                        </Form>
-                      </Col>
-                    </FormBody>
+                    {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) ||
+                    !isSignupUsingDaURL ? (
+                      <FormBody>
+                        <Col span={20} offset={2}>
+                          <h5 align="center">{t("component.signup.formboxheading")}</h5>
+                          <Form onSubmit={this.handleSubmit} autoComplete="new-password">
+                            <FormItem {...formItemLayout} label={t("component.signup.teacher.signupnamelabel")}>
+                              {getFieldDecorator("name", {
+                                validateFirst: true,
+                                initialValue: "",
+                                rules: [
+                                  {
+                                    required: true,
+                                    message: t("component.signup.teacher.validinputname")
+                                  },
+                                  {
+                                    type: "string",
+                                    validator: this.checkName
+                                  }
+                                ]
+                              })(
+                                <Input
+                                  prefix={<img src={userIcon} alt="" />}
+                                  placeholder="Enter your full name"
+                                  autoComplete="new-password"
+                                />
+                              )}
+                            </FormItem>
+                            <FormItem {...formItemLayout} label={t("component.signup.teacher.signupidlabel")}>
+                              {getFieldDecorator("email", {
+                                validateFirst: true,
+                                rules: [
+                                  {
+                                    transform: changeValidValue
+                                  },
+                                  {
+                                    required: true,
+                                    message: t("component.signup.teacher.validemail")
+                                  },
+                                  {
+                                    type: "email",
+                                    message: t("component.signup.teacher.validemail")
+                                  }
+                                ]
+                              })(
+                                <Input
+                                  prefix={<img src={mailIcon} alt="" />}
+                                  placeholder="Enter your school email"
+                                  type="email"
+                                  autoComplete="new-password"
+                                />
+                              )}
+                            </FormItem>
+                            <FormItem {...formItemLayout} label={t("component.signup.signuppasswordlabel")}>
+                              {getFieldDecorator("password", {
+                                validateFirst: true,
+                                initialValue: "",
+                                rules: [
+                                  {
+                                    required: true,
+                                    message: t("component.signup.teacher.validpassword")
+                                  },
+                                  {
+                                    validator: this.checkPassword
+                                  }
+                                ]
+                              })(
+                                <Input
+                                  prefix={<img src={keyIcon} alt="" />}
+                                  type="password"
+                                  placeholder="Enter your password"
+                                  autoComplete="new-password"
+                                />
+                              )}
+                            </FormItem>
+                            <FormItem>
+                              <RegisterButton type="primary" htmlType="submit">
+                                {t("component.signup.teacher.signupteacher")}
+                              </RegisterButton>
+                            </FormItem>
+                          </Form>
+                        </Col>
+                      </FormBody>
+                    ) : null}
                   </FormWrapper>
                 </Col>
               </Row>

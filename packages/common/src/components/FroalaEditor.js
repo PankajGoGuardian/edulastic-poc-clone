@@ -222,7 +222,16 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
   return toolbarButtons;
 };
 
-const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additionalToolbarOptions, ...restOptions }) => {
+const CustomEditor = ({
+  value,
+  onChange,
+  toolbarId,
+  tag,
+  toolbarSize,
+  additionalToolbarOptions,
+  initOnClick,
+  ...restOptions
+}) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
 
@@ -241,13 +250,12 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additional
   const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions);
   const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions);
   const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
-
   const config = Object.assign(
     {
       key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
-      initOnClick: true,
+      initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
       toolbarButtonsSM,
@@ -416,8 +424,10 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additional
           if (restOptions.readOnly === true) {
             this.edit.off();
             this.$el.find(".input__math").css("pointer-events", "none");
+            this.$el.find("img").css("pointer-events", "none");
           }
         },
+
         "toolbar.hide": function() {
           if (this.hasFocus) {
             return false;
@@ -429,12 +439,16 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, toolbarSize, additional
           this.hasFocus = false;
         },
         focus: function() {
-          this.hasFocus = true;
-          this.toolbar.show();
+          if (initOnClick) {
+            this.hasFocus = true;
+            this.toolbar.show();
+          }
         },
         blur: function() {
-          this.hasFocus = false;
-          this.toolbar.hide();
+          if (initOnClick) {
+            this.hasFocus = false;
+            this.toolbar.hide();
+          }
         },
         "commands.after": function(cmd) {
           if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
@@ -687,12 +701,14 @@ CustomEditor.propTypes = {
   onChange: PropTypes.func.isRequired,
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  initOnClick: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
   tag: "textarea",
   toolbarId: null,
+  initOnClick: true,
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false

@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { greenDark, white } from "@edulastic/colors";
+import { greenDark, white, linkColor1 } from "@edulastic/colors";
 
 export const Container = styled.div`
   position: relative;
@@ -56,5 +56,5 @@ export const CreatedByTitle = styled.div`
 export const CreatedByValue = styled.div`
   font-size: 14px;
   font-weight: 600;
-  color: ${white};
+  color: ${linkColor1};
 `;

@@ -398,8 +398,8 @@ class ComposeQuestion extends Component {
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  width={maxWidth}
-                  height={maxHeight}
+                  width={`${maxWidth}px`}
+                  height={`${maxHeight}px`}
                 >
                   {item.imageUrl && (
                     <React.Fragment>
@@ -425,7 +425,7 @@ class ComposeQuestion extends Component {
                       >
                         <PreviewImage
                           src={item.imageUrl}
-                          width={imageWidth < 700 ? imageWidth : maxWidth}
+                          width={imageWidth}
                           height={imageHeight}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}

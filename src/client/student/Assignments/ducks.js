@@ -256,11 +256,10 @@ const isLiveAssignment = (assignment, currentGroup) => {
   // and end Dtae should be greateer than current one :)
   let maxAttempts = (assignment && assignment.maxAttempts) || 1;
   let attempts = (assignment.reports && assignment.reports.length) || 0;
-  let lastAttempt = last(assignment.reports) || [];
+  let lastAttempt = last(assignment.reports) || {};
   let { endDate, class: groups = [] } = assignment;
-
   //when attempts over no need to check for any other condition to hide assignment from assignments page
-  if (maxAttempts <= attempts && lastAttempt.status !== "0") return false;
+  if (maxAttempts <= attempts && lastAttempt.status !== 0) return false;
   if (!endDate) {
     endDate = (_maxBy(groups.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
     const currentClass = groups.find(cl => cl._id === currentGroup) || {};

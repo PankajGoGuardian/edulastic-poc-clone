@@ -2,10 +2,11 @@ import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
 import { isUndefined } from "lodash";
-import { helpers } from "@edulastic/common";
+import { helpers, Stimulus } from "@edulastic/common";
 
 import { clozeImage, canvasDimensions } from "@edulastic/constants";
-import { QuestionHeader } from "../../styled/QuestionHeader";
+// import { QuestionHeader } from "../../styled/QuestionHeader";
+
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -257,7 +258,7 @@ class Display extends Component {
       <StyledDisplayContainer fontSize={fontSize}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <TemplateBoxContainer flexDirection="column">
           <TemplateBoxLayoutContainer>{templateBoxLayout}</TemplateBoxLayoutContainer>

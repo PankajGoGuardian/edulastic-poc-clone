@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { cloneDeep, flattenDeep } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan } from "@edulastic/common";
+import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
 import { white } from "@edulastic/colors";
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
@@ -11,7 +11,6 @@ import DragItem from "./components/DragItem";
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionHeader } from "../../styled/QuestionHeader";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
@@ -69,11 +68,10 @@ class Display extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     const data = Array.isArray(sourceData) ? sourceData : [sourceData];
-
     newAnswers[index] = [...(newAnswers[index] || []), ...data];
 
     if (maxRespCount && newAnswers[index].length > maxRespCount) {
-      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1);
+      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1)[0];
       newResponses.push(last);
     }
 
@@ -222,6 +220,12 @@ class Display extends Component {
             minHeight: `${canvasDimensions.maxHeight}px`
           }}
         >
+          <div style={{ position: "relative" }}>
+            <AnnotationRnd
+              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              questionId={questionId}
+            />
+          </div>
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -378,18 +382,12 @@ class Display extends Component {
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         {responseposition === "top" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
           </React.Fragment>
@@ -397,13 +395,7 @@ class Display extends Component {
         {responseposition === "bottom" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {templateBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{templateBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
           </React.Fragment>
@@ -422,13 +414,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
@@ -470,13 +456,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}

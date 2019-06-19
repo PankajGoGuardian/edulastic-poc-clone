@@ -367,6 +367,9 @@ class Worksheet extends React.Component {
               annotations={annotations}
               onDropAnnotation={this.handleAddAnnotation}
               onHighlightQuestion={this.handleHighlightQuestion}
+              questions={questions}
+              questionsById={questionsById}
+              answersById={answersById}
             />
             <SvgDraw
               activeMode={activeMode}

@@ -34,6 +34,7 @@ const Sidebar = ({
   onChangeSubjects,
   onChangeField,
   tags,
+  owner,
   analytics,
   grades,
   isPlaylist,
@@ -53,6 +54,7 @@ const Sidebar = ({
       <SummaryHeader
         createdBy={createdBy}
         thumbnail={thumbnail}
+        owner={owner}
         windowWidth={windowWidth}
         analytics={analytics}
         onChangeField={onChangeField}
@@ -192,6 +194,7 @@ Sidebar.propTypes = {
   onChangeGrade: PropTypes.func.isRequired,
   windowWidth: PropTypes.number.isRequired,
   subjects: PropTypes.array.isRequired,
+  owner: PropTypes.bool,
   description: PropTypes.string.isRequired,
   textColor: PropTypes.string.isRequired,
   createdBy: PropTypes.object,

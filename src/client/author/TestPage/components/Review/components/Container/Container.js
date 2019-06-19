@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
@@ -92,6 +92,7 @@ class Review extends PureComponent {
 
     this.setSelected([]);
     setData(newData);
+    message.success("Selected testItems removed successfully");
   };
 
   handleCollapse = () => {

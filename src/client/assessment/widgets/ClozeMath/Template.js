@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import produce from "immer";
 import { withNamespaces } from "react-i18next";
-import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last } from "lodash";
+import { cloneDeep, keys as _keys, flattenDeep, isArray, find, last, isEmpty } from "lodash";
 
 import { math } from "@edulastic/constants";
 import { FroalaEditor } from "@edulastic/common";
@@ -72,6 +72,13 @@ class Template extends Component {
         .find("textinput, mathinput, textdropdown")
         .each(findResponseIndexes);
 
+      Object.keys(newResponseId).map(key => {
+        if (key !== "scoring_type") {
+          if (isEmpty(newResponseId[key])) {
+            delete newResponseId[key];
+          }
+        }
+      });
       return newResponseId;
     };
 
@@ -107,6 +114,9 @@ class Template extends Component {
       _keys(responseIds).map(responsekey => {
         responseIds[responsekey].map(res => {
           if (responsekey === "inputs") {
+            if (!_validation.valid_inputs) {
+              _validation.valid_inputs = { score: 1, value: [] };
+            }
             const isExist = find(_validation.valid_inputs.value, valid => valid.id === res.id);
             if (!isExist) {
               _validation.valid_inputs.value.push({
@@ -116,13 +126,19 @@ class Template extends Component {
             }
           }
           if (responsekey === "maths") {
-            const isExist = find(_validation.valid_response.value, valid => valid[0].id === res.id);
+            if (!_validation.valid_response) {
+              _validation.valid_response = { score: 1, value: [] };
+            }
+            const isExist = find(_validation.valid_response.value, valid => (valid[0] ? valid[0].id : "") === res.id);
             if (!isExist) {
               const newArray = [{ ...initialMethod, id: res.id }];
               _validation.valid_response.value.push(newArray);
             }
           }
           if (responsekey === "dropDowns") {
+            if (!_validation.valid_dropdown) {
+              _validation.valid_dropdown = { score: 1, value: [] };
+            }
             const isExist = find(_validation.valid_dropdown.value, valid => valid.id === res.id);
             if (!isExist) {
               _validation.valid_dropdown.value.push({
@@ -135,49 +151,135 @@ class Template extends Component {
       });
 
       // reduce alternate answers
+      const maxAltLen = Math.max(
+        _validation.alt_responses ? _validation.alt_responses.length : 0,
+        _validation.alt_inputs ? _validation.alt_inputs.length : 0,
+        _validation.alt_dropdowns ? _validation.alt_dropdowns.length : 0
+      );
       if (isArray(_validation.alt_responses)) {
-        _validation.alt_responses.map(alt_res => {
-          if (_validation.valid_response.value.length > alt_res.value.length) {
-            alt_res.value.push(last(_validation.valid_response.value));
-          }
-          alt_res.value.map((altAnswer, index) => {
-            const isExist = find(_allIds, resId => resId.id === altAnswer[0].id);
-            if (!isExist) {
-              alt_res.value.splice(index, 1);
+        if (_validation.valid_response) {
+          _validation.alt_responses.map(alt_res => {
+            if (_validation.valid_response.value.length > alt_res.value.length) {
+              alt_res.value.push(last(_validation.valid_response.value));
             }
+            alt_res.value.map((altAnswer, index) => {
+              const isExist = find(_allIds, resId => resId.id === (altAnswer ? altAnswer[0] : "").id);
+              if (!isExist) {
+                alt_res.value.splice(index, 1);
+              }
+            });
           });
+        }
+      } else if (_validation.valid_response) {
+        const newAltValues = cloneDeep(_validation.valid_response.value || []);
+        newAltValues.map(answer => {
+          answer.value = "";
+          return answer;
         });
+        _validation.alt_responses = [];
+        for (let i = 0; i < maxAltLen; i++) {
+          _validation.alt_responses.push({
+            score: 1,
+            value: newAltValues
+          });
+        }
       }
 
       if (isArray(_validation.alt_inputs)) {
-        _validation.alt_inputs.map(alt_res => {
-          if (_validation.valid_inputs.value.length > alt_res.value.length) {
-            alt_res.value.push(last(_validation.valid_inputs.value));
-          }
-          alt_res.value.map((altAnswer, index) => {
-            const isExist = find(_allIds, resId => resId.id === altAnswer.id);
-            if (!isExist) {
-              alt_res.value.splice(index, 1);
+        if (_validation.valid_inputs) {
+          _validation.alt_inputs.map(alt_res => {
+            if (_validation.valid_inputs.value.length > alt_res.value.length) {
+              alt_res.value.push(last(_validation.valid_inputs.value));
             }
+            alt_res.value.map((altAnswer, index) => {
+              const isExist = find(_allIds, resId => resId.id === altAnswer.id);
+              if (!isExist) {
+                alt_res.value.splice(index, 1);
+              }
+            });
           });
+        }
+      } else if (_validation.valid_inputs && maxAltLen) {
+        const newAltValues = cloneDeep(_validation.valid_inputs.value || []);
+        newAltValues.map(answer => {
+          answer.value = "";
+          return answer;
         });
+        _validation.alt_inputs = [];
+        for (let i = 0; i < maxAltLen; i++) {
+          _validation.alt_inputs.push({
+            score: 1,
+            value: newAltValues
+          });
+        }
       }
 
       if (isArray(_validation.alt_dropdowns)) {
-        _validation.alt_dropdowns.map(alt_res => {
-          if (_validation.valid_dropdown.value.length > alt_res.value.length) {
-            alt_res.value.push(last(_validation.valid_dropdown.value));
-          }
-          alt_res.value.map((altAnswer, index) => {
-            const isExist = find(_allIds, resId => resId.id === altAnswer.id);
-            if (!isExist) {
-              alt_res.value.splice(index, 1);
+        if (_validation.valid_dropdown) {
+          _validation.alt_dropdowns.map(alt_res => {
+            if (_validation.valid_dropdown.value.length > alt_res.value.length) {
+              alt_res.value.push(last(_validation.valid_dropdown.value));
             }
+            alt_res.value.map((altAnswer, index) => {
+              const isExist = find(_allIds, resId => resId.id === altAnswer.id);
+              if (!isExist) {
+                alt_res.value.splice(index, 1);
+              }
+            });
           });
+        }
+      } else if (_validation.valid_dropdown) {
+        const newAltValues = cloneDeep(_validation.valid_dropdown.value || []);
+        newAltValues.map(answer => {
+          answer.value = "";
+          return answer;
         });
+        _validation.alt_dropdowns = [];
+        for (let i = 0; i < maxAltLen; i++) {
+          _validation.alt_dropdowns.push({
+            score: 1,
+            value: newAltValues
+          });
+        }
       }
 
+      // remove empty valid value
+      Object.keys(_validation).map(key => {
+        if (key === "valid_dropdown") {
+          if (isEmpty(_validation[key].value)) {
+            delete _validation[key];
+            delete _validation.alt_dropdowns;
+          }
+        }
+        if (key === "valid_inputs") {
+          if (isEmpty(_validation[key].value)) {
+            delete _validation[key];
+            delete _validation.alt_inputs;
+          }
+        }
+        if (key === "valid_response") {
+          if (isEmpty(_validation[key].value)) {
+            delete _validation[key];
+            delete _validation.alt_responses;
+          }
+        }
+      });
+
       return _validation;
+    };
+
+    const _reduceOptions = (responseIds = {}, options) => {
+      const { dropDowns } = responseIds;
+      let _options = cloneDeep(options);
+      if (!dropDowns) {
+        return;
+      }
+
+      if (!_options) {
+        _options = {};
+      }
+
+      return _options;
     };
 
     const _updateTemplate = val => {
@@ -187,14 +289,22 @@ class Template extends Component {
         draft.response_ids = _reduceResponseIds(draft.template);
 
         draft.validation = _reduceValidation(draft.response_ids, draft.validation);
+
+        draft.options = _reduceOptions(draft.response_ids, draft.options);
       });
 
-      newItem.validation.valid_response.value.map(res => {
-        if (res && !res.length) {
-          res.push(initialMethod);
-        }
-        return res;
-      });
+      if (!newItem.options) {
+        delete newItem.options;
+      }
+
+      if (newItem.validation.valid_response) {
+        newItem.validation.valid_response.value.map(res => {
+          if (res && !res.length) {
+            res.push(initialMethod);
+          }
+          return res;
+        });
+      }
 
       setQuestionData(newItem);
     };

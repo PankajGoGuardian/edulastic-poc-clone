@@ -15,11 +15,14 @@ import Sidebar from "../Sidebar/Sidebar";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
+import { getUser } from "../../../../../src/selectors/user";
 
 const Summary = ({
   setData,
+  currentUser,
   test,
   current,
+  owner,
   t,
   onShowSource,
   windowWidth,
@@ -87,12 +90,13 @@ const Summary = ({
               onChangeField={handleChangeField}
               windowWidth={windowWidth}
               grades={grades}
+              owner={owner}
               isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
               textColor={textColor}
-              createdBy={test.createdBy}
+              createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
               thumbnail={test.thumbnail}
               backgroundColor={backgroundColor}
               isPlaylist={isPlaylist}
@@ -109,11 +113,13 @@ const Summary = ({
 };
 
 Summary.defaultProps = {
+  owner: false,
   test: {}
 };
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
+  owner: PropTypes.bool,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
@@ -137,6 +143,7 @@ const enhance = compose(
   connect(
     state => ({
       summary: getSummarySelector(state),
+      currentUser: getUser(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     null

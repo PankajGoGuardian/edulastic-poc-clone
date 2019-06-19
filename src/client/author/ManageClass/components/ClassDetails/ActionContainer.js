@@ -88,7 +88,9 @@ const ActionContainer = ({
         "username",
         "contactEmails"
       ]);
-
+      if (stdData.lastName == null) {
+        stdData.lastName = "";
+      }
       updateStudentRequest({
         userId,
         data: stdData

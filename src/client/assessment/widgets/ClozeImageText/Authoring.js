@@ -406,6 +406,8 @@ class Authoring extends Component {
 
     const imageWith = this.getWidth();
     const imageHeight = this.getHeight();
+    const imageTop = this.getTop();
+    const imageLeft = this.getLeft();
     const canvasWidth = imageWith < maxWidth ? maxWidth : imageWith;
     const canvasHeight = imageHeight < maxHeight ? maxHeight : imageHeight;
 
@@ -441,12 +443,12 @@ class Authoring extends Component {
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <ImageWidthInput data-cy="image-left-input" value={this.getLeft()} onChange={this.changeImageLeft} />
+                  <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
                   <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
                 </FieldWrapper>
 
                 <FieldWrapper>
-                  <ImageWidthInput data-cy="image-top-input" value={this.getTop()} onChange={this.chnageImageTop} />
+                  <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
                   <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
                 </FieldWrapper>
 
@@ -510,8 +512,8 @@ class Authoring extends Component {
                 <ImageContainer
                   data-cy="drag-drop-image-panel"
                   imageUrl={item.imageUrl}
-                  height={canvasHeight}
-                  width={canvasWidth}
+                  height={canvasHeight + 4}
+                  width={canvasWidth + 4}
                   onDragStart={e => e.preventDefault()}
                 >
                   {item.imageUrl && (
@@ -548,14 +550,16 @@ class Authoring extends Component {
                             alt="resp-preview"
                             onDragStart={e => e.preventDefault()}
                           />
-                          <MoveControlButton
-                            onClick={toggleIsMoveResizeEditable}
-                            style={{
-                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
-                            }}
-                          >
-                            <IconMoveResize />
-                          </MoveControlButton>
+                          {isEditableResizeMove && (
+                            <MoveControlButton
+                              onClick={toggleIsMoveResizeEditable}
+                              style={{
+                                boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                              }}
+                            >
+                              <IconMoveResize />
+                            </MoveControlButton>
+                          )}
                         </PreivewImageWrapper>
                       </Rnd>
                       <DropArea
@@ -599,6 +603,18 @@ class Authoring extends Component {
                         {t("component.cloze.imageText.orBrowse")}: PNG, JPG, GIF (1024KB MAX.)
                       </p>
                     </Dragger>
+                  )}
+                  {!isEditableResizeMove && (
+                    <MoveControlButton
+                      onMouseEnter={toggleIsMoveResizeEditable}
+                      style={{
+                        boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                      }}
+                      top={imageTop + imageHeight}
+                      left={imageLeft + imageWith}
+                    >
+                      <IconMoveResize />
+                    </MoveControlButton>
                   )}
                 </ImageContainer>
               </ImageFlexView>

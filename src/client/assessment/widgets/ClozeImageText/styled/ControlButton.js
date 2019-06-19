@@ -27,9 +27,13 @@ export const ControlButton = styled.button`
 `;
 
 export const MoveControlButton = styled(ControlButton)`
+  width: 36px;
+  height: 36px;
   position: absolute;
-  bottom: 0;
-  right: 0;
-  cursor: help;
+  top: ${({ top }) => (top ? `${top - 36}px` : "unset")};
+  left: ${({ left }) => (left ? `${left - 36}px` : "unset")};
+  bottom: ${({ top }) => (top ? "unset" : "0px")};
+  right: ${({ left }) => (left ? "unset" : "-7px")};
+  cursor: move;
   z-index: 9000;
 `;

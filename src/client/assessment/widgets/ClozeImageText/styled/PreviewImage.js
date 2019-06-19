@@ -1,7 +1,10 @@
 import styled from "styled-components";
+import { black } from "@edulastic/colors";
 
 export const PreivewImageWrapper = styled.div`
   position: relative;
+  border: 1px dotted ${black};
+  border-radius: 4px;
 `;
 
 export const PreviewImage = styled.img`

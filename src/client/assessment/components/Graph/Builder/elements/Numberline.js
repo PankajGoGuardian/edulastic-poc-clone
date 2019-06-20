@@ -6,7 +6,8 @@ import { getFraction, toFractionHTML, roundFracIfPossible } from "../fraction";
 
 import "../../common/Fraction.css";
 
-const ROUNDING_FACTOR = 100;
+const LABEL_ROUNDING_FACTOR = 100;
+const TICK_ROUNDING_FACTOR = 100000;
 
 function createMinorTicks(minorCount, majorTicksSorted) {
   const minorTicks = [];
@@ -135,6 +136,10 @@ const onHandler = board => {
     ticks.push(xMax);
   }
 
+  ticks.forEach((val, index) => {
+    ticks[index] = Math.round(val * TICK_ROUNDING_FACTOR) / TICK_ROUNDING_FACTOR;
+  });
+
   /**
    * Minor ticks
    * */
@@ -167,9 +172,9 @@ const onHandler = board => {
       if (Number.isInteger(t)) {
         res = t;
       } else if (t >= 0) {
-        res = Math.round(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+        res = Math.round(t * LABEL_ROUNDING_FACTOR) / LABEL_ROUNDING_FACTOR;
       } else {
-        res = Math.ceil(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+        res = Math.ceil(t * LABEL_ROUNDING_FACTOR) / LABEL_ROUNDING_FACTOR;
       }
       return res;
     }
@@ -183,9 +188,9 @@ const onHandler = board => {
       if (Number.isInteger(t)) {
         res = t;
       } else if (t >= 0) {
-        res = Math.round(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+        res = Math.round(t * LABEL_ROUNDING_FACTOR) / LABEL_ROUNDING_FACTOR;
       } else {
-        res = Math.ceil(t * ROUNDING_FACTOR) / ROUNDING_FACTOR;
+        res = Math.ceil(t * LABEL_ROUNDING_FACTOR) / LABEL_ROUNDING_FACTOR;
       }
       return res;
     }

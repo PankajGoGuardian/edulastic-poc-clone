@@ -1,15 +1,5 @@
 import { isEqual } from "lodash";
-
-const levenshteinDistance = (s, t) => {
-  if (!s.length) return t.length;
-  if (!t.length) return s.length;
-
-  return Math.min(
-    levenshteinDistance(s.substr(1), t) + 1,
-    levenshteinDistance(t.substr(1), s) + 1,
-    levenshteinDistance(s.substr(1), t.substr(1)) + (s[0] !== t[0] ? 1 : 0)
-  );
-};
+import { get as levenshteinDistance } from "fast-levenshtein";
 
 export const isLessThanOneMistake = (userAnswer, validAnswer, ignoreCase) => {
   if (ignoreCase) {

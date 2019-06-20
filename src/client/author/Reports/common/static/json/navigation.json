@@ -103,6 +103,45 @@
         }
       ],
       "group": "standardsMasteryReport"
+    },
+    "performance-over-time": {
+      "title": "Performance over time",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PERFORMANCE OVER TIME"
+        }
+      ],
+      "group": "multipleAssessmentReport"
+    },
+    "peer-progress-analysis": {
+      "title": "Peer Progress Analysis",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PEER PROGRESS ANALYSIS"
+        }
+      ],
+      "group": "multipleAssessmentReport"
+    },
+    "student-progress": {
+      "title": "Student progress",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "STUDENT PROGRESS"
+        }
+      ],
+      "group": "multipleAssessmentReport"
     }
   },
   "navigation": {
@@ -148,6 +187,23 @@
         "key": "standards-gradebook",
         "title": "Standards Gradebook",
         "location": "/author/reports/standards-gradebook"
+      }
+    ],
+    "multipleAssessmentReport": [
+      {
+        "key": "performance-over-time",
+        "title": "Performance Over Time",
+        "location": "/author/reports/"
+      },
+      {
+        "key": "peer-progress-analysis",
+        "title": "Peer Progress Analysis",
+        "location": "/author/reports/peer-progress-analysis/test/"
+      },
+      {
+        "key": "student-progress",
+        "title": "Student Progress",
+        "location": "/author/reports/"
       }
     ]
   }

@@ -5,6 +5,7 @@ import { Row, Col } from "antd";
 import next from "immer";
 
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
+import { MultipleAssessmentReportContainer } from "./subPages/multipleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
 
 import { StyledContainer, StyledCard, PrintableScreen } from "./common/styled";
@@ -115,6 +116,12 @@ const Container = props => {
         path={`/author/reports/performance-by-students/test/`}
         render={_props => (
           <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
+        )}
+      />
+      <Route
+        path={`/author/reports/peer-progress-analysis/test/`}
+        render={_props => (
+          <MultipleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route

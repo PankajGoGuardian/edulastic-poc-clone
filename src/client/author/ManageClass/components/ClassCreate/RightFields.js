@@ -25,6 +25,8 @@ const RightFields = ({
   userOrgData,
   ...restProps
 }) => {
+  //@todo default term id is not coming in terms list.
+  // For now below logic is implemented to set default term end date
   const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
   const updateSubject = e => {
     setSubject(e);

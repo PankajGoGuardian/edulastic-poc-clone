@@ -24,7 +24,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     onDropHandler = () => {},
     responseIDs
   } = resprops;
-  const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
+  const { index: dropTargetIndex } = (responseIDs && responseIDs.find(response => response.id === id)) || {};
   const status =
     userSelections.length > 0 && evaluation.length > 0 ? (evaluation[dropTargetIndex] ? "right" : "wrong") : null;
 

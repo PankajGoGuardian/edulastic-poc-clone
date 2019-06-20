@@ -213,6 +213,7 @@ export const getTestItemStatusSelector = createSelector(
 );
 
 export const getRows = item =>
+  item.rows &&
   item.rows.map(row => ({
     ...row,
     widgets: row.widgets.map(widget => {
@@ -270,7 +271,7 @@ export const getItemDetailDraggingSelector = createSelector(
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
   state => {
-    if (!state) return "";
+    if (!state || !state.rows) return "";
     const left = state.rows[0].dimension.trim().slice(0, -1);
     const right = state.rows[1] ? state.rows[1].dimension.trim().slice(0, -1) : "100";
     return `${left}-${right}`;
@@ -300,7 +301,12 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultGrades:
+    getFromLocalStorage("defaultGrades") !== null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : getFromLocalStorage("defaultGrades"),
   defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };
@@ -529,7 +535,9 @@ export function* updateItemSaga({ payload }) {
       data.testId = testId;
     }
     data.data = {};
-    data.data.questions = yield select(getQuestionsSelector);
+
+    const questions = yield select(getQuestionsSelector);
+    data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
 

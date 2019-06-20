@@ -51,7 +51,7 @@ class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, preview, style, windowWidth, showFeedback, questions, qIndex, student } = this.props;
+    const { cols, preview, style, windowWidth, showFeedback, questions, qIndex, student, disableResponse } = this.props;
 
     let questionCount = 0;
     cols
@@ -81,6 +81,7 @@ class TestItemPreview extends Component {
                 questions={questions}
                 qIndex={qIndex}
                 student={student}
+                disableResponse={disableResponse}
               />
             ))}
         </Container>

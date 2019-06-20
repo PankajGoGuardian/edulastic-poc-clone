@@ -5,7 +5,7 @@ var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefau
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports["default"] = void 0;
+exports["default"] = exports.getChecks = exports.evaluate = void 0;
 
 var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
 
@@ -28,6 +28,8 @@ var evaluate = function evaluate(data) {
     return result.data;
   });
 };
+
+exports.evaluate = evaluate;
 
 var getChecks = function getChecks(validation) {
   var altResponses = validation.alt_responses || [];
@@ -90,6 +92,8 @@ var getChecks = function getChecks(validation) {
     return valAcc;
   }, "");
 }; // exact match evaluator
+
+exports.getChecks = getChecks;
 
 var exactMatchEvaluator =
   /*#__PURE__*/

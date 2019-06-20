@@ -61,6 +61,8 @@ const validatedAnswers = (answers, responses, matrix, type) => {
   return result;
 };
 
+const MathSpan = WithMathFormula(styled.div``);
+
 const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type, smallSize, theme }) => {
   let correctAnswersMatrix;
 
@@ -148,7 +150,6 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
       ""
     );
 
-    const MathSpan = WithMathFormula(styled.div``);
     let columns = [
       {
         title: stemTitle,

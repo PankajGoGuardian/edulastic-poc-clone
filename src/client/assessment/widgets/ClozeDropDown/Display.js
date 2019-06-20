@@ -4,9 +4,8 @@ import { isUndefined, mapValues, cloneDeep, findIndex, find } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
 
-import { QuestionHeader } from "../../styled/QuestionHeader";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 
@@ -185,7 +184,7 @@ class ClozeDropDownDisplay extends Component {
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}

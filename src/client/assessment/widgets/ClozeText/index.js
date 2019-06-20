@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, isEqual } from "lodash";
+import { cloneDeep, isEqual, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import produce from "immer";
 import { Paper, Checkbox, WithResources } from "@edulastic/common";
@@ -155,6 +155,7 @@ class ClozeText extends Component {
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
 
     const allowSingleLetterMistake = item && item.validation ? item.validation.allowSingleLetterMistake : false;
+    const mixAndMatch = get(item, ["validation", "mixAndMatch"], false);
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -201,6 +202,13 @@ class ClozeText extends Component {
                       }
                       label={t("component.cloze.dropDown.allowsinglelettermistake")}
                       checked={!!allowSingleLetterMistake}
+                    />
+
+                    <Checkbox
+                      className="additional-options"
+                      onChange={() => this.handleValidationOptionsChange("mixAndMatch", !mixAndMatch)}
+                      label="Mix-n-Match alternative answers"
+                      checked={!!mixAndMatch}
                     />
                   </div>
                 </Widget>

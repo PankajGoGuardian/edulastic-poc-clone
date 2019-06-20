@@ -7,11 +7,10 @@ import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers } from "@edulastic/common";
+import { InstructorStimulus, PreWrapper, helpers, Stimulus } from "@edulastic/common";
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
-import { QuestionHeader } from "../../styled/QuestionHeader";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
@@ -369,7 +368,7 @@ class ClozeDragDropDisplay extends Component {
       <div style={{ fontSize }}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <div>
           {responsecontainerposition === "top" && (

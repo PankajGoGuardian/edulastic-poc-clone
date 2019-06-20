@@ -1125,6 +1125,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1162,7 +1163,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        imageWidth: 0,
+        keepAspectRatio: true,
         ui_style: {
           width: 140
         },
@@ -2000,7 +2001,7 @@ export const getCards = onSelectQuestionType => {
         template:
           '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
         templateDisplay: true,
-        type: questionType.CLOZE_MATH,
+        type: questionType.EXPRESSION_MULTIPART,
         response_ids: {
           inputs: [],
           maths: [],

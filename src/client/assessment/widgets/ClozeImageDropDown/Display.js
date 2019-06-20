@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { shuffle } from "lodash";
+import { shuffle, isUndefined } from "lodash";
 import { withTheme } from "styled-components";
-
-import { QuestionHeader } from "../../styled/QuestionHeader";
+import { Stimulus } from "@edulastic/common";
+import { clozeImage, response } from "@edulastic/constants";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AnswerDropdown from "./components/AnswerDropdown";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -14,9 +14,7 @@ import { StyledDisplayContainer } from "./styled/StyledDisplayContainer";
 import { TemplateBoxContainer } from "./styled/TemplateBoxContainer";
 import { TemplateBoxLayoutContainer } from "./styled/TemplateBoxLayoutContainer";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
-import { getFontSize, topAndLeftRatio, calculateRatio, fromStringToNumberPx } from "../../utils/helpers";
-import { clozeImage } from "@edulastic/constants";
-import { response } from "@edulastic/constants";
+import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/helpers";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -56,6 +54,55 @@ class Display extends Component {
     return newArr;
   };
 
+  getWidth = () => {
+    const { item } = this.props;
+    const { imageOriginalWidth, imageWidth } = item;
+    const { maxWidth } = clozeImage;
+
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+
+    if (!isUndefined(imageWidth)) {
+      return imageWidth > 0 ? imageWidth : maxWidth;
+    }
+
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
+      return imageOriginalWidth;
+    }
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
+      return maxWidth;
+    }
+    return maxWidth;
+  };
+
+  getHeight = () => {
+    const { item } = this.props;
+    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
+    const { maxHeight } = clozeImage;
+    const imageWidth = this.getWidth();
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
+      return imageOriginalHeight;
+    }
+
+    return maxHeight;
+  };
+
   render() {
     const {
       smallSize,
@@ -72,8 +119,6 @@ class Display extends Component {
       imageUrl,
       responseContainers,
       imageAlterText,
-      imageWidth,
-      imageHeight,
       imagescale,
       uiStyle: { fontsize },
       showDashedBorder,
@@ -81,7 +126,6 @@ class Display extends Component {
       item,
       theme,
       showQuestionNumber,
-      qIndex,
       imageOptions
     } = this.props;
     const { userAnswers } = this.state;
@@ -103,16 +147,23 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const imageHeight = this.getHeight();
+    const canvasHeight = imageHeight + (imageOptions.y || 0);
+
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox smallSize={smallSize} fontSize={fontSize} maxHeight={maxHeight} height={maxHeight}>
-        <StyledPreviewContainer smallSize={smallSize} width={maxWidth} height={maxHeight} maxWidth={maxWidth}>
+      <StyledPreviewTemplateBox
+        smallSize={smallSize}
+        fontSize={fontSize}
+        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+      >
+        <StyledPreviewContainer smallSize={smallSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
           <StyledPreviewImage
-            src={imageUrl || ""}
-            width={imageWidth}
+            imageSrc={imageUrl || ""}
+            width={this.getWidth()}
+            height={this.getHeight()}
             alt={imageAlterText}
             maxHeight={maxHeight}
             maxWidth={maxWidth}
-            height={imageHeight}
             style={{
               position: "absolute",
               top: imageOptions.y || 0,
@@ -154,6 +205,7 @@ class Display extends Component {
               } else {
                 btnStyle.width = btnStyle.widthpx;
               }
+              // eslint-disable-next-line no-unused-vars
               let indexStr = "";
               switch (stemnumeration) {
                 case "lowercase": {
@@ -173,9 +225,9 @@ class Display extends Component {
                   style={{
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
-                    width: `${parseInt(responseContainer.width)}px`,
+                    width: `${parseInt(responseContainer.width, 10)}px`,
                     overflow: "hidden",
-                    height: `${parseInt(responseContainer.height)}px`,
+                    height: `${parseInt(responseContainer.height, 10)}px`,
                     minWidth: response.minWidth,
                     minHeight: response.minHeight
                   }}
@@ -207,8 +259,8 @@ class Display extends Component {
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         imageUrl={imageUrl || ""}
-        imageWidth={imageWidth}
-        imageHeight={imageHeight}
+        imageWidth={this.getWidth()}
+        imageHeight={this.getHeight()}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
         stemnumeration={stemnumeration}
@@ -252,9 +304,9 @@ class Display extends Component {
       <StyledDisplayContainer fontSize={fontSize} smallSize={smallSize}>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
-        <TemplateBoxContainer smallSize={smallSize} flexDirection={"column"}>
+        <TemplateBoxContainer smallSize={smallSize} flexDirection="column">
           <TemplateBoxLayoutContainer smallSize={smallSize}>{templateBoxLayout}</TemplateBoxLayoutContainer>
           {answerBox}
         </TemplateBoxContainer>
@@ -283,10 +335,8 @@ Display.propTypes = {
   item: PropTypes.any.isRequired,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
-  imageWidth: PropTypes.number,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
   imageOptions: PropTypes.object
 };
 
@@ -305,7 +355,6 @@ Display.defaultProps = {
   validation: {},
   imageUrl: undefined,
   imageAlterText: "",
-  imageWidth: 600,
   uiStyle: {
     fontsize: "normal",
     stemnumeration: "numerical",
@@ -315,7 +364,6 @@ Display.defaultProps = {
     responsecontainerindividuals: []
   },
   showQuestionNumber: false,
-  qIndex: null,
   imageOptions: {}
 };
 

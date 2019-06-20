@@ -43,7 +43,7 @@ var countPartialMatchScores = function countPartialMatchScores(compareFunction) 
       var matches = (0, _getMatches["default"])(existingResponse, answer, compareFunction);
 
       if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
-        matches = (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions) === answer.length;
+        matches = (0, _clozeTextHelpers.getClozeTextMatches)(existingResponse, answer, restOptions);
       }
 
       var currentScore = matches * scorePerAnswer;

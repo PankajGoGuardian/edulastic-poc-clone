@@ -67,16 +67,16 @@ class ButtonAction extends Component {
               <Button htmlType="button" onClick={onShowSource} data-cy="source" style={{ height: 45, width: 45 }}>
                 <ButtonLink
                   color="primary"
-                  icon={<IconSource color={newBlue} width={20} height={11} />}
-                  style={{ color: newBlue }}
+                  icon={<IconSource color="#00AD50" width={20} height={11} />}
+                  style={{ color: "#00AD50" }}
                 />
               </Button>
               {showSettingsButton && (
                 <Button htmlType="button" onClick={onShowSettings} style={{ height: 45, width: 45 }}>
                   <ButtonLink
                     color="primary"
-                    icon={<IconSettings color={newBlue} width={20} height={20} />}
-                    style={{ color: newBlue }}
+                    icon={<IconSettings color="#00AD50" width={20} height={20} />}
+                    style={{ color: "#00AD50" }}
                   />
                 </Button>
               )}
@@ -96,11 +96,7 @@ class ButtonAction extends Component {
                   onClick={this.handleCheckClick}
                   data-cy="check-answer-btn"
                 >
-                  <ButtonLink
-                    color="primary"
-                    style={{ color: attempts >= allowedAttempts ? darkGrey : newBlue }}
-                    // icon={<IconCheck color={attempts >= allowedAttempts ? darkGrey : newBlue} width={16} height={16} />}
-                  >
+                  <ButtonLink color="primary" style={{ color: attempts >= allowedAttempts ? darkGrey : "#00AD50" }}>
                     <LabelText>CHECK ANSWER</LabelText>
                   </ButtonLink>
                 </Button>
@@ -111,11 +107,7 @@ class ButtonAction extends Component {
                 onClick={() => changePreviewTab("show")}
                 data-cy="show-answers-btn"
               >
-                <ButtonLink
-                  color="primary"
-                  style={{ color: newBlue }}
-                  // icon={<IconEye color={newBlue} hoverColor={darkBlue} width={16} height={16} />}
-                >
+                <ButtonLink color="primary" style={{ color: "#00AD50" }}>
                   <LabelText>SHOW ANSWER</LabelText>
                 </ButtonLink>
               </Button>
@@ -128,12 +120,7 @@ class ButtonAction extends Component {
                 }}
                 data-cy="clear-btn"
               >
-                <ButtonLink
-                  color="primary"
-                  active={previewTab === "clear"}
-                  style={{ color: newBlue }}
-                  // icon={<IconEraseText color={newBlue} width={16} height={16} />}
-                >
+                <ButtonLink color="primary" active={previewTab === "clear"} style={{ color: "#00AD50" }}>
                   <LabelText>CLEAR</LabelText>
                 </ButtonLink>
               </Button>

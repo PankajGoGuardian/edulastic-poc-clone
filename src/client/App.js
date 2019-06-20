@@ -15,7 +15,9 @@ import { TestAttemptReview } from "./student/TestAttemptReview";
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
-import { getWordsInURLPathName } from "./common/utils/helpers";
+import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
+import LoggedOutRoute from "./common/components/loggedOutRoute";
+import PrivateRoute from "./common/components/privateRoute";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -34,11 +36,10 @@ const AdminSignup = lazy(() =>
   import(/* webpackChunkName: "adminSignup" */ "./student/Signup/components/AdminContainer/Container")
 );
 const Dashboard = lazy(() => import(/* webpackChunkName: "student" */ "./student/app"));
-
 const Author = lazy(() => import(/* webpackChunkName: "author" */ "./author/src/app"));
-
 const Admin = lazy(() => import(/* webpackChunkName: "admin" */ "./admin/app"));
 const RedirectToTest = lazy(() => import(/* webpackChunkName: "RedirecToTest" */ "./author/RedirectToTest"));
+const DistrictRoutes = lazy(() => import("./districtRoutes/index"));
 
 const Loading = () => (
   <div>
@@ -71,8 +72,8 @@ class App extends Component {
   componentDidMount() {
     const { fetchUser, location } = this.props;
     const publicPath = location.pathname.split("/").includes("public");
-
-    if (!publicPath) {
+    const ssoPath = location.pathname.split("/").includes("auth");
+    if (!publicPath && !ssoPath) {
       fetchUser();
     }
   }
@@ -92,14 +93,18 @@ class App extends Component {
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
-      const path = getWordsInURLPathName(this.props.location.pathname.toLocaleLowerCase());
+      const path = getWordsInURLPathName(this.props.location.pathname);
       if (user && user.isAuthenticated) {
         const role = get(user, ["user", "role"]);
         if (role === "teacher") {
           if (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus)) {
             defaultRoute = "/author/assignments";
           } else {
-            redirectRoute = "/Signup";
+            if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+              redirectRoute = "/district/" + path[1];
+            } else {
+              redirectRoute = "/Signup";
+            }
           }
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
@@ -114,7 +119,12 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
         this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
         this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
-        (path[0] && path[0] === "district")
+        (path[0] && path[0].toLocaleLowerCase() === "district")
+      ) {
+      } else if (
+        this.props.location.pathname === "/auth/mso" ||
+        this.props.location.pathname === "/auth/clever" ||
+        this.props.location.pathname === "/auth/google"
       ) {
       } else {
         redirectRoute = "/login";
@@ -130,24 +140,29 @@ class App extends Component {
             redirectRoute !== "" ? (
               <Redirect exact to={redirectRoute} />
             ) : null}
-            <Route path="/author" component={Author} />
-            <Route path="/home" component={Dashboard} />
-            <Route path="/admin" component={Admin} />
+            <PrivateRoute path="/author" component={Author} redirectPath={redirectRoute} />
+            <PrivateRoute path="/home" component={Dashboard} redirectPath={redirectRoute} />
+            <PrivateRoute path="/admin" component={Admin} redirectPath={redirectRoute} />
 
-            <Route path="/Signup" component={TeacherSignup} />
-            <Route path="/district/:districtShortName" component={TeacherSignup} />
-            <Route path="/login" component={Auth} />
-            <Route path="/GetStarted" component={GetStarted} />
-            <Route path="/AdminSignup" component={AdminSignup} />
-            <Route path="/StudentSignup" component={StudentSignup} />
+            <LoggedOutRoute
+              path="/district/:districtShortName"
+              component={DistrictRoutes}
+              redirectPath={defaultRoute}
+            />
+            <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
 
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
-            <Route path="/student/test-summary" component={TestAttemptReview} />
+            <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />
             ))}

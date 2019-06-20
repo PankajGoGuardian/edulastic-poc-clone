@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { debounce, get, has } from "lodash";
+import { debounce, get, has, uniq } from "lodash";
+import styled from "styled-components";
 import * as qs from "query-string";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
@@ -8,9 +9,9 @@ import { compose } from "redux";
 import { Button, Row, Input, Spin } from "antd";
 import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
-import { IconList, IconTile } from "@edulastic/icons";
+import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-import { uniq } from "lodash";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import {
   ScrollBox,
   Container,
@@ -39,16 +40,19 @@ import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   updateDefaultGradesAction,
-  updateDefaultSubjectAction
+  updateDefaultSubjectAction,
+  receiveRecentPlayListsAction
 } from "../../ducks";
 
 import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
 import TestListFilters from "../../../TestList/components/Container/TestListFilters";
-import { receiveRecentPlayListsAction } from "../../ducks";
-import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
-import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import {
+  getInterestedCurriculumsSelector,
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector
+} from "../../../src/selectors/user";
 
 const filterMenuItems = [
   { icon: "book", filter: "ENTIRE_LIBRARY", path: "all", text: "Entire Library" },
@@ -116,9 +120,10 @@ class TestList extends Component {
       receiveRecentPlayLists,
       limit,
       location,
-      interestedCurriculums,
-      defaultGrades,
-      defaultSubject,
+      interestedGrades,
+      interestedSubjects,
+      defaultGrades = [],
+      defaultSubject = [],
       match: { params = {} }
     } = this.props;
 
@@ -161,24 +166,12 @@ class TestList extends Component {
     } else {
       let grades = defaultGrades;
       let subject = defaultSubject;
-      let filteredInterestedCurriculum;
-      if (!grades && subject === null) {
-        filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
-        if (!filteredInterestedCurriculum.length) {
-          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
-          if (!filteredInterestedCurriculum.length) {
-            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
-            if (!filteredInterestedCurriculum.length) {
-              filteredInterestedCurriculum = interestedCurriculums;
-            }
-          }
-        }
-
-        grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
-        grades = grades.length ? uniq(grades.join(",").split(",")) : [];
-        subject = (filteredInterestedCurriculum[0] && filteredInterestedCurriculum[0].subject) || "";
+      if (!grades) {
+        grades = interestedGrades;
       }
-      grades = grades || [];
+      if (subject === null) {
+        subject = interestedSubjects[0] || "";
+      }
       this.setState({
         search: {
           ...search,
@@ -412,7 +405,8 @@ class TestList extends Component {
           onCreate={this.handleCreate}
           creating={creating}
           title="Play List Library"
-          btnTitle="New Playlist"
+          btnTitle="New Play list"
+          icon={<IconPlusStyled color="#00AD50" width={20} height={20} hoverColor="#00AD50" />}
           renderFilter={() => (
             <StyleChangeWrapper>
               <IconTile
@@ -524,6 +518,8 @@ const enhance = compose(
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
       t: PropTypes.func.isRequired
     }),
     {
@@ -538,3 +534,7 @@ const enhance = compose(
 );
 
 export default enhance(TestList);
+
+const IconPlusStyled = styled(IconPlusCircle)`
+  position: relative;
+`;

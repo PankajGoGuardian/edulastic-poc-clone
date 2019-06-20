@@ -12,16 +12,21 @@ import studentBg from "../../assets/small-bg-student.png";
 import teacherBg from "../../assets/small-bg-teacher.png";
 import adminBg from "../../assets/small-bg-adm.png";
 
-const GetStarted = ({ t }) => (
+const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => (
   <RegistrationWrapper>
-    <RegistrationBg src={loginBg} alt="bg" />
+    <RegistrationBg
+      src={generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : loginBg}
+      alt="bg"
+    />
     <RegistrationHeader type="flex" align="middle">
       <Col span={12}>
         <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
       </Col>
       <Col span={12} align="right">
         <span>{t("component.signup.alreadyhaveanaccount")}</span>
-        <Link to="/login">{t("common.signinbtn")}</Link>
+        <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/login" : "/login"}>
+          {t("common.signinbtn")}
+        </Link>
       </Col>
     </RegistrationHeader>
     <RegistrationBody type="flex" align="middle">
@@ -44,15 +49,28 @@ const GetStarted = ({ t }) => (
           <CircleDiv size={60} top={-24} left={30} />
           <CircleDiv size={45} top={64} left={-30} />
           <CircleDiv size={30} bottom={35} right={-40} />
-          <StudentSignupBox data-cy="student" to="/studentsignup" xs={24} sm={8}>
-            <span>{t("component.signup.getstarted.imstudent")}</span>
-          </StudentSignupBox>
-          <TeacherSignupBox to="/signup" xs={24} sm={8}>
-            <span>{t("component.signup.getstarted.imteacher")}</span>
-          </TeacherSignupBox>
-          <AdminSignupBox to="/adminsignup" xs={24} sm={8}>
-            <span>{t("component.signup.getstarted.imadmin")}</span>
-          </AdminSignupBox>
+          <div className="signupbox-container">
+            {(isSignupUsingDaURL && districtPolicy && districtPolicy.studentSignUp) || !isSignupUsingDaURL ? (
+              <StudentSignupBox
+                data-cy="student"
+                to={isSignupUsingDaURL ? "/district/" + districtShortName + "/studentsignup" : "/studentsignup"}
+                xs={24}
+                sm={8}
+              >
+                <span>{t("component.signup.getstarted.imstudent")}</span>
+              </StudentSignupBox>
+            ) : null}
+            {(isSignupUsingDaURL && districtPolicy && districtPolicy.teacherSignUp) || !isSignupUsingDaURL ? (
+              <TeacherSignupBox to={isSignupUsingDaURL ? "/district/" + districtShortName : "/signup"} xs={24} sm={8}>
+                <span>{t("component.signup.getstarted.imteacher")}</span>
+              </TeacherSignupBox>
+            ) : null}
+            {!isSignupUsingDaURL ? (
+              <AdminSignupBox to="/adminsignup" xs={24} sm={8}>
+                <span>{t("component.signup.getstarted.imadmin")}</span>
+              </AdminSignupBox>
+            ) : null}
+          </div>
         </ChooseSignupBox>
       </Col>
     </RegistrationBody>
@@ -133,7 +151,7 @@ const BannerText = styled(Col)`
 `;
 
 const ChooseSignupBox = styled(Row)`
-  background: white;
+  background: transparent;
   width: 559px;
   margin: 0px auto;
   margin-top: 32px;
@@ -151,6 +169,11 @@ const ChooseSignupBox = styled(Row)`
   }
   a {
     color: white;
+  }
+  .signupbox-container {
+    display: flex;
+    background: transparent;
+    justify-content: center;
   }
 `;
 

@@ -4,6 +4,7 @@ import { Document, Page } from "react-pdf";
 import { Droppable } from "react-drag-and-drop";
 
 import { QuestionNumber } from "../QuestionItem/styled";
+import QuestionItem from "../QuestionItem/QuestionItem";
 import { PDFPreviewWrapper, Preview } from "./styled";
 
 const handleDrop = (page, cb) => ({ question }, e) => {
@@ -27,7 +28,17 @@ const getNumberStyles = (x, y) => ({
   left: `${x}px`
 });
 
-const PDFPreview = ({ page, currentPage, annotations, onDocumentLoad, onDropAnnotation, onHighlightQuestion }) => {
+const PDFPreview = ({
+  page,
+  currentPage,
+  annotations,
+  onDocumentLoad,
+  onDropAnnotation,
+  onHighlightQuestion,
+  questions,
+  questionsById,
+  answersById
+}) => {
   const handleHighlight = questionId => () => {
     onHighlightQuestion(questionId);
   };
@@ -50,9 +61,15 @@ const PDFPreview = ({ page, currentPage, annotations, onDocumentLoad, onDropAnno
       {annotations
         .filter(item => item.toolbarMode === "question" && item.page === currentPage)
         .map(({ uuid, qIndex, x, y, questionId }) => (
-          <QuestionNumber style={getNumberStyles(x, y)} onClick={handleHighlight(questionId)} key={uuid}>
-            {qIndex}
-          </QuestionNumber>
+          <div key={uuid} onClick={handleHighlight(questionId)} style={getNumberStyles(x, y)}>
+            <QuestionItem
+              key={questionId}
+              index={qIndex}
+              data={questionsById[questionId]}
+              answer={answersById[questionId]}
+              viewMode="review"
+            />
+          </div>
         ))}
     </PDFPreviewWrapper>
   );

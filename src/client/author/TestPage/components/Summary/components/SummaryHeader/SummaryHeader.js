@@ -17,7 +17,7 @@ import { Block, AnalyticsContainer } from "../Sidebar/styled";
 import { IconShare, IconHeart } from "@edulastic/icons";
 import { renderAnalytics } from "../Sidebar/Sidebar";
 
-const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analytics }) => {
+const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analytics, owner }) => {
   const avatar = createdBy && createdBy.firstName ? createdBy.firstName[0] : "E";
   return (
     <Container>
@@ -25,6 +25,7 @@ const SummaryHeader = ({ createdBy, windowWidth, onChangeField, thumbnail, analy
         <Photo
           height={windowWidth > 993 ? 165 : 120}
           windowWidth={windowWidth}
+          owner={owner}
           onChangeField={onChangeField}
           url={thumbnail}
         />
@@ -56,6 +57,7 @@ SummaryHeader.propTypes = {
   createdBy: PropTypes.shape({
     firstName: PropTypes.string
   }).isRequired,
+  owner: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func.isRequired,
   thumbnail: PropTypes.string.isRequired

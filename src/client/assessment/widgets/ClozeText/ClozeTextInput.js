@@ -79,7 +79,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     item,
     onChange,
     style,
-    uiStyle,
+    responsecontainerindividuals,
     placeholder,
     type,
     showIndex = true,
@@ -87,6 +87,7 @@ const ClozeTextInput = ({ resprops, id }) => {
     responseIds
   } = resprops;
   const ref = useRef();
+  const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   const MInput = item.multiple_line ? TextArea : Input;
   const { index } = find(responseIds, response => response.id === id);
   const { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
@@ -143,7 +144,7 @@ const ClozeTextInput = ({ resprops, id }) => {
           whiteSpace: "nowrap",
           fontSize: style.fontSize,
           background: item.background,
-          width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : `100px`
+          width: responseStyle && responseStyle.widthpx ? `${responseStyle.widthpx}px` : `100px`
         }}
         placeholder={placeholder}
       />

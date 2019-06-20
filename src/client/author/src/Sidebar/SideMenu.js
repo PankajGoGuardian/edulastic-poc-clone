@@ -22,9 +22,9 @@ import {
   IconPlaylist,
   IconSettings
 } from "@edulastic/icons";
-import { dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
-import { getLastPlayListSelector } from "../../Playlist/ducks";
+import { dashBorderColor, fadedBlack, redHeart, tabletWidth } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
+import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";
 import { toggleSideBarAction } from "../actions/toggleMenu";
 import Profile from "../assets/Profile.png";
@@ -188,7 +188,6 @@ class SideMenu extends Component {
           onBreakpoint={brokenStatus => this.setState({ broken: brokenStatus })}
           width="245"
           collapsedWidth={broken ? "0" : "100"}
-          theme="light"
           className="sideBarwrapper"
         >
           <PerfectScrollbar>
@@ -224,7 +223,6 @@ class SideMenu extends Component {
             {!isMobile && <LogoDash />}
             <MenuWrapper>
               <Menu
-                theme="light"
                 selectedKeys={[defaultSelectedMenu.toString()]}
                 mode="inline"
                 onClick={item => this.handleMenu(item)}
@@ -486,6 +484,13 @@ const Menu = styled(AntMenu)`
     .ant-menu-item-selected {
       color: #fff;
       background-color: transparent;
+
+      svg {
+        fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+        path {
+          stroke: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+        }
+      }
       
       &:before {
         opacity: 1;
@@ -549,6 +554,7 @@ const Menu = styled(AntMenu)`
   }
   .ant-menu-item {
     position: relative;
+    background: ${props => props.theme.sideMenu.menuItemBgColor};
     
     &:before {
       content: '';
@@ -558,15 +564,24 @@ const Menu = styled(AntMenu)`
       left: 18px;
       right: 18px;
       border-radius: 4px;
-      background: #0EB08D;
+      background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
     }
+  }
+  .ant-menu-item:not(.ant-menu-item-selected) {
     svg {
       position: relative;
       z-index: 5;
+      fill: ${props => props.theme.sideMenu.menuItemLinkColor};
+    }
+    &:hover {
+      svg {
+        fill: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+      }
+      color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
     }
   }
 }
@@ -581,16 +596,15 @@ const MenuItem = styled(AntMenu.Item)`
   line-height: 1.36;
   letter-spacing: 0.3px;
   text-align: left;
-  color: #434b5d;
-  display: flex;
+  color: ${props => props.theme.sideMenu.menuItemLinkColor};
+  display: ${props => (props.visible ? "flex" : "none !important")};
   align-items: center;
   margin-top: 16px;
-  display: ${props => (props.visible ? "flex" : "none !important")};
 `;
 
 const UserName = styled.div`
-  font-size: 14px;
-  color: #444;
+  font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
+  color: ${props => props.theme.sideMenu.userInfoNameTextColor};
   text-transform: capitalize;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -599,8 +613,8 @@ const UserName = styled.div`
 `;
 
 const UserType = styled.div`
-  font-size: 12px;
-  color: #444;
+  font-size: ${props => props.theme.sideMenu.userInfoRoleFontSize};
+  color: ${props => props.theme.sideMenu.userInfoRoleTextColor};
 `;
 
 const FooterDropDown = styled.div`
@@ -610,7 +624,7 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: #fff;
+    background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid #fff;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
@@ -635,20 +649,21 @@ const FooterDropDown = styled.div`
         margin: 0px;
         padding: 5px 16px;
         height: 50px;
+        background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
         &:hover,
         &:focus {
-          background: #fff;
+          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
         }
         a {
-          color: #444;
-          font-size: 14px;
+          color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+          font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           &:hover,
           &:focus {
-            color: #444;
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
           }
           i {
-            color: #425066;
+            color: ${props => props.theme.sideMenu.itemIconColor};
             position: relative;
             margin-right: 5px;
             top: 2px;
@@ -692,24 +707,27 @@ const MenuFooter = styled.div`
 const QuestionButton = styled.div`
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  background-color: #ffffff;
+  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
+  background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
+  color: ${props => props.theme.sideMenu.helpButtonTextColor};
   height: 60px;
   margin: 0 21px 23px;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-
+  cursor: pointer;
+  svg {
+    fill: ${props => props.theme.sideMenu.helpIconColor};
+  }
   span {
     font-weight: 600;
   }
   &:hover {
-    background: #1890ff;
+    background: ${props => props.theme.sideMenu.helpButtonBgHoverColor};
+    color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     svg {
-      fill: #fff;
-    }
-    span {
-      color: #fff;
+      fill: ${props => props.theme.sideMenu.helpIconHoverColor};
     }
   }
   @media (max-width: ${tabletWidth}) {
@@ -744,7 +762,7 @@ const UserInfoButton = styled.div`
     height: 60px;
     border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #fff;
+    background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
     display: flex;
     align-items: center;
     padding: ${props => (props.isCollapsed ? 0 : "0px 25px 0px 60px")};
@@ -757,6 +775,7 @@ const UserInfoButton = styled.div`
       position: absolute;
       right: 10px;
       top: 20px;
+      color: ${props => props.theme.sideMenu.dropdownIconColor};
     }
   }
   img {

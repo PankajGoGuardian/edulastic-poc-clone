@@ -4,7 +4,7 @@ import { EduButton, FlexContainer } from "@edulastic/common";
 import { Input } from "antd";
 import { Container } from "./styled";
 
-const Prompt = ({ style, onSuccess }) => {
+const Prompt = ({ style, onSuccess, maxValue }) => {
   const [position, setPosition] = useState(1);
 
   const handleChange = e => {
@@ -18,7 +18,7 @@ const Prompt = ({ style, onSuccess }) => {
   return (
     <Container style={style}>
       <FlexContainer style={{ marginBottom: 10 }}>
-        <Input placeholder="Position" type="number" value={position} onChange={handleChange} />
+        <Input placeholder="Position" type="number" value={position} min={1} max={maxValue} onChange={handleChange} />
       </FlexContainer>
       <FlexContainer justifyContent="center">
         <EduButton type="primary" size="small" onClick={handleSuccess}>
@@ -31,10 +31,12 @@ const Prompt = ({ style, onSuccess }) => {
 
 Prompt.propTypes = {
   style: PropTypes.object,
+  maxValue: PropTypes.number,
   onSuccess: PropTypes.func.isRequired
 };
 
 Prompt.defaultProps = {
+  maxValue: 1,
   style: {}
 };
 

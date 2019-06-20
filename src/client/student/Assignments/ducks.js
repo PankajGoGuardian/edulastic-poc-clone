@@ -1,15 +1,13 @@
 import { createAction, createSelector as createSelectorator } from "redux-starter-kit";
-import { maxBy as _maxBy } from "lodash";
 import { takeLatest, put, call, all, select } from "redux-saga/effects";
-import { values, groupBy, last, partial } from "lodash";
+import { values, groupBy, last, partial, maxBy as _maxBy, sortBy } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
 import { getCurrentSchool, fetchUserAction, fetchUser, getUserRole } from "../Login/ducks";
 
-import { getCurrentGroup } from "../Reports/ducks";
-
+import { getCurrentGroup, getClassIds } from "../Reports/ducks";
 // external actions
 import {
   assignmentSchema,
@@ -46,21 +44,36 @@ export const resumeAssignmentAction = createAction(RESUME_ASSIGNMENT);
 export const bootstrapAssessmentAction = createAction(BOOTSTRAP_ASSESSMENT);
 export const launchAssignmentFromLinkAction = createAction(LAUNCH_ASSIGNMENT_FROM_LINK);
 
+const getAssignmentClassId = (assignment, groupId, classIds) => {
+  if (groupId) {
+    return groupId;
+  } else {
+    const assignmentClassIds = (assignment.class || []).reduce((acc, cur) => {
+      acc.add(cur._id);
+      return acc;
+    }, new Set());
+    return classIds.find(x => assignmentClassIds.has(x));
+  }
+};
+
 /**
  * get current redirect status of the assignment
  * @param {Object} assignment
  * @param {string} groupId
  * @param {string} userId
+ * @param {string[]} classIds
  */
-export const getRedirect = (assignment, groupId, userId) => {
+export const getRedirect = (assignment, groupId, userId, classIds) => {
   /**
-   * @type {[]}
+   * @type {Object[]}
    */
   const classes = assignment.class || [];
+  groupId = getAssignmentClassId(assignment, groupId, classIds);
   const redirects = classes.filter(
     x =>
       x.redirect && ((x.specificStudents && x.students.includes(userId)) || (!x.specificStudents && x._id === groupId))
   );
+
   if (redirects.length === 0) {
     return false;
   }
@@ -71,8 +84,8 @@ export const getRedirect = (assignment, groupId, userId) => {
   return { attempts, dueDate };
 };
 
-const transformAssignmentForRedirect = (groupId, userId, assignment) => {
-  const redirect = getRedirect(assignment, groupId, userId);
+export const transformAssignmentForRedirect = (groupId, userId, classIds, assignment) => {
+  const redirect = getRedirect(assignment, groupId, userId, classIds);
   if (!redirect) {
     return assignment;
   }
@@ -91,12 +104,13 @@ function* fetchAssignments({ payload }) {
     yield put(setAssignmentsLoadingAction());
     const groupId = yield select(getCurrentGroup);
     const userId = yield select(getCurrentUserId);
+    const classIds = yield select(getClassIds);
     const [assignments, reports] = yield all([
       call(assignmentApi.fetchAssigned, payload),
       call(reportsApi.fetchReports, groupId)
     ]);
     //transform to handle redirect
-    const transformFn = partial(transformAssignmentForRedirect, groupId, userId);
+    const transformFn = partial(transformAssignmentForRedirect, groupId, userId, classIds);
     const assignmentsProcessed = assignments.map(transformFn);
 
     // normalize reports
@@ -130,11 +144,15 @@ function* startAssignment({ payload }) {
 
     yield put(setActiveAssignmentAction(assignmentId));
     const groupId = yield select(getCurrentGroup);
+    const assignmentsById = yield select(assignmentsSelector);
+    const assignment = assignmentsById[assignmentId];
+    const classIds = yield select(getClassIds);
+    const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
     const { _id: testActivityId } = yield testActivityApi.create({
       assignmentId,
-      groupId,
+      groupId: actualGroupId,
       institutionId,
       groupType,
       testId
@@ -167,7 +185,7 @@ function* resumeAssignment({ payload }) {
 
 /**
  * for loading deeplinking assessment created for SEB. But can be used for others
- * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string}}} param
+ * @param {{payload: {assignmentId: string, testActivityId?: string, testId:string,testType:string}}} param
  */
 function* bootstrapAssesment({ payload }) {
   try {
@@ -251,7 +269,7 @@ export const filterSelector = state => state.studentAssignment.filter;
  *  Close manual can display assignment by checking the startDate is less than current date and close when closed in class object is true
  *
  */
-const isLiveAssignment = (assignment, currentGroup) => {
+export const isLiveAssignment = (assignment, currentGroup, classIds) => {
   // max attempts should be less than total attempts made
   // and end Dtae should be greateer than current one :)
   let maxAttempts = (assignment && assignment.maxAttempts) || 1;
@@ -261,8 +279,10 @@ const isLiveAssignment = (assignment, currentGroup) => {
   //when attempts over no need to check for any other condition to hide assignment from assignments page
   if (maxAttempts <= attempts && lastAttempt.status !== 0) return false;
   if (!endDate) {
-    endDate = (_maxBy(groups.filter(cl => cl._id === currentGroup) || [], "endDate") || {}).endDate;
-    const currentClass = groups.find(cl => cl._id === currentGroup) || {};
+    endDate = (_maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
+      .endDate;
+    const currentClass =
+      groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
     // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
     if (
       assignment.openPolicy !== "Automatically on Start Date" &&
@@ -298,22 +318,57 @@ const statusFilter = filterType => assignment => {
   }
 };
 
+const assignmentSortBy = assignment => {
+  const attempts = (assignment.reports && assignment.reports.length) || 0;
+  const status = attempts === 0 ? 1 : 2;
+
+  if (!assignment.class) {
+    return 999999;
+  }
+
+  const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
+  return status * 1000 + ((dueDate || 0) - new Date());
+};
+
+const assignmentSortByDueDate = (groupedReports, assignment) => {
+  const reports = groupedReports[assignment._id] || [];
+  const attempted = !!(reports && reports.length);
+  const lastAttempt = last(reports) || {};
+  const resume = lastAttempt.status == 0;
+  let result = 0;
+  if (resume) {
+    result = 3;
+  } else {
+    if (!attempted) {
+      result = 2;
+    } else {
+      result = 1;
+    }
+  }
+  const dueDate = assignment.dueDate || (_maxBy(assignment.class, "endDate") || {}).endDate;
+
+  const dueDateDiff = (dueDate - new Date()) / (1000 * 60 * 60 * 24);
+  const sortOrder = result * 10000 + dueDateDiff;
+  return sortOrder;
+};
+
 export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
   getCurrentGroup,
-  (assignmentsObj, reportsObj, filter, currentGroup) => {
+  getClassIds,
+  (assignmentsObj, reportsObj, filter, currentGroup, classIds) => {
     // group reports by assignmentsID
     let groupedReports = groupBy(values(reportsObj), "assignmentId");
     let assignments = values(assignmentsObj)
-      .sort((a, b) => b.createdAt - a.createdAt)
       .map(assignment => ({
         ...assignment,
         reports: groupedReports[assignment._id] || []
       }))
-      .filter(assignment => isLiveAssignment(assignment, currentGroup))
+      .filter(assignment => isLiveAssignment(assignment, currentGroup, classIds))
       .filter(statusFilter(filter));
-    return assignments;
+
+    return sortBy(assignments, [partial(assignmentSortByDueDate, groupedReports)]);
   }
 );

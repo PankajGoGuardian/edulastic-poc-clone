@@ -90,6 +90,7 @@ class Photo extends React.Component {
 
 Photo.propTypes = {
   url: PropTypes.string,
+  owner: PropTypes.bool,
   height: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func

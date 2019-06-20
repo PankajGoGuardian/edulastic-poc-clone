@@ -33,7 +33,7 @@ export const Link = styled.div`
   height: 40px;
   border-radius: 0;
   background: #0288d1;
-  background: ${props => (props.active === "true" ? "#057fc1" : "transparent")};
+  background: ${props => (props.active === "true" ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   border-bottom: none;
   white-space: nowrap;
 
@@ -54,8 +54,8 @@ export const Link = styled.div`
     width: 136px;
     height: 45px;
     border-radius: 5px;
-    background: ${props => (props.active === "true" ? "#5196f3" : "#277df1")};
-    color: ${props => (props.active === "true" ? white : "rgba(255,255,255,0.7)")};
+    background: ${props => (props.active === "true" ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
+    color: ${props => (props.active === "true" ? white : "rgba(255, 255, 255, 0.75)")};
     border-bottom: none;
 
     svg {

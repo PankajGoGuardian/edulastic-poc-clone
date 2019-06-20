@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { find } from "lodash";
@@ -6,16 +6,17 @@ import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
+
   const { save, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
-  const [val, setVal] = useState(_inputsAnwers[id] ? _inputsAnwers[id].value : "");
+  const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
   const {
     response_ids: { inputs }
   } = item;
-  const { index } = find(inputs, res => res.id === id);
+  const { index } = find(inputs, res => res.id === id) || {};
   // const isChecked = checked && !isEmpty(evaluation);
   const { ui_style: uiStyle } = item;
-  const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
+  const width = uiStyle[id] ? `${uiStyle[id].widthpx}px` : `${uiStyle.min_width}px`;
   return checked ? (
     <CheckedBlock
       evaluation={evaluation}
@@ -28,12 +29,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
     />
   ) : (
     <InputDiv>
-      <Input
-        onChange={e => setVal(e.target.value)}
-        onBlur={() => save({ value: val, index }, "inputs", id)}
-        value={val}
-        style={{ width: width || "auto" }}
-      />
+      <Input onChange={e => save({ value: e.target.value, index }, "inputs", id)} value={val} />
     </InputDiv>
   );
 };

@@ -212,6 +212,7 @@ class Container extends PureComponent {
             onShowSource={this.handleNavChange("source")}
             setData={setData}
             test={test}
+            owner={owner}
             current={current}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}

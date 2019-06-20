@@ -33,11 +33,11 @@ export const SaveClassBtn = styled(Button)`
   padding: 5px 20px;
   border: none;
   color: ${white};
-  background: ${green};
+  background: #42d184;
   margin-left: 20px;
   &:hover {
     color: ${white};
-    background: ${greenDark};
+    background: #42d184;
   }
 `;
 
@@ -45,11 +45,11 @@ export const CancelClassBtn = styled(Button)`
   ${ShareButtonStyle}
   padding: 5px 20px;
   border: none;
-  color: ${blue};
+  color: #42d184;
   background: ${white};
   &:hover {
     color: ${white};
-    background: ${blueButton};
+    background: #42d184;
   }
 `;
 

@@ -4,14 +4,14 @@ import { ScoringType } from "./const/scoring";
 
 const url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
-const evaluate = data =>
+export const evaluate = data =>
   axios
     .post(url, {
       ...data
     })
     .then(result => result.data);
 
-const getChecks = validation => {
+export const getChecks = validation => {
   const altResponses = validation.alt_responses || [];
 
   const values = [...validation.valid_response.value, ...altResponses.reduce((acc, res) => [...acc, ...res.value], [])];

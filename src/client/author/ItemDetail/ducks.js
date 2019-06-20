@@ -301,7 +301,12 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultGrades:
+    getFromLocalStorage("defaultGrades") !== null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : getFromLocalStorage("defaultGrades"),
   defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };

@@ -71,6 +71,8 @@ export const TagGrade = styled.span`
   border-radius: 5px;
   padding: 4px 15px;
   font-size: 10px;
+  display: inline-block;
+  margin-bottom: 5px;
   color: ${blue};
   background-color: ${lightBlue6};
   margin-right: 7px;
@@ -81,10 +83,14 @@ export const TagGrade = styled.span`
   }
 `;
 export const TagsLabel = styled(Label)``;
-export const TagsConatiner = styled.div``;
+export const TagsConatiner = styled.div`
+  width: 100%;
+`;
 
 export const GradeLabel = styled(Label)``;
-export const GradeConatiner = styled.div``;
+export const GradeConatiner = styled.div`
+  width: 100%;
+`;
 
 export const SubjectLabel = styled(Label)``;
 export const Subject = styled.div`

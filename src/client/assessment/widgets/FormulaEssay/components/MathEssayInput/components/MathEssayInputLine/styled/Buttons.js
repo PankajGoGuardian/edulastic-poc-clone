@@ -5,6 +5,5 @@ export const Buttons = styled.div`
   align-items: center;
   position: absolute;
   right: 0;
-  bottom: 0;
-  top: 0;
+  top: 5px;
 `;

@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import produce from "immer";
 import PropTypes from "prop-types";
 import { cloneDeep, set, get, forEach, find, isEmpty } from "lodash";
 import { math } from "@edulastic/constants";
-
+import { Checkbox } from "@edulastic/common";
 import CorrectAnswers from "../../../components/CorrectAnswers";
 import MathFormulaAnswer from "./ClozeMathAnswer";
 import DropDownAnswer from "./ClozeDropDownAnswer";
@@ -228,6 +229,14 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
     setQuestionData(newItem);
   };
 
+  const handleValidationOptionsChange = (name, value) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.validation[name] = value;
+      })
+    );
+  };
+
   const mathAnswers = get(item, "validation.valid_response.value", []);
   const inputAnswers = get(item, "validation.valid_inputs.value", []);
   const dropDownAnswers = get(item, "validation.valid_dropdown.value", []);
@@ -347,6 +356,12 @@ const ClozeMathAnswers = ({ item, setQuestionData, fillSections, cleanSections }
           return null;
         })}
       </CorrectAnswerContainer>
+      <Checkbox
+        className="additional-options"
+        onChange={() => handleValidationOptionsChange("mixAndMatch", !item.validation.mixAndMatch)}
+        label="Mix-n-Match alternative answers"
+        checked={!!item.validation.mixAndMatch}
+      />
     </CorrectAnswers>
   );
 };

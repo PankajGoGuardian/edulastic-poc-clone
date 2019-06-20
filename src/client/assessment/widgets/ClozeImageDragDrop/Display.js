@@ -262,8 +262,8 @@ class Display extends Component {
                 : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
               position: "absolute",
               background: backgroundColor,
-              borderRadius: 5,
-              overflow: "hidden"
+              borderRadius: 5
+              // overflow: "hidden"
             };
             if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
               const { widthpx } = responsecontainerindividuals[dropTargetIndex];

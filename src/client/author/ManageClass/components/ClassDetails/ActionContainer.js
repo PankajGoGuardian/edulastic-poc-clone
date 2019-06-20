@@ -37,8 +37,6 @@ const ActionContainer = ({
   userOrgId,
   orgData,
   studentsList,
-  role,
-  addMultiStudents,
   submitted,
   added,
   printPreview,
@@ -46,8 +44,7 @@ const ActionContainer = ({
   selectedStudent,
   changeTTS,
   updateStudentRequest,
-  setForceUpdate,
-  forceUpdate
+  loadStudents
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -57,6 +54,7 @@ const ActionContainer = ({
   const [infoModelVisible, setinfoModelVisible] = useState(false);
   const [infoModalData, setInfoModalData] = useState([]);
 
+  const { _id: classId } = selectedClass;
   let formRef = null;
 
   const toggleModal = key => {
@@ -78,9 +76,9 @@ const ActionContainer = ({
   const sendInviteStudent = async inviteStudentList => {
     setIsAddMultipleStudentsModal(false);
     const result = await enrollmentApi.addEnrolMultiStudents({ classId: selectedClass._id, data: inviteStudentList });
-    setForceUpdate(!forceUpdate);
     setInfoModalData(result.data.result);
     setinfoModelVisible(true);
+    loadStudents({ classId });
   };
 
   const addStudent = () => {
@@ -317,8 +315,7 @@ const ActionContainer = ({
               studentsList={studentsList}
               selectedClass={selectedClass}
               setIsAddMultipleStudentsModal={setIsAddMultipleStudentsModal}
-              setForceUpdate={setForceUpdate}
-              forceUpdate={forceUpdate}
+              loadStudents={loadStudents}
             />
           )}
         </ButtonsWrapper>
@@ -344,7 +341,6 @@ ActionContainer.defaultProps = {};
 
 export default connect(
   state => ({
-    role: getUserRole(state),
     userOrgId: getUserOrgId(state),
     orgData: getUserOrgData(state),
     selectedClass: get(state, "manageClass.entity"),
@@ -358,6 +354,5 @@ export default connect(
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction
-    // addMultiStudents: addMultipleStudentsRequestAction
   }
 )(ActionContainer);

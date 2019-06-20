@@ -3,9 +3,8 @@ import PerfectScrollbar from "react-perfect-scrollbar";
 import { Form, Row, Col, Button, Modal, Select, Tabs, Input, Icon } from "antd";
 const { TabPane } = Tabs;
 const Search = Input.Search;
-import { userApi, enrollmentApi } from "@edulastic/api";
+import { userApi } from "@edulastic/api";
 import { StyledTextArea, PlaceHolderText, SelUserKindDiv, ItemDiv, Text, IconWrapper, ColWrapper } from "./styled";
-import AddMultipleStudentsInfoModal from "../../../../ManageClass/components/ClassDetails/AddmultipleStduentsInfoModel";
 
 const Item = ({ item, moveItem, isEnrolled }) => {
   const handleClick = () => {
@@ -30,7 +29,7 @@ const Item = ({ item, moveItem, isEnrolled }) => {
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class InviteMultipleStudentModal extends React.Component {
+class InviteMultipleStudentModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -165,18 +164,17 @@ class InviteMultipleStudentModal extends React.Component {
     students,
     selClass,
     setIsAddMultipleStudentsModal,
-    forceUpdate,
-    setForceUpdate,
-    orgData
+    loadStudents
   ) => {
     const data = {
       userDetails: students.map(std => std._id)
     };
+    const { _id: classId } = selClass;
     const result = await userApi.SearchAddEnrolMultiStudents(selClass.code, data);
     setIsAddMultipleStudentsModal(false);
-    setForceUpdate(!forceUpdate);
     setInfoModalData(result.data.result);
     setinfoModelVisible(true);
+    loadStudents({ classId });
   };
   render() {
     const { getFieldDecorator } = this.props.form;
@@ -188,8 +186,7 @@ class InviteMultipleStudentModal extends React.Component {
       orgData,
       studentsList,
       selectedClass,
-      setForceUpdate,
-      forceUpdate
+      loadStudents
     } = this.props;
     const { placeHolderVisible, curSel, allStudents, studentsToEnroll } = this.state;
 
@@ -359,9 +356,7 @@ class InviteMultipleStudentModal extends React.Component {
                       studentsToEnroll,
                       selectedClass,
                       setIsAddMultipleStudentsModal,
-                      forceUpdate,
-                      setForceUpdate,
-                      orgData
+                      loadStudents
                     )}
                   >
                     Yes, Add to Class

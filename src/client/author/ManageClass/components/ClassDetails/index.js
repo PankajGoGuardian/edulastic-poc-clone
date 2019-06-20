@@ -13,8 +13,6 @@ import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
 const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
-  const [forceUpdate, setForceUpdate] = useState(false);
-
   if (loadStudents) {
     const { _id: classId } = selctedClass;
     loadStudents({ classId });
@@ -44,7 +42,7 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
-        <ActionContainer printPreview={printPreview} forceUpdate={forceUpdate} setForceUpdate={setForceUpdate} />
+        <ActionContainer printPreview={printPreview} loadStudents={loadStudents} />
         <StudentsList selectStudent />
       </Container>
     </>

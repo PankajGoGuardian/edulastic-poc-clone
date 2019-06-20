@@ -2,13 +2,18 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
+import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { evaluationType } from "@edulastic/constants";
 
-import WidgetOptions from "../../../containers/WidgetOptions";
 import Layout from "./Layout";
+import ResponseContainers from "./ResponseContainers";
+import TextBlocks from "./TextBlocks";
+
+import WidgetOptions from "../../../containers/WidgetOptions";
 import Extras from "../../../containers/Extras";
+import KeyPadOptions from "../../../components/KeyPadOptions";
 
 class MathFormulaOptions extends Component {
   render() {
@@ -23,6 +28,38 @@ class MathFormulaOptions extends Component {
       cleanSections,
       advancedAreOpen
     } = this.props;
+
+    const changeResponseContainers = ({ index, prop, value }) => {
+      const newContainers = cloneDeep(responseContainers);
+      newContainers[index][prop] = value;
+      onChange("response_containers", newContainers);
+    };
+
+    const addResponseContainer = () => {
+      onChange("response_containers", [...responseContainers, {}]);
+    };
+
+    const deleteResponseContainer = index => {
+      const newContainers = cloneDeep(responseContainers);
+      newContainers.splice(index, 1);
+      onChange("response_containers", newContainers);
+    };
+
+    const changeTextBlock = ({ index, value }) => {
+      const newBlocks = cloneDeep(textBlocks);
+      newBlocks[index] = value;
+      onChange("text_blocks", newBlocks);
+    };
+
+    const addTextBlock = () => {
+      onChange("text_blocks", [...textBlocks, ""]);
+    };
+
+    const deleteTextBlock = index => {
+      const newBlocks = cloneDeep(textBlocks);
+      newBlocks.splice(index, 1);
+      onChange("text_blocks", newBlocks);
+    };
 
     const scoringTypes = [
       {
@@ -44,6 +81,34 @@ class MathFormulaOptions extends Component {
           responseContainers={responseContainers}
           textBlocks={textBlocks}
           item={item}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+
+        <ResponseContainers
+          containers={responseContainers}
+          onChange={changeResponseContainers}
+          onAdd={addResponseContainer}
+          onDelete={deleteResponseContainer}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+
+        <KeyPadOptions
+          onChange={onChange}
+          item={item}
+          advancedAreOpen={advancedAreOpen}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+        />
+
+        <TextBlocks
+          blocks={textBlocks}
+          onChange={changeTextBlock}
+          onAdd={addTextBlock}
+          onDelete={deleteTextBlock}
           advancedAreOpen={advancedAreOpen}
           fillSections={fillSections}
           cleanSections={cleanSections}

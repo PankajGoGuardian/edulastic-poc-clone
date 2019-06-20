@@ -44,6 +44,7 @@ import ClozeMath from "../widgets/ClozeMath";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
 import { setQuestionDataAction } from "../../author/src/actions/question";
+import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
@@ -183,13 +184,11 @@ class QuestionWrapper extends Component {
     main: [],
     advanced: [],
     activeTab: 0,
-    advancedAreOpen: false
+    shuffledOptsOrder: []
   };
 
-  handleAdvancedOpen = () => {
-    this.setState(prevState => ({
-      advancedAreOpen: !prevState.advancedAreOpen
-    }));
+  handleShuffledOptions = shuffledOptsOrder => {
+    this.setState({ shuffledOptsOrder });
   };
 
   fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
@@ -227,7 +226,7 @@ class QuestionWrapper extends Component {
 
   static getDerivedStateFromProps(props) {
     if (props.view !== "edit") {
-      return { main: [], advanced: [], activeTab: 0, advancedAreOpen: false };
+      return { main: [], advanced: [], activeTab: 0 };
     }
   }
 
@@ -247,12 +246,14 @@ class QuestionWrapper extends Component {
       windowWidth,
       flowLayout,
       isPresentationMode,
+      handleAdvancedOpen,
+      advancedAreOpen,
       userRole,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
-    const { main, advanced, activeTab, advancedAreOpen, shuffledOptsOrder } = this.state;
+    const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
 
@@ -314,7 +315,7 @@ class QuestionWrapper extends Component {
                     main={main}
                     advanced={advanced}
                     advancedAreOpen={advancedAreOpen}
-                    handleAdvancedOpen={this.handleAdvancedOpen}
+                    handleAdvancedOpen={handleAdvancedOpen}
                   />
                 )}
                 <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
@@ -383,6 +384,8 @@ QuestionWrapper.propTypes = {
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
   flowLayout: PropTypes.bool,
+  advancedAreOpen: PropTypes.bool,
+  handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired
 };
 
@@ -399,7 +402,9 @@ QuestionWrapper.defaultProps = {
   showFeedback: false,
   qIndex: 0,
   changePreviewTab: () => {},
-  flowLayout: false
+  flowLayout: false,
+  advancedAreOpen: false,
+  handleAdvancedOpen: () => {}
 };
 
 const enhance = compose(
@@ -410,10 +415,12 @@ const enhance = compose(
   connect(
     state => ({
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       userRole: getUserRole(state)
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      handleAdvancedOpen: toggleAdvancedSections
     }
   )
 );

@@ -7,9 +7,17 @@ const GetStarted = lazy(() =>
 );
 const Login = lazy(() => import(/* webpackChunkName: "login" */ "./student/Login/components"));
 
+const SsoLogin = lazy(() => import(/* webpackChunkName:"SSo Login" */ "./student/SsoLogin"));
 const Auth = ({ location, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
   if (location.hash !== "#signup") {
     window.location.hash = "#login";
+  }
+  if (
+    location.pathname === "/auth/mso" ||
+    location.pathname === "/auth/clever" ||
+    location.pathname === "/auth/google"
+  ) {
+    return <SsoLogin />;
   }
 
   return location.hash === "#signup" ? (

@@ -72,8 +72,8 @@ class App extends Component {
   componentDidMount() {
     const { fetchUser, location } = this.props;
     const publicPath = location.pathname.split("/").includes("public");
-
-    if (!publicPath) {
+    const ssoPath = location.pathname.split("/").includes("auth");
+    if (!publicPath && !ssoPath) {
       fetchUser();
     }
   }
@@ -121,6 +121,11 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
         (path[0] && path[0].toLocaleLowerCase() === "district")
       ) {
+      } else if (
+        this.props.location.pathname === "/auth/mso" ||
+        this.props.location.pathname === "/auth/clever" ||
+        this.props.location.pathname === "/auth/google"
+      ) {
       } else {
         redirectRoute = "/login";
       }
@@ -157,6 +162,7 @@ class App extends Component {
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />
             ))}

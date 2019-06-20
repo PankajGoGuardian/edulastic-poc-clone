@@ -1125,6 +1125,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1162,6 +1163,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         ui_style: {
           width: 140
         },

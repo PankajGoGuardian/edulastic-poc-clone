@@ -136,7 +136,6 @@ class Display extends Component {
       imageOptions
     } = this.props;
     const { userAnswers } = this.state;
-    const { imageHeight } = item;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemnumeration } = uiStyle;
@@ -147,11 +146,17 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const imageHeight = this.getHeight();
+    const canvasHeight = imageHeight + (imageOptions.y || 0);
+
     const previewTemplateBoxLayout = (
-      <StyledPreviewTemplateBox fontSize={fontSize}>
+      <StyledPreviewTemplateBox
+        fontSize={fontSize}
+        height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+      >
         <StyledPreviewContainer
           data-cy="image-text-answer-board"
-          height={imageHeight > canvasDimensions.maxHeight ? imageHeight : canvasDimensions.maxHeight}
+          height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
         >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}

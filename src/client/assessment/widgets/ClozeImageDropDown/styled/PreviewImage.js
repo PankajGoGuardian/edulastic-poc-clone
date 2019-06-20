@@ -1,10 +1,16 @@
 import styled from "styled-components";
+import { black } from "@edulastic/colors";
 
-export const PreviewImage = styled.img`
-  height: ${({ height }) => (!height ? "100%" : `${height}px`)};
-  width: ${({ width }) => (!width ? "100%" : `${width}px`)};
-  max-width: ${({ maxWidth }) => (!maxWidth ? null : `${maxWidth}px`)};
-  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight}px`)};
+export const PreviewImage = styled.div`
+  position: relative;
+  border: 1px dotted ${black};
+  border-radius: 4px;
+  height: ${({ height, maxHeight }) => (!maxHeight ? "100%" : height ? `${height}px` : "auto")};
+  width: ${({ width, maxWidth }) => (!maxWidth ? "100%" : width ? `${width}px` : maxWidth)};
   user-select: none;
   pointer-events: none;
+  max-width: unset !important;
+  background-size: ${({ height, width, maxWidth, maxHeight }) => `${width || maxWidth}px ${height || maxHeight}px`};
+  background-repeat: no-repeat;
+  background-image: url(${({ imageSrc }) => imageSrc || ""});
 `;

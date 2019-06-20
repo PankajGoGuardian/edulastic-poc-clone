@@ -292,7 +292,7 @@ class Authoring extends Component {
     // If image is larger, compress it to max width (keep aspect-ratio by default)
     // If user changes image size manually to something larger, allow it
     if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
-      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+      return Math.round((imageOriginalHeight * imageWidth) / imageOriginalWidth);
     }
 
     if (!isUndefined(imageHeight)) {
@@ -393,17 +393,29 @@ class Authoring extends Component {
     const { height } = resizeRef.style;
     const { item, setQuestionData } = this.props;
 
+    let _width = Math.round(parseInt(width, 10));
+    let _height = Math.round(parseInt(height, 10));
+    const { imageWidth, imageHeight } = item;
+
+    if (_width <= imageWidth) {
+      _width += 10;
+    }
+
+    if (_height <= imageHeight) {
+      _height += 10;
+    }
+
     setQuestionData(
       produce(item, draft => {
-        draft.imageHeight = parseInt(height, 10);
-        draft.imageWidth = parseInt(width, 10);
+        draft.imageHeight = _height;
+        draft.imageWidth = _width;
       })
     );
   };
 
   render() {
     const { t, item, theme, setQuestionData } = this.props;
-    const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {} } = item;
+    const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {}, keepAspectRatio } = item;
     const { isColorPickerVisible, isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = canvasDimensions;
@@ -423,10 +435,10 @@ class Authoring extends Component {
     const imageHeight = this.getHeight();
     const imageTop = this.getTop();
     const imageLeft = this.getLeft();
-    const canvasWidth = imageWidth < maxWidth ? maxWidth : imageWidth;
-    const canvasHeight = imageHeight < maxHeight ? maxHeight : imageHeight;
+    const canvasWidth = (imageWidth < maxWidth ? maxWidth : imageWidth) + imageLeft;
+    const canvasHeight = (imageHeight < maxHeight ? maxHeight : imageHeight) + imageTop;
     if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
+      this.imageRndRef.current.updateSize({ width: imageWidth - 10, height: imageHeight - 10 });
     }
 
     return (
@@ -473,7 +485,7 @@ class Authoring extends Component {
                 <CheckContainer position="unset" alignSelf="center">
                   <Checkbox
                     data-cy="drag-drop-image-aria-check"
-                    defaultChecked={isEditAriaLabels}
+                    checked={keepAspectRatio}
                     onChange={val => this.onItemPropChange("keepAspectRatio", val.target.checked)}
                   >
                     {t("component.cloze.imageText.keepAspectRatio")}
@@ -546,11 +558,11 @@ class Authoring extends Component {
                         position={{ x: imageOptions.x || 0, y: imageOptions.y || 0 }}
                         bounds="parent"
                         enableResizing={{
-                          bottom: true,
+                          bottom: false,
                           bottomLeft: false,
                           bottomRight: true,
                           left: false,
-                          right: true,
+                          right: false,
                           top: false,
                           topLeft: false,
                           topRight: false
@@ -570,8 +582,8 @@ class Authoring extends Component {
                           </MoveControlButton>
                         )}
                         <PreivewImage
-                          width={imageWidth}
-                          height={imageHeight}
+                          width={imageWidth - 10}
+                          height={imageHeight - 10}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}
@@ -626,8 +638,8 @@ class Authoring extends Component {
                       style={{
                         boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
                       }}
-                      top={imageTop + imageHeight - 4}
-                      left={imageLeft + imageWidth - 4}
+                      top={imageTop + imageHeight - 14}
+                      left={imageLeft + imageWidth - 14}
                     >
                       <IconMoveResize />
                     </MoveControlButton>

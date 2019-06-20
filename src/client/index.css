@@ -645,7 +645,7 @@ table.quill-table td {
   padding: 0 !important;
   height: 100%;
   /* max-height: calc(100vh - 300px); */
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .imagedropdown_template_box.small {

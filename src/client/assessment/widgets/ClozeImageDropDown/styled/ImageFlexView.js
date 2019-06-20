@@ -8,6 +8,6 @@ export const ImageFlexView = styled(FlexView)`
   border-right: 1px solid ${props => props.theme.widgets.clozeImageDropDown.imageFlexViewBorderColor};
   border-bottom: 1px solid ${props => props.theme.widgets.clozeImageDropDown.imageFlexViewBorderColor};
   border-radius: 0px 0px 10px 0px;
-  overflow: hidden;
+  overflow: auto;
   position: relative;
 `;

@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep } from "lodash";
+import { cloneDeep, findIndex } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
@@ -93,7 +93,16 @@ class CorrectAnswers extends Component {
       }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
-    newData.ui_style[id] = { widthpx };
+    newData.ui_style.responsecontainerindividuals = newData.ui_style.responsecontainerindividuals || [];
+    const index = findIndex(newData.ui_style.responsecontainerindividuals, container => container.id === id);
+    if (index === -1) {
+      newData.ui_style.responsecontainerindividuals.push({ id, widthpx });
+    } else {
+      newData.ui_style.responsecontainerindividuals[index] = {
+        ...newData.ui_style.responsecontainerindividuals[index],
+        widthpx
+      };
+    }
     setQuestionData(newData);
   };
 

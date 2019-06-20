@@ -164,7 +164,7 @@ class ClozeTextDisplay extends Component {
           }
         : {
             userAnswers: userSelections,
-            style: { height: btnStyle.height, minWidth: uiStyle.widthpx || response.minWidth },
+            style: { height: btnStyle.height },
             btnStyle,
             onChange: this._changeInput,
             placeholder: btnStyle.placeholder,
@@ -172,7 +172,7 @@ class ClozeTextDisplay extends Component {
             item,
             showIndex,
             responseIds,
-            uiStyle
+            responsecontainerindividuals
           };
 
     const answerBox = showAnswer ? (

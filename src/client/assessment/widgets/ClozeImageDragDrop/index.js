@@ -228,7 +228,7 @@ class ClozeImageDragDrop extends Component {
                       min={1}
                       max={10}
                       defaultValue={item.maxRespCount}
-                      onChange={val => this.onItemPropChange("maxRespCount", val)}
+                      onChange={val => this.handleOptionsChange("maxRespCount", val)}
                     />
                     <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
                   </FieldWrapper>

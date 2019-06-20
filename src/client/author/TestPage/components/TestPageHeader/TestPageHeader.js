@@ -102,12 +102,12 @@ const TestPageHeader = ({
       <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
         {showShareButton && false && (
           <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
-            <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
+            <IconSource color="#00AD50" style={{ stroke: "#00AD50", strokeWidth: 1 }} />
           </EduButton>
         )}
         {showShareButton && owner && (
           <EduButton title={"Share"} data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
-            <IconShare color="#1774F0" />
+            <IconShare color="#00AD50" />
           </EduButton>
         )}
         {showShareButton && owner && (
@@ -119,7 +119,7 @@ const TestPageHeader = ({
             size="large"
             onClick={onSave}
           >
-            <IconDiskette color="#1774F0" />
+            <IconDiskette color="#00AD50" />
           </EduButton>
         )}
         {showShareButton && showPublishButton && owner && testStatus === "draft" && (
@@ -132,12 +132,12 @@ const TestPageHeader = ({
               onPublish();
             }}
           >
-            <IconSend color="#1774F0" stroke="#1774F0" />
+            <IconSend color="#00AD50" stroke="#00AD50" />
           </EduButton>
         )}
         {showShareButton && !showPublishButton && owner && (
           <EduButton title={"Edit Test"} data-cy="edit" style={{ width: 42 }} size="large" onClick={onEnableEdit}>
-            <IconPencilEdit color="#1774F0" />
+            <IconPencilEdit color="#00AD50" />
           </EduButton>
         )}
         {showShareButton && !isPlaylist && (

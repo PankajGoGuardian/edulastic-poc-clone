@@ -436,6 +436,10 @@ const Menu = styled(AntMenu)`
     .ant-menu-item-selected {
       color: #fff;
       background-color: transparent;
+
+      svg {
+        fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
+      }
       
       &:before {
         opacity: 1;
@@ -498,6 +502,7 @@ const Menu = styled(AntMenu)`
   }
   .ant-menu-item {
     position: relative;
+    background: ${props => props.theme.sideMenu.menuItemBgColor};
     
     &:before {
       content: '';
@@ -507,15 +512,24 @@ const Menu = styled(AntMenu)`
       left: 18px;
       right: 18px;
       border-radius: 4px;
-      background: #0EB08D;
+      background: ${props => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
       pointer-events: none;
       transition: all .3s ease;
     }
+  }
+  .ant-menu-item:not(.ant-menu-item-selected) {
     svg {
       position: relative;
       z-index: 5;
+      fill: ${props => props.theme.sideMenu.menuItemLinkColor};
+    }
+    &:hover {
+      svg {
+        fill: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
+      }
+      color: ${props => props.theme.sideMenu.menuItemLinkHoverColor};
     }
   }
 }
@@ -530,7 +544,7 @@ const MenuItem = styled(AntMenu.Item)`
   line-height: 1.36;
   letter-spacing: 0.3px;
   text-align: left;
-  color: #434b5d;
+  color: ${props => props.theme.sideMenu.menuItemLinkColor};
   display: flex;
   align-items: center;
   margin-top: 16px;
@@ -549,24 +563,27 @@ const MenuFooter = styled.div`
 const QuestionButton = styled.div`
   border-radius: 65px;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-  background-color: #ffffff;
+  font-size: ${props => props.theme.sideMenu.helpButtonFontSize};
+  background-color: ${props => props.theme.sideMenu.helpButtonBgColor};
+  color: ${props => props.theme.sideMenu.helpButtonTextColor};
   height: 60px;
   margin: 0 21px 23px;
   display: flex;
   align-items: center;
   position: relative;
   overflow: hidden;
-
+  cursor: pointer;
+  svg {
+    fill: ${props => props.theme.sideMenu.helpIconColor};
+  }
   span {
     font-weight: 600;
   }
   &:hover {
-    background: #1890ff;
+    background: ${props => props.theme.sideMenu.helpButtonBgHoverColor};
+    color: ${props => props.theme.sideMenu.helpButtonTextHoverColor};
     svg {
-      fill: #fff;
-    }
-    span {
-      color: #fff;
+      fill: ${props => props.theme.sideMenu.helpIconHoverColor};
     }
   }
   @media (max-width: ${tabletWidth}) {
@@ -581,13 +598,13 @@ const QuestionButton = styled.div`
 `;
 
 const UserName = styled.div`
-  font-size: 14px;
-  color: #444;
+  font-size: ${props => props.theme.sideMenu.userInfoNameFontSize};
+  color: ${props => props.theme.sideMenu.userInfoNameTextColor};
 `;
 
 const UserType = styled.div`
-  font-size: 12px;
-  color: #444;
+  font-size: ${props => props.theme.sideMenu.userInfoRoleFontSize};
+  color: ${props => props.theme.sideMenu.userInfoRoleTextColor};
 `;
 
 const FooterDropDown = styled.div`
@@ -597,7 +614,7 @@ const FooterDropDown = styled.div`
   transition: 0.2s;
   -webkit-transition: 0.2s;
   ul {
-    background: #fff;
+    background: ${props => props.theme.sideMenu.userInfoDropdownBgColor};
     border-bottom: 1px solid #fff;
     border-radius: 15px 15px 0px 0px;
     overflow: hidden;
@@ -622,24 +639,25 @@ const FooterDropDown = styled.div`
         margin: 0px;
         padding: 5px 16px;
         height: 50px;
+        background: ${props => props.theme.sideMenu.userInfoDropdownItemBgColor};
         &:hover,
         &:focus {
-          background: #fff;
+          background: ${props => props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
         }
         a {
-          color: #444;
-          font-size: 14px;
+          color: ${props => props.theme.sideMenu.userInfoDropdownItemTextColor};
+          font-size: ${props => props.theme.sideMenu.userInfoDropdownItemFontSize};
           font-weight: 600;
           &:hover,
           &:focus {
-            color: #444;
+            color: ${props => props.theme.sideMenu.userInfoDropdownItemTextHoverColor};
           }
           i {
-            color: #425066;
+            color: ${props => props.theme.sideMenu.itemIconColor};
             position: relative;
             margin-right: 5px;
             top: 2px;
-            font-size: 20px;
+            font-size: ${props => props.theme.sideMenu.userInfoDropdownItemIconSize};
           }
         }
       }
@@ -682,26 +700,6 @@ const UserInfoButton = styled.div`
     }
   }
 
-  .footerDropdown {
-    width: auto;
-    height: 60px;
-    border-radius: ${props => (props.isVisible ? "0px 0px 30px 30px" : "65px")};
-    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
-    background-color: #fff;
-    display: flex;
-    align-items: center;
-    padding: ${props => (props.isSidebarCollapsed ? 0 : "0px 25px 0px 60px")};
-    margin: ${props => (props.isSidebarCollapsed ? 0 : "0 21px")};
-    position: relative;
-    font-weight: 600;
-    transition: 0.2s;
-    -webkit-transition: 0.2s;
-    .drop-caret {
-      position: absolute;
-      right: 10px;
-      top: 20px;
-    }
-  }
   img {
     width: 60px;
     height: 60px;
@@ -729,12 +727,6 @@ const UserInfoButton = styled.div`
       pointer-events: none;
       background: transparent;
     }
-    .footerDropdown {
-      padding: 0;
-      border-radius: 50%;
-      width: 60px;
-      margin: 0;
-    }
   }
 `;
 
@@ -746,7 +738,7 @@ const DropdownBtn = styled(Dropdown)`
   background-color: ${props => props.theme.sideMenu.userInfoButtonBgColor};
   display: flex;
   align-items: center;
-  padding: ${props => (props.isSidebarCollapsed ? 0 : "0px 25px 0px 55px")};
+  padding: ${props => (props.isSidebarCollapsed ? 0 : "0px 25px 0px 60px")};
   margin: ${props => (props.isSidebarCollapsed ? 0 : "0 21px")};
   position: relative;
   font-weight: 600;
@@ -756,6 +748,15 @@ const DropdownBtn = styled(Dropdown)`
     position: absolute;
     right: 10px;
     top: 20px;
+    color: ${props => props.theme.sideMenu.dropdownIconColor};
+  }
+  @media (max-width: ${tabletWidth}) {
+    &.footerDropdown {
+      padding: 0;
+      border-radius: 50%;
+      width: 60px;
+      margin: 0;
+    }
   }
 `;
 

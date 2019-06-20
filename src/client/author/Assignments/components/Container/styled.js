@@ -91,7 +91,10 @@ export const StyledFlexContainer = styled(FlexContainer)`
 export const ViewSwitch = styled(Switch)`
   width: 35px;
   margin: 0px 15px;
-  background-color: ${fadedWhite};
+  background-color: #ffffff;
+  &:after {
+    background-color: #00ad50;
+  }
 `;
 
 export const TestButton = styled(Button)`
@@ -111,7 +114,7 @@ export const SwitchWrapper = styled.div`
 export const SwitchLabel = styled.div`
   font-size: 10px;
   font-weight: 600;
-  color: ${fadedBlue};
+  color: ${white};
 `;
 
 export const FilterButton = styled(Button)`

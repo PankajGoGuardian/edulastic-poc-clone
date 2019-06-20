@@ -86,9 +86,12 @@ const VisitClassButton = styled(Button)`
   color: ${props => props.theme.classCard.cardVisitClassBtnTextColor};
   border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   font-weight: bold;
+  &:active,
+  &:focus,
   &:hover {
     background-color: ${props => props.theme.classCard.cardVisitClassBtnBgHoverColor};
     color: ${props => props.theme.classCard.cardVisitClassBtnTextHoverColor};
+    border: 1px solid ${props => props.theme.classCard.cardVisitClassBtnBorderColor};
   }
 `;
 

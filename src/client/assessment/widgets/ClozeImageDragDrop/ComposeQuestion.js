@@ -448,11 +448,19 @@ class ComposeQuestion extends Component {
               width={`${canvasDimensions.maxWidth}px`}
               height={`${canvasDimensions.maxHeight}px`}
             >
-              <AnnotationRnd
-                style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                questionId={item.id}
-                disableDragging={false}
-              />
+              <div
+                style={{
+                  position: "relative",
+                  width: imageWidth || "100%",
+                  height: imageHeight || "100%"
+                }}
+              >
+                <AnnotationRnd
+                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+                  questionId={item.id}
+                  disableDragging={false}
+                />
+              </div>
               {item.imageUrl && (
                 <React.Fragment>
                   <Rnd

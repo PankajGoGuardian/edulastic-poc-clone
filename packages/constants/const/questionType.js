@@ -15,6 +15,7 @@ const VIDEO = "video";
 const MATH = "math";
 const FORMULA_ESSAY = "formulaessay";
 const CLOZE_MATH = "clozemath";
+const EXPRESSION_MULTIPART = "expressionMultipart";
 const ORDER_LIST = "orderList";
 const MULTIPLE_CHOICE = "multipleChoice";
 const CLOZE_TEXT = "clozeText";
@@ -50,6 +51,7 @@ const selectsData = [
   { value: MATH, text: "Math" },
   { value: FORMULA_ESSAY, text: "Formula Essay" },
   { value: CLOZE_MATH, text: "Cloze Math" },
+  { value: EXPRESSION_MULTIPART, text: "Expression Multipart" },
   { value: ORDER_LIST, text: "Order List" },
   { value: MULTIPLE_CHOICE, text: "Multiple Choice" },
   { value: CLOZE_TEXT, text: "Cloze Text" },
@@ -86,6 +88,7 @@ module.exports = {
   MATH,
   FORMULA_ESSAY,
   CLOZE_MATH,
+  EXPRESSION_MULTIPART,
   ORDER_LIST,
   MULTIPLE_CHOICE,
   CLOZE_TEXT,

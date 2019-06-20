@@ -11,9 +11,7 @@ import {
   desktopWidth,
   darkBlueSecondary,
   white,
-  lightBlueSecondary,
-  newBlue,
-  blue
+  lightBlueSecondary
 } from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
@@ -63,7 +61,7 @@ const ListHeader = ({
             color="secondary"
             variant="test"
             shadow="none"
-            icon={<IconPlusStyled color={newBlue} width={20} height={20} hoverColor={newBlue} />}
+            icon={<IconPlusStyled color="#00AD50" width={20} height={20} hoverColor="#00AD50" />}
           >
             NEW ASSIGNMENT
           </TestButton>
@@ -126,11 +124,14 @@ const Container = styled(HeaderWrapper)`
 
 export const TestButton = styled(Button)`
   height: 45px;
-  color: ${blue};
+  color: #00ad50;
   border-radius: 3px;
   margin-left: 25px;
   background: ${white};
   padding: 5px 30px;
+  &:hover {
+    color: #00ad50;
+  }
   span {
     margin-left: 15px;
   }
@@ -162,11 +163,19 @@ const CreateButton = styled(Button)`
   min-width: auto;
   padding: 5px 30px;
   height: 45px;
-  color: ${lightBlueSecondary};
+  color: #00ad50;
   border-radius: 3px;
   background: ${white};
   justify-content: space-around;
   margin-left: 20px;
+  &:hover {
+    color: #00ad50;
+  }
+  &:focus,
+  &:active {
+    border-color: #00ad50;
+    outline-color: #00ad50;
+  }
 `;
 
 const IconPlusStyled = styled(IconPlusCircle)`
@@ -174,8 +183,8 @@ const IconPlusStyled = styled(IconPlusCircle)`
 `;
 
 export const Title = styled.h1`
-  color: ${white};
-  font-size: 22px;
+  font-size: ${props => props.theme.header.headerTitleFontSize};
+  color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   margin: 0;
   padding: 0;

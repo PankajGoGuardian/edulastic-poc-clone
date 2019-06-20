@@ -180,6 +180,7 @@ class Container extends Component {
         showCheckButton={checkAnswerButton}
         allowedAttempts={checkAttempts}
         previewTab={previewTab}
+        showSettingsButton={false}
       />
     );
   };

@@ -5,8 +5,7 @@ import PropTypes from "prop-types";
 import { findIndex, isUndefined, get, keyBy } from "lodash";
 import produce, { setAutoFreeze } from "immer";
 import memoizeOne from "memoize-one";
-import { Modal, Button, Input, message } from "antd";
-
+import { Modal, Button, Input, message, Tooltip } from "antd";
 import {
   StyledFlexContainer,
   AllButton,
@@ -14,7 +13,8 @@ import {
   WrongButton,
   PartiallyCorrectButton,
   GiveOverallFeedBackButton,
-  StudentButtonDiv
+  StudentButtonDiv,
+  EditIconStyled
 } from "./styled";
 
 import ClassQuestions from "../ClassResponses/components/Container/ClassQuestions";
@@ -35,6 +35,7 @@ import {
 } from "../ClassBoard/ducks";
 
 import { getQuestionLabels } from "../ClassBoard/Transformer";
+
 const _getquestionLabels = memoizeOne(getQuestionLabels);
 
 setAutoFreeze(false);
@@ -43,18 +44,18 @@ setAutoFreeze(false);
  * @param {Object[]} testItems
  * @param {Object} variablesSetIds
  */
-const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
-  return produce(classResponse, draft => {
+const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
+  produce(classResponse, draft => {
     if (!draft.testItems) {
       return;
     }
     const qidSetIds = keyBy(variablesSetIds, "qid");
-    for (let [idxItem, item] of draft.testItems.entries()) {
+    for (const [idxItem, item] of draft.testItems.entries()) {
       if (!item.algoVariablesEnabled) {
         continue;
       }
       const questions = get(item, "data.questions", []);
-      for (let [idxQuestion, question] of questions.entries()) {
+      for (const [idxQuestion, question] of questions.entries()) {
         const qid = question.id;
         const setIds = qidSetIds[qid];
         if (!setIds) {
@@ -67,17 +68,19 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
         if (!example) {
           continue;
         }
-        for (let variable of Object.keys(variables)) {
+        for (const variable of Object.keys(variables)) {
           draft.testItems[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
             example[variable];
         }
       }
     }
   });
-};
+
 class StudentViewContainer extends Component {
   state = { filter: null, showFeedbackPopup: false };
+
   feedbackRef = React.createRef();
+
   static getDerivedStateFromProps(nextProps, preState) {
     const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
     const { selectedStudent: _selectedStudent } = preState || {};
@@ -97,6 +100,7 @@ class StudentViewContainer extends Component {
       loading: selectedStudent !== _selectedStudent
     };
   }
+
   handleShowFeedbackPopup = value => {
     this.setState({ showFeedbackPopup: value });
   };
@@ -119,8 +123,9 @@ class StudentViewContainer extends Component {
       studentResponse,
       selectedStudent,
       variableSetIds,
-      testActivity,
-      isPresentationMode
+      isPresentationMode,
+      testItemsOrder,
+      testItemIds
     } = this.props;
 
     const { loading, filter, showFeedbackPopup } = this.state;
@@ -135,6 +140,14 @@ class StudentViewContainer extends Component {
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
       (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
+    const feedbackButtonToolTip = (
+      <div>
+        <p>
+          <b>Overall feedback</b>
+        </p>
+        <p>{initFeedbackValue}</p>
+      </div>
+    );
     return (
       <React.Fragment>
         {showFeedbackPopup && (
@@ -154,7 +167,7 @@ class StudentViewContainer extends Component {
             ]}
           >
             <p>Leave a feedback!</p>
-            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} />
+            <Input.TextArea rows={6} defaultValue={initFeedbackValue} ref={this.feedbackRef} maxlength="250" />
           </Modal>
         )}
         <StyledFlexContainer justifyContent="space-between">
@@ -173,7 +186,14 @@ class StudentViewContainer extends Component {
             </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
-            GIVE OVERALL FEEDBACK
+            {initFeedbackValue.length ? (
+              <Tooltip title={feedbackButtonToolTip}>
+                <span>{`${initFeedbackValue.slice(0, 30)}${initFeedbackValue.length > 30 ? "....." : ""}`}</span>
+                <EditIconStyled />
+              </Tooltip>
+            ) : (
+              "GIVE OVERALL FEEDBACK"
+            )}
           </GiveOverallFeedBackButton>
         </StyledFlexContainer>
         {!loading && (
@@ -181,9 +201,9 @@ class StudentViewContainer extends Component {
             currentStudent={currentStudent || {}}
             questionActivities={studentResponse.questionActivities}
             classResponse={classResponseProcessed}
-            testItemsOrder={this.props.testItemsOrder}
+            testItemsOrder={testItemsOrder}
             studentViewFilter={filter}
-            labels={_getquestionLabels(classResponse.testItems, this.props.testItemIds)}
+            labels={_getquestionLabels(classResponse.testItems, testItemIds)}
             isPresentationMode={isPresentationMode}
           />
         )}
@@ -217,7 +237,13 @@ StudentViewContainer.propTypes = {
   studentItems: PropTypes.array.isRequired,
   studentResponse: PropTypes.object.isRequired,
   selectedStudent: PropTypes.string,
-  isPresentationMode: PropTypes.bool
+  isPresentationMode: PropTypes.bool,
+  saveOverallFeedback: PropTypes.func.isRequired,
+  updateOverallFeedback: PropTypes.func.isRequired,
+  assignmentIdClassId: PropTypes.array.isRequired,
+  variableSetIds: PropTypes.array.isRequired,
+  testItemsOrder: PropTypes.any.isRequired,
+  testItemIds: PropTypes.array.isRequired
 };
 StudentViewContainer.defaultProps = {
   selectedStudent: "",

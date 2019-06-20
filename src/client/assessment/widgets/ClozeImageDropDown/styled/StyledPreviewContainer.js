@@ -4,9 +4,13 @@ export const StyledPreviewContainer = styled.div`
   position: relative;
   top: 0px;
   left: 0px;
-  width: ${({ width }) => (width ? width : "100%")};
-  min-height: ${({ maxHeight }) => (maxHeight ? `${maxHeight}px` : "100%")};
-  min-width: ${({ maxWidth }) => (maxWidth ? `${maxWidth}px` : "100%")};
-  max-width: ${({ maxWidth }) => (!maxWidth ? "100%" : `${maxWidth}px`)};
-  height: auto;
+  margin: auto;
+  width: ${({ width }) => (width ? `${width}px` : "100%")};
+  height: ${({ height }) => (!height ? null : `${height}px`)};
+  max-width: ${({ width }) => (width ? `${width}px` : "100%")};
+  max-height: ${({ maxHeight }) => (!maxHeight ? null : `${maxHeight}px`)};
+
+  img {
+    max-width: unset !important;
+  }
 `;

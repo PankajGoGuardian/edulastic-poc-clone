@@ -24,9 +24,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responsecontainerindividuals,
     responseIds
   } = resprops;
-  const { index } = find(responseIds, res => res.id === id);
-  const status = evaluation[index] ? "right" : "wrong";
+  const { id: choiceId, index } = find(responseIds, res => res.id === id);
 
+  const status = evaluation[choiceId] ? "right" : "wrong";
   // eslint-disable-next-line no-unused-vars
   let indexStr = "";
 
@@ -47,7 +47,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const btnStyle = {
-    width: showAnswer ? "auto" : 140,
+    width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140,
     height: 0,
     widthpx: showAnswer ? "auto" : 140,
     heightpx: 0,
@@ -69,9 +69,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = responseBtnStyle.heightpx;
   } else {
     btnStyle.height = btnStyle.heightpx;
-  }
-  if (uiStyle.widthpx) {
-    btnStyle.width = uiStyle.widthpx;
   }
 
   return (
@@ -109,10 +106,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}
                 `}
-          style={{
-            ...btnStyle,
-            overflow: "hidden"
-          }}
+          style={btnStyle}
         >
           {showIndex && (
             <Fragment>

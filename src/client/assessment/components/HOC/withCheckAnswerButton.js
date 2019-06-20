@@ -9,13 +9,13 @@ import { changePreviewAction } from "../../../author/src/actions/view";
 import { CHECK } from "../../constants/constantsForQuestions";
 
 export const withCheckAnswerButton = WrappedComponent => {
-  const hocComponent = ({ item, userAnswer, checkAnswer, changeMode, t, ...restProps }) => {
+  const hocComponent = ({ item, userAnswer, checkAnswerAction, changeMode, t, ...restProps }) => {
     const initial = item ? item.feedback_attempts || null : null;
     const [attempts, setAttempts] = useState(initial);
 
     useEffect(() => {
       if (attempts !== null && attempts !== initial) {
-        checkAnswer();
+        checkAnswerAction();
         changeMode(CHECK);
       }
     }, [attempts]);
@@ -44,7 +44,7 @@ export const withCheckAnswerButton = WrappedComponent => {
   return withNamespaces("assessment")(
     connect(
       () => ({}),
-      { checkAnswer: checkAnswerAction, changeMode: changePreviewAction }
+      { checkAnswerAction, changeMode: changePreviewAction }
     )(hocComponent)
   );
 };

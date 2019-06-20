@@ -136,7 +136,10 @@ class LiveClassboardPage {
         "stduent stats :: ",
         `${studentName}, ${status}, ${score}, ${performance}, ${JSON.stringify(queAttempt)} , ${queCards}`
       );
-      this.getStudentStatusByIndex(index).should("have.text", status);
+      this.getStudentStatusByIndex(index).should(
+        "have.text",
+        status === asgnStatus.SUBMITTED ? asgnStatus.GRADED : status
+      );
       this.getStudentScoreByIndex(index).should("have.text", score);
       this.getStudentPerformanceByIndex(index).should("have.text", performance);
       this.verifyQuestionCards(index, queCards);
@@ -252,20 +255,30 @@ class LiveClassboardPage {
     let perf;
     let perfValue;
     let stats;
+    let quePerformanceAllStudent = [];
+    let quePerformanceScore;
+    let sumAvgQuePerformance = 0;
 
     Object.keys(attempt).forEach(item => {
       const attempType = attempt[item];
       const { points, attemptData, queKey } = queCentric ? queTypeMap[queNum] : queTypeMap[item];
       // if (attempType === attemptTypes.RIGHT) totalScore += points;
-      totalScore += this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attempType);
+      const score = this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attempType);
+      totalScore += score;
       maxScore += points;
+      quePerformanceAllStudent.push(score / points);
+    });
+
+    quePerformanceAllStudent.forEach(item => {
+      sumAvgQuePerformance += item;
     });
 
     score = `${totalScore} / ${maxScore}`;
-    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 1);
+    perfValue = Cypress._.round((parseFloat(totalScore) / parseFloat(maxScore)) * 100, 2);
     perf = `${perfValue}%`;
-    stats = { score, perf, perfValue };
-    return stats;
+    quePerformanceScore = `${Cypress._.round(sumAvgQuePerformance, 2)} / ${quePerformanceAllStudent.length}`;
+    return { score, perf, perfValue, quePerformanceScore };
+    // return stats;
   };
 
   getFeedBackScore = (feedbackMap, queTypeMap) => {
@@ -299,7 +312,7 @@ class LiveClassboardPage {
       }
     });
 
-    const avgPerformance = `${Cypress._.round((scoreObtain / totalMaxScore) * 100, 2)}%`;
+    const avgPerformance = `${Cypress._.round((scoreObtain / totalMaxScore) * 100)}%`;
     this.getAvgScore().should("have.text", avgPerformance);
   }
 

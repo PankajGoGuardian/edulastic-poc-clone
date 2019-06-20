@@ -57,12 +57,17 @@ var CompareShapes =
       {
         key: "compare",
         value: function compare(testId, trueId) {
+          var compareTestShapes = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
           var testShape = this.testAnswer.find(function(item) {
             return item.id === testId;
           });
-          var trueShape = this.trueAnswerValue.find(function(item) {
-            return item.id === trueId;
-          });
+          var trueShape = compareTestShapes
+            ? this.testAnswer.find(function(item) {
+                return item.id === trueId;
+              })
+            : this.trueAnswerValue.find(function(item) {
+                return item.id === trueId;
+              });
 
           if (!testShape || !trueShape || testShape.type !== trueShape.type) {
             return {

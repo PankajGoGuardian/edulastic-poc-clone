@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Table } from "antd";
 import { find } from "lodash";
@@ -8,10 +8,11 @@ import { TableWrapper } from "./styled";
 
 const { allGrades, allSubjects } = selectsData;
 
-const ClassList = ({ groups, setEntity }) => {
+const ClassList = ({ groups, archiveGroups, setEntity }) => {
   const findGrade = _grade => find(allGrades, item => item.value === _grade) || { text: _grade };
   // eslint-disable-next-line max-len
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
+  const [classGroups, setClassGroups] = useState(groups);
 
   const columns = [
     {
@@ -67,8 +68,8 @@ const ClassList = ({ groups, setEntity }) => {
 
   return (
     <TableWrapper>
-      <ClassSelector />
-      <Table columns={columns} dataSource={groups} rowKey={rowKey} onRow={onRow} />
+      <ClassSelector groups={groups} archiveGroups={archiveGroups} setClassGroups={setClassGroups} />
+      <Table columns={columns} dataSource={classGroups} rowKey={rowKey} onRow={onRow} />
     </TableWrapper>
   );
 };

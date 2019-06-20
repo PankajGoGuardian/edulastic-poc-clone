@@ -36,7 +36,7 @@ import {
   MessageSpan
 } from "./styled";
 import FeaturesSwitch from "../../../../../../features/components/FeaturesSwitch";
-import { getUserFeatures } from "../../../../../../student/Login/ducks";
+import { getUserFeatures, getUserRole } from "../../../../../../student/Login/ducks";
 
 const {
   settingCategories,
@@ -175,7 +175,7 @@ class MainSetting extends Component {
 
   render() {
     const { enable, showAdvancedOption, showPassword } = this.state;
-    const { history, windowWidth, entity } = this.props;
+    const { history, windowWidth, entity, owner, userRole } = this.props;
 
     const {
       releaseScore,
@@ -252,10 +252,14 @@ class MainSetting extends Component {
               <Row>
                 <Title>Test Type</Title>
                 <Body smallSize={isSmallSize}>
-                  <TestTypeSelect defaultValue={testType} onChange={this.updateTestData("testType")}>
+                  <TestTypeSelect defaultValue={testType} disabled={!owner} onChange={this.updateTestData("testType")}>
                     {Object.keys(testTypes).map(key => (
                       <Option key={key} value={key}>
-                        {testTypes[key]}
+                        {key === ASSESSMENT
+                          ? userRole === "teacher"
+                            ? "Class Assessment "
+                            : "Common Assessment "
+                          : testTypes[key]}
                       </Option>
                     ))}
                   </TestTypeSelect>
@@ -267,6 +271,7 @@ class MainSetting extends Component {
               <Body>
                 <MaxAttempts
                   type="number"
+                  disabled={!owner}
                   size="large"
                   value={maxAttempts}
                   onChange={this.updateAttempt}
@@ -279,7 +284,7 @@ class MainSetting extends Component {
               <Block id="mark-as-done" smallSize={isSmallSize}>
                 <Title>Mark as Done</Title>
                 <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup onChange={this.updateFeatures("markAsDone")} value={markAsDone}>
+                  <StyledRadioGroup disabled={!owner} onChange={this.updateFeatures("markAsDone")} value={markAsDone}>
                     {Object.keys(completionTypes).map(item => (
                       <CompletionTypeRadio value={completionTypes[item]} key={completionTypes[item]}>
                         {completionTypes[item]}
@@ -299,7 +304,7 @@ class MainSetting extends Component {
             <Block id="release-scores" smallSize={isSmallSize}>
               <Title>Release Scores</Title>
               <Body smallSize={isSmallSize}>
-                <StyledRadioGroup onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
+                <StyledRadioGroup disabled={!owner} onChange={this.updateFeatures("releaseScore")} value={releaseScore}>
                   {this._releaseGradeKeys.map(item => (
                     <Radio value={item} key={item}>
                       {releaseGradeTypes[item]}
@@ -321,9 +326,14 @@ class MainSetting extends Component {
               <Block id="require-safe-exame-browser" smallSize={isSmallSize}>
                 <Title>Require Safe Exam Browser</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={safeBrowser} onChange={this.updateTestData("safeBrowser")} />
+                  <Switch
+                    disabled={!owner}
+                    defaultChecked={safeBrowser}
+                    onChange={this.updateTestData("safeBrowser")}
+                  />
                   {safeBrowser && (
                     <InputPassword
+                      disabled={!owner}
                       prefix={
                         <i className={`fa fa-eye${showPassword ? "-slash" : ""}`} onClick={this.handleShowPassword} />
                       }
@@ -346,7 +356,11 @@ class MainSetting extends Component {
               <Block id="suffle-question" smallSize={isSmallSize}>
                 <Title>Shuffle Questions</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={shuffleQuestions} onChange={this.updateTestData("shuffleQuestions")} />
+                  <Switch
+                    disabled={!owner}
+                    defaultChecked={shuffleQuestions}
+                    onChange={this.updateTestData("shuffleQuestions")}
+                  />
                   <Description>
                     {"If "}
                     <BlueText>ON</BlueText>
@@ -359,7 +373,11 @@ class MainSetting extends Component {
               <Block id="show-answer-choice" smallSize={isSmallSize}>
                 <Title>Shuffle Answer Choice</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={shuffleAnswers} onChange={this.updateTestData("shuffleAnswers")} />
+                  <Switch
+                    disabled={!owner}
+                    defaultChecked={shuffleAnswers}
+                    onChange={this.updateTestData("shuffleAnswers")}
+                  />
                   <Description>
                     {"If set to "}
                     <BlueText>ON</BlueText>
@@ -376,7 +394,7 @@ class MainSetting extends Component {
               <Block id="show-calculator" smallSize={isSmallSize}>
                 <Title>Show Calculator</Title>
                 <Body smallSize={isSmallSize}>
-                  <StyledRadioGroup onChange={this.updateFeatures("calcType")} value={calcType}>
+                  <StyledRadioGroup disabled={!owner} onChange={this.updateFeatures("calcType")} value={calcType}>
                     {calculatorKeys.map(item => (
                       <Radio value={item} key={item}>
                         {calculators[item]}
@@ -395,7 +413,11 @@ class MainSetting extends Component {
               <Block id="answer-on-paper" smallSize={isSmallSize}>
                 <Title>Answer on Paper</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={answerOnPaper} onChange={this.updateTestData("answerOnPaper")} />
+                  <Switch
+                    disabled={!owner}
+                    defaultChecked={answerOnPaper}
+                    onChange={this.updateTestData("answerOnPaper")}
+                  />
                   <Description>
                     {
                       "Use this opinion if you are administering this assessment on paper. If you use this opinion, you will have to manually grade student responses after the assessment is closed."
@@ -408,7 +430,11 @@ class MainSetting extends Component {
               <Block id="require-password" smallSize={isSmallSize}>
                 <Title>Require Password</Title>
                 <Body smallSize={isSmallSize}>
-                  <Switch defaultChecked={requirePassword} onChange={this.updateTestData("requirePassword")} />
+                  <Switch
+                    disabled={!owner}
+                    defaultChecked={requirePassword}
+                    onChange={this.updateTestData("requirePassword")}
+                  />
                   {requirePassword && (
                     <>
                       <InputPassword
@@ -437,6 +463,7 @@ class MainSetting extends Component {
                 <Title>Check Answer Tries Per Question</Title>
                 <Body smallSize={isSmallSize}>
                   <MaxAnswerChecksInput
+                    disabled={!owner}
                     onChange={e => this.updateTestData("maxAnswerChecks")(e.target.value)}
                     size="large"
                     value={maxAnswerChecks}
@@ -452,6 +479,7 @@ class MainSetting extends Component {
                 <Title>Evaluation Method</Title>
                 <Body smallSize={isSmallSize}>
                   <StyledRadioGroup
+                    disabled={!owner}
                     onChange={e => this.updateTestData("scoringType")(e.target.value)}
                     value={scoringType}
                   >
@@ -464,6 +492,7 @@ class MainSetting extends Component {
                   {scoringType === evalTypeLabels.PARTIAL_CREDIT && (
                     <p>
                       <Checkbox
+                        disabled={!owner}
                         checked={penalty === false}
                         onChange={e => this.updateTestData("penalty")(!e.target.checked)}
                       >
@@ -502,6 +531,7 @@ class MainSetting extends Component {
                     <List.Item>
                       <ListCard
                         item={performanceBandsData[item]}
+                        owner={owner}
                         onPerformanceBandUpdate={() => this.onPerformanceBandUpdate(item)}
                       />
                     </List.Item>
@@ -513,7 +543,7 @@ class MainSetting extends Component {
               <Block id="title" smallSize={isSmallSize}>
                 <Title>Title</Title>
                 <Body smallSize={isSmallSize}>
-                  <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                  <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                     <Radio style={{ display: "block", marginBottom: "24px" }} value={true}>
                       Enable
                     </Radio>
@@ -524,7 +554,7 @@ class MainSetting extends Component {
                   <Row gutter={28}>
                     <Col span={12}>
                       <InputTitle>Activity Title</InputTitle>
-                      <ActivityInput placeholder="Title of activity" />
+                      <ActivityInput disabled={!owner} placeholder="Title of activity" />
                     </Col>
                   </Row>
                 </Body>
@@ -539,7 +569,7 @@ class MainSetting extends Component {
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{navigation}</span>
                       </Col>
                       <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                        <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                           <Radio value={true}>Enable</Radio>
                           <Radio value={false}>Disable</Radio>
                         </RadioGroup>
@@ -567,14 +597,14 @@ class MainSetting extends Component {
 
               <Block id="accessibility" smallSize={isSmallSize}>
                 <Title>Accessibility</Title>
-                <RadioWrapper style={{ marginTop: "29px", marginBottom: 0 }}>
+                <RadioWrapper disabled={!owner} style={{ marginTop: "29px", marginBottom: 0 }}>
                   {Object.keys(accessibilities).map(item => (
                     <Row key={accessibilities[item]} style={{ width: "100%" }}>
                       <Col span={8}>
                         <span style={{ fontSize: 13, fontWeight: 600 }}>{accessibilities[item]}</span>
                       </Col>
                       <Col span={16}>
-                        <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                        <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                           <Radio value={true}>Enable</Radio>
                           <Radio value={false}>Disable</Radio>
                         </RadioGroup>
@@ -594,7 +624,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Configuration Panel</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -605,7 +635,7 @@ class MainSetting extends Component {
                   <Row gutter={28}>
                     <Col span={12}>
                       <InputTitle>Password</InputTitle>
-                      <Input placeholder="Your Password" />
+                      <Input disabled={!owner} placeholder="Your Password" />
                     </Col>
                   </Row>
                 </Body>
@@ -615,7 +645,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Save & Quit</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -629,7 +659,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Exit & Discard</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -643,7 +673,7 @@ class MainSetting extends Component {
                       <span style={{ fontSize: 13, fontWeight: 600 }}>Extend Assessment Time</span>
                     </Col>
                     <Col span={16}>
-                      <RadioGroup onChange={this.enableHandler} defaultValue={enable}>
+                      <RadioGroup disabled={!owner} onChange={this.enableHandler} defaultValue={enable}>
                         <Radio value={true}>Enable</Radio>
                         <Radio value={false}>Disable</Radio>
                       </RadioGroup>
@@ -664,13 +694,15 @@ MainSetting.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   setMaxAttempts: PropTypes.func.isRequired,
   setTestData: PropTypes.func.isRequired,
+  owner: PropTypes.bool,
   entity: PropTypes.object.isRequired
 };
 
 export default connect(
   state => ({
     entity: getTestEntitySelector(state),
-    features: getUserFeatures(state)
+    features: getUserFeatures(state),
+    userRole: getUserRole(state)
   }),
   {
     setMaxAttempts: setMaxAttemptsAction,

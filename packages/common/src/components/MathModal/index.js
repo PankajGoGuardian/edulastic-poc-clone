@@ -15,7 +15,7 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, show, 
         mathInputRef.current.setFocus();
       }
     }
-  }, [show]);
+  }, [show, mathInputRef.current]);
 
   const onInput = newLatex => {
     setLatex(newLatex);
@@ -41,6 +41,7 @@ const MathModal = ({ value, symbols, isEditable, numberPad, showResponse, show, 
         <MathInput
           ref={mathInputRef}
           alwaysShowKeyboard
+          defaultFocus
           symbols={symbols}
           numberPad={numberPad}
           showResponse={showResponse}

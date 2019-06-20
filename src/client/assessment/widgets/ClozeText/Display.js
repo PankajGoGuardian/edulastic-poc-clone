@@ -4,10 +4,9 @@ import styled from "styled-components";
 import { findIndex, find, isEmpty } from "lodash";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
 import { response } from "@edulastic/constants";
 
-import { QuestionHeader } from "../../styled/QuestionHeader";
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
@@ -110,7 +109,7 @@ class ClozeTextDisplay extends Component {
       const resbtn = find(responseIds, res => res.id === id);
       newAnswers[resbtn.index] = { value, index: resbtn.index, id };
     }
-    changeAnswers(newAnswers);
+    changeAnswers(newAnswers, id, Math.min(Math.max(value.length * 8, 100), 400));
   };
 
   _changeInput = ({ value, id, type }) => {
@@ -165,14 +164,15 @@ class ClozeTextDisplay extends Component {
           }
         : {
             userAnswers: userSelections,
-            style: { height: btnStyle.height, minWidth: uiStyle.widthpx || response.minWidth },
+            style: { height: btnStyle.height },
             btnStyle,
             onChange: this._changeInput,
             placeholder: btnStyle.placeholder,
             type: btnStyle.inputtype,
             item,
             showIndex,
-            responseIds
+            responseIds,
+            responsecontainerindividuals
           };
 
     const answerBox = showAnswer ? (
@@ -203,7 +203,7 @@ class ClozeTextDisplay extends Component {
         )}
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}

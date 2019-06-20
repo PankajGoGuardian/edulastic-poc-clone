@@ -30,6 +30,22 @@ const createDistrictProfile = data =>
     })
     .then(result => result.data.result);
 
+const getOrgDetailsByShortNameAndOrgType = params =>
+  api
+    .callApi({
+      url: `/public/setting/org-data/`,
+      params: params
+    })
+    .then(result => {
+      if (result && !result.error) {
+        return result.data.result;
+      } else if (result && result.error) {
+        throw result.data.result;
+      } else {
+        return result.data.result;
+      }
+    });
+
 // term apis
 const getTerm = ({ orgId }) =>
   api
@@ -201,16 +217,6 @@ const updateInterestedStandards = body =>
     })
     .then(result => result.data.result);
 
-const getDistrictByShortNameAndOrgType = params =>
-  api
-    .callApi({
-      url: `/public/setting/org-data/`,
-      params: params
-    })
-    .then(result => {
-      return result.data.result;
-    });
-
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -234,5 +240,5 @@ export default {
   getInterestedStandards,
   saveInterestedStandards,
   updateInterestedStandards,
-  getDistrictByShortNameAndOrgType
+  getOrgDetailsByShortNameAndOrgType
 };

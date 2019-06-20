@@ -43,24 +43,30 @@ class MultipleChoice extends Component {
   };
 
   componentWillReceiveProps(nextProps) {
-    const { item } = this.props;
+    const { item, onShuffleOptions } = this.props;
 
     if (!nextProps.item.shuffle_options) {
+      const shuffledOptions = replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable);
       this.setState({
-        shuffledOptions: replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable)
+        shuffledOptions
       });
+      onShuffleOptions(shuffledOptions);
     } else if (nextProps.item.shuffle_options !== item.shuffle_options && nextProps.item.shuffle_options) {
+      const shuffledOptions = replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable);
       this.setState({
-        shuffledOptions: replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable)
+        shuffledOptions
       });
+      onShuffleOptions(shuffledOptions);
     }
   }
 
   componentDidMount() {
-    const { item } = this.props;
+    const { item, onShuffleOptions } = this.props;
+    const shuffledOptions = replaceValues(cloneDeep(shuffle(item.options)), item.variable);
     this.setState({
-      shuffledOptions: replaceValues(cloneDeep(shuffle(item.options)), item.variable)
+      shuffledOptions
     });
+    onShuffleOptions(shuffledOptions);
   }
 
   getRenderData = () => {

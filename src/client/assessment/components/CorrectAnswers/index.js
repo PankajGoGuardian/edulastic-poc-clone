@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 
 import { newBlue } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
@@ -45,6 +46,14 @@ class CorrectAnswers extends Component {
 
     const { tabs } = this.state;
 
+    const isAlt =
+      !isEmpty(validation.alt_responses) || !isEmpty(validation.alt_inputs) || !isEmpty(validation.alt_dropdowns);
+    const maxAltLen = Math.max(
+      validation.alt_responses ? validation.alt_responses.length : 0,
+      validation.alt_inputs ? validation.alt_inputs.length : 0,
+      validation.alt_dropdowns ? validation.alt_dropdowns.length : 0
+    );
+
     const renderLabel = index => (
       <FlexContainer style={{ marginBottom: 0, marginTop: 0 }}>
         <span>
@@ -57,7 +66,7 @@ class CorrectAnswers extends Component {
           onClick={e => {
             e.stopPropagation();
             onCloseTab(index);
-            this.updateCountTabs(validation.alt_responses.length);
+            this.updateCountTabs(maxAltLen);
           }}
           data-cy="del-alter"
         />
@@ -65,10 +74,10 @@ class CorrectAnswers extends Component {
     );
 
     const renderAltResponses = () => {
-      if (validation && validation.alt_responses && validation.alt_responses.length) {
-        this.updateCountTabs(validation.alt_responses.length + 1);
+      if (isAlt) {
+        this.updateCountTabs(maxAltLen + 1);
 
-        return validation.alt_responses.map((res, i) => <Tab key={i} label={renderLabel(i)} type="primary" />);
+        return new Array(maxAltLen).fill(true).map((res, i) => <Tab key={i} label={renderLabel(i)} type="primary" />);
       }
 
       return null;
@@ -104,7 +113,7 @@ class CorrectAnswers extends Component {
 
         <div>
           <Tabs value={correctTab} onChange={onTabChange} extra={renderPlusButton()} style={{ marginBottom: 10 }}>
-            {tabs >= 1 && (
+            {tabs > 1 && (
               <Tab
                 type="primary"
                 data_cy="correct"

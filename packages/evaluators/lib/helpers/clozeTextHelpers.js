@@ -9,15 +9,7 @@ exports.getClozeTextEvaluation = exports.getClozeTextMatches = exports.isLessTha
 
 var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
-var levenshteinDistance = function levenshteinDistance(s, t) {
-  if (!s.length) return t.length;
-  if (!t.length) return s.length;
-  return Math.min(
-    levenshteinDistance(s.substr(1), t) + 1,
-    levenshteinDistance(t.substr(1), s) + 1,
-    levenshteinDistance(s.substr(1), t.substr(1)) + (s[0] !== t[0] ? 1 : 0)
-  );
-};
+var _fastLevenshtein = require("fast-levenshtein");
 
 var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer, ignoreCase) {
   if (ignoreCase) {
@@ -25,7 +17,7 @@ var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer
     validAnswer = validAnswer.toLowerCase();
   }
 
-  var mistakeCount = levenshteinDistance(userAnswer, validAnswer);
+  var mistakeCount = (0, _fastLevenshtein.get)(userAnswer, validAnswer);
   return mistakeCount < 2;
 };
 

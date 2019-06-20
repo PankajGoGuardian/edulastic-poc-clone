@@ -15,7 +15,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const {
     response_ids: { dropDowns }
   } = item;
-  const { index } = find(dropDowns, res => res.id === id);
+  const { index } = find(dropDowns, res => res.id === id) || {};
   const { ui_style: uiStyle } = item;
   const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
   // const isChecked = checked && !isEmpty(evaluation);
@@ -50,7 +50,7 @@ ClozeDropDown.propTypes = {
 export default ClozeDropDown;
 
 const StyeldSelect = styled(Select)`
-  min-width: 80px;
+  min-width: 120px;
   margin: 0px 4px;
   width: ${({ width }) => (!width ? null : `${width}`)};
   min-height: 35px;

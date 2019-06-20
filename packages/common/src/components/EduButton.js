@@ -13,17 +13,17 @@ const StyledButton = styled(Button)`
       fontWeight: 600,
       fontSize: "11px",
       textTransform: "uppercase",
-      color: lightBlueSecondary
+      color: "#00AD50"
     };
     if (props.type === "secondary") {
       style = {
         ...style,
         ...{
-          background: green,
+          background: "#42d184",
           color: white,
           border: "none",
           ":hover, :focus": {
-            background: greenDark,
+            background: "#42d184",
             color: white
           }
         }
@@ -33,11 +33,11 @@ const StyledButton = styled(Button)`
       style = {
         ...style,
         ...{
-          background: newBlue,
+          background: "#00AD50",
           color: white,
           border: "none",
           ":hover, :focus": {
-            background: darkBlue,
+            background: "#00AD50",
             color: white
           }
         }
@@ -46,4 +46,10 @@ const StyledButton = styled(Button)`
 
     return style;
   }};
+  &:hover,
+  &:focus {
+    border-color: #00ad50;
+    outline-color: #00ad50;
+    color: #00ad50;
+  }
 `;

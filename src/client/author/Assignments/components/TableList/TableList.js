@@ -187,7 +187,7 @@ class TableList extends Component {
         title: "Assignment Name",
         dataIndex: "name",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.name.localeCompare(b.name, "fr", { ignorePunctuation: true }),
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (
@@ -205,7 +205,7 @@ class TableList extends Component {
         title: "Class",
         dataIndex: "class",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.class - b.class,
         width: "11%",
         render: text => (
           <ExpandDivdier data-cy="ButtonToShowAllClasses">
@@ -218,7 +218,7 @@ class TableList extends Component {
         title: "Type",
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.testType.localeCompare(b.testType),
         width: "11%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
@@ -226,7 +226,6 @@ class TableList extends Component {
         title: "Assigned by",
         dataIndex: "assigned",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
         width: "15%",
         render: text => <GreyFont> {text} </GreyFont>
       },
@@ -234,7 +233,6 @@ class TableList extends Component {
         title: "Status",
         dataIndex: "status",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
         width: "12%",
         render: () => <GreyFont>{t("common.assigned")} </GreyFont>
       },
@@ -242,7 +240,6 @@ class TableList extends Component {
         title: "Submitted",
         dataIndex: "submitted",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
         width: "16%",
         render: text => <GreyFont> {text} </GreyFont>
       },
@@ -250,7 +247,7 @@ class TableList extends Component {
         title: "Graded",
         dataIndex: "graded",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.graded - b.graded,
         width: "14%",
         render: text => <GreyFont> {text} </GreyFont>
       },

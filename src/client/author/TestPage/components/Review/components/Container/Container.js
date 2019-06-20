@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
@@ -92,6 +92,7 @@ class Review extends PureComponent {
 
     this.setSelected([]);
     setData(newData);
+    message.success("Selected testItems removed successfully");
   };
 
   handleCollapse = () => {
@@ -172,6 +173,7 @@ class Review extends PureComponent {
       onChangeGrade,
       onChangeSubjects,
       questions,
+      owner,
       itemsSubjectAndGrade
     } = this.props;
     const { isCollapse, isModalVisible, item } = this.state;
@@ -206,16 +208,18 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              <HeaderBar
-                onSelectAll={this.handleSelectAll}
-                itemTotal={test.testItems.length}
-                selectedItems={selected}
-                onRemoveSelected={this.handleRemoveSelected}
-                onCollapse={this.handleCollapse}
-                onMoveTo={this.handleMoveTo}
-                windowWidth={windowWidth}
-                setCollapse={isCollapse}
-              />
+              {owner && (
+                <HeaderBar
+                  onSelectAll={this.handleSelectAll}
+                  itemTotal={test.testItems.length}
+                  selectedItems={selected}
+                  onRemoveSelected={this.handleRemoveSelected}
+                  onCollapse={this.handleCollapse}
+                  onMoveTo={this.handleMoveTo}
+                  windowWidth={windowWidth}
+                  setCollapse={isCollapse}
+                />
+              )}
             </SecondHeader>
             <Paper>
               {isCollapse ? (
@@ -235,6 +239,7 @@ class Review extends PureComponent {
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
                   types={types}
+                  owner={owner}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -254,6 +259,7 @@ class Review extends PureComponent {
               questionsCount={questionsCount}
               grades={grades}
               subjects={subjects}
+              owner={owner}
               totalPoints={getTotalScore(test.testItems)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
@@ -264,6 +270,7 @@ class Review extends PureComponent {
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
+          owner={owner}
           page="review"
           data={item}
         />
@@ -281,6 +288,7 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  owner: PropTypes.bool,
   current: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   questions: PropTypes.object.isRequired

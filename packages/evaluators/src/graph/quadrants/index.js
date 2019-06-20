@@ -59,26 +59,29 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
     result.commonResult = true;
 
     for (let i = 0; i < relatedIds.length; i++) {
+      const relatedShape = trueAnswerValue.find(item => item.id === relatedIds[i]);
       const sameShapes = result.details.filter(item => item.relatedId === relatedIds[i]);
-      const sameShapesType = userResponse.find(item => item.id === sameShapes[0].id).type;
 
       if (
         sameShapes.length > 1 &&
-        sameShapesType !== ShapeTypes.POINT &&
-        sameShapesType !== ShapeTypes.SEGMENT &&
-        sameShapesType !== ShapeTypes.VECTOR &&
-        sameShapesType !== ShapeTypes.POLYGON &&
-        sameShapesType !== ShapeTypes.POLYNOM
+        relatedShape.type !== ShapeTypes.POINT &&
+        relatedShape.type !== ShapeTypes.SEGMENT &&
+        relatedShape.type !== ShapeTypes.VECTOR &&
+        relatedShape.type !== ShapeTypes.POLYGON &&
+        relatedShape.type !== ShapeTypes.POLYNOM
       ) {
-        const allowedSubElementsIds = userResponse.find(item => item.id === sameShapes[0].id).subElementsIds;
+        const firstShape = userResponse.find(item => item.id === sameShapes[0].id);
         for (let j = 1; j < sameShapes.length; j++) {
           const checkableShape = userResponse.find(item => item.id === sameShapes[j].id);
           switch (checkableShape.type) {
+            case ShapeTypes.RAY:
+            case ShapeTypes.PARABOLA:
             case ShapeTypes.CIRCLE:
             case ShapeTypes.EXPONENT:
             case ShapeTypes.LOGARITHM:
               if (
-                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+                !compareShapes.compare(firstShape.subElementsIds.endPoint, checkableShape.subElementsIds.endPoint, true)
+                  .result
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -87,23 +90,42 @@ const checkAnswer = (answer, userResponse, ignoreRepeatedShapes, ignoreLabels) =
 
             case ShapeTypes.ELLIPSE:
             case ShapeTypes.HYPERBOLA:
-              if (!compareShapes.compare(checkableShape.subElementsIds[2], allowedSubElementsIds[2]).result) {
+              if (!compareShapes.compare(firstShape.subElementsIds[2], checkableShape.subElementsIds[2], true).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
               break;
 
-            case ShapeTypes.PARABOLA:
             case ShapeTypes.SINE:
             case ShapeTypes.TANGENT:
             case ShapeTypes.SECANT:
             case ShapeTypes.LINE:
-            case ShapeTypes.RAY:
             default:
               if (
-                !compareShapes.compare(checkableShape.subElementsIds.startPoint, allowedSubElementsIds.startPoint)
-                  .result ||
-                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+                !(
+                  compareShapes.compare(
+                    firstShape.subElementsIds.startPoint,
+                    checkableShape.subElementsIds.startPoint,
+                    true
+                  ).result &&
+                  compareShapes.compare(
+                    firstShape.subElementsIds.endPoint,
+                    checkableShape.subElementsIds.endPoint,
+                    true
+                  ).result
+                ) &&
+                !(
+                  compareShapes.compare(
+                    firstShape.subElementsIds.startPoint,
+                    checkableShape.subElementsIds.endPoint,
+                    true
+                  ).result &&
+                  compareShapes.compare(
+                    firstShape.subElementsIds.endPoint,
+                    checkableShape.subElementsIds.startPoint,
+                    true
+                  ).result
+                )
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;

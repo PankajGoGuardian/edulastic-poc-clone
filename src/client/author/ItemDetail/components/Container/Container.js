@@ -357,6 +357,7 @@ class Container extends Component {
       modalItemId,
       onModalClose,
       toggleSideBar,
+      currentAuthorId,
       history,
       setItemLevelScore,
       setItemLevelScoring
@@ -369,7 +370,6 @@ class Container extends Component {
       showPublishButton =
         (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
     }
-
     return (
       <Layout>
         {showModal && item && (

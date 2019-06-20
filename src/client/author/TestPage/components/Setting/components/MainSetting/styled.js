@@ -151,7 +151,7 @@ export const RadioGroup = styled(Radio.Group)`
 
 export const TestTypeSelect = styled(Select)`
   height: 40px;
-  width: 20%;
+  width: 30%;
   margin-right: 30px;
 `;
 

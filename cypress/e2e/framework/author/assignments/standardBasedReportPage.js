@@ -39,7 +39,7 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
                 queKey.split(".")[0],
                 attemptType
               );
-              const performance = Cypress._.round((score / points) * 100, 2);
+              const performance = score / points;
               scoreObtain += score;
               maxScore += points;
               perfPerQue.push(performance);
@@ -79,21 +79,20 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
   calculateScoreAndPerfForStandard = performanceData => {
     let stdScore = 0;
     let stdMax = 0;
-    let perfSum = 0;
-    const overallAvgStdPerformance = [];
+    let overallAvgStdPerformance = [];
+    const allStudentPerformance = [];
+
     const { students } = performanceData;
     Object.keys(students).forEach(student => {
       const { obtain, max, performanceAllQue } = students[student];
-      overallAvgStdPerformance.concat(performanceAllQue);
+      overallAvgStdPerformance = overallAvgStdPerformance.concat(performanceAllQue);
       stdScore += obtain;
       stdMax += max;
+      allStudentPerformance.push(obtain / max);
     });
 
-    overallAvgStdPerformance.forEach(perf => {
-      perfSum += perf;
-    });
-
-    return Cypress._.round(perfSum / overallAvgStdPerformance.length, 2);
+    return Cypress._.round((Cypress._.sum(allStudentPerformance) / allStudentPerformance.length) * 100, 2); // avg of student individual performance
+    // return Cypress._.round((Cypress._.sum(overallAvgStdPerformance) / overallAvgStdPerformance.length) * 100, 2); // avg of all student attempts
     // return Cypress._.round((stdScore / stdMax) * 100, 2);
   };
 
@@ -125,8 +124,8 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
             .last()
             .find("span")
             .eq(1)
-            .should("have.text", `(${Cypress._.round(perfSum / performanceAllQue.length, 2)}%)`);
-          // .should("have.text", `(${Cypress._.round((obtain / max) * 100, 2)}%)`);
+            // .should("have.text", `(${Cypress._.round((perfSum / performanceAllQue.length) * 100, 2)}%)`);
+            .should("have.text", `(${Cypress._.round((obtain / max) * 100, 2)}%)`);
         });
       });
   };
@@ -147,10 +146,10 @@ export default class StandardBasedReportPage extends LiveClassboardPage {
 
     cy.get("@row")
       .find("td")
-      .eq(2)
+      .eq(3)
       .then(ele => {
         cy.wrap(ele)
-          .find(".ant-progress-text")
+          .find("div")
           .should("have.text", `${stdPerf}%`);
       });
 

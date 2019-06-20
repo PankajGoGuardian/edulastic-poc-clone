@@ -9,7 +9,8 @@ import {
   COUNT_CHECK_ANSWER,
   SET_PASSWORD_VALIDATE_STATUS,
   TEST_ACTIVITY_LOADING,
-  SET_PASSWORD_STATUS_MESSAGE
+  SET_PASSWORD_STATUS_MESSAGE,
+  UPDATE_CURRENT_AUDIO_DEATILS
 } from "../constants/actions";
 
 const initialState = {
@@ -23,7 +24,10 @@ const initialState = {
   answerCheckByItemId: {},
   isPasswordValidated: false,
   loadingTestActivity: true,
-  passwordStatusMessage: ""
+  passwordStatusMessage: "",
+  currentPlayingDetails: {
+    qId: ""
+  }
 };
 
 const test = (state = initialState, { payload, type }) => {
@@ -99,6 +103,13 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         passwordStatusMessage: payload
+      };
+    case UPDATE_CURRENT_AUDIO_DEATILS:
+      return {
+        ...state,
+        currentPlayingDetails: {
+          qId: payload
+        }
       };
     default:
       return state;

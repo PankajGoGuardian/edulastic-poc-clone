@@ -5,7 +5,8 @@ import {
   SET_PASSWORD_VALIDATE_STATUS,
   GET_ASSIGNMENT_PASSWORD,
   SET_PASSWORD_STATUS_MESSAGE,
-  TEST_ACTIVITY_LOADING
+  TEST_ACTIVITY_LOADING,
+  UPDATE_CURRENT_AUDIO_DEATILS
 } from "../constants/actions";
 
 export const loadTestAction = payload => ({
@@ -38,5 +39,10 @@ export const setPasswordStatusAction = payload => ({
 
 export const setTestActivityLoadingAction = payload => ({
   type: TEST_ACTIVITY_LOADING,
+  payload
+});
+
+export const setCurrentAudioDetailsAction = payload => ({
+  type: UPDATE_CURRENT_AUDIO_DEATILS,
   payload
 });

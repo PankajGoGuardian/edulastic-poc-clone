@@ -76,6 +76,8 @@ class DistrictPolicyForm extends Component {
       teacherSignUp: true,
       studentSignUp: true,
 
+      searchAndAddStudents: true,
+
       googleUsernames: true,
       office365Usernames: true,
       firstNameAndLastName: true,
@@ -180,6 +182,7 @@ class DistrictPolicyForm extends Component {
       cleverSignOn: districtPolicyData.cleverSignOn,
       teacherSignUp: districtPolicyData.teacherSignUp,
       studentSignUp: districtPolicyData.studentSignUp,
+      searchAndAddStudents: districtPolicyData.searchAndAddStudents,
       googleUsernames: districtPolicyData.googleUsernames,
       office365Usernames: districtPolicyData.office365Usernames,
       firstNameAndLastName: districtPolicyData.firstNameAndLastName,
@@ -244,6 +247,20 @@ class DistrictPolicyForm extends Component {
               </Checkbox>
               <Checkbox checked={districtPolicy.studentSignUp} onChange={e => this.change(e, "studentSignUp")}>
                 Allow Students to sign-up
+              </Checkbox>
+            </StyledElementDiv>
+          </StyledRow>
+          <StyledRow>
+            <StyledLabel>
+              Student Enrollment <br />
+              Policy:
+            </StyledLabel>
+            <StyledElementDiv>
+              <Checkbox
+                checked={districtPolicy.searchAndAddStudents}
+                onChange={e => this.change(e, "searchAndAddStudents")}
+              >
+                Allow Teachers to search and enroll
               </Checkbox>
             </StyledElementDiv>
           </StyledRow>

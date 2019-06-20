@@ -226,7 +226,7 @@ class Display extends Component {
                     ...btnStyle,
                     borderStyle: smallSize ? "dashed" : "solid",
                     width: `${parseInt(responseContainer.width, 10)}px`,
-                    overflow: "hidden",
+                    // overflow: "hidden",
                     height: `${parseInt(responseContainer.height, 10)}px`,
                     minWidth: response.minWidth,
                     minHeight: response.minHeight

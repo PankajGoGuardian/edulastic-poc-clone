@@ -9,5 +9,5 @@ export const ImageContainer = styled.div`
   padding: 0px;
   width: ${props => (props.width ? `${props.width}px` : props.imageUrl ? "auto" : "100%")};
   height: ${({ height }) => (!height ? "100%" : `${height}px`)};
-  overflow-y: auto;
+  overflow: hidden;
 `;

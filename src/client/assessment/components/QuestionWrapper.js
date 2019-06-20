@@ -425,7 +425,7 @@ const enhance = compose(
   connect(
     state => ({
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen
+      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       userRole: getUserRole(state)
     }),
     {

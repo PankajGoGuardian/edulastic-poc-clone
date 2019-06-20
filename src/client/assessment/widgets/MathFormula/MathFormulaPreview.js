@@ -143,7 +143,6 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-
     return (
       <div>
         <QuestionTitleWrapper>
@@ -173,7 +172,7 @@ class MathFormulaPreview extends Component {
             <MathInput
               symbols={item.symbols}
               numberPad={item.numberPad}
-              value={latex ? latex.replace("\\MathQuillMathField{}", "") : ""}
+              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}

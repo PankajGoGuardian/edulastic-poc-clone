@@ -1093,6 +1093,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {

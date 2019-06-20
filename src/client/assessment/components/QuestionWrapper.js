@@ -291,16 +291,7 @@ class QuestionWrapper extends Component {
       >
         <ThemeProvider theme={themes.default}>
           <>
-            {canShowPlayer ? (
-              <AudioControls
-                shuffledOptions={shuffledOptsOrder}
-                item={data}
-                qId={data.id}
-                audioSrc={data.tts.titleAudioURL}
-              />
-            ) : (
-              ""
-            )}
+            {canShowPlayer ? <AudioControls item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} /> : ""}
             <QuestionContainer
               className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}
@@ -347,7 +338,6 @@ class QuestionWrapper extends Component {
                     fillSections={this.fillSections}
                     showQuestionNumber={showFeedback}
                     flowLayout={flowLayout}
-                    onShuffleOptions={this.handleShuffledOptions}
                     {...userAnswerProps}
                   />
                 </div>

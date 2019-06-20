@@ -2,14 +2,11 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { Select, Checkbox, Input } from "antd";
-import { cloneDeep } from "lodash";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { math } from "@edulastic/constants";
-
-import KeyPadOptions from "../../../components/KeyPadOptions";
 
 import { Subtitle } from "../../../styled/Subtitle";
 import { Row } from "../../../styled/WidgetOptions/Row";
@@ -17,9 +14,6 @@ import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Widget } from "../../../styled/Widget";
 import FontSizeSelect from "../../../components/FontSizeSelect";
-
-import ResponseContainers from "./ResponseContainers";
-import TextBlocks from "./TextBlocks";
 
 class Layout extends Component {
   componentDidMount = () => {
@@ -46,45 +40,13 @@ class Layout extends Component {
   }
 
   render() {
-    const { onChange, uiStyle, t, responseContainers, textBlocks, item, advancedAreOpen } = this.props;
+    const { onChange, uiStyle, t, advancedAreOpen } = this.props;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
         ...uiStyle,
         [prop]: value
       });
-    };
-
-    const changeResponseContainers = ({ index, prop, value }) => {
-      const newContainers = cloneDeep(responseContainers);
-      newContainers[index][prop] = value;
-      onChange("response_containers", newContainers);
-    };
-
-    const addResponseContainer = () => {
-      onChange("response_containers", [...responseContainers, {}]);
-    };
-
-    const deleteResponseContainer = index => {
-      const newContainers = cloneDeep(responseContainers);
-      newContainers.splice(index, 1);
-      onChange("response_containers", newContainers);
-    };
-
-    const changeTextBlock = ({ index, value }) => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks[index] = value;
-      onChange("text_blocks", newBlocks);
-    };
-
-    const addTextBlock = () => {
-      onChange("text_blocks", [...textBlocks, ""]);
-    };
-
-    const deleteTextBlock = index => {
-      const newBlocks = cloneDeep(textBlocks);
-      newBlocks.splice(index, 1);
-      onChange("text_blocks", newBlocks);
     };
 
     return (
@@ -137,17 +99,6 @@ class Layout extends Component {
             </Checkbox>
           </Col>
         </Row>
-
-        <KeyPadOptions onChange={onChange} item={item} />
-
-        <ResponseContainers
-          containers={responseContainers}
-          onChange={changeResponseContainers}
-          onAdd={addResponseContainer}
-          onDelete={deleteResponseContainer}
-        />
-
-        <TextBlocks blocks={textBlocks} onChange={changeTextBlock} onAdd={addTextBlock} onDelete={deleteTextBlock} />
       </Widget>
     );
   }
@@ -155,10 +106,7 @@ class Layout extends Component {
 
 Layout.propTypes = {
   onChange: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired,
-  responseContainers: PropTypes.array,
   t: PropTypes.func.isRequired,
-  textBlocks: PropTypes.array,
   uiStyle: PropTypes.object,
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
@@ -166,8 +114,6 @@ Layout.propTypes = {
 };
 
 Layout.defaultProps = {
-  responseContainers: [],
-  textBlocks: [],
   uiStyle: {
     type: "standard",
     fontsize: "normal",

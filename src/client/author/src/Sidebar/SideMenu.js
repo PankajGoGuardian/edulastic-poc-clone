@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
+import { white, tabletWidth } from "@edulastic/colors";
 import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -110,10 +111,10 @@ class SideMenu extends Component {
     margin-right: ${() => (isSidebarCollapsed ? "0rem" : "1rem")};
 
     .ant-menu-item-active > & {
-      fill: #1890ff;
+      fill: rgb(67, 75, 93);
     }
     .ant-menu-item-selected > & {
-      fill: rgb(67, 75, 93);
+      fill: ${white};
     }
   `;
 
@@ -227,7 +228,7 @@ class SideMenu extends Component {
                 onClick={item => this.handleMenu(item)}
               >
                 {this.MenuItems.map((menu, index) => {
-                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed);
+                  const MenuIcon = this.renderIcon(menu.icon, isCollapsed, menu.stroke);
                   const isItemVisible = !menu.role || (menu.role && menu.role.includes(userRole));
                   return (
                     <MenuItem key={index.toString()} onClick={this.toggleMenu} visible={isItemVisible}>
@@ -469,7 +470,7 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 6px 0px 10px;
+  padding: 9px 0px 10px;
   min-height: calc(100% - 100px);
 
   @media (max-width: ${tabletWidth}) {
@@ -494,6 +495,7 @@ const Menu = styled(AntMenu)`
       &:before {
         opacity: 1;
       }
+      
       &.removeSelectedBorder {
         border: none;
       }
@@ -530,7 +532,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    height: 64px;
+    height: 48px;
     padding: 10px 39px !important;
     max-width: 100%;
     
@@ -544,7 +546,7 @@ const Menu = styled(AntMenu)`
     justify-content: center;
     margin-top: 14px;
     padding: 10px 18px !important;
-    height: 64px;
+    height: 48px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {

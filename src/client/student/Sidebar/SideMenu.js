@@ -19,7 +19,7 @@ import {
   IconQuestion
 } from "@edulastic/icons";
 import { withWindowSizes } from "@edulastic/common";
-import { tabletWidth } from "@edulastic/colors";
+import { white, tabletWidth } from "@edulastic/colors";
 import { toggleSideBarAction } from "./ducks";
 import { logoutAction } from "../Login/ducks";
 
@@ -422,7 +422,7 @@ const MenuWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  padding: 6px 0px 10px;
+  padding: 9px 0px 10px;
   min-height: calc(100% - 100px);
 
   @media (max-width: ${tabletWidth}) {
@@ -445,8 +445,13 @@ const Menu = styled(AntMenu)`
       &:before {
         opacity: 1;
       }
+      
       &.removeSelectedBorder {
         border: none;
+      }
+      
+      svg {
+        fill: ${white};
       }
     }
   }
@@ -481,7 +486,7 @@ const Menu = styled(AntMenu)`
     display: flex;
     align-items: center;
     margin-top: 16px;
-    height: 64px;
+    height: 48px;
     padding: 10px 39px !important;
     max-width: 100%;
     
@@ -495,7 +500,7 @@ const Menu = styled(AntMenu)`
     justify-content: center;
     margin-top: 14px;
     padding: 10px 18px !important;
-    height: 64px;
+    height: 48px;
     width: 100%;
   }
   &.ant-menu-inline > .ant-menu-item {

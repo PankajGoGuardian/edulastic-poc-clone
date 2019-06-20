@@ -23,6 +23,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
+import { FieldWrapper } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
 
 const EmptyWrapper = styled.div``;
@@ -185,6 +186,7 @@ class ClozeImageDragDrop extends Component {
                     cleanSections={cleanSections}
                     questionId={item.id}
                     imageOptions={item.imageOptions}
+                    item={item}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -219,17 +221,17 @@ class ClozeImageDragDrop extends Component {
                     >
                       {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
                     </Checkbox>
-                    <div style={{ alignItems: "center" }}>
-                      <InputNumber
-                        data-cy="drag-drop-image-max-res"
-                        min={1}
-                        max={10}
-                        defaultValue={item.maxRespCount}
-                        onChange={val => this.onItemPropChange("maxRespCount", val)}
-                      />
-                      <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
-                    </div>
                   </CorrectAnswerOptions>
+                  <FieldWrapper>
+                    <InputNumber
+                      data-cy="drag-drop-image-max-res"
+                      min={1}
+                      max={10}
+                      defaultValue={item.maxRespCount}
+                      onChange={val => this.onItemPropChange("maxRespCount", val)}
+                    />
+                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                  </FieldWrapper>
                   <Annotations editable />
                 </Widget>
               </div>

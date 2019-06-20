@@ -652,17 +652,14 @@ class ComposeQuestion extends Component {
               <Subtitle>{t("component.cloze.imageDragDrop.editAriaLabels")}</Subtitle>
 
               <FieldLabel>{t("component.cloze.imageDropDown.imagealtertext")}</FieldLabel>
-
-              <FieldWrapper>
+              <div className="imagelabeldragdrop-droppable iseditablearialabel">
                 <Input
                   data-cy="image-alternate-input"
                   size="large"
-                  style={{ width: 220 }}
                   defaultValue={imageAlterText}
                   onChange={val => this.onItemPropChange("imageAlterText", val.target.value)}
                 />
-                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.imagealtertext")}</PaddingDiv>
-              </FieldWrapper>
+              </div>
 
               <FieldLabel>{t("component.cloze.imageText.responsesaltertext")}</FieldLabel>
               {responses.map((responseContainer, index) => (

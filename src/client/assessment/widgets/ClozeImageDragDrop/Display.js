@@ -1,10 +1,12 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined } from "lodash";
 import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
-import { white } from "@edulastic/colors";
+import { response, clozeImage } from "@edulastic/constants";
+import striptags from "striptags";
+
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
 
@@ -19,13 +21,11 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import { RelativeContainer } from "../../styled/RelativeContainer";
+import { StyledPreviewImage } from "./styled/StyledPreviewImage";
+import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
+import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
-
-import { response } from "@edulastic/constants";
-
-import striptags from "striptags";
-import { canvasDimensions, clozeImage } from "@edulastic/constants";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -116,6 +116,55 @@ class Display extends Component {
     return possibleResps;
   };
 
+  getWidth = () => {
+    const { item } = this.props;
+    const { imageOriginalWidth, imageWidth } = item;
+    const { maxWidth } = clozeImage;
+
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+
+    if (!isUndefined(imageWidth)) {
+      return imageWidth > 0 ? imageWidth : maxWidth;
+    }
+
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
+      return imageOriginalWidth;
+    }
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
+      return maxWidth;
+    }
+    return maxWidth;
+  };
+
+  getHeight = () => {
+    const { item } = this.props;
+    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
+    const { maxHeight } = clozeImage;
+    const imageWidth = this.getWidth();
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
+      return imageOriginalHeight;
+    }
+
+    return maxHeight;
+  };
+
   render() {
     const {
       smallSize,
@@ -129,18 +178,13 @@ class Display extends Component {
       validation,
       evaluation,
       imageUrl,
-      responses: userRespos,
       responseContainers,
       imageAlterText,
-      imageWidth,
-      imageHeight,
-      imageTitle,
       showDashedBorder,
       backgroundColor,
       instructorStimulus,
       theme,
       showQuestionNumber,
-      qIndex,
       item,
       imageOptions,
       showBorder
@@ -163,62 +207,40 @@ class Display extends Component {
       heightpx: heightpx !== 0 ? heightpx : "auto",
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
+    const { maxHeight, maxWidth } = clozeImage;
+    const imageWidth = this.getWidth();
+    const imageHeight = this.getHeight();
+    const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const canvasWidth = imageWidth + +(imageOptions.x || 0);
 
-    const renderImage = () =>
-      imageUrl ? (
-        <img
-          src={imageUrl || ""}
-          style={{
-            position: "absolute",
-            userSelect: "none",
-            pointerEvents: "none",
-            top: imageOptions.y || 0,
-            left: imageOptions.x || 0,
-            width: `${imageWidth}px`,
-            height: `${imageHeight}px`,
-            maxHeight: `${canvasDimensions.maxHeight}px`,
-            maxWidth: `${canvasDimensions.maxWidth}px`
-          }}
-          alt={imageAlterText}
-          title={imageTitle}
-        />
-      ) : (
-        <div
-          style={{
-            background: white,
-            width: uiStyle.widthpx || "100%",
-            height: uiStyle.widthpx || 400,
-            userSelect: "none",
-            pointerEvents: "none"
-          }}
-        />
-      );
+    const renderImage = () => (
+      <StyledPreviewImage
+        imageSrc={imageUrl || ""}
+        width={imageWidth}
+        height={imageHeight}
+        alt={imageAlterText}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
+        style={{
+          position: "absolute",
+          top: imageOptions.y || 0,
+          left: imageOptions.x || 0
+        }}
+      />
+    );
 
     const drop = data => data;
 
     const previewTemplateBoxLayout = (
-      <div
-        className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
-        style={{
-          width: `${canvasDimensions.maxWidth}px`,
-          height: `${canvasDimensions.maxHeight}px`,
-          margin: "auto",
-          fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
-          position: "relative",
-          maxHeight: `${canvasDimensions.maxHeight}px`,
-          maxWidth: `${canvasDimensions.maxWidth}px`
-        }}
+      <StyledPreviewTemplateBox
+        smallSize={smallSize}
+        fontSize={fontSize}
+        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
-        <div
-          data-cy="drag-drop-board"
-          style={{
-            position: "relative",
-            top: 0,
-            left: 0,
-            width: "auto",
-            minWidth: `${canvasDimensions.maxWidth}px`,
-            minHeight: `${canvasDimensions.maxHeight}px`
-          }}
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
         >
           <div style={{ position: "relative" }}>
             <AnnotationRnd
@@ -253,6 +275,7 @@ class Display extends Component {
             } else {
               btnStyle.width = btnStyle.widthpx;
             }
+            // eslint-disable-next-line no-unused-vars
             let indexStr = "";
             switch (stemnumeration) {
               case "lowercase": {
@@ -330,8 +353,8 @@ class Display extends Component {
               </DropContainer>
             );
           })}
-        </div>
-      </div>
+        </StyledPreviewContainer>
+      </StyledPreviewTemplateBox>
     );
 
     const checkboxTemplateBoxLayout = (
@@ -340,7 +363,8 @@ class Display extends Component {
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         image={renderImage()}
-        imageWidth={imageWidth}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
@@ -485,11 +509,12 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
-  imageTitle: PropTypes.string,
-  imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  showQuestionNumber: PropTypes.bool,
+  item: PropTypes.object,
+  showBorder: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -507,9 +532,7 @@ Display.defaultProps = {
   validation: {},
   imageUrl: undefined,
   imageAlterText: "",
-  imageTitle: "",
   maxRespCount: 1,
-  imageWidth: 600,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
@@ -526,7 +549,10 @@ Display.defaultProps = {
     responsecontainerindividuals: []
   },
   instructorStimulus: "",
-  imageOptions: {}
+  imageOptions: {},
+  showBorder: false,
+  showQuestionNumber: false,
+  item: {}
 };
 
 export default withTheme(withCheckAnswerButton(Display));

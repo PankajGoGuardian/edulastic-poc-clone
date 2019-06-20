@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -150,7 +151,8 @@ class CorrectAnswers extends Component {
       uiStyle,
       maxRespCount,
       showDashedBorder,
-      imageOptions
+      imageOptions,
+      item
     } = this.props;
     const { value } = this.state;
     return (
@@ -186,6 +188,7 @@ class CorrectAnswers extends Component {
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 backgroundColor={backgroundColor}
                 imageOptions={imageOptions}
+                item={item}
               />
             </TabContainer>
           )}
@@ -213,6 +216,7 @@ class CorrectAnswers extends Component {
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                       imageOptions={imageOptions}
+                      item={item}
                     />
                   </TabContainer>
                 );
@@ -241,11 +245,13 @@ CorrectAnswers.propTypes = {
   backgroundColor: PropTypes.string,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
+  imageHeight: PropTypes.number,
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  item: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
@@ -258,6 +264,7 @@ CorrectAnswers.defaultProps = {
   backgroundColor: "#fff",
   imageUrl: "",
   imageAlterText: "",
+  imageHeight: 490,
   imageWidth: 600,
   maxRespCount: 1,
   uiStyle: {
@@ -270,7 +277,8 @@ CorrectAnswers.defaultProps = {
   },
   fillSections: () => {},
   cleanSections: () => {},
-  imageOptions: {}
+  imageOptions: {},
+  item: {}
 };
 
 const enhance = compose(

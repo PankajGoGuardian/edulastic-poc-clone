@@ -9,6 +9,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
+import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
@@ -100,6 +101,187 @@ const MathFormulaAnswerMethod = ({
   const methodOptions = methodOptionsConst[method];
   const isActive = showAdditionals.find(el => el === `${method}_${index}`);
 
+  const renderMethodsOptions = () =>
+    methodOptions.map(methodOption => {
+      switch (methodOption) {
+        case "isSimpleFraction":
+          return (
+            <CheckOption
+              dataCy="answer-is-simple-fraction"
+              optionKey="isSimpleFraction"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isSimpleFraction")}
+            />
+          );
+        case "isMixedFraction":
+          return (
+            <CheckOption
+              dataCy="answer-is-mixed-fraction"
+              optionKey="isMixedFraction"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isMixedFraction")}
+            />
+          );
+        case "isExpanded":
+          return (
+            <CheckOption
+              dataCy="answer-is-expanded"
+              optionKey="isExpanded"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isExpanded")}
+            />
+          );
+        case "isFactorised":
+          return (
+            <CheckOption
+              dataCy="answer-is-factorised"
+              optionKey="isFactorised"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isFactorised")}
+            />
+          );
+        case "ignoreCoefficientOfOne":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-coefficient-of-one"
+              optionKey="ignoreCoefficientOfOne"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.ignoreCoefficientOfOne")}
+            />
+          );
+        case "ignoreTrailingZeros":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-trailing-zeros"
+              optionKey="ignoreTrailingZeros"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.ignoreTrailingZeros")}
+            />
+          );
+        case "ignoreLeadingAndTrailingSpaces":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-leading-and-trailing-spaces"
+              optionKey="ignoreLeadingAndTrailingSpaces"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.ignoreLeadingAndTrailingSpaces")}
+            />
+          );
+        case "allowInterval":
+          return (
+            <CheckOption
+              dataCy="answer-allow-interval"
+              optionKey="allowInterval"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.allowInterval")}
+            />
+          );
+        case "ignoreText":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-text"
+              optionKey="treatMultipleSpacesAsOne"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.ignoreText")}
+            />
+          );
+        case "isDecimal":
+          return (
+            <CheckOption
+              dataCy="answer-is-decimal"
+              optionKey="isDecimal"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.isDecimal")}
+            />
+          );
+        case "ignoreOrder":
+          return (
+            <CheckOption
+              dataCy="answer-ignore-order"
+              optionKey="ignoreOrder"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.ignoreOrder")}
+            />
+          );
+        case "allowEulersNumber":
+          return (
+            <CheckOption
+              dataCy="answer-allow-eulers-number"
+              optionKey="allowEulersNumber"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.treatEAsEulersNumber")}
+            />
+          );
+        case "compareSides":
+          return (
+            <CheckOption
+              dataCy="answer-compare-sides"
+              optionKey="compareSides"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.compareSides")}
+            />
+          );
+        case "treatMultipleSpacesAsOne":
+          return (
+            <CheckOption
+              dataCy="answer-treat-multiple-spaces-as-one"
+              optionKey="treatMultipleSpacesAsOne"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.treatMultipleSpacesAsOne")}
+            />
+          );
+        case "inverseResult":
+          return (
+            <CheckOption
+              dataCy="answer-inverse-result"
+              optionKey="inverseResult"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.inverseResult")}
+            />
+          );
+        case "tolerance":
+          return (
+            <WidgetSecondMethod>
+              <Tolerance options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
+        case "significantDecimalPlaces":
+          return (
+            <WidgetSecondMethod>
+              <SignificantDecimalPlaces options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
+        case "setThousandsSeparator":
+          return (
+            <ThousandsSeparators
+              separators={options.setThousandsSeparator}
+              onChange={handleChangeThousandsSeparator}
+              onAdd={handleAddThousandsSeparator}
+              onDelete={handleDeleteThousandsSeparator}
+            />
+          );
+        case "setDecimalSeparator":
+          return <DecimalSeparator options={options} onChange={changeOptions} />;
+        default:
+          return null;
+      }
+    });
+
   return (
     <Container data-cy="math-formula-answer">
       <StyledRow gutter={60}>
@@ -110,6 +292,8 @@ const MathFormulaAnswerMethod = ({
               symbols={item.symbols}
               numberPad={item.numberPad}
               value={value}
+              ALLOW
+              TOLERANCE
               onInput={val => {
                 onChange("value", val);
               }}
@@ -171,211 +355,7 @@ const MathFormulaAnswerMethod = ({
             </Col>
           </AdditionalCompareUsing>
 
-          {(methodOptions.includes("isSimpleFraction") || methodOptions.includes("isMixedFraction")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("isSimpleFraction") && (
-                <CheckOption
-                  dataCy="answer-is-simple-fraction"
-                  optionKey="isSimpleFraction"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.isSimpleFraction")}
-                />
-              )}
-              {methodOptions.includes("isMixedFraction") && (
-                <CheckOption
-                  dataCy="answer-is-mixed-fraction"
-                  optionKey="isMixedFraction"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.isMixedFraction")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("isExpanded") || methodOptions.includes("isFactorised")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("isExpanded") && (
-                <CheckOption
-                  dataCy="answer-is-expanded"
-                  optionKey="isExpanded"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.isExpanded")}
-                />
-              )}
-              {methodOptions.includes("isFactorised") && (
-                <CheckOption
-                  dataCy="answer-is-factorised"
-                  optionKey="isFactorised"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.isFactorised")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("ignoreCoefficientOfOne") || methodOptions.includes("ignoreTrailingZeros")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("ignoreCoefficientOfOne") && (
-                <CheckOption
-                  dataCy="answer-ignore-coefficient-of-one"
-                  optionKey="ignoreCoefficientOfOne"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.ignoreCoefficientOfOne")}
-                />
-              )}
-              {methodOptions.includes("ignoreTrailingZeros") && (
-                <CheckOption
-                  dataCy="answer-ignore-trailing-zeros"
-                  optionKey="ignoreTrailingZeros"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.ignoreTrailingZeros")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("ignoreLeadingAndTrailingSpaces") || methodOptions.includes("allowInterval")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("ignoreLeadingAndTrailingSpaces") && (
-                <CheckOption
-                  dataCy="answer-ignore-leading-and-trailing-spaces"
-                  optionKey="ignoreLeadingAndTrailingSpaces"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.ignoreLeadingAndTrailingSpaces")}
-                />
-              )}
-              {methodOptions.includes("allowInterval") && (
-                <CheckOption
-                  dataCy="answer-allow-interval"
-                  optionKey="allowInterval"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.allowInterval")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("ignoreText") || methodOptions.includes("isDecimal")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("ignoreText") && (
-                <CheckOption
-                  dataCy="answer-ignore-text"
-                  optionKey="treatMultipleSpacesAsOne"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.ignoreText")}
-                />
-              )}
-              {methodOptions.includes("isDecimal") && (
-                <CheckOption
-                  dataCy="answer-is-decimal"
-                  optionKey="isDecimal"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.isDecimal")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("ignoreOrder") || methodOptions.includes("allowEulersNumber")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("ignoreOrder") && (
-                <CheckOption
-                  dataCy="answer-ignore-order"
-                  optionKey="ignoreOrder"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.ignoreOrder")}
-                />
-              )}
-              {methodOptions.includes("allowEulersNumber") && (
-                <CheckOption
-                  dataCy="answer-allow-eulers-number"
-                  optionKey="allowEulersNumber"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.treatEAsEulersNumber")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("compareSides") || methodOptions.includes("treatMultipleSpacesAsOne")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("compareSides") && (
-                <CheckOption
-                  dataCy="answer-compare-sides"
-                  optionKey="compareSides"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.compareSides")}
-                />
-              )}
-              {methodOptions.includes("treatMultipleSpacesAsOne") && (
-                <CheckOption
-                  dataCy="answer-treat-multiple-spaces-as-one"
-                  optionKey="treatMultipleSpacesAsOne"
-                  options={options}
-                  onChange={changeOptions}
-                  label={t("component.math.treatMultipleSpacesAsOne")}
-                />
-              )}
-            </StyledRow>
-          )}
-
-          {methodOptions.includes("inverseResult") && (
-            <StyledRow gutter={60}>
-              <CheckOption
-                dataCy="answer-inverse-result"
-                optionKey="inverseResult"
-                options={options}
-                onChange={changeOptions}
-                label={t("component.math.inverseResult")}
-              />
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("tolerance") || methodOptions.includes("significantDecimalPlaces")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("tolerance") && (
-                <Col span={12}>
-                  <Tolerance options={options} onChange={changeOptions} />
-                </Col>
-              )}
-              {methodOptions.includes("significantDecimalPlaces") && (
-                <Col span={12}>
-                  <SignificantDecimalPlaces options={options} onChange={changeOptions} />
-                </Col>
-              )}
-            </StyledRow>
-          )}
-
-          {(methodOptions.includes("setThousandsSeparator") || methodOptions.includes("setDecimalSeparator")) && (
-            <StyledRow gutter={60}>
-              {methodOptions.includes("setThousandsSeparator") && (
-                <ThousandsSeparators
-                  separators={options.setThousandsSeparator}
-                  onChange={handleChangeThousandsSeparator}
-                  onAdd={handleAddThousandsSeparator}
-                  onDelete={handleDeleteThousandsSeparator}
-                />
-              )}
-              {methodOptions.includes("setDecimalSeparator") && (
-                <Col span={12}>
-                  <DecimalSeparator options={options} onChange={changeOptions} />
-                </Col>
-              )}
-            </StyledRow>
-          )}
+          <WidgetMethods>{renderMethodsOptions()}</WidgetMethods>
 
           {index + 1 === answer.length && (
             <AdditionalContainerRule>

@@ -63,7 +63,11 @@ const normalEvaluator = async ({ userResponse = {}, validation }) => {
     const dropDownValidation = dropDownAnswers[i];
     const clozeTextValidation = textAnswers[i];
     const mathValidation = mathAnswers[i];
-    const questionScore = textAnswers[i].score || 1;
+    const questionScore =
+      (textAnswers[i] && textAnswers[i].score) ||
+      (mathAnswers[i] && mathAnswers[i].score) ||
+      (dropDownAnswers[i] && dropDownAnswers[i].score) ||
+      1;
     let currentScore = 0;
     let evaluations = {};
 
@@ -193,7 +197,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const questionScore =
     (valid_inputs && valid_inputs.score) ||
     (valid_response && valid_response.score) ||
-    (valid_dropdown || valid_dropdown.score) ||
+    (valid_dropdown && valid_dropdown.score) ||
     1;
 
   let score = 0;

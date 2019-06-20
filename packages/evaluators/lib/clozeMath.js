@@ -229,7 +229,11 @@ var normalEvaluator =
                 dropDownValidation = dropDownAnswers[i];
                 clozeTextValidation = textAnswers[i];
                 mathValidation = mathAnswers[i];
-                questionScore = textAnswers[i].score || 1;
+                questionScore =
+                  (textAnswers[i] && textAnswers[i].score) ||
+                  (mathAnswers[i] && mathAnswers[i].score) ||
+                  (dropDownAnswers[i] && dropDownAnswers[i].score) ||
+                  1;
                 currentScore = 0;
                 evaluations = {};
                 maxScore = Math.max(questionScore, maxScore);
@@ -572,8 +576,7 @@ var mixAndMatchEvaluator =
                 questionScore =
                   (valid_inputs && valid_inputs.score) ||
                   (valid_response && valid_response.score) ||
-                  valid_dropdown ||
-                  valid_dropdown.score ||
+                  (valid_dropdown && valid_dropdown.score) ||
                   1;
                 score = 0;
                 optionCount =

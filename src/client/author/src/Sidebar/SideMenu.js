@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
 import ReactOutsideEvent from "react-outside-event";
-import { white, tabletWidth } from "@edulastic/colors";
+import { white, tabletWidth, dashBorderColor, fadedBlack, redHeart } from "@edulastic/colors";
 import { get } from "lodash";
 import { withRouter } from "react-router-dom";
 import PerfectScrollbar from "react-perfect-scrollbar";
@@ -22,7 +22,6 @@ import {
   IconPlaylist,
   IconSettings
 } from "@edulastic/icons";
-import { dashBorderColor, fadedBlack, redHeart, tabletWidth } from "@edulastic/colors";
 import { withWindowSizes } from "@edulastic/common";
 import { getLastPlayListSelector } from "../../Playlist/ducks";
 import { logoutAction } from "../actions/auth";

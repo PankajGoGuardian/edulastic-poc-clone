@@ -160,7 +160,8 @@ class InviteMultipleStudentModal extends React.Component {
   };
 
   onAddMultipleStudents = async (
-    setInfoModel,
+    setinfoModelVisible,
+    setInfoModalData,
     students,
     selClass,
     setIsAddMultipleStudentsModal,
@@ -174,17 +175,16 @@ class InviteMultipleStudentModal extends React.Component {
     const result = await userApi.SearchAddEnrolMultiStudents(selClass.code, data);
     setIsAddMultipleStudentsModal(false);
     setForceUpdate(!forceUpdate);
-    setInfoModel({
-      visible: true,
-      data: result.data.result
-    });
+    setInfoModalData(result.data.result);
+    setinfoModelVisible(true);
   };
   render() {
     const { getFieldDecorator } = this.props.form;
     const {
       modalVisible,
       setIsAddMultipleStudentsModal,
-      setAddMultipleInfoModal,
+      setinfoModelVisible,
+      setInfoModalData,
       orgData,
       studentsList,
       selectedClass,
@@ -354,7 +354,8 @@ class InviteMultipleStudentModal extends React.Component {
                     disabled={!studentsToEnroll.length}
                     onClick={this.onAddMultipleStudents.bind(
                       this,
-                      setAddMultipleInfoModal,
+                      setinfoModelVisible,
+                      setInfoModalData,
                       studentsToEnroll,
                       selectedClass,
                       setIsAddMultipleStudentsModal,

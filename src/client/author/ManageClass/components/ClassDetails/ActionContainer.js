@@ -53,11 +53,9 @@ const ActionContainer = ({
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
   const [isAddMultipleStudentsModal, setIsAddMultipleStudentsModal] = useState(false);
-  const [studentsInfo, setStudentsInfo] = useState({});
-  const [addMultipleInfoModal, setAddMultipleInfoModal] = useState({
-    visible: false,
-    data: []
-  });
+
+  const [infoModelVisible, setinfoModelVisible] = useState(false);
+  const [infoModalData, setInfoModalData] = useState([]);
 
   let formRef = null;
 
@@ -81,10 +79,8 @@ const ActionContainer = ({
     setIsAddMultipleStudentsModal(false);
     const result = await enrollmentApi.addEnrolMultiStudents({ classId: selectedClass._id, data: inviteStudentList });
     setForceUpdate(!forceUpdate);
-    setAddMultipleInfoModal({
-      visible: true,
-      data: result.data.result
-    });
+    setInfoModalData(result.data.result);
+    setinfoModelVisible(true);
   };
 
   const addStudent = () => {
@@ -251,8 +247,13 @@ const ActionContainer = ({
 
   return (
     <>
-      {addMultipleInfoModal.visible && (
-        <AddMultipleStudentsInfoModal info={addMultipleInfoModal} setAddMultipleInfoModal={setAddMultipleInfoModal} />
+      {infoModelVisible && (
+        <AddMultipleStudentsInfoModal
+          infoModelVisible={infoModelVisible}
+          setinfoModelVisible={setinfoModelVisible}
+          infoModalData={infoModalData}
+          setInfoModalData={setInfoModalData}
+        />
       )}
 
       {isOpen.add && (
@@ -310,7 +311,8 @@ const ActionContainer = ({
               inviteStudents={sendInviteStudent}
               closeModal={closeInviteStudentModal}
               userOrgId={userOrgId}
-              setAddMultipleInfoModal={setAddMultipleInfoModal}
+              setinfoModelVisible={setinfoModelVisible}
+              setInfoModalData={setInfoModalData}
               orgData={orgData}
               studentsList={studentsList}
               selectedClass={selectedClass}

@@ -3,16 +3,20 @@ import API from "@edulastic/api/src/utils/API";
 const api = new API();
 const prefix = "/test-activity/summary";
 
-const fetchReports = groupId =>
-  api
-    .callApi({
-      url: `${prefix}`,
-      method: "get",
-      params: {
-        groupId
-      }
-    })
-    .then(result => result.data.result);
+const fetchReports = groupId => {
+  let config = {
+    url: `${prefix}`,
+    method: "get"
+  };
+
+  if (groupId) {
+    config["params"] = {
+      groupId
+    };
+  }
+
+  return api.callApi(config).then(result => result.data.result);
+};
 
 const fetchTestActivityDetail = id =>
   api

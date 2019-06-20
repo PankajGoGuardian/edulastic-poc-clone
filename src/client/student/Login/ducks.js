@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
-import { pick, last } from "lodash";
+import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
 import { push } from "connected-react-router";
@@ -52,7 +52,9 @@ const initialState = {
 };
 
 const setUser = (state, { payload }) => {
+  const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
+  set(state.user, "orgData.defaultClass", defaultClass);
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;

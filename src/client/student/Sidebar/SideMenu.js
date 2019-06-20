@@ -38,7 +38,8 @@ const getIndex = (page, items) => {
 const menuItems = [
   {
     label: "Dashboard",
-    icon: IconClockDashboard
+    icon: IconClockDashboard,
+    path: "home/dashboard"
   },
   {
     label: "Assignments",

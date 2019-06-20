@@ -35,6 +35,7 @@ import {
 } from "../ClassBoard/ducks";
 
 import { getQuestionLabels } from "../ClassBoard/Transformer";
+
 const _getquestionLabels = memoizeOne(getQuestionLabels);
 
 setAutoFreeze(false);
@@ -43,18 +44,18 @@ setAutoFreeze(false);
  * @param {Object[]} testItems
  * @param {Object} variablesSetIds
  */
-const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
-  return produce(classResponse, draft => {
+const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) =>
+  produce(classResponse, draft => {
     if (!draft.testItems) {
       return;
     }
     const qidSetIds = keyBy(variablesSetIds, "qid");
-    for (let [idxItem, item] of draft.testItems.entries()) {
+    for (const [idxItem, item] of draft.testItems.entries()) {
       if (!item.algoVariablesEnabled) {
         continue;
       }
       const questions = get(item, "data.questions", []);
-      for (let [idxQuestion, question] of questions.entries()) {
+      for (const [idxQuestion, question] of questions.entries()) {
         const qid = question.id;
         const setIds = qidSetIds[qid];
         if (!setIds) {
@@ -67,17 +68,19 @@ const transformTestItemsForAlgoVariables = (classResponse, variablesSetIds) => {
         if (!example) {
           continue;
         }
-        for (let variable of Object.keys(variables)) {
+        for (const variable of Object.keys(variables)) {
           draft.testItems[idxItem].data.questions[idxQuestion].variable.variables[variable].exampleValue =
             example[variable];
         }
       }
     }
   });
-};
+
 class StudentViewContainer extends Component {
   state = { filter: null, showFeedbackPopup: false };
+
   feedbackRef = React.createRef();
+
   static getDerivedStateFromProps(nextProps, preState) {
     const { selectedStudent, loadStudentResponses, studentItems, assignmentIdClassId: { classId } = {} } = nextProps;
     const { selectedStudent: _selectedStudent } = preState || {};
@@ -97,6 +100,7 @@ class StudentViewContainer extends Component {
       loading: selectedStudent !== _selectedStudent
     };
   }
+
   handleShowFeedbackPopup = value => {
     this.setState({ showFeedbackPopup: value });
   };
@@ -119,8 +123,9 @@ class StudentViewContainer extends Component {
       studentResponse,
       selectedStudent,
       variableSetIds,
-      testActivity,
-      isPresentationMode
+      isPresentationMode,
+      testItemsOrder,
+      testItemIds
     } = this.props;
 
     const { loading, filter, showFeedbackPopup } = this.state;
@@ -196,9 +201,9 @@ class StudentViewContainer extends Component {
             currentStudent={currentStudent || {}}
             questionActivities={studentResponse.questionActivities}
             classResponse={classResponseProcessed}
-            testItemsOrder={this.props.testItemsOrder}
+            testItemsOrder={testItemsOrder}
             studentViewFilter={filter}
-            labels={_getquestionLabels(classResponse.testItems, this.props.testItemIds)}
+            labels={_getquestionLabels(classResponse.testItems, testItemIds)}
             isPresentationMode={isPresentationMode}
           />
         )}
@@ -232,7 +237,13 @@ StudentViewContainer.propTypes = {
   studentItems: PropTypes.array.isRequired,
   studentResponse: PropTypes.object.isRequired,
   selectedStudent: PropTypes.string,
-  isPresentationMode: PropTypes.bool
+  isPresentationMode: PropTypes.bool,
+  saveOverallFeedback: PropTypes.func.isRequired,
+  updateOverallFeedback: PropTypes.func.isRequired,
+  assignmentIdClassId: PropTypes.array.isRequired,
+  variableSetIds: PropTypes.array.isRequired,
+  testItemsOrder: PropTypes.any.isRequired,
+  testItemIds: PropTypes.array.isRequired
 };
 StudentViewContainer.defaultProps = {
   selectedStudent: "",

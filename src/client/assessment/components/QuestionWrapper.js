@@ -43,7 +43,6 @@ import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
-import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
@@ -228,9 +227,7 @@ class QuestionWrapper extends Component {
   cleanSections = sectionId => {
     if (!sectionId) return;
 
-    this.setState(({ main }) => {
-      return { main: main.filter(item => item.id !== sectionId) };
-    });
+    this.setState(({ main }) => ({ main: main.filter(item => item.id !== sectionId) }));
   };
 
   static getDerivedStateFromProps(props) {
@@ -337,7 +334,7 @@ class QuestionWrapper extends Component {
                 <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
                   {showFeedback && timeSpent && (
                     <p style={{ fontSize: 19, color: "grey" }}>
-                      <i class="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
+                      <i className="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
                       {round(timeSpent / 1000, 1)}s
                     </p>
                   )}
@@ -400,7 +397,8 @@ QuestionWrapper.propTypes = {
   timespent: PropTypes.string,
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  userRole: PropTypes.string.isRequired
 };
 
 QuestionWrapper.defaultProps = {

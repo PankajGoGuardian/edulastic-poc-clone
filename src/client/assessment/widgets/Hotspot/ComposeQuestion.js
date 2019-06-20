@@ -16,7 +16,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import DropZoneToolbar from "../../components/DropZoneToolbar/index";
 import StyledDropZone from "../../components/StyledDropZone/index";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 import { SOURCE } from "../../constants/constantsForQuestions";
 
@@ -104,11 +104,13 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.hotspot.composeQuestion")}</Subtitle>
 
-        <QuestionTextArea
-          placeholder={t("component.hotspot.enterQuestion")}
-          onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.hotspot.enterQuestion")}
+            onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </WidgetFRContainer>
 
         <DropZoneToolbar
           width={+width}

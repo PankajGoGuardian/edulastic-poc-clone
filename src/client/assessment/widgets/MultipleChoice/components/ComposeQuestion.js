@@ -13,7 +13,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../../styled/Subtitle";
-import { Widget } from "../../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../../styled/Widget";
 import { updateVariables } from "../../../utils/variables";
 
 class ComposeQuestion extends Component {
@@ -118,7 +118,10 @@ class ComposeQuestion extends Component {
     return (
       <Widget data-cy="questiontext" questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <FroalaEditor tag="textarea" value={item.stimulus} toolbarId={toolbarId} onChange={this.onChangeQuestion} />
+
+        <WidgetFRContainer>
+          <FroalaEditor tag="textarea" value={item.stimulus} toolbarId={toolbarId} onChange={this.onChangeQuestion} />
+        </WidgetFRContainer>
       </Widget>
     );
   }

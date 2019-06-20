@@ -11,7 +11,7 @@ import { questionType } from "@edulastic/constants";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetSubHeading } from "../../styled/Widget";
+import { Widget, WidgetSubHeading, WidgetFRContainer } from "../../styled/Widget";
 import { ColContainer } from "../../styled/ColContainer";
 
 import UiInputGroup from "./components/UiInputGroup";
@@ -137,11 +137,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.chart.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.chart.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.chart.enterQuestion")}
+            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </WidgetFRContainer>
 
         <div style={{ margin: "20px 0" }}>
           <WidgetSubHeading>{t("component.chart.chartTitle")}</WidgetSubHeading>

@@ -13,7 +13,7 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 import { checkAnswerAction } from "../../../author/src/actions/testItem";
 
@@ -55,11 +55,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget data-cy="questiontext">
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.matrix.enterQuestion")}
-          onChange={this.onChangeQuestion}
-          value={item.stimulus ? item.stimulus : ""}
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.matrix.enterQuestion")}
+            onChange={this.onChangeQuestion}
+            value={item.stimulus ? item.stimulus : ""}
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

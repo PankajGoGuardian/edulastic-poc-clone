@@ -16,6 +16,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { Subtitle } from "../../styled/Subtitle";
+import { WidgetFRContainer } from "../../styled/Widget";
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -127,13 +128,16 @@ class TemplateMarkup extends Component {
     return (
       <>
         <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
-          onChange={this.onChangeMarkUp}
-          additionalToolbarOptions={["response"]}
-          toolbarId="template-markup-area"
-          value={item.templateMarkUp}
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
+            onChange={this.onChangeMarkUp}
+            additionalToolbarOptions={["response"]}
+            toolbarId="template-markup-area"
+            value={item.templateMarkUp}
+          />
+        </WidgetFRContainer>
       </>
     );
   }

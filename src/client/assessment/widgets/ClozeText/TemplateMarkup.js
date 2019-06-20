@@ -16,7 +16,7 @@ import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -143,13 +143,16 @@ class TemplateMarkup extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.text.templatemarkup")}</Subtitle>
-        <FroalaEditor
-          data-cy="templateBox"
-          onChange={this.onChangeMarkUp}
-          value={item.templateMarkUp}
-          toolbarId="cloze-text-template"
-          additionalToolbarOptions={["textinput"]}
-        />
+
+        <WidgetFRContainer>
+          <FroalaEditor
+            data-cy="templateBox"
+            onChange={this.onChangeMarkUp}
+            value={item.templateMarkUp}
+            toolbarId="cloze-text-template"
+            additionalToolbarOptions={["textinput"]}
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

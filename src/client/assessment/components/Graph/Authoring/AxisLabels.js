@@ -11,6 +11,7 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
+import { WidgetFRContainer } from "../../../styled/Widget";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import QuillSortableList from "../../QuillSortableList";
@@ -94,12 +95,15 @@ class GraphAxisLabels extends Component {
           advancedAreOpen={true}
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
-          <QuestionTextArea
-            placeholder={t("component.graphing.question.enteryourquestion")}
-            onChange={this.onChangeQuestion}
-            value={stimulus}
-            firstFocus={firstMount}
-          />
+
+          <WidgetFRContainer>
+            <QuestionTextArea
+              placeholder={t("component.graphing.question.enteryourquestion")}
+              onChange={this.onChangeQuestion}
+              value={stimulus}
+              firstFocus={firstMount}
+            />
+          </WidgetFRContainer>
         </QuestionSection>
 
         <QuestionSection

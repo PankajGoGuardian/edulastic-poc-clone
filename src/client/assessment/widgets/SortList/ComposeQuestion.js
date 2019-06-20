@@ -8,7 +8,7 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -39,11 +39,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.sortList.enterQuestion")}
-          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.sortList.enterQuestion")}
+            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

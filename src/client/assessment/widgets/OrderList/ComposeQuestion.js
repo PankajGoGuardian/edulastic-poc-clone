@@ -11,7 +11,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 import { updateVariables } from "../../utils/variables";
 
 class ComposeQuestion extends Component {
@@ -43,7 +43,10 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
-        <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} />
+
+        <WidgetFRContainer>
+          <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} />
+        </WidgetFRContainer>
       </Widget>
     );
   }

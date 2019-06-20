@@ -10,7 +10,7 @@ import QuestionTextArea from "../../components/QuestionTextArea";
 import { updateVariables } from "../../utils/variables";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRContainer } from "../../styled/Widget";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -41,12 +41,15 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
-        <QuestionTextArea
-          placeholder={t("component.essayText.enterQuestion")}
-          onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
-          value={item.stimulus}
-          toolbarId="compose-question"
-        />
+
+        <WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.essayText.enterQuestion")}
+            onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
+            value={item.stimulus}
+            toolbarId="compose-question"
+          />
+        </WidgetFRContainer>
       </Widget>
     );
   }

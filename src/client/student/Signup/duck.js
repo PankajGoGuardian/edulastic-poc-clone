@@ -367,7 +367,8 @@ function* saveSubjectGradeSaga({ payload }) {
       const data = {
         email: user.email,
         districtId: user.orgData.districtId,
-        currentSignUpState: "DONE"
+        currentSignUpState: "DONE",
+        institutionIds: user.orgData.institutionIds
       };
       const _result = yield call(userApi.updateUser, { data, userId: user._id });
       const finalUser = {

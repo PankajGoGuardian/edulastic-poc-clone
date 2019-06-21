@@ -119,10 +119,10 @@ export const CircularDiv = styled.div`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: #1774f0;
+  color: #00ad50;
   font-weight: 600;
   line-height: 38px;
-  background-color: #e7f1fd;
+  background-color: #e1fbed;
   display: flex;
   justify-content: center;
   align-items: center;

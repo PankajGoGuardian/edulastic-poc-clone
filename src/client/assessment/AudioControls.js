@@ -24,14 +24,7 @@ const ControlButtons = styled(Button)`
   }
 `;
 
-const AudioControls = ({
-  item: questionData,
-  audioSrc,
-  qId,
-  currentPlayingDetails,
-  setCurrentPlayingDetails,
-  shuffledOptions = []
-}) => {
+const AudioControls = ({ item: questionData, audioSrc, qId, currentPlayingDetails, setCurrentPlayingDetails }) => {
   const [loading, setLoading] = useState(true);
   const [stimulusHowl, setStimulusHowl] = useState({});
   const [optionHowl, setOptionHowl] = useState({});
@@ -104,7 +97,8 @@ const AudioControls = ({
     setCurrentPlayingDetails(qId);
     audioPlayResolve(stimulusHowl).then(() => {
       if (questionData.type === "multipleChoice") {
-        let mapOptById = shuffledOptions.map(item => item.value);
+        const { options } = questionData;
+        let mapOptById = options.map(item => item.value);
         const asyncPlay = async () => {
           for (const item of mapOptById) {
             await audioPlayResolve(optionHowl[item]);

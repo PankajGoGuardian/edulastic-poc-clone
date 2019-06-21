@@ -69,7 +69,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
@@ -118,6 +118,7 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
             dropTargetIndex
           })
         }
+        disabled={disabled}
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
         value={value}

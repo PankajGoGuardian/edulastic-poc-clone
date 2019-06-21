@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Pagination, Spin } from "antd";
-import { debounce } from "lodash";
+import { debounce, uniq } from "lodash";
 
 import { Paper, withWindowSizes } from "@edulastic/common";
 import { compose } from "redux";
@@ -10,7 +10,6 @@ import { withNamespaces } from "@edulastic/localization";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { Container, Element, ListItems, SpinContainer, PaginationContainer } from "./styled";
 import Item from "../Item/Item";
-import { uniq } from "lodash";
 import ItemFilter from "../ItemFilter/ItemFilter";
 import CartButton from "../CartButton/CartButton";
 import ModalCreateTest from "../ModalCreateTest/ModalCreateTest";

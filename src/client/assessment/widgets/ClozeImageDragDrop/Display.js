@@ -185,6 +185,8 @@ class Display extends Component {
       instructorStimulus,
       theme,
       showQuestionNumber,
+      qIndex,
+      disableResponse,
       item,
       imageOptions,
       showBorder
@@ -379,7 +381,7 @@ class Display extends Component {
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
-        onDrop={this.onDrop}
+        onDrop={!disableResponse ? this.onDrop : () => {}}
         drop={drop}
         responses={responses}
         fontSize={fontSize}
@@ -509,6 +511,9 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
+  disableResponse: PropTypes.bool,
+  imageTitle: PropTypes.string,
+  imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
   imageOptions: PropTypes.object,
@@ -521,6 +526,7 @@ Display.defaultProps = {
   options: [],
   onChange: () => {},
   preview: true,
+  disableResponse: false,
   showAnswer: false,
   evaluation: [],
   checkAnswer: false,

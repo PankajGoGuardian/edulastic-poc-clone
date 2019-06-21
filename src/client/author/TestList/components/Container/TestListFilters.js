@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { blue, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
@@ -261,13 +261,13 @@ export const FilterItemWrapper = styled.div`
 `;
 
 const ClearAll = styled.span`
-  color: ${blue};
+  color: #00ad50;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
   :hover {
-    color: ${blue};
+    color: #00ad50;
   }
 `;
 

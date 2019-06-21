@@ -44,7 +44,6 @@ const SortableItem = SortableElement(
     questions,
     mobile
   }) => {
-    console.log("questions", questions);
     const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
     const handleCheck = e => onCheck(indx, e.target.checked);
     /**
@@ -95,7 +94,6 @@ const SortableItem = SortableElement(
           </FlexContainer>
         ) : (
           items.map(({ item: _item, question }, index) => {
-            console.log("_item", _item, "item", item);
             return (
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
                 <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
@@ -163,7 +161,6 @@ const List = SortableContainer(
     questions,
     mobile
   }) => {
-    console.log("questions", questions);
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);

@@ -170,11 +170,17 @@ export const TableData = styled(Table)`
       }
 
       &-active {
-        background: ${lightBlueSecondary};
+        background: #00ad50;
         box-shadow: none;
 
         a {
           color: ${white};
+        }
+      }
+      &:hover,
+      &:focus {
+        a {
+          color: #00ad50;
         }
       }
     }
@@ -249,13 +255,13 @@ export const AssignmentTD = styled.div`
 `;
 
 export const IconArrowDown = styled.img`
-  color: ${blue};
+  color: #00ad50;
   margin-right: 5px;
   width: 6px;
 `;
 
 export const BtnAction = styled(Button)`
-  color: ${lightBlueSecondary};
+  color: #00ad50;
   border: none;
   box-shadow: 0px 2px 4px 0 rgba(201, 208, 219, 0.5);
   max-width: 140px;
@@ -268,12 +274,12 @@ export const BtnAction = styled(Button)`
   width: 90px;
 
   :active {
-    background-color: ${lightBlueSecondary};
+    background-color: #00ad50;
     color: ${white};
   }
 
   :hover {
-    background-color: ${lightBlueSecondary};
+    background-color: #00ad50;
     color: ${white};
   }
 `;

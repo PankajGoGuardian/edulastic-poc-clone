@@ -346,6 +346,7 @@ class ClozeImageDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                {...restProps}
               />
             )}
           </Wrapper>

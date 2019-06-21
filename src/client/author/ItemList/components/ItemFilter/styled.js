@@ -75,10 +75,10 @@ export const TextFieldSearch = styled(TextField)`
   }
 
   .ant-input-search-icon {
-    color: ${mainBlueColor};
+    color: #00ad50;
     font-size: 15px;
     &:hover {
-      color: ${mainBlueColor};
+      color: #00ad50;
     }
   }
 
@@ -88,7 +88,7 @@ export const TextFieldSearch = styled(TextField)`
 `;
 
 export const SearchIcon = styled(Icon)`
-  color: ${mainBlueColor};
+  color: #00ad50;
   font-size: 15px;
 `;
 
@@ -173,7 +173,7 @@ export const Title = styled.span`
 export const Clear = styled.div`
   font-size: 12px;
   font-weight: 600;
-  color: ${newBlue};
+  color: #00ad50;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -196,6 +196,6 @@ export const StyledModalContainer = styled.div`
 
 export const StyledModalTitle = styled.div`
   font-size: 22px;
-  color: ${newBlue};
+  color: #00ad50;
   font-weight: 600;
 `;

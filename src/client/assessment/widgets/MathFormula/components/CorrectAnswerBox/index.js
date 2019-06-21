@@ -11,7 +11,10 @@ const CorrectAnswerBox = ({ children, t, altAnswers }) => {
   const answerRef = useRef();
 
   useEffect(() => {
-    window.MathQuill.StaticMath(answerRef.current).latex(children);
+    if (window.MathQuill) {
+      const MQ = window.MathQuill.getInterface(2);
+      MQ.StaticMath(answerRef.current).latex(children);
+    }
   }, []);
 
   return (

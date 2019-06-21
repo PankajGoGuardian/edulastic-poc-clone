@@ -35,6 +35,12 @@ export const themes = {
       menuSelectedItemLinkColor: "white",
       menuItemLinkHoverColor: "#00AD50"
     },
+    checkbox: {
+      checkboxBorderColor: "",
+      checkboxCheckedColor: "#00ad50",
+      checkboxIntermediateColor: "#00ad50",
+      checkboxLabelColor: "#00ad50"
+    },
     common: {
       addNewChoiceButtonFontFamily: "Open Sans",
       addNewChoiceButtonFontSize: "11px",

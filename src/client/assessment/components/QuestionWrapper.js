@@ -43,8 +43,8 @@ import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
-import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
+import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
@@ -184,14 +184,7 @@ class QuestionWrapper extends Component {
     main: [],
     advanced: [],
     activeTab: 0,
-    advancedAreOpen: false,
     shuffledOptsOrder: []
-  };
-
-  handleAdvancedOpen = () => {
-    this.setState(prevState => ({
-      advancedAreOpen: !prevState.advancedAreOpen
-    }));
   };
 
   handleShuffledOptions = shuffledOptsOrder => {
@@ -228,14 +221,12 @@ class QuestionWrapper extends Component {
   cleanSections = sectionId => {
     if (!sectionId) return;
 
-    this.setState(({ main }) => {
-      return { main: main.filter(item => item.id !== sectionId) };
-    });
+    this.setState(({ main }) => ({ main: main.filter(item => item.id !== sectionId) }));
   };
 
   static getDerivedStateFromProps(props) {
     if (props.view !== "edit") {
-      return { main: [], advanced: [], activeTab: 0, advancedAreOpen: false };
+      return { main: [], advanced: [], activeTab: 0 };
     }
   }
 
@@ -255,12 +246,14 @@ class QuestionWrapper extends Component {
       windowWidth,
       flowLayout,
       isPresentationMode,
+      handleAdvancedOpen,
+      advancedAreOpen,
       userRole,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
     const timeSpent = get(data, "activity.timeSpent", false);
-    const { main, advanced, activeTab, advancedAreOpen, shuffledOptsOrder } = this.state;
+    const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
 
@@ -298,16 +291,7 @@ class QuestionWrapper extends Component {
       >
         <ThemeProvider theme={themes.default}>
           <>
-            {canShowPlayer ? (
-              <AudioControls
-                shuffledOptions={shuffledOptsOrder}
-                item={data}
-                qId={data.id}
-                audioSrc={data.tts.titleAudioURL}
-              />
-            ) : (
-              ""
-            )}
+            {canShowPlayer ? <AudioControls item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} /> : ""}
             <QuestionContainer
               className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}
@@ -331,13 +315,13 @@ class QuestionWrapper extends Component {
                     main={main}
                     advanced={advanced}
                     advancedAreOpen={advancedAreOpen}
-                    handleAdvancedOpen={this.handleAdvancedOpen}
+                    handleAdvancedOpen={handleAdvancedOpen}
                   />
                 )}
                 <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
                   {showFeedback && timeSpent && (
                     <p style={{ fontSize: 19, color: "grey" }}>
-                      <i class="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
+                      <i className="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
                       {round(timeSpent / 1000, 1)}s
                     </p>
                   )}
@@ -354,7 +338,6 @@ class QuestionWrapper extends Component {
                     fillSections={this.fillSections}
                     showQuestionNumber={showFeedback}
                     flowLayout={flowLayout}
-                    onShuffleOptions={this.handleShuffledOptions}
                     {...userAnswerProps}
                   />
                 </div>
@@ -400,7 +383,10 @@ QuestionWrapper.propTypes = {
   timespent: PropTypes.string,
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  advancedAreOpen: PropTypes.bool,
+  handleAdvancedOpen: PropTypes.func,
+  userRole: PropTypes.string.isRequired
 };
 
 QuestionWrapper.defaultProps = {
@@ -416,7 +402,9 @@ QuestionWrapper.defaultProps = {
   showFeedback: false,
   qIndex: 0,
   changePreviewTab: () => {},
-  flowLayout: false
+  flowLayout: false,
+  advancedAreOpen: false,
+  handleAdvancedOpen: () => {}
 };
 
 const enhance = compose(
@@ -427,10 +415,12 @@ const enhance = compose(
   connect(
     state => ({
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
       userRole: getUserRole(state)
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      handleAdvancedOpen: toggleAdvancedSections
     }
   )
 );

@@ -103,6 +103,7 @@ class Display extends Component {
       item,
       theme,
       showQuestionNumber,
+      disableResponse,
       imageOptions
     } = this.props;
 
@@ -217,6 +218,7 @@ class Display extends Component {
                         width: `100%`,
                         height: `100%`
                       }}
+                      disabled={disableResponse}
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
@@ -311,6 +313,7 @@ Display.propTypes = {
   backgroundColor: PropTypes.string,
   imagescale: PropTypes.bool,
   uiStyle: PropTypes.object,
+  disableResponse: PropTypes.bool,
   item: PropTypes.any.isRequired,
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
@@ -324,6 +327,7 @@ Display.defaultProps = {
   onChange: () => {},
   imagescale: false,
   showAnswer: false,
+  disableResponse: false,
   evaluation: [],
   checkAnswer: false,
   userSelections: [],

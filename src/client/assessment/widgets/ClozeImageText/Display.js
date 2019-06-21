@@ -7,6 +7,7 @@ import { helpers, Stimulus } from "@edulastic/common";
 import { clozeImage, canvasDimensions } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
+import { FaSellcast } from "react-icons/fa";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -133,6 +134,8 @@ class Display extends Component {
       theme,
       item,
       showQuestionNumber,
+      qIndex,
+      disableResponse,
       imageOptions
     } = this.props;
     const { userAnswers } = this.state;
@@ -210,6 +213,7 @@ class Display extends Component {
                 </Pointer>
                 <ClozeTextInput
                   index={dropTargetIndex}
+                  disabled={disableResponse}
                   resprops={{
                     btnStyle: {},
                     item,
@@ -288,6 +292,7 @@ Display.propTypes = {
   backgroundColor: PropTypes.string,
   uiStyle: PropTypes.object,
   imageUrl: PropTypes.string,
+  disableResponse: PropTypes.bool,
   imageAlterText: PropTypes.string,
   imageWidth: PropTypes.number,
   theme: PropTypes.object.isRequired,
@@ -304,6 +309,7 @@ Display.defaultProps = {
   checkAnswer: false,
   userSelections: [],
   responseContainers: [],
+  disableResponse: false,
   showDashedBorder: false,
   backgroundColor: "#0288d1",
   validation: {},

@@ -24,12 +24,14 @@ const ReviewSummary = ({
   tableData,
   onChangeGrade,
   owner,
+  onChangeField,
+  thumbnail,
   onChangeSubjects,
   grades,
   subjects
 }) => (
   <Container>
-    <Photo owner={owner} height={120} />
+    <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} height={120} />
 
     <MainTitle>Grade</MainTitle>
     <SummarySelect
@@ -102,7 +104,9 @@ ReviewSummary.propTypes = {
   onChangeGrade: PropTypes.func.isRequired,
   onChangeSubjects: PropTypes.func.isRequired,
   grades: PropTypes.array.isRequired,
+  thumbnail: PropTypes.string,
   owner: PropTypes.bool,
+  onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired
 };
 

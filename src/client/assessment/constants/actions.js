@@ -7,6 +7,7 @@ export const GOTO_QUESTION = "[questions] goto question";
 export const AUTHOR_QUESTION = "author question";
 export const ADD_ANSWER = "[questions] add answer";
 export const ADD_EVALUATION = "[questions] add evulation";
+export const TOGGLE_ADVANCED_SECTIONS = "[questions] toggle advanced sections";
 // assessment
 export const LOAD_ASSESSMENT = "[assessment] load assessment";
 export const START_ASSESSMENT = "[assessment] start assessment";

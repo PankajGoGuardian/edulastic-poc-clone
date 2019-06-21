@@ -8,6 +8,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
+import { isDistrictPolicyAllowed } from "../../../common/utils/helpers";
 
 import mailIcon from "../../assets/mail-icon.svg";
 import keyIcon from "../../assets/key-icon.svg";
@@ -83,7 +84,8 @@ class LoginContainer extends React.Component {
                       <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
                     )}
                   </h3>
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
+                  !isSignupUsingDaURL ? (
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
@@ -94,7 +96,8 @@ class LoginContainer extends React.Component {
                       <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) || !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
+                  !isSignupUsingDaURL ? (
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
@@ -105,7 +108,8 @@ class LoginContainer extends React.Component {
                       <img src={icon365} alt="" /> {t("common.office365signinbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.cleverSignOn) || !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
+                  !isSignupUsingDaURL ? (
                     <ThirdPartyLoginBtn
                       span={20}
                       offset={2}
@@ -117,7 +121,8 @@ class LoginContainer extends React.Component {
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
-                {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) || !isSignupUsingDaURL ? (
+                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                !isSignupUsingDaURL ? (
                   <FormBody>
                     <Col span={20} offset={2}>
                       <h5 align="center">{t("common.formboxheading")}</h5>

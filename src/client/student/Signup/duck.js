@@ -13,6 +13,10 @@ const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
 const SEARCH_SCHOOL_SUCCESS = "[signup] search school success";
 const SEARCH_SCHOOL_FAILED = "[signup] search school failed";
 
+const SEARCH_SCHOOL_BY_DISTRICT_REQUEST = "[signup] search school by district request";
+const SEARCH_SCHOOL_BY_DISTRICT_SUCCESS = "[signup] search school by district success";
+const SEARCH_SCHOOL_BY_DISTRICT_FAILED = "[signup] search school by district failed";
+
 const SEARCH_DISTRICTS_REQUEST = "[signup] search districts request";
 const SEARCH_DISTRICTS_SUCCESS = "[signup] search districts success";
 const SEARCH_DISTRICTS_FAILED = "[signup] search districts failed";
@@ -34,8 +38,11 @@ export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST =
   "[signup] get district by short name and org type request";
 export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS =
   "[signup] get district by short name and org type request success";
-export const GET_PUBLIC_DISTRICT_POLICY_REQUEST = "[signup] get public district policy request";
 export const GET_PUBLIC_DISTRICT_POLICY_SUCCESS = "[signup] get public district policy request success";
+
+const CHECK_DISTRICT_POLICY_REQUEST = "[signup] check district policy request";
+const CHECK_DISTRICT_POLICY_SUCCESS = "[signup] check district policy success";
+const CHECK_DISTRICT_POLICY_FAILED = "[signup] check district policy failed";
 
 // Selectors
 export const saveSubjectGradeloadingSelector = createSelector(
@@ -63,6 +70,10 @@ export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST);
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS);
 export const searchSchoolFailedAction = createAction(SEARCH_SCHOOL_FAILED);
 
+export const searchSchoolByDistrictRequestAction = createAction(SEARCH_SCHOOL_BY_DISTRICT_REQUEST);
+export const searchSchoolByDistrictSuccessAction = createAction(SEARCH_SCHOOL_BY_DISTRICT_SUCCESS);
+export const searchSchoolByDistrictFailedAction = createAction(SEARCH_SCHOOL_BY_DISTRICT_FAILED);
+
 export const searchDistrictsRequestAction = createAction(SEARCH_DISTRICTS_REQUEST);
 export const searchDistrictsSuccessAction = createAction(SEARCH_DISTRICTS_SUCCESS);
 export const searchDistrictsFailedAction = createAction(SEARCH_DISTRICTS_FAILED);
@@ -78,6 +89,10 @@ export const saveSubjectGradeAction = createAction(SAVE_SUBJECTGRADE_REQUEST);
 export const createAndJoinSchoolRequestAction = createAction(CREATE_AND_JOIN_SCHOOL_REQUEST);
 export const getOrgDetailsByShortNameAndOrgTypeAction = createAction(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST);
 
+export const checkDistrictPolicyRequestAction = createAction(CHECK_DISTRICT_POLICY_REQUEST);
+export const checkDistrictPolicySuccessAction = createAction(CHECK_DISTRICT_POLICY_SUCCESS);
+export const checkDistrictPolicyFailedAction = createAction(CHECK_DISTRICT_POLICY_FAILED);
+
 // Reducers
 const initialState = {
   isSearching: false,
@@ -85,7 +100,9 @@ const initialState = {
   districts: [],
   newSchool: {},
   saveSubjectGradeloading: false,
-  updateUserWithSchoolLoading: false
+  updateUserWithSchoolLoading: false,
+  checkingPolicy: false,
+  checkDistrictPolicy: true
 };
 
 const searchSchool = state => {
@@ -98,6 +115,31 @@ const receivedSchools = (state, { payload }) => {
 };
 
 const failedSchools = state => {
+  state.isSearching = false;
+};
+
+const searchSchoolsByDistrict = state => {
+  state.isSearching = true;
+};
+
+const receivedSchoolsByDistrict = (state, { payload }) => {
+  state.isSearching = false;
+  if (payload && payload.data) {
+    state.schools = payload.data.map(item => {
+      return {
+        schoolId: item._id,
+        schoolName: item._source.name,
+        districtName: get(item, "_source.district.name", ""),
+        districtId: item._source.districtId || get(item, "_source.district._id", ""),
+        address: get(item, "_source.location", {})
+      };
+    });
+  } else {
+    state.schools = [];
+  }
+};
+
+const failedSchoolsByDistrict = state => {
   state.isSearching = false;
 };
 
@@ -135,6 +177,9 @@ export default createReducer(initialState, {
   [SEARCH_SCHOOL_REQUEST]: searchSchool,
   [SEARCH_SCHOOL_SUCCESS]: receivedSchools,
   [SEARCH_SCHOOL_FAILED]: failedSchools,
+  [SEARCH_SCHOOL_BY_DISTRICT_REQUEST]: searchSchoolsByDistrict,
+  [SEARCH_SCHOOL_BY_DISTRICT_SUCCESS]: receivedSchoolsByDistrict,
+  [SEARCH_SCHOOL_BY_DISTRICT_FAILED]: failedSchoolsByDistrict,
   [SEARCH_DISTRICTS_REQUEST]: searchDistricts,
   [SEARCH_DISTRICTS_SUCCESS]: receivedDistricts,
   [SEARCH_DISTRICTS_FAILED]: failedDistricts,
@@ -156,6 +201,17 @@ export default createReducer(initialState, {
   },
   [GET_PUBLIC_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
     state.districtPolicy = payload;
+  },
+  [CHECK_DISTRICT_POLICY_REQUEST]: (state, { payload }) => {
+    state.checkingPolicy = true;
+  },
+  [CHECK_DISTRICT_POLICY_SUCCESS]: (state, { payload }) => {
+    state.checkingPolicy = false;
+    state.checkDistrictPolicy = payload;
+  },
+  [CHECK_DISTRICT_POLICY_FAILED]: (state, { payload }) => {
+    state.checkingPolicy = false;
+    state.checkDistrictPolicy = {};
   }
 });
 
@@ -167,6 +223,16 @@ function* searchSchoolSaga({ payload = {} }) {
   } catch (err) {
     console.error(err);
     yield put(searchSchoolFailedAction());
+  }
+}
+
+function* searchSchoolByDistricySaga({ payload = {} }) {
+  try {
+    const result = yield call(schoolApi.getSchools, payload);
+    yield put(searchSchoolByDistrictSuccessAction(result));
+  } catch (err) {
+    console.error(err);
+    yield put(searchSchoolByDistrictFailedAction());
   }
 }
 
@@ -320,30 +386,43 @@ function* saveSubjectGradeSaga({ payload }) {
 
 function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
   try {
-    const result = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, payload);
+    const result = yield call(settingsApi.getOrgDetailsByShortNameAndOrgType, payload.data);
     const { generalSettings, districtPolicy } = result;
     if (generalSettings) {
       yield put({ type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS, payload: generalSettings });
     } else {
-      throw { message: "Invalid Url." };
+      throw payload.error.message;
     }
     if (districtPolicy) {
       yield put({ type: GET_PUBLIC_DISTRICT_POLICY_SUCCESS, payload: districtPolicy });
     } else {
-      throw { message: "Failed to get district policy." };
+      throw payload.error.message;
     }
   } catch (e) {
-    yield call(message.error, e && e.message ? e.message : "Failed to get district details.");
+    yield call(message.error, payload.error.message);
     yield put(push("/login"));
+  }
+}
+
+function* checkDistrictPolicyRequestSaga({ payload }) {
+  try {
+    const result = yield call(userApi.validateDistrictPolicy, payload.data);
+    yield put(checkDistrictPolicySuccessAction(result));
+  } catch (e) {
+    console.log("e", e);
+    yield put(checkDistrictPolicyFailedAction());
+    yield call(message.error, payload.error.message);
   }
 }
 
 export function* watcherSaga() {
   yield takeLatest(SEARCH_SCHOOL_REQUEST, searchSchoolSaga);
+  yield takeLatest(SEARCH_SCHOOL_BY_DISTRICT_REQUEST, searchSchoolByDistricySaga);
   yield takeLatest(SEARCH_DISTRICTS_REQUEST, searchDistrictsSaga);
   yield takeLatest(CREATE_SCHOOL_REQUEST, createSchoolSaga);
   yield takeLatest(JOIN_SCHOOL_REQUEST, joinSchoolSaga);
   yield takeLatest(SAVE_SUBJECTGRADE_REQUEST, saveSubjectGradeSaga);
   yield takeLatest(CREATE_AND_JOIN_SCHOOL_REQUEST, createAndJoinSchoolSaga);
   yield takeLatest(GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST, getOrgDetailsByShortNameAndOrgTypeSaga);
+  yield takeLatest(CHECK_DISTRICT_POLICY_REQUEST, checkDistrictPolicyRequestSaga);
 }

@@ -24,6 +24,7 @@ const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, 
             generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : teacherBg
           }
           isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
           districtPolicy={districtPolicy}
           districtShortName={districtShortName}
         />
@@ -38,13 +39,15 @@ const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, 
       {signupStatus === 1 && (
         <JoinSchool
           userInfo={userInfo}
-          districtId={districtShortName ? generalSettings : false}
+          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
           isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
           districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
         />
       )}
       {signupStatus === 2 && (
-        <SubjectGradeForm userInfo={userInfo} districtId={districtShortName ? generalSettings : false} />
+        <SubjectGradeForm userInfo={userInfo} districtId={isSignupUsingDaURL ? generalSettings.orgId : false} />
       )}
     </>
   );

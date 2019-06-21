@@ -6,6 +6,12 @@ import { Link } from "react-router-dom";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { springGreen, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
+import {
+  isDistrictPolicyAllowed,
+  getDistrictLoginUrl,
+  getDistrictStudentSignupUrl,
+  getDistrictTeacherSignupUrl
+} from "../../../common/utils/helpers";
 
 import loginBg from "../../assets/bg-login.png";
 import studentBg from "../../assets/small-bg-student.png";
@@ -24,9 +30,7 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
       </Col>
       <Col span={12} align="right">
         <span>{t("component.signup.alreadyhaveanaccount")}</span>
-        <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/login" : "/login"}>
-          {t("common.signinbtn")}
-        </Link>
+        <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>{t("common.signinbtn")}</Link>
       </Col>
     </RegistrationHeader>
     <RegistrationBody type="flex" align="middle">
@@ -50,18 +54,22 @@ const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, di
           <CircleDiv size={45} top={64} left={-30} />
           <CircleDiv size={30} bottom={35} right={-40} />
           <div className="signupbox-container">
-            {(isSignupUsingDaURL && districtPolicy && districtPolicy.studentSignUp) || !isSignupUsingDaURL ? (
+            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") || !isSignupUsingDaURL ? (
               <StudentSignupBox
                 data-cy="student"
-                to={isSignupUsingDaURL ? "/district/" + districtShortName + "/studentsignup" : "/studentsignup"}
+                to={isSignupUsingDaURL ? getDistrictStudentSignupUrl(districtShortName) : "/studentsignup"}
                 xs={24}
                 sm={8}
               >
                 <span>{t("component.signup.getstarted.imstudent")}</span>
               </StudentSignupBox>
             ) : null}
-            {(isSignupUsingDaURL && districtPolicy && districtPolicy.teacherSignUp) || !isSignupUsingDaURL ? (
-              <TeacherSignupBox to={isSignupUsingDaURL ? "/district/" + districtShortName : "/signup"} xs={24} sm={8}>
+            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") || !isSignupUsingDaURL ? (
+              <TeacherSignupBox
+                to={isSignupUsingDaURL ? getDistrictTeacherSignupUrl(districtShortName) : "/signup"}
+                xs={24}
+                sm={8}
+              >
                 <span>{t("component.signup.getstarted.imteacher")}</span>
               </TeacherSignupBox>
             ) : null}

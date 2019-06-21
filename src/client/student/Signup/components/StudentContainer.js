@@ -18,6 +18,11 @@ import {
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { signupAction } from "../../Login/ducks";
+import {
+  getDistrictLoginUrl,
+  getDistrictTeacherSignupUrl,
+  isDistrictPolicyAllowed
+} from "../../../common/utils/helpers";
 
 import studentBg from "../../assets/bg-student.png";
 import hashIcon from "../../assets/hashtag-icon.svg";
@@ -148,12 +153,12 @@ class StudentSignup extends React.Component {
         <h3 align="center">
           <b>{t("component.signup.signupboxheading")}</b>
         </h3>
-        {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
+        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") || !isSignupUsingDaURL ? (
           <ThirdPartyLoginBtn onClick={this.signupMethod(GOOGLE)} span={20} offset={2}>
             <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
           </ThirdPartyLoginBtn>
         ) : null}
-        {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) || !isSignupUsingDaURL ? (
+        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") || !isSignupUsingDaURL ? (
           <ThirdPartyLoginBtn onClick={this.signupMethod(OFFICE)} span={20} offset={2}>
             <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
           </ThirdPartyLoginBtn>
@@ -208,7 +213,7 @@ class StudentSignup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/login" : "/login"}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -220,9 +225,10 @@ class StudentSignup extends React.Component {
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.student.forstudent")}
                   </h1>
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.teacherSignUp) || !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
+                  !isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link to={isSignupUsingDaURL ? "/district/" + districtShortName : "/signup"}>
+                      <Link to={isSignupUsingDaURL ? getDistrictTeacherSignupUrl(districtShortName) : "/signup"}>
                         {t("component.signup.signupasteacher")}
                       </Link>
                     </LinkDiv>
@@ -237,7 +243,7 @@ class StudentSignup extends React.Component {
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
-                    {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) ||
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
                     !isSignupUsingDaURL ? (
                       <FormBody>
                         <Col span={20} offset={2}>

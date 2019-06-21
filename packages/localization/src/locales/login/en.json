@@ -18,7 +18,8 @@
       "emptyemailid": "Please input your Email!",
       "validemail": "The input is not valid Email!",
       "emptypassword": "Please input your password!"
-    }
+    },
+    "policyvoilation": "Enrollment for your school district is restricted. Please contact your administrator for assistance."
   },
   "component": {
     "signup": {

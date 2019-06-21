@@ -110,7 +110,18 @@ class App extends Component {
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
         } else if (role === "student") {
-          defaultRoute = "/home/assignments";
+          const role =
+            localStorage.getItem("googleLoginRole") ||
+            localStorage.getItem("msoLoginRole") ||
+            localStorage.getItem("cleverLoginRole");
+          if (role) {
+            redirectRoute = "/home/assignments";
+            localStorage.removeItem("googleLoginRole");
+            localStorage.removeItem("msoLoginRole");
+            localStorage.removeItem("cleverLoginRole");
+          } else {
+            defaultRoute = "/home/assignments";
+          }
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
         }

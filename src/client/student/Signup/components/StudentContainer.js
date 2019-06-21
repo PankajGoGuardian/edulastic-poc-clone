@@ -17,7 +17,7 @@ import {
   white
 } from "@edulastic/colors";
 import { connect } from "react-redux";
-import { signupAction } from "../../Login/ducks";
+import { signupAction, googleLoginAction, msoLoginAction } from "../../Login/ducks";
 import {
   getDistrictLoginUrl,
   getDistrictTeacherSignupUrl,
@@ -82,10 +82,19 @@ class StudentSignup extends React.Component {
     this.setState({ confirmDirty });
   };
 
-  signupMethod = key => () =>
+  signupMethod = key => () => {
     this.setState({
       method: key
     });
+    const { googleLoginAction, msoLoginAction } = this.props;
+    if (key === GOOGLE) {
+      console.log("google");
+      googleLoginAction("student");
+    } else if (key === OFFICE) {
+      console.log("ms");
+      msoLoginAction("student");
+    }
+  };
 
   renderGeneralFormFields = () => {
     const {
@@ -290,7 +299,7 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     null,
-    { signup: signupAction }
+    { signup: signupAction, googleLoginAction, msoLoginAction }
   )
 );
 

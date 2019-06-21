@@ -11,6 +11,7 @@ import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../a
 import { getWordsInURLPathName } from "../../common/utils/helpers";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getUser } from "../../author/src/selectors/user";
 
 // types
 export const LOGIN = "[auth] login";
@@ -28,6 +29,7 @@ export const FETCH_USER = "[auth] fetch user";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
+export const UPDATE_USER_ROLE_REQUEST = "[auth] update user role request";
 
 // actions
 export const loginAction = createAction(LOGIN);
@@ -44,6 +46,7 @@ export const signupSuccessAction = createAction(SINGUP_SUCCESS);
 export const fetchUserAction = createAction(FETCH_USER);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
+export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
 
 const initialState = {
   isAuthenticated: false,
@@ -350,8 +353,9 @@ function* changeClass({ payload }) {
   }
 }
 
-function* googleLogin() {
+function* googleLogin({ payload }) {
   try {
+    localStorage.setItem("googleLoginRole", payload);
     const res = yield call(authApi.googleLogin);
     window.location.href = res;
   } catch (e) {
@@ -359,8 +363,19 @@ function* googleLogin() {
   }
 }
 
-function* cleverLogin() {
+function* googleSSOLogin({ payload }) {
   try {
+    const res = yield call(authApi.googleSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "Google Login failed");
+    yield put(push("/login"));
+  }
+}
+
+function* cleverLogin({ payload }) {
+  try {
+    localStorage.setItem("cleverLoginRole", payload);
     const res = yield call(authApi.cleverLogin);
     window.location.href = res;
   } catch (e) {
@@ -368,12 +383,33 @@ function* cleverLogin() {
   }
 }
 
-function* msoLogin() {
+function* cleverSSOLogin({ payload }) {
   try {
+    const res = yield call(authApi.cleverSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "Clever Login failed");
+    yield put(push("/login"));
+  }
+}
+
+function* msoLogin({ payload }) {
+  try {
+    localStorage.setItem("msoLoginRole", payload);
     const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
     yield call(message.error, "MSO Login failed");
+  }
+}
+
+function* msoSSOLogin({ payload }) {
+  try {
+    const res = yield call(authApi.msoSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "MSO Login failed");
+    yield put(push("/login"));
   }
 }
 
@@ -387,7 +423,10 @@ function* getUserData({ payload: res }) {
     "orgData",
     "features",
     "currentSignUpState",
-    "ipZipCode"
+    "ipZipCode",
+    "googleId",
+    "msoId",
+    "cleverId"
   ]);
   TokenStorage.storeAccessToken(res.token, user._id, user.role, true);
   TokenStorage.selectAccessToken(user._id, user.role);
@@ -402,40 +441,23 @@ function* getUserData({ payload: res }) {
   if (redirectUrl && !isAuthUrl) {
     localStorage.removeItem("loginRedirectUrl");
     yield put(push(redirectUrl));
-  } else if (user.role === roleuser.STUDENT) {
-    yield put(push("/home/assignments"));
-  } else if (user.role === roleuser.ADMIN) {
-    yield put(push("/admin"));
-  } else yield put(push("/author/assignments"));
-}
-
-function* googleSSOLogin({ payload }) {
-  try {
-    const res = yield call(authApi.googleSSOLogin, payload);
-    yield put(getUserDataAction(res));
-  } catch (e) {
-    yield call(message.error, "Google Login failed");
-    yield put(push("/login"));
   }
+
+  // Important redirection code removed, redirect code already present in /src/client/App.js
+  // it receives new user props in each steps of teacher signup and for other roles
 }
 
-function* cleverSSOLogin({ payload }) {
+function* updateUserRoleSaga({ payload }) {
   try {
-    const res = yield call(authApi.cleverSSOLogin, payload);
-    yield put(getUserDataAction(res));
+    const user = yield select(getUser);
+    const result = yield call(userApi.updateUserRole, { data: { role: payload }, userId: user._id });
+    const _user = {
+      ...user,
+      role: payload
+    };
+    yield put(signupSuccessAction(_user));
   } catch (e) {
-    yield call(message.error, "Clever Login failed");
-    yield put(push("/login"));
-  }
-}
-
-function* msoSSOLogin({ payload }) {
-  try {
-    const res = yield call(authApi.msoSSOLogin, payload);
-    yield put(getUserDataAction(res));
-  } catch (e) {
-    yield call(message.error, "MSO Login failed");
-    yield put(push("/login"));
+    yield call(message.error, "Failed to update user please try again.");
   }
 }
 
@@ -452,4 +474,5 @@ export function* watcherSaga() {
   yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin);
   yield takeLatest(GET_USER_DATA, getUserData);
   yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin);
+  yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga);
 }

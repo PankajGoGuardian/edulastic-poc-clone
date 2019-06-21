@@ -11,6 +11,9 @@ export const getWordsInURLPathName = pathname => {
 
 export const isLoggedIn = user => {
   if (user && user.isAuthenticated) {
+    if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
+      return false;
+    }
     if (user && user.user && user.user.role !== "teacher") {
       return true;
     } else if (

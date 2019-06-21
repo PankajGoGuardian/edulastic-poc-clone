@@ -76,7 +76,7 @@ class DistrictPolicyForm extends Component {
       teacherSignUp: true,
       studentSignUp: true,
 
-      searchAndAddStudents: true,
+      searchAndAddStudents: false,
 
       googleUsernames: true,
       office365Usernames: true,

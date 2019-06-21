@@ -230,7 +230,11 @@ function* submitTest() {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
-    yield put(push("/home/reports"));
+    if (navigator.userAgent.includes("SEB")) {
+      yield put(push("/student/seb-quit-confirm"));
+    } else {
+      yield put(push("/home/reports"));
+    }
   } catch (err) {
     console.log(err);
   }

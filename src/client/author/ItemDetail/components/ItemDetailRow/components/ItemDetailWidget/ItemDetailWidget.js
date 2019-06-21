@@ -69,7 +69,7 @@ const ItemDetailWidget = ({
                     <input
                       className="ant-input"
                       type="number"
-                      min={0}
+                      min={1}
                       value={itemData.itemLevelScore}
                       onChange={e => {
                         const v = parseFloat(e.target.value);
@@ -85,7 +85,7 @@ const ItemDetailWidget = ({
                     <input
                       className="ant-input"
                       type="number"
-                      min={0}
+                      min={1}
                       value={get(question, "validation.valid_response.score", 0)}
                       onChange={e => {
                         const v = parseFloat(e.target.value);

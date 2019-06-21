@@ -124,10 +124,12 @@ class AssignTest extends React.Component {
     } else if (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25) {
       return message.error("Please add a valid password.");
     }
-    if (saveAssignment && !isEmpty(assignment.class)) {
-      saveAssignment(assignment);
-    } else {
+    if (saveAssignment && isEmpty(assignment.class)) {
       message.error("Please select at least one class to assign.");
+    } else if (saveAssignment && assignment.endDate < Date.now()) {
+      message.error("Please Enter a future end date. ");
+    } else {
+      saveAssignment(assignment);
     }
   };
 

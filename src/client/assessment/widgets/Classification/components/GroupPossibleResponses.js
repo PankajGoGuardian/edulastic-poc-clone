@@ -43,7 +43,7 @@ class GroupPossibleResponses extends Component {
             </div>
             <Row gutter={60}>
               {items.map((item, index) => (
-                <Col data-cy={`group-container-${index}`} key={index} span={12}>
+                <Col data-cy={`group-container-${index}`} key={index}>
                   <Group
                     prefix={`group${index}`}
                     item={item}

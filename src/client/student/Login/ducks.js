@@ -101,6 +101,32 @@ export const getCurrentGroup = createSelector(
   r => r
 );
 
+export const getCurrentGroupWithAllClasses = createSelector(
+  [
+    "user.user.orgData.defaultClass",
+    "studentAssignment.byId",
+    "studentAssignment.current",
+    "user.user.orgData.classList"
+  ],
+  (groupId, assignmentsById, currentAssignmentId, classes) => {
+    if (groupId) {
+      return groupId;
+    } else if (currentAssignmentId) {
+      const currentAssignment = assignmentsById[currentAssignmentId];
+      if (!currentAssignment) {
+        return groupId;
+      }
+
+      const allClassIds = new Set(classes.map(x => x._id));
+      const assignmentClassId = currentAssignment.class.find(cl => allClassIds.has(cl._id));
+
+      return assignmentClassId ? assignmentClassId._id : groupId;
+    } else {
+      return groupId;
+    }
+  }
+);
+
 export const getCurrentSchool = createSelector(
   ["user.user.orgData.defaultSchool"],
   r => r

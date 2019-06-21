@@ -148,6 +148,7 @@ function* startAssignment({ payload }) {
     const assignment = assignmentsById[assignmentId];
     const classIds = yield select(getClassIds);
     const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
+    console.warn("actualgroupId", actualGroupId);
     const institutionId = yield select(getCurrentSchool);
     const groupType = "class";
     const { _id: testActivityId } = yield testActivityApi.create({

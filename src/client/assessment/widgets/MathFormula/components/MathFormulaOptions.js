@@ -5,7 +5,7 @@ import { withTheme } from "styled-components";
 import { cloneDeep } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
-import { evaluationType } from "@edulastic/constants";
+import { evaluationType, questionType } from "@edulastic/constants";
 
 import Layout from "./Layout";
 import ResponseContainers from "./ResponseContainers";
@@ -67,6 +67,13 @@ class MathFormulaOptions extends Component {
         label: t("component.math.exactMatch")
       }
     ];
+
+    if (item && item.type === questionType.EXPRESSION_MULTIPART) {
+      scoringTypes.push({
+        value: evaluationType.PARTIAL_MATCH,
+        label: t("component.math.partialMatch")
+      });
+    }
 
     return (
       <WidgetOptions

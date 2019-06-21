@@ -125,6 +125,11 @@ const TableWrapper = styled(Table)`
     padding: 38px 6px 28px 26px;
   }
 
+  table tr tr img {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
   @media (max-width: ${tabletWidth}) {
     .ant-table-tbody > tr > td {
       padding: 28px;

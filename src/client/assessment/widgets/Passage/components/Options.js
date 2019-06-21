@@ -174,11 +174,6 @@ const Opt = ({ setQuestionData, item, t, theme }) => {
 
       <StyledRow gutter={32}>
         <Col span={12}>
-          <Checkbox checked={item.is_math} onChange={e => handleChange("is_math", e.target.checked)} tabIndex={1}>
-            <b>{t("component.passage.containsMathematics")}</b>
-          </Checkbox>
-        </Col>
-        <Col span={12}>
           <Checkbox
             checked={item.paginated_content}
             onChange={e => handleChange("paginated_content", e.target.checked)}

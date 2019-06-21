@@ -1,5 +1,6 @@
 import React, { memo } from "react";
 import { SortableContainer } from "react-sortable-hoc";
+import { withNamespaces } from "@edulastic/localization";
 
 import QuillSortableItem from "./components/QuillSortableItem";
 
@@ -15,7 +16,8 @@ const QuillSortableList = SortableContainer(
     prefix = "prefix",
     columns = 1,
     label = "",
-    canDelete = true
+    canDelete = true,
+    t
   }) => (
     <div data-cy="sortable-list-container" style={{ fontSize }}>
       {items.map((value, index) => (
@@ -25,6 +27,7 @@ const QuillSortableList = SortableContainer(
           index={index}
           label={label ? `${label} ${index + 1}` : ""}
           indx={prefix + index}
+          placeholder={`${t("component.multiplechoice.optionPlaceholder")} ${index}`}
           value={value}
           firstFocus={firstFocus}
           rOnly={readOnly}
@@ -38,4 +41,4 @@ const QuillSortableList = SortableContainer(
   )
 );
 
-export default memo(QuillSortableList);
+export default memo(withNamespaces("assessment")(QuillSortableList));

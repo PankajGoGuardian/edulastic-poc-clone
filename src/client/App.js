@@ -73,7 +73,8 @@ class App extends Component {
     const { fetchUser, location } = this.props;
     const publicPath = location.pathname.split("/").includes("public");
     const ssoPath = location.pathname.split("/").includes("auth");
-    if (!publicPath && !ssoPath) {
+    const partnerPath = location.pathname.split("/").includes("partnerLogin");
+    if (!publicPath && !ssoPath && !partnerPath) {
       fetchUser();
     }
   }
@@ -126,6 +127,7 @@ class App extends Component {
         this.props.location.pathname === "/auth/clever" ||
         this.props.location.pathname === "/auth/google"
       ) {
+      } else if (this.props.location.pathname === `/partnerLogin/${path[1]}`) {
       } else {
         redirectRoute = "/login";
       }
@@ -151,6 +153,8 @@ class App extends Component {
             />
             <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/partnerLogin/greatminds" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/partnerLogin/readicheck" component={Auth} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />

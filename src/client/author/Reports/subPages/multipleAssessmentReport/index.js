@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Route } from "react-router-dom";
 import next from "immer";
 import qs from "qs";
 
@@ -8,6 +9,7 @@ import { getNavigationTabLinks } from "../../common/util";
 import navigation from "../../common/static/json/navigation.json";
 
 import MultipleAssessmentReportFilters from "./common/components/filters";
+import PeerProgressAnalysis from "./PeerProgressAnalysis";
 
 export const MultipleAssessmentReportContainer = props => {
   const [settings, setSettings] = useState({
@@ -84,6 +86,11 @@ export const MultipleAssessmentReportContainer = props => {
         style={props.showFilter ? { display: "block" } : { display: "none" }}
       />
       <NavigatorTabs data={computedChartNavigatorLinks} selectedTab={props.loc} />
+      <Route
+        exact
+        path={`/author/reports/peer-progress-analysis/test/:testId?`}
+        render={_props => <PeerProgressAnalysis />}
+      />
     </>
   );
 };

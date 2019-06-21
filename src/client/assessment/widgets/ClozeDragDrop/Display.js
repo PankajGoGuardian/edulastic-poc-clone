@@ -355,6 +355,7 @@ class ClozeDragDropDisplay extends Component {
           <AlternateAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
+            hasGroupResponses={hasGroupResponses}
             altAnswers={validation.alt_responses}
           />
         )}

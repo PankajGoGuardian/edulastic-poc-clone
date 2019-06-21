@@ -1,11 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
+import { MathSpan } from "@edulastic/common";
 class AlternateAnswerBoxLayout extends Component {
   render() {
-    const { altAnswers, fontSize, groupResponses } = this.props;
+    const { altAnswers, fontSize, groupResponses, hasGroupResponses } = this.props;
+    let responses = [];
+    if (hasGroupResponses) {
+      groupResponses.forEach(groupResponse => {
+        groupResponse.options.forEach(val => responses.push(val));
+      });
+    } else {
+      responses = groupResponses;
+    }
     const getLabel = value => {
-      const item = groupResponses.find(option => option.value === value);
+      const item = responses.find(option => option.value === value);
       if (item) {
         return item.label;
       }
@@ -14,7 +22,8 @@ class AlternateAnswerBoxLayout extends Component {
     altAnswers.forEach(altAnswer => {
       altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
-        if (alt !== "") {
+        alt = hasGroupResponses ? alt.data : alt;
+        if (alt) {
           alternateAnswers[index + 1].push(getLabel(alt));
         }
       });
@@ -22,7 +31,8 @@ class AlternateAnswerBoxLayout extends Component {
     alternateAnswers = Object.keys(alternateAnswers).map(key => (
       <div key={key} className="response-btn check-answer showanswer">
         <span className="index">{key}</span>
-        <span className="text">{alternateAnswers[key].join(", ")}</span>&nbsp;
+        <MathSpan className="text" dangerouslySetInnerHTML={{ __html: alternateAnswers[key].join(", ") }} />
+        &nbsp;
       </div>
     ));
 

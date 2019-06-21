@@ -8,8 +8,9 @@ import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector } from "../../../Playlist/ducks";
+import { getCollectionsSelector } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
+import { test as testsConstants } from "@edulastic/constants";
 
 const filtersTitle = ["Grades", "Subject", "Status", "Tags"];
 const TestListFilters = ({
@@ -40,7 +41,7 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
-          data: collections.map(o => ({ value: o, text: o })),
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collectionName"
         }
       ];
@@ -93,7 +94,7 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
-          data: collections.map(o => ({ value: o, text: o })),
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collectionName"
         }
       ]

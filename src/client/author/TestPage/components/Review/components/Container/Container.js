@@ -162,6 +162,11 @@ class Review extends PureComponent {
     }));
   }
 
+  handleChangeField = (field, value) => {
+    const { setData } = this.props;
+    setData({ [field]: value });
+  };
+
   render() {
     const {
       test,
@@ -260,6 +265,8 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
+              onChangeField={this.handleChangeField}
+              thumbnail={test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}

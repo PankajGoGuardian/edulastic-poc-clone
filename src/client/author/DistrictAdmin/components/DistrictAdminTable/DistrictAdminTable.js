@@ -201,9 +201,9 @@ class DistrictAdminTable extends Component {
     });
   };
 
-  searchByName = e => {
+  searchByName = evt => {
     const { setSearchName } = this.props;
-    setSearchName(e);
+    setSearchName(evt.target.value);
   };
 
   render() {
@@ -262,7 +262,7 @@ class DistrictAdminTable extends Component {
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
+          <StyledSchoolSearch placeholder="Search by name" onChange={this.searchByName} onSearch={loadAdminData} />
           <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
             Show current users only
           </Checkbox>

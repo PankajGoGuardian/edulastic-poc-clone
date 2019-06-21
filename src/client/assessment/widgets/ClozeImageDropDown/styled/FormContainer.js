@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { extraDesktopWidth, largeDesktopWidth } from "@edulastic/colors";
+import { extraDesktopWidth, largeDesktopWidth, middleMobileWidth } from "@edulastic/colors";
 import { FlexContainer } from "./FlexContainer";
 
 export const FormContainer = styled(FlexContainer)`
@@ -25,6 +25,22 @@ export const FormContainer = styled(FlexContainer)`
   @media screen and (max-width: ${largeDesktopWidth}) {
     .left-buttons {
       flex-direction: column;
+    }
+  }
+`;
+
+export const FormBottomContainer = styled(FlexContainer)`
+  justify-content: flex-start;
+
+  .ant-checkbox-wrapper {
+    white-space: nowrap;
+  }
+
+  @media screen and (max-width: ${middleMobileWidth}) {
+    flex-direction: column;
+    align-items: flex-start;
+    .ant-checkbox-wrapper + .ant-checkbox-wrapper {
+      margin-left: 0px;
     }
   }
 `;

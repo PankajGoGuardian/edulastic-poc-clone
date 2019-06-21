@@ -81,6 +81,7 @@ class Response extends Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index].splice(itemIndex, 1);
+        draft.validation.valid_response.value.splice(index, 1, "");
         updateVariables(draft);
       })
     );
@@ -103,6 +104,7 @@ class Response extends Component {
           draft.ui_style = { widthpx: 140 };
         }
         draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+        draft.validation.valid_response.value.splice(index, 1, e.target.value);
         updateVariables(draft);
       })
     );

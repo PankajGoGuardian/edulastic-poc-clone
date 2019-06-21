@@ -6,7 +6,7 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable = false }) => {
+const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable = false, isDropDown }) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -35,7 +35,7 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
         resp.value.splice(deletedIndex, 1);
         return resp;
       });
-      if (newItem.options) {
+      if (newItem.options && isDropDown) {
         newItem.options.splice(deletedIndex, 1);
       }
       setQuestionData(newItem);
@@ -134,12 +134,14 @@ DropArea.propTypes = {
   width: PropTypes.number.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   showIndex: PropTypes.bool,
+  isDropDown: PropTypes.bool,
   disable: PropTypes.bool
 };
 
 DropArea.defaultProps = {
   showIndex: true,
-  disable: false
+  disable: false,
+  isDropDown: false
 };
 
 export default DropArea;

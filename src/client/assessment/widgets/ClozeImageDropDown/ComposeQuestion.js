@@ -567,6 +567,7 @@ class ComposeQuestion extends Component {
                         item={item}
                         width="100%"
                         showIndex={false}
+                        isDropDown
                       />
                     </React.Fragment>
                   )}

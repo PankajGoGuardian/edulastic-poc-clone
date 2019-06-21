@@ -29,7 +29,8 @@ const TokenHighlightPreview = ({
   previewTab,
   theme,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  disableResponse
 }) => {
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
@@ -59,7 +60,7 @@ const TokenHighlightPreview = ({
   }, [item.templeWithTokens, editCorrectAnswers]);
 
   useEffect(() => {
-    if (previewTab === SHOW) {
+    if (previewTab === SHOW || disableResponse) {
       if (answers.filter(answer => answer.selected).length !== 0) {
         setAnswers([
           ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
@@ -125,10 +126,13 @@ const TokenHighlightPreview = ({
     lineHeight: smallSize ? "18px" : "28px"
   };
 
-  const getClass = index =>
-    answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
+  const getClass = index => {
+    const defaultAnsvers = disableResponse ? validArray : answers;
+    return defaultAnsvers.find(elem => elem.index === index) &&
+      defaultAnsvers.find(elem => elem.index === index).selected
       ? "active-word token answer"
       : "token answer";
+  };
 
   const preview = previewTab === CHECK || previewTab === SHOW || smallSize;
 
@@ -182,7 +186,7 @@ const TokenHighlightPreview = ({
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
           <span
-            onClick={handleSelect(i)}
+            onClick={!disableResponse && handleSelect(i)}
             dangerouslySetInnerHTML={{ __html: el.value }}
             style={preview ? getStyles(i) : {}}
             key={i}
@@ -211,7 +215,8 @@ TokenHighlightPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 TokenHighlightPreview.defaultProps = {
@@ -220,7 +225,8 @@ TokenHighlightPreview.defaultProps = {
   userAnswer: [],
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 const enhance = compose(

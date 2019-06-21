@@ -36,7 +36,8 @@ const ShadingPreview = ({
   previewTab,
   theme,
   qIndex,
-  showQuestionNumber
+  showQuestionNumber,
+  disableResponse
 }) => {
   const { canvas, validation } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
@@ -158,10 +159,10 @@ const ShadingPreview = ({
             cellHeight={smallSize ? 1 : cell_height}
             rowCount={smallSize ? 3 : row_count}
             correctAnswers={previewTab === SHOW ? validAnswer : correctAnswers}
-            showAnswers={previewTab === SHOW}
+            showAnswers={previewTab === SHOW || disableResponse}
             checkAnswers={previewTab === CHECK}
             colCount={smallSize ? 8 : column_count}
-            onCellClick={handleCellClick}
+            onCellClick={disableResponse ? () => {} : handleCellClick}
             shaded={Array.isArray(userAnswer) ? userAnswer : []}
             hidden={hidden}
             border={item.border}
@@ -212,7 +213,8 @@ ShadingPreview.propTypes = {
   t: PropTypes.func.isRequired,
   theme: PropTypes.object.isRequired,
   qIndex: PropTypes.bool,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  disableResponse: PropTypes.bool
 };
 
 ShadingPreview.defaultProps = {
@@ -221,7 +223,8 @@ ShadingPreview.defaultProps = {
   previewTab: CLEAR,
   method: "",
   qIndex: null,
-  showQuestionNumber: false
+  showQuestionNumber: false,
+  disableResponse: false
 };
 
 const enhance = compose(

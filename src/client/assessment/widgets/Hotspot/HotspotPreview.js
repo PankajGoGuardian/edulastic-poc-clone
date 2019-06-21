@@ -13,7 +13,17 @@ import { Polygon } from "./styled/Polygon";
 import { getFontSize } from "../../utils/helpers";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
-const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, previewTab, showQuestionNumber, qIndex }) => {
+const HotspotPreview = ({
+  view,
+  item,
+  smallSize,
+  saveAnswer,
+  userAnswer,
+  previewTab,
+  showQuestionNumber,
+  qIndex,
+  disableResponse
+}) => {
   const { areas, area_attributes, image, validation, multiple_responses, previewAreas } = item;
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
   const maxWidth = get(item, "max_width", 900);
@@ -83,9 +93,10 @@ const HotspotPreview = ({ view, item, smallSize, saveAnswer, userAnswer, preview
                 <Polygon
                   key={i}
                   showAnswer={
-                    view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW)
+                    disableResponse ||
+                    (view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW))
                   }
-                  onClick={handleClick(i)}
+                  onClick={!disableResponse && handleClick(i)}
                   points={area.map(point => `${point.x},${point.y}`).join(" ")}
                   selected={userAnswer.includes(i)}
                   correct={view !== EDIT && allValidAnswers && allValidAnswers.includes(i)}
@@ -131,7 +142,8 @@ HotspotPreview.propTypes = {
   previewTab: PropTypes.string,
   userAnswer: PropTypes.array,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 HotspotPreview.defaultProps = {
@@ -139,7 +151,8 @@ HotspotPreview.defaultProps = {
   smallSize: false,
   userAnswer: [],
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 export default withNamespaces("assessment")(HotspotPreview);

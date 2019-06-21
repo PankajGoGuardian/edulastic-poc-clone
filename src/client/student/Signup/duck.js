@@ -306,8 +306,7 @@ function* saveSubjectGradeSaga({ payload }) {
       const _result = yield call(userApi.updateUser, { data, userId: user._id });
       const finalUser = {
         ..._result,
-        features: user.features,
-        orgData: user.orgData
+        features: user.features
       };
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser));

@@ -37,7 +37,10 @@ export const getFormattedCurriculumsSelector = (state, props) => {
   const interestedCurriculumByOrgType = groupBy(interestedCurriculumsBySubject, curriculum => curriculum.orgType);
   // return if teacher has selected curriculums
   if (interestedCurriculumByOrgType.teacher && interestedCurriculumByOrgType.teacher.length) {
-    return interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }));
+    return uniqBy([
+      defaultStandard,
+      ...interestedCurriculumByOrgType.teacher.map(item => ({ value: item._id, text: item.name }))
+    ]);
   }
   // break line only if interested curriculums are selected by admins and create uniq curriculums
   const uniqCurriculums = interestedCurriculumsBySubject.length

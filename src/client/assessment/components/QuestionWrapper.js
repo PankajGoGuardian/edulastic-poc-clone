@@ -292,7 +292,11 @@ class QuestionWrapper extends Component {
       >
         <ThemeProvider theme={themes.default}>
           <>
-            {canShowPlayer ? <AudioControls item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} /> : ""}
+            {canShowPlayer ? (
+              <AudioControls key={data.id} item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} />
+            ) : (
+              ""
+            )}
             <QuestionContainer
               className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}

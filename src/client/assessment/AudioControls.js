@@ -29,19 +29,21 @@ const AudioControls = ({ item: questionData, audioSrc, qId, currentPlayingDetail
   const [stimulusHowl, setStimulusHowl] = useState({});
   const [optionHowl, setOptionHowl] = useState({});
   const [currentHowl, setCurrentHowl] = useState({});
+  // Loading audio
   const audioLoadResolve = url =>
     new Promise((resolve, reject) => {
       const sound = new Howl({
         src: url
       });
       sound.load();
-      sound.once("load", () => {
+      sound.on("load", () => {
         resolve(sound);
       });
-      sound.once("loaderror", () => {
-        reject(sound);
+      sound.on("loaderror", (id, e) => {
+        reject({ id, e, url });
       });
     });
+  //Playing audio
   const audioPlayResolve = _howl =>
     new Promise(resolve => {
       _howl.play();
@@ -50,7 +52,13 @@ const AudioControls = ({ item: questionData, audioSrc, qId, currentPlayingDetail
       });
       setCurrentHowl(_howl);
     });
-
+  //Stop all audios
+  const stopAllAudios = () => {
+    const findAllPlayingHowls = Howler._howls.filter(item => item.playing());
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach(item => item.stop());
+    }
+  };
   useEffect(() => {
     if (!audioSrc) return;
     audioLoadResolve(audioSrc).then(sound => {
@@ -74,6 +82,7 @@ const AudioControls = ({ item: questionData, audioSrc, qId, currentPlayingDetail
     });
     return () => {
       setCurrentPlayingDetails();
+      stopAllAudios();
       Howler.unload();
     };
   }, [qId]);
@@ -90,10 +99,7 @@ const AudioControls = ({ item: questionData, audioSrc, qId, currentPlayingDetail
       currentHowl.isPaused = false;
       return setCurrentPlayingDetails(qId);
     }
-    const findAllPlayingHowls = Howler._howls.filter(item => item.playing());
-    if (findAllPlayingHowls.length) {
-      findAllPlayingHowls.forEach(item => item.stop());
-    }
+    stopAllAudios();
     setCurrentPlayingDetails(qId);
     audioPlayResolve(stimulusHowl).then(() => {
       if (questionData.type === "multipleChoice") {

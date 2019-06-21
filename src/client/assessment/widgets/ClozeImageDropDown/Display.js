@@ -19,32 +19,9 @@ import { getFontSize, topAndLeftRatio, fromStringToNumberPx } from "../../utils/
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 class Display extends Component {
-  constructor(props) {
-    super(props);
-    const userAnswers = new Array(props.responseContainers.length).fill(false);
-    props.userSelections.map((userSelection, index) => {
-      userAnswers[index] = userSelection;
-      return 0;
-    });
-
-    this.state = {
-      userAnswers
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (this.state !== undefined) {
-      this.setState({
-        userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : []
-      });
-    }
-  }
-
   selectChange = (value, index) => {
-    const { userAnswers: newAnswers } = this.state;
-    const { onChange: changeAnswers } = this.props;
+    const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
     newAnswers[index] = value;
-    this.setState({ userAnswers: newAnswers });
     changeAnswers(newAnswers);
   };
 
@@ -110,7 +87,7 @@ class Display extends Component {
       configureOptions,
       preview,
       options,
-
+      userSelections,
       uiStyle,
       showAnswer,
       checkAnswer,
@@ -128,7 +105,7 @@ class Display extends Component {
       showQuestionNumber,
       imageOptions
     } = this.props;
-    const { userAnswers } = this.state;
+
     const { shuffleOptions } = configureOptions;
     const { maxHeight, maxWidth } = clozeImage;
     let newOptions;
@@ -243,7 +220,7 @@ class Display extends Component {
                       backgroundColor={backgroundColor}
                       options={(newOptions[dropTargetIndex] || []).map(op => ({ value: op, label: op }))}
                       onChange={value => this.selectChange(value, dropTargetIndex)}
-                      defaultValue={userAnswers[dropTargetIndex]}
+                      defaultValue={userSelections[dropTargetIndex]}
                     />
                   )}
                 </div>
@@ -272,7 +249,9 @@ class Display extends Component {
         maxWidth={maxWidth}
         minWidth={response.minWidth}
         minHeight={response.minHeight}
-        userSelections={item && item.activity && item.activity.userResponse ? item.activity.userResponse : userAnswers}
+        userSelections={
+          item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections
+        }
         evaluation={item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation}
         imageOptions={imageOptions}
       />

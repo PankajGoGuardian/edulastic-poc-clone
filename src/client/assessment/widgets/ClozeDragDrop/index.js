@@ -219,6 +219,7 @@ class ClozeDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
                 responseIDs={item.response_ids}
+                {...restProps}
               />
             )}
             {previewTab === "show" && (
@@ -262,6 +263,7 @@ class ClozeDragDrop extends Component {
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 responseIDs={item.response_ids}
+                {...restProps}
               />
             )}
           </Wrapper>

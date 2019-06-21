@@ -329,6 +329,7 @@ class ClozeImageText extends Component {
                 onChange={this.handleAddAnswer}
                 qIndex={qIndex}
                 imageOptions={item.imageOptions}
+                {...restProps}
               />
             )}
           </Wrapper>

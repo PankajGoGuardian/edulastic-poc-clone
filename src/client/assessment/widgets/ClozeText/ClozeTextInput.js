@@ -84,7 +84,9 @@ const ClozeTextInput = ({ resprops, id }) => {
     type,
     showIndex = true,
     userAnswers,
-    responseIds
+    disableResponse,
+    responseIds,
+    qIndex
   } = resprops;
   const ref = useRef();
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
@@ -131,6 +133,7 @@ const ClozeTextInput = ({ resprops, id }) => {
             id
           })
         }
+        disabled={disableResponse}
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
         value={value}

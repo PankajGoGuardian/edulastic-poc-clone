@@ -14,7 +14,16 @@ const SelectWrapper = styled.span`
 
 const ChoicesBox = ({ resprops, id }) => {
   const selectWrapperRef = useRef(null);
-  const { userAnswers, btnStyle, placeholder, options, onChange: changeAnswers, item } = resprops;
+  const {
+    userAnswers,
+    btnStyle,
+    placeholder,
+    options,
+    onChange: changeAnswers,
+    item,
+    qIndex,
+    disableResponse
+  } = resprops;
   if (!id) return null;
   const { response_ids } = item;
   const { index } = find(response_ids, response => response.id === id);
@@ -37,6 +46,7 @@ const ChoicesBox = ({ resprops, id }) => {
         }}
         getPopupContainer={() => findDOMNode(selectWrapperRef.current)}
         data-cy="drop_down_select"
+        disabled={disableResponse}
         onChange={selectChange}
       >
         <Option value="**default_value**" disabled>

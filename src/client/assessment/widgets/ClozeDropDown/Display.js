@@ -117,6 +117,7 @@ class ClozeDropDownDisplay extends Component {
       evaluation,
       instructorStimulus,
       item,
+      disableResponse,
       showQuestionNumber,
       userSelections
     } = this.props;
@@ -164,6 +165,8 @@ class ClozeDropDownDisplay extends Component {
             responseBtnStyle,
             stemNumeration: stemnumeration,
             fontSize,
+            disableResponse,
+            qIndex,
             showAnswer,
             userSelections:
               item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
@@ -174,6 +177,8 @@ class ClozeDropDownDisplay extends Component {
             userAnswers: userSelections || [],
             btnStyle,
             placeholder,
+            disableResponse,
+            qIndex,
             options: responses,
             onChange: this.selectChange,
             item
@@ -216,6 +221,7 @@ ClozeDropDownDisplay.propTypes = {
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
+  disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool
 };
@@ -229,6 +235,7 @@ ClozeDropDownDisplay.defaultProps = {
   checkAnswer: false,
   userSelections: [],
   templateMarkUp: "",
+  disableResponse: false,
   smallSize: false,
   configureOptions: {
     shuffleOptions: false
@@ -241,8 +248,8 @@ ClozeDropDownDisplay.defaultProps = {
     placeholder: null,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false,
-  qIndex: null
+  showQuestionNumber: false
+  // qIndex: null
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));

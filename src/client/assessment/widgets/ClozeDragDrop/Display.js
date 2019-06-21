@@ -262,8 +262,9 @@ class ClozeDragDropDisplay extends Component {
       item,
       theme,
       showQuestionNumber,
-      responseIDs
-      // qIndex
+      responseIDs,
+      disableResponse,
+      qIndex
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
@@ -298,7 +299,7 @@ class ClozeDragDropDisplay extends Component {
             showAnswer,
             userSelections: userAnswers,
             evaluation,
-            onDropHandler: this.onDrop,
+            onDropHandler: !disableResponse ? this.onDrop : () => {},
             responseIDs
           }
         : {
@@ -307,7 +308,7 @@ class ClozeDragDropDisplay extends Component {
             smallSize,
             options,
             userAnswers,
-            onDrop: this.onDrop,
+            onDrop: !disableResponse ? this.onDrop : () => {},
             responseIDs
           };
 
@@ -339,7 +340,7 @@ class ClozeDragDropDisplay extends Component {
         responses={responses}
         fontSize={fontSize}
         dragHandler={dragHandler}
-        onDrop={this.onDrop}
+        onDrop={!disableResponse ? this.onDrop : () => {}}
       />
     );
     const correctAnswerBoxLayout = showAnswer ? (
@@ -460,6 +461,7 @@ ClozeDragDropDisplay.propTypes = {
   validation: PropTypes.object,
   evaluation: PropTypes.array,
   uiStyle: PropTypes.object,
+  disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired
@@ -471,6 +473,7 @@ ClozeDragDropDisplay.defaultProps = {
   onChange: () => {},
   preview: true,
   item: {},
+  disableResponse: false,
   showAnswer: false,
   userSelections: [],
   evaluation: [],

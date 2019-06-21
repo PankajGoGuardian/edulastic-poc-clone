@@ -83,6 +83,7 @@ const methodOptions = {
     "isExpanded",
     "setDecimalSeparator",
     "setThousandsSeparator",
+    "allowedVariables",
     "compareSides"
   ],
   [methods.EQUIV_LITERAL]: [
@@ -106,6 +107,7 @@ const methodOptions = {
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
+    "allowedVariables",
     "compareSides"
   ],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],

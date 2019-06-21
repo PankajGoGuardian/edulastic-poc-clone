@@ -6,7 +6,6 @@ import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const ClozeInput = ({ id, resprops = {} }) => {
-
   const { save, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
   const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";

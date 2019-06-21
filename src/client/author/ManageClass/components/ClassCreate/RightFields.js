@@ -32,7 +32,9 @@ const RightFields = ({
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
   const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
-  let showSchoolField = schoolList.length > 1;
+  if (isArray(schoolList) && !isEmpty(schoolList) && schoolList.length === 1) {
+    defaultSchool = schoolList[0]._id;
+  }
 
   if (isDropdown) {
     if (schoolList.length === 1) {
@@ -141,7 +143,7 @@ const RightFields = ({
         </FieldLabel>
       )}
 
-      {isDropdown && showSchoolField && (
+      {isDropdown && (
         <FieldLabel label="School" {...restProps} fiedlName="institutionId">
           <Select placeholder="Select School">
             {schoolList.map(el => (

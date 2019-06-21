@@ -94,6 +94,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
+  const absent = lastAttempt.status == 2;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
   const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = last(newReports) || {};
@@ -153,6 +154,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         startDate={startDate}
         safeBrowser={safeBrowser}
         graded={lastAttempt.graded}
+        absent={absent}
       />
       <ButtonAndDetail>
         <DetailContainer>

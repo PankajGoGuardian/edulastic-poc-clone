@@ -62,7 +62,8 @@ const MatchListPreview = ({
   showQuestionNumber,
   qIndex,
   showBorder,
-  setQuestionData
+  setQuestionData,
+  disableResponse
 }) => {
   const {
     possible_responses: posResponses,
@@ -267,83 +268,94 @@ const MatchListPreview = ({
                   flag="ans"
                   renderIndex={i}
                   onDrop={onDrop}
-                  item={ans[i]}
+                  item={disableResponse ? validArray[i] : ans[i]}
                   getStyles={getStyles}
+                  disableResponse={disableResponse}
                 />
               </DropContainer>
             </AnswerItem>
           ))}
         </FlexContainer>
 
-        <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
-          <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
-            <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-              {group_possible_responses ? (
-                possible_response_groups.map((i, index) => (
-                  <Fragment key={index}>
+        {!disableResponse && (
+          <CorrectAnswersContainer title={t("component.matchList.dragItemsTitle")}>
+            <DropContainer drop={drop} flag="dragItems" style={styles.dragItemsContainerStyle} noBorder>
+              <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
+                {group_possible_responses ? (
+                  possible_response_groups.map((i, index) => (
+                    <Fragment key={index}>
+                      <FlexContainer
+                        style={{ flex: 1 }}
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Subtitle
+                          style={{
+                            color: theme.widgets.matchList.previewSubtitleColor
+                          }}
+                        >
+                          {i.title}
+                        </Subtitle>
+                        <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                          {i.responses.map(
+                            (ite, ind) =>
+                              dragItems.includes(ite) && (
+                                <DragItem
+                                  flag="dragItems"
+                                  onDrop={onDrop}
+                                  key={ind}
+                                  item={ite}
+                                  getStyles={getStyles}
+                                  disableResponse={disableResponse}
+                                />
+                              )
+                          )}
+                        </FlexContainer>
+                      </FlexContainer>
+                      {index !== possible_response_groups.length - 1 && (
+                        <div
+                          style={{
+                            width: 0,
+                            marginLeft: 35,
+                            marginRight: 35,
+                            borderLeft: `1px solid ${theme.widgets.matchList.groupSeparatorBorderColor}`
+                          }}
+                        />
+                      )}
+                    </Fragment>
+                  ))
+                ) : (
+                  <Fragment>
                     <FlexContainer
                       style={{ flex: 1 }}
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle
-                        style={{
-                          color: theme.widgets.matchList.previewSubtitleColor
-                        }}
-                      >
-                        {i.title}
-                      </Subtitle>
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {i.responses.map(
+                        {dragItems.map(
                           (ite, ind) =>
                             dragItems.includes(ite) && (
-                              <DragItem flag="dragItems" onDrop={onDrop} key={ind} item={ite} getStyles={getStyles} />
+                              <DragItem
+                                flag="dragItems"
+                                onDrop={onDrop}
+                                key={ind}
+                                renderIndex={ind}
+                                item={ite}
+                                getStyles={getStyles}
+                                disableResponse={disableResponse}
+                              />
                             )
                         )}
                       </FlexContainer>
                     </FlexContainer>
-                    {index !== possible_response_groups.length - 1 && (
-                      <div
-                        style={{
-                          width: 0,
-                          marginLeft: 35,
-                          marginRight: 35,
-                          borderLeft: `1px solid ${theme.widgets.matchList.groupSeparatorBorderColor}`
-                        }}
-                      />
-                    )}
                   </Fragment>
-                ))
-              ) : (
-                <Fragment>
-                  <FlexContainer
-                    style={{ flex: 1 }}
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="flex-start"
-                  >
-                    <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                      {dragItems.map(
-                        (ite, ind) =>
-                          dragItems.includes(ite) && (
-                            <DragItem
-                              flag="dragItems"
-                              onDrop={onDrop}
-                              key={ind}
-                              renderIndex={ind}
-                              item={ite}
-                              getStyles={getStyles}
-                            />
-                          )
-                      )}
-                    </FlexContainer>
-                  </FlexContainer>
-                </Fragment>
-              )}
-            </FlexContainer>
-          </DropContainer>
-        </CorrectAnswersContainer>
+                )}
+              </FlexContainer>
+            </DropContainer>
+          </CorrectAnswersContainer>
+        )}
       </div>
       {view === "edit" && (
         <Checkbox
@@ -400,7 +412,8 @@ MatchListPreview.propTypes = {
   userAnswer: PropTypes.array,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 MatchListPreview.defaultProps = {
@@ -409,7 +422,8 @@ MatchListPreview.defaultProps = {
   editCorrectAnswers: [],
   userAnswer: [],
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 const enhance = compose(

@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get } from "lodash";
+import { get, cloneDeep } from "lodash";
 
-import { Icon, Select, message, Button, Menu } from "antd";
+import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
 
 import {
   StyledClassName,
@@ -70,7 +70,9 @@ class ClassesTable extends Component {
         order: "asc"
       },
       currentPage: 1,
-      selectedArchiveClasses: []
+      selectedArchiveClasses: [],
+      showActiveClassCheckbox: true,
+      disableActiveUsers: false
     };
   }
 
@@ -87,21 +89,21 @@ class ClassesTable extends Component {
     });
   }
 
-  onHeaderCell = colName => {
-    const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    if (sortedInfo.columnKey === colName) {
-      if (sortedInfo.order === "asc") {
-        sortedInfo.order = "desc";
-      } else if (sortedInfo.order === "desc") {
-        sortedInfo.order = "asc";
-      }
-    } else {
-      sortedInfo.columnKey = colName;
-      sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
-    }
-    this.setState({ sortedInfo });
-    this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-  };
+  // onHeaderCell = colName => {
+  //   const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
+  //   if (sortedInfo.columnKey === colName) {
+  //     if (sortedInfo.order === "asc") {
+  //       sortedInfo.order = "desc";
+  //     } else if (sortedInfo.order === "desc") {
+  //       sortedInfo.order = "asc";
+  //     }
+  //   } else {
+  //     sortedInfo.columnKey = colName;
+  //     sortedInfo.order = sortedInfo.columnKey === "status" ? "desc" : "asc";
+  //   }
+  //   this.setState({ sortedInfo });
+  //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+  // };
 
   static getDerivedStateFromProps(nextProps, prevState) {
     return {
@@ -155,11 +157,8 @@ class ClassesTable extends Component {
   changeFilterColumn = (value, key) => {
     // here we need to use cloneDeep since a simple spread operator mutates the state
     const filtersData = cloneDeep(this.state.filtersData);
-    filtersData[key] = {
-      filtersColumn: value,
-      filtersValue: "",
-      filterStr: ""
-    };
+    filtersData[key].filtersColumn = value;
+
     if (value === "subjects" || value === "grades" || value === "active") filtersData[key].filtersValue = "eq";
     // here we check if the filter chosen is active or if the previous value held by the select was active
     // then according to this, we either disable or enable the checkbox
@@ -174,31 +173,47 @@ class ClassesTable extends Component {
     } else this.setState({ filtersData }, () => this.afterSetState(key)); // this is done so that we dont have multiple set states and we can avoid two renders
   };
 
+  afterSetState = key => {
+    const { filtersColumn, filtersValue, filterStr } = this.state.filtersData[key];
+    if (
+      // (filtersData[key].filterAdded || key === 2) &&
+      filtersColumn &&
+      filtersValue &&
+      filterStr !== "" // here because 0 can be a value too for "active" select
+    ) {
+      // const { sortedInfo, searchByName, currentPage } = this.state;
+      this.loadFilteredClassList();
+    }
+  };
+
   changeFilterValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filtersValue = value;
-    this.setState({ filtersData });
+    this.setState({ filtersData }, () => this.afterSetState(key));
 
-    if (
-      (filtersData[key].filterAdded || key == 2) &&
-      filtersData[key].filtersColumn !== "" &&
-      filtersData[key].filterStr !== ""
-    ) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    }
+    // if (
+    //   // (filtersData[key].filterAdded || key === 2) &&
+    //   filtersData[key].filtersColumn !== "" &&
+    //   filtersData[key].filterStr !== ""
+    // ) {
+    //   const { sortedInfo, searchByName, currentPage } = this.state;
+    //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+    // }
   };
 
-  onBlurFilterText = (e, key) => {
-    const filtersData = [...this.state.filtersData];
-    filtersData[key].filterStr = e.target.value;
-    this.setState({ filtersData });
+  // onBlurFilterText = (key) => {
+  //   const filtersData = [...this.state.filtersData];
+  //   // filtersData[key].filterStr = e.target.value;
+  //   // this.setState({ filtersData });
 
-    if (filtersData[key].filterAdded || key == 2) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    }
-  };
+  //   if (
+  //     filtersData[key].filtersColumn !== "" &&
+  //     filtersData[key].filtersValue !== ""
+  //   ) {
+  //     const { sortedInfo, searchByName, currentPage } = this.state;
+  //     this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+  //   }
+  // };
 
   changeFilterText = (e, key) => {
     const filtersData = [...this.state.filtersData];
@@ -209,28 +224,43 @@ class ClassesTable extends Component {
   changeStatusValue = (value, key) => {
     const filtersData = [...this.state.filtersData];
     filtersData[key].filterStr = value;
-    this.setState({ filtersData });
+    this.setState({ filtersData }, () => this.afterSetState(key));
 
-    if (filtersData[key].filterAdded || key == 2) {
-      const { sortedInfo, searchByName, currentPage } = this.state;
-      this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
-    }
+    // if (
+    //   // filtersData[key].filterAdded || key === 2 &&
+    //   filtersData[key].filtersColumn !== "" &&
+    //   filtersData[key].filtersValue !== ""
+    // ) {
+    //   const { sortedInfo, searchByName, currentPage } = this.state;
+    //   this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+    // }
   };
 
   addFilter = (e, key) => {
     const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
-    if (filtersData[key].filterAdded && filtersData.length == 3) return;
-    filtersData[key].filterAdded = true;
+    // if (filtersData[key].filterAdded && filtersData.length === 3) return;
+    // filtersData[key].filterAdded = true;
     if (filtersData.length < 3) {
-      filtersData[key].filterAdded = true;
-      filtersData.push({
-        filtersColumn: "",
-        filtersValue: "",
-        filterStr: "",
-        filterAdded: false
-      });
+      // filtersData[key].filterAdded = true;
+      this.setState(state => ({
+        filtersData: [
+          ...state.filtersData,
+          {
+            filtersColumn: "",
+            filtersValue: "",
+            filterStr: "",
+            filterAdded: false
+          }
+        ]
+      }));
+      // filtersData.push({
+      //   filtersColumn: "",
+      //   filtersValue: "",
+      //   filterStr: "",
+      //   filterAdded: false
+      // });
     }
-    this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
+    // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage);
   };
 
   removeFilter = (e, key) => {
@@ -244,39 +274,70 @@ class ClassesTable extends Component {
         filterStr: ""
       });
     } else {
-      newFiltersData = filtersData.filter((item, index) => index != key);
+      newFiltersData = filtersData.filter((item, index) => index !== key);
     }
-    this.setState({ filtersData: newFiltersData });
-    this.loadFilteredClassList(newFiltersData, sortedInfo, searchByName, currentPage);
+    // here we check if the filter we are removing is the active filter, then we enable the checkbox back
+    if (filtersData[key].filtersColumn === "active") {
+      this.setState(
+        {
+          filtersData: newFiltersData,
+          disableActiveUsers: false
+        },
+        this.loadFilteredClassList
+      );
+    } else this.setState({ filtersData: newFiltersData }, this.loadFilteredClassList);
+
+    // this.loadFilteredClassList(newFiltersData, sortedInfo, searchByName, currentPage);
   };
 
   handleSearchName = e => {
     const { filtersData, sortedInfo, currentPage } = this.state;
-    this.setState({ searchByName: e });
-    this.loadFilteredClassList(filtersData, sortedInfo, e, currentPage);
+    this.setState({ searchByName: e }, this.loadFilteredClassList);
+    // this.loadFilteredClassList(filtersData, sortedInfo, e, currentPage);
   };
 
   changePagination = pageNumber => {
     const { filtersData, sortedInfo, searchByName } = this.state;
-    this.setState({ currentPage: pageNumber });
-    this.loadFilteredClassList(filtersData, sortedInfo, searchByName, pageNumber);
+    this.setState({ currentPage: pageNumber }, this.loadFilteredClassList);
+    // this.loadFilteredClassList(filtersData, sortedInfo, searchByName, pageNumber);
   };
 
-  loadFilteredClassList(filtersData, sortedInfo, searchByName, currentPage) {
+  loadFilteredClassList = () => {
     const { loadClassListData, userOrgId } = this.props;
-    let search = {};
+    const { filtersData, searchByName, currentPage, showActiveClassCheckbox, disableActiveUsers } = this.state;
+    const search = {};
 
     if (searchByName.length > 0) {
-      search.name = { type: "cont", value: searchByName };
+      search.name = searchByName;
+    }
+
+    if (!disableActiveUsers && showActiveClassCheckbox) {
+      search.active = 1;
     }
 
     for (let i = 0; i < filtersData.length; i++) {
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
       if (
-        filtersData[i].filtersColumn !== "" &&
-        filtersData[i].filtersValue !== "" &&
-        filtersData[i].filterStr !== ""
+        filtersColumn &&
+        filtersValue &&
+        filterStr !== "" // here because 0 can be a value too for "active" select
       ) {
-        search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
+        if (filtersColumn === "active") {
+          search[filtersColumn] = filterStr;
+        } else {
+          if (!search.filtersColumn) {
+            search[filtersColumn] = [];
+          }
+          if (filtersColumn === "grades" || filtersColumn === "subjects") {
+            search[filtersColumn].push(filterStr);
+          } else {
+            search[filtersColumn].push({
+              type: filtersValue,
+              value: filterStr
+            });
+          }
+        }
+        // search[filtersData[i].filtersColumn] = { type: filtersData[i].filtersValue, value: filtersData[i].filterStr };
       }
     }
 
@@ -286,7 +347,7 @@ class ClassesTable extends Component {
       page: currentPage,
       search
     });
-  }
+  };
 
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
@@ -423,7 +484,9 @@ class ClassesTable extends Component {
       archiveClassModalVisible,
       editClassKey,
       currentPage,
-      selectedArchiveClasses
+      selectedArchiveClasses,
+      showActiveClassCheckbox,
+      disableActiveUsers
     } = this.state;
 
     const {
@@ -462,12 +525,12 @@ class ClassesTable extends Component {
 
     const SearchRows = [];
     for (let i = 0; i < filtersData.length; i++) {
-      const isFilterTextDisable = filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "";
-      const isAddFilterDisable =
-        filtersData[i].filtersColumn === "" || filtersData[i].filtersValue === "" || filtersData[i].filterStr === "";
+      const { filtersColumn, filtersValue, filterStr } = filtersData[i];
+      const isFilterTextDisable = filtersColumn === "" || filtersValue === "";
+      const isAddFilterDisable = filtersColumn === "" || filtersValue === "" || filterStr === "";
 
       const optValues = [];
-      if (filtersData[i].filtersColumn === "subjects" || filtersData[i].filtersColumn === "grades") {
+      if (filtersColumn === "subjects" || filtersColumn === "grades" || filtersColumn === "active") {
         optValues.push(<Option value="eq">Equals</Option>);
       } else {
         optValues.push(<Option value="">Select a value</Option>);
@@ -480,29 +543,31 @@ class ClassesTable extends Component {
           <StyledFilterSelect
             placeholder="Select a column"
             onChange={e => this.changeFilterColumn(e, i)}
-            defaultValue={filtersData[i].filtersColumn}
-            value={filtersData[i].filtersColumn}
+            value={filtersColumn}
           >
             <Option value="">Select a column</Option>
             <Option value="codes">Class Code</Option>
-            <Option value="institutionIds">School</Option>
-            <Option value="subjects">Subject</Option>
+            <Option value="courses">Course</Option>
+            <Option value="teachers">Teacher</Option>
             <Option value="grades">Grade</Option>
+            <Option value="subjects">Subject</Option>
+            <Option value="institutionNames">School Name</Option>
+            <Option value="active">Status</Option>
           </StyledFilterSelect>
 
           <StyledFilterSelect
             placeholder="Select a value"
             onChange={e => this.changeFilterValue(e, i)}
-            value={filtersData[i].filtersValue}
+            value={filtersValue}
           >
             {optValues}
           </StyledFilterSelect>
-          {filtersData[i].filtersColumn === "subjects" ? (
+          {filtersColumn === "subjects" ? (
             <StyledFilterSelect
               placeholder="Select a value"
               onChange={e => this.changeStatusValue(e, i)}
               disabled={isFilterTextDisable}
-              value={filtersData[i].filterStr}
+              value={filterStr}
             >
               <Option value="">Select a subject</Option>
               <Option value="Mathematics">Mathematics</Option>
@@ -511,34 +576,44 @@ class ClassesTable extends Component {
               <Option value="Social Studies">Social Studies</Option>
               <Option value="Other Subjects">Other Subjects</Option>
             </StyledFilterSelect>
-          ) : filtersData[i].filtersColumn === "grades" ? (
+          ) : filtersColumn === "grades" ? (
             <StyledFilterSelect
               placeholder="Select a grade"
               onChange={e => this.changeStatusValue(e, i)}
               disabled={isFilterTextDisable}
-              value={filtersData[i].filterStr}
+              value={filterStr}
             >
               {gradeOptions}
+            </StyledFilterSelect>
+          ) : filtersColumn === "active" ? (
+            <StyledFilterSelect
+              placeholder="Select a value"
+              onChange={e => this.changeStatusValue(e, i)}
+              disabled={isFilterTextDisable}
+              value={filterStr}
+            >
+              <Option value={1}>Active</Option>
+              <Option value={0}>Archived</Option>
             </StyledFilterSelect>
           ) : (
             <StyledFilterInput
               placeholder="Enter text"
               onChange={e => this.changeFilterText(e, i)}
-              onBlur={e => this.onBlurFilterText(e, i)}
+              onSearch={this.loadFilteredClassList}
               disabled={isFilterTextDisable}
-              value={filtersData[i].filterStr}
+              value={filterStr}
             />
           )}
           {i < 2 && (
             <StyledFilterButton
               type="primary"
               onClick={e => this.addFilter(e, i)}
-              disabled={isAddFilterDisable || !filtersData[i].filterAdded || i < filtersData.length - 1}
+              disabled={isAddFilterDisable || i < filtersData.length - 1}
             >
               + Add Filter
             </StyledFilterButton>
           )}
-          {filtersData[i].filterAdded && (
+          {filtersData.length > 1 && (
             <StyledFilterButton type="primary" onClick={e => this.removeFilter(e, i)}>
               - Remove Filter
             </StyledFilterButton>
@@ -554,9 +629,23 @@ class ClassesTable extends Component {
             + Create Class
           </Button>
 
-          <StyledSearch placeholder="Search by name" onBlur={this.handleSearchName} />
-
-          <StyledActionDropDown overlay={actionMenu}>
+          <StyledSearch placeholder="Search by name" onSearch={this.handleSearchName} />
+          <Checkbox
+            disabled={disableActiveUsers}
+            style={{ margin: "auto" }}
+            value={showActiveClassCheckbox}
+            onChange={evt =>
+              this.setState(
+                {
+                  showActiveClassCheckbox: evt.target.checked
+                },
+                this.loadFilteredClassList
+              )
+            }
+          >
+            Show Active Classes
+          </Checkbox>
+          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
             <Button>
               Actions <Icon type="down" />
             </Button>

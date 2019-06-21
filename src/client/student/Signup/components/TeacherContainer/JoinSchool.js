@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -6,6 +6,7 @@ import { withRouter } from "react-router-dom";
 import { get, debounce, find, split } from "lodash";
 import { Row, Col, Select, message } from "antd";
 import styled from "styled-components";
+import { withNamespaces } from "@edulastic/localization";
 import { IconHeader } from "@edulastic/icons";
 import { springGreen, white, title, fadedGrey } from "@edulastic/colors";
 
@@ -13,7 +14,13 @@ import { Button } from "antd/lib/radio";
 import TeacherCarousel from "./TeacherCarousel";
 import RequestSchoolModal from "./RequestSchoolModal";
 
-import { searchSchoolRequestAction, joinSchoolRequestAction, updateUserWithSchoolLoadingSelector } from "../../duck";
+import {
+  searchSchoolRequestAction,
+  searchSchoolByDistrictRequestAction,
+  joinSchoolRequestAction,
+  updateUserWithSchoolLoadingSelector,
+  checkDistrictPolicyRequestAction
+} from "../../duck";
 import { getUserIPZipCode } from "../../../../author/src/selectors/user";
 import { RemoteAutocompleteDropDown } from "../../../../common/components/widgets/remoteAutoCompleteDropDown";
 
@@ -42,31 +49,57 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
 const JoinSchool = ({
   isSearching,
   searchSchool,
+  searchSchoolByDistrictRequestAction,
+  checkDistrictPolicyRequestAction,
   schools,
   newSchool,
   userInfo,
   joinSchool,
   updateUserWithSchoolLoading,
   ipZipCode,
+  checkingPolicy,
+  checkDistrictPolicy,
   districtId,
   isSignupUsingDaURL,
-  districtPolicy
+  generalSettings,
+  districtPolicy,
+  districtShortName,
+  t
 }) => {
   const { email, firstName, middleName, lastName } = userInfo;
   const [selected, setSchool] = useState(null);
+  const [tempSelected, setTempSchool] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [prevCheckDistrictPolicy, setPrevCheckDistrictPolicy] = useState(checkDistrictPolicy);
+  const autoCompleteRef = useRef(null);
 
   const toggleModal = () => setShowModal(!showModal);
 
   const changeSchool = value => {
     const _school = find(schools, item => item.schoolId === value.key);
-    setSchool(_school);
-    if (isSignupUsingDaURL && districtPolicy.orgId !== _school.districtId) {
-      message.error(
-        "Enrollment for your school district is restricted. Please contact your administrator for assistance."
-      );
+    if (isSignupUsingDaURL) {
+      setSchool(_school);
+    } else if (!isSignupUsingDaURL && _school) {
+      checkDistrictPolicyRequestAction({
+        data: { districtId: _school.districtId, email, type: userInfo.role },
+        error: { message: t("common.policyvoilation") }
+      });
+      setTempSchool(_school);
     }
   };
+
+  if (prevCheckDistrictPolicy !== checkDistrictPolicy) {
+    setPrevCheckDistrictPolicy(checkDistrictPolicy);
+    if (!Object.keys(checkDistrictPolicy).length) {
+      if (autoCompleteRef.current) {
+        autoCompleteRef.current.wipeSelected();
+      }
+      setSchool(null);
+    } else {
+      setSchool(tempSelected);
+    }
+    setTempSchool(null);
+  }
 
   const handleSubmit = () => {
     const currentSignUpState = "PREFERENCE_NOT_SELECTED";
@@ -79,25 +112,35 @@ const JoinSchool = ({
       middleName,
       lastName
     };
-    if (isSignupUsingDaURL && districtPolicy.orgId !== selected.districtId) {
-      message.error(
-        "Enrollment for your school district is restricted. Please contact your administrator for assistance."
-      );
-      return;
-    }
     joinSchool({ data, userId: userInfo._id });
   };
 
   const fetchSchool = searchText => {
-    if (searchText) {
-      searchSchool({ ipZipCode, email, searchText });
+    if (searchText && searchText.length >= 3) {
+      if (isSignupUsingDaURL) {
+        searchSchoolByDistrictRequestAction({
+          districtId,
+          search: {
+            name: { type: "cont", value: searchText },
+            city: { type: "cont", value: searchText },
+            zip: { type: "cont", value: searchText }
+          },
+          searchKeysSearchType: "or"
+        });
+      } else {
+        searchSchool({ ipZipCode, email, searchText });
+      }
     }
   };
 
   const handleSearch = debounce(keyword => fetchSchool(keyword), 500);
 
   useEffect(() => {
-    searchSchool({ ipZipCode, email });
+    if (isSignupUsingDaURL) {
+      searchSchoolByDistrictRequestAction({ districtId });
+    } else {
+      searchSchool({ ipZipCode, email });
+    }
   }, []);
 
   useEffect(() => {
@@ -145,11 +188,13 @@ const JoinSchool = ({
                   selectCB={changeSchool}
                   filterKeys={["title", "zip", "city"]}
                   isLoading={isSearching}
+                  _ref={autoCompleteRef}
+                  disabled={tempSelected ? true : false}
                 />
                 <Actions>
                   {/* I want to home school removed temporarily */}
                   {/* <AnchorBtn> I want to homeschool</AnchorBtn> */}
-                  <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn>
+                  {!isSignupUsingDaURL ? <AnchorBtn onClick={toggleModal}> Request a new School</AnchorBtn> : null}
                   {selected && (
                     <DistrictName>
                       <span>District:</span> {selected.districtName}
@@ -186,15 +231,23 @@ JoinSchool.propTypes = {
 
 const enhance = compose(
   withRouter,
+  withNamespaces("login"),
   connect(
     state => ({
       isSearching: get(state, "signup.isSearching", false),
       schools: get(state, "signup.schools", []),
       newSchool: get(state, "signup.newSchool", {}),
+      checkingPolicy: get(state, "signup.checkingPolicy", false),
+      checkDistrictPolicy: get(state, "signup.checkDistrictPolicy", false),
       updateUserWithSchoolLoading: updateUserWithSchoolLoadingSelector(state),
       ipZipCode: getUserIPZipCode(state)
     }),
-    { searchSchool: searchSchoolRequestAction, joinSchool: joinSchoolRequestAction }
+    {
+      searchSchool: searchSchoolRequestAction,
+      searchSchoolByDistrictRequestAction: searchSchoolByDistrictRequestAction,
+      joinSchool: joinSchoolRequestAction,
+      checkDistrictPolicyRequestAction
+    }
   )
 );
 

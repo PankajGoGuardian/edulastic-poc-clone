@@ -1,7 +1,10 @@
 import React, { useEffect, lazy } from "react";
 import { connect } from "react-redux";
-import { Switch, Route } from "react-router-dom";
+import { compose } from "redux";
+import { Switch, Route, Redirect } from "react-router-dom";
 import { get } from "lodash";
+import { withNamespaces } from "@edulastic/localization";
+import { isDistrictPolicyAllowed, isDistrictPolicyAvailable } from "../common/utils/helpers";
 
 import { getOrgDetailsByShortNameAndOrgTypeAction } from "../student/Signup/duck";
 
@@ -21,34 +24,23 @@ const DistrictRoutes = ({
   location,
   getOrgDetailsByShortNameAndOrgTypeAction,
   generalSettings,
-  districtPolicy
+  districtPolicy,
+  t
 }) => {
   const { districtShortName } = match.params;
   const isSignupUsingDaURL = districtShortName ? true : false;
   useEffect(() => {
-    getOrgDetailsByShortNameAndOrgTypeAction({ shortName: districtShortName, orgType: "district" });
+    getOrgDetailsByShortNameAndOrgTypeAction({
+      data: { shortName: districtShortName, orgType: "district" },
+      error: { message: t("common.policyvoilation") }
+    });
   }, []);
 
   return (
     <Switch>
-      {districtPolicy && districtPolicy.teacherSignUp ? (
-        <Route
-          exact
-          path="/district/:districtShortName"
-          render={props => (
-            <TeacherSignup
-              {...props}
-              isSignupUsingDaURL={isSignupUsingDaURL}
-              generalSettings={generalSettings}
-              districtPolicy={districtPolicy}
-              districtShortName={districtShortName}
-            />
-          )}
-        />
-      ) : null}
       <Route
         exact
-        path="/district/:districtShortName/login"
+        path="/district/:districtShortName"
         render={props => (
           <Auth
             {...props}
@@ -59,7 +51,26 @@ const DistrictRoutes = ({
           />
         )}
       />
-      {districtPolicy && districtPolicy.studentSignUp ? (
+
+      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ? (
+        <Route
+          exact
+          path="/district/:districtShortName/signup"
+          render={props => (
+            <TeacherSignup
+              {...props}
+              isSignupUsingDaURL={isSignupUsingDaURL}
+              generalSettings={generalSettings}
+              districtPolicy={districtPolicy}
+              districtShortName={districtShortName}
+            />
+          )}
+        />
+      ) : isDistrictPolicyAvailable(isSignupUsingDaURL, districtPolicy) ? (
+        <Redirect path="/district/:districtShortName/signup" exact to={`/district/${districtShortName}`} />
+      ) : null}
+
+      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ? (
         <Route
           exact
           path="/district/:districtShortName/studentsignup"
@@ -73,30 +84,43 @@ const DistrictRoutes = ({
             />
           )}
         />
+      ) : isDistrictPolicyAvailable(isSignupUsingDaURL, districtPolicy) ? (
+        <Redirect path="/district/:districtShortName/studentsignup" exact to={`/district/${districtShortName}`} />
       ) : null}
-      <Route
-        exact
-        path="/district/:districtShortName/GetStarted"
-        render={props => (
-          <GetStarted
-            {...props}
-            isSignupUsingDaURL={isSignupUsingDaURL}
-            generalSettings={generalSettings}
-            districtPolicy={districtPolicy}
-            districtShortName={districtShortName}
-          />
-        )}
-      />
+
+      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
+      isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ? (
+        <Route
+          exact
+          path="/district/:districtShortName/GetStarted"
+          render={props => (
+            <GetStarted
+              {...props}
+              isSignupUsingDaURL={isSignupUsingDaURL}
+              generalSettings={generalSettings}
+              districtPolicy={districtPolicy}
+              districtShortName={districtShortName}
+            />
+          )}
+        />
+      ) : isDistrictPolicyAvailable(isSignupUsingDaURL, districtPolicy) ? (
+        <Redirect path="/district/:districtShortName/GetStarted" exact to={`/district/${districtShortName}`} />
+      ) : null}
     </Switch>
   );
 };
 
-export default connect(
-  state => ({
-    generalSettings: get(state, "signup.generalSettings", null),
-    districtPolicy: get(state, "signup.districtPolicy", null)
-  }),
-  {
-    getOrgDetailsByShortNameAndOrgTypeAction: getOrgDetailsByShortNameAndOrgTypeAction
-  }
-)(DistrictRoutes);
+const enhance = compose(
+  withNamespaces("login"),
+  connect(
+    state => ({
+      generalSettings: get(state, "signup.generalSettings", null),
+      districtPolicy: get(state, "signup.districtPolicy", null)
+    }),
+    {
+      getOrgDetailsByShortNameAndOrgTypeAction: getOrgDetailsByShortNameAndOrgTypeAction
+    }
+  )
+);
+
+export default enhance(DistrictRoutes);

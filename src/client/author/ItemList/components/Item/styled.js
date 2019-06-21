@@ -39,6 +39,11 @@ export const Question = styled.div`
     font-size: 13px;
   }
 
+  table tr td img {
+    max-height: 100%;
+    max-width: 100%;
+  }
+
   @media (max-width: ${tabletWidth}) {
     width: 100%;
     margin-bottom: 0;

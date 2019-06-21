@@ -68,6 +68,7 @@ const OrderList = ({
   fillSections,
   cleanSections,
   theme,
+  disableResponse,
   t
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
@@ -196,7 +197,7 @@ const OrderList = ({
       });
     });
   }
-
+  const initialAnswers = disableResponse ? correctAnswers : userAnswer;
   return (
     <Fragment>
       {view === EDIT && (
@@ -300,11 +301,12 @@ const OrderList = ({
           {previewTab === CLEAR && (
             <OrderListPreview
               onSortEnd={onSortPreviewEnd}
-              questions={userAnswer.map(index => itemForPreview.list && itemForPreview.list[index])}
+              questions={initialAnswers.map(index => itemForPreview.list && itemForPreview.list[index])}
               smallSize={smallSize}
               listStyle={{ fontSize }}
               axis={axis}
               columns={columns}
+              disableResponse={disableResponse}
             />
           )}
         </Wrapper>
@@ -330,7 +332,8 @@ OrderList.propTypes = {
   advancedAreOpen: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   theme: PropTypes.object.isRequired,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 OrderList.defaultProps = {
@@ -343,7 +346,8 @@ OrderList.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  showQuestionNumber: false
+  showQuestionNumber: false,
+  disableResponse: false
 };
 
 const enhance = compose(

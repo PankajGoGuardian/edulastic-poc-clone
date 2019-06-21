@@ -19,6 +19,11 @@ import {
   white
 } from "@edulastic/colors";
 import { signupAction } from "../../../Login/ducks";
+import {
+  isDistrictPolicyAllowed,
+  getDistrictLoginUrl,
+  getDistrictStudentSignupUrl
+} from "../../../../common/utils/helpers";
 
 import teacherBg from "../../../assets/bg-teacher.png";
 import userIcon from "../../../assets/user-icon.svg";
@@ -45,7 +50,7 @@ class Signup extends React.Component {
   regExp = new RegExp("^[A-Za-z0-9 ]+$");
 
   handleSubmit = e => {
-    const { form, signup } = this.props;
+    const { form, signup, t } = this.props;
     e.preventDefault();
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
@@ -53,7 +58,8 @@ class Signup extends React.Component {
           password,
           email: trim(email),
           name: trim(name),
-          role: "teacher"
+          role: "teacher",
+          policyvoilation: t("common.policyvoilation")
         });
       }
     });
@@ -114,7 +120,7 @@ class Signup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to={isSignupUsingDaURL ? "/district/" + districtShortName + "/login" : "/login"}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -131,11 +137,10 @@ class Signup extends React.Component {
                       <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
                     </LinkDiv>
                   ) : null}
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.studentSignUp) || !isSignupUsingDaURL ? (
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ||
+                  !isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link
-                        to={isSignupUsingDaURL ? "/district/" + districtShortName + "/studentsignup" : "/studentsignup"}
-                      >
+                      <Link to={isSignupUsingDaURL ? getDistrictStudentSignupUrl(districtShortName) : "/studentsignup"}>
                         {t("component.signup.signupasstudent")}
                       </Link>
                     </LinkDiv>
@@ -147,18 +152,20 @@ class Signup extends React.Component {
                       <h3 align="center">
                         <b>{t("component.signup.signupboxheading")}</b>
                       </h3>
-                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
+                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
+                      !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn span={20} offset={2}>
                           <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
                         </ThirdPartyLoginBtn>
                       ) : null}
-                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) ||
+                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
                       !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn span={20} offset={2}>
                           <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
                         </ThirdPartyLoginBtn>
                       ) : null}
-                      {(isSignupUsingDaURL && districtPolicy && districtPolicy.cleverSignOn) || !isSignupUsingDaURL ? (
+                      {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
+                      !isSignupUsingDaURL ? (
                         <ThirdPartyLoginBtn span={20} offset={2}>
                           <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
                         </ThirdPartyLoginBtn>
@@ -171,7 +178,7 @@ class Signup extends React.Component {
                         <Col span={21}>{t("component.signup.infotext")}</Col>
                       </InfoBox>
                     </FormHead>
-                    {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) ||
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
                     !isSignupUsingDaURL ? (
                       <FormBody>
                         <Col span={20} offset={2}>

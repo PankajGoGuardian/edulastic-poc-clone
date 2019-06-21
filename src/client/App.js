@@ -102,7 +102,7 @@ class App extends Component {
             defaultRoute = "/author/assignments";
           } else {
             if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-              redirectRoute = "/district/" + path[1];
+              redirectRoute = `/district/${path[1]}/signup`;
             } else {
               redirectRoute = "/Signup";
             }
@@ -132,6 +132,7 @@ class App extends Component {
         redirectRoute = "/login";
       }
     }
+
     // signup routes hidden till org reference is not done
     return (
       <div>

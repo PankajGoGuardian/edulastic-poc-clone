@@ -50,6 +50,6 @@ const StyledButton = styled(Button)`
   &:focus {
     border-color: #00ad50;
     outline-color: #00ad50;
-    color: #00ad50;
+    color: ${({ type }) => (type === "primary" ? white : "#00ad50")};
   }
 `;

@@ -249,6 +249,7 @@ class QuestionWrapper extends Component {
       handleAdvancedOpen,
       advancedAreOpen,
       userRole,
+      disableResponse,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
@@ -291,7 +292,11 @@ class QuestionWrapper extends Component {
       >
         <ThemeProvider theme={themes.default}>
           <>
-            {canShowPlayer ? <AudioControls item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} /> : ""}
+            {canShowPlayer ? (
+              <AudioControls key={data.id} item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} />
+            ) : (
+              ""
+            )}
             <QuestionContainer
               className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}
@@ -338,6 +343,7 @@ class QuestionWrapper extends Component {
                     fillSections={this.fillSections}
                     showQuestionNumber={showFeedback}
                     flowLayout={flowLayout}
+                    disableResponse={disableResponse}
                     {...userAnswerProps}
                   />
                 </div>
@@ -386,7 +392,8 @@ QuestionWrapper.propTypes = {
   flowLayout: PropTypes.bool,
   advancedAreOpen: PropTypes.bool,
   handleAdvancedOpen: PropTypes.func,
-  userRole: PropTypes.string.isRequired
+  userRole: PropTypes.string.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -404,7 +411,8 @@ QuestionWrapper.defaultProps = {
   changePreviewTab: () => {},
   flowLayout: false,
   advancedAreOpen: false,
-  handleAdvancedOpen: () => {}
+  handleAdvancedOpen: () => {},
+  disableResponse: false
 };
 
 const enhance = compose(

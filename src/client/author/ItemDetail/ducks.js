@@ -404,6 +404,7 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case ADD_QUESTION:
+      if (!payload.validation) return state; // do not set itemLevelScore for resources
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }

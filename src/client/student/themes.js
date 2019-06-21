@@ -77,6 +77,11 @@ export const themes = {
       cardMissedLabelBorderColor: "#d9d9d9",
       cardMissedLabelBgColor: "#efefef",
       cardMissedLabelTextColor: "#878282",
+
+      cardAbsentLabelBorderColor: "#d9d9d9",
+      cardAbsentLabelBgColor: "red",
+      cardAbsentLabelTextColor: "white",
+
       cardDefaultBtnFontSize: "11px",
       cardDefaultBtnBgColor: "white",
       cardDefaultBtnBgHoverColor: "#00AD50",

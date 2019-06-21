@@ -671,6 +671,7 @@
       "decimalSeparator": "Decimal separator",
       "addNewMethod": "Add new method",
       "exactMatch": "Exact match",
+      "partialMatch": "Partial Match",
       "template": "Template",
       "allowThousandsSeparator": "Allow specifying thousands separator",
       "composequestion": "Question",

@@ -126,20 +126,19 @@ const TokenHighlightPreview = ({
     lineHeight: smallSize ? "18px" : "28px"
   };
 
-  const getClass = index => {
-    const defaultAnsvers = disableResponse ? validArray : answers;
-    return defaultAnsvers.find(elem => elem.index === index) &&
-      defaultAnsvers.find(elem => elem.index === index).selected
+  const getClass = index =>
+    answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected
       ? "active-word token answer"
       : "token answer";
-  };
 
   const preview = previewTab === CHECK || previewTab === SHOW || smallSize;
 
   const rightAnswers = validate();
 
   const getStyles = index => {
-    const condition = answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected;
+    const defaultAnswers = disableResponse ? validArray : answers;
+    const condition =
+      defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -188,7 +187,7 @@ const TokenHighlightPreview = ({
           <span
             onClick={!disableResponse && handleSelect(i)}
             dangerouslySetInnerHTML={{ __html: el.value }}
-            style={preview ? getStyles(i) : {}}
+            style={preview || disableResponse ? getStyles(i) : {}}
             key={i}
             className={getClass(i)}
           />

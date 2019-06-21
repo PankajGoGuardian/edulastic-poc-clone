@@ -38,20 +38,23 @@ class Response extends Component {
 
   componentDidMount = () => {
     const { fillSections, t, index } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
-
     fillSections(
       "main",
       `${t("component.cloze.imageDropDown.response")} ${index + 1}`,
       node.offsetTop,
-      node.scrollHeight
+      node.scrollHeight,
+      null,
+      null,
+      `cloze-image-dropdown-response-${index + 1}`
     );
   };
 
   componentWillUnmount() {
-    const { cleanSections } = this.props;
+    const { cleanSections, index } = this.props;
 
-    cleanSections();
+    cleanSections(`cloze-image-dropdown-response-${index + 1}`);
   }
 
   onChangeQuestion = stimulus => {

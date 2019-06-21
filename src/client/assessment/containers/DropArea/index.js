@@ -27,6 +27,7 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
     e.stopPropagation();
     const newItem = cloneDeep(item);
     const deletedIndex = findIndex(newItem.responses, res => res.id === id);
+
     if (deletedIndex !== -1) {
       newItem.responses.splice(deletedIndex, 1);
       newItem.validation.valid_response.value.splice(deletedIndex, 1);
@@ -34,9 +35,11 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
         resp.value.splice(deletedIndex, 1);
         return resp;
       });
+      if (newItem.options) {
+        newItem.options.splice(deletedIndex, 1);
+      }
       setQuestionData(newItem);
     }
-    console.log(deletedIndex);
   };
 
   const _click = index => () => {

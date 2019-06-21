@@ -47,7 +47,7 @@ import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 import { FieldWrapper } from "./styled/FieldWrapper";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
@@ -447,15 +447,14 @@ class Authoring extends Component {
           <Widget>
             <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
 
-            <WidgetFRContainer>
-              <QuestionTextArea
-                toolbarId="stimulus"
-                inputId="stimulusInput"
-                placeholder={t("component.cloze.imageText.thisisstem")}
-                onChange={this.onChangeQuestion}
-                value={item.stimulus}
-              />
-            </WidgetFRContainer>
+            <QuestionTextArea
+              toolbarId="stimulus"
+              inputId="stimulusInput"
+              placeholder={t("component.cloze.imageText.thisisstem")}
+              onChange={this.onChangeQuestion}
+              value={item.stimulus}
+              theme="border"
+            />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">
               <div data-cy="left-buttons">

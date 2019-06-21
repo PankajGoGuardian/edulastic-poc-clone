@@ -10,6 +10,7 @@ import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
+import { white, dashBorderColor } from "@edulastic/colors";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
@@ -174,6 +175,32 @@ const BackgroundStyleWrapper = styled.div.attrs({
     transition: padding-top 0.5s;
     padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
+
+  ${({ theme }) => {
+    if (theme === "border") {
+      return `
+        .fr {
+          &-box {
+            background: ${white};
+            min-height: 134px;
+            border-radius: 4px;
+            border: 1px solid ${dashBorderColor};
+            display: flex;
+          }
+          &-wrapper {
+            width: 100%;
+            min-height: 100%;
+            display: flex;
+          }
+          &-view {
+            width: 100%;
+            min-height: 100%;
+            padding: 20px 23px;
+          }
+        }
+      `;
+    }
+  }}
 `;
 
 export const ToolbarContainer = styled.div.attrs({
@@ -235,6 +262,7 @@ const CustomEditor = ({
   toolbarSize,
   additionalToolbarOptions,
   initOnClick,
+  theme,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
@@ -688,7 +716,7 @@ const CustomEditor = ({
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded}>
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}
@@ -713,7 +741,8 @@ CustomEditor.propTypes = {
   toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
-  initOnClick: PropTypes.bool
+  initOnClick: PropTypes.bool,
+  theme: PropTypes.string
 };
 
 CustomEditor.defaultProps = {
@@ -722,7 +751,8 @@ CustomEditor.defaultProps = {
   initOnClick: true,
   toolbarSize: "STD",
   additionalToolbarOptions: [],
-  readOnly: false
+  readOnly: false,
+  theme: "default"
 };
 
 export default withMathFormula(CustomEditor);

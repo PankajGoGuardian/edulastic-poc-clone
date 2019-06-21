@@ -15,7 +15,7 @@ import { updateVariables } from "../../utils/variables";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -49,13 +49,12 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.classification.composeQuestion")}</Subtitle>
 
-        <WidgetFRContainer>
-          <QuestionTextArea
-            placeholder={t("component.classification.enterQuestion")}
-            onChange={stim => handleItemChangeChange("stimulus", stim)}
-            value={stimulus}
-          />
-        </WidgetFRContainer>
+        <QuestionTextArea
+          placeholder={t("component.classification.enterQuestion")}
+          onChange={stim => handleItemChangeChange("stimulus", stim)}
+          value={stimulus}
+          theme="border"
+        />
       </Widget>
     );
   }

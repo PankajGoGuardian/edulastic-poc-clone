@@ -13,7 +13,6 @@ import { Row } from "../../../../styled/WidgetOptions/Row";
 import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
-import { WidgetFRContainer } from "../../../../styled/Widget";
 
 class GraphQuadrants extends Component {
   onChangeQuestion = stimulus => {
@@ -87,14 +86,13 @@ class GraphQuadrants extends Component {
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
 
-          <WidgetFRContainer>
-            <QuestionTextArea
-              onChange={this.onChangeQuestion}
-              value={graphData.stimulus}
-              firstFocus={graphData.firstMount}
-              placeholder={t("component.graphing.question.enteryourquestion")}
-            />
-          </WidgetFRContainer>
+          <QuestionTextArea
+            onChange={this.onChangeQuestion}
+            value={graphData.stimulus}
+            firstFocus={graphData.firstMount}
+            placeholder={t("component.graphing.question.enteryourquestion")}
+            theme="border"
+          />
         </QuestionSection>
         <QuestionSection
           section="main"

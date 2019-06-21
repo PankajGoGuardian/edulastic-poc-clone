@@ -136,28 +136,6 @@ export const WidgetSubHeading = styled.div`
   }
 `;
 
-export const WidgetFRContainer = styled.div`
-  .fr {
-    &-box {
-      background: ${white};
-      min-height: 134px;
-      border-radius: 4px;
-      border: 1px solid ${dashBorderColor};
-      display: flex;
-    }
-    &-wrapper {
-      width: 100%;
-      min-height: 100%;
-      display: flex;
-    }
-    &-view {
-      width: 100%;
-      min-height: 100%;
-      padding: 20px 23px;
-    }
-  }
-`;
-
 export const WidgetMethods = styled.div`
   display: flex;
   flex-wrap: wrap;

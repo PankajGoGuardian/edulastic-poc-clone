@@ -10,7 +10,7 @@ import { WORD_MODE, PARAGRAPH_MODE, SENTENCE_MODE } from "../../constants/consta
 import { updateVariables } from "../../utils/variables";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 import { Container } from "./styled/Container";
 import { ModeButton } from "./styled/ModeButton";
 
@@ -94,13 +94,12 @@ class Template extends Component {
         </Tabs>
 
         {templateTab === 0 && (
-          <WidgetFRContainer>
-            <QuestionTextArea
-              onChange={val => handleItemChangeChange("template", val)}
-              value={item.template}
-              toolbarId="tokens-template"
-            />
-          </WidgetFRContainer>
+          <QuestionTextArea
+            onChange={val => handleItemChangeChange("template", val)}
+            value={item.template}
+            toolbarId="tokens-template"
+            theme="border"
+          />
         )}
 
         {templateTab === 1 && (

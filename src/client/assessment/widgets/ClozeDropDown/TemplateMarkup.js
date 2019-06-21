@@ -17,7 +17,7 @@ import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 
 class TemplateMarkup extends Component {
   static propTypes = {
@@ -154,16 +154,15 @@ class TemplateMarkup extends Component {
       <Widget>
         <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
 
-        <WidgetFRContainer>
-          <FroalaEditor
-            data-cy="templateBox"
-            toolbarId="cloze-dropdown-template-box"
-            placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
-            additionalToolbarOptions={["textdropdown"]}
-            value={item.templateMarkUp}
-            onChange={this.onChangeMarkUp}
-          />
-        </WidgetFRContainer>
+        <FroalaEditor
+          data-cy="templateBox"
+          toolbarId="cloze-dropdown-template-box"
+          placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
+          additionalToolbarOptions={["textdropdown"]}
+          value={item.templateMarkUp}
+          onChange={this.onChangeMarkUp}
+          theme="border"
+        />
       </Widget>
     );
   }

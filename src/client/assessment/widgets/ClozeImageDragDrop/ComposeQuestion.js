@@ -33,7 +33,7 @@ import { FlexContainer } from "./styled/FlexContainer";
 import { IconMoveResize } from "./styled/IconMoveResize";
 import { IconPin } from "./styled/IconPin";
 import { IconUpload } from "./styled/IconUpload";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 import { FieldWrapper, FieldLabel } from "./styled/FieldWrapper";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -422,15 +422,14 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
 
-        <WidgetFRContainer>
-          <QuestionTextArea
-            toolbarId="stimulus"
-            inputId="stimulusInput"
-            placeholder={t("component.cloze.imageDragDrop.thisisstem")}
-            onChange={this.onChangeQuestion}
-            value={item.stimulus}
-          />
-        </WidgetFRContainer>
+        <QuestionTextArea
+          toolbarId="stimulus"
+          inputId="stimulusInput"
+          placeholder={t("component.cloze.imageDragDrop.thisisstem")}
+          onChange={this.onChangeQuestion}
+          value={item.stimulus}
+          theme="border"
+        />
         <PaddingDiv top={30} />
         <FlexContainer
           style={{

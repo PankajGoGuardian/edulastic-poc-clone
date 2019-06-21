@@ -9,7 +9,6 @@ import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
-import { WidgetFRContainer } from "../../../styled/Widget";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import QuestionTextArea from "../../QuestionTextArea";
 import { QuestionSection } from "./";
@@ -64,14 +63,13 @@ class AxisSegments extends Component {
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
 
-          <WidgetFRContainer>
-            <QuestionTextArea
-              placeholder={t("component.graphing.question.enteryourquestion")}
-              onChange={this.onChangeQuestion}
-              value={stimulus}
-              firstFocus={firstMount}
-            />
-          </WidgetFRContainer>
+          <QuestionTextArea
+            placeholder={t("component.graphing.question.enteryourquestion")}
+            onChange={this.onChangeQuestion}
+            value={stimulus}
+            firstFocus={firstMount}
+            theme="border"
+          />
         </QuestionSection>
 
         <QuestionSection

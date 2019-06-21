@@ -14,7 +14,7 @@ import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 
 class ComposeQuestion extends Component {
   static propTypes = {
@@ -69,14 +69,13 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
 
-        <WidgetFRContainer>
-          <QuestionTextArea
-            toolbarId="stimulus-input"
-            placeholder={t("component.cloze.text.thisisstem")}
-            onChange={this.onChangeQuestion}
-            value={item.stimulus}
-          />
-        </WidgetFRContainer>
+        <QuestionTextArea
+          toolbarId="stimulus-input"
+          placeholder={t("component.cloze.text.thisisstem")}
+          onChange={this.onChangeQuestion}
+          value={item.stimulus}
+          theme="border"
+        />
       </Widget>
     );
   }

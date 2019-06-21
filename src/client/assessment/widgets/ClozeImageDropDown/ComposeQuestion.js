@@ -46,7 +46,7 @@ import { IconUpload } from "./styled/IconUpload";
 import { FieldWrapper } from "./styled/FieldWrapper";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
@@ -419,15 +419,14 @@ class ComposeQuestion extends Component {
           <Widget>
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
 
-            <WidgetFRContainer>
-              <QuestionTextArea
-                toolbarId="stimulus"
-                inputId="stimulusInput"
-                placeholder={t("component.cloze.imageDropDown.thisisstem")}
-                onChange={this.onChangeQuestion}
-                value={item.stimulus}
-              />
-            </WidgetFRContainer>
+            <QuestionTextArea
+              toolbarId="stimulus"
+              inputId="stimulusInput"
+              placeholder={t("component.cloze.imageDropDown.thisisstem")}
+              onChange={this.onChangeQuestion}
+              value={item.stimulus}
+              theme="border"
+            />
             <PaddingDiv />
             <FormContainer>
               <div data-cy="left-buttons">

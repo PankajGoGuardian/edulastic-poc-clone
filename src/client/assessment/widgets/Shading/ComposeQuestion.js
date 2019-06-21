@@ -11,7 +11,7 @@ import { updateVariables } from "../../utils/variables";
 
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { Subtitle } from "../../styled/Subtitle";
-import { Widget, WidgetFRContainer } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -44,13 +44,12 @@ class ComposeQuestion extends Component {
       <Widget>
         <Subtitle>{t("component.shading.composeQuestion")}</Subtitle>
 
-        <WidgetFRContainer>
-          <QuestionTextArea
-            placeholder={t("component.shading.enterQuestion")}
-            onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
-            value={item.stimulus}
-          />
-        </WidgetFRContainer>
+        <QuestionTextArea
+          placeholder={t("component.shading.enterQuestion")}
+          onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
+          value={item.stimulus}
+          theme="border"
+        />
       </Widget>
     );
   }

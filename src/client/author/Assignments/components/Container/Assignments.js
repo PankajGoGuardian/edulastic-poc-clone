@@ -219,12 +219,8 @@ class Assignments extends Component {
                     </PerfectScrollbar>
                   )}
                   <TableWrapper>
-                    <FilterButton
-                      color={showFilter ? "primary" : "secondary"}
-                      variant="filter"
-                      onClick={this.toggleFilter}
-                    >
-                      <IconFilter color={showFilter ? white : blue} width={20} height={20} />
+                    <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
+                      <IconFilter color={showFilter ? white : "#00AD50"} width={20} height={20} />
                     </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (

@@ -128,6 +128,7 @@ export const FilterButton = styled(Button)`
   top: 25px;
   z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.3);
+  background: ${props => (props.showFilter ? "#00AD50" : "#ffffff")};
   &:focus {
     outline: unset;
   }

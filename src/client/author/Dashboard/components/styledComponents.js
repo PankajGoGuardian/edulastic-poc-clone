@@ -5,8 +5,8 @@ const { Paragraph, Text } = Typography;
 
 // shared styled components
 export const TextWrapper = styled(Text)`
-  color: ${props => (props.color ? props.color : "")};
-  font-size: ${props => props.size};
+  color: ${props => (props.color ? props.color : "#444444")};
+  font-size: ${props => (props.size ? props.size : "14px")};
   font-family: "Open Sans";
   text-align: ${props => (props.textalign ? props.textalign : "")};
   display: ${props => (props.display ? props.display : "inline-block")};

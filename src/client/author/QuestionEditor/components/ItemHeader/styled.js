@@ -16,12 +16,11 @@ import { Link } from "react-router-dom";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 export const Container = styled(HeaderWrapper)`
-  background: ${darkBlue};
-  padding: 0px 40px;
+  padding: 0px 20px;
   height: 62px;
   display: flex;
   align-items: center;
-  background: ${darkBlueSecondary};
+  background: ${props => props.theme.header.headerBgColor};
 
   @media (max-width: ${mobileWidth}) {
     margin-bottom: 20px;

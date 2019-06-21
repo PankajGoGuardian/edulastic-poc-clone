@@ -1,13 +1,4 @@
-import {
-  white,
-  tabletWidth,
-  textColor,
-  newBlue,
-  lightGrey,
-  greyDarken,
-  greenPrimary,
-  darkGrey
-} from "@edulastic/colors";
+import { white, tabletWidth, textColor, lightGrey, greyDarken, greenPrimary, darkGrey } from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
@@ -89,9 +80,10 @@ export const ViewButtonStyled = styled(Button)`
   font-weight: 600;
   text-transform: uppercase;
   border: 0;
-  color: ${newBlue};
+  color: #00ad50;
   &:hover {
     background: ${lightGrey};
+    color: #00ad50;
   }
 
   svg {
@@ -112,7 +104,7 @@ export const ViewButtonStyled = styled(Button)`
       width: 20px;
       height: 20px;
       margin-bottom: -3px;
-      fill: ${newBlue};
+      fill: #00ad50;
     }
   }
 `;
@@ -126,14 +118,14 @@ export const AddButtonStyled = styled(Button)`
   font-weight: 600;
   text-transform: uppercase;
   margin-left: 10px;
-  color: ${newBlue};
+  color: #00ad50;
   border: 0;
   padding: 0 15px;
 
   svg {
     max-width: 13px;
     max-height: 13px;
-    fill: ${newBlue};
+    fill: #00ad50;
   }
 
   @media (max-width: ${tabletWidth}) {
@@ -144,7 +136,7 @@ export const AddButtonStyled = styled(Button)`
 
     svg {
       margin-top: 4px;
-      stroke: ${newBlue};
+      stroke: #00ad50;
     }
   }
 `;
@@ -326,25 +318,25 @@ export const Categories = styled.div`
 export const ShareIcon = styled(IconShare)`
   display: flex;
   align-items: center;
-  fill: ${newBlue};
+  fill: #00ad50;
 `;
 
 export const HeartIcon = styled(IconHeart)`
   display: flex;
   align-items: center;
-  fill: ${newBlue};
+  fill: #00ad50;
 `;
 
 export const UserIcon = styled(IconUser)`
   display: flex;
   align-items: center;
-  fill: ${newBlue};
+  fill: #00ad50;
 `;
 
 export const IdIcon = styled(IconId)`
   display: flex;
   align-items: center;
-  fill: ${newBlue};
+  fill: #00ad50;
 `;
 
 export const StandardContent = styled.div`
@@ -418,10 +410,10 @@ export const MoreInfo = styled.div`
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: ${props => (props.isOpenedDetails ? newBlue : white)};
+  background: ${props => (props.isOpenedDetails ? "#00AD50" : white)};
   box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
   border: 0;
-  color: ${newBlue};
+  color: #00ad50;
   width: 40px;
   height: 40px;
   border-radius: 3px;
@@ -432,7 +424,7 @@ export const MoreInfo = styled.div`
   &:focus,
   &:hover {
     svg {
-      fill: ${props => (props.isOpenedDetails ? white : newBlue)};
+      fill: ${props => (props.isOpenedDetails ? white : "#00AD50")};
     }
   }
 
@@ -441,7 +433,7 @@ export const MoreInfo = styled.div`
     width: 18px;
     height: 15px;
     margin-bottom: -3px;
-    fill: ${props => (props.isOpenedDetails ? white : newBlue)};
+    fill: ${props => (props.isOpenedDetails ? white : "#00AD50")};
     position: relative;
     transition: all 0.3s ease;
     transform: ${props => (props.isOpenedDetails ? "rotate(180deg)" : "rotate(0deg)")};

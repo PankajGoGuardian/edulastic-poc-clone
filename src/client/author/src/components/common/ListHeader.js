@@ -116,7 +116,7 @@ const Container = styled(HeaderWrapper)`
   border-radius: 5px;
   align-items: center;
   justify-content: space-between;
-  background-color: ${darkBlueSecondary};
+  background-color: ${props => props.theme.header.headerBgColor};
   padding: 0px 15px;
   height: 62px;
   z-index: 1;

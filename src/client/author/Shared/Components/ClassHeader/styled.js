@@ -9,13 +9,15 @@ const classBoardTheme = themes.default.classboard;
 
 export const Container = styled.div`
   display: flex;
-  border-radius: 5px;
   align-items: center;
   justify-content: space-between;
-  background-color: ${newBlue};
-  height: 62px;
+  background-color: ${props => props.theme.header.headerBgColor};
+  height: 95px;
   z-index: 1;
-  padding: 0 2.5%;
+  padding: 0px 20px;
+  &:hover {
+    background-color: darken(${props => props.theme.header.headerBgColor}, 10%);
+  }
   @media (max-width: ${mobileWidth}) {
     height: 150px;
     padding: 0 20px;
@@ -46,8 +48,9 @@ export const StyledParaFirst = styled.p`
 `;
 
 export const LinkLabel = styled.div`
-  padding-left: 22px;
-  padding-right: 15px;
+  padding: 0px 18px;
+  color: ${props => (props.color ? props.color : "#ffffff")};
+  font-size: 10px;
 `;
 
 export const StyledParaSecond = styled.p`
@@ -115,7 +118,7 @@ export const StyledAnchor = styled.div`
   height: 45px;
   margin: 0 10px;
   border-radius: 4px;
-  background-color: ${props => (props.isActive ? "#5196F3" : "#277DF1")};
+  background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   -webkit-transition: background-color 0.3s;
   transition: background-color 0.3s;
 
@@ -123,8 +126,8 @@ export const StyledAnchor = styled.div`
     font-size: 0.6em;
   }
   :hover {
-    color: ${props => (props.isActive ? "#BED8FA" : "#FFFFFF")};
-    background-color: ${props => (props.isActive ? "#277DF1" : "#5196F3")};
+    color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};
+    background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   }
   a {
     color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};
@@ -208,6 +211,7 @@ export const PresentModeSwitch = styled(Switch)`
     font-size: 14px;
   }
   &.ant-switch-checked {
+    background: #42d184;
     .ant-switch-inner {
       margin-right: 20px;
       margin-left: 6px;

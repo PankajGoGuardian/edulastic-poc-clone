@@ -205,7 +205,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
     <StyledTable
       data-cy="matrixTable"
       fontSize={fontSize}
-      horizontalLines={uiStyle.horizontal_lines}
+      horizontalLines={uiStyle.horizontal_lines && !helpers.isEmpty(uiStyle.option_row_title)}
       columns={getColumns()}
       dataSource={data}
       pagination={false}

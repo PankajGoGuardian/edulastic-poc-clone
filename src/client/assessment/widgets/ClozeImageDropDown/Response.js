@@ -80,8 +80,17 @@ class Response extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
+        const oldOptionValue = draft.options[index][itemIndex];
         draft.options[index].splice(itemIndex, 1);
-        draft.validation.valid_response.value.splice(index, 1, "");
+        if (oldOptionValue === draft.validation.valid_response.value[index]) {
+          draft.validation.valid_response.value.splice(index, 1, "");
+        }
+        draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          if (oldOptionValue === resp[index]) {
+            resp.value.splice(index, 1, "");
+          }
+          return resp;
+        });
         updateVariables(draft);
       })
     );
@@ -92,6 +101,7 @@ class Response extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.options[index] === undefined) draft.options[index] = [];
+        const oldOptionValue = draft.options[index][itemIndex];
         draft.options[index][itemIndex] = e.target.value;
         let maxLength = 0;
         draft.options.forEach(option => {
@@ -104,7 +114,15 @@ class Response extends Component {
           draft.ui_style = { widthpx: 140 };
         }
         draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
-        draft.validation.valid_response.value.splice(index, 1, e.target.value);
+        if (draft.validation.valid_response.value[index] === oldOptionValue) {
+          draft.validation.valid_response.value.splice(index, 1, e.target.value);
+        }
+        draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          if (resp.value[index] === oldOptionValue) {
+            resp.value.splice(index, 1, e.target.value);
+          }
+          return resp;
+        });
         updateVariables(draft);
       })
     );

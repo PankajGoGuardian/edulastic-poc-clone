@@ -10,7 +10,7 @@ export const PreivewImage = styled.div`
   user-select: none;
   pointer-events: none;
   max-width: unset !important;
-  background-size: ${({ height, width, maxWidth, maxHeight }) => `${width || maxWidth}px ${height || maxHeight}px`};
+  background-size: contain;
   background-repeat: no-repeat;
   background-image: url(${({ imageSrc }) => imageSrc || ""});
 `;

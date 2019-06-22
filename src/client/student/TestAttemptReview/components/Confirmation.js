@@ -94,6 +94,14 @@ const StyledButton = styled(Button)`
   background: ${props =>
     props.btnType === 1 ? props.theme.confirmation.cancelButtonBgColor : props.theme.confirmation.submitButtonBgColor};
   border-color: ${props => props.theme.confirmation.buttonBorderColor};
+  &:hover,
+  &:focus {
+    background: ${props =>
+      props.btnType === 1
+        ? props.theme.confirmation.cancelButtonBgColor
+        : props.theme.confirmation.submitButtonBgColor};
+    border-color: ${props => props.theme.confirmation.buttonBorderColor};
+  }
   span {
     text-transform: uppercase;
     font-size: ${props => props.theme.confirmation.buttonTextSize};

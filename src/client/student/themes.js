@@ -12,6 +12,12 @@ export const themes = {
     headerDropdownBgColor: "white",
     headerDropdownTextColor: "#444444",
     headerDropdownFontSize: "14px",
+    filterButtonColor: "#00AD50",
+    filterButtonActiveColor: "#ffffff",
+    filterButtonBgColor: "#ffffff",
+    filterButtonBgActiveColor: "#00AD50",
+    filterButtonBorderColor: "#00AD50",
+    filterButtonBorderActiveColor: "#00AD50",
     sideMenu: {
       logo: edulasticDefaultLogo,
       logoBorderBottomColor: "#d9d6d6",
@@ -46,7 +52,7 @@ export const themes = {
     },
     assignment: {
       cardContainerBgColor: "white",
-      cardTitleColor: "#12a6e8",
+      cardTitleColor: "#00AD50",
       cardTitleFontSize: "16px",
       cardTitleFontFamily: "Open Sans",
       cardTimeIconType: "clock-circle",
@@ -243,15 +249,13 @@ export const themes = {
       descriptionTextSize: "13px",
       descriptionTextColor: "#434b5d",
       buttonTextSize: "11px",
-      buttonBorderColor: "#00b0ff",
+      buttonBorderColor: "#00AD50",
       submitButtonTextColor: "#ffffff",
-      submitButtonBgColor: "#00b0ff",
-      cancelButtonTextColor: "#00b0ff",
+      submitButtonBgColor: "#00AD50",
+      cancelButtonTextColor: "#00AD50",
       cancelButtonBgColor: "#ffffff"
     },
     attemptReview: {
-      headerBgColor: "#0288d1",
-      headerTextColor: "#ffffff",
       logoutIconColor: "#ffffff",
       logoutIconHoverColor: "#23e7ab",
       headingTextSize: "22px",
@@ -268,7 +272,7 @@ export const themes = {
       shortDescriptionTextSize: "12px",
       shortDescriptionTextColor: "#1e1e1e",
       submitButtonTextSize: "11px",
-      submitButtonBgColor: "#12a6e8",
+      submitButtonBgColor: "#00AD50",
       submitButtonTextColor: "#ffffff"
     }
   }

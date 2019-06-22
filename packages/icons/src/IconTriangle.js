@@ -1,13 +1,13 @@
 /* eslint-disable react/prop-types */
-import React from 'react';
+import React from "react";
 
-import withIconStyles from './HOC/withIconStyles';
-import SVG from './common/SVG';
+import withIconStyles from "./HOC/withIconStyles";
+import SVG from "./common/SVG";
 
 const IconTriangle = props => (
   <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.807 18.024" {...props}>
     <g transform="translate(0 0)">
-      <g transform="translate(1.614 1.719)" fill="#31afe7">
+      <g transform="translate(1.614 1.719)" fill="#00AD50">
         <path
           d="M 12.91672039031982 14.33094024658203 L 1.000000596046448 14.33094024658203 L 1.000000596046448 2.414220571517944 L 12.91672039031982 14.33094024658203 Z"
           stroke="none"

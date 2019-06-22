@@ -40,6 +40,8 @@ const ItemDetailWidget = ({
   const onMouseLeaveHander = () => {
     if (flowLayout) setShowButtons(false);
   };
+  const showPoints = rowIndex === 0 && itemData.rows.length > 1 ? false : true;
+
   return (
     connectDragPreview &&
     connectDragSource &&
@@ -63,7 +65,7 @@ const ItemDetailWidget = ({
           {(!flowLayout || showButtons) && (
             <div style={{ flex: "1" }}>
               <Buttons>
-                {itemData.itemLevelScoring && widgetIndex === 0 && (
+                {itemData.itemLevelScoring && widgetIndex === 0 && showPoints && (
                   <div className="points">
                     Points :{" "}
                     <input
@@ -79,7 +81,7 @@ const ItemDetailWidget = ({
                   </div>
                 )}
 
-                {!itemData.itemLevelScoring && (
+                {!itemData.itemLevelScoring && widget.widgetType === "question" && (
                   <div className="points">
                     Points :{" "}
                     <input

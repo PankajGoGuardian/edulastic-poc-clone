@@ -10,6 +10,7 @@ import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 import { getUserOrgData } from "../../../src/selectors/user";
+import { fetchStudentsByIdAction } from "../../ducks";
 
 import {
   DividerDiv,
@@ -36,12 +37,13 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  updateStudentRequest
+  updateStudentRequest,
+  loadStudents
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
-
+  const { _id: classId } = selectedClass;
   // let formRef = null;
 
   const toggleModal = key => {
@@ -143,9 +145,11 @@ const ActionContainer = ({
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to enable text to speech");
         }
+
         if (changeTTS) {
-          const stdIds = selectedStudent.map(std => std._id);
+          const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
+          loadStudents({ classId });
         }
         break;
       case "disableSpeech":
@@ -153,11 +157,12 @@ const ActionContainer = ({
           return showMessage("error", "Select 1 or more students to disable text to speech");
         }
         if (changeTTS) {
-          const stdIds = selectedStudent.map(std => std._id);
+          const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "no" });
+          loadStudents({ classId });
         }
         break;
-      case "delete":
+      case "deleteStudent":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to remove");
         }
@@ -176,7 +181,7 @@ const ActionContainer = ({
         if (selectedStudent.length > 1) {
           return showMessage("error", "Please select only one student");
         }
-        toggleModal("add");
+        toggleModal("addStudent");
         setEditStudentStatues(true);
         break;
       case "addCoTeacher":
@@ -189,19 +194,19 @@ const ActionContainer = ({
 
   const actionMenu = (
     <Menu onClick={handleActionMenuClick}>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech">
         <MenuItem key="enableSpeech">
           <Icon type="caret-right" />
           Enable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech">
         <MenuItem key="disableSpeech">
           <Icon type="sound" />
           Disable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <MenuItem key="delete">
+      <MenuItem key="deleteStudent">
         <Icon type="delete" />
         Remove Selected Student(s)
       </MenuItem>
@@ -209,11 +214,11 @@ const ActionContainer = ({
         <Icon type="key" />
         Reset Password
       </MenuItem>
-      <MenuItem key="edit">
+      <MenuItem key="editStudent">
         <Icon type="edit" />
         Edit Student
       </MenuItem>
-      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher">
         <MenuItem key="addCoTeacher">
           <Icon type="switcher" />
           Add a Co-Teacher
@@ -309,6 +314,7 @@ export default connect(
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
-    changeTTS: changeTTSRequestAction
+    changeTTS: changeTTSRequestAction,
+    loadStudents: fetchStudentsByIdAction
   }
 )(ActionContainer);

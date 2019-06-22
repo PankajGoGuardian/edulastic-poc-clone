@@ -6,8 +6,17 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-
-const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable, isDropDown, above, onDoubleClick }) => {
+const DropArea = ({
+  updateData,
+  item,
+  width,
+  showIndex = true,
+  setQuestionData,
+  disable,
+  isDropDown,
+  isAbove,
+  onDoubleClick
+}) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -102,7 +111,7 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
         left: 0,
         width: !width ? item.imageWidth || "100%" : width,
         pointerEvents: disable ? "none" : "auto",
-        zIndex: above ? 20 : 10
+        zIndex: isAbove ? 20 : 10
       }}
       onDoubleClick={onDoubleClick}
       onClick={_addNew}
@@ -134,20 +143,18 @@ DropArea.propTypes = {
   item: PropTypes.object.isRequired,
   onDoubleClick: PropTypes.func,
   disable: PropTypes.bool,
-  above: PropTypes.bool,
+  isAbove: PropTypes.bool,
   width: PropTypes.number.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   showIndex: PropTypes.bool,
-  isDropDown: PropTypes.bool,
-  disable: PropTypes.bool,
+  isDropDown: PropTypes.bool
 };
 
 DropArea.defaultProps = {
   showIndex: true,
-  disable: false,
   isDropDown: false,
   disable: false,
-  above: false,
+  isAbove: false,
   onDoubleClick: () => {}
 };
 

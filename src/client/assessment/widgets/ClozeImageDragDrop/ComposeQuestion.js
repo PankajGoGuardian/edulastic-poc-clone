@@ -538,7 +538,7 @@ class ComposeQuestion extends Component {
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={item.id}
                   disableDragging={false}
-                  above={!isAnnotationBelow}
+                  isAbove={!isAnnotationBelow}
                   onDoubleClick={toggleIsAnnotationBelow}
                 />
               </div>
@@ -586,7 +586,7 @@ class ComposeQuestion extends Component {
                     />
                   </Rnd>
                   <DropArea
-                    above={isAnnotationBelow}
+                    isAbove={isAnnotationBelow}
                     disable={isEditableResizeMove}
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}

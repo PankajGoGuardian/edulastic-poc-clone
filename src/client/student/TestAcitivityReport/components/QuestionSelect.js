@@ -20,19 +20,33 @@ const createOptions = count => {
 };
 const QuestionSelect = ({ count, current, setCurrentItem }) => {
   const options = createOptions(count || 1);
-  const defaultVal = options[current];
 
+  const moveToNextQuestion = () => {
+    if (current < count - 1) {
+      setCurrentItem(current + 1);
+    }
+  };
+  const moveToPrevQuestion = () => {
+    if (current > 0) {
+      setCurrentItem(current - 1);
+    }
+  };
   return (
     <QuestionListWrapper>
-      <Select defaultValue={defaultVal}>
+      <Select
+        value={current}
+        onChange={val => {
+          setCurrentItem(val);
+        }}
+      >
         {options.map((option, index) => (
-          <Option key={index} onClick={() => setCurrentItem(index)}>
+          <Option key={index} value={index}>
             {option}
           </Option>
         ))}
       </Select>
       <ButtonContainer>
-        <StyledButton>
+        <StyledButton disabled={current === 0} onClick={() => moveToPrevQuestion()}>
           <Icon type="left" />
         </StyledButton>
         {options.map((_, index) => (
@@ -40,7 +54,7 @@ const QuestionSelect = ({ count, current, setCurrentItem }) => {
             {index + 1}
           </StyledNumberButton>
         ))}
-        <StyledButton>
+        <StyledButton disabled={count - 1 === current} onClick={() => moveToNextQuestion()}>
           <Icon type="right" />
         </StyledButton>
       </ButtonContainer>

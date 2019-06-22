@@ -34,7 +34,7 @@ export default class Graph extends Component {
 
   render() {
     const { gradebook, onClickHandler, testQuestionActivities } = this.props;
-    const percentage = round(gradebook.avgScore * 100, 1);
+    const percentage = round(gradebook.avgScore * 100);
     return (
       <StyledDiv>
         <ProgressBarContainer>

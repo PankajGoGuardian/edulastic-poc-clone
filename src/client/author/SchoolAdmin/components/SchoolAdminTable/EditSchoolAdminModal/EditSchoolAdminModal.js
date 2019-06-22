@@ -25,7 +25,11 @@ class EditSchoolAdminModal extends Component {
   };
 
   render() {
-    const { modalVisible, schoolAdminData, schoolsList } = this.props;
+    const {
+      modalVisible,
+      schoolAdminData: { _source },
+      schoolsList
+    } = this.props;
     const schoolsOptions = [];
     schoolsList.map((row, index) => {
       schoolsOptions.push(
@@ -63,7 +67,7 @@ class EditSchoolAdminModal extends Component {
                     message: "Please input First Name"
                   }
                 ],
-                initialValue: schoolAdminData.firstName
+                initialValue: _source.firstName
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
@@ -76,7 +80,7 @@ class EditSchoolAdminModal extends Component {
                     message: "Please input Last Name"
                   }
                 ],
-                initialValue: schoolAdminData.lastName
+                initialValue: _source.lastName
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -95,7 +99,7 @@ class EditSchoolAdminModal extends Component {
                     message: "The input is not valid E-mail"
                   }
                 ],
-                initialValue: schoolAdminData.email
+                initialValue: _source.email
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>
@@ -110,7 +114,7 @@ class EditSchoolAdminModal extends Component {
                     message: "Please select school"
                   }
                 ],
-                initialValue: schoolAdminData.institutionIds
+                initialValue: _source.institutionIds
               })(
                 <Select mode="multiple" placeholder="Select school">
                   {schoolsOptions}

@@ -26,6 +26,7 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
         <Wrapper>
           <Switch>
             <Route path={`${match.url}/assignments`} component={Assignment} />
+            <Route path={`${match.url}/dashboard`} component={Assignment} />
             <Route
               path={`${
                 match.url

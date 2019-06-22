@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -21,6 +21,9 @@ import CorrectAnswers from "./CorrectAnswers";
 import Authoring from "./Authoring";
 import { OptionsContainer } from "./styled/OptionsContainer";
 import { EditorContainer } from "./styled/EditorContainer";
+import { MaxRespCountWrapper } from "./styled/FieldWrapper";
+import { MaxRespCountInput } from "./styled/MaxRespCountInput";
+import { AdditionalContainer } from "./styled/AdditionalContainer";
 import { Widget } from "../../styled/Widget";
 
 import { ContentArea } from "../../styled/ContentArea";
@@ -172,8 +175,6 @@ class ClozeImageDropDown extends Component {
       ...restProps
     } = this.props;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
     const { duplicatedResponses, showDraghandle, shuffleOptions, transparentResponses } = this.state;
 
@@ -195,8 +196,6 @@ class ClozeImageDropDown extends Component {
                     item={itemForEdit}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                   />
                   <Widget>
                     <CorrectAnswers
@@ -225,18 +224,28 @@ class ClozeImageDropDown extends Component {
                       onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       imageOptions={item.imageOptions}
                     />
-                    <CorrectAnswerOptions>
-                      <Checkbox
-                        className="additional-options"
-                        onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
-                        label={t("component.cloze.imageDropDown.shuffleoptions")}
-                        checked={shuffleOptions}
-                      />
-                    </CorrectAnswerOptions>
+                    <AdditionalContainer>
+                      <CorrectAnswerOptions>
+                        <Checkbox
+                          className="additional-options"
+                          onChange={() => this.handleOptionsChange("shuffle_options", !shuffleOptions)}
+                          label={t("component.cloze.imageDropDown.shuffleoptions")}
+                          checked={shuffleOptions}
+                        />
+                      </CorrectAnswerOptions>
+                      <MaxRespCountWrapper>
+                        <MaxRespCountInput
+                          data-cy="drag-drop-image-max-res"
+                          min={1}
+                          max={10}
+                          defaultValue={item.maxRespCount}
+                          onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                        />
+                        <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
+                      </MaxRespCountWrapper>
+                    </AdditionalContainer>
                   </Widget>
                 </div>
               </EditorContainer>
@@ -286,8 +295,6 @@ class ClozeImageDropDown extends Component {
               userSelections={userAnswer}
               maxRespCount={item.maxRespCount}
               onChange={this.handleAddAnswer}
-              maxHeight={maxHeight}
-              maxWidth={maxWidth}
               qIndex={qIndex}
               imageOptions={item.imageOptions}
               {...restProps}

@@ -1,14 +1,14 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
+import { find } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 import CheckedBlock from "./CheckedBlock";
 
-export default class ClozeMathInput extends React.Component {
+class ClozeMathInput extends React.Component {
   static propTypes = {
-    index: PropTypes.number.isRequired,
+    id: PropTypes.string.isRequired,
     resprops: PropTypes.object.isRequired
   };
 
@@ -25,9 +25,9 @@ export default class ClozeMathInput extends React.Component {
   }
 
   componentDidMount() {
-    const { resprops, index } = this.props;
-    const { answers } = resprops;
-    const { math: _userAnwers = [] } = answers;
+    const { resprops = {}, id } = this.props;
+    const { answers = {} } = resprops;
+    const { maths: _userAnwers = [] } = answers;
 
     const _this = this;
 
@@ -45,7 +45,7 @@ export default class ClozeMathInput extends React.Component {
 
       const mQuill = MQ.MathField(this.mathRef.current, config);
       this.setState({ currentMathQuill: mQuill });
-      mQuill.latex(_userAnwers[index] || "");
+      mQuill.latex(_userAnwers[id] ? _userAnwers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
   }
@@ -61,8 +61,7 @@ export default class ClozeMathInput extends React.Component {
       return;
     }
     if (wrappedRef && !wrappedRef.current.contains(target) && !$(target).hasClass("ant-select-dropdown-menu-item")) {
-      this.saveAnswer();
-      // this.setState({ showKeyboard: false });
+      this.setState({ showKeyboard: false }, this.saveAnswer);
     }
   };
 
@@ -109,26 +108,27 @@ export default class ClozeMathInput extends React.Component {
   };
 
   saveAnswer = () => {
-    const { resprops, index } = this.props;
-    const { save } = resprops;
+    const { resprops = {}, id } = this.props;
     const { latex, showKeyboard } = this.state;
-    if (showKeyboard) {
-      save(latex, index, "math");
+    const { save, item, answers = {} } = resprops;
+    const { maths: _userAnwers = [] } = answers;
+
+    const {
+      response_ids: { maths }
+    } = item;
+    const { index } = find(maths, res => res.id === id) || {};
+
+    if (!showKeyboard && latex !== (_userAnwers[id] ? _userAnwers[id].value || "" : "")) {
+      save({ value: latex, index }, "maths", id);
     }
   };
 
   render() {
-    const { resprops, index } = this.props;
-    const { item, answers, evaluation, checked } = resprops;
+    const { resprops = {} } = this.props;
+    const { item } = resprops;
     const { showKeyboard } = this.state;
 
-    const { math: _mathAnswers = [] } = answers;
-    const { mathResults: checkResult = {} } = evaluation;
-    const isChecked = checked && !isEmpty(checkResult);
-
-    return isChecked ? (
-      <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_mathAnswers[index]} index={index} isMath />
-    ) : (
+    return (
       <span ref={this.wrappedRef}>
         <span ref={this.mathRef} onClick={this.showKeyboardModal} />
         {showKeyboard && (
@@ -146,6 +146,31 @@ export default class ClozeMathInput extends React.Component {
     );
   }
 }
+
+const MathInput = ({ resprops = {}, id }) => {
+  const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
+  const { maths: _mathAnswers = [] } = answers;
+  return checked ? (
+    <CheckedBlock
+      evaluation={evaluation}
+      userAnswer={_mathAnswers[id]}
+      item={item}
+      id={id}
+      type="maths"
+      isMath
+      onInnerClick={onInnerClick}
+    />
+  ) : (
+    <ClozeMathInput resprops={resprops} id={id} />
+  );
+};
+
+MathInput.propTypes = {
+  id: PropTypes.string.isRequired,
+  resprops: PropTypes.object.isRequired
+};
+
+export default MathInput;
 
 const KeyboardWrapper = styled.div`
   width: 50%;

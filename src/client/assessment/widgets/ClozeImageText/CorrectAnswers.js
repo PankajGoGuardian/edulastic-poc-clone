@@ -157,8 +157,6 @@ class CorrectAnswers extends Component {
       uiStyle,
       maxRespCount,
       showDashedBorder,
-      maxHeight,
-      maxWidth,
       imageOptions
     } = this.props;
     const { value } = this.state;
@@ -188,8 +186,6 @@ class CorrectAnswers extends Component {
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
                 backgroundColor={backgroundColor}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={imageOptions}
               />
             </TabContainer>
@@ -217,8 +213,6 @@ class CorrectAnswers extends Component {
                       backgroundColor={backgroundColor}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       imageOptions={imageOptions}
                     />
                   </TabContainer>

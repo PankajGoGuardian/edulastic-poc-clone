@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import { identity as _identity, isObject as _isObject, uniq as _uniq } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "../../../TestPage/components/Container/styled";
-
+import { get } from "lodash";
 import TestPageHeader from "../../../TestPage/components/TestPageHeader/TestPageHeader";
 import {
   createPlaylistAction,
@@ -192,7 +192,10 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { playlist, setData, rows, isTestLoading, match, history } = this.props;
+    const { playlist, setData, rows, isTestLoading, match, history, userId } = this.props;
+    const { authors, _id } = playlist;
+    const owner = (authors && authors.some(x => x._id === userId)) || !_id;
+
     if (isTestLoading) {
       return <Spin />;
     }
@@ -238,6 +241,7 @@ class Container extends PureComponent {
             test={playlist}
             current={current}
             isPlaylist={true}
+            owner={owner}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             onChangeColor={handleChangeColor}
@@ -330,7 +334,6 @@ class Container extends PureComponent {
   renderModal = () => {
     const { test } = this.props;
     const { showModal } = this.state;
-
     if (showModal) {
       return (
         <SourceModal onClose={this.setShowModal(false)} onApply={this.handleApplySource}>
@@ -341,11 +344,13 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, playlist, testStatus } = this.props;
+    const { creating, windowWidth, playlist, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status } = playlist || {};
+    const { _id: testId, status, authors } = playlist || {};
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
+
     return (
       <>
         {this.renderModal()}
@@ -369,6 +374,7 @@ class Container extends PureComponent {
           testStatus={testStatus}
           showShareButton={showShareButton}
           onEnableEdit={this.onEnableEdit}
+          owner={owner}
           onShowSource={this.handleNavChange("source")}
           isPlaylist={true}
         />
@@ -388,6 +394,7 @@ const enhance = compose(
       creating: getTestsCreatingSelector(state),
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
+      userId: get(state, "user.user._id", ""),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)

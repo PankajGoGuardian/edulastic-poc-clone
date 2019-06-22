@@ -3,6 +3,7 @@ import { cloneDeep, keyBy as _keyBy, omit as _omit, get, without, pull } from "l
 import { testItemsApi } from "@edulastic/api";
 import { delay } from "redux-saga";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 import { message } from "antd";
 import { createAction } from "redux-starter-kit";
@@ -15,6 +16,10 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
+import { getTestEntitySelector, setTestDataAndUpdateAction, setTestDataAction } from "../TestPage/ducks";
+import { toggleCreateItemModalAction } from "../src/actions/testItem";
+import changeViewAction from "../src/actions/view";
 
 // constants
 const testItemStatusConstants = {
@@ -52,6 +57,8 @@ export const UPDATE_TESTITEM_STATUS = "[itemDetail] update test item status";
 export const ITEM_SET_REDIRECT_TEST = "[itemDetail] set redirect test id";
 export const ITEM_CLEAR_REDIRECT_TEST = "[itemDetail] clear redirect test id";
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY = "[itemDetail] delete widget apply";
+export const UPDATE_DEFAULT_GRADES = "[itemDetail] update default grades";
+export const UPDATE_DEFAULT_SUBJECT = "[itemDetail] update default subject";
 
 export const SAVE_CURRENT_EDITING_TEST_ID = "[itemDetail] save current editing test id";
 // actions
@@ -76,9 +83,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId }
+  payload: { id, data, testId, addToTest }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -136,6 +143,16 @@ export const updateTestItemStatusAction = status => ({
   payload: status
 });
 
+export const updateDefaultSubjectAction = subject => ({
+  type: UPDATE_DEFAULT_SUBJECT,
+  payload: subject
+});
+
+export const updateDefaultGradesAction = grades => ({
+  type: UPDATE_DEFAULT_GRADES,
+  payload: grades
+});
+
 export const setRedirectTestAction = createAction(ITEM_SET_REDIRECT_TEST);
 export const clearRedirectTestAction = createAction(ITEM_CLEAR_REDIRECT_TEST);
 export const setItemLevelScoringAction = createAction(SET_ITEM_DETAIL_ITEM_LEVEL_SCORING);
@@ -151,6 +168,15 @@ export const saveCurrentEditingTestIdAction = id => ({
 // selectors
 
 export const stateSelector = state => state.itemDetail;
+
+export const getDefaultGradesSelector = createSelector(
+  stateSelector,
+  state => state.defaultGrades
+);
+export const getDefaultSubjectSelector = createSelector(
+  stateSelector,
+  state => state.defaultSubject
+);
 
 export const getItemDetailSelector = createSelector(
   stateSelector,
@@ -191,6 +217,7 @@ export const getTestItemStatusSelector = createSelector(
 );
 
 export const getRows = item =>
+  item.rows &&
   item.rows.map(row => ({
     ...row,
     widgets: row.widgets.map(widget => {
@@ -248,7 +275,7 @@ export const getItemDetailDraggingSelector = createSelector(
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
   state => {
-    if (!state) return "";
+    if (!state || !state.rows) return "";
     const left = state.rows[0].dimension.trim().slice(0, -1);
     const right = state.rows[1] ? state.rows[1].dimension.trim().slice(0, -1) : "100";
     return `${left}-${right}`;
@@ -278,6 +305,13 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
+  defaultGrades:
+    getFromLocalStorage("defaultGrades") !== null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : getFromLocalStorage("defaultGrades"),
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };
 
@@ -374,6 +408,7 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case ADD_QUESTION:
+      if (!payload.validation) return state; // do not set itemLevelScore for resources
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }
@@ -416,6 +451,16 @@ export function reducer(state = initialState, { type, payload }) {
           ...state.item,
           status: payload
         }
+      };
+    case UPDATE_DEFAULT_SUBJECT:
+      return {
+        ...state,
+        defaultSubject: payload
+      };
+    case UPDATE_DEFAULT_GRADES:
+      return {
+        ...state,
+        defaultGrades: payload
       };
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
@@ -486,6 +531,7 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
       delete payload.data.data;
@@ -495,10 +541,12 @@ export function* updateItemSaga({ payload }) {
       data.testId = testId;
     }
     data.data = {};
-    data.data.questions = yield select(getQuestionsSelector);
+
+    const questions = yield select(getQuestionsSelector);
+    data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+
     if (payload.redirect && item._id !== payload.id) {
       yield put(
         replace(
@@ -516,6 +564,28 @@ export function* updateItemSaga({ payload }) {
       payload: { item }
     });
     yield call(message.success, "Update item by id is success", "Success");
+    if (addToTest) {
+      // add item to test entity
+      const testItems = yield select(getSelectedItemSelector);
+      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+
+      yield put(setTestItemsAction(nextTestItems));
+
+      const testEntity = yield select(getTestEntitySelector);
+
+      const updatedTestEntity = {
+        ...testEntity,
+        testItems: [...testEntity.testItems, item]
+      };
+      if (!testEntity._id) {
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      } else {
+        yield put(setTestDataAction(updatedTestEntity));
+      }
+      yield put(toggleCreateItemModalAction(false));
+      yield put(changeViewAction("edit"));
+      return;
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Update item by id is failing";

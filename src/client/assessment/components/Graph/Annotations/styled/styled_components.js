@@ -37,7 +37,6 @@ export const Header = styled.div`
 
   span {
     font-size: 12px;
-    text-transform: uppercase;
     font-weight: 600;
   }
 

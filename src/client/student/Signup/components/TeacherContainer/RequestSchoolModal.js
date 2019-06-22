@@ -87,9 +87,9 @@ class RequestSchool extends React.Component {
     });
   };
 
-  handleTyping = keyword => {
+  handleTyping = debounce(keyword => {
     this.onSearch(keyword);
-  };
+  }, 500);
 
   onSearch = searchText => {
     const { searchDistrict, isSearching } = this.props;
@@ -139,18 +139,18 @@ class RequestSchool extends React.Component {
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
-              rules: [{ required: true, message: "Please input School Name!" }]
+              rules: [{ required: true, message: "Please provide a valid school name." }]
             })(<Input placeholder="Enter your school name" />)}
           </Form.Item>
           <Form.Item label="District">
             {getFieldDecorator("districtId", {
               initialValue: { key: "", title: "" },
               rules: [
-                { required: true, message: "Please input district name" },
+                { required: true, message: "Please provide a valid district name." },
                 {
                   validator: (rule, value, callback) => {
                     if (value.title.length === 0 || value.key.length === 0) {
-                      callback("Please input district name");
+                      callback("Please provide a valid district name.");
                       return;
                     }
                     callback();
@@ -167,35 +167,36 @@ class RequestSchool extends React.Component {
                 createNewLabel="Create New District"
                 existingLabel="Districts"
                 placeholder="Enter your district name"
+                isLoading={isSearching}
               />
             )}
           </Form.Item>
           <Form.Item label="Address">
             {getFieldDecorator("address", {
-              rules: [{ required: false, message: "Please input school address" }]
+              rules: [{ required: false, message: "Please provide a valid school address." }]
             })(<Input placeholder="Enter your school address" />)}
           </Form.Item>
           <Form.Item label="City">
             {getFieldDecorator("city", {
-              rules: [{ required: false, message: "Please input school city" }]
+              rules: [{ required: false, message: "Please provide a valid city." }]
             })(<Input placeholder="Enter your school city" />)}
           </Form.Item>
           <FlexItems>
             <Form.Item label="Zip">
               {getFieldDecorator("zip", {
-                rules: [{ required: true, message: "Please input Zip Code" }]
+                rules: [{ required: true, message: "Please provide a valid zip code." }]
               })(<Input placeholder="Enter Zip Code" />)}
             </Form.Item>
             <Form.Item label="State">
               {getFieldDecorator("state", {
-                rules: [{ required: false, message: "Please input State" }]
+                rules: [{ required: false, message: "Please provide a valid state." }]
               })(<Input placeholder="Enter State" />)}
             </Form.Item>
           </FlexItems>
 
           <Form.Item label="Country">
             {getFieldDecorator("country", {
-              rules: [{ required: true, message: "Please Select a country" }],
+              rules: [{ required: true, message: "Please provide a valid country." }],
               initialValue: "US"
             })(
               <Select
@@ -322,13 +323,15 @@ const Title = styled.div`
 const FlexItems = styled.div`
   display: flex;
   align-items: flex-end;
-  padding-left: 11.6%;
-  justify-content: space-between;
+  padding-left: 8.9%;
+  justify-content: flex-start;
   .ant-form-item:nth-child(2) {
     width: 50%;
+    margin-left: 5px;
   }
   .ant-form-item:nth-child(1) {
-    width: 35%;
+    width: 50%;
+    margin-right: 5px;
   }
 `;
 

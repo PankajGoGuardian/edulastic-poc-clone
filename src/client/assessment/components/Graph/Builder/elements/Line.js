@@ -11,6 +11,17 @@ export const defaultConfig = {
 
 let points = [];
 
+function create(board, linePoints, type, id = null) {
+  const newLine = board.$board.create("line", linePoints, {
+    ...getPropsByLineType(type),
+    ...Colors.default[CONSTANT.TOOLS.LINE],
+    label: getLabelParameters(JXG.OBJECT_TYPE_LINE),
+    id
+  });
+  handleSnap(newLine, Object.values(newLine.ancestors), board);
+  return newLine;
+}
+
 function onLineHandler(type) {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -20,16 +31,9 @@ function onLineHandler(type) {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = board.$board.create("line", points, {
-        ...getPropsByLineType(type),
-        ...Colors.default[CONSTANT.TOOLS.LINE],
-        label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
-      });
-      handleSnap(newLine, points, board);
-      if (newLine) {
-        points = [];
-        return newLine;
-      }
+      const newLine = create(board, points, type);
+      points = [];
+      return newLine;
     }
   };
 }
@@ -56,6 +60,7 @@ function getConfig(line) {
 function parseConfig(type) {
   return {
     ...getPropsByLineType(type),
+    ...Colors.default[CONSTANT.TOOLS.LINE],
     label: getLabelParameters(JXG.OBJECT_TYPE_LINE)
   };
 }
@@ -71,5 +76,6 @@ export default {
   getConfig,
   parseConfig,
   clean,
-  getPoints
+  getPoints,
+  create
 };

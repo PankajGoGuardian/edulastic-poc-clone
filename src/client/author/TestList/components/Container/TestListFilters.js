@@ -1,15 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { blue, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector } from "../../../Playlist/ducks";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
+import { test as testsConstants } from "@edulastic/constants";
 
+const filtersTitle = ["Grades", "Subject", "Status", "Tags"];
 const TestListFilters = ({
   isPlaylist,
   onChange,
@@ -19,10 +22,10 @@ const TestListFilters = ({
   formattedCuriculums,
   curriculumStandards,
   collections,
-  searchCurriculum,
-  handleStandardSearch,
+  searchFilterOption,
   filterMenuItems
 }) => {
+  const [showModal, setShowModal] = useState(false);
   const getFilters = () => {
     let filterData1 = [];
     const { filter } = search;
@@ -38,7 +41,7 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
-          data: collections.map(o => ({ value: o, text: o })),
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collectionName"
         }
       ];
@@ -47,53 +50,92 @@ const TestListFilters = ({
     const { curriculumId = "", subject = "" } = search;
     const formattedStandards = (curriculumStandards.elo || []).map(item => ({
       value: item._id,
-      text: `${item.identifier} : ${item.description}`
+      text: item.identifier
     }));
 
     const standardsPlaceholder = !curriculumId.length
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
 
-    filterData1 = filterData;
+    filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     let curriculumsList = [];
     if (subject) curriculumsList = [...formattedCuriculums];
-    return [
-      ...filterData1,
-      {
-        size: "large",
-        title: "Standard set",
-        onChange: "curriculumId",
-        data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
-        optionFilterProp: "children",
-        filterOption: searchCurriculum,
-        showSearch: true
-      },
-      {
-        onSearch: handleStandardSearch,
-        size: "large",
-        mode: "multiple",
-        placeholder: standardsPlaceholder,
-        title: "Standards",
-        filterOption: false,
-        disabled: !curriculumId.length,
-        onChange: "standardIds",
-        data: formattedStandards
-      }
-    ];
+    filterData1.splice(
+      2,
+      0,
+      ...[
+        {
+          size: "large",
+          title: "Standard set",
+          onChange: "curriculumId",
+          data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
+          optionFilterProp: "children",
+          filterOption: searchFilterOption,
+          showSearch: true
+        },
+        {
+          size: "large",
+          mode: "multiple",
+          placeholder: standardsPlaceholder,
+          title: "Standards",
+          filterOption: false,
+          disabled: !curriculumId.length || !formattedStandards.length,
+          onChange: "standardIds",
+          optionFilterProp: "children",
+          data: formattedStandards,
+          filterOption: searchFilterOption,
+          showSearch: true,
+          isStandardSelect: true
+        },
+        {
+          title: "Collections",
+          placeholder: "Select Collection",
+          size: "large",
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
+          onChange: "collectionName"
+        }
+      ]
+    );
+    return filterData1;
   };
+  const handleApply = standardIds => {
+    onChange("standardIds", standardIds);
+    setShowModal(false);
+  };
+
+  const handleSetShowModal = () => {
+    if (!search.curriculumId.length || !curriculumStandards.elo.length) return;
+    setShowModal(true);
+  };
+
   const mappedfilterData = getFilters();
   return (
     <Container>
+      {showModal ? (
+        <StandardsSearchModal
+          setShowModal={setShowModal}
+          showModal={showModal}
+          standardIds={search.standardIds}
+          handleApply={handleApply}
+        />
+      ) : (
+        ""
+      )}
       <FilerHeading justifyContent="space-between">
         <Title>FILTERS</Title>
         <ClearAll onClick={clearFilter}>CLEAR ALL</ClearAll>
       </FilerHeading>
       <TestFiltersNav items={filterMenuItems} onSelect={handleLabelSearch} search={search} />
       {mappedfilterData.map((filterItem, index) => (
-        <React.Fragment key={index}>
+        <FilterItemWrapper key={index}>
+          {filterItem.isStandardSelect ? (
+            <IconExpandStandards className="fa fa-expand" aria-hidden="true" onClick={handleSetShowModal} />
+          ) : (
+            ""
+          )}
           <SubTitle>{filterItem.title}</SubTitle>
           <Select
             showSearch={filterItem.showSearch}
@@ -114,7 +156,7 @@ const TestListFilters = ({
               </Select.Option>
             ))}
           </Select>
-        </React.Fragment>
+        </FilterItemWrapper>
       ))}
     </Container>
   );
@@ -215,14 +257,18 @@ const Title = styled.span`
   letter-spacing: 0.3px;
 `;
 
+export const FilterItemWrapper = styled.div`
+  position: relative;
+`;
+
 const ClearAll = styled.span`
-  color: ${blue};
+  color: #00ad50;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
   :hover {
-    color: ${blue};
+    color: #00ad50;
   }
 `;
 
@@ -231,4 +277,12 @@ const SubTitle = styled.div`
   color: ${secondaryTextColor};
   font-size: 13px;
   font-weight: 600;
+`;
+
+const IconExpandStandards = styled.span`
+  right: 10px;
+  position: absolute;
+  bottom: 14px;
+  z-index: 1;
+  cursor: pointer;
 `;

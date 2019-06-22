@@ -10,14 +10,14 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
     if (!startDate || !endDate) {
       return false;
     }
-    return startDate.valueOf() < new Date();
+    return startDate.valueOf() < Date.now();
   };
 
   const disabledEndDate = endDate => {
     if (!endDate || !startDate) {
       return false;
     }
-    return endDate.valueOf() <= startDate.valueOf();
+    return endDate.valueOf() < startDate.valueOf() || endDate.valueOf() < Date.now();
   };
 
   return (

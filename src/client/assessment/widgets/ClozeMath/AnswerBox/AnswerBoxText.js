@@ -1,26 +1,17 @@
-import React, { useEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { white } from "@edulastic/colors";
+import MathSpanWrapper from "../../../components/MathSpanWrapper";
 
-const AnswerBoxText = ({ children }) => {
-  const elemRef = useRef();
-
-  useEffect(() => {
-    const MQ = window.MathQuill.getInterface(2);
-    const mQuill = MQ.StaticMath(elemRef.current);
-    mQuill.latex(children);
-  }, []);
-
+const AnswerBoxText = ({ children, isMath }) => {
   return (
-    <Text data-cy="correct-answer-box">
-      <span ref={elemRef}>{children}</span>
-    </Text>
+    <Text data-cy="correct-answer-box">{isMath ? <MathSpanWrapper latex={children} /> : <span>{children}</span>}</Text>
   );
 };
 
 AnswerBoxText.propTypes = {
-  children: PropTypes.string.isRequired
+  children: PropTypes.string.isRequired,
+  isMath: PropTypes.bool.isRequired
 };
 
 export default AnswerBoxText;

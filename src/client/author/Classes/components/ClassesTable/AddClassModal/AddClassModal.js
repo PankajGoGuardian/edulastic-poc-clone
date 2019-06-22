@@ -79,13 +79,18 @@ class AddClassModal extends Component {
     const { userOrgId: districtId, searchCourseList } = this.props;
     const searchTerms = {
       districtId,
-      search: {
-        name: { type: "cont", value }
-      },
       active: 1,
       page: 0,
       limit: 50
     };
+    value &&
+      Object.assign(searchTerms, {
+        search: {
+          name: { type: "cont", value },
+          number: { type: "cont", value },
+          operator: "or"
+        }
+      });
     searchCourseList(searchTerms);
   };
 
@@ -151,24 +156,6 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Course">
-              {getFieldDecorator("courseId")(
-                <Select
-                  showSearch
-                  onSearch={this.fetchCoursesForDistrict}
-                  notFoundContent={null}
-                  placeholder="Please enter 1 or more characters"
-                >
-                  {coursesForDistrictList.map(course => (
-                    <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
-                  ))}
-                </Select>
-              )}
-            </ModalFormItem>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={24}>
             <ModalFormItem label="Subject">
               {getFieldDecorator("subject", {
                 rules: [
@@ -213,15 +200,27 @@ class AddClassModal extends Component {
         </Row>
         <Row>
           <Col span={24}>
+            <ModalFormItem label="Course">
+              {getFieldDecorator("courseId")(
+                <Select
+                  showSearch
+                  onSearch={this.fetchCoursesForDistrict}
+                  onFocus={this.fetchCoursesForDistrict}
+                  notFoundContent={null}
+                  placeholder="Please enter 1 or more characters"
+                >
+                  {coursesForDistrictList.map(course => (
+                    <Option key={course._id} value={course._id}>{`${course.name} - ${course.number}`}</Option>
+                  ))}
+                </Select>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
             <ModalFormItem label="Tags">
-              {getFieldDecorator("tags", {
-                rules: [
-                  {
-                    required: true,
-                    message: "Please select tags"
-                  }
-                ]
-              })(<Select placeholder="Please enter 2 or more characters" mode="tags" />)}
+              {getFieldDecorator("tags")(<Select placeholder="Please enter 2 or more characters" mode="tags" />)}
             </ModalFormItem>
           </Col>
         </Row>

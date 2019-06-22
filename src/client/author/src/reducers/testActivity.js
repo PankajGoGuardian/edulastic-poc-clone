@@ -1,13 +1,16 @@
+import { createAction } from "redux-starter-kit";
+import { produce } from "immer";
 import {
   RECEIVE_TESTACTIVITY_REQUEST,
   RECEIVE_TESTACTIVITY_SUCCESS,
   RECEIVE_TESTACTIVITY_ERROR,
-  UPDATE_ASSIGNMENT_STATUS
+  UPDATE_ASSIGNMENT_STATUS,
+  TOGGLE_PRESENTATION_MODE,
+  UPDATE_OPEN_ASSIGNMENTS,
+  UPDATE_CLOSE_ASSIGNMENTS,
+  UPDATE_STUDENT_ACTIVITY
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
-
-import { createAction } from "redux-starter-kit";
-import { produce } from "immer";
 
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD = "[gradebook] realtime test activity add";
 export const REALTIME_GRADEBOOK_TEST_ACTIVITY_SUBMIT = "[gradebook] realtime test activity submit";
@@ -28,7 +31,8 @@ export const realtimeGradebookRedirectAction = createAction(REALTIME_GRADEBOOK_R
 const initialState = {
   entities: [],
   error: null,
-  loading: false
+  loading: false,
+  presentationMode: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -148,6 +152,7 @@ const reducer = (state = initialState, { type, payload }) => {
           for (let index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;
+            _st.entities[index].score = 0;
             _st.entities[index].testActivityId = undefined;
             _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(({ _id }) => ({
               _id,
@@ -167,6 +172,42 @@ const reducer = (state = initialState, { type, payload }) => {
           ...state.data,
           status: payload
         }
+      };
+    case TOGGLE_PRESENTATION_MODE:
+      return {
+        ...state,
+        presentationMode: payload
+      };
+    case UPDATE_OPEN_ASSIGNMENTS:
+      return {
+        ...state,
+        data: {
+          ...state.data,
+          status: "IN PROGRESS"
+        },
+        additionalData: {
+          ...state.additionalData,
+          canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
+        }
+      };
+    case UPDATE_CLOSE_ASSIGNMENTS:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
+        }
+      };
+    case UPDATE_STUDENT_ACTIVITY:
+      const updatedStudents = state.entities.map(item => {
+        if (payload.includes(item.studentId)) {
+          return { ...item, status: "absent" };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        entities: updatedStudents
       };
     default:
       return state;

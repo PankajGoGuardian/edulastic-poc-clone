@@ -257,6 +257,7 @@ class InviteMultipleStudentModal extends Component {
     }
 
     return (
+
       <>
         <Modal
           visible={modalVisible}
@@ -369,6 +370,7 @@ class InviteMultipleStudentModal extends Component {
           ,
         </Modal>
       </>
+
     );
   }
 }

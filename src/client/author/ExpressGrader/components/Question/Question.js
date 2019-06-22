@@ -31,7 +31,7 @@ class Question extends Component {
   }
 
   render() {
-    const { record, studentQuestion, testItems = [], qIndex, student } = this.props;
+    const { record, studentQuestion, testItems = [], qIndex, student, isPresentationMode } = this.props;
 
     const selectedItems = testItems.filter(
       ({ data: { questions = [] } = {} }) => questions.filter(({ id }) => id === record._id).length > 0
@@ -56,6 +56,7 @@ class Question extends Component {
         questionActivities={studentQuestions}
         classResponse={{ testItems: selectedItems }}
         qIndex={qIndex}
+        isPresentationMode={isPresentationMode}
       />
     );
   }
@@ -81,7 +82,12 @@ Question.propTypes = {
   assignmentClassId: PropTypes.object,
   studentQuestion: PropTypes.object,
   qIndex: PropTypes.number,
-  student: PropTypes.object.isRequired
+  student: PropTypes.object.isRequired,
+  isPresentationMode: PropTypes.bool
+};
+
+Question.defaultProps = {
+  isPresentationMode: false
 };
 
 export default enhance(Question);

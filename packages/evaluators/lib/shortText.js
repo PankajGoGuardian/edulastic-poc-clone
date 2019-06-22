@@ -26,7 +26,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
   var maxScore = validScore;
   var evaluation = false;
 
-  if (validValue === text) {
+  if ((validValue || "").trim() === (text || "").trim()) {
     evaluation = true;
     score = validScore;
   }
@@ -48,7 +48,7 @@ var exactMatchEvaluator = function exactMatchEvaluator() {
       altScore = ite.score,
       altMatch = ite.matching_rule;
 
-    if (altValue === text) {
+    if ((altValue || "").trim() === (text || "").trim()) {
       evaluation = true;
 
       if (score === 0) {

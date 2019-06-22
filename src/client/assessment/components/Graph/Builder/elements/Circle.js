@@ -8,6 +8,17 @@ export const defaultConfig = {};
 
 let points = [];
 
+function create(board, circlePoints, id = null) {
+  const newLine = board.$board.create("circle", circlePoints, {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.CIRCLE],
+    label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE),
+    id
+  });
+  handleSnap(newLine, Object.values(newLine.ancestors), board);
+  return newLine;
+}
+
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -17,16 +28,9 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = board.$board.create("circle", points, {
-        ...defaultConfig,
-        ...Colors.default[CONSTANT.TOOLS.CIRCLE],
-        label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE)
-      });
-      handleSnap(newLine, Object.values(newLine.ancestors), board);
-      if (newLine) {
-        points = [];
-        return newLine;
-      }
+      const newLine = create(board, points);
+      points = [];
+      return newLine;
     }
   };
 }
@@ -52,8 +56,8 @@ function getConfig(circle) {
 
 function parseConfig() {
   return {
-    fillColor: "transparent",
-    highlightFillColor: "transparent",
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.CIRCLE],
     label: getLabelParameters(JXG.OBJECT_TYPE_CIRCLE)
   };
 }
@@ -67,5 +71,6 @@ export default {
   getConfig,
   clean,
   parseConfig,
-  getPoints
+  getPoints,
+  create
 };

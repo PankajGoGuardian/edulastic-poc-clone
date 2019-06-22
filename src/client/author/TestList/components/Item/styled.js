@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { blue, darkBlue, darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
+import { darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -42,7 +42,7 @@ export const Footer = styled.div`
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
 `;
 
 export const Author = styled.div`
@@ -50,8 +50,8 @@ export const Author = styled.div`
   font-weight: 600;
   color: ${darkGrey};
   display: inline-flex;
-  align-items: center;
-  max-width: 80px;
+  max-width: 110px;
+  flex-direction: column;
   svg {
     width: 14px;
     height: 14px;
@@ -68,7 +68,9 @@ export const AuthorName = styled.span`
   text-overflow: ellipsis;
   white-space: nowrap;
 `;
-
+export const AuthorWrapper = styled.span`
+  display: flex;
+`;
 export const LikeIcon = styled.div`
   max-width: 60px;
   display: inline-flex;
@@ -113,7 +115,7 @@ export const CardId = styled.span`
 `;
 export const ViewButton = styled.div`
   font-size: 12px;
-  color: ${blue};
+  color: #00ad50;
   background: white;
   padding: 8px;
   margin: 10px 0px 15px;
@@ -171,15 +173,22 @@ export const StyledLink = styled.a`
   white-space: nowrap;
   overflow: hidden;
   text-decoration: none;
-  color: ${blue};
+  color: #00ad50;
   cursor: pointer;
 
   :hover {
-    color: ${darkBlue};
+    color: #00ad50;
   }
 `;
 
 export const Question = styled.div`
   padding: 15px 0px 4px;
   text-align: center;
+`;
+
+export const DraftIconWrapper = styled.div`
+  max-width: 60px;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 15px;
 `;

@@ -1,12 +1,12 @@
 /* eslint-disable func-names */
 /* eslint-disable no-undef */
-import React, { Fragment, useState, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import { Paper } from "@edulastic/common";
-import { isUndefined } from "lodash";
+import { Paper, WithResources } from "@edulastic/common";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import produce from "immer";
+import { get } from "lodash";
 
 import { withTutorial } from "../../../tutorials/withTutorial";
 import { CLEAR, PREVIEW, EDIT } from "../../constants/constantsForQuestions";
@@ -38,8 +38,7 @@ const ClozeMath = ({
   advancedAreOpen,
   ...restProps
 }) => {
-  const [dropDowns, setDropDowns] = useState(0);
-
+  const { col } = restProps;
   const _itemChange = (prop, uiStyle) => {
     const newItem = produce(item, draft => {
       draft[prop] = uiStyle;
@@ -57,25 +56,19 @@ const ClozeMath = ({
     );
   };
 
-  const getDropdowns = tmpl => {
-    if (isUndefined(window.$)) {
-      return;
-    }
-    const temp = tmpl || "";
-    const parsedHTML = $.parseHTML(temp);
-    const _dropDowns = $(parsedHTML).find(".text-dropdown-btn").length;
-    return _dropDowns;
-  };
-
-  useEffect(() => {
-    const counts = getDropdowns(item.template);
-    setDropDowns(counts);
-  }, [item.template]);
-
   const itemForPreview = replaceVariables(item);
-  const dropDownsContainers = new Array(dropDowns).fill(true);
+  const isV1Multipart = get(col, "isV1Multipart", false);
+
   return (
-    <Fragment>
+    <WithResources
+      resources={[
+        "https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.css",
+        "https://cdnedupoc.snapwiz.net/mathquill/mathquill.min.js"
+      ]}
+      fallBack={<span />}
+      onLoaded={() => {}}
+    >
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
           <ComposeQuestion
@@ -97,15 +90,7 @@ const ClozeMath = ({
             fillSections={fillSections}
             cleanSections={cleanSections}
           />
-          {dropDownsContainers.map((_, i) => (
-            <ChoicesForDropDown
-              key={i}
-              index={i}
-              item={item}
-              fillSections={fillSections}
-              cleanSections={cleanSections}
-            />
-          ))}
+          <ChoicesForDropDown item={item} fillSections={fillSections} cleanSections={cleanSections} />
 
           <MathFormulaOptions
             onChange={_itemChange}
@@ -123,12 +108,13 @@ const ClozeMath = ({
         </ContentArea>
       )}
       {view === PREVIEW && (
-        <Paper style={{ height: "100%", overflow: "visible" }}>
+        <Paper isV1Multipart={isV1Multipart} style={{ height: "100%", overflow: "visible" }}>
           <ClozeMathPreview
             type={previewTab}
             item={itemForPreview}
             template={item.template}
             options={item.options || {}}
+            responseIds={item.response_ids}
             saveAnswer={saveAnswer}
             check={checkAnswer}
             userAnswer={userAnswer}
@@ -137,7 +123,7 @@ const ClozeMath = ({
           />
         </Paper>
       )}
-    </Fragment>
+    </WithResources>
   );
 };
 

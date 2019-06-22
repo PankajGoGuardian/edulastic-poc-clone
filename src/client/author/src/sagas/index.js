@@ -19,6 +19,7 @@ import { reportPeerPerformanceSaga } from "../../Reports/subPages/singleAssessme
 import { performanceByStandardsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
 import { reportStandardsGradebookSaga } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
 import { authorGroupsWatcherSaga } from "../../sharedDucks/groups";
+import { authorRoutesWatcherSaga } from "../../sharedDucks/routes";
 import { watcherSaga as UserDetails } from "../../sharedDucks/userDetails";
 import { assessmentPageSaga } from "../../AssessmentCreate";
 import { itemListSaga } from "../../ItemList";
@@ -39,6 +40,7 @@ import folderSaga from "./folder";
 import { interestedStandardsSaga } from "../../InterestedStandards";
 import { playlistSaga } from "../../Playlist";
 import { playlistPageSaga } from "../../PlaylistPage";
+import { dashboardTeacherSaga } from "../../Dashboard";
 
 const authorSagas = [
   itemsSaga(),
@@ -81,7 +83,9 @@ const authorSagas = [
   folderSaga(),
   playlistSaga(),
   playlistPageSaga(),
-  interestedStandardsSaga()
+  interestedStandardsSaga(),
+  dashboardTeacherSaga(),
+  authorRoutesWatcherSaga()
 ];
 
 export default authorSagas;

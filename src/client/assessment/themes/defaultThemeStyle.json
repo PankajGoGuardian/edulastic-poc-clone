@@ -1,4 +1,21 @@
 {
+  "default": {
+    "headerBgColor": "#00AD50",
+    "sideToolbarBgColor": "#00AD50",
+    "dropdownHoverBorderColor": "rgba(255, 255, 255, 0.3)",
+    "dropdownCaretIconColor": "#00ad50",
+    "headerButtonBgColor": "rgba(255, 255, 255, 0.15)",
+    "headerButtonActiveBgColor": "rgba(255, 255, 255, 0.3)",
+    "headerButtonBgHoverColor": "rgba(255, 255, 255, 0.5)",
+    "headerButtonIconColor": "rgba(255, 255, 255, 0.75)",
+    "headerButtonIconActiveColor": "#ffffff",
+    "headerButtonBorderColor": "#F3F3F3",
+    "headerButtonBorderHoverColor": "#00AD50",
+    "confirmationPopupButtonBgColor": "#00AD50",
+    "confirmationPopupButtonBgHoverColor": "#ffffff",
+    "confirmationPopupButtonTextColor": "#00AD50",
+    "confirmationPopupButtonTextHoverColor": "#ffffff"
+  },
   "brandBlue": "#00b0ff",
   "brandGreen": "#1fe3a1",
   "brandDarkgreen": "#4aac8b",

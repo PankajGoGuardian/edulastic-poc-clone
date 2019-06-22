@@ -1,25 +1,41 @@
 /* eslint-disable react/prop-types */
 import React, { useState } from "react";
+import { connect } from "react-redux";
+import { getUserRole } from "../../../src/selectors/user";
 // import PropTypes from "prop-types";
 import * as moment from "moment";
 import { Col, Select } from "antd";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { StyledRow, StyledRowLabel, StyledDatePicker, StyledSelect } from "./styled";
 
-const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, closePolicy }) => {
+const DatePolicySelector = ({
+  startDate,
+  endDate,
+  changeField,
+  openPolicy: selectedOpenPolicy,
+  closePolicy: selectedClosePolicy,
+  userRole
+}) => {
   const disabledStartDate = startDate => {
     if (!startDate || !endDate) {
       return false;
     }
-    return startDate.valueOf() < new Date();
+    return startDate.valueOf() < Date.now();
   };
 
   const disabledEndDate = endDate => {
     if (!endDate || !startDate) {
       return false;
     }
-    return endDate.valueOf() <= startDate.valueOf();
+    return endDate.valueOf() < startDate.valueOf() || endDate.valueOf() < Date.now();
   };
+
+  let openPolicy = selectsData.openPolicy;
+  let closePolicy = selectsData.closePolicy;
+  if (userRole !== "teacher") {
+    openPolicy = selectsData.openPolicyForAdmin;
+    closePolicy = selectsData.closePolicyForAdmin;
+  }
 
   return (
     <React.Fragment>
@@ -61,10 +77,10 @@ const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, close
             data-cy="selectOpenPolicy"
             placeholder="Please select"
             cache="false"
-            value={openPolicy}
+            value={selectedOpenPolicy}
             onChange={changeField("openPolicy")}
           >
-            {selectsData.openPolicy.map(({ value, text }, index) => (
+            {openPolicy.map(({ value, text }, index) => (
               <Select.Option key={index} value={value} data-cy="open">
                 {text}
               </Select.Option>
@@ -76,10 +92,10 @@ const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, close
             data-cy="selectClosePolicy"
             placeholder="Please select"
             cache="false"
-            value={closePolicy}
+            value={selectedClosePolicy}
             onChange={changeField("closePolicy")}
           >
-            {selectsData.closePolicy.map(({ value, text }, index) => (
+            {closePolicy.map(({ value, text }, index) => (
               <Select.Option data-cy="class" key={index} value={value}>
                 {text}
               </Select.Option>
@@ -91,4 +107,6 @@ const DatePolicySelector = ({ startDate, endDate, changeField, openPolicy, close
   );
 };
 
-export default DatePolicySelector;
+export default connect(state => ({
+  userRole: getUserRole(state)
+}))(DatePolicySelector);

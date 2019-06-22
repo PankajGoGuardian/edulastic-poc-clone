@@ -9,10 +9,12 @@ import {
   RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS,
   RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR,
   RECEIVE_ASSIGNMENTS_ERROR,
+  SET_ASSIGNMENT_FILTER,
   UPDATE_CURRENT_EDITING_ASSIGNMENT,
   TOGGLE_RELEASE_GRADE_SETTINGS,
   ADVANCED_ASSIGNMENT_VIEW
 } from "../constants/actions";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const initialState = {
   summaryEntities: [],
@@ -23,6 +25,7 @@ const initialState = {
   limit: 20,
   count: 0,
   loading: false,
+  filter: JSON.parse(getFromLocalStorage("filterAssignments")) || {},
   creating: false,
   toggleReleaseGradeSettings: false,
   currentAssignment: {},
@@ -42,7 +45,8 @@ const reducer = (state = initialState, { type, payload }) => {
       };
     case RECEIVE_ASSIGNMENTS_ERROR:
       return { ...state, loading: false, error: payload.error };
-
+    case SET_ASSIGNMENT_FILTER:
+      return { ...state, filter: { ...payload } };
     case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
       return { ...state, loading: true, filtering: payload.filtering };
     case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS: {

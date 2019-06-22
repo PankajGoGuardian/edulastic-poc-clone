@@ -84,7 +84,7 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .find("td")
       .eq(1)
       .find("span")
-      .should("have.text", perf)
+      .should("have.text", `${Cypress._.round(perf)}%`)
       .parent()
       .should("contain", `(${score})`);
   };
@@ -106,41 +106,47 @@ export default class ExpressGraderPage extends LiveClassboardPage {
       .eq(queIndex)
       .find(".ant-table-column-title")
       .find("span")
-      .should("have.text", perf)
+      .should("have.text", `${Cypress._.round(perf, 1)}%`)
       .parent()
-      .should("contain", `(${score})`);
+      .should("contain", score);
   };
 
-  verifyScoreForStudent = (queNum, points, attemptType) => {
-    const score = attemptType === attemptTypes.RIGHT ? points.toString() : "0";
-    this.getScoreforQueNum(queNum).should("have.text", score);
+  verifyScoreForStudent = (queNum, points, attemptType, attemptData, queKey) => {
+    // const score = attemptType === attemptTypes.RIGHT ? points.toString() : "0";
+    const score = this.questionResponsePage.getScoreByAttempt(attemptData, points, queKey.split(".")[0], attemptType);
+    this.getScoreforQueNum(queNum).should("have.text", score.toString());
   };
 
-  verifyScoreGrid(studentName, studentAttempts, score, perf, questionTypeMap) {
+  verifyScoreGrid(studentName, studentAttempts, score, perfValue, questionTypeMap) {
     this.getGridRowByStudent(studentName);
 
-    this.verifyScoreAndPerformance(score, perf);
+    this.verifyScoreAndPerformance(score, perfValue);
 
     Object.keys(studentAttempts).forEach(queNum => {
       const attemptType = studentAttempts[queNum];
-      const { points } = questionTypeMap[queNum];
+      const { points, attemptData, queKey } = questionTypeMap[queNum];
       //   console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-      this.verifyScoreForStudent(queNum, points, attemptType);
+      this.verifyScoreForStudent(queNum, points, attemptType, attemptData, queKey);
     });
   }
 
   verifyQuestionLevelGrid = (queNum, studentAttempts, questionTypeMap) => {
-    const { score, perf } = this.getScoreAndPerformance(studentAttempts, questionTypeMap, queNum, true);
-    const { points } = questionTypeMap[queNum];
+    const { score, perfValue, quePerformanceScore } = this.getScoreAndPerformance(
+      studentAttempts,
+      questionTypeMap,
+      queNum,
+      true
+    );
+    const { points, attemptData, queKey } = questionTypeMap[queNum];
+
+    this.verifyScoreAndPerformanceForQueNum(queNum, quePerformanceScore, perfValue);
 
     Object.keys(studentAttempts).forEach(studentName => {
       this.getGridRowByStudent(studentName);
       const attemptType = studentAttempts[studentName];
       // console.log(` grid score -${studentName} for que - ${queNum}`, `point - ${points}, attepmt - ${attemptType}`);
-      this.verifyScoreForStudent(queNum, points, attemptType);
+      this.verifyScoreForStudent(queNum, points, attemptType, attemptData, queKey);
     });
-
-    this.verifyScoreAndPerformanceForQueNum(queNum, score, perf);
   };
 
   verifyResponsesInGridStudentLevel = (studentName, studentAttempts, questionTypeMap, useKeyBoardKeys = false) => {

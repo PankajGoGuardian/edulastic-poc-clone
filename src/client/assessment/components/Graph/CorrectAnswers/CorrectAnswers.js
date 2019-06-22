@@ -32,6 +32,11 @@ class CorrectAnswers extends Component {
     onRemoveAltResponses(i);
   };
 
+  handleTabClose = (event, index) => {
+    event.stopPropagation();
+    this.handleAltResponseClose(index);
+  };
+
   renderAltResponses = () => {
     const { graphData, t } = this.props;
     const { validation } = graphData;
@@ -43,7 +48,7 @@ class CorrectAnswers extends Component {
           key={i}
           close
           type="primary"
-          onClose={() => this.handleAltResponseClose(i)}
+          onClose={event => this.handleTabClose(event, i)}
           label={`${t("component.correctanswers.alternate")} ${i + 1}`}
         />
       ));

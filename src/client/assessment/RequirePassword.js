@@ -4,28 +4,19 @@ import { compose } from "redux";
 import { connect } from "react-redux";
 import { Modal, Input, Button, message } from "antd";
 import styled from "styled-components";
-import { red } from "@edulastic/colors";
+import { red, green } from "@edulastic/colors";
 
-import {
-  getAssigmentPasswordAction,
-  setPasswordStatusAction,
-  setTestActivityLoadingAction,
-  setPasswordValidateStatusAction
-} from "./actions/test";
+import { getAssigmentPasswordAction, setPasswordStatusAction } from "./actions/test";
 
 const RequirePassword = ({
   isPasswordValidated,
   passwordStatusMessage,
   getAssignmentPassword,
   setPasswordStatus,
-  history,
-  setTestActivityLoading,
-  setPasswordValidateStatus
+  history
 }) => {
   useEffect(() => {
     return () => {
-      setTestActivityLoading(true);
-      setPasswordValidateStatus(false);
       setPasswordStatus("");
     };
   }, []);
@@ -67,9 +58,13 @@ const RequirePassword = ({
           value={assignmentPassword}
           type={"text"}
           onChange={e => handleSetPassword(e.target.value)}
-          hasmessage={passwordStatusMessage}
+          message={passwordStatusMessage}
         />
-        {passwordStatusMessage ? <MessageSpan>{passwordStatusMessage}</MessageSpan> : ""}
+        {passwordStatusMessage ? (
+          <MessageSpan message={passwordStatusMessage}>{passwordStatusMessage}</MessageSpan>
+        ) : (
+          ""
+        )}
       </p>
     </Modal>
   );
@@ -84,18 +79,16 @@ const enhance = compose(
     }),
     {
       getAssignmentPassword: getAssigmentPasswordAction,
-      setPasswordStatus: setPasswordStatusAction,
-      setTestActivityLoading: setTestActivityLoadingAction,
-      setPasswordValidateStatus: setPasswordValidateStatusAction
+      setPasswordStatus: setPasswordStatusAction
     }
   )
 );
 export default enhance(RequirePassword);
 
 const MessageSpan = styled.span`
-  color: ${red};
+  color: ${props => (props.message === "successful" ? green : red)};
 `;
 
 const PasswordInput = styled(Input)`
-  border-color: ${props => props.hasmessage && red};
+  border-color: ${props => props.message && props.message !== "successful" && red};
 `;

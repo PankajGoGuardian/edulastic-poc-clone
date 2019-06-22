@@ -15,12 +15,14 @@ import { saveSubjectGradeAction, saveSubjectGradeloadingSelector } from "../../d
 // selectors
 import { getCurriculumsListSelector } from "../../../../author/src/selectors/dictionaries";
 
-const { allGrades, allSubjects } = selectsData;
+const { allGrades, allSubjects, defaultStandards } = selectsData;
 
 const { Option } = Select;
+
 class SubjectGrade extends React.Component {
   state = {
-    subject: ""
+    subjects: [],
+    grades: []
   };
 
   static propTypes = {
@@ -46,11 +48,16 @@ class SubjectGrade extends React.Component {
     }
   }
 
-  updateSubject = e => {
-    this.setState({ subject: e });
+  updateSubjects = e => {
+    this.setState({ subjects: e });
+  };
+
+  updateGrades = e => {
+    this.setState({ grades: e });
   };
 
   handleSubmit = e => {
+    const { grades: defaultGrades, subjects: defaultSubjects } = this.state;
     const { form, userInfo, saveSubjectGrade } = this.props;
     const isSignUp = true;
     e.preventDefault();
@@ -63,17 +70,19 @@ class SubjectGrade extends React.Component {
           orgType: userInfo.role,
           districtId: userInfo.districtId,
           isSignUp,
-          curriculums: []
+          curriculums: [],
+          defaultGrades,
+          defaultSubjects
         };
 
         map(values.standard, id => {
           const filterData = find(curriculums, el => el._id === id);
-          data.curriculums.push(
-            mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
-              if (key === "curriculum") key = "name";
-              return key;
-            })
-          );
+          let newCurriculum = mapKeys(pick(filterData, ["_id", "curriculum", "subject"]), (vaule, key) => {
+            if (key === "curriculum") key = "name";
+            return key;
+          });
+          newCurriculum.grades = values.grade;
+          data.curriculums.push(newCurriculum);
         });
 
         saveSubjectGrade({ ...data });
@@ -82,9 +91,23 @@ class SubjectGrade extends React.Component {
   };
 
   render() {
-    const { subject } = this.state;
+    const { subjects } = this.state;
     const { curriculums, form, saveSubjectGradeloading } = this.props;
-    const standardSets = filter(curriculums, el => el.subject === subject);
+    const defaultStandardSets = [];
+    const standardSets = curriculums
+      .filter(el => {
+        const getSubjectDefault = subjects.find(subject => defaultStandards[subject] === el.curriculum);
+        if (getSubjectDefault) {
+          defaultStandardSets.push(el);
+          return false;
+        }
+        return subjects.includes(el.subject);
+      })
+      .sort((a, b) => (a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1));
+    const orderedStandards = [
+      ...defaultStandardSets.sort((a, b) => (a.curriculum.toLowerCase() > b.curriculum.toLowerCase() ? 1 : -1)),
+      ...standardSets
+    ];
     const { getFieldDecorator } = form;
     const filteredAllGrades = allGrades.filter(item => item.isContentGrade !== true);
     const _allSubjects = allSubjects.filter(item => item.value);
@@ -108,9 +131,14 @@ class SubjectGrade extends React.Component {
                       rules: [{ required: true, message: "Grade is not selected" }]
                     })(
                       <GradeSelect
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
                         size="large"
                         placeholder="Select a grade or multiple grades"
                         mode="multiple"
+                        onChange={this.updateGrades}
                         showArrow
                       >
                         {filteredAllGrades.map(el => (
@@ -123,10 +151,16 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
 
                   <Form.Item label="Subject">
-                    {getFieldDecorator("subject", {
-                      rules: [{ required: true, message: "Subject is not selected" }]
+                    {getFieldDecorator("subjects", {
+                      rules: [{ required: true, message: "Subject Area is not selected" }]
                     })(
-                      <GradeSelect size="large" placeholder="Select a subject" onSelect={this.updateSubject} showArrow>
+                      <GradeSelect
+                        mode="multiple"
+                        size="large"
+                        placeholder="Select a subject"
+                        onChange={this.updateSubjects}
+                        showArrow
+                      >
                         {_allSubjects.map(el => (
                           <Option key={el.value} value={el.value}>
                             {el.text}
@@ -137,10 +171,19 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator("standard", {
-                      rules: [{ required: true, message: "standard Area is not selected" }]
+                      rules: [{ required: false, message: "Standard Area is not selected" }]
                     })(
-                      <GradeSelect size="large" placeholder="Select your standard sets" mode="multiple" showArrow>
-                        {standardSets.map(el => (
+                      <GradeSelect
+                        optionFilterProp="children"
+                        filterOption={(input, option) =>
+                          option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+                        }
+                        size="large"
+                        placeholder="Select your standard sets"
+                        mode="multiple"
+                        showArrow
+                      >
+                        {orderedStandards.map(el => (
                           <Option key={el._id} value={el._id}>
                             {el.curriculum}
                           </Option>

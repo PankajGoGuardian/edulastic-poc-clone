@@ -11,6 +11,8 @@ var _objectSpread2 = _interopRequireDefault(require("@babel/runtime/helpers/obje
 
 var _typeof2 = _interopRequireDefault(require("@babel/runtime/helpers/typeof"));
 
+var _isString2 = _interopRequireDefault(require("lodash/isString"));
+
 var _difference2 = _interopRequireDefault(require("lodash/difference"));
 
 var _includes2 = _interopRequireDefault(require("lodash/includes"));
@@ -21,6 +23,12 @@ var _constants = require("@edulastic/constants");
 
 var getMatches = function getMatches(response, answer, compareFunction) {
   return response.filter(function(resp, index) {
+    var singleAns = (0, _isString2["default"])(answer[index]) ? answer[index].trim() : answer[index];
+    var arrayAns = answer.map(function(ans) {
+      return (0, _isString2["default"])(ans) ? ans.trim() : ans;
+    });
+    resp = (0, _isString2["default"])(resp) ? resp.trim() : resp;
+
     switch (compareFunction) {
       case _constants.evaluatorTypes.INNER_DIFFERENCE:
         return (
@@ -40,10 +48,10 @@ var getMatches = function getMatches(response, answer, compareFunction) {
           );
         }
 
-        return (0, _isEqual2["default"])(answer[index], resp);
+        return (0, _isEqual2["default"])(singleAns, resp);
 
       default:
-        return (0, _includes2["default"])(answer, resp);
+        return (0, _includes2["default"])(arrayAns, resp);
     }
   }).length;
 };

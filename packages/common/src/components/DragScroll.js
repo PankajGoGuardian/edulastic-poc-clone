@@ -3,15 +3,19 @@ import PropTypes from "prop-types";
 
 export const UPWARDS = "upwards";
 export const DOWNWARDS = "downwards";
+const DRAG_DETECT_TIMEOUT = 300;
 
 class DragScroll extends Component {
   dragEnterRef = createRef();
 
   state = {
-    isDragging: false
+    isDragging: false,
+    isMouseClicked: false
   };
 
   intervalId;
+
+  timerId;
 
   handleDragEnter = () => {
     const { scrollDelay, direction } = this.props;
@@ -35,27 +39,64 @@ class DragScroll extends Component {
     clearInterval(this.intervalId);
   };
 
+  handleMouseDown = () => {
+    this.timerId = setTimeout(() => {
+      this.setState({ isMouseClicked: true, isDragging: true });
+    }, DRAG_DETECT_TIMEOUT);
+  };
+
+  handleMouseUp = () => {
+    clearTimeout(this.timerId);
+    this.setState({ isMouseClicked: false, isDragging: false });
+  };
+
+  handleMouseEnter = () => {
+    const { handleDragEnter } = this;
+    const { isMouseClicked } = this.state;
+    if (isMouseClicked) {
+      handleDragEnter();
+    }
+  };
+
+  handleMouseLeave = () => {
+    const { handleDragLeave } = this;
+
+    handleDragLeave();
+  };
+
   componentDidMount() {
     const dragEnterEl = this.dragEnterRef.current;
+    window.addEventListener("mousedown", this.handleMouseDown);
+    window.addEventListener("mouseup", this.handleMouseUp);
     window.addEventListener("dragstart", this.handleIsDragging);
     window.addEventListener("dragend", this.handleDragEnd);
+
     dragEnterEl.addEventListener("dragenter", this.handleDragEnter);
     dragEnterEl.addEventListener("dragleave", this.handleDragLeave);
+    dragEnterEl.addEventListener("mouseenter", this.handleMouseEnter);
+    dragEnterEl.addEventListener("mouseleave", this.handleMouseLeave);
   }
 
   componentWillUnmount() {
-    const containerEl = this.dragEnterRef.current;
+    const dragEnterEl = this.dragEnterRef.current;
+    window.removeEventListener("mousedown", this.handleMouseDown);
+    window.removeEventListener("mouseup", this.handleMouseUp);
     window.removeEventListener("dragstart", this.handleIsDragging);
     window.removeEventListener("dragend", this.handleDragEnd);
-    containerEl.removeEventListener("dragenter", this.handleDragEnter);
-    containerEl.removeEventListener("dragleave", this.handleDragLeave);
+
+    dragEnterEl.removeEventListener("dragenter", this.handleDragEnter);
+    dragEnterEl.removeEventListener("dragleave", this.handleDragLeave);
+    dragEnterEl.removeEventListener("mouseenter", this.handleMouseEnter);
+    dragEnterEl.removeEventListener("mouseleave", this.handleMouseLeave);
+
     clearInterval(this.intervalId);
+    clearTimeout(this.timerId);
   }
 
   handleIsDragging = () => {
     const { scrollDelay, direction } = this.props;
     if (direction === DOWNWARDS) {
-      setTimeout(() => {
+      this.timerId = setTimeout(() => {
         this.setState({ isDragging: true });
       }, scrollDelay);
     } else if (direction === UPWARDS) {
@@ -65,7 +106,8 @@ class DragScroll extends Component {
 
   handleDragEnd = () => {
     clearInterval(this.intervalId);
-    this.setState({ isDragging: false });
+    clearInterval(this.timerId);
+    this.setState({ isDragging: false, isMouseClicked: false });
   };
 
   render = () => {

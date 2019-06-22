@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { blue, darkBlue, fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colors";
+import { fadedGrey, lightGrey, darkGrey, red } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 import { Col, Rate, Row } from "antd";
 
@@ -111,11 +111,11 @@ export const StyledLink = styled.a`
   display: inline-flex;
   align-items: center;
   text-decoration: none;
-  color: ${blue};
+  color: #00ad50;
   cursor: pointer;
 
   :hover {
-    color: ${darkBlue};
+    color: #00ad50;
   }
 `;
 
@@ -187,7 +187,7 @@ export const ViewButton = styled.div`
   width: 120px;
   float: right;
   font-size: 12px;
-  color: ${blue};
+  color: #00ad50;
   background: white;
   margin-left: 10px;
   padding: 8px;
@@ -205,7 +205,7 @@ export const AddButton = styled.div`
   width: 120px;
   float: right;
   font-size: 12px;
-  color: ${props => (props.isTestAdded ? red : blue)};
+  color: ${props => (props.isTestAdded ? red : "#00AD50")};
   background: white;
   padding: 8px;
   box-shadow: 0px 1px 1px 1px ${fadedGrey};

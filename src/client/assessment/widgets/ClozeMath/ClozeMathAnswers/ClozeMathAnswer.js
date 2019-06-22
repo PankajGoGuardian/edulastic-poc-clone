@@ -31,12 +31,12 @@ class ClozeMathAnswer extends Component {
   };
 
   render() {
-    const { answer, onChange, onAdd, onDelete, item } = this.props;
+    const { answers, onChange, onAdd, onDelete, item } = this.props;
 
     const { showAdditionals } = this.state;
 
-    const _changeMethod = (methodValueIndex, methodIndex) => (prop, val) => {
-      onChange({ methodValueIndex, methodIndex, prop, value: val });
+    const _changeMethod = (methodId, methodIndex) => (prop, val) => {
+      onChange({ methodId, methodIndex, prop, value: val });
     };
 
     const handleChangeAdditionals = (method, direction) => {
@@ -66,28 +66,28 @@ class ClozeMathAnswer extends Component {
     return (
       <AnswerContainer>
         <Collapse
-          defaultActiveKey={["0"]}
+          // defaultActiveKey={["0"]}
           onChange={() => {}}
           bordered={false}
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
-          {answer.map((responseValue, i) => (
-            <Panel header={`Math Input ${i + 1}`} key={`${i}`}>
-              {responseValue.map((method, methodIndex) => (
+          {answers.map(answer => (
+            <Panel header={`Math Input ${answer.index + 1}`} key={`${answer.index}`}>
+              {answer.value.map((method, methodIndex) => (
                 <MathFormulaAnswerMethod
-                  onDelete={() => onDelete({ methodIndex, methodValueIndex: i })}
-                  key={methodIndex + i}
+                  onDelete={() => onDelete({ methodIndex, methodId: method.id })}
+                  key={methodIndex + answer.index}
                   item={item}
                   index={methodIndex}
-                  answer={responseValue}
+                  answer={method.value}
                   answerIndex={methodIndex}
-                  onChange={_changeMethod(i, methodIndex)}
+                  onChange={_changeMethod(method.id, methodIndex)}
                   showAdditionals={showAdditionals}
                   handleChangeAdditionals={handleChangeAdditionals}
                   clearAdditionals={clearAdditionals}
                   onAdd={onAdd}
-                  onAddIndex={i}
+                  onAddIndex={method.id}
                   {...method}
                 />
               ))}
@@ -100,7 +100,7 @@ class ClozeMathAnswer extends Component {
 }
 
 ClozeMathAnswer.propTypes = {
-  answer: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   onAdd: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,

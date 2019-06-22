@@ -21,6 +21,8 @@
     "safeExamToolTip": "This test requires Safe Exam Browser",
     "GRADED": "GRADED",
     "GRADE_HELD": "GRADES HELD",
-    "NOT_GRADED": "NOT GRADED"
+    "NOT_GRADED": "NOT GRADED",
+    "IN GRADING": "IN GRADING",
+    "absent": "ABSENT"
   }
 }

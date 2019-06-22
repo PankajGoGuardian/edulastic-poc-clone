@@ -1,4 +1,4 @@
-import { ScoringType } from './const/scoring';
+import { ScoringType } from "./const/scoring";
 
 // exact-match evaluator
 const exactMatchEvaluator = (
@@ -17,37 +17,29 @@ const exactMatchEvaluator = (
 
   let evaluation = false;
 
-  if (validValue === text) {
+  if ((validValue || "").trim() === (text || "").trim()) {
     evaluation = true;
     score = validScore;
   }
 
-  if (
-    matching_rule === ScoringType.CONTAINS &&
-    text &&
-    text.toLowerCase().includes(validValue.toLowerCase())
-  ) {
+  if (matching_rule === ScoringType.CONTAINS && text && text.toLowerCase().includes(validValue.toLowerCase())) {
     evaluation = true;
     if (score === 0) {
       score = validScore;
     }
   }
 
-  altAnswers.forEach((ite) => {
+  altAnswers.forEach(ite => {
     const { value: altValue, score: altScore, matching_rule: altMatch } = ite;
 
-    if (altValue === text) {
+    if ((altValue || "").trim() === (text || "").trim()) {
       evaluation = true;
       if (score === 0) {
         score = altScore;
       }
     }
 
-    if (
-      altMatch === ScoringType.CONTAINS &&
-      text &&
-      text.toLowerCase().includes(altValue.toLowerCase())
-    ) {
+    if (altMatch === ScoringType.CONTAINS && text && text.toLowerCase().includes(altValue.toLowerCase())) {
       evaluation = true;
       if (score === 0) {
         score = altScore;

@@ -10,8 +10,18 @@ import {
   ADD_DICT_ALIGNMENT,
   SET_ALIGNMENT_FROM_QUESTION,
   REMOVE_DICT_ALINMENT,
+  UPDATE_RECENT_STANDARDS,
   UPDATE_DICT_ALIGNMENT
 } from "../constants/actions";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+
+export const getNewAlignmentState = () => ({
+  curriculum: "",
+  curriculumId: "",
+  subject: getFromLocalStorage("defaultSubject") || "",
+  grades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : [],
+  domains: []
+});
 
 const initialItemsState = {
   curriculums: {
@@ -25,7 +35,8 @@ const initialItemsState = {
     loading: false,
     error: null
   },
-  alignments: []
+  recentStandardsList: getFromLocalStorage("recentStandards") ? JSON.parse(getFromLocalStorage("recentStandards")) : [],
+  alignments: [getNewAlignmentState()]
 };
 
 const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
@@ -95,10 +106,10 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
     case CLEAR_DICT_ALIGNMENTS:
       return {
         ...state,
-        alignments: []
+        alignments: [getNewAlignmentState()]
       };
     case SET_ALIGNMENT_FROM_QUESTION:
-      const authorAlignments = payload.filter(item => !item.isEquivalentStandard && item.curriculumId);
+      const authorAlignments = payload.filter(item => !item.isEquivalentStandard);
       return {
         ...state,
         alignments: authorAlignments
@@ -122,6 +133,12 @@ const dictionariesReducer = (state = initialItemsState, { type, payload }) => {
       });
 
       return { ...state, alignments: editedAlignments };
+    case UPDATE_RECENT_STANDARDS:
+      const { recentStandards } = payload;
+      return {
+        ...state,
+        recentStandardsList: recentStandards
+      };
     default:
       return state;
   }

@@ -50,12 +50,14 @@ Draggable.propTypes = {
   onDelete: PropTypes.func.isRequired,
   index: PropTypes.number.isRequired,
   background: PropTypes.string,
-  showDashedBorder: PropTypes.bool
+  showDashedBorder: PropTypes.bool,
+  showIndex: PropTypes.bool
 };
 
 Draggable.defaultProps = {
   background: white,
-  showDashedBorder: false
+  showDashedBorder: false,
+  showIndex: false
 };
 
 export default Draggable;

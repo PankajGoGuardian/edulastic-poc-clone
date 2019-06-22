@@ -1,39 +1,130 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { find } from "lodash";
 import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
 
-const AnswerBox = ({ mathAnswers, dropdownAnswers, textInputAnswers }) => (
-  <Wrapper>
-    <Title>Correct answers math field</Title>
-    {mathAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-    <Title>Correct answers dropdown field</Title>
-    {dropdownAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-    <Title>Correct answers input field</Title>
-    {textInputAnswers.map((answer, index) => (
-      <Answer key={index}>
-        <Label>{index + 1}</Label>
-        <AnswerBoxText>{answer}</AnswerBoxText>
-      </Answer>
-    ))}
-  </Wrapper>
-);
+const AnswerBox = ({
+  mathAnswers,
+  dropdownAnswers,
+  textInputAnswers,
+  altMathAnswers,
+  altDropDowns,
+  altInputs,
+  responseIds
+}) => {
+  const { inputs, maths, dropDowns } = responseIds;
+  let validAnswers = [];
+
+  mathAnswers.map(answer => {
+    const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer[0].value,
+      isMath: true
+    });
+  });
+
+  dropdownAnswers.map(answer => {
+    const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer.value,
+      isMath: false
+    });
+  });
+
+  textInputAnswers.map(answer => {
+    const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
+    return validAnswers.push({
+      index,
+      value: answer.value,
+      isMath: false
+    });
+  });
+  validAnswers = validAnswers.sort((a, b) => a.index - b.index);
+
+  const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
+  const altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
+    const _altAnswers = [];
+
+    if (altMathAnswers[altIndex]) {
+      altMathAnswers[altIndex].map(answer => {
+        const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer[0].value,
+          isMath: true
+        });
+      });
+    }
+    if (altDropDowns[altIndex]) {
+      altDropDowns[altIndex].map(answer => {
+        const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer.value,
+          isMath: false
+        });
+      });
+    }
+
+    if (altInputs[altIndex]) {
+      altInputs[altIndex].map(answer => {
+        const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer.value,
+          isMath: false
+        });
+      });
+    }
+
+    return _altAnswers.sort((a, b) => a.index - b.index);
+  });
+
+  return (
+    <Wrapper>
+      <Title>Correct answers</Title>
+      {validAnswers.map((answer, index) => (
+        <Answer key={index}>
+          <Label>{answer.index + 1}</Label>
+          <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
+        </Answer>
+      ))}
+
+      {altAnswers.map((altAnswer, altIndex) => (
+        <div key={altIndex}>
+          <Title>{`Alternate answers ${altIndex + 1}`}</Title>
+          {altAnswer.map((answer, index) => (
+            <Answer key={index}>
+              <Label>{answer.index + 1}</Label>
+              <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
+            </Answer>
+          ))}
+        </div>
+      ))}
+    </Wrapper>
+  );
+};
 
 AnswerBox.propTypes = {
   mathAnswers: PropTypes.array.isRequired,
+  altMathAnswers: PropTypes.array.isRequired,
   dropdownAnswers: PropTypes.array.isRequired,
-  textInputAnswers: PropTypes.array.isRequired
+  altDropDowns: PropTypes.array.isRequired,
+  textInputAnswers: PropTypes.array.isRequired,
+  altInputs: PropTypes.array.isRequired,
+  responseIds: PropTypes.object
+};
+
+AnswerBox.defaultProps = {
+  responseIds: {
+    dropDown: [],
+    inputs: [],
+    math: []
+  }
 };
 
 export default AnswerBox;

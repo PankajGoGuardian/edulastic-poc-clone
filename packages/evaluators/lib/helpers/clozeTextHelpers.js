@@ -7,38 +7,29 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.getClozeTextEvaluation = exports.getClozeTextMatches = exports.isLessThanOneMistake = void 0;
 
-var _toConsumableArray2 = _interopRequireDefault(require("@babel/runtime/helpers/toConsumableArray"));
-
 var _isEqual2 = _interopRequireDefault(require("lodash/isEqual"));
 
-var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer, ignoreCase) {
-  var userAnswerArray = (0, _toConsumableArray2["default"])(userAnswer);
-  var validAnswerArray = (0, _toConsumableArray2["default"])(validAnswer);
-  var mistakesCount = 0;
+var _fastLevenshtein = require("fast-levenshtein");
 
+var isLessThanOneMistake = function isLessThanOneMistake(userAnswer, validAnswer, ignoreCase) {
   if (ignoreCase) {
-    userAnswerArray.forEach(function(letter, index) {
-      if (!validAnswerArray[index] || !letter || letter.toLowerCase() !== validAnswerArray[index].toLowerCase()) {
-        mistakesCount++;
-      }
-    });
-  } else {
-    userAnswerArray.forEach(function(letter, index) {
-      if (letter !== validAnswerArray[index]) {
-        mistakesCount++;
-      }
-    });
+    userAnswer = userAnswer.toLowerCase();
+    validAnswer = validAnswer.toLowerCase();
   }
 
-  return mistakesCount <= 1;
+  var mistakeCount = (0, _fastLevenshtein.get)(userAnswer, validAnswer);
+  return mistakeCount < 2;
 };
 
 exports.isLessThanOneMistake = isLessThanOneMistake;
 
 var getClozeTextMatches = function getClozeTextMatches(response, answer, restOptions) {
   return response.filter(function(resp, index) {
+    resp = (resp || "").trim();
+    var ans = (answer[index] || "").trim();
+
     if (restOptions.allowSingleLetterMistake) {
-      return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
+      return isLessThanOneMistake(ans, resp, restOptions.ignoreCase);
     }
 
     if (restOptions.ignoreCase) {
@@ -56,8 +47,11 @@ exports.getClozeTextMatches = getClozeTextMatches;
 
 var getClozeTextEvaluation = function getClozeTextEvaluation(response, answer, restOptions) {
   return response.map(function(resp, index) {
+    resp = (resp || "").trim();
+    var ans = (answer[index] || "").trim();
+
     if (restOptions.allowSingleLetterMistake) {
-      return isLessThanOneMistake(answer[index].trim(), resp.trim(), restOptions.ignoreCase);
+      return isLessThanOneMistake(ans, resp, restOptions.ignoreCase);
     }
 
     if (restOptions.ignoreCase) {

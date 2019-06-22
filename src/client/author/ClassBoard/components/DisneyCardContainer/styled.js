@@ -119,10 +119,10 @@ export const CircularDiv = styled.div`
   width: 42px;
   height: 42px;
   border-radius: 50%;
-  color: #1774f0;
+  color: #00ad50;
   font-weight: 600;
   line-height: 38px;
-  background-color: #e7f1fd;
+  background-color: #e1fbed;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -132,7 +132,8 @@ export const StyledFlexDiv = styled.div`
   display: flex;
   align-items: baseline;
   text-overflow: ellipsis;
-  width: 50%;
+  width: 52%;
+  margin-right: 0px;
   @media (max-width: ${mobileWidth}) {
     width: 100%;
     text-align: center;
@@ -218,7 +219,8 @@ export const StyledParaSS = styled.p`
   font-weight: bold;
   color: #434b5d;
   text-overflow: ellipsis;
-  width: 50%;
+  width: 85%;
+  font-size: 16px;
 `;
 
 export const StyledParaSSS = styled.p`

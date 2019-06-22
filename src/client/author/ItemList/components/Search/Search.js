@@ -4,25 +4,67 @@ import { Select } from "antd";
 import { connect } from "react-redux";
 import { questionType as questionTypes } from "@edulastic/constants";
 import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
-import { Container, Item, ItemBody, ItemHeader, MainFilterItems } from "./styled";
+import { Container, Item, ItemBody, ItemHeader, MainFilterItems, ItemRelative, IconWrapper } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
-
+import StandardsSearchModal from "./StandardsSearchModal";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { test as testsConstants } from "@edulastic/constants";
 class Search extends Component {
+  state = {
+    showModal: false
+  };
+  setShowModal = value => {
+    const { curriculumStandards } = this.props;
+    if (value && !curriculumStandards.elo.length) {
+      return;
+    }
+    this.setState({ showModal: value });
+  };
+  handleApply = standardIds => {
+    const { onSearchFieldChange } = this.props;
+    onSearchFieldChange("standardIds")(standardIds);
+    this.setShowModal(false);
+  };
   render() {
+    const { showModal } = this.state;
     const {
-      search: { grades, status, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
+      search: {
+        grades,
+        status,
+        subject,
+        collectionName = "",
+        curriculumId,
+        standardIds,
+        questionType,
+        depthOfKnowledge,
+        authorDifficulty
+      },
       onSearchFieldChange,
       curriculumStandards,
-      onStandardSearch,
       showStatus = false,
+      collections,
       formattedCuriculums
     } = this.props;
-    const isStandardsDisabled = !curriculumId;
+    const collectionData = [
+      ...testsConstants.collectionDefaultFilter,
+      ...collections.map(o => ({ text: o.title, value: o._id }))
+    ];
+    const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0);
     const standardsPlaceholder = isStandardsDisabled
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
     return (
       <MainFilterItems>
+        {showModal ? (
+          <StandardsSearchModal
+            setShowModal={this.setShowModal}
+            showModal={showModal}
+            standardIds={standardIds}
+            handleApply={this.handleApply}
+          />
+        ) : (
+          ""
+        )}
         <Container>
           <Item>
             <ItemHeader>Grades</ItemHeader>
@@ -77,13 +119,16 @@ class Search extends Component {
               </Select>
             </ItemBody>
           </Item>
-          <Item>
+          <ItemRelative>
+            <IconWrapper>
+              <i class="fa fa-expand" aria-hidden="true" onClick={() => this.setShowModal(true)} />
+            </IconWrapper>
             <ItemHeader>Standards</ItemHeader>
             <Select
               mode="multiple"
               size="large"
-              onSearch={onStandardSearch}
-              filterOption={false}
+              optionFilterProp={"children"}
+              filterOption={(input, option) => option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
               placeholder={standardsPlaceholder}
               onChange={onSearchFieldChange("standardIds")}
               value={standardIds}
@@ -91,11 +136,11 @@ class Search extends Component {
             >
               {curriculumStandards.elo.map(el => (
                 <Select.Option key={el._id} value={el._id}>
-                  {`${el.identifier}: ${el.description}`}
+                  {`${el.identifier}`}
                 </Select.Option>
               ))}
             </Select>
-          </Item>
+          </ItemRelative>
           <Item>
             <ItemHeader>Question Type</ItemHeader>
             <ItemBody>
@@ -132,6 +177,19 @@ class Search extends Component {
               </Select>
             </ItemBody>
           </Item>
+          <Item>
+            <ItemHeader>Collections</ItemHeader>
+            <ItemBody>
+              <Select size="large" onSelect={onSearchFieldChange("collectionName")} value={collectionName}>
+                {collectionData.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Item>
+
           {showStatus && (
             <Item>
               <ItemHeader>Status</ItemHeader>
@@ -182,12 +240,12 @@ Search.propTypes = {
   ).isRequired,
   onSearchFieldChange: PropTypes.func.isRequired,
   curriculumStandards: PropTypes.array.isRequired,
-  showStatus: PropTypes.bool,
-  onStandardSearch: PropTypes.func.isRequired
+  showStatus: PropTypes.bool
 };
 
 export default connect(
   (state, { search = {} }) => ({
+    collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}

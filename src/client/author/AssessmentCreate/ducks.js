@@ -169,6 +169,9 @@ function* createAssessmentSaga({ payload }) {
         assignments: undefined,
         pageStructure: pageStructure.length ? pageStructure : defaultPageStructure
       };
+      if (newAssessment.requirePassword === false) {
+        delete newAssessment.assignmentPassword;
+      }
       const assessment = yield call(testsApi.create, newAssessment);
 
       yield put(createAssessmentSuccessAction());

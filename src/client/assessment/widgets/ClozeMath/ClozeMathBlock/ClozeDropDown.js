@@ -1,25 +1,39 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
+import { find } from "lodash";
 import styled from "styled-components";
 import { Select } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
 const { Option } = Select;
 
-const ClozeDropDown = ({ save, index, options, answers, evaluation, checked }) => {
-  const { dropDown: _dropDownAnswers = [] } = answers;
+const ClozeDropDown = ({ resprops = {}, id }) => {
+  const { save, options, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
+  const { dropDowns: _dropDownAnswers = [] } = answers;
 
-  const { dropDownResults: checkResult = {} } = evaluation;
-  const isChecked = checked && !isEmpty(checkResult);
-
-  return isChecked ? (
-    <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_dropDownAnswers[index]} index={index} />
+  const val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : "";
+  const {
+    response_ids: { dropDowns }
+  } = item;
+  const { index } = find(dropDowns, res => res.id === id) || {};
+  const { ui_style: uiStyle } = item;
+  const width = uiStyle[id] ? `${uiStyle[id]["widthpx"]}px` : `${uiStyle.min_width}px`;
+  // const isChecked = checked && !isEmpty(evaluation);
+  return checked ? (
+    <CheckedBlock
+      item={item}
+      userAnswer={_dropDownAnswers[id]}
+      id={id}
+      width={width || "auto"}
+      evaluation={evaluation}
+      type="dropDowns"
+      onInnerClick={onInnerClick}
+    />
   ) : (
-    <StyeldSelect onChange={text => save(text, index, "dropDown")} value={_dropDownAnswers[index]}>
+    <StyeldSelect onChange={text => save({ value: text, index }, "dropDowns", id)} value={val} width={width || "auto"}>
       {options &&
-        options[index] &&
-        options[index].map((response, respID) => (
+        options[id] &&
+        options[id].map((response, respID) => (
           <Option value={response} key={respID}>
             {response}
           </Option>
@@ -29,17 +43,15 @@ const ClozeDropDown = ({ save, index, options, answers, evaluation, checked }) =
 };
 
 ClozeDropDown.propTypes = {
-  index: PropTypes.number.isRequired,
-  options: PropTypes.object.isRequired,
-  save: PropTypes.func.isRequired,
-  checked: PropTypes.bool.isRequired,
-  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  answers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+  resprops: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default ClozeDropDown;
 
 const StyeldSelect = styled(Select)`
-  min-width: 80px;
+  min-width: 120px;
   margin: 0px 4px;
+  width: ${({ width }) => (!width ? null : `${width}`)};
+  min-height: 35px;
 `;

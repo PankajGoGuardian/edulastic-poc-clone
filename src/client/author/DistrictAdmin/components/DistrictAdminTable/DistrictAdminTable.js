@@ -3,8 +3,8 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 
-import { Popconfirm, Icon, Select, message, Button, Menu } from "antd";
-const Option = Select.Option;
+import { Icon, Select, message, Button, Menu, Checkbox } from "antd";
+import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
   StyledTableContainer,
@@ -15,24 +15,36 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown
+  StyledActionDropDown,
+  StyledClassName
 } from "./styled";
 
 import CreateDistrictAdminModal from "./CreateDistrictAdminModal/CreateDistrictAdminModal";
 import EditDistrictAdminModal from "./EditDistrictAdminModal/EditDistrictAdminModal";
 
 import {
-  receiveDistrictAdminAction,
-  createDistrictAdminAction,
-  updateDistrictAdminAction,
-  deleteDistrictAdminAction,
+  receiveAdminDataAction,
+  createAdminUserAction,
+  updateAdminUserAction,
+  deleteAdminUserAction,
   setSearchNameAction,
-  setFiltersAction
-} from "../../ducks";
-
-import { getDistrictAdminSelector } from "../../ducks";
+  getAdminUsersDataSelector,
+  getShowActiveUsersSelector,
+  setShowActiveUsersAction,
+  getPageNoSelector,
+  setPageNoAction,
+  getFiltersSelector,
+  changeFilterColumnAction,
+  changeFilterTypeAction,
+  changeFilterValueAction,
+  addFilterAction,
+  removeFilterAction,
+  setRoleAction
+} from "../../../SchoolAdmin/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
+
+const { Option } = Select;
 
 function compareByAlph(a, b) {
   if (a > b) {
@@ -44,72 +56,73 @@ function compareByAlph(a, b) {
   return 0;
 }
 
-class DistrictAdminTable extends React.Component {
+class DistrictAdminTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: [],
       selectedRowKeys: [],
       createDistrictAdminModalVisible: false,
       editDistrictAdminModaVisible: false,
-      editDistrictAdminKey: -1,
-      filters: {
-        column: "",
-        value: "",
-        text: ""
-      },
-      filterAdded: false
+      editDistrictAdminKey: "",
+      selectedAdminsForDeactivate: [],
+      deactivateAdminModalVisible: false
     };
     this.columns = [
       {
-        title: "First Name",
-        dataIndex: "firstName",
-        editable: true,
+        title: "Name",
+        render: (_, { _source: { firstName, lastName } = {} }) => (
+          <span>
+            {firstName} {lastName}
+          </span>
+        ),
         sorter: (a, b) => compareByAlph(a.firstName, b.secondName)
       },
       {
-        title: "Last Name",
-        dataIndex: "lastName",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.lastName, b.lastName)
-      },
-      {
         title: "Username",
-        dataIndex: "email",
-        editable: true,
+        dataIndex: "_source.email",
         sorter: (a, b) => compareByAlph(a.email, b.email)
       },
       {
-        dataIndex: "operation",
-        render: (text, record) => {
-          return (
-            <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditDistrictAdmin(record.key)}>
-                <Icon type="edit" theme="twoTone" />
-              </StyledTableButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledTableButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledTableButton>
-              </Popconfirm>
-            </React.Fragment>
-          );
-        }
+        title: "SSO",
+        dataIndex: "_source.sso",
+        render: (sso = "N/A") => sso
+      },
+      {
+        dataIndex: "_id",
+        render: id => [
+          <StyledTableButton key={`${id}0`} onClick={() => this.onEditDistrictAdmin(id)}>
+            <Icon type="edit" theme="twoTone" />
+          </StyledTableButton>,
+          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)}>
+            <Icon type="delete" theme="twoTone" />
+          </StyledTableButton>
+        ]
       }
     ];
   }
 
   componentDidMount() {
-    const { loadDistrictAdminData, userOrgId } = this.props;
-    loadDistrictAdminData({
-      districtId: userOrgId,
-      role: "district-admin",
-      limit: 10000 // TODO: Remove limit after pagination done properly
-    });
+    const { loadAdminData, setRole } = this.props;
+    setRole("district-admin");
+    loadAdminData();
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    return { dataSource: nextProps.districtAdminData };
+  static getDerivedStateFromProps(nextProps, state) {
+    const {
+      adminUsersData: { result }
+    } = nextProps;
+    return {
+      selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { loadAdminData, showActiveUsers, pageNo } = this.props;
+    // here when the showActiveUsers checkbox is toggled, or the page number changes,
+    // an api call is fired to get the data
+    if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
+      loadAdminData();
+    }
   }
 
   onEditDistrictAdmin = key => {
@@ -119,14 +132,20 @@ class DistrictAdminTable extends React.Component {
     });
   };
 
-  handleDelete = key => {
-    const data = [...this.state.dataSource];
-    const { userOrgId } = this.props;
+  handleDeactivateAdmin = id => {
+    this.setState({
+      selectedAdminsForDeactivate: [id],
+      deactivateAdminModalVisible: true
+    });
+  };
 
-    const selectedDistrictAdmin = data.filter(item => item.key == key);
-
-    const { deleteDistrictAdmin } = this.props;
-    deleteDistrictAdmin([{ userId: selectedDistrictAdmin[0]._id, districtId: userOrgId }]);
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "district-admin" });
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -139,67 +158,23 @@ class DistrictAdminTable extends React.Component {
     });
   };
 
-  changeFilterColumn = value => {
-    const filtersData = this.state.filters;
-    filtersData.column = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterValue = value => {
-    const filtersData = this.state.filters;
-    filtersData.value = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterText = e => {
-    const filtersData = this.state.filters;
-    filtersData.text = e.target.value;
-    this.setState({ filters: filtersData });
-  };
-
-  addFilter = e => {
-    const { filters } = this.state;
-    const { setFilters } = this.props;
-    this.setState({ filterAdded: true });
-    setFilters(filters);
-  };
-
-  removeFilter = e => {
-    const filtersData = {
-      column: "",
-      value: "",
-      text: ""
-    };
-
-    this.setState({
-      filters: filtersData,
-      filterAdded: false
-    });
-    const { setFilters } = this.props;
-    setFilters(filtersData);
-  };
-
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
     if (e.key === "edit user") {
-      if (selectedRowKeys.length == 0) {
+      if (selectedRowKeys.length === 0) {
         message.error("Please select user to edit.");
-      } else if (selectedRowKeys.length == 1) {
+      } else if (selectedRowKeys.length === 1) {
         this.onEditDistrictAdmin(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
         message.error("Please select single user to edit.");
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
-        const data = [...this.state.dataSource];
-        const { userOrgId } = this.props;
-
-        const selectedDistrictAdminData = [];
-        selectedRowKeys.map(value => {
-          selectedDistrictAdminData.push({ userId: data[value]._id, districtId: userOrgId });
+        this.setState({
+          selectedAdminsForDeactivate: selectedRowKeys,
+          deactivateAdminModalVisible: true
         });
-        const { deleteDistrictAdmin } = this.props;
-        deleteDistrictAdmin(selectedDistrictAdminData);
+        // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
         message.error("Please select users to delete.");
       }
@@ -207,10 +182,10 @@ class DistrictAdminTable extends React.Component {
   };
 
   createDistrictAdmin = newDistrictAdminData => {
-    const { userOrgId, createDistrictAdmin } = this.props;
+    const { userOrgId, createAdminUser } = this.props;
     newDistrictAdminData.role = "district-admin";
     newDistrictAdminData.districtId = userOrgId;
-    createDistrictAdmin(newDistrictAdminData);
+    createAdminUser(newDistrictAdminData);
     this.setState({ createDistrictAdminModalVisible: false });
   };
 
@@ -220,61 +195,25 @@ class DistrictAdminTable extends React.Component {
     });
   };
 
-  updateDistrictAdmin = updatedDistrictAdminData => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex(item => updatedDistrictAdminData.key === item.key);
-    delete updatedDistrictAdminData.key;
-    if (index > -1) {
-      const item = newData[index];
-      newData.splice(index, 1, {
-        ...item,
-        ...updatedDistrictAdminData
-      });
-      this.setState({ dataSource: newData });
-    } else {
-      newData.push(updatedDistrictData);
-      this.setState({ dataSource: newData });
-    }
-    this.setState({
-      isChangeState: true,
-      editDistrictAdminModaVisible: false
-    });
-
-    const { updateDistrictAdmin, userOrgId } = this.props;
-    updateDistrictAdmin({
-      userId: newData[index]._id,
-      data: Object.assign(updatedDistrictAdminData, {
-        districtId: userOrgId
-      })
-    });
-  };
-
   closeEditDistrictAdminModal = () => {
     this.setState({
       editDistrictAdminModaVisible: false
     });
   };
 
-  searchByName = e => {
+  searchByName = evt => {
     const { setSearchName } = this.props;
-    setSearchName(e);
+    setSearchName(evt.target.value);
   };
 
   render() {
-    const columns = this.columns.map(col => {
-      return {
-        ...col
-      };
-    });
-
     const {
-      dataSource,
       selectedRowKeys,
       createDistrictAdminModalVisible,
       editDistrictAdminModaVisible,
       editDistrictAdminKey,
-      filters,
-      filterAdded
+      deactivateAdminModalVisible,
+      selectedAdminsForDeactivate
     } = this.state;
 
     const rowSelection = {
@@ -282,9 +221,24 @@ class DistrictAdminTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { userOrgId } = this.props;
+    const {
+      adminUsersData: { result = {}, totalUsers },
+      userOrgId,
+      setShowActiveUsers,
+      showActiveUsers,
+      updateAdminUser,
+      pageNo,
+      setPageNo,
+      filters,
+      changeFilterColumn,
+      changeFilterType,
+      changeFilterValue,
+      loadAdminData,
+      addFilter,
+      removeFilter
+    } = this.props;
 
-    const selectedDistrictAdmin = dataSource.filter(item => item.key == editDistrictAdminKey);
+    // const selectedDistrictAdmin = dataSource.filter(item => item._id === editDistrictAdminKey);
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
@@ -292,8 +246,7 @@ class DistrictAdminTable extends React.Component {
       </Menu>
     );
 
-    const isFilterTextDisable = filters.column === "" || filters.value === "";
-    const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
+    const filterKeysArray = Object.keys(filters);
 
     return (
       <StyledTableContainer>
@@ -309,48 +262,102 @@ class DistrictAdminTable extends React.Component {
               userOrgId={userOrgId}
             />
           )}
-          <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-
+          <StyledSchoolSearch placeholder="Search by name" onChange={this.searchByName} onSearch={loadAdminData} />
+          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+            Show current users only
+          </Checkbox>
           <StyledActionDropDown overlay={actionMenu}>
             <Button>
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        <StyledControlDiv>
-          <StyledFilterSelect placeholder="Select a column" onChange={this.changeFilterColumn} value={filters.column}>
-            <Option value="">Select a column</Option>
-            <Option value="firstName">Frist Name</Option>
-            <Option value="lastName">Last Name</Option>
-            <Option value="email">Email</Option>
-          </StyledFilterSelect>
-          <StyledFilterSelect placeholder="Select a value" onChange={this.changeFilterValue} value={filters.value}>
-            <Option value="">Select a value</Option>
-            <Option value="equals">Equals</Option>
-            <Option value="contains">Contains</Option>
-          </StyledFilterSelect>
-          <StyledFilterInput
-            placeholder="Enter text"
-            onChange={this.changeFilterText}
-            value={filters.text}
-            disabled={isFilterTextDisable}
-          />
-          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
-            + Add Filter
-          </StyledAddFilterButton>
-          {filterAdded && (
-            <StyledAddFilterButton type="primary" onClick={this.removeFilter}>
-              - Remove Filter
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
-        <StyledTable rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
-        {editDistrictAdminModaVisible && editDistrictAdminKey >= 0 && (
+        {filterKeysArray.map(filterKey => {
+          const { type, value } = filters[filterKey];
+          return (
+            <StyledControlDiv key={filterKey}>
+              <StyledFilterSelect
+                placeholder="Select a column"
+                onChange={filterColumn => changeFilterColumn({ prevKey: filterKey, newKey: filterColumn })}
+                value={filterKey}
+              >
+                <Option value="other">Select a column</Option>
+                <Option value="username">Username</Option>
+                <Option value="email">Email</Option>
+              </StyledFilterSelect>
+              <StyledFilterSelect
+                placeholder="Select a value"
+                onChange={filterType => changeFilterType({ key: filterKey, value: filterType })}
+                value={type}
+              >
+                <Option value="">Select a value</Option>
+                <Option value="eq">Equals</Option>
+                <Option value="cont">Contains</Option>
+              </StyledFilterSelect>
+              <StyledFilterInput
+                placeholder="Enter text"
+                onChange={({ target }) => changeFilterValue({ key: filterKey, value: target.value })}
+                value={value}
+                disabled={!type}
+                onSearch={loadAdminData}
+              />
+              <StyledAddFilterButton type="primary" onClick={addFilter} disabled={!!filters.other}>
+                + Add Filter
+              </StyledAddFilterButton>
+              <StyledAddFilterButton
+                type="primary"
+                disabled={filterKey === "other" || filterKeysArray.length === 1}
+                onClick={() => {
+                  removeFilter(filterKey);
+                  loadAdminData();
+                }}
+              >
+                - Remove Filter
+              </StyledAddFilterButton>
+            </StyledControlDiv>
+          );
+        })}
+        <StyledTable
+          rowKey={record => record._id}
+          rowSelection={rowSelection}
+          dataSource={Object.values(result)}
+          columns={this.columns}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+        />
+        {editDistrictAdminModaVisible && (
           <EditDistrictAdminModal
-            districtAdminData={selectedDistrictAdmin[0]}
+            districtAdminData={result[editDistrictAdminKey]}
             modalVisible={editDistrictAdminModaVisible}
-            saveDistrictAdmin={this.updateDistrictAdmin}
+            updateDistrictAdmin={updateAdminUser}
             closeModal={this.closeEditDistrictAdminModal}
+            userOrgId={userOrgId}
+          />
+        )}
+        {deactivateAdminModalVisible && (
+          <TypeToConfirmModal
+            modalVisible={deactivateAdminModalVisible}
+            title="Deactivate"
+            handleOnOkClick={this.confirmDeactivate}
+            wordToBeTyped="DEACTIVATE"
+            primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
+            secondaryLabel={selectedAdminsForDeactivate.map(id => {
+              const { _source: { firstName, lastName } = {} } = result[id];
+              return (
+                <StyledClassName key={id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              );
+            })}
+            closeModal={() =>
+              this.setState({
+                deactivateAdminModalVisible: false
+              })
+            }
           />
         )}
       </StyledTableContainer>
@@ -362,28 +369,43 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      districtAdminData: getDistrictAdminSelector(state)
+      adminUsersData: getAdminUsersDataSelector(state),
+      showActiveUsers: getShowActiveUsersSelector(state),
+      pageNo: getPageNoSelector(state),
+      filters: getFiltersSelector(state)
     }),
     {
-      createDistrictAdmin: createDistrictAdminAction,
-      updateDistrictAdmin: updateDistrictAdminAction,
-      deleteDistrictAdmin: deleteDistrictAdminAction,
-      loadDistrictAdminData: receiveDistrictAdminAction,
+      createAdminUser: createAdminUserAction,
+      updateAdminUser: updateAdminUserAction,
+      deleteAdminUser: deleteAdminUserAction,
+      loadAdminData: receiveAdminDataAction,
       setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction
+      setShowActiveUsers: setShowActiveUsersAction,
+      setPageNo: setPageNoAction,
+      /**
+       * Action to set the filter Column.
+       * @param {string} str1 The previous value held by the select.
+       * @param {string} str2 The new value that is to be set in the select
+       */
+      changeFilterColumn: changeFilterColumnAction,
+      changeFilterType: changeFilterTypeAction,
+      changeFilterValue: changeFilterValueAction,
+      addFilter: addFilterAction,
+      removeFilter: removeFilterAction,
+      setRole: setRoleAction
     }
   )
 );
 
 export default enhance(DistrictAdminTable);
 
-DistrictAdminTable.propTypes = {
-  districtAdminData: PropTypes.array.isRequired,
-  loadDistrictAdminData: PropTypes.func.isRequired,
-  createDistrictAdmin: PropTypes.func.isRequired,
-  updateDistrictAdmin: PropTypes.func.isRequired,
-  deleteDistrictAdmin: PropTypes.func.isRequired,
-  setSearchName: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired
-};
+// DistrictAdminTable.propTypes = {
+//   districtAdminData: PropTypes.array.isRequired,
+//   loadDistrictAdminData: PropTypes.func.isRequired,
+//   createDistrictAdmin: PropTypes.func.isRequired,
+//   updateDistrictAdmin: PropTypes.func.isRequired,
+//   deleteDistrictAdmin: PropTypes.func.isRequired,
+//   setSearchName: PropTypes.func.isRequired,
+//   setFilters: PropTypes.func.isRequired,
+//   userOrgId: PropTypes.string.isRequired
+// };

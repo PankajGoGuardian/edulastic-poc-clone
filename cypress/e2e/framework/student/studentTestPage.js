@@ -1,10 +1,13 @@
 import ReportsPage from "./reportsPage";
 import MathEditor from "./mathEditor";
 import { attemptTypes, questionTypeKey as questionType } from "../constants/questionTypes";
+import AssignmentsPage from "./assignmentsPage";
+import { studentSide } from "../constants/assignmentStatus";
 
 class StudentTestPage {
   constructor() {
     this.mathEditor = new MathEditor();
+    this.assignmentPage = new AssignmentsPage();
     this.attemptType = { RIGHT: "right", WRONG: "wrong" };
   }
 
@@ -149,7 +152,9 @@ class StudentTestPage {
 
   checkAnsMatrix = (answer, steams) => {
     Object.keys(answer).forEach(chKey => {
-      this.getCorrectAnsTableRow()
+      cy.get('[data-cy="matrixTable"]')
+        .children()
+        .find("tr.ant-table-row")
         .contains(chKey)
         .closest("tr")
         .then(ele => {
@@ -561,6 +566,24 @@ class StudentTestPage {
   typeFractionDenominatorWithKeyboard = answer => this.mathEditor.typeFractionDenominatorWithVirtualKeyboard(answer);
 
   checkSavedFractionDenominator = answer => this.mathEditor.checkTypedFractionDenominatorCount(answer.length);
+
+  attemptAssignment = (email, status, attempt, questionTypeMap) => {
+    if (status !== studentSide.NOT_STARTED) {
+      cy.login("student", email);
+      this.assignmentPage.clickOnAssignmentButton();
+      Object.keys(attempt).forEach(queNum => {
+        const [queType] = questionTypeMap[queNum].queKey.split(".");
+        const { attemptData } = questionTypeMap[queNum];
+        this.attemptQuestion(queType, attempt[queNum], attemptData);
+        this.clickOnNext();
+      });
+
+      if (status === studentSide.SUBMITTED || status === studentSide.GRADED) {
+        this.submitTest();
+        cy.contains("Reports").should("be.visible");
+      }
+    }
+  };
 
   attemptQuestion = (attemptQueType, attemptType, attemptData) => {
     cy.wait(1000); // double rendering issue causes choices to suffle and breaks test, hence waiting

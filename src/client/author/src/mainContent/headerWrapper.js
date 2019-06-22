@@ -52,7 +52,7 @@ const HeaderContainer = styled.div`
 const Container = styled.div`
   height: 96px;
   padding: 0px 20px;
-  background: ${newBlue};
+  background: ${props => props.theme.header.headerBgColor};
   display: flex;
   justify-content: space-between;
   align-items: center;

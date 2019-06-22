@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { message, Menu, Dropdown, Button, Modal } from "antd";
+import { message, Menu, Dropdown, Button, Modal, Icon, Switch } from "antd";
 import moment from "moment";
 import { get } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
@@ -26,6 +26,7 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
+  PresentModeSwitch,
   StyledButton,
   MenuWrapper
 } from "./styled";
@@ -35,6 +36,7 @@ import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
 import { releaseScoreAction, markAsDoneAction } from "../../../src/actions/classBoard";
 import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
+import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 
 class ClassHeader extends Component {
   constructor(props) {
@@ -124,6 +126,14 @@ class ClassHeader extends Component {
     });
   };
 
+  toggleCurrentMode = () => {
+    const { togglePresentationMode, isPresentationMode } = this.props;
+    if (!isPresentationMode) {
+      message.info("Presentation mode is ON. You can present assessment data without revealing student identity.");
+    }
+    togglePresentationMode(!isPresentationMode);
+  };
+
   render() {
     const {
       t,
@@ -136,8 +146,11 @@ class ClassHeader extends Component {
       selectedStudentsKeys,
       classResponse = {},
       status,
-      enableMarkAsDone
+      enableMarkAsDone,
+      togglePresentationMode,
+      isPresentationMode
     } = this.props;
+
     const { showDropdown, visible } = this.state;
     const { endDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
@@ -185,8 +198,13 @@ class ClassHeader extends Component {
           <StyledTabs>
             <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
               <StyledAnchor isActive={active === "classboard"}>
-                <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
+                <IconDeskTopMonitor
+                  color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                  left={0}
+                />
+                <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                  {t("common.liveClassBoard")}
+                </LinkLabel>
               </StyledAnchor>
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
@@ -195,8 +213,13 @@ class ClassHeader extends Component {
                 data-cy="Expressgrader"
               >
                 <StyledAnchor isActive={active === "expressgrader"}>
-                  <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+                  <IconBookMarkButton
+                    color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                    left={0}
+                  />
+                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                    {t("common.expressGrader")}
+                  </LinkLabel>
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
@@ -208,10 +231,28 @@ class ClassHeader extends Component {
             >
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
-                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
+                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
+                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                    {t("common.standardBasedReports")}
+                  </LinkLabel>
                 </StyledAnchor>
               </StyledLink>
+            </FeaturesSwitch>
+            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
+              <PresentModeSwitch
+                checkedChildren={
+                  <div>
+                    <Icon type="bar-chart" /> Present
+                  </div>
+                }
+                unCheckedChildren={
+                  <div>
+                    <Icon type="pause" /> Reset
+                  </div>
+                }
+                checked={isPresentationMode}
+                onClick={this.toggleCurrentMode}
+              />
             </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
@@ -253,12 +294,16 @@ const enhance = compose(
       showScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
       status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
-      enableMarkAsDone: getMarkAsDoneEnableSelector(state)
+      enableMarkAsDone: getMarkAsDoneEnableSelector(state),
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       setReleaseScore: releaseScoreAction,
-      setMarkAsDone: markAsDoneAction
+      setMarkAsDone: markAsDoneAction,
+
+      togglePresentationMode: togglePresentationModeAction
     }
   )
 );
+
 export default enhance(ClassHeader);

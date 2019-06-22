@@ -19,26 +19,26 @@ class StudentsDetailsModal extends React.Component {
         title: "Status",
         dataIndex: "status",
         width: "50%",
-        render: (text, record) => {
+        render: status => {
           let statusText = "";
-          if (record.status === "SUCCESS") {
+          if (status === "SUCCESS") {
             statusText = (
               <StatusDiv>
-                <StyledStatusIcon type="check" iconColor={"#1890ff"} />
+                <StyledStatusIcon type="check" iconColor="#1890ff" />
                 New User Created
               </StatusDiv>
             );
-          } else if (record.status === "FAILED_USER_EXISTS") {
+          } else if (status === "FAILED_USER_EXISTS") {
             statusText = (
               <StatusDiv>
-                <StyledStatusIcon type="exclamation-circle" iconColor={"#faad14"} />
+                <StyledStatusIcon type="exclamation-circle" iconColor="#faad14" />
                 User Already Exist
               </StatusDiv>
             );
           } else {
             statusText = (
               <StatusDiv>
-                <StyledStatusIcon type="close-circle" iconColor={"#f5222d"} />
+                <StyledStatusIcon type="close-circle" iconColor="#f5222d" />
                 Create User Failed
               </StatusDiv>
             );
@@ -54,14 +54,7 @@ class StudentsDetailsModal extends React.Component {
   };
 
   render() {
-    const columns = this.columns.map(col => {
-      return {
-        ...col
-      };
-    });
-
     const { dataSource, modalVisible } = this.props;
-    console.log(dataSource);
     return (
       <Modal
         visible={modalVisible}
@@ -76,7 +69,12 @@ class StudentsDetailsModal extends React.Component {
       >
         <Row>
           <Col span={24}>
-            <Table dataSource={dataSource} pagination={false} columns={columns} />
+            <Table
+              rowKey={record => record.userName}
+              dataSource={dataSource}
+              pagination={false}
+              columns={this.columns}
+            />
           </Col>
         </Row>
       </Modal>

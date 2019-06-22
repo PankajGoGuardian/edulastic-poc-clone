@@ -4,7 +4,7 @@ import { push } from "react-router-redux";
 import { keyBy as _keyBy } from "lodash";
 import { test as testContants } from "@edulastic/constants";
 import { ShuffleChoices } from "../utils/test";
-import { getCurrentGroup } from "../../student/Login/ducks";
+import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
   LOAD_TEST,
   LOAD_TEST_ITEMS,
@@ -42,6 +42,11 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: true
     });
+    yield put({
+      type: TEST_ACTIVITY_LOADING,
+      payload: true
+    });
+    yield put(setPasswordValidateStatusAction(false));
 
     const { testActivityId, testId, preview = false, demo = false } = payload;
     yield put({
@@ -51,7 +56,7 @@ function* loadTest({ payload }) {
       }
     });
 
-    const groupId = yield select(getCurrentGroup);
+    const groupId = yield select(getCurrentGroupWithAllClasses);
     // if !preivew, need to load previous responses as well!
     const getTestActivity = !preview ? call(testActivityApi.getById, testActivityId, groupId) : false;
     const testRequest = !demo
@@ -220,12 +225,16 @@ function* loadPreviousResponses() {
 function* submitTest() {
   try {
     const testActivityId = yield select(state => state.test && state.test.testActivityId);
-    const groupId = yield select(getCurrentGroup);
+    const groupId = yield select(getCurrentGroupWithAllClasses);
     if (testActivityId === "test") {
       return;
     }
     yield testActivityApi.submit(testActivityId, groupId);
-    yield put(push("/home/reports"));
+    if (navigator.userAgent.includes("SEB")) {
+      yield put(push("/student/seb-quit-confirm"));
+    } else {
+      yield put(push("/home/reports"));
+    }
   } catch (err) {
     console.log(err);
   }

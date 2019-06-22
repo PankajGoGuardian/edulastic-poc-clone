@@ -26,29 +26,33 @@ export const getStandardWisePerformance = (testActivities, std) => {
   return performanceStudentWise;
 };
 
-export const getStandardWisePerformanceDetail = (testActivities, std) => {
+export const getStandardWisePerformanceDetail = (testActivities, std, isPresentationMode = false) => {
   const submittedTestActivities = testActivities.filter(x => x.status === "submitted");
-  const questionActivities = submittedTestActivities.flatMap(({ studentId, studentName, questionActivities }) =>
-    questionActivities.map(x => ({ ...x, studentId, studentName }))
+  const questionActivities = submittedTestActivities.flatMap(
+    ({ studentId, studentName, fakeName, questionActivities }) =>
+      questionActivities.map(x => ({ ...x, studentId, studentName, fakeName }))
   );
 
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
   let performanceStudentWise = {};
   for (let qid of std.qIds) {
-    const questionActs = questionActivitiesByQid[qid];
-
+    const questionActs = questionActivitiesByQid[qid] || [];
     for (let qAct of questionActs) {
+      if (qAct.disabled || qAct.scoringDisabled || qAct.maxScore == 0) {
+        continue;
+      }
       const { studentId } = qAct;
       if (!performanceStudentWise[studentId]) {
         performanceStudentWise[studentId] = {
-          score: qAct.score / qAct.maxScore,
+          score: qAct.score,
           maxScore: qAct.maxScore,
-          studentName: qAct.studentName
+          studentName: isPresentationMode ? qAct.fakeName : qAct.studentName,
+          count: 1
         };
       } else {
-        performanceStudentWise[studentId].score =
-          (performanceStudentWise[studentId].score + qAct.score / qAct.maxScore) / 2;
-        performanceStudentWise[studentId].maxScore = (performanceStudentWise[studentId].maxScore + qAct.maxScore) / 2;
+        performanceStudentWise[studentId].score += qAct.score;
+        performanceStudentWise[studentId].maxScore += qAct.maxScore;
+        performanceStudentWise[studentId].count += 1;
       }
     }
   }

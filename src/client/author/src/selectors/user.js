@@ -6,7 +6,7 @@ export const stateSelector = state => state.user;
 
 export const getUserIdSelector = createSelector(
   stateSelector,
-  state => state._id
+  state => state.user._id
 );
 
 export const getUserSelector = createSelector(
@@ -54,6 +54,16 @@ export const getInterestedCurriculumsSelector = createSelector(
   state => _get(state, "interestedCurriculums", [])
 );
 
+export const getInterestedGradesSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "defaultGrades", [])
+);
+
+export const getInterestedSubjectsSelector = createSelector(
+  getOrgDataSelector,
+  state => _get(state, "defaultSubjects", [])
+);
+
 export const getUserOrgId = createSelector(
   stateSelector,
   state => _get(state, "user.orgData.districtId")
@@ -62,6 +72,11 @@ export const getUserOrgId = createSelector(
 export const getUserOrgData = createSelector(
   stateSelector,
   state => _get(state, "user.orgData")
+);
+
+export const getCollectionsSelector = createSelector(
+  stateSelector,
+  state => _get(state, "user.orgData.itemBanks", [])
 );
 
 export const getUserId = createSelector(

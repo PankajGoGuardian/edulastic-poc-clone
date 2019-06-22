@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round } from "lodash";
+import { round, shuffle } from "lodash";
 import { Col, Row } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
 
@@ -38,7 +38,8 @@ export default class DisneyCardContainer extends Component {
     selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
     studentUnselect: PropTypes.func.isRequired,
-    viewResponses: PropTypes.func.isRequired
+    viewResponses: PropTypes.func.isRequired,
+    isPresentationMode: PropTypes.bool
   };
 
   constructor(props) {
@@ -58,8 +59,8 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses } = this.props;
-    const styledCard = [];
+    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
+    let styledCard = [];
 
     if (testActivity.length > 0) {
       testActivity.map((student, index) => {
@@ -67,23 +68,33 @@ export default class DisneyCardContainer extends Component {
           color: "",
           status: ""
         };
+
         if (student.status === "notStarted") {
           status.status = "NOT STARTED";
           status.color = red;
+          if (endDate < Date.now()) {
+            status.status = "ABSENT";
+          }
         } else if (student.status === "inProgress") {
           status.status = "IN PROGRESS";
           status.color = yellow;
         } else if (student.status === "submitted") {
-          status.status = "SUBMITTED";
+          if (student.graded) {
+            status.status = "GRADED";
+          } else {
+            status.status = "SUBMITTED";
+          }
           status.color = greenSecondary;
         } else if (student.status === "redirected") {
           status.status = "REDIRECTED";
           status.color = greenSecondary;
-        } else if (student.graded) {
-          status.status = "GRADED";
+        } else if (student.status === "absent") {
+          status.status = "ABSENT";
+          status.color = red;
         }
 
         let correctAnswers = 0;
+
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {
@@ -93,14 +104,21 @@ export default class DisneyCardContainer extends Component {
         });
 
         const stu_per = round((parseFloat(correctAnswers) / parseFloat(questions)) * 100, 2);
+        const name = isPresentationMode ? student.fakeName : student.studentName || "-";
 
         const studentData = (
-          <StyledCard data-cy={`student-card-${student.studentName}`} bordered={false} key={index}>
+          <StyledCard data-cy={`student-card-${name}`} bordered={false} key={index}>
             <PaginationInfoF>
-              <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
+              {isPresentationMode ? (
+                <i style={{ color: student.color, fontSize: "32px" }} className={`fa fa-${student.icon}`}>
+                  {" "}
+                </i>
+              ) : (
+                <CircularDiv>{getAvatarName(student.studentName)}</CircularDiv>
+              )}
               <StyledName>
-                <StyledParaF data-cy="studentName" title={student.email}>
-                  {student.studentName ? student.studentName : "-"}
+                <StyledParaF data-cy="studentName" title={isPresentationMode ? undefined : student.email}>
+                  {name}
                 </StyledParaF>
                 {student.present ? (
                   <StyledParaS data-cy="studentStatus" color={status.color}>
@@ -145,10 +163,10 @@ export default class DisneyCardContainer extends Component {
               <PerfomanceSection>
                 <StyledFlexDiv>
                   <StyledParaSS data-cy="studentScore">
-                    {round(student.score, 1) || 0} / {student.maxScore || 0}
+                    {round(student.score, 2) || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   <StyledParaSSS data-cy="studentPerformance">
-                    {student.score > 0 ? round((student.score / student.maxScore) * 100, 1) : 0}%
+                    {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
                 {student.testActivityId && (
@@ -187,7 +205,14 @@ export default class DisneyCardContainer extends Component {
         return null;
       });
     }
+    if (isPresentationMode) {
+      styledCard = shuffle(styledCard);
+    }
 
-    return <StyledCardContiner>{styledCard}</StyledCardContiner>;
+    return testActivity.length > 0 ? (
+      <StyledCardContiner>{styledCard}</StyledCardContiner>
+    ) : (
+      <h2 style={{ textAlign: "center" }}>There is no students attending this assignment at the moment</h2>
+    );
   }
 }

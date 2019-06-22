@@ -10,27 +10,11 @@ import Breadcrumb from "../../Breadcrumb";
 import { Container } from "./styled_components";
 
 class SecondHeadBar extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      breadcrumbData: [
-        {
-          title: "ITEM BANK",
-          to: "/author/items"
-        },
-        // eslint-disable-next-line react/destructuring-assignment
-        ...this.props.breadcrumb
-      ]
-    };
-  }
-
   render() {
-    const { breadcrumbData } = this.state;
-
+    const { breadcrumb } = this.props;
     return (
       <Container>
-        <Breadcrumb data={breadcrumbData} style={{ position: "unset", width: "100%" }} />
+        <Breadcrumb data={breadcrumb} style={{ position: "unset", width: "100%" }} />
         {this.props.children ? this.props.children : null}
       </Container>
     );
@@ -43,6 +27,10 @@ SecondHeadBar.propTypes = {
 
 SecondHeadBar.defaultProps = {
   breadcrumb: [
+    {
+      title: "ITEM BANK",
+      to: "/author/items"
+    },
     {
       title: "ITEM DETAIL",
       to: `/author/items/${window.location.pathname.split("/")[3]}/item-detail`

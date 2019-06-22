@@ -3,33 +3,25 @@ import PropTypes from "prop-types";
 import { MathFormulaDisplay } from "@edulastic/common";
 
 import { CLEAR } from "../../../constants/constantsForQuestions";
+import { MathEssayInputWrapper } from "./styled";
 
 import MathEssayInput from "./MathEssayInput";
 
 import { InstructorStimulus } from "../styled/InstructorStimulus";
 import { QuestionTitleWrapper, QuestionNumber } from "../styled/QustionNumber";
 
-const FormulaEssayPreview = ({
-  item,
-  type: previewType,
-  lines,
-  setLines,
-  resetLines,
-  userAnswer,
-  showQuestionNumber,
-  qIndex
-}) => {
+const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
   useEffect(() => {
     if (previewType === CLEAR) {
       resetLines();
     }
-  }, [previewType, userAnswer]);
+  }, [previewType]);
 
   return (
-    <div>
+    <MathEssayInputWrapper>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         <MathFormulaDisplay style={{ marginBottom: 15 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
 
@@ -42,7 +34,7 @@ const FormulaEssayPreview = ({
         setLines={setLines}
         onInput={latex => console.log(latex)}
       />
-    </div>
+    </MathEssayInputWrapper>
   );
 };
 

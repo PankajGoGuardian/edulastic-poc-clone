@@ -18,7 +18,8 @@ import {
   StyledDiv,
   SpaceDiv,
   CheckBoxWrapper,
-  MessageSpan
+  MessageSpan,
+  MaxAttemptIInput
 } from "./styled";
 
 const releaseGradeKeys = ["DONT_RELEASE", "SCORE_ONLY", "WITH_RESPONSE", "WITH_ANSWERS"];
@@ -105,6 +106,7 @@ const Settings = ({
     }
   };
   const overRideSettings = (key, value) => {
+    if ((key === "maxAnswerChecks" || key === "maxAttempts") && value < 0) value = 0;
     const newSettingsState = {
       ...assignmentSettings,
       [key]: value
@@ -138,7 +140,8 @@ const Settings = ({
     scoringType = tempTestSettings.scoringType,
     penalty = tempTestSettings.penalty,
     requirePassword = tempTestSettings.requirePassword,
-    assignmentPassword = tempTestSettings.assignmentPassword
+    assignmentPassword = tempTestSettings.assignmentPassword,
+    maxAttempts = tempTestSettings.maxAttempts
   } = assignmentSettings;
 
   return (
@@ -179,6 +182,22 @@ const Settings = ({
           </Col>
         </StyledRowSelect>
         {/* Release score */}
+
+        {/* Maximum attempt */}
+        <StyledRowSettings gutter={16}>
+          <Col span={8}>Maximum Attempts Allowed</Col>
+          <Col span={16}>
+            <MaxAttemptIInput
+              type="number"
+              size="large"
+              value={maxAttempts}
+              onChange={e => overRideSettings("maxAttempts", e.target.value)}
+              min={1}
+              step={1}
+            />
+          </Col>
+        </StyledRowSettings>
+        {/* Maximum attempt */}
 
         {/* Require Safe Exam Browser */}
         <StyledRowSettings gutter={16}>
@@ -311,6 +330,7 @@ const Settings = ({
               size="large"
               value={maxAnswerChecks}
               type={"number"}
+              min={0}
               placeholder="Number of tries"
             />
           </Col>

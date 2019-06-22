@@ -6,13 +6,14 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
+import Editor from "react-froala-wysiwyg";
+import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
-import Editor from "react-froala-wysiwyg";
-import { uploadToS3, canInsert } from "../helpers";
+import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
 import MathModal from "./MathModal";
@@ -33,6 +34,20 @@ FroalaEditor.DefineIconTemplate(
     </g>
   </SVG>
   `
+);
+
+FroalaEditor.DefineIconTemplate(
+  "specialCharacters",
+  `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Capa_1" x="0px" y="0px" viewBox="0 0 469.333 469.333" style="enable-background:new 0 0 469.333 469.333;" xml:space="preserve">
+  <g>
+    <g>
+      <g>
+        <path d="M253.227,300.267L253.227,300.267L199.04,246.72l0.64-0.64c37.12-41.387,63.573-88.96,79.147-139.307h62.507V64H192     V21.333h-42.667V64H0v42.453h238.293c-14.4,41.173-36.907,80.213-67.627,114.347c-19.84-22.08-36.267-46.08-49.28-71.467H78.72     c15.573,34.773,36.907,67.627,63.573,97.28l-108.48,107.2L64,384l106.667-106.667l66.347,66.347L253.227,300.267z"/>
+        <path d="M373.333,192h-42.667l-96,256h42.667l24-64h101.333l24,64h42.667L373.333,192z M317.333,341.333L352,248.853     l34.667,92.48H317.333z"/>
+      </g>
+    </g>
+  </g>
+  </svg>`
 );
 
 FroalaEditor.DEFAULTS.specialCharacterSets = [
@@ -73,26 +88,69 @@ const numberPad = [
 ];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
-  moreText: {
-    buttons: [
-      "bold",
-      "italic",
-      "underline",
-      "backgroundColor",
-      "textColor",
-      "fontFamily",
-      "fontSize",
-      "strikeThrough",
-      "insertTable",
-      "indent",
-      "outdent",
-      "specialCharacters"
-    ],
-    buttonsVisible: 12
+  STD: {
+    moreText: {
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "fontFamily",
+        "fontSize",
+        "paragraphFormat",
+        "indent",
+        "outdent",
+        "insertTable",
+        "math",
+        "insertImage",
+        "undo",
+        "redo",
+        "align",
+        "backgroundColor",
+        "textColor",
+        "strikeThrough"
+      ],
+      buttonsVisible: 10
+    }
   },
-  moreParagraph: {
-    buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
-    buttonsVisible: 6
+  MD: {
+    moreText: {
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "table",
+        "math",
+        "insertImage",
+        "paragraphFormat",
+        "indent",
+        "align",
+        "specialCharacters"
+      ],
+      buttonsVisible: 6
+    }
+  },
+  SM: {
+    moreText: {
+      buttons: [
+        "bold",
+        "italic",
+        "underline",
+        "math",
+        "paragraphFormat",
+        "table",
+        "indent",
+        "align",
+        "insertImage",
+        "specialCharacters"
+      ],
+      buttonsVisible: 4
+    }
+  },
+  XS: {
+    moreText: {
+      buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
+      buttonsVisible: 2
+    }
   }
 };
 
@@ -101,13 +159,20 @@ const NoneDiv = styled.div`
   opacity: 0;
 `;
 
-const BackgroundStyleWrapper = styled.div`
+const BackgroundStyleWrapper = styled.div.attrs({
+  className: "froala-wrapper"
+})`
   position: relative;
   width: 100%;
   display: block;
 
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
+  }
+
+  .fr-wrapper {
+    transition: padding-top 0.5s;
+    padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
 `;
 
@@ -143,7 +208,35 @@ const getFixedPostion = el => {
   };
 };
 
-const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOptions, ...restOptions }) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
+  const sizeMap = {
+    STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
+    MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
+    SM: { STD: "SM", MD: "SM", SM: "SM", XS: "XS" },
+    XS: { STD: "XS", MD: "XS", SM: "XS", XS: "XS" }
+  };
+  const cSize = sizeMap[toolbarSize][size];
+
+  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
+  toolbarButtons.moreText.buttons = [...toolbarButtons.moreText.buttons];
+  toolbarButtons.moreMisc = {
+    buttons: additionalToolbarOptions,
+    buttonsVisible: 3
+  };
+
+  return toolbarButtons;
+};
+
+const CustomEditor = ({
+  value,
+  onChange,
+  toolbarId,
+  tag,
+  toolbarSize,
+  additionalToolbarOptions,
+  initOnClick,
+  ...restOptions
+}) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
 
@@ -153,34 +246,22 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
+  const [toolbarExpanded, setToolbarExpanded] = useState(false);
 
   const [mathField, setMathField] = useState(null);
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS);
-  toolbarButtons.moreMisc = {
-    buttons: additionalToolbarOptions,
-    buttonsVisible: 3
-  };
-  const toolbarButtonsMD = cloneDeep(toolbarButtons);
-  toolbarButtonsMD.moreText.buttonsVisible = 3;
-  toolbarButtonsMD.moreParagraph.buttonsVisible = 3;
-
-  const toolbarButtonsSM = cloneDeep(toolbarButtons);
-  toolbarButtonsSM.moreText.buttonsVisible = 2;
-  toolbarButtonsSM.moreParagraph.buttonsVisible = 2;
-
-  const toolbarButtonsXS = cloneDeep(toolbarButtons);
-  toolbarButtonsXS.moreText.buttonsVisible = 1;
-  toolbarButtonsXS.moreParagraph.buttonsVisible = 1;
-
+  const toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
       key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
-      initOnClick: true,
+      initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
       toolbarButtonsSM,
@@ -206,7 +287,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "textinput",
         "textdropdown",
         "mathinput",
-        "response"
+        "response",
+        "specialCharacters"
       ],
       specialCharactersSets: [
         {
@@ -307,6 +389,11 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
               const cursorEl = parent.childNodes[range.startOffset - 1];
               if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
                 cursorEl.remove();
+                this.selection.save();
+                const updatedHtml = reIndexResponses(this.html.get(true));
+                if (updatedHtml) {
+                  this.html.set(updatedHtml);
+                }
                 return;
               }
               if (
@@ -342,8 +429,11 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         "edit.on": function(e, editor) {
           if (restOptions.readOnly === true) {
             this.edit.off();
+            this.$el.find(".input__math").css("pointer-events", "none");
+            this.$el.find("img").css("pointer-events", "none");
           }
         },
+
         "toolbar.hide": function() {
           if (this.hasFocus) {
             return false;
@@ -355,12 +445,30 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
           this.hasFocus = false;
         },
         focus: function() {
-          this.hasFocus = true;
-          this.toolbar.show();
+          if (initOnClick) {
+            this.hasFocus = true;
+            this.toolbar.show();
+          }
         },
         blur: function() {
-          this.hasFocus = false;
-          this.toolbar.hide();
+          if (initOnClick) {
+            this.hasFocus = false;
+            this.toolbar.hide();
+          }
+        },
+        "commands.after": function(cmd) {
+          if (cmd === "moreText") {
+            this.toolbarExpanded = !this.toolbarExpanded;
+            setToolbarExpanded(this.toolbarExpanded);
+            return;
+          }
+          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
+            this.selection.save();
+            const updatedHtml = reIndexResponses(this.html.get(true));
+            if (updatedHtml) {
+              this.html.set(updatedHtml);
+            }
+          }
         }
       }
     },
@@ -386,43 +494,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
     const valueToSave = replaceMathHtmlWithLatexes(val);
     setPrevValue(valueToSave);
 
-    if (
-      !restOptions.toolbarButtons || // Default toolbarButtons are used
-      restOptions.toolbarButtons.includes("response") || // toolbarButtons prop contains response
-      restOptions.toolbarButtons.includes("mathinput") || // toolbarButtons prop contains mathInput
-      restOptions.toolbarButtons.includes("textdropdown") || // toolbarButtons prop contains dropdown
-      restOptions.toolbarButtons.includes("textinput") // toolbarButtons prop contains text input
-    ) {
-      const responseIndexes = $(val)
-        .find("response")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-      const mathInputIndexes = $(val)
-        .find("mathinput")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-
-      const dropDownIndexes = $(val)
-        .find("textdropdown")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-
-      const inputIndexes = $(val)
-        .find("textinput")
-        .map(function() {
-          return +$(this).text();
-        })
-        .toArray();
-      onChange(valueToSave, mathInputIndexes, dropDownIndexes, inputIndexes);
-    } else {
-      onChange(valueToSave, []);
-    }
+    onChange(valueToSave);
   };
 
   // Math Modal related functions
@@ -457,9 +529,13 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
   useEffect(() => {
     // sample extension of custom buttons
     initMathField();
-
+    if (value) {
+      setChange(reIndexResponses(value));
+    }
     // Math Input
     FroalaEditor.DefineIcon("math", { NAME: "math", template: "math" });
+    FroalaEditor.DefineIcon("specialCharacters", { NAME: "specialCharacters", template: "specialCharacters" });
+
     FroalaEditor.RegisterCommand("math", {
       title: "Math",
       focus: false,
@@ -484,9 +560,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const responseCount = this.$el[0].querySelectorAll("response").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<Response index={{${responseCount}}} contentEditable="false">Response</Response>`);
+        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -499,9 +574,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const inputCount = this.$el[0].querySelectorAll("textinput").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextInput index={{${inputCount}}} contentEditable="false">Text Input</TextInput>`);
+        this.html.insert(`<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>`);
         this.undo.saveStep();
       }
     });
@@ -514,11 +588,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const dropDownCount = this.$el[0].querySelectorAll("textdropdown").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(
-          `<TextDropdown index={{${dropDownCount}}} contentEditable="false">Text Dropdown</TextDropdown>`
-        );
+        this.html.insert(`<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>`);
         this.undo.saveStep();
       }
     });
@@ -531,9 +602,8 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       undo: true,
       refreshAfterCallback: true,
       callback() {
-        const mathInputCount = this.$el[0].querySelectorAll("mathinput").length;
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<MathInput index={{${mathInputCount}}} contentEditable="false">Math Input</MathInput>`);
+        this.html.insert(`<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>`);
         this.undo.saveStep();
       }
     });
@@ -618,7 +688,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}
@@ -640,13 +710,17 @@ CustomEditor.propTypes = {
   value: PropTypes.string.isRequired,
   toolbarId: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  initOnClick: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
   tag: "textarea",
   toolbarId: null,
+  initOnClick: true,
+  toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false
 };

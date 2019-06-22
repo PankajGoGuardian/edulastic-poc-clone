@@ -4,6 +4,8 @@ import {
   CLEAR_DICT_STANDARDS,
   ADD_NEW_ALIGNMENT,
   REMOVE_EXISTED_ALIGNMENT,
+  UPDATE_RECENT_STANDARDS,
+  CLEAR_DICT_ALIGNMENTS,
   UPDATE_DICT_ALIGNMENT
 } from "../constants/actions";
 
@@ -18,6 +20,10 @@ export const getDictStandardsForCurriculumAction = (curriculumId, grades, search
 
 export const clearDictStandardsAction = () => ({
   type: CLEAR_DICT_STANDARDS
+});
+
+export const clearDictAlignmentAction = () => ({
+  type: CLEAR_DICT_ALIGNMENTS
 });
 
 export const addNewAlignmentAction = alignment => ({
@@ -36,4 +42,9 @@ export const updateDictAlignmentAction = (alignmentIndex, payload) => ({
     index: alignmentIndex,
     changedFields: payload
   }
+});
+
+export const updateRecentStandardsAction = payload => ({
+  type: UPDATE_RECENT_STANDARDS,
+  payload
 });

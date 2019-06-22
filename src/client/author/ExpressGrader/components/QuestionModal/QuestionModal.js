@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import Question from "../Question/Question";
 import { ModalWrapper, QuestionWrapper, BottomNavigationWrapper } from "./styled";
 import BottomNavigation from "../BottomNavigation/BottomNavigation";
+import { message } from "antd";
 
 class QuestionModal extends React.Component {
   constructor() {
@@ -93,6 +94,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ rowIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 
@@ -114,6 +117,8 @@ class QuestionModal extends React.Component {
       this.setState({ loaded: false }, () => {
         this.setState({ colIndex: nextIndex, loaded: true });
       });
+    } else {
+      message.success("Congratulations. You have finished grading all students!");
     }
   };
 
@@ -129,7 +134,7 @@ class QuestionModal extends React.Component {
 
   render() {
     let question = null;
-    const { isVisibleModal, tableData, record } = this.props;
+    const { isVisibleModal, tableData, record, isPresentationMode } = this.props;
     const { rowIndex, colIndex, loaded, row } = this.state;
 
     if (colIndex !== null && rowIndex !== null) {
@@ -156,7 +161,13 @@ class QuestionModal extends React.Component {
         {isVisibleModal && question && loaded && (
           <React.Fragment>
             <QuestionWrapper>
-              <Question record={question} key={question.id} qIndex={colIndex} student={student} />
+              <Question
+                record={question}
+                key={question.id}
+                qIndex={colIndex}
+                student={student}
+                isPresentationMode={isPresentationMode}
+              />
             </QuestionWrapper>
             <BottomNavigationWrapper>
               <BottomNavigation
@@ -180,7 +191,12 @@ QuestionModal.propTypes = {
   tableData: PropTypes.array.isRequired,
   isVisibleModal: PropTypes.bool.isRequired,
   showQuestionModal: PropTypes.func.isRequired,
-  hideQuestionModal: PropTypes.func.isRequired
+  hideQuestionModal: PropTypes.func.isRequired,
+  isPresentationMode: PropTypes.bool
+};
+
+QuestionModal.defaultProps = {
+  isPresentationMode: false
 };
 
 export default QuestionModal;

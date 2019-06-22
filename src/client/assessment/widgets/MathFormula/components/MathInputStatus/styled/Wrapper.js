@@ -9,5 +9,6 @@ export const Wrapper = styled.div`
   z-index: 100;
   background: ${props => props.theme.widgets.mathFormula.iconWrapperBgColor};
   display: flex;
+  pointer-events: none;
   align-items: center;
 `;

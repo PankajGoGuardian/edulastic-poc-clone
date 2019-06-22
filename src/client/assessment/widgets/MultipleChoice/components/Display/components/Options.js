@@ -18,7 +18,7 @@ const Options = ({
     <OptionsList styleType={styleType}>
       {options.map((option, index) => (
         <Option
-          key={index}
+          key={option.value}
           index={index}
           uiStyle={uiStyle}
           item={option}

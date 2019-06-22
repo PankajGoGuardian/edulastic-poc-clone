@@ -51,10 +51,10 @@ class GroupResponses extends React.Component {
     setQuestionData(
       produce(item, draft => {
         draft.options[index].label = value;
-        let maxLength = 0;
-        draft.options.forEach(option => {
-          maxLength = Math.max(maxLength, option ? option.label.length : 0);
-        });
+        const maxLength = 0;
+        // draft.options.forEach(option => {
+        //   maxLength = Math.max(maxLength, option ? option.label.length : 0);
+        // });
         const finalWidth = 40 + maxLength * 7;
         draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
         updateVariables(draft);
@@ -181,7 +181,23 @@ class GroupResponses extends React.Component {
     );
   };
 
-  onSortEndGroupOptions = () => {};
+  onSortEndGroupOptions = (groupIndex, params) => {
+    const { oldIndex, newIndex } = params;
+    const {
+      item: { groupResponses = [] }
+    } = this.props;
+    const newGroupResponses = groupResponses.slice();
+    const responseToMove = newGroupResponses[groupIndex].options.splice(oldIndex, 1)[0];
+    newGroupResponses[groupIndex].options.splice(newIndex, 0, responseToMove);
+
+    const { item, setQuestionData } = this.props;
+    setQuestionData(
+      produce(item, draft => {
+        draft.groupResponses = newGroupResponses;
+        updateVariables(draft);
+      })
+    );
+  };
 
   render() {
     const { t, item, theme } = this.props;
@@ -254,7 +270,7 @@ class GroupResponses extends React.Component {
                     <QuillSortableList
                       prefix={`group_${index}`}
                       items={group.options.map(o => o.label)}
-                      onSortEnd={params => this.onSortEndGroupOptions(index, ...params)}
+                      onSortEnd={params => this.onSortEndGroupOptions(index, params)}
                       useDragHandle
                       onRemove={itemIndex => this.removeGroupOptions(index, itemIndex)}
                       onChange={(itemIndex, e) => this.editGroupOptions(index, itemIndex, e)}

@@ -82,24 +82,24 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
     result.commonResult = true;
 
     var _loop = function _loop(i) {
+      var relatedShape = trueAnswerValue.find(function(item) {
+        return item.id === relatedIds[i];
+      });
       var sameShapes = result.details.filter(function(item) {
         return item.relatedId === relatedIds[i];
       });
-      var sameShapesType = userResponse.find(function(item) {
-        return item.id === sameShapes[0].id;
-      }).type;
 
       if (
         sameShapes.length > 1 &&
-        sameShapesType !== _constants.ShapeTypes.POINT &&
-        sameShapesType !== _constants.ShapeTypes.SEGMENT &&
-        sameShapesType !== _constants.ShapeTypes.VECTOR &&
-        sameShapesType !== _constants.ShapeTypes.POLYGON &&
-        sameShapesType !== _constants.ShapeTypes.POLYNOM
+        relatedShape.type !== _constants.ShapeTypes.POINT &&
+        relatedShape.type !== _constants.ShapeTypes.SEGMENT &&
+        relatedShape.type !== _constants.ShapeTypes.VECTOR &&
+        relatedShape.type !== _constants.ShapeTypes.POLYGON &&
+        relatedShape.type !== _constants.ShapeTypes.POLYNOM
       ) {
-        var allowedSubElementsIds = userResponse.find(function(item) {
+        var firstShape = userResponse.find(function(item) {
           return item.id === sameShapes[0].id;
-        }).subElementsIds;
+        });
 
         var _loop2 = function _loop2(j) {
           var checkableShape = userResponse.find(function(item) {
@@ -107,11 +107,14 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
           });
 
           switch (checkableShape.type) {
+            case _constants.ShapeTypes.RAY:
+            case _constants.ShapeTypes.PARABOLA:
             case _constants.ShapeTypes.CIRCLE:
             case _constants.ShapeTypes.EXPONENT:
             case _constants.ShapeTypes.LOGARITHM:
               if (
-                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+                !compareShapes.compare(firstShape.subElementsIds.endPoint, checkableShape.subElementsIds.endPoint, true)
+                  .result
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
@@ -121,24 +124,43 @@ var checkAnswer = function checkAnswer(answer, userResponse, ignoreRepeatedShape
 
             case _constants.ShapeTypes.ELLIPSE:
             case _constants.ShapeTypes.HYPERBOLA:
-              if (!compareShapes.compare(checkableShape.subElementsIds[2], allowedSubElementsIds[2]).result) {
+              if (!compareShapes.compare(firstShape.subElementsIds[2], checkableShape.subElementsIds[2], true).result) {
                 sameShapes[j].result = false;
                 result.commonResult = false;
               }
 
               break;
 
-            case _constants.ShapeTypes.PARABOLA:
             case _constants.ShapeTypes.SINE:
             case _constants.ShapeTypes.TANGENT:
             case _constants.ShapeTypes.SECANT:
             case _constants.ShapeTypes.LINE:
-            case _constants.ShapeTypes.RAY:
             default:
               if (
-                !compareShapes.compare(checkableShape.subElementsIds.startPoint, allowedSubElementsIds.startPoint)
-                  .result ||
-                !compareShapes.compare(checkableShape.subElementsIds.endPoint, allowedSubElementsIds.endPoint).result
+                !(
+                  compareShapes.compare(
+                    firstShape.subElementsIds.startPoint,
+                    checkableShape.subElementsIds.startPoint,
+                    true
+                  ).result &&
+                  compareShapes.compare(
+                    firstShape.subElementsIds.endPoint,
+                    checkableShape.subElementsIds.endPoint,
+                    true
+                  ).result
+                ) &&
+                !(
+                  compareShapes.compare(
+                    firstShape.subElementsIds.startPoint,
+                    checkableShape.subElementsIds.endPoint,
+                    true
+                  ).result &&
+                  compareShapes.compare(
+                    firstShape.subElementsIds.endPoint,
+                    checkableShape.subElementsIds.startPoint,
+                    true
+                  ).result
+                )
               ) {
                 sameShapes[j].result = false;
                 result.commonResult = false;

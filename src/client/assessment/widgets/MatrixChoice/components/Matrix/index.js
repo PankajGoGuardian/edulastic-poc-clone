@@ -61,6 +61,8 @@ const validatedAnswers = (answers, responses, matrix, type) => {
   return result;
 };
 
+const MathSpan = WithMathFormula(styled.div``);
+
 const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, validation, type, smallSize, theme }) => {
   let correctAnswersMatrix;
 
@@ -148,14 +150,13 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
       ""
     );
 
-    const MathSpan = WithMathFormula(styled.div``);
     let columns = [
       {
         title: stemTitle,
         dataIndex: "stem",
         key: "stem",
         width: uiStyle.stem_width || "auto",
-        render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
+        render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
       },
       {
         title: optionRowTitle,
@@ -169,7 +170,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
           title: "",
           dataIndex: "numeration",
           key: "numeration",
-          render: stem => <span dangerouslySetInnerHTML={{ __html: stem }} />
+          render: stem => <MathSpan dangerouslySetInnerHTML={{ __html: stem }} />
         },
         ...columns
       ];
@@ -204,7 +205,7 @@ const Matrix = ({ stems, options, response, isMultiple, onCheck, uiStyle, valida
     <StyledTable
       data-cy="matrixTable"
       fontSize={fontSize}
-      horizontalLines={uiStyle.horizontal_lines}
+      horizontalLines={uiStyle.horizontal_lines && !helpers.isEmpty(uiStyle.option_row_title)}
       columns={getColumns()}
       dataSource={data}
       pagination={false}

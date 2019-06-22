@@ -39,18 +39,30 @@ import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../Playlis
 
 const initAssignment = {
   startDate: moment(),
-  endDate: moment().add("days", 7),
   openPolicy: "Automatically on Start Date",
   closePolicy: "Automatically on Due Date",
   class: [],
   specificStudents: false
 };
 
+const setTime = userRole => {
+  const addDate = userRole !== "teacher" ? 28 : 7;
+  return moment()
+    .add("days", addDate)
+    .set({ hour: 23, minute: 0, second: 0, millisecond: 0 });
+};
+
 class AssignTest extends React.Component {
-  state = {
-    isAdvancedView: false,
-    assignment: initAssignment
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      isAdvancedView: false,
+      assignment: {
+        ...initAssignment,
+        endDate: setTime(props.userRole)
+      }
+    };
+  }
 
   componentDidMount() {
     const {
@@ -87,12 +99,11 @@ class AssignTest extends React.Component {
         }
       }));
     } else {
-      if (userRole === "district-admin") {
+      if (userRole !== "teacher") {
         this.setState(prevState => ({
           assignment: {
             ...prevState.assignment,
-            openPolicy: "Open Manually by Teacher",
-            closePolicy: "Close Manually by Admin"
+            openPolicy: "Open Manually by Teacher"
           }
         }));
       }
@@ -113,10 +124,12 @@ class AssignTest extends React.Component {
     } else if (assignment.assignmentPassword.length < 6 || assignment.assignmentPassword.length > 25) {
       return message.error("Please add a valid password.");
     }
-    if (saveAssignment && !isEmpty(assignment.class)) {
-      saveAssignment(assignment);
-    } else {
+    if (saveAssignment && isEmpty(assignment.class)) {
       message.error("Please select at least one class to assign.");
+    } else if (saveAssignment && assignment.endDate < Date.now()) {
+      message.error("Please Enter a future end date. ");
+    } else {
+      saveAssignment(assignment);
     }
   };
 

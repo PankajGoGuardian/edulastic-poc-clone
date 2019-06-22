@@ -28,11 +28,13 @@ export const ModalContainer = styled(Card)`
 
 export const Image = styled.div`
   min-height: 150px;
+  height: auto;
   width: 95%;
   position: relative;
-  background: url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg");
+  background: ${props =>
+    props.src ? `url(${props.src})` : `url("https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg")`};
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   border-radius: 4px;
   margin-bottom: 15px;
 `;
@@ -69,6 +71,8 @@ export const TagGrade = styled.span`
   border-radius: 5px;
   padding: 4px 15px;
   font-size: 10px;
+  display: inline-block;
+  margin-bottom: 5px;
   color: ${blue};
   background-color: ${lightBlue6};
   margin-right: 7px;
@@ -79,10 +83,14 @@ export const TagGrade = styled.span`
   }
 `;
 export const TagsLabel = styled(Label)``;
-export const TagsConatiner = styled.div``;
+export const TagsConatiner = styled.div`
+  width: 100%;
+`;
 
 export const GradeLabel = styled(Label)``;
-export const GradeConatiner = styled.div``;
+export const GradeConatiner = styled.div`
+  width: 100%;
+`;
 
 export const SubjectLabel = styled(Label)``;
 export const Subject = styled.div`
@@ -101,8 +109,9 @@ export const FooterIcon = styled.div`
   &:first-child {
     margin-left: 0px;
   }
+
   svg {
-    transform: rotate(180deg);
+    transform: ${props => (props.rotate ? "rotate(180deg)" : "")};
   }
 `;
 
@@ -113,11 +122,12 @@ export const IconText = styled.span`
 
 export const ButtonContainer = styled.div`
   display: flex;
+  margin-bottom: 10px;
   justify-content: space-around;
 `;
 
-export const Button = styled.div`
-  width: 165px;
+export const ButtonComponent = styled.div`
+  width: ${({ size }) => (size === "large" ? "100%" : "165px")};
   float: right;
   font-size: 12px;
   color: ${({ bgColor }) => (bgColor ? white : blue)};
@@ -211,4 +221,10 @@ export const SammaryMark = styled.div`
   color: ${greenDark};
   background-color: #d1f9eb;
   font-weight: 700;
+`;
+
+export const IconWrapper = styled.span`
+  margin-right: 4px;
+  position: relative;
+  top: 3px;
 `;

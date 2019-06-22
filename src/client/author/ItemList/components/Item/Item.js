@@ -119,8 +119,9 @@ class Item extends Component {
 
   render() {
     const { item, t, windowWidth, selectedToCart, search } = this.props;
+    const resources =
+      item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
     const { isOpenedDetails } = this.state;
-
     return (
       <Container>
         <Question>
@@ -128,7 +129,7 @@ class Item extends Component {
             <MoveLink onClick={this.moveToItem}>
               {item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
                 ? item.data.questions[0].stimulus
-                : item._id}
+                : "Click here to view the question detail."}
             </MoveLink>
             <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: this.description }} />
           </QuestionContent>
@@ -142,6 +143,13 @@ class Item extends Component {
           )}
         </Question>
         <Detail>
+          {resources.map((resource, index) => (
+            <TypeCategory>
+              <Label key={index}>
+                <LabelText>{resource.title}</LabelText>
+              </Label>
+            </TypeCategory>
+          ))}
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
             <CategoryContent>

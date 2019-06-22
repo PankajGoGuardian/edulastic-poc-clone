@@ -10,13 +10,13 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
-const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem }) => (
+const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem, isNonAutoGradable = false }) => (
   <Container>
-    {settings.maxAnswerChecks > 0 && (
+    {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
       <StyledButton
-        onClick={checkAnswerEvaluation}
+        onClick={answerChecksUsedForItem >= settings.maxAnswerChecks ? "" : checkAnswerEvaluation}
         data-cy="checkAnswer"
-        disabled={answerChecksUsedForItem >= settings.maxAnswerChecks}
+        title={answerChecksUsedForItem >= settings.maxAnswerChecks ? "Usage limit exceeded" : ""}
       >
         <ButtonLink color="primary" icon={<IconCheck color={white} />} style={{ color: white }}>
           {t("common.test.checkanswer")}
@@ -61,18 +61,16 @@ const StyledButton = styled(Button)`
   background: transparent;
   height: 24px;
   &[disabled] {
+    cursor: pointer;
     &:hover {
       background: transparent;
     }
     background: transparent;
   }
-  &:hover {
-    background: transparent;
-  }
-  &:focus {
-    background: transparent;
-  }
+  &:hover,
+  &:focus,
   &:active {
-    background: transparent;
+    background: ${props => props.theme.default.headerButtonActiveBgColor};
+    border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
 `;

@@ -5,7 +5,13 @@ import { cloneDeep, isEqual } from "lodash";
 import HorizontalLines from "./components/HorizontalLines";
 import ArrowPair from "./components/ArrowPair";
 import withGrid from "./HOC/withGrid";
-import { convertPxToUnit, convertUnitToPx, displayHorizontalLines, getGridVariables } from "./helpers";
+import {
+  convertPxToUnit,
+  convertUnitToPx,
+  displayHorizontalLines,
+  displayVerticalLines,
+  getGridVariables
+} from "./helpers";
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
@@ -77,16 +83,24 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) =
     save();
   };
 
+  const [heightAddition, setHeightAddition] = useState(17);
+
   return (
     <svg
       style={{ userSelect: "none" }}
       width={width}
-      height={height}
+      height={height + heightAddition}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <BarsAxises lines={data} gridParams={gridParams} />
+      <BarsAxises
+        setHeightAddition={setHeightAddition}
+        heightAddition={heightAddition}
+        lines={data}
+        gridParams={gridParams}
+        displayGridlines={displayVerticalLines(showGridlines)}
+      />
 
       <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 

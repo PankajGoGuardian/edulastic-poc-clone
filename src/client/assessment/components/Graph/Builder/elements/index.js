@@ -25,3 +25,4 @@ export { default as Vector } from "./Vector";
 export { default as Equation } from "./Equation";
 export { default as Annotation } from "./Annotation";
 export { default as Area } from "./Area";
+export { default as DrawingObject } from "./DrawingObject";

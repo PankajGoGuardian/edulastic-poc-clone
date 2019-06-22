@@ -34,19 +34,26 @@ export const CreateClassButton = styled(Button)`
   border: none;
   text-transform: uppercase;
   color: ${white};
-  background: ${green};
+  background: #42d184;
   &:hover {
-    background: ${greenDark};
+    background: #42d184;
     color: ${white};
   }
 `;
 
 export const SyncButtons = styled(Button)`
-${ShareButtonStyle}
-  color: ${fadedGrey};
-  padding: 0px 35px;
-  background-color: ${blueButton};
+  ${ShareButtonStyle}
+  color: #ffffff;
+  padding: 0px 25px;
+  background-color: #42d184;
+  border-color: #42d184;
   margin-right: 20px;
+  font-size: 12px;
+  &:hover {
+    color: #ffffff;
+    background-color: #42d184;
+    border-color: #42d184;
+  }
 `;
 export const ButtonsWrapper = styled.div`
   display: flex;

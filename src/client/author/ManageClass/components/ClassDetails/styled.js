@@ -75,6 +75,8 @@ export const AddStudentButton = styled(Button)`
   border: none;
   color: ${white};
   background: ${blue};
+  display: flex;
+  align-items: center;
   &:hover {
     color: ${white};
     background: ${lightBlue3};

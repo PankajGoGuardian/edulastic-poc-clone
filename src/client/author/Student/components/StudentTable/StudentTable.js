@@ -1,11 +1,10 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
 
-import { Popconfirm, Icon, Select, message, Button, Menu, Table } from "antd";
-const Option = Select.Option;
+import { Checkbox, Icon, Select, message, Button, Menu, Table } from "antd";
+import { TypeToConfirmModal } from "@edulastic/common";
 
 import {
   StyledTableContainer,
@@ -15,30 +14,52 @@ import {
   StyledFilterInput,
   StyledAddFilterButton,
   StyledSchoolSearch,
-  StyledActionDropDown
+  StyledActionDropDown,
+  StyledClassName
 } from "./styled";
 
-import AddStudentModal from "./AddStudentModal/AddStudentModal";
+import AddStudentModal from "../../../ManageClass/components/ClassDetails/AddStudent/AddStudentModal";
 import EditStudentModal from "./EditStudentModal/EditStudentModal";
 import InviteMultipleStudentModal from "./InviteMultipleStudentModal/InviteMultipleStudentModal";
 import StudentsDetailsModal from "./StudentsDetailsModal/StudentsDetailsModal";
+import AddStudentsToOtherClass from "./AddStudentToOtherClass";
 
 import {
-  receiveStudentsListAction,
-  updateStudentAction,
-  deleteStudentAction,
-  setSearchNameAction,
-  setFiltersAction,
   addMultiStudentsRequestAction,
-  setStudentsDetailsModalVisibleAction
+  setStudentsDetailsModalVisibleAction,
+  getAddStudentsToOtherClassSelector,
+  setAddStudentsToOtherClassVisiblityAction,
+  addStudentsToOtherClassAction,
+  fetchClassDetailsUsingCodeAction
 } from "../../ducks";
 
 import { receiveClassListAction } from "../../../Classes/ducks";
 
-import { getStudentsListSelector, createStudentAction } from "../../ducks";
-import { receiveSchoolsAction, getSchoolsSelector } from "../../../Schools/ducks";
+import {
+  receiveAdminDataAction,
+  createAdminUserAction,
+  updateAdminUserAction,
+  deleteAdminUserAction,
+  setSearchNameAction,
+  getAdminUsersDataSelector,
+  getShowActiveUsersSelector,
+  setShowActiveUsersAction,
+  getPageNoSelector,
+  setPageNoAction,
+  getFiltersSelector,
+  changeFilterColumnAction,
+  changeFilterTypeAction,
+  changeFilterValueAction,
+  addFilterAction,
+  removeFilterAction,
+  setRoleAction
+} from "../../../SchoolAdmin/ducks";
+
+import { receiveSchoolsAction } from "../../../Schools/ducks";
 
 import { getUserOrgId } from "../../../src/selectors/user";
+
+const { Option } = Select;
 
 function compareByAlph(a, b) {
   if (a > b) {
@@ -50,73 +71,68 @@ function compareByAlph(a, b) {
   return 0;
 }
 
-class StudentTable extends React.Component {
+class StudentTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataSource: [],
       selectedRowKeys: [],
       addStudentModalVisible: false,
       editStudentModaVisible: false,
       inviteStudentModalVisible: false,
-      editStudentKey: -1,
-      filters: {
-        column: "",
-        value: "",
-        text: ""
-      },
-      filterAdded: false
+      editStudentKey: "",
+      selectedAdminsForDeactivate: [],
+      deactivateAdminModalVisible: false
     };
     this.columns = [
       {
-        title: "First Name",
-        dataIndex: "firstName",
-        editable: true,
+        title: "Name",
+        render: (_, { _source: { firstName, lastName } = {} }) => (
+          <span>
+            {firstName} {lastName}
+          </span>
+        ),
         sorter: (a, b) => compareByAlph(a.firstName, b.secondName)
       },
       {
-        title: "Last Name",
-        dataIndex: "lastName",
-        editable: true,
-        sorter: (a, b) => compareByAlph(a.lastName, b.lastName)
-      },
-      {
-        title: "Email",
-        dataIndex: "email",
-        editable: true,
+        title: "Username",
+        dataIndex: "_source.email",
         sorter: (a, b) => compareByAlph(a.email, b.email)
       },
       {
-        dataIndex: "operation",
-        render: (text, record) => {
-          return (
-            <React.Fragment>
-              <StyledTableButton onClick={() => this.onEditStudent(record.key)}>
-                <Icon type="edit" theme="twoTone" />
-              </StyledTableButton>
-              <Popconfirm title="Sure to delete?" onConfirm={() => this.handleDelete(record.key)}>
-                <StyledTableButton>
-                  <Icon type="delete" theme="twoTone" />
-                </StyledTableButton>
-              </Popconfirm>
-            </React.Fragment>
-          );
-        }
+        title: "SSO",
+        dataIndex: "_source.sso",
+        render: (sso = "N/A") => sso
+      },
+      {
+        title: "School",
+        dataIndex: "_source.institutionDetails",
+        render: (schools = []) => schools.map(school => school.name)
+      },
+      {
+        title: "Classes",
+        dataIndex: "classCount"
+      },
+      {
+        dataIndex: "_id",
+        render: id => [
+          <StyledTableButton key={`${id}0`} onClick={() => this.onEditStudent(id)}>
+            <Icon type="edit" theme="twoTone" />
+          </StyledTableButton>,
+          <StyledTableButton key={`${id}1`} onClick={() => this.handleDeactivateAdmin(id)}>
+            <Icon type="delete" theme="twoTone" />
+          </StyledTableButton>
+        ]
       }
     ];
   }
 
   componentDidMount() {
-    const { loadSchoolsData, userOrgId, loadStudentsListData, loadClassList } = this.props;
+    const { loadClassList, loadSchoolsData, loadAdminData, setRole, userOrgId } = this.props;
+    setRole("student");
+    loadAdminData();
     loadSchoolsData({
       districtId: userOrgId
     });
-    loadStudentsListData({
-      districtId: userOrgId,
-      role: "student",
-      limit: 10000 // TODO: Remove limit after pagination done properly
-    });
-
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -129,15 +145,21 @@ class StudentTable extends React.Component {
     });
   }
 
-  static getDerivedStateFromProps(nextProps, prevState) {
-    if (nextProps.studentsList.length === undefined) {
-      return {
-        dataSource: []
-      };
-    } else {
-      return {
-        dataSource: nextProps.studentsList
-      };
+  static getDerivedStateFromProps(nextProps, state) {
+    const {
+      adminUsersData: { result }
+    } = nextProps;
+    return {
+      selectedRowKeys: state.selectedRowKeys.filter(rowKey => !!result[rowKey])
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { loadAdminData, showActiveUsers, pageNo } = this.props;
+    // here when the showActiveUsers checkbox is toggled, or the page number changes,
+    // an api call is fired to get the data
+    if (showActiveUsers !== prevProps.showActiveUsers || pageNo !== prevProps.pageNo) {
+      loadAdminData();
     }
   }
 
@@ -148,14 +170,20 @@ class StudentTable extends React.Component {
     });
   };
 
-  handleDelete = key => {
-    const data = [...this.state.dataSource];
-    const { userOrgId } = this.props;
+  handleDeactivateAdmin = id => {
+    this.setState({
+      selectedAdminsForDeactivate: [id],
+      deactivateAdminModalVisible: true
+    });
+  };
 
-    const selectedStudents = data.filter(item => item.key == key);
-
-    const { deleteStudents } = this.props;
-    deleteStudents([{ userId: selectedStudents[0]._id, districtId: userOrgId }]);
+  confirmDeactivate = () => {
+    const { deleteAdminUser } = this.props;
+    const { selectedAdminsForDeactivate } = this.state;
+    deleteAdminUser({ userIds: selectedAdminsForDeactivate, role: "student" });
+    this.setState({
+      deactivateAdminModalVisible: false
+    });
   };
 
   onSelectChange = selectedRowKeys => {
@@ -168,118 +196,55 @@ class StudentTable extends React.Component {
     });
   };
 
-  changeFilterColumn = value => {
-    const filtersData = this.state.filters;
-    filtersData.column = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterValue = value => {
-    const filtersData = this.state.filters;
-    filtersData.value = value;
-    this.setState({ filters: filtersData });
-  };
-
-  changeFilterText = e => {
-    const filtersData = this.state.filters;
-    filtersData.text = e.target.value;
-    this.setState({ filters: filtersData });
-  };
-
-  addFilter = e => {
-    const { filters } = this.state;
-    const { setFilters } = this.props;
-    this.setState({ filterAdded: true });
-    setFilters(filters);
-  };
-
-  removeFilter = e => {
-    const filtersData = {
-      column: "",
-      value: "",
-      text: ""
-    };
-
-    this.setState({
-      filters: filtersData,
-      filterAdded: false
-    });
-    const { setFilters } = this.props;
-    setFilters(filtersData);
-  };
-
   changeActionMode = e => {
     const { selectedRowKeys } = this.state;
+    const { setAddStudentsToOtherClassVisiblity } = this.props;
     if (e.key === "add student") {
       this.setState({ addStudentModalVisible: true });
     }
     if (e.key === "edit user") {
-      if (selectedRowKeys.length == 0) {
+      if (selectedRowKeys.length === 0) {
         message.error("Please select user to edit.");
-      } else if (selectedRowKeys.length == 1) {
+      } else if (selectedRowKeys.length === 1) {
         this.onEditStudent(selectedRowKeys[0]);
       } else if (selectedRowKeys.length > 1) {
         message.error("Please select single user to edit.");
       }
     } else if (e.key === "deactivate user") {
       if (selectedRowKeys.length > 0) {
-        const data = [...this.state.dataSource];
-        const { userOrgId } = this.props;
-
-        const selectedStudents = [];
-        for (let i = 0; i < selectedRowKeys.length; i++) {
-          const matchedRow = data.filter(row => (row.key = selectedRowKeys[i]));
-          if (matchedRow.length > 0) selectedStudents.push({ userId: matchedRow[0]._id, districtId: userOrgId });
-        }
-        const { deleteStudents } = this.props;
-        deleteStudents(selectedStudents);
+        this.setState({
+          selectedAdminsForDeactivate: selectedRowKeys,
+          deactivateAdminModalVisible: true
+        });
       } else {
         message.error("Please select users to delete.");
       }
-    } else if (e.key === "add students to another class") {
+    } else if (e.key === "addStudentsToAnotherClass") {
+      if (selectedRowKeys.length) {
+        setAddStudentsToOtherClassVisiblity(true);
+      } else {
+        message.error("Please select atleast 1 user");
+      }
     }
   };
 
-  addStudent = addStudentData => {
-    const { userOrgId, createStudent } = this.props;
-    addStudentData.role = "student";
-    addStudentData.districtId = userOrgId;
-    createStudent(addStudentData);
+  addStudent = ({ fullName, confirmPwd, ...rest }) => {
+    const { userOrgId: districtId, createAdminUser } = this.props;
+    const [firstName, lastName] = fullName.split(" ");
+    const data = {
+      role: "student",
+      districtId,
+      firstName,
+      lastName,
+      ...rest
+    };
+    createAdminUser(data);
     this.setState({ addStudentModalVisible: false });
   };
 
   closeAddStudentModal = () => {
     this.setState({
       addStudentModalVisible: false
-    });
-  };
-
-  updateStudent = updatedStudentData => {
-    const newData = [...this.state.dataSource];
-    const index = newData.findIndex(item => updatedStudentData.key === item.key);
-    delete updatedStudentData.key;
-    if (index > -1) {
-      const item = newData[index];
-      newData.splice(index, 1, {
-        ...item,
-        ...updatedStudentData
-      });
-      this.setState({ dataSource: newData });
-    } else {
-      newData.push(updatedStudentData);
-      this.setState({ dataSource: newData });
-    }
-    this.setState({
-      isChangeState: true,
-      editStudentModaVisible: false
-    });
-
-    const { updateStudent, userOrgId } = this.props;
-    updateStudent({
-      userId: newData[index]._id,
-      data: Object.assign(updatedStudentData, {
-        districtId: userOrgId
-      })
     });
   };
 
@@ -319,21 +284,14 @@ class StudentTable extends React.Component {
   };
 
   render() {
-    const columns = this.columns.map(col => {
-      return {
-        ...col
-      };
-    });
-
     const {
-      dataSource,
       selectedRowKeys,
       addStudentModalVisible,
       editStudentModaVisible,
       inviteStudentModalVisible,
       editStudentKey,
-      filters,
-      filterAdded
+      deactivateAdminModalVisible,
+      selectedAdminsForDeactivate
     } = this.state;
 
     const rowSelection = {
@@ -341,20 +299,40 @@ class StudentTable extends React.Component {
       onChange: this.onSelectChange
     };
 
-    const { schoolsData, classList, studentDetailsModalVisible } = this.props;
-    const selectedStudents = dataSource.filter(item => item.key == editStudentKey);
+    const {
+      adminUsersData: { result = {}, totalUsers },
+      userOrgId,
+      setShowActiveUsers,
+      showActiveUsers,
+      updateAdminUser,
+      pageNo,
+      setPageNo,
+      filters,
+      changeFilterColumn,
+      changeFilterType,
+      changeFilterValue,
+      loadAdminData,
+      addFilter,
+      removeFilter,
+      // schoolsData,
+      // classList,
+      studentDetailsModalVisible,
+      addStudentsToOtherClassData,
+      setAddStudentsToOtherClassVisiblity,
+      putStudentsToOtherClass,
+      fetchClassDetailsUsingCode
+    } = this.props;
 
     const actionMenu = (
       <Menu onClick={this.changeActionMode}>
         <Menu.Item key="add student">Add Student</Menu.Item>
         <Menu.Item key="edit user">Update Selected User</Menu.Item>
         <Menu.Item key="deactivate user">Deactivate Selected User(s)</Menu.Item>
-        <Menu.Item key="add student to another class">Add student(s) to another class</Menu.Item>
+        <Menu.Item key="addStudentsToAnotherClass">Add student(s) to another class</Menu.Item>
       </Menu>
     );
 
-    const isFilterTextDisable = filters.column === "" || filters.value === "";
-    const isAddFilterDisable = filters.column === "" || filters.value === "" || filters.text === "";
+    const filterKeysArray = Object.keys(filters);
 
     return (
       <StyledTableContainer>
@@ -370,61 +348,120 @@ class StudentTable extends React.Component {
             />
           )}
           <StyledSchoolSearch placeholder="Search by name" onSearch={this.searchByName} />
-
-          <StyledActionDropDown overlay={actionMenu}>
+          <Checkbox checked={showActiveUsers} onChange={evt => setShowActiveUsers(evt.target.checked)}>
+            Show current users only
+          </Checkbox>
+          <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
             <Button>
               Actions <Icon type="down" />
             </Button>
           </StyledActionDropDown>
         </StyledControlDiv>
-        <StyledControlDiv>
-          <StyledFilterSelect placeholder="Select a column" onChange={this.changeFilterColumn} value={filters.column}>
-            <Option value="">Select a column</Option>
-            <Option value="firstName">Frist Name</Option>
-            <Option value="lastName">Last Name</Option>
-            <Option value="email">Email</Option>
-          </StyledFilterSelect>
-          <StyledFilterSelect placeholder="Select a value" onChange={this.changeFilterValue} value={filters.value}>
-            <Option value="">Select a value</Option>
-            <Option value="equals">Equals</Option>
-            <Option value="contains">Contains</Option>
-          </StyledFilterSelect>
-          <StyledFilterInput
-            placeholder="Enter text"
-            onChange={this.changeFilterText}
-            value={filters.text}
-            disabled={isFilterTextDisable}
-          />
-          <StyledAddFilterButton type="primary" onClick={this.addFilter} disabled={isAddFilterDisable}>
-            + Add Filter
-          </StyledAddFilterButton>
-          {filterAdded && (
-            <StyledAddFilterButton type="primary" onClick={this.removeFilter}>
-              - Remove Filter
-            </StyledAddFilterButton>
-          )}
-        </StyledControlDiv>
-        <Table rowSelection={rowSelection} dataSource={dataSource} columns={columns} />
-        {editStudentModaVisible && editStudentKey >= 0 && (
+        {filterKeysArray.map(filterKey => {
+          const { type, value } = filters[filterKey];
+          return (
+            <StyledControlDiv key={filterKey}>
+              <StyledFilterSelect
+                placeholder="Select a column"
+                onChange={filterColumn => changeFilterColumn({ prevKey: filterKey, newKey: filterColumn })}
+                value={filterKey}
+              >
+                <Option value="other">Select a column</Option>
+                <Option value="username">Username</Option>
+                <Option value="email">Email</Option>
+              </StyledFilterSelect>
+              <StyledFilterSelect
+                placeholder="Select a value"
+                onChange={filterType => changeFilterType({ key: filterKey, value: filterType })}
+                value={type}
+              >
+                <Option value="">Select a value</Option>
+                <Option value="eq">Equals</Option>
+                <Option value="cont">Contains</Option>
+              </StyledFilterSelect>
+              <StyledFilterInput
+                placeholder="Enter text"
+                onChange={({ target }) => changeFilterValue({ key: filterKey, value: target.value })}
+                value={value}
+                disabled={!type}
+                onSearch={loadAdminData}
+              />
+              <StyledAddFilterButton type="primary" onClick={addFilter} disabled={!!filters.other}>
+                + Add Filter
+              </StyledAddFilterButton>
+              <StyledAddFilterButton
+                type="primary"
+                disabled={filterKey === "other" || filterKeysArray.length === 1}
+                onClick={() => {
+                  removeFilter(filterKey);
+                  loadAdminData();
+                }}
+              >
+                - Remove Filter
+              </StyledAddFilterButton>
+            </StyledControlDiv>
+          );
+        })}
+        <Table
+          rowKey={record => record._id}
+          rowSelection={rowSelection}
+          dataSource={Object.values(result)}
+          columns={this.columns}
+          pagination={{
+            current: pageNo,
+            total: totalUsers,
+            pageSize: 25,
+            onChange: page => setPageNo(page)
+          }}
+        />
+        {editStudentModaVisible && (
           <EditStudentModal
-            studentData={selectedStudents[0]}
+            userOrgId={userOrgId}
+            studentData={result[editStudentKey]}
             modalVisible={editStudentModaVisible}
-            saveStudent={this.updateStudent}
+            saveStudent={updateAdminUser}
             closeModal={this.closeEditStudentModal}
           />
         )}
         {addStudentModalVisible && (
           <AddStudentModal
-            modalVisible={addStudentModalVisible}
-            addStudent={this.addStudent}
-            closeModal={this.closeAddStudentModal}
-            schoolsData={schoolsData}
-            classData={classList}
+            handleAdd={this.addStudent}
+            handleCancel={this.closeAddStudentModal}
+            isOpen={addStudentModalVisible}
+            submitted={false}
           />
         )}
         {studentDetailsModalVisible && (
           <StudentsDetailsModal modalVisible={studentDetailsModalVisible} closeModal={this.closeStudentsDetailModal} />
         )}
+        {deactivateAdminModalVisible && (
+          <TypeToConfirmModal
+            modalVisible={deactivateAdminModalVisible}
+            title="Deactivate"
+            handleOnOkClick={this.confirmDeactivate}
+            wordToBeTyped="DEACTIVATE"
+            primaryLabel="Are you sure you want to deactivate the following student(s)?"
+            secondaryLabel={selectedAdminsForDeactivate.map(id => {
+              const { _source: { firstName, lastName } = {} } = result[id];
+              return (
+                <StyledClassName key={id}>
+                  {firstName} {lastName}
+                </StyledClassName>
+              );
+            })}
+            closeModal={() =>
+              this.setState({
+                deactivateAdminModalVisible: false
+              })
+            }
+          />
+        )}
+        <AddStudentsToOtherClass
+          {...addStudentsToOtherClassData}
+          handleSubmit={classCode => putStudentsToOtherClass({ classCode, userDetails: selectedRowKeys })}
+          onCloseModal={() => setAddStudentsToOtherClassVisiblity(false)}
+          fetchClassDetailsUsingCode={fetchClassDetailsUsingCode}
+        />
       </StyledTableContainer>
     );
   }
@@ -434,37 +471,43 @@ const enhance = compose(
   connect(
     state => ({
       userOrgId: getUserOrgId(state),
-      studentsList: getStudentsListSelector(state),
-      schoolsData: getSchoolsSelector(state),
-      classList: get(state, ["classesReducer", "data"], []),
-      studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false)
+      // schoolsData: getSchoolsSelector(state),
+      // classList: get(state, ["classesReducer", "data"], []),
+      studentDetailsModalVisible: get(state, ["studentReducer", "studentDetailsModalVisible"], false),
+      adminUsersData: getAdminUsersDataSelector(state),
+      showActiveUsers: getShowActiveUsersSelector(state),
+      pageNo: getPageNoSelector(state),
+      filters: getFiltersSelector(state),
+      addStudentsToOtherClassData: getAddStudentsToOtherClassSelector(state)
     }),
     {
-      createStudent: createStudentAction,
-      updateStudent: updateStudentAction,
-      deleteStudents: deleteStudentAction,
-      loadStudentsListData: receiveStudentsListAction,
-      setSearchName: setSearchNameAction,
-      setFilters: setFiltersAction,
       loadSchoolsData: receiveSchoolsAction,
       loadClassList: receiveClassListAction,
       addMultiStudents: addMultiStudentsRequestAction,
-      setStudentsDetailsModalVisible: setStudentsDetailsModalVisibleAction
+      setStudentsDetailsModalVisible: setStudentsDetailsModalVisibleAction,
+      createAdminUser: createAdminUserAction,
+      updateAdminUser: updateAdminUserAction,
+      deleteAdminUser: deleteAdminUserAction,
+      loadAdminData: receiveAdminDataAction,
+      setSearchName: setSearchNameAction,
+      setShowActiveUsers: setShowActiveUsersAction,
+      setPageNo: setPageNoAction,
+      /**
+       * Action to set the filter Column.
+       * @param {string} str1 The previous value held by the select.
+       * @param {string} str2 The new value that is to be set in the select
+       */
+      changeFilterColumn: changeFilterColumnAction,
+      changeFilterType: changeFilterTypeAction,
+      changeFilterValue: changeFilterValueAction,
+      addFilter: addFilterAction,
+      removeFilter: removeFilterAction,
+      setRole: setRoleAction,
+      setAddStudentsToOtherClassVisiblity: setAddStudentsToOtherClassVisiblityAction,
+      putStudentsToOtherClass: addStudentsToOtherClassAction,
+      fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction
     }
   )
 );
 
 export default enhance(StudentTable);
-
-StudentTable.propTypes = {
-  studentsList: PropTypes.array.isRequired,
-  loadStudentsListData: PropTypes.func.isRequired,
-  updateStudent: PropTypes.func.isRequired,
-  deleteStudents: PropTypes.func.isRequired,
-  setSearchName: PropTypes.func.isRequired,
-  setFilters: PropTypes.func.isRequired,
-  userOrgId: PropTypes.string.isRequired,
-  loadSchoolsData: PropTypes.func.isRequired,
-  schoolsData: PropTypes.array.isRequired,
-  loadClassList: PropTypes.func.isRequired
-};

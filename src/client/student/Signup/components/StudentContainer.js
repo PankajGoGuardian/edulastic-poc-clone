@@ -18,6 +18,11 @@ import {
 } from "@edulastic/colors";
 import { connect } from "react-redux";
 import { signupAction } from "../../Login/ducks";
+import {
+  getDistrictLoginUrl,
+  getDistrictTeacherSignupUrl,
+  isDistrictPolicyAllowed
+} from "../../../common/utils/helpers";
 
 import studentBg from "../../assets/bg-student.png";
 import hashIcon from "../../assets/hashtag-icon.svg";
@@ -58,7 +63,6 @@ class StudentSignup extends React.Component {
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
       if (!err) {
         if (method === GOOGLE) {
-          console.log(classCode);
         } else {
           signup({
             password,
@@ -86,7 +90,11 @@ class StudentSignup extends React.Component {
   renderGeneralFormFields = () => {
     const {
       form: { getFieldDecorator },
-      t
+      t,
+      isSignupUsingDaURL,
+      generalSettings,
+      districtPolicy,
+      districtShortName
     } = this.props;
     return (
       <>
@@ -139,18 +147,22 @@ class StudentSignup extends React.Component {
   };
 
   renderFormHeader = () => {
-    const { t } = this.props;
+    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName } = this.props;
     return (
       <FormHead>
         <h3 align="center">
           <b>{t("component.signup.signupboxheading")}</b>
         </h3>
-        <ThirdPartyLoginBtn onClick={this.signupMethod(GOOGLE)} span={20} offset={2}>
-          <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
-        </ThirdPartyLoginBtn>
-        <ThirdPartyLoginBtn onClick={this.signupMethod(OFFICE)} span={20} offset={2}>
-          <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
-        </ThirdPartyLoginBtn>
+        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") || !isSignupUsingDaURL ? (
+          <ThirdPartyLoginBtn onClick={this.signupMethod(GOOGLE)} span={20} offset={2}>
+            <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
+          </ThirdPartyLoginBtn>
+        ) : null}
+        {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") || !isSignupUsingDaURL ? (
+          <ThirdPartyLoginBtn onClick={this.signupMethod(OFFICE)} span={20} offset={2}>
+            <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}
+          </ThirdPartyLoginBtn>
+        ) : null}
         <InfoBox span={20} offset={2}>
           <InfoIcon span={3}>
             <img src={lockIcon} alt="" />
@@ -164,7 +176,11 @@ class StudentSignup extends React.Component {
   renderGoogleForm = () => {
     const {
       form: { getFieldDecorator },
-      t
+      t,
+      isSignupUsingDaURL,
+      generalSettings,
+      districtPolicy,
+      districtShortName
     } = this.props;
     return (
       <FormItem {...formItemLayout}>
@@ -181,19 +197,25 @@ class StudentSignup extends React.Component {
   };
 
   render() {
-    const { t } = this.props;
+    const { t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName } = this.props;
     const { method } = this.state;
 
     return (
       <div>
-        <RegistrationWrapper>
+        <RegistrationWrapper
+          image={
+            generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : studentBg
+          }
+        >
           <RegistrationHeader type="flex" align="middle">
             <Col span={12}>
               <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to="/login">{t("common.signinbtn")}</Link>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>
+                {t("common.signinbtn")}
+              </Link>
             </Col>
           </RegistrationHeader>
           <RegistrationBody type="flex" align="middle">
@@ -203,35 +225,48 @@ class StudentSignup extends React.Component {
                   <h1>
                     {t("common.edulastictext")} <br /> {t("component.signup.student.forstudent")}
                   </h1>
-                  <LinkDiv>
-                    <Link to="/signup">{t("component.signup.signupasteacher")}</Link>
-                  </LinkDiv>
-                  <LinkDiv>
-                    <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
-                  </LinkDiv>
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
+                  !isSignupUsingDaURL ? (
+                    <LinkDiv>
+                      <Link to={isSignupUsingDaURL ? getDistrictTeacherSignupUrl(districtShortName) : "/signup"}>
+                        {t("component.signup.signupasteacher")}
+                      </Link>
+                    </LinkDiv>
+                  ) : null}
+
+                  {!isSignupUsingDaURL ? (
+                    <LinkDiv>
+                      <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
+                    </LinkDiv>
+                  ) : null}
                 </BannerText>
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
                   <FormWrapper>
                     {method !== GOOGLE && method !== OFFICE && this.renderFormHeader()}
-                    <FormBody>
-                      <Col span={20} offset={2}>
-                        <h5 align="center">
-                          {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
-                          {method === GOOGLE && t("component.signup.formboxheadinggoole")}
-                        </h5>
-                        {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
-                        <Form onSubmit={this.handleSubmit}>
-                          {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
-                          {method === GOOGLE && this.renderGoogleForm()}
-                          <FormItem>
-                            <RegisterButton data-cy="signup" type="primary" htmlType="submit">
-                              {method !== GOOGLE && method !== OFFICE && t("component.signup.student.signupstudentbtn")}
-                              {method === GOOGLE && t("component.signup.student.signupentercode")}
-                            </RegisterButton>
-                          </FormItem>
-                        </Form>
-                      </Col>
-                    </FormBody>
+                    {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                    !isSignupUsingDaURL ? (
+                      <FormBody>
+                        <Col span={20} offset={2}>
+                          <h5 align="center">
+                            {method !== GOOGLE && method !== OFFICE && t("component.signup.formboxheading")}
+                            {method === GOOGLE && t("component.signup.formboxheadinggoole")}
+                          </h5>
+                          {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
+                          <Form onSubmit={this.handleSubmit}>
+                            {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
+                            {method === GOOGLE && this.renderGoogleForm()}
+                            <FormItem>
+                              <RegisterButton data-cy="signup" type="primary" htmlType="submit">
+                                {method !== GOOGLE &&
+                                  method !== OFFICE &&
+                                  t("component.signup.student.signupstudentbtn")}
+                                {method === GOOGLE && t("component.signup.student.signupentercode")}
+                              </RegisterButton>
+                            </FormItem>
+                          </Form>
+                        </Col>
+                      </FormBody>
+                    ) : null}
                   </FormWrapper>
                 </Col>
               </Row>
@@ -262,7 +297,7 @@ const enhance = compose(
 export default enhance(SignupForm);
 
 const RegistrationWrapper = styled.div`
-  background: ${greyGraphstroke} url(${studentBg});
+  background: ${greyGraphstroke} url(${props => props.image});
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;

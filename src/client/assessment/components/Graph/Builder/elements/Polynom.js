@@ -38,6 +38,20 @@ function flatConfigPoints(pointsConfig) {
   }, {});
 }
 
+function create(board, polynomPoints, id = null) {
+  const newPolynom = board.$board.create("functiongraph", [makeCallback(...polynomPoints)], {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.POLYNOM],
+    label: getLabelParameters(jxgType),
+    id
+  });
+  newPolynom.type = jxgType;
+  newPolynom.addParents(polynomPoints);
+  newPolynom.ancestors = flatConfigPoints(polynomPoints);
+  handleSnap(newPolynom, Object.values(newPolynom.ancestors), board);
+  return newPolynom;
+}
+
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -54,20 +68,9 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newPolynom = board.$board.create("functiongraph", [makeCallback(...points)], {
-        ...defaultConfig,
-        ...Colors.default[CONSTANT.TOOLS.POLYNOM],
-        label: getLabelParameters(jxgType)
-      });
-      newPolynom.type = jxgType;
-      handleSnap(newPolynom, points, board);
-
-      if (newPolynom) {
-        newPolynom.addParents(points);
-        newPolynom.ancestors = flatConfigPoints(points);
-        points = [];
-        return newPolynom;
-      }
+      const newPolynom = create(board, points);
+      points = [];
+      return newPolynom;
     }
 
     points.push(newPoint);
@@ -99,7 +102,7 @@ function parseConfig(pointsConfig) {
     [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
     {
       ...defaultConfig,
-      fillColor: "transparent",
+      ...Colors.default[CONSTANT.TOOLS.POLYNOM],
       label: getLabelParameters(jxgType)
     }
   ];
@@ -115,5 +118,6 @@ export default {
   parseConfig,
   clean,
   flatConfigPoints,
-  getPoints
+  getPoints,
+  create
 };

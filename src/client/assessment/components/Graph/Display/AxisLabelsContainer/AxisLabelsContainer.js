@@ -48,18 +48,18 @@ const getColoredAnswer = answerArr => {
 };
 
 const getCompareResult = evaluation => {
-  if (!evaluation && !evaluation.evaluation) {
+  if (!evaluation) {
     return null;
   }
 
   let compareResult = null;
 
-  Object.keys(evaluation.evaluation).forEach(key => {
+  Object.keys(evaluation).forEach(key => {
     if (compareResult) {
       return;
     }
-    if (evaluation.evaluation[key].commonResult) {
-      compareResult = evaluation.evaluation[key];
+    if (evaluation[key].result) {
+      compareResult = evaluation[key];
     }
   });
 
@@ -67,7 +67,7 @@ const getCompareResult = evaluation => {
     return compareResult;
   }
 
-  return evaluation.evaluation[0];
+  return evaluation[0];
 };
 
 class AxisLabelsContainer extends PureComponent {
@@ -122,7 +122,7 @@ class AxisLabelsContainer extends PureComponent {
 
       this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true, this.setMarks);
 
-      this._graph.setMarksDeleteHandler(this.setMarks);
+      this._graph.setMarksDeleteHandler();
 
       this.setElementsToGraph();
 
@@ -162,26 +162,6 @@ class AxisLabelsContainer extends PureComponent {
     }
   };
 
-  getOptions = () => {
-    const { canvas, numberlineAxis, layout } = this.props;
-
-    return [
-      canvas,
-      numberlineAxis,
-      this.setMarks,
-      {
-        position: layout.linePosition,
-        yMax: canvas.yMax,
-        yMin: canvas.yMin
-      },
-      {
-        position: layout.pointBoxPosition,
-        yMax: canvas.yMax,
-        yMin: canvas.yMin
-      }
-    ];
-  };
-
   setElementsToGraph = (prevProps = {}) => {
     const { resourcesLoaded } = this.state;
     if (!resourcesLoaded) {
@@ -193,38 +173,29 @@ class AxisLabelsContainer extends PureComponent {
     if (checkAnswer || showAnswer) {
       if (showAnswer) {
         this._graph.removeMarksAnswers();
-        this._graph.loadMarksAnswers(
-          list,
-          ...this.getOptions(),
-          getColoredAnswer(validation ? validation.valid_response.value : [])
-        );
+        this._graph.loadMarksAnswers(list, getColoredAnswer(validation ? validation.valid_response.value : []));
       }
 
       this._graph.removeMarks();
 
       if (!this.elementsIsEmpty()) {
         let coloredElements;
-        if (evaluation && evaluation.length) {
+        if (evaluation && checkAnswer) {
           const compareResult = getCompareResult(evaluation);
           coloredElements = getColoredElems(elements, compareResult);
         } else {
-          const compareResult = getCompareResult(
-            checkAnswerMethod({
-              userResponse: elements,
-              validation
-            })
-          );
+          const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
           coloredElements = getColoredElems(elements, compareResult);
         }
 
-        this._graph.renderMarks(list, ...this.getOptions(), coloredElements);
+        this._graph.renderMarks(list, coloredElements);
       } else {
-        this._graph.renderMarks(list, ...this.getOptions(), []);
+        this._graph.renderMarks(list, []);
       }
     } else if (!isEqual(elements, this._graph.getMarks()) || this.elementsIsEmpty() || !isEqual(prevProps.list, list)) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(list, ...this.getOptions(), elements);
+      this._graph.renderMarks(list, elements);
     }
   };
 
@@ -240,7 +211,7 @@ class AxisLabelsContainer extends PureComponent {
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
       this._graph.removeMarks();
-      this._graph.renderMarks(list, ...this.getOptions(), stash[id][stashIndex[id] - 1]);
+      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] - 1]);
       setStashIndex(stashIndex[id] - 1, id);
     }
@@ -251,7 +222,7 @@ class AxisLabelsContainer extends PureComponent {
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
       this._graph.removeMarks();
-      this._graph.renderMarks(list, ...this.getOptions(), stash[id][stashIndex[id] - 1]);
+      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }

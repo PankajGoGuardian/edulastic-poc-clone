@@ -8,6 +8,7 @@ import ExpressGraderPage from "../../../framework/author/assignments/expressGrad
 import StandardBasedReportPage from "../../../framework/author/assignments/standardBasedReportPage";
 import TestLibrary from "../../../framework/author/tests/testLibraryPage";
 import BarGraph from "../../../framework/author/assignments/barGraphs";
+import Helpers from "../../../framework/util/Helpers";
 
 describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB page`, () => {
   const lcbTestData = {
@@ -19,55 +20,63 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     feedbackScoreData: [
       {
         email: "auto.lcb.student02@yopmail.com",
-        stuName: "Student02",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
+        stuName: "Student02 2nd",
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
         status: "SUBMITTED"
       }
     ],
     redirectedData: [
       {
         email: "auto.lcb.student01@yopmail.com",
-        stuName: "Student01",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
+        stuName: "Student01 1st",
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
         status: "SUBMITTED"
       }
     ],
     attemptsData: [
       {
         email: "auto.lcb.student01@yopmail.com",
-        stuName: "Student01",
-        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right" },
+        stuName: "Student01 1st",
+        attempt: { Q1: "right", Q2: "right", Q3: "right", Q4: "right", Q5: "right", Q6: "right", Q7: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student02@yopmail.com",
-        stuName: "Student02",
-        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip" },
+        stuName: "Student02 2nd",
+        attempt: { Q1: "right", Q2: "wrong", Q3: "right", Q4: "skip", Q5: "wrong", Q6: "skip", Q7: "right" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student03@yopmail.com",
-        stuName: "Student03",
-        attempt: { Q1: "wrong", Q2: "right", Q3: "right", Q4: "skip" },
+        stuName: "Student03 3rd",
+        attempt: {
+          Q1: "wrong",
+          Q2: "partialCorrect",
+          Q3: "right",
+          Q4: "skip",
+          Q5: "partialCorrect",
+          Q6: "right",
+          Q7: "skip"
+        },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student04@yopmail.com",
-        stuName: "Student04",
-        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong" },
+        stuName: "Student04 4th",
+        attempt: { Q1: "wrong", Q2: "wrong", Q3: "wrong", Q4: "wrong", Q5: "wrong", Q6: "wrong", Q7: "wrong" },
         status: "SUBMITTED"
       },
       {
         email: "auto.lcb.student05@yopmail.com",
-        stuName: "Student05",
-        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip" },
+        stuName: "Student05 5th",
+        attempt: { Q1: "right", Q2: "skip", Q3: "wrong", Q4: "skip", Q5: "right", Q6: "right", Q7: "skip" },
         status: "IN PROGRESS"
       },
       {
         email: "auto.lcb.student06@yopmail.com",
-        stuName: "Student06",
+        stuName: "Student06 6th",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "skip", Q7: "skip" }
       }
     ]
   };
@@ -129,6 +138,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
       testLibrary.header.clickOnAssign();
+      // cy.visit("/author/assignments/5d03b20e1a45d47f9752fe02");
+      // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
     });
@@ -141,22 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
       statsMap[stuName].attempt = attempt;
       statsMap[stuName].status = status;
-
-      if (status !== "NOT STARTED") {
-        cy.login("student", email);
-        assignmentPage.clickOnAssignmentButton();
-        Object.keys(attempt).forEach(queNum => {
-          const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-          const { attemptData } = questionData[queType][questionKey];
-          test.attemptQuestion(queType, attempt[queNum], attemptData);
-          test.clickOnNext();
-        });
-
-        if (status !== "IN PROGRESS") {
-          test.submitTest();
-          cy.contains("Reports").should("be.visible");
-        }
-      }
+      test.attemptAssignment(email, status, attempt, questionTypeMap);
     });
   });
 
@@ -229,7 +225,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       });
 
       it(` > verify students on bar x axis for que :: ${queNumber}`, () => {
-        bargraph.verifyXAxisTicks(submittedInprogressStudentList);
+        bargraph.verifyXAxisTicks(submittedInprogressStudentList.map(studentName => Helpers.getShortName(studentName)));
       });
     });
   });
@@ -253,8 +249,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify for student :: ${studentName}`, () => {
-          const { attempt, score, perf } = statsMap[studentName];
-          expressg.verifyScoreGrid(studentName, attempt, score, perf, questionTypeMap);
+          const { attempt, score, perfValue } = statsMap[studentName];
+          expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
         });
       });
     });
@@ -315,7 +311,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify redirect", () => {
+  describe.skip(" > verify redirect", () => {
     before("calculate redirected stats", () => {
       redirectedData.forEach(attempts => {
         const { attempt, stuName, status } = attempts;
@@ -382,24 +378,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       before(" > attempt by redirected students", () => {
         redirectedData.forEach(attempts => {
           const { attempt, email, status } = attempts;
-          if (status !== "NOT STARTED") {
-            cy.login("student", email);
-            assignmentPage.clickOnAssignmentButton();
-            Object.keys(attempt).forEach(queNum => {
-              const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-              const { attemptData } = questionData[queType][questionKey];
-              // console.log("attemptData ::", attemptData);
-              // console.log("attemptData queType ::", queType);
-              // console.log("attemptData attempt[queNum]::", attempt[queNum]);
-              test.attemptQuestion(queType, attempt[queNum], attemptData);
-              test.clickOnNext();
-            });
-
-            if (status !== "IN PROGRESS") {
-              test.submitTest();
-              cy.contains("Reports").should("be.visible");
-            }
-          }
+          test.attemptAssignment(email, status, attempt, questionTypeMap);
         });
       });
 
@@ -447,7 +426,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify score update", () => {
+  describe.skip(" > verify score update", () => {
     before("question centric view", () => {
       lcb.clickonQuestionsTab();
     });

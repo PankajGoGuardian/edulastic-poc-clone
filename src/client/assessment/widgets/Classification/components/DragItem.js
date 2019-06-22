@@ -31,6 +31,9 @@ const specSource = {
     const itemTo = monitor.getDropResult();
 
     props.onDrop(itemCurrent, itemTo);
+  },
+  canDrag(props) {
+    return props.disableResponse !== true;
   }
 };
 
@@ -56,11 +59,6 @@ const DragItem = ({
             opacity: isDragging ? 0 : 1
           }}
         >
-          {preview && valid !== undefined && (
-            <IndexBox preview={preview} valid={valid}>
-              {renderIndex + 1}
-            </IndexBox>
-          )}
           <div
             style={getStyles(
               isDragging,
@@ -78,7 +76,6 @@ const DragItem = ({
               preview && valid !== undefined
                 ? {
                     paddingRight: 15,
-                    paddingLeft: 15,
                     borderTopLeftRadius: 0,
                     borderBottomLeftRadius: 0
                   }
@@ -94,6 +91,11 @@ const DragItem = ({
               }}
             >
               {dragHandle && <i className="fa fa-arrows-alt" style={{ fontSize: 12 }} />}
+              {preview && valid !== undefined && (
+                <IndexBox preview={preview} valid={valid}>
+                  {renderIndex + 1}
+                </IndexBox>
+              )}
               <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: item }} />
               {preview && valid !== undefined && (
                 <div>

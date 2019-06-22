@@ -42,7 +42,10 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
+
         <ActionContainer printPreview={printPreview} loadStudents={loadStudents} />
+
+ 
         <StudentsList selectStudent />
       </Container>
     </>

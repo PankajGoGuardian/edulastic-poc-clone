@@ -2,6 +2,7 @@
 import { keyBy, groupBy, get } from "lodash";
 import { testActivityStatus } from "@edulastic/constants";
 import DotProp from "dot-prop";
+import produce from "immer";
 
 const getAllQids = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
@@ -16,8 +17,35 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
   return qids;
 };
 
+const alphabets = "abcdefghijklmnopqrstuvwxyz".split("");
+
 /**
- * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number}[]}
+ *
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}_testItemsData
+ * @param {string[]} testItems
+ */
+export const markQuestionLabel = (_testItemsData, testItems) => {
+  const testItemsData = keyBy(_testItemsData, "_id");
+  for (let i = 0; i < testItems.length; i++) {
+    const item = testItemsData[testItems[i]];
+    if (!(item.data && item.data.questions)) {
+      continue;
+    }
+    if (item.data.questions.length === 1) {
+      item.data.questions[0].qLabel = `Q${i + 1}`;
+      item.data.questions[0].barLabel = `Q${i + 1}`;
+    } else {
+      item.data.questions = item.data.questions.map((q, qIndex) => ({
+        ...q,
+        qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+        barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+      }));
+    }
+  }
+};
+
+/**
+ * @returns {{id:string,weight:number,disabled:boolean,qids?:string[],testItemId?:string,maxScore?: number,qLabel:string,barLabel:string}[]}
  */
 const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
   let qids = [];
@@ -34,14 +62,61 @@ const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
-            qids: questions.map(x => x.id)
+            qids: questions.map(x => x.id),
+            qLabel: x.qLabel,
+            barLabel: x.barLabel
           }))
       ];
     } else {
-      qids = [...qids, ...questions.map(x => ({ id: x.id, weight: 1, qids: [x.id] }))];
+      qids = [
+        ...qids,
+        ...questions.map(x => ({
+          id: x.id,
+          weight: 1,
+          qids: [x.id],
+          qLabel: x.qLabel,
+          barLabel: x.barLabel
+        }))
+      ];
     }
   }
   return qids;
+};
+
+/**
+ *
+ * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]} testItemsData
+ * @param {string[]} testItems
+ * @returns {{[qid:string]:{qLabel:string, barLabel: string } }}
+ */
+export const getQuestionLabels = (testItemsData, testItems) => {
+  /**
+   * @type {{[qid:string]:{qLabel:string, barLabel: string }  }}
+   */
+  const result = {};
+  const testItemsdataKeyed = keyBy(testItemsData, "_id");
+  for (let i = 0; i < testItems.length; i++) {
+    const item = testItemsdataKeyed[testItems[i]];
+    if (!item) {
+      continue;
+    }
+    if (!(item.data && item.data.questions)) {
+      continue;
+    }
+    if (item.data.questions.length === 1) {
+      result[item.data.questions[0].id] = { qLabel: `Q${i + 1}`, barLabel: `Q${i + 1}` };
+    } else {
+      for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
+        const q = item.data.questions[qIndex];
+        result[q.id] = {
+          qLabel: `Q${i + 1}.${alphabets[qIndex]}`,
+          barLabel: item.itemLevelScoring ? `Q${i + 1}` : `Q${i + 1}.${alphabets[qIndex]}`
+        };
+      }
+    }
+  }
+
+  return result;
 };
 
 /**
@@ -140,17 +215,23 @@ export const transformGradeBookResponse = ({
     notStarted: true,
     disabled: x.disabled,
     testItemId: x.testItemId,
-    qids: x.qids
+    qids: x.qids,
+    qLabel: x.qLabel,
+    barLabel: x.barLabel
   }));
 
   return studentNames
-    .map(({ _id: studentId, firstName: studentName, lastName, email }) => {
+    .map(({ _id: studentId, firstName: studentName, lastName, email, fakeFirstName, fakeLastName, icon }) => {
       const fullName = `${studentName}${lastName ? ` ${lastName}` : ""}`;
+      const fakeName = `${fakeFirstName} ${fakeLastName}`;
       if (!studentTestActivities[studentId]) {
         return {
           studentId,
           studentName: fullName,
           email,
+          fakeName,
+          icon,
+          color: fakeFirstName,
           present: true,
           status: "notStarted",
           maxScore: testMaxScore,
@@ -158,11 +239,14 @@ export const transformGradeBookResponse = ({
         };
       }
       const testActivity = studentTestActivities[studentId];
-      if (testActivity.redirect) {
+      if (testActivity.redirected) {
         return {
           studentId,
           studentName: fullName,
           email,
+          fakeName,
+          icon,
+          color: fakeFirstName,
           present: true,
           status: "redirected",
           redirected: true,
@@ -173,8 +257,9 @@ export const transformGradeBookResponse = ({
       //TODO: for now always present
       const present = true;
       //TODO: no graded status now. using submitted as a substitute for graded
-      const graded = testActivity.graded === "GRADED";
+      const graded = testActivity.graded ? testActivity.graded === "GRADED" : undefined;
       const submitted = testActivity.status == testActivityStatus.SUBMITTED;
+      const absent = testActivity.status === testActivityStatus.ABSENT;
       const redirected = testActivity.redirected;
       const testActivityId = testActivity._id;
 
@@ -184,57 +269,66 @@ export const transformGradeBookResponse = ({
 
       const questionActivitiesIndexed = (questionActivitiesRaw && keyBy(questionActivitiesRaw, x => x.qid)) || {};
 
-      const questionActivities = qids.map(({ id: el, weight, qids: _qids, disabled, testItemId, maxScore }, index) => {
-        const _id = el;
+      const questionActivities = qids.map(
+        ({ id: el, weight, qids: _qids, disabled, testItemId, maxScore, barLabel, qLabel }, index) => {
+          const _id = el;
 
-        if (!questionActivitiesIndexed[el]) {
-          return { _id, notStarted: true, weight, disabled, testItemId };
-        }
-        let {
-          skipped,
-          correct,
-          partiallyCorrect: partialCorrect,
-          timeSpent,
-          score,
-          graded
-        } = questionActivitiesIndexed[el];
-        const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
-        if (score > 0 && skipped) {
-          skipped = false;
-        }
-        if (_qids && _qids.length) {
-          correct = score === questionMaxScore && score > 0;
-          if (!correct) {
-            partialCorrect = score > 0 && score <= questionMaxScore;
+          if (!questionActivitiesIndexed[el]) {
+            return { _id, notStarted: true, weight, disabled, testItemId, barLabel, qLabel };
           }
-        }
+          let {
+            skipped,
+            correct,
+            partiallyCorrect: partialCorrect,
+            timeSpent,
+            score,
+            graded
+          } = questionActivitiesIndexed[el];
+          const questionMaxScore = maxScore ? maxScore : getMaxScoreOfQid(_id, testItemsData);
+          if (score > 0 && skipped) {
+            skipped = false;
+          }
+          if (_qids && _qids.length) {
+            correct = score === questionMaxScore && score > 0;
+            if (!correct) {
+              partialCorrect = score > 0 && score <= questionMaxScore;
+            }
+          }
 
-        return {
-          _id,
-          weight,
-          skipped,
-          correct,
-          partialCorrect,
-          score,
-          maxScore: questionMaxScore,
-          timeSpent,
-          disabled,
-          testItemId,
-          qids: _qids,
-          testActivityId,
-          graded
-        };
-      });
+          return {
+            _id,
+            weight,
+            skipped,
+            correct,
+            partialCorrect,
+            score,
+            maxScore: questionMaxScore,
+            timeSpent,
+            disabled,
+            testItemId,
+            qids: _qids,
+            testActivityId,
+            graded,
+            qLabel,
+            barLabel
+          };
+        }
+      );
 
       let displayStatus = "inProgress";
       if (submitted) {
         displayStatus = "submitted";
+      } else if (absent) {
+        displayStatus = "absent";
       }
 
       return {
         studentId,
         studentName: fullName,
         email,
+        fakeName,
+        icon,
+        color: fakeFirstName,
         status: displayStatus,
         present,
         check: false,

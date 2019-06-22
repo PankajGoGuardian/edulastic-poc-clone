@@ -62,4 +62,9 @@ export const StyledSelect = styled(Select)`
   @media (max-width: 1000px) {
     display: none;
   }
+  .ant-select-selection.ant-select-selection--single,
+  .ant-select-arrow {
+    color: #000;
+    font-weight: bold;
+  }
 `;

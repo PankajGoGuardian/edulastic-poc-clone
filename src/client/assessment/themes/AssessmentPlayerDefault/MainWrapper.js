@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 const MainWrapper = styled.section`
-  width: 1008px;
+  width: 1526px;
   background-color: ${props => props.theme.mainContentBgColor};
   color: ${props => props.theme.mainContentTextColor};
   min-height: 100vh;

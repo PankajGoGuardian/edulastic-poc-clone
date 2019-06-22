@@ -114,12 +114,21 @@ class LayoutsComponent extends Component {
         <FontSizeOption
           onChange={val => changeUIStyle("fontsize", val)}
           value={get(item, "ui_style.fontsize", "normal")}
-        />,
-        <GridlinesOption
-          onChange={val => changeUIStyle(SETTING_NAME_SHOW_GRIDLINES, val)}
-          value={get(item, `ui_style.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
         />
       ];
+
+      if (
+        chart_type === questionType.HISTOGRAM ||
+        chart_type === questionType.BAR_CHART ||
+        chart_type === questionType.LINE_CHART
+      ) {
+        settings.push(
+          <GridlinesOption
+            onChange={val => changeUIStyle(SETTING_NAME_SHOW_GRIDLINES, val)}
+            value={get(item, `ui_style.${SETTING_NAME_SHOW_GRIDLINES}`, SHOW_GRIDLINES_BOTH)}
+          />
+        );
+      }
 
       if (chart_type === questionType.LINE_CHART) {
         settings.push(
@@ -128,7 +137,9 @@ class LayoutsComponent extends Component {
             value={get(item, "ui_style.pointStyle", "dot")}
           />
         );
-      } else if (chart_type === questionType.HISTOGRAM) {
+      }
+
+      if (chart_type === questionType.HISTOGRAM) {
         settings.push(
           <MulticolorBarsOption
             onChange={val => changeUIStyle("multicolorBars", val)}

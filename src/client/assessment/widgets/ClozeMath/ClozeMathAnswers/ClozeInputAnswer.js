@@ -26,14 +26,16 @@ const AnswerContainer = styled.div`
 `;
 
 class ClozeInputAnswer extends Component {
-  onChangeHandler = (value, inputIndex) => {
+  onChangeHandler = (value, answerId) => {
     const { onChange: changeAnswers } = this.props;
-    changeAnswers({ value, inputIndex });
+    changeAnswers({ value, answerId });
   };
 
   render() {
-    const { answer } = this.props;
-
+    const {
+      answers,
+      item: { ui_style: uiStyle }
+    } = this.props;
     return (
       <AnswerContainer>
         <Collapse
@@ -42,11 +44,18 @@ class ClozeInputAnswer extends Component {
           expandIconPosition="right"
           expandIcon={({ isActive }) => (isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />)}
         >
-          {answer.map((inputValue, inputIndex) => (
-            <Panel header={`Text Input ${inputIndex + 1}`} key={inputIndex}>
-              <Input value={inputValue} onChange={e => this.onChangeHandler(e.target.value, inputIndex)} />
-            </Panel>
-          ))}
+          {answers.map(answer => {
+            const width = uiStyle[answer.id] ? `${uiStyle[answer.id]["widthpx"]}px` : `${uiStyle.min_width}px`;
+            return (
+              <Panel header={`Text Input ${answer.index + 1}`} key={answer.index}>
+                <Input
+                  style={{ width }}
+                  value={answer.value}
+                  onChange={e => this.onChangeHandler(e.target.value, answer.id)}
+                />
+              </Panel>
+            );
+          })}
         </Collapse>
       </AnswerContainer>
     );
@@ -54,7 +63,7 @@ class ClozeInputAnswer extends Component {
 }
 
 ClozeInputAnswer.propTypes = {
-  answer: PropTypes.array.isRequired,
+  answers: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired
 };
 

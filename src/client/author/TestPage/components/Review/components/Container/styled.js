@@ -4,7 +4,8 @@ export const SecondHeader = styled.div`
   display: flex;
   flex-direction: ${props => (props.isMobileSize ? "row" : "column")}
   justify-content: space-between;
-
+  margin-bottom: 10px;
+  
   & > div > .ant-btn {
     background: transparent;
     height: 24px;

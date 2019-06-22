@@ -14,7 +14,17 @@ import Dropdown from "./Dropdown";
 import utils from "./utils";
 
 export default function Tools(props) {
-  const { tools, tool, bgShapes, controls, onSelect, fontSize, getIconByToolName, getHandlerByControlName } = props;
+  const {
+    tools,
+    tool,
+    bgShapes,
+    controls,
+    onSelect,
+    fontSize,
+    getIconByToolName,
+    getHandlerByControlName,
+    toolsAreVisible
+  } = props;
 
   const uiTools = tools.map((_tool, index) => {
     if (Array.isArray(_tool)) {
@@ -46,45 +56,46 @@ export default function Tools(props) {
 
   return (
     <GraphToolbar fontSize={fontSize} data-cy="graphTools">
-      <ToolbarLeft>
-        {uiTools.map(
-          (uiTool, i) =>
-            !uiTool.group && (
-              <ToolBtn
-                style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
-                className={isActive(uiTool) ? "active" : ""}
-                onClick={() => onSelect(uiTool)}
-                key={`tool-btn-${i}`}
-              >
-                <ToolbarItem>
-                  <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
-                    {getIconTemplate(uiTool.name, {
-                      width: fontSize + 2,
-                      height: fontSize + 2,
-                      color: ""
-                    })}
-                  </ToolbarItemIcon>
-                  <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(uiTool.name)}</ToolbarItemLabel>
-                </ToolbarItem>
-              </ToolBtn>
-            )
-        )}
-        {uiTools.map((uiTool, i) =>
-          uiTool.group
-            ? uiTool.group[0] && (
-                <Dropdown
-                  key={`tools-group-${i}`}
-                  list={uiTool.group}
-                  resetThenSet={resetThenSet}
-                  currentTool={tool}
-                  fontSize={fontSize}
-                  getIconTemplate={getIconTemplate}
-                />
+      {toolsAreVisible && (
+        <ToolbarLeft>
+          {uiTools.map(
+            (uiTool, i) =>
+              !uiTool.group && (
+                <ToolBtn
+                  style={{ width: bgShapes ? 70 : fontSize > 20 ? 105 : 93 }}
+                  className={isActive(uiTool) ? "active" : ""}
+                  onClick={() => onSelect(uiTool)}
+                  key={`tool-btn-${i}`}
+                >
+                  <ToolbarItem>
+                    <ToolbarItemIcon className="tool-btn-icon" style={{ marginBottom: fontSize / 2 }}>
+                      {getIconTemplate(uiTool.name, {
+                        width: fontSize + 2,
+                        height: fontSize + 2,
+                        color: ""
+                      })}
+                    </ToolbarItemIcon>
+                    <ToolbarItemLabel style={{ fontSize }}>{utils.capitalizeFirstLetter(uiTool.name)}</ToolbarItemLabel>
+                  </ToolbarItem>
+                </ToolBtn>
               )
-            : null
-        )}
-      </ToolbarLeft>
-
+          )}
+          {uiTools.map((uiTool, i) =>
+            uiTool.group
+              ? uiTool.group[0] && (
+                  <Dropdown
+                    key={`tools-group-${i}`}
+                    list={uiTool.group}
+                    resetThenSet={resetThenSet}
+                    currentTool={tool}
+                    fontSize={fontSize}
+                    getIconTemplate={getIconTemplate}
+                  />
+                )
+              : null
+          )}
+        </ToolbarLeft>
+      )}
       <ToolbarRight>
         {controls.map((control, i) => (
           <ToolBtn
@@ -117,6 +128,7 @@ export default function Tools(props) {
 }
 
 Tools.propTypes = {
+  toolsAreVisible: PropTypes.bool.isRequired,
   tool: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
   tools: PropTypes.array,
   bgShapes: PropTypes.bool.isRequired,

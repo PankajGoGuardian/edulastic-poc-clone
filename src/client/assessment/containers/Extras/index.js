@@ -7,10 +7,10 @@ import { get } from "lodash";
 import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
-import { CustomQuillComponent } from "@edulastic/common";
+import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
-import { Widget } from "../../styled/Widget";
+import { Widget, WidgetFRInput } from "../../styled/Widget";
 import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 
@@ -45,16 +45,9 @@ class Extras extends Component {
   }
 
   render() {
-    const { t, children, theme, item, setQuestionData, isSection, advancedAreOpen } = this.props;
+    const { t, children, item, setQuestionData, isSection, advancedAreOpen } = this.props;
 
     const _change = change({ item, setQuestionData });
-
-    const inputStyle = {
-      minHeight: 35,
-      border: `1px solid #E1E1E1`,
-      padding: "5px 15px",
-      background: theme.extras.inputBgColor
-    };
 
     return (
       <Fragment>
@@ -62,75 +55,95 @@ class Extras extends Component {
           {isSection && <SectionHeading>{t("component.options.extras")}</SectionHeading>}
           {!isSection && <Subtitle>{t("component.options.extras")}</Subtitle>}
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <Label data-cy="acknowledgements">{t("component.options.acknowledgements")}</Label>
-              <CustomQuillComponent
-                toolbarId="acknowledgements"
-                style={inputStyle}
-                onChange={value => _change("metadata.acknowledgements", value)}
-                showResponseBtn={false}
-                value={get(item, "metadata.acknowledgements", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  placeholder="Enter Acknowledgements"
+                  toolbarId="acknowledgements"
+                  toolbarSize="SM"
+                  onChange={value => _change("metadata.acknowledgements", value)}
+                  showResponseBtn={false}
+                  value={get(item, "metadata.acknowledgements", "")}
+                />
+              </WidgetFRInput>
             </Col>
 
             <Col md={12}>
               <Label data-cy="distractor_rationale">{t("component.options.distractorRationale")}</Label>
-              <CustomQuillComponent
-                toolbarId="distractor_rationale"
-                style={inputStyle}
-                onChange={value => _change("metadata.distractor_rationale", value)}
-                showResponseBtn={false}
-                value={get(item, "metadata.distractor_rationale", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  placeholder="Enter distractor rationale"
+                  toolbarId="distractor_rationale"
+                  toolbarSize="SM"
+                  onChange={value => _change("metadata.distractor_rationale", value)}
+                  showResponseBtn={false}
+                  value={get(item, "metadata.distractor_rationale", "")}
+                />
+              </WidgetFRInput>
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <Label data-cy="rubric_reference">{t("component.options.rubricreference")}</Label>
-              <CustomQuillComponent
-                toolbarId="rubric_reference"
-                style={inputStyle}
-                onChange={value => _change("metadata.rubric_reference", value)}
-                showResponseBtn={false}
-                value={get(item, "metadata.rubric_reference", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  placeholder="Enter rubric reference"
+                  toolbarId="rubric_reference"
+                  toolbarSize="SM"
+                  onChange={value => _change("metadata.rubric_reference", value)}
+                  value={get(item, "metadata.rubric_reference", "")}
+                />
+              </WidgetFRInput>
             </Col>
 
             <Col md={12}>
               <Label data-cy="stimulus_review">{t("component.options.stimulusreviewonly")}</Label>
-              <CustomQuillComponent
-                toolbarId="stimulus_review"
-                style={inputStyle}
-                onChange={value => _change("stimulus_review", value)}
-                showResponseBtn={false}
-                value={get(item, "stimulus_review", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  placeholder="Enter stimulus review"
+                  toolbarId="stimulus_review"
+                  toolbarSize="SM"
+                  onChange={value => _change("stimulus_review", value)}
+                  value={get(item, "stimulus_review", "")}
+                />
+              </WidgetFRInput>
             </Col>
           </Row>
 
-          <Row gutter={36}>
+          <Row gutter={60}>
             <Col md={12}>
               <Label data-cy="instructor_stimulus">{t("component.options.instructorStimulus")}</Label>
-              <CustomQuillComponent
-                toolbarId="instructor_stimulus"
-                style={inputStyle}
-                onChange={value => _change("instructor_stimulus", value)}
-                showResponseBtn={false}
-                value={get(item, "instructor_stimulus", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  toolbarId="instructor_stimulus"
+                  toolbarSize="SM"
+                  placeholder="Enter instructor stimulus"
+                  onChange={value => _change("instructor_stimulus", value)}
+                  value={get(item, "instructor_stimulus", "")}
+                />
+              </WidgetFRInput>
             </Col>
 
             <Col md={12}>
               <Label data-cy="sample_answer">{t("component.options.sampleAnswer")}</Label>
-              <CustomQuillComponent
-                toolbarId="sample_answer"
-                style={inputStyle}
-                onChange={value => _change("metadata.sample_answer", value)}
-                showResponseBtn={false}
-                value={get(item, "metadata.sample_answer", "")}
-              />
+
+              <WidgetFRInput>
+                <QuestionTextArea
+                  placeholder="Enter sample answer"
+                  toolbarId="sample_answer"
+                  toolbarSize="SM"
+                  onChange={value => _change("metadata.sample_answer", value)}
+                  value={get(item, "metadata.sample_answer", "")}
+                />
+              </WidgetFRInput>
             </Col>
           </Row>
         </Widget>

@@ -38,20 +38,23 @@ class Response extends Component {
 
   componentDidMount = () => {
     const { fillSections, t, index } = this.props;
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
-
     fillSections(
       "main",
       `${t("component.cloze.imageDropDown.response")} ${index + 1}`,
       node.offsetTop,
-      node.scrollHeight
+      node.scrollHeight,
+      null,
+      null,
+      `cloze-image-dropdown-response-${index + 1}`
     );
   };
 
   componentWillUnmount() {
-    const { cleanSections } = this.props;
+    const { cleanSections, index } = this.props;
 
-    cleanSections();
+    cleanSections(`cloze-image-dropdown-response-${index + 1}`);
   }
 
   onChangeQuestion = stimulus => {
@@ -77,7 +80,17 @@ class Response extends Component {
     const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
+        const oldOptionValue = draft.options[index][itemIndex];
         draft.options[index].splice(itemIndex, 1);
+        if (oldOptionValue === draft.validation.valid_response.value[index]) {
+          draft.validation.valid_response.value.splice(index, 1, "");
+        }
+        draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          if (oldOptionValue === resp[index]) {
+            resp.value.splice(index, 1, "");
+          }
+          return resp;
+        });
         updateVariables(draft);
       })
     );
@@ -88,6 +101,7 @@ class Response extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.options[index] === undefined) draft.options[index] = [];
+        const oldOptionValue = draft.options[index][itemIndex];
         draft.options[index][itemIndex] = e.target.value;
         let maxLength = 0;
         draft.options.forEach(option => {
@@ -100,6 +114,15 @@ class Response extends Component {
           draft.ui_style = { widthpx: 140 };
         }
         draft.ui_style.widthpx = finalWidth < 140 ? 140 : finalWidth > 400 ? 400 : finalWidth;
+        if (draft.validation.valid_response.value[index] === oldOptionValue) {
+          draft.validation.valid_response.value.splice(index, 1, e.target.value);
+        }
+        draft.validation.alt_responses = draft.validation.alt_responses.map(resp => {
+          if (resp.value[index] === oldOptionValue) {
+            resp.value.splice(index, 1, e.target.value);
+          }
+          return resp;
+        });
         updateVariables(draft);
       })
     );

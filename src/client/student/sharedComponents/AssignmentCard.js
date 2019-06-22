@@ -6,8 +6,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { test as testConstants } from "@edulastic/constants";
 import PropTypes from "prop-types";
 import styled, { withTheme } from "styled-components";
-import { last } from "lodash";
-import { Row, Col } from "antd";
+import { last, maxBy } from "lodash";
+import { Row, Col, message } from "antd";
 import { TokenStorage } from "@edulastic/api";
 
 //  components
@@ -58,13 +58,13 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type }) => {
+const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup }) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
 
-  const {
+  let {
     test = {},
     reports = [],
     endDate,
@@ -73,14 +73,28 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     _id: assignmentId,
     safeBrowser,
     testType,
+    class: clazz = [],
     maxAttempts,
     title,
     thumbnail
   } = data;
 
+  if (!startDate && !endDate) {
+    const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
+    startDate = currentClass.startDate;
+    endDate = currentClass.endDate;
+  }
+  if (!startDate) {
+    startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;
+  }
+  if (!endDate) {
+    endDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "closedDate") || {})
+      .closedDate;
+  }
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
+  const absent = lastAttempt.status == 2;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
   const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = last(newReports) || {};
@@ -91,6 +105,9 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const arrow = showAttempts ? "\u2193" : "\u2191";
 
   const startTest = () => {
+    if (endDate < Date.now()) {
+      return message.error("Test is expired");
+    }
     if (resume) {
       resumeAssignment({
         testId,
@@ -137,6 +154,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         startDate={startDate}
         safeBrowser={safeBrowser}
         graded={lastAttempt.graded}
+        absent={absent}
       />
       <ButtonAndDetail>
         <DetailContainer>

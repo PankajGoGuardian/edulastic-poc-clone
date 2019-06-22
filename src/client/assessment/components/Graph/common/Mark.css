@@ -1,15 +1,12 @@
 .mark {
   min-width: 40px;
-  height: 40px !important;
-  padding: 5px;
+  max-width: 55px;
+  height: 45px !important;
+  padding: 2px;
   border-radius: 4px;
   background-color: #ffffff;
-  text-align: center;
   border: 1px solid #e6e6e6 !important;
   cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   font-family: unset !important;
   font-size: unset !important;
   opacity: 1;
@@ -99,4 +96,19 @@
 
 .mark .delete-mark:hover {
   fill: red;
+}
+
+.mark img.fr-dii {
+  max-height: 40px !important;
+  width: auto !important;
+}
+
+.mark .mark-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
+  height: 100%;
+  width: auto;
 }

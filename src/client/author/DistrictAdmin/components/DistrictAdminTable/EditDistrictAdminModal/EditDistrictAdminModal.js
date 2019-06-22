@@ -7,8 +7,14 @@ class EditDistrictAdminModal extends React.Component {
   onSaveDistrictAdmin = () => {
     this.props.form.validateFields((err, row) => {
       if (!err) {
-        row.key = this.props.districtAdminData.key;
-        this.props.saveDistrictAdmin(row);
+        const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props;
+        updateDistrictAdmin({
+          userId: districtAdminData._id,
+          data: Object.assign(row, {
+            districtId: userOrgId
+          })
+        });
+        this.onCloseModal();
       }
     });
   };
@@ -19,7 +25,10 @@ class EditDistrictAdminModal extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { modalVisible, districtAdminData } = this.props;
+    const {
+      modalVisible,
+      districtAdminData: { _source }
+    } = this.props;
     return (
       <StyledModal
         visible={modalVisible}
@@ -47,7 +56,7 @@ class EditDistrictAdminModal extends React.Component {
                     message: "Please input First Name"
                   }
                 ],
-                initialValue: districtAdminData.firstName
+                initialValue: _source.firstName
               })(<Input placeholder="Enter First Name" />)}
             </ModalFormItem>
           </Col>
@@ -60,7 +69,7 @@ class EditDistrictAdminModal extends React.Component {
                     message: "Please input Last Name"
                   }
                 ],
-                initialValue: districtAdminData.lastName
+                initialValue: _source.lastName
               })(<Input placeholder="Enter Last Name" />)}
             </ModalFormItem>
           </Col>
@@ -79,7 +88,7 @@ class EditDistrictAdminModal extends React.Component {
                     message: "The input is not valid E-mail"
                   }
                 ],
-                initialValue: districtAdminData.email
+                initialValue: _source.email
               })(<Input placeholder="Enter E-mail" />)}
             </ModalFormItem>
           </Col>

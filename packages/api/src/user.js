@@ -40,6 +40,15 @@ const fetchUsers = data =>
     })
     .then(({ data: response }) => response);
 
+const fetchUsersForShare = data =>
+  api
+    .callApi({
+      url: `user/search`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
+
 const createUser = data =>
   api
     .callApi({
@@ -65,7 +74,7 @@ const deleteUser = data =>
       method: "delete",
       data
     })
-    .then(result => result.data.result);
+    .then(({ data: response }) => response);
 
 const changeUserTTS = data =>
   api.callApi({
@@ -90,6 +99,7 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
+
 const SearchAddEnrolMultiStudents = (classCode, data) => {
   return api.callApi({
     url: `${prefix}/${classCode}/class-students`,
@@ -98,9 +108,33 @@ const SearchAddEnrolMultiStudents = (classCode, data) => {
   });
 };
 
+const addStudentsToOtherClass = ({ classCode, userDetails }) =>
+  api
+    .callApi({
+      url: `${prefix}/${classCode}/class-students`,
+      method: "post",
+      data: {
+        userDetails
+      }
+    })
+    .then(({ data }) => data);
+
+const validateClassCode = classCode =>
+  api
+    .callApi({
+      url: `/group/${classCode}/validate`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
+const validateDistrictPolicy = params =>
+  api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
+
+
 export default {
   getUser,
   fetchUsers,
+  fetchUsersForShare,
   createUser,
   updateUser,
   deleteUser,
@@ -109,5 +143,11 @@ export default {
   changeUserTTS,
   resetPassword,
   addMultipleStudents,
-  SearchAddEnrolMultiStudents
+
+  SearchAddEnrolMultiStudents,
+
+  addStudentsToOtherClass,
+  validateClassCode,
+  validateDistrictPolicy
+
 };

@@ -70,10 +70,15 @@ const closePolicyForAdmin = [
 
 const testTypes = [
   { value: "", text: "All" },
-  { value: "common", text: "Common" },
-  { value: "assessment", text: "Assessments" },
-  { value: "practice", text: "Practice" },
-  { value: "teacherAssessment", text: "Teacher Assessments" }
+  { value: "assessment", text: "Class Assessments" },
+  { value: "practice", text: "Practice" }
+];
+
+const AdminTestTypes = [
+  { value: "", text: "All" },
+  { value: "common assessment", text: "Common Assessments" },
+  { value: "assessment", text: "Class Assessments" },
+  { value: "practice", text: "Practice" }
 ];
 
 const allStatus = [
@@ -81,6 +86,14 @@ const allStatus = [
   { value: "published", text: "Published" },
   { value: "draft", text: "Draft" }
 ];
+
+const defaultStandards = {
+  Mathematics: "Math - Common Core",
+  ELA: "ELA - Common Core",
+  Science: "Science - NGSS",
+  "Social Studies": "Social Studies"
+};
+
 export default {
   allGrades,
   allSubjects,
@@ -93,5 +106,7 @@ export default {
   closePolicy,
   closePolicyForAdmin,
   allStatus,
-  testTypes
+  testTypes,
+  defaultStandards,
+  AdminTestTypes
 };

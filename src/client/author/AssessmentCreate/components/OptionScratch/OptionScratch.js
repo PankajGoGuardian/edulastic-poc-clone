@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-import { IconAssignment } from "@edulastic/icons";
+import { IconNewFile } from "@edulastic/icons";
 
 import CardComponent from "../../../AssignmentCreate/common/CardComponent";
 import TitleWrapper from "../../../AssignmentCreate/common/TitleWrapper";
@@ -16,7 +16,7 @@ const descriptionBottom = `
 const OptionScratch = () => (
   <CardComponent>
     <IconWrapper>
-      <IconAssignment style={{ height: "40px", width: "40px" }} />
+      <IconNewFile style={{ height: "60px", width: "50px" }} />
     </IconWrapper>
     <TitleWrapper>Create from Scratch</TitleWrapper>
     <TextWrapper>{descriptionBottom}</TextWrapper>

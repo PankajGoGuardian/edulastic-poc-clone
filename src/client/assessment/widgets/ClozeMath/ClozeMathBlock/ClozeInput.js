@@ -1,39 +1,48 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { isEmpty } from "lodash";
+import { find } from "lodash";
 import { Input } from "antd";
 import CheckedBlock from "./CheckedBlock";
 
-const ClozeInput = ({ save, index, answers, evaluation, checked }) => {
+const ClozeInput = ({ id, resprops = {} }) => {
+  const { save, answers = {}, evaluation = [], checked, item, onInnerClick } = resprops;
   const { inputs: _inputsAnwers = [] } = answers;
-  const [val, setVal] = useState(_inputsAnwers[index]);
-
-  const { inputsResults: checkResult = {} } = evaluation;
-  const isChecked = checked && !isEmpty(checkResult);
-
-  return isChecked ? (
-    <CheckedBlock isCorrect={checkResult.evaluation[index]} userAnswer={_inputsAnwers[index]} index={index} />
+  const val = _inputsAnwers[id] ? _inputsAnwers[id].value : "";
+  const {
+    response_ids: { inputs }
+  } = item;
+  const { index } = find(inputs, res => res.id === id) || {};
+  // const isChecked = checked && !isEmpty(evaluation);
+  const { ui_style: uiStyle } = item;
+  const width = uiStyle[id] ? `${uiStyle[id].widthpx}px` : `${uiStyle.min_width}px`;
+  return checked ? (
+    <CheckedBlock
+      evaluation={evaluation}
+      userAnswer={_inputsAnwers[id]}
+      id={id}
+      item={item}
+      type="inputs"
+      onInnerClick={onInnerClick}
+      width={width || "auto"}
+    />
   ) : (
     <InputDiv>
-      <Input onChange={e => setVal(e.target.value)} onBlur={() => save(val, index, "inputs")} value={val} />
+      <Input onChange={e => save({ value: e.target.value, index }, "inputs", id)} value={val} />
     </InputDiv>
   );
 };
 
 ClozeInput.propTypes = {
-  save: PropTypes.func.isRequired,
-  index: PropTypes.number.isRequired,
-  checked: PropTypes.bool.isRequired,
-  evaluation: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired,
-  answers: PropTypes.oneOfType([PropTypes.array, PropTypes.object]).isRequired
+  resprops: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default ClozeInput;
 
 const InputDiv = styled.div`
   min-width: 80px;
-  max-width: 120px;
   display: inline-block;
   margin: 0px 4px;
+  min-height: 35px;
 `;

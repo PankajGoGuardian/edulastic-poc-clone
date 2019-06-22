@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unused-state */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
@@ -8,7 +9,7 @@ import styled, { withTheme } from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
-import { Paper } from "@edulastic/common";
+import { Paper, PaddingDiv } from "@edulastic/common";
 
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -22,6 +23,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
+import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
 
 const EmptyWrapper = styled.div``;
@@ -145,8 +147,6 @@ class ClozeImageDragDrop extends Component {
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     return (
       <div>
         {view === "edit" && (
@@ -154,8 +154,6 @@ class ClozeImageDragDrop extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring
-                  maxHeight={maxHeight}
-                  maxWidth={maxWidth}
                   item={itemForEdit}
                   theme={theme}
                   fillSections={fillSections}
@@ -164,8 +162,6 @@ class ClozeImageDragDrop extends Component {
                 />
                 <Widget>
                   <CorrectAnswers
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                     key={duplicatedResponses || showDraghandle || shuffleOptions}
                     validation={item.validation}
                     configureOptions={{
@@ -190,6 +186,7 @@ class ClozeImageDragDrop extends Component {
                     cleanSections={cleanSections}
                     questionId={item.id}
                     imageOptions={item.imageOptions}
+                    item={item}
                   />
                   <CorrectAnswerOptions>
                     <Checkbox
@@ -225,6 +222,16 @@ class ClozeImageDragDrop extends Component {
                       {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
                     </Checkbox>
                   </CorrectAnswerOptions>
+                  <MaxRespCountWrapper>
+                    <MaxRespCountInput
+                      data-cy="drag-drop-image-max-res"
+                      min={1}
+                      max={10}
+                      defaultValue={item.maxRespCount}
+                      onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                    />
+                    <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                  </MaxRespCountWrapper>
                   <Annotations editable />
                 </Widget>
               </div>
@@ -246,8 +253,6 @@ class ClozeImageDragDrop extends Component {
           <Wrapper>
             {previewTab === "check" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 checkAnswer
                 item={itemForPreview}
                 options={previewDisplayOptions}
@@ -279,8 +284,6 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "show" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 showAnswer
                 item={itemForPreview}
                 instructorStimulus={itemForPreview.instructor_stimulus}
@@ -313,8 +316,6 @@ class ClozeImageDragDrop extends Component {
             )}
             {previewTab === "clear" && (
               <Display
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 preview
                 item={itemForPreview}
                 responses={item.responses}
@@ -345,6 +346,7 @@ class ClozeImageDragDrop extends Component {
                 onChange={this.handleAddAnswer}
                 imageOptions={item.imageOptions}
                 showBorder={false}
+                {...restProps}
               />
             )}
           </Wrapper>

@@ -40,7 +40,7 @@ const fetchAssignments = testId =>
 const fetchAssigned = groupId =>
   api
     .callApi({
-      url: `${prefix}?groupId=${groupId}`,
+      url: `${prefix}${groupId ? `?groupId=${groupId}` : ""}`,
       method: "get"
     })
     .then(result => result.data.result);

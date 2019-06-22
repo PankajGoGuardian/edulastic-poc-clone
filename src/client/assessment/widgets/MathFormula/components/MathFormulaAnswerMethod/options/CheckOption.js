@@ -5,7 +5,7 @@ import { Checkbox, Col } from "antd";
 export const CheckOption = ({ colSpan, dataCy, optionKey, options, onChange, label }) => (
   <Col span={colSpan}>
     <Checkbox data-cy={dataCy} checked={options[optionKey]} onChange={e => onChange(optionKey, e.target.checked)}>
-      {label}
+      <span dangerouslySetInnerHTML={{ __html: label }} />
     </Checkbox>
   </Col>
 );

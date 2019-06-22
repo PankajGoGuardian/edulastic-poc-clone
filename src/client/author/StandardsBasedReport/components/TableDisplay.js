@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { sumBy, sum, groupBy, round, mapValues, values } from "lodash";
+import { sumBy, sum, groupBy, round, mapValues, values, partial } from "lodash";
 import PropTypes from "prop-types";
 
 import DetailedDisplay from "./DetailedDisplay";
@@ -28,17 +28,62 @@ import {
 import ArrowLeftIcon from "../Assets/left-arrow.svg";
 import ArrowRightIcon from "../Assets/right-arrow.svg";
 
+const getMastery = (assignmentMasteryArray, performancePercentage) => {
+  performancePercentage = performancePercentage || 0;
+
+  for (const mastery of assignmentMasteryArray) {
+    if (performancePercentage >= mastery.threshold) {
+      return mastery;
+    }
+  }
+  return {
+    color: "#E61E54",
+    masteryLabel: "NM"
+  };
+};
+
+const sortAlphaNum = (a, b) => {
+  if (a < b) {
+    return -1;
+  }
+  if (a > b) {
+    return 1;
+  }
+  return 0;
+};
+
+const getPerfomancePercentage = (testActivities, std) => {
+  const performances = values(getStandardWisePerformanceMemoized(testActivities, std));
+  return (sum(performances) / performances.length) * 100;
+};
+
 class TableDisplay extends Component {
   constructor(props) {
     super(props);
     this.state = {
       stdId: "",
-      selectedRow: 0
+      selectedRow: 0,
+      perfomancePercentage: undefined
     };
+    this.dataLoaded = false;
   }
 
-  onCaretClick = (e, id = 0, data) => {
-    this.setState({ selectedRow: id, stdId: data });
+  static getDerivedStateFromProps(props, state) {
+    const { additionalData: { standards = [] } = {} } = props;
+    const submittedActs = props.testActivities.filter(x => x.status === "submitted");
+    if (submittedActs.length && !state.dataLoaded) {
+      const firstStandard = standards.sort((a, b) => (b.masterySummary || 0) - (a.masterySummary || 0))[0];
+      const perfomancePercentage = getPerfomancePercentage(props.testActivities, firstStandard);
+      return { selectedRow: 1, stdId: firstStandard._id, perfomancePercentage, dataLoaded: true };
+    }
+  }
+
+  onCaretClick = (e, id = 0, data, perfomancePercentage = undefined) => {
+    if (perfomancePercentage) {
+      this.setState({ selectedRow: id, stdId: data, perfomancePercentage });
+    } else {
+      this.setState({ selectedRow: id, stdId: data });
+    }
   };
 
   isMobile = () => window.innerWidth < 480;
@@ -74,37 +119,43 @@ class TableDisplay extends Component {
   };
 
   render() {
-    const { selectedRow, stdId } = this.state;
-    const { additionalData: { standards = [] } = {} } = this.props;
-
+    const { selectedRow, stdId, perfomancePercentage } = this.state;
+    const { additionalData: { standards = [], assignmentMastery = [] } = {} } = this.props;
     const columns = [
       {
         title: "Standards",
         dataIndex: "standard",
         key: "standard",
-        sorter: (a, b) => a.age - b.age,
+        sorter: (a, b) => sortAlphaNum(a.standard.props.children, b.standard.props.children),
         render: text => <StandardCell>{text}</StandardCell>
       },
       {
         title: "Question",
         dataIndex: "question",
         key: "question",
-        sorter: (a, b) => a.age - b.age,
+        sorter: (a, b) => sortAlphaNum(a.question, b.question),
         render: text => <QuestionCell>{text}</QuestionCell>
       },
       {
         title: "Mastery Summary",
         dataIndex: "masterySummary",
         key: "masterySummary",
-        sorter: (a, b) => a.age - b.age,
-        render: text => <MasterySummary percent={parseFloat(text)} />
+        sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
+        render: text => (
+          <MasterySummary
+            strokeColor={getMastery(assignmentMastery, text || 0).color}
+            showInfo={false}
+            percent={round(parseFloat(text), 2) || 0}
+          />
+        )
       },
       {
         title: "Performance Summary %",
         key: "performanceSummary",
         dataIndex: "performanceSummary",
-        sorter: (a, b) => a.age - b.age,
-        render: text => <PerformanceSummary>{text}</PerformanceSummary>
+        sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
+        render: text => <PerformanceSummary>{round(text, 2) || 0}</PerformanceSummary>,
+        defaultSortOrder: "descend"
       },
       {
         title: "",
@@ -112,29 +163,30 @@ class TableDisplay extends Component {
         dataIndex: "icon"
       }
     ];
-
+    const submittedLength = this.props.testActivities.filter(act => act.status === "submitted").length;
     const data = standards.map((std, index) => {
       const perfomancePercentage = this.getPerfomancePercentage(std);
       return {
         key: index + 1,
         standard: <p className="first-data">{std.identifier}</p>,
-        question: std.qIds
-          .map(qid => this.props.qids.indexOf(qid))
-          .filter(x => x > -1)
-          .map(x => `Q${x + 1}`)
-          .join(","),
+        question: [
+          ...new Set(
+            std.qIds.filter(qid => this.props.qids.indexOf(qid) > -1).map(id => this.props.labels[id].barLabel)
+          )
+        ].join(","),
         masterySummary: perfomancePercentage,
         performanceSummary: perfomancePercentage,
-        icon:
+        icon: submittedLength ? (
           selectedRow === index + 1 ? (
             <div onClick={e => this.onCaretClick(e, 0, std._id)}>
               <img src={ArrowRightIcon} alt="right" />
             </div>
           ) : (
-            <div onClick={e => this.onCaretClick(e, index + 1, std._id)}>
+            <div onClick={e => this.onCaretClick(e, index + 1, std._id, perfomancePercentage)}>
               <img src={ArrowLeftIcon} alt="left" />
             </div>
           )
+        ) : null
       };
     });
 
@@ -159,14 +211,14 @@ class TableDisplay extends Component {
                   </InfoCard>
                   <InfoCard>
                     <label>Performance %</label>
-                    <PerformanceSummary>{d.performanceSummary}</PerformanceSummary>
+                    <PerformanceSummary>{round(d.performanceSummary, 2) || 0}</PerformanceSummary>
                   </InfoCard>
                 </MoblieSubFlexContainer>
 
                 <MoblieSubFlexContainer column>
                   <label>Mastery Summary</label>
-                  <MasterySummary percent={parseFloat(d.masterySummary)} showInfo={false} />
-                  <MasterySummaryInfo>{d.masterySummary}%</MasterySummaryInfo>
+                  <MasterySummary percent={round(parseFloat(d.masterySummary), 2)} showInfo={false} />
+                  <MasterySummaryInfo>{round(d.masterySummary, 2)}%</MasterySummaryInfo>
                 </MoblieSubFlexContainer>
 
                 <MoblieSubFlexContainer>{d.icon}</MoblieSubFlexContainer>
@@ -186,6 +238,8 @@ class TableDisplay extends Component {
           <DetailedDisplay
             onClose={e => this.onCaretClick(e, 0, stdId)}
             data={standards.find(std => std._id === stdId)}
+            performancePercentage={perfomancePercentage}
+            color={getMastery(assignmentMastery, perfomancePercentage || 0).color}
           />
         )}
       </React.Fragment>

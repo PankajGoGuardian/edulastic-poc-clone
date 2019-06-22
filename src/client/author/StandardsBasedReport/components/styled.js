@@ -171,6 +171,10 @@ export const DetailTable = styled(Table)`
   @media (max-width: ${mobileWidth}) {
     padding: 0px;
   }
+  i.anticon.anticon-caret-up,
+  i.anticon.anticon-caret-down {
+    display: none;
+  }
 `;
 
 export const StudnetCell = styled.div`
@@ -203,7 +207,7 @@ export const Container = styled(HeaderWrapper)`
   border-radius: 5px;
   align-items: center;
   justify-content: space-between;
-  background-color: ${darkBlueSecondary};
+  background-color: ${props => props.theme.header.headerBgColor};
   padding: 0px 15px;
   height: 62px;
   z-index: 1;
@@ -423,7 +427,7 @@ export const MasterySummary = styled(Progress)`
     .ant-progress-bg {
       height: 16px !important;
       border-radius: 4px 0px 0px 4px !important;
-      background-color: ${lightBlue5};
+      background-color: ${props => props.color};
     }
   }
   .ant-progress-outer {

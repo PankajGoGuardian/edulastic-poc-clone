@@ -16,7 +16,10 @@ function getDataForTable(data) {
         const rowIndex = index;
         const studentInfo = {
           studentId: student.studentId,
-          studentName: student.studentName
+          studentName: student.studentName,
+          fakeName: student.fakeName,
+          icon: student.icon,
+          color: student.color
         };
         const testActivityId = student.testActivityId ? student.testActivityId : null;
         student.questionActivities.forEach((question, index1) => {
@@ -48,11 +51,13 @@ function getDataForTable(data) {
 class ScoreTable extends Component {
   static propTypes = {
     showQuestionModal: PropTypes.func.isRequired,
-    testActivity: PropTypes.array
+    testActivity: PropTypes.array,
+    isPresentationMode: PropTypes.bool
   };
 
   static defaultProps = {
-    testActivity: {}
+    testActivity: {},
+    isPresentationMode: false
   };
 
   constructor() {
@@ -69,7 +74,8 @@ class ScoreTable extends Component {
   }
 
   getColumnsForTable = (length, submittedLength) => {
-    const { showQuestionModal } = this.props;
+    const { showQuestionModal, isPresentationMode } = this.props;
+
     const columns = [
       {
         title: <TableTitle>Score Grid</TableTitle>,
@@ -83,7 +89,9 @@ class ScoreTable extends Component {
             dataIndex: "students",
             className: "th-border-bottom",
             render: record => (
-              <StyledDivMid style={{ textAlign: "left", paddingLeft: 15 }}>{record.studentName}</StyledDivMid>
+              <StyledDivMid style={{ textAlign: "left", paddingLeft: 15 }}>
+                {isPresentationMode ? record.fakeName : record.studentName}
+              </StyledDivMid>
             ),
             sorter: (a, b) => (a.students.studentName.toUpperCase() > b.students.studentName.toUpperCase() ? 1 : -1)
           },
@@ -103,7 +111,7 @@ class ScoreTable extends Component {
             },
             onFilter: (value, record) => record.score.indexOf(value) === 0,
             sorter: (a, b) => (a.score.score > b.score.score ? 1 : -1),
-            sortDirections: []
+            sortDirections: ["descend", "ascend"]
           }
         ]
       }
@@ -115,27 +123,23 @@ class ScoreTable extends Component {
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
-      const isQids = qids && qids.length > 0;
-      const title = (
-        <StyledDivMid>
-          {`Q${index + 1}`}
-          <img src={InfoIcon} alt="help" />
-        </StyledDivMid>
-      );
+      const title = <StyledDivMid>{students[0].questionActivities[index].barLabel}</StyledDivMid>;
 
-      students.forEach(student => {
-        if (student && !student.questionActivities[index].notStarted) {
-          successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
-          num++;
-        }
-      });
+      students
+        .filter(x => x.status === "submitted")
+        .forEach(student => {
+          if (student && !student.questionActivities[index].notStarted) {
+            successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
+            num++;
+          }
+        });
       const averageScore = successScore;
       const questionAvarageScore = (
         <StyledDivMid>
           <StyledText color={greenThird}>{`${
-            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) : 0
+            submittedLength > 0 ? round((averageScore / submittedLength) * 100, 1) || 0 : 0
           }%`}</StyledText>
-          {round(averageScore, 2)} / {submittedLength}
+          {round(averageScore, 2) || 0} / {submittedLength}
         </StyledDivMid>
       );
 

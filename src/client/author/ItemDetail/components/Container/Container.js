@@ -225,9 +225,13 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { updateItemDetailById, match, item } = this.props;
-    console.log(match.params.id, item, match.params.testId);
-    updateItemDetailById(match.params.id, item, match.params.testId);
+    const { updateItemDetailById, match, item, createType, itemId, onCompleteItemCreation } = this.props;
+    if (createType === "Duplicate") {
+      updateItemDetailById(itemId, item, match.params.id, true);
+      onCompleteItemCreation();
+    } else {
+      updateItemDetailById(match.params.id, item, match.params.testId);
+    }
   };
 
   handleEditWidget = (widget, rowIndex) => {
@@ -357,6 +361,7 @@ class Container extends Component {
       modalItemId,
       onModalClose,
       toggleSideBar,
+      currentAuthorId,
       history,
       setItemLevelScore,
       setItemLevelScoring
@@ -369,7 +374,6 @@ class Container extends Component {
       showPublishButton =
         (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
     }
-
     return (
       <Layout>
         {showModal && item && (

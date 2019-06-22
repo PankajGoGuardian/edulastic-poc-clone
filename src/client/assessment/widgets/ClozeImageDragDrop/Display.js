@@ -1,17 +1,18 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined } from "lodash";
 import { withTheme } from "styled-components";
 
-import { InstructorStimulus, MathSpan } from "@edulastic/common";
-import { white } from "@edulastic/colors";
+import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
+import { response, clozeImage } from "@edulastic/constants";
+import striptags from "striptags";
+
 import DropContainer from "./components/DropContainer";
 import DragItem from "./components/DragItem";
 
 import { Pointer } from "../../styled/Pointer";
 import { Point } from "../../styled/Point";
 import { Triangle } from "../../styled/Triangle";
-import { QuestionHeader } from "../../styled/QuestionHeader";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
@@ -20,12 +21,11 @@ import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 import { withCheckAnswerButton } from "../../components/HOC/withCheckAnswerButton";
 import { RelativeContainer } from "../../styled/RelativeContainer";
+import { StyledPreviewImage } from "./styled/StyledPreviewImage";
+import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
+import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
-
-import { response } from "@edulastic/constants";
-
-import striptags from "striptags";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -68,11 +68,10 @@ class Display extends Component {
     const newResponses = cloneDeep(possibleResponses);
 
     const data = Array.isArray(sourceData) ? sourceData : [sourceData];
-
     newAnswers[index] = [...(newAnswers[index] || []), ...data];
 
     if (maxRespCount && newAnswers[index].length > maxRespCount) {
-      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1);
+      const last = newAnswers[index].splice(newAnswers[index].length - 2, 1)[0];
       newResponses.push(last);
     }
 
@@ -117,6 +116,55 @@ class Display extends Component {
     return possibleResps;
   };
 
+  getWidth = () => {
+    const { item } = this.props;
+    const { imageOriginalWidth, imageWidth } = item;
+    const { maxWidth } = clozeImage;
+
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+
+    if (!isUndefined(imageWidth)) {
+      return imageWidth > 0 ? imageWidth : maxWidth;
+    }
+
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth < maxWidth) {
+      return imageOriginalWidth;
+    }
+    if (!isUndefined(imageOriginalWidth) && imageOriginalWidth >= maxWidth) {
+      return maxWidth;
+    }
+    return maxWidth;
+  };
+
+  getHeight = () => {
+    const { item } = this.props;
+    const { imageHeight, keepAspectRatio, imageOriginalHeight, imageOriginalWidth } = item;
+    const { maxHeight } = clozeImage;
+    const imageWidth = this.getWidth();
+    // If image uploaded is smaller than the max width, keep it as-is
+    // If image is larger, compress it to max width (keep aspect-ratio by default)
+    // If user changes image size manually to something larger, allow it
+    if (keepAspectRatio && !isUndefined(imageOriginalHeight)) {
+      return (imageOriginalHeight * imageWidth) / imageOriginalWidth;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageHeight)) {
+      return imageHeight > 0 ? imageHeight : maxHeight;
+    }
+
+    if (!isUndefined(imageOriginalHeight) && imageOriginalHeight < maxHeight) {
+      return imageOriginalHeight;
+    }
+
+    return maxHeight;
+  };
+
   render() {
     const {
       smallSize,
@@ -130,21 +178,16 @@ class Display extends Component {
       validation,
       evaluation,
       imageUrl,
-      responses: userRespos,
       responseContainers,
       imageAlterText,
-      imageWidth,
-      imageHeight,
-      imageTitle,
       showDashedBorder,
       backgroundColor,
       instructorStimulus,
       theme,
       showQuestionNumber,
       qIndex,
+      disableResponse,
       item,
-      maxHeight,
-      maxWidth,
       imageOptions,
       showBorder
     } = this.props;
@@ -166,63 +209,47 @@ class Display extends Component {
       heightpx: heightpx !== 0 ? heightpx : "auto",
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
+    const { maxHeight, maxWidth } = clozeImage;
+    const imageWidth = this.getWidth();
+    const imageHeight = this.getHeight();
+    const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const canvasWidth = imageWidth + +(imageOptions.x || 0);
 
-    const renderImage = () =>
-      imageUrl ? (
-        <img
-          src={imageUrl || ""}
-          style={{
-            position: "absolute",
-            userSelect: "none",
-            pointerEvents: "none",
-            top: imageOptions.y || 0,
-            left: imageOptions.x || 0,
-            width: `${!maxWidth ? imageWidth || "auto" : imageWidth}px`,
-            height: `${!maxHeight ? imageHeight || "auto" : imageHeight}px`,
-            maxHeight: !maxHeight ? null : maxHeight,
-            maxWidth: !maxWidth ? null : maxWidth
-          }}
-          alt={imageAlterText}
-          title={imageTitle}
-        />
-      ) : (
-        <div
-          style={{
-            background: white,
-            width: uiStyle.widthpx || "100%",
-            height: uiStyle.widthpx || 400,
-            userSelect: "none",
-            pointerEvents: "none"
-          }}
-        />
-      );
+    const renderImage = () => (
+      <StyledPreviewImage
+        imageSrc={imageUrl || ""}
+        width={imageWidth}
+        height={imageHeight}
+        alt={imageAlterText}
+        maxHeight={maxHeight}
+        maxWidth={maxWidth}
+        style={{
+          position: "absolute",
+          top: imageOptions.y || 0,
+          left: imageOptions.x || 0
+        }}
+      />
+    );
 
     const drop = data => data;
 
     const previewTemplateBoxLayout = (
-      <div
-        className={`imagedragdrop_template_box ${smallSize ? "small" : ""}`}
-        style={{
-          width: !maxWidth ? imageWidth || "100%" : maxWidth,
-          height: !maxHeight ? imageHeight || "100%" : maxHeight,
-          margin: "auto",
-          fontSize: smallSize ? theme.widgets.clozeImageDragDrop.previewTemplateBoxSmallFontSize : fontSize,
-          position: "relative",
-          maxHeight: !maxHeight ? null : maxHeight,
-          maxWidth: !maxWidth ? null : maxWidth
-        }}
+      <StyledPreviewTemplateBox
+        smallSize={smallSize}
+        fontSize={fontSize}
+        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
-        <div
-          data-cy="drag-drop-board"
-          style={{
-            position: "relative",
-            top: 0,
-            left: 0,
-            width: "auto",
-            minWidth: maxWidth,
-            minHeight: maxHeight
-          }}
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
         >
+          <div style={{ position: "relative" }}>
+            <AnnotationRnd
+              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              questionId={questionId}
+            />
+          </div>
           {renderImage()}
           {responseContainers.map((responseContainer, index) => {
             const dropTargetIndex = index;
@@ -237,8 +264,8 @@ class Display extends Component {
                 : `solid 1px ${theme.widgets.clozeImageDragDrop.dropContainerSolidBorderColor}`,
               position: "absolute",
               background: backgroundColor,
-              borderRadius: 5,
-              overflow: "hidden"
+              borderRadius: 5
+              // overflow: "hidden"
             };
             if (responsecontainerindividuals && responsecontainerindividuals[dropTargetIndex]) {
               const { widthpx } = responsecontainerindividuals[dropTargetIndex];
@@ -250,6 +277,7 @@ class Display extends Component {
             } else {
               btnStyle.width = btnStyle.widthpx;
             }
+            // eslint-disable-next-line no-unused-vars
             let indexStr = "";
             switch (stemnumeration) {
               case "lowercase": {
@@ -327,8 +355,8 @@ class Display extends Component {
               </DropContainer>
             );
           })}
-        </div>
-      </div>
+        </StyledPreviewContainer>
+      </StyledPreviewTemplateBox>
     );
 
     const checkboxTemplateBoxLayout = (
@@ -337,7 +365,8 @@ class Display extends Component {
         responsecontainerindividuals={responsecontainerindividuals}
         responseBtnStyle={responseBtnStyle}
         image={renderImage()}
-        imageWidth={imageWidth}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
@@ -345,8 +374,6 @@ class Display extends Component {
         evaluation={evaluation}
         drop={drop}
         onDropHandler={this.onDrop}
-        maxHeight={maxHeight}
-        maxWidth={maxWidth}
         showBorder={showBorder}
       />
     );
@@ -354,7 +381,7 @@ class Display extends Component {
     const previewResponseBoxLayout = (
       <ResponseBoxLayout
         smallSize={smallSize}
-        onDrop={this.onDrop}
+        onDrop={!disableResponse ? this.onDrop : () => {}}
         drop={drop}
         responses={responses}
         fontSize={fontSize}
@@ -380,19 +407,13 @@ class Display extends Component {
       <div style={{ fontSize }}>
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
-          <QuestionHeader smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         {responseposition === "top" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{templateBoxLayout}</div>
           </React.Fragment>
@@ -400,13 +421,7 @@ class Display extends Component {
         {responseposition === "bottom" && (
           <React.Fragment>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {templateBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{templateBoxLayout}</RelativeContainer>
             </div>
             <div style={{ margin: "15px 0", borderRadius: 10 }}>{responseBoxLayout}</div>
           </React.Fragment>
@@ -425,13 +440,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
             <div
               style={{
@@ -473,13 +482,7 @@ class Display extends Component {
                 justifyContent: "center"
               }}
             >
-              <RelativeContainer style={{ width: maxWidth, height: maxHeight }}>
-                <AnnotationRnd
-                  style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
-                  questionId={questionId}
-                />
-                {responseBoxLayout}
-              </RelativeContainer>
+              <RelativeContainer>{responseBoxLayout}</RelativeContainer>
             </div>
           </div>
         )}
@@ -508,17 +511,22 @@ Display.propTypes = {
   imageUrl: PropTypes.string,
   imageAlterText: PropTypes.string,
   theme: PropTypes.object.isRequired,
+  disableResponse: PropTypes.bool,
   imageTitle: PropTypes.string,
   imageWidth: PropTypes.number,
   maxRespCount: PropTypes.number,
   instructorStimulus: PropTypes.string,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  showQuestionNumber: PropTypes.bool,
+  item: PropTypes.object,
+  showBorder: PropTypes.bool
 };
 
 Display.defaultProps = {
   options: [],
   onChange: () => {},
   preview: true,
+  disableResponse: false,
   showAnswer: false,
   evaluation: [],
   checkAnswer: false,
@@ -530,9 +538,7 @@ Display.defaultProps = {
   validation: {},
   imageUrl: undefined,
   imageAlterText: "",
-  imageTitle: "",
   maxRespCount: 1,
-  imageWidth: 600,
   configureOptions: {
     showDraghandle: false,
     duplicatedResponses: false,
@@ -549,7 +555,10 @@ Display.defaultProps = {
     responsecontainerindividuals: []
   },
   instructorStimulus: "",
-  imageOptions: {}
+  imageOptions: {},
+  showBorder: false,
+  showQuestionNumber: false,
+  item: {}
 };
 
 export default withTheme(withCheckAnswerButton(Display));

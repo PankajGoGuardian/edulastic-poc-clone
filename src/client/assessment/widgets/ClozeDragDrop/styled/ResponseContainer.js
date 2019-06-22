@@ -6,7 +6,7 @@ export const ResponseContainer = styled.span`
       props.smallSize
         ? props.theme.widgets.clozeDragDrop.responseContainerSmallBorderColor
         : props.theme.widgets.clozeDragDrop.responseContainerBorderColor};
-  min-width: ${props => (props.smallSize ? 140 : 50)}px;
+  min-width: ${props => (props.smallSize ? 140 : 120)}px;
   /* min-height: 30px; */
   padding: 5px 10px;
   margin: 0 10px 5px;
@@ -18,5 +18,8 @@ export const ResponseContainer = styled.span`
   img {
     max-width: 100px;
     max-height: 100px;
+  }
+  p {
+    margin-bottom: 0px;
   }
 `;

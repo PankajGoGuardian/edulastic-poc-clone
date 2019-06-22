@@ -1,6 +1,7 @@
-import React, { Fragment, useMemo, useState } from "react";
+import React, { Fragment, useMemo, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+import { isEmpty } from "lodash";
 import { connect } from "react-redux";
 import uuidv4 from "uuid/v4";
 import styled from "styled-components";
@@ -31,18 +32,15 @@ const FormulaEssay = ({
   setQuestionData,
   smallSize,
   userAnswer,
+  saveAnswer,
   advancedAreOpen,
   fillSections,
   cleanSections,
   isSidebarCollapsed,
   ...restProps
 }) => {
-  const [lines, setLines] = useState([
-    { text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }
-  ]);
-
   const resetLines = () => {
-    setLines([{ text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }]);
+    saveAnswer([{ text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }]);
   };
 
   const Wrapper = testItem ? EmptyWrapper : Paper;
@@ -56,7 +54,7 @@ const FormulaEssay = ({
     );
   };
 
-  const handleSetLines = plines => setLines(plines);
+  const handleSetLines = plines => saveAnswer(plines);
 
   const itemForPreview = useMemo(() => replaceVariables(item), [item]);
 
@@ -91,13 +89,16 @@ const FormulaEssay = ({
         <Wrapper style={{ height: "100%" }}>
           <FormulaEssayPreview
             key={itemForPreview.id}
-            lines={lines}
             setLines={handleSetLines}
             resetLines={resetLines}
             type={previewTab}
             item={itemForPreview}
             smallSize={smallSize}
-            userAnswer={userAnswer}
+            lines={
+              !isEmpty(userAnswer)
+                ? userAnswer
+                : [{ text: "", type: item.ui_style && item.ui_style.default_mode, index: uuidv4() }]
+            }
             {...restProps}
           />
         </Wrapper>
@@ -117,6 +118,7 @@ FormulaEssay.propTypes = {
   advancedAreOpen: PropTypes.bool,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
+  saveAnswer: PropTypes.func.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired
 };
 

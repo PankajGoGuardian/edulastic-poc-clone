@@ -7,7 +7,9 @@ import { grey } from "@edulastic/colors";
 const { Dragger } = Upload;
 
 export const DropAreaContainer = styled(Paper)`
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: 34px 43px 0 46px;
   border-radius: 4px;
 `;
@@ -15,6 +17,8 @@ export const DropAreaContainer = styled(Paper)`
 export const UploadDragger = styled(Dragger)`
   display: block;
   border: 1px dashed ${grey};
+  margin-right: 40px;
+  width: 100%;
 
   .ant-upload-drag {
     padding: 0;

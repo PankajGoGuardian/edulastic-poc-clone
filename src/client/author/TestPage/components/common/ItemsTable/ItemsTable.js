@@ -20,6 +20,8 @@ const ItemsTable = ({
   onAddItems,
   standards,
   windowWidth,
+  showModal = false,
+  addDuplicate,
   testId,
   search,
   gotoSummary
@@ -40,7 +42,7 @@ const ItemsTable = ({
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => <MainInfoCell testId={testId} data={data} />
+      render: data => <MainInfoCell addDuplicate={addDuplicate} showModal={showModal} testId={testId} data={data} />
     },
     {
       title: "Meta info",
@@ -63,7 +65,7 @@ const ItemsTable = ({
     const stimulus =
       item.data && item.data.questions && item.data.questions[0] && item.data.questions[0].stimulus
         ? item.data.questions[0].stimulus
-        : item._id;
+        : "Click here to view the question detail.";
     const main = {
       title: item._id,
       id: item._id,
@@ -105,6 +107,8 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
+  showModal: PropTypes.bool,
+  addDuplicate: PropTypes.func,
   standards: PropTypes.object.isRequired,
   windowWidth: PropTypes.number.isRequired
 };
@@ -123,6 +127,11 @@ export default enhance(ItemsTable);
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
     padding: 38px 6px 28px 26px;
+  }
+
+  table tr tr img {
+    max-height: 100%;
+    max-width: 100%;
   }
 
   @media (max-width: ${tabletWidth}) {

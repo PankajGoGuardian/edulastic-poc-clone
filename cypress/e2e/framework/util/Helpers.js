@@ -29,6 +29,17 @@ class Helpers {
       lowerAlpha: "Lowercase Alphabet"
     };
   }
+
+  static getShortName(name) {
+    let shortName;
+    const [firstName, lastName] = name.split(" ");
+    if (!firstName) shortName = "";
+    else
+      shortName = lastName
+        ? `${firstName.trim().substr(0, 1)}${lastName.trim().substr(0, 1)}`
+        : `${firstName.trim().substr(0)}`;
+    return shortName.toUpperCase();
+  }
 }
 
 export default Helpers;

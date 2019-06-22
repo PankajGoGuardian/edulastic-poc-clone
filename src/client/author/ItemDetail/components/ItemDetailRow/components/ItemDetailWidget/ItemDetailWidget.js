@@ -46,7 +46,7 @@ const ItemDetailWidget = ({
     connectDragPreview(
       <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <div>
+          <div style={{ flex: "10" }}>
             {(widget.widgetType === "question" || widget.widgetType === "resource") && (
               <QuestionWrapper
                 testItem
@@ -61,54 +61,56 @@ const ItemDetailWidget = ({
           </div>
 
           {(!flowLayout || showButtons) && (
-            <Buttons>
-              {itemData.itemLevelScoring && widgetIndex === 0 && (
-                <div className="points">
-                  Points :{" "}
-                  <input
-                    className="ant-input"
-                    type="number"
-                    min={0}
-                    value={itemData.itemLevelScore}
-                    onChange={e => {
-                      const v = parseFloat(e.target.value);
-                      setItemLevelScore(v);
-                    }}
-                  />
-                </div>
-              )}
+            <div style={{ flex: "1" }}>
+              <Buttons>
+                {itemData.itemLevelScoring && widgetIndex === 0 && (
+                  <div className="points">
+                    Points :{" "}
+                    <input
+                      className="ant-input"
+                      type="number"
+                      min={1}
+                      value={itemData.itemLevelScore}
+                      onChange={e => {
+                        const v = parseFloat(e.target.value);
+                        setItemLevelScore(v);
+                      }}
+                    />
+                  </div>
+                )}
 
-              {!itemData.itemLevelScoring && (
-                <div className="points">
-                  Points :{" "}
-                  <input
-                    className="ant-input"
-                    type="number"
-                    min={0}
-                    value={get(question, "validation.valid_response.score", 0)}
-                    onChange={e => {
-                      const v = parseFloat(e.target.value);
-                      setQuestionScore({ score: v, qid: question.id });
-                      //
-                    }}
-                  />
-                </div>
-              )}
+                {!itemData.itemLevelScoring && (
+                  <div className="points">
+                    Points :{" "}
+                    <input
+                      className="ant-input"
+                      type="number"
+                      min={1}
+                      value={get(question, "validation.valid_response.score", 0)}
+                      onChange={e => {
+                        const v = parseFloat(e.target.value);
+                        setQuestionScore({ score: v, qid: question.id });
+                        //
+                      }}
+                    />
+                  </div>
+                )}
 
-              {connectDragSource(
-                <div>
-                  <Button title={t("move")} shape="circle">
-                    <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
-                  </Button>
-                </div>
-              )}
-              <Button title={t("edit")} onClick={onEdit} shape="circle">
-                <IconPencilEdit color={white} width={16} height={16} />
-              </Button>
-              <Button title={t("delete")} onClick={onDelete} shape="circle">
-                <IconTrash color={white} width={16} height={16} />
-              </Button>
-            </Buttons>
+                {connectDragSource(
+                  <div>
+                    <Button title={t("move")} shape="circle">
+                      <IconMoveArrows color={white} style={{ fontSize: 11 }} width={16} height={16} />
+                    </Button>
+                  </div>
+                )}
+                <Button title={t("edit")} onClick={onEdit} shape="circle">
+                  <IconPencilEdit color={white} width={16} height={16} />
+                </Button>
+                <Button title={t("delete")} onClick={onDelete} shape="circle">
+                  <IconTrash color={white} width={16} height={16} />
+                </Button>
+              </Buttons>
+            </div>
           )}
         </Container>
       </div>

@@ -69,7 +69,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
@@ -78,8 +78,6 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
     start: 0,
     end: 0
   });
-
-  const [answer, setAnswer] = useState(value);
 
   const _getValue = val => {
     const newStr = value.split("");
@@ -109,28 +107,21 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops }) => {
     });
   };
 
-  const onBlurHanlder = () => {
-    if (type === "number" && Number.isNaN(+answer.value)) {
-      return;
-    }
-    if (value !== answer) {
-      _change({
-        value: answer,
-        dropTargetIndex
-      });
-    }
-  };
-
   return (
     <CustomInput style={style}>
       {showIndex && <IndexBox>{dropTargetIndex + 1}</IndexBox>}
       <MInput
         ref={ref}
-        onChange={e => setAnswer(e.target.value)}
-        onBlur={onBlurHanlder}
+        onChange={e =>
+          _change({
+            value: e.target.value,
+            dropTargetIndex
+          })
+        }
+        disabled={disabled}
         onSelect={e => setSelection(getInputSelection(e.currentTarget))}
         wrap={item.multiple_line ? "" : "off"}
-        value={answer}
+        value={value}
         key={`input_${dropTargetIndex}`}
         style={{
           ...btnStyle,

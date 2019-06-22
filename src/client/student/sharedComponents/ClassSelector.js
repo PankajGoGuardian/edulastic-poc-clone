@@ -19,6 +19,11 @@ const ClassSelector = ({ t, classes, currentGroup, changeClass }) => {
           changeClass(value);
         }}
       >
+        {classes.length > 1 && (
+          <Select.Option key="all" value={""}>
+            All classes
+          </Select.Option>
+        )}
         {classes.map((cl, i) => (
           <Select.Option key={cl._id} value={cl._id}>
             {cl.name}

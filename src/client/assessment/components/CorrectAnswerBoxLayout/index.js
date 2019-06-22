@@ -18,11 +18,16 @@ const CorrectAnswerBoxLayout = ({
 }) => {
   let results;
   if (altResponses) {
-    results = [];
-    for (let i = 0; i < userAnswers.length; i++) {
-      const res = altResponses.flatMap(ans => ans.value[i]);
-      results.push(res.join(","));
-    }
+    const alternateAnswers = {};
+    altResponses.forEach(altAnswer => {
+      altAnswer.value.forEach((alt, index) => {
+        alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
+        if (alt) {
+          alternateAnswers[index + 1].push(alt);
+        }
+      });
+    });
+    results = Object.keys(alternateAnswers).map(key => alternateAnswers[key].join());
   } else if (hasGroupResponses) {
     results = {};
     userAnswers.forEach(userAnswer => {
@@ -90,7 +95,8 @@ CorrectAnswerBoxLayout.propTypes = {
   userAnswers: PropTypes.array,
   groupResponses: PropTypes.array,
   t: PropTypes.func.isRequired,
-  cleanValue: PropTypes.bool
+  cleanValue: PropTypes.bool,
+  altResponses: PropTypes.object
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -98,7 +104,8 @@ CorrectAnswerBoxLayout.defaultProps = {
   groupResponses: [],
   fontSize: "13px",
   userAnswers: [],
-  cleanValue: false
+  cleanValue: false,
+  altResponses: null
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

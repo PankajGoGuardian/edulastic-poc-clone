@@ -1,5 +1,5 @@
-/* eslint-disable func-names */
-/* eslint-disable no-undef */
+/* eslint-disable */
+import uuid from "uuid/v4";
 import { fileApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
 
@@ -99,35 +99,30 @@ function addProps() {
 }
 
 const sanitizeSelfClosingTags = inputString =>
+  inputString &&
   inputString
     .replace(/<hr>/g, "<hr/>")
     .replace(/<br>/g, "<br/>")
-    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>")
-    .replace(/"{{/g, "{")
-    .replace(/}}"/g, "}");
+    .replace(/(<img("[^"]*"|[^\/">])*)>/gi, "$1/>");
+
+const replaceForJsxParser = inputString =>
+  inputString &&
+  inputString
+    .replace(/"{{resProps/g, "{resProps")
+    .replace(/resProps}}"/g, "resProps}")
+    .replace(/"{{lineHeight/g, "{lineHeight")
+    .replace(/lineHeight}}"/g, "lineHeight}");
 
 const parseTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
-    return temp;
+    return "";
   }
 
-  const parsedHTML = $.parseHTML(temp);
+  const parsedHTML = $("<div />").html(temp);
 
   $(parsedHTML)
-    .find("textinput")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("mathinput")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("textdropdown")
-    .each(addProps);
-
-  $(parsedHTML)
-    .find("response")
+    .find("textinput, mathinput, textdropdown, response")
     .each(addProps);
 
   $(parsedHTML)
@@ -137,12 +132,62 @@ const parseTemplate = tmpl => {
       $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
     });
 
-  temp = $("<div />")
-    .append(parsedHTML)
-    .html();
+  temp = $(parsedHTML).html();
 
-  return sanitizeSelfClosingTags(temp);
+  return replaceForJsxParser(sanitizeSelfClosingTags(temp));
 };
+
+export const getResponsesCount = element => {
+  return $(element).find("textinput, textdropdown, mathinput").length;
+};
+
+export const reIndexResponses = htmlStr => {
+  const parsedHTML = $("<div />").html(htmlStr);
+  if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
+    return htmlStr;
+  }
+
+  $(parsedHTML)
+    .find("textinput, mathinput, textdropdown, response")
+    .each(function(index) {
+      $(this)
+        .find("span")
+        .remove("span");
+
+      const id = $(this).attr("id");
+      if (!id) {
+        $(this).attr("id", uuid());
+      }
+
+      let text = $(this).text();
+      $(this).html(`<span class="index">${index + 1}</span>${text}`);
+
+      text = $("<div>")
+        .append($(this).clone())
+        .html();
+
+      $(this).replaceWith(text);
+    });
+
+  return $(parsedHTML).html();
+};
+
+export const removeSpanFromTemplate = tmpl => {
+  let temp = ` ${tmpl}`.slice(1);
+  if (!window.$) {
+    return temp;
+  }
+  const parsedHTML = $("<div />").html(temp);
+  $(parsedHTML)
+    .find("textinput, mathinput, textdropdown, response")
+    .each(function() {
+      $(this)
+        .find("span")
+        .remove("span");
+    });
+  return $(parsedHTML).html();
+};
+
 export const canInsert = element => element.contentEditable !== "false";
 export default {
   sanitizeSelfClosingTags,
@@ -152,5 +197,7 @@ export default {
   isEmpty,
   uploadToS3,
   parseTemplate,
-  canInsert
+  reIndexResponses,
+  canInsert,
+  removeSpanFromTemplate
 };

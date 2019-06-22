@@ -59,16 +59,23 @@ function renderElement(board, points, params) {
   points[1].on("drag", updateCoords);
 
   newLine.type = jxgType;
-  handleSnap(newLine, points, board, updateCoords);
+  newLine.addParents(...points, focus, dirPoint1, dirPoint2);
+  newLine.ancestors = {
+    [points[0].id]: points[0],
+    [points[1].id]: points[1]
+  };
+  handleSnap(newLine, Object.values(newLine.ancestors), board, updateCoords);
+  return newLine;
+}
 
-  if (newLine) {
-    newLine.addParents(...points, focus, dirPoint1, dirPoint2);
-    newLine.ancestors = {
-      [points[0].id]: points[0],
-      [points[1].id]: points[1]
-    };
-    return newLine;
-  }
+function create(board, parabolaPoints, id = null) {
+  const params = {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.PARABOLA],
+    label: getLabelParameters(jxgType),
+    id
+  };
+  return renderElement(board, parabolaPoints, params);
 }
 
 function onHandler() {
@@ -80,12 +87,7 @@ function onHandler() {
       tempToolPoints.forEach(point => {
         point.isTemp = false;
       });
-      const params = {
-        ...defaultConfig,
-        ...Colors.default[CONSTANT.TOOLS.PARABOLA],
-        label: getLabelParameters(jxgType)
-      };
-      const newLine = renderElement(board, tempToolPoints, params);
+      const newLine = create(board, tempToolPoints);
       tempToolPoints = [];
       return newLine;
     }
@@ -114,7 +116,7 @@ function getConfig(parabola) {
 function parseConfig() {
   return {
     ...defaultConfig,
-    fillColor: "transparent",
+    ...Colors.default[CONSTANT.TOOLS.PARABOLA],
     label: getLabelParameters(jxgType)
   };
 }
@@ -129,5 +131,6 @@ export default {
   clean,
   parseConfig,
   getPoints,
-  renderElement
+  renderElement,
+  create
 };

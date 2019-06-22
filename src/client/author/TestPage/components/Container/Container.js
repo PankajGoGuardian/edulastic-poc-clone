@@ -8,7 +8,7 @@ import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq,
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
-
+import { get } from "lodash";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
@@ -181,11 +181,17 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading } = this.props;
+    const { test, setData, rows, isTestLoading, userId, match = {} } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
+    const { params = {} } = match;
     const { current } = this.state;
+    const { authors } = test;
+    const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
+    if (!owner && (current === "addItems" || current === "description")) {
+      this.setState({ current: "review" });
+    }
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
@@ -206,6 +212,7 @@ class Container extends PureComponent {
             onShowSource={this.handleNavChange("source")}
             setData={setData}
             test={test}
+            owner={owner}
             current={current}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
@@ -216,13 +223,15 @@ class Container extends PureComponent {
           <Review
             test={test}
             rows={rows}
+            onSaveTestId={this.handleSaveTestId}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
+            owner={owner}
             current={current}
           />
         );
       case "settings":
-        return <Setting current={current} onShowSource={this.handleNavChange("source")} />;
+        return <Setting current={current} onShowSource={this.handleNavChange("source")} owner={owner} />;
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -281,7 +290,7 @@ class Container extends PureComponent {
   };
 
   validateTest = test => {
-    const { title, subjects, grades } = test;
+    const { title, subjects, grades, requirePassword = false, assignmentPassword = "" } = test;
     if (!title) {
       message.error("Name field cannot be empty");
       return false;
@@ -294,6 +303,13 @@ class Container extends PureComponent {
       message.error("Subject field cannot be empty");
       return false;
     }
+    if (requirePassword) {
+      if (assignmentPassword.length < 6 || assignmentPassword.length > 25) {
+        message.error("Please add a valid password.");
+        return false;
+      }
+    }
+
     return true;
   };
 
@@ -350,9 +366,10 @@ class Container extends PureComponent {
   };
 
   render() {
-    const { creating, windowWidth, test, testStatus } = this.props;
+    const { creating, windowWidth, test, testStatus, userId } = this.props;
     const { showShareModal, current, editEnable } = this.state;
-    const { _id: testId, status } = test;
+    const { _id: testId, status, authors } = test;
+    const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
     return (
@@ -372,6 +389,7 @@ class Container extends PureComponent {
           onPublish={this.handlePublishTest}
           title={test.title}
           creating={creating}
+          owner={owner}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}
           testStatus={testStatus}
@@ -397,6 +415,7 @@ const enhance = compose(
       user: getUserSelector(state),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
+      userId: get(state, "user.user._id", ""),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     {

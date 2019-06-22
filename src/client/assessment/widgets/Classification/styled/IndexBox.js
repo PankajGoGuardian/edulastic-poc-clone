@@ -5,6 +5,7 @@ export const IndexBox = styled.div`
   font-weight: ${props => props.theme.widgets.classification.indexBoxFontWeight};
   display: flex;
   align-items: center;
+  align-self: stretch;
   justify-content: center;
   min-width: 40px;
   min-height: 40px;

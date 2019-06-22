@@ -10,9 +10,8 @@ export const Container = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 70px;
-  background: ${newBlue};
-  padding: 25px 45px 0;
+  background: ${props => props.theme.header.headerBgColor};
+  padding: 20px;
   height: 96px;
   z-index: 10;
 
@@ -23,10 +22,10 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.div`
-  font-size: 22px;
+  font-size: ${props => props.theme.header.headerTitleFontSize};
+  color: ${props => props.theme.header.headerTitleTextColor};
   font-weight: bold;
   line-height: 1.36;
-  color: ${white};
 
   @media (max-width: ${mobileWidth}) {
     padding-left: 0;

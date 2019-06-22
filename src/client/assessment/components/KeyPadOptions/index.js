@@ -1,13 +1,14 @@
-import React from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
+import ReactDOM from "react-dom";
 import { Col, Select, Input, Checkbox } from "antd";
 
 import { typedList as types, math } from "@edulastic/constants";
 import { MathKeyboard } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
-import { Block } from "../../styled/WidgetOptions/Block";
-import { WidgetSubHeading } from "../../styled/Widget";
+import { Widget } from "../../styled/Widget";
+import { Subtitle } from "../../styled/Subtitle";
 import { Label } from "../../styled/WidgetOptions/Label";
 
 import TypedList from "../TypedList";
@@ -15,129 +16,165 @@ import NumberPad from "../NumberPad";
 
 import { StyledRow } from "./styled/StyledRow";
 
-const KeyPadOptions = ({ t, onChange, item }) => {
-  const changeUiStyle = (prop, value) => {
-    onChange("ui_style", {
-      ...item.ui_style,
-      [prop]: value
-    });
+class KeyPadOptions extends Component {
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    const node = ReactDOM.findDOMNode(this);
+
+    fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
   };
 
-  const handleAddSymbol = () => {
-    let data = [];
+  componentDidUpdate(prevProps) {
+    const { advancedAreOpen, fillSections, t } = this.props;
 
-    if (item.symbols && item.symbols.length) {
-      data = [...item.symbols];
+    const node = ReactDOM.findDOMNode(this);
+
+    if (prevProps.advancedAreOpen !== advancedAreOpen) {
+      fillSections("advanced", t("component.options.keypad"), node.offsetTop, node.scrollHeight);
     }
-    onChange("symbols", [...data, ""]);
-  };
+  }
 
-  const handleDeleteSymbol = index => {
-    const data = [...item.symbols];
-    data.splice(index, 1);
-    onChange("symbols", data);
-  };
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
 
-  const handleSymbolsChange = (index, value) => {
-    const data = [...item.symbols];
+    cleanSections();
+  }
 
-    if (value === "custom") {
-      data[index] = {
-        label: "label",
-        title: "",
-        value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
-      };
-    } else {
-      data[index] = value;
-    }
+  render() {
+    const { item, onChange, advancedAreOpen, t } = this.props;
 
-    onChange("symbols", data);
-  };
+    const changeUiStyle = (prop, value) => {
+      onChange("ui_style", {
+        ...item.ui_style,
+        [prop]: value
+      });
+    };
 
-  const handleChangeNumberPad = (index, value) => {
-    const numberPad = item.numberPad ? [...item.numberPad] : [];
+    const handleAddSymbol = () => {
+      let data = [];
 
-    numberPad[index] = value;
-    onChange("numberPad", numberPad);
-  };
+      if (item.symbols && item.symbols.length) {
+        data = [...item.symbols];
+      }
+      onChange("symbols", [...data, ""]);
+    };
 
-  const getNumberPad = () => {
-    if (!item.numberPad || !item.numberPad.length) {
-      onChange("numberPad", MathKeyboard.NUMBER_PAD_ITEMS.map(({ value }) => value));
-      return MathKeyboard.NUMBER_PAD_ITEMS;
-    }
-    return item.numberPad.map(num => {
-      const res = MathKeyboard.NUMBER_PAD_ITEMS.find(({ value }) => num === value);
+    const handleDeleteSymbol = index => {
+      const data = [...item.symbols];
+      data.splice(index, 1);
+      onChange("symbols", data);
+    };
 
-      return res || { value: "", label: t("component.options.empty") };
-    });
-  };
+    const handleSymbolsChange = (index, value) => {
+      const data = [...item.symbols];
 
-  return (
-    <Block>
-      <WidgetSubHeading>{t("component.options.keypad")}</WidgetSubHeading>
+      if (value === "custom") {
+        data[index] = {
+          label: "label",
+          title: "",
+          value: ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+        };
+      } else {
+        data[index] = value;
+      }
 
-      <StyledRow gutter={60}>
-        <Col span={12}>
-          <Checkbox checked={item.showHints} size="large" onChange={e => onChange("showHints", e.target.checked)}>
-            {t("component.options.showKeypadHints")}
-          </Checkbox>
-        </Col>
-      </StyledRow>
+      onChange("symbols", data);
+    };
 
-      <StyledRow gutter={60}>
-        <Col span={12}>
-          <Label>{t("component.options.maximumLines")}</Label>
-          <Input
-            size="large"
-            type="number"
-            value={item.ui_style.max_lines}
-            onChange={e => changeUiStyle("max_lines", +e.target.value)}
-          />
-        </Col>
-        <Col span={12}>
-          <Label>{t("component.options.defaultMode")}</Label>
-          <Select
-            size="large"
-            value={item.ui_style.default_mode}
-            style={{ width: "100%" }}
-            onChange={val => changeUiStyle("default_mode", val)}
-          >
-            {math.modes.map(({ value: val, label }) => (
-              <Select.Option key={val} value={val}>
-                {label}
-              </Select.Option>
-            ))}
-          </Select>
-        </Col>
-      </StyledRow>
+    const handleChangeNumberPad = (index, value) => {
+      const numberPad = item.numberPad ? [...item.numberPad] : [];
 
-      <StyledRow gutter={60}>
-        <Col span={12}>
-          <Label>{t("component.options.numberPad")}</Label>
-          <NumberPad onChange={handleChangeNumberPad} items={getNumberPad()} />
-        </Col>
-        <Col span={12}>
-          <Label>{t("component.options.symbols")}</Label>
-          <TypedList
-            type={types.SELECT}
-            selectData={[...math.symbols, { value: "custom", label: t("component.options.addCustomGroup") }]}
-            buttonText={t("component.options.add")}
-            onAdd={handleAddSymbol}
-            items={item.symbols}
-            onRemove={handleDeleteSymbol}
-            onChange={handleSymbolsChange}
-          />
-        </Col>
-      </StyledRow>
-    </Block>
-  );
-};
+      numberPad[index] = value;
+      onChange("numberPad", numberPad);
+    };
+
+    const getNumberPad = () => {
+      if (!item.numberPad || !item.numberPad.length) {
+        onChange("numberPad", MathKeyboard.NUMBER_PAD_ITEMS.map(({ value }) => value));
+        return MathKeyboard.NUMBER_PAD_ITEMS;
+      }
+      return item.numberPad.map(num => {
+        const res = MathKeyboard.NUMBER_PAD_ITEMS.find(({ value }) => num === value);
+
+        return res || { value: "", label: t("component.options.empty") };
+      });
+    };
+
+    return (
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Subtitle>{t("component.options.keypad")}</Subtitle>
+
+        <StyledRow gutter={60}>
+          <Col span={12}>
+            <Checkbox checked={item.showHints} size="large" onChange={e => onChange("showHints", e.target.checked)}>
+              {t("component.options.showKeypadHints")}
+            </Checkbox>
+          </Col>
+        </StyledRow>
+
+        <StyledRow gutter={60}>
+          <Col span={12}>
+            <Label>{t("component.options.maximumLines")}</Label>
+            <Input
+              size="large"
+              type="number"
+              value={item.ui_style.max_lines}
+              onChange={e => changeUiStyle("max_lines", +e.target.value)}
+            />
+          </Col>
+          <Col span={12}>
+            <Label>{t("component.options.defaultMode")}</Label>
+            <Select
+              size="large"
+              value={item.ui_style.default_mode}
+              style={{ width: "100%" }}
+              onChange={val => changeUiStyle("default_mode", val)}
+            >
+              {math.modes.map(({ value: val, label }) => (
+                <Select.Option key={val} value={val}>
+                  {label}
+                </Select.Option>
+              ))}
+            </Select>
+          </Col>
+        </StyledRow>
+
+        <StyledRow gutter={60}>
+          <Col span={12}>
+            <Label>{t("component.options.numberPad")}</Label>
+            <NumberPad onChange={handleChangeNumberPad} items={getNumberPad()} />
+          </Col>
+          <Col span={12}>
+            <Label>{t("component.options.symbols")}</Label>
+            <TypedList
+              type={types.SELECT}
+              selectData={[...math.symbols, { value: "custom", label: t("component.options.addCustomGroup") }]}
+              buttonText={t("component.options.add")}
+              onAdd={handleAddSymbol}
+              items={item.symbols}
+              onRemove={handleDeleteSymbol}
+              onChange={handleSymbolsChange}
+            />
+          </Col>
+        </StyledRow>
+      </Widget>
+    );
+  }
+}
 
 KeyPadOptions.propTypes = {
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  advancedAreOpen: PropTypes.bool,
+  fillSections: PropTypes.func,
+  cleanSections: PropTypes.func
+};
+
+KeyPadOptions.defaultProps = {
+  advancedAreOpen: false,
+  fillSections: () => {},
+  cleanSections: () => {}
 };
 
 export default withNamespaces("assessment")(KeyPadOptions);

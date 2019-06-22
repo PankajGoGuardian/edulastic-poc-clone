@@ -7,7 +7,8 @@ import { trim } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { springGreen, fadedBlack } from "@edulastic/colors";
 import { connect } from "react-redux";
-import { loginAction } from "../ducks";
+import { loginAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../ducks";
+import { isDistrictPolicyAllowed } from "../../../common/utils/helpers";
 
 import mailIcon from "../../assets/mail-icon.svg";
 import keyIcon from "../../assets/key-icon.svg";
@@ -54,7 +55,10 @@ class LoginContainer extends React.Component {
       Partners,
       isSignupUsingDaURL,
       districtPolicy,
-      districtShortName
+      districtShortName,
+      googleLogin,
+      cleverLogin,
+      msoLogin
     } = this.props;
 
     const formItemLayout = {
@@ -80,23 +84,45 @@ class LoginContainer extends React.Component {
                       <PartnerBoxTitle src={Partners.boxTitle} alt={Partners.name} />
                     )}
                   </h3>
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.googleSignOn) || !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn span={20} offset={2}>
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "googleSignOn") ||
+                  !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn
+                      span={20}
+                      offset={2}
+                      onClick={() => {
+                        googleLogin();
+                      }}
+                    >
                       <img src={googleIcon} alt="" /> {t("common.googlesigninbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.office365SignOn) || !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn span={20} offset={2}>
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "office365SignOn") ||
+                  !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn
+                      span={20}
+                      offset={2}
+                      onClick={() => {
+                        msoLogin();
+                      }}
+                    >
                       <img src={icon365} alt="" /> {t("common.office365signinbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
-                  {(isSignupUsingDaURL && districtPolicy && districtPolicy.cleverSignOn) || !isSignupUsingDaURL ? (
-                    <ThirdPartyLoginBtn span={20} offset={2}>
+                  {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "cleverSignOn") ||
+                  !isSignupUsingDaURL ? (
+                    <ThirdPartyLoginBtn
+                      span={20}
+                      offset={2}
+                      onClick={() => {
+                        cleverLogin();
+                      }}
+                    >
                       <img src={cleverIcon} alt="" /> {t("common.cleversigninbtn")}
                     </ThirdPartyLoginBtn>
                   ) : null}
                 </FormHead>
-                {(isSignupUsingDaURL && districtPolicy && districtPolicy.userNameAndPassword) || !isSignupUsingDaURL ? (
+                {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "userNameAndPassword") ||
+                !isSignupUsingDaURL ? (
                   <FormBody>
                     <Col span={20} offset={2}>
                       <h5 align="center">{t("common.formboxheading")}</h5>
@@ -155,7 +181,12 @@ const enhance = compose(
   withNamespaces("login"),
   connect(
     null,
-    { login: loginAction }
+    {
+      googleLogin: googleLoginAction,
+      cleverLogin: cleverLoginAction,
+      msoLogin: msoLoginAction,
+      login: loginAction
+    }
   )
 );
 

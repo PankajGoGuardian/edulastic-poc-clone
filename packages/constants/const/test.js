@@ -120,5 +120,13 @@ module.exports = {
     SHOW_COLOUR_SHCEME: "Show Color Scheme",
     SHOW_FONT_SIZE: "Show Font Size",
     SHOW_ZOOM: "Show Zoom"
-  }
+  },
+  collectionDefaultFilter: [
+    { text: "All Collections", value: "" },
+    { text: "Private Library", value: "INDIVIDUAL" },
+    { text: "School Library", value: "SCHOOL" },
+    { text: "District Library", value: "DISTRICT" },
+    { text: "Public Library", value: "PUBLIC" },
+    { text: "Edulastic Certified", value: "EDULASTIC" }
+  ]
 };

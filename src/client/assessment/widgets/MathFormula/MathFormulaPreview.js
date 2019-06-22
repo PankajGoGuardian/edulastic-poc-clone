@@ -42,25 +42,20 @@ class MathFormulaPreview extends Component {
 
   constructor(props) {
     super(props);
-    const { studentTemplate } = props;
     this.state = {
-      latex: studentTemplate,
+      latex: this.getValidLatex(props),
       innerValues: []
     };
   }
 
   componentDidUpdate(prevProps) {
-    const { studentTemplate, type: previewType, userAnswer } = this.props;
-    const { studentTemplate: prevStudentTemplate, type: prevPreviewType, userAnswer: prevUserAnswer } = prevProps;
+    const { studentTemplate, type: previewType } = this.props;
+    const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
 
-    if (
-      (previewType !== prevPreviewType && previewType === CLEAR) ||
-      userAnswer !== prevUserAnswer ||
-      studentTemplate !== prevStudentTemplate
-    ) {
+    if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
       if (!this.isStatic()) {
         // eslint-disable-next-line react/no-did-update-set-state
-        this.setState({ latex: userAnswer || studentTemplate });
+        this.setState({ latex: this.getValidLatex(this.props) });
         return;
       }
       this.updateStaticMathFromUserAnswer();
@@ -72,6 +67,18 @@ class MathFormulaPreview extends Component {
     return (
       studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1 && studentTemplate !== "\\MathQuillMathField{}"
     );
+  }
+
+  getValidLatex(props) {
+    const { studentTemplate, userAnswer } = props;
+    if (this.isStatic()) {
+      return studentTemplate;
+    }
+    if (userAnswer) {
+      if (typeof userAnswer === "string") return userAnswer;
+      return userAnswer[0];
+    }
+    return studentTemplate;
   }
 
   updateStaticMathFromUserAnswer() {
@@ -143,7 +150,6 @@ class MathFormulaPreview extends Component {
           : theme.widgets.mathFormula.inputIncorrectColor
         : theme.widgets.mathFormula.inputIncorrectColor;
     }
-
     return (
       <div>
         <QuestionTitleWrapper>
@@ -173,7 +179,7 @@ class MathFormulaPreview extends Component {
             <MathInput
               symbols={item.symbols}
               numberPad={item.numberPad}
-              value={latex ? latex.replace("\\MathQuillMathField{}", "") : ""}
+              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
               onInput={latexv => this.onUserResponse(latexv)}
               onBlur={latexv => this.onBlur(latexv)}
               disabled={evaluation && !evaluation.some(ie => ie)}

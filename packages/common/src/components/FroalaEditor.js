@@ -6,14 +6,13 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
+import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
-import { IconTranslator } from "@edulastic/icons";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
-import Editor from "react-froala-wysiwyg";
 import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
@@ -95,24 +94,26 @@ const DEFAULT_TOOLBAR_BUTTONS = {
         "bold",
         "italic",
         "underline",
-        "backgroundColor",
-        "textColor",
         "fontFamily",
         "fontSize",
-        "strikeThrough",
-        "insertTable",
+        "paragraphFormat",
         "indent",
-        "outdent"
+        "outdent",
+        "insertTable",
+        "math",
+        "insertImage",
+        "undo",
+        "redo",
+        "align",
+        "backgroundColor",
+        "textColor",
+        "strikeThrough"
       ],
-      buttonsVisible: 6
-    },
-    moreParagraph: {
-      buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
-      buttonsVisible: 6
+      buttonsVisible: 10
     }
   },
   MD: {
-    moreMisc: {
+    moreText: {
       buttons: [
         "bold",
         "italic",
@@ -129,7 +130,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
     }
   },
   SM: {
-    moreMisc: {
+    moreText: {
       buttons: [
         "bold",
         "italic",
@@ -146,7 +147,7 @@ const DEFAULT_TOOLBAR_BUTTONS = {
     }
   },
   XS: {
-    moreMisc: {
+    moreText: {
       buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
       buttonsVisible: 2
     }
@@ -158,13 +159,20 @@ const NoneDiv = styled.div`
   opacity: 0;
 `;
 
-const BackgroundStyleWrapper = styled.div`
+const BackgroundStyleWrapper = styled.div.attrs({
+  className: "froala-wrapper"
+})`
   position: relative;
   width: 100%;
   display: block;
 
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
+  }
+
+  .fr-wrapper {
+    transition: padding-top 0.5s;
+    padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
 `;
 
@@ -210,14 +218,11 @@ const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
   const cSize = sizeMap[toolbarSize][size];
 
   const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
-  if (cSize === "STD") {
-    toolbarButtons.moreMisc = {
-      buttons: additionalToolbarOptions,
-      buttonsVisible: 3
-    };
-  } else {
-    toolbarButtons.moreMisc.buttons = [...toolbarButtons.moreMisc.buttons, ...additionalToolbarOptions];
-  }
+  toolbarButtons.moreText.buttons = [...toolbarButtons.moreText.buttons];
+  toolbarButtons.moreMisc = {
+    buttons: additionalToolbarOptions,
+    buttonsVisible: 3
+  };
 
   return toolbarButtons;
 };
@@ -241,6 +246,7 @@ const CustomEditor = ({
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
+  const [toolbarExpanded, setToolbarExpanded] = useState(false);
 
   const [mathField, setMathField] = useState(null);
 
@@ -451,6 +457,11 @@ const CustomEditor = ({
           }
         },
         "commands.after": function(cmd) {
+          if (cmd === "moreText") {
+            this.toolbarExpanded = !this.toolbarExpanded;
+            setToolbarExpanded(this.toolbarExpanded);
+            return;
+          }
           if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
             this.selection.save();
             const updatedHtml = reIndexResponses(this.html.get(true));
@@ -677,7 +688,7 @@ const CustomEditor = ({
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}

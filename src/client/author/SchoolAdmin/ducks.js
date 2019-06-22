@@ -61,6 +61,10 @@ const getRoleSelector = createSelector(
   stateSchoolAdminSelector,
   ({ role }) => role
 );
+const getSearchValueSelector = createSelector(
+  stateSchoolAdminSelector,
+  ({ searchName }) => searchName
+);
 
 export const getAdminUsersDataSelector = createSelector(
   stateSchoolAdminSelector,
@@ -161,8 +165,8 @@ export const reducer = createReducer(initialState, {
     state.deleting = false;
     state.deleteError = payload.error;
   },
-  [SET_SCHOOLADMIN_SEARCHNAME]: (state, { payload }) => {
-    state.searchName = payload;
+  [SET_SCHOOLADMIN_SEARCHNAME]: (state, { payload: value }) => {
+    state.searchName = value;
   },
   [SET_SHOW_ACTIVE_COURSES]: (state, { payload: bool }) => {
     state.showActiveUsers = bool;
@@ -208,6 +212,15 @@ function* receiveSchoolAdminSaga() {
     const page = yield select(getPageNoSelector);
     const role = yield select(getRoleSelector);
     const { other, ...rest } = yield select(getFiltersSelector);
+    const searchValue = yield select(getSearchValueSelector);
+    const searchParams = searchValue
+      ? {
+          firstName: {
+            type: "cont",
+            value: searchValue
+          }
+        }
+      : {};
     const statusParams = showActiveUsers ? { status: 1 } : {};
     const payload = {
       districtId,
@@ -216,6 +229,7 @@ function* receiveSchoolAdminSaga() {
       page,
       ...statusParams,
       search: {
+        ...searchParams,
         ...rest
       }
     };

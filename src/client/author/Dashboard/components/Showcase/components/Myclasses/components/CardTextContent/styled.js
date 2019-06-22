@@ -2,10 +2,9 @@ import styled from "styled-components";
 import { Row, Col } from "antd";
 export const IconWrapper = styled.div`
   width: 43px;
-  height: 42px;
-  background: #5eb500;
+  height: 43px;
+  background: rgba(94, 181, 0, 0.2);
   border-radius: 50%;
-  opacity: 0.5;
   position: relative;
 `;
 export const OverlayText = styled.div`
@@ -15,7 +14,7 @@ export const OverlayText = styled.div`
   left: 0;
   position: absolute;
   text-align: center;
-  color: black;
+  color: #5eb500;
   font-size: 14px;
   z-index: 30;
   line-height: 2.8rem;

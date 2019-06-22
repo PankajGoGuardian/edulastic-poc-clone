@@ -15,8 +15,8 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 export const Container = styled.div`
   display: flex;
   align-items: center;
-  background: ${darkBlueSecondary};
-  padding: 0px 40px;
+  background: ${props => props.theme.header.headerBgColor};
+  padding: 0px 20px;
   height: 62px;
 
   @media (max-width: ${mobileWidth}) {

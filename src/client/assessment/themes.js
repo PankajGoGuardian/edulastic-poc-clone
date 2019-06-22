@@ -1,5 +1,46 @@
 export const themes = {
   default: {
+    header: {
+      headerBgColor: "#00AD50",
+      headerTitleTextColor: "white",
+      headerTitleFontSize: "22px"
+    },
+    sideMenu: {
+      sidebarBgColor: "#fbfafc",
+      sidebarTextColor: "#434b5d",
+      helpButtonBgColor: "#ffffff",
+      helpButtonBgHoverColor: "#00AD50",
+      helpButtonFontSize: "14px",
+      helpButtonTextColor: "#5EB500",
+      helpButtonTextHoverColor: "white",
+      helpIconColor: "#5EB500",
+      helpIconHoverColor: "white",
+      dropdownIconColor: "#333333",
+      userInfoButtonBgColor: "#ffffff",
+      userInfoNameTextColor: "#444444",
+      userInfoNameFontSize: "14px",
+      userInfoRoleTextColor: "#444444",
+      userInfoRoleFontSize: "12px",
+      userInfoDropdownBgColor: "#ffffff",
+      userInfoDropdownItemBgColor: "#ffffff",
+      userInfoDropdownItemBgHoverColor: "#f0f0f0",
+      userInfoDropdownItemTextColor: "#444444",
+      userInfoDropdownItemTextHoverColor: "#00AD50",
+      itemIconColor: "#425066",
+      userInfoDropdownItemFontSize: "14px",
+      userInfoDropdownItemIconSize: "20px",
+      menuItemBgColor: "transparent",
+      menuSelectedItemBgColor: "#00AD50",
+      menuItemLinkColor: "#434b5d",
+      menuSelectedItemLinkColor: "white",
+      menuItemLinkHoverColor: "#00AD50"
+    },
+    checkbox: {
+      checkboxBorderColor: "",
+      checkboxCheckedColor: "#00ad50",
+      checkboxIntermediateColor: "#00ad50",
+      checkboxLabelColor: "#00ad50"
+    },
     common: {
       addNewChoiceButtonFontFamily: "Open Sans",
       addNewChoiceButtonFontSize: "11px",

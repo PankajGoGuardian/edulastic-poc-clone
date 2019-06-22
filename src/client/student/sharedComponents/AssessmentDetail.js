@@ -22,7 +22,8 @@ const AssessmentDetails = ({
   type,
   startDate,
   safeBrowser,
-  graded = assignmentStatus.GRADED
+  graded = assignmentStatus.GRADED,
+  absent
 }) => (
   <Wrapper>
     <Col>
@@ -62,8 +63,10 @@ const AssessmentDetails = ({
             )}
           </React.Fragment>
         ) : (
-          <StatusButton isSubmitted={started} graded={graded}>
-            <span data-cy="status">{started ? t(`common.${graded}`) : t("common.missed")}</span>
+          <StatusButton isSubmitted={started} graded={graded} absent={absent}>
+            <span data-cy="status">
+              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.missed")}
+            </span>
           </StatusButton>
         )}
       </StatusWrapper>
@@ -92,6 +95,9 @@ const getStatusBgColor = (props, type) => {
       return props.theme.assignment[`cardNotStartedLabel${type}Color`];
     }
   } else {
+    if (props.absent) {
+      return props.theme.assignment[`cardAbsentLabel${type}Color`];
+    }
     if (props.isSubmitted) {
       switch (props.graded) {
         case assignmentStatus.GRADE_HELD:

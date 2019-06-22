@@ -12,6 +12,8 @@ import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
+import SebQuitConfirm from "./student/SebQuitConfirm";
+
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
@@ -72,8 +74,9 @@ class App extends Component {
   componentDidMount() {
     const { fetchUser, location } = this.props;
     const publicPath = location.pathname.split("/").includes("public");
-
-    if (!publicPath) {
+    const ssoPath = location.pathname.split("/").includes("auth");
+    const partnerPath = location.pathname.split("/").includes("partnerLogin");
+    if (!publicPath && !ssoPath && !partnerPath) {
       fetchUser();
     }
   }
@@ -101,7 +104,7 @@ class App extends Component {
             defaultRoute = "/author/assignments";
           } else {
             if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-              redirectRoute = "/district/" + path[1];
+              redirectRoute = `/district/${path[1]}/signup`;
             } else {
               redirectRoute = "/Signup";
             }
@@ -121,10 +124,17 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
         (path[0] && path[0].toLocaleLowerCase() === "district")
       ) {
+      } else if (
+        this.props.location.pathname === "/auth/mso" ||
+        this.props.location.pathname === "/auth/clever" ||
+        this.props.location.pathname === "/auth/google"
+      ) {
+      } else if (this.props.location.pathname === `/partnerLogin/${path[1]}`) {
       } else {
         redirectRoute = "/login";
       }
     }
+
     // signup routes hidden till org reference is not done
     return (
       <div>
@@ -146,6 +156,8 @@ class App extends Component {
             />
             <LoggedOutRoute path="/Signup" component={TeacherSignup} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/login" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/partnerLogin/greatminds" component={Auth} redirectPath={defaultRoute} />
+            <LoggedOutRoute path="/partnerLogin/readicheck" component={Auth} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/GetStarted" component={GetStarted} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/AdminSignup" component={AdminSignup} redirectPath={defaultRoute} />
             <LoggedOutRoute path="/StudentSignup" component={StudentSignup} redirectPath={defaultRoute} />
@@ -153,10 +165,12 @@ class App extends Component {
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
+            <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />
             ))}

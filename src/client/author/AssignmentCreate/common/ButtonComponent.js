@@ -18,10 +18,10 @@ const ButtonComponent = styled.button`
         ...style,
         ...{
           background: white,
-          color: green,
+          color: "#42d184",
           border: "none",
           ":hover, :focus": {
-            background: greenDark,
+            background: "#42d184",
             color: white
           }
         }
@@ -32,10 +32,10 @@ const ButtonComponent = styled.button`
         ...style,
         ...{
           background: white,
-          color: newBlue,
+          color: "#00AD50",
           border: "none",
           ":hover, :focus": {
-            background: darkBlue,
+            background: "#00AD50",
             color: white
           }
         }

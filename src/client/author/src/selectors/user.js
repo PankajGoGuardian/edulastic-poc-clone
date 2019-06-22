@@ -74,6 +74,11 @@ export const getUserOrgData = createSelector(
   state => _get(state, "user.orgData")
 );
 
+export const getCollectionsSelector = createSelector(
+  stateSelector,
+  state => _get(state, "user.orgData.itemBanks", [])
+);
+
 export const getUserId = createSelector(
   getUser,
   state => _get(state, "_id")

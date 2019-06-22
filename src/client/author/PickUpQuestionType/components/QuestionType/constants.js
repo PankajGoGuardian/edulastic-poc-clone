@@ -1093,6 +1093,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
@@ -1104,9 +1105,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ]
       },
       onSelectQuestionType
@@ -1125,6 +1126,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1135,9 +1137,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
         ui_style: {
           widthpx: 140,
@@ -1162,7 +1164,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        imageWidth: 0,
+        keepAspectRatio: true,
         ui_style: {
           width: 140
         },
@@ -1175,9 +1177,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
         stimulusReviewonly: "",
         instructorStimulus: "",

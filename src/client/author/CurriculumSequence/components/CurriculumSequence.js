@@ -686,7 +686,7 @@ ModuleProgress.propTypes = {
 const TopBar = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${greenSecondary};
+  background-color: ${props => props.theme.header.headerBgColor};
   width: 100%;
   min-height: 100px;
 `;

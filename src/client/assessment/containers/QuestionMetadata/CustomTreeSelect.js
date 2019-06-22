@@ -10,6 +10,7 @@ const CustomTreeSelect = ({ children, title, style }) => {
   const handleClickOutside = event => {
     if (
       event.target.className &&
+      event.target.className.includes &&
       (event.target.className.includes("ant-select-dropdown-menu-item") ||
         event.target.className.includes("ant-select-dropdown-menu"))
     ) {

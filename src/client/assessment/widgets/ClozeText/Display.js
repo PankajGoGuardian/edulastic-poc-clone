@@ -137,6 +137,8 @@ class ClozeTextDisplay extends Component {
       item,
       showQuestionNumber,
       showIndex,
+      disableResponse,
+      qIndex,
       userSelections,
       responseIds
     } = this.props;
@@ -159,20 +161,24 @@ class ClozeTextDisplay extends Component {
             userSelections,
             evaluation,
             showIndex,
+            disableResponse,
+            qIndex,
             uiStyle,
             responseIds
           }
         : {
             userAnswers: userSelections,
-            style: { height: btnStyle.height, minWidth: uiStyle.widthpx || response.minWidth },
+            style: { height: btnStyle.height },
             btnStyle,
             onChange: this._changeInput,
             placeholder: btnStyle.placeholder,
             type: btnStyle.inputtype,
             item,
+            qIndex,
+            disableResponse,
             showIndex,
             responseIds,
-            uiStyle
+            responsecontainerindividuals
           };
 
     const answerBox = showAnswer ? (
@@ -237,6 +243,7 @@ ClozeTextDisplay.propTypes = {
   templateMarkUp: PropTypes.string,
   responseIds: PropTypes.object,
   item: PropTypes.object,
+  disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number
 };
@@ -265,7 +272,8 @@ ClozeTextDisplay.defaultProps = {
   },
   templateMarkUp: "",
   showQuestionNumber: false,
-  qIndex: null
+  disableResponse: false
+  // qIndex: null
 };
 
 export default ClozeTextDisplay;

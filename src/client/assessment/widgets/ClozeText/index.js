@@ -289,6 +289,7 @@ class ClozeText extends Component {
                 item={itemForPreview}
                 responseIds={item.response_ids}
                 showIndex={false}
+                {...restProps}
               />
             )}
           </Wrapper>

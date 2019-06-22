@@ -59,7 +59,11 @@ const HeaderBar = ({
           {windowWidth > 468 && <span>Move to</span>}
         </ButtonLink>
         {showPrompt && (
-          <Prompt style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }} onSuccess={handleSuccess} />
+          <Prompt
+            style={{ position: "absolute", left: 0, top: 25, zIndex: 1 }}
+            maxValue={itemTotal}
+            onSuccess={handleSuccess}
+          />
         )}
       </ActionButton>
       <ActionButton data-cy="expandCollapseRow" style={{ marginLeft: 0 }}>

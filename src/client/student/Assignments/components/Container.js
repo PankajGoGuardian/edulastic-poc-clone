@@ -3,18 +3,44 @@ import styled from "styled-components";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Layout } from "antd";
-import { getCurrentGroup } from "../../Login/ducks";
+import { getCurrentGroup, getClasses } from "../../Login/ducks";
+import { useRealtimeV2 } from "@edulastic/common";
+import { get, partial } from "lodash";
 
 // actions
-import { fetchAssignmentsAction, getAssignmentsSelector } from "../ducks";
+import { fetchAssignmentsAction, getAssignmentsSelector, transformAssignmentForRedirect } from "../ducks";
 
+import { addRealtimeAssignmentAction } from "../../sharedDucks/AssignmentModule/ducks";
+import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 
-const Content = ({ flag, assignments, fetchAssignments, currentGroup }) => {
+const Content = ({
+  flag,
+  assignments,
+  fetchAssignments,
+  currentGroup,
+  allClasses,
+  userId,
+  addRealtimeAssignment,
+  addRealtimeReport
+}) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
   }, []);
+
+  const topics = [
+    `student_assignment:user:${userId}`,
+    ...(currentGroup
+      ? [`student_assignment:class:${currentGroup}`]
+      : allClasses.map(x => `student_assignment:class:${x._id}`))
+  ];
+
+  const transformAssignment = payload => {
+    addRealtimeAssignment(transformAssignmentForRedirect(currentGroup, userId, allClasses, payload));
+  };
+
+  useRealtimeV2(topics, { addAssignment: transformAssignment, addReport: addRealtimeReport });
 
   return (
     <LayoutContent flag={flag}>
@@ -31,10 +57,14 @@ export default connect(
   state => ({
     flag: state.ui.flag,
     currentGroup: getCurrentGroup(state),
-    assignments: getAssignmentsSelector(state)
+    assignments: getAssignmentsSelector(state),
+    allClasses: getClasses(state),
+    userId: get(state, "user.user._id")
   }),
   {
-    fetchAssignments: fetchAssignmentsAction
+    fetchAssignments: fetchAssignmentsAction,
+    addRealtimeAssignment: addRealtimeAssignmentAction,
+    addRealtimeReport: addRealtimeReportAction
   }
 )(Content);
 

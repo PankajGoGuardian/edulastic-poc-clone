@@ -1,8 +1,8 @@
 import { createAction, createReducer, createSelector } from "redux-starter-kit";
-import { pick, last } from "lodash";
+import { pick, last, get, set } from "lodash";
 import { takeLatest, call, put, select } from "redux-saga/effects";
 import { message } from "antd";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { authApi, userApi, TokenStorage } from "@edulastic/api";
 import { roleuser, signUpState } from "@edulastic/constants";
 import { fetchAssignmentsAction } from "../Assignments/ducks";
@@ -10,9 +10,17 @@ import { fetchSkillReportByClassID as fetchSkillReportAction } from "../SkillRep
 import { receiveLastPlayListAction, receiveRecentPlayListsAction } from "../../author/Playlist/ducks";
 import { getWordsInURLPathName } from "../../common/utils/helpers";
 import { signupDistrictPolicySelector, signupGeneralSettingsSelector } from "../Signup/duck";
+import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 // types
 export const LOGIN = "[auth] login";
+export const GOOGLE_LOGIN = "[auth] google login";
+export const CLEVER_LOGIN = "[auth] clever login";
+export const MSO_LOGIN = "[auth] mso login";
+export const GOOGLE_SSO_LOGIN = "[auth] google sso login";
+export const CLEVER_SSO_LOGIN = "[auth] clever sso login";
+export const MSO_SSO_LOGIN = "[auth] mso sso login";
+export const GET_USER_DATA = "[auth] get user data from sso response";
 export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
@@ -23,6 +31,13 @@ export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by clas
 
 // actions
 export const loginAction = createAction(LOGIN);
+export const googleLoginAction = createAction(GOOGLE_LOGIN);
+export const cleverLoginAction = createAction(CLEVER_LOGIN);
+export const msoLoginAction = createAction(MSO_LOGIN);
+export const googleSSOLoginAction = createAction(GOOGLE_SSO_LOGIN);
+export const cleverSSOLoginAction = createAction(CLEVER_SSO_LOGIN);
+export const getUserDataAction = createAction(GET_USER_DATA);
+export const msoSSOLoginAction = createAction(MSO_SSO_LOGIN);
 export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
@@ -37,7 +52,9 @@ const initialState = {
 };
 
 const setUser = (state, { payload }) => {
+  const defaultClass = get(payload, "orgData.classList", []).length > 1 ? "" : get(payload, "orgData.defaultClass");
   state.user = payload;
+  set(state.user, "orgData.defaultClass", defaultClass);
   state.isAuthenticated = true;
   state.authenticating = false;
   state.signupStatus = payload.currentSignUpState;
@@ -82,6 +99,32 @@ export const getClasses = createSelector(
 export const getCurrentGroup = createSelector(
   ["user.user.orgData.defaultClass"],
   r => r
+);
+
+export const getCurrentGroupWithAllClasses = createSelector(
+  [
+    "user.user.orgData.defaultClass",
+    "studentAssignment.byId",
+    "studentAssignment.current",
+    "user.user.orgData.classList"
+  ],
+  (groupId, assignmentsById, currentAssignmentId, classes) => {
+    if (groupId) {
+      return groupId;
+    } else if (currentAssignmentId) {
+      const currentAssignment = assignmentsById[currentAssignmentId];
+      if (!currentAssignment) {
+        return groupId;
+      }
+
+      const allClassIds = new Set(classes.map(x => x._id));
+      const assignmentClassId = currentAssignment.class.find(cl => allClassIds.has(cl._id));
+
+      return assignmentClassId ? assignmentClassId._id : groupId;
+    } else {
+      return groupId;
+    }
+  }
 );
 
 export const getCurrentSchool = createSelector(
@@ -146,13 +189,19 @@ const checkEmailPolicy = (policy, role, email) => {
   let inputDomain = email.split("@")[1];
   let allowedDomains;
   if (role === "teacher") {
-    allowedDomains = policy.allowedDomainForTeachers;
+    allowedDomains = policy.allowedDomainForTeachers
+      ? policy.allowedDomainForTeachers.map(item => item.toLocaleLowerCase())
+      : [];
   } else if (role === "student") {
-    allowedDomains = policy.allowedDomainForStudents;
+    allowedDomains = policy.allowedDomainForStudents
+      ? policy.allowedDomainForStudents.map(item => item.toLocaleLowerCase())
+      : [];
   } else if (role === "da") {
-    allowedDomains = policy.allowedDomainsForDistrict;
+    allowedDomains = policy.allowedDomainsForDistrict
+      ? policy.allowedDomainsForDistrict.map(item => item.toLocaleLowerCase())
+      : [];
   }
-  if (allowedDomains.includes(inputDomain)) {
+  if (allowedDomains.includes(inputDomain.toLocaleLowerCase())) {
     return true;
   } else {
     return false;
@@ -163,7 +212,7 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
   try {
-    const { name, email, password, role, classCode } = payload;
+    const { name, email, password, role, classCode, policyvoilation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -171,7 +220,7 @@ function* signup({ payload }) {
     }
     if (!checkEmailPolicy(districtPolicy, role, email)) {
       throw {
-        message: "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+        message: policyvoilation
       };
     }
 
@@ -228,7 +277,6 @@ function* signup({ payload }) {
       // it receives new user props in each steps of teacher signup and for other roles
     }
   } catch (err) {
-    console.error(err);
     const errorMessage = "Email already exist";
     yield call(message.error, err && err.message ? err.message : errorMessage);
   }
@@ -302,10 +350,106 @@ function* changeClass({ payload }) {
   }
 }
 
+function* googleLogin() {
+  try {
+    const res = yield call(authApi.googleLogin);
+    window.location.href = res;
+  } catch (e) {
+    yield call(message.error, "Google Login failed");
+  }
+}
+
+function* cleverLogin() {
+  try {
+    const res = yield call(authApi.cleverLogin);
+    window.location.href = res;
+  } catch (e) {
+    yield call(message.error, "Clever Login failed");
+  }
+}
+
+function* msoLogin() {
+  try {
+    const res = yield call(authApi.msoLogin);
+    window.location.href = res;
+  } catch (e) {
+    yield call(message.error, "MSO Login failed");
+  }
+}
+
+function* getUserData({ payload: res }) {
+  const user = pick(res, [
+    "_id",
+    "firstName",
+    "lastName",
+    "email",
+    "role",
+    "orgData",
+    "features",
+    "currentSignUpState",
+    "ipZipCode"
+  ]);
+  TokenStorage.storeAccessToken(res.token, user._id, user.role, true);
+  TokenStorage.selectAccessToken(user._id, user.role);
+  yield put(setUserAction(user));
+  if (user.role !== roleuser.STUDENT) {
+    yield put(receiveLastPlayListAction());
+    yield put(receiveRecentPlayListsAction());
+  }
+  const redirectUrl = getFromLocalStorage("loginRedirectUrl");
+
+  const isAuthUrl = /signup|login/gi.test(redirectUrl);
+  if (redirectUrl && !isAuthUrl) {
+    localStorage.removeItem("loginRedirectUrl");
+    yield put(push(redirectUrl));
+  } else if (user.role === roleuser.STUDENT) {
+    yield put(push("/home/assignments"));
+  } else if (user.role === roleuser.ADMIN) {
+    yield put(push("/admin"));
+  } else yield put(push("/author/assignments"));
+}
+
+function* googleSSOLogin({ payload }) {
+  try {
+    const res = yield call(authApi.googleSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "Google Login failed");
+    yield put(push("/login"));
+  }
+}
+
+function* cleverSSOLogin({ payload }) {
+  try {
+    const res = yield call(authApi.cleverSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "Clever Login failed");
+    yield put(push("/login"));
+  }
+}
+
+function* msoSSOLogin({ payload }) {
+  try {
+    const res = yield call(authApi.msoSSOLogin, payload);
+    yield put(getUserDataAction(res));
+  } catch (e) {
+    yield call(message.error, "MSO Login failed");
+    yield put(push("/login"));
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login);
   yield takeLatest(SIGNUP, signup);
   yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
   yield takeLatest(CHANGE_CLASS, changeClass);
+  yield takeLatest(GOOGLE_LOGIN, googleLogin);
+  yield takeLatest(CLEVER_LOGIN, cleverLogin);
+  yield takeLatest(MSO_LOGIN, msoLogin);
+  yield takeLatest(GOOGLE_SSO_LOGIN, googleSSOLogin);
+  yield takeLatest(CLEVER_SSO_LOGIN, cleverSSOLogin);
+  yield takeLatest(GET_USER_DATA, getUserData);
+  yield takeLatest(MSO_SSO_LOGIN, msoSSOLogin);
 }

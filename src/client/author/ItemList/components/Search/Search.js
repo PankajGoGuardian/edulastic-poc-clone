@@ -7,6 +7,8 @@ import { getFormattedCurriculumsSelector } from "../../../src/selectors/dictiona
 import { Container, Item, ItemBody, ItemHeader, MainFilterItems, ItemRelative, IconWrapper } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
 import StandardsSearchModal from "./StandardsSearchModal";
+import { getCollectionsSelector } from "../../../src/selectors/user";
+import { test as testsConstants } from "@edulastic/constants";
 class Search extends Component {
   state = {
     showModal: false
@@ -26,12 +28,27 @@ class Search extends Component {
   render() {
     const { showModal } = this.state;
     const {
-      search: { grades, status, subject, curriculumId, standardIds, questionType, depthOfKnowledge, authorDifficulty },
+      search: {
+        grades,
+        status,
+        subject,
+        collectionName = "",
+        curriculumId,
+        standardIds,
+        questionType,
+        depthOfKnowledge,
+        authorDifficulty
+      },
       onSearchFieldChange,
       curriculumStandards,
       showStatus = false,
+      collections,
       formattedCuriculums
     } = this.props;
+    const collectionData = [
+      ...testsConstants.collectionDefaultFilter,
+      ...collections.map(o => ({ text: o.title, value: o._id }))
+    ];
     const isStandardsDisabled = !(curriculumStandards.elo && curriculumStandards.elo.length > 0);
     const standardsPlaceholder = isStandardsDisabled
       ? "Available with Curriculum"
@@ -160,6 +177,19 @@ class Search extends Component {
               </Select>
             </ItemBody>
           </Item>
+          <Item>
+            <ItemHeader>Collections</ItemHeader>
+            <ItemBody>
+              <Select size="large" onSelect={onSearchFieldChange("collectionName")} value={collectionName}>
+                {collectionData.map(el => (
+                  <Select.Option key={el.value} value={el.value}>
+                    {el.text}
+                  </Select.Option>
+                ))}
+              </Select>
+            </ItemBody>
+          </Item>
+
           {showStatus && (
             <Item>
               <ItemHeader>Status</ItemHeader>
@@ -215,6 +245,7 @@ Search.propTypes = {
 
 export default connect(
   (state, { search = {} }) => ({
+    collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search)
   }),
   {}

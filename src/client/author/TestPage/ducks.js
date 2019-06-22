@@ -317,7 +317,12 @@ function* receiveTestByIdSaga({ payload }) {
     yield put(receiveTestByIdSuccess(entity));
   } catch (err) {
     const errorMessage = "Receive test by id is failing";
-    yield call(message.error, errorMessage);
+    if (err.status === 403) {
+      yield put(push("/author/tests"));
+      yield call(message.error, "You can no longer use this as sharing access has been revoked by author.");
+    } else {
+      yield call(message.error, errorMessage);
+    }
     yield put(receiveTestByIdError(errorMessage));
   }
 }

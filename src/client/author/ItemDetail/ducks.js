@@ -301,7 +301,12 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : null,
+  defaultGrades:
+    getFromLocalStorage("defaultGrades") !== null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : getFromLocalStorage("defaultGrades"),
   defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };
@@ -399,6 +404,7 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case ADD_QUESTION:
+      if (!payload.validation) return state; // do not set itemLevelScore for resources
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }

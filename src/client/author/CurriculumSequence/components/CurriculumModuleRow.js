@@ -280,7 +280,7 @@ class ModuleRow extends Component {
                               <AssignmentIcon>
                                 <CustomIcon>
                                   <IconVisualization
-                                    color="#1774F0"
+                                    color="#00AD50"
                                     onClick={() => this.viewTest(moduleData.contentId)}
                                   />
                                 </CustomIcon>
@@ -291,7 +291,7 @@ class ModuleRow extends Component {
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />
                                     ) : (
-                                      <IconLeftArrow color="#1774F0" width={13.3} height={9.35} />
+                                      <IconLeftArrow color="#00AD50" width={13.3} height={9.35} />
                                     )}
                                     {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                                   </Button>
@@ -301,7 +301,7 @@ class ModuleRow extends Component {
                                 <AssignmentIcon>
                                   <Dropdown overlay={moreMenu} trigger={["click"]}>
                                     <CustomIcon data-cy="assignmentMoreOptionsIcon" marginLeft={25} marginRight={1}>
-                                      <IconMoreVertical color="#1774F0" />
+                                      <IconMoreVertical color="#00AD50" />
                                     </CustomIcon>
                                   </Dropdown>
                                 </AssignmentIcon>
@@ -463,19 +463,19 @@ const TotalAssigned = styled.strong`
 export const AssignmentButton = styled.div`
   min-width: 121px;
   .ant-btn {
-    color: ${({ assigned }) => (assigned ? white : "#1774F0")};
-    border-color: ${({ assigned }) => (assigned ? "#1774F0" : white)};
-    background-color: ${({ assigned }) => (assigned ? "#1774F0" : white)};
+    color: ${({ assigned }) => (assigned ? white : "#00AD50")};
+    border-color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
+    background-color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
     min-width: 121px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 4px rgba(201, 208, 219, 0.5);
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : "#1774F0")};
-      color: ${({ assigned }) => (assigned ? "#1774F0" : white)};
-      border-color: ${({ assigned }) => (assigned ? white : "#1774F0")};
+      background-color: ${({ assigned }) => (assigned ? white : "#00AD50")};
+      color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
+      border-color: ${({ assigned }) => (assigned ? white : "#00AD50")};
       svg {
-        fill: ${({ assigned }) => (assigned ? "#1774F0" : white)};
+        fill: ${({ assigned }) => (assigned ? "#00AD50" : white)};
       }
     }
     i {
@@ -500,7 +500,7 @@ const AssignModuleButton = styled.div`
     min-height: 30px;
     font-size: 10px;
     margin-right: 20px;
-    color: #1774f0;
+    color: #00ad50;
     border-color: ${white};
     box-shadow: 0 2px 4px rgba(201, 208, 219, 0.5);
     @media only screen and (max-width: ${mobileWidth}) {

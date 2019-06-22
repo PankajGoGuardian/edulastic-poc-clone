@@ -80,19 +80,21 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   } = data;
 
   if (!startDate && !endDate) {
-    const currentClass = maxBy(clazz.filter(cl => cl._id === currentGroup), "endDate") || {};
+    const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
     startDate = currentClass.startDate;
     endDate = currentClass.endDate;
   }
   if (!startDate) {
-    startDate = (maxBy(clazz.filter(cl => cl._id === currentGroup), "openDate") || {}).openDate;
+    startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;
   }
   if (!endDate) {
-    endDate = (maxBy(clazz.filter(cl => cl._id === currentGroup), "closedDate") || {}).closedDate;
+    endDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "closedDate") || {})
+      .closedDate;
   }
   const lastAttempt = last(reports) || {};
   // if last test attempt was not *submitted*, user should be able to resume it.
   const resume = lastAttempt.status == 0;
+  const absent = lastAttempt.status == 2;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
   const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = last(newReports) || {};
@@ -152,6 +154,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
         startDate={startDate}
         safeBrowser={safeBrowser}
         graded={lastAttempt.graded}
+        absent={absent}
       />
       <ButtonAndDetail>
         <DetailContainer>

@@ -1,3 +1,4 @@
+/* eslint-disable react/destructuring-assignment */
 import React, { Component, Fragment } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -62,8 +63,10 @@ class AnnotationsRnd extends Component {
             width: 120,
             height: 80
           };
+
           if (annotationIndex === annotation.id) {
             const modifiedAnnotation = { ...annotation };
+
             modifiedAnnotation.size = {
               width: oldWidth + size.width,
               height: oldHeight + size.height
@@ -94,6 +97,32 @@ class AnnotationsRnd extends Component {
       })
     );
   };
+
+  componentDidUpdate() {
+    // Resize annotation box to accomodate content (by changing its height)
+    if (this.props.question && this.props.question.annotations) {
+      const { question } = this.props;
+      if (!question || !question.annotations) return null;
+
+      const annotations = question.annotations || [];
+
+      annotations
+        .filter(a => a.value)
+        .forEach((annotation, i) => {
+          const { width = 120, height = 80 } = annotation.size || { width: 120, height: 80 };
+          const { value } = annotation;
+
+          const minCharArea = value.length * 14;
+          const currentCharArea = (width * height) / 14;
+          let hc = height;
+          if (minCharArea > currentCharArea) {
+            hc = height * (minCharArea / currentCharArea) - height;
+            const delta = { width: 0, height: hc };
+            this.handleAnnotationSize(delta, annotation.id);
+          }
+        });
+    }
+  }
 
   render() {
     const { question, view, disableDragging, above } = this.props;

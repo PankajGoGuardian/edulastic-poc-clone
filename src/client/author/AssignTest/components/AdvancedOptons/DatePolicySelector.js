@@ -27,7 +27,7 @@ const DatePolicySelector = ({
     if (!endDate || !startDate) {
       return false;
     }
-    return endDate.valueOf() < startDate.valueOf();
+    return endDate.valueOf() < startDate.valueOf() || endDate.valueOf() < Date.now();
   };
 
   let openPolicy = selectsData.openPolicy;

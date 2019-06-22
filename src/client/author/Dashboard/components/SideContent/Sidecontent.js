@@ -54,7 +54,7 @@ const QuestionBanks = () => {
 const SideContent = () => {
   return (
     <SideContentWrapper>
-      <TextWrapper size="16px" color="#5EB500">
+      <TextWrapper fw="600" mb="5px" color="#5EB500">
         Introduction to Edulastic
       </TextWrapper>
       <VideoSection>
@@ -70,7 +70,7 @@ const SideContent = () => {
       <Row>
         <Col>
           <ContentWrapper mt="0.3rem" mb="1rem">
-            <TextWrapper size="16px" color="#5EB500">
+            <TextWrapper fw="600" color="#5EB500">
               Build assessments in minutes
             </TextWrapper>
             <TextWrapper size="14px" color="#848993">

@@ -27,7 +27,8 @@ import {
   MenuItem,
   MobileContainer,
   MobileFirstContainer,
-  MobileSecondContainer
+  MobileSecondContainer,
+  CustomButton
 } from "./styled_components";
 
 class ButtonBar extends Component {
@@ -120,12 +121,12 @@ class ButtonBar extends Component {
                   </Button>
                 )}
                 {(showPublishButton || showPublishButton === undefined) && (
-                  <Button data-cy="saveButton" onClick={onSave}>
+                  <CustomButton data-cy="saveButton" onClick={onSave}>
                     <HeadIcon>
-                      <IconSaveNew color={newBlue} width={20.4} height={20.4} />
+                      <IconSaveNew color="#00AD50" width={20.4} height={20.4} />
                     </HeadIcon>
                     Save
-                  </Button>
+                  </CustomButton>
                 )}
                 {!(showPublishButton || showPublishButton === undefined) && (
                   <Button data-cy="editItem" style={{ width: 120 }} size="large" onClick={onEnableEdit}>

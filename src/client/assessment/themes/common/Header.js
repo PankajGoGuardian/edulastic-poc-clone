@@ -4,7 +4,7 @@ import { darkBlueSecondary } from "@edulastic/colors";
 const Header = styled.div`
   width: 100%;
   height: 62px;
-  padding: 0 40px;
+  padding: 0 20px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -12,7 +12,7 @@ const Header = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background: ${darkBlueSecondary};
+  background: ${props => props.theme && props.theme.header && props.theme.header.headerBgColor};
   z-index: 9;
 
   @media (max-width: 768px) {

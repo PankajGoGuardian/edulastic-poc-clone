@@ -4,6 +4,7 @@ import { tabletWidth } from "@edulastic/colors";
 import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 
 import styled from "styled-components";
@@ -72,6 +73,13 @@ const ItemsTable = ({
       stimulus,
       item
     };
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const audio = {};
+    if (getAllTTS.length) {
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      audio.ttsSuccess = ttsSuccess;
+    }
     const meta = {
       id: item._id,
       title: item._id,
@@ -81,7 +89,8 @@ const ItemsTable = ({
       types: types[item._id],
       standards: standards[item._id],
       stimulus,
-      item
+      item,
+      audio
     };
 
     return {

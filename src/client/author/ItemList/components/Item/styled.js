@@ -1,4 +1,14 @@
-import { white, tabletWidth, textColor, lightGrey, greyDarken, greenPrimary, darkGrey } from "@edulastic/colors";
+import {
+  white,
+  tabletWidth,
+  textColor,
+  lightGrey,
+  greyDarken,
+  greenPrimary,
+  darkGrey,
+  green,
+  red
+} from "@edulastic/colors";
 import styled from "styled-components";
 import { Button } from "antd";
 import { IconHeart, IconShare, IconUser, IconId } from "@edulastic/icons";
@@ -455,4 +465,9 @@ export const Details = styled.div`
   max-height: ${props => (props.isOpenedDetails ? "150px" : "0")};
   position: relative;
   overflow: hidden;
+`;
+
+export const AudioIcon = styled.i`
+  color: ${props => (props.success ? green : red)};
+  font-size: 18px;
 `;

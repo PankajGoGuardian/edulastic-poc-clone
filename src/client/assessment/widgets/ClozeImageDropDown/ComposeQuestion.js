@@ -46,6 +46,7 @@ import { IconUpload } from "./styled/IconUpload";
 import { FieldWrapper } from "./styled/FieldWrapper";
 import { FieldLabel } from "./styled/FieldLabel";
 import { ResponsTextInputWrapper } from "./styled/ResponsTextInputWrapper";
+import { UploadButton } from "./styled/UploadButton";
 import { Widget } from "../../styled/Widget";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
@@ -427,33 +428,43 @@ class ComposeQuestion extends Component {
             />
             <PaddingDiv />
             <FormContainer>
-              <div data-cy="left-buttons">
-                <FieldWrapper>
-                  <ImageWidthInput
-                    ref={this.imageWidthEditor}
-                    data-cy="image-width-input"
-                    value={imageWidth}
-                    onChange={this.changeImageWidth}
-                  />
+              <div className="left-buttons">
+                <div className="size-controls">
+                  <FieldWrapper>
+                    <ImageWidthInput
+                      ref={this.imageWidthEditor}
+                      data-cy="image-width-input"
+                      value={imageWidth}
+                      onChange={this.changeImageWidth}
+                    />
 
-                  <PaddingDiv left={20}>{t("component.cloze.imageDropDown.widthpx")}</PaddingDiv>
-                </FieldWrapper>
+                    <PaddingDiv left={20}>{t("component.cloze.imageDropDown.widthpx")}</PaddingDiv>
+                  </FieldWrapper>
 
-                <FieldWrapper>
-                  <ImageWidthInput data-cy="image-height-input" value={imageHeight} onChange={this.changeImageHeight} />
-                  <PaddingDiv left={20}>{t("component.cloze.imageDropDown.heightpx")}</PaddingDiv>
-                </FieldWrapper>
+                  <FieldWrapper>
+                    <ImageWidthInput
+                      data-cy="image-height-input"
+                      value={imageHeight}
+                      onChange={this.changeImageHeight}
+                    />
+                    <PaddingDiv left={20}>{t("component.cloze.imageDropDown.heightpx")}</PaddingDiv>
+                  </FieldWrapper>
+                </div>
 
-                <FieldWrapper>
-                  <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
-                  <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
-                </FieldWrapper>
+                <div className="position-controls">
+                  <FieldWrapper>
+                    <ImageWidthInput data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
+                    <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
+                  </FieldWrapper>
 
-                <FieldWrapper>
-                  <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
-                  <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
-                </FieldWrapper>
+                  <FieldWrapper>
+                    <ImageWidthInput data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
+                    <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
+                  </FieldWrapper>
+                </div>
+              </div>
 
+              <div className="right-buttons">
                 <CheckContainer position="unset" alignSelf="center">
                   <Checkbox
                     data-cy="drag-drop-image-aria-check"
@@ -464,9 +475,6 @@ class ComposeQuestion extends Component {
                     {t("component.cloze.imageText.keepAspectRatio")}
                   </Checkbox>
                 </CheckContainer>
-              </div>
-
-              <div data-cy="right-buttons">
                 <PointerContainer className="controls-bar">
                   <FieldWrapper>
                     <ControlButton disabled={!hasActive}>
@@ -607,16 +615,11 @@ class ComposeQuestion extends Component {
                 </ImageContainer>
               </ImageFlexView>
             </FlexContainer>
-            <FlexContainer>
+            <FlexContainer justifyContent="flex-start">
               {item.imageUrl && (
-                <Dragger
-                  className="super-dragger"
-                  {...uploadProps}
-                  style={{ padding: 0, marginRight: "20px" }}
-                  showUploadList={false}
-                >
+                <UploadButton {...uploadProps} showUploadList={false}>
                   <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-                </Dragger>
+                </UploadButton>
               )}
               <CheckContainer position="unset" alignSelf="center">
                 <Checkbox

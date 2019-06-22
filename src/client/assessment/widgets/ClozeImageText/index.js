@@ -15,8 +15,9 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
-import { FieldWrapper } from "./styled/FieldWrapper";
+import { MaxRespCountWrapper } from "./styled/FieldWrapper";
 import { MaxRespCountInput } from "./styled/MaxRespCountInput";
+import { AdditionalContainer } from "./styled/AdditionalContainer";
 import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
@@ -203,7 +204,7 @@ class ClozeImageText extends Component {
                       imageOptions={item.imageOptions}
                     />
 
-                    <div style={{ marginTop: 40 }}>
+                    <AdditionalContainer>
                       <Checkbox
                         className="additional-options"
                         onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
@@ -219,7 +220,7 @@ class ClozeImageText extends Component {
                         label={t("component.cloze.dropDown.allowsinglelettermistake")}
                         checked={!!allowSingleLetterMistake}
                       />
-                      <FieldWrapper style={{ marginTop: 16 }}>
+                      <MaxRespCountWrapper>
                         <MaxRespCountInput
                           data-cy="drag-drop-image-max-res"
                           min={1}
@@ -227,9 +228,9 @@ class ClozeImageText extends Component {
                           defaultValue={item.maxRespCount}
                           onChange={val => this.handleOptionsChange("maxRespCount", val)}
                         />
-                        <PaddingDiv left={20}>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
-                      </FieldWrapper>
-                    </div>
+                        <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
+                      </MaxRespCountWrapper>
+                    </AdditionalContainer>
                   </Widget>
                 </div>
               </EditorContainer>

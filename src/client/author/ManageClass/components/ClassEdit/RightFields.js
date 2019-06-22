@@ -7,7 +7,6 @@ import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
 import { StyledFlexContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
-import { endOfDay } from "date-fns";
 
 const { allGrades, allSubjects } = selectsData;
 

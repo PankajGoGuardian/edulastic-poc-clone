@@ -13,6 +13,7 @@ import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
+import Units from "./options/Units";
 import {
   AdditionalToggle,
   AdditionalContainer,
@@ -279,6 +280,8 @@ const MathFormulaAnswerMethod = ({
           );
         case "setDecimalSeparator":
           return <DecimalSeparator options={options} onChange={changeOptions} />;
+        case "allowedUnits":
+          return <Units options={options} onChange={changeOptions} />;
         default:
           return null;
       }

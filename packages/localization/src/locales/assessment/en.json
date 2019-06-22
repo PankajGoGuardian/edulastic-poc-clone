@@ -652,7 +652,7 @@
       "field": "Field",
       "value": "Value",
       "ariaLabel": "ARIA label",
-      "allowedUnits": "Allowed units",
+      "allowedUnits": "Must use these units",
       "ignoreLeadingAndTrailingSpaces": "Ignore leading and trailing spaces",
       "treatMultipleSpacesAsOne": "Treat extra spaces as one",
       "rule": "Rule",

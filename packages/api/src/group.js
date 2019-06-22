@@ -55,6 +55,16 @@ const deleteGroup = data =>
     })
     .then(result => result.data.result);
 
+
+const addCoTeacher = data =>
+  api
+    .callApi({
+      url: `${prefix}/co-teacher`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
 const bulkUpdateClasses = data =>
   api
     .callApi({
@@ -64,6 +74,7 @@ const bulkUpdateClasses = data =>
     })
     .then(({ data: response }) => response);
 
+
 export default {
   fetchMyGroups,
   fetchMyArchiveGroups,
@@ -71,5 +82,6 @@ export default {
   editGroup,
   createGroup,
   deleteGroup,
+  addCoTeacher,
   bulkUpdateClasses
 };

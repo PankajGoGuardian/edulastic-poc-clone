@@ -38,7 +38,8 @@ const ActionContainer = ({
   selectedStudent,
   changeTTS,
   updateStudentRequest,
-  loadStudents
+  updateView,
+  loadStudents,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -249,7 +250,12 @@ const ActionContainer = ({
 
       <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />
 
-      <AddCoTeacher isOpen={isOpen.addCoTeacher} handleCancel={() => toggleModal("addCoTeacher")} />
+      <AddCoTeacher
+        isOpen={isOpen.addCoTeacher}
+        selectedClass={selectedClass}
+        handleCancel={() => toggleModal("addCoTeacher")}
+        updateView={updateView}
+      />
 
       <AddStudentDivider>
         <TitleWarapper>Student</TitleWarapper>

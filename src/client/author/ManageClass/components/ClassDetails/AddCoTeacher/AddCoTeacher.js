@@ -4,6 +4,11 @@ import PropTypes from "prop-types";
 import { get, isNull } from "lodash";
 import { Select, message } from "antd";
 import { StyledModal, Title, ActionButton, Description } from "./styled";
+import { receiveTeachersListAction } from "../../../../Teacher/ducks";
+import { getUserOrgId } from "../../../../src/selectors/user";
+import { groupApi } from "@edulastic/api";
+import { setClassAction } from "../../../../ManageClass/ducks";
+
 
 class AddCoTeacher extends React.Component {
   static propTypes = {
@@ -18,25 +23,64 @@ class AddCoTeacher extends React.Component {
   };
 
   state = {
-    teacherIndex: null
+    coTeacherId: null,
+    teacherList: []
   };
 
-  onChangeHandler = teacherIndex => this.setState({ teacherIndex });
 
+  componentDidMount() {
+    const { loadTeachers, userOrgId } = this.props;
+    loadTeachers({
+      districtId: userOrgId,
+      role: "teacher",
+      limit: 10000
+    });
+  }
+
+  onChangeHandler = id => {
+    this.setState({
+      ...this.state,
+      coTeacherId: id
+    });
+  };
+
+
+  onSearchHandler = value => {
+    const { teachers } = this.props;
+    this.setState({
+      ...this.state,
+      teacherList: teachers.filter(teacher => teacher.email.includes(value) || teacher.firstName.includes(value))
+    });
+  };
   onAdd = () => {
-    const { handleCancel, selectedStudent } = this.props;
-    const { teacherIndex } = this.state;
-    if (isNull(teacherIndex)) {
+    const { coTeacherId } = this.state;
+    const { setClass } = this.props;
+    if (isNull(coTeacherId)) {
       return message.error("Please select co-teacher");
     }
-    console.log("Add co-teacher", teacherIndex, selectedStudent);
-    if (handleCancel) {
-      handleCancel();
-    }
+    const { handleCancel, selectedClass } = this.props;
+    const { _id: classId } = selectedClass;
+
+    const result = groupApi
+      .addCoTeacher({
+        groupId: classId,
+        coTeacherId: coTeacherId
+      })
+      .then(data => {
+        if (data.groupData) {
+          setClass(data.groupData);
+          message.success("co-teacher added successfully");
+          handleCancel();
+        }
+      })
+      .catch(err => {
+        message.error(err.data.message);
+      });
   };
 
   render() {
-    const { isOpen, handleCancel, teachers } = this.props;
+    const { isOpen, handleCancel } = this.props;
+    let { teacherList } = this.state;
     const title = (
       <Title>
         <label>Add Co-Teacher</label>
@@ -55,7 +99,7 @@ class AddCoTeacher extends React.Component {
     );
 
     return (
-      <StyledModal title={title} visible={isOpen} footer={footer}>
+      <StyledModal title={title} visible={isOpen} footer={footer} onCancel={() => handleCancel()}>
         <Description>
           Invite your colleagues to view and manage your class. Co-teachers can manage enrollment, assign the assessment
           and view reports of your class(es)
@@ -68,20 +112,30 @@ class AddCoTeacher extends React.Component {
           filterOption={false}
           onChange={this.onChangeHandler}
           notFoundContent="Please enter 3 or more characters"
+          onSearch={this.onSearchHandler}
         >
-          {teachers.length > 0 &&
-            teachers.map((el, index) => (
-              <Select.Option key={index} value={index}>
-                {`${el.firstName} ${el.lastName}`}
-              </Select.Option>
-            ))}
+          {teacherList.map((el, index) => (
+            <Select.Option key={index} value={el._id}>
+              {`${el.firstName} ${el.lastName}`}
+            </Select.Option>
+          ))}
+
         </Select>
       </StyledModal>
     );
   }
 }
 
-export default connect(state => ({
-  selectedStudent: get(state, "manageClass.selectedStudent", []),
-  teachers: get(state, "teacherReducer.data", [])
-}))(AddCoTeacher);
+
+export default connect(
+  state => ({
+    userOrgId: getUserOrgId(state),
+    selectedStudent: get(state, "manageClass.selectedStudent", []),
+    teachers: get(state, "teacherReducer.data", [])
+  }),
+  {
+    loadTeachers: receiveTeachersListAction,
+    setClass: setClassAction
+  }
+)(AddCoTeacher);
+

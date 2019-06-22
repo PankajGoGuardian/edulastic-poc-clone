@@ -32,6 +32,7 @@ import {
 import ViewModal from "../ViewModal";
 import { TestStatus } from "../../../TestPage/components/TestPageHeader/styled";
 import TestPreviewModal from "../../../Assignments/components/Container/TestPreviewModal";
+import { EllipsisWrapper } from "../Item/styled";
 
 class ListItem extends Component {
   static propTypes = {
@@ -167,8 +168,11 @@ class ListItem extends Component {
                     </TestStatus>
                   )}
                 </div>
-                <Description onClick={isPlaylist ? this.moveToItem : ""}>
-                  {isPlaylist ? _source.description : description}
+                <Description
+                  title={isPlaylist ? _source.description : description}
+                  onClick={isPlaylist ? this.moveToItem : ""}
+                >
+                  <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
                 </Description>
               </Inner>
             </Col>

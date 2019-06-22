@@ -94,6 +94,7 @@ export default class DisneyCardContainer extends Component {
         }
 
         let correctAnswers = 0;
+
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {

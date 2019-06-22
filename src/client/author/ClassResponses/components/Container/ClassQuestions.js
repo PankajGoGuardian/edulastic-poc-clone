@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { keyBy as _keyBy } from "lodash";
+import { keyBy as _keyBy, isEmpty } from "lodash";
 // components
 import TestItemPreview from "../../../../assessment/components/TestItemPreview";
 import { getRows } from "../../../sharedDucks/itemDetail";
@@ -61,7 +61,7 @@ class ClassQuestions extends Component {
       .sort((x, y) => testItemsOrder[x._id] - testItemsOrder[y._id])
       .map(item => {
         const { data, rows, ...others } = item;
-        if (!(data && data.questions)) {
+        if (!(data && !isEmpty(data.questions))) {
           return;
         }
         if (item.itemLevelScoring) {

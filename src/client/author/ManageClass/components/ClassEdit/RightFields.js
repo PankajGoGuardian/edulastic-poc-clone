@@ -7,11 +7,12 @@ import { Input, Select, DatePicker } from "antd";
 import { FieldLabel } from "./components";
 import { StyledFlexContainer } from "./styled";
 import selectsData from "../../../TestPage/components/common/selectsData";
+import { endOfDay } from "date-fns";
 
 const { allGrades, allSubjects } = selectsData;
 
-const startDate = moment();
-const endDate = moment(); // .add("days", 7);
+const classStartDate = moment();
+const classEndDate = moment(); // .add("days", 7);
 
 // eslint-disable-next-line max-len
 const RightFields = ({
@@ -30,9 +31,13 @@ const RightFields = ({
   ...restProps
 }) => {
   const [subject, setSubject] = useState(defaultSubject || "");
-
+  const [startDate, setStartDate] = useState(moment(defaultStartDate || classStartDate));
   const updateSubject = e => {
     setSubject(e);
+  };
+
+  const onStartDateChangeHandler = date => {
+    setStartDate(date);
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
@@ -54,6 +59,10 @@ const RightFields = ({
     courseOptions = courseList;
   }
 
+  const disabledStartDateHandler = current => current && current < moment().subtract(1, "d");
+  const disabledEndDateHandler1 = current => current && current < moment(startDate).subtract(1, "d");
+  const disabledEndDateHandler2 = current => current && current < moment();
+
   return (
     <>
       <StyledFlexContainer>
@@ -63,23 +72,29 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel
-          label="Class Start Date"
-          optional
-          fiedlName="startDate"
-          initialValue={moment(defaultStartDate || startDate)}
-          {...restProps}
-        >
-          <DatePicker data-cy="startDate" format="DD MMM, YYYY" placeholder="Open Date" />
+        <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
+          <DatePicker
+            data-cy="startDate"
+            format="DD MMM, YYYY"
+            placeholder="Open Date"
+            disabledDate={disabledStartDateHandler}
+            onChange={onStartDateChangeHandler}
+            disabled={moment(startDate) < moment() ? true : false}
+          />
         </FieldLabel>
         <FieldLabel
           label="Class End Date"
           optional
           {...restProps}
           fiedlName="endDate"
-          initialValue={moment(defaultEndDate || endDate)}
+          initialValue={moment(defaultEndDate || classEndDate)}
         >
-          <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
+          <DatePicker
+            data-cy="endDate"
+            format="DD MMM, YYYY"
+            placeholder="End Date"
+            disabledDate={moment(startDate) < moment() ? disabledEndDateHandler2 : disabledEndDateHandler1}
+          />
         </FieldLabel>
       </StyledFlexContainer>
 
@@ -173,8 +188,8 @@ RightFields.propTypes = {
 };
 
 RightFields.defaultProps = {
-  defaultStartDate: startDate,
-  defaultEndDate: endDate,
+  defaultStartDate: classStartDate,
+  defaultEndDate: classEndDate,
   defaultCourse: {},
   defaultGrade: "",
   defaultSubject: "",

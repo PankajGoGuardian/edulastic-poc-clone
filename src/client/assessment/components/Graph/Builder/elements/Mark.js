@@ -4,6 +4,8 @@ import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtil
 
 import { calcMeasure, getClosestTick } from "../utils";
 
+const EXTRA_HEIGHT_FACTOR = 150;
+
 const deleteIconPattern =
   '<svg id="{iconId}" class="delete-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
   '<g id="{iconId}" transform="translate(-40.782 .5)">' +
@@ -164,6 +166,7 @@ const alignMarks = board => {
 
   let offsetX = xMin; // right side of previous mark
   let offsetY = containerY; // bottom side of previous marks line
+  let extraHeight = 0;
   board.elements.forEach(mark => {
     if (mark.Y() === lineY) {
       return;
@@ -177,6 +180,7 @@ const alignMarks = board => {
     if (offsetX + marginLeft + width > xMax) {
       offsetX = xMin;
       offsetY -= marginTop + height;
+      extraHeight += EXTRA_HEIGHT_FACTOR;
     }
 
     const x = offsetX + marginLeft + width / 2;
@@ -189,6 +193,7 @@ const alignMarks = board => {
 
     offsetX = x + width / 2;
   });
+  return extraHeight;
 };
 
 export default {

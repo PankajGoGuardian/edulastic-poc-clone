@@ -1,6 +1,6 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
-import { AUTO_VALUE, AUTO_HEIGHT_VALUE } from "./config/constants";
+import { AUTO_VALUE, AUTO_HEIGHT_VALUE, LOST_HEIGHT_PIXELS } from "./config/constants";
 import {
   Point,
   Line,
@@ -349,7 +349,7 @@ class Board {
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      this.resizeContainer(layout.width, layout.height);
+      this.resizeContainer(layout.width, this.calcContainerHeight(layout.height));
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -426,13 +426,17 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = []) {
+  renderMarks(marks, markCoords = [], layout) {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(Mark.onHandler(this, markCoord, mark));
     });
 
-    Mark.alignMarks(this);
+    const extraHeight = Mark.alignMarks(this);
+    const newHeight = this.calcContainerHeight(layout.height, extraHeight);
+    if (this.$board.canvasHeight + LOST_HEIGHT_PIXELS !== newHeight) {
+      this.resizeContainer(layout.width, newHeight);
+    }
   }
 
   removeMarks() {
@@ -673,11 +677,6 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#resizeContainer
    */
   resizeContainer(canvasWidth, canvasHeight) {
-    if (canvasHeight === AUTO_VALUE) {
-      canvasHeight = AUTO_HEIGHT_VALUE;
-    } else if (isNaN(canvasHeight)) {
-      canvasHeight = 0;
-    }
     this.$board.resizeContainer(canvasWidth || 0, canvasHeight || 0);
   }
 
@@ -1827,6 +1826,21 @@ class Board {
 
   isDragMode() {
     return this.$board.mode === this.$board.BOARD_MODE_DRAG;
+  }
+
+  calcContainerHeight(heightFromSetting, extraHeight) {
+    if (heightFromSetting === AUTO_VALUE) {
+      if (extraHeight) {
+        return AUTO_HEIGHT_VALUE + extraHeight;
+      }
+      return AUTO_HEIGHT_VALUE;
+    }
+
+    if (isNaN(heightFromSetting)) {
+      return 0;
+    }
+
+    return heightFromSetting;
   }
 }
 

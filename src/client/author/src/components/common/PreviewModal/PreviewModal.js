@@ -44,11 +44,16 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = () => {
-    const { data, history } = this.props;
+    const { data, history, showModal = false, addDuplicate } = this.props;
     const itemId = data.id;
     duplicateTestItem(itemId).then(duplicateId => {
       const duplicateTestItemId = duplicateId._id;
-      history.push(`/author/items/${duplicateTestItemId}/item-detail`);
+      if (showModal) {
+        this.closeModal();
+        addDuplicate(duplicateTestItemId);
+      } else {
+        history.push(`/author/items/${duplicateTestItemId}/item-detail`);
+      }
     });
   };
 
@@ -100,6 +105,8 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
+  addDuplicate: PropTypes.func,
+  showModal: PropTypes.bool,
   item: PropTypes.object
 };
 

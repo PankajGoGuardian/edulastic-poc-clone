@@ -16,6 +16,10 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
+import { getTestEntitySelector, setTestDataAndUpdateAction, setTestDataAction } from "../TestPage/ducks";
+import { toggleCreateItemModalAction } from "../src/actions/testItem";
+import changeViewAction from "../src/actions/view";
 
 // constants
 const testItemStatusConstants = {
@@ -79,9 +83,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId }
+  payload: { id, data, testId, addToTest }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -527,6 +531,7 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
       delete payload.data.data;
@@ -559,6 +564,28 @@ export function* updateItemSaga({ payload }) {
       payload: { item }
     });
     yield call(message.success, "Update item by id is success", "Success");
+    if (addToTest) {
+      // add item to test entity
+      const testItems = yield select(getSelectedItemSelector);
+      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+
+      yield put(setTestItemsAction(nextTestItems));
+
+      const testEntity = yield select(getTestEntitySelector);
+
+      const updatedTestEntity = {
+        ...testEntity,
+        testItems: [...testEntity.testItems, item]
+      };
+      if (!testEntity._id) {
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      } else {
+        yield put(setTestDataAction(updatedTestEntity));
+      }
+      yield put(toggleCreateItemModalAction(false));
+      yield put(changeViewAction("edit"));
+      return;
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Update item by id is failing";

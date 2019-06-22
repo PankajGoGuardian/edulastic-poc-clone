@@ -223,6 +223,7 @@ class Container extends PureComponent {
           <Review
             test={test}
             rows={rows}
+            onSaveTestId={this.handleSaveTestId}
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             owner={owner}

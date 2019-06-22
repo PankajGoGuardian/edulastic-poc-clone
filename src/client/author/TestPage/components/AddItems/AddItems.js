@@ -28,7 +28,7 @@ import {
   clearDictAlignmentAction,
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
-import { createTestItemAction } from "../../../src/actions/testItem";
+import { createTestItemAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -78,6 +78,7 @@ class AddItems extends PureComponent {
 
   state = {
     search: getClearSearchState(),
+    questionCreateType: "Duplicate",
     selectedTestItems: []
   };
 
@@ -140,7 +141,21 @@ class AddItems extends PureComponent {
     };
     clearDictAlignment();
     onSaveTestId();
-    createTestItem(defaultWidgets, true);
+    this.setState({ questionCreateType: "CreateNew" }, () => {
+      createTestItem(defaultWidgets, true);
+    });
+  };
+
+  handleDuplicateItem = duplicateTestItemId => {
+    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
+    if (!test.title) {
+      return message.error("Name field cannot be empty");
+    }
+    clearDictAlignment();
+    onSaveTestId();
+    this.setState({ questionCreateType: "Duplicate" }, () => {
+      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
+    });
   };
 
   handleSearchFieldChangeCurriculumId = value => {
@@ -242,7 +257,7 @@ class AddItems extends PureComponent {
       gotoSummary
     } = this.props;
 
-    const { search, selectedTestItems } = this.state;
+    const { search, selectedTestItems, questionCreateType } = this.state;
     return (
       <Container>
         <MainList id="main-list">
@@ -278,6 +293,8 @@ class AddItems extends PureComponent {
                     onAddItems={onAddItems}
                     testId={this.props.match.params.id}
                     search={search}
+                    showModal={true}
+                    addDuplicate={this.handleDuplicateItem}
                     gotoSummary={gotoSummary}
                   />
                 )}
@@ -286,7 +303,9 @@ class AddItems extends PureComponent {
             </ItemsTableContainer>
           </ListItems>
         </MainList>
-        {createTestItemModalVisible && <ModalCreateTestItem setAuthoredByMeFilter={this.setAuthoredByMeFilter} />}
+        {createTestItemModalVisible && (
+          <ModalCreateTestItem type={questionCreateType} setAuthoredByMeFilter={this.setAuthoredByMeFilter} />
+        )}
       </Container>
     );
   }
@@ -313,6 +332,7 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       clearDictAlignment: clearDictAlignmentAction,
+      toggleCreateItemModal: toggleCreateItemModalAction,
       createTestItem: createTestItemAction
     }
   )

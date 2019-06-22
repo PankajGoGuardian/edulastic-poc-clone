@@ -26,8 +26,16 @@ const createTestItemModalTabs = {
   QUESTION_EDIT: "question_edit"
 };
 
-const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion, setAuthoredByMeFilter }) => {
-  const [currentTab, setCurrentTab] = useState(createTestItemModalTabs.PICKUP_QUESTION_TYPE);
+const ModalCreateTestItem = ({
+  itemId,
+  toggleCreateItemModal,
+  createType = "Duplicate",
+  saveQuestion,
+  setAuthoredByMeFilter
+}) => {
+  const [currentTab, setCurrentTab] = useState(
+    createType === "Duplicate" ? createTestItemModalTabs.ITEM_DETAIL : createTestItemModalTabs.PICKUP_QUESTION_TYPE
+  );
 
   const makeNavigateToTab = tab => event => {
     if (event) {
@@ -81,7 +89,16 @@ const ModalCreateTestItem = ({ itemId, toggleCreateItemModal, saveQuestion, setA
 
     switch (currentTab) {
       case createTestItemModalTabs.ITEM_DETAIL:
-        return <ConnectedItemDetail {...tabProps} redirectOnEmptyItem={false} />;
+        return (
+          <ConnectedItemDetail
+            {...tabProps}
+            itemId={itemId}
+            createType={createType}
+            onCompleteItemCreation={handleCloseModal}
+            setAuthoredByMeFilter={setAuthoredByMeFilter}
+            redirectOnEmptyItem={false}
+          />
+        );
       case createTestItemModalTabs.PICKUP_QUESTION_TYPE:
         return <ConnectedPickUpQuestionType {...tabProps} />;
       case createTestItemModalTabs.QUESTION_EDIT:

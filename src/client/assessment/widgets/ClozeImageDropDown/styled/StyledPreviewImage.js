@@ -7,7 +7,7 @@ export const StyledPreviewImage = styled.div`
   max-width: ${({ maxWidth }) => (!maxWidth ? null : `${maxWidth}px`)}; */
   user-select: none;
   pointer-events: none;
-  background-size: ${({ height, width, maxWidth, maxHeight }) => `${width || maxWidth}px ${height || maxHeight}px`};
+  background-size: contain;
   background-repeat: no-repeat;
   background-image: url(${({ imageSrc }) => imageSrc || ""});
 `;

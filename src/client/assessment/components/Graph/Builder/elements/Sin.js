@@ -20,6 +20,23 @@ const makeCallback = (p1, p2) => x => {
 
 let points = [];
 
+function create(board, sinPoints, id = null) {
+  const newLine = board.$board.create("functiongraph", [makeCallback(...sinPoints)], {
+    ...defaultConfig,
+    ...Colors.default[CONSTANT.TOOLS.SIN],
+    label: getLabelParameters(jxgType),
+    id
+  });
+  newLine.type = jxgType;
+  newLine.addParents(sinPoints);
+  newLine.ancestors = {
+    [sinPoints[0].id]: sinPoints[0],
+    [sinPoints[1].id]: sinPoints[1]
+  };
+  handleSnap(newLine, Object.values(newLine.ancestors), board);
+  return newLine;
+}
+
 function onHandler() {
   return (board, event) => {
     const newPoint = Point.onHandler(board, event);
@@ -29,23 +46,9 @@ function onHandler() {
       points.forEach(point => {
         point.isTemp = false;
       });
-      const newLine = board.$board.create("functiongraph", [makeCallback(...points)], {
-        ...defaultConfig,
-        ...Colors.default[CONSTANT.TOOLS.SIN],
-        label: getLabelParameters(jxgType)
-      });
-      newLine.type = jxgType;
-      handleSnap(newLine, points, board);
-
-      if (newLine) {
-        newLine.addParents(points);
-        newLine.ancestors = {
-          [points[0].id]: points[0],
-          [points[1].id]: points[1]
-        };
-        points = [];
-        return newLine;
-      }
+      const newLine = create(board, points);
+      points = [];
+      return newLine;
     }
   };
 }
@@ -75,7 +78,7 @@ function parseConfig(pointsConfig) {
     [pointsArgument => makeCallback(...pointsArgument), pointsConfig],
     {
       ...defaultConfig,
-      fillColor: "transparent",
+      ...Colors.default[CONSTANT.TOOLS.SIN],
       label: getLabelParameters(jxgType)
     }
   ];
@@ -90,5 +93,6 @@ export default {
   getConfig,
   parseConfig,
   clean,
-  getPoints
+  getPoints,
+  create
 };

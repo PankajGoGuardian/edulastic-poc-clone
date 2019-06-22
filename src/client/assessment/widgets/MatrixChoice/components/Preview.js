@@ -47,7 +47,7 @@ const Preview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         <MathFormulaDisplay style={{ marginBottom: 20 }} dangerouslySetInnerHTML={{ __html: item.stimulus }} />
       </QuestionTitleWrapper>
 

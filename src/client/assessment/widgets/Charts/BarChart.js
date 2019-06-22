@@ -83,16 +83,24 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) =
     save();
   };
 
+  const [heightAddition, setHeightAddition] = useState(17);
+
   return (
     <svg
       style={{ userSelect: "none" }}
       width={width}
-      height={height}
+      height={height + heightAddition}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <BarsAxises lines={data} gridParams={gridParams} displayGridlines={displayVerticalLines(showGridlines)} />
+      <BarsAxises
+        setHeightAddition={setHeightAddition}
+        heightAddition={heightAddition}
+        lines={data}
+        gridParams={gridParams}
+        displayGridlines={displayVerticalLines(showGridlines)}
+      />
 
       <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 

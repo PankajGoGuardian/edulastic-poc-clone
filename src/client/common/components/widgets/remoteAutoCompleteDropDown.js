@@ -1,5 +1,5 @@
 //@ts-check
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useImperativeHandle, forwardRef } from "react";
 import { AutoComplete, Input, Icon, Menu } from "antd";
 import styled from "styled-components";
 import { some } from "lodash";
@@ -10,6 +10,8 @@ import { black } from "@edulastic/colors";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
+
+const _wipeSelected = {};
 
 // IMPORTANT:
 // onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
@@ -34,7 +36,11 @@ const RemoteAutocompleteDropDown = ({
   placeholder = "",
   ItemTemplate = null,
   minHeight = "30px",
-  filterKeys = ["title"]
+  filterKeys = ["title"],
+  setSelectedOnDataChange = false,
+  isLoading = false,
+  _ref,
+  disabled = false
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -43,6 +49,7 @@ const RemoteAutocompleteDropDown = ({
   const [addCreateNewOption, setAddCreateNewOption] = useState(false);
   const autoRef = useRef(null);
   const textChangeStatusRef = useRef(false);
+  const isFirstRender = useRef(true);
 
   const isItemPresent = (_data, isPresentItem) => {
     const isItemPresentFlag = _data.find(_item => _item.title === isPresentItem.title);
@@ -51,20 +58,22 @@ const RemoteAutocompleteDropDown = ({
 
   useInternalEffect(() => {
     let item = null;
-    if (data.length) {
-      item = data.find((item, index) => {
-        if (item.key === selected.key) {
-          return true;
+    if (setSelectedOnDataChange) {
+      if (data.length) {
+        item = data.find((item, index) => {
+          if (item.key === selected.key) {
+            return true;
+          }
+        });
+        if (!item) {
+          item = data[0];
         }
-      });
-      if (!item) {
-        item = data[0];
+      } else {
+        item = { key: "", title: "" };
       }
-    } else {
-      item = { key: "", title: "" };
+      setSelected(item);
     }
 
-    setSelected(item);
     setDropDownData(data);
     if (isItemPresent(data, { title: text }) && createNew) {
       setAddCreateNewOption(false);
@@ -89,19 +98,41 @@ const RemoteAutocompleteDropDown = ({
       item = { key: "", title: "" };
     }
 
-    setSelected(item);
+    if (setSelectedOnDataChange) {
+      setSelected(item);
+    } else {
+      setSelected({ key: "", title: "" });
+    }
   }, []);
 
+  useInternalEffect(() => {
+    setDropDownData([...data]);
+  }, [isLoading]);
+
+  useImperativeHandle(_ref, () => ({
+    wipeSelected: () => {
+      setText("");
+      setDropDownData([...data]);
+      onSelect("", { props: { title: "" } });
+    }
+  }));
+
   const buildDropDownData = datum => {
-    let regExp = new RegExp(`${text}`, "i");
-    const searchedDatum = datum.filter(item => {
-      return some(filterKeys, fKey => {
-        let test = item[fKey] || item.title;
-        return regExp.test(test);
+    let searchedDatum;
+    if (text && text.length >= 3) {
+      searchedDatum = datum.filter(item => {
+        return some(filterKeys, fKey => {
+          let test = item[fKey] || item.title;
+          test = (test + "").toLocaleLowerCase();
+          return test.includes((text + "").toLocaleLowerCase());
+        });
       });
-    });
+    } else {
+      searchedDatum = datum;
+    }
+
     let arr;
-    if (addCreateNewOption) {
+    if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
       let existingArr = searchedDatum.map((item, index) => {
         return (
           <Option key={item.key} title={item.title}>
@@ -139,18 +170,11 @@ const RemoteAutocompleteDropDown = ({
   const onSearch = value => {
     if (value.length > 2) {
       let exactMatchFound = false;
-      let regExp = new RegExp(`${value}`, "i");
-      let searchedData = data.filter((item, index) => {
-        if (value === item.title) {
-          exactMatchFound = true;
-          return true;
-        }
-        return some(filterKeys, fKey => {
-          let test = item[fKey] || item.title;
-          return regExp.test(test);
-        });
-      });
-      setDropDownData(searchedData);
+      const searchItem = data.filter(item => item.title === value);
+      if (searchItem) {
+        exactMatchFound = true;
+      }
+      setDropDownData([...data]);
 
       if (createNew && !exactMatchFound) {
         setAddCreateNewOption(true);
@@ -159,6 +183,7 @@ const RemoteAutocompleteDropDown = ({
       }
     } else {
       if (data.length !== dropDownData.length) {
+        // If search text length is less than 3 and we are not displaying all the iteps then display all the items.
         setDropDownData(data);
       }
       if (createNew && !isItemPresent(data, { title: value }) && value) {
@@ -216,7 +241,7 @@ const RemoteAutocompleteDropDown = ({
   };
 
   const dataSource = buildDropDownData(dropDownData);
-
+  isFirstRender.current = false;
   return (
     <StyledDiv className={`${containerClassName} remote-autocomplete-dropdown`}>
       <AutoComplete
@@ -231,11 +256,12 @@ const RemoteAutocompleteDropDown = ({
         value={text}
         ref={autoRef}
         onDropdownVisibleChange={onDropdownVisibleChange}
+        disabled={disabled}
       >
         <Input
           suffix={
             <Icon
-              type={iconType}
+              type={isLoading ? "loading" : iconType}
               className={`${isDropDownVisible ? "ant-input-suffix-icon-rotate-up" : ""}`}
               style={{ color: "#00ad50" }}
             />

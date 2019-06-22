@@ -12,6 +12,7 @@ import TestItemPreview from "../../../../../assessment/components/TestItemPrevie
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
 
 import { testItemsApi } from "@edulastic/api";
+import { getCollectionsSelector } from "../../../selectors/user";
 
 const ModalStyles = {
   minWidth: 750,
@@ -44,11 +45,16 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = () => {
-    const { data, history } = this.props;
+    const { data, history, showModal = false, addDuplicate } = this.props;
     const itemId = data.id;
     duplicateTestItem(itemId).then(duplicateId => {
       const duplicateTestItemId = duplicateId._id;
-      history.push(`/author/items/${duplicateTestItemId}/item-detail`);
+      if (showModal) {
+        this.closeModal();
+        addDuplicate(duplicateTestItemId);
+      } else {
+        history.push(`/author/items/${duplicateTestItemId}/item-detail`);
+      }
     });
   };
 
@@ -63,17 +69,18 @@ class PreviewModal extends React.Component {
   };
 
   render() {
-    const { isVisible, loading, item = { rows: [], data: {}, authors: [] }, currentAuthorId } = this.props;
+    const { isVisible, collections, loading, item = { rows: [], data: {}, authors: [] }, currentAuthorId } = this.props;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows } = item;
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);
+    const { allowDuplicate } = collections.find(o => o._id === item.collectionName) || { allowDuplicate: true };
     return (
       <Modal styles={{ modal: ModalStyles }} open={isVisible} onClose={this.closeModal} center>
         <HeadingWrapper>
           <Title>Preview</Title>
           <ButtonsWrapper>
-            <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>
+            {allowDuplicate && <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>}
             {authorHasPermission && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>
@@ -100,6 +107,8 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
+  addDuplicate: PropTypes.func,
+  showModal: PropTypes.bool,
   item: PropTypes.object
 };
 
@@ -107,6 +116,7 @@ const enhance = compose(
   withRouter,
   connect((state, ownProps) => ({
     item: getItemDetailSelectorForPreview(state, (ownProps.data || {}).id, ownProps.page),
+    collections: getCollectionsSelector(state),
     currentAuthorId: get(state, ["user", "user", "_id"])
   }))
 );

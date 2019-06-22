@@ -10,6 +10,7 @@ import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
 import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 import { getUserOrgData } from "../../../src/selectors/user";
+import { fetchStudentsByIdAction } from "../../ducks";
 
 import {
   DividerDiv,
@@ -36,13 +37,15 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  updateStudentRequest
+  updateStudentRequest,
+  updateView,
+  loadStudents,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
   const [isEdit, setEditStudentStatues] = useState(false);
-
-  let formRef = null;
+  const { _id: classId } = selectedClass;
+  // let formRef = null;
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -54,78 +57,84 @@ const ActionContainer = ({
     setModalStatus(false);
   }
 
-  const addStudent = () => {
-    if (formRef) {
-      const { form } = formRef.props;
-      form.validateFields((err, values) => {
-        if (!err) {
-          if (isEdit) {
-            if (values.dob) {
-              values.dob = moment(values.dob).format("x");
-            }
-            const std = { ...selectedStudent[0], ...values };
-            const userId = std._id || std.userId;
-            std.currentSignUpState = "DONE";
-            const stdData = pick(std, [
-              "districtId",
-              "dob",
-              "ellStatus",
-              "email",
-              "firstName",
-              "gender",
-              "institutionIds",
-              "lastName",
-              "race",
-              "sisId",
-              "studentNumber",
-              "frlStatus",
-              "iepStatus",
-              "sedStatus",
-              "username",
-              "contactEmails"
-            ]);
+  const addStudent = values => {
+    // all of the commented code below is moved into into the add student modal, since the validation
+    // encapsulation should be inside the addStudent and not here -
+    // this higher component should only be aware of the values and perform side effects
 
-            updateStudentRequest({
-              userId,
-              data: stdData
-            });
-            setModalStatus(false);
-          } else {
-            const { fullName } = values;
-            const tempName = split(fullName, " ");
-            const firstName = tempName[0];
-            const lastName = tempName[1];
-
-            values.classCode = selectedClass.code;
-            values.role = "student";
-            values.districtId = orgData.districtId;
-            values.institutionIds = orgData.institutionIds;
-            values.firstName = firstName;
-            values.lastName = lastName;
-
-            const contactEmails = get(values, "contactEmails");
-            if (contactEmails) {
-              values.contactEmails = [contactEmails];
-            }
-
-            if (values.dob) {
-              values.dob = moment(values.dob).format("x");
-            }
-
-            unset(values, ["confirmPwd"]);
-            unset(values, ["fullName"]);
-
-            addStudentRequest(pickBy(values, identity));
-            setReqStatus(true);
-          }
-        }
+    // if (formRef) {
+    //   const { form } = formRef.props;
+    //   form.validateFields((err, values) => {
+    //     if (!err) {
+    if (isEdit) {
+      if (values.dob) {
+        values.dob = moment(values.dob).format("x");
+      }
+      const std = { ...selectedStudent[0], ...values };
+      const userId = std._id || std.userId;
+      std.currentSignUpState = "DONE";
+      const stdData = pick(std, [
+        "districtId",
+        "dob",
+        "ellStatus",
+        "email",
+        "firstName",
+        "gender",
+        "institutionIds",
+        "lastName",
+        "race",
+        "sisId",
+        "studentNumber",
+        "frlStatus",
+        "iepStatus",
+        "sedStatus",
+        "username",
+        "contactEmails"
+      ]);
+      if (stdData.lastName == null) {
+        stdData.lastName = "";
+      }
+      updateStudentRequest({
+        userId,
+        data: stdData
       });
+      setModalStatus(false);
+    } else {
+      const { fullName } = values;
+      const tempName = split(fullName, " ");
+      const firstName = tempName[0];
+      const lastName = tempName[1];
+
+      values.classCode = selectedClass.code;
+      values.role = "student";
+      values.districtId = orgData.districtId;
+      values.institutionIds = orgData.institutionIds;
+      values.firstName = firstName;
+      values.lastName = lastName;
+
+      const contactEmails = get(values, "contactEmails");
+      if (contactEmails) {
+        values.contactEmails = [contactEmails];
+      }
+
+      if (values.dob) {
+        values.dob = moment(values.dob).format("x");
+      }
+
+      unset(values, ["confirmPwd"]);
+      unset(values, ["fullName"]);
+
+      addStudentRequest(pickBy(values, identity));
+      setReqStatus(true);
     }
+    //     }
+    //   });
+    // }
   };
 
-  const saveFormRef = node => {
-    formRef = node;
-  };
+  // const saveFormRef = node => {
+  //   formRef = node;
+  // };
 
   const showMessage = (type, msg) => {
     message.open({ type, content: msg });
@@ -137,9 +146,11 @@ const ActionContainer = ({
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to enable text to speech");
         }
+
         if (changeTTS) {
-          const stdIds = selectedStudent.map(std => std._id);
+          const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
+          loadStudents({ classId });
         }
         break;
       case "disableSpeech":
@@ -147,11 +158,12 @@ const ActionContainer = ({
           return showMessage("error", "Select 1 or more students to disable text to speech");
         }
         if (changeTTS) {
-          const stdIds = selectedStudent.map(std => std._id);
+          const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "no" });
+          loadStudents({ classId });
         }
         break;
-      case "delete":
+      case "deleteStudent":
         if (isEmpty(selectedStudent)) {
           return showMessage("error", "Select 1 or more students to remove");
         }
@@ -170,7 +182,7 @@ const ActionContainer = ({
         if (selectedStudent.length > 1) {
           return showMessage("error", "Please select only one student");
         }
-        toggleModal("add");
+        toggleModal("addStudent");
         setEditStudentStatues(true);
         break;
       case "addCoTeacher":
@@ -183,19 +195,19 @@ const ActionContainer = ({
 
   const actionMenu = (
     <Menu onClick={handleActionMenuClick}>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="enableSpeech">
         <MenuItem key="enableSpeech">
           <Icon type="caret-right" />
           Enable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="textToSpeech" actionOnInaccessible="hidden" key="disableSpeech">
         <MenuItem key="disableSpeech">
           <Icon type="sound" />
           Disable Text To Speech
         </MenuItem>
       </FeaturesSwitch>
-      <MenuItem key="delete">
+      <MenuItem key="deleteStudent">
         <Icon type="delete" />
         Remove Selected Student(s)
       </MenuItem>
@@ -203,11 +215,11 @@ const ActionContainer = ({
         <Icon type="key" />
         Reset Password
       </MenuItem>
-      <MenuItem key="edit">
+      <MenuItem key="editStudent">
         <Icon type="edit" />
         Edit Student
       </MenuItem>
-      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden">
+      <FeaturesSwitch inputFeatures="addCoTeacher" actionOnInaccessible="hidden" key="addCoTeacher">
         <MenuItem key="addCoTeacher">
           <Icon type="switcher" />
           Add a Co-Teacher
@@ -224,7 +236,7 @@ const ActionContainer = ({
           handleCancel={() => toggleModal("add")}
           isOpen={isOpen.add}
           submitted={submitted}
-          wrappedComponentRef={saveFormRef}
+          // wrappedComponentRef={saveFormRef}
           stds={selectedStudent}
           isEdit={isEdit}
         />
@@ -238,7 +250,12 @@ const ActionContainer = ({
 
       <DeleteConfirm isOpen={isOpen.delete} handleCancel={() => toggleModal("delete")} />
 
-      <AddCoTeacher isOpen={isOpen.addCoTeacher} handleCancel={() => toggleModal("addCoTeacher")} />
+      <AddCoTeacher
+        isOpen={isOpen.addCoTeacher}
+        selectedClass={selectedClass}
+        handleCancel={() => toggleModal("addCoTeacher")}
+        updateView={updateView}
+      />
 
       <AddStudentDivider>
         <TitleWarapper>Student</TitleWarapper>
@@ -303,6 +320,7 @@ export default connect(
   {
     addStudentRequest: addStudentRequestAction,
     updateStudentRequest: updateStudentRequestAction,
-    changeTTS: changeTTSRequestAction
+    changeTTS: changeTTSRequestAction,
+    loadStudents: fetchStudentsByIdAction
   }
 )(ActionContainer);

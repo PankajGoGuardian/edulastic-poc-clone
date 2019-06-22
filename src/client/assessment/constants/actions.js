@@ -7,6 +7,7 @@ export const GOTO_QUESTION = "[questions] goto question";
 export const AUTHOR_QUESTION = "author question";
 export const ADD_ANSWER = "[questions] add answer";
 export const ADD_EVALUATION = "[questions] add evulation";
+export const TOGGLE_ADVANCED_SECTIONS = "[questions] toggle advanced sections";
 // assessment
 export const LOAD_ASSESSMENT = "[assessment] load assessment";
 export const START_ASSESSMENT = "[assessment] start assessment";
@@ -23,6 +24,7 @@ export const SET_PASSWORD_VALIDATE_STATUS = "[test] set password validated statu
 export const GET_ASSIGNMENT_PASSWORD = "[test] get assignment password";
 export const TEST_ACTIVITY_LOADING = "[test] loading test activity";
 export const SET_PASSWORD_STATUS_MESSAGE = "[test] set password status message";
+export const UPDATE_CURRENT_AUDIO_DEATILS = "[test] audio player details";
 
 // items
 export const RECEIVE_ITEMS_REQUEST = "[items] receive items request";

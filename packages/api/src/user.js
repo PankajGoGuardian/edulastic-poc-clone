@@ -40,6 +40,15 @@ const fetchUsers = data =>
     })
     .then(({ data: response }) => response);
 
+const fetchUsersForShare = data =>
+  api
+    .callApi({
+      url: `user/search`,
+      method: "post",
+      data
+    })
+    .then(({ data: response }) => response);
+
 const createUser = data =>
   api
     .callApi({
@@ -90,9 +99,32 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
+const addStudentsToOtherClass = ({ classCode, userDetails }) =>
+  api
+    .callApi({
+      url: `${prefix}/${classCode}/class-students`,
+      method: "post",
+      data: {
+        userDetails
+      }
+    })
+    .then(({ data }) => data);
+
+const validateClassCode = classCode =>
+  api
+    .callApi({
+      url: `/group/${classCode}/validate`,
+      method: "get"
+    })
+    .then(({ data }) => data);
+
+const validateDistrictPolicy = params =>
+  api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
+
 export default {
   getUser,
   fetchUsers,
+  fetchUsersForShare,
   createUser,
   updateUser,
   deleteUser,
@@ -100,5 +132,8 @@ export default {
   getSwitchedToken,
   changeUserTTS,
   resetPassword,
-  addMultipleStudents
+  addMultipleStudents,
+  addStudentsToOtherClass,
+  validateClassCode,
+  validateDistrictPolicy
 };

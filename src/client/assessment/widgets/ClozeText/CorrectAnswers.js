@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { cloneDeep } from "lodash";
+import { cloneDeep, findIndex } from "lodash";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, Tabs, TabContainer } from "@edulastic/common";
@@ -82,7 +82,7 @@ class CorrectAnswers extends Component {
     );
   };
 
-  updateCorrectValidationAnswers = answers => {
+  updateCorrectValidationAnswers = (answers, id, widthpx) => {
     const { question, setQuestionData } = this.props;
     const newData = cloneDeep(question);
     const updatedValidation = {
@@ -93,6 +93,16 @@ class CorrectAnswers extends Component {
       }
     };
     newData.validation.valid_response = updatedValidation.valid_response;
+    newData.ui_style.responsecontainerindividuals = newData.ui_style.responsecontainerindividuals || [];
+    const index = findIndex(newData.ui_style.responsecontainerindividuals, container => container.id === id);
+    if (index === -1) {
+      newData.ui_style.responsecontainerindividuals.push({ id, widthpx });
+    } else {
+      newData.ui_style.responsecontainerindividuals[index] = {
+        ...newData.ui_style.responsecontainerindividuals[index],
+        widthpx
+      };
+    }
     setQuestionData(newData);
   };
 
@@ -137,7 +147,8 @@ class CorrectAnswers extends Component {
       templateMarkUp,
       hasGroupResponses,
       configureOptions,
-      uiStyle
+      uiStyle,
+      responseIds
     } = this.props;
     const { value } = this.state;
     return (
@@ -165,6 +176,7 @@ class CorrectAnswers extends Component {
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                responseIds={responseIds}
               />
             </TabContainer>
           )}
@@ -180,6 +192,7 @@ class CorrectAnswers extends Component {
                       stimulus={stimulus}
                       options={options}
                       configureOptions={configureOptions}
+                      responseIds={responseIds}
                       hasGroupResponses={hasGroupResponses}
                       templateMarkUp={templateMarkUp}
                       uiStyle={uiStyle}
@@ -211,12 +224,14 @@ CorrectAnswers.propTypes = {
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responseIds: PropTypes.object
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
+  responseIds: {},
   validation: {},
   onRemoveAltResponses: () => {},
   hasGroupResponses: false,

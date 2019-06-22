@@ -28,7 +28,7 @@ const DrawingPreview = ({ view, item, smallSize, saveAnswer, userAnswer, t, show
   return (
     <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 

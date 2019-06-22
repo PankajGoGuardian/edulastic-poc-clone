@@ -89,6 +89,10 @@ export default class BarGraph {
               incorrect++;
               break;
 
+            case attemptTypes.PARTIAL_CORRECT:
+              partial++;
+              break;
+
             default:
               break;
           }

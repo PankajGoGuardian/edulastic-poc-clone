@@ -7,7 +7,7 @@ export const Container = styled.div`
   padding: 0;
   min-height: ${({ flowLayout }) => (flowLayout ? "unset" : "250px")};
   margin-bottom: 30px;
-  flex-direction: column;
+  flex-direction: row;
   opacity: ${({ isDragging }) => (isDragging ? "0.4" : "1")};
 
   @media (max-width: ${mobileWidth}) {

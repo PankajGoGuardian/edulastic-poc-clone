@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { white, green, newBlue } from "@edulastic/colors";
+import { Button } from "antd";
 
 export const Container = styled.div`
   display: flex;
@@ -59,6 +60,11 @@ export const Container = styled.div`
     font-weight: 600;
     color: ${white};
   }
+`;
+
+export const CustomButton = styled(Button)`
+  color: red;
+  background: yellow;
 `;
 
 export const MobileContainer = styled.div`
@@ -125,7 +131,7 @@ export const RightSide = styled.div`
     margin-left: 5px;
 
     span {
-      color: ${newBlue};
+      color: #00ad50;
       font-size: 11px;
       text-transform: uppercase;
     }
@@ -142,7 +148,7 @@ export const MenuItem = styled.li`
   height: 45px;
   border-radius: 4px;
   border: none;
-  background-color: #277df1;
+  background-color: rgba(255, 255, 255, 0.15);
   margin-right: 5px;
   font-size: 13px;
   font-weight: 600;
@@ -151,19 +157,19 @@ export const MenuItem = styled.li`
   line-height: 1.36;
   letter-spacing: 0.2px;
   text-align: center;
-  color: rgba(255, 255, 255, 0.7);
+  color: rgba(255, 255, 255, 0.75);
 
   &:last-of-type {
     margin-right: 0;
   }
 
   svg {
-    fill: rgba(255, 255, 255, 0.7);
+    fill: rgba(255, 255, 255, 0.75);
   }
 
   &.active {
     color: #fff;
-    background-color: #5196f3;
+    background-color: rgba(255, 255, 255, 0.3);
 
     svg {
       fill: #fff;

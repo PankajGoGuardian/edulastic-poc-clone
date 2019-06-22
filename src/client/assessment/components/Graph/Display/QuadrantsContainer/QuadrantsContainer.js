@@ -185,7 +185,9 @@ class GraphContainer extends PureComponent {
 
     this._graph = makeBorder(this._graphId, graphType);
 
-    this._graph.setTool(tools[0]);
+    if (!this.drawingObjectsAreVisible()) {
+      this._graph.setTool(tools[0]);
+    }
 
     if (this._graph) {
       this._graph.resizeContainer(layout.width, layout.height);
@@ -360,8 +362,6 @@ class GraphContainer extends PureComponent {
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      this._graph.reset();
-      this._graph.loadFromConfig(stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] - 1]);
       setStashIndex(stashIndex[id] - 1, id);
     }
@@ -374,14 +374,13 @@ class GraphContainer extends PureComponent {
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      this._graph.reset();
-      this._graph.loadFromConfig(stash[id][stashIndex[id] + 1]);
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }
   }
 
   onDelete() {
+    this.selectDrawingObject(null);
     this.setState({ selectedTool: { name: "delete", index: -1, groupIndex: -1 } });
     this._graph.setTool("trash");
   }
@@ -420,6 +419,7 @@ class GraphContainer extends PureComponent {
 
   graphUpdateHandler = () => {
     this.updateValues();
+    this.selectDrawingObject(null);
   };
 
   setGraphUpdateEventHandler = () => {
@@ -429,9 +429,8 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, this.graphUpdateHandler);
   };
 
-  setElementsToGraph = () => {
+  setElementsToGraph = (prevProps = {}) => {
     const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
-
     if (checkAnswer || showAnswer) {
       let coloredElements;
       if (evaluation && checkAnswer) {
@@ -442,17 +441,19 @@ class GraphContainer extends PureComponent {
         coloredElements = getColoredElems(elements, compareResult);
       }
 
-      if (showAnswer) {
+      if (showAnswer && !prevProps.showAnswer) {
         this._graph.resetAnswers();
         this._graph.loadAnswersFromConfig(getColoredAnswer(validation ? validation.valid_response.value : []));
       }
 
-      this._graph.reset();
-      this._graph.loadFromConfig(coloredElements);
+      if (!isEqual(elements, prevProps.elements)) {
+        this._graph.reset();
+        this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
+      }
     } else if (!isEqual(elements, this._graph.getConfig())) {
       this._graph.reset();
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements);
+      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
     }
   };
 
@@ -592,8 +593,8 @@ class GraphContainer extends PureComponent {
   };
 
   selectDrawingObject = drawingObject => {
-    console.log(drawingObject);
     this.setState({ selectedDrawingObject: drawingObject });
+    this._graph.setDrawingObject(drawingObject);
   };
 
   render() {
@@ -607,18 +608,17 @@ class GraphContainer extends PureComponent {
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
-          {!this.drawingObjectsAreVisible() && (
-            <Tools
-              tools={bgShapes ? this.allTools : tools}
-              controls={bgShapes ? this.allControls : controls}
-              tool={selectedTool}
-              bgShapes={bgShapes}
-              getIconByToolName={this.getIconByToolName}
-              getHandlerByControlName={this.getHandlerByControlName}
-              onSelect={this.onSelectTool}
-              fontSize={bgShapes ? 12 : layout.fontSize}
-            />
-          )}
+          <Tools
+            toolsAreVisible={!this.drawingObjectsAreVisible()}
+            tools={bgShapes ? this.allTools : tools}
+            controls={bgShapes ? this.allControls : controls}
+            tool={selectedTool}
+            bgShapes={bgShapes}
+            getIconByToolName={this.getIconByToolName}
+            getHandlerByControlName={this.getHandlerByControlName}
+            onSelect={this.onSelectTool}
+            fontSize={bgShapes ? 12 : layout.fontSize}
+          />
           {!this.drawingObjectsAreVisible() && <Equations equations={equations} setEquations={this.setEquations} />}
           <JSXBoxWithDrawingObjectsWrapper>
             {this.drawingObjectsAreVisible() && (

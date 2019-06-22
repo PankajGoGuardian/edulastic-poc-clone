@@ -324,19 +324,15 @@ function* changeUserTTSRequest({ payload }) {
   try {
     const result = yield call(userApi.changeUserTTS, payload);
     const { status } = result;
-
     let msg = "";
     if (status === 200) {
       msg = "User(s) updated successfully";
     } else {
       msg = get(result, "data.result");
     }
-
     message.success(msg);
-    yield put(userTTSRequestSuccessAction());
   } catch (error) {
     message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");
-    yield put(userTTSRequestFailedAction(error));
   }
 }
 

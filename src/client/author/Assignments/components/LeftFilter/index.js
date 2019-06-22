@@ -41,8 +41,9 @@ import {
   StyledMenu,
   StyledIconPencilEdit
 } from "./styled";
+import { getUserRole } from "../../../src/selectors/user";
 
-const { allGrades, allSubjects, testTypes } = selectsData;
+const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
 class LeftFilter extends React.Component {
   state = {
@@ -232,10 +233,10 @@ class LeftFilter extends React.Component {
   };
 
   render() {
-    const { termsData, selectedRows, filterState, isAdvancedView } = this.props;
+    const { termsData, selectedRows, filterState, isAdvancedView, userRole } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
     const { subject, grades, termId, testType } = filterState;
-
+    const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
     return (
       <FilterContainer>
         <FolderActionModal
@@ -320,8 +321,8 @@ class LeftFilter extends React.Component {
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
             <Select mode="default" placeholder="All" value={testType} onChange={this.handleChange("testType")}>
-              {testTypes.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
+              {roleBasedTestType.map(({ value, text }, index) => (
+                <Select.Option key={index} value={value}>
                   {text}
                 </Select.Option>
               ))}
@@ -377,7 +378,8 @@ export default connect(
     districtId: getDistrictIdSelector(state),
     folders: getFoldersSelector(state),
     termsData: get(state, "user.user.orgData.terms", []),
-    folderData: getFolderSelector(state)
+    folderData: getFolderSelector(state),
+    userRole: getUserRole(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

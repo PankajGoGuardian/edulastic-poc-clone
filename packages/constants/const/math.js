@@ -6,14 +6,15 @@ const methods = {
   IS_FACTORISED: "isFactorised",
   IS_EXPANDED: "isExpanded",
   IS_TRUE: "isTrue",
+  IS_UNIT: "isUnit",
   STRING_MATCH: "stringMatch",
   EQUIV_SYNTAX: "equivSyntax"
 };
 
 const fields = {
-  INTEGER: "integer",
-  REAL: "real",
-  COMPLEX: "complex"
+  INTEGER: "integerType",
+  REAL: "realType",
+  COMPLEX: "complexType"
 };
 
 const decimalSeparators = {
@@ -80,11 +81,6 @@ const methodOptions = {
     "allowEulersNumber",
     "isFactorised",
     "isExpanded",
-    "ignoreOrder",
-    "ignoreCoefficientOfOne",
-    "allowInterval",
-    "ignoreLeadingAndTrailingSpaces",
-    "treatMultipleSpacesAsOne",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "compareSides"
@@ -117,6 +113,7 @@ const methodOptions = {
   [methods.IS_FACTORISED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "inverseResult", "field"],
   [methods.IS_EXPANDED]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator", "significantDecimalPlaces"],
   [methods.IS_TRUE]: ["noExpeced", "setDecimalSeparator", "setThousandsSeparator"],
+  [methods.IS_UNIT]: ["allowedUnits", "setThousandsSeparator", "inverseResult"],
   [methods.STRING_MATCH]: ["ariaLabel", "ignoreLeadingAndTrailingSpaces", "treatMultipleSpacesAsOne"]
 };
 

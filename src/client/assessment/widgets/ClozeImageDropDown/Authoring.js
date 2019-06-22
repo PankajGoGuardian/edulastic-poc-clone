@@ -18,12 +18,16 @@ class Authoring extends Component {
     item: PropTypes.object.isRequired,
     theme: PropTypes.object.isRequired,
     fillSections: PropTypes.func,
-    cleanSections: PropTypes.func
+    cleanSections: PropTypes.func,
+    maxHeight: PropTypes.number,
+    maxWidth: PropTypes.number
   };
 
   static defaultProps = {
     fillSections: () => {},
-    cleanSections: () => {}
+    cleanSections: () => {},
+    maxHeight: 490,
+    maxWidth: 660
   };
 
   render() {

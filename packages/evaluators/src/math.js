@@ -4,18 +4,15 @@ import { ScoringType } from "./const/scoring";
 
 const url = process.env.POI_APP_MATH_EVALUATE_API || "https://edulastic-poc.snapwiz.net/math-api/evaluate";
 
-const evaluate = data =>
+export const evaluate = data =>
   axios
     .post(url, {
       ...data
     })
     .then(result => result.data);
 
-const getChecks = validation => {
-  const altResponses = validation.alt_responses || [];
-
-  const values = [...validation.valid_response.value, ...altResponses.reduce((acc, res) => [...acc, ...res.value], [])];
-
+export const getChecks = answer => {
+  const values = answer.value || [];
   return values.reduce((valAcc, val, valIndex) => {
     let options = val.options || {};
     options = omitBy(options, f => f === false);
@@ -66,7 +63,7 @@ const getChecks = validation => {
 };
 
 // exact match evaluator
-const exactMatchEvaluator = async (userResponse, answers, checks) => {
+const exactMatchEvaluator = async (userResponse, answers) => {
   let score = 0;
   let maxScore = 1;
   let evaluation = [];
@@ -77,9 +74,9 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
       }
       return [];
     };
-
     /* eslint-disable */
     for (let answer of answers) {
+      const checks = getChecks(answer);
       const corrects = getAnswerCorrectMethods(answer);
       let valid = false;
       for (let correct of corrects) {
@@ -88,7 +85,6 @@ const exactMatchEvaluator = async (userResponse, answers, checks) => {
           expected: correct ? correct.replace(/\\ /g, " ") : "",
           checks
         };
-
         const { result } = await evaluate(data);
         if (result === "true") {
           valid = true;
@@ -121,9 +117,7 @@ const evaluator = async ({ userResponse, validation }) => {
   switch (scoring_type) {
     case ScoringType.EXACT_MATCH:
     default:
-      const checks = getChecks(validation);
-
-      result = await exactMatchEvaluator(userResponse, answers, checks);
+      result = await exactMatchEvaluator(userResponse, answers);
   }
 
   // if score for attempting is greater than current score

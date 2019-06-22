@@ -332,20 +332,20 @@ class AxisSegmentsMoreOptions extends Component {
                 </Col>
                 <Col md={24}>
                   <Checkbox
+                    label={t("component.graphing.layoutoptions.showMaxArrow")}
+                    onChange={() => this.handleNumberlineCheckboxChange("rightArrow", numberlineAxis.rightArrow)}
+                    name="rightArrow"
+                    checked={numberlineAxis.rightArrow}
+                  />
+                </Col>
+                <Col md={24}>
+                  <Checkbox
                     label={t("component.graphing.layoutoptions.stackResponses")}
                     name="stackResponses"
                     onChange={() =>
                       this.handleNumberlineCheckboxChange("stackResponses", numberlineAxis.stackResponses)
                     }
                     checked={numberlineAxis.stackResponses}
-                  />
-                </Col>
-                <Col md={24}>
-                  <Checkbox
-                    label={t("component.graphing.layoutoptions.showMaxArrow")}
-                    onChange={() => this.handleNumberlineCheckboxChange("rightArrow", numberlineAxis.rightArrow)}
-                    name="rightArrow"
-                    checked={numberlineAxis.rightArrow}
                   />
                 </Col>
               </Row>

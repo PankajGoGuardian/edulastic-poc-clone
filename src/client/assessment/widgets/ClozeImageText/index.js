@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import produce from "immer";
 
-import { Checkbox, Paper } from "@edulastic/common";
+import { Checkbox, Paper, PaddingDiv } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { EDIT } from "../../constants/constantsForQuestions";
@@ -15,6 +15,9 @@ import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
 import { EditorContainer } from "./styled/EditorContainer";
 import { OptionsContainer } from "./styled/OptionsContainer";
+import { MaxRespCountWrapper } from "./styled/FieldWrapper";
+import { MaxRespCountInput } from "./styled/MaxRespCountInput";
+import { AdditionalContainer } from "./styled/AdditionalContainer";
 import Options from "./components/Options";
 import Display from "./Display";
 import Authoring from "./Authoring";
@@ -152,8 +155,6 @@ class ClozeImageText extends Component {
       ...restProps
     } = this.props;
 
-    const maxWidth = "700px",
-      maxHeight = "600px";
     const { previewStimulus, previewDisplayOptions, itemForEdit, itemForPreview, uiStyle } = this.getRenderData();
 
     const ignoreCase = item && item.validation ? item.validation.ignoreCase : false;
@@ -174,8 +175,6 @@ class ClozeImageText extends Component {
                     item={itemForEdit}
                     fillSections={fillSections}
                     cleanSections={cleanSections}
-                    maxHeight={maxHeight}
-                    maxWidth={maxWidth}
                     imageWidth={item.imageWidth}
                   />
                   <Widget>
@@ -202,12 +201,10 @@ class ClozeImageText extends Component {
                       onRemoveAltResponses={this.handleRemoveAltResponses}
                       fillSections={fillSections}
                       cleanSections={cleanSections}
-                      maxHeight={maxHeight}
-                      maxWidth={maxWidth}
                       imageOptions={item.imageOptions}
                     />
 
-                    <div style={{ marginTop: 40 }}>
+                    <AdditionalContainer>
                       <Checkbox
                         className="additional-options"
                         onChange={() => this.handleValidationOptionsChange("ignoreCase", !ignoreCase)}
@@ -223,7 +220,17 @@ class ClozeImageText extends Component {
                         label={t("component.cloze.dropDown.allowsinglelettermistake")}
                         checked={!!allowSingleLetterMistake}
                       />
-                    </div>
+                      <MaxRespCountWrapper>
+                        <MaxRespCountInput
+                          data-cy="drag-drop-image-max-res"
+                          min={1}
+                          max={10}
+                          defaultValue={item.maxRespCount}
+                          onChange={val => this.handleOptionsChange("maxRespCount", val)}
+                        />
+                        <PaddingDiv>{t("component.cloze.imageText.maximumresponses")}</PaddingDiv>
+                      </MaxRespCountWrapper>
+                    </AdditionalContainer>
                   </Widget>
                 </div>
               </EditorContainer>
@@ -267,8 +274,6 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
               />
             )}
@@ -294,8 +299,6 @@ class ClozeImageText extends Component {
                 imageWidth={item.imageWidth}
                 evaluation={evaluation}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
                 {...restProps}
               />
@@ -326,9 +329,8 @@ class ClozeImageText extends Component {
                 maxRespCount={item.maxRespCount}
                 onChange={this.handleAddAnswer}
                 qIndex={qIndex}
-                maxHeight={maxHeight}
-                maxWidth={maxWidth}
                 imageOptions={item.imageOptions}
+                {...restProps}
               />
             )}
           </Wrapper>

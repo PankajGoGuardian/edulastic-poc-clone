@@ -9,23 +9,24 @@ const StartAssignButton = styled(Button)`
   align-items: center;
   justify-content: center;
   text-transform: uppercase;
-  background: ${props => props.theme.assignment.cardRetakeBtnBgColor};
-  border: solid 1px ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
+  background: ${props => props.theme.assignment.cardDefaultBtnBgColor};
+  border: solid 1px ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
   width: 100%;
   padding: 5px 20px;
   cursor: pointer;
   float: right;
   margin: 10px 15px 0 10px;
   span {
-    color: ${props => props.theme.assignment.cardRetakeBtnTextColor};
-    font-size: ${props => props.theme.assignment.cardRetakeBtnFontSize};
+    color: ${props => props.theme.assignment.cardDefaultBtnTextColor};
+    font-size: ${props => props.theme.assignment.cardDefaultBtnFontSize};
     font-weight: 600;
     letter-spacing: 0.2px;
   }
   &:hover {
-    background-color: ${props => props.theme.assignment.cardRetakeBtnBgHoverColor};
+    background-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
+    border-color: ${props => props.theme.assignment.cardDefaultBtnBgHoverColor};
     span {
-      color: ${props => props.theme.assignment.cardRetakeBtnTextHoverColor};
+      color: ${props => props.theme.assignment.cardDefaultBtnTextHoverColor};
     }
   }
   @media screen and (min-width: 1025px) {

@@ -39,7 +39,8 @@ const ClassificationPreview = ({
   editCorrectAnswers,
   theme,
   qIndex,
-  showQuestionNumber
+  showQuestionNumber,
+  disableResponse
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -106,12 +107,13 @@ const ClassificationPreview = ({
 
   const createEmptyArrayOfArrays = () => Array(...Array(initialLength)).map(() => []);
 
-  const initialAnswers =
-    editCorrectAnswers.length > 0
-      ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
-      : userAnswer && userAnswer.some(arr => arr.length !== 0)
-      ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
-      : createEmptyArrayOfArrays();
+  const initialAnswers = disableResponse
+    ? validArray.map(arr => arr.map(ans => possible_responses[ans]))
+    : editCorrectAnswers.length > 0
+    ? editCorrectAnswers.map(ite => ite.map(an => posResp[an]))
+    : userAnswer && userAnswer.some(arr => arr.length !== 0)
+    ? userAnswer.map(arr => arr.map(ans => possible_responses[ans]))
+    : createEmptyArrayOfArrays();
 
   const [answers, setAnswers] = useState(initialAnswers);
 
@@ -125,7 +127,7 @@ const ClassificationPreview = ({
       setAnswers(uniq(initialAnswers));
       setDragItems(uniq(possible_responses.filter(resp => initialAnswers.every(arr => !arr.includes(resp)))));
     }
-  }, [userAnswer, initialAnswers, possible_responses]);
+  }, [userAnswer, possible_responses]);
 
   const boxes = createEmptyArrayOfArrays();
 
@@ -229,7 +231,7 @@ const ClassificationPreview = ({
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
       {!smallSize && view === PREVIEW && (
         <QuestionTitleWrapper>
-          {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
         </QuestionTitleWrapper>
       )}
@@ -275,34 +277,85 @@ const ClassificationPreview = ({
                       onDrop={onDrop}
                       isResizable={view === EDIT}
                       item={item}
+                      disableResponse={disableResponse}
                     />
                   )
               )}
             </tbody>
           </table>
         </TableWrapper>
-
-        <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
-          <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
-            <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
-              {group_possible_responses ? (
-                verifiedGroupDragItems.map((i, index) => (
-                  <Fragment key={index}>
+        {!disableResponse && (
+          <CorrectAnswersContainer title={t("component.classification.dragItemsTitle")}>
+            <DropContainer flag="dragItems" drop={drop} style={styles.dragItemsContainerStyle} noBorder>
+              <FlexContainer style={{ width: "100%" }} alignItems="stretch" justifyContent="center">
+                {group_possible_responses ? (
+                  verifiedGroupDragItems.map((i, index) => (
+                    <Fragment key={index}>
+                      <FlexContainer
+                        style={{ flex: 1 }}
+                        flexDirection="column"
+                        alignItems="center"
+                        justifyContent="flex-start"
+                      >
+                        <Subtitle
+                          style={{
+                            color: theme.widgets.classification.previewSubtitleColor
+                          }}
+                        >
+                          {i.title}
+                        </Subtitle>
+                        <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
+                          {i.map((ite, ind) =>
+                            duplicate_responses ? (
+                              <DragItem
+                                dragHandle={show_drag_handle}
+                                key={ind}
+                                isTransparent={transparent_possible_responses}
+                                preview={preview}
+                                renderIndex={possible_responses.indexOf(ite)}
+                                onDrop={onDrop}
+                                item={ite}
+                                disableResponse={disableResponse}
+                              />
+                            ) : (
+                              dragItems.includes(ite) && (
+                                <DragItem
+                                  dragHandle={show_drag_handle}
+                                  key={ind}
+                                  isTransparent={transparent_possible_responses}
+                                  preview={preview}
+                                  renderIndex={possible_responses.indexOf(ite)}
+                                  onDrop={onDrop}
+                                  item={ite}
+                                  disableResponse={disableResponse}
+                                />
+                              )
+                            )
+                          )}
+                        </FlexContainer>
+                      </FlexContainer>
+                      {index !== possible_response_groups.length - 1 && (
+                        <div
+                          style={{
+                            width: 0,
+                            marginLeft: 35,
+                            marginRight: 35,
+                            borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
+                          }}
+                        />
+                      )}
+                    </Fragment>
+                  ))
+                ) : (
+                  <Fragment>
                     <FlexContainer
                       style={{ flex: 1 }}
                       flexDirection="column"
                       alignItems="center"
                       justifyContent="flex-start"
                     >
-                      <Subtitle
-                        style={{
-                          color: theme.widgets.classification.previewSubtitleColor
-                        }}
-                      >
-                        {i.title}
-                      </Subtitle>
                       <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                        {i.map((ite, ind) =>
+                        {verifiedDragItems.map((ite, ind) =>
                           duplicate_responses ? (
                             <DragItem
                               dragHandle={show_drag_handle}
@@ -312,6 +365,7 @@ const ClassificationPreview = ({
                               renderIndex={possible_responses.indexOf(ite)}
                               onDrop={onDrop}
                               item={ite}
+                              disableResponse={disableResponse}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -323,65 +377,19 @@ const ClassificationPreview = ({
                                 renderIndex={possible_responses.indexOf(ite)}
                                 onDrop={onDrop}
                                 item={ite}
+                                disableResponse={disableResponse}
                               />
                             )
                           )
                         )}
                       </FlexContainer>
                     </FlexContainer>
-                    {index !== possible_response_groups.length - 1 && (
-                      <div
-                        style={{
-                          width: 0,
-                          marginLeft: 35,
-                          marginRight: 35,
-                          borderLeft: `1px solid ${theme.widgets.classification.separatorBorderColor}`
-                        }}
-                      />
-                    )}
                   </Fragment>
-                ))
-              ) : (
-                <Fragment>
-                  <FlexContainer
-                    style={{ flex: 1 }}
-                    flexDirection="column"
-                    alignItems="center"
-                    justifyContent="flex-start"
-                  >
-                    <FlexContainer justifyContent="center" style={{ width: "100%", flexWrap: "wrap" }}>
-                      {verifiedDragItems.map((ite, ind) =>
-                        duplicate_responses ? (
-                          <DragItem
-                            dragHandle={show_drag_handle}
-                            key={ind}
-                            isTransparent={transparent_possible_responses}
-                            preview={preview}
-                            renderIndex={possible_responses.indexOf(ite)}
-                            onDrop={onDrop}
-                            item={ite}
-                          />
-                        ) : (
-                          dragItems.includes(ite) && (
-                            <DragItem
-                              dragHandle={show_drag_handle}
-                              key={ind}
-                              isTransparent={transparent_possible_responses}
-                              preview={preview}
-                              renderIndex={possible_responses.indexOf(ite)}
-                              onDrop={onDrop}
-                              item={ite}
-                            />
-                          )
-                        )
-                      )}
-                    </FlexContainer>
-                  </FlexContainer>
-                </Fragment>
-              )}
-            </FlexContainer>
-          </DropContainer>
-        </CorrectAnswersContainer>
+                )}
+              </FlexContainer>
+            </DropContainer>
+          </CorrectAnswersContainer>
+        )}
       </div>
 
       {previewTab === SHOW && (
@@ -426,7 +434,8 @@ ClassificationPreview.propTypes = {
   view: PropTypes.string.isRequired,
   theme: PropTypes.object.isRequired,
   qIndex: PropTypes.number,
-  showQuestionNumber: PropTypes.bool
+  showQuestionNumber: PropTypes.bool,
+  disableResponse: PropTypes.bool
 };
 
 ClassificationPreview.defaultProps = {
@@ -434,7 +443,8 @@ ClassificationPreview.defaultProps = {
   smallSize: false,
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 const enhance = compose(

@@ -26,6 +26,7 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
+  PresentModeSwitch,
   StyledButton,
   MenuWrapper
 } from "./styled";
@@ -99,8 +100,6 @@ class ClassHeader extends Component {
       return { ...this.state, studentReportCardMenuModalVisibility: true };
     });
   };
-
-
 
   onStudentReportCardMenuModalOk = obj => {
     this.setState(state => {
@@ -199,8 +198,13 @@ class ClassHeader extends Component {
           <StyledTabs>
             <StyledLink to={`/author/classboard/${assignmentId}/${classId}`} data-cy="LiveClassBoard">
               <StyledAnchor isActive={active === "classboard"}>
-                <IconDeskTopMonitor color={active === "classboard" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                <LinkLabel>{t("common.liveClassBoard")}</LinkLabel>
+                <IconDeskTopMonitor
+                  color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                  left={0}
+                />
+                <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                  {t("common.liveClassBoard")}
+                </LinkLabel>
               </StyledAnchor>
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
@@ -209,8 +213,13 @@ class ClassHeader extends Component {
                 data-cy="Expressgrader"
               >
                 <StyledAnchor isActive={active === "expressgrader"}>
-                  <IconBookMarkButton color={active === "expressgrader" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.expressGrader")}</LinkLabel>
+                  <IconBookMarkButton
+                    color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}
+                    left={0}
+                  />
+                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                    {t("common.expressGrader")}
+                  </LinkLabel>
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
@@ -222,18 +231,29 @@ class ClassHeader extends Component {
             >
               <StyledLink to={`/author/standardsBasedReport/${assignmentId}/${classId}`} data-cy="StandardsBasedReport">
                 <StyledAnchor isActive={active === "standard_report"}>
-                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "#bed8fa"} left={0} />
-                  <LinkLabel>{t("common.standardBasedReports")}</LinkLabel>
+                  <IconNotes color={active === "standard_report" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"} left={0} />
+                  <LinkLabel color={active === "classboard" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}>
+                    {t("common.standardBasedReports")}
+                  </LinkLabel>
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
-
-            <Switch
-              checkedChildren={<Icon type="check"> presentation </Icon>}
-              unCheckedChildren={<Icon type="close" />}
-              value={isPresentationMode}
-              onClick={this.toggleCurrentMode}
-            />
+            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
+              <PresentModeSwitch
+                checkedChildren={
+                  <div>
+                    <Icon type="bar-chart" /> Present
+                  </div>
+                }
+                unCheckedChildren={
+                  <div>
+                    <Icon type="pause" /> Reset
+                  </div>
+                }
+                checked={isPresentationMode}
+                onClick={this.toggleCurrentMode}
+              />
+            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>

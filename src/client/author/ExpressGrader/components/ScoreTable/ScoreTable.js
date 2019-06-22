@@ -123,20 +123,16 @@ class ScoreTable extends Component {
       const { testActivity: students } = this.props;
       const key = `Q${index}`;
       const qids = students[0].questionActivities[index].qids;
-      const isQids = qids && qids.length > 0;
-      const title = (
-        <StyledDivMid>
-          {`Q${index + 1}`}
-          <img src={InfoIcon} alt="help" />
-        </StyledDivMid>
-      );
+      const title = <StyledDivMid>{students[0].questionActivities[index].barLabel}</StyledDivMid>;
 
-      students.forEach(student => {
-        if (student && !student.questionActivities[index].notStarted) {
-          successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
-          num++;
-        }
-      });
+      students
+        .filter(x => x.status === "submitted")
+        .forEach(student => {
+          if (student && !student.questionActivities[index].notStarted) {
+            successScore += student.questionActivities[index].score / student.questionActivities[index].maxScore;
+            num++;
+          }
+        });
       const averageScore = successScore;
       const questionAvarageScore = (
         <StyledDivMid>

@@ -48,7 +48,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { value } = this.props;
+    const { defaultFocus, value } = this.props;
     const MQ = window.MathQuill.getInterface(2);
 
     MQ.registerEmbed("response", () => ({
@@ -66,7 +66,10 @@ class MathInput extends React.PureComponent {
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill);
     mathField.write(value);
-    // mathField.focus();
+
+    if (defaultFocus) {
+      mathField.focus();
+    }
 
     this.setState(
       () => ({ mathField }),
@@ -176,6 +179,7 @@ class MathInput extends React.PureComponent {
 
 MathInput.propTypes = {
   alwaysShowKeyboard: PropTypes.bool,
+  defaultFocus: PropTypes.bool,
   onInput: PropTypes.func.isRequired,
   symbols: PropTypes.array.isRequired,
   numberPad: PropTypes.array.isRequired,
@@ -191,6 +195,7 @@ MathInput.propTypes = {
 
 MathInput.defaultProps = {
   alwaysShowKeyboard: false,
+  defaultFocus: false,
   value: "",
   showResponse: false,
   style: {},

@@ -21,13 +21,14 @@ function collectTarget(connector, monitor) {
   };
 }
 
-const Droppable = ({ connectDropTarget, children }) =>
+const Droppable = ({ connectDropTarget, children, style }) =>
   connectDropTarget(
     <div
       style={{
         top: -5,
         display: "inline-flex",
-        verticalAlign: "middle"
+        verticalAlign: "middle",
+        ...style
       }}
     >
       {children}
@@ -36,11 +37,13 @@ const Droppable = ({ connectDropTarget, children }) =>
 
 Droppable.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
-  children: PropTypes.node
+  children: PropTypes.node,
+  style: PropTypes.object
 };
 
 Droppable.defaultProps = {
-  children: undefined
+  children: undefined,
+  style: {}
 };
 
 export default DropTarget("item", specTarget, collectTarget)(Droppable);

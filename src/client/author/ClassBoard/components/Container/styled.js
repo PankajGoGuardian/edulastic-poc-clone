@@ -32,6 +32,18 @@ export const CheckContainer = styled.span`
   > span {
     margin-left: 0;
   }
+  .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+  .ant-checkbox:hover .ant-checkbox-inner,
+  .ant-checkbox-input:focus + .ant-checkbox-inner {
+    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+  }
+  .ant-checkbox-checked .ant-checkbox-inner {
+    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+  }
+  .ant-checkbox-indeterminate .ant-checkbox-inner::after {
+    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
+  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -84,10 +96,10 @@ const StyledTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? "#1774f0" : "#FFFFFF")};
-  color: ${({ active }) => (active ? "#FFFFFF" : "#1774f0")};
+  background-color: ${({ active }) => (active ? "#00AD50" : "#FFFFFF")};
+  color: ${({ active }) => (active ? "#FFFFFF" : "#7C848E")};
   &:hover {
-    background-color: #1774f0;
+    background-color: ${({ active }) => (active ? "#00AD50" : "#42d184")};
     color: #ffffff;
   }
 `;
@@ -110,6 +122,7 @@ export const RedirectButton = styled(StyledTabButton)`
   align-items: center;
   padding-left: 15px;
   padding-right: 25px;
+  color: #00ad50;
   img {
     margin-right: 10px;
   }
@@ -122,6 +135,7 @@ export const PrintButton = styled(StyledTabButton)`
   align-items: center;
   padding-left: 15px;
   padding-right: 25px;
+  color: #00ad50;
   img {
     margin-right: 10px;
   }
@@ -137,7 +151,7 @@ export const BarDiv = styled.div`
 
 export const StyledCheckbox = styled(Checkbox)`
   font-size: 0.7em;
-  color: #1774f0;
+  color: ${props => props.theme.checkbox.checkboxLabelColor};
 `;
 
 export const SpaceDiv = styled.div`

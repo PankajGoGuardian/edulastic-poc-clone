@@ -4,6 +4,8 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { userApi, groupApi } from "@edulastic/api";
 import { message } from "antd";
 
+import { receiveAdminDataAction } from "../SchoolAdmin/ducks";
+
 const RECEIVE_STUDENTLIST_REQUEST = "[student] receive list request";
 const RECEIVE_STUDENTLIST_SUCCESS = "[student] receive list success";
 const RECEIVE_STUDENTLIST_ERROR = "[student] receive list error";
@@ -23,6 +25,11 @@ const ADD_MULTI_STUDENTS_ERROR = "[student] add multip students error";
 const SET_STUDENTDETAIL_MODAL_VISIBLE = "[student] set student detail modal visible";
 const SET_STUDENT_SEARCHNAME = "[student] set search name";
 const SET_STUDENT_SETFILTERS = "[student] set filters";
+const SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY = "[student] set visibility of add students to other class modal";
+const ADD_STUDENTS_TO_OTHER_CLASS = "[student] ADD_STUDENTS_TO_OTHER_CLASS";
+const ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS = "[student] ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS";
+const FETCH_CLASS_DETAILS_USING_CODE = "[student] FETCH_CLASS_DETAILS_USING_CODE";
+const FETCH_CLASS_DETAILS_SUCCESS = "[student] FETCH_CLASS_DETAILS_SUCCESS";
 
 export const receiveStudentsListAction = createAction(RECEIVE_STUDENTLIST_REQUEST);
 export const receiveStudentsListSuccessAction = createAction(RECEIVE_STUDENTLIST_SUCCESS);
@@ -43,6 +50,11 @@ export const addMultiStudentsErrorAction = createAction(ADD_MULTI_STUDENTS_ERROR
 export const setStudentsDetailsModalVisibleAction = createAction(SET_STUDENTDETAIL_MODAL_VISIBLE);
 export const setSearchNameAction = createAction(SET_STUDENT_SEARCHNAME);
 export const setFiltersAction = createAction(SET_STUDENT_SETFILTERS);
+export const setAddStudentsToOtherClassVisiblityAction = createAction(SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY);
+export const addStudentsToOtherClassAction = createAction(ADD_STUDENTS_TO_OTHER_CLASS);
+export const addStudentsToOtherClassSuccess = createAction(ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS);
+export const fetchClassDetailsUsingCodeAction = createAction(FETCH_CLASS_DETAILS_USING_CODE);
+export const fetchClassDetailsSuccess = createAction(FETCH_CLASS_DETAILS_SUCCESS);
 
 //selectors
 const stateStudentSelector = state => state.studentReducer;
@@ -94,6 +106,11 @@ export const getStudentsListSelector = createSelector(
   }
 );
 
+export const getAddStudentsToOtherClassSelector = createSelector(
+  stateStudentSelector,
+  ({ addStudentsToOtherClass }) => addStudentsToOtherClass
+);
+
 // reducers
 const initialState = {
   data: [],
@@ -115,7 +132,13 @@ const initialState = {
   multiStudentsAdding: false,
   multiStudents: {},
   multiStudentsError: null,
-  studentDetailsModalVisible: false
+  studentDetailsModalVisible: false,
+  addStudentsToOtherClass: {
+    showModal: false,
+    destinationClassData: null,
+    successData: null,
+    loading: false
+  }
 };
 
 export const reducer = createReducer(initialState, {
@@ -228,6 +251,23 @@ export const reducer = createReducer(initialState, {
   },
   [SET_STUDENTDETAIL_MODAL_VISIBLE]: (state, { payload }) => {
     state.studentDetailsModalVisible = payload;
+  },
+  [SET_STUDENTS_TO_OTHER_CLASS_VISIBILITY]: (state, { payload: visibility }) => {
+    state.addStudentsToOtherClass.showModal = visibility;
+    state.addStudentsToOtherClass.destinationClassData = null;
+    state.addStudentsToOtherClass.successData = null;
+  },
+  [FETCH_CLASS_DETAILS_USING_CODE]: state => {
+    state.addStudentsToOtherClass.loading = true;
+  },
+  [ADD_STUDENTS_TO_OTHER_CLASS_SUCCESS]: (state, { payload }) => {
+    state.addStudentsToOtherClass.successData = payload;
+    state.addStudentsToOtherClass.destinationClassData = null;
+  },
+  [FETCH_CLASS_DETAILS_SUCCESS]: (state, { payload }) => {
+    state.addStudentsToOtherClass.destinationClassData = payload;
+    state.addStudentsToOtherClass.loading = false;
+    state.addStudentsToOtherClass.successData = null;
   }
 });
 
@@ -284,10 +324,35 @@ function* addMultiStudentSaga({ payload }) {
   try {
     const addMultiStudents = yield call(userApi.addMultipleStudents, payload);
     yield put(addMultiStudentsSuccessAction(addMultiStudents));
+    // here, since we have a common duck for users tab for calling the api, we make that action,
+    // and fetch the fresh data
+    yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Adding Multi Students is failing";
     yield call(message.error, errorMessage);
     yield put(addMultiStudentsErrorAction({ error: errorMessage }));
+  }
+}
+
+function* addStudentsToOtherClassSaga({ payload }) {
+  try {
+    const { result } = yield call(userApi.addStudentsToOtherClass, payload);
+    if (!result.status) yield put(addStudentsToOtherClassSuccess(result));
+    else message.error(result.status);
+  } catch (err) {
+    const errorMessage = "Something went wrong. Please try again";
+    message.error(errorMessage);
+  }
+}
+
+function* fetchClassDetailsUsingCodeSaga({ payload }) {
+  try {
+    const { result } = yield call(userApi.validateClassCode, payload);
+    if (result.isValidClassCode) yield put(fetchClassDetailsSuccess(result));
+    else message.error("Invalid Class Code");
+  } catch (err) {
+    const errorMessage = "Something went wrong. Please try again";
+    message.error(errorMessage);
   }
 }
 
@@ -297,4 +362,6 @@ export function* watcherSaga() {
   yield all([yield takeEvery(CREATE_STUDENT_REQUEST, createStudentSaga)]);
   yield all([yield takeEvery(DELETE_STUDENT_REQUEST, deleteStudentSaga)]);
   yield all([yield takeEvery(ADD_MULTI_STUDENTS_REQUEST, addMultiStudentSaga)]);
+  yield all([yield takeEvery(ADD_STUDENTS_TO_OTHER_CLASS, addStudentsToOtherClassSaga)]);
+  yield all([yield takeEvery(FETCH_CLASS_DETAILS_USING_CODE, fetchClassDetailsUsingCodeSaga)]);
 }

@@ -97,13 +97,15 @@ const StyledButton = styled(Button)`
   height: 50px;
   text-transform: uppercase;
   border: none;
-  border-bottom: 1px solid #f3f3f3;
+  border-bottom: 1px solid ${props => props.theme.default.headerButtonBorderColor};
   border-radius: 0px;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.3px;
   &:active,
-  &:focus {
-    border-color: #f3f3f3;
+  &:focus,
+  &:hover {
+    border-color: ${props => props.theme.default.headerButtonBorderHoverColor};
+    color: ${props => props.theme.default.headerButtonBorderHoverColor};
   }
 `;

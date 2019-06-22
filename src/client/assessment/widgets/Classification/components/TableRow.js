@@ -26,7 +26,8 @@ const TableRow = ({
   isBackgroundImageTransparent,
   theme,
   width,
-  height
+  height,
+  disableResponse
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -89,6 +90,7 @@ const TableRow = ({
                   renderIndex={possible_responses.indexOf(answerValue)}
                   onDrop={onDrop}
                   item={answerValue}
+                  disableResponse={disableResponse}
                 />
               );
             })}

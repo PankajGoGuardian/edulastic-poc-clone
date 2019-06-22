@@ -1,7 +1,7 @@
 import { takeLatest, call, put, all, select } from "redux-saga/effects";
 import { push } from "connected-react-router";
 import { itemsApi, testItemActivityApi } from "@edulastic/api";
-import { getCurrentGroup } from "../../student/Login/ducks";
+import { getCurrentGroupWithAllClasses } from "../../student/Login/ducks";
 import {
   RECEIVE_ITEM_REQUEST,
   RECEIVE_ITEM_SUCCESS,
@@ -67,10 +67,13 @@ function* saveUserResponse({ payload }) {
     const itemIndex = payload.itemId;
     const assignmentsByIds = yield select(state => state.studentAssignment && state.studentAssignment.byId);
     const assignmentId = yield select(state => state.studentAssignment && state.studentAssignment.current);
-    const groupId = yield select(getCurrentGroup);
+    const groupId = yield select(getCurrentGroupWithAllClasses);
     let { endDate, class: clazz = [] } = assignmentsByIds[assignmentId] || {};
     if (!endDate && clazz.length) {
-      endDate = maxBy(clazz.filter(cl => cl._id === groupId), "endDate").endDate;
+      endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "endDate") || {}).endDate;
+      if (!endDate) {
+        endDate = (maxBy(clazz.filter(cl => cl._id === groupId), "closedDate") || {}).closedDate;
+      }
     }
     if (endDate && endDate < Date.now()) {
       yield call(message.error, "Test time ended");

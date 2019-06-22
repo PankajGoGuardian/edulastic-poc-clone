@@ -25,7 +25,7 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data, testId } = this.props;
+    const { data, testId, showModal, addDuplicate } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
       <div>
@@ -37,6 +37,8 @@ class MainInfoCell extends React.Component {
           isVisible={isShowPreviewModal}
           testId={testId}
           page="addItems"
+          addDuplicate={addDuplicate}
+          showModal={showModal}
           onClose={this.closeModal}
           data={data}
         />
@@ -46,7 +48,9 @@ class MainInfoCell extends React.Component {
 }
 
 MainInfoCell.propTypes = {
-  data: PropTypes.object.isRequired
+  data: PropTypes.object.isRequired,
+  showModal: PropTypes.bool,
+  addDuplicate: PropTypes.func
 };
 
 export default withRouter(MainInfoCell);

@@ -141,7 +141,12 @@ export default class QuestionDropdown extends React.Component {
           </FormGroup>
           <FormGroup>
             <FormLabel>Correct Answer</FormLabel>
-            <Select value={value[0]} onChange={this.handleValueChange} style={{ marginRight: "20px" }}>
+            <Select
+              value={value[0]}
+              onChange={this.handleValueChange}
+              style={{ marginRight: "20px" }}
+              getPopupContainer={trigger => trigger.parentNode}
+            >
               {this.currentOptions.map((option, key) => (
                 <Select.Option key={key} value={option}>
                   {option}

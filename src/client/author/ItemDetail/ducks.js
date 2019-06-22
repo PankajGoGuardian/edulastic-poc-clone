@@ -16,6 +16,10 @@ import {
 } from "../sharedDucks/questions";
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
+import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
+import { getTestEntitySelector, setTestDataAndUpdateAction, setTestDataAction } from "../TestPage/ducks";
+import { toggleCreateItemModalAction } from "../src/actions/testItem";
+import changeViewAction from "../src/actions/view";
 
 // constants
 const testItemStatusConstants = {
@@ -79,9 +83,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId }
+  payload: { id, data, testId, addToTest }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -213,6 +217,7 @@ export const getTestItemStatusSelector = createSelector(
 );
 
 export const getRows = item =>
+  item.rows &&
   item.rows.map(row => ({
     ...row,
     widgets: row.widgets.map(widget => {
@@ -270,7 +275,7 @@ export const getItemDetailDraggingSelector = createSelector(
 export const getItemDetailDimensionTypeSelector = createSelector(
   getItemDetailSelector,
   state => {
-    if (!state) return "";
+    if (!state || !state.rows) return "";
     const left = state.rows[0].dimension.trim().slice(0, -1);
     const right = state.rows[1] ? state.rows[1].dimension.trim().slice(0, -1) : "100";
     return `${left}-${right}`;
@@ -300,8 +305,13 @@ const initialState = {
   updateError: null,
   dragging: false,
   redirectTestId: null,
-  defaultGrades: getFromLocalStorage("defaultGrades") ? getFromLocalStorage("defaultGrades").split(",") : [],
-  defaultSubject: getFromLocalStorage("defaultSubject") || "",
+  defaultGrades:
+    getFromLocalStorage("defaultGrades") !== null
+      ? getFromLocalStorage("defaultGrades")
+        ? getFromLocalStorage("defaultGrades").split(",")
+        : []
+      : getFromLocalStorage("defaultGrades"),
+  defaultSubject: getFromLocalStorage("defaultSubject"),
   currentEditingTestId: null
 };
 
@@ -398,6 +408,7 @@ export function reducer(state = initialState, { type, payload }) {
       return { ...state, item: { ...state.item, itemLevelScore: payload } };
 
     case ADD_QUESTION:
+      if (!payload.validation) return state; // do not set itemLevelScore for resources
       return {
         ...state,
         item: { ...state.item, itemLevelScore: ((state.item && state.item.itemLevelScore) || 0) + 1 }
@@ -520,6 +531,7 @@ function* receiveItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    const { addToTest } = payload;
     if (!payload.keepData) {
       // avoid data part being put into db
       delete payload.data.data;
@@ -529,10 +541,12 @@ export function* updateItemSaga({ payload }) {
       data.testId = testId;
     }
     data.data = {};
-    data.data.questions = yield select(getQuestionsSelector);
+
+    const questions = yield select(getQuestionsSelector);
+    data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-    console.log("update by id item itemId ", item._id, "payload.id", payload.id);
+
     if (payload.redirect && item._id !== payload.id) {
       yield put(
         replace(
@@ -550,6 +564,28 @@ export function* updateItemSaga({ payload }) {
       payload: { item }
     });
     yield call(message.success, "Update item by id is success", "Success");
+    if (addToTest) {
+      // add item to test entity
+      const testItems = yield select(getSelectedItemSelector);
+      const nextTestItems = [...(testItems.data ? testItems.data : testItems), item._id];
+
+      yield put(setTestItemsAction(nextTestItems));
+
+      const testEntity = yield select(getTestEntitySelector);
+
+      const updatedTestEntity = {
+        ...testEntity,
+        testItems: [...testEntity.testItems, item]
+      };
+      if (!testEntity._id) {
+        yield put(setTestDataAndUpdateAction(updatedTestEntity));
+      } else {
+        yield put(setTestDataAction(updatedTestEntity));
+      }
+      yield put(toggleCreateItemModalAction(false));
+      yield put(changeViewAction("edit"));
+      return;
+    }
   } catch (err) {
     console.error(err);
     const errorMessage = "Update item by id is failing";

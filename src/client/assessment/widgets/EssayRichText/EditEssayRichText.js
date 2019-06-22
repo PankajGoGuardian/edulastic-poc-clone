@@ -18,6 +18,7 @@ import ComposeQuestion from "./ComposeQuestion";
 import FormattingOptions from "./FormattingOptions";
 import Options from "./Options";
 import Scoring from "../../containers/WidgetOptions/components/Scoring";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSections, advancedAreOpen }) => {
   const [act, setAct] = useState(item.formatting_options || []);
@@ -36,6 +37,7 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
       })
     );
   };
+
   return (
     <ContentArea>
       <ComposeQuestion
@@ -60,7 +62,7 @@ const EditEssayRichText = ({ item, setQuestionData, t, fillSections, cleanSectio
           scoringTypes={[]}
           questionData={item}
           advancedAreOpen={advancedAreOpen}
-          noPaddingLeft={true}
+          noPaddingLeft
         />
         <WordLimitAndCount
           withOutTopMargin
@@ -110,7 +112,7 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     ({ user }) => ({ user }),
-    null
+    { setQuestionData: setQuestionDataAction }
   )
 );
 

@@ -92,13 +92,27 @@ const ButtonContainer = styled.div`
 const StyledButton = styled(Button)`
   width: 100%;
   height: 40px;
-  background: ${props => (props.btnType === 1 ? "#fff" : "#00b0ff")};
-  border-color: #00b0ff;
+  background: ${props =>
+    props.btnType === 1
+      ? props.theme.default.confirmationPopupButtonTextHoverColor
+      : props.theme.default.confirmationPopupButtonBgColor};
+  border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
+  &:hover,
+  &:focus {
+    background: ${props =>
+      props.btnType === 1
+        ? props.theme.default.confirmationPopupButtonTextHoverColor
+        : props.theme.default.confirmationPopupButtonBgColor};
+    border-color: ${props => props.theme.default.confirmationPopupButtonBgColor};
+  }
   span {
     text-transform: uppercase;
     font-size: 11px;
     font-weight: 600;
-    color: ${props => (props.btnType === 1 ? "#00b0ff" : "#fff")};
+    color: ${props =>
+      props.btnType === 1
+        ? props.theme.default.confirmationPopupButtonTextColor
+        : props.theme.default.confirmationPopupButtonTextHoverColor};
   }
   @media screen and (max-width: 767px) {
     margin-top: 10px;

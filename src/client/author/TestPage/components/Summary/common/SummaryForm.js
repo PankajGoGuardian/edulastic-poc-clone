@@ -36,11 +36,12 @@ export const SummarySelect = styled(Select)`
 export const SummaryTextArea = styled(Input.TextArea)`
   font-weight: 600;
   color: ${secondaryTextColor};
-  min-height: ${props => (props.isplaylist ? "78px !important" : "168px !important")};
-  height: ${props => (props.isplaylist ? "78px" : "168px")};
-  max-height: ${props => (props.isplaylist ? "78px" : "168px")};
+  min-height: 80px !important;
+  height: 80px !important;
+  max-height: 168px !important;
   padding: 10px 20px;
   border: none;
+  margin-bottom: 23px;
   background: ${lightGreySecondary};
 `;
 

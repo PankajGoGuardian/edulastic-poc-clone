@@ -28,6 +28,20 @@ import {
 import ArrowLeftIcon from "../Assets/left-arrow.svg";
 import ArrowRightIcon from "../Assets/right-arrow.svg";
 
+const getMastery = (assignmentMasteryArray, performancePercentage) => {
+  performancePercentage = performancePercentage || 0;
+
+  for (const mastery of assignmentMasteryArray) {
+    if (performancePercentage >= mastery.threshold) {
+      return mastery;
+    }
+  }
+  return {
+    color: "#E61E54",
+    masteryLabel: "NM"
+  };
+};
+
 const sortAlphaNum = (a, b) => {
   if (a < b) {
     return -1;
@@ -58,7 +72,7 @@ class TableDisplay extends Component {
     const { additionalData: { standards = [] } = {} } = props;
     const submittedActs = props.testActivities.filter(x => x.status === "submitted");
     if (submittedActs.length && !state.dataLoaded) {
-      const firstStandard = standards[0];
+      const firstStandard = standards.sort((a, b) => (b.masterySummary || 0) - (a.masterySummary || 0))[0];
       const perfomancePercentage = getPerfomancePercentage(props.testActivities, firstStandard);
       return { selectedRow: 1, stdId: firstStandard._id, perfomancePercentage, dataLoaded: true };
     }
@@ -106,7 +120,7 @@ class TableDisplay extends Component {
 
   render() {
     const { selectedRow, stdId, perfomancePercentage } = this.state;
-    const { additionalData: { standards = [] } = {} } = this.props;
+    const { additionalData: { standards = [], assignmentMastery = [] } = {} } = this.props;
     const columns = [
       {
         title: "Standards",
@@ -126,15 +140,22 @@ class TableDisplay extends Component {
         title: "Mastery Summary",
         dataIndex: "masterySummary",
         key: "masterySummary",
-        sorter: (a, b) => a.masterySummary - b.masterySummary,
-        render: text => <MasterySummary showInfo={false} percent={round(parseFloat(text), 2) || 0} />
+        sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
+        render: text => (
+          <MasterySummary
+            strokeColor={getMastery(assignmentMastery, text || 0).color}
+            showInfo={false}
+            percent={round(parseFloat(text), 2) || 0}
+          />
+        )
       },
       {
         title: "Performance Summary %",
         key: "performanceSummary",
         dataIndex: "performanceSummary",
-        sorter: (a, b) => a.performanceSummary - b.performanceSummary,
-        render: text => <PerformanceSummary>{round(text, 2) || 0}</PerformanceSummary>
+        sorter: (a, b) => (a.masterySummary || 0) - (b.masterySummary || 0),
+        render: text => <PerformanceSummary>{round(text, 2) || 0}</PerformanceSummary>,
+        defaultSortOrder: "descend"
       },
       {
         title: "",
@@ -148,11 +169,11 @@ class TableDisplay extends Component {
       return {
         key: index + 1,
         standard: <p className="first-data">{std.identifier}</p>,
-        question: std.qIds
-          .map(qid => this.props.qids.indexOf(qid))
-          .filter(x => x > -1)
-          .map(x => `Q${x + 1}`)
-          .join(","),
+        question: [
+          ...new Set(
+            std.qIds.filter(qid => this.props.qids.indexOf(qid) > -1).map(id => this.props.labels[id].barLabel)
+          )
+        ].join(","),
         masterySummary: perfomancePercentage,
         performanceSummary: perfomancePercentage,
         icon: submittedLength ? (
@@ -218,6 +239,7 @@ class TableDisplay extends Component {
             onClose={e => this.onCaretClick(e, 0, stdId)}
             data={standards.find(std => std._id === stdId)}
             performancePercentage={perfomancePercentage}
+            color={getMastery(assignmentMastery, perfomancePercentage || 0).color}
           />
         )}
       </React.Fragment>

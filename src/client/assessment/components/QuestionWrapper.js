@@ -4,7 +4,7 @@ import styled, { ThemeProvider } from "styled-components";
 import { questionType } from "@edulastic/constants";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { get, isUndefined } from "lodash";
+import { get, isUndefined, round } from "lodash";
 import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth, desktopWidth } from "@edulastic/colors";
 import { withWindowSizes, WithResources } from "@edulastic/common";
@@ -43,9 +43,11 @@ import { FormulaEssay } from "../widgets/FormulaEssay";
 import ClozeMath from "../widgets/ClozeMath";
 import FeedbackBottom from "./FeedbackBottom";
 import FeedbackRight from "./FeedbackRight";
-import Timespent from "./Timespent";
 import { setQuestionDataAction } from "../../author/src/actions/question";
+import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
+import { getUserRole } from "../../author/src/selectors/user";
+import AudioControls from "../AudioControls";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -168,6 +170,7 @@ const getQuestion = type => {
     case questionType.FORMULA_ESSAY:
       return FormulaEssay;
     case questionType.CLOZE_MATH:
+    case questionType.EXPRESSION_MULTIPART:
       return ClozeMath;
     case questionType.GRAPH:
       return Graph;
@@ -181,13 +184,11 @@ class QuestionWrapper extends Component {
     main: [],
     advanced: [],
     activeTab: 0,
-    advancedAreOpen: false
+    shuffledOptsOrder: []
   };
 
-  handleAdvancedOpen = () => {
-    this.setState(prevState => ({
-      advancedAreOpen: !prevState.advancedAreOpen
-    }));
+  handleShuffledOptions = shuffledOptsOrder => {
+    this.setState({ shuffledOptsOrder });
   };
 
   fillSections = (section, label, offset, offsetBottom, haveDesk, deskHeight, id) => {
@@ -220,14 +221,12 @@ class QuestionWrapper extends Component {
   cleanSections = sectionId => {
     if (!sectionId) return;
 
-    this.setState(({ main }) => {
-      return { main: main.filter(item => item.id !== sectionId) };
-    });
+    this.setState(({ main }) => ({ main: main.filter(item => item.id !== sectionId) }));
   };
 
   static getDerivedStateFromProps(props) {
     if (props.view !== "edit") {
-      return { main: [], advanced: [], activeTab: 0, advancedAreOpen: false };
+      return { main: [], advanced: [], activeTab: 0 };
     }
   }
 
@@ -247,13 +246,19 @@ class QuestionWrapper extends Component {
       windowWidth,
       flowLayout,
       isPresentationMode,
+      handleAdvancedOpen,
+      advancedAreOpen,
+      userRole,
+      disableResponse,
       ...restProps
     } = this.props;
     const userAnswer = get(data, "activity.userResponse", null);
-    const { main, advanced, activeTab, advancedAreOpen } = this.state;
+    const timeSpent = get(data, "activity.timeSpent", false);
+    const { main, advanced, activeTab } = this.state;
     const disabled = get(data, "activity.disabled", false) || data.scoringDisabled;
     const Question = getQuestion(type);
 
+    const isV1Multipart = get(this.props, "col.isV1Multipart", false);
     const studentName = data.activity && data.activity.studentName;
     const presentationModeProps = {
       isPresentationMode,
@@ -276,6 +281,7 @@ class QuestionWrapper extends Component {
        */
       userAnswerProps.key = data.id;
     }
+    const canShowPlayer = userRole === "student" && data.tts && data.tts.taskStatus === "COMPLETED";
     return (
       <WithResources
         resources={[
@@ -285,61 +291,81 @@ class QuestionWrapper extends Component {
         fallBack={<span />}
       >
         <ThemeProvider theme={themes.default}>
-          <QuestionContainer
-            className={`fr-view question-container-id-${data.id}`}
-            disabled={disabled}
-            noPadding={noPadding}
-            isFlex={isFlex}
-            data-cy="question-container"
-          >
-            <PaperWrapper
+          <>
+            {canShowPlayer ? (
+              <AudioControls key={data.id} item={data} qId={data.id} audioSrc={data.tts.titleAudioURL} />
+            ) : (
+              ""
+            )}
+            <QuestionContainer
+              className={`fr-view question-container-id-${data.id}`}
               disabled={disabled}
-              style={{
-                width: "-webkit-fill-available",
-                display: "flex",
-                boxShadow: "none"
-              }}
-              flowLayout={flowLayout}
+              noPadding={noPadding}
+              isFlex={isFlex}
+              data-cy="question-container"
             >
-              {view === "edit" && (
-                <QuestionMenu
-                  activeTab={activeTab}
-                  main={main}
-                  advanced={advanced}
-                  advancedAreOpen={advancedAreOpen}
-                  handleAdvancedOpen={this.handleAdvancedOpen}
-                />
-              )}
-              <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
-                {timespent ? <Timespent timespent={timespent} view={view} /> : null}
-                <Question
-                  {...restProps}
-                  setQuestionData={setQuestionData}
-                  item={data}
-                  view={view}
-                  changePreviewTab={changePreviewTab}
-                  qIndex={qIndex}
-                  advancedAreOpen={advancedAreOpen}
-                  cleanSections={this.cleanSections}
-                  fillSections={this.fillSections}
-                  showQuestionNumber={showFeedback}
-                  flowLayout={flowLayout}
-                  {...userAnswerProps}
-                />
-              </div>
-            </PaperWrapper>
-            {showFeedback &&
-              (multiple ? (
-                <FeedbackBottom
-                  widget={data}
-                  disabled={disabled}
-                  studentName={studentName}
-                  {...presentationModeProps}
-                />
-              ) : (
-                <FeedbackRight disabled={disabled} widget={data} studentName={studentName} {...presentationModeProps} />
-              ))}
-          </QuestionContainer>
+              <PaperWrapper
+                disabled={disabled}
+                isV1Multipart={isV1Multipart}
+                style={{
+                  width: "-webkit-fill-available",
+                  display: "flex",
+                  boxShadow: "none"
+                }}
+                flowLayout={flowLayout}
+              >
+                {view === "edit" && (
+                  <QuestionMenu
+                    activeTab={activeTab}
+                    main={main}
+                    advanced={advanced}
+                    advancedAreOpen={advancedAreOpen}
+                    handleAdvancedOpen={handleAdvancedOpen}
+                  />
+                )}
+                <div style={{ flex: "auto", maxWidth: `${windowWidth > desktopWidth ? "auto" : "100%"}` }}>
+                  {showFeedback && timeSpent && (
+                    <p style={{ fontSize: 19, color: "grey" }}>
+                      <i className="fa fa-clock-o" style={{ paddingRight: 15 }} aria-hidden="true" />
+                      {round(timeSpent / 1000, 1)}s
+                    </p>
+                  )}
+
+                  <Question
+                    {...restProps}
+                    setQuestionData={setQuestionData}
+                    item={data}
+                    view={view}
+                    changePreviewTab={changePreviewTab}
+                    qIndex={qIndex}
+                    advancedAreOpen={advancedAreOpen}
+                    cleanSections={this.cleanSections}
+                    fillSections={this.fillSections}
+                    showQuestionNumber={showFeedback}
+                    flowLayout={flowLayout}
+                    disableResponse={disableResponse}
+                    {...userAnswerProps}
+                  />
+                </div>
+              </PaperWrapper>
+              {showFeedback &&
+                (multiple ? (
+                  <FeedbackBottom
+                    widget={data}
+                    disabled={disabled}
+                    studentName={studentName}
+                    {...presentationModeProps}
+                  />
+                ) : (
+                  <FeedbackRight
+                    disabled={disabled}
+                    widget={data}
+                    studentName={studentName}
+                    {...presentationModeProps}
+                  />
+                ))}
+            </QuestionContainer>
+          </>
         </ThemeProvider>
       </WithResources>
     );
@@ -363,7 +389,11 @@ QuestionWrapper.propTypes = {
   timespent: PropTypes.string,
   qIndex: PropTypes.number,
   windowWidth: PropTypes.number.isRequired,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  advancedAreOpen: PropTypes.bool,
+  handleAdvancedOpen: PropTypes.func,
+  userRole: PropTypes.string.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 QuestionWrapper.defaultProps = {
@@ -379,7 +409,10 @@ QuestionWrapper.defaultProps = {
   showFeedback: false,
   qIndex: 0,
   changePreviewTab: () => {},
-  flowLayout: false
+  flowLayout: false,
+  advancedAreOpen: false,
+  handleAdvancedOpen: () => {},
+  disableResponse: false
 };
 
 const enhance = compose(
@@ -389,10 +422,13 @@ const enhance = compose(
   withNamespaces("assessment"),
   connect(
     state => ({
-      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
+      isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
+      advancedAreOpen: state.assessmentplayerQuestions.advancedAreOpen,
+      userRole: getUserRole(state)
     }),
     {
-      setQuestionData: setQuestionDataAction
+      setQuestionData: setQuestionDataAction,
+      handleAdvancedOpen: toggleAdvancedSections
     }
   )
 );

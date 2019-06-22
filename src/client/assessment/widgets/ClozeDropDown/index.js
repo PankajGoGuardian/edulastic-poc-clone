@@ -23,6 +23,7 @@ import Options from "./components/Options";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 import { ContentArea } from "../../styled/ContentArea";
+import ChoicesForResponse from "./ChoicesForResponse";
 
 const EmptyWrapper = styled.div``;
 
@@ -64,16 +65,15 @@ class ClozeDropDown extends Component {
     const { setQuestionData, item } = this.props;
     setQuestionData(
       produce(item, draft => {
-        const response = {
+        const validAnswers = cloneDeep(draft.validation.valid_response.value);
+        validAnswers.map(answer => {
+          answer.value = "";
+          return answer;
+        });
+        draft.validation.alt_responses.push({
           score: 1,
-          value: []
-        };
-
-        if (draft.validation.alt_responses && draft.validation.alt_responses.length) {
-          draft.validation.alt_responses.push(response);
-        } else {
-          draft.validation.alt_responses = [response];
-        }
+          value: validAnswers
+        });
       })
     );
   };
@@ -132,7 +132,7 @@ class ClozeDropDown extends Component {
       instructorStimulus
     } = this.getRenderData();
 
-    const { shuffleOptions } = item;
+    const { shuffleOptions, response_ids } = item;
 
     const Wrapper = testItem ? EmptyWrapper : Paper;
 
@@ -174,6 +174,16 @@ class ClozeDropDown extends Component {
                     />
                   </CorrectAnswerOptions>
                 </Widget>
+                {response_ids &&
+                  response_ids.map(response => (
+                    <ChoicesForResponse
+                      key={response.id}
+                      response={response}
+                      item={item}
+                      fillSections={fillSections}
+                      cleanSections={cleanSections}
+                    />
+                  ))}
               </div>
               <div style={{ marginTop: 35 }}>
                 <Options

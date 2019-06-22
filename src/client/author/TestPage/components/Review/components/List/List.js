@@ -30,8 +30,20 @@ const splitItems = (item, testItem) => {
 };
 
 const SortableItem = SortableElement(
-  ({ indx, selected, item, testItem, onCheck, points, onChangePoints, metaInfoData, onPreview, questions, mobile }) => {
-    console.log("questions", questions);
+  ({
+    indx,
+    selected,
+    item,
+    testItem,
+    onCheck,
+    points,
+    onChangePoints,
+    owner,
+    metaInfoData,
+    onPreview,
+    questions,
+    mobile
+  }) => {
     const DragHandle = SortableHandle(() => <QuestionIndex>Q{indx + 1}</QuestionIndex>);
     const handleCheck = e => onCheck(indx, e.target.checked);
     /**
@@ -60,6 +72,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
+                    disabled={!owner}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -72,6 +85,7 @@ const SortableItem = SortableElement(
                 cols={item}
                 previewTab="clear"
                 verticalDivider={item.verticalDivider}
+                disableResponse={true}
                 scrolling={item.scrolling}
                 questions={questions}
                 windowWidth="100%"
@@ -80,7 +94,6 @@ const SortableItem = SortableElement(
           </FlexContainer>
         ) : (
           items.map(({ item: _item, question }, index) => {
-            console.log("_item", _item, "item", item);
             return (
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
                 <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
@@ -97,6 +110,7 @@ const SortableItem = SortableElement(
                     style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
                     cols={_item}
                     previewTab="clear"
+                    disableResponse={true}
                     verticalDivider={item.verticalDivider}
                     scrolling={item.scrolling}
                     questions={questions}
@@ -110,6 +124,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
+                      disabled={!owner}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -142,10 +157,10 @@ const List = SortableContainer(
     standards,
     scoring,
     onPreview,
+    owner,
     questions,
     mobile
   }) => {
-    console.log("questions", questions);
     const handleCheckboxChange = (index, checked) => {
       if (checked) {
         setSelected([...selected, index]);
@@ -184,6 +199,7 @@ const List = SortableContainer(
               standards: standards[testItems[i]._id]
             }}
             index={i}
+            owner={owner}
             indx={i}
             item={item}
             testItem={testItems[i]}
@@ -211,11 +227,13 @@ List.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
+  owner: PropTypes.bool,
   questions: PropTypes.object.isRequired,
   mobile: PropTypes.bool
 };
 
 List.defaultProps = {
+  owner: false,
   mobile: false
 };
 

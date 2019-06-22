@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
@@ -8,11 +8,12 @@ import {
   setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
-  updateOpenAssignmentsAction
+  updateOpenAssignmentsAction,
+  updateStudentActivityAction
 } from "../src/actions/classBoard";
-import { togglePresentationModeAction } from "../src/actions/testActivity";
 
 import { createFakeData } from "./utils";
+import { markQuestionLabel, getQuestionLabels } from "./Transformer";
 
 import {
   RECEIVE_GRADEBOOK_REQUEST,
@@ -24,7 +25,9 @@ import {
   UPDATE_RELEASE_SCORE,
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
-  CLOSE_ASSIGNMENT
+  CLOSE_ASSIGNMENT,
+  SAVE_OVERALL_FEEDBACK,
+  MARK_AS_ABSENT
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -50,6 +53,8 @@ function* receiveTestActivitySaga({ payload }) {
     // test, testItemsData, testActivities, studentNames, testQuestionActivities
     const { additionalData, ...gradebookData } = yield call(classBoardApi.testActivity, payload);
     const students = get(gradebookData, "students", []);
+    // this method mutates the gradebookData
+    markQuestionLabel(gradebookData.testItemsData, gradebookData.test.testItems);
     // attach fake data to students for presentation mode.
     const fakeData = createFakeData(students.length);
     gradebookData.students = students.map((student, index) => ({
@@ -62,7 +67,6 @@ function* receiveTestActivitySaga({ payload }) {
       payload: { gradebookData, additionalData }
     });
 
-    yield put(togglePresentationModeAction(false));
     const releaseScore = additionalData.showScore;
     yield put(setShowScoreAction(releaseScore));
   } catch (err) {
@@ -121,6 +125,25 @@ function* closeAssignmentSaga({ payload }) {
   }
 }
 
+function* saveOverallFeedbackSaga({ payload }) {
+  try {
+    yield call(testActivityApi.saveOverallFeedback, payload);
+    yield call(message.success, "feedback saved");
+  } catch (err) {
+    yield call(message.error, "Saving failed");
+  }
+}
+
+function* markAbsentSaga({ payload }) {
+  try {
+    yield call(classBoardApi.markAbsent, payload);
+    yield put(updateStudentActivityAction(payload.students));
+    yield call(message.success, "Successfully marked as absent");
+  } catch (err) {
+    yield call(message.error, "Mark absent students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -128,7 +151,9 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
-    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga)
+    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
+    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
   ]);
 }
 
@@ -169,12 +194,16 @@ export const getAggregateByQuestion = (entities, studentId) => {
       disabled,
       score,
       maxScore,
-      graded
+      graded,
+      qLabel,
+      barLabel
     } of questionActivities.filter(x => !x.disabled)) {
       let skippedx = false;
       if (!questionMap[_id]) {
         questionMap[_id] = {
           _id,
+          qLabel,
+          barLabel,
           itemLevelScoring: false,
           itemId: null,
           attemptsNum: 0,
@@ -368,7 +397,6 @@ const getAllQids = (testItemIds, testItemsDataKeyed) => {
 export const getQIdsSelector = createSelector(
   stateTestActivitySelector,
   state => {
-    console.log("qid state", state);
     const testItemIds = get(state, "data.test.testItems", []);
     const testItemsData = get(state, "data.testItemsData", []);
     if (testItemIds.length === 0 && testItemsData.length === 0) {
@@ -377,5 +405,14 @@ export const getQIdsSelector = createSelector(
     const testItemsDataKeyed = keyBy(testItemsData, "_id");
     const qIds = getAllQids(testItemIds, testItemsDataKeyed);
     return qIds;
+  }
+);
+
+export const getQLabelsSelector = createSelector(
+  stateTestActivitySelector,
+  state => {
+    const testItemIds = get(state, "data.test.testItems", []);
+    const testItemsData = get(state, "data.testItemsData", []);
+    return getQuestionLabels(testItemsData, testItemIds);
   }
 );

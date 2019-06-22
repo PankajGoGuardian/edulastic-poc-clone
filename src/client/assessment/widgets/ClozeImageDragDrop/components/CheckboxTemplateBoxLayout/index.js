@@ -4,6 +4,8 @@ import { withTheme } from "styled-components";
 
 import { MathSpan } from "@edulastic/common";
 
+import striptags from "striptags";
+import { response, clozeImage } from "@edulastic/constants";
 import DropContainer from "../DropContainer";
 import DragItem from "../DragItem";
 
@@ -15,8 +17,8 @@ import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 
-import striptags from "striptags";
-import { response, canvasDimensions } from "@edulastic/constants";
+import { StyledPreviewTemplateBox } from "../../styled/StyledPreviewTemplateBox";
+import { StyledPreviewContainer } from "../../styled/StyledPreviewContainer";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -24,7 +26,8 @@ const CheckboxTemplateBoxLayout = ({
   showAnswer,
   responseContainers,
   image,
-  imageWidth,
+  canvasHeight,
+  canvasWidth,
   responsecontainerindividuals,
   responseBtnStyle,
   fontSize,
@@ -36,29 +39,13 @@ const CheckboxTemplateBoxLayout = ({
   theme,
   showBorder
 }) => {
-  const { maxHeight, maxWidth } = canvasDimensions;
+  const { maxHeight, maxWidth } = clozeImage;
+
   return (
-    <div
-      className="imagedragdrop_template_box"
-      style={{
-        fontSize,
-        padding: 20,
-        width: !maxWidth ? imageWidth || "100%" : `${maxWidth}px`,
-        height: !maxHeight ? null : maxHeight,
-        margin: "auto",
-        maxHeight: !maxHeight ? null : `${maxHeight}px`,
-        maxWidth: !maxWidth ? null : `${maxWidth}px`
-      }}
-    >
-      <div
-        style={{
-          position: "relative",
-          top: 0,
-          left: 0,
-          width: imageWidth,
-          minWidth: `${maxWidth}px`,
-          maxWidth: "100%"
-        }}
+    <StyledPreviewTemplateBox fontSize={fontSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+      <StyledPreviewContainer
+        width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+        height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
         {image}
         {responseContainers.map((responseContainer, index) => {
@@ -242,8 +229,8 @@ const CheckboxTemplateBoxLayout = ({
             </React.Fragment>
           );
         })}
-      </div>
-    </div>
+      </StyledPreviewContainer>
+    </StyledPreviewTemplateBox>
   );
 };
 
@@ -259,8 +246,10 @@ CheckboxTemplateBoxLayout.propTypes = {
   onDropHandler: PropTypes.func.isRequired,
   image: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,
-  imageWidth: PropTypes.number.isRequired,
-  theme: PropTypes.object.isRequired
+  canvasWidth: PropTypes.number.isRequired,
+  canvasHeight: PropTypes.number.isRequired,
+  theme: PropTypes.object.isRequired,
+  showBorder: PropTypes.bool.isRequired
 };
 
 export default withTheme(React.memo(CheckboxTemplateBoxLayout));

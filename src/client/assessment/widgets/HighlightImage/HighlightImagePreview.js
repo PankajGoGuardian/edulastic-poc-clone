@@ -44,8 +44,8 @@ const HighlightImagePreview = ({
 
   const [currentColor, setCurrentColor] = useState(line_color[0]);
 
-  const [width, setWidth] = useState(image ? image.width : "auto");
-  const [height, setHeight] = useState(image ? image.height : 470);
+  const [width, setWidth] = useState(image ? `${image.width}px` : "auto");
+  const [height, setHeight] = useState(image ? `${image.height}px` : 470);
   const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
@@ -191,7 +191,7 @@ const HighlightImagePreview = ({
           <InstructorStimulus width={"100%"}>{item.instructor_stimulus}</InstructorStimulus>
 
           <QuestionTitleWrapper>
-            {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+            {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
             {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
           </QuestionTitleWrapper>
           {renderImage()}

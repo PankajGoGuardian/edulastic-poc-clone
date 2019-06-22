@@ -15,7 +15,7 @@ import {
 } from "../constants/actions";
 import { getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
-const getNewAlignmentState = () => ({
+export const getNewAlignmentState = () => ({
   curriculum: "",
   curriculumId: "",
   subject: getFromLocalStorage("defaultSubject") || "",

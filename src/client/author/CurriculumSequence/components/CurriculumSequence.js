@@ -291,6 +291,7 @@ class CurriculumSequence extends Component {
     removeTestFromModule({ moduleIndex: removeModuleIndex, itemId: removeTestId });
     this.setState({ showConfirmRemoveModal: false });
   };
+
   render() {
     const desktopWidthValue = Number(desktopWidth.split("px")[0]);
     const { onGuideChange, handleRemoveTest, removeTestFromPlaylist, onCloseConfirmRemoveModal } = this;
@@ -319,7 +320,7 @@ class CurriculumSequence extends Component {
       history
     } = this.props;
 
-    const lastThreeRecentPlaylist = recentPlaylists.slice(0, 3);
+    const lastThreeRecentPlaylist = recentPlaylists ? recentPlaylists.slice(0, 3) : [];
     const { handleSaveClick, handleUseThisClick, handleCustomizeClick, handleEditClick } = this;
     const urlHasUseThis = history.location.pathname.match(/use-this/g);
     // Options for add unit
@@ -686,7 +687,7 @@ ModuleProgress.propTypes = {
 const TopBar = styled.div`
   display: flex;
   flex-direction: column;
-  background-color: ${greenSecondary};
+  background-color: ${props => props.theme.header.headerBgColor};
   width: 100%;
   min-height: 100px;
 `;
@@ -817,7 +818,7 @@ const AddUnitSubHeaderButtonStyle = styled.div`
   display: flex;
   align-items: center;
   .ant-btn {
-    color: #1774f0;
+    color: #00ad50;
     border-color: ${white};
     display: flex;
     align-items: center;
@@ -827,9 +828,9 @@ const AddUnitSubHeaderButtonStyle = styled.div`
     }
   }
   .ant-btn:hover {
-    background-color: #1774f0;
+    background-color: #00ad50;
     color: ${white};
-    border-color: #1774f0;
+    border-color: #00ad50;
     svg {
       fill: ${white};
     }
@@ -852,7 +853,7 @@ const AddCustomContentSubHeaderButtonStyle = styled.div`
   align-items: center;
   padding-left: 10px;
   .ant-btn {
-    color: #1774f0;
+    color: #00ad50;
     border-color: ${white};
     display: flex;
     align-items: center;
@@ -862,9 +863,9 @@ const AddCustomContentSubHeaderButtonStyle = styled.div`
     }
   }
   .ant-btn:hover {
-    background-color: #1774f0;
+    background-color: #00ad50;
     color: ${white};
-    border-color: #1774f0;
+    border-color: #00ad50;
     svg {
       fill: ${white};
     }
@@ -892,7 +893,7 @@ const SelectContentSubHeaderButtonStyle = styled.div`
   padding-left: 10px;
   /* TODO: responsive paddings - negative margin on the parent */
   .ant-btn {
-    color: #1774f0;
+    color: #00ad50;
     border-color: ${white};
     display: flex;
     align-items: center;
@@ -903,9 +904,9 @@ const SelectContentSubHeaderButtonStyle = styled.div`
     }
   }
   .ant-btn:hover {
-    background-color: #1774f0;
+    background-color: #00ad50;
     color: ${white};
-    border-color: #1774f0;
+    border-color: #00ad50;
     svg {
       fill: ${white};
     }

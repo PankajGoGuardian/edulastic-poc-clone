@@ -6,21 +6,19 @@ class AlternateAnswerBoxLayout extends Component {
     const { altAnswers, fontSize } = this.props;
     let alternateAnswers = {};
     altAnswers.forEach(altAnswer => {
-      altAnswer["value"].forEach((alt, index) => {
+      altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt !== "") {
           alternateAnswers[index + 1].push(alt);
         }
       });
     });
-    alternateAnswers = Object.keys(alternateAnswers).map(key => {
-      return (
-        <div key={key} className="response-btn check-answer showanswer">
-          &nbsp;<span className="index">{key}</span>
-          <span className="text">{alternateAnswers[key].join(", ")}</span>&nbsp;
-        </div>
-      );
-    });
+    alternateAnswers = Object.keys(alternateAnswers).map(key => (
+      <div key={key} className="response-btn check-answer showanswer">
+        <span className="index">{key}</span>
+        <span className="text">{alternateAnswers[key].join(", ")}</span>&nbsp;
+      </div>
+    ));
 
     return (
       <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
@@ -36,8 +34,9 @@ AlternateAnswerBoxLayout.propTypes = {
   fontSize: PropTypes.string
 };
 
-AlternateAnswerBoxLayout.defaltProps = {
-  fontSize: "13px"
+AlternateAnswerBoxLayout.defaultProps = {
+  fontSize: "13px",
+  altAnswers: []
 };
 
 export default AlternateAnswerBoxLayout;

@@ -7,8 +7,12 @@ import Droppable from "./Droppable";
 import Draggable from "./Draggable";
 import { ResponseContainer } from "../styled/ResponseContainer";
 
-const TemplateBox = ({ index: dropTargetIndex, resprops }) => {
-  const { hasGroupResponses, btnStyle, smallSize, options, userAnswers, onDrop } = resprops;
+const TemplateBox = ({ resprops, id }) => {
+  if (!id) {
+    return "NOID";
+  }
+  const { hasGroupResponses, btnStyle, smallSize, options, userAnswers, onDrop, responseIDs } = resprops;
+  const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
 
   const getLabel = () => {
     if (userAnswers[dropTargetIndex]) {
@@ -67,8 +71,8 @@ const TemplateBox = ({ index: dropTargetIndex, resprops }) => {
 };
 
 TemplateBox.propTypes = {
-  index: PropTypes.number.isRequired,
-  resprops: PropTypes.object.isRequired
+  resprops: PropTypes.object.isRequired,
+  id: PropTypes.string.isRequired
 };
 
 export default TemplateBox;

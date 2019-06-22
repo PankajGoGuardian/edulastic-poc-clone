@@ -68,6 +68,9 @@ export const GraphContainer = styled.div`
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
   margin: 0px auto;
+  p {
+    padding: 0px 0px;
+  }
 `;
 
 export const StyledCard = styled(Card)`

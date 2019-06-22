@@ -38,7 +38,7 @@ export const StyledMenu = styled(Menu)`
     }
 
     :hover {
-      background: ${lightBlueSecondary};
+      background: #00ad50;
 
       img {
         filter: brightness(10);
@@ -71,7 +71,7 @@ export const ActionButtonWrapper = styled.div`
 
 export const ActionButton = styled(Button)`
   color: ${white};
-  background-color: ${lightBlueSecondary};
+  background-color: #00ad50;
   border: none;
   box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
   max-width: 140px;
@@ -85,7 +85,7 @@ export const ActionButton = styled(Button)`
   text-transform: uppercase;
 
   :hover {
-    background-color: ${lightBlueSecondary};
+    background-color: #00ad50;
     color: ${white};
   }
 `;

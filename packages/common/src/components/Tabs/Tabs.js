@@ -48,5 +48,6 @@ const Container = styled.div`
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  flex-direction: row;
   margin-bottom: 4px;
 `;

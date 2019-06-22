@@ -115,6 +115,11 @@ const FilterBtn = styled(Button)`
         ? props.theme.headerFilters.headerSelectedFilterBgColor
         : props.theme.headerFilters.headerFilterBgColor};
   }
+  &:hover {
+    color: ${props => props.theme.headerFilters.headerFilterTextHoverColor};
+    background: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
+    border-color: ${props => props.theme.headerFilters.headerFilterBgBorderHoverColor};
+  }
   span {
     font-size: ${props => props.theme.headerFilters.headerFilterTextSize};
     font-weight: 600;

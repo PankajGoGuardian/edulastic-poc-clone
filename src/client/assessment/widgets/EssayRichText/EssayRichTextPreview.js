@@ -5,7 +5,14 @@ import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, FroalaEditor } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  FroalaEditor,
+  MathFormulaDisplay
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -29,6 +36,7 @@ const getToolBarButtons = item =>
     });
 
 const EssayRichTextPreview = ({
+  col,
   view,
   saveAnswer,
   t,
@@ -38,11 +46,11 @@ const EssayRichTextPreview = ({
   theme,
   showQuestionNumber,
   qIndex,
-  previewTab,
   testItem,
-  location
+  location,
+  disableResponse,
+  previewTab
 }) => {
-  console.log(userAnswer, "userAnswer");
   const toolbarButtons = getToolBarButtons(item);
 
   const [showCharacters, setShowCharacters] = useState(false);
@@ -63,7 +71,7 @@ const EssayRichTextPreview = ({
   );
 
   useEffect(() => {
-    if (Array.isArray(userAnswer)) {
+    if (Array.isArray(userAnswer) || typeof userAnswer !== "string") {
       setText("");
       saveAnswer("");
       setWordCount(0);
@@ -72,16 +80,18 @@ const EssayRichTextPreview = ({
 
   // TODO: if this is slooooooow, debounce or throttle it..
   const handleTextChange = val => {
-    const wordsCount =
-      typeof val === "string"
-        ? stripTags(val)
-            .split(" ")
-            .filter(i => !!i.trim()).length
-        : 0;
-    const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
-    setWordCount(wordsCount + mathInputCount);
-    setText(val);
-    saveAnswer(val);
+    if (typeof val === "string") {
+      const wordsCount =
+        typeof val === "string"
+          ? stripTags(val)
+              .split(" ")
+              .filter(i => !!i.trim()).length
+          : 0;
+      const mathInputCount = typeof val === "string" ? (val.match(/input__math/g) || []).length : 0;
+      setWordCount(wordsCount + mathInputCount);
+      setText(val);
+      saveAnswer(val);
+    }
   };
 
   const handleCharacterSelect = char => {
@@ -110,14 +120,16 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  const isReadOnly = (previewTab === "show" || testItem) && !location.pathname.includes("student");
+  const isV1Multipart = get(col, "isV1Multipart", false);
+
+  const isReadOnly = (previewTab === "show" || disableResponse) && !location.pathname.includes("student");
 
   return item.id ? (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
+        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
         {view === PREVIEW && !smallSize && <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />}
       </QuestionTitleWrapper>
 
@@ -132,7 +144,7 @@ const EssayRichTextPreview = ({
             />
           )}
         </div>
-        {!Array.isArray(userAnswer) && (
+        {!Array.isArray(userAnswer) && !isReadOnly && (
           <FroalaEditor
             backgroundColor={
               item.max_word < wordCount
@@ -151,8 +163,11 @@ const EssayRichTextPreview = ({
             toolbarButtons={toolbarButtons}
           />
         )}
+        {!Array.isArray(userAnswer) && isReadOnly && (
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: userAnswer }} />
+        )}
 
-        {item.show_word_count && (
+        {item.show_word_count && (userAnswer || !isReadOnly) && (
           <Toolbar borderRadiusOnlyBottom>
             <FlexContainer />
             <Item style={wordCountStyle}>{displayWordCount}</Item>
@@ -172,9 +187,11 @@ EssayRichTextPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   previewTab: PropTypes.string.isRequired,
-  testItem: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  location: PropTypes.any.isRequired,
+  testItem: PropTypes.bool,
+  qIndex: PropTypes.number,
+  col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {

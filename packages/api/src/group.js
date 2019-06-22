@@ -11,6 +11,14 @@ const fetchMyGroups = () =>
     })
     .then(result => result.data.result);
 
+const fetchMyArchiveGroups = () =>
+  api
+    .callApi({
+      url: `${prefix}/mygroups?active=0`,
+      method: "get"
+    })
+    .then(result => result.data.result);
+
 const getGroups = body =>
   api
     .callApi({
@@ -47,10 +55,33 @@ const deleteGroup = data =>
     })
     .then(result => result.data.result);
 
+
+const addCoTeacher = data =>
+  api
+    .callApi({
+      url: `${prefix}/co-teacher`,
+      method: "post",
+      data
+    })
+    .then(result => result.data.result);
+
+const bulkUpdateClasses = data =>
+  api
+    .callApi({
+      url: `${prefix}`,
+      method: "put",
+      data
+    })
+    .then(({ data: response }) => response);
+
+
 export default {
   fetchMyGroups,
+  fetchMyArchiveGroups,
   getGroups,
   editGroup,
   createGroup,
-  deleteGroup
+  deleteGroup,
+  addCoTeacher,
+  bulkUpdateClasses
 };

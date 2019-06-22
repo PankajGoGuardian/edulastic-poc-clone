@@ -25,16 +25,21 @@ const RightFields = ({
   userOrgData,
   ...restProps
 }) => {
+
   //@todo default term id is not coming in terms list.
   // For now below logic is implemented to set default term end date
   const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
+
   const updateSubject = e => {
     setSubject(e);
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
-
+  const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   let isDropdown = isArray(schoolList) && !isEmpty(schoolList);
+  if (isArray(schoolList) && !isEmpty(schoolList) && schoolList.length === 1) {
+    defaultSchool = schoolList[0]._id;
+  }
 
   if (isDropdown) {
     if (schoolList.length === 1) {
@@ -127,6 +132,7 @@ const RightFields = ({
           showArrow={false}
           filterOption={false}
           onSearch={handleSearch}
+          onFocus={handleFocus}
           notFoundContent={null}
           loading={isSearching}
         >

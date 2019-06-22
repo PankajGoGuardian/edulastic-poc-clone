@@ -58,7 +58,7 @@ const getCompareResult = evaluation => {
     if (compareResult) {
       return;
     }
-    if (evaluation[key].commonResult) {
+    if (evaluation[key].result) {
       compareResult = evaluation[key];
     }
   });

@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import { Row, Col } from "antd";
+import { Row, Col, message } from "antd";
 import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
@@ -17,13 +17,18 @@ import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questi
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
+import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem";
+import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
+import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
+import ModalCreateTestItem from "../../../ModalCreateTestItem/ModalCreateTestItem";
 
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
     return item.itemLevelScore;
   } else {
     return get(item, "data.questions", []).reduce(
-      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0)
+      (acc, q) => acc + get(q, ["validation", "valid_response", "score"], 0),
+      0
     );
   }
 };
@@ -48,6 +53,7 @@ class Review extends PureComponent {
   state = {
     isCollapse: false,
     isModalVisible: false,
+    questionCreateType: "Duplicate",
     item: []
   };
 
@@ -91,6 +97,7 @@ class Review extends PureComponent {
 
     this.setSelected([]);
     setData(newData);
+    message.success("Selected testItems removed successfully");
   };
 
   handleCollapse = () => {
@@ -133,6 +140,18 @@ class Review extends PureComponent {
     });
   };
 
+  handleDuplicateItem = duplicateTestItemId => {
+    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
+    if (!test.title) {
+      return message.error("Name field cannot be empty");
+    }
+    clearDictAlignment();
+    onSaveTestId();
+    this.setState({ questionCreateType: "Duplicate" }, () => {
+      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
+    });
+  };
+
   handlePreview = data => {
     this.setState({
       item: { id: data }
@@ -160,6 +179,11 @@ class Review extends PureComponent {
     }));
   }
 
+  handleChangeField = (field, value) => {
+    const { setData } = this.props;
+    setData({ [field]: value });
+  };
+
   render() {
     const {
       test,
@@ -171,9 +195,11 @@ class Review extends PureComponent {
       onChangeGrade,
       onChangeSubjects,
       questions,
+      owner,
+      createTestItemModalVisible,
       itemsSubjectAndGrade
     } = this.props;
-    const { isCollapse, isModalVisible, item } = this.state;
+    const { isCollapse, isModalVisible, item, questionCreateType } = this.state;
     const totalPoints = test.scoring.total;
     const questionsCount = test.testItems.length;
 
@@ -205,16 +231,18 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              <HeaderBar
-                onSelectAll={this.handleSelectAll}
-                itemTotal={test.testItems.length}
-                selectedItems={selected}
-                onRemoveSelected={this.handleRemoveSelected}
-                onCollapse={this.handleCollapse}
-                onMoveTo={this.handleMoveTo}
-                windowWidth={windowWidth}
-                setCollapse={isCollapse}
-              />
+              {owner && (
+                <HeaderBar
+                  onSelectAll={this.handleSelectAll}
+                  itemTotal={test.testItems.length}
+                  selectedItems={selected}
+                  onRemoveSelected={this.handleRemoveSelected}
+                  onCollapse={this.handleCollapse}
+                  onMoveTo={this.handleMoveTo}
+                  windowWidth={windowWidth}
+                  setCollapse={isCollapse}
+                />
+              )}
             </SecondHeader>
             <Paper>
               {isCollapse ? (
@@ -234,6 +262,7 @@ class Review extends PureComponent {
                   setSelected={this.setSelected}
                   onSortEnd={this.moveTestItems}
                   types={types}
+                  owner={owner}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -253,6 +282,9 @@ class Review extends PureComponent {
               questionsCount={questionsCount}
               grades={grades}
               subjects={subjects}
+              owner={owner}
+              onChangeField={this.handleChangeField}
+              thumbnail={test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
@@ -263,9 +295,13 @@ class Review extends PureComponent {
           testId={get(this.props, "match.params.id", false)}
           isVisible={isModalVisible}
           onClose={this.closeModal}
+          showModal={true}
+          addDuplicate={this.handleDuplicateItem}
+          owner={owner}
           page="review"
           data={item}
         />
+        {createTestItemModalVisible && <ModalCreateTestItem type={questionCreateType} />}
       </div>
     );
   }
@@ -280,6 +316,8 @@ Review.propTypes = {
   types: PropTypes.any.isRequired,
   standards: PropTypes.object.isRequired,
   summary: PropTypes.array.isRequired,
+  owner: PropTypes.bool,
+  onSaveTestId: PropTypes.func,
   current: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
   questions: PropTypes.object.isRequired
@@ -292,10 +330,15 @@ const enhance = compose(
       types: getItemsTypesSelector(state),
       standards: getStandardsSelector(state),
       summary: getSummarySelector(state),
+      createTestItemModalVisible: getCreateItemModalVisibleSelector(state),
       questions: getQuestionsSelectorForReview(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
-    { setData: setTestDataAction }
+    {
+      setData: setTestDataAction,
+      toggleCreateItemModal: toggleCreateItemModalAction,
+      clearDictAlignment: clearDictAlignmentAction
+    }
   )
 );
 

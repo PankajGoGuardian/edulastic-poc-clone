@@ -1,77 +1,59 @@
 import React from "react";
+import styled from "styled-components";
+import { isEmpty } from "lodash";
 import PropTypes from "prop-types";
+import { withNamespaces } from "@edulastic/localization";
 
-// eslint-disable-next-line max-len
-const CorrectAnswerBoxLayout = ({ hasGroupResponses, fontSize, userAnswers, groupResponses, altAnswers }) => {
-  let results;
-  if (hasGroupResponses) {
-    results = {};
-    userAnswers.forEach(userAnswer => {
-      if (results[userAnswer.group] === undefined) {
-        results[userAnswer.group] = [];
-      }
-      results[userAnswer.group].push(userAnswer.data);
-    });
-  } else {
-    if (altAnswers && altAnswers.length > 0) {
-      userAnswers = userAnswers.map((ans, index) => {
-        const final = [ans];
-        for (const altAnswer of altAnswers) {
-          const { value } = altAnswer;
-          if (value[index] && value[index] !== "") {
-            final.push(value[index]);
-          }
-        }
-        return final;
-      });
+const CorrectAnswerBoxLayout = ({ fontSize, userAnswers, altAnswers, responseIds, t }) => {
+  const getLabel = id => {
+    if (isEmpty(altAnswers)) {
+      const correctAnswer = userAnswers.find(answer => (answer ? answer.id : "") === id);
+      return correctAnswer ? correctAnswer.value : "";
     }
-    results = userAnswers;
-  }
+    const altLabels = [];
+    altAnswers.forEach(altAnswer => {
+      const answer = altAnswer.value.find(alt => (alt ? alt.id : "") === id);
+      if (answer && answer.value) {
+        altLabels.push(answer.value);
+      }
+    });
+    return altLabels.toString();
+  };
+  responseIds.sort((a, b) => a.index - b.index);
+
   return (
     <div className="correctanswer-box" style={{ padding: 16, fontSize }}>
-      <h2 style={{ fontSize: 20 }}>Correct Answer</h2>
+      <CorrectAnswerTitle>
+        {!isEmpty(altAnswers) ? t("component.cloze.altAnswers") : t("component.cloze.correctAnswer")}
+      </CorrectAnswerTitle>
       <div>
-        {hasGroupResponses &&
-          Object.keys(results).map((key, index) => (
-            <div key={index}>
-              <h3>{groupResponses[key] && groupResponses[key].title}</h3>
-              {results[key].map(
-                (value, itemId) =>
-                  value && (
-                    <div key={itemId} className="response-btn check-answer showanswer">
-                      <span className="index">{index + 1}</span>
-                      <span className="text">{value}</span>
-                    </div>
-                  )
-              )}
-            </div>
-          ))}
-        {!hasGroupResponses &&
-          results.map((result, index) => (
-            <div key={index} className="response-btn check-answer showanswer">
-              <span className="index">{index + 1}</span>
-              <span className="text">{typeof result === "string" ? result : result.join(", ")}</span>
-            </div>
-          ))}
+        {responseIds.map(response => (
+          <div key={response.index} className="response-btn check-answer showanswer">
+            <span className="index">{response.index + 1}</span>
+            <span className="text">{getLabel(response.id)}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
 CorrectAnswerBoxLayout.propTypes = {
-  hasGroupResponses: PropTypes.bool,
   fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
-  groupResponses: PropTypes.array,
-  altAnswers: PropTypes.array
+  altAnswers: PropTypes.array,
+  responseIds: PropTypes.array.isRequired,
+  t: PropTypes.func.isRequired
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
-  hasGroupResponses: false,
-  groupResponses: [],
   fontSize: "13px",
   userAnswers: [],
   altAnswers: []
 };
 
-export default React.memo(CorrectAnswerBoxLayout);
+export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));
+
+const CorrectAnswerTitle = styled.h2`
+  font-size: ${props => props.theme.correctAnswerBoxLayout.titleFontSize};
+`;

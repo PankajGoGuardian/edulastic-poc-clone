@@ -97,7 +97,7 @@ class AxisLabelsContainer extends PureComponent {
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
-      this._graph.resizeContainer(layout.width, layout.height);
+      this._graph.resizeContainer(layout.width, this._graph.calcContainerHeight(layout.height));
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas
@@ -168,7 +168,7 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    const { elements, checkAnswer, showAnswer, evaluation, validation, list, layout } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation, list } = this.props;
 
     if (checkAnswer || showAnswer) {
       if (showAnswer) {
@@ -188,14 +188,14 @@ class AxisLabelsContainer extends PureComponent {
           coloredElements = getColoredElems(elements, compareResult);
         }
 
-        this._graph.renderMarks(list, coloredElements, layout);
+        this._graph.renderMarks(list, coloredElements);
       } else {
-        this._graph.renderMarks(list, [], layout);
+        this._graph.renderMarks(list, []);
       }
     } else if (!isEqual(elements, this._graph.getMarks()) || this.elementsIsEmpty() || !isEqual(prevProps.list, list)) {
       this._graph.removeMarks();
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(list, elements, layout);
+      this._graph.renderMarks(list, elements);
     }
   };
 
@@ -207,22 +207,22 @@ class AxisLabelsContainer extends PureComponent {
   controls = ["undo", "redo"];
 
   onUndo = () => {
-    const { stash, stashIndex, setStashIndex, setValue, list, layout } = this.props;
+    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
       this._graph.removeMarks();
-      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1], layout);
+      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] - 1]);
       setStashIndex(stashIndex[id] - 1, id);
     }
   };
 
   onRedo() {
-    const { stash, stashIndex, setStashIndex, setValue, list, layout } = this.props;
+    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
       this._graph.removeMarks();
-      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1], layout);
+      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }

@@ -426,16 +426,24 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = [], layout) {
+  renderMarks(marks, markCoords = []) {
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(Mark.onHandler(this, markCoord, mark));
     });
 
     const extraHeight = Mark.alignMarks(this);
-    const newHeight = this.calcContainerHeight(layout.height, extraHeight);
-    if (this.$board.canvasHeight + LOST_HEIGHT_PIXELS !== newHeight) {
-      this.resizeContainer(layout.width, newHeight);
+    const newHeight = this.calcContainerHeight(this.numberlineSettings.layout.height, extraHeight);
+    if (newHeight !== 0 && this.$board.canvasHeight + LOST_HEIGHT_PIXELS !== newHeight) {
+      this.numberlineSettings.layout.height = newHeight;
+      this.updateNumberlineSettings(
+        this.numberlineSettings.canvas,
+        this.numberlineSettings.numberlineAxis,
+        this.numberlineSettings.layout,
+        undefined,
+        this.numberlineSettings.setValue
+      );
+      this.numberlineSettings.layout.height = AUTO_VALUE;
     }
   }
 

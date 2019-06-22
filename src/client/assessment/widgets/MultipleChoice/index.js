@@ -140,9 +140,11 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = qid => {
-    const { saveAnswer, userAnswer, item } = this.props;
+    const { saveAnswer, userAnswer, item, previewTab, changePreviewTab } = this.props;
     const newAnswer = cloneDeep(userAnswer);
-
+    if (previewTab !== CHECK) {
+      changePreviewTab(CHECK);
+    }
     if (item.multiple_responses) {
       if (newAnswer.includes(qid)) {
         const removeIndex = newAnswer.findIndex(el => el === qid);
@@ -198,6 +200,7 @@ class MultipleChoice extends Component {
       isSidebarCollapsed,
       advancedAreOpen,
       flowLayout,
+      disableResponse,
       ...restProps
     } = this.props;
     const { shuffledOptions, correctTab } = this.state;
@@ -276,6 +279,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   options={shuffledOptions}
                   question={previewStimulus}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
@@ -295,6 +299,7 @@ class MultipleChoice extends Component {
                   options={shuffledOptions}
                   question={previewStimulus}
                   userSelections={userAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}

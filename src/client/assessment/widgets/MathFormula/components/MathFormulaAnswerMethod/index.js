@@ -101,6 +101,8 @@ const MathFormulaAnswerMethod = ({
   const methodOptions = methodOptionsConst[method];
   const isActive = showAdditionals.find(el => el === `${method}_${index}`);
 
+  const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
+
   const renderMethodsOptions = () =>
     methodOptions.map(methodOption => {
       switch (methodOption) {
@@ -221,7 +223,7 @@ const MathFormulaAnswerMethod = ({
               optionKey="allowEulersNumber"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.treatEAsEulersNumber")}
+              label={eToLowerCase(t("component.math.treatEAsEulersNumber"))}
             />
           );
         case "compareSides":

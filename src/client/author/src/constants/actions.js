@@ -150,6 +150,8 @@ export const UPDATE_OPEN_ASSIGNMENTS = "[gradebook] update open assignments";
 export const UPDATE_CLOSE_ASSIGNMENTS = "[gradebook] update close assignments";
 export const SAVE_OVERALL_FEEDBACK = "[gradebook] save overall feedback";
 export const UPDATE_OVERALL_FEEDBACK = "[gradebook] update overalll feedback";
+export const MARK_AS_ABSENT = "[gradebook] mark student/students as absent";
+export const UPDATE_STUDENT_ACTIVITY = "[gradebook] update student activity as absent";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";

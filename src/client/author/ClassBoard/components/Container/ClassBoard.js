@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { compose } from "redux";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { get } from "lodash";
+import { get, keyBy } from "lodash";
 import moment from "moment";
 import { message, Dropdown, Menu } from "antd";
 import { withWindowSizes } from "@edulastic/common";
@@ -14,7 +14,8 @@ import {
   openAssignmentAction,
   closeAssignmentAction,
   releaseScoreAction,
-  markAsDoneAction
+  markAsDoneAction,
+  markAbsentAction
 } from "../../../src/actions/classBoard";
 import QuestionContainer from "../../../QuestionView";
 import StudentContainer from "../../../StudentView";
@@ -83,6 +84,7 @@ import {
   StudentGrapContainer
 } from "./styled";
 import { getUserRole } from "../../../../student/Login/ducks";
+import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
 class ClassBoard extends Component {
   constructor(props) {
@@ -106,7 +108,10 @@ class ClassBoard extends Component {
 
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
-      studentReportCardModalColumnsFlags: {}
+      studentReportCardModalColumnsFlags: {},
+      showModal: false,
+      modalInputVal: "",
+      selectedNotStartedStudents: []
     };
   }
 
@@ -328,6 +333,43 @@ class ClassBoard extends Component {
     closeAssignment(assignmentId, classId);
   };
 
+  handleShowMarkAsAbsentModal = () => {
+    const { selectedStudents, testActivity, assignmentStatus } = this.props;
+    if (assignmentStatus.toLowerCase() === "not open") return message.warn("Assignment is not opened yet");
+    const selectedStudentKeys = Object.keys(selectedStudents);
+    if (!selectedStudentKeys.length)
+      return message.warn("At least one student should be selected to be Marked as Absent.");
+    const mapTestActivityByStudId = keyBy(testActivity, "studentId");
+    const selectedNotStartedStudents = selectedStudentKeys.filter(
+      item => mapTestActivityByStudId[item].status === "notStarted"
+    );
+    if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
+      const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
+      return message.warn(
+        `${submittedStudents} student(s) that you selected have already submitted the assessment, you will not be allowed to submit again.`
+      );
+    }
+    this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });
+  };
+
+  handleMarkAbsent = () => {
+    const { selectedNotStartedStudents } = this.state;
+    const { markAbsent, match, studentUnselectAll } = this.props;
+    const { assignmentId, classId } = match.params;
+    if (!selectedNotStartedStudents.length) return message.warn("No students selected");
+    markAbsent(assignmentId, classId, selectedNotStartedStudents);
+    studentUnselectAll();
+    this.setState({ showModal: false });
+  };
+
+  handleCancelMarkAbsent = () => {
+    this.setState({ showModal: false });
+  };
+
+  handleValidateInput = e => {
+    this.setState({ modalInputVal: e.target.value });
+  };
+
   render() {
     const {
       gradebook,
@@ -351,7 +393,8 @@ class ClassBoard extends Component {
       userRole,
       entities,
       status,
-      labels
+      labels,
+      assignmentStatus
     } = this.props;
     const gradeSubject = {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
@@ -367,7 +410,11 @@ class ClassBoard extends Component {
       studentReportCardModalVisibility,
       studentReportCardModalColumnsFlags,
       itemId,
-      selectedQid
+      selectedQid,
+      selectAll,
+      nCountTrue,
+      modalInputVal,
+      showModal
     } = this.state;
     const { assignmentId, classId } = match.params;
     const testActivityId = this.getTestActivity(testActivity);
@@ -387,8 +434,28 @@ class ClassBoard extends Component {
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
     const canClose =
       canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
+    const disableMarkAbsent =
+      assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
+    const hasMoreOptions = canOpen || canClose;
     return (
       <div>
+        {showModal ? (
+          <ConfirmationModal
+            title="Absent"
+            show={showModal}
+            onOk={this.handleMarkAbsent}
+            onCancel={this.handleCancelMarkAbsent}
+            inputVal={modalInputVal}
+            onInputChange={this.handleValidateInput}
+            expectedVal={"ABSENT"}
+            bodyText={
+              "You are about to Mark the selecte studen(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
+            }
+            okText={"Yes,Absent"}
+          />
+        ) : (
+          ""
+        )}
         <HooksContainer classId={classId} assignmentId={assignmentId} />
         <ClassHeader
           classId={classId}
@@ -498,7 +565,10 @@ class ClassBoard extends Component {
                   <Dropdown
                     overlay={
                       <Menu>
-                        {!canOpen && !canClose && <span>&nbsp; --------</span>}
+                        {!hasMoreOptions && <span>&nbsp; --------</span>}
+                        <Menu.Item onClick={this.handleShowMarkAsAbsentModal} disabled={disableMarkAbsent}>
+                          <RedirectButton disabled={disableMarkAbsent}>Mark as Absent</RedirectButton>
+                        </Menu.Item>
                         {canOpen && (
                           <Menu.Item onClick={this.handleOpenAssignment}>
                             <RedirectButton>Open</RedirectButton>
@@ -552,6 +622,7 @@ class ClassBoard extends Component {
                 assignmentId={assignmentId}
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
+                endDate={additionalData.endDate || additionalData.closedDate}
                 studentUnselect={this.onUnselectCardOne}
                 viewResponses={(e, selected) => {
                   this.onTabChange(e, "Student", selected);
@@ -663,7 +734,7 @@ const enhance = compose(
       qActivityByStudent: stateStudentResponseSelector(state),
       showScore: showScoreSelector(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
-      status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
       userRole: getUserRole(state),
       labels: getQLabelsSelector(state)
@@ -678,7 +749,8 @@ const enhance = compose(
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
       openAssignment: openAssignmentAction,
-      closeAssignment: closeAssignmentAction
+      closeAssignment: closeAssignmentAction,
+      markAbsent: markAbsentAction
     }
   )
 );

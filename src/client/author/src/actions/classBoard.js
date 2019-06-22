@@ -17,7 +17,9 @@ import {
   UPDATE_OPEN_ASSIGNMENTS,
   UPDATE_CLOSE_ASSIGNMENTS,
   SAVE_OVERALL_FEEDBACK,
-  UPDATE_OVERALL_FEEDBACK
+  UPDATE_OVERALL_FEEDBACK,
+  MARK_AS_ABSENT,
+  UPDATE_STUDENT_ACTIVITY
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -87,6 +89,16 @@ export const openAssignmentAction = (assignmentId, classId) => ({
 export const closeAssignmentAction = (assignmentId, classId) => ({
   type: CLOSE_ASSIGNMENT,
   payload: { assignmentId, classId }
+});
+
+export const markAbsentAction = (assignmentId, classId, students) => ({
+  type: MARK_AS_ABSENT,
+  payload: { assignmentId, classId, students }
+});
+
+export const updateStudentActivityAction = payload => ({
+  type: UPDATE_STUDENT_ACTIVITY,
+  payload
 });
 
 export const updateAssignmentStatusAction = status => ({

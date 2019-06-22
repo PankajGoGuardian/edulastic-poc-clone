@@ -59,7 +59,7 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode } = this.props;
+    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -72,6 +72,9 @@ export default class DisneyCardContainer extends Component {
         if (student.status === "notStarted") {
           status.status = "NOT STARTED";
           status.color = red;
+          if (endDate < Date.now()) {
+            status.status = "ABSENT";
+          }
         } else if (student.status === "inProgress") {
           status.status = "IN PROGRESS";
           status.color = yellow;
@@ -85,6 +88,9 @@ export default class DisneyCardContainer extends Component {
         } else if (student.status === "redirected") {
           status.status = "REDIRECTED";
           status.color = greenSecondary;
+        } else if (student.status === "absent") {
+          status.status = "ABSENT";
+          status.color = red;
         }
 
         let correctAnswers = 0;

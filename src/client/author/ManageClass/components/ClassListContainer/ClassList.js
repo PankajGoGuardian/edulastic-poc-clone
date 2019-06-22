@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Table } from "antd";
@@ -15,7 +14,6 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
   const [classGroups, setClassGroups] = useState(groups);
 
-  const [classGroups, setClassGroups] = useState([]);
   useEffect(() => {
     setClassGroups(groups);
   }, [groups]);

@@ -24,7 +24,7 @@ import {
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
-import { CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
+import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -271,12 +271,14 @@ const MathFormulaAnswerMethod = ({
           );
         case "setThousandsSeparator":
           return (
-            <ThousandsSeparators
-              separators={options.setThousandsSeparator}
-              onChange={handleChangeThousandsSeparator}
-              onAdd={handleAddThousandsSeparator}
-              onDelete={handleDeleteThousandsSeparator}
-            />
+            <WidgetSecondMethod>
+              <ThousandsSeparators
+                separators={options.setThousandsSeparator}
+                onChange={handleChangeThousandsSeparator}
+                onAdd={handleAddThousandsSeparator}
+                onDelete={handleDeleteThousandsSeparator}
+              />
+            </WidgetSecondMethod>
           );
         case "setDecimalSeparator":
           return (
@@ -288,6 +290,12 @@ const MathFormulaAnswerMethod = ({
           return (
             <WidgetSecondMethod>
               <Units options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
+        case "allowedVariables":
+          return (
+            <WidgetSecondMethod>
+              <AllowedVariables options={options} onChange={changeOptions} />
             </WidgetSecondMethod>
           );
         default:

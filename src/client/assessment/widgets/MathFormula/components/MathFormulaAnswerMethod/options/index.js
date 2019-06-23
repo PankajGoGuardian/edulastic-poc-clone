@@ -1,3 +1,4 @@
+export * from "./AllowedVariables";
 export * from "./AriaLabel";
 export * from "./CheckOption";
 export * from "./DecimalSeparator";

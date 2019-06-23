@@ -240,7 +240,7 @@ class AxisLabelsMoreOptions extends Component {
                 name="layout_width"
                 placeholder="0"
                 value={ui_style.layout_width === 0 ? null : ui_style.layout_width}
-                onChange={this.handleInputChange}
+                onChange={this.handleOptionsInputChange}
               />
             </Col>
 
@@ -250,7 +250,7 @@ class AxisLabelsMoreOptions extends Component {
                 type="text"
                 name="layout_height"
                 value={ui_style.layout_height}
-                onChange={this.handleOptionsInputChange}
+                onChange={this.handleInputChange}
               />
             </Col>
 

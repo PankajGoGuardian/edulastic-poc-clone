@@ -81,6 +81,11 @@ const methodOptions = {
     "allowEulersNumber",
     "isFactorised",
     "isExpanded",
+    "isSimplified",
+    "isMixedFraction",
+    "ignoreAlphabeticCharacter",
+    "ignoreText",
+    "inverseResult",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "allowedVariables",
@@ -93,6 +98,7 @@ const methodOptions = {
     "setThousandsSeparator",
     "ignoreOrder",
     "ignoreCoefficientOfOne",
+    "inverseResult",
     "allowInterval"
   ],
   [methods.EQUIV_VALUE]: [
@@ -102,6 +108,7 @@ const methodOptions = {
     "isSimpleFraction",
     "ignoreTrailingZeros",
     "ignoreText",
+    "isUnit",
     "tolerance",
     "allowedUnits",
     "setThousandsSeparator",

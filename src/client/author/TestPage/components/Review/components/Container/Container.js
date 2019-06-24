@@ -163,12 +163,6 @@ class Review extends PureComponent {
     this.setModalVisibility(false);
   };
 
-  handleSelectedTest = items => {
-    const { test } = this.props;
-    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
-    this.setSelected(result);
-  };
-
   get tableData() {
     const { summary } = this.props;
     return summary.map(data => ({
@@ -246,11 +240,7 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable
-                  items={test.testItems}
-                  setSelectedTests={this.handleSelectedTest}
-                  selectedTests={selected.map(i => test.testItems[i]._id)}
-                />
+                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}

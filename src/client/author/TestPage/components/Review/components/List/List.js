@@ -165,10 +165,7 @@ const List = SortableContainer(
       if (checked) {
         setSelected([...selected, index]);
       } else {
-        const removeIndex = selected.findIndex(item => item === index);
-        const newSelected = [...selected];
-
-        newSelected.splice(removeIndex, 1);
+        const newSelected = selected.filter(item => item !== index);
         setSelected(newSelected);
       }
     };

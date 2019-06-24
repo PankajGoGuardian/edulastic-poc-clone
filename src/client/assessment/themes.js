@@ -1,5 +1,18 @@
 export const themes = {
   default: {
+    default: {
+      // this default is required for Doc based asseeements
+      headerBgColor: "#00AD50",
+      sideToolbarBgColor: "#00AD50",
+      dropdownHoverBorderColor: "rgba(255, 255, 255, 0.3)",
+      dropdownCaretIconColor: "#00AD50",
+      headerButtonBgColor: "rgba(255, 255, 255, 0.15)",
+      headerButtonActiveBgColor: "rgba(255, 255, 255, 0.3)",
+      headerButtonBgHoverColor: "rgba(255, 255, 255, 0.5)",
+      headerButtonIconColor: "rgba(255, 255, 255, 0.75)",
+      headerButtonIconActiveColor: "#ffffff",
+      headerButtonBorderColor: "#F3F3F3"
+    },
     header: {
       headerBgColor: "#00AD50",
       headerTitleTextColor: "white",

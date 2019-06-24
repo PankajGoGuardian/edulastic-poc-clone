@@ -69,7 +69,7 @@ const characterMapButtons = [
   "ü"
 ];
 
-const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled }) => {
+const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled, noIndent }) => {
   const { btnStyle, item, onChange, style, placeholder, type, showIndex = true, userAnswers } = resprops;
   const value = userAnswers[dropTargetIndex];
   const ref = useRef();
@@ -108,7 +108,7 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled }) => {
   };
 
   return (
-    <CustomInput style={style}>
+    <CustomInput style={style} noIndent={noIndent}>
       {showIndex && <IndexBox>{dropTargetIndex + 1}</IndexBox>}
       <MInput
         ref={ref}
@@ -155,7 +155,14 @@ const ClozeTextInput = ({ index: dropTargetIndex, resprops, disabled }) => {
 
 ClozeTextInput.propTypes = {
   resprops: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
+  disabled: PropTypes.bool,
+  noIndent: PropTypes.bool
+};
+
+ClozeTextInput.defaultProps = {
+  noIndent: false,
+  disabled: false
 };
 
 export default ClozeTextInput;
@@ -165,6 +172,10 @@ const CustomInput = styled.div`
   margin: 0px 4px;
   position: relative;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+
+  .ant-input {
+    padding: ${({ noIndent }) => (noIndent ? "4px 2px" : null)};
+  }
 `;
 
 const IndexBox = styled.div`

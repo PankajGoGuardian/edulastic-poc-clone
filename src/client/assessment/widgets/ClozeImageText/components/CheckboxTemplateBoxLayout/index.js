@@ -86,7 +86,7 @@ const CheckboxTemplateBoxLayout = ({
                 className={`
                     imagelabeldragdrop-droppable 
                     active 
-                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
+                    check-answer
                     ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
               >
                 <div className="text container" title={userSelections[dropTargetIndex]}>
@@ -95,8 +95,8 @@ const CheckboxTemplateBoxLayout = ({
                   </div>
                 </div>
                 <IconWrapper rightPosition={20}>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+                  {status === "right" && <RightIcon />}
+                  {status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />
@@ -116,7 +116,7 @@ const CheckboxTemplateBoxLayout = ({
                 className={`
                     imagelabeldragdrop-droppable 
                     active 
-                    ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"}
+                    ${userSelections.length > 0 ? "check-answer" : "noAnswer"}
                     ${status} 
                     show-answer`}
               >
@@ -127,8 +127,8 @@ const CheckboxTemplateBoxLayout = ({
                   </div>
                 </div>
                 <IconWrapper>
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "right" && <RightIcon />}
-                  {userSelections.length > 0 && userSelections[dropTargetIndex] && status === "wrong" && <WrongIcon />}
+                  {userSelections.length > 0 && status === "right" && <RightIcon />}
+                  {userSelections.length > 0 && status === "wrong" && <WrongIcon />}
                 </IconWrapper>
                 <Pointer className={responseContainer.pointerPosition} width={responseContainer.width}>
                   <Point />

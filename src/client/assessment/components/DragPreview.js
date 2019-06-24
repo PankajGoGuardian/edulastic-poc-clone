@@ -11,21 +11,17 @@ function collect(monitor) {
 }
 
 class DragPreview extends Component {
-  getLayerStyles() {
-    const { sourceOffset } = this.props;
-
-    return {
-      transform: sourceOffset ? `translate(${sourceOffset.x}px, ${sourceOffset.y}px)` : ""
-    };
-  }
-
   render() {
-    const { isDragging, children } = this.props;
+    const { isDragging, children, sourceOffset } = this.props;
     if (!isDragging) {
       return null;
     }
 
-    return <PreviewContainer style={this.getLayerStyles()}>{children}</PreviewContainer>;
+    return (
+      <PreviewContainer left={sourceOffset.x} top={sourceOffset.y}>
+        {children}
+      </PreviewContainer>
+    );
   }
 }
 
@@ -46,6 +42,7 @@ DragPreview.defaultProps = {
 export default DragLayer(collect)(DragPreview);
 
 const PreviewContainer = styled.div`
+  transform: ${({ left, top }) => `translate(${left || 0}px, ${top || 0}px)`};
   background: ${white};
   border: 2px ${dashBorderColor} dotted;
   padding: 8px 20px;

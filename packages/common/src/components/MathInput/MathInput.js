@@ -94,7 +94,9 @@ class MathInput extends React.PureComponent {
     const { mathField } = this.state;
 
     if (!mathField) return;
-    if (key === "left_move") {
+    if (key === "in") {
+      mathField.write("in");
+    } else if (key === "left_move") {
       mathField.keystroke("Left");
     } else if (key === "right_move") {
       mathField.keystroke("Right");

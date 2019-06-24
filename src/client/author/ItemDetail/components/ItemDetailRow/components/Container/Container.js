@@ -64,11 +64,11 @@ class Container extends Component {
   );
 
   renderWidgets = () => {
-    const { row, dragging, rowIndex, itemData, setItemLevelScore } = this.props;
+    const { row, dragging, rowIndex, itemData, setItemLevelScore, view } = this.props;
     const { tabIndex } = this.state;
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
-        {!row.widgets.length && itemData.itemLevelScoring && (
+        {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
           <FlexContainer justifyContent={"flex-end"} marginBottom={"1em"}>
             <div className="points">Points</div>
             <div>

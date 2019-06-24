@@ -470,6 +470,7 @@ class Container extends Component {
                 <ItemDetailRow
                   key={i}
                   row={row}
+                  view={view}
                   rowIndex={i}
                   itemData={item}
                   count={rows.length}

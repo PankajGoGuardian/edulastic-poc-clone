@@ -49,8 +49,7 @@ const Sidebar = ({
   isBackgroundColorPickerVisible,
   windowWidth
 }) => {
-  let subjectsList = [...selectsData.allSubjects];
-  subjectsList.splice(0, 1);
+  const subjectsList = selectsData.allSubjects.slice(1);
   return (
     <FlexContainer flexDirection="column">
       <Block>

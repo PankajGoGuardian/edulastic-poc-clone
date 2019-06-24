@@ -1,6 +1,7 @@
 import React from "react";
 import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
+import DragPreview from "../../../components/DragPreview";
 
 function collectSource(connector, monitor) {
   return {
@@ -25,10 +26,11 @@ const specSource = {
   }
 };
 
-const Draggable = ({ connectDragSource, title, data, children, className }) =>
+const Draggable = ({ connectDragSource, title, data, children, className, ...restProps }) =>
   data &&
   connectDragSource(
-    <div title={title} className={className}>
+    <div title={title} className={className} draggable>
+      <DragPreview {...restProps}>{children}</DragPreview>
       {children}
     </div>
   );

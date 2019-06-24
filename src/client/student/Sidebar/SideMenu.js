@@ -317,6 +317,7 @@ const FixedSidebar = styled.div`
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
     max-width: 245px;
+    display: block !important;
   }
 `;
 
@@ -400,6 +401,16 @@ const SideBar = styled(Layout.Sider)`
         fill: #434b5d;
       }
     }
+
+    ${({ collapsed }) =>
+      collapsed
+        ? `
+      flex: inherit;
+      max-width: 245px;
+      min-width: 0;
+      width: 100%;
+    `
+        : ``}
   }
 `;
 

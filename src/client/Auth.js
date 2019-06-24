@@ -26,12 +26,7 @@ const Auth = ({ user, location, isSignupUsingDaURL, generalSettings, districtPol
   if (isLoggedInForPrivateRoute(user) && user.user.role === "teacher") {
   } else if (isLoggedInForPrivateRoute(user) && user.user.role === "student") {
     return <Redirect exact to="/home/assignments" />;
-  } else if (
-    location.pathname === "/auth/mso" ||
-    location.pathname === "/auth/clever" ||
-    location.pathname === "/auth/google" ||
-    location.pathname.toLocaleLowerCase().includes("auth")
-  ) {
+  } else if (location.pathname.toLocaleLowerCase().includes("auth")) {
     return (
       <>
         {!user || (user && !user.isAuthenticated) ? (

@@ -62,11 +62,13 @@ class AxisSegments extends Component {
           advancedAreOpen={true}
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+
           <QuestionTextArea
             placeholder={t("component.graphing.question.enteryourquestion")}
             onChange={this.onChangeQuestion}
             value={stimulus}
             firstFocus={firstMount}
+            theme="border"
           />
         </QuestionSection>
 

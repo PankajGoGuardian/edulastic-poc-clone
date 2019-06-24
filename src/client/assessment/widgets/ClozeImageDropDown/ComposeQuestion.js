@@ -419,12 +419,14 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
+
             <QuestionTextArea
               toolbarId="stimulus"
               inputId="stimulusInput"
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
+              theme="border"
             />
             <PaddingDiv />
             <FormContainer>

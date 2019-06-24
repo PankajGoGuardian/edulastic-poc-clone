@@ -153,6 +153,7 @@ class TemplateMarkup extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
+
         <FroalaEditor
           data-cy="templateBox"
           toolbarId="cloze-dropdown-template-box"
@@ -160,6 +161,7 @@ class TemplateMarkup extends Component {
           additionalToolbarOptions={["textdropdown"]}
           value={item.templateMarkUp}
           onChange={this.onChangeMarkUp}
+          theme="border"
         />
       </Widget>
     );

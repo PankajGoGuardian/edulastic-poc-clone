@@ -447,12 +447,14 @@ class Authoring extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
+
             <QuestionTextArea
               toolbarId="stimulus"
               inputId="stimulusInput"
               placeholder={t("component.cloze.imageText.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
+              theme="border"
             />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">

@@ -118,7 +118,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget data-cy="questiontext" questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <FroalaEditor tag="textarea" value={item.stimulus} toolbarId={toolbarId} onChange={this.onChangeQuestion} />
+
+        <FroalaEditor
+          tag="textarea"
+          value={item.stimulus}
+          toolbarId={toolbarId}
+          onChange={this.onChangeQuestion}
+          theme="border"
+        />
       </Widget>
     );
   }

@@ -43,10 +43,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.math.composeQuestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.math.enterQuestion")}
           onChange={stimulus => handleItemChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
       </Widget>
     );

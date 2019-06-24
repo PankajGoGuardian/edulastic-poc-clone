@@ -45,6 +45,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.shortText.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
       </Widget>
     );

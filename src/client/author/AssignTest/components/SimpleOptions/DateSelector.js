@@ -50,6 +50,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
             format="YYYY-MM-DD HH:mm:ss"
             value={moment(endDate)}
             placeholder="Close Date"
+            showToday={false}
             onChange={changeField("endDate")}
           />
         </Col>

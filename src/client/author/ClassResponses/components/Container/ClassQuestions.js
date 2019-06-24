@@ -19,6 +19,7 @@ function Preview({ item, qIndex, studentId }) {
         preview="show"
         previewTab="show"
         questions={questionsKeyed}
+        disableResponse
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}

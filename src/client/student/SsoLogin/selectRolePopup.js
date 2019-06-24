@@ -11,12 +11,10 @@ const SelectRolePopup = props => {
   const { className, updateUserRoleAction } = props;
 
   const onSignupAsStudent = () => {
-    console.log("onSignupAsStudent");
     updateUserRoleAction("student");
   };
 
   const onSignupAsTeacher = () => {
-    console.log("onSignupAsTeacher");
     updateUserRoleAction("teacher");
   };
 

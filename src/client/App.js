@@ -90,7 +90,6 @@ class App extends Component {
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
-
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
@@ -110,18 +109,7 @@ class App extends Component {
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
         } else if (role === "student") {
-          const role =
-            localStorage.getItem("googleLoginRole") ||
-            localStorage.getItem("msoLoginRole") ||
-            localStorage.getItem("cleverLoginRole");
-          if (role) {
-            redirectRoute = "/home/assignments";
-            localStorage.removeItem("googleLoginRole");
-            localStorage.removeItem("msoLoginRole");
-            localStorage.removeItem("cleverLoginRole");
-          } else {
-            defaultRoute = "/home/assignments";
-          }
+          defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
         }

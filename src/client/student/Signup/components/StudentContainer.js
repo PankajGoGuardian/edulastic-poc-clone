@@ -88,10 +88,8 @@ class StudentSignup extends React.Component {
     });
     const { googleLoginAction, msoLoginAction } = this.props;
     if (key === GOOGLE) {
-      console.log("google");
       googleLoginAction("student");
     } else if (key === OFFICE) {
-      console.log("ms");
       msoLoginAction("student");
     }
   };

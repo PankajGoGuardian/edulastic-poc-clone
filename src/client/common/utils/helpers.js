@@ -9,7 +9,7 @@ export const getWordsInURLPathName = pathname => {
   return path;
 };
 
-export const isLoggedIn = user => {
+export const isLoggedInForPrivateRoute = user => {
   if (user && user.isAuthenticated) {
     if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
       return false;
@@ -23,7 +23,24 @@ export const isLoggedIn = user => {
     ) {
       return true;
     }
-    return false;
+  }
+  return false;
+};
+
+export const isLoggedInForLoggedOutRoute = user => {
+  if (user && user.isAuthenticated) {
+    if (user && user.user && !user.user.role && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
+      return true;
+    }
+    if (user && user.user && user.user.role !== "teacher") {
+      return true;
+    } else if (
+      user.user &&
+      user.user.role === "teacher" &&
+      (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus))
+    ) {
+      return true;
+    }
   }
   return false;
 };

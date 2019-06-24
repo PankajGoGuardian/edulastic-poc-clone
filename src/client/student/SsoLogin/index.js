@@ -12,13 +12,16 @@ class SsoLogin extends React.Component {
 
     const path = location.pathname.split("/");
     if (path.includes("mso")) {
-      const role = localStorage.getItem("msoLoginRole");
+      let role = localStorage.getItem("thirdPartySignOnRole");
+      role = role || undefined;
       msoSSOLogin({ code: qs.parse(location.search)["?code"], edulasticRole: role });
     } else if (path.includes("google")) {
-      const role = localStorage.getItem("googleLoginRole");
+      let role = localStorage.getItem("thirdPartySignOnRole");
+      role = role || undefined;
       googleSSOLogin({ code: qs.parse(location.search)["?code"], edulasticRole: role });
     } else if (path.includes("clever")) {
-      const role = localStorage.getItem("cleverLoginRole");
+      let role = localStorage.getItem("thirdPartySignOnRole");
+      role = role || undefined;
       cleverSSOLogin({
         code: qs.parse(location.search)["?code"],
         state: qs.parse(location.search)["state"],

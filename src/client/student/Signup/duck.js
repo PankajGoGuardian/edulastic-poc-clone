@@ -8,6 +8,8 @@ import { push } from "connected-react-router";
 import { getUser } from "../../author/src/selectors/user";
 import produce from "immer";
 
+import { userPickFields } from "../../common/utils/static/user";
+
 // Types
 const SEARCH_SCHOOL_REQUEST = "[signup] search school request";
 const SEARCH_SCHOOL_SUCCESS = "[signup] search school success";
@@ -283,17 +285,7 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
         TokenStorage.storeAccessToken(_result.token, _result._id, _result.role, true);
         TokenStorage.selectAccessToken(_result._id, _result.role);
       }
-      const user = pick(_result, [
-        "_id",
-        "firstName",
-        "middleName",
-        "lastName",
-        "email",
-        "role",
-        "orgData",
-        "features",
-        "currentSignUpState"
-      ]);
+      const user = pick(_result, userPickFields);
       yield put(signupSuccessAction(user));
     }
   } catch (err) {
@@ -309,17 +301,7 @@ function* joinSchoolSaga({ payload = {} }) {
       TokenStorage.storeAccessToken(result.token, result._id, result.role, true);
       TokenStorage.selectAccessToken(result._id, result.role);
     }
-    const user = pick(result, [
-      "_id",
-      "firstName",
-      "middleName",
-      "lastName",
-      "email",
-      "role",
-      "orgData",
-      "features",
-      "currentSignUpState"
-    ]);
+    const user = pick(result, userPickFields);
     yield put(signupSuccessAction(user));
   } catch (err) {
     yield put({

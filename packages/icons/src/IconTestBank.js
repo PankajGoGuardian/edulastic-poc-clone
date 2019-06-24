@@ -4,42 +4,49 @@ import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
 
 const IconBookInformation = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41.829 41.829" {...props}>
-    <g transform="translate(0.25 0.25)">
+  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 26.118 26.117" {...props}>
+    <g transform="translate(1.505 1.504)">
       <path
-        d="M28.045,0H0V41.329H41.329V0ZM13.284,39.853H1.476V1.476H13.284Zm13.284,0H14.76V1.476H26.569Zm13.284,0H28.045V1.476H39.853Z"
+        d="M17.384,0H0V25.618H25.618V0ZM8.234,24.7H.915V.915H8.234Zm8.234,0H9.149V.915h7.319Zm8.234,0H17.384V.915H24.7Z"
+        transform="translate(-1.255 -1.255)"
         strokeWidth="0.5"
       />
       <path
-        d="M10.563,4H4V16.032h6.563ZM9.469,14.938H5.094V5.094H9.469Z"
-        transform="translate(0.099 1.054)"
+        d="M6.983,4H4V9.469H6.983Zm-.5,4.972H4.5V4.5H6.486Z"
+        transform="translate(-2.365 -0.545)"
         strokeWidth="0.5"
       />
       <path
-        d="M10.563,4H4V16.032h6.563ZM9.469,14.938H5.094V5.094H9.469Z"
-        transform="translate(26.627 1.054)"
+        d="M6.983,4H4V9.469H6.983Zm-.5,4.972H4.5V4.5H6.486Z"
+        transform="translate(14.635 -0.545)"
         strokeWidth="0.5"
       />
       <path
-        d="M10.563,4H4V16.032h6.563ZM9.469,14.938H5.094V5.094H9.469Z"
-        transform="translate(13.427 1.054)"
+        d="M6.983,4H4V9.469H6.983Zm-.5,4.972H4.5V4.5H6.486Z"
+        transform="translate(6.018 -0.545)"
         strokeWidth="0.5"
       />
       <path
-        d="M7.609,46.217A3.609,3.609,0,1,0,4,42.609,3.612,3.612,0,0,0,7.609,46.217Zm0-6.014A2.406,2.406,0,1,1,5.2,42.609,2.408,2.408,0,0,1,7.609,40.2Z"
-        transform="translate(-0.228 -9.398)"
+        d="M5.619,42.237A1.619,1.619,0,1,0,4,40.619,1.62,1.62,0,0,0,5.619,42.237Zm0-2.7A1.079,1.079,0,1,1,4.54,40.619,1.08,1.08,0,0,1,5.619,39.54Z"
+        transform="translate(-2.492 -22.049)"
         strokeWidth="0.5"
       />
       <path
-        d="M7.609,46.217A3.609,3.609,0,1,0,4,42.609,3.612,3.612,0,0,0,7.609,46.217Zm0-6.014A2.406,2.406,0,1,1,5.2,42.609,2.408,2.408,0,0,1,7.609,40.2Z"
-        transform="translate(26.3 -9.398)"
+        d="M5.619,42.237A1.619,1.619,0,1,0,4,40.619,1.62,1.62,0,0,0,5.619,42.237Zm0-2.7A1.079,1.079,0,1,1,4.54,40.619,1.08,1.08,0,0,1,5.619,39.54Z"
+        transform="translate(14.508 -22.049)"
         strokeWidth="0.5"
       />
       <path
-        d="M7.609,46.217A3.609,3.609,0,1,0,4,42.609,3.612,3.612,0,0,0,7.609,46.217Zm0-6.014A2.406,2.406,0,1,1,5.2,42.609,2.408,2.408,0,0,1,7.609,40.2Z"
-        transform="translate(13.1 -9.398)"
+        d="M5.619,42.237A1.619,1.619,0,1,0,4,40.619,1.62,1.62,0,0,0,5.619,42.237Zm0-2.7A1.079,1.079,0,1,1,4.54,40.619,1.08,1.08,0,0,1,5.619,39.54Z"
+        transform="translate(5.891 -22.049)"
         strokeWidth="0.5"
       />
+      <circle cx="1.5" cy="1.5" r="1.5" transform="translate(9.89 17.218)" />
+      <circle cx="1.5" cy="1.5" r="1.5" transform="translate(18.89 17.218)" />
+      <circle cx="1.5" cy="1.5" r="1.5" transform="translate(1.89 17.218)" />
+      <rect width="3" height="5" transform="translate(1.69 3.218)" />
+      <rect width="3" height="5" transform="translate(9.89 3.218)" />
+      <rect width="3" height="5" transform="translate(18.89 3.218)" />
     </g>
   </SVG>
 );

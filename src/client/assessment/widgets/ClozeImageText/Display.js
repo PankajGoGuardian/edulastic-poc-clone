@@ -241,6 +241,7 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
+        maxHeight={canvasHeight}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}

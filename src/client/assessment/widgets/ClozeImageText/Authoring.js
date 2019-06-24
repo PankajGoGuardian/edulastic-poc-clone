@@ -588,8 +588,8 @@ class Authoring extends Component {
                           </MoveControlButton>
                         )}
                         <PreivewImage
-                          width={imageWidth - 10}
-                          height={imageHeight - 10}
+                          width={imageWidth}
+                          height={imageHeight}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}

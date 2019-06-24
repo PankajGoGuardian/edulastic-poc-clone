@@ -31,13 +31,12 @@ const CheckboxTemplateBoxLayout = ({
   imagescale,
   evaluation,
   maxHeight,
-  maxWidth,
   minWidth,
   minHeight,
   imageOptions
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={maxWidth} maxHeight={maxHeight} maxWidth={maxWidth} height={maxHeight}>
+    <TemplateCover height={maxHeight}>
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}

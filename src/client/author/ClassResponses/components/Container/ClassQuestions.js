@@ -7,7 +7,7 @@ import { getRows } from "../../../sharedDucks/itemDetail";
 // styled wrappers
 import { StyledFlexContainer } from "./styled";
 
-function Preview({ item, qIndex, studentId }) {
+function Preview({ item, qIndex, studentId, evaluation }) {
   const rows = getRows(item);
   const questions = (item.data && item.data.questions) || [];
   const questionsKeyed = _keyBy(questions, "id");
@@ -19,10 +19,12 @@ function Preview({ item, qIndex, studentId }) {
         preview="show"
         previewTab="show"
         questions={questionsKeyed}
+        disableResponse
         verticalDivider={item.verticalDivider}
         scrolling={item.scrolling}
         style={{ width: "100%" }}
         qIndex={qIndex}
+        evaluation={evaluation}
       />
     </StyledFlexContainer>
   );
@@ -31,7 +33,11 @@ function Preview({ item, qIndex, studentId }) {
 Preview.propTypes = {
   item: PropTypes.object.isRequired,
   qIndex: PropTypes.number.isRequired,
-  studentId: PropTypes.any.isRequired
+  studentId: PropTypes.any.isRequired,
+  evaluation: PropTypes.object
+};
+Preview.defaultProps = {
+  evaluation: {}
 };
 
 class ClassQuestions extends Component {
@@ -128,11 +134,23 @@ class ClassQuestions extends Component {
   }
 
   render() {
+    const { questionActivities } = this.props;
     const testItems = this.getTestItems();
+    const evaluation = questionActivities.reduce((acc, curr) => {
+      acc[curr.qid] = curr.evaluation;
+      return acc;
+    }, {});
+
     const { qIndex, currentStudent } = this.props;
 
     return testItems.map((item, index) => (
-      <Preview studentId={(currentStudent || {}).studentId} key={index} item={item} qIndex={qIndex || index} />
+      <Preview
+        studentId={(currentStudent || {}).studentId}
+        key={index}
+        item={item}
+        qIndex={qIndex || index}
+        evaluation={evaluation}
+      />
     ));
   }
 }

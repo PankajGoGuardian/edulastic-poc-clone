@@ -24,6 +24,7 @@ const ReviewSummary = ({
   tableData,
   onChangeGrade,
   owner,
+  summary,
   onChangeField,
   thumbnail,
   onChangeSubjects,
@@ -72,34 +73,35 @@ const ReviewSummary = ({
         ))}
       </SummarySelect>
 
-      <MainTitle>Summary</MainTitle>
-      <FlexContainer justifyContent="space-between">
-        <SummaryInfoContainer>
-          <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
-          <SummaryInfoTitle>Questions</SummaryInfoTitle>
-        </SummaryInfoContainer>
-        <SummaryInfoContainer>
-          <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
-          <SummaryInfoTitle>Points</SummaryInfoTitle>
-        </SummaryInfoContainer>
-      </FlexContainer>
-      <Row>
-        <TableHeaderCol span={8}>Summary</TableHeaderCol>
-        <TableHeaderCol span={8}>Q's</TableHeaderCol>
-        <TableHeaderCol span={8}>Points</TableHeaderCol>
-      </Row>
-      {tableData.map(data => (
+
+    <MainTitle>Summary</MainTitle>
+    <FlexContainer justifyContent="space-between">
+      <SummaryInfoContainer>
+        <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
+        <SummaryInfoTitle>Questions</SummaryInfoTitle>
+      </SummaryInfoContainer>
+      <SummaryInfoContainer>
+        <SummaryInfoNumber data-cy="points">{totalPoints}</SummaryInfoNumber>
+        <SummaryInfoTitle>Points</SummaryInfoTitle>
+      </SummaryInfoContainer>
+    </FlexContainer>
+    <Row>
+      <TableHeaderCol span={8}>Summary</TableHeaderCol>
+      <TableHeaderCol span={8}>Q's</TableHeaderCol>
+      <TableHeaderCol span={8}>Points</TableHeaderCol>
+    </Row>
+    {summary.standards &&
+      summary.standards.map(data => (
         <TableBodyRow key={data.key}>
           <TableBodyCol span={8}>
-            <Standard>{data.standard}</Standard>
+            <Standard>{data.identifier}</Standard>
           </TableBodyCol>
-          <TableBodyCol span={8}>{data.qs}</TableBodyCol>
-          <TableBodyCol span={8}>{data.points}</TableBodyCol>
+          <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+          <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
         </TableBodyRow>
       ))}
-    </Container>
-  );
-};
+  </Container>
+);
 
 ReviewSummary.propTypes = {
   totalPoints: PropTypes.number.isRequired,
@@ -109,6 +111,7 @@ ReviewSummary.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   grades: PropTypes.array.isRequired,
   thumbnail: PropTypes.string,
+  summary: PropTypes.object,
   owner: PropTypes.bool,
   onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired

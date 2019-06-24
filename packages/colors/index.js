@@ -37,7 +37,7 @@ export const svgMapFillColor = "rgba(0, 176, 255, 0.19)";
 export const svgMapStrokeColor = "rgba(0, 176, 255, 1)";
 export const svgDisabledColor = "#80838b";
 
-export const red = "#ee1658";
+export const red = "#FF0080";
 export const lightRed = "#fbdfe7";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
@@ -56,7 +56,7 @@ export const newBlue = "#1774F0";
 export const blueButton = "#0e93dc";
 export const blueBorder = "#40a9ff";
 
-export const green = "#1fe3a1";
+export const green = "#00AD50";
 export const lightGreen = "#f5f9fe";
 export const lightGreen1 = "#62ebbd";
 export const lightGreen2 = "#94df5e";

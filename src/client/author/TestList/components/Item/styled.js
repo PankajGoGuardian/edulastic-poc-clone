@@ -88,6 +88,32 @@ export const ShareIcon = styled.div`
   }
 `;
 
+export const EllipsisWrapper = styled.div`
+  max-height: 100%;
+  min-height: 18px;
+  position: relative;
+  overflow: hidden;
+  text-align: justify;
+  text-overflow: hidden;
+  &:before {
+    content: "...";
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    color: black;
+  }
+  &:after {
+    content: "";
+    position: absolute;
+    right: 0;
+    width: 1em;
+    height: 1em;
+    margin-top: 0.2em;
+    background: white;
+  }
+`;
+
 export const IconText = styled.span`
   font-size: 11px;
   color: ${darkGrey};

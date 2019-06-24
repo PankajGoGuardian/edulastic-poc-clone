@@ -92,9 +92,13 @@ class ClassEdit extends React.Component {
         values.endDate = moment(endDate).format("x");
         values.startDate = moment(startDate).format("x");
 
+        const editedClassValues = Object.assign({}, values);
+        if (editedClassValues.courseId === "") {
+          delete editedClassValues.courseId;
+        }
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true });
-        updateClass({ params: values, classId });
+        updateClass({ params: editedClassValues, classId });
       }
     });
   };

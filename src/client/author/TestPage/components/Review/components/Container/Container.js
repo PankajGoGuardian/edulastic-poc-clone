@@ -283,6 +283,7 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
+              summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}

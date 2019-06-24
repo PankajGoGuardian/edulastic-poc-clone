@@ -10,7 +10,9 @@ import { getItemDetailDraggingSelector } from "../../../../ducks";
 import { MAX_MOBILE_WIDTH } from "../../../../../src/constants/others";
 import AddNew from "../AddNew/AddNew";
 import { Content, AddButtonContainer, TabContainer, WidgetContainer } from "./styled";
-
+// src/client/author/ItemDetail/ducks.js
+import { setItemLevelScoreAction } from "../../../../ducks";
+import { FlexContainer } from "@edulastic/common";
 class Container extends Component {
   state = {
     tabIndex: 0
@@ -62,11 +64,28 @@ class Container extends Component {
   );
 
   renderWidgets = () => {
-    const { row, dragging, rowIndex } = this.props;
+    const { row, dragging, rowIndex, itemData, setItemLevelScore, view } = this.props;
     const { tabIndex } = this.state;
-
     return (
       <WidgetContainer flowLayout={row.flowLayout}>
+        {view !== "edit" && !row.widgets.length && itemData.itemLevelScoring && (
+          <FlexContainer justifyContent={"flex-end"} marginBottom={"1em"}>
+            <div className="points">Points</div>
+            <div>
+              <input
+                className="ant-input"
+                type="number"
+                min={0}
+                value={itemData.itemLevelScore}
+                onChange={e => {
+                  const v = parseFloat(e.target.value);
+                  setItemLevelScore(v);
+                }}
+                style={{ maxWidth: "45px" }}
+              />
+            </div>
+          </FlexContainer>
+        )}
         {row.widgets.map((widget, i) => (
           <React.Fragment key={i}>
             {dragging && widget.tabIndex === tabIndex && (
@@ -86,7 +105,6 @@ class Container extends Component {
   render() {
     const { row, onEditTabTitle, rowIndex, dragging, count, windowWidth } = this.props;
     const { tabIndex } = this.state;
-
     return (
       <Content
         value={tabIndex}
@@ -129,9 +147,14 @@ class Container extends Component {
 }
 
 const enhance = compose(
-  connect(state => ({
-    dragging: getItemDetailDraggingSelector(state)
-  }))
+  connect(
+    state => ({
+      dragging: getItemDetailDraggingSelector(state)
+    }),
+    {
+      setItemLevelScore: setItemLevelScoreAction
+    }
+  )
 );
 
 export default enhance(Container);

@@ -285,23 +285,25 @@ export const isLiveAssignment = (assignment, currentGroup, classIds) => {
     const currentClass =
       groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
     // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
-    if (
-      assignment.openPolicy !== "Automatically on Start Date" &&
-      assignment.closePolicy !== "Automatically on Due Date"
-    ) {
-      const isLive = currentClass.open && (!currentClass.closed || currentClass.closeDate > Date.now());
-      return isLive;
-    }
-    // IF MANUAL OPEN AND AUTO CLOSE
-    if (assignment.openPolicy !== "Automatically on Start Date") {
-      const isLive = currentClass.open && (!currentClass.closed || currentClass.endDate > Date.now());
-      return isLive;
-    }
-    // IF MANUAL CLOSE AND AUTO OPEN
-    if (assignment.openPolicy !== "Automatically on Due Date") {
-      const isLive =
-        currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
-      return isLive;
+    if (!endDate) {
+      if (
+        assignment.openPolicy !== "Automatically on Start Date" &&
+        assignment.closePolicy !== "Automatically on Due Date"
+      ) {
+        const isLive = currentClass.open && (!currentClass.closed || currentClass.closeDate > Date.now());
+        return isLive;
+      }
+      // IF MANUAL OPEN AND AUTO CLOSE
+      if (assignment.openPolicy !== "Automatically on Start Date") {
+        const isLive = currentClass.open && (!currentClass.closed || currentClass.endDate > Date.now());
+        return isLive;
+      }
+      // IF MANUAL CLOSE AND AUTO OPEN
+      if (assignment.openPolicy !== "Automatically on Due Date") {
+        const isLive =
+          currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
+        return isLive;
+      }
     }
   }
   return endDate > Date.now();

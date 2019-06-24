@@ -9,6 +9,7 @@ import { themes } from "../../themes";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
+import { withRouter } from "react-router-dom";
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -33,8 +34,13 @@ class SummaryTest extends Component {
     this.setState({ isShowConfirmationModal: false });
   };
 
+  goToQuestion = (testId, testActivityId, index) => () => {
+    const { history } = this.props;
+    history.push(`/student/assessment/${testId}/uta/${testActivityId}/qid/${index}`);
+  };
+
   render() {
-    const { questionList, t } = this.props;
+    const { questionList, t, test } = this.props;
     const questions = Object.keys(questionList);
     const { finishTest } = this.props;
     const { buttonIdx, isShowConfirmationModal } = this.state;
@@ -100,6 +106,7 @@ class SummaryTest extends Component {
                     <QuestionColorBlock
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
+                      onClick={this.goToQuestion(test.testId, test.testActivityId, index)}
                     >
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
@@ -123,7 +130,8 @@ class SummaryTest extends Component {
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
   questionList: PropTypes.array,
-  t: PropTypes.func.isRequired
+  t: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired
 };
 
 SummaryTest.defaultProps = {
@@ -132,8 +140,10 @@ SummaryTest.defaultProps = {
 
 const enhance = compose(
   withNamespaces(["summary", "default"]),
+  withRouter,
   connect(state => ({
-    questionList: attemptSummarySelector(state)
+    questionList: attemptSummarySelector(state),
+    test: state.test
   }))
 );
 

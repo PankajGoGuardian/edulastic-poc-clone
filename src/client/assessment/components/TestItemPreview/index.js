@@ -51,7 +51,18 @@ class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, preview, style, windowWidth, showFeedback, questions, qIndex, student, disableResponse } = this.props;
+    const {
+      cols,
+      preview,
+      style,
+      windowWidth,
+      showFeedback,
+      questions,
+      qIndex,
+      student,
+      disableResponse,
+      evaluation
+    } = this.props;
 
     let questionCount = 0;
     cols
@@ -70,6 +81,7 @@ class TestItemPreview extends Component {
             cols.length &&
             cols.map((col, i) => (
               <TestItemCol
+                evaluation={evaluation}
                 key={i}
                 col={col}
                 view="preview"

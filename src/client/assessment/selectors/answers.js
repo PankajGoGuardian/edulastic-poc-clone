@@ -39,7 +39,7 @@ export const getUserAnswerSelector = createSelector(
   }
 );
 
-const getEvaluationSelector = state => state.evaluation;
+const getEvaluationSelector = (state, props) => props.evaluation || state.evaluation;
 
 export const getEvaluationByIdSelector = createSelector(
   [getEvaluationSelector, getQuestionIdFromPropsSelector],

@@ -112,6 +112,8 @@ class App extends Component {
           defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
+        } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
+          defaultRoute = "/auth";
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (

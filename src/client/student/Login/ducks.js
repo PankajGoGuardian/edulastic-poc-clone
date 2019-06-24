@@ -297,7 +297,8 @@ export function* fetchUser() {
     }
     const user = yield call(userApi.getUser);
     const key = localStorage.getItem("defaultTokenKey") + "";
-    if (key.includes("role:undefined")) {
+
+    if (key.includes("role:undefined") && user.role) {
       TokenStorage.removeAccessToken(user._id, "undefined");
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true);
       TokenStorage.selectAccessToken(user._id, user.role);

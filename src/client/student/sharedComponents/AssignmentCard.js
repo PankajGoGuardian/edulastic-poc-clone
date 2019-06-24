@@ -97,10 +97,10 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   const absent = lastAttempt.status == 2;
   let newReports = resume ? reports.slice(0, reports.length - 1) : reports.slice(0);
   newReports = newReports || [];
-  const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = last(newReports) || {};
+  const { correct = 0, wrong = 0, maxScore = 0, score = 0, skipped = 0 } = last(newReports) || {};
   const attempted = !!(newReports && newReports.length);
   const attemptCount = newReports && newReports.length;
-  const totalQuestions = correct + wrong || 0;
+  const totalQuestions = correct + wrong + skipped || 0;
   const scorePercentage = (score / maxScore) * 100 || 0;
   const arrow = showAttempts ? "\u2193" : "\u2191";
 

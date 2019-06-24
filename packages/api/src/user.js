@@ -70,7 +70,7 @@ const updateUser = ({ data, userId }) =>
 const updateUserRole = ({ data, userId }) =>
   api
     .callApi({
-      url: `${prefix}/update-role/${userId}`,
+      url: `${prefix}/role/${userId}`,
       method: "put",
       data
     })

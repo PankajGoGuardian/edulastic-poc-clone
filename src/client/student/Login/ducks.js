@@ -289,16 +289,13 @@ const getLoggedOutUrl = () => {
 
 export function* fetchUser() {
   try {
-    debugger;
     // TODO: handle the case of invalid token
-    console.log("TokenStorage.getAccessToken()", TokenStorage.getAccessToken());
     if (!TokenStorage.getAccessToken()) {
       localStorage.setItem("loginRedirectUrl", getCurrentPath());
       yield put(push(getLoggedOutUrl()));
       return;
     }
     const user = yield call(userApi.getUser);
-    debugger;
     const key = localStorage.getItem("defaultTokenKey") + "";
     if (key.includes("role:undefined")) {
       TokenStorage.removeAccessToken(user._id, "undefined");
@@ -411,7 +408,6 @@ function* cleverSSOLogin({ payload }) {
 }
 
 function* getUserData({ payload: res }) {
-  debugger;
   try {
     const user = pick(res, userPickFields);
     TokenStorage.storeAccessToken(res.token, user._id, user.role, true);

@@ -90,9 +90,11 @@ class ShareModal extends React.Component {
   };
 
   removeHandler = data => {
-    const { deleteShared, testId } = this.props;
+    const { deleteShared, testId, isPlaylist } = this.props;
     const { sharedId, _userId: sharedWith } = data;
-    deleteShared({ contentId: testId, sharedId, sharedWith });
+    const contentType = isPlaylist ? "PLAYLIST" : "TEST";
+
+    deleteShared({ contentId: testId, sharedId, sharedWith, contentType });
   };
 
   permissionHandler = value => {

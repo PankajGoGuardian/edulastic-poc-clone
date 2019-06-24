@@ -338,18 +338,25 @@ class Board {
     });
   }
 
-  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue) {
+  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue = () => {}, setCalculatedHeight = () => {}) {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
       layout,
-      setValue
+      setValue,
+      setCalculatedHeight
     };
 
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      this.resizeContainer(layout.width, this.calcContainerHeight(layout.height));
+      let { height } = layout;
+      if (height === AUTO_VALUE) {
+        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
+      } else if (Number.isNaN(Number.parseFloat(height))) {
+        height = 0;
+      }
+      this.resizeContainer(layout.width, height);
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -432,19 +439,7 @@ class Board {
       this.elements.push(Mark.onHandler(this, markCoord, mark));
     });
 
-    const extraHeight = Mark.alignMarks(this);
-    const newHeight = this.calcContainerHeight(this.numberlineSettings.layout.height, extraHeight);
-    if (newHeight !== 0 && this.$board.canvasHeight + LOST_HEIGHT_PIXELS !== newHeight) {
-      this.numberlineSettings.layout.height = newHeight;
-      this.updateNumberlineSettings(
-        this.numberlineSettings.canvas,
-        this.numberlineSettings.numberlineAxis,
-        this.numberlineSettings.layout,
-        undefined,
-        this.numberlineSettings.setValue
-      );
-      this.numberlineSettings.layout.height = AUTO_VALUE;
-    }
+    Mark.alignMarks(this);
   }
 
   removeMarks() {
@@ -1834,21 +1829,6 @@ class Board {
 
   isDragMode() {
     return this.$board.mode === this.$board.BOARD_MODE_DRAG;
-  }
-
-  calcContainerHeight(heightFromSetting, extraHeight) {
-    if (heightFromSetting === AUTO_VALUE) {
-      if (extraHeight) {
-        return AUTO_HEIGHT_VALUE + extraHeight;
-      }
-      return AUTO_HEIGHT_VALUE;
-    }
-
-    if (isNaN(heightFromSetting)) {
-      return 0;
-    }
-
-    return heightFromSetting;
   }
 }
 

@@ -67,4 +67,3 @@ export const FRACTIONS_FORMAT = {
 
 export const AUTO_VALUE = "auto";
 export const AUTO_HEIGHT_VALUE = 250;
-export const LOST_HEIGHT_PIXELS = 2;

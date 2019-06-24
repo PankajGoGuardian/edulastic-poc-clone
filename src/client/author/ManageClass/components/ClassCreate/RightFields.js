@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { filter, isArray, isEmpty, debounce } from "lodash";
 
@@ -10,7 +10,6 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 
 const { allGrades, allSubjects } = selectsData;
 
-const startDate = moment();
 
 // eslint-disable-next-line max-len
 const RightFields = ({
@@ -26,12 +25,20 @@ const RightFields = ({
   ...restProps
 }) => {
 
+  const [startDate, setStartDate] = useState(moment());
+
+
   //@todo default term id is not coming in terms list.
   // For now below logic is implemented to set default term end date
   const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
 
+
   const updateSubject = e => {
     setSubject(e);
+  };
+
+  const onStartDateChangeHnadler = date => {
+    setStartDate(date);
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
@@ -46,6 +53,8 @@ const RightFields = ({
       isDropdown = schoolList[0]._id !== defaultSchool;
     }
   }
+  const disabledStartDate = current => current && current < moment().subtract(1, "day");
+  const disabledEndDate = current => current && current < moment(startDate).subtract(1, "day");
 
   const grades = filter(allGrades, el => el.isContentGrade !== true);
   const subjects = filter(allSubjects, el => el.value !== "");
@@ -58,17 +67,17 @@ const RightFields = ({
       </StyledFlexContainer>
 
       <StyledFlexContainer>
-        <FieldLabel
-          label="Class Start Date"
-          optional
-          fiedlName="startDate"
-          initialValue={moment(startDate)}
-          {...restProps}
-        >
-          <DatePicker data-cy="startDate" format="DD MMM, YYYY" placeholder="Open Date" />
+        <FieldLabel label="Class Start Date" optional fiedlName="startDate" initialValue={startDate} {...restProps}>
+          <DatePicker
+            data-cy="startDate"
+            format="DD MMM, YYYY"
+            placeholder="Open Date"
+            disabledDate={disabledStartDate}
+            onChange={onStartDateChangeHnadler}
+          />
         </FieldLabel>
         <FieldLabel label="Class End Date" optional {...restProps} fiedlName="endDate" initialValue={moment(endDate)}>
-          <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" />
+          <DatePicker data-cy="endDate" format="DD MMM, YYYY" placeholder="End Date" disabledDate={disabledEndDate} />
         </FieldLabel>
       </StyledFlexContainer>
 

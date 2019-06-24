@@ -87,7 +87,10 @@ class Review extends PureComponent {
   handleRemoveSelected = () => {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
-
+    const itemsSelected = test.testItems.find(item => item.selected);
+    if (!itemsSelected) {
+      return message.warn("Please select at least one question to remove");
+    }
     newData.testItems = test.testItems.filter(item => !item.selected);
 
     newData.scoring.testItems = test.scoring.testItems.filter(item => {
@@ -161,12 +164,6 @@ class Review extends PureComponent {
 
   closeModal = () => {
     this.setModalVisibility(false);
-  };
-
-  handleSelectedTest = items => {
-    const { test } = this.props;
-    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
-    this.setSelected(result);
   };
 
   get tableData() {
@@ -246,11 +243,7 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable
-                  items={test.testItems}
-                  setSelectedTests={this.handleSelectedTest}
-                  selectedTests={selected.map(i => test.testItems[i]._id)}
-                />
+                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}

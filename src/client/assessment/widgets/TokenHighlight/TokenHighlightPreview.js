@@ -185,7 +185,7 @@ const TokenHighlightPreview = ({
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
           <span
-            onClick={!disableResponse && handleSelect(i)}
+            onClick={!disableResponse ? handleSelect(i) : () => {}}
             dangerouslySetInnerHTML={{ __html: el.value }}
             style={preview || disableResponse ? getStyles(i) : {}}
             key={i}

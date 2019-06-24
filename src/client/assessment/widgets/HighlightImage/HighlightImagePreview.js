@@ -197,9 +197,9 @@ const HighlightImagePreview = ({
           </QuestionTitleWrapper>
           {renderImage()}
           <canvas
-            onMouseDown={!disableResponse && onCanvasMouseDown}
-            onMouseUp={!disableResponse && onCanvasMouseUp}
-            onMouseMove={!disableResponse && onCanvasMouseMove}
+            onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
+            onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
+            onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
             ref={canvas}
           />
         </CanvasContainer>

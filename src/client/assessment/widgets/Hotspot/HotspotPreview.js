@@ -96,7 +96,7 @@ const HotspotPreview = ({
                     disableResponse ||
                     (view !== EDIT && ((previewTab === CHECK && userAnswer.includes(i)) || previewTab === SHOW))
                   }
-                  onClick={!disableResponse && handleClick(i)}
+                  onClick={!disableResponse ? handleClick(i) : () => {}}
                   points={area.map(point => `${point.x},${point.y}`).join(" ")}
                   selected={userAnswer.includes(i)}
                   correct={view !== EDIT && allValidAnswers && allValidAnswers.includes(i)}

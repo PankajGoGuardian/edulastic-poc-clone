@@ -247,7 +247,7 @@ class Display extends Component {
         uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
-        maxHeight={maxHeight}
+        maxHeight={canvasHeight}
         maxWidth={maxWidth}
         minWidth={response.minWidth}
         minHeight={response.minHeight}

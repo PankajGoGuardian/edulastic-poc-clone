@@ -560,8 +560,8 @@ class ComposeQuestion extends Component {
                           </MoveControlButton>
                         )}
                         <PreviewImage
-                          width={imageWidth - 10}
-                          height={imageHeight - 10}
+                          width={imageWidth}
+                          height={imageHeight}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}

@@ -40,7 +40,7 @@ class Photo extends React.Component {
   };
 
   render() {
-    const { height, windowWidth, url, owner } = this.props;
+    const { height, windowWidth, url, owner, readOnlyMode = false } = this.props;
 
     const uploadButton = (
       <Container height={height}>
@@ -65,7 +65,7 @@ class Photo extends React.Component {
 
     return (
       <UploadWrapper>
-        <Upload disabled={!owner} {...props}>
+        <Upload disabled={!owner || readOnlyMode} {...props}>
           <Container height={height}>
             <ImageContainer height={height}>
               {loading ? (
@@ -92,6 +92,7 @@ Photo.propTypes = {
   url: PropTypes.string,
   owner: PropTypes.bool,
   height: PropTypes.number,
+  readOnlyMode: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func
 };

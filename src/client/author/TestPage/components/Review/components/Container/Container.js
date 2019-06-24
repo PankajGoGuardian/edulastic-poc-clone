@@ -193,6 +193,7 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
+      readOnlyMode = false,
       createTestItemModalVisible,
       itemsSubjectAndGrade
     } = this.props;
@@ -228,7 +229,7 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              {owner && (
+              {owner && !readOnlyMode && (
                 <HeaderBar
                   onSelectAll={this.handleSelectAll}
                   itemTotal={test.testItems.length}
@@ -256,6 +257,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   owner={owner}
+                  readOnlyMode={readOnlyMode}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -276,6 +278,7 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
+              readOnlyMode={readOnlyMode}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
@@ -290,6 +293,8 @@ class Review extends PureComponent {
           isVisible={isModalVisible}
           onClose={this.closeModal}
           showModal={true}
+          readOnlyMode={readOnlyMode}
+          owner={owner}
           addDuplicate={this.handleDuplicateItem}
           owner={owner}
           page="review"

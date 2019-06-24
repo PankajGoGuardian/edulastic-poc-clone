@@ -36,6 +36,7 @@ const SortableItem = SortableElement(
     item,
     testItem,
     onCheck,
+    readOnlyMode = false,
     points,
     onChangePoints,
     owner,
@@ -72,7 +73,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
-                    disabled={!owner}
+                    disabled={!owner || readOnlyMode}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -124,7 +125,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
-                      disabled={!owner}
+                      disabled={!owner || readOnlyMode}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -154,6 +155,7 @@ const List = SortableContainer(
     testItems,
     onChangePoints,
     types,
+    readOnlyMode = false,
     standards,
     scoring,
     onPreview,
@@ -210,6 +212,7 @@ const List = SortableContainer(
             index={i}
             owner={owner}
             indx={i}
+            readOnlyMode={readOnlyMode}
             item={item}
             testItem={testItems[i]}
             points={getPoints(i)}
@@ -234,6 +237,7 @@ List.propTypes = {
   onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
+  readOnlyMode: PropTypes.bool,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
   owner: PropTypes.bool,

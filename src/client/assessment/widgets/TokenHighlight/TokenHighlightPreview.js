@@ -29,7 +29,8 @@ const TokenHighlightPreview = ({
   previewTab,
   theme,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  disableResponse
 }) => {
   const initialArray = (item.templeWithTokens || []).map((el, i) => ({
     value: el.value,
@@ -59,7 +60,7 @@ const TokenHighlightPreview = ({
   }, [item.templeWithTokens, editCorrectAnswers]);
 
   useEffect(() => {
-    if (previewTab === SHOW) {
+    if (previewTab === SHOW || disableResponse) {
       if (answers.filter(answer => answer.selected).length !== 0) {
         setAnswers([
           ...validArray.filter((answer, i) => answers[i].selected === answer.selected),
@@ -135,7 +136,9 @@ const TokenHighlightPreview = ({
   const rightAnswers = validate();
 
   const getStyles = index => {
-    const condition = answers.find(elem => elem.index === index) && answers.find(elem => elem.index === index).selected;
+    const defaultAnswers = disableResponse ? validArray : answers;
+    const condition =
+      defaultAnswers.find(elem => elem.index === index) && defaultAnswers.find(elem => elem.index === index).selected;
 
     let resultStyle;
 
@@ -182,9 +185,9 @@ const TokenHighlightPreview = ({
       {item.templeWithTokens.map((el, i) =>
         el.active ? (
           <span
-            onClick={handleSelect(i)}
+            onClick={!disableResponse ? handleSelect(i) : () => {}}
             dangerouslySetInnerHTML={{ __html: el.value }}
-            style={preview ? getStyles(i) : {}}
+            style={preview || disableResponse ? getStyles(i) : {}}
             key={i}
             className={getClass(i)}
           />
@@ -211,7 +214,8 @@ TokenHighlightPreview.propTypes = {
   userAnswer: PropTypes.any,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 TokenHighlightPreview.defaultProps = {
@@ -220,7 +224,8 @@ TokenHighlightPreview.defaultProps = {
   userAnswer: [],
   editCorrectAnswers: [],
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 const enhance = compose(

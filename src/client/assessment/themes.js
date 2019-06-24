@@ -1,5 +1,46 @@
 export const themes = {
   default: {
+    header: {
+      headerBgColor: "#00AD50",
+      headerTitleTextColor: "white",
+      headerTitleFontSize: "22px"
+    },
+    sideMenu: {
+      sidebarBgColor: "#fbfafc",
+      sidebarTextColor: "#434b5d",
+      helpButtonBgColor: "#ffffff",
+      helpButtonBgHoverColor: "#00AD50",
+      helpButtonFontSize: "14px",
+      helpButtonTextColor: "#5EB500",
+      helpButtonTextHoverColor: "white",
+      helpIconColor: "#5EB500",
+      helpIconHoverColor: "white",
+      dropdownIconColor: "#333333",
+      userInfoButtonBgColor: "#ffffff",
+      userInfoNameTextColor: "#444444",
+      userInfoNameFontSize: "14px",
+      userInfoRoleTextColor: "#444444",
+      userInfoRoleFontSize: "12px",
+      userInfoDropdownBgColor: "#ffffff",
+      userInfoDropdownItemBgColor: "#ffffff",
+      userInfoDropdownItemBgHoverColor: "#f0f0f0",
+      userInfoDropdownItemTextColor: "#444444",
+      userInfoDropdownItemTextHoverColor: "#00AD50",
+      itemIconColor: "#425066",
+      userInfoDropdownItemFontSize: "14px",
+      userInfoDropdownItemIconSize: "20px",
+      menuItemBgColor: "transparent",
+      menuSelectedItemBgColor: "#00AD50",
+      menuItemLinkColor: "#434b5d",
+      menuSelectedItemLinkColor: "white",
+      menuItemLinkHoverColor: "#00AD50"
+    },
+    checkbox: {
+      checkboxBorderColor: "",
+      checkboxCheckedColor: "#00ad50",
+      checkboxIntermediateColor: "#00ad50",
+      checkboxLabelColor: "#00ad50"
+    },
     common: {
       addNewChoiceButtonFontFamily: "Open Sans",
       addNewChoiceButtonFontSize: "11px",
@@ -110,7 +151,7 @@ export const themes = {
       itemFontWeight: "700"
     },
     sortableList: {
-      iconTrashColor: "#1774F0", // greenDark
+      iconTrashColor: "#00AD50", // greenDark
       iconTrashHoverColor: "#ee1658", // red
       iconTrashWrapperBgHoverColor: "#f9f9f9", // lightGrey
       itemContainerBorderColor: "#dfdfdf",
@@ -120,7 +161,7 @@ export const themes = {
       inputFontSize: "13px"
     },
     typedList: {
-      iconTrashColor: "#1774F0", // greenDark
+      iconTrashColor: "#00AD50", // greenDark
       iconTrashHoverColor: "#ee1658", // red
       itemContainerBorderColor: "#dfdfdf",
       dragIconColor: "#1fe3a1",
@@ -240,7 +281,7 @@ export const themes = {
         dragItemFontWeight: "600",
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658", // red
-        iconTrashColor: "#1774F0", // greenDark
+        iconTrashColor: "#00AD50", // greenDark
         iconTrashHoverColor: "#ee1658", // red
         dropContainerBgColor: "#fff" // white
       },
@@ -436,7 +477,7 @@ export const themes = {
         inputColor: "#fff",
         inputCorrectColor: "#e1fbf2",
         inputIncorrectColor: "#fce0e8",
-        iconTrashColor: "#1774F0", // newBlue
+        iconTrashColor: "#00AD50", // newBlue
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
         iconCheckColor: "#1fe3a1", // green
@@ -481,6 +522,8 @@ export const themes = {
         subtitleColor: "#434b5d", // secondaryTextColor
         svgMapFillColor: "rgba(0, 176, 255, 0.19)", // svgMapFillColor
         svgMapStrokeColor: "rgba(0, 176, 255, 1)", // svgMapStrokeColor
+        svgMapRightFillColor: "rgba(31, 227, 161, 0.19)", // svgMapFillColor
+        svgMapRightStrokeColor: "rgba(31, 227, 161, 1)", // svgMapStrokeColor
         intersectStrokeColor: "#ee1658", // red
         intersectFillColor: "#fbdfe750",
         iconPlusColor: "#fff", // white
@@ -542,7 +585,7 @@ export const themes = {
         indexFontWeight: "600",
         indexFontSize: "14px",
         corTitleFontWeight: "600",
-        iconTrashColor: "#1774F0", // greenDark
+        iconTrashColor: "#00AD50", // greenDark
         iconTrashHoverColor: "#ee1658", // red
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658" // red
@@ -552,7 +595,7 @@ export const themes = {
         inlineLabelColor: "#4aac8b", // greenDark
         correctCellInputWrapperBgColor: "#e1fbf2", // lightGreen
         incorrectCellInputWrapperBgColor: "#fbdfe7", // lightRed
-        tableStyledHeaderColor: "#1774F0", // greenDark
+        tableStyledHeaderColor: "#00AD50", // greenDark
         styledTableBorderColor: "#e8e8e8",
         styledTableThBgColor: "#fff" // white
       },
@@ -571,14 +614,14 @@ export const themes = {
         labelIconFontSize: "18px",
         labelIconCheckColor: "#1fe3a1", // green
         labelIconTimesColor: "#ee1658",
-        checkboxContainerBorderColor: "#277DF1",
+        checkboxContainerBorderColor: "#00AD50",
         checkboxContainerBgColor: "transparent",
         checkboxContainerSmallFontSize: "15px",
         checkboxContainerFontSize: "20px",
         checkboxContainerFontWeight: "700",
         checkboxContainerColor: "#444444",
         checkboxContainerCheckedColor: "white",
-        checkboxContainerCheckedBgColor: "#277DF1",
+        checkboxContainerCheckedBgColor: "#00AD50",
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658" // red
       },

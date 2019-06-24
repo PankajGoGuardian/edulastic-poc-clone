@@ -21,7 +21,7 @@ const Header = ({ onTabChange, currentTab, tabs, title, status, onSave, onPublis
     <SaveWrapper>
       <FlexContainer justifyContent="space-between" className="abcdTesting">
         <EduButton data-cy="save" style={{ ...style, width: 42, padding: 0 }} size="large" onClick={onSave("draft")}>
-          <IconDiskette color="#1774F0" fill="#1774F0" />
+          <IconDiskette color="#00AD50" fill="#00AD50" />
         </EduButton>
         <EduButton data-cy="assign" style={{ ...style, width: 120 }} size="large" onClick={onAssign}>
           Assign

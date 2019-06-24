@@ -9,10 +9,10 @@ const ControlBtn = styled(Button)`
   width: 40px;
   border-radius: 4px;
   background-color: ${props =>
-    props.skin ? props.theme.controlBtnPrimaryColor : props.theme.controlBtnSecondaryColor};
+    props.skin ? props.theme.default.headerButtonActiveBgColor : props.theme.controlBtnSecondaryColor};
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   border: none;
-  color: ${props => props.theme.controlBtnTextColor};
+  color: ${props => props.theme.default.headerButtonIconActiveColor};
   font-size: 2rem;
   padding: ${props => (props.next ? (props.skin ? "0" : "0 25px") : "0")};
   position: relative;
@@ -24,19 +24,24 @@ const ControlBtn = styled(Button)`
   padding-right: ${props => (props.next ? "0" : "3px")};
   cursor: normal;
 
+  &:hover {
+    background: ${props => props.theme.default.headerButtonBgHoverColor};
+  }
   &[disabled] {
-    background: transparent;
+    background: ${props => props.theme.default.headerButtonBgColor};
     cursor: not-allowed;
-    border: 1px solid ${white};
+    border: 1px solid ${props => props.theme.default.headerButtonBgColor};
+    color: ${props => props.theme.default.headerButtonIconColor};
     &:hover {
-      background: transparent;
+      background: ${props => props.theme.default.headerButtonBgColor};
+      border-color: ${props => props.theme.default.headerButtonBgColor};
     }
   }
   &:focus,
   &:active {
-    color: ${props => props.theme.controlBtnTextColor};
+    color: ${props => props.theme.default.headerButtonIconActiveColor};
     background-color: ${props =>
-      props.skin ? props.theme.controlBtnPrimaryColor : props.theme.controlBtnSecondaryColor};
+      props.skin ? props.theme.default.headerButtonActiveBgColor : props.theme.controlBtnSecondaryColor};
     border: none;
   }
 
@@ -57,7 +62,7 @@ const ControlBtn = styled(Button)`
     font-stretch: normal;
     line-height: 1.36;
     letter-spacing: 0.7px;
-    color: ${props => props.theme.controlBtnTextColor};
+    color: ${props => props.theme.default.headerButtonIconColor};
   }
 
   .ant-btn {

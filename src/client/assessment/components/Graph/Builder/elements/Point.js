@@ -37,12 +37,12 @@ export function findPoint(elements, coords) {
   return result;
 }
 
-function onHandler(board, event) {
-  const coords = board.getCoords(event);
-  const point = board.$board.create("point", coords.usrCoords, {
+function create(board, usrCoords, id = null) {
+  const point = board.$board.create("point", usrCoords, {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...Colors.default[CONSTANT.TOOLS.POINT],
-    label: getLabelParameters(JXG.OBJECT_TYPE_POINT)
+    label: getLabelParameters(JXG.OBJECT_TYPE_POINT),
+    id
   });
 
   point.on("up", () => {
@@ -64,6 +64,11 @@ function onHandler(board, event) {
   return point;
 }
 
+function onHandler(board, event, id = null) {
+  const coords = board.getCoords(event);
+  return create(board, coords.usrCoords, id);
+}
+
 function getConfig(point) {
   return {
     _type: point.type,
@@ -80,6 +85,7 @@ function parseConfig(config, pointParameters) {
     "point",
     [config.x, config.y],
     {
+      ...Colors.default[CONSTANT.TOOLS.POINT],
       ...(pointParameters || defaultPointParameters()),
       label: getLabelParameters(JXG.OBJECT_TYPE_POINT)
     }
@@ -91,5 +97,6 @@ export default {
   getConfig,
   parseConfig,
   roundCoords,
-  findPoint
+  findPoint,
+  create
 };

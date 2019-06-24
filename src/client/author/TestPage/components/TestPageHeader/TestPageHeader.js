@@ -22,7 +22,7 @@ import HeaderWrapper from "../../../src/mainContent/headerWrapper";
 
 import { toggleSideBarAction } from "../../../src/actions/toggleMenu";
 
-export const navButtons = [
+export const navButtonsTest = [
   {
     icon: <IconDescription color={white} width={16} height={16} />,
     value: "description",
@@ -86,6 +86,10 @@ const TestPageHeader = ({
   owner,
   onAssign
 }) => {
+  let navButtons = isPlaylist ? [...playlistNavButtons] : [...navButtonsTest];
+  if (!owner) {
+    navButtons = navButtons.slice(2);
+  }
   return windowWidth > 993 ? (
     <HeaderWrapper>
       <TitleWrapper>
@@ -93,20 +97,20 @@ const TestPageHeader = ({
         <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
       </TitleWrapper>
 
-      <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />
+      <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
 
       <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
         {showShareButton && false && (
           <EduButton data-cy="source" style={{ width: 42, padding: 0 }} size="large" onClick={onShowSource}>
-            <IconSource color="#1774F0" style={{ stroke: "#1774F0", strokeWidth: 1 }} />
+            <IconSource color="#00AD50" style={{ stroke: "#00AD50", strokeWidth: 1 }} />
           </EduButton>
         )}
-        {showShareButton && (
+        {showShareButton && owner && (
           <EduButton title={"Share"} data-cy="share" style={{ width: 42, padding: 0 }} size="large" onClick={onShare}>
-            <IconShare color="#1774F0" />
+            <IconShare color="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && (
+        {showShareButton && owner && (
           <EduButton
             title={"Save as Draft"}
             data-cy="save"
@@ -115,10 +119,10 @@ const TestPageHeader = ({
             size="large"
             onClick={onSave}
           >
-            <IconDiskette color="#1774F0" />
+            <IconDiskette color="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && showPublishButton && testStatus === "draft" && (
+        {showShareButton && showPublishButton && owner && testStatus === "draft" && (
           <EduButton
             title={"Publish Test"}
             data-cy="publish"
@@ -128,12 +132,12 @@ const TestPageHeader = ({
               onPublish();
             }}
           >
-            <IconSend color="#1774F0" stroke="#1774F0" />
+            <IconSend color="#00AD50" stroke="#00AD50" />
           </EduButton>
         )}
         {showShareButton && !showPublishButton && owner && (
           <EduButton title={"Edit Test"} data-cy="edit" style={{ width: 42 }} size="large" onClick={onEnableEdit}>
-            <IconPencilEdit color="#1774F0" />
+            <IconPencilEdit color="#00AD50" />
           </EduButton>
         )}
         {showShareButton && !isPlaylist && (
@@ -165,15 +169,19 @@ const TestPageHeader = ({
             <Title>{title}</Title>
           </MenuIconWrapper>
           <FlexContainer justifyContent="space-between">
-            <EduButton size="large" onClick={onShare}>
-              <ShareIcon />
-            </EduButton>
-            <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
-              {creating ? "Saving..." : "Save"}
-            </EduButton>
+            {owner && (
+              <EduButton size="large" onClick={onShare}>
+                <ShareIcon />
+              </EduButton>
+            )}
+            {owner && (
+              <EduButton style={{ width: 80 }} disabled={creating} size="large" type="secondary" onClick={onSave}>
+                {creating ? "Saving..." : "Save"}
+              </EduButton>
+            )}
           </FlexContainer>
         </FlexContainer>
-        <TestPageNav onChange={onChangeNav} current={current} buttons={isPlaylist ? playlistNavButtons : navButtons} />
+        <TestPageNav owner={owner} onChange={onChangeNav} current={current} buttons={navButtons} />
       </FlexContainer>
     </Container>
   );

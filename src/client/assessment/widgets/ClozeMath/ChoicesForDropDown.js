@@ -116,7 +116,8 @@ class ChoicesForDropDown extends Component {
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
         draft.options[dropDownId][itemIndex] = e.target.value;
-        draft.ui_style["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
+        draft.ui_style[dropDownId] = draft.ui_style[dropDownId] || {};
+        draft.ui_style[dropDownId]["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
         updateVariables(draft);
       })
     );

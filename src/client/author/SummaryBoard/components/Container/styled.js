@@ -130,8 +130,8 @@ export const ActionDescription = styled.div`
   }
 `;
 export const ViewRecommendationsBtn = styled(Button)`
-  background-color: #1774f0;
-  border-color: #1774f0;
+  background-color: #00ad50;
+  border-color: #00ad50;
   border-radius: 4px;
   color: #ffffff;
   font-size: 11px;
@@ -140,8 +140,8 @@ export const ViewRecommendationsBtn = styled(Button)`
   padding: 12px 30px;
   height: 40px;
   &:hover {
-    color: #1774f0;
-    border-color: #1774f0;
+    color: #00ad50;
+    border-color: #00ad50;
   }
 `;
 

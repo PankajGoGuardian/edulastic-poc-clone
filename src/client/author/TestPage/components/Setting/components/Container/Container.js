@@ -13,7 +13,7 @@ import { Container, ButtonLink } from "../../../../../src/components/common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import MainSetting from "../MainSetting/MainSetting";
 
-const Setting = ({ t, current, history, onShowSource, windowWidth }) => {
+const Setting = ({ t, current, history, onShowSource, windowWidth, owner }) => {
   const breadcrumbData = [
     {
       title: "TESTS LIBRARY",
@@ -35,7 +35,7 @@ const Setting = ({ t, current, history, onShowSource, windowWidth }) => {
           </ButtonLink>
         </Button>
       </SecondHeader>
-      <MainSetting history={history} windowWidth={windowWidth} />
+      <MainSetting history={history} windowWidth={windowWidth} owner={owner} />
     </Container>
   );
 };
@@ -45,6 +45,7 @@ Setting.propTypes = {
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  owner: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired
 };
 

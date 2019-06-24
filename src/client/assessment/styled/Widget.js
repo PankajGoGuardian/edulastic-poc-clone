@@ -67,6 +67,14 @@ export const Widget = styled.div`
   }
 
   .ant-input {
+    border: 1px solid ${dashBorderColor};
+  }
+
+  div.main {
+    box-shadow: none !important;
+  }
+
+  .ant-input {
     font-size: 12px;
     padding-left: 21px;
     letter-spacing: 0.3px;
@@ -91,7 +99,7 @@ export const Widget = styled.div`
   }
 
   .input__math {
-    padding: 12px 21px;
+    padding: 12px 2px;
   }
 
   .mq-root-block,
@@ -148,6 +156,36 @@ export const WidgetFRContainer = styled.div`
       padding: 20px 23px;
     }
   }
+`;
+
+export const WidgetMethods = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+
+  > div {
+    width: 50%;
+    margin-top: 26px;
+    order: 1;
+
+    &:nth-child(1),
+    &:nth-child(2) {
+      margin-top: 0;
+    }
+  }
+
+  .ant-checkbox-wrapper {
+    width: 100%;
+  }
+
+  .ant-input {
+    margin-left: 35px;
+    width: calc(100% - 35px) !important;
+    max-width: 295px;
+  }
+`;
+
+export const WidgetSecondMethod = styled.div`
+  order: 2 !important;
 `;
 
 export const WidgetFRInput = styled.div`

@@ -15,7 +15,11 @@ import {
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
   UPDATE_OPEN_ASSIGNMENTS,
-  UPDATE_CLOSE_ASSIGNMENTS
+  UPDATE_CLOSE_ASSIGNMENTS,
+  SAVE_OVERALL_FEEDBACK,
+  UPDATE_OVERALL_FEEDBACK,
+  MARK_AS_ABSENT,
+  UPDATE_STUDENT_ACTIVITY
 } from "../constants/actions";
 
 export const receiveClassResponseAction = data => ({
@@ -87,6 +91,16 @@ export const closeAssignmentAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId }
 });
 
+export const markAbsentAction = (assignmentId, classId, students) => ({
+  type: MARK_AS_ABSENT,
+  payload: { assignmentId, classId, students }
+});
+
+export const updateStudentActivityAction = payload => ({
+  type: UPDATE_STUDENT_ACTIVITY,
+  payload
+});
+
 export const updateAssignmentStatusAction = status => ({
   type: UPDATE_ASSIGNMENT_STATUS,
   payload: status
@@ -100,4 +114,14 @@ export const updateOpenAssignmentsAction = classId => ({
 export const updateCloseAssignmentsAction = classId => ({
   type: UPDATE_CLOSE_ASSIGNMENTS,
   payload: { classId }
+});
+
+export const saveOverallFeedbackAction = (testActivityId, groupId, feedback) => ({
+  type: SAVE_OVERALL_FEEDBACK,
+  payload: { testActivityId, groupId, feedback }
+});
+
+export const updateOverallFeedbackAction = payload => ({
+  type: UPDATE_OVERALL_FEEDBACK,
+  payload
 });

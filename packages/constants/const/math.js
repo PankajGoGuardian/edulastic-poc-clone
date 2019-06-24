@@ -12,9 +12,9 @@ const methods = {
 };
 
 const fields = {
-  INTEGER: "integer",
-  REAL: "real",
-  COMPLEX: "complex"
+  INTEGER: "integerType",
+  REAL: "realType",
+  COMPLEX: "complexType"
 };
 
 const decimalSeparators = {
@@ -81,11 +81,6 @@ const methodOptions = {
     "allowEulersNumber",
     "isFactorised",
     "isExpanded",
-    "ignoreOrder",
-    "ignoreCoefficientOfOne",
-    "allowInterval",
-    "ignoreLeadingAndTrailingSpaces",
-    "treatMultipleSpacesAsOne",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "compareSides"

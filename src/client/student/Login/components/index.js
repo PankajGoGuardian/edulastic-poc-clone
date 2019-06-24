@@ -7,6 +7,7 @@ import Header from "./Header";
 import LoginContainer from "./Container";
 
 import loginBg from "../../assets/bg-login.png";
+import greatMindLogo from "../../assets/GM_Horizontal.png";
 const readicheckBg = "//cdn.edulastic.com/default/readicheck_home-page-bg-1.png";
 const greatMindkBg = "//cdn.edulastic.com/default/Affirm_Background_Image.jpg";
 
@@ -21,7 +22,8 @@ const Partners = {
     headerLogo: "//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png",
     boxTitle: "Login",
     background: loginBg,
-    position: "start"
+    position: "start",
+    opacity: 0.5
   },
   readicheck: {
     name: "readicheck",
@@ -29,19 +31,21 @@ const Partners = {
     boxTitle: "//cdn.edulastic.com/default/readicheck_logo.png",
     background: readicheckBg,
     colorFilter: "brightness(100)",
-    position: "center"
+    position: "center",
+    opacity: 0.5
   },
   greatminds: {
     name: "greatMind",
-    headerLogo: "//cdn.edulastic.com/default/GM_Horizontal.JPG",
+    headerLogo: greatMindLogo,
     boxTitle: "Login",
     background: greatMindkBg,
     colorFilter: "brightness(1)",
-    position: "center"
+    position: "center",
+    opacity: 0.2
   }
 };
 
-const Login = () => {
+const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
   let partnerCheck = "login";
   Object.keys(Partners).map(key => {
     if (key === urlParams[urlParams.length - 1]) {
@@ -51,10 +55,29 @@ const Login = () => {
 
   return (
     <Wrapper>
-      <LoginWrapper Partners={Partners[partnerCheck]}>
-        {Partners[partnerCheck].name !== "login" && <Backdrop />}
-        <Header Partners={Partners[partnerCheck]} />
-        <LoginContainer Partners={Partners[partnerCheck]} />
+      <LoginWrapper
+        Partners={Partners[partnerCheck]}
+        image={
+          isSignupUsingDaURL
+            ? generalSettings && generalSettings.pageBackground
+              ? generalSettings.pageBackground
+              : ""
+            : Partners[partnerCheck].background
+        }
+      >
+        {Partners[partnerCheck].name !== "login" && <Backdrop Partners={Partners[partnerCheck]} />}
+        <Header
+          Partners={Partners[partnerCheck]}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
+        <LoginContainer
+          Partners={Partners[partnerCheck]}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
       </LoginWrapper>
     </Wrapper>
   );
@@ -63,7 +86,7 @@ const Login = () => {
 export default Login;
 
 const LoginWrapper = styled.div`
-  background: ${props => `#999999 url(${props.Partners.background})`};
+  background: ${props => `#999999 url(${props.image})`};
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -81,5 +104,5 @@ const Backdrop = styled.div`
   left: 0px;
   bottom: 0px;
   right: 0px;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, ${props => props.Partners.opacity});
 `;

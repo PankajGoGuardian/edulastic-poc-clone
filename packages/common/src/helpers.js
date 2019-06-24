@@ -119,7 +119,7 @@ const parseTemplate = tmpl => {
     return "";
   }
 
-  const parsedHTML = $.parseHTML(temp);
+  const parsedHTML = $("<div />").html(temp);
 
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")
@@ -132,9 +132,7 @@ const parseTemplate = tmpl => {
       $(this).replaceWith(`<mathspan lineheight={{lineHeight}} latex="${latex}" />`);
     });
 
-  temp = $("<div />")
-    .append(parsedHTML)
-    .html();
+  temp = $(parsedHTML).html();
 
   return replaceForJsxParser(sanitizeSelfClosingTags(temp));
 };
@@ -143,10 +141,10 @@ export const getResponsesCount = element => {
   return $(element).find("textinput, textdropdown, mathinput").length;
 };
 
-export const reIndexResponses = html => {
-  const parsedHTML = $.parseHTML(html);
+export const reIndexResponses = htmlStr => {
+  const parsedHTML = $("<div />").html(htmlStr);
   if (!$(parsedHTML).find("textinput, mathinput, textdropdown, response").length) {
-    return html;
+    return htmlStr;
   }
 
   $(parsedHTML)
@@ -171,11 +169,7 @@ export const reIndexResponses = html => {
       $(this).replaceWith(text);
     });
 
-  const temp = $("<div />")
-    .append(parsedHTML)
-    .html();
-
-  return temp;
+  return $(parsedHTML).html();
 };
 
 export const removeSpanFromTemplate = tmpl => {
@@ -183,7 +177,7 @@ export const removeSpanFromTemplate = tmpl => {
   if (!window.$) {
     return temp;
   }
-  const parsedHTML = $.parseHTML(temp);
+  const parsedHTML = $("<div />").html(temp);
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")
     .each(function() {
@@ -191,10 +185,7 @@ export const removeSpanFromTemplate = tmpl => {
         .find("span")
         .remove("span");
     });
-  temp = $("<div />")
-    .append(parsedHTML)
-    .html();
-  return temp;
+  return $(parsedHTML).html();
 };
 
 export const canInsert = element => element.contentEditable !== "false";

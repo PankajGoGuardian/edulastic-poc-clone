@@ -509,7 +509,7 @@ class ChoiceMatrixStandardPage {
         this.clickOnAdvancedOptions();
         // set evaluation type
         if (evaluation) {
-          this.getEnableAutoScoring().click({ force: true });
+          // this.getEnableAutoScoring().click({ force: true });
           CypressHelper.selectDropDownByAttribute("scoringType", evaluation);
         }
 

@@ -992,7 +992,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample Template markup<response contenteditable="false" index="0">Response</response></p>`,
+        templateMarkUp: `<p>Sample Template markup<response contenteditable="false">Response</response>&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "[This is stem.]",
         ui_style: {
@@ -1028,8 +1028,9 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false" index="0"><span class="index">1</span>Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false" index="1"><span class="index">2</span>Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
+        response_ids: [],
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1039,10 +1040,7 @@ export const getCards = onSelectQuestionType => {
           wordwrap: false,
           responsecontainerindividuals: []
         },
-        options: {
-          0: ["A", "B"],
-          1: ["Choice A", "Choice B"]
-        },
+        options: {},
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1062,7 +1060,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>sample template T1<textinput contenteditable="false" index="0"><span class="index">1</span>Text Input</textinput>, T2<textinput contenteditable="false" index="1"><span class="index">2</span>Text Input</textinput></p>',
+          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -1072,10 +1070,6 @@ export const getCards = onSelectQuestionType => {
           responsecontainerposition: "bottom",
           stemnumeration: "",
           widthpx: 140
-        },
-        options: {
-          0: "",
-          1: ""
         },
         validation: {
           scoring_type: "exactMatch",
@@ -1099,6 +1093,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         maxRespCount: 1,
         options: ["Country A", "Country B", "Country C"],
         validation: {
@@ -1110,9 +1105,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ]
       },
       onSelectQuestionType
@@ -1131,6 +1126,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
+        keepAspectRatio: true,
         options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1141,9 +1137,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
         ui_style: {
           widthpx: 140,
@@ -1168,7 +1164,7 @@ export const getCards = onSelectQuestionType => {
         stimulus: "",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
-        imageWidth: 0,
+        keepAspectRatio: true,
         ui_style: {
           width: 140
         },
@@ -1181,9 +1177,9 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         responses: [
-          { top: 0, left: 240, width: 200, height: 40 },
-          { top: 100, left: 120, width: 220, height: 40 },
-          { top: 220, left: 200, width: 200, height: 40 }
+          { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
+          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
         ],
         stimulusReviewonly: "",
         instructorStimulus: "",
@@ -1396,8 +1392,8 @@ export const getCards = onSelectQuestionType => {
           instructor_stimulus: ""
         },
         numberlineAxis: {
-          leftArrow: false,
-          rightArrow: false,
+          leftArrow: true,
+          rightArrow: true,
           showTicks: true,
           snapToTicks: true,
           ticksDistance: 1,
@@ -1464,7 +1460,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         }
       },
       onSelectQuestionType
@@ -1524,7 +1521,8 @@ export const getCards = onSelectQuestionType => {
             score: 1,
             value: []
           },
-          alt_responses: []
+          alt_responses: [],
+          rounding: "none"
         },
         canvas: {
           x_max: 10,
@@ -1643,7 +1641,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFormula,
       stimulus: "",
       data: {
-        title: "Expression",
+        title: "Expression & Formula",
         is_math: true,
         stimulus: "",
         type: questionType.MATH,
@@ -1698,7 +1696,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFractions,
       stimulus: "",
       data: {
-        title: "Numeric",
+        title: "Numeric Entry",
         is_math: true,
         stimulus: "",
         template: EMBED_RESPONSE,
@@ -1753,7 +1751,7 @@ export const getCards = onSelectQuestionType => {
       cardImage: MTFillInBlanks,
       stimulus: "",
       data: {
-        title: "Fill in the blanks",
+        title: "Complete the Equation",
         is_math: true,
         stimulus: "",
         template: `${EMBED_RESPONSE} + ${EMBED_RESPONSE} = ${EMBED_RESPONSE}`,
@@ -2004,7 +2002,7 @@ export const getCards = onSelectQuestionType => {
         template:
           '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
         templateDisplay: true,
-        type: questionType.CLOZE_MATH,
+        type: questionType.EXPRESSION_MULTIPART,
         response_ids: {
           inputs: [],
           maths: [],

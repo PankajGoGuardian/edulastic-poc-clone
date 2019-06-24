@@ -10,12 +10,15 @@ export const SET_REPORTS = "[studentReport] fetch reports";
 export const UPDATE_TEST_ACTIVITY = "[studentReport] update reports";
 export const SET_CURRENT_REPORT = "[studentReport] set current testActivityId";
 export const SET_FILTER = "[studentReport] set filter";
+export const ADD_REPORT_REALTIME = "[studentAssignment] add report realtime";
 
 // actions
 export const setReportsAction = createAction(SET_REPORTS);
 export const updateTestActivityAction = createAction(UPDATE_TEST_ACTIVITY);
 export const setCurrentReportAction = createAction(SET_CURRENT_REPORT);
 export const setFilterAction = createAction(SET_FILTER);
+export const addRealtimeReportAction = createAction(ADD_REPORT_REALTIME);
+
 // initialState
 const initialState = {
   byId: {},
@@ -52,7 +55,11 @@ export default createReducer(initialState, {
   [SET_REPORTS]: setReports,
   [SET_CURRENT_REPORT]: setCurrentReport,
   [UPDATE_TEST_ACTIVITY]: updateReports,
-  [SET_FILTER]: setFilter
+  [SET_FILTER]: setFilter,
+  [ADD_REPORT_REALTIME]: (state, { payload: report }) => {
+    state.byId[report._id] = report;
+    state.allIds.push(report._id);
+  }
 });
 
 //selector

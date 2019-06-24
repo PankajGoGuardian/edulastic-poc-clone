@@ -119,7 +119,6 @@ export const FlexTitle = styled.div`
 `;
 
 export const FlexTextWrapper = styled.div`
-  display: flex;
   font-size: 14px;
   margin-bottom: 40px;
   color: ${darkGrey};

@@ -18,9 +18,9 @@ const CorrectAnswerBoxLayout = ({
 }) => {
   let results;
   if (altResponses) {
-    let alternateAnswers = {};
+    const alternateAnswers = {};
     altResponses.forEach(altAnswer => {
-      altAnswer["value"].forEach((alt, index) => {
+      altAnswer.value.forEach((alt, index) => {
         alternateAnswers[index + 1] = alternateAnswers[index + 1] || [];
         if (alt) {
           alternateAnswers[index + 1].push(alt);
@@ -95,7 +95,8 @@ CorrectAnswerBoxLayout.propTypes = {
   userAnswers: PropTypes.array,
   groupResponses: PropTypes.array,
   t: PropTypes.func.isRequired,
-  cleanValue: PropTypes.bool
+  cleanValue: PropTypes.bool,
+  altResponses: PropTypes.object
 };
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -103,7 +104,8 @@ CorrectAnswerBoxLayout.defaultProps = {
   groupResponses: [],
   fontSize: "13px",
   userAnswers: [],
-  cleanValue: false
+  cleanValue: false,
+  altResponses: null
 };
 
 export default React.memo(withNamespaces("assessment")(CorrectAnswerBoxLayout));

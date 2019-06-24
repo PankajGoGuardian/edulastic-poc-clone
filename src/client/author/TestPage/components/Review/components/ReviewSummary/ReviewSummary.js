@@ -23,12 +23,16 @@ const ReviewSummary = ({
   questionsCount,
   tableData,
   onChangeGrade,
+  owner,
+  summary,
+  onChangeField,
+  thumbnail,
   onChangeSubjects,
   grades,
   subjects
 }) => (
   <Container>
-    <Photo height={120} />
+    <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} height={120} />
 
     <MainTitle>Grade</MainTitle>
     <SummarySelect
@@ -36,6 +40,7 @@ const ReviewSummary = ({
       mode="multiple"
       size="large"
       style={{ width: "100%" }}
+      disabled={!owner}
       placeholder="Please select"
       defaultValue={grades}
       onChange={onChangeGrade}
@@ -52,6 +57,7 @@ const ReviewSummary = ({
       data-cy="subjectSelect"
       mode="multiple"
       size="large"
+      disabled={!owner}
       style={{ width: "100%" }}
       placeholder="Please select"
       defaultValue={subjects}
@@ -80,15 +86,16 @@ const ReviewSummary = ({
       <TableHeaderCol span={8}>Q's</TableHeaderCol>
       <TableHeaderCol span={8}>Points</TableHeaderCol>
     </Row>
-    {tableData.map(data => (
-      <TableBodyRow key={data.key}>
-        <TableBodyCol span={8}>
-          <Standard>{data.standard}</Standard>
-        </TableBodyCol>
-        <TableBodyCol span={8}>{data.qs}</TableBodyCol>
-        <TableBodyCol span={8}>{data.points}</TableBodyCol>
-      </TableBodyRow>
-    ))}
+    {summary.standards &&
+      summary.standards.map(data => (
+        <TableBodyRow key={data.key}>
+          <TableBodyCol span={8}>
+            <Standard>{data.identifier}</Standard>
+          </TableBodyCol>
+          <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+          <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
+        </TableBodyRow>
+      ))}
   </Container>
 );
 
@@ -99,6 +106,10 @@ ReviewSummary.propTypes = {
   onChangeGrade: PropTypes.func.isRequired,
   onChangeSubjects: PropTypes.func.isRequired,
   grades: PropTypes.array.isRequired,
+  thumbnail: PropTypes.string,
+  summary: PropTypes.object,
+  owner: PropTypes.bool,
+  onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired
 };
 

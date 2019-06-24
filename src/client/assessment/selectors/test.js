@@ -79,3 +79,8 @@ export const currentItemAnswerChecksSelector = createSelector(
   answerChecksByIdSelector,
   (current, answerCheckCounts) => answerCheckCounts[current] || 0
 );
+
+export const curentPlayerDetailsSelector = createSelector(
+  stateSelector,
+  state => state.currentPlayingDetails
+);

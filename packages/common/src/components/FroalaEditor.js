@@ -6,14 +6,13 @@ import PropTypes from "prop-types";
 import styled from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
+import Editor from "react-froala-wysiwyg";
 import uuid from "uuid/v4";
 import { withMathFormula } from "../HOC/withMathFormula";
 import { aws } from "@edulastic/constants";
-import { IconTranslator } from "@edulastic/icons";
 import FroalaEditor from "froala-editor/js/froala_editor.pkgd.min";
 // froala.min.css is loaded at index as it required for preview as well.
 
-import Editor from "react-froala-wysiwyg";
 import { uploadToS3, reIndexResponses, canInsert } from "../helpers";
 import headings from "./FroalaPlugins/headings";
 
@@ -89,30 +88,32 @@ const numberPad = [
 ];
 
 const DEFAULT_TOOLBAR_BUTTONS = {
-  normal: {
+  STD: {
     moreText: {
       buttons: [
         "bold",
         "italic",
         "underline",
-        "backgroundColor",
-        "textColor",
         "fontFamily",
         "fontSize",
-        "strikeThrough",
-        "insertTable",
+        "paragraphFormat",
         "indent",
-        "outdent"
+        "outdent",
+        "insertTable",
+        "math",
+        "insertImage",
+        "undo",
+        "redo",
+        "align",
+        "backgroundColor",
+        "textColor",
+        "strikeThrough"
       ],
-      buttonsVisible: 6
-    },
-    moreParagraph: {
-      buttons: ["paragraphFormat", "align", "undo", "redo", "math", "insertImage"],
-      buttonsVisible: 6
+      buttonsVisible: 10
     }
   },
-  md: {
-    moreMisc: {
+  MD: {
+    moreText: {
       buttons: [
         "bold",
         "italic",
@@ -128,8 +129,8 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       buttonsVisible: 6
     }
   },
-  sm: {
-    moreMisc: {
+  SM: {
+    moreText: {
       buttons: [
         "bold",
         "italic",
@@ -145,8 +146,8 @@ const DEFAULT_TOOLBAR_BUTTONS = {
       buttonsVisible: 4
     }
   },
-  xs: {
-    moreMisc: {
+  XS: {
+    moreText: {
       buttons: ["bold", "math", "italic", "underline", "table", "indent", "align", "insertImage", "specialCharacters"],
       buttonsVisible: 2
     }
@@ -158,13 +159,20 @@ const NoneDiv = styled.div`
   opacity: 0;
 `;
 
-const BackgroundStyleWrapper = styled.div`
+const BackgroundStyleWrapper = styled.div.attrs({
+  className: "froala-wrapper"
+})`
   position: relative;
   width: 100%;
   display: block;
 
   .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
+  }
+
+  .fr-wrapper {
+    transition: padding-top 0.5s;
+    padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
 `;
 
@@ -200,7 +208,35 @@ const getFixedPostion = el => {
   };
 };
 
-const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOptions, ...restOptions }) => {
+const getToolbarButtons = (size, toolbarSize, additionalToolbarOptions) => {
+  const sizeMap = {
+    STD: { STD: "STD", MD: "MD", SM: "SM", XS: "XS" },
+    MD: { STD: "MD", MD: "MD", SM: "SM", XS: "XS" },
+    SM: { STD: "SM", MD: "SM", SM: "SM", XS: "XS" },
+    XS: { STD: "XS", MD: "XS", SM: "XS", XS: "XS" }
+  };
+  const cSize = sizeMap[toolbarSize][size];
+
+  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS[cSize]);
+  toolbarButtons.moreText.buttons = [...toolbarButtons.moreText.buttons];
+  toolbarButtons.moreMisc = {
+    buttons: additionalToolbarOptions,
+    buttonsVisible: 3
+  };
+
+  return toolbarButtons;
+};
+
+const CustomEditor = ({
+  value,
+  onChange,
+  toolbarId,
+  tag,
+  toolbarSize,
+  additionalToolbarOptions,
+  initOnClick,
+  ...restOptions
+}) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
 
@@ -210,32 +246,22 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
   const [currentMathEl, setCurrentMathEl] = useState(null);
   const [content, setContent] = useState("");
   const [prevValue, setPrevValue] = useState("");
+  const [toolbarExpanded, setToolbarExpanded] = useState(false);
 
   const [mathField, setMathField] = useState(null);
 
   const EditorRef = useRef(null);
 
-  const toolbarButtons = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.normal);
-  toolbarButtons.moreMisc = {
-    buttons: additionalToolbarOptions,
-    buttonsVisible: 3
-  };
-
-  const toolbarButtonsMD = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.md);
-  toolbarButtonsMD.moreMisc.buttons = [...toolbarButtonsMD.moreMisc.buttons, ...additionalToolbarOptions];
-
-  const toolbarButtonsSM = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.sm);
-  toolbarButtonsSM.moreMisc.buttons = [...toolbarButtonsSM.moreMisc.buttons, ...additionalToolbarOptions];
-
-  const toolbarButtonsXS = cloneDeep(DEFAULT_TOOLBAR_BUTTONS.xs);
-  toolbarButtonsXS.moreMisc.buttons = [...toolbarButtonsXS.moreMisc.buttons, ...additionalToolbarOptions];
-
+  const toolbarButtons = getToolbarButtons("STD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsMD = getToolbarButtons("MD", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsSM = getToolbarButtons("SM", toolbarSize, additionalToolbarOptions);
+  const toolbarButtonsXS = getToolbarButtons("XS", toolbarSize, additionalToolbarOptions);
   const config = Object.assign(
     {
       key: "Ig1A7vB5C2A1C1sGXh1WWTDSGXYOUKc1KINLe1OC1c1D-17D2E2F2C1E4G1A2B8E7E7==",
       imageInsertButtons: ["imageUpload"], // hide other image uplaod options
       imageDefaultDisplay: "inline",
-      initOnClick: true,
+      initOnClick,
       toolbarButtons,
       toolbarButtonsMD,
       toolbarButtonsSM,
@@ -404,8 +430,10 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
           if (restOptions.readOnly === true) {
             this.edit.off();
             this.$el.find(".input__math").css("pointer-events", "none");
+            this.$el.find("img").css("pointer-events", "none");
           }
         },
+
         "toolbar.hide": function() {
           if (this.hasFocus) {
             return false;
@@ -417,15 +445,24 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
           this.hasFocus = false;
         },
         focus: function() {
-          this.hasFocus = true;
-          this.toolbar.show();
+          if (initOnClick) {
+            this.hasFocus = true;
+            this.toolbar.show();
+          }
         },
         blur: function() {
-          this.hasFocus = false;
-          this.toolbar.hide();
+          if (initOnClick) {
+            this.hasFocus = false;
+            this.toolbar.hide();
+          }
         },
         "commands.after": function(cmd) {
-          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput") {
+          if (cmd === "moreText") {
+            this.toolbarExpanded = !this.toolbarExpanded;
+            setToolbarExpanded(this.toolbarExpanded);
+            return;
+          }
+          if (cmd === "textinput" || cmd === "textdropdown" || cmd === "mathinput" || cmd === "response") {
             this.selection.save();
             const updatedHtml = reIndexResponses(this.html.get(true));
             if (updatedHtml) {
@@ -524,8 +561,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        const responseCount = this.$el[0].querySelectorAll("response").length;
-        this.html.insert(`<Response index="${responseCount}" contentEditable="false">Response</Response>`);
+        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -652,7 +688,7 @@ const CustomEditor = ({ value, onChange, toolbarId, tag, additionalToolbarOption
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor}>
+      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         <Editor
           tag={tag}
@@ -674,13 +710,17 @@ CustomEditor.propTypes = {
   value: PropTypes.string.isRequired,
   toolbarId: PropTypes.string,
   onChange: PropTypes.func.isRequired,
+  toolbarSize: PropTypes.oneOf(["STD", "MD", "SM", "XS"]),
   additionalToolbarOptions: PropTypes.array,
-  readOnly: PropTypes.bool
+  readOnly: PropTypes.bool,
+  initOnClick: PropTypes.bool
 };
 
 CustomEditor.defaultProps = {
   tag: "textarea",
   toolbarId: null,
+  initOnClick: true,
+  toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false
 };

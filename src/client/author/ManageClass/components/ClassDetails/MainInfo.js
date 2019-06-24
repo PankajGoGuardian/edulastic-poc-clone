@@ -10,9 +10,27 @@ const { allGrades, allSubjects } = selectsData;
 
 const MainInfo = ({ entity = {} }) => {
   // eslint-disable-next-line max-len
-  const { thumbnail, tags, grade, subject, standardSets = [], course = {}, startDate, endDate } = entity;
+  const {
+    thumbnail,
+    tags,
+    grade,
+    subject,
+    standardSets = [],
+    course = {},
+    startDate,
+    endDate,
+    owners,
+    primaryTeacherId
+  } = entity;
   const _grade = find(allGrades, item => item.value === grade) || { text: grade };
   const _subject = find(allSubjects, item => item.value === subject) || { text: subject };
+  const coTeachers = owners
+    .map(owner => {
+      if (owner.id !== primaryTeacherId) {
+        return owner.name;
+      }
+    })
+    .join(",");
 
   return (
     <MainContainer>
@@ -41,6 +59,10 @@ const MainInfo = ({ entity = {} }) => {
         <FieldValue>
           <div>Course :</div>
           <span>{course.name}</span>
+        </FieldValue>
+        <FieldValue>
+          <div>Co-Teachers :</div>
+          <span>{coTeachers}</span>
         </FieldValue>
       </MidWrapper>
       <RightWrapper>

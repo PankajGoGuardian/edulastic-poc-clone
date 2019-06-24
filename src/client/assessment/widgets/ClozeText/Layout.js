@@ -6,6 +6,7 @@ import { isEqual } from "lodash";
 
 import { Select, TextField } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 
 import { Checkbox } from "antd";
 
@@ -21,7 +22,6 @@ import { Container } from "./components/Options/styled/Container";
 import { Delete } from "./components/Options/styled/Delete";
 import SpecialCharacters from "../../containers/WidgetOptions/components/SpecialCharacters";
 
-import { response } from "@edulastic/constants";
 class Layout extends Component {
   static propTypes = {
     onChange: PropTypes.func.isRequired,

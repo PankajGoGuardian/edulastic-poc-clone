@@ -140,7 +140,8 @@ class Container extends React.Component {
           dimension: "100%",
           widgets: assessmentQuestions.map(createWidget)
         }
-      ]
+      ],
+      itemLevelScoring: false
     };
 
     const newAssessment = {

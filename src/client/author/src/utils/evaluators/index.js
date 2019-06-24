@@ -33,6 +33,7 @@ const evaluators = {
   [questionType.CLOZE_IMAGE_TEXT]: clozeImageText,
   [questionType.MATH]: math,
   [questionType.CLOZE_MATH]: clozeMath,
+  [questionType.EXPRESSION_MULTIPART]: clozeMath,
   [questionType.CLOZE_DRAG_DROP]: clozeDragDrop,
   [questionType.HIGHLIGHT_IMAGE]: essayRichText,
   [questionType.SHORT_TEXT]: shortText,

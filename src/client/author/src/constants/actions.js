@@ -148,6 +148,10 @@ export const OPEN_ASSIGNMENT = "[gradebook] open assignment";
 export const CLOSE_ASSIGNMENT = "[gradebook] close assignment";
 export const UPDATE_OPEN_ASSIGNMENTS = "[gradebook] update open assignments";
 export const UPDATE_CLOSE_ASSIGNMENTS = "[gradebook] update close assignments";
+export const SAVE_OVERALL_FEEDBACK = "[gradebook] save overall feedback";
+export const UPDATE_OVERALL_FEEDBACK = "[gradebook] update overalll feedback";
+export const MARK_AS_ABSENT = "[gradebook] mark student/students as absent";
+export const UPDATE_STUDENT_ACTIVITY = "[gradebook] update student activity as absent";
 
 export const RECEIVE_TESTACTIVITY_REQUEST = "[testActivity] receive list request";
 export const RECEIVE_TESTACTIVITY_SUCCESS = "[testActivity] receive list success";
@@ -165,6 +169,7 @@ export const RECEIVE_ASSIGNMENTS_SUMMARY_ERROR = "[assignmentsSummary] receive l
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_REQUEST = "[assignment’s class list] receive list request";
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_SUCCESS = "[assignment’s class list] receive list success";
 export const RECEIVE_ASSIGNMENT_CLASS_LIST_ERROR = "[assignment’s class list] receive list error";
+export const SET_ASSIGNMENT_FILTER = "[assignments] set assignment filter";
 
 export const FETCH_CURRENT_EDITING_ASSIGNMENT = "[assignments] fetch assignment data";
 export const UPDATE_CURRENT_EDITING_ASSIGNMENT = "[assignments] save current assignment";

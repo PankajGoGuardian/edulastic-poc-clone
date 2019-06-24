@@ -4,6 +4,8 @@ import { takeEvery, call, put, all } from "redux-saga/effects";
 import { userApi, groupApi } from "@edulastic/api";
 import { message } from "antd";
 
+import { receiveAdminDataAction } from "../SchoolAdmin/ducks";
+
 const RECEIVE_STUDENTLIST_REQUEST = "[student] receive list request";
 const RECEIVE_STUDENTLIST_SUCCESS = "[student] receive list success";
 const RECEIVE_STUDENTLIST_ERROR = "[student] receive list error";
@@ -322,6 +324,9 @@ function* addMultiStudentSaga({ payload }) {
   try {
     const addMultiStudents = yield call(userApi.addMultipleStudents, payload);
     yield put(addMultiStudentsSuccessAction(addMultiStudents));
+    // here, since we have a common duck for users tab for calling the api, we make that action,
+    // and fetch the fresh data
+    yield put(receiveAdminDataAction());
   } catch (err) {
     const errorMessage = "Adding Multi Students is failing";
     yield call(message.error, errorMessage);

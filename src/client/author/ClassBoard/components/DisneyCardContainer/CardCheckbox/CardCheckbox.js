@@ -3,7 +3,7 @@ import React from "react";
 import { StyledCheckbox } from "./styled";
 
 const CardCheckbox = ({ checked = false, onChange = undefined }) => {
-  return <StyledCheckbox checked={checked} onChange={onChange} />;
+  return <StyledCheckbox className="aabbcc" checked={checked} onChange={onChange} />;
 };
 
 export default CardCheckbox;

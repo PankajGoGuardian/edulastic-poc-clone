@@ -33,7 +33,7 @@ const DecimalSeparatorPure = ({ options, onChange, t }) => {
           }
         }}
       >
-        {t("component.math.decimalSeparator")}
+        {t("component.math.setDecimalSeparator")}
       </Checkbox>
       {allowDecimalSeparator && (
         <Select

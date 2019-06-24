@@ -12,10 +12,18 @@ function AddStudentsToOtherClass({
   loading
 }) {
   useEffect(() => {
-    const { groupInfo: { name, institutionName } = {} } = destinationClassData || {};
+    const { groupInfo: { name, institutionName, primaryTeacherId, owners = [] } = {} } = destinationClassData || {};
+    let teacherName = "";
+    if (primaryTeacherId) {
+      const teacherInfo = owners.filter(info => info.id === primaryTeacherId);
+      teacherName = teacherInfo.length > 0 ? teacherInfo[0].name : "";
+    } else if (owners.length > 0) {
+      teacherName = owners[0].name || "";
+    }
     setFieldsValue({
       name,
-      institutionName
+      institutionName,
+      teacherName
     });
   }, [destinationClassData]);
 
@@ -27,7 +35,7 @@ function AddStudentsToOtherClass({
     });
   };
   return successData ? (
-    <Modal onOk={onCloseModal}>
+    <Modal visible={showModal} title="Student enrollment status" width="800px" onOk={onCloseModal}>
       <Table
         rowKey={record => record.username}
         columns={[

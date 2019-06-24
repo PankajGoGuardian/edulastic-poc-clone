@@ -127,7 +127,7 @@ const ChartEdit = ({ item, setQuestionData, t, fillSections, cleanSections, adva
         }
         draft.validation.alt_responses.push({
           score: 1,
-          value: draft.validation.valid_response.value
+          value: draft.validation.valid_response.value.map(chartData => ({ ...chartData, y: yAxisMin }))
         });
       })
     );

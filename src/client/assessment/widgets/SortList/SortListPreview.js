@@ -30,7 +30,17 @@ const styles = {
   }),
   wrapperStyles: smallSize => ({ marginTop: smallSize ? 0 : 40 })
 };
-const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswer, showQuestionNumber, qIndex }) => {
+const SortListPreview = ({
+  previewTab,
+  t,
+  smallSize,
+  item,
+  userAnswer,
+  saveAnswer,
+  showQuestionNumber,
+  qIndex,
+  disableResponse
+}) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
   const getItemsFromUserAnswer = () =>
@@ -189,6 +199,7 @@ const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswe
                 flag="items"
                 onDrop={onDrop}
                 obj={draggableItem}
+                disableResponse={disableResponse}
               />
             </DropContainer>
           ))}
@@ -220,7 +231,8 @@ const SortListPreview = ({ previewTab, t, smallSize, item, userAnswer, saveAnswe
                 active={isEqual(active, selectedItem)}
                 onClick={setActiveItem}
                 onDrop={onDrop}
-                obj={selectedItem}
+                obj={disableResponse ? inCorrectList[valid_response[i]] : selectedItem}
+                disableResponse={disableResponse}
               />
             </DropContainer>
           ))}
@@ -247,7 +259,8 @@ SortListPreview.propTypes = {
   userAnswer: PropTypes.any.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 SortListPreview.defaultProps = {
@@ -255,7 +268,8 @@ SortListPreview.defaultProps = {
   smallSize: false,
   item: {},
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
 export default withNamespaces("assessment")(SortListPreview);

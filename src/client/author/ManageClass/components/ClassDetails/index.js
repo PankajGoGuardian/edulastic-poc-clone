@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
@@ -42,7 +42,10 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
-        <ActionContainer printPreview={printPreview} />
+
+        <ActionContainer printPreview={printPreview} loadStudents={loadStudents} />
+
+ 
         <StudentsList selectStudent />
       </Container>
     </>

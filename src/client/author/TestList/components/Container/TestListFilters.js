@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { blue, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
 import { getStandardsListSelector, getFormattedCurriculumsSelector } from "../../../src/selectors/dictionaries";
 import TestFiltersNav from "../../../src/components/common/TestFilters/TestFiltersNav";
 import filterData from "./FilterData";
-import { getCollectionsSelector } from "../../../Playlist/ducks";
+import { getCollectionsSelector } from "../../../src/selectors/user";
 import StandardsSearchModal from "../../../ItemList/components/Search/StandardsSearchModal";
+import { test as testsConstants } from "@edulastic/constants";
 
+const filtersTitle = ["Grades", "Subject", "Status", "Tags"];
 const TestListFilters = ({
   isPlaylist,
   onChange,
@@ -39,7 +41,7 @@ const TestListFilters = ({
           title: "Collections",
           placeholder: "Select Collection",
           size: "large",
-          data: collections.map(o => ({ value: o, text: o })),
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
           onChange: "collectionName"
         }
       ];
@@ -55,38 +57,49 @@ const TestListFilters = ({
       ? "Available with Curriculum"
       : 'Type to Search, for example "k.cc"';
 
-    filterData1 = filterData;
+    filterData1 = filterData.filter(o => filtersTitle.includes(o.title));
     if (filter === filterMenuItems[0].filter) {
       filterData1 = filterData1.filter(o => o.title !== "Status");
     }
     let curriculumsList = [];
     if (subject) curriculumsList = [...formattedCuriculums];
-    return [
-      ...filterData1,
-      {
-        size: "large",
-        title: "Standard set",
-        onChange: "curriculumId",
-        data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
-        optionFilterProp: "children",
-        filterOption: searchFilterOption,
-        showSearch: true
-      },
-      {
-        size: "large",
-        mode: "multiple",
-        placeholder: standardsPlaceholder,
-        title: "Standards",
-        filterOption: false,
-        disabled: !curriculumId.length || !formattedStandards.length,
-        onChange: "standardIds",
-        optionFilterProp: "children",
-        data: formattedStandards,
-        filterOption: searchFilterOption,
-        showSearch: true,
-        isStandardSelect: true
-      }
-    ];
+    filterData1.splice(
+      2,
+      0,
+      ...[
+        {
+          size: "large",
+          title: "Standard set",
+          onChange: "curriculumId",
+          data: [{ value: "", text: "All Standard set" }, ...curriculumsList],
+          optionFilterProp: "children",
+          filterOption: searchFilterOption,
+          showSearch: true
+        },
+        {
+          size: "large",
+          mode: "multiple",
+          placeholder: standardsPlaceholder,
+          title: "Standards",
+          filterOption: false,
+          disabled: !curriculumId.length || !formattedStandards.length,
+          onChange: "standardIds",
+          optionFilterProp: "children",
+          data: formattedStandards,
+          filterOption: searchFilterOption,
+          showSearch: true,
+          isStandardSelect: true
+        },
+        {
+          title: "Collections",
+          placeholder: "Select Collection",
+          size: "large",
+          data: [...testsConstants.collectionDefaultFilter, ...collections.map(o => ({ value: o._id, text: o.title }))],
+          onChange: "collectionName"
+        }
+      ]
+    );
+    return filterData1;
   };
   const handleApply = standardIds => {
     onChange("standardIds", standardIds);
@@ -249,13 +262,13 @@ export const FilterItemWrapper = styled.div`
 `;
 
 const ClearAll = styled.span`
-  color: ${blue};
+  color: #00ad50;
   font-size: 12px;
   font-weight: 600;
   cursor: pointer;
 
   :hover {
-    color: ${blue};
+    color: #00ad50;
   }
 `;
 

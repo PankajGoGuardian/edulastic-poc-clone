@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 import { isEmpty } from "lodash";
@@ -14,160 +14,194 @@ import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 
 import { getStylesFromUiStyleToCssStyle } from "../../utils/helpers";
 
-const MathFormulaPreview = ({
-  item,
-  studentTemplate,
-  type: previewType,
-  evaluation,
-  saveAnswer,
-  userAnswer,
-  theme,
-  showQuestionNumber,
-  qIndex
-}) => {
-  const studentRef = useRef();
-  const isStatic = studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1;
-
-  const [latex, setLatex] = useState(studentTemplate);
-  const [innerValues, setInnerValues] = useState([]);
-
-  const hasAltAnswers =
-    item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
-
-  const onUserResponse = latexv => {
-    if (isStatic) {
-      saveAnswer(latexv);
-      return;
-    }
-    setLatex(latexv);
-    saveAnswer(latexv);
+class MathFormulaPreview extends Component {
+  static propTypes = {
+    item: PropTypes.object.isRequired,
+    studentTemplate: PropTypes.string,
+    type: PropTypes.string.isRequired,
+    saveAnswer: PropTypes.func.isRequired,
+    changePreviewTab: PropTypes.func.isRequired,
+    evaluation: PropTypes.oneOfType([PropTypes.object, PropTypes.array]).isRequired,
+    userAnswer: PropTypes.any,
+    theme: PropTypes.object.isRequired,
+    showQuestionNumber: PropTypes.bool
   };
 
-  const onBlur = latexv => {
-    if (isStatic) {
-      saveAnswer(latexv);
-    }
+  static defaultProps = {
+    studentTemplate: "",
+    userAnswer: null,
+    showQuestionNumber: false
   };
 
-  const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  studentRef = React.createRef();
 
-  const updateStaticMathFromUserAnswer = () => {
+  state = {
+    latex: "",
+    innerValues: []
+  };
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      latex: this.getValidLatex(props),
+      innerValues: []
+    };
+  }
+
+  componentDidUpdate(prevProps) {
+    const { studentTemplate, type: previewType } = this.props;
+    const { studentTemplate: prevStudentTemplate, type: prevPreviewType } = prevProps;
+
+    if ((previewType !== prevPreviewType && previewType === CLEAR) || studentTemplate !== prevStudentTemplate) {
+      if (!this.isStatic()) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ latex: this.getValidLatex(this.props) });
+        return;
+      }
+      this.updateStaticMathFromUserAnswer();
+    }
+  }
+
+  isStatic() {
+    const { studentTemplate } = this.props;
+    return (
+      studentTemplate.search(/\\MathQuillMathField\{(.*)\}/g) !== -1 && studentTemplate !== "\\MathQuillMathField{}"
+    );
+  }
+
+  getValidLatex(props) {
+    const { studentTemplate, userAnswer } = props;
+    if (this.isStatic()) {
+      return studentTemplate;
+    }
+    if (userAnswer) {
+      if (typeof userAnswer === "string") return userAnswer;
+      return userAnswer[0];
+    }
+    return studentTemplate;
+  }
+
+  updateStaticMathFromUserAnswer() {
+    const { userAnswer, studentTemplate } = this.props;
     if (!userAnswer) {
-      setLatex(studentTemplate);
-      setInnerValues([]);
+      this.setState({
+        latex: studentTemplate,
+        innerValues: []
+      });
       return;
     }
 
-    if (!isStatic) return;
+    if (!this.isStatic()) return;
 
+    const escapeRegExp = string => string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const regexTemplate = new RegExp(
       escapeRegExp(studentTemplate).replace(/\\\\MathQuillMathField\\\{\\\}/g, "(.*)"),
       "g"
     );
+
     if (userAnswer && userAnswer.length > 0) {
       const userInnerValues = regexTemplate.exec(userAnswer);
       if (userInnerValues && userInnerValues.length > 0) {
-        setInnerValues(userInnerValues.slice(1));
+        this.setState({ innerValues: userInnerValues.slice(1) });
       }
     } else {
-      setInnerValues([]);
+      this.setState({ innerValues: [] });
     }
-  };
-
-  useEffect(() => {
-    if (previewType === CLEAR) {
-      if (!isStatic) {
-        setLatex(userAnswer || studentTemplate);
-        return;
-      }
-      updateStaticMathFromUserAnswer();
-    }
-  }, [studentTemplate, previewType, userAnswer]);
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (!isStatic) {
-        setLatex(userAnswer || studentTemplate);
-        return;
-      }
-      updateStaticMathFromUserAnswer();
-    }, 0);
-  }, [studentTemplate, userAnswer]);
-
-  let statusColor = theme.widgets.mathFormula.inputColor;
-  if (!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
-    statusColor = !isEmpty(evaluation)
-      ? evaluation.some(ie => ie)
-        ? theme.widgets.mathFormula.inputCorrectColor
-        : theme.widgets.mathFormula.inputIncorrectColor
-      : theme.widgets.mathFormula.inputIncorrectColor;
   }
 
-  const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
+  onUserResponse(latexv) {
+    const { type: previewType, saveAnswer } = this.props;
+    if (previewType === CHECK) return;
+    if (this.isStatic()) {
+      saveAnswer(latexv);
+      return;
+    }
+    this.setState({ latex: latexv });
+    saveAnswer(latexv);
+  }
 
-  return (
-    <div>
-      <QuestionTitleWrapper>
-        {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-        <MathFormulaDisplay
-          data-cy="preview-header"
-          style={{ marginBottom: 15 }}
-          dangerouslySetInnerHTML={{ __html: item.stimulus }}
-        />
-      </QuestionTitleWrapper>
+  onBlur(latexv) {
+    const { type: previewType, saveAnswer } = this.props;
+    if (this.isStatic() && previewType !== CHECK) {
+      saveAnswer(latexv);
+    }
+  }
 
-      <MathInputWrapper>
-        {isStatic && (
-          <StaticMath
-            symbols={item.symbols}
-            numberPad={item.numberPad}
-            ref={studentRef}
-            onInput={onUserResponse}
-            onBlur={onBlur}
-            style={{ background: statusColor, ...cssStyles }}
-            latex={studentTemplate}
-            innerValues={innerValues}
+  onInnerFieldClick() {
+    const { type: previewType, changePreviewTab } = this.props;
+
+    if (previewType === CHECK) {
+      changePreviewTab(CLEAR);
+    }
+  }
+
+  render() {
+    const { evaluation, item, type: previewType, showQuestionNumber, studentTemplate, theme } = this.props;
+    const { latex, innerValues } = this.state;
+
+    const hasAltAnswers =
+      item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
+    let statusColor = theme.widgets.mathFormula.inputColor;
+    if (!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
+      statusColor = !isEmpty(evaluation)
+        ? evaluation.some(ie => ie)
+          ? theme.widgets.mathFormula.inputCorrectColor
+          : theme.widgets.mathFormula.inputIncorrectColor
+        : theme.widgets.mathFormula.inputIncorrectColor;
+    }
+    return (
+      <div>
+        <QuestionTitleWrapper>
+          {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
+          <MathFormulaDisplay
+            data-cy="preview-header"
+            style={{ marginBottom: 15 }}
+            dangerouslySetInnerHTML={{ __html: item.stimulus }}
           />
-        )}
-        {!isStatic && (
-          <MathInput
-            symbols={item.symbols}
-            numberPad={item.numberPad}
-            value={latex}
-            onInput={onUserResponse}
-            onBlur={onBlur}
-            disabled={evaluation && !evaluation.some(ie => ie)}
-            style={{ background: statusColor, ...cssStyles }}
-          />
-        )}
-        {!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
-          <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
-        )}
-      </MathInputWrapper>
+        </QuestionTitleWrapper>
 
-      {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
-        <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
-      )}
-      {hasAltAnswers && previewType === SHOW && (
-        <CorrectAnswerBox altAnswers>
-          {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
-        </CorrectAnswerBox>
-      )}
-    </div>
-  );
-};
-MathFormulaPreview.propTypes = {
-  item: PropTypes.object.isRequired,
-  studentTemplate: PropTypes.string,
-  type: PropTypes.string.isRequired,
-  saveAnswer: PropTypes.func.isRequired,
-  evaluation: PropTypes.object.isRequired,
-  userAnswer: PropTypes.any,
-  theme: PropTypes.object.isRequired
-};
-MathFormulaPreview.defaultProps = {
-  studentTemplate: "",
-  userAnswer: null
-};
+        <MathInputWrapper>
+          {this.isStatic() && (
+            <StaticMath
+              symbols={item.symbols}
+              numberPad={item.numberPad}
+              ref={this.studentRef}
+              onInput={latexv => this.onUserResponse(latexv)}
+              onBlur={latexv => this.onBlur(latexv)}
+              style={{ background: statusColor, ...cssStyles }}
+              latex={studentTemplate}
+              innerValues={innerValues}
+              onInnerFieldClick={() => this.onInnerFieldClick()}
+            />
+          )}
+          {!this.isStatic() && (
+            <MathInput
+              symbols={item.symbols}
+              numberPad={item.numberPad}
+              value={latex && !Array.isArray(latex) ? latex.replace("\\MathQuillMathField{}", "") : ""}
+              onInput={latexv => this.onUserResponse(latexv)}
+              onBlur={latexv => this.onBlur(latexv)}
+              disabled={evaluation && !evaluation.some(ie => ie)}
+              style={{ background: statusColor, ...cssStyles }}
+            />
+          )}
+          {!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+            <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
+          )}
+        </MathInputWrapper>
+
+        {previewType === SHOW && item.validation.valid_response.value[0].value !== undefined && (
+          <CorrectAnswerBox>{item.validation.valid_response.value[0].value}</CorrectAnswerBox>
+        )}
+        {hasAltAnswers && previewType === SHOW && (
+          <CorrectAnswerBox altAnswers>
+            {item.validation.alt_responses.map(ans => ans.value[0].value).join(", ")}
+          </CorrectAnswerBox>
+        )}
+      </div>
+    );
+  }
+}
 
 export default withTheme(MathFormulaPreview);

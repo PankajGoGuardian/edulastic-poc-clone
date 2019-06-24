@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Rate } from "antd/lib/index";
-import { blue, darkBlue, darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
+import { darkGrey, fadedGrey, lightGrey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const Container = styled(Card)`
@@ -115,7 +115,7 @@ export const CardId = styled.span`
 `;
 export const ViewButton = styled.div`
   font-size: 12px;
-  color: ${blue};
+  color: #00ad50;
   background: white;
   padding: 8px;
   margin: 10px 0px 15px;
@@ -173,11 +173,11 @@ export const StyledLink = styled.a`
   white-space: nowrap;
   overflow: hidden;
   text-decoration: none;
-  color: ${blue};
+  color: #00ad50;
   cursor: pointer;
 
   :hover {
-    color: ${darkBlue};
+    color: #00ad50;
   }
 `;
 

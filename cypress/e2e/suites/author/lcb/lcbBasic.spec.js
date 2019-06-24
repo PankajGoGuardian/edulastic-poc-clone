@@ -76,7 +76,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
         email: "auto.lcb.student06@yopmail.com",
         stuName: "Student06 6th",
         status: "NOT STARTED",
-        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "right", Q7: "right" }
+        attempt: { Q1: "skip", Q2: "skip", Q3: "skip", Q4: "skip", Q5: "skip", Q6: "skip", Q7: "skip" }
       }
     ]
   };
@@ -138,7 +138,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     cy.login("teacher", teacher);
     testLibrary.createTest("LCB_1").then(() => {
       testLibrary.header.clickOnAssign();
-      // cy.visit("/author/assignments/5cff5b54c949875787025732");
+      // cy.visit("/author/assignments/5d03b20e1a45d47f9752fe02");
       // cy.wait(10000);
       testLibrary.assignPage.selectClass(className);
       testLibrary.assignPage.clickOnAssign();
@@ -152,22 +152,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       statsMap[stuName] = lcb.getScoreAndPerformance(attempt, questionTypeMap);
       statsMap[stuName].attempt = attempt;
       statsMap[stuName].status = status;
-
-      if (status !== "NOT STARTED") {
-        cy.login("student", email);
-        assignmentPage.clickOnAssignmentButton();
-        Object.keys(attempt).forEach(queNum => {
-          const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-          const { attemptData } = questionData[queType][questionKey];
-          test.attemptQuestion(queType, attempt[queNum], attemptData);
-          test.clickOnNext();
-        });
-
-        if (status !== "IN PROGRESS") {
-          test.submitTest();
-          cy.contains("Reports").should("be.visible");
-        }
-      }
+      test.attemptAssignment(email, status, attempt, questionTypeMap);
     });
   });
 
@@ -264,8 +249,8 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       submittedStudentList.forEach(studentName => {
         // ["Student01"].forEach(studentName => {
         it(` > verify for student :: ${studentName}`, () => {
-          const { attempt, score, perf } = statsMap[studentName];
-          expressg.verifyScoreGrid(studentName, attempt, score, perf, questionTypeMap);
+          const { attempt, score, perfValue } = statsMap[studentName];
+          expressg.verifyScoreGrid(studentName, attempt, score, perfValue, questionTypeMap);
         });
       });
     });
@@ -326,7 +311,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify redirect", () => {
+  describe.skip(" > verify redirect", () => {
     before("calculate redirected stats", () => {
       redirectedData.forEach(attempts => {
         const { attempt, stuName, status } = attempts;
@@ -393,24 +378,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
       before(" > attempt by redirected students", () => {
         redirectedData.forEach(attempts => {
           const { attempt, email, status } = attempts;
-          if (status !== "NOT STARTED") {
-            cy.login("student", email);
-            assignmentPage.clickOnAssignmentButton();
-            Object.keys(attempt).forEach(queNum => {
-              const [queType, questionKey] = questionTypeMap[queNum].queKey.split(".");
-              const { attemptData } = questionData[queType][questionKey];
-              // console.log("attemptData ::", attemptData);
-              // console.log("attemptData queType ::", queType);
-              // console.log("attemptData attempt[queNum]::", attempt[queNum]);
-              test.attemptQuestion(queType, attempt[queNum], attemptData);
-              test.clickOnNext();
-            });
-
-            if (status !== "IN PROGRESS") {
-              test.submitTest();
-              cy.contains("Reports").should("be.visible");
-            }
-          }
+          test.attemptAssignment(email, status, attempt, questionTypeMap);
         });
       });
 
@@ -458,7 +426,7 @@ describe(`${FileHelper.getSpecName(Cypress.spec.name)} >> Teacher Assignment LCB
     });
   });
 
-  describe(" > verify score update", () => {
+  describe.skip(" > verify score update", () => {
     before("question centric view", () => {
       lcb.clickonQuestionsTab();
     });

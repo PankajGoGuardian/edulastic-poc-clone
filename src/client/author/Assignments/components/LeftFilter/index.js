@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useLayoutEffect, useRef } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { Select, Input, Menu, Dropdown, Icon, message } from "antd";
+import { Select, Input, Menu, Dropdown, Icon, message, Modal } from "antd";
 import { get, pickBy, identity, orderBy, lowerCase, find } from "lodash";
 import {
   IconFolderNew,
@@ -41,9 +41,17 @@ import {
   StyledMenu,
   StyledIconPencilEdit
 } from "./styled";
+import { getUserRole } from "../../../src/selectors/user";
 
-const { allGrades, allSubjects, testTypes } = selectsData;
+const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData;
 
+const ExtendedInput = ({ value, onChange, visible }) => {
+  const renameInput = useRef();
+  useLayoutEffect(() => {
+    renameInput.current.select();
+  }, [visible]);
+  return <Input placeholder="Name this folder" value={value} onChange={onChange} ref={renameInput} />;
+};
 class LeftFilter extends React.Component {
   state = {
     visibleModal: {},
@@ -92,28 +100,47 @@ class LeftFilter extends React.Component {
     });
   };
 
-  removeFolder = id => {
-    const { deleteFolder } = this.props;
-    if (deleteFolder) {
-      deleteFolder({ folderId: id });
-    }
-  };
-
   moveFolder = () => {
     const {
       selectedRows,
       addMoveToFolderRequest,
       folderData: { _id: folderId },
+      folders,
       loadFolders,
       clearSelectedRow
     } = this.props;
     const { moveFolderId } = this.state;
 
+    const { folderName, content } = folders.find(folder => folder._id === moveFolderId) || {};
+
+    const itemsExistInFolder = [];
+    const itemsNotExistInFolder = [];
+
+    const currentFolderMap = content.reduce((p, v) => {
+      p[v._id] = true;
+      return p;
+    }, {});
+    selectedRows.forEach(item => {
+      if (currentFolderMap[item.testId]) {
+        itemsExistInFolder.push(item.name);
+      } else {
+        itemsNotExistInFolder.push(item.name);
+      }
+    });
+    if (itemsExistInFolder.length > 0) {
+      message.info(`${itemsExistInFolder.join(", ")} already exist in ${folderName} folder`);
+    }
+    if (itemsNotExistInFolder.length === 0) {
+      return;
+    }
+
     const params = selectedRows.map(row => {
       const param = {
         _id: row.testId,
         contentType: "TEST",
-        sourceFolderId: folderId
+        sourceFolderId: folderId,
+        assignmentsNameList: itemsNotExistInFolder,
+        folderName
       };
       return pickBy(param, identity);
     });
@@ -125,6 +152,27 @@ class LeftFilter extends React.Component {
       this.setState({ moveFolderId: "" });
     }
     this.hideModal("moveFolder");
+  };
+
+  showDeleteConfirm = id => {
+    const { folders, deleteFolder } = this.props;
+    const folderContent = folders.filter(folder => id === folder._id);
+    const delFolderName = folders.find(folder => id === folder._id).folderName;
+    if (folderContent[0] && folderContent[0].content && folderContent[0].content.length > 0) {
+      return message.info("Only empty folders can be deleted");
+    }
+    Modal.confirm({
+      title: `Are you sure you want to delete ${delFolderName} folder?`,
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        if (deleteFolder) {
+          deleteFolder({ folderId: id, delFolderName });
+        }
+      },
+      onCancel() {}
+    });
   };
 
   hideModal = name => {
@@ -190,7 +238,7 @@ class LeftFilter extends React.Component {
           <span>Rename</span>
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item key="2" onClick={() => this.removeFolder(id)}>
+        <Menu.Item key="2" onClick={() => this.showDeleteConfirm(id)}>
           <Icon type="close" /> <span>Delete</span>
         </Menu.Item>
       </StyledMenu>
@@ -232,10 +280,11 @@ class LeftFilter extends React.Component {
   };
 
   render() {
-    const { termsData, selectedRows, filterState, isAdvancedView } = this.props;
+    const { termsData, selectedRows, folders, filterState, isAdvancedView, userRole } = this.props;
     const { visibleModal, folderName, selectedFolder } = this.state;
     const { subject, grades, termId, testType } = filterState;
-
+    const roleBasedTestType = userRole === "teacher" ? testTypes : AdminTestTypes;
+    const oldFolderName = selectedFolder ? folders.find(folder => selectedFolder === folder._id).folderName : "";
     return (
       <FilterContainer>
         <FolderActionModal
@@ -257,7 +306,11 @@ class LeftFilter extends React.Component {
             </ModalFooterButton>
           ]}
         >
-          <Input placeholder="Name this folder" value={folderName} onChange={this.handleChangeNewFolderName} />
+          <ExtendedInput
+            value={folderName || oldFolderName}
+            onChange={this.handleChangeNewFolderName}
+            visible={visibleModal.newFolder}
+          />
         </FolderActionModal>
 
         <FolderActionModal
@@ -320,8 +373,8 @@ class LeftFilter extends React.Component {
             </Select>
             <StyledBoldText>Test Type</StyledBoldText>
             <Select mode="default" placeholder="All" value={testType} onChange={this.handleChange("testType")}>
-              {testTypes.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
+              {roleBasedTestType.map(({ value, text }, index) => (
+                <Select.Option key={index} value={value}>
                   {text}
                 </Select.Option>
               ))}
@@ -377,7 +430,8 @@ export default connect(
     districtId: getDistrictIdSelector(state),
     folders: getFoldersSelector(state),
     termsData: get(state, "user.user.orgData.terms", []),
-    folderData: getFolderSelector(state)
+    folderData: getFolderSelector(state),
+    userRole: getUserRole(state)
   }),
   {
     loadAssignments: receiveAssignmentsAction,

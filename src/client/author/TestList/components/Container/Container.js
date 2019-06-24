@@ -60,7 +60,11 @@ import {
   removeTestFromPlaylistAction
 } from "../../../PlaylistPage/ducks";
 import RemoveTestModal from "../../../PlaylistPage/components/RemoveTestModal/RemoveTestModal";
-import { getInterestedCurriculumsSelector } from "../../../src/selectors/user";
+import {
+  getInterestedCurriculumsSelector,
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector
+} from "../../../src/selectors/user";
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 export const filterMenuItems = [
@@ -77,6 +81,7 @@ export const getClearSearchState = () => ({
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
+  collectionName: "",
   curriculumId: "",
   status: "",
   grades: [],
@@ -142,7 +147,8 @@ class TestList extends Component {
       mode,
       defaultGrades,
       defaultSubject,
-      interestedCurriculums = [],
+      interestedGrades = [],
+      interestedSubjects = [],
       match: { params = {} },
       getCurriculumStandards,
       clearDictStandards
@@ -220,18 +226,11 @@ class TestList extends Component {
       } else {
         let grades = defaultGrades;
         let subject = defaultSubject;
-        let filteredInterestedCurriculum;
-        if (!grades.length && !subject) {
-          filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "teacher") || [];
-          if (!filteredInterestedCurriculum.length) {
-            filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "school") || [];
-            if (!filteredInterestedCurriculum.length) {
-              filteredInterestedCurriculum = interestedCurriculums.filter(ic => ic.orgType === "district") || [];
-            }
-          }
-          grades = filteredInterestedCurriculum.flatMap(o => o.grades || []);
-          grades = grades.length ? uniq(grades.join(",").split(",")) : [];
-          subject = filteredInterestedCurriculum.length > 0 ? filteredInterestedCurriculum[0].subject : "";
+        if (!grades) {
+          grades = interestedGrades;
+        }
+        if (subject === null) {
+          subject = interestedSubjects[0] || "";
         }
         this.setState({
           search: {
@@ -505,7 +504,7 @@ class TestList extends Component {
             <CardWrapper
               item={item}
               key={index}
-              owner={item.authors && item.authors.find(x => x._id === userId)}
+              owner={item.authors && item.authors.some(x => x._id === userId)}
               blockStyle="tile"
               windowWidth={windowWidth}
               history={history}
@@ -522,14 +521,14 @@ class TestList extends Component {
           tests.map((item, index) => (
             <CardWrapper
               key={index}
-              owner={item.authors && item.authors.find(x => x._id === userId)}
+              owner={item.authors && item.authors.some(x => x._id === userId)}
               item={item}
               windowWidth={windowWidth}
               history={history}
               match={match}
               mode={mode}
               removeTestFromPlaylist={this.handleRemoveTest}
-              isTestAdded={selectedTests.includes(item._id)}
+              isTestAdded={selectedTests ? selectedTests.includes(item._id) : false}
               addTestToPlaylist={this.handleAddTests}
             />
           ))}
@@ -705,7 +704,7 @@ class TestList extends Component {
                     size="large"
                     onClick={this.handleCreateNewModule}
                   >
-                    <IconPlusCircle color="#1774F0" width={15} height={15} />
+                    <IconPlusCircle color="#00AD50" width={15} height={15} />
                     <span>Add Module</span>
                   </StyledButton>
                 )}
@@ -743,6 +742,8 @@ const enhance = compose(
       defaultGrades: getDefaultGradesSelector(state),
       defaultSubject: getDefaultSubjectSelector(state),
       interestedCurriculums: getInterestedCurriculumsSelector(state),
+      interestedGrades: getInterestedGradesSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, "user.user._id", false),
       t: PropTypes.func.isRequired
     }),

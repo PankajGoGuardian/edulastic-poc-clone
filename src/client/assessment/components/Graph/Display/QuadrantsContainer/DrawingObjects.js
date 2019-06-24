@@ -1,8 +1,11 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
+import striptags from "striptags";
 
-import { secondaryTextColor, white } from "@edulastic/colors";
+import { secondaryTextColor, white, whiteSmoke } from "@edulastic/colors";
+
+import utils from "./utils";
 
 class DrawingObjects extends Component {
   onClick = drawingObject => {
@@ -11,6 +14,23 @@ class DrawingObjects extends Component {
       return;
     }
     selectDrawingObject(drawingObject);
+  };
+
+  getLabel = drawingObject => {
+    const type = utils.capitalizeFirstLetter(drawingObject.type);
+    const objLabel = striptags(drawingObject.label);
+    if (objLabel) {
+      return `${type} ${objLabel}`;
+    }
+
+    if (drawingObject.pointLabels) {
+      const pointLabels = drawingObject.pointLabels.map(item => striptags(item)).join("");
+      if (pointLabels) {
+        return `${type} ${pointLabels}`;
+      }
+    }
+
+    return type;
   };
 
   render() {
@@ -24,7 +44,7 @@ class DrawingObjects extends Component {
             onClick={() => this.onClick(drawingObject)}
             className={drawingObject.disabled ? "disabled" : drawingObject.selected ? "selected" : ""}
           >
-            {`drawing-object-${index}`}
+            {this.getLabel(drawingObject)}
           </Button>
         ))}
       </Container>
@@ -42,7 +62,7 @@ export default DrawingObjects;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  width: 100px;
+  width: 150px;
   padding: 5px;
 `;
 
@@ -54,12 +74,15 @@ const Button = styled.div`
   cursor: pointer;
   transition: background-color 0.1s ease-in;
 
+  &.selected,
   &:hover {
     background-color: ${white};
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
   }
 
-  &.selected {
-    background-color: ${white};
-    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.06);
+  &.disabled,
+  &.disabled:hover {
+    color: ${whiteSmoke};
+    box-shadow: none;
   }
 `;

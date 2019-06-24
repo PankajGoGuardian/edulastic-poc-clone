@@ -267,16 +267,18 @@ const AnsweredTypeButtonContainer = styled.div`
 const StyledButton = styled(Button)`
   height: 24px;
   float: left;
-  color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
-  border: 1px solid #00b0ff;
+  color: ${props => (props.enabled ? props.theme.filterButtonActiveColor : props.theme.filterButtonColor)};
+  background: ${props => (props.enabled ? props.theme.filterButtonBgActiveColor : props.theme.filterButtonBgColor)};
+  border: 1px solid ${props => props.theme.filterButtonBorderColor};
   border-radius: 4px;
   margin-right: 20px;
   min-width: 85px;
-  background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
   &:focus,
-  &:active {
-    color: ${props => (props.enabled ? "#fff" : "#00b0ff")};
-    background: ${props => (props.enabled ? "#00b0ff" : "transparent")};
+  &:active,
+  &:hover {
+    color: ${props => (props.enabled ? props.theme.filterButtonActiveColor : props.theme.filterButtonColor)};
+    background: ${props => (props.enabled ? props.theme.filterButtonBgActiveColor : props.theme.filterButtonBgColor)};
+    border-color: ${props => props.theme.filterButtonBorderActiveColor};
   }
   span {
     font-size: 10px;
@@ -345,11 +347,17 @@ const SubmitButton = styled(Button)`
   height: 40px;
   border-radius: 4px;
   background-color: ${props => props.theme.attemptReview.submitButtonBgColor};
+  border-color: ${props => props.theme.attemptReview.submitButtonBgColor};
   span {
     font-size: ${props => props.theme.attemptReview.submitButtonTextSize};
     color: ${props => props.theme.attemptReview.submitButtonTextColor};
     font-weight: 600;
     letter-spacing: 0.2px;
+  }
+  &:hover,
+  &:focus {
+    border-color: ${props => props.theme.attemptReview.submitButtonBgColor};
+    background-color: ${props => props.theme.attemptReview.submitButtonBgColor};
   }
   @media screen and (max-width: 768px) {
     margin: 20px 0px;

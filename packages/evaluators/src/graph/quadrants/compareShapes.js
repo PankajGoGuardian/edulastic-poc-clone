@@ -28,9 +28,11 @@ class CompareShapes {
     this.ignoreLabels = ignoreLabels;
   }
 
-  compare(testId, trueId) {
+  compare(testId, trueId, compareTestShapes = false) {
     const testShape = this.testAnswer.find(item => item.id === testId);
-    const trueShape = this.trueAnswerValue.find(item => item.id === trueId);
+    const trueShape = compareTestShapes
+      ? this.testAnswer.find(item => item.id === trueId)
+      : this.trueAnswerValue.find(item => item.id === trueId);
 
     if (!testShape || !trueShape || testShape.type !== trueShape.type) {
       return {

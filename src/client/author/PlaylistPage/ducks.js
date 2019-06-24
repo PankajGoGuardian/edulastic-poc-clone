@@ -29,26 +29,26 @@ export const RECEIVE_PLAYLIST_BY_ID_REQUEST = "[playlists] receive playlist by i
 export const RECEIVE_PLAYLIST_BY_ID_SUCCESS = "[playlists] receive playlist by id success";
 export const RECEIVE_PLAYLIST_BY_ID_ERROR = "[playlists] receive playlist by id error";
 
-export const SET_TEST_DATA = "[tests] set playlist data";
-export const SET_DEFAULT_TEST_DATA = "[tests] set default playlist data";
-export const SET_TEST_EDIT_ASSIGNED = "[tests] set edit assigned";
+export const SET_TEST_DATA = "[playlists] set playlist data";
+export const SET_DEFAULT_TEST_DATA = "[playlists] set default playlist data";
+export const SET_TEST_EDIT_ASSIGNED = "[playlists] set edit assigned";
 export const REGRADE_TEST = "[regrade] set regrade data";
-export const TEST_SHARE = "[test] send playlist share request";
-export const PLAYLIST_PUBLISH = "[playlist] publish playlist";
-export const UPDATE_TEST_STATUS = "[test] update playlist status";
-export const CLEAR_TEST_DATA = "[test] clear playlist data";
-export const TEST_CREATE_SUCCESS = "[test] create playlist succes";
-export const SET_REGRADE_OLD_TESTID = "[test] set regrade old test_id";
-export const UPDATE_ENTITY_DATA = "[test] update entity data";
-export const RECEIVE_SHARED_USERS_LIST = "[test] receive shared users list";
-export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
-export const DELETE_SHARED_USER = "[test] delete share user from list";
-export const ADD_MODULE = "[playlist] Add new module";
-export const ADD_TEST_IN_PLAYLIST = "[playlist] add test to module";
-export const SET_USER_CUSTOMIZE = "[playlist] set user customize";
-export const REMOVE_TEST_FROM_MODULE = "[playlist] remove test from module";
-export const REMOVE_TEST_FROM_PLAYLIST = "[playlist] remove test from playlist";
-export const MOVE_CONTENT = "[playlist] move content in playlist";
+export const TEST_SHARE = "[playlists] send playlist share request";
+export const PLAYLIST_PUBLISH = "[playlists] publish playlist";
+export const UPDATE_TEST_STATUS = "[playlists] update playlist status";
+export const CLEAR_TEST_DATA = "[playlists] clear playlist data";
+export const TEST_CREATE_SUCCESS = "[playlists] create playlist succes";
+export const SET_REGRADE_OLD_TESTID = "[playlists] set regrade old test_id";
+export const UPDATE_ENTITY_DATA = "[playlists] update entity data";
+export const RECEIVE_SHARED_USERS_LIST = "[playlists] receive shared users list";
+export const UPDATE_SHARED_USERS_LIST = "[playlists] update shared with users list";
+export const DELETE_SHARED_USER = "[playlists] delete share user from list";
+export const ADD_MODULE = "[playlists] Add new module";
+export const ADD_TEST_IN_PLAYLIST = "[playlists] add test to module";
+export const SET_USER_CUSTOMIZE = "[playlists] set user customize";
+export const REMOVE_TEST_FROM_MODULE = "[playlists] remove test from module";
+export const REMOVE_TEST_FROM_PLAYLIST = "[playlists] remove test from playlist";
+export const MOVE_CONTENT = "[playlists] move content in playlist";
 // actions
 
 export const receivePlaylistByIdAction = id => ({
@@ -509,7 +509,7 @@ function* receiveSharedWithListSaga({ payload }) {
 
 function* deleteSharedUserSaga({ payload }) {
   try {
-    const authors = yield call(testsApi.deleteSharedUser, payload);
+    const authors = yield call(contentSharingApi.deleteSharedUser, payload);
     yield put(receiveSharedWithListAction(payload.testId));
   } catch (e) {
     const errorMessage = "delete shared user is failing";

@@ -194,8 +194,8 @@ export default Tools;
 const ToolBox = styled(FlexContainer)`
   width: 50px;
   position: fixed;
-  top: 62px;
-  background: ${mainBlueColor};
+  top: 60px;
+  background: ${props => props.theme.default.sideToolbarBgColor};
   z-index: 100001;
   border-radius: 4px;
   padding: 10px 0;
@@ -238,12 +238,13 @@ const StyledButton = styled(Button)`
   margin-bottom: 5px;
   margin-top: 5px;
   box-shadow: none !important;
-  background: ${props => (props.enable ? darkBlueSecondary : "transparent")};
+  background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
   height: 40px;
   width: 40px;
   border: none !important;
   &:focus,
   &:hover {
-    background: ${props => (props.enable ? darkBlueSecondary : "transparent")};
+    background: ${props =>
+      props.enable ? props.theme.default.headerButtonActiveBgColor : props.theme.default.headerButtonBgColor};
   }
 `;

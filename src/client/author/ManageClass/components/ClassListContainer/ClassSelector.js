@@ -3,15 +3,27 @@ import { Menu, Dropdown } from "antd";
 
 import { ClassSelect, LabelMyClasses } from "./styled";
 
-const options = ["Active Classes"];
+const options = ["Active Classes", "Archive Classes"];
 
-const ClassSelector = () => {
+const ClassSelector = ({ groups, archiveGroups, setClassGroups }) => {
   const [selectedOption, setOption] = useState(options[0]);
+
+  const handleActiveClassClick = () => {
+    setOption(options[0]);
+    setClassGroups(groups);
+  };
+  const handleArchiveClassClick = () => {
+    setOption(options[1]);
+    setClassGroups(archiveGroups);
+  };
 
   const menu = (
     <Menu>
-      <Menu.Item key="1" onClick={() => setOption(options[0])}>
+      <Menu.Item key="1" onClick={handleActiveClassClick}>
         Active Classes
+      </Menu.Item>
+      <Menu.Item key="2" onClick={handleArchiveClassClick}>
+        Archive Classes
       </Menu.Item>
     </Menu>
   );

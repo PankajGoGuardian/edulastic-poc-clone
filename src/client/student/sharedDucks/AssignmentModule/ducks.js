@@ -10,6 +10,8 @@ export const assignmentSchema = new schema.Entity("assignments", {}, { idAttribu
 // types
 export const SET_LOADING = "[studentAssignment] fetch assignments";
 export const SET_ASSIGNMENTS = "[studentAssignment] set assignments";
+export const ADD_ASSIGNMENT_REALTIME = "[studentAssignment] add assignment realtime";
+
 export const SET_ACTIVE_ASSIGNMENT = "[studentAssignments] set active assignment";
 export const SET_FILTER = "[studentAssignment] set filter";
 
@@ -21,6 +23,7 @@ export const setAssignmentsLoadingAction = createAction(SET_LOADING);
 export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
 export const setActiveAssignmentAction = createAction(SET_ACTIVE_ASSIGNMENT);
 export const setFilterAction = createAction(SET_FILTER);
+export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME);
 
 // initial State
 const initialState = {
@@ -54,6 +57,12 @@ const setFilter = (state, { payload }) => {
 export default createReducer(initialState, {
   [SET_LOADING]: setLoading,
   [SET_ASSIGNMENTS]: setAssignments,
+  [ADD_ASSIGNMENT_REALTIME]: (state, { payload: assignment }) => {
+    const { _id: assignmentId } = assignment;
+    state.byId[assignmentId] = assignment;
+    state.allIds.push(assignmentId);
+  },
+
   [SET_ACTIVE_ASSIGNMENT]: (state, { payload }) => {
     state.current = payload;
   },

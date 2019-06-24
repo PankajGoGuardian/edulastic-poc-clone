@@ -5,7 +5,14 @@ import { withTheme } from "styled-components";
 import { get } from "lodash";
 import stripTags from "striptags";
 
-import { Paper, Stimulus, FlexContainer, InstructorStimulus, FroalaEditor } from "@edulastic/common";
+import {
+  Paper,
+  Stimulus,
+  FlexContainer,
+  InstructorStimulus,
+  FroalaEditor,
+  MathFormulaDisplay
+} from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
 
 import { Toolbar } from "../../styled/Toolbar";
@@ -29,6 +36,7 @@ const getToolBarButtons = item =>
     });
 
 const EssayRichTextPreview = ({
+  col,
   view,
   saveAnswer,
   t,
@@ -40,6 +48,7 @@ const EssayRichTextPreview = ({
   qIndex,
   testItem,
   location,
+  disableResponse,
   previewTab
 }) => {
   const toolbarButtons = getToolBarButtons(item);
@@ -111,15 +120,12 @@ const EssayRichTextPreview = ({
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
       : {};
 
-  const isNotItemDetailPreview = qIndex === null && testItem && !location.pathname.includes("item-detail");
+  const isV1Multipart = get(col, "isV1Multipart", false);
 
-  const isTestReview = qIndex !== null && testItem;
-
-  const isReadOnly =
-    (previewTab === "show" || isTestReview || isNotItemDetailPreview) && !location.pathname.includes("student");
+  const isReadOnly = (previewTab === "show" || disableResponse) && !location.pathname.includes("student");
 
   return item.id ? (
-    <Paper padding={smallSize} boxShadow={smallSize ? "none" : ""}>
+    <Paper isV1Multipart={isV1Multipart} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
 
       <QuestionTitleWrapper>
@@ -138,7 +144,7 @@ const EssayRichTextPreview = ({
             />
           )}
         </div>
-        {!Array.isArray(userAnswer) && (
+        {!Array.isArray(userAnswer) && !isReadOnly && (
           <FroalaEditor
             backgroundColor={
               item.max_word < wordCount
@@ -157,8 +163,11 @@ const EssayRichTextPreview = ({
             toolbarButtons={toolbarButtons}
           />
         )}
+        {!Array.isArray(userAnswer) && isReadOnly && (
+          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: userAnswer }} />
+        )}
 
-        {item.show_word_count && (
+        {item.show_word_count && (userAnswer || !isReadOnly) && (
           <Toolbar borderRadiusOnlyBottom>
             <FlexContainer />
             <Item style={wordCountStyle}>{displayWordCount}</Item>
@@ -181,7 +190,8 @@ EssayRichTextPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   location: PropTypes.any.isRequired,
   testItem: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  col: PropTypes.object
 };
 
 EssayRichTextPreview.defaultProps = {

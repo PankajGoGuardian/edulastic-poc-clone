@@ -20,11 +20,13 @@ import {
   CHANGE_VIEW
 } from "../constants/actions";
 
+import { removeUserAnswerAction } from "../../../assessment/actions/answers";
+import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
+
 import { history } from "../../../configureStore";
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
 import { toggleCreateItemModalAction } from "../actions/testItem";
-import { CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 function* createTestItemSaga({ payload: { data, showModal } }) {
   try {
@@ -148,7 +150,7 @@ function* evaluateAnswers() {
         });
       }
       const questions = yield select(getQuestionsSelector);
-      let { evaluation, score, maxScore } = yield evaluateItem(
+      const { evaluation, score, maxScore } = yield evaluateItem(
         _answeredAndUnanswered,
         questions,
         itemLevelScoring,
@@ -199,6 +201,11 @@ function* setAnswerSaga() {
   try {
     const answers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", {}));
+
+    const { preview, view } = yield select(state => _get(state, "view", {}));
+    if (preview === CLEAR && view === PREVIEW) {
+      yield put(removeUserAnswerAction());
+    }
 
     if (!answers[id]) {
       yield put({

@@ -28,12 +28,16 @@ export const CartButtonWrapper = styled(Button)`
   text-transform: uppercase;
   background: url(${iconCart}) -20% center no-repeat, ${white};
   background-size: 60% 50%;
+  color: #00ad50;
+  border-color: #00ad50;
 
   &:hover,
   &:focus,
   &:active {
     background: url(${iconCart}) -20% center no-repeat, ${white};
     background-size: 60% 50%;
+    color: #00ad50;
+    border-color: #00ad50;
   }
 
   @media (max-width: ${desktopWidth}) {
@@ -60,7 +64,7 @@ export const ItemsAmount = styled.span`
   height: 21px;
   text-align: center;
   border-radius: 10px;
-  background: ${green};
+  background: #42d184;
   color: ${white};
   font-size: 14px;
   line-height: 22px;

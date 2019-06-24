@@ -25,7 +25,7 @@ const countPartialMatchScores = compareFunction => ({ answers, userResponse = []
     let matches = getMatches(existingResponse, answer, compareFunction);
 
     if (restOptions.ignoreCase || restOptions.allowSingleLetterMistake) {
-      matches = getClozeTextMatches(existingResponse, answer, restOptions) === answer.length;
+      matches = getClozeTextMatches(existingResponse, answer, restOptions);
     }
 
     const currentScore = matches * scorePerAnswer;

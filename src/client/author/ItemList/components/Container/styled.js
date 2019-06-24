@@ -98,12 +98,17 @@ export const Element = styled.div`
       border-radius: 4px;
       box-shadow: 0 2px 7px 0 rgba(201, 208, 219, 0.5);
       border: 0;
+      &:hover {
+        a {
+          color: #00ad50;
+        }
+      }
 
       &-active {
         font-size: 13px;
         font-weight: 600;
         opacity: 1;
-        background: ${newBlue};
+        background: #00ad50;
       }
     }
   }

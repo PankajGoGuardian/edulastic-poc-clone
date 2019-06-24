@@ -88,7 +88,7 @@ class AdvancedTable extends Component {
         title: "ASSESSMENT NAME",
         dataIndex: "title",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.title.localeCompare(b.title, "fr", { ignorePunctuation: true }),
         width: "22%",
         className: "assignment-name",
         render: (text, row) => (
@@ -106,7 +106,7 @@ class AdvancedTable extends Component {
         title: "Type",
         dataIndex: "testType",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.testType.localeCompare(b.testType),
         width: "11%",
         render: (text = test.type.ASSESSMENT) => <TitleCase>{text}</TitleCase>
       },
@@ -114,7 +114,7 @@ class AdvancedTable extends Component {
         title: "Classes",
         dataIndex: "total",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.total - b.total,
         width: "11%",
         render: text => <div>{text}</div>
       },
@@ -122,7 +122,7 @@ class AdvancedTable extends Component {
         title: "Not started",
         dataIndex: "notStarted",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.notStarted - b.notStarted,
         width: "15%",
         render: text => <div> {text} </div>
       },
@@ -130,7 +130,7 @@ class AdvancedTable extends Component {
         title: "In progress",
         dataIndex: "inProgress",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.inProgress - b.inProgress,
         width: "12%",
         render: text => <div>{text} </div>
       },
@@ -138,7 +138,7 @@ class AdvancedTable extends Component {
         title: "Submitted",
         dataIndex: "inGrading",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.inGrading - b.inGrading,
         width: "16%",
         render: text => <div> {text} </div>
       },
@@ -146,7 +146,7 @@ class AdvancedTable extends Component {
         title: "Graded",
         dataIndex: "graded",
         sortDirections: ["descend", "ascend"],
-        sorter: true,
+        sorter: (a, b) => a.graded - b.graded,
         width: "14%",
         render: text => <div> {text} </div>
       },

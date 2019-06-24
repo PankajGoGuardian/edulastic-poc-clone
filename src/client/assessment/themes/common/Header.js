@@ -12,7 +12,7 @@ const Header = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  background: ${darkBlueSecondary};
+  background: ${props => props.theme.default.headerBgColor};
   z-index: 9;
 
   @media (max-width: 768px) {

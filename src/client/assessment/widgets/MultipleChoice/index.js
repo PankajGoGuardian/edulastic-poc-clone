@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-import { cloneDeep, shuffle } from "lodash";
+import { get, cloneDeep, shuffle } from "lodash";
 import styled from "styled-components";
 import { Checkbox } from "antd";
 import produce from "immer";
@@ -28,8 +28,8 @@ const EmptyWrapper = styled.div``;
 const MutlChoiceWrapper = styled(Paper)`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
   background: ${({ flowLayout }) => (flowLayout ? "transparent" : white)};
-  padding: ${({ flowLayout }) => (flowLayout ? "0px" : "35px 43px")};
-  box-shadow: ${({ flowLayout }) => (flowLayout ? "unset" : `0 3px 10px 0 ${boxShadowDefault}`)};
+  padding: ${props => (props.padding ? props.padding : props.isV1Multipart ? "0px 35px" : "35px 43px")};
+  box-shadow: ${props => (props.boxShadow ? props.boxShadow : props.isV1Multipart ? "none" : boxShadowDefault)};
 `;
 
 const Divider = styled.div`
@@ -44,22 +44,24 @@ class MultipleChoice extends Component {
 
   componentWillReceiveProps(nextProps) {
     const { item } = this.props;
-
     if (!nextProps.item.shuffle_options) {
+      const shuffledOptions = replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable);
       this.setState({
-        shuffledOptions: replaceValues(cloneDeep(nextProps.item.options), nextProps.item.variable)
+        shuffledOptions
       });
     } else if (nextProps.item.shuffle_options !== item.shuffle_options && nextProps.item.shuffle_options) {
+      const shuffledOptions = replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable);
       this.setState({
-        shuffledOptions: replaceValues(cloneDeep(shuffle(nextProps.item.options)), nextProps.item.variable)
+        shuffledOptions
       });
     }
   }
 
   componentDidMount() {
     const { item } = this.props;
+    const shuffledOptions = replaceValues(cloneDeep(shuffle(item.options)), item.variable);
     this.setState({
-      shuffledOptions: replaceValues(cloneDeep(shuffle(item.options)), item.variable)
+      shuffledOptions
     });
   }
 
@@ -138,9 +140,11 @@ class MultipleChoice extends Component {
   };
 
   handleAddAnswer = qid => {
-    const { saveAnswer, userAnswer, item } = this.props;
+    const { saveAnswer, userAnswer, item, previewTab, changePreviewTab } = this.props;
     const newAnswer = cloneDeep(userAnswer);
-
+    if (previewTab !== CHECK) {
+      changePreviewTab(CHECK);
+    }
     if (item.multiple_responses) {
       if (newAnswer.includes(qid)) {
         const removeIndex = newAnswer.findIndex(el => el === qid);
@@ -181,6 +185,7 @@ class MultipleChoice extends Component {
 
   render() {
     const {
+      col,
       qIndex,
       view,
       previewTab,
@@ -195,6 +200,7 @@ class MultipleChoice extends Component {
       isSidebarCollapsed,
       advancedAreOpen,
       flowLayout,
+      disableResponse,
       ...restProps
     } = this.props;
     const { shuffledOptions, correctTab } = this.state;
@@ -206,6 +212,7 @@ class MultipleChoice extends Component {
       multipleResponses,
       shuffleOptions
     } = this.getRenderData();
+    const isV1Multipart = get(col, "isV1Multipart", false);
 
     const Wrapper = testItem ? EmptyWrapper : MutlChoiceWrapper;
     // const multi_response = this.props.item.multiple_responses;
@@ -262,7 +269,7 @@ class MultipleChoice extends Component {
             </ContentArea>
           )}
           {view === PREVIEW && (
-            <Wrapper flowLayout={flowLayout}>
+            <Wrapper isV1Multipart={isV1Multipart} flowLayout={flowLayout}>
               {previewTab === CHECK && (
                 <Display
                   checkAnswer
@@ -272,6 +279,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   options={shuffledOptions}
                   question={previewStimulus}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
@@ -291,6 +299,7 @@ class MultipleChoice extends Component {
                   options={shuffledOptions}
                   question={previewStimulus}
                   userSelections={userAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   handleMultiSelect={this.handleMultiSelect}
                   uiStyle={uiStyle}
                   evaluation={evaluation}
@@ -347,7 +356,8 @@ MultipleChoice.propTypes = {
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired,
-  flowLayout: PropTypes.bool
+  flowLayout: PropTypes.bool,
+  col: PropTypes.object
 };
 
 MultipleChoice.defaultProps = {

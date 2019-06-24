@@ -4,10 +4,10 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 
 import { blue, darkBlue } from "@edulastic/colors";
-import { navButtons } from "../TestPageHeader/TestPageHeader";
+import { navButtonsTest } from "../TestPageHeader/TestPageHeader";
 
 const getCurrentText = current => {
-  const currentItem = navButtons.find(btn => btn.value === current);
+  const currentItem = navButtonsTest.find(btn => btn.value === current);
   if (currentItem) {
     return currentItem.text;
   }

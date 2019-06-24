@@ -1,5 +1,5 @@
 //@ts-check
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useImperativeHandle, forwardRef } from "react";
 import { AutoComplete, Input, Icon, Menu } from "antd";
 import styled from "styled-components";
 import { some } from "lodash";
@@ -10,6 +10,8 @@ import { black } from "@edulastic/colors";
 
 const Option = AutoComplete.Option;
 const OptGroup = AutoComplete.OptGroup;
+
+const _wipeSelected = {};
 
 // IMPORTANT:
 // onChange props is passed by ant design to support Ant design Form items as it requires onChange Callback
@@ -36,7 +38,9 @@ const RemoteAutocompleteDropDown = ({
   minHeight = "30px",
   filterKeys = ["title"],
   setSelectedOnDataChange = false,
-  isLoading = false
+  isLoading = false,
+  _ref,
+  disabled = false
 }) => {
   const [dropDownData, setDropDownData] = useState(data);
   const [selected, setSelected] = useState(by);
@@ -45,6 +49,7 @@ const RemoteAutocompleteDropDown = ({
   const [addCreateNewOption, setAddCreateNewOption] = useState(false);
   const autoRef = useRef(null);
   const textChangeStatusRef = useRef(false);
+  const isFirstRender = useRef(true);
 
   const isItemPresent = (_data, isPresentItem) => {
     const isItemPresentFlag = _data.find(_item => _item.title === isPresentItem.title);
@@ -104,14 +109,27 @@ const RemoteAutocompleteDropDown = ({
     setDropDownData([...data]);
   }, [isLoading]);
 
+  useImperativeHandle(_ref, () => ({
+    wipeSelected: () => {
+      setText("");
+      setDropDownData([...data]);
+      onSelect("", { props: { title: "" } });
+    }
+  }));
+
   const buildDropDownData = datum => {
-    let regExp = new RegExp(`${text}`, "i");
-    const searchedDatum = datum.filter(item => {
-      return some(filterKeys, fKey => {
-        let test = item[fKey] || item.title;
-        return regExp.test(test);
+    let searchedDatum;
+    if (text && text.length >= 3) {
+      searchedDatum = datum.filter(item => {
+        return some(filterKeys, fKey => {
+          let test = item[fKey] || item.title;
+          test = (test + "").toLocaleLowerCase();
+          return test.includes((text + "").toLocaleLowerCase());
+        });
       });
-    });
+    } else {
+      searchedDatum = datum;
+    }
 
     let arr;
     if (addCreateNewOption && text && text.trim() && text.length >= 3 && !isLoading) {
@@ -165,6 +183,7 @@ const RemoteAutocompleteDropDown = ({
       }
     } else {
       if (data.length !== dropDownData.length) {
+        // If search text length is less than 3 and we are not displaying all the iteps then display all the items.
         setDropDownData(data);
       }
       if (createNew && !isItemPresent(data, { title: value }) && value) {
@@ -222,7 +241,7 @@ const RemoteAutocompleteDropDown = ({
   };
 
   const dataSource = buildDropDownData(dropDownData);
-
+  isFirstRender.current = false;
   return (
     <StyledDiv className={`${containerClassName} remote-autocomplete-dropdown`}>
       <AutoComplete
@@ -237,6 +256,7 @@ const RemoteAutocompleteDropDown = ({
         value={text}
         ref={autoRef}
         onDropdownVisibleChange={onDropdownVisibleChange}
+        disabled={disabled}
       >
         <Input
           suffix={

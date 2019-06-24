@@ -12,16 +12,17 @@ import { withNamespaces } from "@edulastic/localization";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { Container, ButtonLink } from "../../../../../src/components/common";
 import Sidebar from "../Sidebar/Sidebar";
-import SummaryHeader from "../SummaryHeader/SummaryHeader";
-import Description from "../Description/Description";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import { SecondHeader } from "./styled";
 import { getSummarySelector } from "../../ducks";
+import { getUser } from "../../../../../src/selectors/user";
 
 const Summary = ({
   setData,
+  currentUser,
   test,
   current,
+  owner,
   t,
   onShowSource,
   windowWidth,
@@ -77,9 +78,9 @@ const Summary = ({
           </Button>
         )}
       </SecondHeader>
-      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "1000px" : "100%" }}>
+      <Paper style={{ margin: "25px auto 0 auto", width: windowWidth > 993 ? "700px" : "100%" }}>
         <Row gutter={32}>
-          <Col span={windowWidth > 993 ? 12 : 24}>
+          <Col>
             <Sidebar
               title={test.title}
               description={test.description}
@@ -89,22 +90,17 @@ const Summary = ({
               onChangeField={handleChangeField}
               windowWidth={windowWidth}
               grades={grades}
+              owner={owner}
               isPlaylist={isPlaylist}
               subjects={subjects}
               onChangeGrade={onChangeGrade}
               onChangeSubjects={onChangeSubjects}
-            />
-          </Col>
-          <Col span={windowWidth > 993 ? 12 : 24}>
-            <Description
               textColor={textColor}
-              createdBy={test.createdBy}
+              createdBy={test.createdBy && test.createdBy._id ? test.createdBy : currentUser}
               thumbnail={test.thumbnail}
               backgroundColor={backgroundColor}
-              windowWidth={windowWidth}
               isPlaylist={isPlaylist}
               description={test.description}
-              onChangeField={handleChangeField}
               onChangeColor={onChangeColor}
               isTextColorPickerVisible={isTextColorPickerVisible}
               isBackgroundColorPickerVisible={isBackgroundColorPickerVisible}
@@ -117,11 +113,13 @@ const Summary = ({
 };
 
 Summary.defaultProps = {
+  owner: false,
   test: {}
 };
 Summary.propTypes = {
   setData: PropTypes.func.isRequired,
   test: PropTypes.object.isRequired,
+  owner: PropTypes.bool,
   t: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
   onShowSource: PropTypes.func.isRequired,
@@ -145,6 +143,7 @@ const enhance = compose(
   connect(
     state => ({
       summary: getSummarySelector(state),
+      currentUser: getUser(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state)
     }),
     null

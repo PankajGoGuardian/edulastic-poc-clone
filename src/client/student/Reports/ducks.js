@@ -15,6 +15,9 @@ import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/duc
 
 // constants
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
+
+export const getClassIds = createSelectorator(["user.user.orgData.classList"], cls => (cls || []).map(cl => cl._id));
+
 export const FILTERS = {
   ALL: "all",
   SUBMITTED: "submitted",

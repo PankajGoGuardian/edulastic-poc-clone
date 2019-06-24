@@ -2,11 +2,13 @@ import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { darkBlue, lightBlueSecondary } from "@edulastic/colors";
+import { withMathFormula } from "../HOC/withMathFormula";
+
+const MathSpan = withMathFormula(styled.span``);
 
 const MoveLink = ({ onClick, children }) => (
   <Link onClick={onClick}>
-    <span dangerouslySetInnerHTML={{ __html: children }} />
+    <MathSpan dangerouslySetInnerHTML={{ __html: children }} />
   </Link>
 );
 
@@ -26,11 +28,11 @@ const Link = styled.a`
   align-items: center;
   flex-wrap: nowrap;
   text-decoration: none;
-  color: ${lightBlueSecondary};
+  color: #00ad50;
   cursor: pointer;
 
   :hover {
-    color: ${darkBlue};
+    color: #00ad50;
   }
 
   p {

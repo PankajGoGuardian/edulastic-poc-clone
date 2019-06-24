@@ -34,7 +34,7 @@ const ThousandsSeparators = ({ separators, onChange, t }) => {
             }
           }}
         >
-          {t("component.math.allowThousandsSeparator")}
+          {t("component.math.setThousandsSeparator")}
         </Checkbox>
         {separators &&
           !!separators.length &&

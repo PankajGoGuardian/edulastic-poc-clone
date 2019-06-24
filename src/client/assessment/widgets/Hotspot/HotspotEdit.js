@@ -81,12 +81,12 @@ const HotspotEdit = ({ item, setQuestionData, t, theme, advancedAreOpen, fillSec
         }
         draft.validation.alt_responses.push({
           score: 1,
-          value: draft.validation.valid_response.value
+          value: []
         });
         updateVariables(draft);
       })
     );
-    setCorrectTab(correctTab + 1);
+    setCorrectTab(item.validation.alt_responses.length + 1);
   };
 
   const handlePointsChange = val => {

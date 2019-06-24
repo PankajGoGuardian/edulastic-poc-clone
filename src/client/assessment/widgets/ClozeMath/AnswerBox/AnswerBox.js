@@ -45,35 +45,41 @@ const AnswerBox = ({
   });
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
-  const altAnswers = altMathAnswers.map((alt, altIndex) => {
+  const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
+  const altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
     const _altAnswers = [];
 
-    alt.map(answer => {
-      const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
-      return _altAnswers.push({
-        index,
-        value: answer[0].value,
-        isMath: true
+    if (altMathAnswers[altIndex]) {
+      altMathAnswers[altIndex].map(answer => {
+        const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer[0].value,
+          isMath: true
+        });
       });
-    });
+    }
+    if (altDropDowns[altIndex]) {
+      altDropDowns[altIndex].map(answer => {
+        const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer.value,
+          isMath: false
+        });
+      });
+    }
 
-    altDropDowns[altIndex].map(answer => {
-      const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
-      return _altAnswers.push({
-        index,
-        value: answer.value,
-        isMath: false
+    if (altInputs[altIndex]) {
+      altInputs[altIndex].map(answer => {
+        const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
+        return _altAnswers.push({
+          index,
+          value: answer.value,
+          isMath: false
+        });
       });
-    });
-
-    altInputs[altIndex].map(answer => {
-      const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
-      return _altAnswers.push({
-        index,
-        value: answer.value,
-        isMath: false
-      });
-    });
+    }
 
     return _altAnswers.sort((a, b) => a.index - b.index);
   });

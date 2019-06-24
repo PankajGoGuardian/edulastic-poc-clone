@@ -31,7 +31,8 @@ const HighlightImagePreview = ({
   userAnswer,
   t,
   showQuestionNumber,
-  qIndex
+  qIndex,
+  disableResponse
 }) => {
   const canvas = useRef(null);
   const [ctx, setCtx] = useState(null);
@@ -44,8 +45,8 @@ const HighlightImagePreview = ({
 
   const [currentColor, setCurrentColor] = useState(line_color[0]);
 
-  const [width, setWidth] = useState(image ? image.width : "auto");
-  const [height, setHeight] = useState(image ? image.height : 470);
+  const [width, setWidth] = useState(image ? `${image.width}px` : "auto");
+  const [height, setHeight] = useState(image ? `${image.height}px` : 470);
   const [canvasHeight, setCanvasHeight] = useState(image ? image.height : canvasDimensions.maxHeight);
   const altText = image ? image.altText : "";
   const file = image ? image.source : "";
@@ -196,9 +197,9 @@ const HighlightImagePreview = ({
           </QuestionTitleWrapper>
           {renderImage()}
           <canvas
-            onMouseDown={onCanvasMouseDown}
-            onMouseUp={onCanvasMouseUp}
-            onMouseMove={onCanvasMouseMove}
+            onMouseDown={!disableResponse ? onCanvasMouseDown : () => {}}
+            onMouseUp={!disableResponse ? onCanvasMouseUp : () => {}}
+            onMouseMove={!disableResponse ? onCanvasMouseMove : () => {}}
             ref={canvas}
           />
         </CanvasContainer>
@@ -216,13 +217,15 @@ HighlightImagePreview.propTypes = {
   t: PropTypes.func.isRequired,
   userAnswer: PropTypes.any.isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 HighlightImagePreview.defaultProps = {
   showQuestionNumber: false,
   qIndex: null,
-  smallSize: false
+  smallSize: false,
+  disableResponse: false
 };
 
 export default withWindowSizes(withNamespaces("assessment")(HighlightImagePreview));

@@ -17,7 +17,8 @@ import {
   receiveAssignmentByIdAction,
   updateReleaseScoreSettingsAction,
   toggleReleaseScoreSettingsAction,
-  toggleAssignmentViewAction
+  toggleAssignmentViewAction,
+  setAssignmentFiltersAction
 } from "../../../src/actions/assignments";
 import { receiveFolderAction } from "../../../src/actions/folder";
 import TestPreviewModal from "./TestPreviewModal";
@@ -28,7 +29,8 @@ import {
   getCurrentAssignmentSelector,
   getToggleReleaseGradeStateSelector,
   getDistrictIdSelector,
-  getAssignmentViewSelector
+  getAssignmentViewSelector,
+  getAssignmentFilterSelector
 } from "../../../src/selectors/assignments";
 
 import FilterBar from "../FilterBar/FilterBar";
@@ -48,6 +50,7 @@ import {
   FilterButton,
   TableWrapper
 } from "./styled";
+import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
 
 const { releaseGradeLabels } = test;
 
@@ -75,17 +78,22 @@ class Assignments extends Component {
       districtId,
       loadFolders,
       assignmentsSummary,
+      defaultFilters,
       orgData
     } = this.props;
     const { terms, defaultTermId } = orgData;
     const { filterState } = this.state;
 
     let filters = {};
+
     if (defaultTermId) {
       const defaultTerm = find(terms, ({ _id }) => _id === defaultTermId) || {};
       filters = { termId: defaultTerm._id || "" };
     }
-
+    filters = {
+      ...filters,
+      ...defaultFilters
+    };
     loadAssignments({ filters });
 
     loadFolders();
@@ -102,6 +110,9 @@ class Assignments extends Component {
   }
 
   setFilterState = filterState => {
+    const { setAssignmentFilters } = this.props;
+    storeInLocalStorage("filterAssignments", JSON.stringify(filterState));
+    setAssignmentFilters(filterState);
     this.setState({ filterState });
   };
 
@@ -135,8 +146,7 @@ class Assignments extends Component {
 
   SwitchView = () => {
     const { toggleAssignmentView } = this.props;
-    const { defaultFilters } = this.state;
-    this.setState({ selectedRows: [], filterState: defaultFilters }, toggleAssignmentView);
+    this.setState({ selectedRows: [] }, toggleAssignmentView);
   };
 
   renderFilter = () => {
@@ -209,12 +219,8 @@ class Assignments extends Component {
                     </PerfectScrollbar>
                   )}
                   <TableWrapper>
-                    <FilterButton
-                      color={showFilter ? "primary" : "secondary"}
-                      variant="filter"
-                      onClick={this.toggleFilter}
-                    >
-                      <IconFilter color={showFilter ? white : blue} width={20} height={20} />
+                    <FilterButton showFilter={showFilter} variant="filter" onClick={this.toggleFilter}>
+                      <IconFilter color={showFilter ? white : "#00AD50"} width={20} height={20} />
                     </FilterButton>
                     <StyledCard>
                       {isAdvancedView ? (
@@ -302,6 +308,7 @@ const enhance = compose(
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),
+      defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, "user.user.orgData", {})
     }),
     {
@@ -311,6 +318,7 @@ const enhance = compose(
       loadAssignmentById: receiveAssignmentByIdAction,
       updateReleaseScoreSettings: updateReleaseScoreSettingsAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
+      setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction
     }
   )

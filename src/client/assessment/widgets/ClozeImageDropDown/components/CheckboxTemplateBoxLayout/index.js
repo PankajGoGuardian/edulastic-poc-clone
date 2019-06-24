@@ -11,6 +11,7 @@ import { TemplateCover } from "./styled/TemplateCover";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
 import { calculateRatio } from "../../../../utils/helpers";
+import { StyledPreviewImage } from "../../styled/StyledPreviewImage";
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
@@ -35,33 +36,27 @@ const CheckboxTemplateBoxLayout = ({
   minHeight,
   imageOptions
 }) => (
-  <StyledTemplateBox fontSize={fontSize} maxHeight={maxHeight} maxWidth={maxWidth} margin={"auto"}>
-    <TemplateCover
-      width={calculateRatio(imagescale, uiStyle.fontsize, imageWidth)}
-      maxHeight={maxHeight}
-      maxWidth={maxWidth}
-    >
-      <img
-        src={imageUrl}
-        style={{
-          height: `${imageOptions.height}px`,
-          maxWidth,
-          maxHeight,
-          width: `${imageOptions.width}px`,
-          top: imageOptions.y,
-          left: imageOptions.x,
-          userSelect: "none",
-          pointerEvents: "none"
-        }}
+  <StyledTemplateBox fontSize={fontSize}>
+    <TemplateCover width={maxWidth} maxHeight={maxHeight} maxWidth={maxWidth} height={maxHeight}>
+      <StyledPreviewImage
+        imageSrc={imageUrl || ""}
+        width={imageWidth}
+        height={imageHeight}
+        heighcanvasDimensionst={imageHeight}
         alt={imageAlterText}
+        style={{
+          position: "absolute",
+          top: imageOptions.y || 0,
+          left: imageOptions.x || 0
+        }}
       />
       {responseContainers.map((responseContainer, index) => {
         const dropTargetIndex = index;
         const btnStyle = {
-          width: `${parseInt(responseContainer.width)}px`,
+          width: `${parseInt(responseContainer.width, 10)}px`,
           top: responseContainer.top,
           left: responseContainer.left,
-          height: `${parseInt(responseContainer.height)}px`,
+          height: `${parseInt(responseContainer.height, 10)}px`,
           position: "absolute",
           borderRadius: 5
         };
@@ -95,8 +90,8 @@ const CheckboxTemplateBoxLayout = ({
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height)}px`,
-                  width: `${parseInt(responseContainer.width)}px`,
+                  height: `${parseInt(responseContainer.height, 10)}px`,
+                  width: `${parseInt(responseContainer.width, 10)}px`,
                   minWidth,
                   minHeight
                 }}
@@ -121,8 +116,8 @@ const CheckboxTemplateBoxLayout = ({
               <div
                 style={{
                   ...btnStyle,
-                  height: `${parseInt(responseContainer.height)}px`,
-                  width: `${parseInt(responseContainer.width)}px`,
+                  height: `${parseInt(responseContainer.height, 10)}px`,
+                  width: `${parseInt(responseContainer.width, 10)}px`,
                   minWidth,
                   minHeight
                 }}

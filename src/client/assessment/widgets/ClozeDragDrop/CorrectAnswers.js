@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -34,7 +35,8 @@ class CorrectAnswers extends Component {
     const { options } = this.props;
 
     if (!_.isEqual(options, prevProps.options)) {
-      const oldValue = this.props.validation.valid_response.value;
+      const { validation } = this.props;
+      const oldValue = validation.valid_response.value;
       const diff = _.difference(prevProps.options, options);
       if (oldValue.some(el => diff.includes(el))) {
         const index = prevProps.options.indexOf(diff[0]);
@@ -166,7 +168,8 @@ class CorrectAnswers extends Component {
       templateMarkUp,
       hasGroupResponses,
       configureOptions,
-      uiStyle
+      uiStyle,
+      responseIDs
     } = this.props;
     const { value } = this.state;
     return (
@@ -194,6 +197,7 @@ class CorrectAnswers extends Component {
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
                 onUpdatePoints={this.handleUpdateCorrectScore}
+                responseIDs={responseIDs}
               />
             </TabContainer>
           )}
@@ -214,6 +218,7 @@ class CorrectAnswers extends Component {
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
+                      responseIDs={responseIDs}
                     />
                   </TabContainer>
                 );
@@ -240,12 +245,14 @@ CorrectAnswers.propTypes = {
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
-  cleanSections: PropTypes.func
+  cleanSections: PropTypes.func,
+  responseIDs: PropTypes.array
 };
 
 CorrectAnswers.defaultProps = {
   stimulus: "",
   options: [],
+  responseIDs: [],
   validation: {},
   hasGroupResponses: false,
   templateMarkUp: "",

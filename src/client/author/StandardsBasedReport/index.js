@@ -13,7 +13,8 @@ import {
   getTestActivitySelector,
   getAdditionalDataSelector,
   getQIdsSelector,
-  getClassResponseSelector
+  getClassResponseSelector,
+  getQLabelsSelector
 } from "../ClassBoard/ducks";
 import { Anchor, AnchorLink, PaginationInfo, StyledFlexContainer, DivWrapper } from "./components/styled";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
@@ -74,7 +75,12 @@ class StandardsBasedReport extends Component {
           </StyledFlexContainer>
 
           <DivWrapper>
-            <TableDisplay testActivities={testActivity} additionalData={additionalData} qids={this.props.testQIds} />
+            <TableDisplay
+              testActivities={testActivity}
+              labels={this.props.labels}
+              additionalData={additionalData}
+              qids={this.props.testQIds}
+            />
           </DivWrapper>
         </React.Fragment>
       </FeaturesSwitch>
@@ -88,7 +94,8 @@ const enhance = compose(
       testActivity: getTestActivitySelector(state),
       additionalData: getAdditionalDataSelector(state),
       testQIds: getQIdsSelector(state),
-      classResponse: getClassResponseSelector(state)
+      classResponse: getClassResponseSelector(state),
+      labels: getQLabelsSelector(state)
     }),
     {
       loadTestActivity: receiveTestActivitydAction

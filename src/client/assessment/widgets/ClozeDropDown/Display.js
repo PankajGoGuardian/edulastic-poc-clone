@@ -1,13 +1,12 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { isUndefined, mapValues, cloneDeep } from "lodash";
+import { isUndefined, mapValues, cloneDeep, findIndex, find } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, helpers } from "@edulastic/common";
+import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
 
-import { QuestionHeader } from "../../styled/QuestionHeader";
-import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
+import CorrectAnswerBoxLayout from "./components/CorrectAnswerBoxLayout";
 import { getFontSize } from "../../utils/helpers";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -30,10 +29,20 @@ class ClozeDropDownDisplay extends Component {
     this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp) });
   }
 
-  selectChange = (value, index) => {
+  selectChange = (value, index, id) => {
     const { onChange: changeAnswers, userSelections: newAnswers } = this.props;
-    newAnswers[index] = value;
-    changeAnswers(newAnswers);
+    const changedIndex = findIndex(newAnswers, answer => (answer ? answer.id : "") === id);
+    if (changedIndex !== -1) {
+      newAnswers[changedIndex] = { value, index, id };
+      changeAnswers(newAnswers);
+    } else {
+      const {
+        item: { response_ids }
+      } = this.props;
+      const response = find(response_ids, res => res.id === id);
+      newAnswers[response.index] = { value, index, id };
+      changeAnswers(newAnswers);
+    }
   };
 
   shuffle = arr => {
@@ -108,6 +117,7 @@ class ClozeDropDownDisplay extends Component {
       evaluation,
       instructorStimulus,
       item,
+      disableResponse,
       showQuestionNumber,
       userSelections
     } = this.props;
@@ -133,12 +143,14 @@ class ClozeDropDownDisplay extends Component {
           fontSize={fontSize}
           groupResponses={options}
           userAnswers={item.validation.valid_response && item.validation.valid_response.value}
+          responseIds={item.response_ids}
         />
         {hasAltAnswers && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             groupResponses={options}
             altResponses={item.validation.alt_responses}
+            responseIds={item.response_ids}
           />
         )}
       </React.Fragment>
@@ -153,17 +165,23 @@ class ClozeDropDownDisplay extends Component {
             responseBtnStyle,
             stemNumeration: stemnumeration,
             fontSize,
+            disableResponse,
+            qIndex,
             showAnswer,
             userSelections:
               item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
-            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation
+            evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation,
+            item
           }
         : {
             userAnswers: userSelections || [],
             btnStyle,
             placeholder,
-            responses,
-            onChange: this.selectChange
+            disableResponse,
+            qIndex,
+            options: responses,
+            onChange: this.selectChange,
+            item
           };
 
     return (
@@ -171,7 +189,7 @@ class ClozeDropDownDisplay extends Component {
         <InstructorStimulus>{instructorStimulus}</InstructorStimulus>
         <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
-          <QuestionHeader qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
+          <Stimulus qIndex={qIndex} smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
         </QuestionTitleWrapper>
         <JsxParser
           bindings={{ resProps, lineHeight: `${maxLineHeight}px` }}
@@ -203,6 +221,7 @@ ClozeDropDownDisplay.propTypes = {
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string.isRequired,
   item: PropTypes.object.isRequired,
+  disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool
 };
@@ -216,6 +235,7 @@ ClozeDropDownDisplay.defaultProps = {
   checkAnswer: false,
   userSelections: [],
   templateMarkUp: "",
+  disableResponse: false,
   smallSize: false,
   configureOptions: {
     shuffleOptions: false
@@ -228,8 +248,8 @@ ClozeDropDownDisplay.defaultProps = {
     placeholder: null,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false,
-  qIndex: null
+  showQuestionNumber: false
+  // qIndex: null
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));

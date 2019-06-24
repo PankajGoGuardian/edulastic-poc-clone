@@ -23,6 +23,9 @@ const SelectContainer = styled.div`
     display: flex;
     align-items: center;
     padding-left: 10px;
+    &:hover {
+      border-color: ${props => props.theme.default.dropdownHoverBorderColor};
+    }
   }
   .ant-select-selection-selected-value {
     font-size: 13px;
@@ -32,7 +35,7 @@ const SelectContainer = styled.div`
   }
   .anticon-down {
     svg {
-      fill: #00b0ff;
+      fill: ${props => props.theme.default.dropdownCaretIconColor};
     }
   }
   @media (max-width: 768px) {

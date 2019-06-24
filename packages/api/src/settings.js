@@ -30,6 +30,14 @@ const createDistrictProfile = data =>
     })
     .then(result => result.data.result);
 
+const getOrgDetailsByShortNameAndOrgType = params =>
+  api
+    .callApi({
+      url: `/auth/setting/org-data/`,
+      params: params
+    })
+    .then(result => result.data.result);
+
 // term apis
 const getTerm = ({ orgId }) =>
   api
@@ -223,5 +231,6 @@ export default {
   updatePerformanceBand,
   getInterestedStandards,
   saveInterestedStandards,
-  updateInterestedStandards
+  updateInterestedStandards,
+  getOrgDetailsByShortNameAndOrgType
 };

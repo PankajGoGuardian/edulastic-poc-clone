@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -9,16 +9,25 @@ import Header from "./Header";
 import JoinSchool from "./JoinSchool";
 import SignupForm from "./SignupForm";
 import SubjectGradeForm from "./SubjectGrade";
+import teacherBg from "../../../assets/bg-teacher.png";
 
 import { logoutAction } from "../../../Login/ducks";
 
-const Container = ({ user, logout }) => {
+const Container = ({ user, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName, logout, match }) => {
   const { isAuthenticated, signupStatus } = user;
 
   if (!isAuthenticated) {
     return (
       <>
-        <SignupForm />
+        <SignupForm
+          image={
+            generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : teacherBg
+          }
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
       </>
     );
   }
@@ -27,8 +36,19 @@ const Container = ({ user, logout }) => {
   return (
     <>
       <Header userInfo={userInfo} logout={logout} />
-      {signupStatus === 1 && <JoinSchool userInfo={userInfo} />}
-      {signupStatus === 2 && <SubjectGradeForm userInfo={userInfo} />}
+      {signupStatus === 1 && (
+        <JoinSchool
+          userInfo={userInfo}
+          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+          isSignupUsingDaURL={isSignupUsingDaURL}
+          generalSettings={generalSettings}
+          districtPolicy={districtPolicy}
+          districtShortName={districtShortName}
+        />
+      )}
+      {signupStatus === 2 && (
+        <SubjectGradeForm userInfo={userInfo} districtId={isSignupUsingDaURL ? generalSettings.orgId : false} />
+      )}
     </>
   );
 };
@@ -46,7 +66,9 @@ Container.defaultProps = {
 const enhance = compose(
   withRouter,
   connect(
-    state => ({ user: state.user }),
+    state => ({
+      user: state.user
+    }),
     {
       logout: logoutAction
     }

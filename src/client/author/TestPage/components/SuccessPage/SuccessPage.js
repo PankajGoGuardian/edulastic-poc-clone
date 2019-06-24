@@ -103,7 +103,7 @@ class SuccessPage extends React.Component {
       },
       {
         title: `${title}`,
-        to: `/author/playlists/${_id}`
+        to: `/author/playlists/${_id}#review`
       },
       {
         title: `${isAssignSuccess ? "ASSIGN" : "PUBLISH"}`,
@@ -118,7 +118,7 @@ class SuccessPage extends React.Component {
       },
       {
         title: `${title}`,
-        to: `/author/tests/${_id}`
+        to: `/author/tests/${_id}#review`
       },
       {
         title: `${isAssignSuccess ? "ASSIGN" : "PUBLISH"}`,

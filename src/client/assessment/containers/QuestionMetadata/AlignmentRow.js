@@ -191,12 +191,22 @@ const AlignmentRow = ({
                 <Fragment>
                   <ItemBody data-cy="subjectItem">
                     <div className="select-label">{t("component.options.subject")}</div>
-                    <Select data-cy="subjectSelect" style={{ width: "100%" }} value={subject} onChange={setSubject}>
-                      {selectsData.allSubjects.map(({ text, value }) => (
-                        <Select.Option key={value} value={value}>
-                          {text}
-                        </Select.Option>
-                      ))}
+                    <Select
+                      getPopupContainer={trigger => trigger.parentNode}
+                      data-cy="subjectSelect"
+                      style={{ width: "100%" }}
+                      value={subject}
+                      onChange={setSubject}
+                    >
+                      {selectsData.allSubjects.map(({ text, value }) =>
+                        value ? (
+                          <Select.Option key={value} value={value}>
+                            {text}
+                          </Select.Option>
+                        ) : (
+                          ""
+                        )
+                      )}
                     </Select>
                   </ItemBody>
                   <ItemBody data-cy="standardItem">
@@ -208,6 +218,7 @@ const AlignmentRow = ({
                       filterOption
                       value={curriculum}
                       onChange={handleChangeStandard}
+                      getPopupContainer={trigger => trigger.parentNode}
                     >
                       {formattedCuriculums.map(({ value, text, disabled }) => (
                         <Select.Option key={value} value={text} disabled={disabled}>
@@ -225,6 +236,7 @@ const AlignmentRow = ({
                       style={{ width: "100%" }}
                       value={grades}
                       onChange={setGrades}
+                      getPopupContainer={trigger => trigger.parentNode}
                     >
                       {selectsData.allGrades.map(({ text, value }) => (
                         <Select.Option key={text} value={value}>
@@ -249,6 +261,7 @@ const AlignmentRow = ({
                   onSearch={handleSearchStandard}
                   onSelect={handleStandardSelect}
                   onDeselect={handleStandardDeselect}
+                  getPopupContainer={trigger => trigger.parentNode}
                 >
                   {!curriculumStandardsLoading &&
                     curriculumStandardsELO &&

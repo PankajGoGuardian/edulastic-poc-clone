@@ -1,9 +1,12 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { compose } from "redux";
 
 import { withNamespaces } from "@edulastic/localization";
 
 import { CorrectAnswerPointField } from "../../styled/CorrectAnswerPointField";
+import { getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
 
 import { CorrectAnswerHeader } from "./styled/CorrectAnswerHeader";
 import { Points } from "./styled/Points";
@@ -28,11 +31,13 @@ class CorrectAnswer extends Component {
     backgroundColor: PropTypes.string.isRequired,
     imageAlterText: PropTypes.string.isRequired,
     imageWidth: PropTypes.number.isRequired,
+    item: PropTypes.object.isRequired,
     imageHeight: PropTypes.number,
     imageOptions: PropTypes.object
   };
 
   static contextType = ItemLevelContext;
+
   static defaultProps = {
     imagescale: false,
     imageHeight: 0,
@@ -78,10 +83,9 @@ class CorrectAnswer extends Component {
       showDashedBorder,
       backgroundColor,
       maxRespCount,
-      maxHeight,
-      maxWidth,
       imageHeight,
-      imageOptions
+      imageOptions,
+      item
     } = this.props;
     const { responseScore } = this.state;
     return (
@@ -105,6 +109,7 @@ class CorrectAnswer extends Component {
           preview
           setAnswers
           dragHandler
+          item={item}
           options={options}
           uiStyle={uiStyle}
           imagescale={imagescale}
@@ -120,8 +125,6 @@ class CorrectAnswer extends Component {
           imageHeight={imageHeight}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}
-          maxHeight={maxHeight}
-          maxWidth={maxWidth}
           imageOptions={imageOptions}
         />
       </div>
@@ -129,4 +132,11 @@ class CorrectAnswer extends Component {
   }
 }
 
-export default withNamespaces("assessment")(CorrectAnswer);
+const enhance = compose(
+  withNamespaces("assessment"),
+  connect(state => ({
+    item: getQuestionDataSelector(state)
+  }))
+);
+
+export default enhance(CorrectAnswer);

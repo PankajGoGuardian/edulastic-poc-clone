@@ -7,7 +7,8 @@ import {
   UPDATE_ASSIGNMENT_STATUS,
   TOGGLE_PRESENTATION_MODE,
   UPDATE_OPEN_ASSIGNMENTS,
-  UPDATE_CLOSE_ASSIGNMENTS
+  UPDATE_CLOSE_ASSIGNMENTS,
+  UPDATE_STUDENT_ACTIVITY
 } from "../constants/actions";
 import { transformGradeBookResponse, getMaxScoreOfQid } from "../../ClassBoard/Transformer";
 
@@ -151,6 +152,7 @@ const reducer = (state = initialState, { type, payload }) => {
           for (let index of studentIndexes) {
             _st.entities[index].status = "redirected";
             _st.entities[index].redirected = true;
+            _st.entities[index].score = 0;
             _st.entities[index].testActivityId = undefined;
             _st.entities[index].questionActivities = _st.entities[index].questionActivities.map(({ _id }) => ({
               _id,
@@ -179,6 +181,10 @@ const reducer = (state = initialState, { type, payload }) => {
     case UPDATE_OPEN_ASSIGNMENTS:
       return {
         ...state,
+        data: {
+          ...state.data,
+          status: "IN PROGRESS"
+        },
         additionalData: {
           ...state.additionalData,
           canOpenClass: state.additionalData.canOpenClass.filter(item => item !== payload.classId)
@@ -191,6 +197,17 @@ const reducer = (state = initialState, { type, payload }) => {
           ...state.additionalData,
           canCloseClass: state.additionalData.canCloseClass.filter(item => item !== payload.classId)
         }
+      };
+    case UPDATE_STUDENT_ACTIVITY:
+      const updatedStudents = state.entities.map(item => {
+        if (payload.includes(item.studentId)) {
+          return { ...item, status: "absent" };
+        }
+        return item;
+      });
+      return {
+        ...state,
+        entities: updatedStudents
       };
     default:
       return state;

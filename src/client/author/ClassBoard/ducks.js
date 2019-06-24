@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
-import { classBoardApi } from "@edulastic/api";
+import { classBoardApi, testActivityApi } from "@edulastic/api";
 import { message } from "antd";
 import { createSelector } from "reselect";
 import { values as _values, get, keyBy } from "lodash";
@@ -8,9 +8,9 @@ import {
   setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
-  updateOpenAssignmentsAction
+  updateOpenAssignmentsAction,
+  updateStudentActivityAction
 } from "../src/actions/classBoard";
-import { togglePresentationModeAction } from "../src/actions/testActivity";
 
 import { createFakeData } from "./utils";
 import { markQuestionLabel, getQuestionLabels } from "./Transformer";
@@ -25,7 +25,9 @@ import {
   UPDATE_RELEASE_SCORE,
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
-  CLOSE_ASSIGNMENT
+  CLOSE_ASSIGNMENT,
+  SAVE_OVERALL_FEEDBACK,
+  MARK_AS_ABSENT
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -65,7 +67,6 @@ function* receiveTestActivitySaga({ payload }) {
       payload: { gradebookData, additionalData }
     });
 
-    yield put(togglePresentationModeAction(false));
     const releaseScore = additionalData.showScore;
     yield put(setShowScoreAction(releaseScore));
   } catch (err) {
@@ -124,6 +125,25 @@ function* closeAssignmentSaga({ payload }) {
   }
 }
 
+function* saveOverallFeedbackSaga({ payload }) {
+  try {
+    yield call(testActivityApi.saveOverallFeedback, payload);
+    yield call(message.success, "feedback saved");
+  } catch (err) {
+    yield call(message.error, "Saving failed");
+  }
+}
+
+function* markAbsentSaga({ payload }) {
+  try {
+    yield call(classBoardApi.markAbsent, payload);
+    yield put(updateStudentActivityAction(payload.students));
+    yield call(message.success, "Successfully marked as absent");
+  } catch (err) {
+    yield call(message.error, "Mark absent students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -131,7 +151,9 @@ export function* watcherSaga() {
     yield takeEvery(UPDATE_RELEASE_SCORE, releaseScoreSaga),
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
-    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga)
+    yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
+    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
   ]);
 }
 

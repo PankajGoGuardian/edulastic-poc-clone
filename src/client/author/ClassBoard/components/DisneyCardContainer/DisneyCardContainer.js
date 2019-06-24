@@ -59,7 +59,7 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode } = this.props;
+    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -72,6 +72,9 @@ export default class DisneyCardContainer extends Component {
         if (student.status === "notStarted") {
           status.status = "NOT STARTED";
           status.color = red;
+          if (endDate < Date.now()) {
+            status.status = "ABSENT";
+          }
         } else if (student.status === "inProgress") {
           status.status = "IN PROGRESS";
           status.color = yellow;
@@ -85,9 +88,13 @@ export default class DisneyCardContainer extends Component {
         } else if (student.status === "redirected") {
           status.status = "REDIRECTED";
           status.color = greenSecondary;
+        } else if (student.status === "absent") {
+          status.status = "ABSENT";
+          status.color = red;
         }
 
         let correctAnswers = 0;
+
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {
@@ -156,10 +163,10 @@ export default class DisneyCardContainer extends Component {
               <PerfomanceSection>
                 <StyledFlexDiv>
                   <StyledParaSS data-cy="studentScore">
-                    {round(student.score, 1) || 0} / {student.maxScore || 0}
+                    {round(student.score, 2) || 0} / {student.maxScore || 0}
                   </StyledParaSS>
                   <StyledParaSSS data-cy="studentPerformance">
-                    {student.score > 0 ? round((student.score / student.maxScore) * 100) : 0}%
+                    {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
                 {student.testActivityId && (
@@ -202,6 +209,10 @@ export default class DisneyCardContainer extends Component {
       styledCard = shuffle(styledCard);
     }
 
-    return <StyledCardContiner>{styledCard}</StyledCardContiner>;
+    return testActivity.length > 0 ? (
+      <StyledCardContiner>{styledCard}</StyledCardContiner>
+    ) : (
+      <h2 style={{ textAlign: "center" }}>There is no students attending this assignment at the moment</h2>
+    );
   }
 }

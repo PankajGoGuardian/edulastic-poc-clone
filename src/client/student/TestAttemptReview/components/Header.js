@@ -30,9 +30,9 @@ export default memo(SummaryHeader);
 const AssignmentsHeader = styled(Layout.Header)`
   display: flex;
   align-items: center;
-  background-color: ${props => props.theme.attemptReview.headerBgColor};
+  background-color: ${props => props.theme.headerBgColor};
   height: 62px;
-  color: ${props => props.theme.attemptReview.headerTextColor};
+  color: ${props => props.theme.headerTitleTextColor};
   padding: 0 40px;
 
   .ant-col-24 {

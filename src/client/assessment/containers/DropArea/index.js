@@ -1,11 +1,12 @@
 import React, { useRef } from "react";
-import { cloneDeep, get } from "lodash";
+import { cloneDeep, get, findIndex } from "lodash";
 import PropTypes from "prop-types";
+import uuidv4 from "uuid/v4";
 import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable = false }) => {
+const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable = false, isDropDown }) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -22,16 +23,23 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
     updateData(newItem.responses);
   };
 
-  const _delete = index => e => {
+  const _delete = id => e => {
     e.stopPropagation();
     const newItem = cloneDeep(item);
-    newItem.responses.splice(index, 1);
-    newItem.validation.valid_response.value.splice(index, 1);
-    newItem.validation.alt_responses = newItem.validation.alt_responses.map(resp => {
-      resp.value.pop();
-      return resp;
-    });
-    setQuestionData(newItem);
+    const deletedIndex = findIndex(newItem.responses, res => res.id === id);
+
+    if (deletedIndex !== -1) {
+      newItem.responses.splice(deletedIndex, 1);
+      newItem.validation.valid_response.value.splice(deletedIndex, 1);
+      newItem.validation.alt_responses = newItem.validation.alt_responses.map(resp => {
+        resp.value.splice(deletedIndex, 1);
+        return resp;
+      });
+      if (newItem.options && isDropDown) {
+        newItem.options.splice(deletedIndex, 1);
+      }
+      setQuestionData(newItem);
+    }
   };
 
   const _click = index => () => {
@@ -62,14 +70,15 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
     const newItem = cloneDeep(item);
     const newResponseContainer = {};
     const elemRect = dropAreaRef.current.getBoundingClientRect();
-    const width = get(item, "ui_style.width", 150);
-    const height = get(item, "ui_style.height", 40);
+    const _width = get(item, "ui_style.width", 150);
+    const _height = get(item, "ui_style.height", 40);
 
     newResponseContainer.top = e.clientY - elemRect.top;
     newResponseContainer.left = e.clientX - elemRect.left;
-    newResponseContainer.width = width;
-    newResponseContainer.height = height;
+    newResponseContainer.width = _width;
+    newResponseContainer.height = _height;
     newResponseContainer.active = true;
+    newResponseContainer.id = uuidv4();
     newItem.responses = newItem.responses.map(res => {
       res.active = false;
       return res;
@@ -107,7 +116,7 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
           showDashedBorder={get(item, "responseLayout.showdashedborder", false)}
           onDragStop={_dragStop(i)}
           onResize={_resize(i)}
-          onDelete={_delete(i)}
+          onDelete={_delete(response.id)}
           onClick={_click(i)}
           showIndex={showIndex}
           style={{
@@ -121,7 +130,18 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
 
 DropArea.propTypes = {
   updateData: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
+  item: PropTypes.object.isRequired,
+  width: PropTypes.number.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
+  showIndex: PropTypes.bool,
+  isDropDown: PropTypes.bool,
+  disable: PropTypes.bool
+};
+
+DropArea.defaultProps = {
+  showIndex: true,
+  disable: false,
+  isDropDown: false
 };
 
 export default DropArea;

@@ -13,7 +13,7 @@ function collect(monitor) {
 class DragPreview extends Component {
   render() {
     const { isDragging, children, sourceOffset } = this.props;
-    if (!isDragging) {
+    if (!isDragging || !sourceOffset) {
       return null;
     }
 

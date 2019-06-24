@@ -20,6 +20,7 @@ export const getSelectedClassName = createSelector(
 );
 
 // action types
+
 export const FETCH_CLASS_LIST = "[manageClass] fetch google class";
 export const SET_GOOGLE_COURSE_LIST = "[manageClass] set google classes";
 export const SET_MODAL = "[manageClass] set modal";
@@ -64,6 +65,7 @@ export const UPDATE_STUDENT_SUCCESS = "[manageClass] update student success";
 export const SET_SUBJECT = "[manageClass] set subject";
 
 // action creators
+
 export const fetchClassListAction = createAction(FETCH_CLASS_LIST);
 export const setGoogleCourseListAction = createAction(SET_GOOGLE_COURSE_LIST);
 export const setModalAction = createAction(SET_MODAL);
@@ -122,7 +124,6 @@ const initialState = {
   selectedSubject: ""
 };
 
-// reducers
 const setGoogleCourseList = (state, { payload }) => {
   state.googleCourseList = payload;
   state.showModal = true;
@@ -253,7 +254,6 @@ export default createReducer(initialState, {
   [SET_SUBJECT]: setSubject
 });
 
-// sagas boi
 function* fetchClassList({ payload }) {
   try {
     const { code } = payload;
@@ -307,7 +307,10 @@ function* receiveAddStudentRequest({ payload }) {
     if (student) {
       const successMsg = "User added to class successfully.";
       yield call(message.success, successMsg);
-      yield put(addStudentSuccessAction({ ...student, enrollmentStatus: "1" }));
+      let newStudent = Object.assign({}, student);
+      newStudent._id = student.userId;
+      delete newStudent.userId;
+      yield put(addStudentSuccessAction(newStudent));
     } else {
       const msg = get(result, "data.message", "User already part of this class section");
       message.error(msg);

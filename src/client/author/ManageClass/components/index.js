@@ -10,6 +10,7 @@ import {
   getArchiveGroupsSelector
 } from "../../sharedDucks/groups";
 import { setModalAction, syncClassAction, setClassAction } from "../ducks";
+
 // components
 
 import ClassCreate from "./ClassCreate";

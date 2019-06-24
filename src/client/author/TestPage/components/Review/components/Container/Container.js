@@ -87,7 +87,10 @@ class Review extends PureComponent {
   handleRemoveSelected = () => {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
-
+    const itemsSelected = test.testItems.find(item => item.selected);
+    if (!itemsSelected) {
+      return message.warn("Please select at least one question to remove");
+    }
     newData.testItems = test.testItems.filter(item => !item.selected);
 
     newData.scoring.testItems = test.scoring.testItems.filter(item => {

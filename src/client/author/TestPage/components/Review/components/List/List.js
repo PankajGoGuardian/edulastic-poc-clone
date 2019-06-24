@@ -185,6 +185,17 @@ const List = SortableContainer(
       );
     };
 
+    const audioStatus = item => {
+      const questions = get(item, "data.questions", []);
+      const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+      const audio = {};
+      if (getAllTTS.length) {
+        const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+        audio.ttsSuccess = ttsSuccess;
+      }
+      return audio;
+    };
+
     return (
       <div>
         {rows.map((item, i) => (
@@ -196,7 +207,8 @@ const List = SortableContainer(
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],
-              standards: standards[testItems[i]._id]
+              standards: standards[testItems[i]._id],
+              audio: audioStatus(testItems[i])
             }}
             index={i}
             owner={owner}

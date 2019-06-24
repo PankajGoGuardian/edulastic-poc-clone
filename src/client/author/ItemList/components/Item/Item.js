@@ -30,7 +30,8 @@ import {
   UserIcon,
   IdIcon,
   MoreInfo,
-  Details
+  Details,
+  AudioIcon
 } from "./styled";
 
 // render single item
@@ -76,7 +77,8 @@ class Item extends Component {
 
   renderDetails = () => {
     const { item } = this.props;
-
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
     const details = [
       {
         name: <UserIcon />,
@@ -96,7 +98,13 @@ class Item extends Component {
         text: "9"
       }
     ];
-
+    if (getAllTTS.length) {
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      const ttsStatusSuccess = {
+        name: <AudioIcon className="fa fa-volume-up" success={ttsSuccess} />
+      };
+      details.push(ttsStatusSuccess);
+    }
     return details.map((detail, index) => (
       <DetailCategory key={`DetailCategory_${index}`}>
         <CategoryName>{detail.name}</CategoryName>

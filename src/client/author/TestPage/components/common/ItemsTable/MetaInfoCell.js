@@ -21,6 +21,8 @@ import {
   getTestItemsSelector
 } from "../../AddItems/ducks";
 
+import { AudioIcon } from "../../../../ItemList/components/Item/styled";
+
 class MetaInfoCell extends Component {
   constructor(props) {
     super(props);
@@ -211,6 +213,13 @@ class MetaInfoCell extends Component {
                   <IconHeart color="#bbbfc4" width={16} height={14} />
                   <FirstText>{data.likes}</FirstText>
                 </MetaWrapper>
+                {data.audio.hasOwnProperty("ttsSuccess") ? (
+                  <MetaWrapper>
+                    <AudioIcon className="fa fa-volume-up" success={data.audio.ttsSuccess} />
+                  </MetaWrapper>
+                ) : (
+                  ""
+                )}
               </FlexContainer>
             </div>
           </FlexContainer>

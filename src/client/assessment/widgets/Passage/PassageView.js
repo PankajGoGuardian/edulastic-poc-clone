@@ -7,6 +7,7 @@ import ReactQuill from "react-quill";
 import { InstructorStimulus } from "./styled/InstructorStimulus";
 import { Heading } from "./styled/Heading";
 import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+import { Stimulus } from "@edulastic/common";
 
 const ContentsTitle = Heading;
 
@@ -35,38 +36,12 @@ const PassageView = ({ item, preview, showQuestionNumber, qIndex, flowLayout }) 
       )}
 
       {item.contentsTitle && !flowLayout && <ContentsTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />}
-      {!flowLayout ? (
-        <div
-          id="myToolbar"
-          style={{
-            display: "block",
-            position: "relative",
-            width: 50,
-            top: 0,
-            background: "transparent"
-          }}
-          className="passage_toolbar"
-        >
-          <span className="ql-formats">
-            <select className="ql-background">
-              <option value="transparent" />
-              <option value="#99c2ff" />
-              <option value="#99ff99" />
-              <option value="#ff8533" />
-              <option value="#ffff80" />
-              <option value="#ff99bb" />
-            </select>
-          </span>
-        </div>
-      ) : (
-        <div id="myToolbar" style={{ display: "none" }} />
-      )}
       {!item.paginated_content && item.content && (
-        <ReactQuill id="mainContents" value={item.content} modules={PassageView.modules} />
+        <Stimulus id="mainContents" dangerouslySetInnerHTML={{ __html: item.content }} />
       )}
       {item.paginated_content && item.pages && !!item.pages.length && !flowLayout && (
         <div>
-          <ReactQuill id="paginatedContents" value={item.pages[page - 1]} modules={PassageView.modules} />
+          <Stimulus id="paginatedContents" dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }} />
 
           <Pagination
             pageSize={1}

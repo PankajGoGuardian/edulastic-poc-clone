@@ -478,7 +478,7 @@ function* receiveSharedWithListSaga({ payload }) {
 function* deleteSharedUserSaga({ payload }) {
   try {
     const authors = yield call(contentSharingApi.deleteSharedUser, payload);
-    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: "TEST" }));
+    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.contentType }));
   } catch (e) {
     const errorMessage = "delete shared user is failing";
     yield call(message.error, errorMessage);

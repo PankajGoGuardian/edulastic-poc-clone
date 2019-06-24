@@ -41,6 +41,8 @@ import { PointerSelect } from "./styled/PointerSelect";
 import { PreviewImage } from "../ClozeImageDropDown/styled/PreviewImage";
 import { ImageContainer } from "../ClozeImageDropDown/styled/ImageContainer";
 import { CheckContainer } from "../ClozeImageDropDown/styled/CheckContainer";
+import { FormContainer, FormBottomContainer } from "../ClozeImageDropDown/styled/FormContainer";
+import { UploadButton } from "../ClozeImageDropDown/styled/UploadButton";
 
 import { uploadToS3 } from "../../../author/src/utils/upload";
 
@@ -380,7 +382,7 @@ class ComposeQuestion extends Component {
   };
 
   render() {
-    const { t, item, theme, setQuestionData } = this.props;
+    const { t, item, setQuestionData } = this.props;
     const { isEditableResizeMove } = this.state;
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
 
@@ -429,35 +431,35 @@ class ComposeQuestion extends Component {
           value={item.stimulus}
         />
         <PaddingDiv top={30} />
-        <FlexContainer
-          style={{
-            background: theme.widgets.clozeImageDragDrop.imageSettingsContainerBgColor,
-            height: 70,
-            fontSize: theme.widgets.clozeImageDragDrop.imageSettingsContainerFontSize
-          }}
-        >
+        <FormContainer>
           <div data-cy="left-buttons">
-            <FieldWrapper>
-              <InputNumber data-cy="image-width-input" value={imageWidth} onChange={this.changeImageWidth} />
+            <div className="size-controls">
+              <FieldWrapper>
+                <InputNumber data-cy="image-width-input" value={imageWidth} onChange={this.changeImageWidth} />
 
-              <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.widthpx")}</PaddingDiv>
-            </FieldWrapper>
-            <FieldWrapper>
-              <InputNumber data-cy="image-height-input" value={imageHeight} onChange={this.changeImageHeight} />
+                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.widthpx")}</PaddingDiv>
+              </FieldWrapper>
+              <FieldWrapper>
+                <InputNumber data-cy="image-height-input" value={imageHeight} onChange={this.changeImageHeight} />
 
-              <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.heightpx")}</PaddingDiv>
-            </FieldWrapper>
+                <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.heightpx")}</PaddingDiv>
+              </FieldWrapper>
+            </div>
 
-            <FieldWrapper>
-              <InputNumber data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
-              <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
-            </FieldWrapper>
+            <div className="position-controls">
+              <FieldWrapper>
+                <InputNumber data-cy="image-left-input" value={imageLeft} onChange={this.changeImageLeft} />
+                <PaddingDiv left={20}>{t("component.cloze.imageText.positionX")}</PaddingDiv>
+              </FieldWrapper>
 
-            <FieldWrapper>
-              <InputNumber data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
-              <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
-            </FieldWrapper>
+              <FieldWrapper>
+                <InputNumber data-cy="image-top-input" value={imageTop} onChange={this.chnageImageTop} />
+                <PaddingDiv left={20}>{t("component.cloze.imageText.positionY")}</PaddingDiv>
+              </FieldWrapper>
+            </div>
+          </div>
 
+          <div data-cy="right-buttons">
             <CheckContainer position="unset" alignSelf="center">
               <Checkbox
                 data-cy="drag-drop-image-aria-check"
@@ -468,9 +470,6 @@ class ComposeQuestion extends Component {
                 {t("component.cloze.imageText.keepAspectRatio")}
               </Checkbox>
             </CheckContainer>
-          </div>
-
-          <div data-cy="right-buttons">
             <PointerContainer className="controls-bar">
               <FieldWrapper>
                 <ControlButton disabled={!hasActive}>
@@ -504,7 +503,7 @@ class ComposeQuestion extends Component {
               <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
             </FieldWrapper>
           </div>
-        </FlexContainer>
+        </FormContainer>
 
         <PaddingDiv top={30} />
         <FlexContainer>
@@ -618,34 +617,27 @@ class ComposeQuestion extends Component {
             </ImageContainer>
           </FlexView>
         </FlexContainer>
-        <FlexContainer align="flex-start">
+        <FormBottomContainer align="flex-start">
           {item.imageUrl && (
-            <Dragger
-              className="super-dragger"
-              {...uploadProps}
-              style={{ padding: 0, marginRight: "20px" }}
-              showUploadList={false}
-            >
+            <UploadButton {...uploadProps} showUploadList={false}>
               <EduButton type="primary">{t("component.cloze.imageText.updateImageButtonText")}</EduButton>
-            </Dragger>
+            </UploadButton>
           )}
-          <PaddingDiv top={30} style={{ alignSelf: "flex-start" }}>
-            <Checkbox
-              data-cy="drag-drop-image-dashboard-check"
-              defaultChecked={responseLayout && responseLayout.showdashedborder}
-              onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
-            >
-              {t("component.cloze.imageDragDrop.showdashedborder")}
-            </Checkbox>
-            <Checkbox
-              data-cy="drag-drop-image-aria-check"
-              defaultChecked={isEditAriaLabels}
-              onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
-            >
-              {t("component.cloze.imageDragDrop.editAriaLabels")}
-            </Checkbox>
-          </PaddingDiv>
-        </FlexContainer>
+          <Checkbox
+            data-cy="drag-drop-image-dashboard-check"
+            defaultChecked={responseLayout && responseLayout.showdashedborder}
+            onChange={val => this.onResponsePropChange("showdashedborder", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.showdashedborder")}
+          </Checkbox>
+          <Checkbox
+            data-cy="drag-drop-image-aria-check"
+            defaultChecked={isEditAriaLabels}
+            onChange={val => this.onItemPropChange("isEditAriaLabels", val.target.checked)}
+          >
+            {t("component.cloze.imageDragDrop.editAriaLabels")}
+          </Checkbox>
+        </FormBottomContainer>
         <PaddingDiv>
           {isEditAriaLabels && (
             <React.Fragment>

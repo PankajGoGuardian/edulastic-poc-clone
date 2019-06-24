@@ -16,6 +16,7 @@ import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { nonAutoGradableTypes } from "@edulastic/constants";
+import defaultTheme from "../defaultThemeStyle";
 
 import {
   ControlBtn,
@@ -47,7 +48,7 @@ import { currentItemAnswerChecksSelector } from "../../selectors/test";
 
 /* eslint import/no-webpack-loader-syntax: off */
 // eslint-disable-next-line
-const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
+// const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {

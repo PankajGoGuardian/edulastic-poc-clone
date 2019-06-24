@@ -6,7 +6,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { cloneDeep } from "lodash";
 import styled, { withTheme } from "styled-components";
-import { Checkbox, InputNumber } from "antd";
+import { Checkbox } from "antd";
 import produce from "immer";
 import { withNamespaces } from "@edulastic/localization";
 import { Paper, PaddingDiv } from "@edulastic/common";
@@ -23,7 +23,7 @@ import CorrectAnswers from "./CorrectAnswers";
 import Display from "./Display";
 import Authoring from "./Authoring";
 import { ContentArea } from "../../styled/ContentArea";
-import { FieldWrapper } from "./styled/FieldWrapper";
+import { MaxRespCountWrapper, MaxRespCountInput } from "./styled/FieldWrapper";
 import Annotations from "../../components/Graph/Annotations/Annotations";
 
 const EmptyWrapper = styled.div``;
@@ -222,16 +222,16 @@ class ClozeImageDragDrop extends Component {
                       {t("component.cloze.imageDragDrop.transparentpossibleresponses")}
                     </Checkbox>
                   </CorrectAnswerOptions>
-                  <FieldWrapper>
-                    <InputNumber
+                  <MaxRespCountWrapper>
+                    <MaxRespCountInput
                       data-cy="drag-drop-image-max-res"
                       min={1}
                       max={10}
                       defaultValue={item.maxRespCount}
                       onChange={val => this.handleOptionsChange("maxRespCount", val)}
                     />
-                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
-                  </FieldWrapper>
+                    <PaddingDiv>{t("component.cloze.imageDragDrop.maximumresponses")}</PaddingDiv>
+                  </MaxRespCountWrapper>
                   <Annotations editable />
                 </Widget>
               </div>

@@ -89,8 +89,8 @@ export const CheckboxContainer = styled.div`
     
       & input:checked + span {
         color: ${props.theme.widgets.multipleChoice.checkboxContainerCheckedColor};
-        background-color: ${newBlue};
-        border-color: ${newBlue};
+        background-color: ${props.theme.widgets.multipleChoice.checkboxContainerCheckedBgColor};
+        border-color: ${props.theme.widgets.multipleChoice.checkboxContainerBorderColor};
       }
     
       & input:checked + span + div {

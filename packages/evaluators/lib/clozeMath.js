@@ -58,9 +58,7 @@ var mathEval =
                           case 0:
                             id = _Object$keys[_i];
                             checks = (0, _math.getChecks)({
-                              valid_response: {
-                                value: validResponses[id]
-                              }
+                              value: validResponses[id]
                             });
                             answers = (validResponses[id] || []).map(function(item) {
                               return item.value;
@@ -443,9 +441,7 @@ var mixAndMatchMathEvaluator =
                               validAnswers = answersById[id];
                               calculations = validAnswers.map(function(validAnswer) {
                                 var checks = (0, _math.getChecks)({
-                                  valid_response: {
-                                    value: [validAnswer]
-                                  }
+                                  value: [validAnswer]
                                 });
                                 var expected = (validAnswer.value || "").replace(/\\ /g, " ");
                                 var input = userResponse[id].value.replace(/\\ /g, " ");
@@ -582,7 +578,7 @@ var mixAndMatchEvaluator =
                 optionCount =
                   (0, _get2["default"])(valid_response, ["value", "length"], 0) +
                   (0, _get2["default"])(valid_inputs, ["value", "length"], 0) +
-                  (0, _get2["default"])(valid_response, ["value", "length"], 0); // cloze-text evaluation!
+                  (0, _get2["default"])(valid_dropdown, ["value", "length"], 0); // cloze-text evaluation!
 
                 clozeTextEvaluation =
                   (valid_inputs &&

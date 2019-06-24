@@ -8,7 +8,8 @@ import {
   setShowScoreAction,
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
-  updateOpenAssignmentsAction
+  updateOpenAssignmentsAction,
+  updateStudentActivityAction
 } from "../src/actions/classBoard";
 
 import { createFakeData } from "./utils";
@@ -25,7 +26,8 @@ import {
   SET_MARK_AS_DONE,
   OPEN_ASSIGNMENT,
   CLOSE_ASSIGNMENT,
-  SAVE_OVERALL_FEEDBACK
+  SAVE_OVERALL_FEEDBACK,
+  MARK_AS_ABSENT
 } from "../src/constants/actions";
 
 function* receiveGradeBookSaga({ payload }) {
@@ -132,6 +134,16 @@ function* saveOverallFeedbackSaga({ payload }) {
   }
 }
 
+function* markAbsentSaga({ payload }) {
+  try {
+    yield call(classBoardApi.markAbsent, payload);
+    yield put(updateStudentActivityAction(payload.students));
+    yield call(message.success, "Successfully marked as absent");
+  } catch (err) {
+    yield call(message.error, "Mark absent students failed");
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_GRADEBOOK_REQUEST, receiveGradeBookSaga),
@@ -140,7 +152,8 @@ export function* watcherSaga() {
     yield takeEvery(SET_MARK_AS_DONE, markAsDoneSaga),
     yield takeEvery(OPEN_ASSIGNMENT, openAssignmentSaga),
     yield takeEvery(CLOSE_ASSIGNMENT, closeAssignmentSaga),
-    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga)
+    yield takeEvery(SAVE_OVERALL_FEEDBACK, saveOverallFeedbackSaga),
+    yield takeEvery(MARK_AS_ABSENT, markAbsentSaga)
   ]);
 }
 

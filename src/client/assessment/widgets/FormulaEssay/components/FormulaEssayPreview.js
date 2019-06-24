@@ -10,21 +10,12 @@ import MathEssayInput from "./MathEssayInput";
 import { InstructorStimulus } from "../styled/InstructorStimulus";
 import { QuestionTitleWrapper, QuestionNumber } from "../styled/QustionNumber";
 
-const FormulaEssayPreview = ({
-  item,
-  type: previewType,
-  lines,
-  setLines,
-  resetLines,
-  userAnswer,
-  showQuestionNumber,
-  qIndex
-}) => {
+const FormulaEssayPreview = ({ item, type: previewType, lines, setLines, resetLines, showQuestionNumber, qIndex }) => {
   useEffect(() => {
     if (previewType === CLEAR) {
       resetLines();
     }
-  }, [previewType, userAnswer]);
+  }, [previewType]);
 
   return (
     <MathEssayInputWrapper>

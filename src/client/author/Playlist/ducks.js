@@ -191,11 +191,6 @@ export const getPlaylistsCountSelector = createSelector(
   state => state.count
 );
 
-export const getCollectionsSelector = createSelector(
-  stateSelector,
-  state => state.publishers
-);
-
 export const getLastPlayListSelector = createSelector(
   stateSelector,
   state => state.lastPlayList

@@ -35,6 +35,11 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
       sorter: (a, b) => a.email > b.email
     },
     {
+      title: "TTS enabled",
+      dataIndex: "tts",
+      width: "20%"
+    },
+    {
       title: "Google User",
       dataIndex: "isGoogleUser",
       width: "30%",

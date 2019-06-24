@@ -97,13 +97,16 @@ const customizeIcon = icon => styled(icon)`
 
 const StyledButton = styled(Button)`
   margin-right: 10px;
-  background: ${props => (props.enable ? "#00b0ff" : "transparent")};
+  background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
+  border-color: ${props => props.theme.default.headerButtonBorderColor};
   height: 40px;
   width: 40px;
 
   &:focus,
-  &:hover {
-    background: ${props => (props.enable ? "#00b0ff" : "transparent")};
+  &:hover,
+  &:active {
+    background: ${props => (props.enable ? props.theme.default.headerButtonActiveBgColor : "transparent")};
+    border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
 `;
 

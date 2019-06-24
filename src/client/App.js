@@ -12,6 +12,8 @@ import Joyride from "react-joyride";
 import { test, signUpState } from "@edulastic/constants";
 import { TokenStorage } from "@edulastic/api";
 import { TestAttemptReview } from "./student/TestAttemptReview";
+import SebQuitConfirm from "./student/SebQuitConfirm";
+
 import { fetchUserAction } from "./student/Login/ducks";
 import TestDemoPlayer from "./author/TestDemoPlayer";
 import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
@@ -102,7 +104,7 @@ class App extends Component {
             defaultRoute = "/author/assignments";
           } else {
             if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-              redirectRoute = "/district/" + path[1];
+              redirectRoute = `/district/${path[1]}/signup`;
             } else {
               redirectRoute = "/Signup";
             }
@@ -132,6 +134,7 @@ class App extends Component {
         redirectRoute = "/login";
       }
     }
+
     // signup routes hidden till org reference is not done
     return (
       <div>
@@ -162,6 +165,7 @@ class App extends Component {
             <Route path={`/student/${ASSESSMENT}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP />} />
             <Route path={`/student/${ASSESSMENT}/:id`} render={() => <AssessmentPlayer defaultAP />} />
             <PrivateRoute path="/student/test-summary" component={TestAttemptReview} />
+            <Route path="/student/seb-quit-confirm" component={SebQuitConfirm} />
             <Route path={`/student/${PRACTICE}/:id/uta/:utaId`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />

@@ -18,7 +18,8 @@ import ClassDetails from "./ClassDetails";
 import ClassEdit from "./ClassEdit";
 import PrintPreview from "./PrintPreview";
 
-const ManageClass = ({ fetchGroups, fetchArchiveGroups, setClass, ...restProps }) => {
+const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, ...restProps }) => {
+
   const [view, setView] = useState("listView");
 
   useEffect(() => {
@@ -49,7 +50,15 @@ const ManageClass = ({ fetchGroups, fetchArchiveGroups, setClass, ...restProps }
       case "printview":
         return <PrintPreview />;
       case "listView":
-        return <ClassListContainer {...restProps} onCreate={() => updateView("create")} setEntity={setEntity} />;
+        return (
+          <ClassListContainer
+            {...restProps}
+            onCreate={() => updateView("create")}
+            setEntity={setEntity}
+            groups={groups}
+            archiveGroups={archiveGroups}
+          />
+        );
     }
   };
 

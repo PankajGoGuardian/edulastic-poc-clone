@@ -787,7 +787,9 @@ class Board {
     if (markCoords) {
       marks.forEach(mark => {
         const markCoord = markCoords.find(el => el.id === mark.id);
-        this.answers.push(Mark.onHandler(this, { ...markCoord, fixed: true }, mark));
+        if (markCoord) {
+          this.answers.push(Mark.onHandler(this, { ...markCoord, fixed: true }, mark));
+        }
       });
     }
   }

@@ -7,7 +7,7 @@ const mathEval = async ({ userResponse, validation }) => {
   const evaluation = {};
   // parallelize network request!!
   for (const id of Object.keys(userResponse)) {
-    const checks = getChecks({ valid_response: { value: validResponses[id] } });
+    const checks = getChecks({ value: validResponses[id] });
     const answers = (validResponses[id] || []).map(item => item.value);
     const requests = answers.map(ans => {
       const data = {
@@ -162,7 +162,7 @@ const mixAndMatchMathEvaluator = async ({ userResponse, validation }) => {
   for (const id of Object.keys(userResponse)) {
     const validAnswers = answersById[id];
     const calculations = validAnswers.map(validAnswer => {
-      const checks = getChecks({ valid_response: { value: [validAnswer] } });
+      const checks = getChecks({ value: [validAnswer] });
       const expected = (validAnswer.value || "").replace(/\\ /g, " ");
       const input = userResponse[id].value.replace(/\\ /g, " ");
       return evaluate({ input, checks, expected });
@@ -204,7 +204,7 @@ const mixAndMatchEvaluator = async ({ userResponse, validation }) => {
   const optionCount =
     get(valid_response, ["value", "length"], 0) +
     get(valid_inputs, ["value", "length"], 0) +
-    get(valid_response, ["value", "length"], 0);
+    get(valid_dropdown, ["value", "length"], 0);
 
   // cloze-text evaluation!
   const clozeTextEvaluation =

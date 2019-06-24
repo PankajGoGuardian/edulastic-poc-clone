@@ -81,11 +81,6 @@ const methodOptions = {
     "allowEulersNumber",
     "isFactorised",
     "isExpanded",
-    "ignoreOrder",
-    "ignoreCoefficientOfOne",
-    "allowInterval",
-    "ignoreLeadingAndTrailingSpaces",
-    "treatMultipleSpacesAsOne",
     "setDecimalSeparator",
     "setThousandsSeparator",
     "compareSides"

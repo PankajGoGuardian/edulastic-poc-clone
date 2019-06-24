@@ -10,7 +10,7 @@ const AnswerDropdown = ({ responseIndex, style, backgroundColor, onChange, disab
       style={style}
       disabled={disabled}
       data-cy={`dropdown-res-${responseIndex}`}
-      defaultValue={defaultValue}
+      value={defaultValue}
       onChange={value => {
         onChange(value);
       }}
@@ -29,7 +29,8 @@ AnswerDropdown.propTypes = {
   options: PropTypes.array.isRequired,
   onChange: PropTypes.func.isRequired,
   defaultValue: PropTypes.string,
-  style: PropTypes.object.isRequired
+  style: PropTypes.object.isRequired,
+  backgroundColor: PropTypes.string.isRequired
 };
 
 AnswerDropdown.defaultProps = {

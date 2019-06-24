@@ -652,7 +652,7 @@
       "field": "Field",
       "value": "Value",
       "ariaLabel": "ARIA label",
-      "allowedUnits": "Allowed units",
+      "allowedUnits": "Must use these units",
       "ignoreLeadingAndTrailingSpaces": "Ignore leading and trailing spaces",
       "treatMultipleSpacesAsOne": "Treat extra spaces as one",
       "rule": "Rule",
@@ -697,7 +697,9 @@
       "isSlopeInterceptForm": "Check if equation is in slope intercept form",
       "isPointSlopeForm": "Check if equation is in point slope form",
       "choicesfordropdown": "Choices for Text Dropdown",
-      "additionalOptions": "Additional Options"
+      "additionalOptions": "Additional Options",
+      "setThousandsSeparator": "Set Thousands Separator",
+      "setDecimalSeparator": "Set Decimal Separator"
     },
     "matrix": {
       "matrixStyle": "Matrix style",

@@ -13,6 +13,7 @@ import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
+import Units from "./options/Units";
 import {
   AdditionalToggle,
   AdditionalContainer,
@@ -100,6 +101,8 @@ const MathFormulaAnswerMethod = ({
 
   const methodOptions = methodOptionsConst[method];
   const isActive = showAdditionals.find(el => el === `${method}_${index}`);
+
+  const eToLowerCase = label => label.replace("'e'", "<span style=\"text-transform: lowercase\">'e'</span>");
 
   const renderMethodsOptions = () =>
     methodOptions.map(methodOption => {
@@ -221,7 +224,7 @@ const MathFormulaAnswerMethod = ({
               optionKey="allowEulersNumber"
               options={options}
               onChange={changeOptions}
-              label={t("component.math.treatEAsEulersNumber")}
+              label={eToLowerCase(t("component.math.treatEAsEulersNumber"))}
             />
           );
         case "compareSides":
@@ -277,6 +280,8 @@ const MathFormulaAnswerMethod = ({
           );
         case "setDecimalSeparator":
           return <DecimalSeparator options={options} onChange={changeOptions} />;
+        case "allowedUnits":
+          return <Units options={options} onChange={changeOptions} />;
         default:
           return null;
       }

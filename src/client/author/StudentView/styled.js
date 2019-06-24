@@ -60,10 +60,10 @@ const StyledTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? "#1774f0" : "#FFFFFF")};
-  color: ${({ active }) => (active ? "#FFFFFF" : "#1774f0")};
+  background-color: ${({ active }) => (active ? "#00AD50" : "#FFFFFF")};
+  color: ${({ active }) => (active ? "#FFFFFF" : "#00AD50")};
   &:hover {
-    background-color: #1774f0;
+    background-color: #00ad50;
     color: #ffffff;
   }
 `;

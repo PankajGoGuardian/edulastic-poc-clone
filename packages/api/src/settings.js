@@ -33,18 +33,10 @@ const createDistrictProfile = data =>
 const getOrgDetailsByShortNameAndOrgType = params =>
   api
     .callApi({
-      url: `/public/setting/org-data/`,
+      url: `/auth/setting/org-data/`,
       params: params
     })
-    .then(result => {
-      if (result && !result.error) {
-        return result.data.result;
-      } else if (result && result.error) {
-        throw result.data.result;
-      } else {
-        return result.data.result;
-      }
-    });
+    .then(result => result.data.result);
 
 // term apis
 const getTerm = ({ orgId }) =>

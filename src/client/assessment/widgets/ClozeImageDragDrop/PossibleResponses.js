@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -115,7 +116,7 @@ class PossibleResponses extends Component {
   };
 
   addNewChoiceBtn = () => {
-    const { item, setQuestionData, t } = this.props;
+    const { item, setQuestionData } = this.props;
     setQuestionData(
       produce(item, draft => {
         draft.options.push("");

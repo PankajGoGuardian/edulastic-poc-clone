@@ -1,4 +1,5 @@
 import { createSelector } from "reselect";
+import { questionType } from "@edulastic/constants";
 
 // selectors
 export const answersSelector = state => state.answers;
@@ -12,7 +13,11 @@ export const attemptSummarySelector = createSelector(
     // eslint-disable
     for (const item of items) {
       if (item && item.data && item.data.questions) {
-        for (const { id: qId } of item.data.questions) {
+        for (const { id: qId, type } of item.data.questions) {
+          if (type === questionType.VIDEO || type === questionType.PASSAGE) {
+            continue;
+          }
+
           if (item.reviewLater) {
             questions[qId] = 2;
           } else {

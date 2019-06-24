@@ -67,13 +67,10 @@ const StyledButton = styled(Button)`
     }
     background: transparent;
   }
-  &:hover {
-    background: transparent;
-  }
-  &:focus {
-    background: transparent;
-  }
+  &:hover,
+  &:focus,
   &:active {
-    background: transparent;
+    background: ${props => props.theme.default.headerButtonActiveBgColor};
+    border-color: ${props => props.theme.default.headerButtonActiveBgColor};
   }
 `;

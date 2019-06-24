@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { middleMobileWidth } from "@edulastic/colors";
 
 export const FlexContainer = styled.div`
   display: flex;
@@ -8,5 +9,12 @@ export const FlexContainer = styled.div`
 
   & > div {
     display: flex;
+  }
+`;
+
+export const BottomActionContainer = styled(FlexContainer)`
+  @media screen and (max-width: ${middleMobileWidth}) {
+    flex-direction: column;
+    align-items: flex-start;
   }
 `;

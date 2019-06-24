@@ -32,8 +32,8 @@ export const CloseModal = styled(Button)`
   height: 32px;
   font-weight: 600;
   color: #ffffff;
-  background-color: #1774f0;
-  border: 1px #1774f0 solid;
+  background-color: #00ad50;
+  border: 1px #00ad50 solid;
   text-transform: uppercase;
   display: flex;
   justify-content: space-evenly;
@@ -42,10 +42,10 @@ export const CloseModal = styled(Button)`
     fill: #ffffff;
   }
   &:hover {
-    color: #1774f0;
+    color: #00ad50;
     background-color: #ffffff;
     svg {
-      fill: #1774f0;
+      fill: #00ad50;
     }
   }
 `;

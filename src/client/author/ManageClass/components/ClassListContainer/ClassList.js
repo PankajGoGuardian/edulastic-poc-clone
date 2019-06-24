@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { Table } from "antd";
 import { find } from "lodash";
@@ -14,6 +14,9 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
   const findSubject = _subject => find(allSubjects, item => item.value === _subject) || { text: _subject };
   const [classGroups, setClassGroups] = useState(groups);
 
+  useEffect(() => {
+    setClassGroups(groups);
+  }, [groups]);
   const columns = [
     {
       title: "Class Name",

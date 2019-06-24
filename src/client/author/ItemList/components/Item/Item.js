@@ -119,8 +119,9 @@ class Item extends Component {
 
   render() {
     const { item, t, windowWidth, selectedToCart, search } = this.props;
+    const resources =
+      item.rows && item.rows.flatMap(row => row.widgets).filter(widget => widget.widgetType === "resource");
     const { isOpenedDetails } = this.state;
-
     return (
       <Container>
         <Question>
@@ -142,6 +143,13 @@ class Item extends Component {
           )}
         </Question>
         <Detail>
+          {resources.map((resource, index) => (
+            <TypeCategory>
+              <Label key={index}>
+                <LabelText>{resource.title}</LabelText>
+              </Label>
+            </TypeCategory>
+          ))}
           <TypeCategory>
             {windowWidth > MAX_TAB_WIDTH && <Standards item={item} search={search} />}
             <CategoryContent>

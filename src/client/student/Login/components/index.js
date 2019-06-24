@@ -53,13 +53,18 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtSh
     }
   });
 
-  if (partnerCheck === "login" && isSignupUsingDaURL) {
-    Partners.login.background = generalSettings ? generalSettings.pageBackground : "";
-  }
-
   return (
     <Wrapper>
-      <LoginWrapper Partners={Partners[partnerCheck]}>
+      <LoginWrapper
+        Partners={Partners[partnerCheck]}
+        image={
+          isSignupUsingDaURL
+            ? generalSettings && generalSettings.pageBackground
+              ? generalSettings.pageBackground
+              : ""
+            : Partners[partnerCheck].background
+        }
+      >
         {Partners[partnerCheck].name !== "login" && <Backdrop Partners={Partners[partnerCheck]} />}
         <Header
           Partners={Partners[partnerCheck]}
@@ -81,7 +86,7 @@ const Login = ({ isSignupUsingDaURL, generalSettings, districtPolicy, districtSh
 export default Login;
 
 const LoginWrapper = styled.div`
-  background: ${props => `#999999 url(${props.Partners.background})`};
+  background: ${props => `#999999 url(${props.image})`};
   background-position: top center;
   background-size: cover;
   background-repeat: no-repeat;

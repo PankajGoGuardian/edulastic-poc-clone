@@ -141,9 +141,10 @@ class ClozeDragDropDisplay extends Component {
         const temp = newAnswers[sourceIndex];
         newAnswers[sourceIndex] = newAnswers[index];
         newAnswers[index] = temp;
+      } else {
+        newAnswers[index] = options.find(option => option.value === value).value;
+        newResponses.splice(newResponses.indexOf(resp => resp.value === value), 1);
       }
-      newAnswers[index] = options.find(option => option.value === value).value;
-      newResponses.splice(newResponses.indexOf(resp => resp.value === value), 1);
     }
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });

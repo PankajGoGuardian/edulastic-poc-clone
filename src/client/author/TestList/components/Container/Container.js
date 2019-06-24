@@ -81,6 +81,7 @@ export const getClearSearchState = () => ({
   questionType: "",
   depthOfKnowledge: "",
   authorDifficulty: "",
+  collectionName: "",
   curriculumId: "",
   status: "",
   grades: [],
@@ -703,7 +704,7 @@ class TestList extends Component {
                     size="large"
                     onClick={this.handleCreateNewModule}
                   >
-                    <IconPlusCircle color="#1774F0" width={15} height={15} />
+                    <IconPlusCircle color="#00AD50" width={15} height={15} />
                     <span>Add Module</span>
                   </StyledButton>
                 )}

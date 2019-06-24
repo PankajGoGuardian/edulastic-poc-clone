@@ -5,4 +5,5 @@ export const CheckContainer = styled.div`
   left: 60px;
   bottom: 20px;
   align-self: ${({ alignSelf }) => (!alignSelf ? "flex-start" : alignSelf)};
+  white-space: nowrap;
 `;

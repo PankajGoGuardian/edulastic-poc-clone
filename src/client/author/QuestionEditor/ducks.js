@@ -28,7 +28,8 @@ import changeViewAction from "../src/actions/view";
 // constants
 export const resourceTypeQuestions = {
   PASSAGE: questionType.PASSAGE,
-  PROTRACTOR: questionType.PROTRACTOR
+  PROTRACTOR: questionType.PROTRACTOR,
+  VIDEO: questionType.VIDEO
 };
 
 export const widgetTypes = {

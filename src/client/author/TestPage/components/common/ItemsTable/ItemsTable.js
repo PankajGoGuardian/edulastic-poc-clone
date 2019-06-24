@@ -20,6 +20,8 @@ const ItemsTable = ({
   onAddItems,
   standards,
   windowWidth,
+  showModal = false,
+  addDuplicate,
   testId,
   search,
   gotoSummary
@@ -40,7 +42,7 @@ const ItemsTable = ({
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => <MainInfoCell testId={testId} data={data} />
+      render: data => <MainInfoCell addDuplicate={addDuplicate} showModal={showModal} testId={testId} data={data} />
     },
     {
       title: "Meta info",
@@ -105,6 +107,8 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
+  showModal: PropTypes.bool,
+  addDuplicate: PropTypes.func,
   standards: PropTypes.object.isRequired,
   windowWidth: PropTypes.number.isRequired
 };

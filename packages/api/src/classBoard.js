@@ -52,11 +52,21 @@ const closeAssignment = ({ assignmentId, classId }) =>
     })
     .then(result => result.data);
 
+const markAbsent = ({ assignmentId, classId, students }) =>
+  api
+    .callApi({
+      method: "post",
+      url: `${prefix}/${assignmentId}/mark-as-absent`,
+      data: { groupId: classId, students }
+    })
+    .then(result => result.data);
+
 export default {
   gradebook,
   testActivity,
   releaseScore,
   markAsDone,
   openAssignment,
-  closeAssignment
+  closeAssignment,
+  markAbsent
 };

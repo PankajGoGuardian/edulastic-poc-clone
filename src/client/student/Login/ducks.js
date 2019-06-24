@@ -189,13 +189,19 @@ const checkEmailPolicy = (policy, role, email) => {
   let inputDomain = email.split("@")[1];
   let allowedDomains;
   if (role === "teacher") {
-    allowedDomains = policy.allowedDomainForTeachers;
+    allowedDomains = policy.allowedDomainForTeachers
+      ? policy.allowedDomainForTeachers.map(item => item.toLocaleLowerCase())
+      : [];
   } else if (role === "student") {
-    allowedDomains = policy.allowedDomainForStudents;
+    allowedDomains = policy.allowedDomainForStudents
+      ? policy.allowedDomainForStudents.map(item => item.toLocaleLowerCase())
+      : [];
   } else if (role === "da") {
-    allowedDomains = policy.allowedDomainsForDistrict;
+    allowedDomains = policy.allowedDomainsForDistrict
+      ? policy.allowedDomainsForDistrict.map(item => item.toLocaleLowerCase())
+      : [];
   }
-  if (allowedDomains.includes(inputDomain)) {
+  if (allowedDomains.includes(inputDomain.toLocaleLowerCase())) {
     return true;
   } else {
     return false;
@@ -206,7 +212,7 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector);
 
   try {
-    const { name, email, password, role, classCode } = payload;
+    const { name, email, password, role, classCode, policyvoilation } = payload;
     let nameList = name.split(" ");
     nameList = nameList.filter(item => (item && item.trim() ? true : false));
     if (!nameList.length) {
@@ -214,7 +220,7 @@ function* signup({ payload }) {
     }
     if (!checkEmailPolicy(districtPolicy, role, email)) {
       throw {
-        message: "Enrollment for your school district is restricted. Please contact your administrator for assistance."
+        message: policyvoilation
       };
     }
 
@@ -271,7 +277,6 @@ function* signup({ payload }) {
       // it receives new user props in each steps of teacher signup and for other roles
     }
   } catch (err) {
-    console.error(err);
     const errorMessage = "Email already exist";
     yield call(message.error, err && err.message ? err.message : errorMessage);
   }

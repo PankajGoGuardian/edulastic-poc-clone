@@ -24,6 +24,7 @@ const ReviewSummary = ({
   tableData,
   onChangeGrade,
   owner,
+  summary,
   onChangeField,
   thumbnail,
   onChangeSubjects,
@@ -85,15 +86,16 @@ const ReviewSummary = ({
       <TableHeaderCol span={8}>Q's</TableHeaderCol>
       <TableHeaderCol span={8}>Points</TableHeaderCol>
     </Row>
-    {tableData.map(data => (
-      <TableBodyRow key={data.key}>
-        <TableBodyCol span={8}>
-          <Standard>{data.standard}</Standard>
-        </TableBodyCol>
-        <TableBodyCol span={8}>{data.qs}</TableBodyCol>
-        <TableBodyCol span={8}>{data.points}</TableBodyCol>
-      </TableBodyRow>
-    ))}
+    {summary.standards &&
+      summary.standards.map(data => (
+        <TableBodyRow key={data.key}>
+          <TableBodyCol span={8}>
+            <Standard>{data.identifier}</Standard>
+          </TableBodyCol>
+          <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+          <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
+        </TableBodyRow>
+      ))}
   </Container>
 );
 
@@ -105,6 +107,7 @@ ReviewSummary.propTypes = {
   onChangeSubjects: PropTypes.func.isRequired,
   grades: PropTypes.array.isRequired,
   thumbnail: PropTypes.string,
+  summary: PropTypes.object,
   owner: PropTypes.bool,
   onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired

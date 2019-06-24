@@ -10,6 +10,7 @@ import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
+import { X_RATIO, Y_RATIO } from "../Authoring/GraphQuadrants/GraphQuadrants";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -523,8 +524,8 @@ class GraphDisplay extends Component {
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
-          <div>Wrong parameters</div>
-        )}
+            <div>Wrong parameters</div>
+          )}
       </Fragment>
     );
   }
@@ -550,8 +551,8 @@ GraphDisplay.propTypes = {
 
 GraphDisplay.defaultProps = {
   smallSize: false,
-  onChange: () => {},
-  changePreviewTab: () => {},
+  onChange: () => { },
+  changePreviewTab: () => { },
   elements: [],
   evaluation: null,
   showAnswer: false,

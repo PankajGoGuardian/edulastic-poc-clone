@@ -125,7 +125,7 @@ class AnnotationsRnd extends Component {
   }
 
   render() {
-    const { question, view, disableDragging } = this.props;
+    const { question, view, disableDragging, isAbove } = this.props;
     if (!question || !question.annotations) return null;
 
     const { updateAnnotation } = this;
@@ -153,7 +153,7 @@ class AnnotationsRnd extends Component {
                 }}
                 onDragStop={(evt, d) => this.handleAnnotationPosition(d, annotation.id)}
                 onResizeStop={(e, dir, ref, delta) => this.handleAnnotationSize(delta, annotation.id)}
-                style={{ zIndex: 10 }}
+                style={{ zIndex: isAbove ? 20 : 10 }}
                 enableResizing={disableDragging ? resizeDisable : resizeEnable}
                 disableDragging={disableDragging}
                 bounds={"parent"}
@@ -181,12 +181,14 @@ AnnotationsRnd.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   questionId: PropTypes.string,
-  disableDragging: PropTypes.bool
+  disableDragging: PropTypes.bool,
+  isAbove: PropTypes.bool
 };
 
 AnnotationsRnd.defaultProps = {
   questionId: "",
-  disableDragging: true
+  disableDragging: true,
+  isAbove: true
 };
 
 const enhance = compose(

@@ -6,7 +6,17 @@ import { helpers } from "@edulastic/common";
 
 import Draggable from "./components/Draggable";
 
-const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, disable = false, isDropDown }) => {
+const DropArea = ({
+  updateData,
+  item,
+  width,
+  showIndex = true,
+  setQuestionData,
+  disable,
+  isDropDown,
+  isAbove,
+  onDoubleClick
+}) => {
   const dropAreaRef = useRef();
 
   const _dragStop = index => (e, d) => {
@@ -44,8 +54,6 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
 
   const _click = index => () => {
     const newItem = cloneDeep(item);
-
-    console.log("click", newItem);
 
     newItem.responses = newItem.responses.map((res, i) => {
       res.active = false;
@@ -102,8 +110,10 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
         top: 0,
         left: 0,
         width: !width ? item.imageWidth || "100%" : width,
-        pointerEvents: disable ? "none" : "auto"
+        pointerEvents: disable ? "none" : "auto",
+        zIndex: isAbove ? 20 : 10
       }}
+      onDoubleClick={onDoubleClick}
       onClick={_addNew}
       onDragStart={() => false}
     >
@@ -131,17 +141,21 @@ const DropArea = ({ updateData, item, width, showIndex = true, setQuestionData, 
 DropArea.propTypes = {
   updateData: PropTypes.func.isRequired,
   item: PropTypes.object.isRequired,
+  onDoubleClick: PropTypes.func,
+  disable: PropTypes.bool,
+  isAbove: PropTypes.bool,
   width: PropTypes.number.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   showIndex: PropTypes.bool,
-  isDropDown: PropTypes.bool,
-  disable: PropTypes.bool
+  isDropDown: PropTypes.bool
 };
 
 DropArea.defaultProps = {
   showIndex: true,
+  isDropDown: false,
   disable: false,
-  isDropDown: false
+  isAbove: false,
+  onDoubleClick: () => {}
 };
 
 export default DropArea;

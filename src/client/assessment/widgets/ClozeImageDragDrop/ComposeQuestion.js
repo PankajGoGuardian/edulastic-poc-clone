@@ -56,7 +56,8 @@ class ComposeQuestion extends Component {
   imageRndRef = createRef();
 
   state = {
-    isEditableResizeMove: false
+    isEditableResizeMove: false,
+    isAnnotationBelow: false
   };
 
   static propTypes = {
@@ -260,6 +261,10 @@ class ComposeQuestion extends Component {
     );
   };
 
+  toggleIsAnnotationBelow = () => {
+    this.setState(prevState => ({ isAnnotationBelow: !prevState.isAnnotationBelow }));
+  };
+
   changeImageHeight = height => {
     const { maxHeight } = clozeImage;
     const newHeight = height > 0 ? height : maxHeight;
@@ -383,8 +388,8 @@ class ComposeQuestion extends Component {
 
   render() {
     const { t, item, setQuestionData } = this.props;
-    const { isEditableResizeMove } = this.state;
-    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
+    const { isEditableResizeMove, isAnnotationBelow } = this.state;
+    const { toggleIsMoveResizeEditable, handleImagePosition, toggleIsAnnotationBelow } = this;
 
     const { maxWidth, maxHeight } = clozeImage;
 
@@ -533,6 +538,8 @@ class ComposeQuestion extends Component {
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={item.id}
                   disableDragging={false}
+                  isAbove={!isAnnotationBelow}
+                  onDoubleClick={toggleIsAnnotationBelow}
                 />
               </div>
               {item.imageUrl && (
@@ -579,12 +586,14 @@ class ComposeQuestion extends Component {
                     />
                   </Rnd>
                   <DropArea
+                    isAbove={isAnnotationBelow}
                     disable={isEditableResizeMove}
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}
                     item={item}
                     width="100%"
                     showIndex={false}
+                    onDoubleClick={toggleIsAnnotationBelow}
                   />
                 </React.Fragment>
               )}

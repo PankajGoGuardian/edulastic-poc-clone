@@ -52,13 +52,12 @@ const addEnrolMultiStudents = ({ classId, data }) => {
     method: "post",
     data
   });
-
+};
 const SearchAddEnrolMultiStudents = data => {
   return api.callApi({
-    url: `${prefix}/student`,
-
+    url: `${prefix}/student`
+  });
 };
-
 
 export default {
   fetch,

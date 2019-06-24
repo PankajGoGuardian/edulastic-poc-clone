@@ -99,7 +99,6 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
-
 const checkUser = payload => {
   return api
     .callApi({
@@ -111,7 +110,6 @@ const checkUser = payload => {
     })
     .then(result => result.data.result);
 };
-
 
 const SearchAddEnrolMultiStudents = (classCode, data) => {
   return api.callApi({
@@ -143,8 +141,6 @@ const validateClassCode = classCode =>
 const validateDistrictPolicy = params =>
   api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
 
-
-
 export default {
   getUser,
   fetchUsers,
@@ -158,14 +154,11 @@ export default {
   resetPassword,
   addMultipleStudents,
 
-  checkUser
-
+  checkUser,
 
   SearchAddEnrolMultiStudents,
 
   addStudentsToOtherClass,
   validateClassCode,
   validateDistrictPolicy
-
-
 };

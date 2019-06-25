@@ -1028,7 +1028,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown>&nbsp; Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown>&nbsp;</p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
         response_ids: [],
         ui_style: {
@@ -1060,7 +1060,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
+          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>&nbsp;, <textinput contenteditable="false">Text Input</textinput>&nbsp;</p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",

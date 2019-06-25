@@ -223,12 +223,13 @@ export const ToolbarContainer = styled.div.attrs({
   }
 `;
 
+// if (theme === "border") {
 export const Placeholder = styled.div.attrs({
   className: "froala-placeholder"
 })`
   position: absolute;
-  top: ${props => (props.toolbarExpanded ? "50px" : "0")};
-  left: 0;
+  top: ${props => (props.theme === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
+  left: ${props => (props.theme === "border" ? "23px" : 0)};
   right: 0;
   opacity: 0.7;
   color: #cccccc;
@@ -738,7 +739,7 @@ const CustomEditor = ({
       <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         {showPlaceholder && (
-          <Placeholder toolbarExpanded={toolbarExpanded} showMargin={!tag}>
+          <Placeholder toolbarExpanded={toolbarExpanded} theme={theme} showMargin={!tag}>
             {config.placeholder}
           </Placeholder>
         )}

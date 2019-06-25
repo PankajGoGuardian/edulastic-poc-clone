@@ -422,7 +422,7 @@ class ComposeQuestion extends Component {
     const canvasWidth = (imageWidth < maxWidth ? maxWidth : imageWidth) + imageLeft;
     const canvasHeight = (imageHeight < maxHeight ? maxHeight : imageHeight) + imageTop;
     if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth - 10, height: imageHeight - 10 });
+      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
 
     return (

@@ -24,7 +24,7 @@ import {
   getPerformanceByStandardsLoadingSelector,
   getPerformanceByStandardsReportSelector
 } from "./ducks";
-import { getAssignmentsRequestAction, getReportsAssignments } from "../../../assignmentsDucks";
+
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 
@@ -41,7 +41,7 @@ const MasteryLevels = ({ scaleInfo }) => (
 
 const PAGE_SIZE = 15;
 
-const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, assignments, settings }) => {
+const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(compareByMode.CLASS);
@@ -63,13 +63,10 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
   );
 
   const getTitleByTestId = testId => {
-    const arr = get(assignments, "data.result.tests", []);
-    const item = arr.find(o => o._id === testId);
-
-    if (item) {
-      return item.title;
-    }
-    return "";
+    const {
+      selectedTest: { title: testTitle = "" }
+    } = settings;
+    return testTitle;
   };
 
   useEffect(() => {
@@ -327,24 +324,17 @@ PerformanceByStandards.propTypes = {
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
-  assignments: PropTypes.array,
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
-};
-
-PerformanceByStandards.defaultProps = {
-  assignments: []
 };
 
 const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
-    report: getPerformanceByStandardsReportSelector(state),
-    assignments: getReportsAssignments(state)
+    report: getPerformanceByStandardsReportSelector(state)
   }),
   {
-    getPerformanceByStandards: getPerformanceByStandardsAction,
-    getAssignmentsRequestAction: getAssignmentsRequestAction
+    getPerformanceByStandards: getPerformanceByStandardsAction
   }
 );
 

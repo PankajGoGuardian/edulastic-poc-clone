@@ -116,7 +116,7 @@ export const SingleAssessmentReportContainer = props => {
         <Route
           exact
           path={`/author/reports/performance-by-standards/test/:testId?`}
-          render={_props => <PerformanceByStandards {..._props} showFilter={props.showFilter} settings={settings} />}
+          render={_props => <PerformanceByStandards {..._props} settings={settings} />}
         />
         <Route
           exact

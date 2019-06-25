@@ -143,7 +143,7 @@ class MathFormulaPreview extends Component {
       item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
     let statusColor = theme.widgets.mathFormula.inputColor;
-    if (!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
+    if (latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
       statusColor = !isEmpty(evaluation)
         ? evaluation.some(ie => ie)
           ? theme.widgets.mathFormula.inputCorrectColor
@@ -186,7 +186,7 @@ class MathFormulaPreview extends Component {
               style={{ background: statusColor, ...cssStyles }}
             />
           )}
-          {!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+          {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
             <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
           )}
         </MathInputWrapper>

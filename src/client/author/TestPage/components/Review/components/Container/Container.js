@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -20,7 +21,6 @@ import { SecondHeader } from "./styled";
 import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
-import ModalCreateTestItem from "../../../ModalCreateTestItem/ModalCreateTestItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
 const scoreOfItem = item => {
@@ -147,15 +147,18 @@ class Review extends PureComponent {
   };
 
   handleDuplicateItem = duplicateTestItemId => {
-    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      test: { title, _id: testId },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "Duplicate" }, () => {
-      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
-    });
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}#duplicate`);
   };
 
   handlePreviewTestItem = data => {
@@ -266,26 +269,31 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} owner={owner} />
-              ) : (
-                <List
-                  onChangePoints={this.handleChangePoints}
-                  onPreview={this.handlePreviewTestItem}
-                  testItems={test.testItems}
-                  rows={rows}
-                  standards={standards}
-                  selected={selected}
+                <ItemsTable
+                  items={test.testItems}
                   setSelected={this.setSelected}
-                  onSortEnd={this.moveTestItems}
-                  types={types}
-                  owner={owner}
-                  readOnlyMode={readOnlyMode}
-                  scoring={test.scoring}
-                  questions={questions}
-                  mobile={!isSmallSize}
-                  useDragHandle
+                  selected={selected}
+                  handlePreview={this.handlePreview}
                 />
-              )}
+              ) : (
+                  <List
+                    onChangePoints={this.handleChangePoints}
+                    onPreview={this.handlePreviewTestItem}
+                    testItems={test.testItems}
+                    rows={rows}
+                    standards={standards}
+                    selected={selected}
+                    setSelected={this.setSelected}
+                    onSortEnd={this.moveTestItems}
+                    types={types}
+                    owner={owner}
+                    readOnlyMode={readOnlyMode}
+                    scoring={test.scoring}
+                    questions={questions}
+                    mobile={!isSmallSize}
+                    useDragHandle
+                  />
+                )}
             </Paper>
           </Col>
           <Col
@@ -330,7 +338,6 @@ class Review extends PureComponent {
           test={test}
           hideModal={this.hidePreviewModal}
         />
-        {createTestItemModalVisible && <ModalCreateTestItem type={questionCreateType} />}
       </div>
     );
   }
@@ -353,6 +360,7 @@ Review.propTypes = {
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   connect(
     state => ({

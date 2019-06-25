@@ -4,7 +4,7 @@ import { test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get, keyBy } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
 import moment from "moment";
 import {
@@ -345,7 +345,7 @@ function* receiveTestByIdSaga({ payload }) {
   try {
     const createdItems = yield select(getTestCreatedItemsSelector);
     let entity = yield call(testsApi.getById, payload.id, { data: true });
-    entity.testItems = [...entity.testItems, ...createdItems];
+    entity.testItems = uniqBy([...entity.testItems, ...createdItems], "_id");
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
@@ -550,7 +550,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
 function* getEvaluation(testItemId) {
   const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
   const testItem = testItems.find(x => x._id === testItemId) || {};
-  const questions = keyBy(testItem.data.questions, "id");
+  const questions = _keyBy(testItem.data.questions, "id");
   const answers = yield select(state => get(state, "answers", {}));
   const evaluation = yield evaluateItem(answers, questions);
   return evaluation;
@@ -583,7 +583,7 @@ function* showAnswerSaga({ payload }) {
   try {
     const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
     const testItem = testItems.find(x => x._id === payload.id) || {};
-    const questions = keyBy(testItem.data.questions, "id");
+    const questions = _keyBy(testItem.data.questions, "id");
     const answers = yield select(state => get(state, "answers", {}));
     const { evaluation } = yield createShowAnswerData(questions, answers);
     yield put({

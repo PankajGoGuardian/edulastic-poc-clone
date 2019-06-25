@@ -11,7 +11,7 @@ import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar"
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag } from "./styled";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio } }) => (
+const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {} } }) => (
   <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
     <FlexContainer>
       {standards && !!standards.length && (

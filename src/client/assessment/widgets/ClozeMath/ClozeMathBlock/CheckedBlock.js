@@ -14,7 +14,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
 
   let checkBoxClass = "";
 
-  if (evaluation[id] !== undefined) {
+  if (userAnswer && evaluation[id] !== undefined) {
     checkBoxClass = evaluation[id] ? "right" : "wrong";
   }
 
@@ -37,7 +37,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
       <span className="value" ref={filedRef}>
         {userAnswer.value}
       </span>
-      {evaluation[id] !== undefined && (
+      {userAnswer && evaluation[id] && (
         <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
       )}
     </CheckBox>

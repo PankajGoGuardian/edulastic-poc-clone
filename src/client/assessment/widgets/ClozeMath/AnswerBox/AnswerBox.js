@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 import React from "react";
 import PropTypes from "prop-types";
 import { find, isEmpty } from "lodash";
@@ -46,7 +47,7 @@ const AnswerBox = ({
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
   const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
-  let altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
+  const altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
     const _altAnswers = [];
 
     if (altMathAnswers[altIndex]) {

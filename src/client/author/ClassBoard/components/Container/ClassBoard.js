@@ -558,7 +558,7 @@ class ClassBoard extends Component {
                 >
                   <RedirectButton
                     onClick={this.handleMarkAsDone}
-                    disabled={!enableMarkAsDone || status.toLowerCase() === "done"}
+                    disabled={!enableMarkAsDone || assignmentStatus.toLowerCase() === "done"}
                   >
                     Mark as Done
                   </RedirectButton>

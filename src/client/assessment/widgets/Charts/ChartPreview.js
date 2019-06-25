@@ -25,7 +25,7 @@ const ChartPreview = ({
   previewTab,
   view,
   showQuestionNumber,
-  qIndex,
+  disableResponse,
   evaluation,
   changePreviewTab
 }) => {
@@ -103,6 +103,7 @@ const ChartPreview = ({
         {...passData}
         gridParams={ui_style}
         view={view}
+        disableResponse={disableResponse}
         previewTab={previewTab}
         saveAnswer={saveAnswerHandler}
         correct={correct}
@@ -118,6 +119,7 @@ ChartPreview.propTypes = {
   previewTab: PropTypes.string,
   userAnswer: PropTypes.array,
   view: PropTypes.string,
+  disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
   evaluation: PropTypes.any,
@@ -132,6 +134,7 @@ ChartPreview.defaultProps = {
   qIndex: null,
   showQuestionNumber: false,
   evaluation: null,
+  disableResponse: false,
   changePreviewTab: () => {}
 };
 

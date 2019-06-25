@@ -17,7 +17,7 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
+const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -108,7 +108,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
         previewTab={previewTab}
         circles={localData}
         view={view}
-        onMouseDown={onMouseDown}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />
@@ -129,9 +129,14 @@ LineChart.propTypes = {
     snapTo: PropTypes.number,
     pointStyle: PropTypes.string
   }).isRequired,
+  disableResponse: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired
+};
+
+LineChart.defaultProps = {
+  disableResponse: false
 };
 
 export default withGrid(LineChart);

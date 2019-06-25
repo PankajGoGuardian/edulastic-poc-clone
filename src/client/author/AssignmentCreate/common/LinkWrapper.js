@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { darkBlue } from "@edulastic/colors";
 
 const LinkWrapper = styled.div`
   text-transform: uppercase;
@@ -7,7 +6,7 @@ const LinkWrapper = styled.div`
   font-weight: 800;
   cursor: pointer;
   display: flex;
-  color: ${darkBlue};
+  color: ${props => props.theme.themeTextColor};
 `;
 
 export default LinkWrapper;

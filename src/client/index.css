@@ -100,6 +100,11 @@ pre {
 
 a {
   background-color: transparent;
+  color: #00ad50;
+}
+
+a:hover {
+  color: #00ad50;
 }
 
 /**
@@ -1991,4 +1996,17 @@ span.token.active-word {
 
 .ant-modal-mask {
   z-index: 1003;
+}
+
+.ant-spin {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  -webkit-transform: translate(-50%, -50%);
+  -moz-transform: translate(-50%, -50%);
+}
+
+.ant-spin-dot .ant-spin-dot-item {
+  background-color: #00ad50;
 }

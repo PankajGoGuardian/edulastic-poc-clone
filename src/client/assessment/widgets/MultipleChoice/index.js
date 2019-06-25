@@ -274,7 +274,7 @@ class MultipleChoice extends Component {
                 <Display
                   checkAnswer
                   view={view}
-                  onChange={this.handleAddAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   smallSize={smallSize}
                   userSelections={userAnswer}
                   options={shuffledOptions}
@@ -322,7 +322,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   uiStyle={uiStyle}
                   validation={item.validation}
-                  onChange={this.handleAddAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
                   multipleResponses={multipleResponses}

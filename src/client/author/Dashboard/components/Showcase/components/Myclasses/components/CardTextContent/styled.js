@@ -1,9 +1,10 @@
 import styled from "styled-components";
+import { fadedGreen, lightBlue, green, greenThird } from "@edulastic/colors";
 import { Row, Col, Icon } from "antd";
 export const IconWrapper = styled.div`
   width: 43px;
   height: 43px;
-  background: rgba(94, 181, 0, 0.2);
+  background: ${fadedGreen};
   border-radius: 50%;
   position: relative;
 `;
@@ -14,7 +15,7 @@ export const OverlayText = styled.div`
   left: 0;
   position: absolute;
   text-align: center;
-  color: #5eb500;
+  color: ${greenThird};
   font-size: 14px;
   z-index: 30;
   line-height: 2.8rem;
@@ -42,7 +43,7 @@ export const Image = styled.img`
 `;
 
 export const TextDiv = styled.p`
-  color: #22a7f0;
+  color: ${lightBlue};
   size: 12px;
   text-overflow: ellipsis;
   display: block;
@@ -51,6 +52,6 @@ export const TextDiv = styled.p`
   white-space: nowrap;
 `;
 export const IconRightArrow = styled(Icon)`
-  color: #22a7f0;
+  color: ${green};
   font-size: 20px;
 `;

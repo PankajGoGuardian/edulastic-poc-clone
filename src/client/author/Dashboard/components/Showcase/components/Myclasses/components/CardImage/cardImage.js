@@ -6,7 +6,16 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { TextWrapper } from "../../../../../styledComponents";
 
-import { Image, OverlayText, IconWrapper, TextDiv, SpanLeftMargin, SpanRightMargin } from "./styled";
+import {
+  Image,
+  OverlayText,
+  IconWrapper,
+  TextDiv,
+  SpanLeftMargin,
+  SpanRightMargin,
+  RowWrapperGrade,
+  RowWrapperSTudentCount
+} from "./styled";
 
 const CardImage = ({ data, history }) => {
   const { name, grade, studentCount, subject, thumbnail } = data;
@@ -26,7 +35,7 @@ const CardImage = ({ data, history }) => {
                 <TextDiv>{name}</TextDiv>
               </Tooltip>
             </Row>
-            <Row style={{ marginTop: "0.3rem" }}>
+            <RowWrapperGrade>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 <SpanRightMargin>Grade</SpanRightMargin>
                 {grade}
@@ -42,12 +51,12 @@ const CardImage = ({ data, history }) => {
                   ""
                 )}
               </TextWrapper>
-            </Row>
-            <Row style={{ marginTop: "1.3rem" }}>
+            </RowWrapperGrade>
+            <RowWrapperSTudentCount>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
                 {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
-            </Row>
+            </RowWrapperSTudentCount>
           </Col>
           <Col span={6}>
             <IconWrapper bgcolor="#FFFFFF" width="34px" height="34px" padding="0.5">

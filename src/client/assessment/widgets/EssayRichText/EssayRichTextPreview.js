@@ -164,7 +164,22 @@ const EssayRichTextPreview = ({
           />
         )}
         {!Array.isArray(userAnswer) && isReadOnly && (
-          <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: userAnswer }} />
+          <FlexContainer
+            alignItems="flex-start"
+            justifyContent="flex-start"
+            style={{
+              minHeight: "150px",
+              borderRadius: "10px",
+              border: "1px solid",
+              paddingLeft: "6px"
+            }}
+          >
+            <MathFormulaDisplay
+              dangerouslySetInnerHTML={{
+                __html: !userAnswer ? "<p>Essay Editor Box</p>" : userAnswer
+              }}
+            />
+          </FlexContainer>
         )}
 
         {item.show_word_count && (userAnswer || !isReadOnly) && (

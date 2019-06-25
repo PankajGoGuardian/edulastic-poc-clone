@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
@@ -108,23 +108,24 @@ const AnswerBox = ({
           <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
         </Answer>
       ))}
-
-      <div>
-        <Title>{`Alternate answers`}</Title>
-        {Object.keys(alternateAnswers).map(key => (
-          <Answer key={key}>
-            <Label>{key}</Label>
-            <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
-              {alternateAnswers[key]
-                .reduce((acc, alternateAnswer) => {
-                  acc.push(alternateAnswer.value);
-                  return acc;
-                }, [])
-                .join()}
-            </AnswerBoxText>
-          </Answer>
-        ))}
-      </div>
+      {!isEmpty(alternateAnswers) && (
+        <div>
+          <Title>Alternate answers</Title>
+          {Object.keys(alternateAnswers).map(key => (
+            <Answer key={key}>
+              <Label>{key}</Label>
+              <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
+                {alternateAnswers[key]
+                  .reduce((acc, alternateAnswer) => {
+                    acc.push(alternateAnswer.value);
+                    return acc;
+                  }, [])
+                  .join()}
+              </AnswerBoxText>
+            </Answer>
+          ))}
+        </div>
+      )}
     </Wrapper>
   );
 };

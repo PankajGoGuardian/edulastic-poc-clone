@@ -37,7 +37,9 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
       <span className="value" ref={filedRef}>
         {userAnswer.value}
       </span>
-      {evaluation[index] && <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>}
+      {evaluation[id] !== undefined && (
+        <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
+      )}
     </CheckBox>
   );
 };

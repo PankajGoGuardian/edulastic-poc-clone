@@ -69,7 +69,7 @@ var getChecks = function getChecks(answer) {
       } else if (key === "syntax") {
         acc += options.argument === undefined ? fieldVal : "".concat(fieldVal, "=").concat(options.argument);
       } else {
-        acc += "".concat(key, "=").concat(fieldVal);
+        acc += "".concat(fieldVal);
       }
 
       return "".concat(acc, ",");

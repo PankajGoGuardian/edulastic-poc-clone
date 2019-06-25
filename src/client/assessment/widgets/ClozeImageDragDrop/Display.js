@@ -298,10 +298,10 @@ class Display extends Component {
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? "dashed" : "solid",
-                  height: responseContainer.height || "auto",
-                  minHeight: btnStyle.height,
-                  width: responseContainer.width || "max-content",
-                  minWidth: response.minWidth,
+                  height: "auto", // responseContainer.height || "auto",
+                  width: "auto",
+                  minHeight: responseContainer.height || "auto",
+                  minWidth: responseContainer.width || "auto",
                   maxWidth: response.maxWidth
                 }}
                 className="imagelabeldragdrop-droppable active"

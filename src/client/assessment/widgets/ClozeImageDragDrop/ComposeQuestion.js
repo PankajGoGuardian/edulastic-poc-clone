@@ -527,13 +527,13 @@ class ComposeQuestion extends Component {
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
               height={canvasHeight + 4}
-              width={canvasWidth + 4}
+              width={canvasWidth}
             >
               <div
                 style={{
                   position: "relative",
-                  width: imageWidth - 10 || "100%",
-                  height: imageHeight - 10 || "100%"
+                  width: imageWidth || "100%",
+                  height: imageHeight || "100%"
                 }}
               >
                 <AnnotationRnd

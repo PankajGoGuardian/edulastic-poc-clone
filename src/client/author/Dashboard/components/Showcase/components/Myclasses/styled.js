@@ -14,6 +14,6 @@ export const CardBox = styled.div`
   margin-bottom: 2rem;
   padding: 0.5rem;
   border-radius: 4px;
-  width: 270px;
-  height: 260px;
+  width: 280px;
+  height: 270px;
 `;

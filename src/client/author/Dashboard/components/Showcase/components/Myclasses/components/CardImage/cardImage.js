@@ -1,12 +1,12 @@
 import React from "react";
-import { Row, Col } from "antd";
+import { Row, Col, Tooltip } from "antd";
 import cardImg from "../../../../../../assets/images/cardImg.png";
 import rightArrow from "../../../../../../assets/svgs/right-arrow.svg";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { TextWrapper } from "../../../../../styledComponents";
 
-import { Image, OverlayText, IconWrapper } from "./styled";
+import { Image, OverlayText, IconWrapper, TextDiv, SpanLeftMargin, SpanRightMargin } from "./styled";
 
 const CardImage = ({ data, history }) => {
   const { name, grade, studentCount, subject, thumbnail } = data;
@@ -22,18 +22,30 @@ const CardImage = ({ data, history }) => {
         <Row>
           <Col span={18}>
             <Row>
-              <TextWrapper color="#FFFFFF" size="15px" fw="bold">
-                {name}
+              <Tooltip title={name} placement="topLeft">
+                <TextDiv>{name}</TextDiv>
+              </Tooltip>
+            </Row>
+            <Row style={{ marginTop: "0.3rem" }}>
+              <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
+                <SpanRightMargin>Grade</SpanRightMargin>
+                {grade}
+
+                {subject ? (
+                  <>
+                    <SpanLeftMargin>|</SpanLeftMargin>
+                    <Tooltip title={subject} placement="topLeft">
+                      <SpanLeftMargin>{subject}</SpanLeftMargin>
+                    </Tooltip>
+                  </>
+                ) : (
+                  ""
+                )}
               </TextWrapper>
             </Row>
-            <Row>
+            <Row style={{ marginTop: "1.3rem" }}>
               <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
-                Grade {grade} | {subject}
-              </TextWrapper>
-            </Row>
-            <Row>
-              <TextWrapper color="#FFFFFF" size="12px" fw="SemiBold">
-                {studentCount} {studentCount > 1 ? "Students" : "Student"}
+                {studentCount || 0} {studentCount > 1 ? "Students" : "Student"}
               </TextWrapper>
             </Row>
           </Col>

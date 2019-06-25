@@ -30,3 +30,19 @@ export const IconWrapper = styled.div`
   background: #ffffff;
   cursor: pointer;
 `;
+export const TextDiv = styled.p`
+  color: #ffffff;
+  font-size: 18px;
+  text-overflow: ellipsis;
+  display: block;
+  width: 180px;
+  overflow: hidden;
+  white-space: nowrap;
+  font-weight: bold;
+`;
+export const SpanLeftMargin = styled.span`
+  margin-left: 0.5rem;
+`;
+export const SpanRightMargin = styled.span`
+  margin-right: 0.2rem;
+`;

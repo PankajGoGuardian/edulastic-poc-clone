@@ -41,7 +41,7 @@ class TestItemCol extends Component {
   };
 
   renderTabContent = (widget, flowLayout) => {
-    const { preview, showFeedback, multiple, questions, qIndex, evaluation, ...restProps } = this.props;
+    const { preview, showFeedback, multiple, questions, qIndex, evaluation, previewTab, ...restProps } = this.props;
     const timespent = widget.timespent !== undefined ? widget.timespent : null;
 
     const question = questions[widget.reference];

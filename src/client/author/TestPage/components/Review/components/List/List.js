@@ -89,6 +89,7 @@ const SortableItem = SortableElement(
                 scrolling={item.scrolling}
                 questions={questions}
                 windowWidth="100%"
+                isReviewTab
               />
             </FlexContainer>
           </FlexContainer>
@@ -115,6 +116,7 @@ const SortableItem = SortableElement(
                     scrolling={item.scrolling}
                     questions={questions}
                     windowWidth="100%"
+                    isReviewTab
                   />
                 </FlexContainer>
                 <FlexContainer style={{ flex: 1 }}>

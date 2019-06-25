@@ -11,12 +11,23 @@ const TemplateBox = ({ resprops, id }) => {
   if (!id) {
     return "NOID";
   }
-  const { hasGroupResponses, btnStyle, smallSize, options, userAnswers, onDrop, responseIDs } = resprops;
+  const {
+    hasGroupResponses,
+    btnStyle,
+    smallSize,
+    options,
+    userAnswers,
+    onDrop,
+    responseIDs,
+    isReviewTab,
+    cAnswers
+  } = resprops;
   const { index: dropTargetIndex } = responseIDs.find(response => response.id === id) || {};
 
   const getLabel = () => {
-    if (userAnswers[dropTargetIndex]) {
-      const foundedItem = options.find(option => option.value === userAnswers[dropTargetIndex]);
+    const answers = isReviewTab ? cAnswers : userAnswers;
+    if (answers[dropTargetIndex]) {
+      const foundedItem = options.find(option => option.value === answers[dropTargetIndex]);
       if (foundedItem) {
         return foundedItem.label;
       }
@@ -24,12 +35,13 @@ const TemplateBox = ({ resprops, id }) => {
   };
 
   const getLabelForGroup = () => {
-    if (userAnswers[dropTargetIndex] && userAnswers[dropTargetIndex].data) {
+    const answers = isReviewTab ? cAnswers : userAnswers;
+    if (answers[dropTargetIndex] && answers[dropTargetIndex].data) {
       const foundedGroup = options.find(option =>
-        option.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data)
+        option.options.find(inOption => inOption.value === answers[dropTargetIndex].data)
       );
       if (foundedGroup) {
-        const foundItem = foundedGroup.options.find(inOption => inOption.value === userAnswers[dropTargetIndex].data);
+        const foundItem = foundedGroup.options.find(inOption => inOption.value === answers[dropTargetIndex].data);
         if (foundItem) {
           return foundItem.label;
         }

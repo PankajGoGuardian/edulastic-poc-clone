@@ -5,6 +5,7 @@ import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
+import QuillSortableHintsList from "../../../components/QuillSortableHintsList";
 import QuestionTextArea from "../../../components/QuestionTextArea";
 import { updateVariables } from "../../../utils/variables";
 
@@ -19,7 +20,7 @@ class Extras extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.extras"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.solution"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -28,7 +29,7 @@ class Extras extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.extras"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.solution"), node.offsetTop, node.scrollHeight);
     }
   }
 
@@ -66,7 +67,7 @@ class Extras extends Component {
 
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Subtitle>{t("component.options.extras")}</Subtitle>
+        <Subtitle>{t("component.options.solution")}</Subtitle>
 
         <Row>
           <Col md={24}>
@@ -78,6 +79,8 @@ class Extras extends Component {
             />
           </Col>
         </Row>
+
+        <QuillSortableHintsList />
       </Widget>
     );
   }

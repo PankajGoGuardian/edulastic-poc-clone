@@ -49,7 +49,7 @@ class LayoutsComponent extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -58,7 +58,7 @@ class LayoutsComponent extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
     }
   }
 

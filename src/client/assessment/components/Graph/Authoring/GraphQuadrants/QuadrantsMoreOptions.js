@@ -122,12 +122,12 @@ class QuadrantsMoreOptions extends Component {
 
         <QuestionSection
           section="advanced"
-          label="Layout"
+          label={t("component.graphing.display")}
           cleanSections={cleanSections}
           fillSections={fillSections}
           advancedAreOpen={advancedAreOpen}
         >
-          <Subtitle>{t("component.graphing.layoutoptionstitle")}</Subtitle>
+          <Subtitle>{t("component.graphing.display")}</Subtitle>
           <Row gutter={60}>
             <Col md={12}>
               <Label>{t("component.graphing.layoutoptions.width")}</Label>

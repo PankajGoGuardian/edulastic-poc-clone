@@ -161,7 +161,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -249,7 +250,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -339,7 +341,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -428,7 +431,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -518,7 +522,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -536,7 +541,8 @@ export const getCards = onSelectQuestionType => {
         line_color: [mainBlueColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {}
+        validation: {},
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -565,7 +571,8 @@ export const getCards = onSelectQuestionType => {
             }
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -599,7 +606,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -621,7 +629,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -662,7 +671,8 @@ export const getCards = onSelectQuestionType => {
           { id: "test26", value: "clean", active: false },
           { id: "test27", value: "formula", active: true },
           { id: "test28", value: "specialCharacters", active: true }
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -680,7 +690,8 @@ export const getCards = onSelectQuestionType => {
         show_word_limit: ON_LIMIT,
         show_word_count: true,
         ui_style: { min_height: 300 },
-        validation: { valid_response: { score: 1 }, max_score: 1 }
+        validation: { valid_response: { score: 1 }, max_score: 1 },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -699,7 +710,8 @@ export const getCards = onSelectQuestionType => {
             value: ""
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -726,7 +738,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -753,7 +766,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: true
+        multiple_responses: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -776,7 +790,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -804,7 +819,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: true
+        multiple_responses: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -825,7 +841,8 @@ export const getCards = onSelectQuestionType => {
             value: [1, 2, 0, 3]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -858,7 +875,8 @@ export const getCards = onSelectQuestionType => {
             value: [[], []]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -886,7 +904,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -905,7 +924,8 @@ export const getCards = onSelectQuestionType => {
             value: [0, 1, 2]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -931,7 +951,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -956,7 +977,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -982,7 +1004,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1016,7 +1039,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1048,7 +1072,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1078,7 +1103,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1108,7 +1134,8 @@ export const getCards = onSelectQuestionType => {
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
           { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1150,7 +1177,8 @@ export const getCards = onSelectQuestionType => {
         rubricReference: "",
         sampleAnswer: "",
         distractorRationalePerResponse: "",
-        distractorRationaleOptions: []
+        distractorRationaleOptions: [],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1186,7 +1214,8 @@ export const getCards = onSelectQuestionType => {
         rubricReference: "",
         sampleAnswer: "",
         distractorRationalePerResponse: "",
-        distractorRationaleOptions: []
+        distractorRationaleOptions: [],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1270,7 +1299,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1354,7 +1384,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1462,7 +1493,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: [],
           rounding: "none"
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1477,7 +1509,8 @@ export const getCards = onSelectQuestionType => {
         alt: "A 180-degree standard protractor.",
         width: 530,
         height: 265,
-        rotate: true
+        rotate: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1597,7 +1630,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: false
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1609,7 +1643,8 @@ export const getCards = onSelectQuestionType => {
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",
-        content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items."
+        content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items.",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       list: ["Item A", "Item B"],
       onSelectQuestionType
@@ -1632,7 +1667,8 @@ export const getCards = onSelectQuestionType => {
           posterImage: "",
           hideControls: false,
           captionURL: ""
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1687,7 +1723,8 @@ export const getCards = onSelectQuestionType => {
         ],
         symbols: ["units_si", "units_us", "qwerty"],
         template: EMBED_RESPONSE,
-        templateDisplay: false
+        templateDisplay: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1742,7 +1779,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1797,7 +1835,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1857,7 +1896,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1912,7 +1952,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["matrices", "general", "qwerty"]
+        symbols: ["matrices", "general", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1988,7 +2029,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["units_si", "units_us", "qwerty"]
+        symbols: ["units_si", "units_us", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -2067,7 +2109,8 @@ export const getCards = onSelectQuestionType => {
           "right_move",
           "Backspace",
           "="
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -2113,7 +2156,8 @@ export const getCards = onSelectQuestionType => {
         ],
         metadata: {},
         is_math: true,
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     }

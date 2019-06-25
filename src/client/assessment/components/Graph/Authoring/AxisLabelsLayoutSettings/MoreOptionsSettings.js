@@ -117,7 +117,7 @@ class MoreOptionsSettings extends Component {
     return (
       <Fragment>
         <MoreOptionsContainer>
-          <MoreOptionsSubHeading>{t("component.graphing.layoutoptionstitle")}</MoreOptionsSubHeading>
+          <MoreOptionsSubHeading>{t("component.graphing.display")}</MoreOptionsSubHeading>
 
           <MoreOptionsColumnContainer>
             <MoreOptionsColumn>

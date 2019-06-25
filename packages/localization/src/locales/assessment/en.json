@@ -14,6 +14,8 @@
   },
   "component": {
     "checkAnswer": "Check answer",
+    "hint": "Hint",
+    "addANewHint": "Add a new hint",
     "options": {
       "instant_feedback": "Check answer button",
       "check_answer": "Check answer",
@@ -179,7 +181,11 @@
       "pointStyle": "Point style",
       "dot": "Dot",
       "cross": "Cross",
-      "multicolorBars": "Multicolor bars"
+      "multicolorBars": "Multicolor bars",
+      "solution": "Solution",
+      "overallDistractorRationale": "Overall Distractor Rationale",
+      "explanation": "Explanation",
+      "display": "Display"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -550,6 +556,7 @@
       "addnewpossibleresponsebtn": "Add",
       "optionstitle": "Advanced Options",
       "layoutoptionstitle": "Layout",
+      "display": "Display",
       "layoutoptions": {
         "width": "Width (px)",
         "height": "Height (px)",

@@ -1126,7 +1126,7 @@ response .index {
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   display: flex;
-  min-height: 35px;
+  /* min-height: 35px; 5043*/
 }
 
 .imagelabeldragdrop-droppable.noAnswer {

@@ -186,7 +186,8 @@ class Display extends Component {
                 : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`,
               position: "absolute",
               background: backgroundColor,
-              borderRadius: 5
+              borderRadius: 5,
+              display: "inline-flex"
             };
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;

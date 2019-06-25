@@ -175,6 +175,7 @@ const CustomInput = styled.div`
 
   .ant-input {
     padding: ${({ noIndent }) => (noIndent ? "4px 2px" : null)};
+    min-height: 18px;
   }
 `;
 

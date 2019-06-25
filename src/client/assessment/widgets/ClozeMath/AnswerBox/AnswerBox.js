@@ -46,42 +46,57 @@ const AnswerBox = ({
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
   const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
-  const altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
+  let altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
     const _altAnswers = [];
 
     if (altMathAnswers[altIndex]) {
       altMathAnswers[altIndex].map(answer => {
         const { index } = find(maths, d => d.id === answer[0].id) || { index: 0 };
-        return _altAnswers.push({
-          index,
-          value: answer[0].value,
-          isMath: true
-        });
+        if (answer[0].value) {
+          return _altAnswers.push({
+            index,
+            value: answer[0].value,
+            isMath: true
+          });
+        }
       });
     }
     if (altDropDowns[altIndex]) {
       altDropDowns[altIndex].map(answer => {
         const { index } = find(dropDowns, d => d.id === answer.id) || { index: 0 };
-        return _altAnswers.push({
-          index,
-          value: answer.value,
-          isMath: false
-        });
+        if (answer.value) {
+          return _altAnswers.push({
+            index,
+            value: answer.value,
+            isMath: false
+          });
+        }
       });
     }
 
     if (altInputs[altIndex]) {
       altInputs[altIndex].map(answer => {
         const { index } = find(inputs, d => d.id === answer.id) || { index: 0 };
-        return _altAnswers.push({
-          index,
-          value: answer.value,
-          isMath: false
-        });
+        if (answer.value) {
+          return _altAnswers.push({
+            index,
+            value: answer.value,
+            isMath: false
+          });
+        }
       });
     }
 
     return _altAnswers.sort((a, b) => a.index - b.index);
+  });
+  const alternateAnswers = {};
+  altAnswers.forEach(altAnswer => {
+    altAnswer.forEach(alt => {
+      alternateAnswers[alt.index + 1] = alternateAnswers[alt.index + 1] || [];
+      if (alt.value) {
+        alternateAnswers[alt.index + 1].push({ value: alt.value, isMath: alt.isMath });
+      }
+    });
   });
 
   return (
@@ -94,17 +109,22 @@ const AnswerBox = ({
         </Answer>
       ))}
 
-      {altAnswers.map((altAnswer, altIndex) => (
-        <div key={altIndex}>
-          <Title>{`Alternate answers ${altIndex + 1}`}</Title>
-          {altAnswer.map((answer, index) => (
-            <Answer key={index}>
-              <Label>{answer.index + 1}</Label>
-              <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
-            </Answer>
-          ))}
-        </div>
-      ))}
+      <div>
+        <Title>{`Alternate answers`}</Title>
+        {Object.keys(alternateAnswers).map(key => (
+          <Answer key={key}>
+            <Label>{key}</Label>
+            <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
+              {alternateAnswers[key]
+                .reduce((acc, alternateAnswer) => {
+                  acc.push(alternateAnswer.value);
+                  return acc;
+                }, [])
+                .join()}
+            </AnswerBoxText>
+          </Answer>
+        ))}
+      </div>
     </Wrapper>
   );
 };

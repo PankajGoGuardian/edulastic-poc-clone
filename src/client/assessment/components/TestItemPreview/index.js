@@ -60,10 +60,10 @@ class TestItemPreview extends Component {
       questions,
       qIndex,
       student,
+      metaData,
       disableResponse,
       evaluation
     } = this.props;
-
     let questionCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
@@ -85,6 +85,7 @@ class TestItemPreview extends Component {
                 key={i}
                 col={col}
                 view="preview"
+                metaData={metaData}
                 preview={preview}
                 multiple={cols.length > 1}
                 style={this.getStyle(i !== cols.length - 1)}

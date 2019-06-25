@@ -27,6 +27,8 @@ const ChartPreview = ({
   showQuestionNumber,
   disableResponse,
   evaluation,
+  location,
+  metaData,
   changePreviewTab
 }) => {
   const fontSize = getFontSize(get(item, "ui_style.fontsize"));
@@ -34,7 +36,6 @@ const ChartPreview = ({
 
   const { chart_data = {}, validation, ui_style } = item;
   const { data = [] } = chart_data;
-
   let CurrentChart = null;
 
   switch (chartType) {
@@ -71,7 +72,7 @@ const ChartPreview = ({
   const passData = {
     ...chart_data
   };
-  if (previewTab === SHOW) {
+  if (previewTab === SHOW || (location && location.pathname.includes("author") && disableResponse)) {
     passData.data = validation.valid_response.value;
   } else if (answerIsActual() || view === EDIT) {
     passData.data = [...userAnswer];
@@ -92,6 +93,15 @@ const ChartPreview = ({
     saveAnswer(ans);
   };
 
+  const calculatedParams = {
+    ...ui_style,
+    width:
+      document.querySelector(`[data-cy="${metaData}"]`) !== null &&
+      ui_style.width > document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
+        ? document.querySelector(`[data-cy="${metaData}"]`).clientWidth - 460
+        : ui_style.width
+  };
+
   return (
     <Paper style={{ fontSize }} padding={smallSize} boxShadow={smallSize ? "none" : ""}>
       <InstructorStimulus>{item.instructor_stimulus}</InstructorStimulus>
@@ -101,7 +111,7 @@ const ChartPreview = ({
       </QuestionTitleWrapper>
       <CurrentChart
         {...passData}
-        gridParams={ui_style}
+        gridParams={calculatedParams}
         view={view}
         disableResponse={disableResponse}
         previewTab={previewTab}
@@ -117,10 +127,12 @@ ChartPreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   previewTab: PropTypes.string,
+  location: PropTypes.object.isRequired,
   userAnswer: PropTypes.array,
   view: PropTypes.string,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
+  metaData: PropTypes.string.isRequired,
   qIndex: PropTypes.number,
   evaluation: PropTypes.any,
   changePreviewTab: PropTypes.func

@@ -114,7 +114,7 @@ const methodOptions = {
     "setThousandsSeparator",
     "significantDecimalPlaces",
     "ignoreAlphabeticCharacters",
-    "allowedVariables",
+    "allowNumericOnly",
     "compareSides"
   ],
   [methods.EQUIV_SYNTAX]: ["syntax", "ignoreText", "argument", "rule"],

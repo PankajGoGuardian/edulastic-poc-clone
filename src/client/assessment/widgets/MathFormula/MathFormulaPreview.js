@@ -113,19 +113,19 @@ class MathFormulaPreview extends Component {
     const { item } = this.props;
     const { options } = item.validation.valid_response.value[0];
 
-    if (!options || !options.allowedVariables || !val) return val;
+    if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
 
-    const { allowedVariables } = options;
-    const { allowNumeric, allowVarsList, varsList } = allowedVariables;
+    const { allowNumericOnly, allowedVariables } = options;
     let newVal = val;
 
-    if (!allowNumeric) {
-      newVal = newVal.replace(/\d+/g, "");
+    if (allowNumericOnly) {
+      newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, "");
+      return newVal;
     }
 
-    if (!allowVarsList) return newVal;
+    if (!allowedVariables) return newVal;
 
-    const validVars = varsList.split(",").filter(segment => !!segment.trim());
+    const validVars = allowedVariables.split(",").filter(segment => !!segment.trim());
     if (validVars.length === 0) return newVal;
 
     const foundVars = [];

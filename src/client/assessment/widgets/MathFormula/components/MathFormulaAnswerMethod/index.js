@@ -292,6 +292,16 @@ const MathFormulaAnswerMethod = ({
               <Units options={options} onChange={changeOptions} />
             </WidgetSecondMethod>
           );
+        case "allowNumericOnly":
+          return (
+            <CheckOption
+              dataCy="answer-allow-numeric-only"
+              optionKey="allowNumericOnly"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.allowNumericOnly")}
+            />
+          );
         case "allowedVariables":
           return (
             <WidgetSecondMethod>

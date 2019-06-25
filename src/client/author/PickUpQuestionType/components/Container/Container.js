@@ -63,9 +63,21 @@ class Container extends Component {
     setQuestion(question);
     // add question to the questions store.
     addQuestion(question);
-
+    const { testId, itemId } = match.params;
     if (modalItemId) {
       navigateToQuestionEdit();
+      return;
+    }
+
+    if (itemId) {
+      history.push({
+        pathname: `/author/tests/${testId}/createItem/${itemId}/questions/create`,
+        state: {
+          ...history.location.state,
+          backUrl: match.url,
+          backText: t("component.pickupcomponent.headertitle")
+        }
+      });
       return;
     }
 

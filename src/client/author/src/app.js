@@ -263,7 +263,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                     </Suspense>
                   )}
                 />
-
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId"
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <ItemDetail {...props} />
+                    </Suspense>
+                  )}
+                />
                 <Route
                   exact
                   path="/author/tests/:id/editAssigned"
@@ -311,6 +319,16 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                       <TestList {...props} />
                     </Suspense>
                   )}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
+                  component={PickUpQuestionType}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/questions/create"
+                  component={QuestionEditor}
                 />
                 <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                 <Route exact path="/author/questions/create" component={QuestionEditor} />

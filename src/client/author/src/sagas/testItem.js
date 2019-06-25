@@ -2,7 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { LOCATION_CHANGE } from "connected-react-router";
+import { LOCATION_CHANGE, push } from "connected-react-router";
 import { evaluateItem } from "../utils/evalution";
 import createShowAnswerData from "../utils/showAnswer";
 
@@ -28,7 +28,7 @@ import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks
 import { SET_ANSWER } from "../../../assessment/constants/actions";
 import { toggleCreateItemModalAction } from "../actions/testItem";
 
-function* createTestItemSaga({ payload: { data, showModal } }) {
+function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
   try {
     const item = yield call(testItemsApi.create, data);
     yield put({
@@ -36,10 +36,10 @@ function* createTestItemSaga({ payload: { data, showModal } }) {
       payload: item
     });
 
-    if (!showModal) {
-      yield call(history.push, `/author/items/${item._id}/item-detail`);
+    if (!testFlow) {
+      yield put(push(`/author/items/${item._id}/item-detail`));
     } else {
-      yield put(toggleCreateItemModalAction({ modalVisible: true, itemId: item._id }));
+      yield put(push(`/author/tests/${testId}/createItem/${item._id}`));
     }
   } catch (err) {
     console.error(err);

@@ -126,8 +126,14 @@ class AddItems extends PureComponent {
   };
 
   handleCreateNewItem = () => {
-    const { onSaveTestId, createTestItem, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      createTestItem,
+      test: { _id: testId, title },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     const defaultWidgets = {
@@ -135,15 +141,15 @@ class AddItems extends PureComponent {
         {
           tabs: [],
           dimension: "100%",
-          widgets: []
+          widgets: [],
+          flowLayout: false,
+          content: ""
         }
       ]
     };
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "CreateNew" }, () => {
-      createTestItem(defaultWidgets, true);
-    });
+    createTestItem(defaultWidgets, true, testId);
   };
 
   handleDuplicateItem = duplicateTestItemId => {

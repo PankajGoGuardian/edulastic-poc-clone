@@ -63,7 +63,7 @@ class Container extends Component {
 
   componentDidMount() {
     const { getItemDetailById, match, modalItemId, setRedirectTest } = this.props;
-    getItemDetailById(modalItemId || match.params.id, { data: true, validation: true });
+    getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
 
     if (match.params.testId) {
       setRedirectTest(match.params.testId);
@@ -74,22 +74,37 @@ class Container extends Component {
     const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
+    const { itemId, testId } = match.params;
 
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
-      history.replace({
-        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
-        state: {
-          backText: t("component.itemDetail.backText"),
-          backUrl: "/author/items",
-          rowIndex: 0,
-          tabIndex: 0,
-          testItemId: match.params._id
-        }
-      });
+      if (itemId) {
+        getItemDetailById(itemId, { data: true, validation: true });
+        history.replace({
+          pathname: `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`,
+          state: {
+            backText: t("component.itemDetail.backText"),
+            backUrl: `/author/tests/${testId}/createItem/${itemId}`,
+            rowIndex: 0,
+            tabIndex: 0,
+            testItemId: itemId
+          }
+        });
+      } else {
+        history.replace({
+          pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+          state: {
+            backText: t("component.itemDetail.backText"),
+            backUrl: "/author/items",
+            rowIndex: 0,
+            tabIndex: 0,
+            testItemId: match.params._id
+          }
+        });
+      }
     }
 
     if (this.isPassage(rows)) {

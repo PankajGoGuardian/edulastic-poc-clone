@@ -10,7 +10,12 @@ import { push } from "connected-react-router";
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from "../../assessment/utils/helpers";
 
 import { getItemDetailSelector, UPDATE_ITEM_DETAIL_SUCCESS, setRedirectTestAction } from "../ItemDetail/ducks";
-import { setTestDataAction, getTestEntitySelector, setTestDataAndUpdateAction } from "../TestPage/ducks";
+import {
+  setTestDataAction,
+  getTestEntitySelector,
+  setTestDataAndUpdateAction,
+  setCreatedItemToTestAction
+} from "../TestPage/ducks";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
 import {
   UPDATE_QUESTION,
@@ -62,9 +67,9 @@ export const receiveQuestionByIdAction = id => ({
   }
 });
 
-export const saveQuestionAction = modalItemId => ({
+export const saveQuestionAction = (testId, isTestFlow) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: modalItemId
+  payload: { testId, isTestFlow }
 });
 
 export const setQuestionDataAction = question => ({
@@ -268,7 +273,7 @@ export const getQuestionIds = item => {
 
 export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
 
-function* saveQuestionSaga({ payload: modalItemId }) {
+function* saveQuestionSaga({ payload: { testId: tId, isTestFlow } }) {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
@@ -365,29 +370,29 @@ function* saveQuestionSaga({ payload: modalItemId }) {
 
     yield call(message.success, "Update item by id is success", "Success");
 
-    if (modalItemId) {
+    if (isTestFlow) {
       // add item to test entity
       const testItems = yield select(getSelectedItemSelector);
       const nextTestItems = [...(testItems.data ? testItems.data : testItems), itemDetail._id];
 
       yield put(setTestItemsAction(nextTestItems));
 
-      const testEntity = yield select(getTestEntitySelector);
+      let testEntity = yield select(getTestEntitySelector);
 
       const updatedTestEntity = {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-      if (!testEntity._id) {
+      if (!tId || tId === "undefined") {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
-        yield put(setTestDataAction(updatedTestEntity));
+        yield put(setCreatedItemToTestAction(item));
+        yield put(push(`/author/tests/${tId}#review`));
       }
       yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
       return;
     }
-
     if (itemDetail) {
       yield put(
         push({
@@ -403,7 +408,7 @@ function* saveQuestionSaga({ payload: modalItemId }) {
   } catch (err) {
     console.error(err);
     const errorMessage = "Save question is failing";
-    if (modalItemId) {
+    if (isTestFlow) {
       yield put(toggleCreateItemModalAction(false));
     }
     yield call(message.error, errorMessage);

@@ -498,3 +498,54 @@ export function isInPolygon(testPoint, vertices) {
 
   return result;
 }
+
+/**
+ * usage:
+ *    let gen = nameGenerator();
+ *    gen.next().value  => 'A'
+ *    gen.next().value  => 'B'
+ *    ...
+ *    gen.next().value  => 'AA'
+ *    gen.next().value  => 'AB'
+ * reset
+ *    gen.next(true).value  => 'A'
+ *    gen.next().value  => 'B'
+ */
+function* nameGenerator() {
+  const charCodes = [];
+  const firstChar = "A";
+  const lastChar = "Z";
+  const firstCharCode = firstChar.charCodeAt();
+  const lastCharCode = lastChar.charCodeAt();
+
+  while (true) {
+    let index = charCodes.length - 1;
+    let overflow = false;
+
+    while (index >= -1) {
+      if (index + 1 === charCodes.length || overflow) {
+        overflow = false;
+        if (charCodes[index] >= firstCharCode && charCodes[index] < lastCharCode) {
+          charCodes[index]++;
+        } else if (charCodes[index] === lastCharCode) {
+          charCodes[index] = firstCharCode;
+          overflow = true;
+          if (index === 0) {
+            charCodes.unshift(firstCharCode);
+          }
+        } else if (charCodes.length === 0) {
+          charCodes.push(firstCharCode);
+        }
+      }
+
+      --index;
+    }
+
+    const reset = yield String.fromCharCode(...charCodes);
+    if (reset) {
+      charCodes.splice(0, charCodes.length);
+    }
+  }
+}
+
+export const objectNameGenerator = nameGenerator();

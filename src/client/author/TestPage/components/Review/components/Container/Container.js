@@ -21,6 +21,7 @@ import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import ModalCreateTestItem from "../../../ModalCreateTestItem/ModalCreateTestItem";
+import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
@@ -54,7 +55,9 @@ class Review extends PureComponent {
     isCollapse: true,
     isModalVisible: false,
     questionCreateType: "Duplicate",
-    item: []
+    item: [],
+    isTestPreviewModalVisible: false,
+    currentTestId: ""
   };
 
   setSelected = values => {
@@ -155,7 +158,7 @@ class Review extends PureComponent {
     });
   };
 
-  handlePreview = data => {
+  handlePreviewTestItem = data => {
     this.setState({
       item: { id: data }
     });
@@ -181,6 +184,15 @@ class Review extends PureComponent {
     setData({ [field]: value });
   };
 
+  hidePreviewModal = () => {
+    this.setState({ isTestPreviewModalVisible: false });
+  };
+
+  showTestPreviewModal = () => {
+    const { test } = this.props;
+    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
+  };
+
   render() {
     const {
       test,
@@ -197,7 +209,14 @@ class Review extends PureComponent {
       createTestItemModalVisible,
       itemsSubjectAndGrade
     } = this.props;
-    const { isCollapse, isModalVisible, item, questionCreateType } = this.state;
+    const {
+      isCollapse,
+      isModalVisible,
+      item,
+      questionCreateType,
+      isTestPreviewModalVisible,
+      currentTestId
+    } = this.state;
     const totalPoints = test.scoring.total;
     const questionsCount = test.testItems.length;
 
@@ -239,6 +258,7 @@ class Review extends PureComponent {
                   onMoveTo={this.handleMoveTo}
                   windowWidth={windowWidth}
                   setCollapse={isCollapse}
+                  onShowTestPreview={this.showTestPreviewModal}
                 />
               )}
             </SecondHeader>
@@ -248,7 +268,7 @@ class Review extends PureComponent {
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}
-                  onPreview={this.handlePreview}
+                  onPreview={this.handlePreviewTestItem}
                   testItems={test.testItems}
                   rows={rows}
                   standards={standards}
@@ -298,6 +318,12 @@ class Review extends PureComponent {
           addDuplicate={this.handleDuplicateItem}
           page="review"
           data={item}
+        />
+        <TestPreviewModal
+          isModalVisible={isTestPreviewModalVisible}
+          testId={currentTestId}
+          test={test}
+          hideModal={this.hidePreviewModal}
         />
         {createTestItemModalVisible && <ModalCreateTestItem type={questionCreateType} />}
       </div>

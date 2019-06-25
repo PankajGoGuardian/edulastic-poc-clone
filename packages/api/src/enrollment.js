@@ -55,7 +55,9 @@ const addEnrolMultiStudents = ({ classId, data }) => {
 };
 const SearchAddEnrolMultiStudents = data => {
   return api.callApi({
-    url: `${prefix}/student`
+    url: `${prefix}/student`,
+    method: "post",
+    data
   });
 };
 

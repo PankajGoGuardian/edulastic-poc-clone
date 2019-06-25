@@ -142,8 +142,8 @@ class MultipleChoice extends Component {
   handleAddAnswer = qid => {
     const { saveAnswer, userAnswer, item, previewTab, changePreviewTab } = this.props;
     const newAnswer = cloneDeep(userAnswer);
-    if (previewTab !== CHECK) {
-      changePreviewTab(CHECK);
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
     }
     if (item.multiple_responses) {
       if (newAnswer.includes(qid)) {

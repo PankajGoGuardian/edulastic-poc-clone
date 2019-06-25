@@ -40,7 +40,7 @@ export const ItemsMenu = styled(FlexContainer)`
   background: ${lightGreySecondary};
   align-items: space-between;
   justify-content: space-between;
-  padding: 8px 40px 8px 57px;
+  padding: 10px 20px;
 
   @media screen and (max-width: 993px) {
     padding: 8px 15px;
@@ -57,7 +57,7 @@ export const MainList = styled.div`
 
 export const ListItems = styled.div`
   flex: 1;
-  margin: 0 40px -51px 29px;
+  margin: 0px 0px -50px;
   box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
   background: ${white};
 

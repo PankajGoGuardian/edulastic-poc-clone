@@ -22,6 +22,7 @@ const ReviewSummary = ({
   totalPoints,
   questionsCount,
   tableData,
+  readOnlyMode = false,
   onChangeGrade,
   owner,
   summary,
@@ -32,7 +33,7 @@ const ReviewSummary = ({
   subjects
 }) => (
   <Container>
-    <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} height={120} />
+    <Photo url={thumbnail} onChangeField={onChangeField} owner={owner} readOnlyMode={readOnlyMode} height={120} />
 
     <MainTitle>Grade</MainTitle>
     <SummarySelect
@@ -40,7 +41,7 @@ const ReviewSummary = ({
       mode="multiple"
       size="large"
       style={{ width: "100%" }}
-      disabled={!owner}
+      disabled={!owner || readOnlyMode}
       placeholder="Please select"
       defaultValue={grades}
       onChange={onChangeGrade}
@@ -57,7 +58,7 @@ const ReviewSummary = ({
       data-cy="subjectSelect"
       mode="multiple"
       size="large"
-      disabled={!owner}
+      disabled={!owner || readOnlyMode}
       style={{ width: "100%" }}
       placeholder="Please select"
       defaultValue={subjects}
@@ -109,6 +110,7 @@ ReviewSummary.propTypes = {
   thumbnail: PropTypes.string,
   summary: PropTypes.object,
   owner: PropTypes.bool,
+  readOnlyMode: PropTypes.bool,
   onChangeField: PropTypes.func,
   subjects: PropTypes.array.isRequired
 };

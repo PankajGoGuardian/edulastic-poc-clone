@@ -53,9 +53,9 @@ class Item extends Component {
   moveToItem = () => {
     const { history, item, isPlaylist, owner } = this.props;
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}${!owner ? "#review" : ""}`);
+      history.push(`/author/playlists/${item._id}#review`);
     } else {
-      history.push(`/author/tests/${item._id}${!owner ? "#review" : ""}`);
+      history.push(`/author/tests/${item._id}#review`);
     }
   };
 

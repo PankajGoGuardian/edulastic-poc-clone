@@ -13,7 +13,7 @@ import { Container, ButtonLink } from "../../../../../src/components/common";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import MainSetting from "../MainSetting/MainSetting";
 
-const Setting = ({ t, current, history, onShowSource, windowWidth, owner }) => {
+const Setting = ({ t, current, history, onShowSource, windowWidth, owner, readOnlyMode = false }) => {
   const breadcrumbData = [
     {
       title: "TESTS LIBRARY",
@@ -29,13 +29,15 @@ const Setting = ({ t, current, history, onShowSource, windowWidth, owner }) => {
     <Container>
       <SecondHeader>
         <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-        <Button onClick={onShowSource}>
-          <ButtonLink color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
-            {t("component.questioneditor.buttonbar.source")}
-          </ButtonLink>
-        </Button>
+        {owner && !readOnlyMode && (
+          <Button onClick={readOnlyMode ? "" : onShowSource}>
+            <ButtonLink color="primary" icon={<IconSource color={blue} width={16} height={16} />}>
+              {t("component.questioneditor.buttonbar.source")}
+            </ButtonLink>
+          </Button>
+        )}
       </SecondHeader>
-      <MainSetting history={history} windowWidth={windowWidth} owner={owner} />
+      <MainSetting history={history} windowWidth={windowWidth} owner={owner} readOnlyMode={readOnlyMode} />
     </Container>
   );
 };
@@ -45,6 +47,7 @@ Setting.propTypes = {
   current: PropTypes.string.isRequired,
   history: PropTypes.func.isRequired,
   onShowSource: PropTypes.func.isRequired,
+  readOnlyMode: PropTypes.bool,
   owner: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired
 };

@@ -73,7 +73,7 @@ class Container extends PureComponent {
   };
 
   state = {
-    current: "description",
+    current: "review",
     showModal: false,
     editEnable: false,
     showShareModal: false
@@ -96,6 +96,7 @@ class Container extends PureComponent {
     if (match.params.id) {
       receiveTestById(match.params.id);
     } else {
+      this.setState({ current: "description" });
       clearTestAssignments([]);
       clearSelectedItems();
       setDefaultData();
@@ -181,17 +182,16 @@ class Container extends PureComponent {
   };
 
   renderContent = () => {
-    const { test, setData, rows, isTestLoading, userId, match = {} } = this.props;
+    const { test, setData, rows, isTestLoading, userId, match = {}, testStatus } = this.props;
     if (isTestLoading) {
       return <Spin />;
     }
     const { params = {} } = match;
-    const { current } = this.state;
+    const { current, editEnable } = this.state;
     const { authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    if (!owner && (current === "addItems" || current === "description")) {
-      this.setState({ current: "review" });
-    }
+    const readOnlyMode = (testStatus && testStatus !== statusConstants.PUBLISHED && params.id) || editEnable;
+
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
     switch (current) {
@@ -227,11 +227,19 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             owner={owner}
+            readOnlyMode={!readOnlyMode}
             current={current}
           />
         );
       case "settings":
-        return <Setting current={current} onShowSource={this.handleNavChange("source")} owner={owner} />;
+        return (
+          <Setting
+            current={current}
+            readOnlyMode={!readOnlyMode}
+            onShowSource={this.handleNavChange("source")}
+            owner={owner}
+          />
+        );
       case "assign":
         return <Assign test={test} setData={setData} current={current} />;
       default:
@@ -394,6 +402,7 @@ class Container extends PureComponent {
           showPublishButton={showPublishButton}
           testStatus={testStatus}
           showShareButton={showShareButton}
+          editEnable={editEnable}
           onEnableEdit={this.onEnableEdit}
           onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}

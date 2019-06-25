@@ -81,7 +81,6 @@ class PreviewModal extends React.Component {
   render() {
     const {
       isVisible,
-      owner,
       collections,
       loading,
       item = { rows: [], data: {}, authors: [] },
@@ -102,9 +101,7 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
           <ButtonsWrapper>
-            {allowDuplicate && !readOnlyMode && owner && (
-              <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>
-            )}
+            {allowDuplicate && !readOnlyMode && <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>}
             {authorHasPermission && !readOnlyMode && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>

@@ -21,12 +21,10 @@ import {
 } from "../constants/actions";
 
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
-import { PREVIEW, EDIT, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
+import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
-import { history } from "../../../configureStore";
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
-import { toggleCreateItemModalAction } from "../actions/testItem";
 
 function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
   try {

@@ -236,10 +236,10 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { updateItemDetailById, match, item, createType, itemId, onCompleteItemCreation } = this.props;
-    if (createType === "Duplicate") {
-      updateItemDetailById(itemId, item, match.params.id, true);
-      onCompleteItemCreation();
+    const { updateItemDetailById, match, item, location } = this.props;
+    const createType = location.hash;
+    if (createType === "#duplicate") {
+      updateItemDetailById(match.params.itemId, item, match.params.testId, true);
     } else {
       updateItemDetailById(match.params.id, item, match.params.testId);
     }

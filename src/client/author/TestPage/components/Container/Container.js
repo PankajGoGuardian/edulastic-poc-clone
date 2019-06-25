@@ -200,6 +200,7 @@ class Container extends PureComponent {
             onAddItems={this.handleAddItems}
             selectedItems={selectedItems}
             current={current}
+            readOnlyMode={!readOnlyMode}
             onSaveTestId={this.handleSaveTestId}
             test={test}
             gotoSummary={this.handleNavChange("description")}

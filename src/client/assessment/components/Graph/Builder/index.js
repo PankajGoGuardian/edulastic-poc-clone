@@ -372,7 +372,7 @@ class Board {
         yMax: canvas.yMax,
         yMin: canvas.yMin
       });
-      if (!first) {
+      if (!first && this.numberlineAxis) {
         this.resetOutOfLineMarks();
         Mark.alignMarks(this);
         setValue();

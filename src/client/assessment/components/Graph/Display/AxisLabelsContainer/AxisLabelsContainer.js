@@ -15,6 +15,7 @@ import { makeBorder } from "../../Builder";
 import Tools from "../QuadrantsContainer/Tools";
 import { setElementsStashAction, setStashIndexAction } from "../../../../actions/graphTools";
 import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
 const getColoredElems = (elements, compareResult) => {
   const { details } = compareResult;
@@ -92,12 +93,19 @@ class AxisLabelsContainer extends PureComponent {
       layout,
       gridParams,
       graphType,
-      setElementsStash
+      setElementsStash,
+      setCalculatedHeight
     } = this.props;
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
-      this._graph.resizeContainer(layout.width, layout.height);
+      let { height } = layout;
+      if (height === AUTO_VALUE) {
+        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
+      } else if (Number.isNaN(Number.parseFloat(height))) {
+        height = 0;
+      }
+      this._graph.resizeContainer(layout.width, height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas
@@ -120,7 +128,7 @@ class AxisLabelsContainer extends PureComponent {
         ...gridParams
       });
 
-      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true, this.setMarks);
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, true, this.setMarks, setCalculatedHeight);
 
       this._graph.setMarksDeleteHandler();
 
@@ -131,7 +139,7 @@ class AxisLabelsContainer extends PureComponent {
   }
 
   componentDidUpdate(prevProps) {
-    const { canvas, numberlineAxis, layout, list, setValue } = this.props;
+    const { canvas, numberlineAxis, layout, list, setValue, setCalculatedHeight } = this.props;
 
     if (this._graph) {
       if (
@@ -139,7 +147,7 @@ class AxisLabelsContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false, this.setMarks);
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false, this.setMarks, setCalculatedHeight);
       }
 
       this.setElementsToGraph(prevProps);
@@ -308,7 +316,8 @@ AxisLabelsContainer.propTypes = {
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
-  altAnswerId: PropTypes.string
+  altAnswerId: PropTypes.string,
+  setCalculatedHeight: PropTypes.func.isRequired
 };
 
 AxisLabelsContainer.defaultProps = {

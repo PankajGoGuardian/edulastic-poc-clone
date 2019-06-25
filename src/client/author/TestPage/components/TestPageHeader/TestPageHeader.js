@@ -102,7 +102,7 @@ const TestPageHeader = ({
         onChange={onChangeNav}
         current={current}
         buttons={navButtons}
-        showPublishButton={showPublishButton}
+        showPublishButton={!showShareButton || showPublishButton}
       />
 
       <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>

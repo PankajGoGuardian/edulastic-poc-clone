@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
@@ -23,7 +24,16 @@ const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
       render: data => <MetaInfoCell data={data} />
     }
   ];
-
+  const audioStatus = item => {
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const audio = {};
+    if (getAllTTS.length) {
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      audio.ttsSuccess = ttsSuccess;
+    }
+    return audio;
+  };
   const data = items.map((item, i) => {
     const main = {
       title: item._id,
@@ -35,7 +45,8 @@ const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
       shared: "9578 (1)",
       likes: 9,
       types: types[item._id],
-      standards: standards[item._id]
+      standards: standards[item._id],
+      audio: audioStatus(item)
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {

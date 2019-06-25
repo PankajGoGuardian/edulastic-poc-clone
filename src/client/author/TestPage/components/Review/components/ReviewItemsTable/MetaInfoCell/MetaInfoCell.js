@@ -39,7 +39,11 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio =
       {renderAnalytics(id, IconHash)}
       {renderAnalytics(shared, IconShare)}
       {renderAnalytics(likes, IconHeart)}
-      {audio.hasOwnProperty("ttsSuccess") ? <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} /> : ""}
+      {audio && audio.hasOwnProperty("ttsSuccess") ? (
+        <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
+      ) : (
+        ""
+      )}
     </FlexContainer>
   </FlexContainer>
 );

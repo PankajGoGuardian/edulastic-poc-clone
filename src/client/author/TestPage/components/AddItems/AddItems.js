@@ -28,7 +28,7 @@ import {
   clearDictAlignmentAction,
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
-import { createTestItemAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import { createTestItemAction } from "../../../src/actions/testItem";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -156,7 +156,6 @@ class AddItems extends PureComponent {
   handleDuplicateItem = duplicateTestItemId => {
     const {
       onSaveTestId,
-      toggleCreateItemModal,
       test: { title, _id: testId },
       clearDictAlignment,
       history
@@ -166,7 +165,7 @@ class AddItems extends PureComponent {
     }
     clearDictAlignment();
     onSaveTestId();
-    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}#duplicate`);
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
   };
 
   handleSearchFieldChangeCurriculumId = value => {
@@ -345,7 +344,6 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       clearDictAlignment: clearDictAlignmentAction,
-      toggleCreateItemModal: toggleCreateItemModalAction,
       createTestItem: createTestItemAction
     }
   )

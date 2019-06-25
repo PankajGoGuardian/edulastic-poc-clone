@@ -67,7 +67,7 @@ class PreviewModal extends React.Component {
     const { data, history, testId } = this.props;
     const itemId = data.id;
     if (testId) {
-      history.push(`/author/tests/${testId}/createItem/${itemId}#edit`);
+      history.push(`/author/tests/${testId}/createItem/${itemId}`);
     } else {
       history.push(`/author/items/${itemId}/item-detail`);
     }

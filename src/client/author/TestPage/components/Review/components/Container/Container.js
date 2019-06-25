@@ -18,7 +18,6 @@ import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questi
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
-import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
@@ -158,7 +157,7 @@ class Review extends PureComponent {
     }
     clearDictAlignment();
     onSaveTestId();
-    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}#duplicate`);
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
   };
 
   handlePreviewTestItem = data => {

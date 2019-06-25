@@ -330,6 +330,11 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   path="/author/tests/:testId/createItem/:itemId/questions/create"
                   component={QuestionEditor}
                 />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/questions/edit"
+                  component={QuestionEditor}
+                />
                 <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                 <Route exact path="/author/questions/create" component={QuestionEditor} />
                 <Route exact path="/author/questions/edit" component={QuestionEditor} />

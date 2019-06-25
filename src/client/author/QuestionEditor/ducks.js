@@ -67,9 +67,9 @@ export const receiveQuestionByIdAction = id => ({
   }
 });
 
-export const saveQuestionAction = (testId, isTestFlow) => ({
+export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow }
+  payload: { testId, isTestFlow, isEditFlow }
 });
 
 export const setQuestionDataAction = question => ({
@@ -273,7 +273,7 @@ export const getQuestionIds = item => {
 
 export const redirectTestIdSelector = state => get(state, "itemDetail.redirectTestId", false);
 
-function* saveQuestionSaga({ payload: { testId: tId, isTestFlow } }) {
+function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } }) {
   try {
     const question = yield select(getCurrentQuestionSelector);
     const itemDetail = yield select(getItemDetailSelector);
@@ -387,7 +387,7 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow } }) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
         yield put(setCreatedItemToTestAction(item));
-        yield put(push(`/author/tests/${tId}#review`));
+        yield put(push(!isEditFlow ? `/author/tests/${tId}#review` : `/author/tests/${tId}/createItem/${item._id}`));
       }
       yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));
@@ -496,16 +496,29 @@ function* loadQuestionSaga({ payload }) {
     const pathname = yield select(state => state.router.location.pathname);
 
     yield put(changeCurrentQuestionAction(data.reference));
-    yield put(
-      push({
-        pathname: "/author/questions/edit",
-        state: {
-          backText: "question edit",
-          backUrl: pathname,
-          rowIndex
-        }
-      })
-    );
+    if (pathname.includes("tests")) {
+      yield put(
+        push({
+          pathname: `${pathname}/questions/edit`,
+          state: {
+            backText: "question edit",
+            backUrl: pathname,
+            rowIndex
+          }
+        })
+      );
+    } else {
+      yield put(
+        push({
+          pathname: "/author/questions/edit",
+          state: {
+            backText: "question edit",
+            backUrl: pathname,
+            rowIndex
+          }
+        })
+      );
+    }
     let alignments = yield select(getAlignmentFromQuestionSelector);
     if (!alignments.length) {
       alignments = [getNewAlignmentState()];

@@ -237,8 +237,7 @@ class Container extends Component {
 
   handleSave = () => {
     const { updateItemDetailById, match, item, location } = this.props;
-    const createType = location.hash;
-    if (createType === "#duplicate" || createType === "#edit") {
+    if (match.params.itemId) {
       updateItemDetailById(match.params.itemId, item, match.params.testId, true);
     } else {
       updateItemDetailById(match.params.id, item, match.params.testId);

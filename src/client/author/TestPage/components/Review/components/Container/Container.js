@@ -51,7 +51,7 @@ class Review extends PureComponent {
   };
 
   state = {
-    isCollapse: false,
+    isCollapse: true,
     isModalVisible: false,
     questionCreateType: "Duplicate",
     item: []

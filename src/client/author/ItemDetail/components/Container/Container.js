@@ -281,6 +281,12 @@ class Container extends Component {
     this.setState({ enableEdit: true });
   };
 
+  componentWillUnmount() {
+    // reset the view to "edit" while leaving.
+    const { changeView } = this.props;
+    changeView("edit");
+  }
+
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps } = this.props;
     const item = itemProps || {};

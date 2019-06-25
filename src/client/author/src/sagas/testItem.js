@@ -21,7 +21,7 @@ import {
 } from "../constants/actions";
 
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
-import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
+import { PREVIEW, EDIT, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
 import { history } from "../../../configureStore";
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
@@ -197,13 +197,13 @@ function* showAnswers() {
   }
 }
 
-function* setAnswerSaga() {
+function* setAnswerSaga({ payload }) {
   try {
     const answers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", {}));
-
     const { preview, view } = yield select(state => _get(state, "view", {}));
-    if (preview === CLEAR && view === PREVIEW) {
+
+    if ((preview === CLEAR && view === PREVIEW) || payload.view === "edit") {
       yield put(removeUserAnswerAction());
     }
 

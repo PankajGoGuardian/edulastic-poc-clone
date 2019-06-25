@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Progress, withWindowSizes } from "@edulastic/common";
+import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
 import { Row, Col, Switch, Input, Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
+import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import {
   getItemDetailByIdAction,
@@ -56,9 +57,7 @@ class Container extends Component {
   state = {
     showModal: false,
     showSettings: false,
-    view: "preview",
     enableEdit: false,
-    previewTab: "clear",
     hasAuthorPermission: false
   };
 
@@ -103,7 +102,6 @@ class Container extends Component {
     const isAuthor = authors.some(author => author._id === props.currentAuthorId);
     if (isAuthor !== state.hasAuthorPermission) {
       return {
-        view: "edit",
         hasAuthorPermission: true
       };
     }
@@ -158,9 +156,8 @@ class Container extends Component {
   };
 
   handleChangeView = view => {
-    this.setState({
-      view
-    });
+    const { changeView } = this.props;
+    changeView(view);
   };
 
   handleShowSource = () => {
@@ -201,7 +198,6 @@ class Container extends Component {
   };
 
   handleApplySettings = ({ type }) => {
-    console.log(type, "type");
     const { updateDimension } = this.props;
     const { left, right } = this.getSizes(type);
     updateDimension(left, right);
@@ -272,10 +268,6 @@ class Container extends Component {
     }
 
     changePreview(previewTab);
-
-    this.setState({
-      previewTab
-    });
   };
 
   handlePublishTestItem = () => {
@@ -314,9 +306,9 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview } = this.props;
+    const { item, updating, testItemStatus, changePreview, preview, view } = this.props;
 
-    const { previewTab, view, enableEdit } = this.state;
+    const { enableEdit } = this.state;
 
     let showPublishButton = false;
 
@@ -336,14 +328,14 @@ class Container extends Component {
         onSave={this.handleSave}
         saving={updating}
         view={view}
-        previewTab={previewTab}
+        previewTab={preview}
         showPublishButton={showPublishButton}
       />
     );
   };
 
   render() {
-    const { showModal, showSettings, view, previewTab, enableEdit, hasAuthorPermission } = this.state;
+    const { showModal, showSettings, enableEdit, hasAuthorPermission } = this.state;
     const {
       t,
       match,
@@ -364,7 +356,9 @@ class Container extends Component {
       currentAuthorId,
       history,
       setItemLevelScore,
-      setItemLevelScoring
+      setItemLevelScoring,
+      view,
+      preview
     } = this.props;
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
@@ -417,7 +411,7 @@ class Container extends Component {
             onPublishTestItem={this.handlePublishTestItem}
             saving={updating}
             view={view}
-            previewTab={previewTab}
+            previewTab={preview}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
@@ -464,24 +458,26 @@ class Container extends Component {
           )}
         </BreadCrumbBar>
         {view === "edit" && (
-          <ItemDetailWrapper>
-            {rows &&
-              rows.map((row, i) => (
-                <ItemDetailRow
-                  key={i}
-                  row={row}
-                  view={view}
-                  rowIndex={i}
-                  itemData={item}
-                  count={rows.length}
-                  onAdd={this.handleAdd}
-                  windowWidth={windowWidth}
-                  onDeleteWidget={this.handleDeleteWidget(i)}
-                  onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                />
-              ))}
-          </ItemDetailWrapper>
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <ItemDetailWrapper>
+              {rows &&
+                rows.map((row, i) => (
+                  <ItemDetailRow
+                    key={i}
+                    row={row}
+                    view={view}
+                    rowIndex={i}
+                    itemData={item}
+                    count={rows.length}
+                    onAdd={this.handleAdd}
+                    windowWidth={windowWidth}
+                    onDeleteWidget={this.handleDeleteWidget(i)}
+                    onEditWidget={this.handleEditWidget}
+                    onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                  />
+                ))}
+            </ItemDetailWrapper>
+          </AnswerContext.Provider>
         )}
         {view === "preview" && this.renderPreview()}
         {view === "metadata" && this.renderMetadata()}
@@ -554,7 +550,8 @@ const enhance = compose(
       questions: getQuestionsSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
       preview: state.view.preview,
-      currentAuthorId: get(state, ["user", "user", "_id"])
+      currentAuthorId: get(state, ["user", "user", "_id"]),
+      view: getViewSelector(state)
     }),
     {
       changeView: changeViewAction,

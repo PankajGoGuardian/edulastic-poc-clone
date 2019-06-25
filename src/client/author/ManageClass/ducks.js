@@ -216,6 +216,19 @@ const updateStudent = (state, { payload }) => {
   }
 };
 
+const updateStudentsAfterTTSChange = (state, { payload }) => {
+  const userIds = payload.userIds;
+  const ttsStatus = payload.ttsStatus;
+  const stdList = state.studentsList;
+  const newStdList = stdList.map((std, idx) => {
+    if (userIds[idx] !== undefined && std._id === userIds[idx]) {
+      std.tts = ttsStatus;
+    }
+    return std;
+  });
+  state.studentsList = newStdList;
+};
+
 const removeStudentsSuccess = (state, { payload: studentIds }) => {
   // creating a hashmap of studentIds to reduce the loop complexity from n^2 to 2n
   const studentIdHash = keyBy(studentIds);
@@ -251,7 +264,8 @@ export default createReducer(initialState, {
   [SELECT_STUDENTS]: selectStudent,
   [UPDATE_STUDENT_SUCCESS]: updateStudent,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
-  [SET_SUBJECT]: setSubject
+  [SET_SUBJECT]: setSubject,
+  [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
 });
 
 function* fetchClassList({ payload }) {
@@ -326,10 +340,14 @@ function* receiveAddStudentRequest({ payload }) {
 function* changeUserTTSRequest({ payload }) {
   try {
     const result = yield call(userApi.changeUserTTS, payload);
+    debugger;
     const { status } = result;
     let msg = "";
     if (status === 200) {
       msg = "User(s) updated successfully";
+      const userIds = payload.userId.split(",");
+      const ttsStatus = payload.ttsStatus;
+      yield put(userTTSRequestSuccessAction({ userIds, ttsStatus }));
     } else {
       msg = get(result, "data.result");
     }

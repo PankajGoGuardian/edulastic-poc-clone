@@ -92,7 +92,6 @@ class App extends Component {
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
-
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
@@ -115,6 +114,8 @@ class App extends Component {
           defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
+        } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
+          defaultRoute = "/auth";
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (

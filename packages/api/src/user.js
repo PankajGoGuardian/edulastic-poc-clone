@@ -67,6 +67,15 @@ const updateUser = ({ data, userId }) =>
     })
     .then(result => result.data.result);
 
+const updateUserRole = ({ data, userId }) =>
+  api
+    .callApi({
+      url: `${prefix}/role/${userId}`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
 const deleteUser = data =>
   api
     .callApi({
@@ -147,6 +156,7 @@ export default {
   fetchUsersForShare,
   createUser,
   updateUser,
+  updateUserRole,
   deleteUser,
   getProxyUser,
   getSwitchedToken,

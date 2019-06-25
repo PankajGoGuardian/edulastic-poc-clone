@@ -296,7 +296,6 @@ class Review extends PureComponent {
           readOnlyMode={readOnlyMode}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
-          owner={owner}
           page="review"
           data={item}
         />

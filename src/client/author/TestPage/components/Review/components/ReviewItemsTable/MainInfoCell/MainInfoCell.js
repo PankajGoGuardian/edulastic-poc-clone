@@ -11,19 +11,17 @@ class MainInfoCell extends React.Component {
   };
 
   onPreviewModalChange = () => {
-    this.setState({
-      isShowPreviewModal: !this.state.isShowPreviewModal
-    });
+    this.setState(prev => ({
+      isShowPreviewModal: !prev.isShowPreviewModal
+    }));
   };
 
   render() {
     const { data } = this.props;
     const { isShowPreviewModal } = this.state;
-
     return (
       <div>
-        <MoveLink onClick={this.onPreviewModalChange}>{data.title}</MoveLink>
-        <Stimulus dangerouslySetInnerHTML={{ __html: data.stimulus }} />
+        <Stimulus onClick={this.onPreviewModalChange} dangerouslySetInnerHTML={{ __html: data.stimulus }} />
         <PreviewModal isVisible={isShowPreviewModal} onClose={this.onPreviewModalChange} data={data} />
       </div>
     );

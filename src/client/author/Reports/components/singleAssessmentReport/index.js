@@ -33,7 +33,7 @@ const links = [
   {
     key: "performanceByStudents",
     title: "Performance by Students",
-    location: "/author/reports/"
+    location: "/author/reports/performance-by-students/test/"
   }
 ];
 

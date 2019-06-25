@@ -7,6 +7,7 @@ import ResponseFrequency from "./ResponseFrequency";
 import AssessmentSummary from "./AssessmentSummary";
 import PeerPerformance from "./PeerPerformance";
 import PerformanceByStandards from "./PerformanceByStandards";
+import PerformanceByStudents from "./PerformanceByStudents";
 
 import SingleAssessmentReportFilters from "./common/components/filters";
 import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
@@ -110,6 +111,11 @@ export const SingleAssessmentReportContainer = props => {
           exact
           path={`/author/reports/performance-by-standards/test/:testId?`}
           render={_props => <PerformanceByStandards {..._props} showFilter={props.showFilter} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/performance-by-students/test/:testId?`}
+          render={_props => <PerformanceByStudents {..._props} showFilter={props.showFilter} settings={settings} />}
         />
       </FeaturesSwitch>
     </>

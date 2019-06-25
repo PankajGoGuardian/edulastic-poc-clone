@@ -14,11 +14,11 @@ import { Placeholder } from "../../../common/components/loader";
 
 import { SimpleStackedBarChartContainer } from "./components/charts/simpleStackedBarChartContainer";
 import { SignedStackedBarChartContainer } from "./components/charts/signedStackedBarChartContainer";
-import { UpperContainer, TableContainer, StyledTable, StyledCard } from "./components/styled";
+import { UpperContainer, TableContainer, StyledCard } from "./components/styled";
 import { PeerPerformanceTable } from "./components/table/peerPerformanceTable";
 import { getPeerPerformanceRequestAction, getReportsPeerPerformance, getReportsPeerPerformanceLoader } from "./ducks";
 
-import dropDownFormat from "./static/json/dropDownFormat.json";
+import dropDownFormat from "../../../common/static/json/dropDownFormat.json";
 import { getUserRole } from "../../../../src/selectors/user";
 import columns from "./static/json/tableColumns.json";
 import tempData from "./static/json/tempData";

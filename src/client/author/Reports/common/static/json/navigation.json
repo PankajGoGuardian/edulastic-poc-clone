@@ -52,6 +52,19 @@
       ],
       "group": "singleAssessmentReport"
     },
+    "performance-by-students": {
+      "title": "Performance by Students",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "PERFORMANCE BY STUDENTS"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    },
     "standards-performance-summary": {
       "title": "Standards Performance Summary",
       "breadcrumb": [
@@ -109,7 +122,7 @@
       {
         "key": "performance-by-students",
         "title": "Performance by Students",
-        "location": "/author/reports/"
+        "location": "/author/reports/performance-by-students/test/"
       }
     ],
     "standardsMasteryReport": [

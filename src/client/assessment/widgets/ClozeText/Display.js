@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import styled from "styled-components";
-import { findIndex, find, isEmpty } from "lodash";
+import { findIndex, find, isEmpty, get } from "lodash";
 import JsxParser from "react-jsx-parser";
 
 import { InstructorStimulus, helpers, Stimulus } from "@edulastic/common";
@@ -140,7 +140,8 @@ class ClozeTextDisplay extends Component {
       disableResponse,
       qIndex,
       userSelections,
-      responseIds
+      responseIds,
+      isReviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
     // Layout Options
@@ -164,7 +165,9 @@ class ClozeTextDisplay extends Component {
             disableResponse,
             qIndex,
             uiStyle,
-            responseIds
+            responseIds,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
             userAnswers: userSelections,
@@ -178,7 +181,9 @@ class ClozeTextDisplay extends Component {
             disableResponse,
             showIndex,
             responseIds,
-            responsecontainerindividuals
+            responsecontainerindividuals,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           };
 
     const answerBox = showAnswer ? (
@@ -245,6 +250,7 @@ ClozeTextDisplay.propTypes = {
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
   showQuestionNumber: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   qIndex: PropTypes.number
 };
 
@@ -272,8 +278,9 @@ ClozeTextDisplay.defaultProps = {
   },
   templateMarkUp: "",
   showQuestionNumber: false,
-  disableResponse: false
-  // qIndex: null
+  disableResponse: false,
+  isReviewTab: false,
+  qIndex: null
 };
 
 export default ClozeTextDisplay;

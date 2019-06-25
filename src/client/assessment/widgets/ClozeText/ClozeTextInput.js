@@ -86,13 +86,20 @@ const ClozeTextInput = ({ resprops, id }) => {
     userAnswers,
     disableResponse,
     responseIds,
-    qIndex
+    isReviewTab,
+    cAnswers
   } = resprops;
+
   const ref = useRef();
   const responseStyle = find(responsecontainerindividuals, container => container.id === id);
   const MInput = item.multiple_line ? TextArea : Input;
   const { index } = find(responseIds, response => response.id === id);
-  const { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+  let { value } = find(userAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+
+  if (isReviewTab) {
+    const { value: correctValue } = find(cAnswers, answer => (answer ? answer.id : "") === id) || { value: "" };
+    value = correctValue;
+  }
   const [selection, setSelection] = useState({ start: 0, end: 0 });
 
   const _getValue = val => {

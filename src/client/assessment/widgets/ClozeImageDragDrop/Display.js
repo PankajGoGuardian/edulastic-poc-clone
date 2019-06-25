@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, isUndefined } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined, get } from "lodash";
 import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
@@ -185,16 +185,20 @@ class Display extends Component {
       instructorStimulus,
       theme,
       showQuestionNumber,
-      qIndex,
       disableResponse,
       item,
       imageOptions,
-      showBorder
+      showBorder,
+      isReviewTab
     } = this.props;
 
     const questionId = item && item.id;
 
-    const { userAnswers, possibleResponses } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses } = this.state;
+    const cAnswers = get(item, "validation.valid_response.value", []);
+
+    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
+
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
     if (preview && shuffleOptions) {
@@ -208,6 +212,18 @@ class Display extends Component {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
       heightpx: heightpx !== 0 ? heightpx : "auto",
       whiteSpace: wordwrap ? "inherit" : "nowrap"
+    };
+
+    const dragItemStyle = {
+      border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
+      margin: 5,
+      padding: 5,
+      display: "flex",
+      alignItems: "center",
+      width: "max-content",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
     const imageWidth = this.getWidth();
@@ -324,19 +340,7 @@ class Display extends Component {
                           index={item_index}
                           item={answer}
                           data={`${answer}_${dropTargetIndex}_${item_index}`}
-                          style={{
-                            border: `${
-                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-                            }`,
-                            margin: 5,
-                            padding: 5,
-                            display: "flex",
-                            alignItems: "center",
-                            width: "max-content",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                          }}
+                          style={dragItemStyle}
                           onDrop={this.onDrop}
                         >
                           <MathSpan
@@ -398,7 +402,7 @@ class Display extends Component {
     ) : (
       <div />
     );
-    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
@@ -519,7 +523,8 @@ Display.propTypes = {
   imageOptions: PropTypes.object,
   showQuestionNumber: PropTypes.bool,
   item: PropTypes.object,
-  showBorder: PropTypes.bool
+  showBorder: PropTypes.bool,
+  isReviewTab: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -558,7 +563,8 @@ Display.defaultProps = {
   imageOptions: {},
   showBorder: false,
   showQuestionNumber: false,
-  item: {}
+  item: {},
+  isReviewTab: false
 };
 
 export default withTheme(withCheckAnswerButton(Display));

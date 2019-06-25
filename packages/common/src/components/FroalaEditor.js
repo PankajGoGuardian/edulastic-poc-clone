@@ -413,8 +413,10 @@ const CustomEditor = ({
           if (evt.which === 8) {
             const range = this.selection.ranges()[0];
             const parent = range.commonAncestorContainer;
-            if (parent && range.startOffset === range.endOffset && parent.tagName === "P") {
+            if (parent && range.startOffset === range.endOffset) {
               const cursorEl = parent.childNodes[range.startOffset - 1];
+              if (!cursorEl || !cursorEl.tagName) return;
+
               if (["RESPONSE", "TEXTINPUT", "TEXTDROPDOWN", "MATHINPUT"].includes(cursorEl.tagName)) {
                 cursorEl.remove();
                 this.selection.save();

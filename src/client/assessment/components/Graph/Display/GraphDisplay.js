@@ -7,7 +7,6 @@ import { Stimulus } from "@edulastic/common";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
-import { X_RATIO, Y_RATIO } from "../Authoring/GraphQuadrants/GraphQuadrants";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -228,7 +227,7 @@ class GraphDisplay extends Component {
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance) * canvas[X_RATIO],
+        ticksDistance: safeParseFloat(ui_style.xTickDistance),
         name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
@@ -238,7 +237,7 @@ class GraphDisplay extends Component {
         showAxis: xShowAxis
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance) * canvas[Y_RATIO],
+        ticksDistance: safeParseFloat(ui_style.yTickDistance),
         name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
@@ -248,8 +247,8 @@ class GraphDisplay extends Component {
         showAxis: yShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(ui_style.xDistance) * canvas[X_RATIO],
-        gridY: safeParseFloat(ui_style.yDistance) * canvas[Y_RATIO],
+        gridX: safeParseFloat(ui_style.xDistance),
+        gridY: safeParseFloat(ui_style.yDistance),
         showGrid
       },
       bgImgOptions: {

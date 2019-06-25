@@ -14,8 +14,8 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
-export const X_RATIO = "x_ratio";
-export const Y_RATIO = "y_ratio";
+const X_RATIO = "x_ratio";
+const Y_RATIO = "y_ratio";
 const X_MIN = "x_min";
 const X_MAX = "x_max";
 const Y_MIN = "y_min";
@@ -47,11 +47,11 @@ class GraphQuadrants extends Component {
     value = parseFloat(value);
     value = value > 0 ? value : 1;
     if (name === X_RATIO) {
-      canvas[X_MIN] = parseFloat(canvas[X_MIN]) * (value / canvas[X_RATIO]);
-      canvas[X_MAX] = parseFloat(canvas[X_MAX]) * (value / canvas[X_RATIO]);
+      canvas[X_MIN] = +(parseFloat(canvas[X_MIN]) * (value / canvas[X_RATIO])).toFixed(4);
+      canvas[X_MAX] = +(parseFloat(canvas[X_MAX]) * (value / canvas[X_RATIO])).toFixed(4);
     } else if (name === Y_RATIO) {
-      canvas[Y_MIN] = parseFloat(canvas[Y_MIN]) * (value / canvas[Y_RATIO]);
-      canvas[Y_MAX] = parseFloat(canvas[Y_MAX]) * (value / canvas[Y_RATIO]);
+      canvas[Y_MIN] = +(parseFloat(canvas[Y_MIN]) * (value / canvas[Y_RATIO])).toFixed(4);
+      canvas[Y_MAX] = +(parseFloat(canvas[Y_MAX]) * (value / canvas[Y_RATIO])).toFixed(4);
     }
 
     canvas[name] = value;

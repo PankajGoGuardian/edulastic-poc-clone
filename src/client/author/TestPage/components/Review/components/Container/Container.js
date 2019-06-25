@@ -264,7 +264,7 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} />
+                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} owner={owner} />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}

@@ -4,15 +4,14 @@ import React from "react";
 import withIconStyles from "./HOC/withIconStyles";
 import SVG from "./common/SVG";
 
-<svg xmlns="http://www.w3.org/2000/svg" width="17.463" height="17.464" viewBox="0 0 17.463 17.464" />;
 const IconPlaylist = props => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32.228 29.197" {...props}>
-    <g transform="translate(-51 -195)">
-      <g transform="translate(51 195)">
-        <rect width="19.927" height="3.243" rx="1.622" transform="translate(0 8.65)" />
-        <rect width="32.228" height="3.243" rx="1.622" transform="translate(0 17.292)" />
-        <rect width="32.228" height="3.243" rx="1.622" transform="translate(0 25.954)" />
-        <rect width="32.228" height="3.243" rx="1.622" transform="translate(0)" />
+  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 18.84 17.115" {...props}>
+    <g transform="translate(-50.75 -194.75)">
+      <g transform="translate(14466.809 13535)">
+        <rect width="11.341" height="1.846" rx="0.923" transform="translate(-14415.809 -13335.077)" strokeWidth="0.5" />
+        <rect width="18.341" height="1.846" rx="0.923" transform="translate(-14415.809 -13330.159)" strokeWidth="0.5" />
+        <rect width="18.341" height="1.846" rx="0.923" transform="translate(-14415.809 -13325.229)" strokeWidth="0.5" />
+        <rect width="18.341" height="1.846" rx="0.923" transform="translate(-14415.809 -13340)" strokeWidth="0.5" />
       </g>
     </g>
   </SVG>

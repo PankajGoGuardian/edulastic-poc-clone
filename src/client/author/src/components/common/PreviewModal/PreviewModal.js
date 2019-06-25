@@ -69,7 +69,15 @@ class PreviewModal extends React.Component {
   };
 
   render() {
-    const { isVisible, collections, loading, item = { rows: [], data: {}, authors: [] }, currentAuthorId } = this.props;
+    const {
+      isVisible,
+      owner,
+      collections,
+      loading,
+      item = { rows: [], data: {}, authors: [] },
+      currentAuthorId,
+      readOnlyMode = false
+    } = this.props;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows } = item;
     const getAuthorsId = authors.map(item => item._id);
@@ -80,8 +88,10 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
           <ButtonsWrapper>
-            {allowDuplicate && <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>}
-            {authorHasPermission && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
+            {allowDuplicate && !readOnlyMode && owner && (
+              <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>
+            )}
+            {authorHasPermission && !readOnlyMode && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>
         {loading || item === null ? (
@@ -107,6 +117,8 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
+  readOnlyMode: PropTypes.bool,
+  owner: PropTypes.bool,
   addDuplicate: PropTypes.func,
   showModal: PropTypes.bool,
   item: PropTypes.object

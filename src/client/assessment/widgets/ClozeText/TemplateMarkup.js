@@ -143,12 +143,14 @@ class TemplateMarkup extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.text.templatemarkup")}</Subtitle>
+
         <FroalaEditor
           data-cy="templateBox"
           onChange={this.onChangeMarkUp}
           value={item.templateMarkUp}
           toolbarId="cloze-text-template"
           additionalToolbarOptions={["textinput"]}
+          theme="border"
         />
       </Widget>
     );

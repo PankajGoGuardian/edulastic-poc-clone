@@ -192,6 +192,7 @@ class Display extends Component {
               btnStyle.width = responseBtnStyle.width;
             }
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
+            const responseWidth = parseInt(responseContainer.width, 10);
             return (
               <div
                 title={
@@ -214,6 +215,7 @@ class Display extends Component {
                 <ClozeTextInput
                   index={dropTargetIndex}
                   disabled={disableResponse}
+                  noIndent={responseWidth < 30}
                   resprops={{
                     btnStyle: {},
                     item,
@@ -241,6 +243,7 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
+        maxHeight={canvasHeight}
         imageAlterText={imageAlterText}
         stemnumeration={stemnumeration}
         fontSize={fontSize}

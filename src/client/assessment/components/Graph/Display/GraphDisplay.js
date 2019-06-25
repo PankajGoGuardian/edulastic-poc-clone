@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
 import styled from "styled-components";
 
 import { Stimulus } from "@edulastic/common";
@@ -7,6 +9,7 @@ import { Stimulus } from "@edulastic/common";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -431,6 +434,7 @@ class GraphDisplay extends Component {
         width: ui_style.layout_width,
         margin: ui_style.layout_margin,
         height: ui_style.layout_height,
+        autoCalcHeight: ui_style.autoCalcHeight,
         snapTo: ui_style.layout_snapto,
         fontSize: getFontSizeVal(ui_style.currentFontSize),
         titlePosition: parseInt(ui_style.title_position, 10),
@@ -480,8 +484,19 @@ class GraphDisplay extends Component {
       checkAnswer,
       changePreviewTab,
       questionId: id,
-      altAnswerId
+      altAnswerId,
+      setCalculatedHeight: this.setCalculatedHeight
     };
+  };
+
+  setCalculatedHeight = height => {
+    const { setQuestionData, graphData } = this.props;
+    const newGraphData = cloneDeep(graphData);
+    newGraphData.ui_style = {
+      ...newGraphData.ui_style,
+      autoCalcHeight: height
+    };
+    setQuestionData(newGraphData);
   };
 
   render() {
@@ -519,6 +534,7 @@ class GraphDisplay extends Component {
 }
 
 GraphDisplay.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   graphData: PropTypes.object.isRequired,
   smallSize: PropTypes.bool,
@@ -550,4 +566,9 @@ GraphDisplay.defaultProps = {
   qIndex: null
 };
 
-export default GraphDisplay;
+export default connect(
+  null,
+  {
+    setQuestionData: setQuestionDataAction
+  }
+)(GraphDisplay);

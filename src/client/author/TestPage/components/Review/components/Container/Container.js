@@ -87,7 +87,10 @@ class Review extends PureComponent {
   handleRemoveSelected = () => {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
-
+    const itemsSelected = test.testItems.find(item => item.selected);
+    if (!itemsSelected) {
+      return message.warn("Please select at least one question to remove");
+    }
     newData.testItems = test.testItems.filter(item => !item.selected);
 
     newData.scoring.testItems = test.scoring.testItems.filter(item => {
@@ -163,12 +166,6 @@ class Review extends PureComponent {
     this.setModalVisibility(false);
   };
 
-  handleSelectedTest = items => {
-    const { test } = this.props;
-    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
-    this.setSelected(result);
-  };
-
   get tableData() {
     const { summary } = this.props;
     return summary.map(data => ({
@@ -196,6 +193,7 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
+      readOnlyMode = false,
       createTestItemModalVisible,
       itemsSubjectAndGrade
     } = this.props;
@@ -231,7 +229,7 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              {owner && (
+              {owner && !readOnlyMode && (
                 <HeaderBar
                   onSelectAll={this.handleSelectAll}
                   itemTotal={test.testItems.length}
@@ -246,11 +244,7 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable
-                  items={test.testItems}
-                  setSelectedTests={this.handleSelectedTest}
-                  selectedTests={selected.map(i => test.testItems[i]._id)}
-                />
+                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}
@@ -263,6 +257,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   owner={owner}
+                  readOnlyMode={readOnlyMode}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -283,6 +278,7 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
+              readOnlyMode={readOnlyMode}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
@@ -297,6 +293,8 @@ class Review extends PureComponent {
           isVisible={isModalVisible}
           onClose={this.closeModal}
           showModal={true}
+          readOnlyMode={readOnlyMode}
+          owner={owner}
           addDuplicate={this.handleDuplicateItem}
           owner={owner}
           page="review"

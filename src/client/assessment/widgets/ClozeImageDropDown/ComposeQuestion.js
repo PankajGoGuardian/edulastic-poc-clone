@@ -411,7 +411,7 @@ class ComposeQuestion extends Component {
     const canvasWidth = (imageWidth < maxWidth ? maxWidth : imageWidth) + imageLeft;
     const canvasHeight = (imageHeight < maxHeight ? maxHeight : imageHeight) + imageTop;
     if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth - 10, height: imageHeight - 10 });
+      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
 
     return (
@@ -419,12 +419,14 @@ class ComposeQuestion extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageDropDown.composequestion")}</Subtitle>
+
             <QuestionTextArea
               toolbarId="stimulus"
               inputId="stimulusInput"
               placeholder={t("component.cloze.imageDropDown.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
+              theme="border"
             />
             <PaddingDiv />
             <FormContainer>
@@ -560,8 +562,8 @@ class ComposeQuestion extends Component {
                           </MoveControlButton>
                         )}
                         <PreviewImage
-                          width={imageWidth - 10}
-                          height={imageHeight - 10}
+                          width={imageWidth}
+                          height={imageHeight}
                           maxWidth={maxWidth}
                           maxHeight={maxHeight}
                           onDragStart={e => e.preventDefault()}

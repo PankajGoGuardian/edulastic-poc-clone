@@ -56,7 +56,8 @@ class ComposeQuestion extends Component {
   imageRndRef = createRef();
 
   state = {
-    isEditableResizeMove: false
+    isEditableResizeMove: false,
+    isAnnotationBelow: false
   };
 
   static propTypes = {
@@ -260,6 +261,10 @@ class ComposeQuestion extends Component {
     );
   };
 
+  toggleIsAnnotationBelow = () => {
+    this.setState(prevState => ({ isAnnotationBelow: !prevState.isAnnotationBelow }));
+  };
+
   changeImageHeight = height => {
     const { maxHeight } = clozeImage;
     const newHeight = height > 0 ? height : maxHeight;
@@ -383,8 +388,8 @@ class ComposeQuestion extends Component {
 
   render() {
     const { t, item, setQuestionData } = this.props;
-    const { isEditableResizeMove } = this.state;
-    const { toggleIsMoveResizeEditable, handleImagePosition } = this;
+    const { isEditableResizeMove, isAnnotationBelow } = this.state;
+    const { toggleIsMoveResizeEditable, handleImagePosition, toggleIsAnnotationBelow } = this;
 
     const { maxWidth, maxHeight } = clozeImage;
 
@@ -417,18 +422,20 @@ class ComposeQuestion extends Component {
     const canvasWidth = (imageWidth < maxWidth ? maxWidth : imageWidth) + imageLeft;
     const canvasHeight = (imageHeight < maxHeight ? maxHeight : imageHeight) + imageTop;
     if (this.imageRndRef.current) {
-      this.imageRndRef.current.updateSize({ width: imageWidth - 10, height: imageHeight - 10 });
+      this.imageRndRef.current.updateSize({ width: imageWidth, height: imageHeight });
     }
 
     return (
       <Widget>
         <Subtitle>{t("component.cloze.imageDragDrop.composequestion")}</Subtitle>
+
         <QuestionTextArea
           toolbarId="stimulus"
           inputId="stimulusInput"
           placeholder={t("component.cloze.imageDragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
           value={item.stimulus}
+          theme="border"
         />
         <PaddingDiv top={30} />
         <FormContainer>
@@ -520,19 +527,21 @@ class ComposeQuestion extends Component {
               data-cy="drag-drop-image-panel"
               imageUrl={item.imageUrl}
               height={canvasHeight + 4}
-              width={canvasWidth + 4}
+              width={canvasWidth}
             >
               <div
                 style={{
                   position: "relative",
-                  width: imageWidth - 10 || "100%",
-                  height: imageHeight - 10 || "100%"
+                  width: imageWidth || "100%",
+                  height: imageHeight || "100%"
                 }}
               >
                 <AnnotationRnd
                   style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
                   questionId={item.id}
                   disableDragging={false}
+                  isAbove={!isAnnotationBelow}
+                  onDoubleClick={toggleIsAnnotationBelow}
                 />
               </div>
               {item.imageUrl && (
@@ -570,8 +579,8 @@ class ComposeQuestion extends Component {
                       </MoveControlButton>
                     )}
                     <PreviewImage
-                      width={imageWidth - 10}
-                      height={imageHeight - 10}
+                      width={imageWidth}
+                      height={imageHeight}
                       maxWidth={maxWidth}
                       maxHeight={maxHeight}
                       onDragStart={e => e.preventDefault()}
@@ -579,12 +588,14 @@ class ComposeQuestion extends Component {
                     />
                   </Rnd>
                   <DropArea
+                    isAbove={isAnnotationBelow}
                     disable={isEditableResizeMove}
                     setQuestionData={setQuestionData}
                     updateData={this.updateData}
                     item={item}
                     width="100%"
                     showIndex={false}
+                    onDoubleClick={toggleIsAnnotationBelow}
                   />
                 </React.Fragment>
               )}

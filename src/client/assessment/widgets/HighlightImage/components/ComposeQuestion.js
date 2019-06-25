@@ -127,10 +127,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.highlightImage.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
 
         <DropZoneToolbar

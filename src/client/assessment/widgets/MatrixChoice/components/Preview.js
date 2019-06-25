@@ -6,6 +6,7 @@ import { InstructorStimulus, MathFormulaDisplay } from "@edulastic/common";
 
 import Matrix from "./Matrix";
 import CheckAnswerButton from "../../../themes/common/CheckAnswerButton";
+import { CLEAR } from "../../../constants/constantsForQuestions";
 
 const Preview = ({
   type,
@@ -15,12 +16,17 @@ const Preview = ({
   smallSize,
   onCheckAnswer,
   feedbackAttempts,
+  previewTab,
+  changePreviewTab,
+  disableResponse,
   showQuestionNumber,
   qIndex
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer);
-
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
+    }
     let value = newAnswer.value[rowIndex];
     let findIndex;
 
@@ -57,7 +63,7 @@ const Preview = ({
         uiStyle={item.ui_style}
         response={userAnswer}
         isMultiple={item.multiple_responses}
-        onCheck={handleCheck}
+        onCheck={!disableResponse ? handleCheck : () => {}}
         validation={item.validation}
         type={type}
         smallSize={smallSize}

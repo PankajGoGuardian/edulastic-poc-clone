@@ -85,11 +85,13 @@ class GraphQuadrants extends Component {
           advancedAreOpen
         >
           <Subtitle>{t("component.graphing.question.composequestion")}</Subtitle>
+
           <QuestionTextArea
             onChange={this.onChangeQuestion}
             value={graphData.stimulus}
             firstFocus={graphData.firstMount}
             placeholder={t("component.graphing.question.enteryourquestion")}
+            theme="border"
           />
         </QuestionSection>
         <QuestionSection

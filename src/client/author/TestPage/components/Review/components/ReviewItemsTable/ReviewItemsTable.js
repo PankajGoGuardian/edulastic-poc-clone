@@ -8,7 +8,7 @@ import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
   const columns = [
     {
       title: "Main info",
@@ -24,7 +24,7 @@ const ItemsTable = ({ items, types, standards }) => {
     }
   ];
 
-  const data = items.map(item => {
+  const data = items.map((item, i) => {
     const main = {
       title: item._id,
       id: item._id
@@ -43,13 +43,21 @@ const ItemsTable = ({ items, types, standards }) => {
     }
 
     return {
-      key: item._id,
+      key: i,
       main,
       meta
     };
   });
 
-  return <Table columns={columns} dataSource={data} showHeader={false} />;
+  const rowSelection = {
+    onChange: selectedRowKeys => {
+      setSelected(selectedRowKeys);
+    },
+    selectedRowKeys: selected
+  };
+  return (
+    <Table rowSelection={rowSelection} columns={columns} dataSource={data} showHeader={false} pagination={false} />
+  );
 };
 
 ItemsTable.propTypes = {

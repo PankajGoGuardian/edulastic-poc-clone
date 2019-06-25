@@ -75,6 +75,7 @@ const TestPageHeader = ({
   creating,
   onShare,
   onPublish,
+  editEnable = false,
   windowWidth,
   onEnableEdit,
   toggleSideBar,
@@ -97,7 +98,12 @@ const TestPageHeader = ({
         <TestStatus className={isPlaylist ? "draft" : testStatus}>{isPlaylist ? "DRAFT" : testStatus}</TestStatus>
       </TitleWrapper>
 
-      <TestPageNav onChange={onChangeNav} current={current} buttons={navButtons} />
+      <TestPageNav
+        onChange={onChangeNav}
+        current={current}
+        buttons={navButtons}
+        showPublishButton={showPublishButton}
+      />
 
       <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
         {showShareButton && false && (
@@ -115,17 +121,18 @@ const TestPageHeader = ({
             title={"Save as Draft"}
             data-cy="save"
             style={{ width: 42, padding: 0 }}
-            disabled={creating}
+            disabled={creating || !showPublishButton}
             size="large"
             onClick={onSave}
           >
             <IconDiskette color="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && showPublishButton && owner && testStatus === "draft" && (
+        {showShareButton && owner && (
           <EduButton
             title={"Publish Test"}
             data-cy="publish"
+            disabled={!showPublishButton}
             style={{ width: 42, padding: 0 }}
             size="large"
             onClick={() => {
@@ -135,8 +142,15 @@ const TestPageHeader = ({
             <IconSend color="#00AD50" stroke="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && !showPublishButton && owner && (
-          <EduButton title={"Edit Test"} data-cy="edit" style={{ width: 42 }} size="large" onClick={onEnableEdit}>
+        {showShareButton && owner && (
+          <EduButton
+            title={"Edit Test"}
+            disabled={editEnable}
+            data-cy="edit"
+            style={{ width: 42 }}
+            size="large"
+            onClick={onEnableEdit}
+          >
             <IconPencilEdit color="#00AD50" />
           </EduButton>
         )}
@@ -199,6 +213,7 @@ TestPageHeader.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   onShowSource: PropTypes.func.isRequired,
   testId: PropTypes.string,
+  editEnable: PropTypes.bool,
   onAssign: PropTypes.func.isRequired
 };
 

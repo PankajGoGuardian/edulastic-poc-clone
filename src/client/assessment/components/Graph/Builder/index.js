@@ -1,5 +1,6 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
+import { AUTO_VALUE, AUTO_HEIGHT_VALUE, LOST_HEIGHT_PIXELS } from "./config/constants";
 import {
   Point,
   Line,
@@ -337,18 +338,25 @@ class Board {
     });
   }
 
-  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue) {
+  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue = () => {}, setCalculatedHeight = () => {}) {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
       layout,
-      setValue
+      setValue,
+      setCalculatedHeight
     };
 
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      this.resizeContainer(layout.width, layout.height);
+      let { height } = layout;
+      if (height === AUTO_VALUE) {
+        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
+      } else if (Number.isNaN(Number.parseFloat(height))) {
+        height = 0;
+      }
+      this.resizeContainer(layout.width, height);
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -372,7 +380,7 @@ class Board {
         yMax: canvas.yMax,
         yMin: canvas.yMin
       });
-      if (!first) {
+      if (!first && this.numberlineAxis) {
         this.resetOutOfLineMarks();
         Mark.alignMarks(this);
         setValue();

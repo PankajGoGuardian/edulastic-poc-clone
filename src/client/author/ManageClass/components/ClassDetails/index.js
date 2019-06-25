@@ -45,7 +45,6 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
 
         <ActionContainer printPreview={printPreview} loadStudents={loadStudents} />
 
- 
         <StudentsList selectStudent />
       </Container>
     </>

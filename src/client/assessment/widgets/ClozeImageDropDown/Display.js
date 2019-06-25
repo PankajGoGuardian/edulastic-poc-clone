@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { shuffle, isUndefined } from "lodash";
+import { shuffle, isUndefined, isEmpty } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
@@ -247,7 +247,7 @@ class Display extends Component {
         uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
-        maxHeight={maxHeight}
+        maxHeight={canvasHeight}
         maxWidth={maxWidth}
         minWidth={response.minWidth}
         minHeight={response.minHeight}
@@ -267,7 +267,7 @@ class Display extends Component {
           groupResponses={newOptions}
           userAnswers={validation.valid_response && validation.valid_response.value}
         />
-        {validation.alt_responses && (
+        {!isEmpty(validation.alt_responses) && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             cleanValue

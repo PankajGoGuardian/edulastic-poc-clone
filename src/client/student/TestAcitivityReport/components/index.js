@@ -11,7 +11,7 @@ import MainContainer from "../../styled/mainContainer";
 //actions
 import { loadTestActivityReportAction } from "../ducks";
 
-const ReportListContainer = ({ flag, match, location, loadReport, loadTestActivityReport }) => {
+const ReportListContainer = ({ flag, match, location, loadTestActivityReport }) => {
   useEffect(() => {
     loadTestActivityReport({ testActivityId: match.params.id });
   }, []);
@@ -19,7 +19,7 @@ const ReportListContainer = ({ flag, match, location, loadReport, loadTestActivi
     <MainContainer flag={flag}>
       <TestAcivityHeader titleText="common.reportsTitle" />
       <TestActivitySubHeader title={location.title} />
-      <ReportListContent title={location.title} />
+      <ReportListContent title={location.title} reportId={match.params.id} />
     </MainContainer>
   );
 };

@@ -1,32 +1,30 @@
 import React from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
+import { test as testConstants } from "@edulastic/constants";
 import QuestionWrapper from "../../../assessment/components/QuestionWrapper";
-
-const itemReport = ({ question, index }) => (
+const { releaseGradeLabels } = testConstants;
+//TODO user  response to show in UI
+const itemReport = ({ question, index, releaseScore }) => (
   <ReportListWrapper>
     <div style={{ width: "100%" }}>
       <QuestionWrapper testItem type={question.type} view="preview" data={question} />
-      <FeedbackWrapper>
-        <FeedbackText>
-          <QuestionText>Q{index + 1}</QuestionText> - Teacher Feedback
-        </FeedbackText>
-        <FeedbackContainer>
-          <ScoreWrapper>
-            <Score>{question.feedback && question.feedback.score}</Score>
-            <Total>{question.feedback && question.feedback.maxScore}</Total>
-          </ScoreWrapper>
-          <Feedback>
-            <FeedbackGiven>{question.feedback && question.feedback.text}</FeedbackGiven>
-          </Feedback>
-        </FeedbackContainer>
-      </FeedbackWrapper>
-      <SolutionWrapper>
-        <FeedbackText>
-          <QuestionText>Q{index + 1}</QuestionText> - Solution
-        </FeedbackText>
-        <Answer>{question.feedback && question.feedback.userResponse}</Answer>
-      </SolutionWrapper>
+      {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
+        <FeedbackWrapper>
+          <FeedbackText>
+            <QuestionText>Q{index + 1}</QuestionText> - Teacher Feedback
+          </FeedbackText>
+          <FeedbackContainer>
+            <ScoreWrapper>
+              <Score>{question.feedback && question.feedback.score}</Score>
+              <Total>{question.feedback && question.feedback.maxScore}</Total>
+            </ScoreWrapper>
+            <Feedback>
+              <FeedbackGiven>{question.feedback && question.feedback.text}</FeedbackGiven>
+            </Feedback>
+          </FeedbackContainer>
+        </FeedbackWrapper>
+      )}
     </div>
   </ReportListWrapper>
 );

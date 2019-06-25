@@ -14,8 +14,8 @@ import { Col } from "../../../../styled/WidgetOptions/Col";
 import { Label } from "../../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../../styled/Subtitle";
 
-export const X_RATIO = "x_ratio";
-export const Y_RATIO = "y_ratio";
+const X_RATIO = "x_ratio";
+const Y_RATIO = "y_ratio";
 const X_MIN = "x_min";
 const X_MAX = "x_max";
 const Y_MIN = "y_min";

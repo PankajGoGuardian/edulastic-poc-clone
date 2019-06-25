@@ -10,7 +10,6 @@ import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
 import { setQuestionDataAction } from "../../../../author/src/actions/question";
-import { X_RATIO, Y_RATIO } from "../Authoring/GraphQuadrants/GraphQuadrants";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;

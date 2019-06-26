@@ -186,9 +186,15 @@ class DistrictPolicyForm extends Component {
       googleUsernames: districtPolicyData.googleUsernames,
       office365Usernames: districtPolicyData.office365Usernames,
       firstNameAndLastName: districtPolicyData.firstNameAndLastName,
-      allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers.split(/[\s,]+/),
-      allowedDomainForStudents: districtPolicyData.allowedDomainForStudents.split(/[\s,]+/),
-      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict.split(/[\s,]+/),
+      allowedDomainForTeachers: districtPolicyData.allowedDomainForTeachers.length
+        ? districtPolicyData.allowedDomainForTeachers.split(/[\s,]+/)
+        : [],
+      allowedDomainForStudents: districtPolicyData.allowedDomainForStudents.length
+        ? districtPolicyData.allowedDomainForStudents.split(/[\s,]+/)
+        : [],
+      allowedDomainsForDistrict: districtPolicyData.allowedDomainsForDistrict.length
+        ? districtPolicyData.allowedDomainsForDistrict.split(/[\s,]+/)
+        : [],
       googleClassroom: districtPolicyData.googleClassroom,
       canvas: districtPolicyData.canvas
     };

@@ -605,7 +605,7 @@ export function* updateItemSaga({ payload }) {
 
 function* publishTestItemSaga({ payload }) {
   try {
-    yield call(testItemsApi.publishTestItem, pauload);
+    yield call(testItemsApi.publishTestItem, payload);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
     if (redirectTestId) {

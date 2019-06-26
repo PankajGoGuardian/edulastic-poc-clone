@@ -316,7 +316,7 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview, preview, view } = this.props;
+    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow } = this.props;
 
     const { enableEdit } = this.state;
 
@@ -325,7 +325,8 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        false && ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
+        isTestFlow &&
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
     }
 
     return (
@@ -377,7 +378,8 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        (!isTestFlow && (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED)) ||
+        enableEdit;
     }
     const { testId } = match.params;
     let breadCrumb = [
@@ -434,6 +436,7 @@ class Container extends Component {
             saving={updating}
             view={view}
             previewTab={preview}
+            isTestFlow={isTestFlow}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}

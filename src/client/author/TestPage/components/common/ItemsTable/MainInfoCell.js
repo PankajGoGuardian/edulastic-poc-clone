@@ -25,7 +25,7 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data, testId, showModal, addDuplicate } = this.props;
+    const { data, testId, showModal, addDuplicate, readOnlyMode = false } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
       <div>
@@ -36,6 +36,7 @@ class MainInfoCell extends React.Component {
         <PreviewModal
           isVisible={isShowPreviewModal}
           testId={testId}
+          readOnlyMode={readOnlyMode}
           page="addItems"
           addDuplicate={addDuplicate}
           showModal={showModal}
@@ -49,6 +50,7 @@ class MainInfoCell extends React.Component {
 
 MainInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
+  readOnlyMode: PropTypes.bool,
   showModal: PropTypes.bool,
   addDuplicate: PropTypes.func
 };

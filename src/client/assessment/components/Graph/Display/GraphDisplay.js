@@ -523,8 +523,8 @@ class GraphDisplay extends Component {
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
-          <div>Wrong parameters</div>
-        )}
+            <div>Wrong parameters</div>
+          )}
       </Fragment>
     );
   }
@@ -550,8 +550,8 @@ GraphDisplay.propTypes = {
 
 GraphDisplay.defaultProps = {
   smallSize: false,
-  onChange: () => {},
-  changePreviewTab: () => {},
+  onChange: () => { },
+  changePreviewTab: () => { },
   elements: [],
   evaluation: null,
   showAnswer: false,

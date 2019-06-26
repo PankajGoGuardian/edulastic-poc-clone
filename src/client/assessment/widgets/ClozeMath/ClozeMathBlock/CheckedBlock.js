@@ -40,6 +40,7 @@ const CheckedBlock = ({ item, evaluation, userAnswer, id, type, isMath, width, o
       {userAnswer && evaluation[id] && (
         <IconWrapper>{checkBoxClass === "right" ? <RightIcon /> : <WrongIcon />}</IconWrapper>
       )}
+
     </CheckBox>
   );
 };
@@ -58,7 +59,7 @@ CheckedBlock.propTypes = {
 CheckedBlock.defaultProps = {
   isMath: false,
   userAnswer: "",
-  onInnerClick: () => {},
+  onInnerClick: () => { },
   width: 120
 };
 

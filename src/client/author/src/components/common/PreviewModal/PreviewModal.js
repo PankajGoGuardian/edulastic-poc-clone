@@ -49,11 +49,12 @@ class PreviewModal extends React.Component {
   };
 
   handleDuplicateTestItem = () => {
-    const { data, history, showModal = false, addDuplicate } = this.props;
+    const { data, history, match, addDuplicate } = this.props;
     const itemId = data.id;
+    const { path } = match;
     duplicateTestItem(itemId).then(duplicateId => {
       const duplicateTestItemId = duplicateId._id;
-      if (showModal) {
+      if (path.includes("tests")) {
         this.closeModal();
         addDuplicate(duplicateTestItemId);
       } else {
@@ -66,7 +67,7 @@ class PreviewModal extends React.Component {
     const { data, history, testId } = this.props;
     const itemId = data.id;
     if (testId) {
-      history.push(`/author/items/${itemId}/item-detail/test/${testId}`);
+      history.push(`/author/tests/${testId}/createItem/${itemId}`);
     } else {
       history.push(`/author/items/${itemId}/item-detail`);
     }
@@ -81,7 +82,6 @@ class PreviewModal extends React.Component {
   render() {
     const {
       isVisible,
-      owner,
       collections,
       loading,
       item = { rows: [], data: {}, authors: [] },
@@ -102,9 +102,7 @@ class PreviewModal extends React.Component {
         <HeadingWrapper>
           <Title>Preview</Title>
           <ButtonsWrapper>
-            {allowDuplicate && !readOnlyMode && owner && (
-              <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>
-            )}
+            {allowDuplicate && !readOnlyMode && <Button onClick={this.handleDuplicateTestItem}>Duplicate</Button>}
             {authorHasPermission && !readOnlyMode && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>

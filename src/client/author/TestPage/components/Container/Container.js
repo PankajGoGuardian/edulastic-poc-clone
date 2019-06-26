@@ -92,8 +92,7 @@ class Container extends PureComponent {
     if (location.hash === "#review") {
       this.handleNavChange("review")();
     }
-
-    if (match.params.id) {
+    if (match.params.id && match.params.id != "undefined") {
       receiveTestById(match.params.id);
     } else {
       this.setState({ current: "description" });
@@ -201,6 +200,7 @@ class Container extends PureComponent {
             onAddItems={this.handleAddItems}
             selectedItems={selectedItems}
             current={current}
+            readOnlyMode={!readOnlyMode}
             onSaveTestId={this.handleSaveTestId}
             test={test}
             gotoSummary={this.handleNavChange("description")}

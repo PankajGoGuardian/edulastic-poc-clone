@@ -263,7 +263,15 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                     </Suspense>
                   )}
                 />
-
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId"
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <ItemDetail isTestFlow {...props} />
+                    </Suspense>
+                  )}
+                />
                 <Route
                   exact
                   path="/author/tests/:id/editAssigned"
@@ -309,6 +317,33 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   render={props => (
                     <Suspense fallback={<Progress />}>
                       <TestList {...props} />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <PickUpQuestionType isTestFlow {...props} />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/questions/create"
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <QuestionEditor isTestFlow {...props} />
+                    </Suspense>
+                  )}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:testId/createItem/:itemId/questions/edit"
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <QuestionEditor isTestFlow isEditFlow {...props} />
                     </Suspense>
                   )}
                 />

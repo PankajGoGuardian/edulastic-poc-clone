@@ -74,7 +74,8 @@ class ShareModal extends React.Component {
   componentDidMount() {
     const { getSharedUsers, match, isPlaylist } = this.props;
     const testId = match.params.id;
-    if (testId) getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
+    if (testId && testId !== "undefined")
+      getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
   }
 
   radioHandler = e => {

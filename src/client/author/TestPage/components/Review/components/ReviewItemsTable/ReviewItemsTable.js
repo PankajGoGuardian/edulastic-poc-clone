@@ -9,13 +9,13 @@ import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards, selected, setSelected, owner }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview }) => {
   const columns = [
     {
       title: "Main info",
       dataIndex: "main",
       key: "main",
-      render: data => <MainInfoCell data={data} owner={owner} />
+      render: data => <MainInfoCell data={data} handlePreview={handlePreview} />
     },
     {
       title: "Meta info",
@@ -74,6 +74,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, owner }) =
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
+  handlePreview: PropTypes.func,
   standards: PropTypes.object.isRequired
 };
 

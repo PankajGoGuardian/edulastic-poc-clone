@@ -441,7 +441,7 @@ const CustomEditor = ({
           if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.COURSE)
+          uploadToS3(image[0], aws.s3Folders.DEFAULT)
             .then(result => {
               this.image.insert(result);
             })

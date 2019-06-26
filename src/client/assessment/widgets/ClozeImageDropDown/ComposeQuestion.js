@@ -238,7 +238,7 @@ class ComposeQuestion extends Component {
         message.error("Please upload files in image format");
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
       this.onItemPropChange("imageUrl", imageUrl);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);

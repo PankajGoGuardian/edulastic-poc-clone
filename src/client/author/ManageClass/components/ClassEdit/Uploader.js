@@ -17,7 +17,7 @@ class Uploader extends React.Component {
   handleChange = async info => {
     try {
       const { file } = info;
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       const { setThumbnailUrl } = this.props;
       this.setState(
         {

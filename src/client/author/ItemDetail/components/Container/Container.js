@@ -83,7 +83,7 @@ class Container extends Component {
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
       getItemDetailById(itemId, { data: true, validation: true });
       history.replace({
-        pathname: isTestFLow
+        pathname: isTestFlow
           ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
           : `/author/items/${match.params.id}/pickup-questiontype`,
         state: {

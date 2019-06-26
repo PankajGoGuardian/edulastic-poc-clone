@@ -272,27 +272,27 @@ class Review extends PureComponent {
                   items={test.testItems}
                   setSelected={this.setSelected}
                   selected={selected}
-                  handlePreview={this.handlePreview}
+                  handlePreview={this.handlePreviewTestItem}
                 />
               ) : (
-                  <List
-                    onChangePoints={this.handleChangePoints}
-                    onPreview={this.handlePreviewTestItem}
-                    testItems={test.testItems}
-                    rows={rows}
-                    standards={standards}
-                    selected={selected}
-                    setSelected={this.setSelected}
-                    onSortEnd={this.moveTestItems}
-                    types={types}
-                    owner={owner}
-                    readOnlyMode={readOnlyMode}
-                    scoring={test.scoring}
-                    questions={questions}
-                    mobile={!isSmallSize}
-                    useDragHandle
-                  />
-                )}
+                <List
+                  onChangePoints={this.handleChangePoints}
+                  onPreview={this.handlePreviewTestItem}
+                  testItems={test.testItems}
+                  rows={rows}
+                  standards={standards}
+                  selected={selected}
+                  setSelected={this.setSelected}
+                  onSortEnd={this.moveTestItems}
+                  types={types}
+                  owner={owner}
+                  readOnlyMode={readOnlyMode}
+                  scoring={test.scoring}
+                  questions={questions}
+                  mobile={!isSmallSize}
+                  useDragHandle
+                />
+              )}
             </Paper>
           </Col>
           <Col

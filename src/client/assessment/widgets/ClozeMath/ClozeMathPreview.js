@@ -15,6 +15,23 @@ import ClozeInput from "./ClozeMathBlock/ClozeInput";
 import ClozeMathInput from "./ClozeMathBlock/ClozeMathInput";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
+const getFontSize = size => {
+  switch (size) {
+    case "small":
+      return "11px";
+    case "normal":
+      return "14px";
+    case "large":
+      return "17px";
+    case "xlarge":
+      return "20px";
+    case "xxlarge":
+      return "24px";
+    default:
+      return "14px";
+  }
+};
+
 const ClozeMathPreview = ({
   type,
   item,
@@ -58,11 +75,32 @@ const ClozeMathPreview = ({
     }
   };
 
+  const getStyles = () => {
+    const uiStyles = {};
+    const { ui_style = {} } = item;
+    if (ui_style.fontsize) {
+      uiStyles.fontSize = getFontSize(ui_style.fontsize);
+    }
+
+    if (ui_style.min_width) {
+      uiStyles.width = `${ui_style.min_width}px`;
+      if (parseInt(ui_style.min_width, 10) < 25) {
+        uiStyles.padding = "4px 2px";
+      }
+    } else {
+      uiStyles.width = 80;
+    }
+
+    return uiStyles;
+  };
+
   useEffect(() => {
     if (window.$) {
       setNewHtml(helpers.parseTemplate(template));
     }
   }, [template]);
+
+  const uiStyles = getStyles();
 
   return (
     <div>
@@ -80,7 +118,8 @@ const ClozeMathPreview = ({
             answers: userAnswer,
             item,
             checked: type === CHECK || type === SHOW,
-            onInnerClick
+            onInnerClick,
+            uiStyles
           }
         }}
         showWarnings

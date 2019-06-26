@@ -76,11 +76,11 @@ class Layout extends Component {
               size="large"
               value={uiStyle.min_width}
               onChange={e => {
-                const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
+                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
                 return changeUiStyle("min_width", val);
               }}
               max={400}
-              min={100}
+              min={20}
             />
           </Col>
         </Row>

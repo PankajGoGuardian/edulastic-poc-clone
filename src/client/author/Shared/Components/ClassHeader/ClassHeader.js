@@ -26,7 +26,6 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
-  PresentModeSwitch,
   StyledButton,
   MenuWrapper
 } from "./styled";
@@ -238,22 +237,6 @@ class ClassHeader extends Component {
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
-              <PresentModeSwitch
-                checkedChildren={
-                  <div>
-                    <Icon type="bar-chart" /> Present
-                  </div>
-                }
-                unCheckedChildren={
-                  <div>
-                    <Icon type="pause" /> Reset
-                  </div>
-                }
-                checked={isPresentationMode}
-                onClick={this.toggleCurrentMode}
-              />
-            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
         <StyledDiv>
@@ -299,9 +282,7 @@ const enhance = compose(
     }),
     {
       setReleaseScore: releaseScoreAction,
-      setMarkAsDone: markAsDoneAction,
-
-      togglePresentationMode: togglePresentationModeAction
+      setMarkAsDone: markAsDoneAction
     }
   )
 );

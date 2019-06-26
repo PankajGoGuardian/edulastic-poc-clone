@@ -2,12 +2,6 @@ import styled from "styled-components";
 import { tabletWidth } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
-  a {
-    color: ${props => props.theme.themeTextColor};
-    &:hover {
-      color: ${props => props.theme.themeTextColor};
-    }
-  }
   padding-left: ${props => {
     if (props.isPrintPreview) {
       return "0";
@@ -108,5 +102,9 @@ export const MainContainer = styled.div`
         background-color: ${props => props.theme.themeBgColor};
       }
     }
+  }
+
+  .ant-switch-checked {
+    background-color: ${props => props.theme.themeBgColor};
   }
 `;

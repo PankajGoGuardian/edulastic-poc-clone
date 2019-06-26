@@ -99,7 +99,7 @@ class CorrectAnswer extends Component {
           </CorrectAnswerHeader>
         )}
         <Display
-          preview
+          preview={false}
           setAnswers
           dragHandler
           options={options}

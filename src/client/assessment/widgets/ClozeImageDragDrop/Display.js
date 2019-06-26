@@ -246,7 +246,11 @@ class Display extends Component {
         >
           <div style={{ position: "relative" }}>
             <AnnotationRnd
-              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              style={{
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                border: preview ? null : "1px solid lightgray"
+              }}
               questionId={questionId}
             />
           </div>

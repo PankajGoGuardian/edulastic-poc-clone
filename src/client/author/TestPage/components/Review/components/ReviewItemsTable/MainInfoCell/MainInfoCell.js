@@ -7,12 +7,7 @@ import { Stimulus } from "./styled";
 class MainInfoCell extends React.Component {
   render() {
     const { data, handlePreview } = this.props;
-    return (
-      <div>
-        <MoveLink onClick={() => handlePreview(data.id)}>{data.title}</MoveLink>
-        <Stimulus dangerouslySetInnerHTML={{ __html: data.stimulus }} />
-      </div>
-    );
+    return <Stimulus onClick={() => handlePreview(data.id)} dangerouslySetInnerHTML={{ __html: data.stimulus }} />;
   }
 }
 

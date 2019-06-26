@@ -81,7 +81,7 @@ const RedirectPopUp = ({
 
       <Row> Students </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Row>
             <Select
               mode="multiple"

@@ -208,15 +208,12 @@ class GraphDisplay extends Component {
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
 
-    const xRatio = parseFloat(canvas.x_ratio) > 0 ? parseFloat(canvas.x_ratio) : 1;
-    const yRatio = parseFloat(canvas.y_ratio) > 0 ? parseFloat(canvas.y_ratio) : 1;
-
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min) * xRatio,
-        xMax: parseFloat(canvas.x_max) * xRatio,
-        yMin: parseFloat(canvas.y_min) * yRatio,
-        yMax: parseFloat(canvas.y_max) * yRatio
+        xMin: parseFloat(canvas.x_min),
+        xMax: parseFloat(canvas.x_max),
+        yMin: parseFloat(canvas.y_min),
+        yMax: parseFloat(canvas.y_max)
       },
       layout: {
         width: ui_style.layout_width,
@@ -233,7 +230,7 @@ class GraphDisplay extends Component {
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance) * xRatio,
+        ticksDistance: safeParseFloat(ui_style.xTickDistance),
         name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
@@ -243,7 +240,7 @@ class GraphDisplay extends Component {
         showAxis: xShowAxis
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance) * yRatio,
+        ticksDistance: safeParseFloat(ui_style.yTickDistance),
         name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
@@ -253,8 +250,8 @@ class GraphDisplay extends Component {
         showAxis: yShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(ui_style.xDistance) * xRatio,
-        gridY: safeParseFloat(ui_style.yDistance) * yRatio,
+        gridX: safeParseFloat(ui_style.xDistance),
+        gridY: safeParseFloat(ui_style.yDistance),
         showGrid
       },
       bgImgOptions: {

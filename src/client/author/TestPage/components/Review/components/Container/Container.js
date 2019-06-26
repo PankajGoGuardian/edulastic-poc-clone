@@ -11,7 +11,7 @@ import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
-import { setTestDataAction } from "../../../../ducks";
+import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
@@ -207,7 +207,9 @@ class Review extends PureComponent {
       owner,
       readOnlyMode = false,
       createTestItemModalVisible,
-      itemsSubjectAndGrade
+      itemsSubjectAndGrade,
+      checkAnswer,
+      showAnswer
     } = this.props;
     const {
       isCollapse,
@@ -318,6 +320,9 @@ class Review extends PureComponent {
           addDuplicate={this.handleDuplicateItem}
           page="review"
           data={item}
+          checkAnswer={() => checkAnswer(item)}
+          showAnswer={() => showAnswer(item)}
+          showEvaluationButtons
         />
         <TestPreviewModal
           isModalVisible={isTestPreviewModalVisible}
@@ -361,7 +366,9 @@ const enhance = compose(
     {
       setData: setTestDataAction,
       toggleCreateItemModal: toggleCreateItemModalAction,
-      clearDictAlignment: clearDictAlignmentAction
+      clearDictAlignment: clearDictAlignmentAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
     }
   )
 );

@@ -39,6 +39,7 @@ import { setElementsStashAction, setStashIndexAction } from "../../../../actions
 import Equations from "./Equations";
 import DrawingObjects from "./DrawingObjects";
 import AnnotationRnd from "../../Annotations/AnnotationRnd";
+import { nameGenerator, objectLabelComparator } from "../../Builder/utils";
 
 const getColoredElems = (elements, compareResult) => {
   if (compareResult && compareResult.details && compareResult.details.length > 0) {
@@ -178,12 +179,20 @@ class GraphContainer extends PureComponent {
       backgroundShapes,
       toolbar,
       setElementsStash,
-      graphType
+      graphType,
+      elements
     } = this.props;
 
     const { tools } = toolbar;
 
     this._graph = makeBorder(this._graphId, graphType);
+
+    elements.sort(objectLabelComparator);
+    this._graph.objectNameGenerator = nameGenerator();
+    if (typeof elements[0] === "object") {
+      this._graph.objectNameGenerator.next();
+      this._graph.objectNameGenerator.next(String.fromCharCode(elements[0].label.charCodeAt(0) - 1));
+    }
 
     if (!this.drawingObjectsAreVisible()) {
       this._graph.setTool(tools[0]);

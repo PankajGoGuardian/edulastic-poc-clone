@@ -544,6 +544,27 @@ export function* nameGenerator() {
     const reset = yield String.fromCharCode(...charCodes);
     if (reset) {
       charCodes.splice(0, charCodes.length);
+      if (typeof reset === "string" && reset.charCodeAt() >= firstCharCode && reset.charCodeAt() < lastCharCode) {
+        charCodes.push(reset.charCodeAt());
+      }
     }
   }
+}
+
+export function objectLabelComparator(a, b) {
+  if (typeof a.label === "string" && typeof b.label === "string") {
+    if (a.label.length > b.label.length) {
+      return -1;
+    }
+    if (a.label.length < b.label.length) {
+      return 1;
+    }
+  }
+  if (a.label > b.label) {
+    return -1;
+  }
+  if (a.label < b.label) {
+    return 1;
+  }
+  return 0;
 }

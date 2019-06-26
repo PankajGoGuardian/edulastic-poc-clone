@@ -135,7 +135,7 @@ export default enhance(ItemsTable);
 
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
-    padding: 38px 6px 28px 26px;
+    padding: 30px;
   }
 
   table tr tr img {

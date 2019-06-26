@@ -56,8 +56,8 @@ MainInfoCell.propTypes = {
 export default withRouter(MainInfoCell);
 
 const TypeContainer = styled.div`
-  margin-top: 31px;
-  width: 30%;
+  margin-top: 30px;
+  display: flex;
   .ant-tag {
     background: rgba(0, 176, 255, 0.2);
     color: rgb(0, 131, 190);

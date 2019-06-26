@@ -283,7 +283,7 @@ class AddItems extends PureComponent {
                   <span>Create new Item</span>
                 </StyledButton>
               </ItemsMenu>
-              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px 71px 0 31px">
+              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
                 {loading && <Spin size="large" />}
                 {!loading && (
                   <ItemsTable

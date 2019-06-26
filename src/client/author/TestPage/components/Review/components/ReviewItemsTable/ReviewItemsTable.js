@@ -9,13 +9,13 @@ import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected, owner }) => {
   const columns = [
     {
       title: "Main info",
       dataIndex: "main",
       key: "main",
-      render: data => <MainInfoCell data={data} />
+      render: data => <MainInfoCell data={data} owner={owner} />
     },
     {
       title: "Meta info",
@@ -36,8 +36,8 @@ const ItemsTable = ({ items, types, standards, selected, setSelected }) => {
   };
   const data = items.map((item, i) => {
     const main = {
-      title: item._id,
-      id: item._id
+      id: item._id,
+      title: item._id
     };
     const meta = {
       id: item._id,

@@ -17,12 +17,18 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data } = this.props;
+    const { data, owner } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
       <div>
         <Stimulus onClick={this.onPreviewModalChange} dangerouslySetInnerHTML={{ __html: data.stimulus }} />
-        <PreviewModal isVisible={isShowPreviewModal} onClose={this.onPreviewModalChange} data={data} />
+        <PreviewModal
+          isVisible={isShowPreviewModal}
+          onClose={this.onPreviewModalChange}
+          data={data}
+          page="review"
+          owner={owner}
+        />
       </div>
     );
   }

@@ -273,6 +273,7 @@ const SingleAssessmentReportFilters = ({
     <div className={className} style={style}>
       <Row type="flex" className="single-assessment-report-top-filter">
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>School Year</PrintablePrefix>
           <ControlDropDown
             by={filters.termId}
             selectCB={updateSchoolYearDropDownCB}
@@ -282,6 +283,7 @@ const SingleAssessmentReportFilters = ({
           />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>Subject</PrintablePrefix>
           <ControlDropDown
             by={filters.subject}
             selectCB={updateSubjectDropDownCB}
@@ -291,6 +293,7 @@ const SingleAssessmentReportFilters = ({
           />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>Grade</PrintablePrefix>
           <AutocompleteDropDown
             prefix="Grade"
             className="custom-1-scrollbar"
@@ -300,6 +303,7 @@ const SingleAssessmentReportFilters = ({
           />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>Course</PrintablePrefix>
           <AutocompleteDropDown
             prefix="Course"
             by={filters.courseId}
@@ -308,6 +312,7 @@ const SingleAssessmentReportFilters = ({
           />
         </Col>
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>Class</PrintablePrefix>
           <AutocompleteDropDown
             prefix="Class"
             by={filters.groupId}
@@ -318,6 +323,7 @@ const SingleAssessmentReportFilters = ({
         {role !== "teacher" ? (
           <>
             <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>School</PrintablePrefix>
               <AutocompleteDropDown
                 prefix="School"
                 by={filters.schoolId}
@@ -326,6 +332,7 @@ const SingleAssessmentReportFilters = ({
               />
             </Col>
             <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+              <PrintablePrefix>Teacher</PrintablePrefix>
               <AutocompleteDropDown
                 prefix="Teacher"
                 by={filters.teacherId}
@@ -336,6 +343,7 @@ const SingleAssessmentReportFilters = ({
           </>
         ) : null}
         <Col xs={12} sm={12} md={8} lg={4} xl={4}>
+          <PrintablePrefix>Assessment Type</PrintablePrefix>
           <AutocompleteDropDown
             prefix="Assessment Type"
             by={filters.assessmentType}
@@ -346,6 +354,9 @@ const SingleAssessmentReportFilters = ({
       </Row>
       <Row type="flex" className="single-assessment-report-bottom-filter">
         <Col className="single-assessment-report-test-autocomplete-container">
+          <div>
+            <PrintablePrefix>Assessment Name</PrintablePrefix>
+          </div>
           <AutocompleteDropDown
             containerClassName="single-assessment-report-test-autocomplete"
             data={processedTestIds.testIds ? processedTestIds.testIds : []}
@@ -380,6 +391,16 @@ const enhance = compose(
     }
   )
 );
+
+const PrintablePrefix = styled.b`
+  display: none;
+  padding-left: 5px;
+  // float: left;
+
+  @media print {
+    display: block;
+  }
+`;
 
 const StyledSingleAssessmentReportFilters = styled(SingleAssessmentReportFilters)`
   padding: 10px;

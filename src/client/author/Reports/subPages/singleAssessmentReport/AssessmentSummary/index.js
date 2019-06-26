@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
+import styled from "styled-components";
 import { compose } from "redux";
 import { connect } from "react-redux";
 import queryString from "query-string";
@@ -18,6 +19,7 @@ import {
   getReportsAssessmentSummary,
   getReportsAssessmentSummaryLoader
 } from "./ducks";
+import { getPrintingState } from "../../../ducks";
 import { getUserRole } from "../../../../src/selectors/user";
 
 const AssessmentSummary = props => {
@@ -71,6 +73,7 @@ const AssessmentSummary = props => {
                     name={state.assessmentName}
                     data={state.metricInfo}
                     role={props.role}
+                    isPrinting={props.isPrinting}
                   />
                 ) : (
                   ""
@@ -89,7 +92,8 @@ const enhance = compose(
     state => ({
       assessmentSummary: getReportsAssessmentSummary(state),
       loading: getReportsAssessmentSummaryLoader(state),
-      role: getUserRole(state)
+      role: getUserRole(state),
+      isPrinting: getPrintingState(state)
     }),
     {
       getAssessmentSummaryRequestAction: getAssessmentSummaryRequestAction

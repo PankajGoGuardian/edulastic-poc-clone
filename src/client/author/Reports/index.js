@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { compose } from "redux";
+import styled from "styled-components";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -19,6 +19,8 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 import navigation from "./common/static/json/navigation.json";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
+import { getPrintingState, setPrintingState } from "./ducks";
+
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
 
@@ -29,7 +31,7 @@ const Container = props => {
   };
 
   const onPrintClickCB = () => {
-    console.log("not implemented yet");
+    props.setPrintingState(true);
   };
 
   const onDownloadCSVClickCB = () => {
@@ -39,6 +41,13 @@ const Container = props => {
   const onRefineResultsCB = (event, status) => {
     setShowFilter(status);
   };
+
+  useEffect(() => {
+    if (props.isPrinting) {
+      window.print();
+      props.setPrintingState(false);
+    }
+  }, [props.isPrinting]);
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
@@ -60,8 +69,10 @@ const Container = props => {
     }
   });
 
+  const expandFilter = showFilter || props.isPrinting;
+
   return (
-    <div>
+    <PrintableScreen>
       <CustomizedHeaderWrapper
         breadcrumbsData={headerSettings.breadcrumbData}
         title={headerSettings.title}
@@ -74,40 +85,40 @@ const Container = props => {
       <Route
         path={`/author/reports/assessment-summary/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/peer-performance/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/response-frequency/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/performance-by-standards/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/performance-by-students/test/`}
         render={_props => (
-          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <SingleAssessmentReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
       <Route
         path={`/author/reports/standards-gradebook`}
         render={_props => (
-          <StandardsMasteryReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+          <StandardsMasteryReportContainer {..._props} showFilter={expandFilter} loc={props.match.params.reportType} />
         )}
       />
-    </div>
+    </PrintableScreen>
   );
 };
 
@@ -148,4 +159,67 @@ const Reports = props => {
   );
 };
 
-export default Container;
+const enhance = connect(
+  state => ({
+    isPrinting: getPrintingState(state)
+  }),
+  {
+    setPrintingState
+  }
+)(Container);
+
+export default enhance;
+
+const PrintableScreen = styled.div`
+  @media print {
+    .fixed-header,
+    .navigator-tabs-container,
+    .ant-pagination,
+    .single-assessment-report-go-button-container,
+    .anticon-caret-down {
+      display: none;
+    }
+
+    .recharts-wrapper {
+      transform: translate(100px);
+    }
+
+    // .control-dropdown, .autocomplete-dropdown {
+    //   display: inline-block !important;
+    //   padding: 0px 0px 0px 10px !important;
+    // }
+
+    // .ant-dropdown-trigger, .ant-select-selection, .ant-input {
+    //   border-color: transparent !important;
+    //   background-color: transparent !important;
+    //   box-shadow: none !important;
+    //   padding: 0px !important;
+    //   height: auto !important;
+    // }
+
+    // .ant-select {
+    //   height: 20px;
+    // }
+
+    // .ant-select-auto-complete.ant-select .ant-select-search--inline {
+    //   margin-top: -3px;
+    // }
+
+    // .ant-table-header-column {
+    //   width: 60px;
+    //   white-space: normal;
+    // }
+
+    // .ant-card-body {
+    //   padding: 0px;
+    // }
+
+    // .ant-table-body table thead tr th {
+    //   padding: 0px;
+    // }
+
+    // .ant-card {
+    //   padding: 0px;
+    // }
+  }
+`;

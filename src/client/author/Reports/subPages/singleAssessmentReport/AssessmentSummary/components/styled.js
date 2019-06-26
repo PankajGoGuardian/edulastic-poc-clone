@@ -5,6 +5,10 @@ import { StyledTable as Table, StyledCustomChartTooltip as CustomChartTooltip } 
 import { AssessmentStatisticTable } from "./table/assessmentStatisticTable";
 
 export const UpperContainer = styled(Row)`
+  @media print {
+    flex-direction: column-reverse;
+  }
+
   .sub-container {
     .ant-card-body {
       min-height: 350px;

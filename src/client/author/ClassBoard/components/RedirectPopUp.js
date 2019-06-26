@@ -86,27 +86,33 @@ const RedirectPopUp = ({
 
       <Row> Students </Row>
       <Row>
-        <Select
-          mode="multiple"
-          placeholder="Select the students"
-          value={Object.keys(selectedStudents)}
-          onChange={v => {
-            setSelected(v);
-          }}
-        >
-          {allStudents.map(x => (
-            <Option key={x._id} value={x._id}>
-              {x.firstName}
-            </Option>
-          ))}
-        </Select>
+        <Col span={12}>
+          <Row>
+            <Select
+              mode="multiple"
+              style={{ width: "100%" }}
+              placeholder="Select the students"
+              value={Object.keys(selectedStudents)}
+              onChange={v => {
+                setSelected(v);
+              }}
+            >
+              {allStudents.map(x => (
+                <Option key={x._id} value={x._id}>
+                  {x.firstName}
+                </Option>
+              ))}
+            </Select>
+          </Row>
+        </Col>
       </Row>
       <Row>
+        <Row>Close Date</Row>
         <Col span={12}>
-          <Row>Close Date</Row>
           <Row>
             <DatePicker
               disabledDate={disabledEndDate}
+              style={{ width: "100%" }}
               value={dueDate}
               showTime
               showToday={false}

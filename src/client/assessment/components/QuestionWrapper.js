@@ -374,7 +374,7 @@ class QuestionWrapper extends Component {
 
 QuestionWrapper.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
-  isPresentationMode: PropTypes.func.isRequired,
+  isPresentationMode: PropTypes.bool,
   view: PropTypes.string.isRequired,
   multiple: PropTypes.bool,
   showFeedback: PropTypes.bool,
@@ -412,7 +412,8 @@ QuestionWrapper.defaultProps = {
   flowLayout: false,
   advancedAreOpen: false,
   handleAdvancedOpen: () => {},
-  disableResponse: false
+  disableResponse: false,
+  isPresentationMode: false
 };
 
 const enhance = compose(

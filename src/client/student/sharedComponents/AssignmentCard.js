@@ -121,7 +121,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
   };
 
   const { releaseScore = releaseGradeLabels.DONT_RELEASE, activityReview = true } = data;
-  const showReviewButton = releaseScore !== releaseGradeLabels.DONT_RELEASE;
+  const showReviewButton =
+    releaseScore !== releaseGradeLabels.DONT_RELEASE && releaseScore !== releaseGradeLabels.SCORE_ONLY;
   const ScoreDetail = (
     <React.Fragment>
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (

@@ -68,6 +68,9 @@ import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
 
+// Rulers & Calculators
+import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
+
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
 
@@ -1500,6 +1503,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "rulers-calculators",
+      cardImage: Protractor,
       data: {
         title: "Protractor",
         type: questionType.PROTRACTOR,

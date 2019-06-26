@@ -473,9 +473,14 @@ class ClassBoard extends Component {
             <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
             <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
-          <PresentationToggleSwitch />
+
           <StudentButtonDiv data-cy="studentnQuestionTab">
-            <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
+            <PresentationToggleSwitch />
+            <BothButton
+              style={{ marginLeft: "10px" }}
+              active={selectedTab === "Both"}
+              onClick={e => this.onTabChange(e, "Both")}
+            >
               CARD VIEW
             </BothButton>
             <StudentButton

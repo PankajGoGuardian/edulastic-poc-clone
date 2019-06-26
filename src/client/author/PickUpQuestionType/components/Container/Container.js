@@ -53,7 +53,7 @@ class Container extends Component {
   selectQuestionType = data => {
     // FIXME: Weird! connect not working properly. setQuestion not available as a prop
     // TODO: found the issue because of an indirect circular dependency. Found all the possible locations and eventually need to be fixed all the circular dependency issues
-    const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit } = this.props;
+    const { setQuestion, addQuestion, history, match, t, modalItemId, navigateToQuestionEdit, isTestFlow } = this.props;
 
     const question = {
       id: uuid(),
@@ -69,7 +69,7 @@ class Container extends Component {
       return;
     }
 
-    if (itemId) {
+    if (isTestFlow) {
       history.push({
         pathname: `/author/tests/${testId}/createItem/${itemId}/questions/create`,
         state: {
@@ -136,9 +136,9 @@ class Container extends Component {
   };
 
   get breadcrumb() {
-    const { location, testName, modalItemId, navigateToItemDetail, toggleModalAction, testId } = this.props;
+    const { location, testName, modalItemId, navigateToItemDetail, toggleModalAction, testId, isTestFlow } = this.props;
 
-    if (location.pathname.includes("author/tests")) {
+    if (isTestFlow) {
       const testPath = `/author/tests/${testId || "create"}`;
       return [
         {

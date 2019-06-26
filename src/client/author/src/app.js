@@ -268,7 +268,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                   path="/author/tests/:testId/createItem/:itemId"
                   render={props => (
                     <Suspense fallback={<Progress />}>
-                      <ItemDetail {...props} />
+                      <ItemDetail isTestFlow {...props} />
                     </Suspense>
                   )}
                 />
@@ -323,17 +323,29 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 <Route
                   exact
                   path="/author/tests/:testId/createItem/:itemId/pickup-questiontype"
-                  component={PickUpQuestionType}
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <PickUpQuestionType isTestFlow {...props} />
+                    </Suspense>
+                  )}
                 />
                 <Route
                   exact
                   path="/author/tests/:testId/createItem/:itemId/questions/create"
-                  component={QuestionEditor}
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <QuestionEditor isTestFlow {...props} />
+                    </Suspense>
+                  )}
                 />
                 <Route
                   exact
                   path="/author/tests/:testId/createItem/:itemId/questions/edit"
-                  component={QuestionEditor}
+                  render={props => (
+                    <Suspense fallback={<Progress />}>
+                      <QuestionEditor isTestFlow isEditFlow {...props} />
+                    </Suspense>
+                  )}
                 />
                 <Route exact path="/author/items/:id/pickup-questiontype" component={PickUpQuestionType} />
                 <Route exact path="/author/questions/create" component={QuestionEditor} />

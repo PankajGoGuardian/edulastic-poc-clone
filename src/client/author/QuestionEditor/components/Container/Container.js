@@ -63,10 +63,9 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, location } = this.props;
-    const { testId, itemId } = match.params;
-    const { pathname } = location;
-    saveQuestion(testId, itemId ? true : false, pathname.includes("edit"));
+    const { saveQuestion, removeAnswers, setAuthoredByMeFilter, match, isEditFlow, isTestFlow } = this.props;
+    const { testId } = match.params;
+    saveQuestion(testId, isTestFlow, isEditFlow);
     removeAnswers();
     if (setAuthoredByMeFilter) setAuthoredByMeFilter();
   };

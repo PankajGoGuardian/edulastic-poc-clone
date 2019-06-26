@@ -5,14 +5,16 @@ import { connect } from "react-redux";
 import { get, keyBy } from "lodash";
 import { Spin, Button } from "antd";
 import styled from "styled-components";
+import { FlexContainer } from "@edulastic/common";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
 
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
 import { getItemDetailSelectorForPreview } from "../../../../ItemDetail/ducks";
-
 import { testItemsApi } from "@edulastic/api";
 import { getCollectionsSelector } from "../../../selectors/user";
+import { changePreviewAction } from "../../../actions/view";
+import { clearAnswersAction } from "../../../actions/answers";
 
 const ModalStyles = {
   minWidth: 750,
@@ -39,9 +41,11 @@ class PreviewModal extends React.Component {
   }
 
   closeModal = () => {
-    const { onClose } = this.props;
+    const { onClose, changeView, clearAnswers } = this.props;
     this.setState({ flag: false });
+    changeView("clear");
     onClose();
+    clearAnswers();
   };
 
   handleDuplicateTestItem = () => {
@@ -68,6 +72,12 @@ class PreviewModal extends React.Component {
     }
   };
 
+  clearView = () => {
+    const { changeView, clearAnswers } = this.props;
+    changeView("clear");
+    clearAnswers();
+  };
+
   render() {
     const {
       isVisible,
@@ -76,7 +86,11 @@ class PreviewModal extends React.Component {
       loading,
       item = { rows: [], data: {}, authors: [] },
       currentAuthorId,
-      readOnlyMode = false
+      readOnlyMode = false,
+      checkAnswer,
+      showAnswer,
+      preview,
+      showEvaluationButtons
     } = this.props;
     const questions = keyBy(get(item, "data.questions", []), "id");
     const { authors = [], rows } = item;
@@ -94,6 +108,13 @@ class PreviewModal extends React.Component {
             {authorHasPermission && !readOnlyMode && <ButtonEdit onClick={this.editTestItem}>EDIT</ButtonEdit>}
           </ButtonsWrapper>
         </HeadingWrapper>
+        {showEvaluationButtons && (
+          <FlexContainer style={{ justifyContent: "flex-start" }}>
+            <Button onClick={checkAnswer}> Check Answer </Button>
+            <Button onClick={showAnswer}> Show Answer </Button>
+            <Button onClick={this.clearView}> Clear </Button>
+          </FlexContainer>
+        )}
         {loading || item === null ? (
           <ProgressContainer>
             <Spin tip="" />
@@ -101,7 +122,8 @@ class PreviewModal extends React.Component {
         ) : (
           <TestItemPreview
             cols={rows}
-            previewTab="clear"
+            preview={preview}
+            previewTab={preview}
             verticalDivider={item.verticalDivider}
             scrolling={item.scrolling}
             style={{ width: "100%" }}
@@ -121,16 +143,33 @@ PreviewModal.propTypes = {
   owner: PropTypes.bool,
   addDuplicate: PropTypes.func,
   showModal: PropTypes.bool,
-  item: PropTypes.object
+  item: PropTypes.object,
+  checkAnswer: PropTypes.func,
+  showAnswer: PropTypes.func,
+  changeView: PropTypes.func.isRequired,
+  showEvaluationButtons: PropTypes.bool
+};
+
+PreviewModal.defaultProps = {
+  checkAnswer: () => {},
+  showAnswer: () => {},
+  showEvaluationButtons: false
 };
 
 const enhance = compose(
   withRouter,
-  connect((state, ownProps) => ({
-    item: getItemDetailSelectorForPreview(state, (ownProps.data || {}).id, ownProps.page),
-    collections: getCollectionsSelector(state),
-    currentAuthorId: get(state, ["user", "user", "_id"])
-  }))
+  connect(
+    (state, ownProps) => ({
+      item: getItemDetailSelectorForPreview(state, (ownProps.data || {}).id, ownProps.page),
+      collections: getCollectionsSelector(state),
+      preview: get(state, ["view", "preview"]),
+      currentAuthorId: get(state, ["user", "user", "_id"])
+    }),
+    {
+      changeView: changePreviewAction,
+      clearAnswers: clearAnswersAction
+    }
+  )
 );
 
 export default enhance(PreviewModal);

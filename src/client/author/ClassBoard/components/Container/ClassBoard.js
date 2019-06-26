@@ -413,7 +413,16 @@ class ClassBoard extends Component {
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
       assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
-
+    const hasMoreOptions = canOpen || canClose;
+    let students = [...allStudents];
+    const updateStudent = (studentId, status) => {
+      students = students.map(student => {
+        if (student._id === studentId) {
+          student.status = status;
+        }
+        return student;
+      });
+    };
     return (
       <div>
         {showModal ? (
@@ -586,6 +595,7 @@ class ClassBoard extends Component {
 
             {flag ? (
               <DisneyCardContainer
+                updateStudent={updateStudent}
                 selectedStudents={selectedStudents}
                 testActivity={testActivity}
                 assignmentId={assignmentId}
@@ -604,7 +614,7 @@ class ClassBoard extends Component {
 
             <RedirectPopup
               open={redirectPopup}
-              allStudents={allStudents}
+              allStudents={students}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
               closePopup={() => {

@@ -19,6 +19,7 @@ import Attempt from "./Attempt";
 
 // actions
 import { startAssignmentAction, resumeAssignmentAction } from "../Assignments/ducks";
+import { getClassIds } from "../Reports/ducks";
 
 const isSEB = () => window.navigator.userAgent.includes("SEB");
 
@@ -58,7 +59,7 @@ const SafeBrowserButton = ({
   return <SafeStartAssignButton href={url}>{startButtonText}</SafeStartAssignButton>;
 };
 
-const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup }) => {
+const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
 
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
@@ -119,6 +120,11 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
       startAssignment({ testId, assignmentId, testType });
     }
   };
+  if (!currentGroup) {
+    //Find current group from assignment classes object
+    const getClass = data.class.find(({ _id }) => userGroups.includes(_id)) || {};
+    currentGroup = getClass._id;
+  }
 
   const { releaseScore = releaseGradeLabels.DONT_RELEASE, activityReview = true } = data;
   const showReviewButton =
@@ -207,6 +213,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
                 activityReview={activityReview}
                 t={t}
                 attempted={attempted}
+                classId={currentGroup}
               />
             )
           )}
@@ -221,6 +228,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
               releaseScore={releaseScore}
               showReviewButton={showReviewButton}
               releaseGradeLabels={releaseGradeLabels}
+              classId={attempt.groupId}
             />
           ))}
       </ButtonAndDetail>
@@ -233,7 +241,9 @@ const enhance = compose(
   withRouter,
   withNamespaces("assignmentCard"),
   connect(
-    null,
+    state => ({
+      userGroups: getClassIds(state)
+    }),
     {
       startAssignment: startAssignmentAction,
       resumeAssignment: resumeAssignmentAction

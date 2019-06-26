@@ -59,7 +59,8 @@ export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
 export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 export const SET_CREATED_ITEM_TO_TEST = "[test] set created item to test";
 export const CLEAR_CREATED_ITEMS_FROM_TEST = "[test] clear createdItems from test";
-
+export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
+export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 // actions
 
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);

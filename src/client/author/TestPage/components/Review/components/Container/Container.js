@@ -372,7 +372,6 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
-      toggleCreateItemModal: toggleCreateItemModalAction,
       clearDictAlignment: clearDictAlignmentAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction

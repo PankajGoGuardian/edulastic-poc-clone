@@ -83,7 +83,10 @@ const CheckboxTemplateBoxLayout = ({
           default:
             indexStr = dropTargetIndex + 1;
         }
-        const status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        let status = "";
+        if (userSelections[dropTargetIndex]) {
+          status = evaluation[dropTargetIndex] ? "right" : "wrong";
+        }
         return (
           <React.Fragment key={index}>
             {!showAnswer && (

@@ -904,6 +904,7 @@ textinput {
   display: inline-flex;
   align-items: center;
   min-height: 35px;
+  white-space: nowrap;
 }
 
 mathinput span,

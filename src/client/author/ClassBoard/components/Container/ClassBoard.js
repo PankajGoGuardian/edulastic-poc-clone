@@ -38,7 +38,6 @@ import {
   gradebookUnSelectAllAction,
   gradebookSetSelectedAction
 } from "../../../src/reducers/gradeBook";
-
 // components
 import Score from "../Score/Score";
 import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
@@ -47,6 +46,7 @@ import BarGraph from "../BarGraph/BarGraph";
 import { GenSelect } from "../../../Shared/Components/ClassSelect/ClassSelect";
 import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
 import { StudentReportCardMenuModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardMenuModal";
@@ -473,6 +473,7 @@ class ClassBoard extends Component {
             <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
             <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
+          <PresentationToggleSwitch />
           <StudentButtonDiv data-cy="studentnQuestionTab">
             <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
               CARD VIEW

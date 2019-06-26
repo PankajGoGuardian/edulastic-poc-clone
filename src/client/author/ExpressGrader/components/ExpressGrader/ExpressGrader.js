@@ -19,6 +19,7 @@ import ScoreTable from "../ScoreTable/ScoreTable";
 import ScoreCard from "../ScoreCard/ScoreCard";
 import QuestionModal from "../QuestionModal/QuestionModal";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 // styled wrappers
 import { PaginationInfo, StyledFlexContainer } from "./styled";
@@ -133,6 +134,7 @@ class ExpressGrader extends Component {
               {additionalData && <a>{additionalData.testName}</a>} /{" "}
               {additionalData && <a>{additionalData.className}</a>}
             </PaginationInfo>
+            <PresentationToggleSwitch />
           </StyledFlexContainer>
           {!isMobile && (
             <ScoreTable

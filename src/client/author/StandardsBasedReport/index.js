@@ -6,7 +6,7 @@ import { size, isEmpty } from "lodash";
 
 import HooksContainer from "../ClassBoard/components/HooksContainer/HooksContainer";
 import ClassHeader from "../Shared/Components/ClassHeader/ClassHeader";
-
+import PresentationToggleSwitch from "../Shared/Components/PresentationToggleSwitch";
 import TableDisplay from "./components/TableDisplay";
 import { receiveTestActivitydAction } from "../src/actions/classBoard";
 import {
@@ -72,6 +72,7 @@ class StandardsBasedReport extends Component {
               &lt; <AnchorLink to="/author/assignments">RECENTS ASSIGNMENTS</AnchorLink> /{" "}
               <Anchor>{additionalData.testName}</Anchor> / <Anchor>{additionalData.className}</Anchor>
             </PaginationInfo>
+            <PresentationToggleSwitch />
           </StyledFlexContainer>
 
           <DivWrapper>

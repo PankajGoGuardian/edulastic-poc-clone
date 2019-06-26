@@ -1,6 +1,6 @@
 //@ts-check
 import React, { useState, useCallback } from "react";
-import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker } from "antd";
+import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
 
@@ -35,6 +35,9 @@ const RedirectPopUp = ({
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
   const [loading, setLoading] = useState(false);
   const submitAction = useCallback(async () => {
+    if (dueDate < moment()) {
+      return message.error("Select a Future end Date");
+    }
     setLoading(true);
     const selected = Object.keys(selectedStudents);
     await assignmentApi.redirect(assignmentId, {
@@ -46,6 +49,13 @@ const RedirectPopUp = ({
     setLoading(false);
     closePopup();
   }, [selectedStudents, assignmentId, dueDate, groupId]);
+
+  const disabledEndDate = endDate => {
+    if (!endDate) {
+      return false;
+    }
+    return endDate < moment().startOf("day");
+  };
 
   return (
     <Modal
@@ -101,10 +111,17 @@ const RedirectPopUp = ({
         <Col span={12}>
           <Row>
             <DatePicker
+              disabledDate={disabledEndDate}
               style={{ width: "100%" }}
               value={dueDate}
+              showTime
+              showToday={false}
               onChange={v => {
-                setDueDate(v);
+                if (!v) {
+                  setDueDate(moment().add(1, "day"));
+                } else {
+                  setDueDate(v);
+                }
               }}
             />
           </Row>

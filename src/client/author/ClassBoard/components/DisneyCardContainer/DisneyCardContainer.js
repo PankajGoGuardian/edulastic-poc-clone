@@ -59,7 +59,15 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
+    const {
+      selectedStudents,
+      studentSelect,
+      studentUnselect,
+      viewResponses,
+      isPresentationMode,
+      endDate,
+      updateStudent
+    } = this.props;
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -94,7 +102,7 @@ export default class DisneyCardContainer extends Component {
         }
 
         let correctAnswers = 0;
-
+        updateStudent(student.studentId, status.status);
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {

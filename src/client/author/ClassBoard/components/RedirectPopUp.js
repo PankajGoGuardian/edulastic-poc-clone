@@ -1,6 +1,6 @@
 //@ts-check
 import React, { useState, useCallback } from "react";
-import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker } from "antd";
+import { Modal, Button, Row, Col, Input, Radio, Select, DatePicker, message } from "antd";
 import moment from "moment";
 import { assignmentApi } from "@edulastic/api";
 
@@ -37,14 +37,19 @@ const RedirectPopUp = ({
   const submitAction = useCallback(async () => {
     setLoading(true);
     const selected = Object.keys(selectedStudents);
-    await assignmentApi.redirect(assignmentId, {
-      _id: groupId,
-      specificStudents: true,
-      students: selected,
-      endDate: +dueDate
-    });
-    setLoading(false);
-    closePopup();
+    if (selected.length === 0) {
+      message.error("At least one student should be selected to redirect assessment.");
+      setLoading(false);
+    } else {
+      await assignmentApi.redirect(assignmentId, {
+        _id: groupId,
+        specificStudents: true,
+        students: selected,
+        endDate: +dueDate
+      });
+      setLoading(false);
+      closePopup();
+    }
   }, [selectedStudents, assignmentId, dueDate, groupId]);
 
   return (
@@ -88,7 +93,7 @@ const RedirectPopUp = ({
               }}
             >
               {allStudents.map(x => (
-                <Option key={x._id} value={x._id}>
+                <Option key={x._id} value={x._id} disabled={x.status === "NOT STARTED" || x.status === "IN PROGRESS"}>
                   {x.firstName}
                 </Option>
               ))}

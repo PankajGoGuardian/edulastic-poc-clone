@@ -279,9 +279,17 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "setDecimalSeparator":
-          return <DecimalSeparator options={options} onChange={changeOptions} />;
+          return (
+            <WidgetSecondMethod>
+              <DecimalSeparator options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
         case "allowedUnits":
-          return <Units options={options} onChange={changeOptions} />;
+          return (
+            <WidgetSecondMethod>
+              <Units options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
         default:
           return null;
       }

@@ -5,10 +5,10 @@ import { test as testConstants } from "@edulastic/constants";
 import QuestionWrapper from "../../../assessment/components/QuestionWrapper";
 const { releaseGradeLabels } = testConstants;
 //TODO user  response to show in UI
-const itemReport = ({ question, index, releaseScore }) => (
+const itemReport = ({ question, index, releaseScore, disableResponse }) => (
   <ReportListWrapper>
     <div style={{ width: "100%" }}>
-      <QuestionWrapper testItem type={question.type} view="preview" data={question} />
+      <QuestionWrapper testItem type={question.type} view="preview" data={question} disableResponse={disableResponse} />
       {releaseScore === releaseGradeLabels.WITH_ANSWERS && (
         <FeedbackWrapper>
           <FeedbackText>
@@ -31,7 +31,12 @@ const itemReport = ({ question, index, releaseScore }) => (
 
 itemReport.propTypes = {
   question: PropTypes.object.isRequired,
-  index: PropTypes.number.isRequired
+  index: PropTypes.number.isRequired,
+  disableResponse: PropTypes.bool
+};
+
+itemReport.defaultProps = {
+  disableResponse: false
 };
 
 export default itemReport;

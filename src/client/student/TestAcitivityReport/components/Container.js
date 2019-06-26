@@ -14,7 +14,13 @@ const ReportListContent = ({ questions, flag, testActivityById }) => {
       <AssignmentContentWrapper>
         <Wrapper>
           {questions.map((question, index) => (
-            <ItemReport key={index} question={question} index={index} releaseScore={releaseScore} />
+            <ItemReport
+              key={index}
+              question={question}
+              index={index}
+              releaseScore={releaseScore}
+              disableResponse={true}
+            />
           ))}
         </Wrapper>
       </AssignmentContentWrapper>

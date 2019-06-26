@@ -2,7 +2,6 @@ import JXG from "jsxgraph";
 import { CONSTANT, Colors } from "../config";
 import { defaultPointParameters, getLabelParameters } from "../settings";
 import QuillInput from "./QuillInput";
-import { objectNameGenerator } from "../utils";
 
 function roundCoords(coords) {
   return [Math.round(coords[1]), Math.round(coords[2])];
@@ -63,7 +62,9 @@ function create(board, usrCoords, id = null) {
     board.dragged = true;
   });
 
-  QuillInput(point, board).setLabel(objectNameGenerator.next().value);
+  if (board.drawingObject === null) {
+    QuillInput(point, board).setLabel(board.objectNameGenerator.next().value);
+  }
 
   return point;
 }

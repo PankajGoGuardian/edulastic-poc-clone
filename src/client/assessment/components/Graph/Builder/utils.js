@@ -511,7 +511,7 @@ export function isInPolygon(testPoint, vertices) {
  *    gen.next(true).value  => 'A'
  *    gen.next().value  => 'B'
  */
-function* nameGenerator() {
+export function* nameGenerator() {
   const charCodes = [];
   const firstChar = "A";
   const lastChar = "Z";
@@ -547,5 +547,3 @@ function* nameGenerator() {
     }
   }
 }
-
-export const objectNameGenerator = nameGenerator();

@@ -44,7 +44,8 @@ import {
   flat2nestedConfig,
   calcUnitX,
   handleSnap,
-  isInPolygon
+  isInPolygon,
+  nameGenerator
 } from "./utils";
 import _events from "./events";
 
@@ -114,6 +115,8 @@ class Board {
 
     this.creatingHandler = () => {};
     this.setCreatingHandler();
+
+    this.objectNameGenerator = nameGenerator();
   }
 
   isAnyElementsHasFocus(withPrepare = false) {

@@ -193,17 +193,29 @@ class Container extends Component {
       navigateToPickupQuestionType();
       return;
     }
-
-    history.push({
-      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
-      state: {
-        backText: t("component.itemDetail.backText"),
-        backUrl: match.url,
-        rowIndex,
-        tabIndex,
-        testItemId: match.params._id
-      }
-    });
+    if (match.params.itemId) {
+      history.push({
+        pathname: `/author/tests/${match.params.testId}/createItem/${match.params.itemId}/pickup-questiontype`,
+        state: {
+          backText: t("component.itemDetail.backText"),
+          backUrl: match.url,
+          rowIndex,
+          tabIndex,
+          testItemId: match.params.itemId
+        }
+      });
+    } else {
+      history.push({
+        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          backText: t("component.itemDetail.backText"),
+          backUrl: match.url,
+          rowIndex,
+          tabIndex,
+          testItemId: match.params._id
+        }
+      });
+    }
   };
 
   handleCancelSettings = () => {
@@ -236,7 +248,7 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { updateItemDetailById, match, item, location } = this.props;
+    const { updateItemDetailById, match, item } = this.props;
     if (match.params.itemId) {
       updateItemDetailById(match.params.itemId, item, match.params.testId, true);
     } else {
@@ -335,7 +347,7 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        false && ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
     }
 
     return (
@@ -388,6 +400,18 @@ class Container extends Component {
       showPublishButton =
         (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
     }
+    const { testId, itemId } = match.params;
+    console.log("re", testId, itemId);
+    let breadCrumb = [
+      {
+        title: "TEST LIBRARY",
+        to: "/author/tests"
+      },
+      {
+        title: "TEST",
+        to: `/author/tests/${testId}#review`
+      }
+    ];
     return (
       <Layout>
         {showModal && item && (
@@ -450,7 +474,7 @@ class Container extends Component {
         <BreadCrumbBar>
           <Col md={view === "preview" ? 12 : 24}>
             {windowWidth > MAX_MOBILE_WIDTH ? (
-              <SecondHeadBar>
+              <SecondHeadBar breadcrumb={itemId ? breadCrumb : undefined}>
                 {item && view !== "preview" && qLength > 1 && (
                   <Row type="flex" justify="end" style={{ width: 250 }}>
                     <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>

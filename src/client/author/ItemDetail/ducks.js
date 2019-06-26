@@ -603,15 +603,20 @@ export function* updateItemSaga({ payload }) {
   }
 }
 
-function* publishTestItemSaga({ payload }) {
+function* publishTestItemSaga({ payload: { itemId, isTestFlow, testId } }) {
   try {
-    yield call(testItemsApi.publishTestItem, payload);
+    yield call(testItemsApi.publishTestItem, itemId);
     yield put(updateTestItemStatusAction(testItemStatusConstants.PUBLISHED));
     const redirectTestId = yield select(getRedirectTestSelector);
     if (redirectTestId) {
       yield delay(1500);
       yield put(push(`/author/tests/${redirectTestId}`));
       yield put(clearRedirectTestAction());
+    }
+    if (isTestFlow) {
+      yield delay(1500);
+
+      yield put(push(`/author/tests/${testId}#review`));
     }
     yield call(message.success, "Successfully published");
   } catch (e) {

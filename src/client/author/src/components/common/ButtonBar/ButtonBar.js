@@ -115,7 +115,7 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
-                {showPublishButton && itemStatus === "draft" && (
+                {showPublishButton && itemStatus === "draft" && false && (
                   <Button data-cy="publishItem" onClick={onPublishTestItem}>
                     Publish
                   </Button>

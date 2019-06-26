@@ -413,7 +413,6 @@ class ClassBoard extends Component {
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
       assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
-    const hasMoreOptions = canOpen || canClose;
     let students = [...allStudents];
     const updateStudent = (studentId, status) => {
       students = students.map(student => {

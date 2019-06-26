@@ -589,7 +589,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`&nbsp;<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
+        this.html.insert(`&nbsp;<Response id="${uuid()}" contentEditable="false"></Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -603,7 +603,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`&nbsp;<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>&nbsp;`);
+        this.html.insert(`&nbsp;<TextInput id="${uuid()}" contentEditable="false"></TextInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -617,9 +617,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(
-          `&nbsp;<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>&nbsp;`
-        );
+        this.html.insert(`&nbsp;<TextDropdown id="${uuid()}" contentEditable="false"></TextDropdown>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -633,7 +631,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`&nbsp;<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>&nbsp;`);
+        this.html.insert(`&nbsp;<MathInput id="${uuid()}" contentEditable="false"></MathInput>&nbsp;`);
         this.undo.saveStep();
       }
     });

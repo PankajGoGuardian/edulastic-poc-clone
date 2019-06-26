@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { greenDark, green, white, newBlue, darkBlue } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 
 const ButtonComponent = styled.button`
   ${props => {
@@ -18,10 +18,12 @@ const ButtonComponent = styled.button`
         ...style,
         ...{
           background: white,
-          color: "#42d184",
+          color: themeColor,
           border: "none",
           ":hover, :focus": {
-            background: "#42d184",
+            background: themeColor,
+            "border-color": themeColor,
+            "outline-color": themeColor,
             color: white
           }
         }
@@ -32,10 +34,12 @@ const ButtonComponent = styled.button`
         ...style,
         ...{
           background: white,
-          color: "#00AD50",
+          color: themeColor,
           border: "none",
           ":hover, :focus": {
-            background: "#00AD50",
+            background: themeColor,
+            "border-color": themeColor,
+            "outline-color": themeColor,
             color: white
           }
         }

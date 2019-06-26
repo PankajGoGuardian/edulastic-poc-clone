@@ -1,11 +1,20 @@
+import { themeColor } from "@edulastic/colors";
+
 export const themes = {
   default: {
+    themeLoaderColor: themeColor,
+    themeTextColor: themeColor,
+    themeBgColor: themeColor,
+    themeButtonLabelWhite: "#ffffff",
+    themeButtonBgColor: themeColor,
+    themeButtonBgWhite: "#ffffff",
+    themeDropIconColor: themeColor,
     default: {
       // this default is required for Doc based asseeements
-      headerBgColor: "#00AD50",
-      sideToolbarBgColor: "#00AD50",
+      headerBgColor: themeColor,
+      sideToolbarBgColor: themeColor,
       dropdownHoverBorderColor: "rgba(255, 255, 255, 0.3)",
-      dropdownCaretIconColor: "#00AD50",
+      dropdownCaretIconColor: themeColor,
       headerButtonBgColor: "rgba(255, 255, 255, 0.15)",
       headerButtonActiveBgColor: "rgba(255, 255, 255, 0.3)",
       headerButtonBgHoverColor: "rgba(255, 255, 255, 0.5)",
@@ -14,7 +23,7 @@ export const themes = {
       headerButtonBorderColor: "#F3F3F3"
     },
     header: {
-      headerBgColor: "#00AD50",
+      headerBgColor: themeColor, // greenDark
       headerTitleTextColor: "white",
       headerTitleFontSize: "22px"
     },
@@ -22,7 +31,7 @@ export const themes = {
       sidebarBgColor: "#fbfafc",
       sidebarTextColor: "#434b5d",
       helpButtonBgColor: "#ffffff",
-      helpButtonBgHoverColor: "#00AD50",
+      helpButtonBgHoverColor: themeColor,
       helpButtonFontSize: "14px",
       helpButtonTextColor: "#5EB500",
       helpButtonTextHoverColor: "white",
@@ -38,21 +47,21 @@ export const themes = {
       userInfoDropdownItemBgColor: "#ffffff",
       userInfoDropdownItemBgHoverColor: "#f0f0f0",
       userInfoDropdownItemTextColor: "#444444",
-      userInfoDropdownItemTextHoverColor: "#00AD50",
+      userInfoDropdownItemTextHoverColor: themeColor,
       itemIconColor: "#425066",
       userInfoDropdownItemFontSize: "14px",
       userInfoDropdownItemIconSize: "20px",
       menuItemBgColor: "transparent",
-      menuSelectedItemBgColor: "#00AD50",
+      menuSelectedItemBgColor: themeColor,
       menuItemLinkColor: "#434b5d",
       menuSelectedItemLinkColor: "white",
-      menuItemLinkHoverColor: "#00AD50"
+      menuItemLinkHoverColor: themeColor
     },
     checkbox: {
-      checkboxBorderColor: "",
-      checkboxCheckedColor: "#00ad50",
-      checkboxIntermediateColor: "#00ad50",
-      checkboxLabelColor: "#00ad50"
+      checkboxBorderColor: "#f3f3f3",
+      checkboxCheckedColor: themeColor,
+      checkboxIntermediateColor: themeColor,
+      checkboxLabelColor: themeColor
     },
     common: {
       addNewChoiceButtonFontFamily: "Open Sans",
@@ -164,7 +173,7 @@ export const themes = {
       itemFontWeight: "700"
     },
     sortableList: {
-      iconTrashColor: "#00AD50", // greenDark
+      iconTrashColor: themeColor, // greenDark
       iconTrashHoverColor: "#ee1658", // red
       iconTrashWrapperBgHoverColor: "#f9f9f9", // lightGrey
       itemContainerBorderColor: "#dfdfdf",
@@ -174,7 +183,7 @@ export const themes = {
       inputFontSize: "13px"
     },
     typedList: {
-      iconTrashColor: "#00AD50", // greenDark
+      iconTrashColor: themeColor, // greenDark
       iconTrashHoverColor: "#ee1658", // red
       itemContainerBorderColor: "#dfdfdf",
       dragIconColor: "#1fe3a1",
@@ -294,7 +303,7 @@ export const themes = {
         dragItemFontWeight: "600",
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658", // red
-        iconTrashColor: "#00AD50", // greenDark
+        iconTrashColor: themeColor, // greenDark
         iconTrashHoverColor: "#ee1658", // red
         dropContainerBgColor: "#fff" // white
       },
@@ -490,7 +499,7 @@ export const themes = {
         inputColor: "#fff",
         inputCorrectColor: "#e1fbf2",
         inputIncorrectColor: "#fce0e8",
-        iconTrashColor: "#00AD50", // newBlue
+        iconTrashColor: themeColor, // newBlue
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
         iconCheckColor: "#1fe3a1", // green
@@ -598,7 +607,7 @@ export const themes = {
         indexFontWeight: "600",
         indexFontSize: "14px",
         corTitleFontWeight: "600",
-        iconTrashColor: "#00AD50", // greenDark
+        iconTrashColor: themeColor, // greenDark
         iconTrashHoverColor: "#ee1658", // red
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658" // red
@@ -608,7 +617,7 @@ export const themes = {
         inlineLabelColor: "#4aac8b", // greenDark
         correctCellInputWrapperBgColor: "#e1fbf2", // lightGreen
         incorrectCellInputWrapperBgColor: "#fbdfe7", // lightRed
-        tableStyledHeaderColor: "#00AD50", // greenDark
+        tableStyledHeaderColor: themeColor, // greenDark
         styledTableBorderColor: "#e8e8e8",
         styledTableThBgColor: "#fff" // white
       },
@@ -627,14 +636,14 @@ export const themes = {
         labelIconFontSize: "18px",
         labelIconCheckColor: "#1fe3a1", // green
         labelIconTimesColor: "#ee1658",
-        checkboxContainerBorderColor: "#00AD50",
+        checkboxContainerBorderColor: themeColor,
         checkboxContainerBgColor: "transparent",
         checkboxContainerSmallFontSize: "15px",
         checkboxContainerFontSize: "20px",
         checkboxContainerFontWeight: "700",
         checkboxContainerColor: "#444444",
         checkboxContainerCheckedColor: "white",
-        checkboxContainerCheckedBgColor: "#00AD50",
+        checkboxContainerCheckedBgColor: themeColor,
         iconCheckColor: "#1fe3a1", // green
         iconCloseColor: "#ee1658" // red
       },

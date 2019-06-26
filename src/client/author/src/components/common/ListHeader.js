@@ -5,14 +5,7 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer, Button } from "@edulastic/common";
-import {
-  mobileWidth,
-  tabletWidth,
-  desktopWidth,
-  darkBlueSecondary,
-  white,
-  lightBlueSecondary
-} from "@edulastic/colors";
+import { mobileWidth, tabletWidth, desktopWidth, white } from "@edulastic/colors";
 import { IconPlusCircle, IconMenuOpenClose } from "@edulastic/icons";
 import { connect } from "react-redux";
 import HeaderWrapper from "../../mainContent/headerWrapper";
@@ -127,10 +120,15 @@ export const TestButton = styled(Button)`
   color: #00ad50;
   border-radius: 3px;
   margin-left: 25px;
-  background: ${white};
+  background: ${props => props.theme.themeButtonBgWhite};
   padding: 5px 30px;
   &:hover {
-    color: #00ad50;
+    color: ${props => props.theme.themeTextColor};
+  }
+  &:focus,
+  &:active {
+    border-color: ${props => props.theme.themeButtonBgColor};
+    outline-color: ${props => props.theme.themeButtonBgColor};
   }
   span {
     margin-left: 15px;
@@ -165,16 +163,16 @@ const CreateButton = styled(Button)`
   height: 45px;
   color: #00ad50;
   border-radius: 3px;
-  background: ${white};
+  background: ${props => props.theme.themeButtonBgWhite};
   justify-content: space-around;
   margin-left: 20px;
   &:hover {
-    color: #00ad50;
+    color: ${props => props.theme.themeTextColor};
   }
   &:focus,
   &:active {
-    border-color: #00ad50;
-    outline-color: #00ad50;
+    border-color: ${props => props.theme.themeButtonBgColor};
+    outline-color: ${props => props.theme.themeButtonBgColor};
   }
 `;
 

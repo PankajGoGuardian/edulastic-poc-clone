@@ -187,6 +187,11 @@ export const FolderActionModal = styled(Modal)`
     justify-content: flex-end;
     padding-bottom: 15px;
   }
+  .ant-input {
+    &:hover &:focus {
+      border-color: ${props => props.theme.themeBgColor};
+    }
+  }
 `;
 
 export const ModalTitle = styled.div`
@@ -202,7 +207,7 @@ export const StyledMenu = styled(Menu)`
     display: flex;
     align-items: center;
     &:hover {
-      background-color: ${blue};
+      background-color: ${props => props.theme.themeBgColor};
       color: ${white};
 
       svg {

@@ -6,14 +6,14 @@ import PropTypes from "prop-types";
 import { Button, Menu, Dropdown, Icon, Modal } from "antd";
 import {
   mobileWidth,
-  lightBlue,
   white,
   desktopWidth,
   tabletWidth,
   greenThird,
   extraDesktopWidth,
   mainBgColor,
-  textColor
+  textColor,
+  themeColor
 } from "@edulastic/colors";
 import { IconVerified, IconVisualization, IconCheckSmall, IconMoreVertical, IconLeftArrow } from "@edulastic/icons";
 import { toggleCheckedUnitItemAction, setSelectedItemsForAssignAction, removeUnitAction } from "../ducks";
@@ -291,7 +291,7 @@ class ModuleRow extends Component {
                                     {isAssigned ? (
                                       <IconCheckSmall color={white} />
                                     ) : (
-                                      <IconLeftArrow color="#00AD50" width={13.3} height={9.35} />
+                                      <IconLeftArrow width={13.3} height={9.35} />
                                     )}
                                     {isAssigned ? IS_ASSIGNED : NOT_ASSIGNED}
                                   </Button>
@@ -463,19 +463,22 @@ const TotalAssigned = styled.strong`
 export const AssignmentButton = styled.div`
   min-width: 121px;
   .ant-btn {
-    color: ${({ assigned }) => (assigned ? white : "#00AD50")};
-    border-color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
-    background-color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
+    color: ${({ assigned }) => (assigned ? white : themeColor)};
+    border-color: ${({ assigned }) => (assigned ? themeColor : white)};
+    background-color: ${({ assigned }) => (assigned ? themeColor : white)};
     min-width: 121px;
     display: flex;
     align-items: center;
     box-shadow: 0 2px 4px rgba(201, 208, 219, 0.5);
+    svg {
+      fill: ${({ assigned }) => (assigned ? white : themeColor)};
+    }
     &:hover {
-      background-color: ${({ assigned }) => (assigned ? white : "#00AD50")};
-      color: ${({ assigned }) => (assigned ? "#00AD50" : white)};
-      border-color: ${({ assigned }) => (assigned ? white : "#00AD50")};
+      background-color: ${({ assigned }) => (assigned ? white : themeColor)};
+      color: ${({ assigned }) => (assigned ? themeColor : white)};
+      border-color: ${({ assigned }) => (assigned ? white : themeColor)};
       svg {
-        fill: ${({ assigned }) => (assigned ? "#00AD50" : white)};
+        fill: ${({ assigned }) => (assigned ? themeColor : white)};
       }
     }
     i {
@@ -762,7 +765,7 @@ const ModuleWrapper = styled.div`
     }
   }
   .module-btn-assigned {
-    background-color: ${lightBlue};
+    background-color: ${themeColor};
     margin-left: auto;
     justify-self: flex-end;
   }

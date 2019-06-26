@@ -10,6 +10,7 @@ import DragScroll, { DOWNWARDS } from "@edulastic/common/src/components/DragScro
 import { themes } from "../../assessment/themes";
 import Sidebar from "./Sidebar/SideMenu";
 import SuccessPage from "../TestPage/components/SuccessPage/SuccessPage";
+import { MainContainer } from "./MainStyle";
 /* lazy load routes */
 
 const Dashboard = lazy(() => import("../Dashboard"));
@@ -356,29 +357,6 @@ Author.propTypes = {
   match: PropTypes.object.isRequired
 };
 
-const MainContainer = styled.div`
-  padding-left: ${props => {
-    if (props.isPrintPreview) {
-      return "0";
-    }
-    return "100px";
-  }};
-  width: 100%;
-  .fixed-header {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 100px;
-    z-index: 999;
-  }
-  @media (max-width: ${tabletWidth}) {
-    padding-left: 0px;
-    .fixed-header {
-      left: 0;
-      background: #00ad50;
-    }
-  }
-`;
 const SidebarCompnent = styled(Sidebar)`
   display: ${props => (props.isPrintPreview ? "none" : "block")};
   @media (max-width: ${tabletWidth}) {

@@ -17,4 +17,5 @@ export const Wrapper = styled.div`
   justify-content: center;
   background: ${props => getCellColor(props.correct, props.theme)};
   padding: ${props => (props.smallSize ? 1 : 15)}px;
+  position: relative;
 `;

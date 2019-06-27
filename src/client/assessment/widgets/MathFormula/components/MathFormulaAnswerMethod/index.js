@@ -54,6 +54,10 @@ const MathFormulaAnswerMethod = ({
     if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
       newOptions.field = fieldsConst.INTEGER;
     }
+    if (method === methodsConst.EQUIV_VALUE) {
+      newOptions.allowNumericOnly = true;
+    }
+
     onChange("options", newOptions);
   }, [method]);
 

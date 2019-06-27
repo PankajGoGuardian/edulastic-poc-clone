@@ -111,6 +111,7 @@ const RedirectPopUp = ({
         <Col span={12}>
           <Row>
             <DatePicker
+              allowClear={false}
               disabledDate={disabledEndDate}
               style={{ width: "100%" }}
               value={dueDate}

@@ -59,7 +59,7 @@ body {
 
 h1 {
   font-size: 2em;
-  margin: .67em 0;
+  margin: 0.67em 0;
 }
 
 /* Grouping content
@@ -267,7 +267,7 @@ button:-moz-focusring {
  */
 
 fieldset {
-  padding: .35em .75em .625em;
+  padding: 0.35em 0.75em 0.625em;
 }
 
 /**
@@ -466,7 +466,7 @@ template {
 
 .ql-editor {
   padding: 0 25px 0 15px !important;
-  letter-spacing: .2px;
+  letter-spacing: 0.2px;
   color: rgb(68, 68, 68);
   line-height: 1.8 !important;
   height: auto !important;
@@ -1445,7 +1445,7 @@ span.token.active-word {
 
 .mq-math-mode .mq-root-block,
 .mq-root-block {
-  margin-bottom: .2em;
+  margin-bottom: 0.2em;
 }
 
 .mq-math-mode .mq-supsub.mq-sup-only {
@@ -1453,7 +1453,7 @@ span.token.active-word {
 }
 
 .mq-math-mode sup.mq-nthroot {
-  margin-top: .3em;
+  margin-top: 0.3em;
 }
 
 .liveinspect-keydata {
@@ -1472,13 +1472,13 @@ span.token.active-word {
 .liveinspect-keydata .kds-absolute {
   border-left: 1px solid black;
   border-right: 1px solid black;
-  padding: 0 .3em;
+  padding: 0 0.3em;
 }
 
 .liveinspect-keydata .abs {
   border-left: #000000 1px solid;
   border-right: #000000 1px solid;
-  padding: 0 .3em;
+  padding: 0 0.3em;
 }
 
 .liveinspect-keydata .kds-border-1 {
@@ -1516,12 +1516,12 @@ span.token.active-word {
 .liveinspect-keydata .kds-fillin {
   border: 1px solid black;
   display: inline-block;
-  margin: 0 .2em;
+  margin: 0 0.2em;
   padding-left: 1em;
 }
 
 .liveinspect-keydata .fillin {
-  margin: 0 .2em;
+  margin: 0 0.2em;
   padding-left: 1em;
   min-height: 1em;
   border: #000000 1px solid;
@@ -1665,7 +1665,7 @@ span.token.active-word {
 }
 
 .liveinspect-keydata .newradical div.exp {
-  font-size: .7em;
+  font-size: 0.7em;
   position: relative;
   left: 7px;
   bottom: 5px;
@@ -1696,13 +1696,13 @@ span.token.active-word {
 .liveinspect-keydata .kds-whole-number {
   display: inline-block;
   font-size: 120%;
-  margin: 0 0 0 .2em;
+  margin: 0 0 0 0.2em;
 }
 
 .liveinspect-keydata .whole {
   display: inline-block;
   *display: inline;
-  margin: 0 0 0 .2em;
+  margin: 0 0 0 0.2em;
   font-size: 120%;
 }
 
@@ -1852,7 +1852,7 @@ span.token.active-word {
 
 .liveinspect-keydata .p-number {
   float: left;
-  font-size: .85em;
+  font-size: 0.85em;
 }
 
 .liveinspect-keydata .numbered-paragraph {
@@ -1936,12 +1936,18 @@ span.token.active-word {
 }
 
 .fr-toolbar .fr-command.fr-btn[data-cmd="response"],
+.fr-toolbar .fr-command.fr-btn[data-cmd="textinput"],
 .fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"],
 .fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"] {
   border: 1px #000 dotted;
   height: 34px;
   padding: 0 4px;
   top: 4px;
+}
+
+.fr-toolbar .fr-command.fr-btn[data-cmd="responseBoxes"]::after {
+  right: 4px !important;
+  top: 14px !important;
 }
 
 .fr-toolbar .fr-command.fr-btn[data-cmd="textdropdown"]::after {

@@ -105,7 +105,7 @@ class ClassBoard extends Component {
       selectedStudentId: "",
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-
+      disabledList: [],
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
@@ -370,6 +370,22 @@ class ClassBoard extends Component {
     this.setState({ modalInputVal: e.target.value });
   };
 
+  updateDisabledList = (studId, status) => {
+    const { disabledList } = this.state;
+    if (status === "REDIRECT" || status === "NOT STARTED") {
+      if (!disabledList.includes(studId)) {
+        disabledList.push(studId);
+        this.setState({ disabledList });
+      }
+    } else {
+      const index = disabledList.indexOf(studId);
+      if (index >= 0) {
+        disabledList.splice(index, 1);
+        this.setState({ disabledList });
+      }
+    }
+  };
+
   render() {
     const {
       gradebook,
@@ -411,6 +427,7 @@ class ClassBoard extends Component {
       studentReportCardModalColumnsFlags,
       itemId,
       selectedQid,
+      disabledList,
       selectAll,
       nCountTrue,
       modalInputVal,
@@ -437,15 +454,6 @@ class ClassBoard extends Component {
     const disableMarkAbsent =
       assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
     const hasMoreOptions = canOpen || canClose;
-    let students = [...allStudents];
-    const updateStudent = (studentId, status) => {
-      students = students.map(student => {
-        if (student._id === studentId) {
-          student.status = status;
-        }
-        return student;
-      });
-    };
     return (
       <div>
         {showModal ? (
@@ -627,9 +635,9 @@ class ClassBoard extends Component {
 
             {flag ? (
               <DisneyCardContainer
-                updateStudent={updateStudent}
                 selectedStudents={selectedStudents}
                 testActivity={testActivity}
+                updateDisabledList={this.updateDisabledList}
                 assignmentId={assignmentId}
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
@@ -646,7 +654,8 @@ class ClassBoard extends Component {
 
             <RedirectPopup
               open={redirectPopup}
-              allStudents={students}
+              allStudents={allStudents}
+              disabledList={disabledList}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
               closePopup={() => {

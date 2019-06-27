@@ -15,6 +15,7 @@ const Option = Select.Option;
  * @property {boolean} open
  * @property {Function} closePopup
  * @property {Function} setSelected
+ * @property {string[]} disabledList
  * @property {string} assignmentId
  * @property {string} groupId
  */
@@ -30,6 +31,7 @@ const RedirectPopUp = ({
   closePopup,
   setSelected,
   assignmentId,
+  disabledList = [],
   groupId
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
@@ -93,7 +95,7 @@ const RedirectPopUp = ({
               }}
             >
               {allStudents.map(x => (
-                <Option key={x._id} value={x._id} disabled={x.status === "NOT STARTED" || x.status === "IN PROGRESS"}>
+                <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
                   {x.firstName}
                 </Option>
               ))}

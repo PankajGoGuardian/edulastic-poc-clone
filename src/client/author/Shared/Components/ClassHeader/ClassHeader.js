@@ -177,7 +177,7 @@ class ClassHeader extends Component {
     } = this.props;
 
     const { showDropdown, visible } = this.state;
-    const { endDate } = additionalData;
+    const { endDate, startDate } = additionalData;
     const dueDate = Number.isNaN(endDate) ? new Date(endDate) : new Date(parseInt(endDate, 10));
     const gradeSubject = {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
@@ -188,7 +188,8 @@ class ClassHeader extends Component {
       canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
     const canClose =
       canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
-
+    const assignmentStatusForDisplay =
+      assignmentStatus === "NOT OPEN" && startDate && startDate < moment() ? "IN PROGRESS" : assignmentStatus;
     const menu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
@@ -223,7 +224,7 @@ class ClassHeader extends Component {
         <StyledTitle>
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
-            {assignmentStatus} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {assignmentStatusForDisplay} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>

@@ -374,14 +374,12 @@ class ClassBoard extends Component {
     const { disabledList } = this.state;
     if (status === "REDIRECT" || status === "NOT STARTED") {
       if (!disabledList.includes(studId)) {
-        disabledList.push(studId);
-        this.setState({ disabledList });
+        this.setState({ disabledList: [...disabledList, studId] });
       }
     } else {
       const index = disabledList.indexOf(studId);
       if (index >= 0) {
-        disabledList.splice(index, 1);
-        this.setState({ disabledList });
+        this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
       }
     }
   };

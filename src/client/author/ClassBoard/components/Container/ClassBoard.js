@@ -106,6 +106,7 @@ class ClassBoard extends Component {
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
       disabledList: [],
+      absentList: [],
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
@@ -371,8 +372,8 @@ class ClassBoard extends Component {
   };
 
   updateDisabledList = (studId, status) => {
-    const { disabledList } = this.state;
-    if (status === "REDIRECT" || status === "NOT STARTED") {
+    const { disabledList, absentList } = this.state;
+    if (status === "NOT STARTED" || status === "IN PROGRESS") {
       if (!disabledList.includes(studId)) {
         this.setState({ disabledList: [...disabledList, studId] });
       }
@@ -380,6 +381,16 @@ class ClassBoard extends Component {
       const index = disabledList.indexOf(studId);
       if (index >= 0) {
         this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
+      }
+    }
+    if (status === "ABSENT") {
+      if (!absentList.includes(studId)) {
+        this.setState({ absentList: [...absentList, studId] });
+      }
+    } else {
+      const index = absentList.indexOf(studId);
+      if (index >= 0) {
+        this.setState({ absentList: [...absentList.slice(0, index), ...absentList.slice(index + 1)] });
       }
     }
   };
@@ -426,6 +437,7 @@ class ClassBoard extends Component {
       itemId,
       selectedQid,
       disabledList,
+      absentList,
       selectAll,
       nCountTrue,
       modalInputVal,
@@ -654,6 +666,7 @@ class ClassBoard extends Component {
               open={redirectPopup}
               allStudents={allStudents}
               disabledList={disabledList}
+              absentList={absentList}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
               closePopup={() => {

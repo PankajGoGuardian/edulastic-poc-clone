@@ -62,11 +62,29 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, modalItemId, setRedirectTest } = this.props;
+    const { getItemDetailById, match, modalItemId, setRedirectTest, isTestFlow, history, t } = this.props;
+    const { itemId, testId } = match.params;
+
     getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
 
     if (match.params.testId) {
       setRedirectTest(match.params.testId);
+    }
+
+    if (isTestFlow) {
+      getItemDetailById(itemId, { data: true, validation: true });
+      history.replace({
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
+          : `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          backText: t("component.itemDetail.backText"),
+          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
+          rowIndex: 0,
+          tabIndex: 0,
+          testItemId: isTestFlow ? itemId : match.params._id
+        }
+      });
     }
   }
 
@@ -545,7 +563,8 @@ Container.propTypes = {
   toggleSideBar: PropTypes.func.isRequired,
   redirectOnEmptyItem: PropTypes.bool,
   setItemLevelScore: PropTypes.func,
-  setItemLevelScoring: PropTypes.func
+  setItemLevelScoring: PropTypes.func,
+  isTestFlow: PropTypes.bool
 };
 
 Container.defaultProps = {
@@ -559,7 +578,8 @@ Container.defaultProps = {
   redirectOnEmptyItem: true,
   testItemStatus: "",
   setItemLevelScore: () => {},
-  setItemLevelScoring: () => {}
+  setItemLevelScoring: () => {},
+  isTestFlow: false
 };
 
 const enhance = compose(

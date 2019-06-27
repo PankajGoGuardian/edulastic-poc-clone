@@ -75,7 +75,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     safeBrowser,
     testType,
     class: clazz = [],
-    maxAttempts,
+    maxAttempts = 1,
     title,
     thumbnail
   } = data;

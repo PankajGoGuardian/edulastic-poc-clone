@@ -5,6 +5,7 @@ import { MathSpan } from "@edulastic/common";
 import Draggable from "../Draggable";
 import Droppable from "../Droppable";
 import { CheckboxContainer } from "./styled/CheckboxContainer";
+import { CheckBoxTemplateBox } from "./styled/CheckBoxTemplateBox";
 import { IconWrapper } from "./styled/IconWrapper";
 import { RightIcon } from "./styled/RightIcon";
 import { WrongIcon } from "./styled/WrongIcon";
@@ -93,7 +94,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   };
 
   return (
-    <div>
+    <CheckBoxTemplateBox>
       {showAnswer && hasGroupResponses && (
         <div
           className={`
@@ -174,7 +175,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
           </Draggable>
         )}
       </Droppable>
-    </div>
+    </CheckBoxTemplateBox>
   );
 };
 

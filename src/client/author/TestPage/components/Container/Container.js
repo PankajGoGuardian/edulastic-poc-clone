@@ -8,7 +8,7 @@ import { cloneDeep, identity as _identity, isObject as _isObject, uniq as _uniq,
 import uuidv4 from "uuid/v4";
 import { withWindowSizes } from "@edulastic/common";
 import { Content } from "./styled";
-import { get } from "lodash";
+import { get, without } from "lodash";
 import TestPageHeader from "../TestPageHeader/TestPageHeader";
 import {
   createTestAction,
@@ -254,12 +254,10 @@ class Container extends PureComponent {
 
     newTest.subjects = _uniq([...newTest.subjects, ...itemsSubjectAndGrade.subjects]);
     newTest.grades = _uniq([...newTest.grades, ...itemsSubjectAndGrade.grades]);
-
+    const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
     newTest.createdBy = {
       id: user._id,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName
+      name
     };
 
     newTest.testItems = testItems || [];

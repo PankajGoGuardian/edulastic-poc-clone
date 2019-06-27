@@ -1,13 +1,4 @@
-import {
-  newBlue,
-  darkBlueSecondary,
-  mobileWidth,
-  white,
-  desktopWidth,
-  btnColor,
-  btnBg,
-  btnBgActive
-} from "@edulastic/colors";
+import { themeColor, mobileWidth, white, desktopWidth, btnColor, btnBg, btnBgActive } from "@edulastic/colors";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import HeaderWrapper from "../../../src/mainContent/headerWrapper";
@@ -92,7 +83,7 @@ export const Container = styled.div`
         svg {
           width: 20px;
           height: 20px;
-          fill: ${newBlue};
+          fill: ${themeColor};
         }
       }
     }
@@ -166,7 +157,7 @@ export const Back = styled(Link)`
   text-transform: uppercase;
 
   :hover {
-    color: ${newBlue};
+    color: ${themeColor};
   }
 `;
 

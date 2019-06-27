@@ -1,6 +1,6 @@
 import { FlexContainer } from "@edulastic/common";
 import styled from "styled-components";
-import { tabletWidth } from "@edulastic/colors";
+import { tabletWidth, themeColor } from "@edulastic/colors";
 import { Select } from "antd";
 
 export const Container = styled.div`
@@ -26,7 +26,7 @@ export const Container = styled.div`
 
   .ant-select-arrow-icon {
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
       margin-right: 0px;
     }
   }

@@ -6,7 +6,7 @@ const LinkWrapper = styled.div`
   font-weight: 800;
   cursor: pointer;
   display: flex;
-  color: ${props => props.theme.themeTextColor};
+  color: ${props => props.theme.themeColor};
 `;
 
 export default LinkWrapper;

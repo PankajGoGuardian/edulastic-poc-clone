@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Pagination, Affix, Input } from "antd";
 
-import { desktopWidth, textColor, grey } from "@edulastic/colors";
+import { themeColor, desktopWidth, textColor, grey } from "@edulastic/colors";
 import { Card } from "@edulastic/common";
 
 export const ScrollBox = styled.div`
@@ -31,7 +31,7 @@ export const Container = styled.div`
   .ant-input-suffix {
     font-size: 15px;
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
     }
   }
 

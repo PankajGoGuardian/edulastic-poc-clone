@@ -1,13 +1,12 @@
 import styled from "styled-components";
 import {
   desktopWidth,
-  greenDark,
   mobileWidth,
   secondaryTextColor,
   tabletWidth,
   white,
   lightGreySecondary,
-  lightBlueSecondary
+  themeColor
 } from "@edulastic/colors";
 import { Select } from "antd/lib/index";
 import { EduButton, FlexContainer, Paper } from "@edulastic/common";
@@ -75,25 +74,6 @@ export const ListItems = styled.div`
     }
   }
 
-  .ant-pagination-total-text {
-    flex: 1;
-    font-size: 13px;
-    font-weight: 600;
-    font-family: "Open Sans";
-    color: ${secondaryTextColor};
-    letter-spacing: normal;
-  }
-
-  .ant-pagination-item-active {
-    border: none;
-    opacity: 0.75;
-    background-color: ${greenDark};
-  }
-
-  .ant-pagination-item-active a {
-    color: ${white};
-  }
-
   @media (max-width: ${mobileWidth}) {
     margin: 21px 26px 0px 26px;
   }
@@ -108,16 +88,16 @@ export const StyledButton = styled(EduButton)`
   font-size: 11px;
   text-transform: uppercase;
   background: transparent;
-  color: ${lightBlueSecondary};
+  color: ${themeColor};
   display: flex;
   align-items: center;
-  border: 1px solid ${lightBlueSecondary};
+  border: 1px solid ${themeColor};
   border-radius: 5px;
 
   &:hover,
   &:active {
     background: transparent;
-    color: ${lightBlueSecondary};
+    color: ${themeColor};
   }
 
   svg {
@@ -152,7 +132,7 @@ export const StyledSelect = styled(Select)`
 
   .ant-select-arrow-icon {
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
     }
   }
 `;
@@ -163,50 +143,6 @@ export const ItemsPagination = styled(FlexContainer)`
 
   @media screen and (max-width: 480px) {
     padding: 30px;
-  }
-
-  .ant-pagination {
-    margin-bottom: 0;
-
-    @media screen and (max-width: 768px) {
-      margin-top: 0 !important;
-    }
-
-    &-item {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-      border: none;
-      background: ${white};
-      line-height: 35px;
-
-      &-link {
-        border: none;
-      }
-
-      &-active {
-        background: ${lightBlueSecondary};
-        box-shadow: none;
-
-        a {
-          color: ${white};
-        }
-      }
-    }
-
-    &-prev,
-    &-next {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-    }
-
-    &-jump {
-      &-next,
-      &-prev {
-        min-width: 33px;
-        height: 33px;
-        background: ${white};
-        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-        line-height: 35px;
-      }
-    }
   }
 `;
 

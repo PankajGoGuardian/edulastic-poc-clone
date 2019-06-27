@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { Paper } from "@edulastic/common";
-import { grey, secondaryTextColor, mainBlueColor } from "@edulastic/colors";
+import { grey, secondaryTextColor, themeColorLight } from "@edulastic/colors";
 
 export const PaperCreate = styled(Paper)`
   border-radius: 5px;
@@ -16,7 +16,7 @@ export const PaperCreate = styled(Paper)`
     text-transform: uppercase;
     font-size: 11px;
     min-height: 40px;
-    background: ${mainBlueColor};
+    background: ${themeColorLight};
     border: none;
     border-radius: 4px;
   }

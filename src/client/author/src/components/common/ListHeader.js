@@ -120,15 +120,15 @@ export const TestButton = styled(Button)`
   color: #00ad50;
   border-radius: 3px;
   margin-left: 25px;
-  background: ${props => props.theme.themeButtonBgWhite};
+  background: ${white};
   padding: 5px 30px;
   &:hover {
-    color: ${props => props.theme.themeTextColor};
+    color: ${props => props.theme.themeColor};
   }
   &:focus,
   &:active {
-    border-color: ${props => props.theme.themeButtonBgColor};
-    outline-color: ${props => props.theme.themeButtonBgColor};
+    border-color: ${props => props.theme.themeColor};
+    outline-color: ${props => props.theme.themeColor};
   }
   span {
     margin-left: 15px;
@@ -163,16 +163,16 @@ const CreateButton = styled(Button)`
   height: 45px;
   color: #00ad50;
   border-radius: 3px;
-  background: ${props => props.theme.themeButtonBgWhite};
+  background: ${white};
   justify-content: space-around;
   margin-left: 20px;
   &:hover {
-    color: ${props => props.theme.themeTextColor};
+    color: ${props => props.theme.themeColor};
   }
   &:focus,
   &:active {
-    border-color: ${props => props.theme.themeButtonBgColor};
-    outline-color: ${props => props.theme.themeButtonBgColor};
+    border-color: ${props => props.theme.themeColor};
+    outline-color: ${props => props.theme.themeColor};
   }
 `;
 

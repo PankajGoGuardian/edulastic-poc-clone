@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue, secondaryTextColor } from "@edulastic/colors";
+import { secondaryTextColor } from "@edulastic/colors";
 
 const params = {
   width: 0,

@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { Anchor, Input, Row, Col, Radio, Switch, List, Select, Checkbox, Form } from "antd";
 
 import { test } from "@edulastic/constants";
-import { lightBlueSecondary, red, green, blueBorder } from "@edulastic/colors";
+import { red, green, blueBorder } from "@edulastic/colors";
 import { IconCaretDown } from "@edulastic/icons";
 
 import { setMaxAttemptsAction, setSafeBroswePassword } from "../../ducks";
@@ -233,7 +233,7 @@ class MainSetting extends Component {
             {/* Hiding temporarly for deploying */}
             {/* <AdvancedButton onClick={this.advancedHandler} show={showAdvancedOption}>
               {showAdvancedOption ? "HIDE ADVANCED OPTIONS" : "SHOW ADVANCED OPTIONS"}
-              <IconCaretDown color={lightBlueSecondary} width={11} height={6} />
+              <IconCaretDown color={themeColor} width={11} height={6} />
             </AdvancedButton>
             {showAdvancedOption && (
               <StyledAnchor affix={false} offsetTop={125}>

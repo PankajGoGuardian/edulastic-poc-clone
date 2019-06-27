@@ -349,10 +349,10 @@ function* saveQuestionSaga({ payload: { testId: tId, isTestFlow, isEditFlow } })
             }
           }
           if (q.template) {
-            q.template = helpers.removeSpanFromTemplate(q.template);
+            q.template = helpers.removeIndexFromTemplate(q.template);
           }
           if (q.templateMarkUp) {
-            q.templateMarkUp = helpers.removeSpanFromTemplate(q.templateMarkUp);
+            q.templateMarkUp = helpers.removeIndexFromTemplate(q.templateMarkUp);
           }
         });
       }

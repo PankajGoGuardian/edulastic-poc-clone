@@ -13,6 +13,7 @@ import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
+import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import {
   AdditionalToggle,
@@ -24,7 +25,7 @@ import {
 import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
-import { CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
+import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -54,6 +55,10 @@ const MathFormulaAnswerMethod = ({
     if (method === methodsConst.IS_FACTORISED && !newOptions.field) {
       newOptions.field = fieldsConst.INTEGER;
     }
+    if (method === methodsConst.EQUIV_VALUE) {
+      newOptions.allowNumericOnly = true;
+    }
+
     onChange("options", newOptions);
   }, [method]);
 
@@ -271,12 +276,14 @@ const MathFormulaAnswerMethod = ({
           );
         case "setThousandsSeparator":
           return (
-            <ThousandsSeparators
-              separators={options.setThousandsSeparator}
-              onChange={handleChangeThousandsSeparator}
-              onAdd={handleAddThousandsSeparator}
-              onDelete={handleDeleteThousandsSeparator}
-            />
+            <WidgetSecondMethod>
+              <ThousandsSeparators
+                separators={options.setThousandsSeparator}
+                onChange={handleChangeThousandsSeparator}
+                onAdd={handleAddThousandsSeparator}
+                onDelete={handleDeleteThousandsSeparator}
+              />
+            </WidgetSecondMethod>
           );
         case "setDecimalSeparator":
           return (
@@ -290,6 +297,24 @@ const MathFormulaAnswerMethod = ({
               <Units options={options} onChange={changeOptions} />
             </WidgetSecondMethod>
           );
+        case "allowNumericOnly":
+          return (
+            <CheckOption
+              dataCy="answer-allow-numeric-only"
+              optionKey="allowNumericOnly"
+              options={options}
+              onChange={changeOptions}
+              label={t("component.math.allowNumericOnly")}
+            />
+          );
+        case "allowedVariables":
+          return (
+            <WidgetSecondMethod>
+              <AllowedVariables options={options} onChange={changeOptions} />
+            </WidgetSecondMethod>
+          );
+        case "rule":
+          return <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />;
         default:
           return null;
       }

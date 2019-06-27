@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { textColor, newBlue, mobileWidth } from "@edulastic/colors";
+import { textColor, themeColor, mobileWidth } from "@edulastic/colors";
 
 export const AdditionalToggle = styled.span`
   cursor: pointer;
@@ -16,7 +16,7 @@ export const AdditionalToggle = styled.span`
     position: absolute;
     top: 6px;
     right: -28px;
-    border-top: 5px solid ${newBlue};
+    border-top: 5px solid ${themeColor};
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
     transition: all 0.3s ease;
@@ -76,7 +76,7 @@ export const AdditionalAddRule = styled.span`
   cursor: pointer;
   margin-left: auto;
   text-transform: uppercase;
-  color: ${newBlue};
+  color: ${themeColor};
   display: inline-block;
   font-size: 11px;
   letter-spacing: 0.4px;

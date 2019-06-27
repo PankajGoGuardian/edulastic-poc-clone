@@ -43,7 +43,7 @@ class Template extends Component {
     };
 
     return (
-      <Widget style={{ display: item.templateDisplay ? "inherit" : "none" }}>
+      <Widget visible={item.templateDisplay}>
         <Subtitle data-cy="template-container">{t("component.math.template")}</Subtitle>
         <MathInput
           showResponse

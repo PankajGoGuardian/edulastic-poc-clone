@@ -5,7 +5,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import { cloneDeep } from "lodash";
 
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tab, TabContainer, Tabs } from "@edulastic/common";
 import { setQuestionDataAction, getQuestionDataSelector } from "../../../author/QuestionEditor/ducks";
@@ -80,7 +80,7 @@ class CorrectAnswers extends Component {
       <Button
         style={{
           background: "transparent",
-          color: newBlue,
+          color: themeColor,
           borderRadius: 0,
           padding: 0,
           boxShadow: "none",

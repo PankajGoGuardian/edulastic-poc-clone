@@ -4,7 +4,7 @@ import ReactDOM from "react-dom";
 import { compose } from "redux";
 import { isEmpty } from "lodash";
 
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { Button, Tabs, Tab, FlexContainer } from "@edulastic/common";
 import { Widget } from "../../styled/Widget";
@@ -87,7 +87,7 @@ class CorrectAnswers extends Component {
       <Button
         style={{
           background: "transparent",
-          color: newBlue,
+          color: themeColor,
           borderRadius: 0,
           padding: 0,
           boxShadow: "none",

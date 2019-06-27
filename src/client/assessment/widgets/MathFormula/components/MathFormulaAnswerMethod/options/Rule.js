@@ -8,7 +8,7 @@ import { math } from "@edulastic/constants";
 import { Label } from "../../../../../styled/WidgetOptions/Label";
 import { StyledRow } from "../styled/StyledRow";
 
-const RulePure = ({ syntax, argument, handleChangeRule, onChange, t }) => {
+const RulePure = ({ syntax, argument, onChange, t }) => {
   const syntaxes = [
     { value: "", label: "" },
     { value: math.syntaxes.DECIMAL, label: t("component.math.decimal") },
@@ -45,7 +45,7 @@ const RulePure = ({ syntax, argument, handleChangeRule, onChange, t }) => {
           value={syntax}
           style={{ width: "100%" }}
           onChange={val => {
-            handleChangeRule(val);
+            onChange("syntax", val);
           }}
         >
           {syntaxes.map(({ value: val, label }) => (
@@ -93,7 +93,6 @@ RulePure.propTypes = {
   syntax: PropTypes.string,
   argument: PropTypes.string,
   onChange: PropTypes.func.isRequired,
-  handleChangeRule: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired
 };
 

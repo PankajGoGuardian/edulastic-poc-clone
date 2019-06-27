@@ -14,7 +14,6 @@ const CorItem = styled.div`
   background: ${white};
   padding: 0 25px;
   font-weight: 600;
-  margin-bottom: 5px;
   margin-left: 84px;
   width: calc(50% - 50px);
   text-align: center;

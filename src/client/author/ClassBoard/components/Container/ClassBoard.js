@@ -331,7 +331,7 @@ class ClassBoard extends Component {
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return message.warn(
-        `${submittedStudents} student(s) that you selected have already submitted the assessment, you will not be allowed to submit again.`
+        `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
       );
     }
     this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });

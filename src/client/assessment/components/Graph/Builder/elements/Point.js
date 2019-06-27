@@ -64,7 +64,6 @@ function create(board, usrCoords, id = null) {
 
   if (board.drawingObject === null) {
     QuillInput(point, board).setLabel(board.objectNameGenerator.next().value);
-    point.quillInput.blur();
   }
 
   return point;

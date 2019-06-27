@@ -44,7 +44,9 @@ import {
   flat2nestedConfig,
   calcUnitX,
   handleSnap,
-  isInPolygon
+  isInPolygon,
+  objectLabelComparator,
+  nameGenerator
 } from "./utils";
 import _events from "./events";
 
@@ -115,7 +117,7 @@ class Board {
     this.creatingHandler = () => {};
     this.setCreatingHandler();
 
-    this.objectNameGenerator = null;
+    this.objectNameGenerator = nameGenerator();
   }
 
   isAnyElementsHasFocus(withPrepare = false) {
@@ -828,6 +830,15 @@ class Board {
   }
 
   loadFromConfig(flatCfg, labelIsReadOnly = false) {
+    // get name of the last object by label and reset objectNameGenerator with it
+    flatCfg.sort(objectLabelComparator);
+    if (typeof flatCfg[0] === "object") {
+      // it is required to call next() before reseting objectNameGenerator
+      this.objectNameGenerator.next();
+      // this.objectNameGenerator.next(String.fromCharCode(flatCfg[0].label.charCodeAt(0) - 1));
+      this.objectNameGenerator.next(flatCfg[0].label);
+    }
+
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {

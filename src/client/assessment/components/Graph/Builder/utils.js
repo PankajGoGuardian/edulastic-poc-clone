@@ -515,8 +515,8 @@ export function* nameGenerator() {
   const charCodes = [];
   const firstChar = "A";
   const lastChar = "Z";
-  const firstCharCode = firstChar.charCodeAt();
-  const lastCharCode = lastChar.charCodeAt();
+  const firstCharCode = firstChar.charCodeAt(0);
+  const lastCharCode = lastChar.charCodeAt(0);
 
   while (true) {
     let index = charCodes.length - 1;
@@ -544,8 +544,11 @@ export function* nameGenerator() {
     const reset = yield String.fromCharCode(...charCodes);
     if (reset) {
       charCodes.splice(0, charCodes.length);
-      if (typeof reset === "string" && reset.charCodeAt() >= firstCharCode && reset.charCodeAt() < lastCharCode) {
-        charCodes.push(reset.charCodeAt());
+      if (typeof reset === "string") {
+        const code = reset.charCodeAt(0) - 1;
+        if (code >= firstCharCode && code < lastCharCode) {
+          charCodes.push(code);
+        }
       }
     }
   }

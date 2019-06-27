@@ -41,6 +41,7 @@ const QuillInput = (element, board) => ({
     init(element, board, readOnly);
     element.quillInput.clipboard.dangerouslyPasteHTML(0, label);
     element.labelHTML = label;
+    element.quillInput.blur();
   },
 
   setFocus() {

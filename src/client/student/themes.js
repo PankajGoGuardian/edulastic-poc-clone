@@ -269,9 +269,9 @@ export const themes = {
       headingColor: "#434b5d",
       titleDescriptionTextSize: "13px",
       titleDescriptionTextColor: "#434b5d",
-      greenMarkBgColor: "#1fe3a1",
-      grayMarkBgColor: "#b1b1b1",
-      redMarkBgColor: "#ee1658",
+      markedAnswerBoxColor: "#59abeb", // BlueColor
+      markedSkippedBoxColor: "#b1b1b1", // GrayColor
+      markedForReviewBoxColor: "#f8c165", // YellowColor
       descriptionTextSize: "12px",
       descriptionTextColor: "#878282",
       questiontextSize: "16px",

@@ -112,8 +112,7 @@ export const TableData = styled(Table)`
     text-transform: uppercase;
     color: ${darkGrey};
     white-space: nowrap;
-    padding: 0 !important;
-    padding-bottom: 34px !important;
+    padding: 10px;
   }
 
   .ant-table-thead > tr > th > .ant-table-column-has-actions > .ant-table-column-sorters {

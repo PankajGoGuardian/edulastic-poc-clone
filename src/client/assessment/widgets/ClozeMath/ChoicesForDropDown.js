@@ -5,7 +5,7 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { forEach, cloneDeep } from "lodash";
+import { forEach, cloneDeep, get, findIndex } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 import uuid from "uuid/v4";
@@ -113,12 +113,24 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
+    const prevDropDownAnswers = get(item, "validation.valid_dropdown.value", []);
+    const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
+
     setQuestionData(
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        const prevOption = draft.options[dropDownId][itemIndex];
         draft.options[dropDownId][itemIndex] = e.target.value;
         draft.ui_style[dropDownId] = draft.ui_style[dropDownId] || {};
         draft.ui_style[dropDownId].widthpx = Math.min(e.target.value.split("").length * 14, response.maxWidth);
+
+        if (prevAnswerIndex !== -1) {
+          const prevAnswer = prevDropDownAnswers[prevAnswerIndex].value;
+          if (prevAnswer && prevAnswer === prevOption) {
+            prevDropDownAnswers.splice(prevAnswerIndex, 1, { id: dropDownId, value: e.target.value });
+          }
+        }
+
         updateVariables(draft);
       })
     );
@@ -129,7 +141,9 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
-        draft.options[dropDownId].push(t("component.cloze.dropDown.newChoice"));
+        draft.options[dropDownId].push(
+          `${t("component.cloze.dropDown.newChoice")} ${draft.options[dropDownId].length + 1}`
+        );
       })
     );
   };

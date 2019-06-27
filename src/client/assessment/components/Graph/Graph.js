@@ -272,15 +272,7 @@ class Graph extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const {
-      graphType,
-      extra_options,
-      ui_style,
-      validation: {
-        valid_response: { value: correctAnswer },
-        alt_responses: altAnswers
-      }
-    } = item;
+    const { graphType, extra_options, ui_style, validation } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -410,14 +402,14 @@ class Graph extends Component {
                     view={view}
                     previewTab={previewTab}
                     onChange={this.handleAddAnswer}
-                    elements={correctAnswer}
+                    elements={validation.valid_response.value}
                     evaluation={evaluation}
                     {...restProps}
                   />
                 </CorrectAnswersContainer>
 
-                {altAnswers &&
-                  altAnswers.map((altAnswer, i) => (
+                {validation.alt_responses &&
+                  validation.alt_responses.map((altAnswer, i) => (
                     <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
                       <GraphDisplay
                         disableResponse

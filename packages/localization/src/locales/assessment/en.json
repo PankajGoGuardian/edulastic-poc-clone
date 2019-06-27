@@ -665,6 +665,8 @@
       "rule": "Rule",
       "argument": "Argument",
       "ignoreOrder": "Ignore order",
+      "allowNumericOnly": "Restrict to numeric input",
+      "allowedVariables": "Restrict variables used to",
       "allowInterval": "Allow interval",
       "ignoreTrailingZeros": "Ignore trailing zeros in a decimal",
       "ignoreCoefficientOfOne": "Ignore a \"1\" in front of a variable",

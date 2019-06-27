@@ -10,7 +10,7 @@ import { connect } from "react-redux";
 import produce from "immer";
 import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
-import { Checkbox, Input, Select, Upload, message } from "antd";
+import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 import { cloneDeep, isUndefined } from "lodash";
@@ -31,8 +31,6 @@ import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
 import { ColorBox } from "./styled/ColorBox";
-import { ColorPickerContainer } from "./styled/ColorPickerContainer";
-import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -84,8 +82,7 @@ class Authoring extends Component {
   };
 
   state = {
-    isEditableResizeMove: false,
-    isColorPickerVisible: false
+    isEditableResizeMove: false
     // imageWidth:
     //   this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
@@ -195,10 +192,6 @@ class Authoring extends Component {
         updateVariables(draft);
       })
     );
-  };
-
-  showColorPicker = status => {
-    this.setState({ isColorPickerVisible: status });
   };
 
   updateData = item => {
@@ -417,7 +410,7 @@ class Authoring extends Component {
   render() {
     const { t, item, theme, setQuestionData } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {}, keepAspectRatio } = item;
-    const { isColorPickerVisible, isEditableResizeMove } = this.state;
+    const { isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = canvasDimensions;
 
@@ -517,24 +510,20 @@ class Authoring extends Component {
                     <Option value="right">{t("component.cloze.imageText.right")}</Option>
                   </PointerSelect>
                 </PointerContainer>
-
-                <FieldWrapper>
-                  <ColorBox
-                    data-cy="image-text-box-color-picker"
-                    background={background}
-                    onClick={() => this.showColorPicker(true)}
-                  />
-                  {isColorPickerVisible && (
-                    <ColorPickerContainer data-cy="image-text-box-color-panel">
-                      <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
-                      <ChromePicker
-                        color={background}
-                        onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                      />
-                    </ColorPickerContainer>
+                <Dropdown
+                  overlay={() => (
+                    <ChromePicker
+                      color={background}
+                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                    />
                   )}
-                  <PaddingDiv left={20}>{t("component.cloze.imageText.fillcolor")}</PaddingDiv>
-                </FieldWrapper>
+                  trigger={["click"]}
+                >
+                  <FieldWrapper>
+                    <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
+                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
+                  </FieldWrapper>
+                </Dropdown>
               </div>
             </FormContainer>
 

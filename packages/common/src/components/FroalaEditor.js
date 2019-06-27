@@ -58,7 +58,7 @@ FroalaEditor.DEFAULTS.specialCharacterSets = [
   }
 ];
 
-FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Response</span>`);
+FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Drop Area</span>`);
 FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-btn">Response Boxes</span>`);
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
@@ -601,7 +601,7 @@ const CustomEditor = ({
     // Register response commnad for Response Button
     FroalaEditor.DefineIcon("response", { NAME: "response", template: "response" });
     FroalaEditor.RegisterCommand("response", {
-      title: "Response",
+      title: "Drop Area",
       focus: true,
       undo: true,
       refreshAfterCallback: true,

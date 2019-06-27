@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import styled from "styled-components";
-import { secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
+import { themeColor, secondaryTextColor, titleColor, lightGreySecondary } from "@edulastic/colors";
 import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Select } from "antd";
@@ -237,7 +237,7 @@ const Container = styled.div`
   .ant-select-arrow-icon {
     font-size: 14px;
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
     }
   }
 

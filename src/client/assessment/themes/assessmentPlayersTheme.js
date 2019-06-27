@@ -1,4 +1,4 @@
-import { themeColor } from "@edulastic/colors";
+import { themeColor, themeColorLight } from "@edulastic/colors";
 
 export const playersTheme = {
   default: {
@@ -29,7 +29,7 @@ export const playersTheme = {
   brandLightgrey: "#f3f3f3",
   brandWhite: "#ffffff",
   primary: "#1fe3a1",
-  secondary: "#00b0ff",
+  secondary: themeColorLight,
   warning: "#f4a700",
   danger: "#ee1658",
   muted: "#cfcfcf",
@@ -57,19 +57,19 @@ export const playersTheme = {
   sidebarContentBorderColor: "#1fe3a1",
   sidebarActiveTextColor: "#1fe3a1",
   sidebarTextColor: "#878282",
-  sidebarActiveCircleColor: "#00b0ff",
+  sidebarActiveCircleColor: themeColorLight,
   sidebarFontFamily: "'Source Sans Pro', 'Arial', sans-serif",
   controlBtnTextColor: "#ffffff",
   controlBtnPrimaryColor: "#1fe3a1",
-  controlBtnSecondaryColor: "#00b0ff",
+  controlBtnSecondaryColor: themeColorLight,
   controlBtnMutedColor: "#cfcfcf",
   selectTextColor: "#444444",
   selectBgColor: "#ffffff",
-  selectArrowColor: "#00b0ff",
+  selectArrowColor: themeColorLight,
   quitAssessmentTextColor: "#ee1658",
   quitAssessmentFontSize: "14px",
   timerIconColor: "#756e6e",
-  progressStrokeColor: "#00b0ff",
+  progressStrokeColor: themeColorLight,
   progressTrailColor: "#e2e2e2",
   saveIconColor: "#756e6e",
   submitIconColor: "#756e6e",

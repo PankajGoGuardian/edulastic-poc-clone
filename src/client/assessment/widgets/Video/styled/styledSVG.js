@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { mainBlueColor, white } from "@edulastic/colors";
+import { themeColor, white } from "@edulastic/colors";
 
 export const Circle = styled.circle`
-  fill: ${mainBlueColor};
+  fill: ${themeColor};
 `;
 
 export const G = styled.g`

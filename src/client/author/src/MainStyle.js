@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tabletWidth } from "@edulastic/colors";
+import { tabletWidth, secondaryTextColor, themeColor } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
   padding-left: ${props => {
@@ -89,6 +89,10 @@ export const MainContainer = styled.div`
     }
   }
 
+  .ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
+    border-color: ${props => props.theme.themeBgColor};
+  }
+
   .ant-input {
     &:hover,
     &:focus {
@@ -106,5 +110,71 @@ export const MainContainer = styled.div`
 
   .ant-switch-checked {
     background-color: ${props => props.theme.themeBgColor};
+  }
+
+  .ant-pagination {
+    display: flex;
+    justify-content: flex-end;
+    .ant-pagination-total-text {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+      font-family: "Open Sans";
+      color: ${secondaryTextColor};
+      letter-spacing: normal;
+    }
+    li {
+      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+      border: none;
+    }
+    .ant-pagination {
+      &-prev .ant-pagination-item-link,
+      &-next .ant-pagination-item-link {
+        border: none;
+      }
+      &-item {
+        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
+        border: none;
+        line-height: 35px;
+        background: white;
+        a {
+          color: ${props => props.theme.themeTextColor};
+        }
+        &:hover,
+        &:focus {
+          background: ${props => props.theme.themeBgColor};
+          border-color: ${props => props.theme.themeBgColor};
+          a {
+            color: white;
+          }
+        }
+        &-active {
+          border: none;
+          opacity: 0.75;
+          background: ${props => props.theme.themeBgColor};
+          border-color: ${props => props.theme.themeBgColor};
+          a {
+            color: white;
+          }
+          &:hover,
+          &:focus {
+            background: ${props => props.theme.themeBgColor};
+            a {
+              color: white;
+            }
+          }
+        }
+      }
+    }
+    .ant-pagination-jump {
+      &-prev,
+      &-next {
+        .ant-pagination-item-container {
+          .ant-pagination-item-link-icon {
+            color: ${props => props.theme.themeTextColor};
+          }
+        }
+      }
+    }
   }
 `;

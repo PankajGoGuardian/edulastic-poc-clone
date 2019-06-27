@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
 import { Dropdown, Menu, Icon, Input } from "antd";
-import { mainBlueColor, largeDesktopWidth, desktopWidth, white } from "@edulastic/colors";
+import { themeColorLight, largeDesktopWidth, desktopWidth, white } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { searchContentAction, setContentCurriculumAction, toggleCheckedUnitItemAction } from "../ducks";
 import SelectContentRow from "./SelectContentRow";
@@ -185,7 +185,7 @@ const CurriculumHeader = styled(FlexContainer)`
     }
   }
   .anticon {
-    color: ${mainBlueColor};
+    color: ${themeColorLight};
   }
 
   .ant-input-affix-wrapper .ant-input-suffix :not(.anticon) {
@@ -226,7 +226,7 @@ const CurriculumTitle = styled.div`
   }
   .anticon {
     margin-left: 10px;
-    color: ${mainBlueColor};
+    color: ${themeColorLight};
   }
 `;
 

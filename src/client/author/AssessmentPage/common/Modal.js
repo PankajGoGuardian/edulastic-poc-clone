@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { secondaryTextColor, mainBlueColor, white } from "@edulastic/colors";
+import { secondaryTextColor, themeColorLight, white } from "@edulastic/colors";
 
 export const ModalWrapper = styled.div`
   width: 746px;
@@ -27,14 +27,14 @@ export const ModalFooter = styled.div`
     width: 222px;
     height: 40px;
     font-size: 11px;
-    background: ${mainBlueColor};
+    background: ${themeColorLight};
     color: ${white};
     border: none;
     text-transform: uppercase;
 
     &:first-child {
-      border: 1px solid ${mainBlueColor};
-      color: ${mainBlueColor};
+      border: 1px solid ${themeColorLight};
+      color: ${themeColorLight};
       background: transparent;
     }
   }

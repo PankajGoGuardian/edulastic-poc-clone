@@ -2,13 +2,7 @@ import styled from "styled-components";
 import { Col, Row } from "antd";
 
 import { Paper } from "@edulastic/common";
-import {
-  lightBlueSecondary,
-  lightGreySecondary,
-  secondaryTextColor,
-  dropZoneTitleColor,
-  greenDark
-} from "@edulastic/colors";
+import { themeColor, lightGreySecondary, secondaryTextColor, dropZoneTitleColor, greenDark } from "@edulastic/colors";
 
 export const Container = styled(Paper)`
   padding: 16px 24px;
@@ -20,7 +14,7 @@ export const Container = styled(Paper)`
     display: flex;
     align-items: center;
     background: #cbdef7;
-    color: ${lightBlueSecondary};
+    color: ${themeColor};
     font-weight: 600;
     margin-top: 9px !important;
   }
@@ -41,7 +35,7 @@ export const Container = styled(Paper)`
   }
 
   .ant-select-remove-icon svg {
-    fill: ${lightBlueSecondary};
+    fill: ${themeColor};
     width: 12px;
     height: 12px;
   }

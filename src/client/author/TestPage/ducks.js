@@ -549,9 +549,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
 function* getEvaluation(testItemId) {
   const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
   const testItem = testItems.find(x => x._id === testItemId) || {};
+  const { itemLevelScore, itemLevelScoring = false } = testItem;
   const questions = _keyBy(testItem.data.questions, "id");
   const answers = yield select(state => get(state, "answers", {}));
-  const evaluation = yield evaluateItem(answers, questions);
+  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
   return evaluation;
 }
 

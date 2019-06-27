@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Button } from "antd";
 import { IconEye, IconCheck, IconSource, IconSettings, IconEraseText } from "@edulastic/icons";
-import { darkBlue, darkGrey, newBlue } from "@edulastic/colors";
+import { darkGrey } from "@edulastic/colors";
 import { withNamespaces } from "@edulastic/localization";
 import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";

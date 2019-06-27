@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 
 import { formatTime } from "../utils";
 
-const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels }) => {
+const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, releaseGradeLabels, classId }) => {
   const { correct = 0, wrong = 0, maxScore = 0, score = 0 } = data;
   const total = correct + wrong;
   const percentage = (score / maxScore) * 100 || 0;
@@ -33,7 +33,7 @@ const Attempt = ({ data, type, activityReview, releaseScore, showReviewButton, r
         <SpaceBetween pagetype={type === "reports"} />
         {type === "reports" && activityReview && showReviewButton ? (
           <AnswerAndScoreReview>
-            <Link to={`/home/testActivityReport/${data._id}`}>
+            <Link to={`/home/class/${classId}/testActivityReport/${data._id}`}>
               <span data-cy="review">REVIEW</span>
             </Link>
           </AnswerAndScoreReview>

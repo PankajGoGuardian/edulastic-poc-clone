@@ -1,14 +1,5 @@
 import styled from "styled-components";
-import {
-  newBlue,
-  secondaryTextColor,
-  mainBgColor,
-  mainBlueColor,
-  green,
-  darkBlue,
-  blue,
-  white
-} from "@edulastic/colors";
+import { blue, white } from "@edulastic/colors";
 import { CheckboxContainer } from "./CheckboxContainer";
 import { MultiChoiceContent } from "./MultiChoiceContent";
 

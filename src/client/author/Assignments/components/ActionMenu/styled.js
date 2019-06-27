@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Menu, Button } from "antd";
 
-import { white, lightBlueSecondary, mobileWidth } from "@edulastic/colors";
+import { white, mobileWidth } from "@edulastic/colors";
 
 export const Container = styled.div`
   left: 0;

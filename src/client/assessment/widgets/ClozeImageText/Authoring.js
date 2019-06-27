@@ -8,7 +8,7 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
@@ -583,7 +583,7 @@ class Authoring extends Component {
                           <MoveControlButton
                             onClick={toggleIsMoveResizeEditable}
                             style={{
-                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                             }}
                           >
                             <IconMoveResize />
@@ -642,9 +642,9 @@ class Authoring extends Component {
                   )}
                   {!isEditableResizeMove && (
                     <MoveControlButton
-                      onMouseEnter={toggleIsMoveResizeEditable}
+                      onClick={toggleIsMoveResizeEditable}
                       style={{
-                        boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                       }}
                       top={imageTop + imageHeight - 14}
                       left={imageLeft + imageWidth - 14}

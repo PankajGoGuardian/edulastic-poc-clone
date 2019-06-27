@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { darkGrey, mainBlueColor } from "@edulastic/colors";
+import { darkGrey, themeColorLight } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 
 export const Description = styled.p`
@@ -24,7 +24,7 @@ export const CreateBlankContainer = styled(FlexContainer)`
     font-size: 11px;
     min-height: 40px;
     margin-top: 50px;
-    background: ${mainBlueColor};
+    background: ${themeColorLight};
     border: none;
     border-radius: 4px;
   }

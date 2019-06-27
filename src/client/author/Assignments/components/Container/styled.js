@@ -1,7 +1,7 @@
 import { Radio, Switch } from "antd";
 import styled from "styled-components";
 
-import { mobileWidth, tabletWidth, fadedWhite, blue, white, fadedBlue } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, white, themeColor } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 
 export const Container = styled.div`
@@ -91,16 +91,19 @@ export const StyledFlexContainer = styled(FlexContainer)`
 export const ViewSwitch = styled(Switch)`
   width: 35px;
   margin: 0px 15px;
-  background-color: #ffffff;
+  background-color: ${white};
+  &.ant-switch-checked {
+    background-color: ${white};
+  }
   &:after {
-    background-color: #00ad50;
+    background-color: ${themeColor};
   }
 `;
 
 export const TestButton = styled(Button)`
   height: 45px;
   width: 130px;
-  color: ${blue};
+  color: ${themeColor};
   border-radius: 3px;
   margin-left: 25px;
   background: ${white};

@@ -13,7 +13,7 @@ import { loadTestActivityReportAction } from "../ducks";
 
 const ReportListContainer = ({ flag, match, location, loadTestActivityReport }) => {
   useEffect(() => {
-    loadTestActivityReport({ testActivityId: match.params.id });
+    loadTestActivityReport({ testActivityId: match.params.id, groupId: match.params.classId });
   }, []);
   return (
     <MainContainer flag={flag}>

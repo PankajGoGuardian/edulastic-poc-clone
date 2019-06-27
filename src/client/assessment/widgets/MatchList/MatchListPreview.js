@@ -370,7 +370,7 @@ const MatchListPreview = ({
         <Fragment>
           <CorrectAnswersContainer title={t("component.matchList.correctAnswers")}>
             {list.map((ite, i) => (
-              <FlexContainer key={i} alignItems="center">
+              <FlexContainer key={i} marginBottom="10px" alignItems="center">
                 <CorTitle>
                   <MathFormulaDisplay stem dangerouslySetInnerHTML={{ __html: ite }} />
                 </CorTitle>

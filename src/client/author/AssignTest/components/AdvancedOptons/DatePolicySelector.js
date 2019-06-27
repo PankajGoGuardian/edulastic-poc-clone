@@ -48,6 +48,7 @@ const DatePolicySelector = ({
       <StyledRow gutter={48}>
         <Col span={6}>
           <StyledDatePicker
+            allowClear={false}
             data-cy="startDate"
             style={{ width: "100%" }}
             size="large"
@@ -61,6 +62,7 @@ const DatePolicySelector = ({
         </Col>
         <Col span={6}>
           <StyledDatePicker
+            allowClear={false}
             data-cy="closeDate"
             style={{ width: "100%" }}
             size="large"

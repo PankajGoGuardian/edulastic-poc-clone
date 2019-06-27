@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { white, secondaryTextColor, greenDark, green, red, mainBlueColor } from "@edulastic/colors";
+import { white, secondaryTextColor, greenDark, green, red, themeColorLight } from "@edulastic/colors";
 
 export const QuestionItemWrapper = styled.div`
   margin-bottom: 10px;
@@ -9,7 +9,7 @@ export const QuestionItemWrapper = styled.div`
   border-radius: ${({ centered }) => (centered ? "10px" : "unset")};
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
-  box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${mainBlueColor}` : "none")};
+  box-shadow: ${({ highlighted }) => (highlighted ? `0 0 10px 0 ${themeColorLight}` : "none")};
 `;
 
 export const AnswerForm = styled.div`

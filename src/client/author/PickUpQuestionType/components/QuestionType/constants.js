@@ -1,4 +1,4 @@
-import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
+import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
 import { math, questionType } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
@@ -541,7 +541,7 @@ export const getCards = onSelectQuestionType => {
           height: 600,
           altText: ""
         },
-        line_color: [mainBlueColor],
+        line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
         validation: {},

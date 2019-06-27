@@ -5,7 +5,7 @@ import { Checkbox, Radio } from "antd";
 import { Wrapper } from "./styled/Wrapper";
 import { InlineLabel } from "./styled/InlineLabel";
 
-const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize }) => {
+const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, smallSize, children }) => {
   let input;
 
   if (isMultiple) {
@@ -18,6 +18,7 @@ const MatrixCell = ({ label, type, correct, isMultiple, checked, onChange, small
     <Wrapper smallSize={smallSize} correct={correct}>
       {input}
       {type === "inline" && <InlineLabel dangerouslySetInnerHTML={{ __html: label }} />}
+      {children}
     </Wrapper>
   );
 };
@@ -29,11 +30,13 @@ MatrixCell.propTypes = {
   isMultiple: PropTypes.bool.isRequired,
   checked: PropTypes.bool.isRequired,
   onChange: PropTypes.func.isRequired,
-  smallSize: PropTypes.bool
+  smallSize: PropTypes.bool,
+  children: PropTypes.object
 };
 
 MatrixCell.defaultProps = {
-  smallSize: false
+  smallSize: false,
+  children: null
 };
 
 export default MatrixCell;

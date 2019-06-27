@@ -191,11 +191,11 @@ const Container = styled.button`
     background: ${({ backgroundColorHover }) => backgroundColorHover};
     color: ${({ hoverColor }) => hoverColor};
     cursor: pointer;
-    border-color: ${props => props.theme.themeButtonBgColor};
+    border-color: ${props => props.theme.themeColor};
   }
 
   &:focus {
-    border-color: ${props => props.theme.themeButtonBgColor};
-    outline-color: ${props => props.theme.themeButtonBgColor};
+    border-color: ${props => props.theme.themeColor};
+    outline-color: ${props => props.theme.themeColor};
   }
 `;

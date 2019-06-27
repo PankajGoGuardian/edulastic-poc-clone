@@ -223,6 +223,18 @@ export const ToolbarContainer = styled.div.attrs({
   }
 `;
 
+// if (theme === "border") {
+export const Placeholder = styled.div.attrs({
+  className: "froala-placeholder"
+})`
+  position: absolute;
+  top: ${props => (props.theme === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
+  left: ${props => (props.theme === "border" ? "23px" : 0)};
+  right: 0;
+  opacity: 0.7;
+  color: #cccccc;
+`;
+
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor);
 
@@ -309,7 +321,6 @@ const CustomEditor = ({
         "script",
         ".fa",
         "span",
-        "p",
         "path",
         "line",
         "textinput",
@@ -434,6 +445,11 @@ const CustomEditor = ({
                 cursorEl.remove();
                 return;
               }
+              return;
+            }
+            if (cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
+              cursorEl.remove();
+              return;
             }
           }
         },
@@ -706,6 +722,7 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
+  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -720,6 +737,11 @@ const CustomEditor = ({
       />
       <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
+        {showPlaceholder && (
+          <Placeholder toolbarExpanded={toolbarExpanded} theme={theme} showMargin={!tag}>
+            {config.placeholder}
+          </Placeholder>
+        )}
         <Editor
           tag={tag}
           model={content}

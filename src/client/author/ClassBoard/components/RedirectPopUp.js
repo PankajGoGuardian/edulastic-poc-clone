@@ -15,6 +15,7 @@ const Option = Select.Option;
  * @property {boolean} open
  * @property {Function} closePopup
  * @property {Function} setSelected
+ * @property {string[]} disabledList
  * @property {string} assignmentId
  * @property {string} groupId
  */
@@ -30,6 +31,7 @@ const RedirectPopUp = ({
   closePopup,
   setSelected,
   assignmentId,
+  disabledList = [],
   groupId
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
@@ -124,7 +126,7 @@ const RedirectPopUp = ({
 
       <Row> Students </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Row>
             <Select
               mode="multiple"
@@ -138,7 +140,7 @@ const RedirectPopUp = ({
               }}
             >
               {allStudents.map(x => (
-                <Option key={x._id} value={x._id}>
+                <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
                   {x.firstName}
                 </Option>
               ))}
@@ -151,6 +153,7 @@ const RedirectPopUp = ({
         <Col span={12}>
           <Row>
             <DatePicker
+              allowClear={false}
               disabledDate={disabledEndDate}
               style={{ width: "100%" }}
               value={dueDate}

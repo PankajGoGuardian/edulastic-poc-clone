@@ -145,7 +145,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, graphData, changePreviewTab, previewTab, view } = this.props;
+    const { t, graphData, changePreviewTab, previewTab, view, disableResponse } = this.props;
     const { validation } = graphData;
 
     const { value } = this.state;
@@ -161,6 +161,7 @@ class CorrectAnswers extends Component {
           {value === 0 && (
             <TabContainer>
               <CorrectAnswer
+                disableResponse={disableResponse}
                 graphData={graphData}
                 view={view}
                 previewTab={previewTab}
@@ -178,6 +179,7 @@ class CorrectAnswers extends Component {
                 return (
                   <TabContainer key={i}>
                     <CorrectAnswer
+                      disableResponse={disableResponse}
                       graphData={graphData}
                       view={view}
                       response={alter}
@@ -206,7 +208,12 @@ CorrectAnswers.propTypes = {
   question: PropTypes.object.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
-  view: PropTypes.string.isRequired
+  view: PropTypes.string.isRequired,
+  disableResponse: PropTypes.bool
+};
+
+CorrectAnswers.defaultProps = {
+  disableResponse: false
 };
 
 const enhance = compose(

@@ -106,7 +106,8 @@ class ClassBoard extends Component {
       selectedStudentId: "",
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-
+      disabledList: [],
+      absentList: [],
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
@@ -330,7 +331,7 @@ class ClassBoard extends Component {
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return message.warn(
-        `${submittedStudents} student(s) that you selected have already submitted the assessment, you will not be allowed to submit again.`
+        `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
       );
     }
     this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });
@@ -352,6 +353,30 @@ class ClassBoard extends Component {
 
   handleValidateInput = e => {
     this.setState({ modalInputVal: e.target.value });
+  };
+
+  updateDisabledList = (studId, status) => {
+    const { disabledList, absentList } = this.state;
+    if (status === "NOT STARTED" || status === "IN PROGRESS" || status === "REDIRECTED") {
+      if (!disabledList.includes(studId)) {
+        this.setState({ disabledList: [...disabledList, studId] });
+      }
+    } else {
+      const index = disabledList.indexOf(studId);
+      if (index >= 0) {
+        this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
+      }
+    }
+    if (status === "ABSENT") {
+      if (!absentList.includes(studId)) {
+        this.setState({ absentList: [...absentList, studId] });
+      }
+    } else {
+      const index = absentList.indexOf(studId);
+      if (index >= 0) {
+        this.setState({ absentList: [...absentList.slice(0, index), ...absentList.slice(index + 1)] });
+      }
+    }
   };
 
   render() {
@@ -393,6 +418,8 @@ class ClassBoard extends Component {
       studentReportCardModalColumnsFlags,
       itemId,
       selectedQid,
+      disabledList,
+      absentList,
       selectAll,
       nCountTrue,
       modalInputVal,
@@ -413,15 +440,6 @@ class ClassBoard extends Component {
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
       assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
-    let students = [...allStudents];
-    const updateStudent = (studentId, status) => {
-      students = students.map(student => {
-        if (student._id === studentId) {
-          student.status = status;
-        }
-        return student;
-      });
-    };
     return (
       <div>
         {showModal ? (
@@ -594,9 +612,9 @@ class ClassBoard extends Component {
 
             {flag ? (
               <DisneyCardContainer
-                updateStudent={updateStudent}
                 selectedStudents={selectedStudents}
                 testActivity={testActivity}
+                updateDisabledList={this.updateDisabledList}
                 assignmentId={assignmentId}
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
@@ -613,7 +631,9 @@ class ClassBoard extends Component {
 
             <RedirectPopup
               open={redirectPopup}
-              allStudents={students}
+              allStudents={allStudents}
+              disabledList={disabledList}
+              absentList={absentList}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
               closePopup={() => {

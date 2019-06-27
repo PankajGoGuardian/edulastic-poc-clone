@@ -66,7 +66,7 @@ export default class DisneyCardContainer extends Component {
       viewResponses,
       isPresentationMode,
       endDate,
-      updateStudent
+      updateDisabledList
     } = this.props;
     let styledCard = [];
 
@@ -102,7 +102,7 @@ export default class DisneyCardContainer extends Component {
         }
 
         let correctAnswers = 0;
-        updateStudent(student.studentId, status.status);
+        updateDisabledList(student.studentId, status.status);
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {

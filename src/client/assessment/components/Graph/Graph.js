@@ -268,6 +268,7 @@ class Graph extends Component {
       cleanSections,
       advancedAreOpen,
       isSidebarCollapsed,
+      disableResponse,
       ...restProps
     } = this.props;
     const { graphType, extra_options, ui_style } = item;
@@ -299,6 +300,7 @@ class Graph extends Component {
               >
                 <React.Fragment>
                   <CorrectAnswers
+                    disableResponse={disableResponse}
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
@@ -368,6 +370,7 @@ class Graph extends Component {
             )}
             {previewTab === "check" && item.canvas && item.ui_style && (
               <GraphDisplay
+                disableResponse={disableResponse}
                 checkAnswer
                 graphData={item}
                 view={view}
@@ -381,6 +384,7 @@ class Graph extends Component {
             )}
             {previewTab === "show" && item.canvas && item.ui_style && (
               <GraphDisplay
+                disableResponse={disableResponse}
                 showAnswer
                 graphData={item}
                 onChange={this.handleAddAnswer}
@@ -394,6 +398,7 @@ class Graph extends Component {
             )}
             {previewTab === "clear" && item.canvas && item.ui_style && (
               <GraphDisplay
+                disableResponse={disableResponse}
                 clearAnswer
                 graphData={item}
                 onChange={this.handleAddAnswer}
@@ -449,7 +454,8 @@ Graph.propTypes = {
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
-  advancedAreOpen: PropTypes.bool
+  advancedAreOpen: PropTypes.bool,
+  disableResponse: PropTypes.bool
 };
 
 Graph.defaultProps = {
@@ -459,7 +465,8 @@ Graph.defaultProps = {
   userAnswer: [],
   changePreviewTab: () => {},
   evaluation: null,
-  advancedAreOpen: false
+  advancedAreOpen: false,
+  disableResponse: false
 };
 
 const enhance = compose(

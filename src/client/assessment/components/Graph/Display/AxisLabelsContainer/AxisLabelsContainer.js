@@ -188,7 +188,7 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && disableResponse) {
+    if (disableResponse) {
       this._graph.removeMarksAnswers();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);
@@ -200,7 +200,7 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && !disableResponse && !isEqual(evaluation, prevProps.evaluation)) {
+    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
       this._graph.removeMarks();
       if (!this.elementsIsEmpty()) {
         const compareResult = getCompareResult(evaluation);

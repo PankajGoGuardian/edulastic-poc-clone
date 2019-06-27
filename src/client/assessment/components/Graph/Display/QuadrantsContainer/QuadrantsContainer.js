@@ -437,7 +437,7 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && disableResponse) {
+    if (disableResponse) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.resetAnswers();
@@ -445,7 +445,7 @@ class GraphContainer extends PureComponent {
       return;
     }
 
-    if (checkAnswer && !disableResponse && !isEqual(evaluation, prevProps.evaluation)) {
+    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
       const compareResult = getCompareResult(evaluation);
       const coloredElements = getColoredElems(elements, compareResult);
       this._graph.reset();
@@ -540,16 +540,12 @@ class GraphContainer extends PureComponent {
   };
 
   setEquations = equations => {
-    const { setValue, changePreviewTab, checkAnswer, setElementsStash, elements } = this.props;
+    const { setValue, setElementsStash, elements } = this.props;
     let newElements = cloneDeep(elements);
     newElements = newElements.filter(el => el.type !== CONSTANT.TOOLS.EQUATION);
     newElements.push(...equations);
     setValue(newElements);
     setElementsStash(newElements, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   };
 
   allTools = [

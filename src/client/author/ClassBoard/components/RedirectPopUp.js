@@ -16,6 +16,7 @@ const Option = Select.Option;
  * @property {Function} closePopup
  * @property {Function} setSelected
  * @property {string[]} disabledList
+ * @property {string[]} absentList
  * @property {string} assignmentId
  * @property {string} groupId
  */
@@ -31,6 +32,7 @@ const RedirectPopUp = ({
   closePopup,
   setSelected,
   assignmentId,
+  absentList = [],
   disabledList = [],
   groupId
 }) => {
@@ -41,19 +43,16 @@ const RedirectPopUp = ({
   useEffect(() => {
     let setRedirectStudents = {};
     if (type === "absentStudents") {
-      allStudents
-        .filter(st => st.status === "ABSENT")
-        .forEach(st => {
-          setRedirectStudents[st._id] = true;
-        });
+      absentList.forEach(st => {
+        setRedirectStudents[st] = true;
+      });
       setStudentsToRedirect(setRedirectStudents);
     } else if (type === "entire") {
-      const isNotRedirectable = allStudents.some(
-        st => st.status === "IN GRADING" || st.status === "NOT STARTED" || st.status === "REDIRECTED"
-      );
-      allStudents.forEach(st => {
-        setRedirectStudents[st._id] = true;
-      });
+      const isNotRedirectable = disabledList.length > 0;
+      !isNotRedirectable &&
+        allStudents.forEach(st => {
+          setRedirectStudents[st._id] = true;
+        });
       setStudentsToRedirect(isNotRedirectable ? {} : setRedirectStudents);
     } else {
       setStudentsToRedirect(selectedStudents);
@@ -72,17 +71,16 @@ const RedirectPopUp = ({
           ? "You can redirect an assessment only after the assessment has been submitted by the student(s)."
           : "At least one student should be selected to redirect assessment."
       );
-      setLoading(false);
     } else {
       await assignmentApi.redirect(assignmentId, {
         _id: groupId,
-        specificStudents: true,
-        students: selected,
+        specificStudents: type === "entire" ? false : true,
+        students: type === "entire" ? [] : selected,
         endDate: +dueDate
       });
-      setLoading(false);
       closePopup();
     }
+    setLoading(false);
   }, [studentsToRedirect, assignmentId, dueDate, groupId]);
 
   const disabledEndDate = endDate => {
@@ -131,7 +129,6 @@ const RedirectPopUp = ({
             <Select
               mode="multiple"
               disabled={type !== "specificStudents"}
-              allowClear={false}
               style={{ width: "100%" }}
               placeholder="Select the students"
               value={Object.keys(selectedStudents)}
@@ -155,7 +152,7 @@ const RedirectPopUp = ({
             <DatePicker
               allowClear={false}
               disabledDate={disabledEndDate}
-              style={{ width: "100%" }}
+              style={{ width: "100%", cursor: "pointer" }}
               value={dueDate}
               showTime
               showToday={false}

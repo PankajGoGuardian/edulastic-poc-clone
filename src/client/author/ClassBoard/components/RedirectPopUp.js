@@ -57,7 +57,7 @@ const RedirectPopUp = ({
     } else {
       setStudentsToRedirect(selectedStudents);
     }
-  }, [type]);
+  }, [type, selectedStudents]);
 
   const submitAction = useCallback(async () => {
     if (dueDate < moment()) {

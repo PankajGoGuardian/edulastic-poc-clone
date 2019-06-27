@@ -326,7 +326,8 @@ class ClassBoard extends Component {
       return message.warn("At least one student should be selected to be Marked as Absent.");
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
-      item => mapTestActivityByStudId[item].status === "notStarted"
+      item =>
+        mapTestActivityByStudId[item].status === "notStarted" || mapTestActivityByStudId[item].status === "redirected"
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;

@@ -890,7 +890,7 @@ input[type="checkbox"] {
 mathinput,
 textdropdown,
 textinput {
-  padding: 0 12px 0 0;
+  padding: 0 10px 0 0;
   color: rgba(0, 0, 0, 0.65);
   font-size: 14px;
   line-height: 1.5;
@@ -906,120 +906,43 @@ textinput {
   min-height: 35px;
 }
 
-mathinput span,
-textdropdown span,
-textinput span {
-  background: darkgray;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  padding: 6px 8px;
-  margin-right: 8px;
-}
-
-textdropdown {
-  padding-right: 20px;
-}
-
-textdropdown::after {
-  content: "";
-  width: 0;
-  height: 0;
-  border-color: #5f5f5f;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid;
-  margin-left: 5px;
-  position: absolute;
-  right: 5px;
-  top: 15px;
-}
-
-.response-btn .text,
-textdropdown .dropdown-text,
-textinput .input-text {
-  padding: 0 8px;
-}
-
-textdropdown .dropdown-index {
-  background: #d3d3d3;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border: 1px #777 solid;
-  border-right: 0;
-}
-
-textdropdown .dropdown-text {
-  background: #e5e5e5;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border: 1px #777 solid;
-  border-left: 0;
-  display: flex;
-  align-items: center;
-}
-
-textdropdown .dropdown-text::after {
-  content: "";
-  width: 0;
-  height: 0;
-  border-color: #5f5f5f;
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid;
-  margin-left: 5px;
-}
-
-textdropdown:hover .dropdown-text {
-  color: #12a6e8;
-}
-
-textdropdown:hover .dropdown-index {
-  background: #12a6e8;
-  color: white;
-}
-
-textinput .text-input-index {
-  background: #d3d3d3;
-  border-top-left-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border: 1px #777 solid;
-  border-right: 0;
-}
-
-textinput .input-text {
-  background: #e5e5e5;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
-  border: 1px #777 solid;
-  border-left: 0;
-  display: flex;
-  align-items: center;
-}
-
-textinput:hover .input-text {
-  color: #12a6e8;
-}
-
-textinput:hover .text-input-index {
-  background: #12a6e8;
-  color: white;
-}
-
 response {
   min-width: 120px;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
+  padding: 4px 8px;
   margin: 0 2px;
   border-radius: 10px;
   overflow: hidden;
   border: 2px black dotted;
-  justify-content: flex-start;
+  justify-content: center;
 }
 
-response .index {
-  background: #d5d5d5;
-  padding: 4px 10px;
+response::after {
+  content: "Response";
+}
+
+mathinput::after {
+  content: "Math Input";
+}
+
+textdropdown::after {
+  content: "Text Dropdown";
+}
+
+textinput::after {
+  content: "Text Input";
+}
+
+mathinput::before,
+textdropdown::before,
+textinput::before {
+  content: attr(responseIndex);
+  background: darkgray;
+  border-top-left-radius: 4px;
+  border-bottom-left-radius: 4px;
+  padding: 6px 8px;
   margin-right: 8px;
 }
 

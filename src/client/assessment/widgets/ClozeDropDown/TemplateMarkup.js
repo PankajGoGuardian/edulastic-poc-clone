@@ -41,7 +41,7 @@ class TemplateMarkup extends Component {
 
     fillSections(
       "main",
-      t("component.cloze.dropDown.templatemarkup"),
+      t("component.cloze.dropDown.composequestion"),
       node.offsetTop,
       deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
       deskHeight === true,
@@ -55,7 +55,7 @@ class TemplateMarkup extends Component {
     cleanSections();
   }
 
-  onChangeMarkUp = templateMarkUp => {
+  onChangeMarkUp = template => {
     const { item, setQuestionData } = this.props;
 
     const reduceResponseIds = tmpl => {
@@ -138,8 +138,8 @@ class TemplateMarkup extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.templateMarkUp = templateMarkUp;
-        draft.response_ids = reduceResponseIds(templateMarkUp);
+        draft.template = template;
+        draft.response_ids = reduceResponseIds(template);
         draft.validation = reudceValidations(draft.response_ids, draft.validation);
         draft.options = reduceOptions(draft.response_ids, draft.options);
         updateVariables(draft);
@@ -152,14 +152,14 @@ class TemplateMarkup extends Component {
 
     return (
       <Widget>
-        <Subtitle>{t("component.cloze.dropDown.templatemarkup")}</Subtitle>
+        <Subtitle>{t("component.cloze.dropDown.composequestion")}</Subtitle>
 
         <FroalaEditor
           data-cy="templateBox"
           toolbarId="cloze-dropdown-template-box"
           placeholder={t("component.cloze.dropDown.templatemarkupplaceholder")}
           additionalToolbarOptions={["textdropdown"]}
-          value={item.templateMarkUp}
+          value={item.template}
           onChange={this.onChangeMarkUp}
           theme="border"
         />

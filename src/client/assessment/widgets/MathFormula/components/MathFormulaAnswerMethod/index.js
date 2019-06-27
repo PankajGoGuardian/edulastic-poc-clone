@@ -13,6 +13,7 @@ import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
+import { Rule } from "./options/Rule";
 import Units from "./options/Units";
 import {
   AdditionalToggle,
@@ -312,6 +313,8 @@ const MathFormulaAnswerMethod = ({
               <AllowedVariables options={options} onChange={changeOptions} />
             </WidgetSecondMethod>
           );
+        case "rule":
+          return <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />;
         default:
           return null;
       }

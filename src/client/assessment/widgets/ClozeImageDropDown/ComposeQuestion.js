@@ -8,9 +8,9 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { cloneDeep, isUndefined } from "lodash";
 import produce from "immer";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
-import { Checkbox, Input, Select, Upload, message } from "antd";
+import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 
@@ -30,8 +30,6 @@ import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
 import { ColorBox } from "./styled/ColorBox";
-import { ColorPickerContainer } from "./styled/ColorPickerContainer";
-import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -80,7 +78,6 @@ class ComposeQuestion extends Component {
   };
 
   state = {
-    isColorPickerVisible: false,
     isEditableResizeMove: false
   };
 
@@ -163,10 +160,6 @@ class ComposeQuestion extends Component {
         updateVariables(draft);
       })
     );
-  };
-
-  showColorPicker = status => {
-    this.setState({ isColorPickerVisible: status });
   };
 
   updateData = item => {
@@ -387,7 +380,7 @@ class ComposeQuestion extends Component {
   render() {
     const { t, item, theme, setQuestionData } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, keepAspectRatio } = item;
-    const { isColorPickerVisible, isEditableResizeMove } = this.state;
+    const { isEditableResizeMove } = this.state;
 
     const { toggleIsMoveResizeEditable, handleImagePosition } = this;
     const hasActive = item.responses && item.responses.filter(it => it.active === true).length > 0;
@@ -493,23 +486,20 @@ class ComposeQuestion extends Component {
                   </PointerSelect>
                 </PointerContainer>
 
-                <FieldWrapper>
-                  <ColorBox
-                    data-cy="image-text-box-color-picker"
-                    background={background}
-                    onClick={() => this.showColorPicker(true)}
-                  />
-                  {isColorPickerVisible && (
-                    <ColorPickerContainer data-cy="image-text-box-color-panel">
-                      <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
-                      <ChromePicker
-                        color={background}
-                        onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                      />
-                    </ColorPickerContainer>
+                <Dropdown
+                  overlay={() => (
+                    <ChromePicker
+                      color={background}
+                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                    />
                   )}
-                  <PaddingDiv left={20}>{t("component.cloze.imageDropDown.fillcolor")}</PaddingDiv>
-                </FieldWrapper>
+                  trigger={["click"]}
+                >
+                  <FieldWrapper>
+                    <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
+                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
+                  </FieldWrapper>
+                </Dropdown>
               </div>
             </FormContainer>
             <FlexContainer
@@ -555,7 +545,7 @@ class ComposeQuestion extends Component {
                           <MoveControlButton
                             onClick={toggleIsMoveResizeEditable}
                             style={{
-                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                             }}
                           >
                             <IconMoveResize />
@@ -604,11 +594,11 @@ class ComposeQuestion extends Component {
                   )}
                   {!isEditableResizeMove && (
                     <MoveControlButton
-                      onMouseEnter={toggleIsMoveResizeEditable}
+                      onClick={toggleIsMoveResizeEditable}
                       top={imageTop + imageHeight - 14}
                       left={imageLeft + imageWidth - 14}
                       style={{
-                        boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                       }}
                     >
                       <IconMoveResize />

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { difference, isEmpty } from "lodash";
+import { difference, isEmpty, get } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
 
@@ -111,7 +111,7 @@ class MathFormulaPreview extends Component {
 
   validateVal(val) {
     const { item } = this.props;
-    const { options } = item.validation.valid_response.value[0];
+    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
 
     if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
 

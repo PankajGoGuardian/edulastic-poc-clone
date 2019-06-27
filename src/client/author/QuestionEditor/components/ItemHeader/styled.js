@@ -1,7 +1,7 @@
 import {
   blue,
   darkBlue,
-  newBlue,
+  themeColor,
   darkBlueSecondary,
   mobileWidth,
   white,
@@ -59,7 +59,7 @@ export const RightSide = styled.div`
     height: 40px;
     max-height: 40px;
     margin-top: auto;
-    background: ${newBlue};
+    background: ${themeColor};
     overflow-x: auto;
     overflow-y: hidden;
     padding: 0 25px;
@@ -139,7 +139,7 @@ export const RightSide = styled.div`
         svg {
           width: 20px;
           height: 20px;
-          fill: ${newBlue};
+          fill: ${themeColor};
         }
       }
     }

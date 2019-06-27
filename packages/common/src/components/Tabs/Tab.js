@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { newBlue, white, mobileWidth, tabGrey } from "@edulastic/colors";
+import { themeColor, white, mobileWidth, tabGrey } from "@edulastic/colors";
 import { IconPencilEdit, IconClose } from "@edulastic/icons";
 
 const Tab = ({
@@ -21,7 +21,7 @@ const Tab = ({
   const inputTab = (
     <EditableTab>
       <Input type="text" value={label} onChange={onChange} />
-      <IconPencilEdit color={newBlue} width={16} height={16} />
+      <IconPencilEdit color={themeColor} width={16} height={16} />
     </EditableTab>
   );
 
@@ -78,7 +78,7 @@ const Container = styled.div`
   color: ${({ active }) => (active ? white : tabGrey)};
   padding: ${({ type }) => (type === "primary" ? "0 10px" : "10px 25px")};
   cursor: pointer;
-  background: ${({ active }) => (active ? newBlue : white)};
+  background: ${({ active }) => (active ? themeColor : white)};
   height: ${({ type }) => (type === "primary" ? "28px" : "auto")};
   line-height: ${({ type }) => (type === "primary" ? "26px" : "normal")};
   min-width: ${({ type }) => (type === "primary" ? "120px" : "0")};

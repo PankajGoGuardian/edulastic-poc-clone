@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 
-import { mainBlueColor, red, green } from "@edulastic/colors";
+import { themeColorLight, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
@@ -56,7 +56,7 @@ const Crosses = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
                 17 -
                 ind * yAxisStep -
                 yAxisStep / 2})`}
-              fill={mainBlueColor}
+              fill={themeColorLight}
               d="M24.778,21.419L19.276,15.917L24.777,10.415L21.949,7.585L16.447,13.087L10.945,7.585L8.117,10.415L13.618,15.917L8.116,21.419L10.946,24.248L16.447,18.746L21.948,24.248Z"
             />
           ))}
@@ -85,7 +85,7 @@ const Crosses = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
                 x={getCenterX(index)}
                 y={getCenterY(dot) - 4}
                 width={step - 2}
-                color={dot.y === 0 ? mainBlueColor : "transparent"}
+                color={dot.y === 0 ? themeColorLight : "transparent"}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />

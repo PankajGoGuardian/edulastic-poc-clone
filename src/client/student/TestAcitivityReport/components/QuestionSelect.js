@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { Select, Button, Icon } from "antd";
+import { themeColor } from "@edulastic/colors";
 
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -100,7 +101,7 @@ const QuestionListWrapper = styled.div`
   }
   .anticon-down {
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
     }
   }
 `;

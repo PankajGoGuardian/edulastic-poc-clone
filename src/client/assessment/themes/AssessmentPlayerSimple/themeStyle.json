@@ -1,15 +1,12 @@
 {
   "logoColor": "#0eb08d",
-  "progressStrokeColor": "#00b0ff",
+  "progressStrokeColor": "#00AD50",
   "progressTrailColor": "#e2e2e2",
-
   "headerBg": "#00AD50",
   "headerIconBgColor": "#e5e5e5",
   "headerIconHoverColor": "#5ae3a1",
   "headerIconColor": "#afafaf",
-
   "progressFill": "#41a9fc",
-
   "btnDisabled": "#dfdfdf",
   "mainContentTextColor": "#444444",
   "mainContentBgColor": "white",

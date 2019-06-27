@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Popover, Icon, Modal, Checkbox } from "antd";
 
-import { mobileWidth, tabletWidth, lightBlueSecondary, white, lightGreySecondary } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, themeColor, white } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 9px 38px 9px 11px;
@@ -10,12 +10,12 @@ export const Container = styled.div`
   cursor: pointer;
   box-shadow: 0px 2px 7px 0 rgba(201, 208, 219, 0.5);
   border-radius: 5px;
-  color: ${props => (props.active ? white : lightBlueSecondary)};
+  color: ${props => (props.active ? white : themeColor)};
   margin-right: 0 !important;
   padding-bottom: 8px;
   width: 120px;
   height: 28px;
-  background: ${props => (props.active ? lightBlueSecondary : white)};
+  background: ${props => (props.active ? themeColor : white)};
   font-weight: 600;
   font-size: 12px;
   user-select: none;

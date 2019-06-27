@@ -1,8 +1,10 @@
-import { themeColor } from "@edulastic/colors";
+import { themeColor, themeColorLight } from "@edulastic/colors";
 import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
   default: {
+    themeColor,
+    themeColorLight,
     logo: edulasticDefaultLogo,
     logoBorderBottomColor: "#d9d6d6",
     headerBgColor: themeColor,
@@ -19,6 +21,12 @@ export const themes = {
     filterButtonBgActiveColor: themeColor,
     filterButtonBorderColor: themeColor,
     filterButtonBorderActiveColor: themeColor,
+    default: {
+      confirmationPopupButtonBgColor: themeColor,
+      confirmationPopupButtonBgHoverColor: "#ffffff",
+      confirmationPopupButtonTextColor: themeColor,
+      confirmationPopupButtonTextHoverColor: "#ffffff"
+    },
     sideMenu: {
       logo: edulasticDefaultLogo,
       logoBorderBottomColor: "#d9d6d6",
@@ -104,14 +112,14 @@ export const themes = {
       attemptsReviewRowTextColor: "#9ca0a9",
       attemptsReviewRowFontSize: "12px",
       attemptsRowReviewLinkSize: "12px",
-      attemptsRowReviewLinkColor: "#00b0ff"
+      attemptsRowReviewLinkColor: themeColorLight
     },
     classboard: {
-      headerContainerColor: "#00b0ff",
-      headerAnchorLink: "#00b0ff",
+      headerContainerColor: themeColorLight,
+      headerAnchorLink: themeColorLight,
       headerBarbgcolor: "lightgray",
       headerCheckboxColor: "#1890ffd9",
-      headerButtonColor: "#00b0ff",
+      headerButtonColor: themeColorLight,
       SwitchColorheaderListColor: "#037fc2",
       SortBarSelectionColor: "#434b5d",
       ScoreCardColor: "#565e6d",
@@ -140,17 +148,17 @@ export const themes = {
       headerSelectedFilterBgBorderColor: themeColor
     },
     breadcrumbs: {
-      breadcrumbTextColor: "#00b0ff",
+      breadcrumbTextColor: themeColorLight,
       breadcrumbTextSize: "10px",
-      breadcrumbLinkColor: "#00b0ff"
+      breadcrumbLinkColor: themeColorLight
     },
     reportList: {
       reportListTitleColor: "#12a6e8",
       reportListTitleTextSize: "16px",
       reportListBackButtonBgColor: "transparent",
-      reportListBackButtonBgBorderColor: "#00b0ff",
-      reportListBackButtonTextColor: "#00b0ff",
-      reportListBackButtonBgHoverColor: "#00b0ff",
+      reportListBackButtonBgBorderColor: themeColorLight,
+      reportListBackButtonTextColor: themeColorLight,
+      reportListBackButtonBgHoverColor: themeColorLight,
       reportListBackButtonBgBorderHoverColor: "white",
       reportListBackButtonTextHoverColor: "white",
       reportListBackButtonTextSize: "0.7rem",

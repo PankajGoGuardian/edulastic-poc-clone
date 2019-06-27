@@ -29,6 +29,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
       <StyledRow gutter={32}>
         <Col span={12}>
           <StyledDatePicker
+            allowClear={false}
             data-cy="startDate"
             style={{ width: "100%" }}
             size="large"
@@ -42,6 +43,7 @@ const DateSelector = ({ startDate, endDate, changeField }) => {
         </Col>
         <Col span={12}>
           <StyledDatePicker
+            allowClear={false}
             data-cy="closeDate"
             style={{ width: "100%" }}
             size="large"

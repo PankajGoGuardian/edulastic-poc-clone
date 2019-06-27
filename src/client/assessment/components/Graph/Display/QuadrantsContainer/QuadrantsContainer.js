@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
-import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -178,7 +177,8 @@ class GraphContainer extends PureComponent {
       backgroundShapes,
       toolbar,
       setElementsStash,
-      graphType
+      graphType,
+      disableResponse
     } = this.props;
 
     const { tools } = toolbar;
@@ -190,6 +190,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
+      if (disableResponse) {
+        this._graph.setDisableResponse();
+      }
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -408,13 +411,9 @@ class GraphContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getConfig();
-    const { setValue, changePreviewTab, checkAnswer, setElementsStash } = this.props;
+    const { setValue, setElementsStash } = this.props;
     setValue(conf);
     setElementsStash(conf, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   }
 
   graphUpdateHandler = () => {
@@ -430,30 +429,33 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
-    if (checkAnswer || showAnswer) {
-      let coloredElements;
-      if (evaluation && checkAnswer) {
-        const compareResult = getCompareResult(evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      } else {
-        const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      }
+    const { elements, checkAnswer, showAnswer, evaluation, disableResponse } = this.props;
 
-      if (showAnswer && !prevProps.showAnswer) {
-        this._graph.resetAnswers();
-        this._graph.loadAnswersFromConfig(getColoredAnswer(validation ? validation.valid_response.value : []));
-      }
-
-      if (!isEqual(elements, prevProps.elements)) {
-        this._graph.reset();
-        this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
-      }
-    } else if (!isEqual(elements, this._graph.getConfig())) {
-      this._graph.reset();
+    if (showAnswer) {
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
+      this._graph.loadAnswersFromConfig(getColoredAnswer(elements));
+      return;
+    }
+
+    if (disableResponse) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.resetAnswers();
+      this._graph.loadAnswersFromConfig(coloredElements);
+      return;
+    }
+
+    if (checkAnswer && !isEqual(evaluation, prevProps.evaluation)) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.reset();
+      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible(), true);
+      return;
+    }
+
+    if (!isEqual(elements, this._graph.getConfig()) || this._graph.elementsAreEvaluated) {
+      this._graph.reset();
+      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible(), false);
     }
   };
 
@@ -538,16 +540,12 @@ class GraphContainer extends PureComponent {
   };
 
   setEquations = equations => {
-    const { setValue, changePreviewTab, checkAnswer, setElementsStash, elements } = this.props;
+    const { setValue, setElementsStash, elements } = this.props;
     let newElements = cloneDeep(elements);
     newElements = newElements.filter(el => el.type !== CONSTANT.TOOLS.EQUATION);
     newElements.push(...equations);
     setValue(newElements);
     setElementsStash(newElements, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   };
 
   allTools = [
@@ -598,7 +596,7 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId } = this.props;
+    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse } = this.props;
     const { tools } = toolbar;
     const { selectedTool } = this.state;
     const hasAnnotation =
@@ -608,20 +606,24 @@ class GraphContainer extends PureComponent {
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
-          <Tools
-            toolsAreVisible={!this.drawingObjectsAreVisible()}
-            tools={bgShapes ? this.allTools : tools}
-            controls={bgShapes ? this.allControls : controls}
-            tool={selectedTool}
-            bgShapes={bgShapes}
-            getIconByToolName={this.getIconByToolName}
-            getHandlerByControlName={this.getHandlerByControlName}
-            onSelect={this.onSelectTool}
-            fontSize={bgShapes ? 12 : layout.fontSize}
-          />
-          {!this.drawingObjectsAreVisible() && <Equations equations={equations} setEquations={this.setEquations} />}
+          {!disableResponse && (
+            <Tools
+              toolsAreVisible={!this.drawingObjectsAreVisible()}
+              tools={bgShapes ? this.allTools : tools}
+              controls={bgShapes ? this.allControls : controls}
+              tool={selectedTool}
+              bgShapes={bgShapes}
+              getIconByToolName={this.getIconByToolName}
+              getHandlerByControlName={this.getHandlerByControlName}
+              onSelect={this.onSelectTool}
+              fontSize={bgShapes ? 12 : layout.fontSize}
+            />
+          )}
+          {!this.drawingObjectsAreVisible() && !disableResponse && (
+            <Equations equations={equations} setEquations={this.setEquations} />
+          )}
           <JSXBoxWithDrawingObjectsWrapper>
-            {this.drawingObjectsAreVisible() && (
+            {this.drawingObjectsAreVisible() && !disableResponse && (
               <DrawingObjects
                 selectDrawingObject={this.selectDrawingObject}
                 drawingObjects={this.getDrawingObjects()}
@@ -668,11 +670,9 @@ GraphContainer.propTypes = {
   toolbar: PropTypes.object,
   graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
-  validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func,
   bgShapes: PropTypes.bool.isRequired,
   annotation: PropTypes.object,
   controls: PropTypes.array,
@@ -682,7 +682,8 @@ GraphContainer.propTypes = {
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
-  altAnswerId: PropTypes.string
+  altAnswerId: PropTypes.string,
+  disableResponse: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {
@@ -690,7 +691,6 @@ GraphContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {},
   annotation: null,
   controls: [],
   stash: {},
@@ -700,7 +700,8 @@ GraphContainer.defaultProps = {
     tools: [],
     drawingPrompt: "byTools",
     drawingObjects: []
-  }
+  },
+  disableResponse: false
 };
 
 export default connect(

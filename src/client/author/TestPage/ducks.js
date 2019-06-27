@@ -170,9 +170,7 @@ export const createBlankTest = () => ({
   thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   createdBy: {
     _id: "",
-    firstName: "",
-    lastName: "",
-    email: ""
+    name: ""
   },
   tags: [],
   scoring: {
@@ -404,6 +402,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.createdDate;
     delete payload.data.assignments;
     delete payload.data.authors;
+    delete payload.data.createdBy;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,

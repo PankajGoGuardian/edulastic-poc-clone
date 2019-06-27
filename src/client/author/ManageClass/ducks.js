@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import { createAction, createReducer } from "redux-starter-kit";
-import { all, takeEvery, call, put } from "redux-saga/effects";
+import { all, takeEvery, call, put, select } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
@@ -217,16 +217,7 @@ const updateStudent = (state, { payload }) => {
 };
 
 const updateStudentsAfterTTSChange = (state, { payload }) => {
-  const userIds = payload.userIds;
-  const ttsStatus = payload.ttsStatus;
-  const stdList = state.studentsList;
-  const newStdList = stdList.map((std, idx) => {
-    if (userIds[idx] !== undefined && std._id === userIds[idx]) {
-      std.tts = ttsStatus;
-    }
-    return std;
-  });
-  state.studentsList = newStdList;
+  state.studentsList = payload;
 };
 
 const removeStudentsSuccess = (state, { payload: studentIds }) => {
@@ -340,14 +331,20 @@ function* receiveAddStudentRequest({ payload }) {
 function* changeUserTTSRequest({ payload }) {
   try {
     const result = yield call(userApi.changeUserTTS, payload);
-    debugger;
     const { status } = result;
     let msg = "";
     if (status === 200) {
-      msg = "User(s) updated successfully";
+      msg = "TTS updated successfully";
       const userIds = payload.userId.split(",");
       const ttsStatus = payload.ttsStatus;
-      yield put(userTTSRequestSuccessAction({ userIds, ttsStatus }));
+      const studentsList = yield select(state => state.manageClass.studentsList);
+      const newStdList = studentsList.map(std => {
+        if (userIds.indexOf(std._id) > -1) {
+          std["tts"] = ttsStatus;
+        }
+        return std;
+      });
+      yield put(userTTSRequestSuccessAction(newStdList));
     } else {
       msg = get(result, "data.result");
     }

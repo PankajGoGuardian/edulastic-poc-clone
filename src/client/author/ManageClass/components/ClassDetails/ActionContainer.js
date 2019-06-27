@@ -134,7 +134,6 @@ const ActionContainer = ({
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
-          // loadStudents({ classId });
         }
         break;
       case "disableSpeech":
@@ -144,7 +143,6 @@ const ActionContainer = ({
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "no" });
-          // loadStudents({ classId });
         }
         break;
       case "deleteStudent":

@@ -249,11 +249,13 @@ class ClassBoard extends Component {
   handleRedirect = () => {
     const { selectedStudents, testActivity } = this.props;
     const notStartedStudents = testActivity.filter(
-      x => selectedStudents[x.studentId] && (x.status === "notStarted" || x.status === "inProgress")
+      x =>
+        selectedStudents[x.studentId] &&
+        (x.status === "notStarted" || x.status === "inProgress" || x.status === "redirected")
     );
 
     if (notStartedStudents.length > 0) {
-      message.warn("Only absent and submitted students can be redirected");
+      message.warn("You can redirect only Submitted and Absent student(s).");
       return;
     }
     this.setState({ redirectPopup: true });

@@ -65,7 +65,7 @@ const AssessmentDetails = ({
         ) : (
           <StatusButton isSubmitted={started} graded={graded} absent={absent}>
             <span data-cy="status">
-              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.missed")}
+              {absent ? t("common.absent") : started ? t(`common.${graded}`) : t("common.absent")}
             </span>
           </StatusButton>
         )}

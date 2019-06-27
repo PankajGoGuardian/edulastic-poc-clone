@@ -10,6 +10,7 @@ import { themes } from "../../themes";
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
 import { withRouter } from "react-router-dom";
+import { getAssignmentsSelector } from "../../Assignments/ducks";
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -34,9 +35,16 @@ class SummaryTest extends Component {
     this.setState({ isShowConfirmationModal: false });
   };
 
-  goToQuestion = (testId, testActivityId, index) => () => {
-    const { history } = this.props;
-    history.push(`/student/assessment/${testId}/uta/${testActivityId}/qid/${index}`);
+  goToQuestion = (testId, testActivityId, q) => () => {
+    const { history, assignments, items } = this.props;
+
+    const assignmentItem = assignments.filter(item => item.testId === testId);
+    const targetItemIndex = items.reduce((acc, item, index) => {
+      if (item.data.questions.some(({ id }) => id === q)) acc = index;
+      return acc;
+    }, null);
+
+    history.push(`/student/${assignmentItem[0].testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`);
   };
 
   render() {
@@ -106,7 +114,7 @@ class SummaryTest extends Component {
                     <QuestionColorBlock
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                      onClick={this.goToQuestion(test.testId, test.testActivityId, index)}
+                      onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
                     >
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
@@ -130,6 +138,8 @@ class SummaryTest extends Component {
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
   questionList: PropTypes.array,
+  assignments: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired
 };
@@ -139,11 +149,13 @@ SummaryTest.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces(["summary", "default"]),
+  withNamespaces(["summary", "default", "student"]),
   withRouter,
   connect(state => ({
     questionList: attemptSummarySelector(state),
-    test: state.test
+    assignments: getAssignmentsSelector(state),
+    test: state.test,
+    items: state.test.items
   }))
 );
 

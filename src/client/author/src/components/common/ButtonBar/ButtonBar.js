@@ -63,6 +63,7 @@ class ButtonBar extends Component {
       clearAnswers,
       showPublishButton,
       view,
+      isTestFlow = false,
       hasAuthorPermission = true,
       itemStatus,
       renderExtra,
@@ -115,7 +116,7 @@ class ButtonBar extends Component {
             {hasAuthorPermission && (
               <RightSide>
                 {renderRightSide()}
-                {showPublishButton && itemStatus === "draft" && false && (
+                {showPublishButton && itemStatus === "draft" && !isTestFlow && (
                   <Button data-cy="publishItem" onClick={onPublishTestItem}>
                     Publish
                   </Button>
@@ -245,6 +246,7 @@ ButtonBar.propTypes = {
   onShowSettings: PropTypes.func,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  isTestFlow: PropTypes.bool,
   onEnableEdit: PropTypes.func,
   clearAnswers: PropTypes.func.isRequired,
   renderExtra: PropTypes.func,

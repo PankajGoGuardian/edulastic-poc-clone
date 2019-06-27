@@ -20,7 +20,7 @@ class ComposeQuestion extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    toolbarId: PropTypes.object,
+    toolbarId: PropTypes.string,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func,
     setQuestionData: PropTypes.func.isRequired

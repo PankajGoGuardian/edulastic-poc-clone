@@ -24,6 +24,7 @@ import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
+import { AnswerContainer } from "./styled/AnswerContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
@@ -246,7 +247,11 @@ class Display extends Component {
         >
           <div style={{ position: "relative" }}>
             <AnnotationRnd
-              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              style={{
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                border: preview ? null : "1px solid lightgray"
+              }}
               questionId={questionId}
             />
           </div>
@@ -298,8 +303,8 @@ class Display extends Component {
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? "dashed" : "solid",
-                  height: "auto", // responseContainer.height || "auto",
-                  width: "auto",
+                  height: responseContainer.height || "auto", // responseContainer.height || "auto",
+                  width: responseContainer.width || "auto",
                   minHeight: responseContainer.height || "auto",
                   minWidth: responseContainer.width || "auto",
                   maxWidth: response.maxWidth
@@ -339,11 +344,16 @@ class Display extends Component {
                           }}
                           onDrop={this.onDrop}
                         >
-                          <MathSpan
-                            dangerouslySetInnerHTML={{
-                              __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                            }}
-                          />
+                          <AnswerContainer
+                            height={responseContainer.height || "auto"}
+                            width={responseContainer.width || "auto"}
+                          >
+                            <MathSpan
+                              dangerouslySetInnerHTML={{
+                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                              }}
+                            />
+                          </AnswerContainer>
                         </DragItem>
                       );
                     })}

@@ -441,7 +441,7 @@ const CustomEditor = ({
           if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.COURSE)
+          uploadToS3(image[0], aws.s3Folders.DEFAULT)
             .then(result => {
               this.image.insert(result);
             })
@@ -591,7 +591,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
+        this.html.insert(`&nbsp;<Response id="${uuid()}" contentEditable="false"></Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -605,7 +605,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>`);
+        this.html.insert(`&nbsp;<TextInput id="${uuid()}" contentEditable="false"></TextInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -619,7 +619,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>`);
+        this.html.insert(`&nbsp;<TextDropdown id="${uuid()}" contentEditable="false"></TextDropdown>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -633,7 +633,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>`);
+        this.html.insert(`&nbsp;<MathInput id="${uuid()}" contentEditable="false"></MathInput>&nbsp;`);
         this.undo.saveStep();
       }
     });

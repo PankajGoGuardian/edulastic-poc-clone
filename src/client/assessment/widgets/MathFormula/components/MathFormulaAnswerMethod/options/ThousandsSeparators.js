@@ -20,7 +20,7 @@ const ThousandsSeparators = ({ separators, onChange, t }) => {
   }, [separators]);
 
   return (
-    <Col span={12}>
+    <Col span={24}>
       <FlexContainer flexDirection="column" alignItems="flex-start">
         <Checkbox
           data-cy="answer-allow-thousand-separator"

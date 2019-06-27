@@ -25,7 +25,7 @@ class Photo extends React.Component {
         this.setState({ loading: false });
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       const { onChangeField } = this.props;
       this.setState(
         {

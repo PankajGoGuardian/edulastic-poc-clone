@@ -321,7 +321,6 @@ const CustomEditor = ({
         "script",
         ".fa",
         "span",
-        "p",
         "path",
         "line",
         "textinput",

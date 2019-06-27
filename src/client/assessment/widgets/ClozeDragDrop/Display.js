@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, isEmpty } from "lodash";
+import { cloneDeep, isEmpty, get } from "lodash";
 import { withTheme } from "styled-components";
 import uuid from "uuid/v4";
 
@@ -264,7 +264,8 @@ class ClozeDragDropDisplay extends Component {
       theme,
       showQuestionNumber,
       responseIDs,
-      disableResponse
+      disableResponse,
+      isReviewTab
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;
@@ -300,7 +301,9 @@ class ClozeDragDropDisplay extends Component {
             userSelections: userAnswers,
             evaluation,
             onDropHandler: !disableResponse ? this.onDrop : () => {},
-            responseIDs
+            responseIDs,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
             hasGroupResponses,
@@ -309,7 +312,9 @@ class ClozeDragDropDisplay extends Component {
             options,
             userAnswers,
             onDrop: !disableResponse ? this.onDrop : () => {},
-            responseIDs
+            responseIDs,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           };
 
     const templateBoxLayoutContainer = (
@@ -363,7 +368,7 @@ class ClozeDragDropDisplay extends Component {
     ) : (
       <div />
     );
-    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     return (
@@ -465,6 +470,7 @@ ClozeDragDropDisplay.propTypes = {
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired
   // qIndex: PropTypes.number
 };
@@ -497,7 +503,8 @@ ClozeDragDropDisplay.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false
+  showQuestionNumber: false,
+  isReviewTab: false
   // qIndex: null
 };
 

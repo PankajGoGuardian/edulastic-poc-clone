@@ -1,13 +1,13 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
 import { withTheme } from "styled-components";
-import { isUndefined } from "lodash";
+import { isUndefined, get } from "lodash";
 import { helpers, Stimulus } from "@edulastic/common";
 
 import { clozeImage, canvasDimensions } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
-import { FaSellcast } from "react-icons/fa";
+// import { FaSellcast } from "react-icons/fa";
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 
 import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
@@ -134,11 +134,14 @@ class Display extends Component {
       theme,
       item,
       showQuestionNumber,
-      qIndex,
       disableResponse,
-      imageOptions
+      imageOptions,
+      isReviewTab
     } = this.props;
-    const { userAnswers } = this.state;
+    const cAnswers = get(item, "validation.valid_response.value", []);
+    const { userAnswers: _uAnswers } = this.state;
+
+    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
     // Layout Options
     const fontSize = getFontSize(uiStyle.fontsize);
     const { height, wordwrap, stemnumeration } = uiStyle;
@@ -305,6 +308,7 @@ Display.propTypes = {
   theme: PropTypes.object.isRequired,
   item: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
+  isReviewTab: PropTypes.bool,
   imageOptions: PropTypes.object
 };
 
@@ -331,7 +335,8 @@ Display.defaultProps = {
     wordwrap: false
   },
   showQuestionNumber: false,
-  imageOptions: {}
+  imageOptions: {},
+  isReviewTab: false
 };
 
 export default withTheme(Display);

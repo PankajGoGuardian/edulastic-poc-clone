@@ -74,35 +74,34 @@ const ReviewSummary = ({
         ))}
       </SummarySelect>
 
-
-    <MainTitle>Summary</MainTitle>
-    <FlexContainer justifyContent="space-between">
-      <SummaryInfoContainer>
-        <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
-        <SummaryInfoTitle>Questions</SummaryInfoTitle>
-      </SummaryInfoContainer>
-      <SummaryInfoContainer>
-        <SummaryInfoNumber data-cy="points">{summary.totalPoints}</SummaryInfoNumber>
-        <SummaryInfoTitle>Points</SummaryInfoTitle>
-      </SummaryInfoContainer>
-    </FlexContainer>
-    <Row>
-      <TableHeaderCol span={8}>Summary</TableHeaderCol>
-      <TableHeaderCol span={8}>Q's</TableHeaderCol>
-      <TableHeaderCol span={8}>Points</TableHeaderCol>
-    </Row>
-    {summary.standards &&
-      summary.standards.map(data => (
-        <TableBodyRow key={data.key}>
-          <TableBodyCol span={8}>
-            <Standard>{data.identifier}</Standard>
-          </TableBodyCol>
-          <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
-          <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
-        </TableBodyRow>
-      ))}
-  </Container>
-)
+      <MainTitle>Summary</MainTitle>
+      <FlexContainer justifyContent="space-between">
+        <SummaryInfoContainer>
+          <SummaryInfoNumber data-cy="question">{questionsCount}</SummaryInfoNumber>
+          <SummaryInfoTitle>Questions</SummaryInfoTitle>
+        </SummaryInfoContainer>
+        <SummaryInfoContainer>
+          <SummaryInfoNumber data-cy="points">{summary.totalPoints}</SummaryInfoNumber>
+          <SummaryInfoTitle>Points</SummaryInfoTitle>
+        </SummaryInfoContainer>
+      </FlexContainer>
+      <Row>
+        <TableHeaderCol span={8}>Summary</TableHeaderCol>
+        <TableHeaderCol span={8}>Q's</TableHeaderCol>
+        <TableHeaderCol span={8}>Points</TableHeaderCol>
+      </Row>
+      {summary.standards &&
+        summary.standards.map(data => (
+          <TableBodyRow key={data.key}>
+            <TableBodyCol span={8}>
+              <Standard>{data.identifier}</Standard>
+            </TableBodyCol>
+            <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+            <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
+          </TableBodyRow>
+        ))}
+    </Container>
+  );
 };
 
 ReviewSummary.propTypes = {

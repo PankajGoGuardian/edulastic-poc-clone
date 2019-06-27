@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { isUndefined, mapValues, cloneDeep, findIndex, find } from "lodash";
+import { isUndefined, mapValues, cloneDeep, findIndex, find, get } from "lodash";
 import styled, { withTheme } from "styled-components";
 import JsxParser from "react-jsx-parser";
 
@@ -119,7 +119,8 @@ class ClozeDropDownDisplay extends Component {
       item,
       disableResponse,
       showQuestionNumber,
-      userSelections
+      userSelections,
+      isReviewTab
     } = this.props;
     const { parsedTemplate } = this.state;
     const { shuffleOptions } = configureOptions;
@@ -171,7 +172,9 @@ class ClozeDropDownDisplay extends Component {
             userSelections:
               item && item.activity && item.activity.userResponse ? item.activity.userResponse : userSelections,
             evaluation: item && item.activity && item.activity.evaluation ? item.activity.evaluation : evaluation,
-            item
+            item,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           }
         : {
             userAnswers: userSelections || [],
@@ -181,7 +184,9 @@ class ClozeDropDownDisplay extends Component {
             qIndex,
             options: responses,
             onChange: this.selectChange,
-            item
+            item,
+            isReviewTab,
+            cAnswers: get(item, "validation.valid_response.value", [])
           };
 
     return (
@@ -223,6 +228,7 @@ ClozeDropDownDisplay.propTypes = {
   item: PropTypes.object.isRequired,
   disableResponse: PropTypes.bool,
   qIndex: PropTypes.number,
+  isReviewTab: PropTypes.bool,
   showQuestionNumber: PropTypes.bool
 };
 
@@ -248,8 +254,9 @@ ClozeDropDownDisplay.defaultProps = {
     placeholder: null,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false
-  // qIndex: null
+  showQuestionNumber: false,
+  isReviewTab: false,
+  qIndex: null
 };
 
 export default withTheme(withCheckAnswerButton(ClozeDropDownDisplay));

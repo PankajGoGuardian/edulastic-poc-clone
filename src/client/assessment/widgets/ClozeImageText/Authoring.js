@@ -642,7 +642,7 @@ class Authoring extends Component {
                   )}
                   {!isEditableResizeMove && (
                     <MoveControlButton
-                      onMouseEnter={toggleIsMoveResizeEditable}
+                      onClick={toggleIsMoveResizeEditable}
                       style={{
                         boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
                       }}

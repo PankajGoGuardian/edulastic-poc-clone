@@ -177,7 +177,7 @@ export default class DisneyCardContainer extends Component {
                     {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
-                {student.testActivityId && (
+                {student.testActivityId && status.status !== "ABSENT" && (
                   <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
                     {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                     VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>

@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 import { IconEdit } from "@edulastic/icons";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, white } from "@edulastic/colors";
+import { mobileWidth, white, themeColor } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -29,11 +29,11 @@ const StyledStudentTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? "#5196F3" : "#FFFFFF")};
-  color: ${({ active }) => (active ? "#FFFFFF" : "#5196F3")};
+  background-color: ${({ active }) => (active ? themeColor : white)};
+  color: ${({ active }) => (active ? white : themeColor)};
   &:hover {
-    background-color: #5196f3;
-    color: #ffffff;
+    background-color: ${themeColor};
+    color: ${white};
   }
 `;
 
@@ -60,11 +60,11 @@ const StyledTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? "#00AD50" : "#FFFFFF")};
-  color: ${({ active }) => (active ? "#FFFFFF" : "#00AD50")};
+  background-color: ${({ active }) => (active ? themeColor : white)};
+  color: ${({ active }) => (active ? white : themeColor)};
   &:hover {
-    background-color: #00ad50;
-    color: #ffffff;
+    background-color: ${themeColor};
+    color: ${white};
   }
 `;
 

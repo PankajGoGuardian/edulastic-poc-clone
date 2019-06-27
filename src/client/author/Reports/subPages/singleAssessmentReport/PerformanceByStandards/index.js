@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { uniq, xor, isEmpty, get } from "lodash";
-import { Spin, Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
+import { Card, Form, Select, Radio, Popover, Button, Icon } from "antd";
 import next from "immer";
 
 import { getNavigationTabLinks, getDropDownTestIds } from "../../../common/util";
@@ -19,6 +19,7 @@ import CardHeader, {
   MasteryLevelTitle
 } from "./common/CardHeader/CardHeader";
 import { analysisParseData, viewByMode, analyzeByMode, compareByMode } from "./util/transformers";
+import { Placeholder } from "../../../common/components/loader";
 import {
   getPerformanceByStandardsAction,
   getPerformanceByStandardsLoadingSelector,
@@ -188,7 +189,12 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
   };
 
   if (loading) {
-    return <Spin />;
+    return (
+      <>
+        <Placeholder />
+        <Placeholder />
+      </>
+    );
   }
 
   const { standardsMap, scaleInfo } = report;

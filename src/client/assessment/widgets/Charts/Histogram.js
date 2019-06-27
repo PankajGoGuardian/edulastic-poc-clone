@@ -13,10 +13,10 @@ import {
   displayVerticalLines
 } from "./helpers";
 import Hists from "./components/Hists";
-import VerticalLines from "./components/VerticalLines";
+
 import BarsAxises from "./components/BarsAxises";
 
-const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
+const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -110,7 +110,7 @@ const Histogram = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
         previewTab={previewTab}
         bars={localData}
         view={view}
-        onMouseDown={onMouseDown}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />
@@ -132,8 +132,13 @@ Histogram.propTypes = {
     snapTo: PropTypes.number
   }).isRequired,
   view: PropTypes.string.isRequired,
+  disableResponse: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired
+};
+
+Histogram.defaultProps = {
+  disableResponse: false
 };
 
 export default withGrid(Histogram);

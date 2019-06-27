@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all } from "redux-saga/effects";
 import { folderApi } from "@edulastic/api";
-import { get } from "lodash";
+import { get, omit } from "lodash";
 import { message } from "antd";
 import {
   RECEIVE_FOLDER_REQUEST,
@@ -39,7 +39,10 @@ function* receiveGetFoldersRequest() {
 
 function* receiveCreateFolderRequest({ payload }) {
   try {
+    const { folderName } = payload;
     const entity = yield call(folderApi.createFolder, payload);
+    const successMsg = `${folderName} created successfully`;
+    yield call(message.success, successMsg);
     yield put({
       type: RECEIVE_FOLDER_CREATE_SUCCESS,
       payload: { entity }
@@ -57,8 +60,12 @@ function* receiveCreateFolderRequest({ payload }) {
 function* receiveAddMoveFolderRequest({ payload }) {
   try {
     const { folderId, params = [] } = payload;
-    const result = yield call(folderApi.addMoveContent, { folderId, data: { content: params } });
-    const successMsg = "Successfully Added or Moved content to folder";
+    const showNamesInMsg = params[0].assignmentsNameList.join(", ");
+    const moveFolderName = params[0].folderName;
+    const folderDetails = params.map(i => omit(i, ["assignmentsNameList", "folderName"]));
+
+    const result = yield call(folderApi.addMoveContent, { folderId, data: { content: folderDetails } });
+    const successMsg = `${showNamesInMsg} was successfully moved to ${moveFolderName} folder`;
     yield call(message.success, successMsg);
     yield put({
       type: ADD_MOVE_FOLDER_SUCCESS,
@@ -76,9 +83,10 @@ function* receiveAddMoveFolderRequest({ payload }) {
 
 function* receiveDeleteFolderRequest({ payload }) {
   try {
-    const { folderId } = payload;
-    const success = yield call(folderApi.deleteFolder, folderId);
-    yield call(message.success, success.data.result);
+    const { folderId, delFolderName } = payload;
+    yield call(folderApi.deleteFolder, folderId);
+    const successMsg = `${delFolderName} deleted successfully`;
+    yield call(message.success, successMsg);
 
     yield put({
       type: DELETE_FOLDER_SUCCESS,
@@ -97,6 +105,8 @@ function* receiveRenameFolderRequest({ payload }) {
   try {
     const { folderId, folderName } = payload;
     const success = yield call(folderApi.renameFolder, { folderId, data: { folderName } });
+    const successMsg = `Folder name successfully updated to ${folderName}`;
+    yield call(message.success, successMsg);
     yield put({
       type: RENAME_FOLDER_SUCCESS,
       payload: get(success, "data.result", null)

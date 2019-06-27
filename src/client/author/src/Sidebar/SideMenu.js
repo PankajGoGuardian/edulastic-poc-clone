@@ -148,8 +148,18 @@ class SideMenu extends Component {
 
   render() {
     const { broken, isVisible } = this.state;
-    const { windowWidth, history, isSidebarCollapsed, firstName, middleName, lastName, logout, userRole } = this.props;
-    const userName = firstName + " " + (middleName ? middleName + " " : "") + (lastName ? lastName : "");
+    const {
+      windowWidth,
+      history,
+      isSidebarCollapsed,
+      firstName,
+      middleName,
+      lastName,
+      logout,
+      userRole,
+      className
+    } = this.props;
+    const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${lastName || ``}`;
 
     const isCollapsed = isSidebarCollapsed;
     const isMobile = windowWidth < 770;
@@ -176,7 +186,7 @@ class SideMenu extends Component {
 
     return (
       <FixedSidebar
-        className={`${!isCollapsed ? "full" : ""} ${this.props.className}`}
+        className={`${!isCollapsed ? "full" : ""} ${className}`}
         onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
         isCollapsed={isCollapsed}
       >
@@ -293,9 +303,18 @@ SideMenu.propTypes = {
   history: PropTypes.object.isRequired,
   toggleSideBar: PropTypes.func.isRequired,
   firstName: PropTypes.string.isRequired,
+  middleName: PropTypes.string.isRequired,
+  lastName: PropTypes.string.isRequired,
   userRole: PropTypes.string.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
-  logout: PropTypes.func.isRequired
+  logout: PropTypes.func.isRequired,
+  className: PropTypes.string,
+  lastPlayList: PropTypes.object
+};
+
+SideMenu.defaultProps = {
+  className: "",
+  lastPlayList: {}
 };
 
 const enhance = compose(
@@ -361,6 +380,7 @@ const FixedSidebar = styled.div`
   @media (max-width: ${tabletWidth}) {
     z-index: 1000;
     max-width: 245px;
+    display: block !important;
   }
 `;
 const SideBar = styled(Layout.Sider)`
@@ -443,6 +463,16 @@ const SideBar = styled(Layout.Sider)`
         fill: #434b5d;
       }
     }
+
+    ${({ collapsed }) =>
+      collapsed
+        ? `
+      flex: inherit;
+      max-width: 245px;
+      min-width: 0;
+      width: 100%;
+    `
+        : ``}
   }
   @media print {
     display: none;
@@ -486,9 +516,6 @@ const Menu = styled(AntMenu)`
 
       svg {
         fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
-        path {
-          stroke: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
-        }
       }
       
       &:before {

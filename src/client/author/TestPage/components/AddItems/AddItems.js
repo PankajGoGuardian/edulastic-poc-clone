@@ -28,7 +28,7 @@ import {
   clearDictAlignmentAction,
   getDictStandardsForCurriculumAction
 } from "../../../src/actions/dictionaries";
-import { createTestItemAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
+import { createTestItemAction } from "../../../src/actions/testItem";
 import {
   getTestItemsLoadingSelector,
   getTestItemsSelector,
@@ -49,6 +49,7 @@ class AddItems extends PureComponent {
     receiveTestItems: PropTypes.func.isRequired,
     onAddItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
+    readOnlyMode: PropTypes.bool,
     selectedItems: PropTypes.array.isRequired,
     windowWidth: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
@@ -126,8 +127,14 @@ class AddItems extends PureComponent {
   };
 
   handleCreateNewItem = () => {
-    const { onSaveTestId, createTestItem, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      createTestItem,
+      test: { _id: testId, title },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     const defaultWidgets = {
@@ -135,27 +142,30 @@ class AddItems extends PureComponent {
         {
           tabs: [],
           dimension: "100%",
-          widgets: []
+          widgets: [],
+          flowLayout: false,
+          content: ""
         }
       ]
     };
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "CreateNew" }, () => {
-      createTestItem(defaultWidgets, true);
-    });
+    createTestItem(defaultWidgets, true, testId);
   };
 
   handleDuplicateItem = duplicateTestItemId => {
-    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      test: { title, _id: testId },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "Duplicate" }, () => {
-      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
-    });
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
   };
 
   handleSearchFieldChangeCurriculumId = value => {
@@ -250,6 +260,7 @@ class AddItems extends PureComponent {
       curriculumStandards,
       loading,
       items,
+      readOnlyMode,
       onAddItems,
       t,
       createTestItemModalVisible,
@@ -283,7 +294,7 @@ class AddItems extends PureComponent {
                   <span>Create new Item</span>
                 </StyledButton>
               </ItemsMenu>
-              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px 71px 0 31px">
+              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
                 {loading && <Spin size="large" />}
                 {!loading && (
                   <ItemsTable
@@ -294,6 +305,7 @@ class AddItems extends PureComponent {
                     testId={this.props.match.params.id}
                     search={search}
                     showModal={true}
+                    readOnlyMode={readOnlyMode}
                     addDuplicate={this.handleDuplicateItem}
                     gotoSummary={gotoSummary}
                   />
@@ -332,7 +344,6 @@ const enhance = compose(
       getCurriculumStandards: getDictStandardsForCurriculumAction,
       clearDictStandards: clearDictStandardsAction,
       clearDictAlignment: clearDictAlignmentAction,
-      toggleCreateItemModal: toggleCreateItemModalAction,
       createTestItem: createTestItemAction
     }
   )

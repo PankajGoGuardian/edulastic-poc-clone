@@ -66,30 +66,30 @@ const msoLogin = () =>
     })
     .then(result => result.data.result);
 
-const googleSSOLogin = code =>
+const googleSSOLogin = data =>
   api
     .callApi({
       url: `${prefix}/callback-sso/google`,
       method: "post",
-      data: { code }
+      data
     })
     .then(result => result.data.result);
 
-const cleverSSOLogin = ({ code, state }) =>
+const cleverSSOLogin = data =>
   api
     .callApi({
       url: `${prefix}/callback-sso/clever`,
       method: "post",
-      data: { code, state }
+      data
     })
     .then(result => result.data.result);
 
-const msoSSOLogin = code =>
+const msoSSOLogin = data =>
   api
     .callApi({
       url: `${prefix}/callback-sso/mso`,
       method: "post",
-      data: { code }
+      data
     })
     .then(result => result.data.result);
 

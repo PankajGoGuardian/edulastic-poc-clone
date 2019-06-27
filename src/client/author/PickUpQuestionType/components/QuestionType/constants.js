@@ -1,4 +1,4 @@
-import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
+import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
 import { math, questionType } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
@@ -67,6 +67,9 @@ import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
+
+// Rulers & Calculators
+import Protractor from "../../../src/assets/rulers-calculators/protractor.svg";
 
 export const getCards = onSelectQuestionType => {
   const { EMBED_RESPONSE } = math;
@@ -161,7 +164,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -249,7 +253,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -339,7 +344,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -428,7 +434,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -518,7 +525,8 @@ export const getCards = onSelectQuestionType => {
           alt_responses: []
         },
         x_axis_label: "X Axis",
-        y_axis_label: "Y Axis"
+        y_axis_label: "Y Axis",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -533,10 +541,11 @@ export const getCards = onSelectQuestionType => {
           height: 600,
           altText: ""
         },
-        line_color: [mainBlueColor],
+        line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
-        validation: {}
+        validation: {},
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -565,7 +574,8 @@ export const getCards = onSelectQuestionType => {
             }
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -599,7 +609,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -621,7 +632,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -662,7 +674,8 @@ export const getCards = onSelectQuestionType => {
           { id: "test26", value: "clean", active: false },
           { id: "test27", value: "formula", active: true },
           { id: "test28", value: "specialCharacters", active: true }
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -680,7 +693,8 @@ export const getCards = onSelectQuestionType => {
         show_word_limit: ON_LIMIT,
         show_word_count: true,
         ui_style: { min_height: 300 },
-        validation: { valid_response: { score: 1 }, max_score: 1 }
+        validation: { valid_response: { score: 1 }, max_score: 1 },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -699,7 +713,8 @@ export const getCards = onSelectQuestionType => {
             value: ""
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -726,7 +741,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -753,7 +769,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: true
+        multiple_responses: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -776,7 +793,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -804,7 +822,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: true
+        multiple_responses: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -825,7 +844,8 @@ export const getCards = onSelectQuestionType => {
             value: [1, 2, 0, 3]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -858,7 +878,8 @@ export const getCards = onSelectQuestionType => {
             value: [[], []]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -886,7 +907,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -905,7 +927,8 @@ export const getCards = onSelectQuestionType => {
             value: [0, 1, 2]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -931,7 +954,8 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: []
         },
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -956,7 +980,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -982,7 +1007,8 @@ export const getCards = onSelectQuestionType => {
             value: [null, null, null, null]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -992,7 +1018,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample Template markup<response contenteditable="false">Response</response>&nbsp;</p>`,
+        templateMarkUp: `<p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "[This is stem.]",
         ui_style: {
@@ -1005,9 +1031,9 @@ export const getCards = onSelectQuestionType => {
           responsecontainerindividuals: []
         },
         options: [
-          { value: uuidsForFill[0], label: "WHISPERED" },
-          { value: uuidsForFill[1], label: "HOLMES" },
-          { value: uuidsForFill[2], label: "INTRUDER" }
+          { value: uuidsForFill[0], label: "Option 1" },
+          { value: uuidsForFill[1], label: "Option 2" },
+          { value: uuidsForFill[2], label: "Option 3" }
         ],
         validation: {
           scoring_type: EXACT_MATCH,
@@ -1016,7 +1042,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1027,10 +1054,13 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
-        templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he<textdropdown contenteditable="false">Text Dropdown</textdropdown> Have you the <textdropdown contenteditable="false">Text Dropdown</textdropdown></p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+        templateMarkUp: `<p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
+          uuids[0]
+        } contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${
+          uuids[1]
+        } contenteditable="false"></textdropdown>&nbsp;</p>`,
         stimulus: "",
-        response_ids: [],
+        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",
@@ -1040,7 +1070,10 @@ export const getCards = onSelectQuestionType => {
           wordwrap: false,
           responsecontainerindividuals: []
         },
-        options: {},
+        options: {
+          [uuids[0]]: ["Option 1", "Option 2"],
+          [uuids[1]]: ["Option 2", "Option 3"]
+        },
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1048,7 +1081,8 @@ export const getCards = onSelectQuestionType => {
             value: []
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1059,8 +1093,11 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
-        templateMarkUp:
-          '<p>Sample template <textinput contenteditable="false">Text Input</textinput>, <textinput contenteditable="false">Text Input</textinput></p>',
+        templateMarkUp: `<p>Sample question text with <textinput responseindex="1" id=${
+          uuids[0]
+        } contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${
+          uuids[1]
+        }/></textinput>&nbsp;</p>`,
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -1071,14 +1108,16 @@ export const getCards = onSelectQuestionType => {
           stemnumeration: "",
           widthpx: 140
         },
+        response_ids: [{ index: 0, id: uuids[0] }, { index: 1, id: uuids[1] }],
         validation: {
           scoring_type: "exactMatch",
           valid_response: {
             score: 1,
-            value: []
+            value: [{ id: uuids[0], index: 0, value: "Answer 1" }, { id: uuids[1], index: 1, value: "Answer 2" }]
           },
           alt_responses: []
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1090,12 +1129,12 @@ export const getCards = onSelectQuestionType => {
         title: "Label Image with Drag & Drop",
         type: questionType.CLOZE_IMAGE_DRAG_DROP,
         firstMount: true,
-        stimulus: "",
+        stimulus: "Sample image background with an overlaid drop area(s)",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
         maxRespCount: 1,
-        options: ["Country A", "Country B", "Country C"],
+        options: ["Option 1", "Option 2", "Option 3"],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1108,7 +1147,8 @@ export const getCards = onSelectQuestionType => {
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
           { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
           { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1123,11 +1163,11 @@ export const getCards = onSelectQuestionType => {
         title: "Label Image with Drop Down",
         type: questionType.CLOZE_IMAGE_DROP_DOWN,
         firstMount: true,
-        stimulus: "",
+        stimulus: "Sample image background with overlaid drop downs",
         imageWidth: 0,
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
-        options: [["A", "B"], ["Choice A", "Choice B"], ["Select A", "Select B"]],
+        options: [["Option 1", "Option 2"], ["Option 3", "Option 4"]],
         validation: {
           scoring_type: EXACT_MATCH,
           valid_response: {
@@ -1138,8 +1178,7 @@ export const getCards = onSelectQuestionType => {
         },
         responses: [
           { top: 0, left: 240, width: 200, height: 40, id: uuids[0] },
-          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] },
-          { top: 220, left: 200, width: 200, height: 40, id: uuids[2] }
+          { top: 100, left: 120, width: 220, height: 40, id: uuids[1] }
         ],
         ui_style: {
           widthpx: 140,
@@ -1150,7 +1189,8 @@ export const getCards = onSelectQuestionType => {
         rubricReference: "",
         sampleAnswer: "",
         distractorRationalePerResponse: "",
-        distractorRationaleOptions: []
+        distractorRationaleOptions: [],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1161,7 +1201,7 @@ export const getCards = onSelectQuestionType => {
       data: {
         title: "Label Image with Text",
         type: questionType.CLOZE_IMAGE_TEXT,
-        stimulus: "",
+        stimulus: "Sample image background with overlaid text fields",
         options: [],
         imageUrl: "https://edureact-dev.s3.amazonaws.com/1558946005996_transparent.png",
         keepAspectRatio: true,
@@ -1186,7 +1226,8 @@ export const getCards = onSelectQuestionType => {
         rubricReference: "",
         sampleAnswer: "",
         distractorRationalePerResponse: "",
-        distractorRationaleOptions: []
+        distractorRationaleOptions: [],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1270,7 +1311,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1354,7 +1396,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: true
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1462,12 +1505,14 @@ export const getCards = onSelectQuestionType => {
           },
           alt_responses: [],
           rounding: "none"
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
     {
       type: "rulers-calculators",
+      cardImage: Protractor,
       data: {
         title: "Protractor",
         type: questionType.PROTRACTOR,
@@ -1477,7 +1522,8 @@ export const getCards = onSelectQuestionType => {
         alt: "A 180-degree standard protractor.",
         width: 530,
         height: 265,
-        rotate: true
+        rotate: true,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1578,7 +1624,7 @@ export const getCards = onSelectQuestionType => {
           xTickDistance: 1,
           yTickDistance: 0,
           layout_width: 600,
-          layout_height: 250,
+          layout_height: "auto",
           layout_margin: 0,
           layout_snapto: "grid",
           xAxisLabel: "X",
@@ -1597,7 +1643,8 @@ export const getCards = onSelectQuestionType => {
           showShapePoints: false
         },
         background_shapes: [],
-        multiple_responses: false
+        multiple_responses: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1609,7 +1656,8 @@ export const getCards = onSelectQuestionType => {
         type: questionType.PASSAGE,
         heading: "Section 3",
         math_renderer: "",
-        content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items."
+        content: "Enabling a <b>highlightable</b> text passage that can be used across multiple items.",
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       list: ["Item A", "Item B"],
       onSelectQuestionType
@@ -1632,7 +1680,8 @@ export const getCards = onSelectQuestionType => {
           posterImage: "",
           hideControls: false,
           captionURL: ""
-        }
+        },
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1687,7 +1736,8 @@ export const getCards = onSelectQuestionType => {
         ],
         symbols: ["units_si", "units_us", "qwerty"],
         template: EMBED_RESPONSE,
-        templateDisplay: false
+        templateDisplay: false,
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1742,7 +1792,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1797,7 +1848,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1857,7 +1909,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1912,7 +1965,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["matrices", "general", "qwerty"]
+        symbols: ["matrices", "general", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -1988,7 +2042,8 @@ export const getCards = onSelectQuestionType => {
           "Backspace",
           "="
         ],
-        symbols: ["units_si", "units_us", "qwerty"]
+        symbols: ["units_si", "units_us", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -2000,7 +2055,7 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>,<mathinput contenteditable="false">Math Input</mathinput></p>',
+          '<p>Sample question -&nbsp;<textinput contenteditable="false"></textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false"></textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false"></mathinput>&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         response_ids: {
@@ -2067,7 +2122,8 @@ export const getCards = onSelectQuestionType => {
           "right_move",
           "Backspace",
           "="
-        ]
+        ],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     },
@@ -2113,7 +2169,8 @@ export const getCards = onSelectQuestionType => {
         ],
         metadata: {},
         is_math: true,
-        symbols: ["basic", "qwerty"]
+        symbols: ["basic", "qwerty"],
+        hints: [{ value: uuids[0], label: "Hint A" }]
       },
       onSelectQuestionType
     }

@@ -4,7 +4,6 @@ const tokenKey = (userId, role) => `user:${userId}:role:${role}`;
 
 export function storeAccessToken(token, userId, role, _default = false) {
   const key = tokenKey(userId, role);
-
   window.localStorage.setItem(key, token);
   if (_default) {
     window.localStorage.defaultTokenKey = key;
@@ -13,6 +12,11 @@ export function storeAccessToken(token, userId, role, _default = false) {
 
 export function selectAccessToken(userId, role) {
   window.sessionStorage.tokenKey = tokenKey(userId, role);
+}
+
+export function removeAccessToken(userId, role) {
+  const key = tokenKey(userId, role);
+  window.localStorage.removeItem(key);
 }
 
 export function getAccessToken() {

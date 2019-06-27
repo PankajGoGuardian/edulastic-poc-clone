@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { mainBlueColor, boxShadowDefault, black, dashBorderColor } from "@edulastic/colors";
+import { themeColorLight, boxShadowDefault, black, dashBorderColor } from "@edulastic/colors";
 
 export const TLOList = styled.div`
   max-height: 40vh;
@@ -10,10 +10,10 @@ export const TLOList = styled.div`
   box-sizing: content-box;
   .tlo-list-item {
     &.active {
-      border-left: 5px solid ${mainBlueColor};
+      border-left: 5px solid ${themeColorLight};
       box-shadow: ${boxShadowDefault};
       .tlo-item-title {
-        color: ${mainBlueColor};
+        color: ${themeColorLight};
       }
       .tlo-description {
         color: ${black};

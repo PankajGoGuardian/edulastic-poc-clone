@@ -185,7 +185,7 @@ const AlignmentRow = ({
             <Col md={7}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"
-                title={`${subject}-${curriculum}-${grades}`}
+                title={`${curriculum}${curriculum ? "-" : ""}Grades-${grades}`}
                 style={{ marginTop: 11 }}
               >
                 <Fragment>

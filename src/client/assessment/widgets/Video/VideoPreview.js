@@ -32,12 +32,16 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
               <Player
                 poster={item.ui_style.posterImage}
                 src={item.sourceURL}
-                style={item.ui_style}
+                style={{
+                  ...item.ui_style,
+                  width: "100%",
+                  maxWidth: item.ui_style.width
+                }}
                 onClick={playPause}
               />
             </div>
             {(!item.ui_style.hideControls || item.videoType === videoTypes.YOUTUBE) && (
-              <FlexContainer style={{ width: item.ui_style.width }}>
+              <FlexContainer style={{ width: "100%", maxWidth: item.ui_style.width }}>
                 <PlayPause />
                 <SeekBar style={{ width: item.ui_style.width - 338 }} />
                 <div>

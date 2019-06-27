@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { cloneDeep } from "lodash";
 import styled from "styled-components";
 
 import { Stimulus } from "@edulastic/common";
@@ -7,6 +9,7 @@ import { Stimulus } from "@edulastic/common";
 import { QuadrantsContainer } from "./QuadrantsContainer";
 import { AxisLabelsContainer } from "./AxisLabelsContainer";
 import { AxisSegmentsContainer } from "./AxisSegmentsContainer";
+import { setQuestionDataAction } from "../../../../author/src/actions/question";
 
 const QuestionTitleWrapper = styled.div`
   display: flex;
@@ -184,10 +187,10 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
       bgShapes,
-      altAnswerId
+      altAnswerId,
+      disableResponse
     } = this.props;
 
     const {
@@ -197,7 +200,6 @@ class GraphDisplay extends Component {
       background_shapes,
       toolbar,
       controlbar,
-      validation,
       annotation,
       id,
       graphType
@@ -205,15 +207,12 @@ class GraphDisplay extends Component {
 
     const { showGrid = true, xShowAxis = true, yShowAxis = true } = ui_style;
 
-    const xRatio = parseFloat(canvas.x_ratio) > 0 ? parseFloat(canvas.x_ratio) : 1;
-    const yRatio = parseFloat(canvas.y_ratio) > 0 ? parseFloat(canvas.y_ratio) : 1;
-
     return {
       canvas: {
-        xMin: parseFloat(canvas.x_min) * xRatio,
-        xMax: parseFloat(canvas.x_max) * xRatio,
-        yMin: parseFloat(canvas.y_min) * yRatio,
-        yMax: parseFloat(canvas.y_max) * yRatio
+        xMin: parseFloat(canvas.x_min),
+        xMax: parseFloat(canvas.x_max),
+        yMin: parseFloat(canvas.y_min),
+        yMax: parseFloat(canvas.y_max)
       },
       layout: {
         width: ui_style.layout_width,
@@ -230,7 +229,7 @@ class GraphDisplay extends Component {
         withLabel: false
       },
       xAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.xTickDistance) * xRatio,
+        ticksDistance: safeParseFloat(ui_style.xTickDistance),
         name: ui_style.xShowAxisLabel ? ui_style.xAxisLabel : "",
         showTicks: !ui_style.xHideTicks,
         drawLabels: ui_style.xDrawLabel,
@@ -240,7 +239,7 @@ class GraphDisplay extends Component {
         showAxis: xShowAxis
       },
       yAxesParameters: {
-        ticksDistance: safeParseFloat(ui_style.yTickDistance) * yRatio,
+        ticksDistance: safeParseFloat(ui_style.yTickDistance),
         name: ui_style.yShowAxisLabel ? ui_style.yAxisLabel : "",
         showTicks: !ui_style.yHideTicks,
         drawLabels: ui_style.yDrawLabel,
@@ -250,8 +249,8 @@ class GraphDisplay extends Component {
         showAxis: yShowAxis
       },
       gridParams: {
-        gridX: safeParseFloat(ui_style.xDistance) * xRatio,
-        gridY: safeParseFloat(ui_style.yDistance) * yRatio,
+        gridX: safeParseFloat(ui_style.xDistance),
+        gridY: safeParseFloat(ui_style.yDistance),
         showGrid
       },
       bgImgOptions: {
@@ -268,17 +267,16 @@ class GraphDisplay extends Component {
       toolbar,
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       graphType,
       bgShapes,
       annotation,
       questionId: id,
       altAnswerId,
-      view
+      view,
+      disableResponse
     };
   };
 
@@ -289,12 +287,12 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
-      altAnswerId
+      altAnswerId,
+      disableResponse
     } = this.props;
 
-    const { ui_style, canvas, toolbar, numberlineAxis, validation, graphType, id } = graphData;
+    const { ui_style, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -372,14 +370,13 @@ class GraphDisplay extends Component {
       evaluation,
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       graphType,
       questionId: id,
-      altAnswerId
+      altAnswerId,
+      disableResponse
     };
   };
 
@@ -390,12 +387,12 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
-      altAnswerId
+      altAnswerId,
+      disableResponse
     } = this.props;
 
-    const { ui_style, canvas, numberlineAxis, validation, list, graphType, id } = graphData;
+    const { ui_style, canvas, numberlineAxis, list, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -431,6 +428,7 @@ class GraphDisplay extends Component {
         width: ui_style.layout_width,
         margin: ui_style.layout_margin,
         height: ui_style.layout_height,
+        autoCalcHeight: ui_style.autoCalcHeight,
         snapTo: ui_style.layout_snapto,
         fontSize: getFontSizeVal(ui_style.currentFontSize),
         titlePosition: parseInt(ui_style.title_position, 10),
@@ -474,18 +472,28 @@ class GraphDisplay extends Component {
       graphType,
       evaluation,
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       questionId: id,
-      altAnswerId
+      altAnswerId,
+      disableResponse,
+      setCalculatedHeight: this.setCalculatedHeight
     };
   };
 
+  setCalculatedHeight = height => {
+    const { setQuestionData, graphData } = this.props;
+    const newGraphData = cloneDeep(graphData);
+    newGraphData.ui_style = {
+      ...newGraphData.ui_style,
+      autoCalcHeight: height
+    };
+    setQuestionData(newGraphData);
+  };
+
   render() {
-    const { graphData, smallSize, showAnswer, checkAnswer, clearAnswer, showQuestionNumber, qIndex } = this.props;
+    const { graphData } = this.props;
     const { stimulus } = graphData;
     const { graphIsValid } = this.state;
 
@@ -496,18 +504,6 @@ class GraphDisplay extends Component {
         {graphIsValid ? (
           <Fragment>
             <Stimulus data-cy="questionHeader" dangerouslySetInnerHTML={{ __html: stimulus }} />
-            {/* {showAnswer ? "showAnswer" : null}
-            {checkAnswer ? "checkAnswer" : null}
-            {clearAnswer ? "clearAnswer" : null}
-            <QuestionTitleWrapper>
-              {showQuestionNumber && <QuestionNumber>{`Q${qIndex + 1}`}</QuestionNumber>}
-              <QuestionHeader
-                qIndex={qIndex}
-                smallSize={smallSize}
-                dangerouslySetInnerHTML={{ __html: stimulus }}
-                data-cy="questionHeader"
-              />
-            </QuestionTitleWrapper> */}
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
@@ -519,6 +515,7 @@ class GraphDisplay extends Component {
 }
 
 GraphDisplay.propTypes = {
+  setQuestionData: PropTypes.func.isRequired,
   view: PropTypes.string.isRequired,
   graphData: PropTypes.object.isRequired,
   smallSize: PropTypes.bool,
@@ -532,7 +529,8 @@ GraphDisplay.propTypes = {
   bgShapes: PropTypes.bool,
   altAnswerId: PropTypes.string,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number
+  qIndex: PropTypes.number,
+  disableResponse: PropTypes.bool
 };
 
 GraphDisplay.defaultProps = {
@@ -547,7 +545,13 @@ GraphDisplay.defaultProps = {
   bgShapes: false,
   altAnswerId: null,
   showQuestionNumber: false,
-  qIndex: null
+  qIndex: null,
+  disableResponse: false
 };
 
-export default GraphDisplay;
+export default connect(
+  null,
+  {
+    setQuestionData: setQuestionDataAction
+  }
+)(GraphDisplay);

@@ -31,7 +31,7 @@ class ImageUpload extends Component {
       message.error("Image must smaller then 2MB!");
     } else {
       this.props.setUploadingStatus(true);
-      const fileUri = await uploadToS3(file, aws.s3Folders.COURSE);
+      const fileUri = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.setState({ file: fileUri, visibleRequired: false });
       const { keyName } = this.props;
       this.props.updateImgUrl(fileUri, keyName);

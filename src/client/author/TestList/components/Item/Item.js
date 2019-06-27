@@ -22,7 +22,8 @@ import {
   AuthorWrapper,
   IconText,
   ButtonWrapper,
-  DraftIconWrapper
+  DraftIconWrapper,
+  EllipsisWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -52,9 +53,9 @@ class Item extends Component {
   moveToItem = () => {
     const { history, item, isPlaylist, owner } = this.props;
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}${!owner ? "#review" : ""}`);
+      history.push(`/author/playlists/${item._id}#review`);
     } else {
-      history.push(`/author/tests/${item._id}${!owner ? "#review" : ""}`);
+      history.push(`/author/tests/${item._id}#review`);
     }
   };
 
@@ -157,8 +158,11 @@ class Item extends Component {
                 {isPlaylist ? _source.title : title}
               </StyledLink>
             </Question>
-            <CardDescription onClick={isPlaylist ? this.moveToItem : ""}>
-              {isPlaylist ? _source.description : description}
+            <CardDescription
+              title={isPlaylist ? _source.description : description}
+              onClick={isPlaylist ? this.moveToItem : ""}
+            >
+              <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
             </CardDescription>
             {!isPlaylist && <Tags tags={tags} />}
           </Inner>

@@ -5,7 +5,8 @@ import PropTypes from "prop-types";
 import { Switch, Route, Redirect, withRouter, BrowserRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { DragDropContext } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
+import TouchBackend from "react-dnd-touch-backend";
+// import HTML5Backend from "react-dnd-html5-backend";
 import { compose } from "redux";
 import { Spin } from "antd";
 import Joyride from "react-joyride";
@@ -92,7 +93,6 @@ class App extends Component {
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
-
     let defaultRoute = "";
     let redirectRoute = "";
     if (!publicPath) {
@@ -102,12 +102,10 @@ class App extends Component {
         if (role === "teacher") {
           if (user.signupStatus === signUpState.DONE || isUndefined(user.signupStatus)) {
             defaultRoute = "/author/assignments";
+          } else if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
+            redirectRoute = `/district/${path[1]}/signup`;
           } else {
-            if (path[0] && path[0].toLocaleLowerCase() === "district" && path[1]) {
-              redirectRoute = `/district/${path[1]}/signup`;
-            } else {
-              redirectRoute = "/Signup";
-            }
+            redirectRoute = "/Signup";
           }
         } else if (role === "edulastic-admin") {
           defaultRoute = "/admin";
@@ -115,6 +113,8 @@ class App extends Component {
           defaultRoute = "/home/assignments";
         } else if (role === "district-admin" || role === "school-admin") {
           defaultRoute = "/author/assignments";
+        } else if (user.user && (user.user.googleId || user.user.msoId || user.user.cleverId)) {
+          defaultRoute = "/auth";
         }
         // TODO: handle the rest of the role routes (district-admin,school-admin)
       } else if (
@@ -183,7 +183,12 @@ class App extends Component {
 }
 
 const enhance = compose(
-  DragDropContext(HTML5Backend),
+  DragDropContext(
+    TouchBackend({
+      enableTouchEvents: true,
+      enableMouseEvents: true
+    })
+  ),
   withRouter,
   connect(
     ({ user, tutorial }) => ({ user, tutorial: tutorial.currentTutorial }),

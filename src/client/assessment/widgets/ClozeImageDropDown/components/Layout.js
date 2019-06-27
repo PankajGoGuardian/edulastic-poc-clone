@@ -29,7 +29,7 @@ class Layout extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -38,7 +38,7 @@ class Layout extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
     }
   }
 
@@ -201,7 +201,7 @@ class Layout extends Component {
       <React.Fragment>
         <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
           <Block style={{ paddingTop: 0 }}>
-            <Subtitle>{t("component.options.layout")}</Subtitle>
+            <Subtitle>{t("component.options.display")}</Subtitle>
             <MarginRow gutter={20}>
               <Col md={12}>
                 <OptionCheckbox

@@ -48,7 +48,7 @@ function* loadTest({ payload }) {
     });
     yield put(setPasswordValidateStatusAction(false));
 
-    const { testActivityId, testId, preview = false, demo = false } = payload;
+    const { testActivityId, testId, preview = false, demo = false, test: testData = {} } = payload;
     yield put({
       type: SET_TEST_ID,
       payload: {
@@ -88,8 +88,8 @@ function* loadTest({ payload }) {
       }
       yield put(setPasswordStatusAction(""));
     }
-
-    const [test] = yield all([testRequest]);
+    const isAuthorReview = Object.keys(testData).length > 0;
+    const [test] = isAuthorReview ? [testData] : yield all([testRequest]);
     const questions = getQuestions(test.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
 

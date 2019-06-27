@@ -107,8 +107,8 @@ const SingleAssessmentReportFilters = ({
       key: "All",
       title: "All Groups"
     };
-    const urlSchoolId = { key: "All", title: "All Schools" };
-    const urlTeacherId = { key: "All", title: "All Teachers" };
+    let urlSchoolId = { key: "All", title: "All Schools" };
+    let urlTeacherId = { key: "All", title: "All Teachers" };
     if (role !== "teacher") {
       urlSchoolId = dropDownData.schools.find((item, index) => item.key === search.schoolId) || {
         key: "All",

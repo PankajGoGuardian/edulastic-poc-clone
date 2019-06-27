@@ -9,13 +9,11 @@ import InviteMultipleStudentModal from "../../../Student/components/StudentTable
 import ResetPwd from "./ResetPwd/ResetPwd";
 import DeleteConfirm from "./DeleteConfirm/DeleteConfirm";
 import AddCoTeacher from "./AddCoTeacher/AddCoTeacher";
-import { addStudentRequestAction, changeTTSRequestAction, updateStudentRequestAction } from "../../ducks";
 
-// import { addMultipleStudentsRequestAction } from "../../ducks";
+import { addStudentRequestAction, changeTTSRequestAction } from "../../ducks";
 import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
-
 
 import {
   DividerDiv,
@@ -45,10 +43,7 @@ const ActionContainer = ({
   studentLoaded,
   selectedStudent,
   changeTTS,
-  updateStudentRequest,
-
   loadStudents
-
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -61,7 +56,6 @@ const ActionContainer = ({
 
   const { _id: classId } = selectedClass;
   let formRef = null;
-
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -92,68 +86,31 @@ const ActionContainer = ({
       const { form } = formRef.props;
       form.validateFields((err, values) => {
         if (!err) {
-          if (isEdit) {
-            if (values.dob) {
-              values.dob = moment(values.dob).format("x");
-            }
-            const std = { ...selectedStudent[0], ...values };
-            const userId = std._id || std.userId;
-            std.currentSignUpState = "DONE";
-            const stdData = pick(std, [
-              "districtId",
-              "dob",
-              "ellStatus",
-              "email",
-              "firstName",
-              "gender",
-              "institutionIds",
-              "lastName",
-              "race",
-              "sisId",
-              "studentNumber",
-              "frlStatus",
-              "iepStatus",
-              "sedStatus",
-              "username",
-              "contactEmails"
-            ]);
+          const { fullName } = values;
+          const tempName = split(fullName, " ");
+          const firstName = tempName[0];
+          const lastName = tempName[1];
+          values.classCode = selectedClass.code;
+          values.role = "student";
+          values.districtId = orgData.districtId;
+          values.institutionIds = orgData.institutionIds;
+          values.firstName = firstName;
+          values.lastName = lastName;
 
-      if (stdData.lastName == null) {
-        stdData.lastName = "";
-      }
-      updateStudentRequest({
-        userId,
-        data: stdData
-      });
-      setModalStatus(false);
-    } else {
-      const { fullName } = values;
-      const tempName = split(fullName, " ");
-      const firstName = tempName[0];
-      const lastName = tempName[1];
+          const contactEmails = get(values, "contactEmails");
+          if (contactEmails) {
+            values.contactEmails = [contactEmails];
+          }
 
-      values.classCode = selectedClass.code;
-      values.role = "student";
-      values.districtId = orgData.districtId;
-      values.institutionIds = orgData.institutionIds;
-      values.firstName = firstName;
-      values.lastName = lastName;
+          if (values.dob) {
+            values.dob = moment(values.dob).format("x");
+          }
 
-      const contactEmails = get(values, "contactEmails");
-      if (contactEmails) {
-        values.contactEmails = [contactEmails];
-      }
+          unset(values, ["confirmPassword"]);
+          unset(values, ["fullName"]);
 
-      if (values.dob) {
-        values.dob = moment(values.dob).format("x");
-      }
-
-      unset(values, ["confirmPwd"]);
-      unset(values, ["fullName"]);
-
-      addStudentRequest(pickBy(values, identity));
-      setReqStatus(true);
-    }
+          addStudentRequest(pickBy(values, identity));
+          setReqStatus(true);
         }
       });
     }
@@ -272,9 +229,10 @@ const ActionContainer = ({
           handleCancel={() => toggleModal("add")}
           isOpen={isOpen.add}
           submitted={submitted}
-          // wrappedComponentRef={saveFormRef}
+          wrappedComponentRef={saveFormRef}
           stds={selectedStudent}
           isEdit={isEdit}
+          loadStudents={loadStudents}
         />
       )}
 
@@ -350,8 +308,7 @@ ActionContainer.propTypes = {
   studentLoaded: PropTypes.bool.isRequired,
   added: PropTypes.any.isRequired,
   selectedStudent: PropTypes.array.isRequired,
-  changeTTS: PropTypes.func.isRequired,
-  updateStudentRequest: PropTypes.func.isRequired
+  changeTTS: PropTypes.func.isRequired
 };
 
 ActionContainer.defaultProps = {};
@@ -369,7 +326,6 @@ export default connect(
   }),
   {
     addStudentRequest: addStudentRequestAction,
-    updateStudentRequest: updateStudentRequestAction,
     changeTTS: changeTTSRequestAction
   }
 )(ActionContainer);

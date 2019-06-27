@@ -137,10 +137,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.chart.composeQuestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.chart.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
 
         <div style={{ margin: "20px 0" }}>

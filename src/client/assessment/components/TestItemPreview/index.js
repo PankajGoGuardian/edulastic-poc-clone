@@ -51,8 +51,19 @@ class TestItemPreview extends Component {
   };
 
   render() {
-    const { cols, preview, style, windowWidth, showFeedback, questions, qIndex, student, disableResponse } = this.props;
-
+    const {
+      cols,
+      preview,
+      style,
+      windowWidth,
+      showFeedback,
+      questions,
+      qIndex,
+      student,
+      metaData,
+      disableResponse,
+      evaluation
+    } = this.props;
     let questionCount = 0;
     cols
       .filter(item => item.widgets.length > 0)
@@ -70,9 +81,11 @@ class TestItemPreview extends Component {
             cols.length &&
             cols.map((col, i) => (
               <TestItemCol
+                evaluation={evaluation}
                 key={i}
                 col={col}
                 view="preview"
+                metaData={metaData}
                 preview={preview}
                 multiple={cols.length > 1}
                 style={this.getStyle(i !== cols.length - 1)}

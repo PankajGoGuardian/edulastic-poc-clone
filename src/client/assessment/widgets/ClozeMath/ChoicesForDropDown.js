@@ -5,12 +5,13 @@ import { arrayMove } from "react-sortable-hoc";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
-import { forEach, cloneDeep } from "lodash";
+import { forEach, cloneDeep, get, findIndex } from "lodash";
 import "react-quill/dist/quill.snow.css";
 import produce from "immer";
 import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -18,8 +19,6 @@ import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { WidgetWrapper, Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
-
-import { response } from "@edulastic/constants";
 
 class ChoicesForDropDown extends Component {
   static propTypes = {
@@ -49,11 +48,13 @@ class ChoicesForDropDown extends Component {
       response_ids: { dropDowns: prev = [] }
     } = prevItem;
 
-    // eslint-disable-next-line react/no-find-dom-node
+    const { sectionId } = this.state;
+
     if (current.length === 0) {
-      return cleanSections(this.state.sectionId);
+      return cleanSections(sectionId);
     }
 
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
     if (current.length === 1 && prev.length !== 1) {
       fillSections(
@@ -63,15 +64,15 @@ class ChoicesForDropDown extends Component {
         node.scrollHeight,
         undefined,
         undefined,
-        this.state.sectionId
+        sectionId
       );
     }
   }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
-
-    cleanSections(this.state.sectionId);
+    const { sectionId } = this.state;
+    cleanSections(sectionId);
   }
 
   onChangeQuestion = stimulus => {
@@ -112,12 +113,24 @@ class ChoicesForDropDown extends Component {
 
   editOptions = (dropDownId, itemIndex, e) => {
     const { item, setQuestionData } = this.props;
+    const prevDropDownAnswers = get(item, "validation.valid_dropdown.value", []);
+    const prevAnswerIndex = findIndex(prevDropDownAnswers, answer => answer.id === dropDownId);
+
     setQuestionData(
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
+        const prevOption = draft.options[dropDownId][itemIndex];
         draft.options[dropDownId][itemIndex] = e.target.value;
         draft.ui_style[dropDownId] = draft.ui_style[dropDownId] || {};
-        draft.ui_style[dropDownId]["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
+        draft.ui_style[dropDownId].widthpx = Math.min(e.target.value.split("").length * 14, response.maxWidth);
+
+        if (prevAnswerIndex !== -1) {
+          const prevAnswer = prevDropDownAnswers[prevAnswerIndex].value;
+          if (prevAnswer && prevAnswer === prevOption) {
+            prevDropDownAnswers.splice(prevAnswerIndex, 1, { id: dropDownId, value: e.target.value });
+          }
+        }
+
         updateVariables(draft);
       })
     );
@@ -128,7 +141,9 @@ class ChoicesForDropDown extends Component {
     setQuestionData(
       produce(item, draft => {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
-        draft.options[dropDownId].push(t("component.cloze.dropDown.newChoice"));
+        draft.options[dropDownId].push(
+          `${t("component.cloze.dropDown.newChoice")} ${draft.options[dropDownId].length + 1}`
+        );
       })
     );
   };

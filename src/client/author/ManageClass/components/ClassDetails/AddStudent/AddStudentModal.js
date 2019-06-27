@@ -1,37 +1,62 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { get } from "lodash";
 import { Form, Icon, Collapse, Spin } from "antd";
 import { IconUser } from "@edulastic/icons";
-import { find } from "lodash";
 
 import BasicFields from "./BasicFields";
 import AdditionalFields from "./AdditionalFields";
 import { StyledModal, Title, ActionButton, PanelHeader } from "./styled";
+import { getUserOrgData } from "../../../../src/selectors/user";
+import { enrollmentApi } from "@edulastic/api";
 
 const { Panel } = Collapse;
 // = ({ handleAdd, handleCancel, isOpen, form }) =>
 class AddStudentModal extends React.Component {
   state = {
-    keys: ["basic"]
+    keys: ["basic"],
+    isUpdate: false,
+    foundUserId: ""
   };
 
-  handleAddClick = () => {
-    const {
-      form: { validateFieldsAndScroll },
-      handleAdd
-    } = this.props;
-    validateFieldsAndScroll((err, values) => {
-      if (!err) {
-        handleAdd(values);
-      }
+  setIsUpdate = payload => {
+    this.setState({
+      ...this.state,
+      isUpdate: payload
+    });
+  };
+  setFounduser = payload => {
+    this.setState({
+      ...this.state,
+      foundUserId: payload
     });
   };
 
-  render() {
-    const { form, handleCancel, isOpen, submitted, stds, isEdit } = this.props;
-    const { keys } = this.state;
-    const { getFieldDecorator, getFieldValue } = form;
+  enrollStudent = async () => {
+    const { selectedClass, orgData, loadStudents, handleCancel } = this.props;
+    const { _id: classId } = selectedClass;
+    const { code: classCode } = selectedClass;
+    const { districtId } = orgData;
+    const userId = this.state.foundUserId;
+    const data = {
+      classCode,
+      studentIds: [userId],
+      districtId
+    };
+    const res = await enrollmentApi.SearchAddEnrolMultiStudents(data);
+    if (res.status == 200) {
+      handleCancel();
+      loadStudents({ classId });
+    } else {
+      console.log("error updating student");
+    }
+  };
 
+  render() {
+    const { form, handleCancel, handleAdd, isOpen, submitted, stds, isEdit, foundUserId } = this.props;
+    const { keys, isUpdate } = this.state;
+    const { getFieldDecorator, getFieldValue, setFields, setFieldsValue } = form;
     const std = isEdit ? stds[0] : {};
 
     const title = (
@@ -46,8 +71,14 @@ class AddStudentModal extends React.Component {
         <ActionButton onClick={handleCancel} ghost type="primary">
           No, Cancel
         </ActionButton>
-        <ActionButton onClick={this.handleAddClick} type="primary">
-          {isEdit ? "Yes, Update Student" : "Yes, Add Student"}
+
+        <ActionButton
+          onClick={isUpdate ? this.enrollStudent : handleAdd}
+          // .bind(this, districtId, classCode, classId, loadStudents, handleCancel)
+          type="primary"
+        >
+          {isUpdate ? "Yes, Enroll Student" : "Yes, Add Student"}
+
           <Icon type="right" />
         </ActionButton>
       </>
@@ -80,6 +111,14 @@ class AddStudentModal extends React.Component {
                   getFieldValue={getFieldValue}
                   std={std}
                   isEdit={isEdit}
+                  setFields={setFields}
+                  setFieldsValue={setFieldsValue}
+                  isUpdate={isUpdate}
+                  setIsUpdate={this.setIsUpdate}
+                  updateStudent={this.updateStudent}
+                  setFounduser={this.setFounduser}
+                  foundUserId={foundUserId}
+                  modalClose={handleCancel}
                 />
               </Panel>
               <Panel header={AdditionalDetailsHeader} key="additional">
@@ -117,4 +156,7 @@ AddStudentModal.defaultProps = {
 
 const AddStudentForm = Form.create({ name: "add_student_form" })(AddStudentModal);
 
-export default AddStudentForm;
+export default connect(state => ({
+  orgData: getUserOrgData(state),
+  selectedClass: get(state, "manageClass.entity")
+}))(AddStudentForm);

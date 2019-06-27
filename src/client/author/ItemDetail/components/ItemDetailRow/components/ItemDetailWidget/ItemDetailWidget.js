@@ -48,7 +48,7 @@ const ItemDetailWidget = ({
     connectDragPreview(
       <div onMouseEnter={onMouseEnterHander} onMouseLeave={onMouseLeaveHander}>
         <Container isDragging={isDragging} flowLayout={flowLayout}>
-          <div style={{ flex: "10" }}>
+          <div style={{ flex: "10", maxWidth: "100%" }}>
             {(widget.widgetType === "question" || widget.widgetType === "resource") && (
               <QuestionWrapper
                 testItem

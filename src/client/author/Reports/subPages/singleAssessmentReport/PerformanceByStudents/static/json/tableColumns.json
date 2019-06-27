@@ -1,0 +1,43 @@
+[
+  { "title": "Proficiency Band", "dataIndex": "proficiencyBand", "key": "proficiencyBand", "width": 250 },
+  { "title": "Student", "sortable": true, "type": "name", "dataIndex": "student", "key": "student", "width": 250 },
+  { "title": "School", "dataIndex": "school", "key": "school", "width": 250, "hiddenFromRole": ["teacher"] },
+  { "title": "Teacher", "dataIndex": "teacher", "key": "teacher", "width": 250, "hiddenFromRole": ["teacher"] },
+  { "title": "Class Name", "dataIndex": "className", "key": "className", "width": 250 },
+  { "title": "Assessment Date", "dataIndex": "assessmentDate", "key": "assessmentDate", "width": 250 },
+  { "title": "Assessment Score", "dataIndex": "assessmentScore", "key": "assessmentScore", "width": 250 },
+  {
+    "title": "District (Avg. Score%)",
+    "showToolTip": true,
+    "type": "percentage",
+    "dataIndex": "districtAvg",
+    "key": "districtAvg",
+    "width": 250
+  },
+  {
+    "title": "School (Avg Score%)",
+    "showToolTip": true,
+    "type": "percentage",
+    "dataIndex": "schoolAvg",
+    "key": "schoolAvg",
+    "width": 250
+  },
+  {
+    "title": "Class (Avg Score%)",
+    "showToolTip": true,
+    "sortable": true,
+    "type": "percentage",
+    "dataIndex": "classAvg",
+    "key": "classAvg",
+    "width": 250
+  },
+  {
+    "title": "Student (Score%)",
+    "showToolTip": true,
+    "sortable": true,
+    "type": "percentage",
+    "dataIndex": "studentScore",
+    "key": "studentScore",
+    "width": 250
+  }
+]

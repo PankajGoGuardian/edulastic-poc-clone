@@ -1,13 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Select } from "antd";
 import { FieldLabel } from "./components";
 import Uploader from "./Uploader";
 import selectsData from "../../../TestPage/components/common/selectsData";
-
-const defaultImage = "https://fakeimg.pl/1000x300/";
+import { getThumbnail } from "../ClassSectionThumbnailsBySubjectGrade";
 
 export default props => {
-  const [thumbnail, setThumbnail] = useState(defaultImage);
+  useEffect(() => {
+    setThumbnail(getThumbnail());
+  }, []);
+  const [thumbnail, setThumbnail] = useState("");
 
   return (
     <>

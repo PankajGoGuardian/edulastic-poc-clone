@@ -40,11 +40,13 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.essayText.composequestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.essayText.enterQuestion")}
           onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
           toolbarId="compose-question"
+          theme="border"
         />
       </Widget>
     );

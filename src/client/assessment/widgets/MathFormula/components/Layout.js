@@ -20,7 +20,7 @@ class Layout extends Component {
     const { fillSections, t } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
-    fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+    fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
   };
 
   componentDidUpdate(prevProps) {
@@ -29,7 +29,7 @@ class Layout extends Component {
     const node = ReactDOM.findDOMNode(this);
 
     if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections("advanced", t("component.options.layout"), node.offsetTop, node.scrollHeight);
+      fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
     }
   }
 
@@ -51,7 +51,7 @@ class Layout extends Component {
 
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
-        <Subtitle>{t("component.options.layout")}</Subtitle>
+        <Subtitle>{t("component.options.display")}</Subtitle>
 
         <Row gutter={60}>
           <Col md={12}>
@@ -76,11 +76,11 @@ class Layout extends Component {
               size="large"
               value={uiStyle.min_width}
               onChange={e => {
-                const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
+                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
                 return changeUiStyle("min_width", val);
               }}
               max={400}
-              min={100}
+              min={20}
             />
           </Col>
         </Row>

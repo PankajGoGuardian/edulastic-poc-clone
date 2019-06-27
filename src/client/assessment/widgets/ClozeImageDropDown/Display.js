@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { shuffle, isUndefined } from "lodash";
+import { shuffle, isUndefined, isEmpty } from "lodash";
 import { withTheme } from "styled-components";
 import { Stimulus } from "@edulastic/common";
 import { clozeImage, response } from "@edulastic/constants";
@@ -126,7 +126,9 @@ class Display extends Component {
     };
 
     const imageHeight = this.getHeight();
+    const imageWidth = this.getWidth();
     const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const canvasWidth = imageWidth + +(imageOptions.x || 0);
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -134,7 +136,11 @@ class Display extends Component {
         fontSize={fontSize}
         height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
-        <StyledPreviewContainer smallSize={smallSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+        >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -240,6 +246,8 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
         stemnumeration={stemnumeration}
@@ -247,7 +255,7 @@ class Display extends Component {
         uiStyle={uiStyle}
         showAnswer={showAnswer}
         options={newOptions}
-        maxHeight={maxHeight}
+        maxHeight={canvasHeight}
         maxWidth={maxWidth}
         minWidth={response.minWidth}
         minHeight={response.minHeight}
@@ -267,7 +275,7 @@ class Display extends Component {
           groupResponses={newOptions}
           userAnswers={validation.valid_response && validation.valid_response.value}
         />
-        {validation.alt_responses && (
+        {!isEmpty(validation.alt_responses) && (
           <CorrectAnswerBoxLayout
             fontSize={fontSize}
             cleanValue

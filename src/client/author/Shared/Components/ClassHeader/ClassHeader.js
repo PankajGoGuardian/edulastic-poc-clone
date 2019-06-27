@@ -26,16 +26,27 @@ import {
   StyledTabContainer,
   StyledTabs,
   StyledAnchor,
-  PresentModeSwitch,
   StyledButton,
-  MenuWrapper
+  MenuWrapper,
+  OpenCloseButton,
+  HeaderMenuIcon,
+  RightSideButtonWrapper,
+  DropMenu,
+  MenuItems,
+  CaretUp
 } from "./styled";
 import { StudentReportCardMenuModal } from "./components/studentReportCardMenuModal";
 import { StudentReportCardModal } from "./components/studentReportCardModal";
 import FeaturesSwitch from "../../../../features/components/FeaturesSwitch";
 
-import { releaseScoreAction, markAsDoneAction } from "../../../src/actions/classBoard";
+import {
+  releaseScoreAction,
+  markAsDoneAction,
+  openAssignmentAction,
+  closeAssignmentAction
+} from "../../../src/actions/classBoard";
 import { showScoreSelector, getClassResponseSelector, getMarkAsDoneEnableSelector } from "../../../ClassBoard/ducks";
+import { getUserRole } from "../../../../student/Login/ducks";
 import { togglePresentationModeAction } from "../../../src/actions/testActivity";
 
 class ClassHeader extends Component {
@@ -95,9 +106,23 @@ class ClassHeader extends Component {
     setMarkAsDone(assignmentId, classId);
   };
 
+  handleOpenAssignment = () => {
+    const { openAssignment, assignmentId, classId, additionalData, userRole } = this.props;
+    if (additionalData.testType === "common assessment" && userRole === "teacher") {
+      return message.error(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
+    `);
+    }
+    openAssignment(assignmentId, classId);
+  };
+
+  handleCloseAssignment = () => {
+    const { closeAssignment, assignmentId, classId } = this.props;
+    closeAssignment(assignmentId, classId);
+  };
+
   onStudentReportCardsClick = () => {
     this.setState(state => {
-      return { ...this.state, studentReportCardMenuModalVisibility: true };
+      return { ...state, studentReportCardMenuModalVisibility: true };
     });
   };
 
@@ -145,7 +170,7 @@ class ClassHeader extends Component {
       showScore,
       selectedStudentsKeys,
       classResponse = {},
-      status,
+      assignmentStatus,
       enableMarkAsDone,
       togglePresentationMode,
       isPresentationMode
@@ -158,32 +183,39 @@ class ClassHeader extends Component {
       grade: classResponse.metadata ? classResponse.metadata.grades : [],
       subject: classResponse.metadata ? classResponse.metadata.subjects : []
     };
+    const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData;
+    const canOpen =
+      canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
+    const canClose =
+      canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
+
     const menu = (
-      <Menu>
+      <DropMenu>
+        <CaretUp className="fa fa-caret-up" />
         <FeaturesSwitch
           inputFeatures="assessmentSuperPowersMarkAsDone"
           actionOnInaccessible="hidden"
           gradeSubject={gradeSubject}
         >
-          <Menu.Item
+          <MenuItems
             key="key1"
             onClick={this.handleMarkAsDone}
-            disabled={!enableMarkAsDone || status.toLowerCase() === "done"}
+            disabled={!enableMarkAsDone || assignmentStatus.toLowerCase() === "done"}
           >
             Mark as Done
-          </Menu.Item>
+          </MenuItems>
         </FeaturesSwitch>
-        <Menu.Item
+        <MenuItems
           key="key2"
           onClick={this.handleReleaseScore}
           style={{ textDecoration: showScore ? "line-through" : "none" }}
         >
           Release Score
-        </Menu.Item>
-        <Menu.Item key="key3" onClick={this.onStudentReportCardsClick}>
-          Student Report Cards
-        </Menu.Item>
-      </Menu>
+        </MenuItems>
+        <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
+          Generate Bubble Sheet
+        </MenuItems>
+      </DropMenu>
     );
 
     return (
@@ -191,7 +223,7 @@ class ClassHeader extends Component {
         <StyledTitle>
           <StyledParaFirst data-cy="CurrentClassName">{additionalData.className || "loading..."}</StyledParaFirst>
           <StyledParaSecond>
-            {status} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
+            {assignmentStatus} (Due on {additionalData.endDate && moment(dueDate).format("D MMMM YYYY")})
           </StyledParaSecond>
         </StyledTitle>
         <StyledTabContainer>
@@ -238,24 +270,22 @@ class ClassHeader extends Component {
                 </StyledAnchor>
               </StyledLink>
             </FeaturesSwitch>
-            <FeaturesSwitch inputFeatures="presentationMode" actionOnInaccessible="hidden">
-              <PresentModeSwitch
-                checkedChildren={
-                  <div>
-                    <Icon type="bar-chart" /> Present
-                  </div>
-                }
-                unCheckedChildren={
-                  <div>
-                    <Icon type="pause" /> Reset
-                  </div>
-                }
-                checked={isPresentationMode}
-                onClick={this.toggleCurrentMode}
-              />
-            </FeaturesSwitch>
           </StyledTabs>
         </StyledTabContainer>
+        <RightSideButtonWrapper>
+          {canOpen ? (
+            <OpenCloseButton onClick={this.handleOpenAssignment}>OPEN</OpenCloseButton>
+          ) : canClose ? (
+            <OpenCloseButton onClick={this.handleCloseAssignment}>CLOSE</OpenCloseButton>
+          ) : (
+            ""
+          )}
+          <Dropdown overlay={menu} placement={"bottomRight"}>
+            <HeaderMenuIcon>
+              <i class="fa fa-ellipsis-v" />
+            </HeaderMenuIcon>
+          </Dropdown>
+        </RightSideButtonWrapper>
         <StyledDiv>
           <StyledPopconfirm
             visible={visible}
@@ -293,15 +323,16 @@ const enhance = compose(
     state => ({
       showScore: showScoreSelector(state),
       classResponse: getClassResponseSelector(state),
-      status: get(state, ["author_classboard_testActivity", "data", "status"], ""),
+      userRole: getUserRole(state),
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
+      assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false)
     }),
     {
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
-
-      togglePresentationMode: togglePresentationModeAction
+      openAssignment: openAssignmentAction,
+      closeAssignment: closeAssignmentAction
     }
   )
 );

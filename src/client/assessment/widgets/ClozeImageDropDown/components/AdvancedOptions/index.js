@@ -19,7 +19,7 @@ const AdvancedOptions = ({ t, onUiChange }) => {
   return (
     <WidgetOptions title={t("common.options.title")}>
       <Hr />
-      <Subtitle style={{ padding: 0, marginBottom: 21 }}>{t("component.options.layout")}</Subtitle>
+      <Subtitle style={{ padding: 0, marginBottom: 21 }}>{t("component.options.display")}</Subtitle>
       <FlexRow>
         <Flex flexDir="column">
           <FontSizeSelect

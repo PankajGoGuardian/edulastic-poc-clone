@@ -10,6 +10,7 @@ import {
   getArchiveGroupsSelector
 } from "../../sharedDucks/groups";
 import { setModalAction, syncClassAction, setClassAction } from "../ducks";
+
 // components
 
 import ClassCreate from "./ClassCreate";
@@ -19,7 +20,6 @@ import ClassEdit from "./ClassEdit";
 import PrintPreview from "./PrintPreview";
 
 const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, ...restProps }) => {
-
   const [view, setView] = useState("listView");
 
   useEffect(() => {

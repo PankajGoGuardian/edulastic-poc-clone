@@ -2,14 +2,7 @@ import styled from "styled-components";
 import { Card } from "antd";
 import { FlexContainer } from "@edulastic/common";
 import { IconChevronLeft } from "@edulastic/icons";
-import {
-  lightBlueSecondary,
-  secondaryTextColor,
-  lightGreySecondary,
-  blue,
-  greyScoreCardTitleColor,
-  cardTitleColor
-} from "@edulastic/colors";
+import { themeColor, secondaryTextColor, lightGreySecondary, cardTitleColor } from "@edulastic/colors";
 
 export const StyledFlexContainer = styled(FlexContainer)`
   width: 95%;
@@ -117,7 +110,7 @@ const TitleText = styled.div`
 export const StudentsTitle = styled(TitleText)``;
 export const ScoreTitle = styled(TitleText)``;
 export const ViewDetails = styled(TitleText)`
-  color: ${lightBlueSecondary};
+  color: ${themeColor};
   font-weight: 600;
 `;
 
@@ -126,8 +119,8 @@ export const IconExpand = styled(IconChevronLeft)`
   transform: ${({ up }) => (up ? "rotate(-270deg)" : "rotate(-90deg)")};
   margin: 0 16px 0 12px;
   cursor: pointer;
-  fill: ${lightBlueSecondary};
+  fill: ${themeColor};
   &:hover {
-    fill: ${lightBlueSecondary};
+    fill: ${themeColor};
   }
 `;

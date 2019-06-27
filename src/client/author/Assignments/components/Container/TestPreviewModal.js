@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Modal } from "antd";
 import AssessmentPlayer from "../../../../assessment";
 
-const TestPreviewModal = ({ isModalVisible, hideModal, testId }) => {
+const TestPreviewModal = ({ isModalVisible, hideModal, testId, test }) => {
   return (
     <Modal
       visible={isModalVisible}
@@ -13,7 +13,7 @@ const TestPreviewModal = ({ isModalVisible, hideModal, testId }) => {
       width={"80%"}
       style={{ top: 50 }}
     >
-      <AssessmentPlayer testId={testId} preview />
+      <AssessmentPlayer testId={testId} test={test} preview />
     </Modal>
   );
 };

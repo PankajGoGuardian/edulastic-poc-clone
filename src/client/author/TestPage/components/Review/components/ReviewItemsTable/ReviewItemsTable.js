@@ -3,18 +3,19 @@ import PropTypes from "prop-types";
 import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview }) => {
   const columns = [
     {
       title: "Main info",
       dataIndex: "main",
       key: "main",
-      render: data => <MainInfoCell data={data} />
+      render: data => <MainInfoCell data={data} handlePreview={handlePreview} />
     },
     {
       title: "Meta info",
@@ -23,11 +24,20 @@ const ItemsTable = ({ items, types, standards }) => {
       render: data => <MetaInfoCell data={data} />
     }
   ];
-
-  const data = items.map(item => {
+  const audioStatus = item => {
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const audio = {};
+    if (getAllTTS.length) {
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      audio.ttsSuccess = ttsSuccess;
+    }
+    return audio;
+  };
+  const data = items.map((item, i) => {
     const main = {
-      title: item._id,
-      id: item._id
+      id: item._id,
+      title: item._id
     };
     const meta = {
       id: item._id,
@@ -35,7 +45,8 @@ const ItemsTable = ({ items, types, standards }) => {
       shared: "9578 (1)",
       likes: 9,
       types: types[item._id],
-      standards: standards[item._id]
+      standards: standards[item._id],
+      audio: audioStatus(item)
     };
 
     if (item.data && item.data.questions && item.data.questions.length) {
@@ -43,18 +54,27 @@ const ItemsTable = ({ items, types, standards }) => {
     }
 
     return {
-      key: item._id,
+      key: i,
       main,
       meta
     };
   });
 
-  return <Table columns={columns} dataSource={data} showHeader={false} />;
+  const rowSelection = {
+    onChange: selectedRowKeys => {
+      setSelected(selectedRowKeys);
+    },
+    selectedRowKeys: selected
+  };
+  return (
+    <Table rowSelection={rowSelection} columns={columns} dataSource={data} showHeader={false} pagination={false} />
+  );
 };
 
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
+  handlePreview: PropTypes.func,
   standards: PropTypes.object.isRequired
 };
 

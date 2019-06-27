@@ -41,7 +41,7 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
             <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
             <Route path={`${match.url}/manage`} component={ManageClass} />
             <Route path={`${match.url}/profile`} component={Profile} />
-            <Route path={`${match.url}/testActivityReport/:id`} component={ReportList} />
+            <Route path={`${match.url}/class/:classId/testActivityReport/:id`} component={ReportList} />
             <Route path={`${match.url}/group/:groupId/assignment/:assignmentId`} component={StartAssignment} />
           </Switch>
         </Wrapper>

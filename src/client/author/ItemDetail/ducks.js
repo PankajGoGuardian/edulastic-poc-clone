@@ -17,7 +17,12 @@ import {
 import produce from "immer";
 import { CLEAR_DICT_ALIGNMENTS } from "../src/constants/actions";
 import { setTestItemsAction, getSelectedItemSelector } from "../TestPage/components/AddItems/ducks";
-import { getTestEntitySelector, setTestDataAndUpdateAction, setTestDataAction } from "../TestPage/ducks";
+import {
+  getTestEntitySelector,
+  setTestDataAndUpdateAction,
+  setTestDataAction,
+  setCreatedItemToTestAction
+} from "../TestPage/ducks";
 import { toggleCreateItemModalAction } from "../src/actions/testItem";
 import changeViewAction from "../src/actions/view";
 
@@ -577,10 +582,11 @@ export function* updateItemSaga({ payload }) {
         ...testEntity,
         testItems: [...testEntity.testItems, item]
       };
-      if (!testEntity._id) {
+      if (!payload.testId) {
         yield put(setTestDataAndUpdateAction(updatedTestEntity));
       } else {
-        yield put(setTestDataAction(updatedTestEntity));
+        yield put(setCreatedItemToTestAction(item));
+        yield put(push(`/author/tests/${payload.testId}#review`));
       }
       yield put(toggleCreateItemModalAction(false));
       yield put(changeViewAction("edit"));

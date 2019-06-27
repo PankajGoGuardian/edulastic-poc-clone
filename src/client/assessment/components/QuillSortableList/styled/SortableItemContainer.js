@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue, inputBorder } from "@edulastic/colors";
+import { themeColor, inputBorder } from "@edulastic/colors";
 
 export const SortableItemContainer = styled.div`
   width: ${props => (props.columns === 1 ? 100 / props.columns : 100 / props.columns - 2)}%;
@@ -51,7 +51,7 @@ export const DragIcon = styled.div`
 export const DragLine = styled.div`
   width: 19px;
   height: 3px;
-  background: ${newBlue};
+  background: ${themeColor};
 
   &:not(:last-child) {
     margin-bottom: 4px;

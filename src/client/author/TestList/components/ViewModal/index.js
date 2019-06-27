@@ -61,6 +61,7 @@ export default class ViewModal extends React.Component {
       analytics = [],
       testItems = [],
       scoring = {},
+      summary = {},
       sharing = [],
       _source
     } = item;
@@ -137,12 +138,12 @@ export default class ViewModal extends React.Component {
               <SummaryCardContainer>
                 <SummaryCard>
                   <SummaryCardValue>
-                    {isPlaylist ? _source.modules && _source.modules.length : testItems.length}
+                    {isPlaylist ? _source.modules && _source.modules.length : summary.totalQuestions}
                   </SummaryCardValue>
                   <SummaryCardLabel>Questions</SummaryCardLabel>
                 </SummaryCard>
                 <SummaryCard>
-                  <SummaryCardValue>{scoring.total}</SummaryCardValue>
+                  <SummaryCardValue>{summary.totalPoints}</SummaryCardValue>
                   <SummaryCardLabel>Points</SummaryCardLabel>
                 </SummaryCard>
               </SummaryCardContainer>
@@ -152,13 +153,17 @@ export default class ViewModal extends React.Component {
                   <ListHeaderCell>Qs</ListHeaderCell>
                   <ListHeaderCell>POINTS</ListHeaderCell>
                 </ListHeader>
-                <ListRow>
-                  <ListCell>
-                    <SammaryMark>7.G.1</SammaryMark>
-                  </ListCell>
-                  <ListCell>4</ListCell>
-                  <ListCell>4</ListCell>
-                </ListRow>
+                {summary &&
+                  summary.standards &&
+                  summary.standards.map(data => (
+                    <ListRow>
+                      <ListCell>
+                        <SammaryMark>{data.identifier}</SammaryMark>
+                      </ListCell>
+                      <ListCell>{data.totalQuestions}</ListCell>
+                      <ListCell>{data.totalPoints}</ListCell>
+                    </ListRow>
+                  ))}
               </SummaryList>
             </SummaryContainer>
           </ModalColumn>

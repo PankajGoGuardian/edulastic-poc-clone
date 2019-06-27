@@ -36,6 +36,7 @@ const SortableItem = SortableElement(
     item,
     testItem,
     onCheck,
+    readOnlyMode = false,
     points,
     onChangePoints,
     owner,
@@ -72,7 +73,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
-                    disabled={!owner}
+                    disabled={!owner || readOnlyMode}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -83,9 +84,10 @@ const SortableItem = SortableElement(
               <TestItemPreview
                 style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
                 cols={item}
+                metaData={metaInfoData.id}
                 previewTab="clear"
                 verticalDivider={item.verticalDivider}
-                disableResponse={true}
+                disableResponse
                 scrolling={item.scrolling}
                 questions={questions}
                 windowWidth="100%"
@@ -110,7 +112,8 @@ const SortableItem = SortableElement(
                     style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
                     cols={_item}
                     previewTab="clear"
-                    disableResponse={true}
+                    metaData={metaInfoData.id}
+                    disableResponse
                     verticalDivider={item.verticalDivider}
                     scrolling={item.scrolling}
                     questions={questions}
@@ -124,7 +127,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
-                      disabled={!owner}
+                      disabled={!owner || readOnlyMode}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -154,6 +157,7 @@ const List = SortableContainer(
     testItems,
     onChangePoints,
     types,
+    readOnlyMode = false,
     standards,
     scoring,
     onPreview,
@@ -165,10 +169,7 @@ const List = SortableContainer(
       if (checked) {
         setSelected([...selected, index]);
       } else {
-        const removeIndex = selected.findIndex(item => item === index);
-        const newSelected = [...selected];
-
-        newSelected.splice(removeIndex, 1);
+        const newSelected = selected.filter(item => item !== index);
         setSelected(newSelected);
       }
     };
@@ -185,6 +186,17 @@ const List = SortableContainer(
       );
     };
 
+    const audioStatus = item => {
+      const questions = get(item, "data.questions", []);
+      const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+      const audio = {};
+      if (getAllTTS.length) {
+        const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+        audio.ttsSuccess = ttsSuccess;
+      }
+      return audio;
+    };
+
     return (
       <div>
         {rows.map((item, i) => (
@@ -196,11 +208,13 @@ const List = SortableContainer(
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],
-              standards: standards[testItems[i]._id]
+              standards: standards[testItems[i]._id],
+              audio: audioStatus(testItems[i])
             }}
             index={i}
             owner={owner}
             indx={i}
+            readOnlyMode={readOnlyMode}
             item={item}
             testItem={testItems[i]}
             points={getPoints(i)}
@@ -225,6 +239,7 @@ List.propTypes = {
   onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
+  readOnlyMode: PropTypes.bool,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
   owner: PropTypes.bool,

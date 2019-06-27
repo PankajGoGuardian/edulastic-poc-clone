@@ -9,9 +9,10 @@ import { debounce, get as _get } from "lodash";
 import { withRouter } from "react-router-dom";
 
 import { FlexContainer } from "@edulastic/common";
-import { mainBlueColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
+import { themeColor, whiteSmoke, greenDark, fadedGrey, white } from "@edulastic/colors";
 import { IconClose, IconShare } from "@edulastic/icons";
 import { getUserFeatures } from "../../../../../student/Login/ducks";
+import { RadioInputWrapper } from "../RadioInput";
 
 import {
   getTestIdSelector,
@@ -73,7 +74,8 @@ class ShareModal extends React.Component {
   componentDidMount() {
     const { getSharedUsers, match, isPlaylist } = this.props;
     const testId = match.params.id;
-    if (testId) getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
+    if (testId && testId !== "undefined")
+      getSharedUsers({ contentId: testId, contentType: isPlaylist ? "PLAYLIST" : "TEST" });
   }
 
   radioHandler = e => {
@@ -90,9 +92,11 @@ class ShareModal extends React.Component {
   };
 
   removeHandler = data => {
-    const { deleteShared, testId } = this.props;
+    const { deleteShared, testId, isPlaylist } = this.props;
     const { sharedId, _userId: sharedWith } = data;
-    deleteShared({ contentId: testId, sharedId, sharedWith });
+    const contentType = isPlaylist ? "PLAYLIST" : "TEST";
+
+    deleteShared({ contentId: testId, sharedId, sharedWith, contentType });
   };
 
   permissionHandler = value => {
@@ -336,7 +340,7 @@ const ModalContainer = styled.div`
   padding: 20px 30px;
   .anticon-down {
     svg {
-      fill: ${mainBlueColor};
+      fill: ${themeColor};
     }
   }
 `;
@@ -398,10 +402,15 @@ const Address = styled(Select)`
 const ShareButton = styled(Button)`
   height: 35px;
   width: 160px;
-  background: ${mainBlueColor};
+  background: ${themeColor};
   border: none;
   display: flex;
   align-items: center;
+  &:hover,
+  &:focus {
+    background: ${themeColor};
+    border-color: ${themeColor};
+  }
   span {
     font-size: 12px;
     font-weight: 600;
@@ -411,7 +420,7 @@ const ShareButton = styled(Button)`
 
 const DoneButton = styled(Button)`
   width: 200px;
-  background: ${mainBlueColor};
+  background: ${themeColor};
   border: none;
   height: 35px;
   span {
@@ -419,7 +428,7 @@ const DoneButton = styled(Button)`
     font-weight: 600;
   }
 `;
-const RadioBtnWrapper = styled.div`
+const RadioBtnWrapper = styled(RadioInputWrapper)`
   font-weight: 600;
   margin: 10px 0px;
 `;
@@ -436,7 +445,7 @@ const CloseIcon = styled(IconClose)`
 
 const CopyWrapper = styled.div`
   display: flex;
-  color: ${mainBlueColor};
+  color: ${themeColor};
   font-weight: 600;
   align-items: center;
   font-size: 12px;
@@ -451,6 +460,6 @@ const TitleCopy = styled(Paragraph)`
   svg {
     width: 20px;
     height: 20px;
-    color: ${mainBlueColor};
+    color: ${themeColor};
   }
 `;

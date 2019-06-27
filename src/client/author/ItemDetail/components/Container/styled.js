@@ -1,5 +1,5 @@
 import { Paper } from "@edulastic/common";
-import { mobileWidth, newBlue, white } from "@edulastic/colors";
+import { mobileWidth, themeColor, white } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Content = styled(Paper)`
@@ -59,7 +59,7 @@ export const BackLink = styled.span`
   font-weight: 600;
   line-height: 28px;
   padding: 0 20px;
-  color: ${newBlue};
+  color: ${themeColor};
   text-transform: uppercase;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   cursor: pointer;

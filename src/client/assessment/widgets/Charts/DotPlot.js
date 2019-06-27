@@ -8,7 +8,7 @@ import withGrid from "./HOC/withGrid";
 import { convertPxToUnit, convertUnitToPx, getGridVariables } from "./helpers";
 import { Line } from "./styled";
 
-const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct }) => {
+const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct, disableResponse }) => {
   const { width, height, margin } = gridParams;
 
   const { step } = getGridVariables(data, gridParams, true);
@@ -91,7 +91,7 @@ const DotPlot = ({ data, saveAnswer, previewTab, gridParams, view, correct }) =>
         previewTab={previewTab}
         bars={localData}
         view={view}
-        onMouseDown={onMouseDown}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />
@@ -112,9 +112,14 @@ DotPlot.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired,
+  disableResponse: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired
+};
+
+DotPlot.defaultProps = {
+  disableResponse: false
 };
 
 export default withGrid(DotPlot);

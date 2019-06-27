@@ -67,6 +67,15 @@ const updateUser = ({ data, userId }) =>
     })
     .then(result => result.data.result);
 
+const updateUserRole = ({ data, userId }) =>
+  api
+    .callApi({
+      url: `${prefix}/role/${userId}`,
+      method: "put",
+      data
+    })
+    .then(result => result.data.result);
+
 const deleteUser = data =>
   api
     .callApi({
@@ -99,6 +108,17 @@ const addMultipleStudents = ({ districtId, data }) =>
     })
     .then(result => result.data.result);
 
+const checkUser = payload => {
+  return api
+    .callApi({
+      url: `${prefix}/username-email/`,
+      params: {
+        username: `${payload.username}`
+      },
+      method: "get"
+    })
+    .then(result => result.data.result);
+};
 
 const SearchAddEnrolMultiStudents = (classCode, data) => {
   return api.callApi({
@@ -130,13 +150,13 @@ const validateClassCode = classCode =>
 const validateDistrictPolicy = params =>
   api.callApi({ url: `${prefix}/domain`, params }).then(result => result.data.result);
 
-
 export default {
   getUser,
   fetchUsers,
   fetchUsersForShare,
   createUser,
   updateUser,
+  updateUserRole,
   deleteUser,
   getProxyUser,
   getSwitchedToken,
@@ -144,10 +164,11 @@ export default {
   resetPassword,
   addMultipleStudents,
 
+  checkUser,
+
   SearchAddEnrolMultiStudents,
 
   addStudentsToOtherClass,
   validateClassCode,
   validateDistrictPolicy
-
 };

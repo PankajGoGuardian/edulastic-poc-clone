@@ -11,15 +11,15 @@ import MainContainer from "../../styled/mainContainer";
 //actions
 import { loadTestActivityReportAction } from "../ducks";
 
-const ReportListContainer = ({ flag, match, location, loadReport, loadTestActivityReport }) => {
+const ReportListContainer = ({ flag, match, location, loadTestActivityReport }) => {
   useEffect(() => {
-    loadTestActivityReport({ testActivityId: match.params.id });
+    loadTestActivityReport({ testActivityId: match.params.id, groupId: match.params.classId });
   }, []);
   return (
     <MainContainer flag={flag}>
       <TestAcivityHeader titleText="common.reportsTitle" />
       <TestActivitySubHeader title={location.title} />
-      <ReportListContent title={location.title} />
+      <ReportListContent title={location.title} reportId={match.params.id} />
     </MainContainer>
   );
 };

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 
 export const AddNewChoiceBtn = styled.a`
   width: 220px;
@@ -11,7 +11,7 @@ export const AddNewChoiceBtn = styled.a`
   justify-content: center;
   cursor: pointer;
   margin-top: 14px;
-  background: ${newBlue};
+  background: ${themeColor};
 
   font-family: '${props => props.theme.common.addNewChoiceButtonFontFamily}';
   text-transform: uppercase;

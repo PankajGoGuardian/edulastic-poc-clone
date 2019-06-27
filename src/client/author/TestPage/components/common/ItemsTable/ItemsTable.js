@@ -4,6 +4,7 @@ import { tabletWidth } from "@edulastic/colors";
 import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
 
 import styled from "styled-components";
@@ -21,6 +22,7 @@ const ItemsTable = ({
   standards,
   windowWidth,
   showModal = false,
+  readOnlyMode = false,
   addDuplicate,
   testId,
   search,
@@ -42,7 +44,15 @@ const ItemsTable = ({
       dataIndex: "main",
       key: "main",
       width: "30%",
-      render: data => <MainInfoCell addDuplicate={addDuplicate} showModal={showModal} testId={testId} data={data} />
+      render: data => (
+        <MainInfoCell
+          addDuplicate={addDuplicate}
+          showModal={showModal}
+          readOnlyMode={readOnlyMode}
+          testId={testId}
+          data={data}
+        />
+      )
     },
     {
       title: "Meta info",
@@ -72,6 +82,13 @@ const ItemsTable = ({
       stimulus,
       item
     };
+    const questions = get(item, "data.questions", []);
+    const getAllTTS = questions.filter(item => item.tts).map(item => item.tts);
+    const audio = {};
+    if (getAllTTS.length) {
+      const ttsSuccess = getAllTTS.filter(item => item.taskStatus !== "COMPLETED").length === 0;
+      audio.ttsSuccess = ttsSuccess;
+    }
     const meta = {
       id: item._id,
       title: item._id,
@@ -81,7 +98,8 @@ const ItemsTable = ({
       types: types[item._id],
       standards: standards[item._id],
       stimulus,
-      item
+      item,
+      audio
     };
 
     return {
@@ -107,6 +125,7 @@ ItemsTable.propTypes = {
   setSelectedTests: PropTypes.func.isRequired,
   onAddItems: PropTypes.func.isRequired,
   selectedTests: PropTypes.array.isRequired,
+  readOnlyMode: PropTypes.bool,
   showModal: PropTypes.bool,
   addDuplicate: PropTypes.func,
   standards: PropTypes.object.isRequired,
@@ -126,7 +145,7 @@ export default enhance(ItemsTable);
 
 const TableWrapper = styled(Table)`
   .ant-table-tbody > tr > td {
-    padding: 38px 6px 28px 26px;
+    padding: 30px;
   }
 
   table tr tr img {

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { get } from "lodash";
 import { Form } from "antd";
 import { Field } from "./styled";
+import { userApi } from "@edulastic/api";
 
 // eslint-disable-next-line max-len
 const CustomField = ({
@@ -14,7 +15,9 @@ const CustomField = ({
   initialValue,
   getFieldValue,
   isEdit,
-  students
+  students,
+  districtId,
+  setFields
 }) => {
   const confirmPwdCheck = (rule, value, callback) => {
     const pwd = getFieldValue("password");
@@ -26,12 +29,48 @@ const CustomField = ({
     }
   };
 
-  const checkEmail = (rule, value, callback) => {
-    const isExist = students.some(({ enrollmentStatus, email }) => enrollmentStatus === "1" && email === value);
-    if (!isExist) {
-      callback();
-    } else {
-      callback(rule.message);
+  const checkEmail = async (rule, value, callback) => {
+    setFields({
+      fullName: {
+        value: ""
+      }
+    });
+    const result = await userApi.checkUser({
+      districtId: districtId,
+      username: value
+    });
+    let errorMsg = "";
+    let isSameClass = false;
+    if (result.length > 0) {
+      let foundUser = result[0];
+      students.forEach(student => {
+        if (student._id == foundUser._id) {
+          isSameClass = true;
+          return;
+        }
+      });
+      if (isSameClass) {
+        errorMsg = "User already part of this class section";
+      } else {
+        let isSameDistrict = foundUser.districtId == districtId;
+        if (isSameDistrict) {
+          if (foundUser.role == "teacher")
+            errorMsg = "User exists in the current district as an Instructor and can't be added to this class";
+          else {
+            errorMsg = "User exists and will be enrolled";
+            setFields({
+              fullName: {
+                value: foundUser.firstName
+              }
+            });
+          }
+        } else {
+          errorMsg = "Username already exists";
+        }
+      }
+      if (errorMsg !== "") {
+        callback(errorMsg);
+      }
     }
   };
 
@@ -47,7 +86,7 @@ const CustomField = ({
 
   const emailValidations = isEdit
     ? [...commonEmailValidations]
-    : [{ validator: checkEmail, message: "User already part of this class section." }, ...commonEmailValidations];
+    : [{ validator: checkEmail }, ...commonEmailValidations];
 
   const validations = {
     email: emailValidations,
@@ -81,6 +120,7 @@ const CustomField = ({
       <Form.Item>
         {getFieldDecorator(fiedlName, {
           rules: validations[fiedlName],
+          // validateTrigger: fiedlName === "email" ? "onBlur" : "onChange",
           initialValue
         })(children)}
       </Form.Item>
@@ -108,5 +148,6 @@ CustomField.defaultProps = {
 };
 
 export default connect(state => ({
-  students: get(state, "manageClass.studentsList", [])
+  students: get(state, "manageClass.studentsList", []),
+  districtId: get(state, "user.user.orgData.districtId", "")
 }))(CustomField);

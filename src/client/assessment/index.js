@@ -18,13 +18,14 @@ const AssessmentPlayer = ({
   testId,
   demo,
   isPasswordValidated,
-  testActivityLoading
+  testActivityLoading,
+  test
 }) => {
   useEffect(() => {
     testId = preview ? testId : match.params.id;
     const { utaId: testActivityId } = match.params;
 
-    loadTest({ testId, testActivityId, preview, demo });
+    loadTest({ testId, testActivityId, preview, demo, test });
   }, [testId]);
 
   if (preview) {
@@ -49,12 +50,14 @@ AssessmentPlayer.propTypes = {
   loadTest: PropTypes.func.isRequired,
   match: PropTypes.any.isRequired,
   preview: PropTypes.any,
-  testId: PropTypes.string
+  testId: PropTypes.string,
+  test: PropTypes.object
 };
 
 AssessmentPlayer.defaultProps = {
   preview: false,
-  testId: ""
+  testId: "",
+  test: {}
 };
 
 // export component

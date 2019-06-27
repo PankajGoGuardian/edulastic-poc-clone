@@ -1,16 +1,7 @@
 import styled from "styled-components";
 import { Table, Button } from "antd";
 import { testActivity } from "@edulastic/constants";
-import {
-  red,
-  white,
-  darkGrey,
-  greenThird,
-  secondaryTextColor,
-  lightBlueSecondary,
-  authorAssignment,
-  tabletWidth
-} from "@edulastic/colors";
+import { red, white, darkGrey, greenThird, secondaryTextColor, authorAssignment, tabletWidth } from "@edulastic/colors";
 
 const { assignmentStatusBg } = authorAssignment;
 const {
@@ -95,46 +86,6 @@ export const TableData = styled(Table)`
 
       &:first-child {
         text-align: left;
-      }
-    }
-  }
-
-  .ant-pagination {
-    margin-bottom: 0;
-
-    &-item {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-      border: none;
-      background: ${white};
-      line-height: 35px;
-
-      &-link {
-        border: none;
-      }
-
-      &-active {
-        background: ${lightBlueSecondary};
-        box-shadow: none;
-
-        a {
-          color: ${white};
-        }
-      }
-    }
-
-    &-prev,
-    &-next {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-    }
-
-    &-jump {
-      &-next,
-      &-prev {
-        min-width: 33px;
-        height: 33px;
-        background: ${white};
-        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-        line-height: 35px;
       }
     }
   }

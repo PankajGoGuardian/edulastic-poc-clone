@@ -1,12 +1,11 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { uniqueId } from "lodash";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 
-import { withRouter } from "react-router-dom";
 import * as moment from "moment";
 import { Button, Modal, Input, Cascader, Radio, Icon } from "antd";
 import { FlexContainer } from "@edulastic/common";
@@ -33,6 +32,7 @@ import {
   IconMoveTo,
   IconCollapse
 } from "@edulastic/icons";
+import { RadioInputWrapper } from "../../src/components/common/RadioInput";
 import Curriculum from "./Curriculum";
 import SelectContent from "./SelectContent";
 import {
@@ -785,7 +785,7 @@ const ModalHeader = styled.div`
   font-size: 18px;
 `;
 
-const RadioGroupWrapper = styled.div`
+const RadioGroupWrapper = styled(RadioInputWrapper)`
   display: flex;
   align-items: center;
   justify-content: center;

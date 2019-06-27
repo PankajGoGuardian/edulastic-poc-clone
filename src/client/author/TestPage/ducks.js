@@ -4,11 +4,20 @@ import { test } from "@edulastic/constants";
 import { call, put, all, takeEvery, select } from "redux-saga/effects";
 import { push, replace } from "connected-react-router";
 import { message } from "antd";
-import { keyBy as _keyBy, omit, get } from "lodash";
+import { keyBy as _keyBy, omit, get, uniqBy } from "lodash";
 import { testsApi, assignmentApi, contentSharingApi } from "@edulastic/api";
 import moment from "moment";
-import { SET_MAX_ATTEMPT, UPDATE_TEST_IMAGE, SET_SAFE_BROWSE_PASSWORD } from "../src/constants/actions";
+import {
+  SET_MAX_ATTEMPT,
+  UPDATE_TEST_IMAGE,
+  SET_SAFE_BROWSE_PASSWORD,
+  ADD_ITEM_EVALUATION,
+  CHANGE_PREVIEW,
+  CHANGE_VIEW
+} from "../src/constants/actions";
 import { loadQuestionsAction } from "../sharedDucks/questions";
+import { evaluateItem } from "../src/utils/evalution";
+import createShowAnswerData from "../src/utils/showAnswer";
 
 // constants
 
@@ -46,7 +55,14 @@ export const RECEIVE_SHARED_USERS_LIST = "[test] receive shared users list";
 export const UPDATE_SHARED_USERS_LIST = "[test] update shared with users list";
 export const DELETE_SHARED_USER = "[test] delete share user from list";
 export const SET_TEST_DATA_AND_SAVE = "[test] set test data and update test";
+export const SET_CREATED_ITEM_TO_TEST = "[test] set created item to test";
+export const CLEAR_CREATED_ITEMS_FROM_TEST = "[test] clear createdItems from test";
+export const PREVIEW_CHECK_ANSWER = "[test] check answer for preview modal";
+export const PREVIEW_SHOW_ANSWER = "[test] show answer for preview modal";
 // actions
+
+export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER);
+export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER);
 
 export const receiveTestByIdAction = id => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
@@ -127,8 +143,10 @@ export const setRegradeOldIdAction = createAction(SET_REGRADE_OLD_TESTID);
 export const updateSharedWithListAction = createAction(UPDATE_SHARED_USERS_LIST);
 export const receiveSharedWithListAction = createAction(RECEIVE_SHARED_USERS_LIST);
 export const deleteSharedUserAction = createAction(DELETE_SHARED_USER);
-// reducer
+export const setCreatedItemToTestAction = createAction(SET_CREATED_ITEM_TO_TEST);
+export const clearCreatedItemsAction = createAction(CLEAR_CREATED_ITEMS_FROM_TEST);
 
+//reducer
 export const createBlankTest = () => ({
   title: `Untitled Test - ${moment().format("MM/DD/YYYY HH:mm")}`,
   description: "",
@@ -152,9 +170,7 @@ export const createBlankTest = () => ({
   thumbnail: "https://ak0.picdn.net/shutterstock/videos/4001980/thumb/1.jpg",
   createdBy: {
     _id: "",
-    firstName: "",
-    lastName: "",
-    email: ""
+    name: ""
   },
   tags: [],
   scoring: {
@@ -184,6 +200,7 @@ const initialState = {
   count: 0,
   loading: false,
   creating: false,
+  createdItems: [],
   sharedUsersList: []
 };
 
@@ -217,6 +234,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: { ...state.entity, ...entity },
+        createdItems: [],
         creating: false
       };
     case UPDATE_ENTITY_DATA:
@@ -277,7 +295,13 @@ export const reducer = (state = initialState, { type, payload }) => {
           grades: [],
           subjects: []
         },
+        createdItems: [],
         sharedUsersList: []
+      };
+    case SET_CREATED_ITEM_TO_TEST:
+      return {
+        ...state,
+        createdItems: [...state.createdItems, payload]
       };
     case TEST_CREATE_SUCCESS:
       return {
@@ -288,6 +312,11 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         sharedUsersList: payload
+      };
+    case CLEAR_CREATED_ITEMS_FROM_TEST:
+      return {
+        ...state,
+        createdItems: []
       };
     default:
       return state;
@@ -311,7 +340,9 @@ const getQuestions = (testItems = []) => {
 // saga
 function* receiveTestByIdSaga({ payload }) {
   try {
-    const entity = yield call(testsApi.getById, payload.id, { data: true });
+    const createdItems = yield select(getTestCreatedItemsSelector);
+    let entity = yield call(testsApi.getById, payload.id, { data: true });
+    entity.testItems = uniqBy([...entity.testItems, ...createdItems], "_id");
     const questions = getQuestions(entity.testItems);
     yield put(loadQuestionsAction(_keyBy(questions, "id")));
     yield put(receiveTestByIdSuccess(entity));
@@ -371,6 +402,7 @@ function* updateTestSaga({ payload }) {
     delete payload.data.createdDate;
     delete payload.data.assignments;
     delete payload.data.authors;
+    delete payload.data.createdBy;
 
     const pageStructure = get(payload.data, "pageStructure", []).map(page => ({
       ...page,
@@ -478,7 +510,7 @@ function* receiveSharedWithListSaga({ payload }) {
 function* deleteSharedUserSaga({ payload }) {
   try {
     const authors = yield call(contentSharingApi.deleteSharedUser, payload);
-    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: "TEST" }));
+    yield put(receiveSharedWithListAction({ contentId: payload.contentId, contentType: payload.contentType }));
   } catch (e) {
     const errorMessage = "delete shared user is failing";
     yield call(message.error, errorMessage);
@@ -513,6 +545,65 @@ function* setTestDataAndUpdateSaga({ payload }) {
   }
 }
 
+function* getEvaluation(testItemId) {
+  const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
+  const testItem = testItems.find(x => x._id === testItemId) || {};
+  const { itemLevelScore, itemLevelScoring = false } = testItem;
+  const questions = _keyBy(testItem.data.questions, "id");
+  const answers = yield select(state => get(state, "answers", {}));
+  const evaluation = yield evaluateItem(answers, questions, itemLevelScoring, itemLevelScore);
+  return evaluation;
+}
+
+function* checkAnswerSaga({ payload }) {
+  try {
+    const { evaluation, score, maxScore } = yield getEvaluation(payload.id);
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation
+      }
+    });
+    yield put({
+      type: CHANGE_PREVIEW,
+      payload: {
+        view: "check"
+      }
+    });
+
+    message.success(`score: ${score}/${maxScore}`);
+  } catch (e) {
+    message.error("failed to check answer");
+    console.log("error checking answer", e);
+  }
+}
+
+function* showAnswerSaga({ payload }) {
+  try {
+    const testItems = yield select(state => get(state, ["tests", "entity", "testItems"], []));
+    const testItem = testItems.find(x => x._id === payload.id) || {};
+    const questions = _keyBy(testItem.data.questions, "id");
+    const answers = yield select(state => get(state, "answers", {}));
+    const { evaluation } = yield createShowAnswerData(questions, answers);
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation
+      }
+    });
+
+    yield put({
+      type: CHANGE_PREVIEW,
+      payload: {
+        view: "show"
+      }
+    });
+  } catch (e) {
+    message.error("failed loading answer");
+    console.log("error showing answer", e);
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_BY_ID_REQUEST, receiveTestByIdSaga),
@@ -523,7 +614,9 @@ export function* watcherSaga() {
     yield takeEvery(TEST_PUBLISH, publishTestSaga),
     yield takeEvery(RECEIVE_SHARED_USERS_LIST, receiveSharedWithListSaga),
     yield takeEvery(SET_TEST_DATA_AND_SAVE, setTestDataAndUpdateSaga),
-    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga)
+    yield takeEvery(DELETE_SHARED_USER, deleteSharedUserSaga),
+    yield takeEvery(PREVIEW_CHECK_ANSWER, checkAnswerSaga),
+    yield takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga)
   ]);
 }
 
@@ -616,4 +709,9 @@ export const getTestItemsRowsSelector = createSelector(
         })
       }));
     })
+);
+
+export const getTestCreatedItemsSelector = createSelector(
+  stateSelector,
+  state => get(state, "createdItems", [])
 );

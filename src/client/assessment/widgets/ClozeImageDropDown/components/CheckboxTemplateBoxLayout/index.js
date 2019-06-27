@@ -1,6 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
-
+import { clozeImage } from "@edulastic/constants";
 import { Pointer } from "../../../../styled/Pointer";
 import { Point } from "../../../../styled/Point";
 import { Triangle } from "../../../../styled/Triangle";
@@ -31,13 +31,17 @@ const CheckboxTemplateBoxLayout = ({
   // imagescale,
   evaluation,
   maxHeight,
-  maxWidth,
   minWidth,
   minHeight,
-  imageOptions
+  imageOptions,
+  canvasHeight,
+  canvasWidth
 }) => (
   <StyledTemplateBox fontSize={fontSize}>
-    <TemplateCover width={maxWidth} maxHeight={maxHeight} maxWidth={maxWidth} height={maxHeight}>
+    <TemplateCover
+      width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
+      height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+    >
       <StyledPreviewImage
         imageSrc={imageUrl || ""}
         width={imageWidth}
@@ -166,10 +170,11 @@ CheckboxTemplateBoxLayout.propTypes = {
   imageHeight: PropTypes.number.isRequired,
   imageWidth: PropTypes.number.isRequired,
   maxHeight: PropTypes.number.isRequired,
-  maxWidth: PropTypes.number.isRequired,
   minWidth: PropTypes.number.isRequired,
   minHeight: PropTypes.number.isRequired,
-  imageOptions: PropTypes.object
+  imageOptions: PropTypes.object,
+  canvasWidth: PropTypes.number.isRequired,
+  canvasHeight: PropTypes.number.isRequired
 };
 
 CheckboxTemplateBoxLayout.defaultProps = {

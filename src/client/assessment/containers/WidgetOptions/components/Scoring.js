@@ -76,33 +76,16 @@ class Scoring extends Component {
       setQuestionData(newData);
     };
 
-    const handleChangeData = (param, value) => {
-      const newData = cloneDeep(questionData);
-
-      if (["instant_feedback", "feedback_attempts"].includes(param)) {
-        if (param === "feedback_attempts" && value < 0) {
-          newData[param] = 0;
-        } else {
-          newData[param] = value;
-        }
-      }
-
-      newData.validation[param] = value;
-
-      setQuestionData(newData);
-    };
-
     const isAutomarkChecked = get(questionData, "validation.automarkable", true);
     const maxScore = get(questionData, "validation.max_score", 1);
     const questionType = get(questionData, "type", "");
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType);
-    const ColWrapper = props => {
-      return props.noPaddingLeft ? (
+    const ColWrapper = props =>
+      props.noPaddingLeft ? (
         <ColNoPaddingLeft md={12}>{props.children} </ColNoPaddingLeft>
       ) : (
         <Col md={12}>{props.children}</Col>
       );
-    };
     return (
       <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
         {isSection && <SectionHeading>{t("component.options.scoring")}</SectionHeading>}
@@ -147,33 +130,6 @@ class Scoring extends Component {
                   style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
                 />
                 <Label>{t("component.options.penalty")}</Label>
-              </FormGroup>
-            </Col>
-          </Row>
-        )}
-        {isAutomarkChecked && (
-          <Row gutter={60} center>
-            <Col md={12}>
-              <Checkbox
-                data-cy="checkAnswerButton"
-                checked={questionData.instant_feedback}
-                onChange={e => handleChangeData("instant_feedback", e.target.checked)}
-                size="large"
-              >
-                {t("component.options.checkAnswerButton")}
-              </Checkbox>
-            </Col>
-            <Col md={12}>
-              <FormGroup center>
-                <Input
-                  data-cy="checkAttempts"
-                  type="number"
-                  value={questionData.feedback_attempts}
-                  onChange={e => handleChangeData("feedback_attempts", +e.target.value)}
-                  size="large"
-                  style={{ width: "20%", marginRight: 30, borderColor: "#E1E1E1" }}
-                />
-                <Label>{t("component.options.attempts")}</Label>
               </FormGroup>
             </Col>
           </Row>

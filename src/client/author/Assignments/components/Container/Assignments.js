@@ -135,9 +135,14 @@ class Assignments extends Component {
   };
 
   onUpdateReleaseScoreSettings = releaseScore => {
-    const { updateReleaseScoreSettings, currentEditableAssignment, toggleReleaseGradePopUp } = this.props;
+    const {
+      updateReleaseScoreSettings,
+      currentEditableAssignment = { class: [{}] },
+      toggleReleaseGradePopUp
+    } = this.props;
     if (releaseScore !== releaseGradeLabels.DONT_RELEASE) {
-      const updateReleaseScore = { ...currentEditableAssignment, releaseScore };
+      const { startDate, endDate } = currentEditableAssignment.class[0];
+      const updateReleaseScore = { ...currentEditableAssignment, releaseScore, startDate, endDate };
       updateReleaseScoreSettings(updateReleaseScore);
     } else {
       toggleReleaseGradePopUp(false);

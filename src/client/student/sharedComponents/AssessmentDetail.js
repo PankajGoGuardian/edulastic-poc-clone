@@ -110,7 +110,7 @@ const getStatusBgColor = (props, type) => {
           return props.theme.assignment[`cardSubmitedLabel${type}Color`];
       }
     } else {
-      return props.theme.assignment[`cardMissedLabel${type}Color`];
+      return props.theme.assignment[`cardAbsentLabel${type}Color`];
     }
   }
 };

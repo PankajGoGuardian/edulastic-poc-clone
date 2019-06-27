@@ -89,11 +89,13 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
           toolbarId="stimulus-input"
           value={item.stimulus}
+          theme="border"
         />
       </Widget>
     );

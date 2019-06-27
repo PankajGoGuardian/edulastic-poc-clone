@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
-import { white, secondaryTextColor, mainBlueColor, green, red, greyishDarker1 } from "@edulastic/colors";
+import { white, secondaryTextColor, themeColorLight, green, red, greyishDarker1 } from "@edulastic/colors";
 
 const getBackground = ({ selected, checked, correct }) =>
-  selected ? (checked ? (correct ? green : red) : mainBlueColor) : white;
+  selected ? (checked ? (correct ? green : red) : themeColorLight) : white;
 
 const getBorder = ({ selected, checked, correct }) =>
-  selected ? (checked ? (correct ? green : red) : mainBlueColor) : greyishDarker1;
+  selected ? (checked ? (correct ? green : red) : themeColorLight) : greyishDarker1;
 
 export const QuestionChunk = styled.div`
   &:not(:last-child) {

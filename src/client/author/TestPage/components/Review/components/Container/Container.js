@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -11,16 +12,15 @@ import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
-import { setTestDataAction } from "../../../../ducks";
+import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
-import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
-import ModalCreateTestItem from "../../../ModalCreateTestItem/ModalCreateTestItem";
+import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
 const scoreOfItem = item => {
   if (item.itemLevelScoring) {
@@ -51,10 +51,12 @@ class Review extends PureComponent {
   };
 
   state = {
-    isCollapse: false,
+    isCollapse: true,
     isModalVisible: false,
     questionCreateType: "Duplicate",
-    item: []
+    item: [],
+    isTestPreviewModalVisible: false,
+    currentTestId: ""
   };
 
   setSelected = values => {
@@ -87,7 +89,10 @@ class Review extends PureComponent {
   handleRemoveSelected = () => {
     const { test, setData } = this.props;
     const newData = cloneDeep(test);
-
+    const itemsSelected = test.testItems.find(item => item.selected);
+    if (!itemsSelected) {
+      return message.warn("Please select at least one question to remove");
+    }
     newData.testItems = test.testItems.filter(item => !item.selected);
 
     newData.scoring.testItems = test.scoring.testItems.filter(item => {
@@ -141,18 +146,21 @@ class Review extends PureComponent {
   };
 
   handleDuplicateItem = duplicateTestItemId => {
-    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      test: { title, _id: testId },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "Duplicate" }, () => {
-      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
-    });
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
   };
 
-  handlePreview = data => {
+  handlePreviewTestItem = data => {
     this.setState({
       item: { id: data }
     });
@@ -161,12 +169,6 @@ class Review extends PureComponent {
 
   closeModal = () => {
     this.setModalVisibility(false);
-  };
-
-  handleSelectedTest = items => {
-    const { test } = this.props;
-    const result = items.map(item => test.testItems.findIndex(i => item === i._id));
-    this.setSelected(result);
   };
 
   get tableData() {
@@ -184,6 +186,15 @@ class Review extends PureComponent {
     setData({ [field]: value });
   };
 
+  hidePreviewModal = () => {
+    this.setState({ isTestPreviewModalVisible: false });
+  };
+
+  showTestPreviewModal = () => {
+    const { test } = this.props;
+    this.setState({ isTestPreviewModalVisible: true, currentTestId: test._id });
+  };
+
   render() {
     const {
       test,
@@ -196,10 +207,20 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
+      readOnlyMode = false,
       createTestItemModalVisible,
-      itemsSubjectAndGrade
+      itemsSubjectAndGrade,
+      checkAnswer,
+      showAnswer
     } = this.props;
-    const { isCollapse, isModalVisible, item, questionCreateType } = this.state;
+    const {
+      isCollapse,
+      isModalVisible,
+      item,
+      questionCreateType,
+      isTestPreviewModalVisible,
+      currentTestId
+    } = this.state;
     const totalPoints = test.scoring.total;
     const questionsCount = test.testItems.length;
 
@@ -231,7 +252,7 @@ class Review extends PureComponent {
           <Col span={isSmallSize ? 18 : 24} style={{ padding: isMobileSize ? "0 23px 0 45px" : "0 25px" }}>
             <SecondHeader isMobileSize={isMobileSize}>
               <Breadcrumb data={breadcrumbData} style={{ position: "unset" }} />
-              {owner && (
+              {owner && !readOnlyMode && (
                 <HeaderBar
                   onSelectAll={this.handleSelectAll}
                   itemTotal={test.testItems.length}
@@ -241,6 +262,7 @@ class Review extends PureComponent {
                   onMoveTo={this.handleMoveTo}
                   windowWidth={windowWidth}
                   setCollapse={isCollapse}
+                  onShowTestPreview={this.showTestPreviewModal}
                 />
               )}
             </SecondHeader>
@@ -248,13 +270,14 @@ class Review extends PureComponent {
               {isCollapse ? (
                 <ItemsTable
                   items={test.testItems}
-                  setSelectedTests={this.handleSelectedTest}
-                  selectedTests={selected.map(i => test.testItems[i]._id)}
+                  setSelected={this.setSelected}
+                  selected={selected}
+                  handlePreview={this.handlePreviewTestItem}
                 />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}
-                  onPreview={this.handlePreview}
+                  onPreview={this.handlePreviewTestItem}
                   testItems={test.testItems}
                   rows={rows}
                   standards={standards}
@@ -263,6 +286,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   owner={owner}
+                  readOnlyMode={readOnlyMode}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -283,6 +307,8 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
+              readOnlyMode={readOnlyMode}
+              summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
               totalPoints={getTotalScore(test.testItems)}
@@ -296,12 +322,21 @@ class Review extends PureComponent {
           isVisible={isModalVisible}
           onClose={this.closeModal}
           showModal={true}
-          addDuplicate={this.handleDuplicateItem}
+          readOnlyMode={readOnlyMode}
           owner={owner}
+          addDuplicate={this.handleDuplicateItem}
           page="review"
           data={item}
+          checkAnswer={() => checkAnswer(item)}
+          showAnswer={() => showAnswer(item)}
+          showEvaluationButtons
         />
-        {createTestItemModalVisible && <ModalCreateTestItem type={questionCreateType} />}
+        <TestPreviewModal
+          isModalVisible={isTestPreviewModalVisible}
+          testId={currentTestId}
+          test={test}
+          hideModal={this.hidePreviewModal}
+        />
       </div>
     );
   }
@@ -324,6 +359,7 @@ Review.propTypes = {
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   connect(
     state => ({
@@ -336,8 +372,9 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
-      toggleCreateItemModal: toggleCreateItemModalAction,
-      clearDictAlignment: clearDictAlignmentAction
+      clearDictAlignment: clearDictAlignmentAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
     }
   )
 );

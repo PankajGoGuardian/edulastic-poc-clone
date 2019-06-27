@@ -15,7 +15,7 @@ import {
 import Bars from "./components/Bars";
 import BarsAxises from "./components/BarsAxises";
 
-const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
+const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams, true);
@@ -110,7 +110,7 @@ const BarChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) =
         previewTab={previewTab}
         bars={localData}
         view={view}
-        onMouseDown={onMouseDown}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />
@@ -131,9 +131,14 @@ BarChart.propTypes = {
     stepSize: PropTypes.number,
     snapTo: PropTypes.number
   }).isRequired,
+  disableResponse: PropTypes.bool,
   view: PropTypes.string.isRequired,
   previewTab: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired
+};
+
+BarChart.defaultProps = {
+  disableResponse: false
 };
 
 export default withGrid(BarChart);

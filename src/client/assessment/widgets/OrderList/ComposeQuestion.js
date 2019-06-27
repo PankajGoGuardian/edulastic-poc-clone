@@ -43,7 +43,8 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.orderlist.composeQuestion")}</Subtitle>
-        <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} />
+
+        <QuestionTextArea onChange={handleQuestionChange} value={item.stimulus} theme="border" />
       </Widget>
     );
   }

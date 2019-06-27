@@ -149,7 +149,7 @@ SummaryTest.defaultProps = {
 };
 
 const enhance = compose(
-  withNamespaces(["summary", "default", "student"]),
+  withNamespaces(["summary", "default"]),
   withRouter,
   connect(state => ({
     questionList: attemptSummarySelector(state),

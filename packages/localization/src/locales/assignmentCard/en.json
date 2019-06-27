@@ -23,6 +23,7 @@
     "GRADE_HELD": "GRADES HELD",
     "NOT_GRADED": "NOT GRADED",
     "IN GRADING": "IN GRADING",
-    "absent": "ABSENT"
+    "absent": "ABSENT",
+    "submitted": "SUBMITTED"
   }
 }

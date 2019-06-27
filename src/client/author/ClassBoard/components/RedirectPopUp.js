@@ -15,6 +15,7 @@ const Option = Select.Option;
  * @property {boolean} open
  * @property {Function} closePopup
  * @property {Function} setSelected
+ * @property {string[]} disabledList
  * @property {string} assignmentId
  * @property {string} groupId
  */
@@ -30,6 +31,7 @@ const RedirectPopUp = ({
   closePopup,
   setSelected,
   assignmentId,
+  disabledList = [],
   groupId
 }) => {
   const [dueDate, setDueDate] = useState(moment().add(1, "day"));
@@ -40,14 +42,19 @@ const RedirectPopUp = ({
     }
     setLoading(true);
     const selected = Object.keys(selectedStudents);
-    await assignmentApi.redirect(assignmentId, {
-      _id: groupId,
-      specificStudents: true,
-      students: selected,
-      endDate: +dueDate
-    });
-    setLoading(false);
-    closePopup();
+    if (selected.length === 0) {
+      message.error("At least one student should be selected to redirect assessment.");
+      setLoading(false);
+    } else {
+      await assignmentApi.redirect(assignmentId, {
+        _id: groupId,
+        specificStudents: true,
+        students: selected,
+        endDate: +dueDate
+      });
+      setLoading(false);
+      closePopup();
+    }
   }, [selectedStudents, assignmentId, dueDate, groupId]);
 
   const disabledEndDate = endDate => {
@@ -86,7 +93,7 @@ const RedirectPopUp = ({
 
       <Row> Students </Row>
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <Row>
             <Select
               mode="multiple"
@@ -98,7 +105,7 @@ const RedirectPopUp = ({
               }}
             >
               {allStudents.map(x => (
-                <Option key={x._id} value={x._id}>
+                <Option key={x._id} value={x._id} disabled={disabledList.includes(x._id)}>
                   {x.firstName}
                 </Option>
               ))}

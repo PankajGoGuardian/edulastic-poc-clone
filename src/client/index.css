@@ -636,7 +636,7 @@ table.quill-table td {
   border-radius: 0;
   border: 0;
   height: 100%;
-  max-height: calc(100vh - 300px);
+  /* max-height: calc(100vh - 300px); */
   overflow-y: auto;
 }
 

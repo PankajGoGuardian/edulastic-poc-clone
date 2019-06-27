@@ -6,7 +6,6 @@ import {
   tabletWidth,
   red,
   darkGrey,
-  lightBlueSecondary,
   lightGreySecondary,
   white,
   authorAssignment,
@@ -158,48 +157,6 @@ export const TableData = styled(Table)`
 
   .ant-pagination {
     margin-bottom: 0;
-
-    &-item {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-      border: none;
-      background: ${white};
-      line-height: 35px;
-
-      &-link {
-        border: none;
-      }
-
-      &-active {
-        background: #00ad50;
-        box-shadow: none;
-
-        a {
-          color: ${white};
-        }
-      }
-      &:hover,
-      &:focus {
-        a {
-          color: #00ad50;
-        }
-      }
-    }
-
-    &-prev,
-    &-next {
-      box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-    }
-
-    &-jump {
-      &-next,
-      &-prev {
-        min-width: 33px;
-        height: 33px;
-        background: ${white};
-        box-shadow: 0px 2px 8px 1px rgba(163, 160, 160, 0.2);
-        line-height: 35px;
-      }
-    }
   }
 
   @media (max-width: ${tabletWidth}) {

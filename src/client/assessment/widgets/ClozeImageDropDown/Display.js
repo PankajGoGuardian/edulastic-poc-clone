@@ -126,7 +126,9 @@ class Display extends Component {
     };
 
     const imageHeight = this.getHeight();
+    const imageWidth = this.getWidth();
     const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const canvasWidth = imageWidth + +(imageOptions.x || 0);
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -134,7 +136,11 @@ class Display extends Component {
         fontSize={fontSize}
         height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
       >
-        <StyledPreviewContainer smallSize={smallSize} height={canvasHeight > maxHeight ? canvasHeight : maxHeight}>
+        <StyledPreviewContainer
+          smallSize={smallSize}
+          width={canvasWidth > maxWidth ? canvasWidth : maxWidth}
+          height={canvasHeight > maxHeight ? canvasHeight : maxHeight}
+        >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}
             width={this.getWidth()}
@@ -240,6 +246,8 @@ class Display extends Component {
         imageUrl={imageUrl || ""}
         imageWidth={this.getWidth()}
         imageHeight={this.getHeight()}
+        canvasHeight={canvasHeight}
+        canvasWidth={canvasWidth}
         imageAlterText={imageAlterText}
         imagescale={imagescale}
         stemnumeration={stemnumeration}

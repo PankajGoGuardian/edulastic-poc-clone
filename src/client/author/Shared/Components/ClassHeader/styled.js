@@ -87,9 +87,7 @@ export const StyledDiv = styled.div`
   }
 `;
 
-export const StyledTabContainer = styled.div`
-  overflow: auto;
-`;
+export const StyledTabContainer = styled.div``;
 
 export const StyledTabs = styled.div`
   min-width: 750px;

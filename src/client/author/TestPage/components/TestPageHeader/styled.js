@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Icon } from "antd";
 
 import {
-  mainBlueColor,
+  themeColor,
   white,
   darkBlueSecondary,
   tabletWidth,
@@ -49,7 +49,7 @@ export const TitleWrapper = styled.div`
 export const ShareIcon = styled(IconShare)`
   width: 16px;
   height: 16px;
-  fill: ${mainBlueColor};
+  fill: ${themeColor};
 `;
 
 export const MenuIcon = styled(Icon)`

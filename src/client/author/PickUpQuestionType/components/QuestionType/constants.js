@@ -1,4 +1,4 @@
-import { mainBlueColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
+import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
 import { math, questionType } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
@@ -541,7 +541,7 @@ export const getCards = onSelectQuestionType => {
           height: 600,
           altText: ""
         },
-        line_color: [mainBlueColor],
+        line_color: [themeColor],
         stimulus: "<p>[This is the stem.]</p>",
         type: questionType.HIGHLIGHT_IMAGE,
         validation: {},
@@ -1018,7 +1018,7 @@ export const getCards = onSelectQuestionType => {
       stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample Template markup&nbsp;<response contenteditable="false">Response</response>&nbsp;</p>`,
+        templateMarkUp: `<p>Sample Template markup&nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "[This is stem.]",
         ui_style: {
@@ -1055,7 +1055,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
         templateMarkUp:
-          '<p>&quot;It&#39;s all clear&quot; he&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>&nbsp; Have you the &nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>&nbsp;</p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
+          '<p>&quot;It&#39;s all clear&quot; he&nbsp;<textdropdown contenteditable="false" />&nbsp; Have you the &nbsp;<textdropdown contenteditable="false" />&nbsp;</p><p>and the bags?<br>Great Scott!!! Jump, archive, jump, and I&#39;ll swing for it</p>',
         stimulus: "",
         response_ids: [],
         ui_style: {
@@ -1088,7 +1088,7 @@ export const getCards = onSelectQuestionType => {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
         templateMarkUp:
-          '<p>Sample template &nbsp;<textinput contenteditable="false">Text Input</textinput>&nbsp;, &nbsp;<textinput contenteditable="false">Text Input</textinput>&nbsp;</p>',
+          '<p>Sample template &nbsp;<textinput contenteditable="false" />&nbsp;, &nbsp;<textinput contenteditable="false" />&nbsp;</p>',
         stimulus: "",
         ui_style: {
           fontsize: "normal",
@@ -2046,7 +2046,7 @@ export const getCards = onSelectQuestionType => {
         title: "Expression Multipart",
         stimulus: "",
         template:
-          '<p>sample template markup -&nbsp;<textinput contenteditable="false">Text Input</textinput>&nbsp;,&nbsp;<textdropdown contenteditable="false">Text Dropdown</textdropdown>&nbsp;,&nbsp;<mathinput contenteditable="false">Math Input</mathinput>&nbsp;</p>',
+          '<p>sample template markup -&nbsp;<textinput contenteditable="false" />&nbsp;,&nbsp;<textdropdown contenteditable="false" />&nbsp;,&nbsp;<mathinput contenteditable="false" />&nbsp;</p>',
         templateDisplay: true,
         type: questionType.EXPRESSION_MULTIPART,
         response_ids: {

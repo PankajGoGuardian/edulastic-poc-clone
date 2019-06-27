@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import PropTypes from "prop-types";
 
-import { mainBlueColor, red, green } from "@edulastic/colors";
+import { themeColorLight, red, green } from "@edulastic/colors";
 import { IconCheck, IconClose } from "@edulastic/icons";
 
 import { EDIT, CLEAR, CHECK, SHOW } from "../../../constants/constantsForQuestions";
@@ -81,7 +81,7 @@ const Circles = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
                 x={getCenterX(index)}
                 y={getCenterY(dot) - 4}
                 width={step - 2}
-                color={dot.y === 0 ? mainBlueColor : "transparent"}
+                color={dot.y === 0 ? themeColorLight : "transparent"}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
               />

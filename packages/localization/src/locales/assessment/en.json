@@ -371,6 +371,8 @@
       "addnewchoice": "Add New Choice",
       "multiplechoiceoptions": "Multiple Choice Options",
       "composequestion": "Question",
+      "questionPlaceholder": "Enter the question stem here",
+      "optionPlaceholder": "Option",
       "multipleResponses": "Multiple Responses",
       "shuffleOptions": "Shuffle options",
       "choice": "Choice"
@@ -628,7 +630,9 @@
       "background_shapes": "Background shapes",
       "minVal": "Minimum value",
       "maxVal": "Maximum value",
-      "responseNumAllowed": "Number of responses allowed"
+      "responseNumAllowed": "Number of responses allowed",
+      "correctAnswer": "Correct Answer",
+      "alternateAnswer": "Alternate Answer"
     },
     "math": {
       "enterQuestion": "Enter question",
@@ -665,6 +669,8 @@
       "rule": "Rule",
       "argument": "Argument",
       "ignoreOrder": "Ignore order",
+      "allowNumericOnly": "Restrict to numeric input",
+      "allowedVariables": "Restrict variables used to",
       "allowInterval": "Allow interval",
       "ignoreTrailingZeros": "Ignore trailing zeros in a decimal",
       "ignoreCoefficientOfOne": "Ignore a \"1\" in front of a variable",

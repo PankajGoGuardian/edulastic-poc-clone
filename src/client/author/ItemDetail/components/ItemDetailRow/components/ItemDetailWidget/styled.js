@@ -1,4 +1,4 @@
-import { newBlue, white, mobileWidth } from "@edulastic/colors";
+import { themeColor, white, mobileWidth } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const Container = styled.div`
@@ -53,7 +53,7 @@ export const Buttons = styled.div`
     margin-bottom: 8px;
 
     svg {
-      fill: ${newBlue};
+      fill: ${themeColor};
     }
   }
 

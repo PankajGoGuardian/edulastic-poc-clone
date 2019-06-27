@@ -11,6 +11,16 @@ export const Widget = styled.div`
   padding: 30px;
   background: #f8f8fb;
   border-radius: 4px;
+  ${({ visible }) =>
+    typeof visible !== "undefined" &&
+    !visible &&
+    `
+        position: absolute;
+        top: -300000; 
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      `}}
 
   &:not(:first-child) {
     margin-top: 30px;

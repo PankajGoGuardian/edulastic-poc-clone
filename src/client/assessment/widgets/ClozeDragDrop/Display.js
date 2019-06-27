@@ -264,8 +264,7 @@ class ClozeDragDropDisplay extends Component {
       theme,
       showQuestionNumber,
       responseIDs,
-      disableResponse,
-      qIndex
+      disableResponse
     } = this.props;
 
     const { userAnswers, possibleResponses, parsedTemplate } = this.state;

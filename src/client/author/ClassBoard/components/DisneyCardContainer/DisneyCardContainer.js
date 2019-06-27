@@ -59,7 +59,15 @@ export default class DisneyCardContainer extends Component {
 
   render() {
     const { testActivity } = this.state;
-    const { selectedStudents, studentSelect, studentUnselect, viewResponses, isPresentationMode, endDate } = this.props;
+    const {
+      selectedStudents,
+      studentSelect,
+      studentUnselect,
+      viewResponses,
+      isPresentationMode,
+      endDate,
+      updateDisabledList
+    } = this.props;
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -94,7 +102,7 @@ export default class DisneyCardContainer extends Component {
         }
 
         let correctAnswers = 0;
-
+        updateDisabledList(student.studentId, status.status);
         const questions = student.questionActivities.length;
         student.questionActivities.map(questionAct => {
           if (questionAct.correct) {
@@ -169,7 +177,7 @@ export default class DisneyCardContainer extends Component {
                     {student.score > 0 ? round((student.score / student.maxScore) * 100, 2) : 0}%
                   </StyledParaSSS>
                 </StyledFlexDiv>
-                {student.testActivityId && (
+                {student.testActivityId && status.status !== "ABSENT" && (
                   <PagInfo data-cy="viewResponse" onClick={e => viewResponses(e, student.studentId)}>
                     {/* <Link to={`/author/classresponses/${student.testActivityId}`}> */}
                     VIEW RESPONSES <GSpan>&gt;&gt;</GSpan>

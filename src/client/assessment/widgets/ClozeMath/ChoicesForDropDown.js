@@ -11,6 +11,7 @@ import produce from "immer";
 import uuid from "uuid/v4";
 
 import { withNamespaces } from "@edulastic/localization";
+import { response } from "@edulastic/constants";
 import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
@@ -18,8 +19,6 @@ import SortableList from "../../components/SortableList/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { WidgetWrapper, Widget } from "../../styled/Widget";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
-
-import { response } from "@edulastic/constants";
 
 class ChoicesForDropDown extends Component {
   static propTypes = {
@@ -49,11 +48,13 @@ class ChoicesForDropDown extends Component {
       response_ids: { dropDowns: prev = [] }
     } = prevItem;
 
-    // eslint-disable-next-line react/no-find-dom-node
+    const { sectionId } = this.state;
+
     if (current.length === 0) {
-      return cleanSections(this.state.sectionId);
+      return cleanSections(sectionId);
     }
 
+    // eslint-disable-next-line react/no-find-dom-node
     const node = ReactDOM.findDOMNode(this);
     if (current.length === 1 && prev.length !== 1) {
       fillSections(
@@ -63,15 +64,15 @@ class ChoicesForDropDown extends Component {
         node.scrollHeight,
         undefined,
         undefined,
-        this.state.sectionId
+        sectionId
       );
     }
   }
 
   componentWillUnmount() {
     const { cleanSections } = this.props;
-
-    cleanSections(this.state.sectionId);
+    const { sectionId } = this.state;
+    cleanSections(sectionId);
   }
 
   onChangeQuestion = stimulus => {
@@ -117,7 +118,7 @@ class ChoicesForDropDown extends Component {
         if (draft.options[dropDownId] === undefined) draft.options[dropDownId] = [];
         draft.options[dropDownId][itemIndex] = e.target.value;
         draft.ui_style[dropDownId] = draft.ui_style[dropDownId] || {};
-        draft.ui_style[dropDownId]["widthpx"] = Math.min(e.target.value.split("").length * 14, response.maxWidth);
+        draft.ui_style[dropDownId].widthpx = Math.min(e.target.value.split("").length * 14, response.maxWidth);
         updateVariables(draft);
       })
     );

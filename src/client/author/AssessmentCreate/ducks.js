@@ -4,7 +4,7 @@ import { message } from "antd";
 import { call, put, all, takeLatest, select } from "redux-saga/effects";
 import { push } from "react-router-redux";
 import pdfjs from "pdfjs-dist";
-import { get } from "lodash";
+import { get, without } from "lodash";
 
 import { testsApi, testItemsApi } from "@edulastic/api";
 import { aws } from "@edulastic/constants";
@@ -153,15 +153,13 @@ function* createAssessmentSaga({ payload }) {
       yield put(push(`/author/assessments/${assessment._id}`));
     } else {
       const { user } = yield select(getUserSelector);
-
+      const name = without([user.firstName, user.lastName], undefined, null, "").join(" ");
       const newAssessment = {
         ...initialTestState,
         title: "Author Test",
         createdBy: {
           id: user._id,
-          firstName: user.firstName,
-          lastName: "",
-          email: user.email
+          name
         },
         testItems: [testItem._id],
         docUrl: fileURI,

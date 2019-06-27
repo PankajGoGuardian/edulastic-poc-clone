@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 import Delete from "../keyboardButtons/delete.svg";
 import Sqrt from "../keyboardButtons/sqrt.svg";
-import Group940 from "../keyboardButtons/940.svg";
+import Group940 from "../keyboardButtons/fraction.svg";
 import Group941 from "../keyboardButtons/941.svg";
 import Group942 from "../keyboardButtons/942.svg";
 import Group943 from "../keyboardButtons/943.svg";

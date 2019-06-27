@@ -516,9 +516,6 @@ const Menu = styled(AntMenu)`
 
       svg {
         fill: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
-        path {
-          stroke: ${props => props.theme.sideMenu.menuSelectedItemLinkColor};
-        }
       }
       
       &:before {

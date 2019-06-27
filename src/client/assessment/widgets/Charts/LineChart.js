@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { mainBlueColor } from "@edulastic/colors";
+import { themeColorLight } from "@edulastic/colors";
 
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
@@ -17,7 +17,7 @@ import {
   getGridVariables
 } from "./helpers";
 
-const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) => {
+const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, disableResponse }) => {
   const { width, height, margin, showGridlines } = gridParams;
 
   const { padding, step } = getGridVariables(data, gridParams);
@@ -98,7 +98,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
 
       <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 
-      <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={mainBlueColor} />
+      <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
 
@@ -108,7 +108,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct }) 
         previewTab={previewTab}
         circles={localData}
         view={view}
-        onMouseDown={onMouseDown}
+        onMouseDown={!disableResponse ? onMouseDown : () => {}}
         gridParams={gridParams}
         correct={correct}
       />
@@ -129,9 +129,14 @@ LineChart.propTypes = {
     snapTo: PropTypes.number,
     pointStyle: PropTypes.string
   }).isRequired,
+  disableResponse: PropTypes.bool,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   correct: PropTypes.array.isRequired
+};
+
+LineChart.defaultProps = {
+  disableResponse: false
 };
 
 export default withGrid(LineChart);

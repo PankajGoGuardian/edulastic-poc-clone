@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 import { FlexContainer } from "@edulastic/common";
-import { lightBlueSecondary, secondaryTextColor } from "@edulastic/colors";
+import { themeColor, secondaryTextColor } from "@edulastic/colors";
 
 export const Block = styled.div`
   display: flex;
@@ -29,7 +29,7 @@ export const Block = styled.div`
     display: flex;
     align-items: center;
     background: #cbdef7;
-    color: ${lightBlueSecondary};
+    color: ${themeColor};
     font-weight: 600;
     margin-top: 9px !important;
   }
@@ -50,7 +50,7 @@ export const Block = styled.div`
   }
 
   .ant-select-remove-icon svg {
-    fill: ${lightBlueSecondary};
+    fill: ${themeColor};
     width: 12px;
     height: 12px;
   }

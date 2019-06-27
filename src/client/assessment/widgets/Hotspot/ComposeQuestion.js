@@ -8,7 +8,6 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Image as ImageComponent } from "@edulastic/common";
-import { fileApi } from "@edulastic/api";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -17,8 +16,9 @@ import DropZoneToolbar from "../../components/DropZoneToolbar/index";
 import StyledDropZone from "../../components/StyledDropZone/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
-
-import { SOURCE } from "../../constants/constantsForQuestions";
+import { aws } from "@edulastic/constants";
+import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
+import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -38,9 +38,10 @@ class ComposeQuestion extends Component {
     const { item, setQuestionData, t, loading, setLoading } = this.props;
 
     const { image } = item;
-
-    const width = image ? image.width : 700;
-    const height = image ? image.height : 600;
+    const maxWidth = 700,
+      maxHeight = 600;
+    const width = image ? image.width : maxWidth;
+    const height = image ? image.height : maxHeight;
     const altText = image ? image.altText : "";
     const file = image ? image.source : "";
 
@@ -71,9 +72,9 @@ class ComposeQuestion extends Component {
         setQuestionData(
           produce(item, draft => {
             if (prop === "width") {
-              draft.image[prop] = val > 700 ? 700 : val;
+              draft.image[prop] = val > maxWidth ? maxWidth : val;
             } else if (prop === "height") {
-              draft.image[prop] = val > 600 ? 600 : val;
+              draft.image[prop] = val > maxHeight ? maxHeight : val;
             } else {
               draft.image[prop] = val;
             }
@@ -83,13 +84,46 @@ class ComposeQuestion extends Component {
       }
     };
 
+    const updateImage = imagePassed => {
+      const newItem = { ...item };
+      newItem.image = { ...newItem.image, ...imagePassed };
+      setQuestionData(newItem);
+    };
+
+    const getImageDimensions = url => {
+      const uploadedImage = new Image();
+      uploadedImage.addEventListener("load", function() {
+        let height, width;
+        if (this.naturalHeight > maxHeight || this.naturalWidth > maxWidth) {
+          const fitHeight = Math.floor(maxWidth * (this.naturalHeight / this.naturalWidth));
+          const fitWidth = Math.floor(maxHeight * (this.naturalWidth / this.naturalHeight));
+          if (fitWidth > maxWidth) {
+            width = maxWidth;
+            height = fitHeight;
+          } else {
+            height = maxHeight;
+            width = fitWidth;
+          }
+        } else {
+          width = this.naturalWidth;
+          height = this.naturalHeight;
+        }
+        const obj = {};
+        obj[WIDTH] = width;
+        obj[HEIGHT] = height;
+        obj[SOURCE] = url;
+        updateImage(obj);
+        setLoading(false);
+      });
+      uploadedImage.src = url;
+    };
+
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
-        fileApi
-          .upload({ file: files })
-          .then(({ fileUri }) => {
-            handleImageToolbarChange(SOURCE)(fileUri);
+        uploadToS3(files, aws.s3Folders.DEFAULT)
+          .then(fileUri => {
+            handleImageToolbarChange(SOURCE)(getImageDimensions(fileUri));
             setLoading(false);
           })
           .catch(() => {
@@ -108,6 +142,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.hotspot.enterQuestion")}
           onChange={stimulus => stimulus && handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
 
         <DropZoneToolbar

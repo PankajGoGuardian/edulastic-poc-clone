@@ -413,7 +413,7 @@ const EditClassification = ({
         message.error("Please upload files in image format");
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       getImageWidth(imageUrl);
       handleItemChangeChange("imageUrl", imageUrl);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);

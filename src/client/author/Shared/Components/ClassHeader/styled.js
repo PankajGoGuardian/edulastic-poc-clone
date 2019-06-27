@@ -1,11 +1,17 @@
-import { Popconfirm, Switch } from "antd";
-import styled from "styled-components";
-import { white, mobileWidth, newBlue } from "@edulastic/colors";
+import { Popconfirm, Switch, Button, Menu } from "antd";
+import styled, { css } from "styled-components";
+import { white, mobileWidth, themeColor, fadedBlue } from "@edulastic/colors";
 import { Link } from "react-router-dom";
 import { themes } from "../../../../student/themes";
 import { StyledTable as Table } from "../../../Reports/common/styled";
 
 const classBoardTheme = themes.default.classboard;
+
+export const RightSideButtonWrapper = styled.div`
+  height: 45px;
+  display: flex;
+  margin-left: auto;
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -49,7 +55,7 @@ export const StyledParaFirst = styled.p`
 
 export const LinkLabel = styled.div`
   padding: 0px 18px;
-  color: ${props => (props.color ? props.color : "#ffffff")};
+  color: ${props => (props.color ? props.color : white)};
   font-size: 10px;
 `;
 
@@ -81,28 +87,13 @@ export const StyledDiv = styled.div`
   }
 `;
 
-export const StyledTabContainer = styled.div`
-  overflow: auto;
-`;
+export const StyledTabContainer = styled.div``;
 
 export const StyledTabs = styled.div`
   min-width: 750px;
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-`;
-
-export const StyledAnchorA = styled.a`
-  display: inline-block;
-  font-size: 0.8em;
-  font-weight: 600;
-  color: ${white};
-  padding: 17px 12px 15px 12px;
-  width: auto;
-  padding: 0px 15px;
-  text-align: center;
-  border-bottom: 4px solid lightgray;
-  background-color: #3393dc;
+  justify-content: center;
 `;
 
 export const StyledAnchor = styled.div`
@@ -111,7 +102,7 @@ export const StyledAnchor = styled.div`
   font-weight: 600;
   align-items: center;
   justify-content: center;
-  color: #ffffff;
+  color: ${white};
   width: auto;
   padding: 0px 18px;
   text-align: center;
@@ -126,11 +117,11 @@ export const StyledAnchor = styled.div`
     font-size: 0.6em;
   }
   :hover {
-    color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};
+    color: ${props => (props.isActive ? white : fadedBlue)};
     background-color: ${props => (props.isActive ? "rgba(255, 255, 255, 0.3)" : "rgba(255, 255, 255, 0.15)")};
   }
   a {
-    color: ${props => (props.isActive ? "#FFFFFF" : "#BED8FA")};
+    color: ${props => (props.isActive ? white : fadedBlue)};
   }
 `;
 
@@ -143,12 +134,12 @@ export const StyledButton = styled.button`
   width: 31px;
   height: 45px;
   background: transparent;
-  color: #fff;
+  color: ${white};
   font-size: 12px;
   border: 0px;
   :hover {
     svg {
-      fill: #bed8fa;
+      fill: ${fadedBlue};
     }
   }
   :focus {
@@ -211,10 +202,44 @@ export const PresentModeSwitch = styled(Switch)`
     font-size: 14px;
   }
   &.ant-switch-checked {
-    background: #42d184;
+    background: ${themeColor};
     .ant-switch-inner {
       margin-right: 20px;
       margin-left: 6px;
     }
   }
+`;
+
+const commonButtonsCSS = css`
+  color: ${themeColor};
+  height: 100%;
+`;
+export const HeaderMenuIcon = styled(Button)`
+  ${commonButtonsCSS}
+  width: 45px;
+`;
+export const OpenCloseButton = styled(Button)`
+  ${commonButtonsCSS}
+  margin-right: 10px;
+  padding: 10px 40px;
+  font-size: 12px;
+`;
+
+export const MenuItems = styled(Menu.Item)`
+  &:not(.ant-dropdown-menu-item-disabled):hover {
+    color: ${white};
+    background-color: ${themeColor};
+  }
+`;
+
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  right: 12px;
+  font-size: 30px;
+`;
+
+export const DropMenu = styled(Menu)`
+  margin-top: 10px;
 `;

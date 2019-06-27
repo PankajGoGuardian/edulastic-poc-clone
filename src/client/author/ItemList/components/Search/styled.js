@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, blue, newBlue, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
+import { white, blue, themeColor, secondaryTextColor, lightGrey4 } from "@edulastic/colors";
 
 export const Container = styled.div`
   padding: 0 0 20px;
@@ -36,14 +36,14 @@ export const Container = styled.div`
     border: 0;
     background-color: rgba(23, 115, 240, 0.2);
     height: 23.5px;
-    color: ${newBlue};
+    color: ${themeColor};
   }
 
   .ant-select-selection__choice__content {
     font-size: 10px;
     font-weight: bold;
     letter-spacing: 0.2px;
-    color: ${newBlue};
+    color: ${themeColor};
     opacity: 1;
   }
 
@@ -56,7 +56,7 @@ export const Container = styled.div`
   .ant-select-arrow-icon {
     font-size: 14px;
     svg {
-      fill: ${newBlue};
+      fill: ${themeColor};
     }
   }
 `;

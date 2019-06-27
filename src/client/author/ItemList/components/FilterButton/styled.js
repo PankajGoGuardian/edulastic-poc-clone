@@ -1,4 +1,4 @@
-import { boxShadowDefault, textColor, desktopWidth, mobileWidth, newBlue } from "@edulastic/colors";
+import { boxShadowDefault, textColor, desktopWidth, mobileWidth, themeColor } from "@edulastic/colors";
 import styled from "styled-components";
 
 export const FilterButtonContainer = styled.div`
@@ -41,7 +41,7 @@ export const FilterButtonContainer = styled.div`
       width: 22px;
       height: 22px;
       margin: auto auto -4px;
-      fill: ${newBlue};
+      fill: ${themeColor};
     }
   }
 

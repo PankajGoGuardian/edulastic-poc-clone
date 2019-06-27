@@ -87,6 +87,13 @@ const fetchPerformanceByStandard = params => {
   });
 };
 
+const fetchPerformanceByStudentsReport = params => {
+  return api.callApi({
+    url: `/report/performance-by-students`,
+    params: { ...params.requestFilters, testId: params.testId }
+  });
+};
+
 const fetchSARFilterData = params => {
   return api.callApi({
     url: `/report/filter/single-assessment`,
@@ -126,6 +133,7 @@ export default {
   fetchAssessmentSummaryReport,
   fetchPeerPerformanceReport,
   fetchPerformanceByStandard,
+  fetchPerformanceByStudentsReport,
   fetchSARFilterData,
   fetchStandardsGradebookReport,
   fetchStandardMasteryFilter,

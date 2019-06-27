@@ -39,10 +39,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.sortList.composeQuestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.sortList.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
       </Widget>
     );

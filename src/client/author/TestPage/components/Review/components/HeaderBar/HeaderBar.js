@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { Checkbox, message, Button } from "antd";
 
 import { blue } from "@edulastic/colors";
-import { IconClose, IconMoveTo, IconCollapse } from "@edulastic/icons";
+import { IconClose, IconMoveTo, IconCollapse, IconEye } from "@edulastic/icons";
 
 import Prompt from "../Prompt/Prompt";
 import { ButtonLink } from "../../../../../src/components/common";
@@ -17,7 +17,8 @@ const HeaderBar = ({
   selectedItems,
   onMoveTo,
   windowWidth,
-  setCollapse
+  setCollapse,
+  onShowTestPreview
 }) => {
   const [showPrompt, setShowPrompt] = useState(false);
 
@@ -49,6 +50,11 @@ const HeaderBar = ({
           Select All
         </SelectAllCheckbox>
       </Item>
+      <ActionButton style={{ marginLeft: 0 }}>
+        <ButtonLink onClick={onShowTestPreview} color="primary" icon={<IconEye color={blue} width={12} height={12} />}>
+          {windowWidth > 468 && <span>View as Student</span>}
+        </ButtonLink>
+      </ActionButton>
       <ActionButton data-cy="removeSelected" style={{ marginLeft: 0 }}>
         <ButtonLink onClick={onRemoveSelected} color="primary" icon={<IconClose color={blue} width={12} height={12} />}>
           {windowWidth > 468 && <span>Remove Selected</span>}

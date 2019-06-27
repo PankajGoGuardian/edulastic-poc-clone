@@ -10,7 +10,6 @@ import { connect } from "react-redux";
 import { withTheme } from "styled-components";
 
 import { Image as Img } from "@edulastic/common";
-import { fileApi } from "@edulastic/api";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../../utils/variables";
@@ -22,7 +21,8 @@ import DropZoneToolbar from "../../../components/DropZoneToolbar";
 import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 
-import { canvasDimensions } from "@edulastic/constants";
+import { canvasDimensions, aws } from "@edulastic/constants";
+import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -110,9 +110,8 @@ class ComposeQuestion extends Component {
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
-        fileApi
-          .upload({ file: files })
-          .then(({ fileUri }) => {
+        uploadToS3(files, aws.s3Folders.DEFAULT)
+          .then(fileUri => {
             getImageDimensions(fileUri);
           })
           .catch(err => {
@@ -127,10 +126,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget>
         <Subtitle>{t("component.highlightImage.composeQuestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.highlightImage.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
+          theme="border"
         />
 
         <DropZoneToolbar

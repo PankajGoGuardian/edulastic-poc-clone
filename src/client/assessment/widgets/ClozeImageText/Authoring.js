@@ -8,9 +8,9 @@ import { compose } from "redux";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import produce from "immer";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
-import { Checkbox, Input, Select, Upload, message } from "antd";
+import { Checkbox, Input, Select, Upload, message, Dropdown } from "antd";
 import { ChromePicker } from "react-color";
 import { withTheme } from "styled-components";
 import { cloneDeep, isUndefined } from "lodash";
@@ -31,8 +31,6 @@ import { FormContainer } from "./styled/FormContainer";
 import { ImageWidthInput } from "./styled/ImageWidthInput";
 import { ImageAlterTextInput } from "./styled/ImageAlterTextInput";
 import { ColorBox } from "./styled/ColorBox";
-import { ColorPickerContainer } from "./styled/ColorPickerContainer";
-import { ColorPickerWrapper } from "./styled/ColorPickerWrapper";
 import { FlexContainer } from "./styled/FlexContainer";
 import { ControlButton, MoveControlButton } from "./styled/ControlButton";
 import { PointerContainer } from "./styled/PointerContainer";
@@ -84,8 +82,7 @@ class Authoring extends Component {
   };
 
   state = {
-    isEditableResizeMove: false,
-    isColorPickerVisible: false
+    isEditableResizeMove: false
     // imageWidth:
     //   this.props.item.imageWidth > 0 ? (this.props.item.imageWidth >= 700 ? 700 : this.props.item.imageWidth) : 700
   };
@@ -195,10 +192,6 @@ class Authoring extends Component {
         updateVariables(draft);
       })
     );
-  };
-
-  showColorPicker = status => {
-    this.setState({ isColorPickerVisible: status });
   };
 
   updateData = item => {
@@ -379,7 +372,7 @@ class Authoring extends Component {
         message.error("Please upload files in image format");
         return;
       }
-      const imageUrl = await uploadToS3(file, aws.s3Folders.COURSE);
+      const imageUrl = await uploadToS3(file, aws.s3Folders.DEFAULT);
       this.getImageDimensions(imageUrl, true);
       message.success(`${info.file.name} ${t("component.cloze.imageText.fileUploadedSuccessfully")}.`);
     } catch (e) {
@@ -417,7 +410,7 @@ class Authoring extends Component {
   render() {
     const { t, item, theme, setQuestionData } = this.props;
     const { background, imageAlterText, isEditAriaLabels, responses, imageOptions = {}, keepAspectRatio } = item;
-    const { isColorPickerVisible, isEditableResizeMove } = this.state;
+    const { isEditableResizeMove } = this.state;
 
     const { maxHeight, maxWidth } = canvasDimensions;
 
@@ -447,12 +440,14 @@ class Authoring extends Component {
         <PaddingDiv>
           <Widget>
             <Subtitle>{t("component.cloze.imageText.composequestion")}</Subtitle>
+
             <QuestionTextArea
               toolbarId="stimulus"
               inputId="stimulusInput"
               placeholder={t("component.cloze.imageText.thisisstem")}
               onChange={this.onChangeQuestion}
               value={item.stimulus}
+              theme="border"
             />
             <PaddingDiv />
             <FormContainer data-cy="top-toolbar-area">
@@ -515,24 +510,20 @@ class Authoring extends Component {
                     <Option value="right">{t("component.cloze.imageText.right")}</Option>
                   </PointerSelect>
                 </PointerContainer>
-
-                <FieldWrapper>
-                  <ColorBox
-                    data-cy="image-text-box-color-picker"
-                    background={background}
-                    onClick={() => this.showColorPicker(true)}
-                  />
-                  {isColorPickerVisible && (
-                    <ColorPickerContainer data-cy="image-text-box-color-panel">
-                      <ColorPickerWrapper onClick={() => this.showColorPicker(false)} />
-                      <ChromePicker
-                        color={background}
-                        onChangeComplete={color => this.onItemPropChange("background", color.hex)}
-                      />
-                    </ColorPickerContainer>
+                <Dropdown
+                  overlay={() => (
+                    <ChromePicker
+                      color={background}
+                      onChangeComplete={color => this.onItemPropChange("background", color.hex)}
+                    />
                   )}
-                  <PaddingDiv left={20}>{t("component.cloze.imageText.fillcolor")}</PaddingDiv>
-                </FieldWrapper>
+                  trigger={["click"]}
+                >
+                  <FieldWrapper>
+                    <ColorBox data-cy="image-text-box-color-picker" style={{ backgroundColor: background }} />
+                    <PaddingDiv left={20}>{t("component.cloze.imageDragDrop.fillcolor")}</PaddingDiv>
+                  </FieldWrapper>
+                </Dropdown>
               </div>
             </FormContainer>
 
@@ -581,7 +572,7 @@ class Authoring extends Component {
                           <MoveControlButton
                             onClick={toggleIsMoveResizeEditable}
                             style={{
-                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                             }}
                           >
                             <IconMoveResize />
@@ -640,9 +631,9 @@ class Authoring extends Component {
                   )}
                   {!isEditableResizeMove && (
                     <MoveControlButton
-                      onMouseEnter={toggleIsMoveResizeEditable}
+                      onClick={toggleIsMoveResizeEditable}
                       style={{
-                        boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                       }}
                       top={imageTop + imageHeight - 14}
                       left={imageLeft + imageWidth - 14}

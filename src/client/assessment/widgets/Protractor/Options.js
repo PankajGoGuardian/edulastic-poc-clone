@@ -18,7 +18,7 @@ function Options({ onChange, item, t }) {
   const customRequest = async ({ file }) => {
     setUploading(true);
     try {
-      const fileUri = await uploadToS3(file, aws.s3Folders.COURSE);
+      const fileUri = await uploadToS3(file, aws.s3Folders.DEFAULT);
       onChange("image", fileUri);
     } catch (err) {
       console.error(err);

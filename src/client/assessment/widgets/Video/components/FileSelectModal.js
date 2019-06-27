@@ -1,14 +1,15 @@
 import React, { useState, useMemo } from "react";
 import PropTypes from "prop-types";
 import Dropzone from "react-dropzone";
-import { fileApi } from "@edulastic/api";
 
 import { StyledModal } from "../styled/StyledModal";
 import { Paper, Image, Button, FlexContainer } from "@edulastic/common";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { StyledInput } from "../styled/StyledInput";
 import { Typography, Empty } from "antd";
+import { aws } from "@edulastic/constants";
 import StyledDropZone from "../../../components/StyledDropZone";
+import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 const FileSelectModal = ({
   onCancel,
@@ -29,7 +30,7 @@ const FileSelectModal = ({
     if (files) {
       setLoading(true);
       try {
-        const { fileUri } = await fileApi.upload({ file: files });
+        const fileUri = await uploadToS3(files, aws.s3Folders.DEFAULT);
         setSourceURL(fileUri);
       } catch (error) {
         console.log(error);

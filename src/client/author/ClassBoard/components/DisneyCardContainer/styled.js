@@ -1,7 +1,7 @@
 import { Pagination, Card, Col } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth, red } from "@edulastic/colors";
+import { mobileWidth, red, themeColor } from "@edulastic/colors";
 
 import { themes } from "../../../../student/themes";
 
@@ -83,7 +83,7 @@ export const Space = styled.div`
 export const PagInfo = styled.span`
   font-weight: 600;
   font-size: 12px;
-  color: #1774f0;
+  color: ${themeColor};
   text-overflow: ellipsis;
   /* width: 50%; */
   cursor: pointer;

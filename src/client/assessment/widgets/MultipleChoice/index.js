@@ -142,8 +142,8 @@ class MultipleChoice extends Component {
   handleAddAnswer = qid => {
     const { saveAnswer, userAnswer, item, previewTab, changePreviewTab } = this.props;
     const newAnswer = cloneDeep(userAnswer);
-    if (previewTab !== CHECK) {
-      changePreviewTab(CHECK);
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR);
     }
     if (item.multiple_responses) {
       if (newAnswer.includes(qid)) {
@@ -274,7 +274,7 @@ class MultipleChoice extends Component {
                 <Display
                   checkAnswer
                   view={view}
-                  onChange={this.handleAddAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   smallSize={smallSize}
                   userSelections={userAnswer}
                   options={shuffledOptions}
@@ -322,7 +322,7 @@ class MultipleChoice extends Component {
                   userSelections={userAnswer}
                   uiStyle={uiStyle}
                   validation={item.validation}
-                  onChange={this.handleAddAnswer}
+                  onChange={!disableResponse ? this.handleAddAnswer : () => {}}
                   qIndex={qIndex}
                   instructorStimulus={item.instructor_stimulus}
                   multipleResponses={multipleResponses}
@@ -357,6 +357,7 @@ MultipleChoice.propTypes = {
   advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   flowLayout: PropTypes.bool,
+  disableResponse: PropTypes.bool,
   col: PropTypes.object
 };
 
@@ -373,7 +374,8 @@ MultipleChoice.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  flowLayout: false
+  flowLayout: false,
+  disableResponse: false
 };
 
 const enhance = compose(

@@ -1,5 +1,6 @@
 import { Select } from "antd";
 import styled from "styled-components";
+import { themeColor } from "@edulastic/colors";
 
 export const Container = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ export const Container = styled.div`
 
   .ant-select-arrow-icon {
     svg {
-      fill: #00b0ff;
+      fill: ${themeColor};
       margin-right: 0px;
     }
   }

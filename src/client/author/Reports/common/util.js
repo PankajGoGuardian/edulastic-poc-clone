@@ -48,3 +48,19 @@ export const getDropDownTestIds = arr => {
 
   return _arr;
 };
+
+export const filterData = (data, filter) => {
+  let filteredData = data.filter((item, index) => {
+    if (
+      (item.gender.toLowerCase() === filter.gender.toLowerCase() || filter.gender === "all") &&
+      (item.frlStatus.toLowerCase() === filter.frlStatus.toLowerCase() || filter.frlStatus === "all") &&
+      (item.ellStatus.toLowerCase() === filter.ellStatus.toLowerCase() || filter.ellStatus === "all") &&
+      (item.iepStatus.toLowerCase() === filter.iepStatus.toLowerCase() || filter.iepStatus === "all") &&
+      (item.race.toLowerCase() === filter.race.toLowerCase() || filter.race === "all")
+    ) {
+      return true;
+    }
+    return false;
+  });
+  return filteredData;
+};

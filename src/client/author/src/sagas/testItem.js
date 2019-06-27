@@ -2,7 +2,7 @@ import { takeEvery, call, put, all, select } from "redux-saga/effects";
 import { message } from "antd";
 import { get as _get } from "lodash";
 import { testItemsApi } from "@edulastic/api";
-import { LOCATION_CHANGE } from "connected-react-router";
+import { LOCATION_CHANGE, push } from "connected-react-router";
 import { evaluateItem } from "../utils/evalution";
 import createShowAnswerData from "../utils/showAnswer";
 
@@ -23,12 +23,10 @@ import {
 import { removeUserAnswerAction } from "../../../assessment/actions/answers";
 import { PREVIEW, CLEAR, CHECK } from "../../../assessment/constants/constantsForQuestions";
 
-import { history } from "../../../configureStore";
 import { getQuestionsSelector, CHANGE_CURRENT_QUESTION } from "../../sharedDucks/questions";
 import { SET_ANSWER } from "../../../assessment/constants/actions";
-import { toggleCreateItemModalAction } from "../actions/testItem";
 
-function* createTestItemSaga({ payload: { data, showModal } }) {
+function* createTestItemSaga({ payload: { data, testFlow, testId } }) {
   try {
     const item = yield call(testItemsApi.create, data);
     yield put({
@@ -36,10 +34,10 @@ function* createTestItemSaga({ payload: { data, showModal } }) {
       payload: item
     });
 
-    if (!showModal) {
-      yield call(history.push, `/author/items/${item._id}/item-detail`);
+    if (!testFlow) {
+      yield put(push(`/author/items/${item._id}/item-detail`));
     } else {
-      yield put(toggleCreateItemModalAction({ modalVisible: true, itemId: item._id }));
+      yield put(push(`/author/tests/${testId}/createItem/${item._id}`));
     }
   } catch (err) {
     console.error(err);
@@ -197,13 +195,13 @@ function* showAnswers() {
   }
 }
 
-function* setAnswerSaga() {
+function* setAnswerSaga({ payload }) {
   try {
     const answers = yield select(state => state.answers);
     const id = yield select(state => _get(state, "question.entity.data.id", {}));
-
     const { preview, view } = yield select(state => _get(state, "view", {}));
-    if (preview === CLEAR && view === PREVIEW) {
+
+    if ((preview === CLEAR && view === PREVIEW) || payload.view === "edit") {
       yield put(removeUserAnswerAction());
     }
 

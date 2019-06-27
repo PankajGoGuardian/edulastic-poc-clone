@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ColorPicker from "rc-color-picker";
 import styled from "styled-components";
 
-import { mainBlueColor, white, darkBlueSecondary, secondaryTextColor } from "@edulastic/colors";
+import { white, secondaryTextColor } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 import { drawTools } from "@edulastic/constants";
 import {

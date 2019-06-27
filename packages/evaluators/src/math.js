@@ -19,7 +19,6 @@ export const getChecks = answer => {
 
     let midRes = Object.keys(options).reduce((acc, key, i) => {
       const fieldVal = options[key];
-
       acc += i === 0 ? ":" : "";
 
       if (key === "argument") {
@@ -44,9 +43,8 @@ export const getChecks = answer => {
       } else if (key === "syntax") {
         acc += options.argument === undefined ? fieldVal : `${fieldVal}=${options.argument}`;
       } else {
-        acc += `${key}=${fieldVal}`;
+        acc += `${fieldVal}`;
       }
-
       return `${acc},`;
     }, val.method);
 

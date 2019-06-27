@@ -9,7 +9,7 @@ import { compose } from "redux";
 
 import { withWindowSizes } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, themeColor } from "@edulastic/colors";
 
 import { getUserSelector } from "../../author/src/selectors/user";
 import { receiveFeedbackResponseAction } from "../../author/src/actions/classBoard";
@@ -166,7 +166,7 @@ class FeedbackRight extends Component {
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: "#1774F0" }} size={34}>
+            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: themeColor }} size={34}>
               {studentName.charAt(0)}
             </Avatar>
           )}
@@ -263,10 +263,13 @@ const StyledCardTwo = styled(Card)`
   margin: 0px 0px 0px 15px;
   min-width: 250px;
   min-height: 100%;
+  .ant-card-head {
+    height: 60px;
+  }
   .ant-card-body {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: calc(100% - 60px);
     .ant-input-disabled {
       padding: 4px 22px;
     }
@@ -344,12 +347,13 @@ const UpdateButton = styled(Button)`
   width: 100%;
   height: 32px;
   font-weight: 600;
-  color: #1774f0;
+  color: ${themeColor};
   background-color: #ffffff;
-  border: 1px #1774f0 solid;
+  border: 1px solid ${themeColor};
   text-transform: uppercase;
   &:hover {
     color: #ffffff;
-    background-color: #1774f0;
+    background-color: ${themeColor};
+    border-color: ${themeColor};
   }
 `;

@@ -20,7 +20,7 @@ class ComposeQuestion extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
-    toolbarId: PropTypes.object,
+    toolbarId: PropTypes.string,
     fillSections: PropTypes.func,
     cleanSections: PropTypes.func,
     setQuestionData: PropTypes.func.isRequired
@@ -118,7 +118,14 @@ class ComposeQuestion extends Component {
     return (
       <Widget data-cy="questiontext" questionTextArea>
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
-        <FroalaEditor tag="textarea" value={item.stimulus} toolbarId={toolbarId} onChange={this.onChangeQuestion} />
+        <FroalaEditor
+          tag="textarea"
+          placeholder={t("component.multiplechoice.questionPlaceholder")}
+          value={item.stimulus}
+          toolbarId={toolbarId}
+          onChange={this.onChangeQuestion}
+          theme="border"
+        />
       </Widget>
     );
   }

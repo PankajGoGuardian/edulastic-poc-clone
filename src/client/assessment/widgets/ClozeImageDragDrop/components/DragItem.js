@@ -3,6 +3,8 @@ import { DragSource } from "react-dnd";
 import PropTypes from "prop-types";
 import striptags from "striptags";
 
+import DragPreview from "../../../components/DragPreview";
+
 function collectSource(connector, monitor) {
   return {
     connectDragSource: connector.dragSource(),
@@ -39,7 +41,7 @@ const specSource = {
   }
 };
 
-const DragItem = ({ connectDragSource, data, children, style, title }) =>
+const DragItem = ({ connectDragSource, data, children, style, title, ...restProps }) =>
   data &&
   connectDragSource(
     <div
@@ -47,7 +49,9 @@ const DragItem = ({ connectDragSource, data, children, style, title }) =>
       style={{
         ...style
       }}
+      draggable
     >
+      <DragPreview {...restProps}>{children}</DragPreview>
       {children}
     </div>
   );

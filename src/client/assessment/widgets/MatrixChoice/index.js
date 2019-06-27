@@ -21,6 +21,7 @@ import MultipleChoiceOptions from "./MultipleChoiceOptions";
 import Steams from "./Steams";
 import Answers from "./Answers";
 import { ContentArea } from "../../styled/ContentArea";
+import { PREVIEW, EDIT, CLEAR, CHECK, SHOW } from "../../constants/constantsForQuestions";
 
 const EmptyWrapper = styled.div``;
 
@@ -38,6 +39,7 @@ const MatrixChoice = ({
   cleanSections,
   isSidebarCollapsed,
   advancedAreOpen,
+  disableResponse,
   ...restProps
 }) => {
   const [feedbackAttempts, setFeedbackAttempts] = useState(item.feedback_attempts);
@@ -77,7 +79,7 @@ const MatrixChoice = ({
 
   return (
     <Fragment>
-      {view === "edit" && (
+      {view === EDIT && (
         <ContentArea isSidebarCollapsed={isSidebarCollapsed}>
           <Fragment>
             <ComposeQuestion
@@ -114,9 +116,9 @@ const MatrixChoice = ({
           </Fragment>
         </ContentArea>
       )}
-      {view === "preview" && (
+      {view === PREVIEW && (
         <Wrapper>
-          {previewTab === "check" && (
+          {previewTab === CHECK && (
             <Preview
               type="check"
               saveAnswer={saveAnswer}
@@ -124,10 +126,12 @@ const MatrixChoice = ({
               item={itemForPreview}
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
+              previewTab={previewTab}
+              {...restProps}
             />
           )}
 
-          {previewTab === "show" && (
+          {previewTab === SHOW && (
             <Preview
               type="show"
               saveAnswer={saveAnswer}
@@ -135,19 +139,22 @@ const MatrixChoice = ({
               item={itemForPreview}
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
+              previewTab={previewTab}
               {...restProps}
             />
           )}
 
-          {previewTab === "clear" && (
+          {previewTab === CLEAR && (
             <Preview
               smallSize={smallSize}
               type="clear"
-              saveAnswer={saveAnswer}
+              saveAnswer={!disableResponse ? saveAnswer : () => {}}
               userAnswer={answer}
               item={itemForPreview}
               feedbackAttempts={feedbackAttempts}
               onCheckAnswer={_checkAnswer}
+              previewTab={previewTab}
+              {...restProps}
             />
           )}
         </Wrapper>
@@ -169,6 +176,7 @@ MatrixChoice.propTypes = {
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
+  disableResponse: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired
 };
 
@@ -180,7 +188,8 @@ MatrixChoice.defaultProps = {
   smallSize: false,
   advancedAreOpen: false,
   fillSections: () => {},
-  cleanSections: () => {}
+  cleanSections: () => {},
+  disableResponse: false
 };
 
 const enhance = compose(

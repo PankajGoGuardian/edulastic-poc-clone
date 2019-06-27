@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "antd";
 import styled from "styled-components";
-import { green, white, greenDark, lightBlueSecondary, newBlue, darkBlue } from "@edulastic/colors";
+import { white, themeColorLight } from "@edulastic/colors";
 
 const EduButton = ({ children, ...restProps }) => <StyledButton {...restProps}>{children}</StyledButton>;
 
@@ -19,11 +19,11 @@ const StyledButton = styled(Button)`
       style = {
         ...style,
         ...{
-          background: "#42d184",
+          background: themeColorLight,
           color: white,
           border: "none",
           ":hover, :focus": {
-            background: "#42d184",
+            background: themeColorLight,
             color: white
           }
         }

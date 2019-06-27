@@ -41,5 +41,8 @@ export { withMathFormula as WithMathFormula } from "./src/HOC/withMathFormula";
 export { scrollTo, offset } from "./src/utils/DomUtils";
 export { default as helpers } from "./src/helpers";
 
+// contexts
+export { default as AnswerContext } from "./src/contexts/AnswerContext";
+
 // realtime hook
 export { default as useRealtimeV2 } from "./src/useRealtimeV2";

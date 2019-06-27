@@ -3,6 +3,7 @@ import JXG from "jsxgraph";
 import { replaceLatexesWithMathHtml } from "@edulastic/common/src/utils/mathUtils";
 
 import { calcMeasure, getClosestTick } from "../utils";
+import { AUTO_VALUE } from "../config/constants";
 
 const deleteIconPattern =
   '<svg id="{iconId}" class="delete-mark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12.728 16.702">' +
@@ -149,7 +150,8 @@ const alignMarks = board => {
   const {
     numberlineAxis: { separationDistanceX, separationDistanceY },
     canvas,
-    layout: { linePosition, pointBoxPosition }
+    layout: { linePosition, pointBoxPosition, height: layoutHeight },
+    setCalculatedHeight
   } = board.numberlineSettings;
 
   const [, yMeasure] = calcMeasure(board.$board.canvasWidth, board.$board.canvasHeight, board);
@@ -164,6 +166,7 @@ const alignMarks = board => {
 
   let offsetX = xMin; // right side of previous mark
   let offsetY = containerY; // bottom side of previous marks line
+  let minY = 10; // y position of lowest mark
   board.elements.forEach(mark => {
     if (mark.Y() === lineY) {
       return;
@@ -181,6 +184,7 @@ const alignMarks = board => {
 
     const x = offsetX + marginLeft + width / 2;
     const y = offsetY - (marginTop + height);
+    minY = Math.min(y, minY);
     mark.setPosition(setCoords, [x, y]);
     mark.setAttribute({
       cssClass: "fr-box mark",
@@ -189,6 +193,21 @@ const alignMarks = board => {
 
     offsetX = x + width / 2;
   });
+
+  // set auto calculated height if needed
+  if (layoutHeight !== AUTO_VALUE) {
+    return;
+  }
+
+  const extraHeight = (yMin - minY) * pxInUnitY;
+  if (extraHeight <= 0) {
+    return;
+  }
+
+  const containerHeight = (board.$board.canvasHeight * (100 - pointBoxPosition)) / 100;
+  const newContainerHeight = containerHeight + extraHeight + separationDistanceY;
+  const newHeight = +((newContainerHeight * 100) / (100 - pointBoxPosition) + 3).toFixed(4);
+  setCalculatedHeight(newHeight);
 };
 
 export default {

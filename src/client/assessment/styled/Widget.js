@@ -11,6 +11,16 @@ export const Widget = styled.div`
   padding: 30px;
   background: #f8f8fb;
   border-radius: 4px;
+  ${({ visible }) =>
+    typeof visible !== "undefined" &&
+    !visible &&
+    `
+        position: absolute;
+        top: -300000; 
+        width: 0;
+        height: 0;
+        overflow: hidden;
+      `}}
 
   &:not(:first-child) {
     margin-top: 30px;
@@ -133,28 +143,6 @@ export const WidgetSubHeading = styled.div`
     font-size: 16px;
     line-height: 1.5;
     margin-bottom: 15px;
-  }
-`;
-
-export const WidgetFRContainer = styled.div`
-  .fr {
-    &-box {
-      background: ${white};
-      min-height: 134px;
-      border-radius: 4px;
-      border: 1px solid ${dashBorderColor};
-      display: flex;
-    }
-    &-wrapper {
-      width: 100%;
-      min-height: 100%;
-      display: flex;
-    }
-    &-view {
-      width: 100%;
-      min-height: 100%;
-      padding: 20px 23px;
-    }
   }
 `;
 

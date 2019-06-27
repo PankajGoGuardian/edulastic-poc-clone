@@ -5,7 +5,7 @@ import { Subtitle } from "../../../styled/Subtitle";
 
 const Layout = ({ children, t }) => (
   <div data-cy="layout">
-    <Subtitle>{t("component.options.layout")}</Subtitle>
+    <Subtitle>{t("component.options.display")}</Subtitle>
     {children}
   </div>
 );

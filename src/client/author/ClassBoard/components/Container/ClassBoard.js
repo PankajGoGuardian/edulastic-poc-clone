@@ -11,8 +11,6 @@ import { withNamespaces } from "@edulastic/localization";
 import {
   receiveTestActivitydAction,
   receiveClassResponseAction,
-  openAssignmentAction,
-  closeAssignmentAction,
   releaseScoreAction,
   markAsDoneAction,
   markAbsentAction
@@ -38,7 +36,6 @@ import {
   gradebookUnSelectAllAction,
   gradebookSetSelectedAction
 } from "../../../src/reducers/gradeBook";
-
 // components
 import Score from "../Score/Score";
 import DisneyCardContainer from "../DisneyCardContainer/DisneyCardContainer";
@@ -47,6 +44,7 @@ import BarGraph from "../BarGraph/BarGraph";
 import { GenSelect } from "../../../Shared/Components/ClassSelect/ClassSelect";
 import StudentSelect from "../../../Shared/Components/StudentSelect/StudentSelect";
 import ClassHeader from "../../../Shared/Components/ClassHeader/ClassHeader";
+import PresentationToggleSwitch from "../../../Shared/Components/PresentationToggleSwitch";
 import HooksContainer from "../HooksContainer/HooksContainer";
 import RedirectPopup from "../RedirectPopUp";
 import { StudentReportCardMenuModal } from "../../../Shared/Components/ClassHeader/components/studentReportCardMenuModal";
@@ -80,10 +78,13 @@ import {
   QuestionButton,
   BothButton,
   RedirectButton,
-  PrintButton,
-  StudentGrapContainer
+  ClassBoardFeats,
+  StudentGrapContainer,
+  ButtonIconWrap,
+  MenuItems,
+  CaretUp,
+  DropMenu
 } from "./styled";
-import { getUserRole } from "../../../../student/Login/ducks";
 import ConfirmationModal from "../../../../common/components/ConfirmationModal";
 
 class ClassBoard extends Component {
@@ -105,7 +106,8 @@ class ClassBoard extends Component {
       selectedStudentId: "",
       visible: false,
       condition: true, // Whether meet the condition, if not show popconfirm.
-
+      disabledList: [],
+      absentList: [],
       studentReportCardMenuModalVisibility: false,
       studentReportCardModalVisibility: false,
       studentReportCardModalColumnsFlags: {},
@@ -248,11 +250,13 @@ class ClassBoard extends Component {
   handleRedirect = () => {
     const { selectedStudents, testActivity } = this.props;
     const notStartedStudents = testActivity.filter(
-      x => selectedStudents[x.studentId] && (x.status === "notStarted" || x.status === "inProgress")
+      x =>
+        selectedStudents[x.studentId] &&
+        (x.status === "notStarted" || x.status === "inProgress" || x.status === "redirected")
     );
 
     if (notStartedStudents.length > 0) {
-      message.warn("Only absent and submitted students can be redirected");
+      message.warn("You can redirect only Submitted and Absent student(s).");
       return;
     }
     this.setState({ redirectPopup: true });
@@ -316,23 +320,6 @@ class ClassBoard extends Component {
     this.setState(state => ({ ...state, studentReportCardModalVisibility: false }));
   };
 
-  handleOpenAssignment = () => {
-    const { openAssignment, match, additionalData, userRole } = this.props;
-    const { assignmentId, classId } = match.params;
-    if (additionalData.testType === "common assessment" && userRole === "teacher") {
-      return message.error(`You can open the assessment once the Open time ${moment(additionalData.endDate)} has passed.
-    `);
-    }
-    openAssignment(assignmentId, classId);
-  };
-
-  handleCloseAssignment = () => {
-    const { closeAssignment, match } = this.props;
-    const { assignmentId, classId } = match.params;
-
-    closeAssignment(assignmentId, classId);
-  };
-
   handleShowMarkAsAbsentModal = () => {
     const { selectedStudents, testActivity, assignmentStatus } = this.props;
     if (assignmentStatus.toLowerCase() === "not open") return message.warn("Assignment is not opened yet");
@@ -341,12 +328,13 @@ class ClassBoard extends Component {
       return message.warn("At least one student should be selected to be Marked as Absent.");
     const mapTestActivityByStudId = keyBy(testActivity, "studentId");
     const selectedNotStartedStudents = selectedStudentKeys.filter(
-      item => mapTestActivityByStudId[item].status === "notStarted"
+      item =>
+        mapTestActivityByStudId[item].status === "notStarted" || mapTestActivityByStudId[item].status === "redirected"
     );
     if (selectedNotStartedStudents.length !== selectedStudentKeys.length) {
       const submittedStudents = selectedStudentKeys.length - selectedNotStartedStudents.length;
       return message.warn(
-        `${submittedStudents} student(s) that you selected have already submitted the assessment, you will not be allowed to submit again.`
+        `${submittedStudents} student(s) that you selected have already started the assessment, you will not be allowed to mark as absent.`
       );
     }
     this.setState({ showModal: true, selectedNotStartedStudents, modalInputVal: "" });
@@ -370,6 +358,30 @@ class ClassBoard extends Component {
     this.setState({ modalInputVal: e.target.value });
   };
 
+  updateDisabledList = (studId, status) => {
+    const { disabledList, absentList } = this.state;
+    if (status === "NOT STARTED" || status === "IN PROGRESS" || status === "REDIRECTED") {
+      if (!disabledList.includes(studId)) {
+        this.setState({ disabledList: [...disabledList, studId] });
+      }
+    } else {
+      const index = disabledList.indexOf(studId);
+      if (index >= 0) {
+        this.setState({ disabledList: [...disabledList.slice(0, index), ...disabledList.slice(index + 1)] });
+      }
+    }
+    if (status === "ABSENT") {
+      if (!absentList.includes(studId)) {
+        this.setState({ absentList: [...absentList, studId] });
+      }
+    } else {
+      const index = absentList.indexOf(studId);
+      if (index >= 0) {
+        this.setState({ absentList: [...absentList.slice(0, index), ...absentList.slice(index + 1)] });
+      }
+    }
+  };
+
   render() {
     const {
       gradebook,
@@ -390,9 +402,7 @@ class ClassBoard extends Component {
       enableMarkAsDone,
       showScore,
       isPresentationMode,
-      userRole,
       entities,
-      status,
       labels,
       assignmentStatus
     } = this.props;
@@ -411,6 +421,8 @@ class ClassBoard extends Component {
       studentReportCardModalColumnsFlags,
       itemId,
       selectedQid,
+      disabledList,
+      absentList,
       selectAll,
       nCountTrue,
       modalInputVal,
@@ -429,14 +441,8 @@ class ClassBoard extends Component {
     );
     const firstQuestionEntities = get(entities, [0, "questionActivities"], []);
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
-    const { canOpenClass = [], canCloseClass = [], openPolicy, closePolicy } = additionalData || {};
-    const canOpen =
-      canOpenClass.includes(classId) && !(openPolicy === "Open Manually by Admin" && userRole === "teacher");
-    const canClose =
-      canCloseClass.includes(classId) && !(closePolicy === "Close Manually by Admin" && userRole === "teacher");
     const disableMarkAbsent =
       assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
-    const hasMoreOptions = canOpen || canClose;
     return (
       <div>
         {showModal ? (
@@ -473,8 +479,14 @@ class ClassBoard extends Component {
             <AnchorLink to="/author/assignments">{additionalData.testName}</AnchorLink> /{" "}
             <Anchor>{additionalData.className}</Anchor>
           </PaginationInfo>
+
           <StudentButtonDiv data-cy="studentnQuestionTab">
-            <BothButton active={selectedTab === "Both"} onClick={e => this.onTabChange(e, "Both")}>
+            <PresentationToggleSwitch />
+            <BothButton
+              style={{ marginLeft: "10px" }}
+              active={selectedTab === "Both"}
+              onClick={e => this.onTabChange(e, "Both")}
+            >
               CARD VIEW
             </BothButton>
             <StudentButton
@@ -532,63 +544,49 @@ class ClassBoard extends Component {
                     {unselectedStudents.length > 0 ? "SELECT ALL" : "UNSELECT ALL"}
                   </StyledCheckbox>
                 </CheckContainer>
-
-                <PrintButton
-                  data-cy="printButton"
-                  onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
-                >
-                  <img src={Ptools} alt="" />
-                  PRINT
-                </PrintButton>
-                <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
-                  <img src={Elinks} alt="" />
-                  REDIRECT
-                </RedirectButton>
-                <RedirectButton
-                  onClick={this.handleReleaseScore}
-                  style={{ textDecoration: showScore ? "line-through" : "none" }}
-                >
-                  Release Score
-                </RedirectButton>
-                <RedirectButton onClick={this.onStudentReportCardsClick}>Student Report Cards</RedirectButton>
-                <FeaturesSwitch
-                  inputFeatures="assessmentSuperPowersMarkAsDone"
-                  actionOnInaccessible="hidden"
-                  gradeSubject={gradeSubject}
-                >
+                <ClassBoardFeats>
                   <RedirectButton
-                    onClick={this.handleMarkAsDone}
-                    disabled={!enableMarkAsDone || status.toLowerCase() === "done"}
+                    first={true}
+                    data-cy="printButton"
+                    onClick={() => history.push(`/author/printpreview/${additionalData.testId}`)}
                   >
-                    Mark as Done
+                    <ButtonIconWrap>
+                      <img src={Ptools} alt="" />
+                    </ButtonIconWrap>
+                    PRINT
                   </RedirectButton>
-                  <Dropdown
-                    overlay={
-                      <Menu>
-                        {!hasMoreOptions && <span>&nbsp; --------</span>}
-                        <Menu.Item onClick={this.handleShowMarkAsAbsentModal} disabled={disableMarkAbsent}>
-                          <RedirectButton disabled={disableMarkAbsent}>Mark as Absent</RedirectButton>
-                        </Menu.Item>
-                        {canOpen && (
-                          <Menu.Item onClick={this.handleOpenAssignment}>
-                            <RedirectButton>Open</RedirectButton>
-                          </Menu.Item>
-                        )}
-                        {canClose && (
-                          <Menu.Item onClick={this.handleCloseAssignment}>
-                            <RedirectButton>Close</RedirectButton>
-                          </Menu.Item>
-                        )}
-                      </Menu>
-                    }
-                    placement="bottomLeft"
+                  <RedirectButton data-cy="rediectButton" onClick={this.handleRedirect}>
+                    <ButtonIconWrap>
+                      <img src={Elinks} alt="" />
+                    </ButtonIconWrap>
+                    REDIRECT
+                  </RedirectButton>
+                  <FeaturesSwitch
+                    inputFeatures="assessmentSuperPowersMarkAsDone"
+                    actionOnInaccessible="hidden"
+                    gradeSubject={gradeSubject}
                   >
-                    <RedirectButton>
-                      <i className="fa fa-bars" aria-hidden="true" />
-                      &nbsp; More
-                    </RedirectButton>
-                  </Dropdown>
-                </FeaturesSwitch>
+                    <Dropdown
+                      overlay={
+                        <DropMenu>
+                          <CaretUp className="fa fa-caret-up" />
+                          <MenuItems disabled={disableMarkAbsent} onClick={this.handleShowMarkAsAbsentModal}>
+                            Mark as Absent
+                          </MenuItems>
+                          <MenuItems onClick={this.onStudentReportCardsClick}>Student Report Cards</MenuItems>
+                        </DropMenu>
+                      }
+                      placement="bottomRight"
+                    >
+                      <RedirectButton last={true}>
+                        <ButtonIconWrap>
+                          <i class="fa fa-ellipsis-h" />{" "}
+                        </ButtonIconWrap>
+                        MORE
+                      </RedirectButton>
+                    </Dropdown>
+                  </FeaturesSwitch>
+                </ClassBoardFeats>
               </StyledFlexContainer>
             }
 
@@ -619,6 +617,7 @@ class ClassBoard extends Component {
               <DisneyCardContainer
                 selectedStudents={selectedStudents}
                 testActivity={testActivity}
+                updateDisabledList={this.updateDisabledList}
                 assignmentId={assignmentId}
                 classId={classId}
                 studentSelect={this.onSelectCardOne}
@@ -636,6 +635,8 @@ class ClassBoard extends Component {
             <RedirectPopup
               open={redirectPopup}
               allStudents={allStudents}
+              disabledList={disabledList}
+              absentList={absentList}
               selectedStudents={selectedStudents}
               additionalData={additionalData}
               closePopup={() => {
@@ -736,7 +737,6 @@ const enhance = compose(
       enableMarkAsDone: getMarkAsDoneEnableSelector(state),
       assignmentStatus: get(state, ["author_classboard_testActivity", "data", "status"], ""),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      userRole: getUserRole(state),
       labels: getQLabelsSelector(state)
     }),
     {
@@ -748,8 +748,6 @@ const enhance = compose(
       setSelected: gradebookSetSelectedAction,
       setReleaseScore: releaseScoreAction,
       setMarkAsDone: markAsDoneAction,
-      openAssignment: openAssignmentAction,
-      closeAssignment: closeAssignmentAction,
       markAbsent: markAbsentAction
     }
   )
@@ -780,12 +778,8 @@ ClassBoard.propTypes = {
   enableMarkAsDone: PropTypes.bool,
   setMarkAsDone: PropTypes.func,
   isPresentationMode: PropTypes.bool,
-  openAssignment: PropTypes.func,
-  closeAssignment: PropTypes.func,
-  userRole: PropTypes.string,
   testQuestionActivities: PropTypes.array,
   qActivityByStudent: PropTypes.any,
   entities: PropTypes.array,
-  status: PropTypes.string,
   labels: PropTypes.array
 };

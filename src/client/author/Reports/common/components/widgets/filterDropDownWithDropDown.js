@@ -3,10 +3,6 @@ import styled from "styled-components";
 import { Button, Dropdown, Menu, Icon } from "antd";
 import { NormalDropDown } from "./normalDropDown";
 
-const StyledMenu = styled(Menu)`
-  min-width: 250px;
-`;
-
 export const FilterDropDownWithDropDown = ({ className, updateCB, data }) => {
   const [visible, setVisible] = useState(false);
 
@@ -26,7 +22,7 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data }) => {
         return (
           <Menu.Item key={item.key}>
             <p>{item.title}</p>
-            <NormalDropDown by={item.data[0]} updateCB={updateNormalDropDownCB} data={item.data} comData={item.key} />
+            <StyledDropDown by={item.data[0]} updateCB={updateNormalDropDownCB} data={item.data} comData={item.key} />
           </Menu.Item>
         );
       })}
@@ -43,3 +39,15 @@ export const FilterDropDownWithDropDown = ({ className, updateCB, data }) => {
     </div>
   );
 };
+const StyledMenu = styled(Menu)`
+  min-width: 250px;
+`;
+
+const StyledDropDown = styled(NormalDropDown)`
+  .ant-btn {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+`;

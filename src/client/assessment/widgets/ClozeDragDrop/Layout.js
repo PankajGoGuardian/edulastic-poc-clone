@@ -79,7 +79,7 @@ class Layout extends Component {
     return (
       <Widget>
         <Block style={{ paddingTop: 0 }}>
-          <Subtitle>{t("component.options.layout")}</Subtitle>
+          <Subtitle>{t("component.options.display")}</Subtitle>
           <Row gutter={20}>
             <Col md={8}>
               <Label>{t("component.options.responsecontainerposition")}</Label>

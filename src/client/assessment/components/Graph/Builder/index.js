@@ -1,5 +1,6 @@
 import JXG from "jsxgraph";
 import getDefaultConfig, { CONSTANT, Colors } from "./config";
+import { AUTO_VALUE, AUTO_HEIGHT_VALUE, LOST_HEIGHT_PIXELS } from "./config/constants";
 import {
   Point,
   Line,
@@ -98,6 +99,8 @@ class Board {
 
     this.stackResponses = false;
 
+    this.disableResponse = false;
+
     this.stackResponsesSpacing = 30;
 
     this.responsesAllowed = null;
@@ -107,6 +110,8 @@ class Board {
     this.dragged = false;
 
     this.drawingObject = null;
+
+    this.elementsAreEvaluated = false;
 
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
@@ -301,6 +306,10 @@ class Board {
    */
   setCreatingHandler() {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
+      if (this.disableResponse) {
+        return;
+      }
+
       if (this.dragged) {
         this.dragged = false;
         return;
@@ -327,6 +336,10 @@ class Board {
     });
   }
 
+  setDisableResponse() {
+    this.disableResponse = true;
+  }
+
   resetOutOfLineMarks() {
     const { canvas } = this.numberlineSettings;
     this.elements.forEach(mark => {
@@ -337,18 +350,25 @@ class Board {
     });
   }
 
-  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue) {
+  updateNumberlineSettings(canvas, numberlineAxis, layout, first, setValue = () => {}, setCalculatedHeight = () => {}) {
     this.numberlineSettings = {
       canvas,
       numberlineAxis,
       layout,
-      setValue
+      setValue,
+      setCalculatedHeight
     };
 
     Object.values(this.$board.defaultAxes).forEach(axis => this.$board.removeObject(axis));
 
     if (this.graphType === "axisLabels") {
-      this.resizeContainer(layout.width, layout.height);
+      let { height } = layout;
+      if (height === AUTO_VALUE) {
+        height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
+      } else if (Number.isNaN(Number.parseFloat(height))) {
+        height = 0;
+      }
+      this.resizeContainer(layout.width, height);
     } else {
       this.updateStackSettings(
         numberlineAxis.stackResponses,
@@ -372,7 +392,7 @@ class Board {
         yMax: canvas.yMax,
         yMin: canvas.yMin
       });
-      if (!first) {
+      if (!first && this.numberlineAxis) {
         this.resetOutOfLineMarks();
         Mark.alignMarks(this);
         setValue();
@@ -425,7 +445,8 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = []) {
+  renderMarks(marks, markCoords = [], elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(Mark.onHandler(this, markCoord, mark));
@@ -817,7 +838,8 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg, labelIsReadOnly = false) {
+  loadFromConfig(flatCfg, labelIsReadOnly, elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
     const config = flat2nestedConfig(flatCfg);
     this.elements.push(
       ...this.loadObjects(config, ({ objectCreator, el }) => {
@@ -869,7 +891,8 @@ class Board {
     );
   }
 
-  loadSegments(elements) {
+  loadSegments(elements, elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
     this.elements.push(
       ...elements.map(element => {
         switch (element.type) {

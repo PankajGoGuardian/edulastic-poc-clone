@@ -11,7 +11,7 @@ import { renderAnalytics } from "../../../../Summary/components/Sidebar/Sidebar"
 import { AudioIcon } from "../../../../../../ItemList/components/Item/styled";
 import { MetaTag } from "./styled";
 
-const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio } }) => (
+const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio = {} } }) => (
   <FlexContainer justifyContent="space-between" style={{ width: "100%" }}>
     <FlexContainer>
       {standards && !!standards.length && (
@@ -39,7 +39,11 @@ const MetaInfoCell = ({ data: { standards, types, by, id, shared, likes, audio }
       {renderAnalytics(id, IconHash)}
       {renderAnalytics(shared, IconShare)}
       {renderAnalytics(likes, IconHeart)}
-      {audio.hasOwnProperty("ttsSuccess") ? <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} /> : ""}
+      {audio && audio.hasOwnProperty("ttsSuccess") ? (
+        <AudioIcon className="fa fa-volume-up" success={audio.ttsSuccess} />
+      ) : (
+        ""
+      )}
     </FlexContainer>
   </FlexContainer>
 );

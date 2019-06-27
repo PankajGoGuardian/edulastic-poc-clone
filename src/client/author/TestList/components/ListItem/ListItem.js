@@ -59,7 +59,7 @@ class ListItem extends Component {
   moveToItem = () => {
     const { history, item, match, mode } = this.props;
     if (mode !== "embedded") {
-      history.push(`${match.url}/${item._id}`);
+      history.push(`${match.url}/${item._id}#review`);
     }
   };
 

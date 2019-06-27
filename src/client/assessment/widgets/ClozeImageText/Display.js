@@ -152,8 +152,10 @@ class Display extends Component {
       whiteSpace: wordwrap ? "inherit" : "nowrap"
     };
 
+    const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
     const canvasHeight = imageHeight + (imageOptions.y || 0);
+    const canvasWidth = imageWidth + +(imageOptions.x || 0);
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
@@ -162,6 +164,7 @@ class Display extends Component {
       >
         <StyledPreviewContainer
           data-cy="image-text-answer-board"
+          width={canvasWidth > canvasDimensions.maxWidth ? canvasWidth : canvasDimensions.maxWidth}
           height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
         >
           <StyledPreviewImage
@@ -189,12 +192,14 @@ class Display extends Component {
                 : `solid 1px ${theme.widgets.clozeImageText.responseContainerSolidBorderColor}`,
               position: "absolute",
               background: backgroundColor,
-              borderRadius: 5
+              borderRadius: 5,
+              display: "inline-flex"
             };
             if (btnStyle && btnStyle.width === 0) {
               btnStyle.width = responseBtnStyle.width;
             }
             const indexNumber = helpers.getNumeration(dropTargetIndex, stemnumeration);
+            const responseWidth = parseInt(responseContainer.width, 10);
             return (
               <div
                 title={
@@ -217,6 +222,7 @@ class Display extends Component {
                 <ClozeTextInput
                   index={dropTargetIndex}
                   disabled={disableResponse}
+                  noIndent={responseWidth < 30}
                   resprops={{
                     btnStyle: {},
                     item,

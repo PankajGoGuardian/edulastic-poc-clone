@@ -8,7 +8,7 @@ import {
   linkColor1,
   cardTitleColor,
   lightGreySecondary,
-  lightBlueSecondary,
+  themeColor,
   red,
   blueBorder
 } from "@edulastic/colors";
@@ -59,12 +59,12 @@ export const StyledAnchor = styled(Anchor)`
   }
 
   .ant-anchor-link-title-active {
-    color: ${lightBlueSecondary};
+    color: ${themeColor};
     font-weight: 600;
   }
 
   .ant-anchor-ink-ball {
-    background: ${lightBlueSecondary};
+    background: ${themeColor};
     border: none;
   }
 `;

@@ -176,7 +176,7 @@ const reducer = (state = initialState, { type, payload }) => {
     case TOGGLE_PRESENTATION_MODE:
       return {
         ...state,
-        presentationMode: payload
+        presentationMode: !state.presentationMode
       };
     case UPDATE_OPEN_ASSIGNMENTS:
       return {

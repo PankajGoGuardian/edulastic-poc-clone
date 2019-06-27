@@ -60,6 +60,8 @@ const ResponseRnd = props => {
 
         draft.responseOptions[index] = {
           ...draft.responseOptions[index],
+          x: position.x,
+          y: position.y,
           width: updatedWidth,
           height: updatedHeight
         };

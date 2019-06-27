@@ -4,12 +4,13 @@ import { connect } from "react-redux";
 import { withNamespaces } from "@edulastic/localization";
 import PropTypes from "prop-types";
 import styled from "styled-components";
-import { Progress, withWindowSizes } from "@edulastic/common";
+import { Progress, withWindowSizes, AnswerContext } from "@edulastic/common";
 import { IconClose } from "@edulastic/icons";
 import { cloneDeep, get } from "lodash";
 import { Row, Col, Switch, Input, Layout } from "antd";
 import { MAX_MOBILE_WIDTH } from "../../../src/constants/others";
 import { changeViewAction, changePreviewAction } from "../../../src/actions/view";
+import { getViewSelector, getPreviewSelector } from "../../../src/selectors/view";
 import { checkAnswerAction, showAnswerAction, toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import {
   getItemDetailByIdAction,
@@ -56,15 +57,13 @@ class Container extends Component {
   state = {
     showModal: false,
     showSettings: false,
-    view: "preview",
     enableEdit: false,
-    previewTab: "clear",
     hasAuthorPermission: false
   };
 
   componentDidMount() {
     const { getItemDetailById, match, modalItemId, setRedirectTest } = this.props;
-    getItemDetailById(modalItemId || match.params.id, { data: true, validation: true });
+    getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
 
     if (match.params.testId) {
       setRedirectTest(match.params.testId);
@@ -72,23 +71,27 @@ class Container extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem } = this.props;
+    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem, isTestFlow } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
+    const { itemId, testId } = match.params;
 
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
+      getItemDetailById(itemId, { data: true, validation: true });
       history.replace({
-        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
+          : `/author/items/${match.params.id}/pickup-questiontype`,
         state: {
           backText: t("component.itemDetail.backText"),
-          backUrl: "/author/items",
+          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
           rowIndex: 0,
           tabIndex: 0,
-          testItemId: match.params._id
+          testItemId: isTestFlow ? itemId : match.params._id
         }
       });
     }
@@ -103,7 +106,6 @@ class Container extends Component {
     const isAuthor = authors.some(author => author._id === props.currentAuthorId);
     if (isAuthor !== state.hasAuthorPermission) {
       return {
-        view: "edit",
         hasAuthorPermission: true
       };
     }
@@ -158,9 +160,8 @@ class Container extends Component {
   };
 
   handleChangeView = view => {
-    this.setState({
-      view
-    });
+    const { changeView } = this.props;
+    changeView(view);
   };
 
   handleShowSource = () => {
@@ -174,22 +175,23 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
+    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
     changeView("edit");
 
     if (modalItemId) {
       navigateToPickupQuestionType();
       return;
     }
-
     history.push({
-      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+      pathname: isTestFlow
+        ? `/author/tests/${match.params.testId}/createItem/${match.params.itemId}/pickup-questiontype`
+        : `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
         backText: t("component.itemDetail.backText"),
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: match.params._id
+        testItemId: isTestFlow ? match.params.itemId : match.params._id
       }
     });
   };
@@ -201,7 +203,6 @@ class Container extends Component {
   };
 
   handleApplySettings = ({ type }) => {
-    console.log(type, "type");
     const { updateDimension } = this.props;
     const { left, right } = this.getSizes(type);
     updateDimension(left, right);
@@ -225,10 +226,9 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { updateItemDetailById, match, item, createType, itemId, onCompleteItemCreation } = this.props;
-    if (createType === "Duplicate") {
-      updateItemDetailById(itemId, item, match.params.id, true);
-      onCompleteItemCreation();
+    const { updateItemDetailById, match, item, isTestFlow } = this.props;
+    if (isTestFlow) {
+      updateItemDetailById(match.params.itemId, item, match.params.testId, true);
     } else {
       updateItemDetailById(match.params.id, item, match.params.testId);
     }
@@ -272,10 +272,6 @@ class Container extends Component {
     }
 
     changePreview(previewTab);
-
-    this.setState({
-      previewTab
-    });
   };
 
   handlePublishTestItem = () => {
@@ -288,6 +284,12 @@ class Container extends Component {
   handleEnableEdit = () => {
     this.setState({ enableEdit: true });
   };
+
+  componentWillUnmount() {
+    // reset the view to "edit" while leaving.
+    const { changeView } = this.props;
+    changeView("edit");
+  }
 
   renderPreview = () => {
     const { rows, preview, questions, item: itemProps } = this.props;
@@ -314,16 +316,17 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview } = this.props;
+    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow } = this.props;
 
-    const { previewTab, view, enableEdit } = this.state;
+    const { enableEdit } = this.state;
 
     let showPublishButton = false;
 
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        isTestFlow &&
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
     }
 
     return (
@@ -336,14 +339,14 @@ class Container extends Component {
         onSave={this.handleSave}
         saving={updating}
         view={view}
-        previewTab={previewTab}
+        previewTab={preview}
         showPublishButton={showPublishButton}
       />
     );
   };
 
   render() {
-    const { showModal, showSettings, view, previewTab, enableEdit, hasAuthorPermission } = this.state;
+    const { showModal, showSettings, enableEdit, hasAuthorPermission } = this.state;
     const {
       t,
       match,
@@ -364,7 +367,10 @@ class Container extends Component {
       currentAuthorId,
       history,
       setItemLevelScore,
-      setItemLevelScoring
+      setItemLevelScoring,
+      view,
+      isTestFlow,
+      preview
     } = this.props;
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
 
@@ -372,8 +378,20 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        (!isTestFlow && (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED)) ||
+        enableEdit;
     }
+    const { testId } = match.params;
+    let breadCrumb = [
+      {
+        title: "TEST LIBRARY",
+        to: "/author/tests"
+      },
+      {
+        title: "TEST",
+        to: `/author/tests/${testId}#review`
+      }
+    ];
     return (
       <Layout>
         {showModal && item && (
@@ -417,7 +435,8 @@ class Container extends Component {
             onPublishTestItem={this.handlePublishTestItem}
             saving={updating}
             view={view}
-            previewTab={previewTab}
+            previewTab={preview}
+            isTestFlow={isTestFlow}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
@@ -436,7 +455,7 @@ class Container extends Component {
         <BreadCrumbBar>
           <Col md={view === "preview" ? 12 : 24}>
             {windowWidth > MAX_MOBILE_WIDTH ? (
-              <SecondHeadBar>
+              <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
                 {item && view !== "preview" && qLength > 1 && (
                   <Row type="flex" justify="end" style={{ width: 250 }}>
                     <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
@@ -464,24 +483,26 @@ class Container extends Component {
           )}
         </BreadCrumbBar>
         {view === "edit" && (
-          <ItemDetailWrapper>
-            {rows &&
-              rows.map((row, i) => (
-                <ItemDetailRow
-                  key={i}
-                  row={row}
-                  view={view}
-                  rowIndex={i}
-                  itemData={item}
-                  count={rows.length}
-                  onAdd={this.handleAdd}
-                  windowWidth={windowWidth}
-                  onDeleteWidget={this.handleDeleteWidget(i)}
-                  onEditWidget={this.handleEditWidget}
-                  onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
-                />
-              ))}
-          </ItemDetailWrapper>
+          <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+            <ItemDetailWrapper>
+              {rows &&
+                rows.map((row, i) => (
+                  <ItemDetailRow
+                    key={i}
+                    row={row}
+                    view={view}
+                    rowIndex={i}
+                    itemData={item}
+                    count={rows.length}
+                    onAdd={this.handleAdd}
+                    windowWidth={windowWidth}
+                    onDeleteWidget={this.handleDeleteWidget(i)}
+                    onEditWidget={this.handleEditWidget}
+                    onEditTabTitle={(tabIndex, value) => updateTabTitle({ rowIndex: i, tabIndex, value })}
+                  />
+                ))}
+            </ItemDetailWrapper>
+          </AnswerContext.Provider>
         )}
         {view === "preview" && this.renderPreview()}
         {view === "metadata" && this.renderMetadata()}
@@ -554,7 +575,8 @@ const enhance = compose(
       questions: getQuestionsSelector(state),
       testItemStatus: getTestItemStatusSelector(state),
       preview: state.view.preview,
-      currentAuthorId: get(state, ["user", "user", "_id"])
+      currentAuthorId: get(state, ["user", "user", "_id"]),
+      view: getViewSelector(state)
     }),
     {
       changeView: changeViewAction,

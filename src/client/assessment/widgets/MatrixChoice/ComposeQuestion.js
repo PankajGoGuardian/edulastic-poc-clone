@@ -55,10 +55,12 @@ class ComposeQuestion extends Component {
     return (
       <Widget data-cy="questiontext">
         <Subtitle>{t("component.multiplechoice.composequestion")}</Subtitle>
+
         <QuestionTextArea
           placeholder={t("component.matrix.enterQuestion")}
           onChange={this.onChangeQuestion}
           value={item.stimulus ? item.stimulus : ""}
+          theme="border"
         />
       </Widget>
     );

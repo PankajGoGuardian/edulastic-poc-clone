@@ -1,18 +1,26 @@
 import React from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
+import { get } from "lodash";
 import PropTypes from "prop-types";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import ItemReport from "./ItemReport";
 import { getQuestionWithFeedbackSelector } from "../../sharedDucks/TestItem";
 
-const ReportListContent = ({ questions, flag }) => {
+const ReportListContent = ({ questions, flag, testActivityById }) => {
+  const { releaseScore = "" } = testActivityById;
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         <Wrapper>
           {questions.map((question, index) => (
-            <ItemReport key={index} question={question} index={index} />
+            <ItemReport
+              key={index}
+              question={question}
+              index={index}
+              releaseScore={releaseScore}
+              disableResponse={true}
+            />
           ))}
         </Wrapper>
       </AssignmentContentWrapper>
@@ -20,8 +28,9 @@ const ReportListContent = ({ questions, flag }) => {
   );
 };
 export default connect(
-  state => ({
-    questions: getQuestionWithFeedbackSelector(state)
+  (state, props) => ({
+    questions: getQuestionWithFeedbackSelector(state),
+    testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
   }),
   null
 )(ReportListContent);

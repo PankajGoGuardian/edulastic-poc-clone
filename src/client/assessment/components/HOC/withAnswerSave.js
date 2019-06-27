@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useContext } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { withRouter } from "react-router-dom";
-
+import { AnswerContext } from "@edulastic/common";
 import { setUserAnswerAction } from "../../actions/answers";
 import { getUserAnswerSelector, getEvaluationByIdSelector } from "../../selectors/answers";
 
@@ -13,17 +13,12 @@ export default WrappedComponent => {
   const hocComponent = ({ setUserAnswer, testItemId, evaluation, ...props }) => {
     const { data: question } = props;
     const questionId = getQuestionId(question.id);
+    const answerContext = useContext(AnswerContext);
 
-    return (
-      <WrappedComponent
-        saveAnswer={data => {
-          setUserAnswer(questionId, data);
-        }}
-        questionId={questionId}
-        evaluation={evaluation}
-        {...props}
-      />
-    );
+    const saveAnswer = data => {
+      if (answerContext.isAnswerModifiable) setUserAnswer(questionId, data);
+    };
+    return <WrappedComponent saveAnswer={saveAnswer} questionId={questionId} evaluation={evaluation} {...props} />;
   };
 
   hocComponent.propTypes = {

@@ -12,6 +12,7 @@ import {
   setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
+import { testActivity as testActivityConstants } from "@edulastic/constants";
 
 // constants
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
@@ -84,13 +85,14 @@ const isReport = assignment => {
 
 const statusFilter = filterType => assignment => {
   const lastAttempt = last(assignment.reports) || {};
-  const isSubmitted = (assignment.reports.length === 1 && lastAttempt.status != 0) || assignment.reports.length > 1;
-  const isGraded = false; // need to impliment graded status from API
+  const isSubmitted = (assignment.reports.length === 1 && lastAttempt.status === 1) || assignment.reports.length > 1;
+  const isAbsent = lastAttempt.status === 2 || !assignment.reports.length;
+  const isGraded = lastAttempt.graded == testActivityConstants.studentAssignmentConstants.assignmentStatus.GRADED;
   switch (filterType) {
     case FILTERS.MISSED:
-      return !isSubmitted;
+      return isAbsent;
     case FILTERS.SUBMITTED:
-      return isSubmitted;
+      return isSubmitted && !isGraded;
     case FILTERS.GRADED:
       return isGraded;
     default:

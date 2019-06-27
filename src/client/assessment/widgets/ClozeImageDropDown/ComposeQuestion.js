@@ -604,7 +604,7 @@ class ComposeQuestion extends Component {
                   )}
                   {!isEditableResizeMove && (
                     <MoveControlButton
-                      onMouseEnter={toggleIsMoveResizeEditable}
+                      onClick={toggleIsMoveResizeEditable}
                       top={imageTop + imageHeight - 14}
                       left={imageLeft + imageWidth - 14}
                       style={{

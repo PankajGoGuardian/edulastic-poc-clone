@@ -613,9 +613,9 @@ table.quill-table td {
   vertical-align: top;
 }
 
-.template_box p {
+/* .template_box p {
   display: inline;
-}
+} */
 
 .response-btn > div {
   align-self: center;

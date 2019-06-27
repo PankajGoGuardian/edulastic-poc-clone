@@ -20,14 +20,11 @@ import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
-const defaultTemplateMarkup =
-  '<p>Sample Template markup&nbsp;<span class="input__math" data-latex="xy^2"></span> &nbsp;<response contenteditable="false" index="{{0}}">Response</response> <response contenteditable="false" index="{{1}}">Response</response></p>';
-
 class ClozeDragDropDisplay extends Component {
   constructor(props) {
     super(props);
-    const { templateMarkUp } = props;
-    const respLength = this.getResponsesCount(templateMarkUp);
+    const { template } = props;
+    const respLength = this.getResponsesCount(template);
     const userAnswers = new Array(respLength).fill(false);
     props.userSelections.map((userSelection, index) => {
       userAnswers[index] = userSelection;
@@ -42,14 +39,14 @@ class ClozeDragDropDisplay extends Component {
   }
 
   componentDidMount() {
-    const { templateMarkUp } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp || defaultTemplateMarkup) });
+    const { template } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
   }
 
   componentWillReceiveProps(nextProps) {
     if (this.state !== undefined) {
       const possibleResponses = this.getInitialResponses(nextProps);
-      const parsedTemplate = helpers.parseTemplate(nextProps.templateMarkUp);
+      const parsedTemplate = helpers.parseTemplate(nextProps.template);
       this.setState({
         userAnswers: nextProps.userSelections ? [...nextProps.userSelections] : [],
         possibleResponses,
@@ -58,11 +55,11 @@ class ClozeDragDropDisplay extends Component {
     }
   }
 
-  getResponsesCount = templateMarkUp => {
+  getResponsesCount = template => {
     if (!window.$) {
       return 0;
     }
-    return $($("<div />").html(templateMarkUp)).find("response").length;
+    return $($("<div />").html(template)).find("response").length;
   };
 
   onDrop = (data, index) => {
@@ -460,7 +457,7 @@ ClozeDragDropDisplay.propTypes = {
   userSelections: PropTypes.array,
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  templateMarkUp: PropTypes.string,
+  template: PropTypes.string,
   question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
@@ -485,7 +482,7 @@ ClozeDragDropDisplay.defaultProps = {
   userSelections: [],
   evaluation: [],
   checkAnswer: false,
-  templateMarkUp: defaultTemplateMarkup,
+  template: "",
   smallSize: false,
   hasGroupResponses: false,
   validation: {},

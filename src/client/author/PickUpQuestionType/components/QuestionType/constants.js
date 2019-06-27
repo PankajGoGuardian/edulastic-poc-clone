@@ -1015,10 +1015,10 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeDragDrop,
-      stimulus: "",
+      stimulus: "Drag and Drop the right answer in the answers below",
       data: {
         title: "Cloze with Drag & Drop",
-        templateMarkUp: `<p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
+        template: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
         stimulus: "[This is stem.]",
         ui_style: {
@@ -1050,11 +1050,11 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeDropDown,
-      stimulus: "",
+      stimulus: "Pick the right options in the dropdown below",
       data: {
         title: "Cloze with Drop Down",
         type: questionType.CLOZE_DROP_DOWN,
-        templateMarkUp: `<p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
+        template: `<p>Pick the right options in the dropdown below.</p><p>Sample question text with &nbsp;<textdropdown responseindex="1" id=${
           uuids[0]
         } contenteditable="false"></textdropdown>&nbsp;and&nbsp;<textdropdown responseindex="2" id=${
           uuids[1]
@@ -1089,11 +1089,11 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeText,
-      stimulus: "",
+      stimulus: "Fill blank boxes with the right answer.",
       data: {
         title: "Cloze with Text",
         type: questionType.CLOZE_TEXT,
-        templateMarkUp: `<p>Sample question text with <textinput responseindex="1" id=${
+        template: `<p>Fill blank boxes with the right answer.</p><p>Sample question text with <textinput responseindex="1" id=${
           uuids[0]
         } contenteditable="false" /></textinput>&nbsp;and<textinput responseindex="2" contenteditable="false" id=${
           uuids[1]

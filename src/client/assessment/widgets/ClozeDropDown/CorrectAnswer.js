@@ -17,7 +17,7 @@ class CorrectAnswer extends Component {
     stimulus: PropTypes.string.isRequired,
     options: PropTypes.array.isRequired,
     hasGroupResponses: PropTypes.bool.isRequired,
-    templateMarkUp: PropTypes.string.isRequired,
+    template: PropTypes.string.isRequired,
     configureOptions: PropTypes.object.isRequired,
     uiStyle: PropTypes.object.isRequired,
     item: PropTypes.object.isRequired
@@ -49,17 +49,7 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const {
-      t,
-      options,
-      stimulus,
-      response,
-      templateMarkUp,
-      hasGroupResponses,
-      item,
-      configureOptions,
-      uiStyle
-    } = this.props;
+    const { t, options, stimulus, response, template, hasGroupResponses, item, configureOptions, uiStyle } = this.props;
     const { responseScore } = this.state;
     const itemLevelScoring = this.context;
     return (
@@ -86,7 +76,7 @@ class CorrectAnswer extends Component {
           uiStyle={uiStyle}
           question={stimulus}
           item={item}
-          templateMarkUp={templateMarkUp}
+          template={template}
           userSelections={response.value}
           configureOptions={configureOptions}
           onChange={this.handleMultiSelect}

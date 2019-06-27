@@ -18,12 +18,12 @@ class ClozeTextDisplay extends Component {
   };
 
   componentDidMount() {
-    const { templateMarkUp } = this.props;
-    this.setState({ parsedTemplate: helpers.parseTemplate(templateMarkUp) });
+    const { template } = this.props;
+    this.setState({ parsedTemplate: helpers.parseTemplate(template) });
   }
 
-  static getDerivedStateFromProps({ templateMarkUp }) {
-    return { parsedTemplate: helpers.parseTemplate(templateMarkUp) };
+  static getDerivedStateFromProps({ template }) {
+    return { parsedTemplate: helpers.parseTemplate(template) };
   }
 
   getFontSize = size => {
@@ -245,7 +245,7 @@ ClozeTextDisplay.propTypes = {
   uiStyle: PropTypes.object,
   instructorStimulus: PropTypes.string,
   /* eslint-disable react/no-unused-prop-types */
-  templateMarkUp: PropTypes.string,
+  template: PropTypes.string,
   responseIds: PropTypes.object,
   item: PropTypes.object,
   disableResponse: PropTypes.bool,
@@ -276,7 +276,7 @@ ClozeTextDisplay.defaultProps = {
     inputtype: "text",
     responsecontainerindividuals: []
   },
-  templateMarkUp: "",
+  template: "",
   showQuestionNumber: false,
   disableResponse: false,
   isReviewTab: false,

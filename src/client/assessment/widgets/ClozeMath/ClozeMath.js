@@ -19,7 +19,7 @@ import { ContentArea } from "../../styled/ContentArea";
 
 import { replaceVariables, updateVariables } from "../../utils/variables";
 
-import ComposeQuestion from "./ComposeQuestion";
+// import ComposeQuestion from "./ComposeQuestion";
 import Template from "./Template";
 import ChoicesForDropDown from "./ChoicesForDropDown";
 
@@ -71,12 +71,12 @@ const ClozeMath = ({
     >
       {view === EDIT && (
         <ContentArea data-cy="question-area" isSidebarCollapsed={isSidebarCollapsed}>
-          <ComposeQuestion
+          {/* <ComposeQuestion
             item={item}
             setQuestionData={_setQuestionData}
             fillSections={fillSections}
             cleanSections={cleanSections}
-          />
+          /> */}
           <Template
             item={item}
             setQuestionData={_setQuestionData}

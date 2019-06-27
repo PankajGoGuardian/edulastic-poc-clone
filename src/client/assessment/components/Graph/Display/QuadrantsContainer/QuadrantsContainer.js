@@ -101,6 +101,16 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
+const getCorrectAnswer = answerArr => {
+  if (Array.isArray(answerArr)) {
+    return answerArr.map(el => ({
+      colors: Colors.green[el.type],
+      ...el
+    }));
+  }
+  return answerArr;
+};
+
 const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => ({
@@ -178,7 +188,8 @@ class GraphContainer extends PureComponent {
       backgroundShapes,
       toolbar,
       setElementsStash,
-      graphType
+      graphType,
+      disableResponse
     } = this.props;
 
     const { tools } = toolbar;
@@ -190,6 +201,9 @@ class GraphContainer extends PureComponent {
     }
 
     if (this._graph) {
+      if (disableResponse) {
+        this._graph.setDisableResponse();
+      }
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -430,7 +444,14 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation, disableResponse } = this.props;
+
+    if (disableResponse) {
+      this._graph.resetAnswers();
+      this._graph.loadAnswersFromConfig(getCorrectAnswer(validation ? validation.valid_response.value : []));
+      return;
+    }
+
     if (checkAnswer || showAnswer) {
       let coloredElements;
       if (evaluation && checkAnswer) {
@@ -598,7 +619,7 @@ class GraphContainer extends PureComponent {
   };
 
   render() {
-    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId } = this.props;
+    const { toolbar, layout, annotation, controls, bgShapes, elements, questionId, disableResponse } = this.props;
     const { tools } = toolbar;
     const { selectedTool } = this.state;
     const hasAnnotation =
@@ -608,20 +629,24 @@ class GraphContainer extends PureComponent {
       <div data-cy="axis-quadrants-container" style={{ overflow: "auto", width: "100%" }}>
         <GraphWrapper>
           {annotation && annotation.title && <Title dangerouslySetInnerHTML={{ __html: annotation.title }} />}
-          <Tools
-            toolsAreVisible={!this.drawingObjectsAreVisible()}
-            tools={bgShapes ? this.allTools : tools}
-            controls={bgShapes ? this.allControls : controls}
-            tool={selectedTool}
-            bgShapes={bgShapes}
-            getIconByToolName={this.getIconByToolName}
-            getHandlerByControlName={this.getHandlerByControlName}
-            onSelect={this.onSelectTool}
-            fontSize={bgShapes ? 12 : layout.fontSize}
-          />
-          {!this.drawingObjectsAreVisible() && <Equations equations={equations} setEquations={this.setEquations} />}
+          {!disableResponse && (
+            <Tools
+              toolsAreVisible={!this.drawingObjectsAreVisible()}
+              tools={bgShapes ? this.allTools : tools}
+              controls={bgShapes ? this.allControls : controls}
+              tool={selectedTool}
+              bgShapes={bgShapes}
+              getIconByToolName={this.getIconByToolName}
+              getHandlerByControlName={this.getHandlerByControlName}
+              onSelect={this.onSelectTool}
+              fontSize={bgShapes ? 12 : layout.fontSize}
+            />
+          )}
+          {!this.drawingObjectsAreVisible() && !disableResponse && (
+            <Equations equations={equations} setEquations={this.setEquations} />
+          )}
           <JSXBoxWithDrawingObjectsWrapper>
-            {this.drawingObjectsAreVisible() && (
+            {this.drawingObjectsAreVisible() && !disableResponse && (
               <DrawingObjects
                 selectDrawingObject={this.selectDrawingObject}
                 drawingObjects={this.getDrawingObjects()}
@@ -682,7 +707,8 @@ GraphContainer.propTypes = {
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
-  altAnswerId: PropTypes.string
+  altAnswerId: PropTypes.string,
+  disableResponse: PropTypes.bool
 };
 
 GraphContainer.defaultProps = {
@@ -700,7 +726,8 @@ GraphContainer.defaultProps = {
     tools: [],
     drawingPrompt: "byTools",
     drawingObjects: []
-  }
+  },
+  disableResponse: false
 };
 
 export default connect(

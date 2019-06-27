@@ -94,11 +94,16 @@ class AxisLabelsContainer extends PureComponent {
       gridParams,
       graphType,
       setElementsStash,
-      setCalculatedHeight
+      setCalculatedHeight,
+      disableResponse
     } = this.props;
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
+      if (disableResponse) {
+        this._graph.setDisableResponse();
+      }
+
       let { height } = layout;
       if (height === AUTO_VALUE) {
         height = layout.autoCalcHeight || AUTO_HEIGHT_VALUE;
@@ -106,6 +111,7 @@ class AxisLabelsContainer extends PureComponent {
         height = 0;
       }
       this._graph.resizeContainer(layout.width, height);
+
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas
@@ -176,7 +182,18 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    const { elements, checkAnswer, showAnswer, evaluation, validation, list } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation, list, disableResponse } = this.props;
+
+    if (disableResponse) {
+      this._graph.removeMarksAnswers();
+      const answerArr = [...validation.valid_response.value].map(el => ({
+        className: "correct",
+        text: el.point,
+        ...el
+      }));
+      this._graph.loadMarksAnswers(answerArr, answerArr);
+      return;
+    }
 
     if (checkAnswer || showAnswer) {
       if (showAnswer) {
@@ -263,7 +280,7 @@ class AxisLabelsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, numberlineAxis, questionId } = this.props;
+    const { layout, numberlineAxis, questionId, disableResponse } = this.props;
 
     return (
       <div data-cy="axis-labels-container" style={{ overflow: "auto" }}>
@@ -278,13 +295,15 @@ class AxisLabelsContainer extends PureComponent {
           <span />
         </WithResources>
         <GraphWrapper>
-          <Tools
-            controls={this.controls}
-            getIconByToolName={() => ""}
-            getHandlerByControlName={this.getHandlerByControlName}
-            onSelect={() => {}}
-            fontSize={numberlineAxis.fontSize}
-          />
+          {!disableResponse && (
+            <Tools
+              controls={this.controls}
+              getIconByToolName={() => ""}
+              getHandlerByControlName={this.getHandlerByControlName}
+              onSelect={() => {}}
+              fontSize={numberlineAxis.fontSize}
+            />
+          )}
           <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
           <AnnotationRnd questionId={questionId} disableDragging={false} />
         </GraphWrapper>
@@ -317,7 +336,8 @@ AxisLabelsContainer.propTypes = {
   stashIndex: PropTypes.object,
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
-  setCalculatedHeight: PropTypes.func.isRequired
+  setCalculatedHeight: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 AxisLabelsContainer.defaultProps = {
@@ -328,7 +348,8 @@ AxisLabelsContainer.defaultProps = {
   changePreviewTab: () => {},
   stash: {},
   stashIndex: {},
-  altAnswerId: null
+  altAnswerId: null,
+  disableResponse: false
 };
 
 export default connect(

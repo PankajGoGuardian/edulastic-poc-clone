@@ -94,6 +94,63 @@ const getColoredElems = (elements, compareResult) => {
   return elements;
 };
 
+const getCorrectAnswer = answerArr => {
+  if (Array.isArray(answerArr)) {
+    const green = Colors.green[CONSTANT.TOOLS.POINT];
+    const greenHollow = Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT];
+
+    return answerArr.map(el => {
+      switch (el.type) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
+          return {
+            colors: green,
+            pointColor: green,
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
+          return {
+            lineColor: green,
+            leftPointColor: green,
+            rightPointColor: green,
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
+          return {
+            lineColor: green,
+            leftPointColor: greenHollow,
+            rightPointColor: greenHollow,
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
+          return {
+            lineColor: green,
+            leftPointColor: greenHollow,
+            rightPointColor: green,
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
+          return {
+            lineColor: green,
+            leftPointColor: green,
+            rightPointColor: greenHollow,
+            ...el
+          };
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
+          return {
+            colors: green,
+            pointColor: greenHollow,
+            ...el
+          };
+        default:
+          return null;
+      }
+    });
+  }
+};
+
 const getColoredAnswer = answerArr => {
   if (Array.isArray(answerArr)) {
     return answerArr.map(el => {
@@ -210,12 +267,16 @@ class AxisSegmentsContainer extends PureComponent {
       layout,
       gridParams,
       graphType,
-      setElementsStash
+      setElementsStash,
+      disableResponse
     } = this.props;
 
     this._graph = makeBorder(this._graphId, graphType);
 
     if (this._graph) {
+      if (disableResponse) {
+        this._graph.setDisableResponse();
+      }
       this._graph.resizeContainer(layout.width, layout.height);
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
@@ -347,7 +408,13 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   setElementsToGraph = () => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, validation, disableResponse } = this.props;
+
+    if (disableResponse) {
+      this._graph.resetAnswers();
+      this._graph.loadSegmentsAnswers(getCorrectAnswer(validation ? validation.valid_response.value : []));
+      return;
+    }
 
     if (checkAnswer || showAnswer) {
       let coloredElements;
@@ -465,7 +532,7 @@ class AxisSegmentsContainer extends PureComponent {
   };
 
   render() {
-    const { layout, canvas, elements, tools, questionId } = this.props;
+    const { layout, canvas, elements, tools, questionId, disableResponse } = this.props;
     const { selectedTool } = this.state;
 
     return (
@@ -475,15 +542,17 @@ class AxisSegmentsContainer extends PureComponent {
             <AnnotationRnd questionId={questionId} disableDragging={false} />
             <JSXBox id={this._graphId} className="jxgbox" margin={layout.margin} />
           </div>
-          <SegmentsTools
-            tool={selectedTool}
-            toolbar={tools}
-            elementsNumber={(elements || []).length}
-            getIconByToolName={this.getIconByToolName}
-            onSelect={this.onSelectTool}
-            fontSize={layout.fontSize}
-            responsesAllowed={canvas.responsesAllowed}
-          />
+          {!disableResponse && (
+            <SegmentsTools
+              tool={selectedTool}
+              toolbar={tools}
+              elementsNumber={(elements || []).length}
+              getIconByToolName={this.getIconByToolName}
+              onSelect={this.onSelectTool}
+              fontSize={layout.fontSize}
+              responsesAllowed={canvas.responsesAllowed}
+            />
+          )}
         </GraphWrapper>
       </div>
     );
@@ -515,7 +584,8 @@ AxisSegmentsContainer.propTypes = {
   questionId: PropTypes.string.isRequired,
   altAnswerId: PropTypes.string,
   question: PropTypes.object.isRequired,
-  setQuestionData: PropTypes.func.isRequired
+  setQuestionData: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool
 };
 
 AxisSegmentsContainer.defaultProps = {
@@ -525,7 +595,8 @@ AxisSegmentsContainer.defaultProps = {
   changePreviewTab: () => {},
   stash: {},
   stashIndex: {},
-  altAnswerId: null
+  altAnswerId: null,
+  disableResponse: false
 };
 
 export default connect(

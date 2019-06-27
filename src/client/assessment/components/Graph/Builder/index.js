@@ -99,6 +99,8 @@ class Board {
 
     this.stackResponses = false;
 
+    this.disableResponse = false;
+
     this.stackResponsesSpacing = 30;
 
     this.responsesAllowed = null;
@@ -302,6 +304,10 @@ class Board {
    */
   setCreatingHandler() {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
+      if (this.disableResponse) {
+        return;
+      }
+
       if (this.dragged) {
         this.dragged = false;
         return;
@@ -326,6 +332,10 @@ class Board {
         }
       }
     });
+  }
+
+  setDisableResponse() {
+    this.disableResponse = true;
   }
 
   resetOutOfLineMarks() {

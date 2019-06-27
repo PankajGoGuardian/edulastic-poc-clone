@@ -2,6 +2,8 @@ import { themeColor, themeColorLight } from "@edulastic/colors";
 
 export const playersTheme = {
   default: {
+    themeColor,
+    themeColorLight,
     headerBgColor: themeColor,
     sideToolbarBgColor: themeColor,
     dropdownHoverBorderColor: "rgba(255, 255, 255, 0.3)",

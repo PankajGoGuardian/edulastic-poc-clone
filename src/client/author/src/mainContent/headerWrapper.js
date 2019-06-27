@@ -1,7 +1,7 @@
 import React, { memo, Component, createRef } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { newBlue, mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
 import DragScroll, { UPWARDS } from "@edulastic/common/src/components/DragScroll";
 

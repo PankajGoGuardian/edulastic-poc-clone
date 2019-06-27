@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-import { newBlue, cardBg, cardBorder } from "@edulastic/colors";
+import { themeColor, cardBg, cardBorder } from "@edulastic/colors";
 
 export const RoundDiv = styled.div`
   display: flex;
@@ -30,7 +30,7 @@ export const RoundDiv = styled.div`
   }
 
   &:hover {
-    background-color: ${newBlue};
+    background-color: ${themeColor};
 
     .card-title {
       color: #fff;

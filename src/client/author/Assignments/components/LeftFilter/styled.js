@@ -189,7 +189,7 @@ export const FolderActionModal = styled(Modal)`
   }
   .ant-input {
     &:hover &:focus {
-      border-color: ${props => props.theme.themeBgColor};
+      border-color: ${props => props.theme.themeColor};
     }
   }
 `;
@@ -207,7 +207,7 @@ export const StyledMenu = styled(Menu)`
     display: flex;
     align-items: center;
     &:hover {
-      background-color: ${props => props.theme.themeBgColor};
+      background-color: ${props => props.theme.themeColor};
       color: ${white};
 
       svg {

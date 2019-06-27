@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
-import { themeColorLight, newBlue } from "@edulastic/colors";
+import { themeColorLight, themeColor } from "@edulastic/colors";
 
 class TextField extends Component {
   state = {
@@ -71,7 +71,7 @@ const Icon = styled.span`
   right: 13px;
 
   svg {
-    fill: ${newBlue};
+    fill: ${themeColor};
     width: 17px;
     height: 17px;
   }

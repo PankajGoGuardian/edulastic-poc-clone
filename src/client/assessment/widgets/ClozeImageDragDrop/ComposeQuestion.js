@@ -15,7 +15,7 @@ import { cloneDeep, isUndefined } from "lodash";
 
 import { PaddingDiv, EduButton } from "@edulastic/common";
 import { withNamespaces } from "@edulastic/localization";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import { aws, clozeImage } from "@edulastic/constants";
 import QuestionTextArea from "../../components/QuestionTextArea";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
@@ -572,7 +572,7 @@ class ComposeQuestion extends Component {
                       <MoveControlButton
                         onClick={toggleIsMoveResizeEditable}
                         style={{
-                          boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                          boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                         }}
                       >
                         <IconMoveResize />
@@ -619,7 +619,7 @@ class ComposeQuestion extends Component {
                   top={imageTop + imageHeight - 14}
                   left={imageLeft + imageWidth - 14}
                   style={{
-                    boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                    boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                   }}
                 >
                   <IconMoveResize />

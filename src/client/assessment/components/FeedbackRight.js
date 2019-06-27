@@ -166,7 +166,7 @@ class FeedbackRight extends Component {
           {isPresentationMode ? (
             <i className={`fa fa-${icon}`} style={{ color, fontSize: "32px" }} />
           ) : (
-            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: "#1774F0" }} size={34}>
+            <Avatar style={{ verticalAlign: "middle", background: "#E7F1FD", color: themeColor }} size={34}>
               {studentName.charAt(0)}
             </Avatar>
           )}

@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { tabletWidth, secondaryTextColor, themeColor } from "@edulastic/colors";
+import { tabletWidth, secondaryTextColor } from "@edulastic/colors";
 
 export const MainContainer = styled.div`
   padding-left: ${props => {
@@ -24,30 +24,30 @@ export const MainContainer = styled.div`
     }
   }
   .ant-btn {
-    border-color: ${props => props.theme.themeButtonBgColor};
+    border-color: ${props => props.theme.themeColor};
     &:hover,
     &:focus,
     &:active {
-      border-color: ${props => props.theme.themeButtonBgColor};
+      border-color: ${props => props.theme.themeColor};
     }
   }
   .ant-btn-primary {
-    background-color: ${props => props.theme.themeButtonBgColor};
-    border-color: ${props => props.theme.themeButtonBgColor};
+    background-color: ${props => props.theme.themeColor};
+    border-color: ${props => props.theme.themeColor};
     &:hover,
     &:focus,
     &:active {
-      background-color: ${props => props.theme.themeButtonBgColor};
-      border-color: ${props => props.theme.themeButtonBgColor};
+      background-color: ${props => props.theme.themeColor};
+      border-color: ${props => props.theme.themeColor};
     }
   }
   .ant-select-open,
   .ant-select-focused {
     .ant-select-selection {
-      border-color: ${props => props.theme.themeButtonBgColor};
+      border-color: ${props => props.theme.themeColor};
       &:hover,
       &:focus {
-        border-color: ${props => props.theme.themeButtonBgColor};
+        border-color: ${props => props.theme.themeColor};
       }
     }
   }
@@ -55,61 +55,37 @@ export const MainContainer = styled.div`
     .ant-select-selection {
       &:hover,
       &:focus {
-        border-color: ${props => props.theme.themeButtonBgColor};
+        border-color: ${props => props.theme.themeColor};
       }
       .ant-select-arrow-icon {
         svg {
-          fill: ${props => props.theme.themeTextColor};
+          fill: ${props => props.theme.themeColor};
         }
       }
     }
   }
-  .ant-checkbox-wrapper:hover .ant-checkbox-inner,
-  .ant-checkbox:hover .ant-checkbox-inner,
-  .ant-checkbox-input:focus + .ant-checkbox-inner {
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-  }
-  .ant-checkbox-checked .ant-checkbox-inner {
-    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-  }
-  .ant-checkbox-indeterminate .ant-checkbox-inner::after {
-    background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-  }
-
-  .ant-radio-wrapper:hover .ant-radio-inner,
-  .ant-radio:hover .ant-radio-inner,
-  .ant-radio-input:focus + .ant-radio-inner {
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-  }
-  .ant-radio-checked .ant-radio-inner {
-    border-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-    &:after {
-      background-color: ${props => props.theme.checkbox.checkboxCheckedColor};
-    }
-  }
 
   .ant-input-affix-wrapper:hover .ant-input:not(.ant-input-disabled) {
-    border-color: ${props => props.theme.themeBgColor};
+    border-color: ${props => props.theme.themeColor};
   }
 
   .ant-input {
     &:hover,
     &:focus {
-      border-color: ${props => props.theme.themeBgColor};
+      border-color: ${props => props.theme.themeColor};
     }
   }
 
   .ant-dropdown-menu {
     .ant-dropdown-menu-item {
       &:hover {
-        background-color: ${props => props.theme.themeBgColor};
+        background-color: ${props => props.theme.themeColor};
       }
     }
   }
 
   .ant-switch-checked {
-    background-color: ${props => props.theme.themeBgColor};
+    background-color: ${props => props.theme.themeColor};
   }
 
   .ant-pagination {
@@ -138,12 +114,12 @@ export const MainContainer = styled.div`
         line-height: 35px;
         background: white;
         a {
-          color: ${props => props.theme.themeTextColor};
+          color: ${props => props.theme.themeColor};
         }
         &:hover,
         &:focus {
-          background: ${props => props.theme.themeBgColor};
-          border-color: ${props => props.theme.themeBgColor};
+          background: ${props => props.theme.themeColor};
+          border-color: ${props => props.theme.themeColor};
           a {
             color: white;
           }
@@ -151,14 +127,14 @@ export const MainContainer = styled.div`
         &-active {
           border: none;
           opacity: 0.75;
-          background: ${props => props.theme.themeBgColor};
-          border-color: ${props => props.theme.themeBgColor};
+          background: ${props => props.theme.themeColor};
+          border-color: ${props => props.theme.themeColor};
           a {
             color: white;
           }
           &:hover,
           &:focus {
-            background: ${props => props.theme.themeBgColor};
+            background: ${props => props.theme.themeColor};
             a {
               color: white;
             }
@@ -171,7 +147,7 @@ export const MainContainer = styled.div`
       &-next {
         .ant-pagination-item-container {
           .ant-pagination-item-link-icon {
-            color: ${props => props.theme.themeTextColor};
+            color: ${props => props.theme.themeColor};
           }
         }
       }

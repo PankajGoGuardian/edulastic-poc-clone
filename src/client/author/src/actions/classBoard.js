@@ -51,13 +51,10 @@ export const receiveGradeBookdAction = (assignmentId, classId) => ({
   payload: { assignmentId, classId }
 });
 
-export const receiveTestActivitydAction = (assignmentId, classId) => {
-  console.log("{ assignmentId, classId }-------------------", { assignmentId, classId });
-  return {
-    type: RECEIVE_TESTACTIVITY_REQUEST,
-    payload: { assignmentId, classId }
-  };
-};
+export const receiveTestActivitydAction = (assignmentId, classId) => ({
+  type: RECEIVE_TESTACTIVITY_REQUEST,
+  payload: { assignmentId, classId }
+});
 
 export const releaseScoreAction = (assignmentId, classId, isReleaseScore) => ({
   type: UPDATE_RELEASE_SCORE,

@@ -158,10 +158,7 @@ export function* watcherSaga() {
 }
 
 export const stateGradeBookSelector = state => state.author_classboard_gradebook;
-export const stateTestActivitySelector = state => {
-  // console.log('state.author_***********', state);
-  return state.author_classboard_testActivity;
-};
+export const stateTestActivitySelector = state => state.author_classboard_testActivity;
 
 export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
@@ -277,10 +274,7 @@ export const getGradeBookSelector = createSelector(
 
 export const getTestActivitySelector = createSelector(
   stateTestActivitySelector,
-  state => {
-    // console.log('|||||||||||||||||||-------getTestActivitySelector-------|||||||||||||||||||', state.entities)
-    return state.entities;
-  }
+  state => state.entities
 );
 
 export const getAdditionalDataSelector = createSelector(

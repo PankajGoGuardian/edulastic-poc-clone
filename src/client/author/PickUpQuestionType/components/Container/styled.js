@@ -13,7 +13,7 @@ import {
   IconRulerPencil,
   IconPlay
 } from "@edulastic/icons";
-import { mobileWidth, desktopWidth, newBlue, textColor } from "@edulastic/colors";
+import { mobileWidth, desktopWidth, themeColor, textColor } from "@edulastic/colors";
 import Modal from "react-responsive-modal";
 import { Link } from "react-router-dom";
 
@@ -63,13 +63,13 @@ export const LeftSide = styled.div`
       padding-top: 15px;
       font-weight: 600;
       letter-spacing: 0.2px;
-      color: ${newBlue};
+      color: ${themeColor};
       text-transform: uppercase;
     }
   }
 
   .ant-menu-horizontal > .ant-menu-item-selected {
-    border-bottom: solid 2px ${newBlue};
+    border-bottom: solid 2px ${themeColor};
   }
 
   .ant-menu-inline {
@@ -87,17 +87,17 @@ export const LeftSide = styled.div`
   }
 
   .ant-menu-inline .ant-menu-item-selected {
-    color: ${newBlue};
+    color: ${themeColor};
     background: #fff !important;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     border-radius: 0 10px 10px 0;
 
     svg {
-      fill: ${newBlue};
+      fill: ${themeColor};
     }
 
     &:after {
-      border-color: ${newBlue};
+      border-color: ${themeColor};
     }
   }
 
@@ -257,13 +257,13 @@ export const StyledModalContainer = styled.div`
       padding-top: 15px;
       font-weight: 600;
       letter-spacing: 0.2px;
-      color: ${newBlue};
+      color: ${themeColor};
       text-transform: uppercase;
     }
   }
 
   .ant-menu-horizontal > .ant-menu-item-selected {
-    border-bottom: solid 2px ${newBlue};
+    border-bottom: solid 2px ${themeColor};
   }
 
   .ant-menu-inline {
@@ -281,18 +281,18 @@ export const StyledModalContainer = styled.div`
   }
 
   .ant-menu-inline .ant-menu-item-selected {
-    color: ${newBlue};
+    color: ${themeColor};
     max-width: 275px;
     background: #fff !important;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
     border-radius: 0 10px 10px 0;
 
     svg {
-      fill: ${newBlue};
+      fill: ${themeColor};
     }
 
     &:after {
-      border-color: ${newBlue};
+      border-color: ${themeColor};
     }
   }
 
@@ -318,7 +318,7 @@ export const SelectWidget = styled.div`
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  background: ${newBlue};
+  background: ${themeColor};
   color: #fff;
   text-transform: uppercase;
   margin-left: auto;
@@ -335,7 +335,7 @@ export const BackLink = styled(Link)`
   font-weight: 600;
   line-height: 28px;
   padding: 0 20px;
-  color: ${newBlue};
+  color: ${themeColor};
   text-transform: uppercase;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   cursor: pointer;

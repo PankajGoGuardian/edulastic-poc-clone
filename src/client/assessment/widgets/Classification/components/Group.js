@@ -3,7 +3,6 @@ import { Input } from "antd";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
-import { newBlue } from "@edulastic/colors";
 import { FlexContainer } from "@edulastic/common";
 
 import { Subtitle } from "../../../styled/Subtitle";

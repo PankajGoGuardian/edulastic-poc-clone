@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { white, inputBgGrey, newBlue, sectionBorder, mobileWidth } from "@edulastic/colors";
+import { white, inputBgGrey, themeColor, sectionBorder, mobileWidth } from "@edulastic/colors";
 
 export const CorrectAnswerContainer = styled.div`
   background: ${white};
@@ -15,7 +15,7 @@ export const CorrectAnswerContainer = styled.div`
   }
 
   .ant-select-arrow .ant-select-arrow-icon {
-    color: ${newBlue};
+    color: ${themeColor};
   }
 
   @media (max-width: ${mobileWidth}) {

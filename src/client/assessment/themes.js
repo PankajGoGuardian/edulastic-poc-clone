@@ -2,13 +2,8 @@ import { themeColor, themeColorLight } from "@edulastic/colors";
 
 export const themes = {
   default: {
-    themeLoaderColor: themeColor,
-    themeTextColor: themeColor,
-    themeBgColor: themeColor,
-    themeButtonLabelWhite: "#ffffff",
-    themeButtonBgColor: themeColor,
-    themeButtonBgWhite: "#ffffff",
-    themeDropIconColor: themeColor,
+    themeColor,
+    themeColorLight,
     default: {
       // this default is required for Doc based asseeements
       headerBgColor: themeColor,
@@ -499,7 +494,7 @@ export const themes = {
         inputColor: "#fff",
         inputCorrectColor: "#e1fbf2",
         inputIncorrectColor: "#fce0e8",
-        iconTrashColor: themeColor, // newBlue
+        iconTrashColor: themeColor,
         iconTrashHoverColor: "#ee1658", // red
         quillBorderColor: "#dfdfdf", // grey
         iconCheckColor: "#1fe3a1", // green

@@ -8,7 +8,7 @@ import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { cloneDeep, isUndefined } from "lodash";
 import produce from "immer";
-import { newBlue } from "@edulastic/colors";
+import { themeColor } from "@edulastic/colors";
 import "react-quill/dist/quill.snow.css";
 import { Checkbox, Input, Select, Upload, message } from "antd";
 import { ChromePicker } from "react-color";
@@ -555,7 +555,7 @@ class ComposeQuestion extends Component {
                           <MoveControlButton
                             onClick={toggleIsMoveResizeEditable}
                             style={{
-                              boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                              boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                             }}
                           >
                             <IconMoveResize />
@@ -608,7 +608,7 @@ class ComposeQuestion extends Component {
                       top={imageTop + imageHeight - 14}
                       left={imageLeft + imageWidth - 14}
                       style={{
-                        boxShadow: isEditableResizeMove ? `${newBlue} 0px 1px 7px 0px` : null
+                        boxShadow: isEditableResizeMove ? `${themeColor} 0px 1px 7px 0px` : null
                       }}
                     >
                       <IconMoveResize />

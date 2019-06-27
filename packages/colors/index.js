@@ -2,8 +2,8 @@ export const white = "#fff";
 export const black = "#000";
 export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 
-export const themeColor = "#00AD50";
-export const themeColorLight = "#42d184";
+export const themeColor = "#00AD50"; // green
+export const themeColorLight = "#42d184"; // light green
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
@@ -46,7 +46,6 @@ export const fadedRed = "#fce0e8";
 
 export const mainBlueColor = "#00b0ff";
 export const blue = "#1774F0";
-export const newBlue = "#1774F0";
 export const lightBlue = "#93d8f7";
 export const lightBlue3 = "#3793dc";
 export const lightBlue4 = "#40a1ee";

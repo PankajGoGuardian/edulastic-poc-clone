@@ -3,6 +3,8 @@ import edulasticDefaultLogo from "./assets/logo.svg";
 
 export const themes = {
   default: {
+    themeColor,
+    themeColorLight,
     logo: edulasticDefaultLogo,
     logoBorderBottomColor: "#d9d6d6",
     headerBgColor: themeColor,

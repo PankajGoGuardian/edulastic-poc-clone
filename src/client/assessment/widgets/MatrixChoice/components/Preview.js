@@ -67,6 +67,7 @@ const Preview = ({
         validation={item.validation}
         type={type}
         smallSize={smallSize}
+        previewTab={previewTab}
       />
       {item.instant_feedback && <CheckAnswerButton feedbackAttempts={feedbackAttempts} onCheck={onCheckAnswer} />}
     </div>

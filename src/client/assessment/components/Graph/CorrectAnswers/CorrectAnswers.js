@@ -145,7 +145,7 @@ class CorrectAnswers extends Component {
   };
 
   render() {
-    const { t, graphData, changePreviewTab, previewTab, view, disableResponse } = this.props;
+    const { t, graphData, previewTab, view, disableResponse } = this.props;
     const { validation } = graphData;
 
     const { value } = this.state;
@@ -165,7 +165,6 @@ class CorrectAnswers extends Component {
                 graphData={graphData}
                 view={view}
                 previewTab={previewTab}
-                changePreviewTab={changePreviewTab}
                 response={validation.valid_response}
                 onUpdateValidationValue={this.updateValidationValue}
                 onUpdatePoints={this.handleUpdateCorrectScore}
@@ -184,7 +183,6 @@ class CorrectAnswers extends Component {
                       view={view}
                       response={alter}
                       previewTab={previewTab}
-                      changePreviewTab={changePreviewTab}
                       onUpdateValidationValue={val => this.updateAltValidationValue(val, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
                     />
@@ -206,7 +204,6 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   onRemoveAltResponses: PropTypes.func.isRequired,
   question: PropTypes.object.isRequired,
-  changePreviewTab: PropTypes.func.isRequired,
   previewTab: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
   disableResponse: PropTypes.bool

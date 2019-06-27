@@ -187,7 +187,6 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
       bgShapes,
       altAnswerId,
@@ -201,7 +200,6 @@ class GraphDisplay extends Component {
       background_shapes,
       toolbar,
       controlbar,
-      validation,
       annotation,
       id,
       graphType
@@ -269,11 +267,9 @@ class GraphDisplay extends Component {
       toolbar,
       controls: controlbar ? controlbar.controls : [],
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       graphType,
       bgShapes,
       annotation,
@@ -291,13 +287,12 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
       altAnswerId,
       disableResponse
     } = this.props;
 
-    const { ui_style, canvas, toolbar, numberlineAxis, validation, graphType, id } = graphData;
+    const { ui_style, canvas, toolbar, numberlineAxis, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -375,11 +370,9 @@ class GraphDisplay extends Component {
       evaluation,
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       graphType,
       questionId: id,
       altAnswerId,
@@ -394,13 +387,12 @@ class GraphDisplay extends Component {
       onChange,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       elements,
       altAnswerId,
       disableResponse
     } = this.props;
 
-    const { ui_style, canvas, numberlineAxis, validation, list, graphType, id } = graphData;
+    const { ui_style, canvas, numberlineAxis, list, graphType, id } = graphData;
 
     return {
       canvas: {
@@ -480,11 +472,9 @@ class GraphDisplay extends Component {
       graphType,
       evaluation,
       setValue: onChange,
-      validation,
       elements,
       showAnswer,
       checkAnswer,
-      changePreviewTab,
       questionId: id,
       altAnswerId,
       disableResponse,
@@ -517,8 +507,8 @@ class GraphDisplay extends Component {
             <GraphContainer {...this.getGraphContainerProps()} />
           </Fragment>
         ) : (
-            <div>Wrong parameters</div>
-          )}
+          <div>Wrong parameters</div>
+        )}
       </Fragment>
     );
   }
@@ -545,8 +535,8 @@ GraphDisplay.propTypes = {
 
 GraphDisplay.defaultProps = {
   smallSize: false,
-  onChange: () => { },
-  changePreviewTab: () => { },
+  onChange: () => {},
+  changePreviewTab: () => {},
   elements: [],
   evaluation: null,
   showAnswer: false,

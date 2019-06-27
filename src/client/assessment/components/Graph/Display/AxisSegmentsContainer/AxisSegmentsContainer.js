@@ -1,7 +1,6 @@
 import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphPoint as IconPoint,
   IconBothIncludedSegment,
@@ -92,63 +91,6 @@ const getColoredElems = (elements, compareResult) => {
     return newElems;
   }
   return elements;
-};
-
-const getCorrectAnswer = answerArr => {
-  if (Array.isArray(answerArr)) {
-    const green = Colors.green[CONSTANT.TOOLS.POINT];
-    const greenHollow = Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT];
-
-    return answerArr.map(el => {
-      switch (el.type) {
-        case CONSTANT.TOOLS.SEGMENTS_POINT:
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
-          return {
-            colors: green,
-            pointColor: green,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
-          return {
-            lineColor: green,
-            leftPointColor: green,
-            rightPointColor: green,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
-          return {
-            lineColor: green,
-            leftPointColor: greenHollow,
-            rightPointColor: greenHollow,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
-          return {
-            lineColor: green,
-            leftPointColor: greenHollow,
-            rightPointColor: green,
-            ...el
-          };
-        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
-          return {
-            lineColor: green,
-            leftPointColor: green,
-            rightPointColor: greenHollow,
-            ...el
-          };
-        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
-        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
-          return {
-            colors: green,
-            pointColor: greenHollow,
-            ...el
-          };
-        default:
-          return null;
-      }
-    });
-  }
 };
 
 const getColoredAnswer = answerArr => {
@@ -344,7 +286,7 @@ class AxisSegmentsContainer extends PureComponent {
         this._graph.updateNumberlineSettings(canvas, numberlineAxis, layout, false);
       }
 
-      this.setElementsToGraph();
+      this.setElementsToGraph(prevProps);
     }
   }
 
@@ -366,8 +308,6 @@ class AxisSegmentsContainer extends PureComponent {
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      this._graph.segmentsReset();
-      this._graph.loadSegments(stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] - 1]);
       setStashIndex(stashIndex[id] - 1, id);
     }
@@ -377,8 +317,6 @@ class AxisSegmentsContainer extends PureComponent {
     const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      this._graph.segmentsReset();
-      this._graph.loadSegments(stash[id][stashIndex[id] + 1]);
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }
@@ -392,13 +330,9 @@ class AxisSegmentsContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getSegments();
-    const { setValue, changePreviewTab, checkAnswer, setElementsStash } = this.props;
+    const { setValue, setElementsStash } = this.props;
     setValue(conf);
     setElementsStash(conf, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   }
 
   setGraphUpdateEventHandler = () => {
@@ -407,36 +341,34 @@ class AxisSegmentsContainer extends PureComponent {
     this._graph.events.on(CONSTANT.EVENT_NAMES.CHANGE_DELETE, () => this.updateValues());
   };
 
-  setElementsToGraph = () => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation, disableResponse } = this.props;
+  setElementsToGraph = (prevProps = {}) => {
+    const { elements, checkAnswer, showAnswer, evaluation, disableResponse } = this.props;
 
-    if (disableResponse) {
+    if (showAnswer) {
       this._graph.resetAnswers();
-      this._graph.loadSegmentsAnswers(getCorrectAnswer(validation ? validation.valid_response.value : []));
+      this._graph.loadSegmentsAnswers(getColoredAnswer(elements));
       return;
     }
 
-    if (checkAnswer || showAnswer) {
-      let coloredElements;
-      if (evaluation && checkAnswer) {
-        const compareResult = getCompareResult(evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      } else {
-        const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      }
-
-      if (showAnswer) {
-        this._graph.resetAnswers();
-        this._graph.loadSegmentsAnswers(getColoredAnswer(validation ? validation.valid_response.value : []));
-      }
-
-      this._graph.segmentsReset();
-      this._graph.loadSegments(coloredElements);
-    } else if (!isEqual(elements, this._graph.getSegments())) {
-      this._graph.segmentsReset();
+    if (checkAnswer && disableResponse) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.resetAnswers();
-      this._graph.loadSegments(elements);
+      this._graph.loadSegmentsAnswers(coloredElements);
+      return;
+    }
+
+    if (checkAnswer && !disableResponse && !isEqual(evaluation, prevProps.evaluation)) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.segmentsReset();
+      this._graph.loadSegments(coloredElements, true);
+      return;
+    }
+
+    if (!isEqual(elements, this._graph.getSegments()) || this._graph.elementsAreEvaluated) {
+      this._graph.segmentsReset();
+      this._graph.loadSegments(elements, false);
     }
   };
 
@@ -569,11 +501,9 @@ AxisSegmentsContainer.propTypes = {
   gridParams: PropTypes.object.isRequired,
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
-  validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func,
   tools: PropTypes.array.isRequired,
   graphType: PropTypes.string.isRequired,
   view: PropTypes.string.isRequired,
@@ -592,7 +522,6 @@ AxisSegmentsContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {},
   stash: {},
   stashIndex: {},
   altAnswerId: null,

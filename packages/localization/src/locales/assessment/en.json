@@ -628,7 +628,9 @@
       "background_shapes": "Background shapes",
       "minVal": "Minimum value",
       "maxVal": "Maximum value",
-      "responseNumAllowed": "Number of responses allowed"
+      "responseNumAllowed": "Number of responses allowed",
+      "correctAnswer": "Correct Answer",
+      "alternateAnswer": "Alternate Answer"
     },
     "math": {
       "enterQuestion": "Enter question",

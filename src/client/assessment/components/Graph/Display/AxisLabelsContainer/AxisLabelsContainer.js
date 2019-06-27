@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { isEqual } from "lodash";
-import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import { WithResources } from "@edulastic/common";
 import { GraphWrapper, JSXBox } from "./styled";
 import {
@@ -18,24 +17,27 @@ import AnnotationRnd from "../../Annotations/AnnotationRnd";
 import { AUTO_HEIGHT_VALUE, AUTO_VALUE } from "../../Builder/config/constants";
 
 const getColoredElems = (elements, compareResult) => {
-  const { details } = compareResult;
-  return elements.map(el => {
-    const detail = details && details.find(det => det.label.id === el.id);
-    let newEl = {};
+  if (compareResult && compareResult.details && compareResult.details.length > 0) {
+    const { details } = compareResult;
+    return elements.map(el => {
+      const detail = details && details.find(det => det.label.id === el.id);
+      let newEl = {};
 
-    if (detail && detail.result) {
-      newEl = {
-        className: "correct",
-        ...el
-      };
-    } else {
-      newEl = {
-        className: "incorrect",
-        ...el
-      };
-    }
-    return newEl;
-  });
+      if (detail && detail.result) {
+        newEl = {
+          className: "correct",
+          ...el
+        };
+      } else {
+        newEl = {
+          className: "incorrect",
+          ...el
+        };
+      }
+      return newEl;
+    });
+  }
+  return elements;
 };
 
 const getColoredAnswer = answerArr => {
@@ -167,13 +169,9 @@ class AxisLabelsContainer extends PureComponent {
 
   setMarks = () => {
     const conf = this._graph.getMarks();
-    const { setValue, checkAnswer, changePreviewTab, setElementsStash } = this.props;
+    const { setValue, setElementsStash } = this.props;
     setValue(conf);
     setElementsStash(conf, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   };
 
   setElementsToGraph = (prevProps = {}) => {
@@ -182,45 +180,46 @@ class AxisLabelsContainer extends PureComponent {
       return;
     }
 
-    const { elements, checkAnswer, showAnswer, evaluation, validation, list, disableResponse } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, list, disableResponse } = this.props;
 
-    if (disableResponse) {
+    if (showAnswer) {
       this._graph.removeMarksAnswers();
-      const answerArr = [...validation.valid_response.value].map(el => ({
-        className: "correct",
-        text: el.point,
-        ...el
-      }));
-      this._graph.loadMarksAnswers(answerArr, answerArr);
+      this._graph.loadMarksAnswers(list, getColoredAnswer(elements));
       return;
     }
 
-    if (checkAnswer || showAnswer) {
-      if (showAnswer) {
-        this._graph.removeMarksAnswers();
-        this._graph.loadMarksAnswers(list, getColoredAnswer(validation ? validation.valid_response.value : []));
-      }
-
-      this._graph.removeMarks();
-
-      if (!this.elementsIsEmpty()) {
-        let coloredElements;
-        if (evaluation && checkAnswer) {
-          const compareResult = getCompareResult(evaluation);
-          coloredElements = getColoredElems(elements, compareResult);
-        } else {
-          const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
-          coloredElements = getColoredElems(elements, compareResult);
-        }
-
-        this._graph.renderMarks(list, coloredElements);
-      } else {
-        this._graph.renderMarks(list, []);
-      }
-    } else if (!isEqual(elements, this._graph.getMarks()) || this.elementsIsEmpty() || !isEqual(prevProps.list, list)) {
-      this._graph.removeMarks();
+    if (checkAnswer && disableResponse) {
       this._graph.removeMarksAnswers();
-      this._graph.renderMarks(list, elements);
+      if (!this.elementsIsEmpty()) {
+        const compareResult = getCompareResult(evaluation);
+        const coloredElements = getColoredElems(elements, compareResult);
+        this._graph.loadMarksAnswers(list, coloredElements);
+      } else {
+        this._graph.loadMarksAnswers(list, []);
+      }
+      return;
+    }
+
+    if (checkAnswer && !disableResponse && !isEqual(evaluation, prevProps.evaluation)) {
+      this._graph.removeMarks();
+      if (!this.elementsIsEmpty()) {
+        const compareResult = getCompareResult(evaluation);
+        const coloredElements = getColoredElems(elements, compareResult);
+        this._graph.renderMarks(list, coloredElements, true);
+      } else {
+        this._graph.renderMarks(list, [], true);
+      }
+      return;
+    }
+
+    if (
+      !isEqual(elements, this._graph.getMarks()) ||
+      this.elementsIsEmpty() ||
+      !isEqual(prevProps.list, list) ||
+      this._graph.elementsAreEvaluated
+    ) {
+      this._graph.removeMarks();
+      this._graph.renderMarks(list, elements, false);
     }
   };
 
@@ -232,22 +231,18 @@ class AxisLabelsContainer extends PureComponent {
   controls = ["undo", "redo"];
 
   onUndo = () => {
-    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] > 0 && stashIndex[id] <= stash[id].length - 1) {
-      this._graph.removeMarks();
-      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] - 1]);
       setStashIndex(stashIndex[id] - 1, id);
     }
   };
 
   onRedo() {
-    const { stash, stashIndex, setStashIndex, setValue, list } = this.props;
+    const { stash, stashIndex, setStashIndex, setValue } = this.props;
     const id = this.getStashId();
     if (stashIndex[id] >= 0 && stashIndex[id] < stash[id].length - 1) {
-      this._graph.removeMarks();
-      this._graph.renderMarks(list, stash[id][stashIndex[id] - 1]);
       setValue(stash[id][stashIndex[id] + 1]);
       setStashIndex(stashIndex[id] + 1, id);
     }
@@ -324,11 +319,9 @@ AxisLabelsContainer.propTypes = {
   list: PropTypes.array,
   evaluation: PropTypes.any,
   setValue: PropTypes.func.isRequired,
-  validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func,
   view: PropTypes.string.isRequired,
   setElementsStash: PropTypes.func.isRequired,
   setStashIndex: PropTypes.func.isRequired,
@@ -345,7 +338,6 @@ AxisLabelsContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {},
   stash: {},
   stashIndex: {},
   altAnswerId: null,

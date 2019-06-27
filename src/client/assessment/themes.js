@@ -214,7 +214,7 @@ export const themes = {
       iconCloseHoverColor: "#ee1658" // red
     },
     correctAnswerBoxLayout: {
-      titleFontSize: "20px"
+      titleFontSize: "16px"
     },
     dropContainer: {
       isOverBorderColor: "#1fe3a1", // green
@@ -325,8 +325,8 @@ export const themes = {
         previewTemplateBoxSmallFontSize: "14px",
         iconPlusColor: "#fff", // white
         deleteBgColor: "lightgray",
-        rightIconColor: "#1fe3a1", // green
-        wrongIconColor: "#ee1658" // red
+        rightIconColor: "#84cd36", // green
+        wrongIconColor: "#dd2e44" // red
       },
       clozeImageDragDrop: {
         editViewBgColor: "white",

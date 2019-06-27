@@ -2,7 +2,6 @@ import React, { PureComponent } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
-import { graph as checkAnswerMethod } from "@edulastic/evaluators";
 import {
   IconGraphRay as IconRay,
   IconGraphLine as IconLine,
@@ -99,16 +98,6 @@ const getColoredElems = (elements, compareResult) => {
     return newElems;
   }
   return elements;
-};
-
-const getCorrectAnswer = answerArr => {
-  if (Array.isArray(answerArr)) {
-    return answerArr.map(el => ({
-      colors: Colors.green[el.type],
-      ...el
-    }));
-  }
-  return answerArr;
 };
 
 const getColoredAnswer = answerArr => {
@@ -422,13 +411,9 @@ class GraphContainer extends PureComponent {
 
   updateValues() {
     const conf = this._graph.getConfig();
-    const { setValue, changePreviewTab, checkAnswer, setElementsStash } = this.props;
+    const { setValue, setElementsStash } = this.props;
     setValue(conf);
     setElementsStash(conf, this.getStashId());
-
-    if (checkAnswer) {
-      changePreviewTab("clear");
-    }
   }
 
   graphUpdateHandler = () => {
@@ -444,37 +429,33 @@ class GraphContainer extends PureComponent {
   };
 
   setElementsToGraph = (prevProps = {}) => {
-    const { elements, checkAnswer, showAnswer, evaluation, validation, disableResponse } = this.props;
+    const { elements, checkAnswer, showAnswer, evaluation, disableResponse } = this.props;
 
-    if (disableResponse) {
+    if (showAnswer) {
       this._graph.resetAnswers();
-      this._graph.loadAnswersFromConfig(getCorrectAnswer(validation ? validation.valid_response.value : []));
+      this._graph.loadAnswersFromConfig(getColoredAnswer(elements));
       return;
     }
 
-    if (checkAnswer || showAnswer) {
-      let coloredElements;
-      if (evaluation && checkAnswer) {
-        const compareResult = getCompareResult(evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      } else {
-        const compareResult = getCompareResult(checkAnswerMethod({ userResponse: elements, validation }).evaluation);
-        coloredElements = getColoredElems(elements, compareResult);
-      }
-
-      if (showAnswer && !prevProps.showAnswer) {
-        this._graph.resetAnswers();
-        this._graph.loadAnswersFromConfig(getColoredAnswer(validation ? validation.valid_response.value : []));
-      }
-
-      if (!isEqual(elements, prevProps.elements)) {
-        this._graph.reset();
-        this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible());
-      }
-    } else if (!isEqual(elements, this._graph.getConfig())) {
-      this._graph.reset();
+    if (checkAnswer && disableResponse) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
       this._graph.resetAnswers();
-      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible());
+      this._graph.loadAnswersFromConfig(coloredElements);
+      return;
+    }
+
+    if (checkAnswer && !disableResponse && !isEqual(evaluation, prevProps.evaluation)) {
+      const compareResult = getCompareResult(evaluation);
+      const coloredElements = getColoredElems(elements, compareResult);
+      this._graph.reset();
+      this._graph.loadFromConfig(coloredElements, this.drawingObjectsAreVisible(), true);
+      return;
+    }
+
+    if (!isEqual(elements, this._graph.getConfig()) || this._graph.elementsAreEvaluated) {
+      this._graph.reset();
+      this._graph.loadFromConfig(elements, this.drawingObjectsAreVisible(), false);
     }
   };
 
@@ -693,11 +674,9 @@ GraphContainer.propTypes = {
   toolbar: PropTypes.object,
   graphType: PropTypes.string.isRequired,
   setValue: PropTypes.func.isRequired,
-  validation: PropTypes.object.isRequired,
   elements: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool,
   checkAnswer: PropTypes.bool,
-  changePreviewTab: PropTypes.func,
   bgShapes: PropTypes.bool.isRequired,
   annotation: PropTypes.object,
   controls: PropTypes.array,
@@ -716,7 +695,6 @@ GraphContainer.defaultProps = {
   evaluation: null,
   showAnswer: false,
   checkAnswer: false,
-  changePreviewTab: () => {},
   annotation: null,
   controls: [],
   stash: {},

@@ -1,12 +1,13 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { cloneDeep } from "lodash";
-import { Paper } from "@edulastic/common";
+import { CorrectAnswersContainer, Paper } from "@edulastic/common";
 import { Select } from "antd";
 import { compose } from "redux";
 import styled from "styled-components";
 import { withNamespaces } from "@edulastic/localization";
+
 import { ContentArea } from "../../styled/ContentArea";
 import { setQuestionDataAction } from "../../../author/src/actions/question";
 import QuadrantsMoreOptions from "./Authoring/GraphQuadrants/QuadrantsMoreOptions";
@@ -256,13 +257,13 @@ class Graph extends Component {
 
   render() {
     const {
+      t,
       view,
       item,
       smallSize,
       testItem,
       previewTab,
       userAnswer,
-      changePreviewTab,
       evaluation,
       fillSections,
       cleanSections,
@@ -271,7 +272,15 @@ class Graph extends Component {
       disableResponse,
       ...restProps
     } = this.props;
-    const { graphType, extra_options, ui_style } = item;
+    const {
+      graphType,
+      extra_options,
+      ui_style,
+      validation: {
+        valid_response: { value: correctAnswer },
+        alt_responses: altAnswers
+      }
+    } = item;
     const OptionsComponent = this.getOptionsComponent();
     const MoreOptionsComponent = this.getMoreOptionsComponent();
 
@@ -300,11 +309,9 @@ class Graph extends Component {
               >
                 <React.Fragment>
                   <CorrectAnswers
-                    disableResponse={disableResponse}
                     graphData={item}
                     view={view}
                     previewTab={previewTab}
-                    changePreviewTab={changePreviewTab}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
                     onAddAltResponses={this.handleAddAltResponses}
                   />
@@ -375,7 +382,6 @@ class Graph extends Component {
                 graphData={item}
                 view={view}
                 previewTab={previewTab}
-                changePreviewTab={changePreviewTab}
                 onChange={this.handleAddAnswer}
                 elements={userAnswer}
                 evaluation={evaluation}
@@ -383,29 +389,61 @@ class Graph extends Component {
               />
             )}
             {previewTab === "show" && item.canvas && item.ui_style && (
-              <GraphDisplay
-                disableResponse={disableResponse}
-                showAnswer
-                graphData={item}
-                onChange={this.handleAddAnswer}
-                elements={userAnswer}
-                view={view}
-                previewTab={previewTab}
-                changePreviewTab={changePreviewTab}
-                evaluation={evaluation}
-                {...restProps}
-              />
+              <Fragment>
+                <GraphDisplay
+                  disableResponse={disableResponse}
+                  checkAnswer
+                  graphData={item}
+                  view={view}
+                  previewTab={previewTab}
+                  onChange={this.handleAddAnswer}
+                  elements={userAnswer}
+                  evaluation={evaluation}
+                  {...restProps}
+                />
+
+                <CorrectAnswersContainer title={t("component.graphing.correctAnswer")}>
+                  <GraphDisplay
+                    disableResponse
+                    showAnswer
+                    graphData={item}
+                    view={view}
+                    previewTab={previewTab}
+                    onChange={this.handleAddAnswer}
+                    elements={correctAnswer}
+                    evaluation={evaluation}
+                    {...restProps}
+                  />
+                </CorrectAnswersContainer>
+
+                {altAnswers &&
+                  altAnswers.map((altAnswer, i) => (
+                    <CorrectAnswersContainer title={`${t("component.graphing.alternateAnswer")} ${i + 1}`}>
+                      <GraphDisplay
+                        disableResponse
+                        showAnswer
+                        graphData={item}
+                        view={view}
+                        previewTab={previewTab}
+                        onChange={this.handleAddAnswer}
+                        elements={altAnswer.value}
+                        evaluation={evaluation}
+                        {...restProps}
+                      />
+                    </CorrectAnswersContainer>
+                  ))}
+              </Fragment>
             )}
             {previewTab === "clear" && item.canvas && item.ui_style && (
               <GraphDisplay
                 disableResponse={disableResponse}
                 clearAnswer
                 graphData={item}
-                onChange={this.handleAddAnswer}
-                elements={userAnswer}
                 view={view}
                 previewTab={previewTab}
-                changePreviewTab={changePreviewTab}
+                onChange={this.handleAddAnswer}
+                elements={userAnswer}
+                evaluation={evaluation}
                 {...restProps}
               />
             )}
@@ -449,13 +487,13 @@ Graph.propTypes = {
   previewTab: PropTypes.string,
   userAnswer: PropTypes.any,
   saveAnswer: PropTypes.func.isRequired,
-  changePreviewTab: PropTypes.func,
   evaluation: PropTypes.any,
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   advancedAreOpen: PropTypes.bool,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  t: PropTypes.func.isRequired
 };
 
 Graph.defaultProps = {
@@ -463,7 +501,6 @@ Graph.defaultProps = {
   previewTab: "clear",
   testItem: false,
   userAnswer: [],
-  changePreviewTab: () => {},
   evaluation: null,
   advancedAreOpen: false,
   disableResponse: false

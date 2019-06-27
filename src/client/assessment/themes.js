@@ -1,4 +1,4 @@
-import { themeColor } from "@edulastic/colors";
+import { themeColor, themeColorLight } from "@edulastic/colors";
 
 export const themes = {
   default: {
@@ -71,7 +71,7 @@ export const themes = {
       addNewChoiceButtonFontStretch: "normal",
       addNewChoiceButtonBorderColor: "#12a6e8",
       addNewChoiceButtonColor: "#fff",
-      addNewChoiceButtonBgHoverColor: "#00b0ff",
+      addNewChoiceButtonBgHoverColor: themeColorLight,
       addNewChoiceButtonHoverColor: "#ffffff",
       addNewChoiceButtonBgActiveColor: "#59c7f9",
       addNewChoiceButtonActiveColor: "#eee",
@@ -192,15 +192,15 @@ export const themes = {
     styledDropZone: {
       loadingIconFontSize: "100",
       iconUploadColor: "#e6e6e6", // dashBorderColor
-      iconUploadDragActiveColor: "#00b0ff", // mainBlueColor
+      iconUploadDragActiveColor: themeColorLight, // headerGreen
       containerColor: "#e6e6e6", // dashBorderColor
-      containerDragActiveColor: "#00b0ff", // mainBlueColor
+      containerDragActiveColor: themeColorLight, // headerGreen
       zoneTitleFontSize: "16px",
       zoneTitleCommentFontSize: "11px",
       zoneTitleFontWeight: "900",
       zoneTitleColor: "#e6e6e6", // dashBorderColor
       zoneTitleAltColor: "#b1b1b1", // dropZoneTitleColor
-      underlinedColor: "#00b0ff" // mainBlueColor
+      underlinedColor: themeColorLight // headerGreen
     },
     testItemPreview: {
       itemColBorderColor: "#f3f3f3", // mainBgColor
@@ -247,7 +247,7 @@ export const themes = {
       antSelectSelectionChoiceContentFontWeight: "bold",
       antSelectSelectionSelectedValueFontSize: "13px",
       antSelectSelectionSelectedValueFontWeight: "600",
-      antSelectSelectionSelectedValueColor: "#00b0ff",
+      antSelectSelectionSelectedValueColor: themeColorLight,
       antSelectSelectionSelectedValueBackground: "#d1e3fc",
       containerBackground: "#f8f8fb",
       antSelectArrowIconColor: "#12a6e8", // blue
@@ -406,7 +406,7 @@ export const themes = {
         antSelectSelectionFontSize: "13px",
         antSelectSelectionFontWeight: "600",
         antSelectSelectionColor: "#434b5d",
-        antIconDownColor: "#00b0ff",
+        antIconDownColor: themeColorLight,
         hrBorderColor: "#dfdfdf" // grey
       },
       clozeImageText: {
@@ -685,7 +685,7 @@ export const themes = {
         iconArrowFontSize: "20px",
         correctAnswersItemBgColor: "#fff", // white
         correctAnswersItemFontWeight: "600",
-        correctAnswersIndexBgColor: "#00b0ff", // mainBlueColor
+        correctAnswersIndexBgColor: themeColorLight, // headerGreen
         correctAnswersIndexColor: "#fff", // white
         dragItemActiveBgColor: "#dfdfdf", // grey
         dragItemBgColor: "transparent",

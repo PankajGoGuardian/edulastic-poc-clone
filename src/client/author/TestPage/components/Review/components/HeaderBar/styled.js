@@ -2,12 +2,12 @@ import styled from "styled-components";
 import { Checkbox, Button } from "antd";
 
 import { FlexContainer } from "@edulastic/common";
-import { blue, secondaryTextColor, lightBlueSecondary } from "@edulastic/colors";
+import { secondaryTextColor, themeColor } from "@edulastic/colors";
 
 export const Item = styled(FlexContainer)`
   cursor: pointer;
   margin-right: 20px;
-  color: ${blue};
+  color: ${themeColor};
   position: relative;
 `;
 
@@ -35,7 +35,7 @@ export const SelectAllCheckbox = styled(Checkbox)`
 
 export const ActionButton = styled(Button)`
   padding: 0;
-  border: 1px solid ${lightBlueSecondary};
+  border: 1px solid ${themeColor};
   border-radius: 4px;
 
   @media screen and (max-width: 768px) {

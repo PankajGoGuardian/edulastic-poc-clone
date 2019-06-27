@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { Button, Input, Checkbox } from "antd";
 
-import { grey, lightBlueSecondary, lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
+import { grey, themeColor, lightGreySecondary, secondaryTextColor } from "@edulastic/colors";
 
 export const TestItemWrapper = styled.div`
   border-bottom: 1px solid ${grey};
@@ -18,7 +18,7 @@ export const PreviewButton = styled(Button)`
   height: 40px;
   font-size: 11px;
   font-weight: 600;
-  color: ${lightBlueSecondary};
+  color: ${themeColor};
   text-transform: uppercase;
   box-shadow: 0 2px 4px 0 rgba(201, 208, 219, 0.5);
   border: none;

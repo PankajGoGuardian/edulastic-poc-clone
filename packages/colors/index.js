@@ -3,6 +3,7 @@ export const black = "#000";
 export const fadedBlack = "rgba(0, 0, 0, 0.65)";
 
 export const themeColor = "#00AD50";
+export const themeColorLight = "#42d184";
 
 export const grey = "#dfdfdf";
 export const lightGrey = "#f9f9f9";
@@ -33,7 +34,6 @@ export const separatorColor = "#d6d0d0";
 export const dashBorderColor = "#e6e6e6";
 export const dashBorderColorOpacity = "#e6e6e633";
 export const dropZoneTitleColor = "#b1b1b1";
-export const mainBlueColor = "#00b0ff";
 
 export const svgMapFillColor = "rgba(0, 176, 255, 0.19)";
 export const svgMapStrokeColor = "rgba(0, 176, 255, 1)";
@@ -44,9 +44,10 @@ export const lightRed = "#fbdfe7";
 export const redDark = "#dd2e44";
 export const fadedRed = "#fce0e8";
 
+export const mainBlueColor = "#00b0ff";
 export const blue = "#1774F0";
+export const newBlue = "#1774F0";
 export const lightBlue = "#93d8f7";
-export const lightBlueSecondary = "#1774F0";
 export const lightBlue3 = "#3793dc";
 export const lightBlue4 = "#40a1ee";
 export const lightBlue5 = "#91d5dc";
@@ -54,7 +55,6 @@ export const lightBlue6 = "#c8e8f6";
 export const darkBlue = "#0080b9";
 export const darkBlue1 = "#157ad8";
 export const darkBlueSecondary = "#0288d1";
-export const newBlue = "#1774F0";
 export const blueButton = "#0e93dc";
 export const blueBorder = "#40a9ff";
 

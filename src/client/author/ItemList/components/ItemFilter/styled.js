@@ -2,9 +2,7 @@ import { Icon, Row } from "antd";
 import {
   boxShadowDefault,
   desktopWidth,
-  newBlue,
   secondaryTextColor,
-  mainBlueColor,
   textColor,
   greenDark,
   dropZoneTitleColor

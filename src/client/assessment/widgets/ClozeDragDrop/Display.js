@@ -64,7 +64,15 @@ class ClozeDragDropDisplay extends Component {
 
   onDrop = (data, index) => {
     const { userAnswers: newAnswers, possibleResponses } = this.state;
-    const { onChange: changeAnswers, hasGroupResponses, userSelections, configureOptions, options } = this.props;
+    const {
+      onChange: changeAnswers,
+      hasGroupResponses,
+      userSelections,
+      configureOptions,
+      options,
+      changePreviewTab
+    } = this.props;
+
     const { duplicatedResponses: isDuplicated } = configureOptions;
     const newResponses = cloneDeep(possibleResponses);
 
@@ -146,6 +154,7 @@ class ClozeDragDropDisplay extends Component {
 
     this.setState({ userAnswers: newAnswers, possibleResponses: newResponses });
     changeAnswers(newAnswers);
+    changePreviewTab("clear");
   };
 
   shuffle = arr => {
@@ -452,6 +461,7 @@ ClozeDragDropDisplay.propTypes = {
   options: PropTypes.array,
   item: PropTypes.object,
   onChange: PropTypes.func,
+  changePreviewTab: PropTypes.func,
   preview: PropTypes.bool,
   showAnswer: PropTypes.bool,
   userSelections: PropTypes.array,
@@ -475,6 +485,7 @@ ClozeDragDropDisplay.propTypes = {
 ClozeDragDropDisplay.defaultProps = {
   options: [],
   onChange: () => {},
+  changePreviewTab: () => {},
   preview: true,
   item: {},
   disableResponse: false,

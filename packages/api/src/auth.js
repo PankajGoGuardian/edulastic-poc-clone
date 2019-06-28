@@ -93,6 +93,13 @@ const msoSSOLogin = data =>
     })
     .then(result => result.data.result);
 
+const V1Redirect = id =>
+  api
+    .callApi({
+      url: `${prefix}/fwd?id=${id}`
+    })
+    .then(result => result.data);
+
 export default {
   login,
   signup,
@@ -104,5 +111,6 @@ export default {
   msoLogin,
   msoSSOLogin,
   checkUserExist,
-  signupWithGoogle
+  signupWithGoogle,
+  V1Redirect
 };

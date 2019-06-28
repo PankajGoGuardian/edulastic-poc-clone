@@ -27,6 +27,7 @@ export const SET_USER = "[auth] set user";
 export const SIGNUP = "[auth] signup";
 export const SINGUP_SUCCESS = "[auth] signup success";
 export const FETCH_USER = "[auth] fetch user";
+export const FETCH_V1_REDIRECT = "[v1 redirect] fetch";
 export const LOGOUT = "[auth] logout";
 export const CHANGE_CLASS = "[student] change class";
 export const LOAD_SKILL_REPORT_BY_CLASSID = "[reports] load skill report by class id";
@@ -45,6 +46,7 @@ export const setUserAction = createAction(SET_USER);
 export const signupAction = createAction(SIGNUP);
 export const signupSuccessAction = createAction(SINGUP_SUCCESS);
 export const fetchUserAction = createAction(FETCH_USER);
+export const fetchV1RedirectAction = createAction(FETCH_V1_REDIRECT);
 export const logoutAction = createAction(LOGOUT);
 export const changeClassAction = createAction(CHANGE_CLASS);
 export const updateUserRoleAction = createAction(UPDATE_USER_ROLE_REQUEST);
@@ -89,6 +91,10 @@ export default createReducer(initialState, {
     state.user.orgData.defaultClass = payload;
   },
   [FETCH_USER]: state => {
+    state.isAuthenticated = false;
+    state.authenticating = true;
+  },
+  [FETCH_V1_REDIRECT]: state => {
     state.isAuthenticated = false;
     state.authenticating = true;
   },
@@ -314,8 +320,36 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
-    yield put(push(getLoggedOutUrl()));
+    if (!(error.response && error.response.status === 501)) {
+      window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      yield put(push(getLoggedOutUrl()));
+    }
+  }
+}
+
+export function* fetchV1Redirect({ payload: id }) {
+  try {
+    // TODO: handle the case of invalid token
+    const { authToken, _id, role } = yield call(authApi.V1Redirect, id);
+    if (authToken) {
+      TokenStorage.storeAccessToken(authToken, _id, role);
+      TokenStorage.selectAccessToken(_id, role);
+    } else {
+      yield call(message.error, "authtoken invalid on redirection");
+      return;
+    }
+
+    const user = yield call(userApi.getUser);
+
+    yield put({
+      type: SET_USER,
+      payload: user
+    });
+    let redirectUrl = (role === "student")? "/home/assignments": "/author/assignments";
+    yield put(push(redirectUrl));
+  } catch (e) {
+    console.log(e);
+    yield call(message.error, "failed loading user data");
   }
 }
 
@@ -458,6 +492,7 @@ export function* watcherSaga() {
   yield takeLatest(SIGNUP, signup);
   yield takeLatest(LOGOUT, logout);
   yield takeLatest(FETCH_USER, fetchUser);
+  yield takeLatest(FETCH_V1_REDIRECT, fetchV1Redirect);
   yield takeLatest(CHANGE_CLASS, changeClass);
   yield takeLatest(GOOGLE_LOGIN, googleLogin);
   yield takeLatest(CLEVER_LOGIN, cleverLogin);

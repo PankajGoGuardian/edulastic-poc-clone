@@ -56,14 +56,16 @@ class ListItem extends Component {
     isOpenModal: false
   };
 
-  moveToItem = () => {
+  moveToItem = e => {
+    e && e.stopPropagation();
     const { history, item, match, mode } = this.props;
     if (mode !== "embedded") {
       history.push(`${match.url}/${item._id}#review`);
     }
   };
 
-  duplicate = async () => {
+  duplicate = async e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
     history.push(`/author/tests/${duplicateTest._id}`);
@@ -73,7 +75,8 @@ class ListItem extends Component {
     this.setState({ isOpenModal: false });
   };
 
-  assignTest = () => {
+  assignTest = e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     history.push(`/author/assignments/${item._id}`);
   };
@@ -92,7 +95,7 @@ class ListItem extends Component {
 
   render() {
     const {
-      item: { title, analytics, tags = [], _source, _id: testId, status: testStatus, description },
+      item: { title, analytics, tags = [], _source, _id: testId, status: testStatus, description, thumbnail },
       item,
       authorName,
       owner = false,
@@ -107,7 +110,7 @@ class ListItem extends Component {
       usage = analytics ? analytics[0].usage : "0"
     } = this.props;
     const { isOpenModal, currentTestId, isPreviewModalVisible } = this.state;
-
+    const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail;
     return (
       <>
         <ViewModal
@@ -124,12 +127,12 @@ class ListItem extends Component {
           testId={currentTestId}
           hideModal={this.hidePreviewModal}
         />
-        <Container onClick={isPlaylist ? this.moveToItem : ""}>
+        <Container onClick={isPlaylist ? this.moveToItem : this.openModal}>
           <ContentWrapper>
             <Col span={18}>
               <ListCard
                 title={
-                  <Header src={isPlaylist ? _source.thumbnail : undefined}>
+                  <Header src={thumbnailData}>
                     <Stars size="small" />
                     <ButtonWrapper className="showHover">
                       {owner && testStatus === "draft" && (
@@ -144,7 +147,13 @@ class ListItem extends Component {
                         </Button>
                       )}
                       {testStatus === "published" && (
-                        <Button type="primary" onClick={() => this.showPreviewModal(testId)}>
+                        <Button
+                          type="primary"
+                          onClick={e => {
+                            e.stopPropagation();
+                            this.showPreviewModal(testId);
+                          }}
+                        >
                           Preview
                         </Button>
                       )}
@@ -159,25 +168,20 @@ class ListItem extends Component {
               />
               <Inner>
                 <div>
-                  <StyledLink title={title} onClick={isPlaylist ? this.moveToItem : this.openModal}>
-                    {isPlaylist ? _source.title : title}
-                  </StyledLink>
+                  <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
                   {mode && (
                     <TestStatus className={testStatus} mode={"embedded"}>
                       {testStatus}
                     </TestStatus>
                   )}
                 </div>
-                <Description
-                  title={isPlaylist ? _source.description : description}
-                  onClick={isPlaylist ? this.moveToItem : ""}
-                >
+                <Description title={isPlaylist ? _source.description : description}>
                   <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
                 </Description>
               </Inner>
             </Col>
 
-            {!isPlaylist && (
+            {!isPlaylist && mode === "embedded" && (
               <ViewButtonWrapper span={6}>
                 <TypeContainer />
                 {!isTestAdded && mode === "embedded" && (

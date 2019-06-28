@@ -72,7 +72,7 @@ const columns = [
           </Link>
         </Tooltip>
         <Tooltip placement="bottom" title="Express Grader">
-          <Link to="/author/expressgrader">
+          <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
             <Icon src={additemsIcon} alt="Images" />
           </Link>
         </Tooltip>

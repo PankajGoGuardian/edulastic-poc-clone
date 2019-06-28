@@ -100,11 +100,7 @@ const Author = ({ match, history, isSidebarCollapsed }) => {
                 <Route exact path={`${match.url}/classresponses/:testActivityId`} component={ClassResponses} />
                 <Route exact path={`${match.url}/printpreview/:testActivityId`} component={PrintPreview} />
                 <Route exact path={`${match.url}/manageClass`} component={ManageClass} />
-                <Route
-                  exact
-                  path={`${match.url}/expressgrader/:assignmentId/:classId/:testActivityId`}
-                  component={ExpressGrader}
-                />
+                <Route exact path={`${match.url}/expressgrader/:assignmentId/:classId`} component={ExpressGrader} />
                 <Route
                   exact
                   path={`${match.url}/standardsBasedReport/:assignmentId/:classId`}

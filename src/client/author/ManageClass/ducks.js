@@ -332,15 +332,19 @@ function* changeUserTTSRequest({ payload }) {
   try {
     const result = yield call(userApi.changeUserTTS, payload);
     const { status } = result;
+
     let msg = "";
     if (status === 200) {
       msg = "TTS updated successfully";
       const userIds = payload.userId.split(",");
-      const ttsStatus = payload.ttsStatus;
+      const tts = payload.ttsStatus;
       const studentsList = yield select(state => state.manageClass.studentsList);
       const newStdList = studentsList.map(std => {
         if (userIds.indexOf(std._id) > -1) {
-          std["tts"] = ttsStatus;
+          return {
+            ...std,
+            tts
+          };
         }
         return std;
       });

@@ -21,6 +21,7 @@ import TestItemDemoPlayer from "./author/TestItemDemoPlayer";
 import { getWordsInURLPathName, isLoggedIn } from "./common/utils/helpers";
 import LoggedOutRoute from "./common/components/loggedOutRoute";
 import PrivateRoute from "./common/components/privateRoute";
+import V1Redirect from "./author/V1Redirect";
 
 const { ASSESSMENT, PRACTICE } = test.type;
 // route wise splitting
@@ -77,7 +78,8 @@ class App extends Component {
     const publicPath = location.pathname.split("/").includes("public");
     const ssoPath = location.pathname.split("/").includes("auth");
     const partnerPath = location.pathname.split("/").includes("partnerLogin");
-    if (!publicPath && !ssoPath && !partnerPath) {
+    const isV1Redirect = location.pathname.includes("/fwd");
+    if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect) {
       fetchUser();
     }
   }
@@ -89,7 +91,7 @@ class App extends Component {
       history.push(`/d/ap?eAId=${v1Id}`);
     }
 
-    const publicPath = location.pathname.split("/").includes("public");
+    const publicPath = location.pathname.split("/").includes("public") || location.pathname.includes("/fwd");
     if (!publicPath && user.authenticating && TokenStorage.getAccessToken()) {
       return <Loading />;
     }
@@ -122,7 +124,8 @@ class App extends Component {
         this.props.location.pathname.toLocaleLowerCase() === "/signup" ||
         this.props.location.pathname.toLocaleLowerCase() === "/studentsignup" ||
         this.props.location.pathname.toLocaleLowerCase() === "/adminsignup" ||
-        (path[0] && path[0].toLocaleLowerCase() === "district")
+        (path[0] && path[0].toLocaleLowerCase() === "district") ||
+        this.props.location.pathname.includes("/fwd")
       ) {
       } else if (
         this.props.location.pathname === "/auth/mso" ||
@@ -170,6 +173,7 @@ class App extends Component {
             <Route path={`/student/${PRACTICE}/:id`} render={() => <AssessmentPlayer defaultAP={false} />} />
             <Route path="/public/test/:id" render={() => <TestDemoPlayer />} />
             <Route path="/v1/testItem/:id" render={() => <TestItemDemoPlayer />} />
+            <Route exact path="/fwd" render={() => <V1Redirect />} />
             <Route path="/auth" render={() => <Auth />} />
             {testRedirectRoutes.map(route => (
               <Route path={route} component={RedirectToTest} key={route} />

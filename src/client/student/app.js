@@ -37,6 +37,7 @@ const StudentApp = ({ match, isSidebarCollapsed }) => (
               path={`${match.url}/seb/test/:testId/type/:testType/assignment/:assignmentId`}
               component={DeepLink}
             />
+
             <Route path={`${match.url}/reports`} component={Report} />
             <Route path={`${match.url}/skill-report`} component={SkillReportContainer} />
             <Route path={`${match.url}/manage`} component={ManageClass} />

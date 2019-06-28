@@ -5,11 +5,14 @@ import styled, { ThemeProvider } from "styled-components";
 import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { Row, Col, Button } from "antd";
+import { withRouter } from "react-router-dom";
+import { get, isEmpty } from "lodash";
 import { themes } from "../../themes";
 
 import Confirmation from "./Confirmation";
 import { attemptSummarySelector } from "../ducks";
-import { withRouter } from "react-router-dom";
+import { getAssignmentsSelector } from "../../Assignments/ducks";
+import { receiveTestActivitydAction } from "../../../author/src/actions/classBoard";
 
 class SummaryTest extends Component {
   constructor(props) {
@@ -18,6 +21,18 @@ class SummaryTest extends Component {
       buttonIdx: null,
       isShowConfirmationModal: false
     };
+  }
+
+  componentDidMount() {
+    const {
+      loadTestActivity,
+      assignments,
+      test: { testId }
+    } = this.props;
+    if (!testId || isEmpty(assignments)) return;
+    const [assignment] = assignments.filter(item => item.testId === testId);
+
+    loadTestActivity(assignment._id, assignment.class[0]._id);
   }
 
   handlerButton = buttonIdx => {
@@ -34,9 +49,16 @@ class SummaryTest extends Component {
     this.setState({ isShowConfirmationModal: false });
   };
 
-  goToQuestion = (testId, testActivityId, index) => () => {
-    const { history } = this.props;
-    history.push(`/student/assessment/${testId}/uta/${testActivityId}/qid/${index}`);
+  goToQuestion = (testId, testActivityId, q) => () => {
+    const { history, assignments, items, assignmentId } = this.props;
+
+    const [assignmentItem] = assignments.filter(item => item._id === assignmentId);
+    const targetItemIndex = items.reduce((acc, item, index) => {
+      if (item.data.questions.some(({ id }) => id === q)) acc = index;
+      return acc;
+    }, null);
+
+    history.push(`/student/${assignmentItem.testType}/${testId}/uta/${testActivityId}/qid/${targetItemIndex}`);
   };
 
   render() {
@@ -105,7 +127,7 @@ class SummaryTest extends Component {
                     <QuestionColorBlock
                       type={questionList[q]}
                       isVisible={buttonIdx === null || buttonIdx === questionList[q]}
-                      onClick={this.goToQuestion(test.testId, test.testActivityId, index)}
+                      onClick={this.goToQuestion(test.testId, test.testActivityId, q)}
                     >
                       <span> {index + 1} </span>
                     </QuestionColorBlock>
@@ -129,8 +151,14 @@ class SummaryTest extends Component {
 SummaryTest.propTypes = {
   finishTest: PropTypes.func.isRequired,
   questionList: PropTypes.array,
+  assignments: PropTypes.array.isRequired,
+  items: PropTypes.array.isRequired,
   t: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired
+  history: PropTypes.object.isRequired,
+  loadTestActivity: PropTypes.func.isRequired,
+  assignmentId: PropTypes.string,
+  classId: PropTypes.string,
+  test: PropTypes.object
 };
 
 SummaryTest.defaultProps = {
@@ -140,10 +168,19 @@ SummaryTest.defaultProps = {
 const enhance = compose(
   withNamespaces(["summary", "default"]),
   withRouter,
-  connect(state => ({
-    questionList: attemptSummarySelector(state),
-    test: state.test
-  }))
+  connect(
+    state => ({
+      questionList: attemptSummarySelector(state),
+      assignments: getAssignmentsSelector(state),
+      test: state.test,
+      items: state.test.items,
+      assignmentId: get(state, "author_classboard_testActivity.assignmentId", ""),
+      classId: get(state, "author_classboard_testActivity.classId", "")
+    }),
+    {
+      loadTestActivity: receiveTestActivitydAction
+    }
+  )
 );
 
 export default enhance(SummaryTest);

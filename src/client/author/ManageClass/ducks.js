@@ -330,28 +330,21 @@ function* receiveAddStudentRequest({ payload }) {
 
 function* changeUserTTSRequest({ payload }) {
   try {
-    const result = yield call(userApi.changeUserTTS, payload);
-    const { status } = result;
-
-    let msg = "";
-    if (status === 200) {
-      msg = "TTS updated successfully";
-      const userIds = payload.userId.split(",");
-      const tts = payload.ttsStatus;
-      const studentsList = yield select(state => state.manageClass.studentsList);
-      const newStdList = studentsList.map(std => {
-        if (userIds.indexOf(std._id) > -1) {
-          return {
-            ...std,
-            tts
-          };
-        }
-        return std;
-      });
-      yield put(userTTSRequestSuccessAction(newStdList));
-    } else {
-      msg = get(result, "data.result");
-    }
+    yield call(userApi.changeUserTTS, payload);
+    const msg = "TTS updated successfully";
+    const userIds = payload.userId.split(",");
+    const tts = payload.ttsStatus;
+    const studentsList = yield select(state => state.manageClass.studentsList);
+    const newStdList = studentsList.map(std => {
+      if (userIds.indexOf(std._id) > -1) {
+        return {
+          ...std,
+          tts
+        };
+      }
+      return std;
+    });
+    yield put(userTTSRequestSuccessAction(newStdList));
     message.success(msg);
   } catch (error) {
     message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");

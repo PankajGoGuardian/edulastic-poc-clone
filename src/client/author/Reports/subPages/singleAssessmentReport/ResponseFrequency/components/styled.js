@@ -65,6 +65,22 @@ export const StyledContainer = styled(Row)`
 `;
 
 export const StyledTable = styled(Table)`
+  @media print {
+    table,
+    th,
+    td {
+      border: 1px solid #e6e6e6;
+      font-size: 9px;
+    }
+
+    th.ant-table-column-has-sorters {
+      padding-top: 13px !important;
+    }
+
+    .ant-table-column-sorter {
+      display: none !important;
+    }
+  }
   .ant-table-body {
     table {
       thead {

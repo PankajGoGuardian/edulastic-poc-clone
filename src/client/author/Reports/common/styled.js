@@ -223,3 +223,17 @@ export const StyledAxisTickText = styled(Text)`
 export const StyledText = styled.text`
   font-size: 12px;
 `;
+
+export const PrintableScreen = styled.div`
+  @media print {
+    width: 1024px;
+
+    .fixed-header,
+    .navigator-tabs-container,
+    .ant-pagination,
+    .single-assessment-report-go-button-container,
+    .anticon-caret-down {
+      display: none;
+    }
+  }
+`;

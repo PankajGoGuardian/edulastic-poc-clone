@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from "react";
-import styled from "styled-components";
 import { connect } from "react-redux";
 import { Route, Switch } from "react-router-dom";
 import { Row, Col } from "antd";
@@ -8,7 +7,7 @@ import next from "immer";
 import { SingleAssessmentReportContainer } from "./subPages/singleAssessmentReport";
 import { StandardsMasteryReportContainer } from "./subPages/standardsMasteryReport";
 
-import { StyledContainer, StyledCard } from "./common/styled";
+import { StyledContainer, StyledCard, PrintableScreen } from "./common/styled";
 
 import { SingleAssessmentReport } from "./components/singleAssessmentReport";
 import { StudentProfileReport } from "./components/studentProfileReport";
@@ -169,17 +168,3 @@ const enhance = connect(
 )(Container);
 
 export default enhance;
-
-const PrintableScreen = styled.div`
-  @media print {
-    width: 1024px;
-
-    .fixed-header,
-    .navigator-tabs-container,
-    .ant-pagination,
-    .single-assessment-report-go-button-container,
-    .anticon-caret-down {
-      display: none;
-    }
-  }
-`;

@@ -6,24 +6,13 @@ const defaultPagination = {
 
 const PrintableTable = ({ component, isPrinting, dataSource, pagination = defaultPagination, ...props }) => {
   const ComponentToRender = component;
+  let _pagination = pagination;
 
-  return isPrinting ? (
-    <ComponentToRender
-      {...props}
-      pagination={{
-        ...pagination,
-        pageSize: dataSource.length
-      }}
-      dataSource={dataSource}
-    />
-  ) : (
-    <ComponentToRender
-      {...props}
-      pagination={pagination}
-      dataSource={dataSource}
-      onChange={props => console.log(props)}
-    />
-  );
+  if (isPrinting) {
+    _pagination.pageSize = dataSource.length;
+  }
+
+  return <ComponentToRender {...props} pagination={_pagination} dataSource={dataSource} />;
 };
 
 export default PrintableTable;

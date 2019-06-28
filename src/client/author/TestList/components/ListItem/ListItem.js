@@ -117,6 +117,7 @@ class ListItem extends Component {
           isShow={isOpenModal}
           close={this.closeModal}
           item={item}
+          status={testStatus}
           onEdit={this.moveToItem}
           onDuplicate={this.duplicate}
           assign={this.assignTest}

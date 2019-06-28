@@ -85,6 +85,7 @@ const CheckboxTemplateBoxLayout = ({
                     ${userSelections.length > 0 && userSelections[dropTargetIndex] ? "check-answer" : "noAnswer"} 
                     ${evaluation[dropTargetIndex] ? "right" : "wrong"}`}
               >
+                <span className="index index-box">{indexStr}</span>
                 <div className="text container" title={userSelections[dropTargetIndex]}>
                   <div className="clipText" style={{ maxWidth: `${uiStyle.widthpx}px` }}>
                     {userSelections[dropTargetIndex]}

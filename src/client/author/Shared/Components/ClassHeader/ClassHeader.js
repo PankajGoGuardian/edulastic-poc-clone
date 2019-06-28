@@ -241,10 +241,7 @@ class ClassHeader extends Component {
               </StyledAnchor>
             </StyledLink>
             <FeaturesSwitch inputFeatures="expressGrader" actionOnInaccessible="hidden" gradeSubject={gradeSubject}>
-              <StyledLink
-                to={`/author/expressgrader/${assignmentId}/${classId}/${testActivityId}`}
-                data-cy="Expressgrader"
-              >
+              <StyledLink to={`/author/expressgrader/${assignmentId}/${classId}`} data-cy="Expressgrader">
                 <StyledAnchor isActive={active === "expressgrader"}>
                   <IconBookMarkButton
                     color={active === "expressgrader" ? "#FFFFFF" : "rgba(255, 255, 255, 0.75)"}

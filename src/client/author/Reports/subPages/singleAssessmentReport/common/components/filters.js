@@ -395,7 +395,7 @@ const enhance = compose(
 const PrintablePrefix = styled.b`
   display: none;
   padding-left: 5px;
-  // float: left;
+  float: left;
 
   @media print {
     display: block;
@@ -441,6 +441,33 @@ const StyledSingleAssessmentReportFilters = styled(SingleAssessmentReportFilters
       .ant-select-show-search {
         width: 100%;
       }
+    }
+  }
+
+  @media print {
+    .control-dropdown,
+    .autocomplete-dropdown {
+      display: inline-block !important;
+      padding: 0px 0px 0px 10px !important;
+      width: auto !important;
+    }
+
+    .ant-dropdown-trigger,
+    .ant-select-selection,
+    .ant-input {
+      border-color: transparent !important;
+      background-color: transparent !important;
+      box-shadow: none !important;
+      padding: 0px !important;
+      height: auto !important;
+    }
+
+    .ant-select {
+      height: 20px;
+    }
+
+    .ant-select-auto-complete.ant-select .ant-select-search--inline {
+      margin-top: -5px;
     }
   }
 `;

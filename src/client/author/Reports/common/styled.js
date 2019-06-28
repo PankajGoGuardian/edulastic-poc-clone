@@ -42,6 +42,14 @@ export const StyledCard = styled(Card)`
       padding: 18px;
     }
   }
+
+  @media print {
+    box-shadow: none !important;
+
+    .ant-card-body {
+      padding: 0px !important;
+    }
+  }
 `;
 
 export const StyledContainer = styled.div`

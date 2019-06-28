@@ -179,7 +179,6 @@ export const AssessmentStatisticTable = props => {
         )}
       </Row>
       <PrintableTable
-        pagination={{ pageSize: 1 }}
         isPrinting={props.isPrinting}
         component={StyledTable}
         columns={table.columns}

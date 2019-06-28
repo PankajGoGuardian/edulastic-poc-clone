@@ -172,6 +172,8 @@ export default enhance;
 
 const PrintableScreen = styled.div`
   @media print {
+    width: 1024px;
+
     .fixed-header,
     .navigator-tabs-container,
     .ant-pagination,
@@ -179,47 +181,5 @@ const PrintableScreen = styled.div`
     .anticon-caret-down {
       display: none;
     }
-
-    .recharts-wrapper {
-      transform: translate(100px);
-    }
-
-    // .control-dropdown, .autocomplete-dropdown {
-    //   display: inline-block !important;
-    //   padding: 0px 0px 0px 10px !important;
-    // }
-
-    // .ant-dropdown-trigger, .ant-select-selection, .ant-input {
-    //   border-color: transparent !important;
-    //   background-color: transparent !important;
-    //   box-shadow: none !important;
-    //   padding: 0px !important;
-    //   height: auto !important;
-    // }
-
-    // .ant-select {
-    //   height: 20px;
-    // }
-
-    // .ant-select-auto-complete.ant-select .ant-select-search--inline {
-    //   margin-top: -3px;
-    // }
-
-    // .ant-table-header-column {
-    //   width: 60px;
-    //   white-space: normal;
-    // }
-
-    // .ant-card-body {
-    //   padding: 0px;
-    // }
-
-    // .ant-table-body table thead tr th {
-    //   padding: 0px;
-    // }
-
-    // .ant-card {
-    //   padding: 0px;
-    // }
   }
 `;

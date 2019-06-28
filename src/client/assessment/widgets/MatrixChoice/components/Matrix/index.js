@@ -230,7 +230,7 @@ const Matrix = ({
     <StyledTable
       data-cy="matrixTable"
       fontSize={fontSize}
-      horizontalLines={uiStyle.horizontal_lines && !helpers.isEmpty(uiStyle.option_row_title)}
+      horizontalLines={uiStyle.horizontal_lines}
       columns={getColumns()}
       dataSource={data}
       pagination={false}

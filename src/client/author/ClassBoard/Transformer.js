@@ -239,7 +239,7 @@ export const transformGradeBookResponse = ({
         };
       }
       const testActivity = studentTestActivities[studentId];
-      if (testActivity.redirected) {
+      if (testActivity.redirect) {
         return {
           studentId,
           studentName: fullName,

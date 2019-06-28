@@ -7,7 +7,7 @@ const SET_PRINTING_STATE = "[reports] set printing state";
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-export const setPrintingState = createAction(SET_PRINTING_STATE_REQUEST);
+export const setPrintingStateAction = createAction(SET_PRINTING_STATE_REQUEST);
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 

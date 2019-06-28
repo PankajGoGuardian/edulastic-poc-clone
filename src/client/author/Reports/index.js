@@ -18,7 +18,7 @@ import { CustomizedHeaderWrapper } from "./common/components/header";
 import navigation from "./common/static/json/navigation.json";
 import FeaturesSwitch from "../../features/components/FeaturesSwitch";
 
-import { getPrintingState, setPrintingState } from "./ducks";
+import { getPrintingState, setPrintingStateAction } from "./ducks";
 
 const Container = props => {
   const [showFilter, setShowFilter] = useState(false);
@@ -30,7 +30,7 @@ const Container = props => {
   };
 
   const onPrintClickCB = () => {
-    props.setPrintingState(true);
+    props.setPrintingStateAction(true);
   };
 
   const onDownloadCSVClickCB = () => {
@@ -44,7 +44,7 @@ const Container = props => {
   useEffect(() => {
     if (props.isPrinting) {
       window.print();
-      props.setPrintingState(false);
+      props.setPrintingStateAction(false);
     }
   }, [props.isPrinting]);
 
@@ -163,7 +163,7 @@ const enhance = connect(
     isPrinting: getPrintingState(state)
   }),
   {
-    setPrintingState
+    setPrintingStateAction
   }
 )(Container);
 

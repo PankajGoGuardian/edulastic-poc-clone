@@ -9,7 +9,7 @@ import StartButton from "../../styled/AssignmentCardButton";
 const AssignmentButton = ({ startDate, t, startTest, attempted, resume }) => {
   const startButtonText = resume ? t("common.resume") : attempted ? t("common.retake") : t("common.startAssignment");
 
-  return new Date(startDate) > new Date() ? (
+  return new Date(startDate) > new Date() || !startDate ? (
     <NotAvailableButton disabled>
       <span>
         <img src={lockIcon} alt="" />

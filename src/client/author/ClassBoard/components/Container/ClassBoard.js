@@ -321,8 +321,9 @@ class ClassBoard extends Component {
   };
 
   handleShowMarkAsAbsentModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus } = this.props;
-    if (assignmentStatus.toLowerCase() === "not open") return message.warn("Assignment is not opened yet");
+    const { selectedStudents, testActivity, assignmentStatus, additionalData = {} } = this.props;
+    if (assignmentStatus.toLowerCase() === "not open" && additionalData.startDate > Date.now())
+      return message.warn("Assignment is not opened yet");
     const selectedStudentKeys = Object.keys(selectedStudents);
     if (!selectedStudentKeys.length)
       return message.warn("At least one student should be selected to be Marked as Absent.");
@@ -442,7 +443,8 @@ class ClassBoard extends Component {
     const firstQuestionEntities = get(entities, [0, "questionActivities"], []);
     const unselectedStudents = entities.filter(x => !selectedStudents[x.studentId]);
     const disableMarkAbsent =
-      assignmentStatus.toLowerCase() == "not open" || assignmentStatus.toLowerCase() === "graded";
+      (assignmentStatus.toLowerCase() == "not open" && additionalData.startDate > Date.now()) ||
+      assignmentStatus.toLowerCase() === "graded";
     return (
       <div>
         {showModal ? (

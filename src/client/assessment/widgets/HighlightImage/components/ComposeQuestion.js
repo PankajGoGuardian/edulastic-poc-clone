@@ -22,7 +22,7 @@ import StyledDropZone from "../../../components/StyledDropZone";
 import { SOURCE, HEIGHT, WIDTH } from "../../../constants/constantsForQuestions";
 
 import { canvasDimensions, aws } from "@edulastic/constants";
-import { uploadToS3 } from "@edulastic/common/src/helpers";
+import { uploadToS3, beforeUpload } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -110,6 +110,11 @@ class ComposeQuestion extends Component {
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
+        const canUpload = beforeUpload(files);
+        if (!canUpload) {
+          setLoading(false);
+          return false;
+        }
         uploadToS3(files, aws.s3Folders.DEFAULT)
           .then(fileUri => {
             getImageDimensions(fileUri);
@@ -142,14 +147,7 @@ class ComposeQuestion extends Component {
           handleChange={handleImageToolbarChange}
         />
 
-        <Dropzone
-          onDrop={onDrop}
-          maxSize={2097152}
-          accept="image/*"
-          className="dropzone"
-          activeClassName="active-dropzone"
-          multiple={false}
-        >
+        <Dropzone onDrop={onDrop} className="dropzone" activeClassName="active-dropzone" multiple={false}>
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div
               style={{

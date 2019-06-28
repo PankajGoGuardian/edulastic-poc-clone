@@ -6,6 +6,7 @@ import { Card } from "@edulastic/common";
 export const Container = styled(Card)`
   border: 1px solid #eeeeee;
   box-shadow: none;
+  cursor: pointer;
   padding: 15px;
   border-radius: 8px;
   .ant-card-body {
@@ -23,9 +24,6 @@ export const Container = styled(Card)`
   }
 `;
 
-export const CardItemBody = styled.div`
-  cursor: pointer;
-`;
 export const Inner = styled.div`
   div:last-child {
     & > span {

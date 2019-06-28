@@ -127,7 +127,7 @@ class ListItem extends Component {
           testId={currentTestId}
           hideModal={this.hidePreviewModal}
         />
-        <Container onClick={isPlaylist ? this.moveToItem : this.openModal} style={{ cursor: "pointer" }}>
+        <Container onClick={isPlaylist ? this.moveToItem : this.openModal}>
           <ContentWrapper>
             <Col span={18}>
               <ListCard

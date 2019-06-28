@@ -23,8 +23,7 @@ import {
   IconText,
   ButtonWrapper,
   DraftIconWrapper,
-  EllipsisWrapper,
-  CardItemBody
+  EllipsisWrapper
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -129,7 +128,6 @@ class Item extends Component {
         />
         <Container
           onClick={isPlaylist ? this.moveToItem : this.openModal}
-          style={{ cursor: "pointer" }}
           title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars />
@@ -159,47 +157,45 @@ class Item extends Component {
             </Header>
           }
         >
-          <CardItemBody>
-            <Inner>
-              <Question>
-                <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
-              </Question>
-              <CardDescription title={isPlaylist ? _source.description : description}>
-                <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
-              </CardDescription>
-              {!isPlaylist && <Tags tags={tags} />}
-            </Inner>
-            <Footer>
-              {authorName && (
-                <Author>
-                  <IconText>Created by</IconText>
+          <Inner>
+            <Question>
+              <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
+            </Question>
+            <CardDescription title={isPlaylist ? _source.description : description}>
+              <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
+            </CardDescription>
+            {!isPlaylist && <Tags tags={tags} />}
+          </Inner>
+          <Footer>
+            {authorName && (
+              <Author>
+                <IconText>Created by</IconText>
 
-                  <AuthorWrapper>
-                    <IconUser /> &nbsp;
-                    <AuthorName title={authorName}>{authorName}</AuthorName>
-                  </AuthorWrapper>
-                </Author>
-              )}
-              {status !== "draft" && (
-                <>
-                  <ShareIcon>
-                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                    <IconText>{usage}</IconText>
-                  </ShareIcon>
-                  <LikeIcon>
-                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                    <IconText>{likes}</IconText>
-                  </LikeIcon>
-                </>
-              )}
-              {status === "draft" && (
-                <DraftIconWrapper>
-                  <IconDraft /> &nbsp;
-                  <IconText>In Draft</IconText>
-                </DraftIconWrapper>
-              )}
-            </Footer>
-          </CardItemBody>
+                <AuthorWrapper>
+                  <IconUser /> &nbsp;
+                  <AuthorName title={authorName}>{authorName}</AuthorName>
+                </AuthorWrapper>
+              </Author>
+            )}
+            {status !== "draft" && (
+              <>
+                <ShareIcon>
+                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{usage}</IconText>
+                </ShareIcon>
+                <LikeIcon>
+                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                  <IconText>{likes}</IconText>
+                </LikeIcon>
+              </>
+            )}
+            {status === "draft" && (
+              <DraftIconWrapper>
+                <IconDraft /> &nbsp;
+                <IconText>In Draft</IconText>
+              </DraftIconWrapper>
+            )}
+          </Footer>
         </Container>
       </>
     );

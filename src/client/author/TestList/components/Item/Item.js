@@ -117,6 +117,7 @@ class Item extends Component {
           onDuplicate={this.duplicate}
           onEdit={this.moveToItem}
           item={item}
+          status={status}
           owner={owner}
           assign={this.assignTest}
           isPlaylist={isPlaylist}

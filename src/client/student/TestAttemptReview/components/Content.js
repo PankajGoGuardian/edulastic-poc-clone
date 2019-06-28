@@ -61,20 +61,19 @@ class SummaryTest extends Component {
               <ColorDescription>
                 <ColorDescriptionRow gutter={32}>
                   <FlexCol lg={8} md={24}>
-                    <GreenMark />
+                    <MarkedAnswered />
                     <SpaceLeft>
                       <Description>{t("common.markedQuestionLineOne")}</Description>
-                      <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
-                    <GrayMark />
+                    <MarkedSkipped />
                     <SpaceLeft>
                       <Description>{t("common.skippedQues")}</Description>
                     </SpaceLeft>
                   </FlexCol>
                   <FlexCol lg={8} md={24}>
-                    <RedMark />
+                    <MarkedForReview />
                     <SpaceLeft>
                       <Description>{t("common.markedForReview")}</Description>
                       <Description style={{ marginTop: -2 }}>{t("common.markedQuestionLineTwo")}</Description>
@@ -218,16 +217,16 @@ const Markers = styled.div`
   border-radius: 2px;
   flex-shrink: 0;
 `;
-const GreenMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.greenMarkBgColor};
+const MarkedAnswered = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedAnswerBoxColor};
 `;
 
-const GrayMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.grayMarkBgColor};
+const MarkedSkipped = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedSkippedBoxColor};
 `;
 
-const RedMark = styled(Markers)`
-  background-color: ${props => props.theme.attemptReview.redMarkBgColor};
+const MarkedForReview = styled(Markers)`
+  background-color: ${props => props.theme.attemptReview.markedForReviewBoxColor};
 `;
 
 const Description = styled.div`
@@ -317,7 +316,12 @@ const QuestionColorBlock = styled.div`
   width: 60px;
   height: 40px;
   border-radius: 4px;
-  background-color: ${props => (props.type === 2 ? "#ee1658" : props.type === 1 ? "#1fe3a1" : "#b1b1b1")};
+  background-color: ${props =>
+    props.type === 2
+      ? props.theme.attemptReview.markedForReviewBoxColor
+      : props.type === 1
+      ? props.theme.attemptReview.markedAnswerBoxColor
+      : props.theme.attemptReview.markedSkippedBoxColor};
   margin-right: 23px;
   display: ${props => (props.isVisible ? "flex" : "none")};
   align-items: center;

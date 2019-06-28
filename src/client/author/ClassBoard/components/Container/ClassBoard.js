@@ -453,11 +453,11 @@ class ClassBoard extends Component {
             onCancel={this.handleCancelMarkAbsent}
             inputVal={modalInputVal}
             onInputChange={this.handleValidateInput}
-            expectedVal={"ABSENT"}
+            expectedVal="ABSENT"
             bodyText={
-              "You are about to Mark the selecte studen(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
+              "You are about to Mark the selected student(s) as Absent. Student's response if present will be deleted. Do you still want to proceed?"
             }
-            okText={"Yes,Absent"}
+            okText="Yes,Absent"
           />
         ) : (
           ""

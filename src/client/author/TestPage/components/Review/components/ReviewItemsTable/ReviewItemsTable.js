@@ -41,7 +41,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
     };
     const meta = {
       id: item._id,
-      by: "Kevin Hart",
+      by: item.createdBy.name,
       shared: "9578 (1)",
       likes: 9,
       types: types[item._id],

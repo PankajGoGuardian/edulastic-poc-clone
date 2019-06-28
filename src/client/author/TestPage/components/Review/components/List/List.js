@@ -206,7 +206,7 @@ const List = SortableContainer(
             key={i}
             metaInfoData={{
               id: testItems[i]._id,
-              by: testItems[i].authors[0].name,
+              by: testItems[i].createdBy.name,
               shared: "0",
               likes: "0",
               types: types[testItems[i]._id],

@@ -45,7 +45,6 @@ export const reportReducer = createReducer(initialState, {
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
 function* setPrintingStateWatcher({ payload }) {
-  console.log(payload);
   yield put({
     type: SET_PRINTING_STATE,
     payload: payload

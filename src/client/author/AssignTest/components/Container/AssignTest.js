@@ -172,7 +172,7 @@ class AssignTest extends React.Component {
   render() {
     const { isAdvancedView, assignment } = this.state;
     const { group, fetchStudents, students, testSettings, testItem, isPlaylist, playlist } = this.props;
-    const { title } = isPlaylist ? playlist : testItem;
+    const { title, _id } = isPlaylist ? playlist : testItem;
 
     return (
       <div>
@@ -189,8 +189,11 @@ class AssignTest extends React.Component {
               &lt;{" "}
               <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}`}>
                 {isPlaylist ? "PLAYLIST LIBRARY" : "TEST LIBRARY"}
-              </AnchorLink>{" "}
-              / <Anchor>{title}</Anchor>
+              </AnchorLink>
+              &nbsp;/&nbsp;
+              <AnchorLink to={`/author/${isPlaylist ? "playlists" : "tests"}/${_id}#review`}>{title}</AnchorLink>
+              &nbsp;/&nbsp;
+              <Anchor>Assign</Anchor>
             </PaginationInfo>
             <SwitchWrapper>
               <SwitchLabel>SIMPLE</SwitchLabel>

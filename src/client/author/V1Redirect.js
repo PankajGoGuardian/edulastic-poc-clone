@@ -8,7 +8,6 @@ const query = qsParse(window.location.search.replace("?", "") || "");
 
 function V1Redirect({ fetchV1Redirect }) {
   useEffect(() => {
-    console.log("qs", qsParse(window.location.search || ""));
     if (query.id) {
       fetchV1Redirect(query.id);
     }

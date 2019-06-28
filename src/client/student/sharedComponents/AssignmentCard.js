@@ -61,7 +61,6 @@ const SafeBrowserButton = ({
 
 const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
-
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
 
@@ -71,6 +70,8 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
     endDate,
     testId,
     startDate,
+    open = false,
+    close = false,
     _id: assignmentId,
     safeBrowser,
     testType,
@@ -82,13 +83,15 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
 
   if (!startDate && !endDate) {
     const currentClass = maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "endDate") || {};
+    open = currentClass.open;
+    close = currentClass.close;
     startDate = currentClass.startDate;
     endDate = currentClass.endDate;
   }
-  if (!startDate) {
+  if (!startDate && open) {
     startDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "openDate") || {}).openDate;
   }
-  if (!endDate) {
+  if (!endDate && close) {
     endDate = (maxBy(clazz.filter(cl => (currentGroup ? cl._id === currentGroup : true)), "closedDate") || {})
       .closedDate;
   }
@@ -181,7 +184,7 @@ const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, typ
             </AttemptDetails>
           )}
           {type === "assignment" ? (
-            safeBrowser && !(new Date(startDate) > new Date()) && !isSEB() ? (
+            safeBrowser && !(new Date(startDate) > new Date() || !startDate) && !isSEB() ? (
               <SafeBrowserButton
                 data-cy="start"
                 testId={testId}

@@ -186,12 +186,14 @@ export const StyledSlider = styled(Slider)`
     height: 12px;
     border-radius: 6px;
     background-color: #e1e1e1;
+    -webkit-print-color-adjust: exact;
   }
 
   .ant-slider-track {
     height: 12px;
     border-radius: 6px;
     background-color: #69c0ff;
+    -webkit-print-color-adjust: exact;
   }
 
   .ant-slider-step {

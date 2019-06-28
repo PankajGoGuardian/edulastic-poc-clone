@@ -147,7 +147,7 @@ class ClozeDropDown extends Component {
             <React.Fragment>
               <div className="authoring">
                 <Authoring item={itemForEdit} fillSections={fillSections} cleanSections={cleanSections} />
-                <Widget>
+                <Widget position="unset">
                   <CorrectAnswers
                     key="shuffleOptions"
                     validation={item.validation}

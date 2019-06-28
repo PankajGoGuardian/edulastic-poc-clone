@@ -7,7 +7,7 @@ import { withTheme } from "styled-components";
 import produce from "immer";
 import uuid from "uuid/v4";
 import { arrayMove } from "react-sortable-hoc";
-import { Button, Icon, Input } from "antd";
+import { Button, Icon, Input, Checkbox } from "antd";
 import { withNamespaces } from "@edulastic/localization";
 import { PaddingDiv } from "@edulastic/common";
 
@@ -17,15 +17,47 @@ import QuillSortableList from "../../components/QuillSortableList/index";
 import { updateVariables } from "../../utils/variables";
 import { Subtitle } from "../../styled/Subtitle";
 import { AddNewChoiceBtn } from "../../styled/AddNewChoiceBtn";
-import { Label, Heading } from "./styled";
+import { ActionWrapper } from "./styled/ActionWrapper";
+import { CheckContainer } from "./styled/CheckContainer";
 
 class GroupResponses extends React.Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
     setQuestionData: PropTypes.func.isRequired,
-    theme: PropTypes.object.isRequired
+    theme: PropTypes.object.isRequired,
+    cleanSections: PropTypes.func,
+    fillSections: PropTypes.func
   };
+
+  static defaultProps = {
+    cleanSections: () => null,
+    fillSections: () => null
+  };
+
+  constructor(props) {
+    super(props);
+
+    this.containerRef = React.createRef();
+  }
+
+  componentDidMount = () => {
+    const { fillSections, t } = this.props;
+    if (this.containerRef.current) {
+      fillSections(
+        "main",
+        t("component.cloze.dragDrop.choicesforresponse"),
+        this.containerRef.current.offsetTop,
+        this.containerRef.current.scrollHeight
+      );
+    }
+  };
+
+  componentWillUnmount() {
+    const { cleanSections } = this.props;
+
+    cleanSections();
+  }
 
   onSortEnd = ({ oldIndex, newIndex }) => {
     const { item, setQuestionData } = this.props;
@@ -199,24 +231,29 @@ class GroupResponses extends React.Component {
     );
   };
 
+  groupResponseOption = () => {
+    const { t, item } = this.props;
+    return (
+      <CheckContainer>
+        <Checkbox
+          data-cy="drag-drop-aria-check"
+          checked={item.hasGroupResponses}
+          onChange={e => this.groupResponsesHandler(e)}
+        >
+          {t("component.cloze.dragDrop.grouppossibleresponses")}
+        </Checkbox>
+      </CheckContainer>
+    );
+  };
+
   render() {
     const { t, item, theme } = this.props;
     return (
-      <>
-        <PaddingDiv>
-          <Subtitle>
-            <input
-              checked={item.hasGroupResponses}
-              id="groupResponseCheckbox"
-              type="checkbox"
-              onChange={e => this.groupResponsesHandler(e)}
-            />
-            <Label htmlFor="groupResponseCheckbox">{t("component.cloze.dragDrop.grouppossibleresponses")}</Label>
-          </Subtitle>
-        </PaddingDiv>
+      <div ref={this.containerRef}>
+        <Subtitle>{t("component.cloze.dragDrop.choicesforresponse")}</Subtitle>
+
         {!item.hasGroupResponses && (
           <PaddingDiv>
-            <Heading>{t("component.cloze.dragDrop.choicesforresponse")}</Heading>
             <QuillSortableList
               items={item.options.map(o => o.label)}
               onSortEnd={this.onSortEnd}
@@ -224,11 +261,12 @@ class GroupResponses extends React.Component {
               onRemove={this.remove}
               onChange={this.editOptions}
             />
-            <div>
+            <ActionWrapper>
               <AddNewChoiceBtn onClick={this.addNewChoiceBtn}>
                 {t("component.cloze.dragDrop.addnewchoice")}
               </AddNewChoiceBtn>
-            </div>
+              {this.groupResponseOption()}
+            </ActionWrapper>
           </PaddingDiv>
         )}
         {item.hasGroupResponses &&
@@ -286,17 +324,12 @@ class GroupResponses extends React.Component {
             </div>
           ))}
         {item.hasGroupResponses && (
-          <Button
-            type="primary"
-            onClick={this.addGroup}
-            style={{
-              background: theme.widgets.clozeDragDrop.addGroupButtonBgColor
-            }}
-          >
-            {t("component.cloze.dragDrop.addgroup")}
-          </Button>
+          <ActionWrapper>
+            <AddNewChoiceBtn onClick={this.addGroup}>{t("component.cloze.dragDrop.addgroup")}</AddNewChoiceBtn>
+            {this.groupResponseOption()}
+          </ActionWrapper>
         )}
-      </>
+      </div>
     );
   }
 }

@@ -1,6 +1,10 @@
 import React from "react";
 
-const PrintableTable = ({ component, isPrinting, dataSource, pagination = {}, ...props }) => {
+const defaultPagination = {
+  pageSize: 10
+};
+
+const PrintableTable = ({ component, isPrinting, dataSource, pagination = defaultPagination, ...props }) => {
   const ComponentToRender = component;
 
   return isPrinting ? (
@@ -13,7 +17,12 @@ const PrintableTable = ({ component, isPrinting, dataSource, pagination = {}, ..
       dataSource={dataSource}
     />
   ) : (
-    <ComponentToRender {...props} pagination={pagination} dataSource={dataSource} />
+    <ComponentToRender
+      {...props}
+      pagination={pagination}
+      dataSource={dataSource}
+      onChange={props => console.log(props)}
+    />
   );
 };
 

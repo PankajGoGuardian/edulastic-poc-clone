@@ -67,20 +67,6 @@ export const StyledContainer = styled(Row)`
 export const StyledTable = styled(Table)`
   .ant-table-body {
     table {
-      page-break-inside: auto;
-    }
-    tr,
-    div {
-      page-break-inside: auto;
-    }
-    thead {
-      display: table-header-group;
-    }
-    tfoot {
-      display: table-footer-group;
-    }
-
-    table {
       thead {
         tr {
           th {
@@ -119,7 +105,7 @@ export const StyledTable = styled(Table)`
 
     @media print {
       .ant-row-flex {
-        flex-flow: row wrap;
+        justify-content: flex-end;
       }
     }
   }

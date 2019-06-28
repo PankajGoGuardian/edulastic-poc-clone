@@ -121,9 +121,12 @@ class AddItems extends PureComponent {
   };
 
   handleClearSearch = () => {
-    this.setState({
-      search: getClearSearchState()
-    });
+    this.setState(
+      {
+        search: getClearSearchState()
+      },
+      this.handleSearch
+    );
   };
 
   handleCreateNewItem = () => {

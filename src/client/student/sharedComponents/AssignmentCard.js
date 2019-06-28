@@ -61,7 +61,6 @@ const SafeBrowserButton = ({
 
 const AssignmentCard = ({ startAssignment, resumeAssignment, data, theme, t, type, currentGroup, userGroups }) => {
   const [showAttempts, setShowAttempts] = useState(false);
-  console.log("d", data);
   const toggleAttemptsView = () => setShowAttempts(prev => !prev);
   const { releaseGradeLabels } = testConstants;
 

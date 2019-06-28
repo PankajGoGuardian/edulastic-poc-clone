@@ -1,6 +1,6 @@
 import { Typography } from "antd";
 import styled from "styled-components";
-import { mobileWidth, tabletWidth, blue, white, darkGrey, lightGrey, lightGrey4 } from "@edulastic/colors";
+import { mobileWidth, tabletWidth, themeColor, white, darkGrey, lightGrey, lightGrey4 } from "@edulastic/colors";
 import { FlexContainer, Card, Button } from "@edulastic/common";
 const { Paragraph } = Typography;
 
@@ -25,11 +25,12 @@ export const AssignButton = styled(Button)`
   position: relative;
   min-width: 130px;
   height: 45px;
-  color: ${blue};
+  color: ${themeColor};
   border-radius: 3px;
   background: ${white};
   justify-content: space-around;
   margin-left: 20px;
+  border-color: ${themeColor};
 `;
 
 export const StyledCard = styled(Card)`
@@ -157,7 +158,7 @@ export const FlexShareBox = styled.div`
   width: 500px;
   padding: 8px 10px;
   background-color: ${lightGrey};
-  color: ${blue};
+  color: ${themeColor};
   justify-content: space-between;
   margin-bottom: 10px;
 `;
@@ -170,7 +171,7 @@ export const IconWrapper = styled.span`
 
 export const TitleCopy = styled(Paragraph)`
   &.ant-typography {
-    color: ${blue};
+    color: ${themeColor};
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -181,7 +182,7 @@ export const TitleCopy = styled(Paragraph)`
   svg {
     width: 20px;
     height: 20px;
-    color: ${blue};
+    color: ${themeColor};
   }
 `;
 

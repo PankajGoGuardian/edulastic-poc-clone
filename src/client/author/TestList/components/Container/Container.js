@@ -10,7 +10,6 @@ import Modal from "react-responsive-modal";
 import { withWindowSizes, helpers, FlexContainer } from "@edulastic/common";
 import { IconList, IconTile, IconPlusCircle } from "@edulastic/icons";
 import { grey, white } from "@edulastic/colors";
-import { uniq } from "lodash";
 import {
   ScrollBox,
   Container,
@@ -151,6 +150,7 @@ class TestList extends Component {
       interestedSubjects = [],
       match: { params = {} },
       getCurriculumStandards,
+      clearSelectedItems,
       clearDictStandards
     } = this.props;
     const { search } = this.state;
@@ -248,6 +248,7 @@ class TestList extends Component {
       clearDictStandards();
       getCurriculumStandards(curriculumId, gradeArray, "");
     }
+    clearSelectedItems();
   }
 
   searchTest = debounce(() => {

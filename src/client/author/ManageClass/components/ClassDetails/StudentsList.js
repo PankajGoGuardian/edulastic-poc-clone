@@ -1,10 +1,11 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import { Icon } from "antd";
 import { get, isEmpty, size } from "lodash";
 import { Table, Spin } from "antd";
 import { lightBlue3 } from "@edulastic/colors";
-import { StudentContent, NoStudents, NoConentDesc, StyledIcon } from "./styled";
+import { StudentContent, NoStudents, NoConentDesc, StyledIcon, TableDataSpan } from "./styled";
 import { selectStudentAction } from "../../ducks";
 
 const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => {
@@ -37,7 +38,12 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
     {
       title: "TTS enabled",
       dataIndex: "tts",
-      width: "20%"
+      width: "20%",
+      render: tts => (
+        <TableDataSpan>
+          {tts === "yes" ? <Icon type="check-circle" theme="filled" /> : <Icon type="close-circle" theme="filled" />}
+        </TableDataSpan>
+      )
     },
     {
       title: "Google User",
@@ -51,7 +57,8 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
       dataIndex: "status",
       width: "30%",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.status > b.status
+      sorter: (a, b) => a.status > b.status,
+      render: status => <TableDataSpan>{status}</TableDataSpan>
     }
   ];
 

@@ -1,6 +1,6 @@
 /* eslint-disable no-template-curly-in-string */
 import { createAction, createReducer } from "redux-starter-kit";
-import { all, takeEvery, call, put } from "redux-saga/effects";
+import { all, takeEvery, call, put, select } from "redux-saga/effects";
 import { createSelector } from "reselect";
 import { message } from "antd";
 import { get, findIndex, keyBy } from "lodash";
@@ -216,6 +216,10 @@ const updateStudent = (state, { payload }) => {
   }
 };
 
+const updateStudentsAfterTTSChange = (state, { payload }) => {
+  state.studentsList = payload;
+};
+
 const removeStudentsSuccess = (state, { payload: studentIds }) => {
   // creating a hashmap of studentIds to reduce the loop complexity from n^2 to 2n
   const studentIdHash = keyBy(studentIds);
@@ -251,7 +255,8 @@ export default createReducer(initialState, {
   [SELECT_STUDENTS]: selectStudent,
   [UPDATE_STUDENT_SUCCESS]: updateStudent,
   [REMOVE_STUDENTS_SUCCESS]: removeStudentsSuccess,
-  [SET_SUBJECT]: setSubject
+  [SET_SUBJECT]: setSubject,
+  [USER_TTS_REQUEST_SUCCESS]: updateStudentsAfterTTSChange
 });
 
 function* fetchClassList({ payload }) {
@@ -325,14 +330,21 @@ function* receiveAddStudentRequest({ payload }) {
 
 function* changeUserTTSRequest({ payload }) {
   try {
-    const result = yield call(userApi.changeUserTTS, payload);
-    const { status } = result;
-    let msg = "";
-    if (status === 200) {
-      msg = "User(s) updated successfully";
-    } else {
-      msg = get(result, "data.result");
-    }
+    yield call(userApi.changeUserTTS, payload);
+    const msg = "TTS updated successfully";
+    const userIds = payload.userId.split(",");
+    const tts = payload.ttsStatus;
+    const studentsList = yield select(state => state.manageClass.studentsList);
+    const newStdList = studentsList.map(std => {
+      if (userIds.indexOf(std._id) > -1) {
+        return {
+          ...std,
+          tts
+        };
+      }
+      return std;
+    });
+    yield put(userTTSRequestSuccessAction(newStdList));
     message.success(msg);
   } catch (error) {
     message.error("Error occurred while enabling/disabling text to speech. Please contact customer support.");

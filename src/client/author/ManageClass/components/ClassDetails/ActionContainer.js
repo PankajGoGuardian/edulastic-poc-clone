@@ -15,8 +15,6 @@ import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
-
-
 import {
   DividerDiv,
   TitleWarapper,
@@ -46,7 +44,6 @@ const ActionContainer = ({
   selectedStudent,
   changeTTS,
   loadStudents
-
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -59,7 +56,6 @@ const ActionContainer = ({
 
   const { _id: classId } = selectedClass;
   let formRef = null;
-
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -115,7 +111,6 @@ const ActionContainer = ({
 
           addStudentRequest(pickBy(values, identity));
           setReqStatus(true);
-
         }
       });
     }
@@ -139,7 +134,6 @@ const ActionContainer = ({
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "yes" });
-          loadStudents({ classId });
         }
         break;
       case "disableSpeech":
@@ -149,7 +143,6 @@ const ActionContainer = ({
         if (changeTTS) {
           const stdIds = selectedStudent.map(std => std._id).join(",");
           changeTTS({ userId: stdIds, ttsStatus: "no" });
-          loadStudents({ classId });
         }
         break;
       case "deleteStudent":

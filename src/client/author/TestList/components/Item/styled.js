@@ -23,6 +23,9 @@ export const Container = styled(Card)`
   }
 `;
 
+export const CardItemBody = styled.div`
+  cursor: pointer;
+`;
 export const Inner = styled.div`
   div:last-child {
     & > span {

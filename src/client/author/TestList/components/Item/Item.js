@@ -23,7 +23,8 @@ import {
   IconText,
   ButtonWrapper,
   DraftIconWrapper,
-  EllipsisWrapper
+  EllipsisWrapper,
+  CardItemBody
 } from "./styled";
 import Tags from "../../../src/components/common/Tags";
 import ViewModal from "../ViewModal";
@@ -50,8 +51,9 @@ class Item extends Component {
     isOpenModal: false
   };
 
-  moveToItem = () => {
-    const { history, item, isPlaylist, owner } = this.props;
+  moveToItem = e => {
+    e && e.stopPropagation();
+    const { history, item, isPlaylist } = this.props;
     if (isPlaylist) {
       history.push(`/author/playlists/${item._id}#review`);
     } else {
@@ -59,13 +61,15 @@ class Item extends Component {
     }
   };
 
-  duplicate = async () => {
+  duplicate = async e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     const duplicateTest = await assignmentApi.duplicateAssignment(item._id);
     history.push(`/author/tests/${duplicateTest._id}`);
   };
 
-  assignTest = () => {
+  assignTest = e => {
+    e && e.stopPropagation();
     const { history, item } = this.props;
     history.push(`/author/assignments/${item._id}`);
   };
@@ -82,7 +86,8 @@ class Item extends Component {
     this.setState({ isPreviewModalVisible: false });
   };
 
-  showPreviewModal = testId => {
+  showPreviewModal = (testId, e) => {
+    e && e.stopPropagation();
     this.setState({ isPreviewModalVisible: true, currentTestId: testId });
   };
 
@@ -123,6 +128,8 @@ class Item extends Component {
           hideModal={this.hidePreviewModal}
         />
         <Container
+          onClick={isPlaylist ? this.moveToItem : this.openModal}
+          style={{ cursor: "pointer" }}
           title={
             <Header src={isPlaylist ? _source.thumbnail : thumbnail}>
               <Stars />
@@ -139,7 +146,7 @@ class Item extends Component {
                   </Button>
                 )}
                 {status === "published" && (
-                  <Button type="primary" onClick={() => this.showPreviewModal(testId)}>
+                  <Button type="primary" onClick={e => this.showPreviewModal(testId, e)}>
                     Preview
                   </Button>
                 )}
@@ -152,50 +159,47 @@ class Item extends Component {
             </Header>
           }
         >
-          <Inner>
-            <Question>
-              <StyledLink title={title} onClick={isPlaylist ? this.moveToItem : this.openModal}>
-                {isPlaylist ? _source.title : title}
-              </StyledLink>
-            </Question>
-            <CardDescription
-              title={isPlaylist ? _source.description : description}
-              onClick={isPlaylist ? this.moveToItem : ""}
-            >
-              <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
-            </CardDescription>
-            {!isPlaylist && <Tags tags={tags} />}
-          </Inner>
-          <Footer>
-            {authorName && (
-              <Author>
-                <IconText>Created by</IconText>
+          <CardItemBody>
+            <Inner>
+              <Question>
+                <StyledLink title={title}>{isPlaylist ? _source.title : title}</StyledLink>
+              </Question>
+              <CardDescription title={isPlaylist ? _source.description : description}>
+                <EllipsisWrapper>{isPlaylist ? _source.description : description}</EllipsisWrapper>
+              </CardDescription>
+              {!isPlaylist && <Tags tags={tags} />}
+            </Inner>
+            <Footer>
+              {authorName && (
+                <Author>
+                  <IconText>Created by</IconText>
 
-                <AuthorWrapper>
-                  <IconUser /> &nbsp;
-                  <AuthorName title={authorName}>{authorName}</AuthorName>
-                </AuthorWrapper>
-              </Author>
-            )}
-            {status !== "draft" && (
-              <>
-                <ShareIcon>
-                  <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{usage}</IconText>
-                </ShareIcon>
-                <LikeIcon>
-                  <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
-                  <IconText>{likes}</IconText>
-                </LikeIcon>
-              </>
-            )}
-            {status === "draft" && (
-              <DraftIconWrapper>
-                <IconDraft /> &nbsp;
-                <IconText>In Draft</IconText>
-              </DraftIconWrapper>
-            )}
-          </Footer>
+                  <AuthorWrapper>
+                    <IconUser /> &nbsp;
+                    <AuthorName title={authorName}>{authorName}</AuthorName>
+                  </AuthorWrapper>
+                </Author>
+              )}
+              {status !== "draft" && (
+                <>
+                  <ShareIcon>
+                    <IconShare color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconText>{usage}</IconText>
+                  </ShareIcon>
+                  <LikeIcon>
+                    <IconHeart color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconText>{likes}</IconText>
+                  </LikeIcon>
+                </>
+              )}
+              {status === "draft" && (
+                <DraftIconWrapper>
+                  <IconDraft /> &nbsp;
+                  <IconText>In Draft</IconText>
+                </DraftIconWrapper>
+              )}
+            </Footer>
+          </CardItemBody>
         </Container>
       </>
     );

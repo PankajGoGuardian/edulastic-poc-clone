@@ -1,9 +1,9 @@
 import React, { memo } from "react";
 import PropTypes from "prop-types";
-import { Table } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { get } from "lodash";
+import { ReviewTableWrapper } from "./styled";
 
 import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
@@ -67,7 +67,13 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
     selectedRowKeys: selected
   };
   return (
-    <Table rowSelection={rowSelection} columns={columns} dataSource={data} showHeader={false} pagination={false} />
+    <ReviewTableWrapper
+      rowSelection={rowSelection}
+      columns={columns}
+      dataSource={data}
+      showHeader={false}
+      pagination={false}
+    />
   );
 };
 

@@ -7,7 +7,7 @@ import uuid from "uuid/v4";
 
 import JsxParser from "react-jsx-parser";
 
-import { InstructorStimulus, PreWrapper, helpers, Stimulus } from "@edulastic/common";
+import { InstructorStimulus, PreWrapper, helpers } from "@edulastic/common"; // , Stimulus
 
 import CorrectAnswerBoxLayout from "../../components/CorrectAnswerBoxLayout";
 import AlternateAnswerBoxLayout from "./components/AlternateAnswerBoxLayout";
@@ -16,7 +16,7 @@ import CheckboxTemplateBoxLayout from "./components/CheckboxTemplateBoxLayout";
 import ResponseBoxLayout from "./components/ResponseBoxLayout";
 import TemplateBox from "./components/TemplateBox";
 import { AnswerContainer } from "./styled/AnswerContainer";
-import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
+// import { QuestionTitleWrapper, QuestionNumber } from "./styled/QustionNumber";
 import { getFontSize } from "../../utils/helpers";
 import MathSpanWrapper from "../../components/MathSpanWrapper";
 
@@ -247,7 +247,7 @@ class ClozeDragDropDisplay extends Component {
   render() {
     const {
       smallSize,
-      question,
+      // question,
       configureOptions,
       hasGroupResponses,
       preview,
@@ -259,7 +259,7 @@ class ClozeDragDropDisplay extends Component {
       evaluation,
       item,
       theme,
-      showQuestionNumber,
+      // showQuestionNumber,
       responseIDs,
       disableResponse,
       isReviewTab
@@ -370,10 +370,10 @@ class ClozeDragDropDisplay extends Component {
 
     return (
       <div style={{ fontSize }}>
-        <QuestionTitleWrapper>
+        {/* <QuestionTitleWrapper>
           {showQuestionNumber && <QuestionNumber>{item.qLabel}</QuestionNumber>}
           <Stimulus smallSize={smallSize} dangerouslySetInnerHTML={{ __html: question }} />
-        </QuestionTitleWrapper>
+        </QuestionTitleWrapper> */}
         <div>
           {responsecontainerposition === "top" && (
             <React.Fragment>
@@ -458,7 +458,7 @@ ClozeDragDropDisplay.propTypes = {
   smallSize: PropTypes.bool,
   checkAnswer: PropTypes.bool,
   template: PropTypes.string,
-  question: PropTypes.string.isRequired,
+  // question: PropTypes.string.isRequired,
   hasGroupResponses: PropTypes.bool,
   configureOptions: PropTypes.object,
   validation: PropTypes.object,
@@ -466,7 +466,7 @@ ClozeDragDropDisplay.propTypes = {
   uiStyle: PropTypes.object,
   disableResponse: PropTypes.bool,
   theme: PropTypes.object.isRequired,
-  showQuestionNumber: PropTypes.bool,
+  // showQuestionNumber: PropTypes.bool,
   isReviewTab: PropTypes.bool,
   responseIDs: PropTypes.array.isRequired
   // qIndex: PropTypes.number
@@ -500,7 +500,7 @@ ClozeDragDropDisplay.defaultProps = {
     wordwrap: false,
     responsecontainerindividuals: []
   },
-  showQuestionNumber: false,
+  // showQuestionNumber: false,
   isReviewTab: false
   // qIndex: null
 };

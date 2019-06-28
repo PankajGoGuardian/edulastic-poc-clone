@@ -1015,12 +1015,12 @@ export const getCards = onSelectQuestionType => {
     {
       type: "fill-blanks",
       cardImage: FBClozeDragDrop,
-      stimulus: "Drag and Drop the right answer in the answers below",
+      stimulus: "",
       data: {
         title: "Cloze with Drag & Drop",
         template: `<p>Drag and Drop the right answer in the answers below.</p><p>Sample question text with a single drop area &nbsp;<response contenteditable="false" />&nbsp;</p>`,
         type: questionType.CLOZE_DRAG_DROP,
-        stimulus: "[This is stem.]",
+        stimulus: "Drag and Drop the right answer in the answers below",
         ui_style: {
           responsecontainerposition: "bottom",
           fontsize: "normal",

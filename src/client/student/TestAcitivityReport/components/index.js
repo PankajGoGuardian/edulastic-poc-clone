@@ -10,10 +10,12 @@ import ReportListContent from "./Container";
 import MainContainer from "../../styled/mainContainer";
 //actions
 import { loadTestActivityReportAction } from "../ducks";
+import { setCurrentItemAction } from "../../sharedDucks/TestItem";
 
-const ReportListContainer = ({ flag, match, location, loadTestActivityReport }) => {
+const ReportListContainer = ({ flag, match, location, loadTestActivityReport, setCurrentItem }) => {
   useEffect(() => {
     loadTestActivityReport({ testActivityId: match.params.id, groupId: match.params.classId });
+    setCurrentItem(0);
   }, []);
   return (
     <MainContainer flag={flag}>
@@ -31,6 +33,7 @@ const enhance = compose(
       flag: ui.flag
     }),
     {
+      setCurrentItem: setCurrentItemAction,
       loadTestActivityReport: loadTestActivityReportAction
     }
   )

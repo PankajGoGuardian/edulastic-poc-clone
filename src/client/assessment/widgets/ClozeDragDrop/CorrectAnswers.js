@@ -1,7 +1,5 @@
-/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import ReactDOM from "react-dom";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import _, { cloneDeep } from "lodash";
@@ -22,13 +20,19 @@ class CorrectAnswers extends Component {
     this.state = {
       value: 0
     };
+    this.wrapperRef = React.createRef();
   }
 
   componentDidMount = () => {
     const { fillSections, t } = this.props;
-    const node = ReactDOM.findDOMNode(this);
-
-    fillSections("main", t("component.correctanswers.setcorrectanswers"), node.offsetTop, node.scrollHeight);
+    if (this.wrapperRef.current) {
+      fillSections(
+        "main",
+        t("component.correctanswers.setcorrectanswers"),
+        this.wrapperRef.current.offsetTop,
+        this.wrapperRef.current.scrollHeight
+      );
+    }
   };
 
   componentDidUpdate(prevProps) {
@@ -173,7 +177,7 @@ class CorrectAnswers extends Component {
     } = this.props;
     const { value } = this.state;
     return (
-      <div>
+      <div ref={this.wrapperRef}>
         <Subtitle>{t("component.correctanswers.setcorrectanswers")}</Subtitle>
         <div>
           <Tabs value={value} onChange={this.handleTabChange} extra={this.renderPlusButton()}>

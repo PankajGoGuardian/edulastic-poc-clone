@@ -67,8 +67,10 @@ class Authoring extends Component {
     return (
       <div>
         {/* <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} /> */}
-        <Widget>
+        <Widget position="unset">
           <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        </Widget>
+        <Widget position="unset">
           <GroupResponses item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />
         </Widget>
       </div>

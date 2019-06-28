@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
+import { withRouter, Link } from "react-router-dom";
 import { receiveTestByIdAction, getTestSelector } from "../../../TestPage/ducks";
 
 import ListHeader from "../../../src/components/common/ListHeader";
@@ -95,7 +95,7 @@ class SuccessPage extends React.Component {
     const { isShareModalVisible } = this.state;
     const { title, _id, sharing, status, thumbnail, scoring = {} } = isPlaylist ? playlist : testItem;
     let sharedWith = ((sharing ? sharing[0] : {}) || {}).type;
-    let shareUrl = `${window.location.origin}/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
+    let shareUrl = `/author/${isPlaylist ? "playlists" : "tests"}/${_id}`;
     const playlistBreadCrumbData = [
       {
         title: "PLAY LIST",
@@ -168,7 +168,8 @@ class SuccessPage extends React.Component {
                 <b>{title}</b>&nbsp; has been added to your &nbsp;<b> Private Library</b>.
               </FlexTextWrapper>
               <FlexText>
-                Click on &nbsp;<span style={{ color: blue }}>Edit</span>&nbsp; icon to share it with your colleagues.
+                Click on &nbsp;<Link to={`${shareUrl}#review`}> Edit </Link>&nbsp; icon to share it with your
+                colleagues.
               </FlexText>
               <FlexShareContainer>
                 <FlexShareTitle>Shared With</FlexShareTitle>
@@ -183,7 +184,7 @@ class SuccessPage extends React.Component {
                 </FlexShareWithBox>
                 <FlexShareTitle>Share</FlexShareTitle>
                 <FlexShareBox>
-                  <TitleCopy copyable>{shareUrl}</TitleCopy>
+                  <TitleCopy copyable>{`${window.location.origin}${shareUrl}`}</TitleCopy>
                 </FlexShareBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>

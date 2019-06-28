@@ -67,7 +67,7 @@ const AlignmentRow = ({
     recentStandardsList = recentStandardsList.filter(recentStandard => recentStandard._id !== newStandard._id);
     recentStandardsList.unshift(newStandard);
     if (recentStandardsList.length > 10) {
-      recentStandsList = recentStandardsList.splice(0, 10);
+      recentStandardsList = recentStandardsList.splice(0, 10);
     }
     updateRecentStandardsList({ recentStandards: recentStandardsList });
     storeInLocalStorage("recentStandards", JSON.stringify(recentStandardsList));

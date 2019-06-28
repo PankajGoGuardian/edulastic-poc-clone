@@ -91,12 +91,6 @@ class StudentSignup extends React.Component {
     this.setState({
       method: key
     });
-    // const { googleLoginAction, msoLoginAction } = this.props;
-    // if (key === GOOGLE) {
-    //   googleLoginAction("student");
-    // } else if (key === OFFICE) {
-    //   msoLoginAction("student");
-    // }
   };
 
   renderGeneralFormFields = () => {

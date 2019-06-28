@@ -498,6 +498,7 @@ class Board {
     this.abortTool();
     this.elements.map(this.removeObject.bind(this));
     this.elements = [];
+    this.objectNameGenerator.next(true);
   }
 
   resetAnswers() {
@@ -833,9 +834,6 @@ class Board {
     // get name of the last object by label and reset objectNameGenerator with it
     flatCfg.sort(objectLabelComparator);
     if (typeof flatCfg[0] === "object") {
-      // it is required to call next() before reseting objectNameGenerator
-      this.objectNameGenerator.next();
-      // this.objectNameGenerator.next(String.fromCharCode(flatCfg[0].label.charCodeAt(0) - 1));
       this.objectNameGenerator.next(flatCfg[0].label);
     }
 

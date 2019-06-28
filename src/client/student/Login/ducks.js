@@ -320,8 +320,7 @@ export function* fetchUser() {
   } catch (e) {
     console.log(e);
     yield call(message.error, "failed loading user data");
-    if (error.response && error.response.status === 501) {
-    } else {
+    if (!(error.response && error.response.status === 501)) {
       window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
       yield put(push(getLoggedOutUrl()));
     }
@@ -341,16 +340,12 @@ export function* fetchV1Redirect({ payload: id }) {
     }
 
     const user = yield call(userApi.getUser);
-    const key = localStorage.getItem("defaultTokenKey") + "";
 
     yield put({
       type: SET_USER,
       payload: user
     });
-    let redirectUrl = "/author/assignments";
-    if (role === "student") {
-      redirectUrl = "/home/assignments";
-    }
+    let redirectUrl = (role === "student")? "/home/assignments": "/author/assignments";
     yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);

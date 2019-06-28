@@ -18,7 +18,7 @@ const links = [
   {
     key: "questionAnalysis",
     title: "Question Analysis",
-    location: "/author/reports/"
+    location: "/author/reports/question-analysis/test/"
   },
   {
     key: "responseFrequency",

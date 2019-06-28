@@ -8,6 +8,7 @@ import AssessmentSummary from "./AssessmentSummary";
 import PeerPerformance from "./PeerPerformance";
 import PerformanceByStandards from "./PerformanceByStandards";
 import PerformanceByStudents from "./PerformanceByStudents";
+import QuestionAnalysis from "./QuestionAnalysis";
 
 import SingleAssessmentReportFilters from "./common/components/filters";
 import { NavigatorTabs } from "../../common/components/widgets/navigatorTabs";
@@ -101,6 +102,11 @@ export const SingleAssessmentReportContainer = props => {
           exact
           path={`/author/reports/peer-performance/test/:testId?`}
           render={_props => <PeerPerformance {..._props} settings={settings} />}
+        />
+        <Route
+          exact
+          path={`/author/reports/question-analysis/test/:testId?`}
+          render={_props => <QuestionAnalysis {..._props} settings={settings} />}
         />
         <Route
           exact

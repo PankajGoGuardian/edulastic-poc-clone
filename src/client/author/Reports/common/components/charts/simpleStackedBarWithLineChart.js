@@ -36,8 +36,7 @@ const LabelText = props => {
   );
 };
 
-export const SimpleStackedBarChart = ({
-  margin = { top: 0, right: 0, left: 0, bottom: 0 },
+export const SimpleStackedBarWithLineChart = ({
   pageSize,
   data = [],
   yDomain = [0, 110],
@@ -58,8 +57,7 @@ export const SimpleStackedBarChart = ({
   lineChartDataKey = false,
   lineProps = {},
   lineTicks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100],
-  lineYTickFormatter = _yTickFormatter,
-  lineYAxisLabel = ""
+  lineYTickFormatter = _yTickFormatter
 }) => {
   const page = pageSize || 7;
   const [pagination, setPagination] = useState({ startIndex: 0, endIndex: page - 1 });
@@ -69,8 +67,7 @@ export const SimpleStackedBarChart = ({
   const constants = {
     COLOR_BLACK: "#010101",
     TICK_FILL: { fill: "#010101", fontWeight: "normal" },
-    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 },
-    LINE_Y_AXIS_LABEL: { value: lineYAxisLabel, angle: -90, dx: 25 }
+    Y_AXIS_LABEL: { value: yAxisLabel, angle: -90, dx: -25 }
   };
 
   if (data !== copyData) {
@@ -162,7 +159,7 @@ export const SimpleStackedBarChart = ({
         }}
       />
       <ResponsiveContainer width={"100%"} height={400}>
-        <ComposedChart width={730} height={400} data={chartData} margin={margin}>
+        <ComposedChart width={730} height={400} data={chartData}>
           <CartesianGrid vertical={false} strokeWidth={0.5} />
           <XAxis
             dataKey={xAxisDataKey}
@@ -172,6 +169,7 @@ export const SimpleStackedBarChart = ({
           <YAxis
             type={"number"}
             yAxisId="barChart"
+            dataKey={bottomStackDataKey}
             domain={yDomain}
             tick={constants.TICK_FILL}
             ticks={ticks}
@@ -228,7 +226,11 @@ export const SimpleStackedBarChart = ({
             <YAxis
               yAxisId="lineChart"
               domain={lineYDomain ? lineYDomain : null}
-              label={constants.LINE_Y_AXIS_LABEL}
+              label={{
+                value: "Time (mins)",
+                angle: -90
+                // fontSize: "10px"
+              }}
               ticks={lineTicks}
               orientation="right"
               tickFormatter={lineYTickFormatter}
@@ -237,7 +239,7 @@ export const SimpleStackedBarChart = ({
           {lineChartDataKey ? (
             <Line yAxisId="lineChart" type="monotone" dataKey={lineChartDataKey} {...lineProps} />
           ) : null}
-          {referenceLineY > 0 ? <ReferenceLine yAxisId={"barChart"} y={referenceLineY} stroke="#010101" /> : null}
+          {referenceLineY > 0 ? <ReferenceLine y={referenceLineY} stroke="#010101" /> : null}
         </ComposedChart>
       </ResponsiveContainer>
     </StyledStackedBarChartContainer>

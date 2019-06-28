@@ -26,6 +26,19 @@
       ],
       "group": "singleAssessmentReport"
     },
+    "question-analysis": {
+      "title": "Question Analysis",
+      "breadcrumb": [
+        {
+          "title": "REPORTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "QUESTION ANALYSIS"
+        }
+      ],
+      "group": "singleAssessmentReport"
+    },
     "response-frequency": {
       "title": "Response Frequency",
       "breadcrumb": [
@@ -107,7 +120,7 @@
       {
         "key": "question-analysis",
         "title": "Question Analysis",
-        "location": "/author/reports/"
+        "location": "/author/reports/question-analysis/test/"
       },
       {
         "key": "response-frequency",

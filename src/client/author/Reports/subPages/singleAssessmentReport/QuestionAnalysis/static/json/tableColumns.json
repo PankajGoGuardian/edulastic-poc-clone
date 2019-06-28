@@ -1,0 +1,32 @@
+[
+  {
+    "title": "Question",
+    "dataIndex": "qLabel",
+    "key": "qLabel",
+    "width": 210
+  },
+  {
+    "title": "Standards",
+    "dataIndex": "standards",
+    "key": "standards",
+    "width": 190
+  },
+  {
+    "title": "Points",
+    "dataIndex": "points",
+    "key": "points",
+    "width": 100
+  },
+  {
+    "title": "District(Avg. Score %)",
+    "dataIndex": "districtAvg",
+    "key": "districtAvg",
+    "width": 100
+  },
+  {
+    "title": "All",
+    "dataIndex": "avgPerformance",
+    "key": "avgPerformance",
+    "width": 100
+  }
+]

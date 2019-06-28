@@ -84,6 +84,12 @@ const Container = props => {
         )}
       />
       <Route
+        path={`/author/reports/question-analysis/test/`}
+        render={_props => (
+          <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />
+        )}
+      />
+      <Route
         path={`/author/reports/response-frequency/test/`}
         render={_props => (
           <SingleAssessmentReportContainer {..._props} showFilter={showFilter} loc={props.match.params.reportType} />

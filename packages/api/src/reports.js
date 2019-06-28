@@ -123,6 +123,13 @@ const fetchStandardMasteryBrowseStandards = params => {
   });
 };
 
+const fetchQuestionAnalysisReport = params => {
+  return api.callApi({
+    url: `/report/question-analysis`,
+    params: { ...params.requestFilters, testId: params.testId }
+  });
+};
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -137,5 +144,6 @@ export default {
   fetchSARFilterData,
   fetchStandardsGradebookReport,
   fetchStandardMasteryFilter,
-  fetchStandardMasteryBrowseStandards
+  fetchStandardMasteryBrowseStandards,
+  fetchQuestionAnalysisReport
 };

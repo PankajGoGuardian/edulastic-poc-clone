@@ -16,6 +16,7 @@ import { reportSARFilterDataSaga } from "../../Reports/subPages/singleAssessment
 import { reportAssessmentSummarySaga } from "../../Reports/subPages/singleAssessmentReport/AssessmentSummary/ducks";
 import { reportResponseFrequencySaga } from "../../Reports/subPages/singleAssessmentReport/ResponseFrequency/ducks";
 import { reportPeerPerformanceSaga } from "../../Reports/subPages/singleAssessmentReport/PeerPerformance/ducks";
+import { reportQuestionAnalysisSaga } from "../../Reports/subPages/singleAssessmentReport/QuestionAnalysis/ducks";
 import { performanceByStandardsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStandards/ducks";
 import { reportPerformanceByStudentsSaga } from "../../Reports/subPages/singleAssessmentReport/PerformanceByStudents/ducks";
 import { reportStandardsGradebookSaga } from "../../Reports/subPages/standardsMasteryReport/standardsGradebook/ducks";
@@ -57,6 +58,7 @@ const authorSagas = [
   reportResponseFrequencySaga(),
   reportPeerPerformanceSaga(),
   reportPerformanceByStudentsSaga(),
+  reportQuestionAnalysisSaga(),
   reportStandardsGradebookSaga(),
   classResponsesSaga(),
   testsListSaga(),

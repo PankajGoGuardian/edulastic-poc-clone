@@ -81,7 +81,6 @@ class ItemFilter extends Component {
                   <Title>{t("component.itemlist.filter.filters")}</Title>
                   <Clear onClick={onClearSearch}>{t("component.itemlist.filter.clearAll")}</Clear>
                 </MainFilterHeader>
-                {false && <TestFiltersNav items={items} onSelect={onLabelSearch} search={search} />}
                 <Search
                   search={search}
                   showStatus={search.filter !== items[0].filter}

@@ -288,35 +288,47 @@ class AddItems extends PureComponent {
             items={filterMenuItems}
             t={t}
           />
-          <ListItems id="item-list">
-            <ItemsTableContainer>
-              <ItemsMenu>
-                <QuestionsFound>{count} questions found</QuestionsFound>
-                <StyledButton data-cy="createNewItem" type="secondary" size="large" onClick={this.handleCreateNewItem}>
-                  <IconPlusCircle color="#00AD50" width={15} height={15} />
-                  <span>Create new Item</span>
-                </StyledButton>
-              </ItemsMenu>
-              <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
-                {loading && <Spin size="large" />}
-                {!loading && (
-                  <ItemsTable
-                    items={items}
-                    setSelectedTests={this.setSelectedTestItems}
-                    selectedTests={selectedTestItems}
-                    onAddItems={onAddItems}
-                    testId={this.props.match.params.id}
-                    search={search}
-                    showModal={true}
-                    readOnlyMode={readOnlyMode}
-                    addDuplicate={this.handleDuplicateItem}
-                    gotoSummary={gotoSummary}
-                  />
-                )}
-                {!loading && this.renderPagination()}
-              </ListWrapper>
-            </ItemsTableContainer>
-          </ListItems>
+          <PerfectScrollbar
+            ref={e => {
+              this.itemsScrollBar = e;
+            }}
+            style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
+          >
+            <ListItems id="item-list">
+              <ItemsTableContainer>
+                <ItemsMenu>
+                  <QuestionsFound>{count} questions found</QuestionsFound>
+                  <StyledButton
+                    data-cy="createNewItem"
+                    type="secondary"
+                    size="large"
+                    onClick={this.handleCreateNewItem}
+                  >
+                    <IconPlusCircle color="#00AD50" width={15} height={15} />
+                    <span>Create new Item</span>
+                  </StyledButton>
+                </ItemsMenu>
+                <ListWrapper borderRadius="0px" boxShadow="none" padding="0px">
+                  {loading && <Spin size="large" />}
+                  {!loading && (
+                    <ItemsTable
+                      items={items}
+                      setSelectedTests={this.setSelectedTestItems}
+                      selectedTests={selectedTestItems}
+                      onAddItems={onAddItems}
+                      testId={this.props.match.params.id}
+                      search={search}
+                      showModal={true}
+                      readOnlyMode={readOnlyMode}
+                      addDuplicate={this.handleDuplicateItem}
+                      gotoSummary={gotoSummary}
+                    />
+                  )}
+                  {!loading && this.renderPagination()}
+                </ListWrapper>
+              </ItemsTableContainer>
+            </ListItems>
+          </PerfectScrollbar>
         </MainList>
         {createTestItemModalVisible && (
           <ModalCreateTestItem type={questionCreateType} setAuthoredByMeFilter={this.setAuthoredByMeFilter} />

@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { cloneDeep, get, uniq as _uniq } from "lodash";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { Paper, withWindowSizes } from "@edulastic/common";
 import PreviewModal from "../../../../../src/components/common/PreviewModal";
 import HeaderBar from "../HeaderBar/HeaderBar";
@@ -11,16 +12,14 @@ import List from "../List/List";
 import ItemsTable from "../ReviewItemsTable/ReviewItemsTable";
 import { getItemsSubjectAndGradeSelector } from "../../../AddItems/ducks";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
-import { setTestDataAction } from "../../../../ducks";
+import { setTestDataAction, previewCheckAnswerAction, previewShowAnswerAction } from "../../../../ducks";
 import { getSummarySelector } from "../../../Summary/ducks";
 import { getQuestionsSelectorForReview } from "../../../../../sharedDucks/questions";
 import Breadcrumb from "../../../../../src/components/Breadcrumb";
 import ReviewSummary from "../ReviewSummary/ReviewSummary";
 import { SecondHeader } from "./styled";
-import { toggleCreateItemModalAction } from "../../../../../src/actions/testItem";
 import { clearDictAlignmentAction } from "../../../../../src/actions/dictionaries";
 import { getCreateItemModalVisibleSelector } from "../../../../../src/selectors/testItem";
-import ModalCreateTestItem from "../../../ModalCreateTestItem/ModalCreateTestItem";
 import TestPreviewModal from "../../../../../Assignments/components/Container/TestPreviewModal";
 
 const scoreOfItem = item => {
@@ -147,15 +146,18 @@ class Review extends PureComponent {
   };
 
   handleDuplicateItem = duplicateTestItemId => {
-    const { onSaveTestId, toggleCreateItemModal, test, clearDictAlignment } = this.props;
-    if (!test.title) {
+    const {
+      onSaveTestId,
+      test: { title, _id: testId },
+      clearDictAlignment,
+      history
+    } = this.props;
+    if (!title) {
       return message.error("Name field cannot be empty");
     }
     clearDictAlignment();
     onSaveTestId();
-    this.setState({ questionCreateType: "Duplicate" }, () => {
-      toggleCreateItemModal({ modalVisible: true, itemId: duplicateTestItemId });
-    });
+    history.push(`/author/tests/${testId}/createItem/${duplicateTestItemId}`);
   };
 
   handlePreviewTestItem = data => {
@@ -207,7 +209,9 @@ class Review extends PureComponent {
       owner,
       readOnlyMode = false,
       createTestItemModalVisible,
-      itemsSubjectAndGrade
+      itemsSubjectAndGrade,
+      checkAnswer,
+      showAnswer
     } = this.props;
     const {
       isCollapse,
@@ -264,7 +268,12 @@ class Review extends PureComponent {
             </SecondHeader>
             <Paper>
               {isCollapse ? (
-                <ItemsTable items={test.testItems} setSelected={this.setSelected} selected={selected} />
+                <ItemsTable
+                  items={test.testItems}
+                  setSelected={this.setSelected}
+                  selected={selected}
+                  handlePreview={this.handlePreviewTestItem}
+                />
               ) : (
                 <List
                   onChangePoints={this.handleChangePoints}
@@ -318,6 +327,9 @@ class Review extends PureComponent {
           addDuplicate={this.handleDuplicateItem}
           page="review"
           data={item}
+          checkAnswer={() => checkAnswer(item)}
+          showAnswer={() => showAnswer(item)}
+          showEvaluationButtons
         />
         <TestPreviewModal
           isModalVisible={isTestPreviewModalVisible}
@@ -325,7 +337,6 @@ class Review extends PureComponent {
           test={test}
           hideModal={this.hidePreviewModal}
         />
-        {createTestItemModalVisible && <ModalCreateTestItem type={questionCreateType} />}
       </div>
     );
   }
@@ -348,6 +359,7 @@ Review.propTypes = {
 };
 
 const enhance = compose(
+  withRouter,
   withWindowSizes,
   connect(
     state => ({
@@ -360,8 +372,9 @@ const enhance = compose(
     }),
     {
       setData: setTestDataAction,
-      toggleCreateItemModal: toggleCreateItemModalAction,
-      clearDictAlignment: clearDictAlignmentAction
+      clearDictAlignment: clearDictAlignmentAction,
+      checkAnswer: previewCheckAnswerAction,
+      showAnswer: previewShowAnswerAction
     }
   )
 );

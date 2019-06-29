@@ -11,7 +11,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { updateVariables } from "../../utils/variables";
 
-import ComposeQuestion from "./ComposeQuestion";
+// import ComposeQuestion from "./ComposeQuestion";
 import TemplateMarkup from "./TemplateMarkup";
 
 class Authoring extends Component {
@@ -42,7 +42,7 @@ class Authoring extends Component {
 
     return (
       <Fragment>
-        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        {/* <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} /> */}
         <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
       </Fragment>
     );

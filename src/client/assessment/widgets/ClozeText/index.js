@@ -180,7 +180,7 @@ class ClozeText extends Component {
                     options={previewDisplayOptions}
                     question={previewStimulus}
                     uiStyle={uiStyle}
-                    templateMarkUp={itemForEdit.templateMarkUp}
+                    template={itemForEdit.template}
                     responseIds={item.response_ids}
                     onAddAltResponses={this.handleAddAltResponses}
                     onRemoveAltResponses={this.handleRemoveAltResponses}
@@ -240,7 +240,7 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 evaluation={evaluation}
@@ -260,7 +260,7 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 validation={itemForPreview.validation}
                 evaluation={evaluation}
@@ -282,7 +282,7 @@ class ClozeText extends Component {
                 options={previewDisplayOptions}
                 question={previewStimulus}
                 uiStyle={uiStyle}
-                templateMarkUp={itemForPreview.templateMarkUp}
+                template={itemForPreview.template}
                 userSelections={userAnswer}
                 onChange={this.handleAddAnswer}
                 instructorStimulus={itemForPreview.instructor_stimulus}

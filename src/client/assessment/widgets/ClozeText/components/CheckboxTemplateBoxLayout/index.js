@@ -104,8 +104,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
         <span
           className={`response-btn 
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
-                ${status}
-                `}
+                ${status}`}
           style={btnStyle}
         >
           {showIndex && (
@@ -119,8 +118,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               display: "block",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
-              overflow: "hidden",
-              lineHeight: 2.5
+              overflow: "hidden"
             }}
             className="text"
           >

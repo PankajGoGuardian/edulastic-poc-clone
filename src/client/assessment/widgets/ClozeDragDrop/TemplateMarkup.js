@@ -39,14 +39,14 @@ class TemplateMarkup extends Component {
 
     fillSections(
       "main",
-      t("component.cloze.dragDrop.templatemarkup"),
+      t("component.cloze.dragDrop.composequestion"),
       node.offsetTop,
       deskHeight ? node.scrollHeight + deskHeight : node.scrollHeight,
       deskHeight === true,
       deskHeight
     );
 
-    this.onChangeMarkUp(helpers.reIndexResponses(item.templateMarkUp));
+    this.onChangeMarkUp(helpers.reIndexResponses(item.template));
   };
 
   componentWillUnmount() {
@@ -55,7 +55,7 @@ class TemplateMarkup extends Component {
     cleanSections();
   }
 
-  onChangeMarkUp = templateMarkUp => {
+  onChangeMarkUp = template => {
     const { item, setQuestionData } = this.props;
 
     const reduceResponse = (tmpl, preIDs, preValidation) => {
@@ -113,8 +113,8 @@ class TemplateMarkup extends Component {
 
     setQuestionData(
       produce(item, draft => {
-        draft.templateMarkUp = templateMarkUp;
-        const { response_ids, validation } = reduceResponse(templateMarkUp, draft.response_ids, draft.validation);
+        draft.template = template;
+        const { response_ids, validation } = reduceResponse(template, draft.response_ids, draft.validation);
         draft.response_ids = response_ids;
         draft.validation = validation;
         updateVariables(draft);
@@ -126,14 +126,14 @@ class TemplateMarkup extends Component {
     const { t, item } = this.props;
     return (
       <>
-        <Subtitle>{t("component.cloze.dragDrop.templatemarkup")}</Subtitle>
+        <Subtitle>{t("component.cloze.dragDrop.composequestion")}</Subtitle>
 
         <QuestionTextArea
           placeholder={t("component.cloze.dragDrop.templatemarkupplaceholder")}
           onChange={this.onChangeMarkUp}
           additionalToolbarOptions={["response"]}
           toolbarId="template-markup-area"
-          value={item.templateMarkUp}
+          value={item.template}
           theme="border"
         />
       </>

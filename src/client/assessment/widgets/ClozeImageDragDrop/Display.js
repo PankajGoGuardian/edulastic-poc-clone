@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import React, { Component } from "react";
-import { cloneDeep, flattenDeep, isUndefined } from "lodash";
+import { cloneDeep, flattenDeep, isUndefined, get } from "lodash";
 import { withTheme } from "styled-components";
 
 import { InstructorStimulus, MathSpan, Stimulus } from "@edulastic/common";
@@ -24,6 +24,7 @@ import { RelativeContainer } from "../../styled/RelativeContainer";
 import { StyledPreviewImage } from "./styled/StyledPreviewImage";
 import { StyledPreviewTemplateBox } from "./styled/StyledPreviewTemplateBox";
 import { StyledPreviewContainer } from "./styled/StyledPreviewContainer";
+import { AnswerContainer } from "./styled/AnswerContainer";
 
 import AnnotationRnd from "../../components/Graph/Annotations/AnnotationRnd";
 
@@ -185,16 +186,20 @@ class Display extends Component {
       instructorStimulus,
       theme,
       showQuestionNumber,
-      qIndex,
       disableResponse,
       item,
       imageOptions,
-      showBorder
+      showBorder,
+      isReviewTab
     } = this.props;
 
     const questionId = item && item.id;
 
-    const { userAnswers, possibleResponses } = this.state;
+    const { userAnswers: _uAnswers, possibleResponses } = this.state;
+    const cAnswers = get(item, "validation.valid_response.value", []);
+
+    const userAnswers = isReviewTab ? cAnswers : _uAnswers;
+
     const { showDraghandle: dragHandler, shuffleOptions, transparentResponses } = configureOptions;
     let responses = cloneDeep(possibleResponses);
     if (preview && shuffleOptions) {
@@ -208,6 +213,18 @@ class Display extends Component {
       widthpx: uiStyle.widthpx !== 0 ? uiStyle.widthpx : "auto",
       heightpx: heightpx !== 0 ? heightpx : "auto",
       whiteSpace: wordwrap ? "inherit" : "nowrap"
+    };
+
+    const dragItemStyle = {
+      border: `${showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null}`,
+      margin: 5,
+      padding: 5,
+      display: "flex",
+      alignItems: "center",
+      width: "max-content",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis"
     };
     const { maxHeight, maxWidth } = clozeImage;
     const imageWidth = this.getWidth();
@@ -246,7 +263,11 @@ class Display extends Component {
         >
           <div style={{ position: "relative" }}>
             <AnnotationRnd
-              style={{ backgroundColor: "transparent", boxShadow: "none", border: "1px solid lightgray" }}
+              style={{
+                backgroundColor: "transparent",
+                boxShadow: "none",
+                border: preview ? null : "1px solid lightgray"
+              }}
               questionId={questionId}
             />
           </div>
@@ -298,8 +319,8 @@ class Display extends Component {
                 style={{
                   ...btnStyle,
                   borderStyle: smallSize ? "dashed" : "solid",
-                  height: "auto", // responseContainer.height || "auto",
-                  width: "auto",
+                  height: responseContainer.height || "auto", // responseContainer.height || "auto",
+                  width: responseContainer.width || "auto",
                   minHeight: responseContainer.height || "auto",
                   minWidth: responseContainer.width || "auto",
                   maxWidth: response.maxWidth
@@ -324,26 +345,19 @@ class Display extends Component {
                           index={item_index}
                           item={answer}
                           data={`${answer}_${dropTargetIndex}_${item_index}`}
-                          style={{
-                            border: `${
-                              showBorder ? `solid 1px ${theme.widgets.clozeImageDragDrop.dragItemBorderColor}` : null
-                            }`,
-                            margin: 5,
-                            padding: 5,
-                            display: "flex",
-                            alignItems: "center",
-                            width: "max-content",
-                            whiteSpace: "nowrap",
-                            overflow: "hidden",
-                            textOverflow: "ellipsis"
-                          }}
+                          style={dragItemStyle}
                           onDrop={this.onDrop}
                         >
-                          <MathSpan
-                            dangerouslySetInnerHTML={{
-                              __html: answer.replace("<p>", "<p class='clipText'>") || ""
-                            }}
-                          />
+                          <AnswerContainer
+                            height={responseContainer.height || "auto"}
+                            width={responseContainer.width || "auto"}
+                          >
+                            <MathSpan
+                              dangerouslySetInnerHTML={{
+                                __html: answer.replace("<p>", "<p class='clipText'>") || ""
+                              }}
+                            />
+                          </AnswerContainer>
                         </DragItem>
                       );
                     })}
@@ -398,7 +412,7 @@ class Display extends Component {
     ) : (
       <div />
     );
-    const responseBoxLayout = showAnswer ? <div /> : previewResponseBoxLayout;
+    const responseBoxLayout = showAnswer || isReviewTab ? <div /> : previewResponseBoxLayout;
     const answerBox = showAnswer ? correctAnswerBoxLayout : <div />;
 
     const responseposition = smallSize ? "right" : responsecontainerposition;
@@ -519,7 +533,8 @@ Display.propTypes = {
   imageOptions: PropTypes.object,
   showQuestionNumber: PropTypes.bool,
   item: PropTypes.object,
-  showBorder: PropTypes.bool
+  showBorder: PropTypes.bool,
+  isReviewTab: PropTypes.bool
 };
 
 Display.defaultProps = {
@@ -558,7 +573,8 @@ Display.defaultProps = {
   imageOptions: {},
   showBorder: false,
   showQuestionNumber: false,
-  item: {}
+  item: {},
+  isReviewTab: false
 };
 
 export default withTheme(withCheckAnswerButton(Display));

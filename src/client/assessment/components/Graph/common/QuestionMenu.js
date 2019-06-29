@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import styled from "styled-components";
 import { throttle } from "lodash";
-import { newBlue, desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
+import { themeColor, desktopWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import { withWindowSizes } from "@edulastic/common";
 
@@ -213,7 +213,7 @@ const MainOptions = styled.ul`
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    background: ${newBlue};
+    background: ${themeColor};
     content: "";
     position: absolute;
     left: -7.5px;
@@ -265,7 +265,7 @@ const Option = styled.li`
   }
 
   &.active {
-    color: ${newBlue};
+    color: ${themeColor};
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
@@ -289,7 +289,7 @@ const AdvancedOptionsHeader = styled.div`
     transform: translateY(-50%) ${props => props.advancedAreOpen && "rotate(180deg)"};
     border-left: 5px solid transparent;
     border-right: 5px solid transparent;
-    border-top: 5.5px solid ${newBlue};
+    border-top: 5.5px solid ${themeColor};
     transition: all 0.2s ease;
   }
   p {

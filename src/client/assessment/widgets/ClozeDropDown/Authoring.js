@@ -9,7 +9,7 @@ import "react-quill/dist/quill.snow.css";
 import { withNamespaces } from "@edulastic/localization";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
-import ComposeQuestion from "./ComposeQuestion";
+// import ComposeQuestion from "./ComposeQuestion";
 import TemplateMarkup from "./TemplateMarkup";
 
 class ClozeDropDownAuthoring extends Component {
@@ -29,7 +29,7 @@ class ClozeDropDownAuthoring extends Component {
 
     return (
       <div>
-        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        {/* <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} /> */}
         <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
       </div>
     );

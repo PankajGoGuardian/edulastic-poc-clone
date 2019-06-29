@@ -14,7 +14,7 @@ import { updateVariables } from "../../utils/variables";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 import { Widget } from "../../styled/Widget";
-import ComposeQuestion from "./ComposeQuestion";
+// import ComposeQuestion from "./ComposeQuestion";
 import TemplateMarkup from "./TemplateMarkup";
 import GroupResponses from "./GroupRespones";
 
@@ -66,7 +66,7 @@ class Authoring extends Component {
 
     return (
       <div>
-        <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} />
+        {/* <ComposeQuestion item={item} fillSections={fillSections} cleanSections={cleanSections} /> */}
         <Widget>
           <TemplateMarkup item={item} fillSections={fillSections} cleanSections={cleanSections} />
           <GroupResponses item={item} theme={theme} fillSections={fillSections} cleanSections={cleanSections} />

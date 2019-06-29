@@ -31,20 +31,20 @@ class TestConfirmation extends Component {
             <ColorDescription>
               <Row gutter={32} style={{ width: "100%" }}>
                 <Col span={8} style={{ display: "flex", alignItems: "center" }}>
-                  <GreenMark />
+                  <MarkedAnswered />
                   <div style={{ marginLeft: 22 }}>
                     <Description>You have marked these questions.</Description>
                     <Description style={{ marginTop: -2 }}>Review them before submitting your test.</Description>
                   </div>
                 </Col>
                 <Col span={8} style={{ display: "flex", alignItems: "center" }}>
-                  <GrayMark />
+                  <MarkedSkipped />
                   <div style={{ marginLeft: 22 }}>
                     <Description>Please review your skipped questions before submitting the test</Description>
                   </div>
                 </Col>
                 <Col span={8} style={{ display: "flex", alignItems: "center" }}>
-                  <RedMark />
+                  <MarkedForReview />
                   <div style={{ marginLeft: 22 }}>
                     <Description>You have marked for review these questions.</Description>
                     <Description style={{ marginTop: -2 }}>Review them before submitting your test.</Description>
@@ -134,25 +134,23 @@ const ColorDescription = styled.div`
   justify-content: center;
 `;
 
-const GreenMark = styled.div`
+const Markers = styled.div`
   width: 24px;
   height: 24px;
   border-radius: 2px;
-  background-color: #1fe3a1;
+  flex-shrink: 0;
 `;
 
-const GrayMark = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
+const MarkedAnswered = styled(Markers)`
+  background-color: #59abeb;
+`;
+
+const MarkedSkipped = styled(Markers)`
   background-color: #b1b1b1;
 `;
 
-const RedMark = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 2px;
-  background-color: #ee1658;
+const MarkedForReview = styled(Markers)`
+  background-color: #f8c165;
 `;
 
 const Description = styled.div`

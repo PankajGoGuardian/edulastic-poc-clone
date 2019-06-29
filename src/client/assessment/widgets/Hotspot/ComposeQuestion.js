@@ -8,7 +8,6 @@ import { withTheme } from "styled-components";
 
 import { withNamespaces } from "@edulastic/localization";
 import { Image as ImageComponent } from "@edulastic/common";
-import { fileApi } from "@edulastic/api";
 
 import { updateVariables } from "../../utils/variables";
 
@@ -17,7 +16,9 @@ import DropZoneToolbar from "../../components/DropZoneToolbar/index";
 import StyledDropZone from "../../components/StyledDropZone/index";
 import { Subtitle } from "../../styled/Subtitle";
 import { Widget } from "../../styled/Widget";
+import { aws } from "@edulastic/constants";
 import { SOURCE, WIDTH, HEIGHT } from "../../constants/constantsForQuestions";
+import { uploadToS3 } from "@edulastic/common/src/helpers";
 
 class ComposeQuestion extends Component {
   componentDidMount = () => {
@@ -120,9 +121,8 @@ class ComposeQuestion extends Component {
     const onDrop = ([files]) => {
       if (files) {
         setLoading(true);
-        fileApi
-          .upload({ file: files })
-          .then(({ fileUri }) => {
+        uploadToS3(files, aws.s3Folders.DEFAULT)
+          .then(fileUri => {
             handleImageToolbarChange(SOURCE)(getImageDimensions(fileUri));
             setLoading(false);
           })

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
-import { isEmpty } from "lodash";
+import { difference, isEmpty, get } from "lodash";
 
 import { MathInput, StaticMath, MathFormulaDisplay } from "@edulastic/common";
 
@@ -109,21 +109,63 @@ class MathFormulaPreview extends Component {
     }
   }
 
+  validateVal(val) {
+    const { item } = this.props;
+    const { options } = get(item, ["validation", "valid_response", "value", 0], {});
+
+    if (!options || (!options.allowedVariables && !options.allowNumericOnly) || !val) return val;
+
+    const { allowNumericOnly, allowedVariables } = options;
+    let newVal = val;
+
+    if (allowNumericOnly) {
+      newVal = newVal.replace(/\b([a-zA-Z]+)\b/gm, "");
+      return newVal;
+    }
+
+    if (!allowedVariables) return newVal;
+
+    const validVars = allowedVariables.split(",").filter(segment => !!segment.trim());
+    if (validVars.length === 0) return newVal;
+
+    const foundVars = [];
+    const varReg = /\b([a-zA-Z]+)\b/gm;
+    let m;
+    do {
+      m = varReg.exec(newVal);
+      if (m) {
+        foundVars.push(m[0]);
+      }
+    } while (m);
+
+    const varsToExclude = difference(foundVars, validVars);
+    for (const varToExclude of varsToExclude) {
+      const excludeReg = new RegExp(`\\b${varToExclude}\\b`, "gm");
+      newVal = newVal.replace(excludeReg, "");
+    }
+
+    return newVal;
+  }
+
   onUserResponse(latexv) {
     const { type: previewType, saveAnswer } = this.props;
+    const validatedVal = this.validateVal(latexv);
+
     if (previewType === CHECK) return;
     if (this.isStatic()) {
-      saveAnswer(latexv);
+      saveAnswer(validatedVal);
       return;
     }
-    this.setState({ latex: latexv });
-    saveAnswer(latexv);
+    this.setState({ latex: validatedVal });
+    saveAnswer(validatedVal);
   }
 
   onBlur(latexv) {
     const { type: previewType, saveAnswer } = this.props;
+    const validatedVal = this.validateVal(latexv);
+
     if (this.isStatic() && previewType !== CHECK) {
-      saveAnswer(latexv);
+      saveAnswer(validatedVal);
     }
   }
 
@@ -143,7 +185,7 @@ class MathFormulaPreview extends Component {
       item && item.validation && item.validation.alt_responses && item.validation.alt_responses.length > 0;
     const cssStyles = getStylesFromUiStyleToCssStyle(item.ui_style);
     let statusColor = theme.widgets.mathFormula.inputColor;
-    if (!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
+    if (latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK)) {
       statusColor = !isEmpty(evaluation)
         ? evaluation.some(ie => ie)
           ? theme.widgets.mathFormula.inputCorrectColor
@@ -186,7 +228,7 @@ class MathFormulaPreview extends Component {
               style={{ background: statusColor, ...cssStyles }}
             />
           )}
-          {!isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
+          {latex && !isEmpty(evaluation) && (previewType === SHOW || previewType === CHECK) && (
             <MathInputStatus valid={!!evaluation && !!evaluation.some(ie => ie)} />
           )}
         </MathInputWrapper>

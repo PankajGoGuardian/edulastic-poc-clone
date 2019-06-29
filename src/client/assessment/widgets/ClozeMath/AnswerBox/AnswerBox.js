@@ -1,6 +1,7 @@
+/* eslint-disable array-callback-return */
 import React from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 import styled from "styled-components";
 import { white, blue } from "@edulastic/colors";
 import AnswerBoxText from "./AnswerBoxText";
@@ -46,7 +47,7 @@ const AnswerBox = ({
   validAnswers = validAnswers.sort((a, b) => a.index - b.index);
 
   const maxAltLen = Math.max(altMathAnswers.length, altDropDowns.length, altInputs.length);
-  let altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
+  const altAnswers = new Array(maxAltLen).fill(true).map((_, altIndex) => {
     const _altAnswers = [];
 
     if (altMathAnswers[altIndex]) {
@@ -108,23 +109,24 @@ const AnswerBox = ({
           <AnswerBoxText isMath={answer.isMath}>{answer.value}</AnswerBoxText>
         </Answer>
       ))}
-
-      <div>
-        <Title>{`Alternate answers`}</Title>
-        {Object.keys(alternateAnswers).map(key => (
-          <Answer key={key}>
-            <Label>{key}</Label>
-            <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
-              {alternateAnswers[key]
-                .reduce((acc, alternateAnswer) => {
-                  acc.push(alternateAnswer.value);
-                  return acc;
-                }, [])
-                .join()}
-            </AnswerBoxText>
-          </Answer>
-        ))}
-      </div>
+      {!isEmpty(alternateAnswers) && (
+        <div>
+          <Title>Alternate answers</Title>
+          {Object.keys(alternateAnswers).map(key => (
+            <Answer key={key}>
+              <Label>{key}</Label>
+              <AnswerBoxText isMath={alternateAnswers[key][0].isMath}>
+                {alternateAnswers[key]
+                  .reduce((acc, alternateAnswer) => {
+                    acc.push(alternateAnswer.value);
+                    return acc;
+                  }, [])
+                  .join()}
+              </AnswerBoxText>
+            </Answer>
+          ))}
+        </div>
+      )}
     </Wrapper>
   );
 };

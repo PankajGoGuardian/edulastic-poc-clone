@@ -9,6 +9,7 @@ import DropContainer from "../../../components/DropContainer";
 import DragItem from "./DragItem";
 import { Column } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
+import ResponseRnd from "../ResponseRnd";
 
 const TableRow = ({
   startIndex,
@@ -24,17 +25,19 @@ const TableRow = ({
   dragHandle,
   isTransparent,
   isBackgroundImageTransparent,
-  theme,
   width,
   height,
+  theme,
+  isResizable,
+  item,
   disableResponse
 }) => {
   const styles = {
     columnContainerStyle: {
       display: "flex",
       flexWrap: "wrap",
-      width,
-      minHeight: height,
+      width: "100%",
+      height: "100%",
       borderRadius: 4,
       backgroundColor: isBackgroundImageTransparent ? "transparent" : theme.widgets.classification.dropContainerBgColor
     }
@@ -63,38 +66,39 @@ const TableRow = ({
         rowTitles={rowTitles}
         colCount={colCount}
       >
-        <DropContainer
-          style={{
-            ...styles.columnContainerStyle,
-            justifyContent: "center"
-          }}
-          noTopBorder={index / colCount >= 1}
-          drop={drop}
-          index={index}
-          flag="column"
-        >
-          {Array.isArray(answers) &&
-            Array.isArray(answers[index]) &&
-            answers[index].length > 0 &&
-            // eslint-disable-next-line no-loop-func
-            answers[index].map((answerValue, answerIndex) => {
-              validIndex++;
-
-              return (
-                <DragItem
-                  isTransparent={isTransparent}
-                  dragHandle={dragHandle}
-                  valid={validArray && validArray[validIndex]}
-                  preview={preview}
-                  key={answerIndex}
-                  renderIndex={possible_responses.indexOf(answerValue)}
-                  onDrop={onDrop}
-                  item={answerValue}
-                  disableResponse={disableResponse}
-                />
-              );
-            })}
-        </DropContainer>
+        <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
+          <DropContainer
+            style={{
+              ...styles.columnContainerStyle,
+              justifyContent: "center"
+            }}
+            noTopBorder={index / colCount >= 1}
+            drop={drop}
+            index={index}
+            flag="column"
+          >
+            {Array.isArray(answers) &&
+              Array.isArray(answers[index]) &&
+              answers[index].length > 0 &&
+              // eslint-disable-next-line no-loop-func
+              answers[index].map((answerValue, answerIndex) => {
+                validIndex++;
+                return (
+                  <DragItem
+                    isTransparent={isTransparent}
+                    dragHandle={dragHandle}
+                    valid={validArray && validArray[validIndex]}
+                    preview={preview}
+                    key={answerIndex}
+                    renderIndex={possible_responses.indexOf(answerValue)}
+                    onDrop={onDrop}
+                    item={answerValue}
+                    disableResponse={disableResponse}
+                  />
+                );
+              })}
+          </DropContainer>
+        </ResponseRnd>
       </Column>
     );
   }
@@ -118,7 +122,9 @@ TableRow.propTypes = {
   possible_responses: PropTypes.array.isRequired,
   onDrop: PropTypes.func.isRequired,
   validArray: PropTypes.array.isRequired,
-  theme: PropTypes.object.isRequired
+  theme: PropTypes.object.isRequired,
+  isResizable: PropTypes.bool.isRequired,
+  item: PropTypes.object.isRequired
 };
 
 export default withTheme(TableRow);

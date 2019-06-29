@@ -101,6 +101,8 @@ class Board {
 
     this.stackResponses = false;
 
+    this.disableResponse = false;
+
     this.stackResponsesSpacing = 30;
 
     this.responsesAllowed = null;
@@ -110,6 +112,8 @@ class Board {
     this.dragged = false;
 
     this.drawingObject = null;
+
+    this.elementsAreEvaluated = false;
 
     this.$board = JXG.JSXGraph.initBoard(id, mergeParams(getDefaultConfig(), this.parameters));
     this.$board.setZoom(1, 1);
@@ -306,6 +310,10 @@ class Board {
    */
   setCreatingHandler() {
     this.$board.on(CONSTANT.EVENT_NAMES.UP, event => {
+      if (this.disableResponse) {
+        return;
+      }
+
       if (this.dragged) {
         this.dragged = false;
         return;
@@ -330,6 +338,10 @@ class Board {
         }
       }
     });
+  }
+
+  setDisableResponse() {
+    this.disableResponse = true;
   }
 
   resetOutOfLineMarks() {
@@ -437,7 +449,8 @@ class Board {
   }
 
   // Render marks
-  renderMarks(marks, markCoords = []) {
+  renderMarks(marks, markCoords = [], elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
     marks.forEach(mark => {
       const markCoord = markCoords.find(el => el.id === mark.id);
       this.elements.push(Mark.onHandler(this, markCoord, mark));
@@ -830,7 +843,9 @@ class Board {
     );
   }
 
-  loadFromConfig(flatCfg, labelIsReadOnly = false) {
+  loadFromConfig(flatCfg, labelIsReadOnly, elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
+
     // get name of the last object by label and reset objectNameGenerator with it
     flatCfg.sort(objectLabelComparator);
     if (typeof flatCfg[0] === "object") {
@@ -888,7 +903,8 @@ class Board {
     );
   }
 
-  loadSegments(elements) {
+  loadSegments(elements, elementsAreEvaluated) {
+    this.elementsAreEvaluated = elementsAreEvaluated;
     this.elements.push(
       ...elements.map(element => {
         switch (element.type) {

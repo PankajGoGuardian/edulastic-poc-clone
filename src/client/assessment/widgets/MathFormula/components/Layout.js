@@ -1,3 +1,4 @@
+/* eslint-disable react/no-find-dom-node */
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ReactDOM from "react-dom";
@@ -16,11 +17,17 @@ import { Widget } from "../../../styled/Widget";
 import FontSizeSelect from "../../../components/FontSizeSelect";
 
 class Layout extends Component {
+  state = {
+    minWidth: 0
+  };
+
   componentDidMount = () => {
-    const { fillSections, t } = this.props;
+    const { fillSections, t, uiStyle } = this.props;
     const node = ReactDOM.findDOMNode(this);
 
     fillSections("advanced", t("component.options.display"), node.offsetTop, node.scrollHeight);
+
+    this.setState({ minWidth: uiStyle.min_width });
   };
 
   componentDidUpdate(prevProps) {
@@ -39,8 +46,13 @@ class Layout extends Component {
     cleanSections();
   }
 
+  onChangeMinWidth = e => {
+    this.setState({ minWidth: e.target.value });
+  };
+
   render() {
     const { onChange, uiStyle, t, advancedAreOpen } = this.props;
+    const { minWidth } = this.state;
 
     const changeUiStyle = (prop, value) => {
       onChange("ui_style", {
@@ -74,13 +86,15 @@ class Layout extends Component {
             <Input
               type="number"
               size="large"
-              value={uiStyle.min_width}
-              onChange={e => {
-                const val = e.target.value > 400 || e.target.value < 100 ? 100 : e.target.value;
+              value={minWidth}
+              onChange={this.onChangeMinWidth}
+              onBlur={e => {
+                const val = e.target.value > 400 ? 400 : e.target.value < 20 ? 20 : e.target.value;
+                this.setState({ minWidth: val });
                 return changeUiStyle("min_width", val);
               }}
               max={400}
-              min={100}
+              min={20}
             />
           </Col>
         </Row>

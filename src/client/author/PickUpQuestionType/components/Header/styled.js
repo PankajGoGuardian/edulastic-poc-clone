@@ -1,4 +1,4 @@
-import { white, newBlue, mobileWidth, tabletWidth } from "@edulastic/colors";
+import { white, mobileWidth, tabletWidth } from "@edulastic/colors";
 import styled from "styled-components";
 import { IconMenuOpenClose } from "@edulastic/icons";
 

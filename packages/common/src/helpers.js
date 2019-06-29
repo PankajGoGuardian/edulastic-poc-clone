@@ -159,10 +159,10 @@ export const reIndexResponses = htmlStr => {
         $(this).attr("id", uuid());
       }
 
-      let text = $(this).text();
-      $(this).html(`<span class="index">${index + 1}</span>${text}`);
+      $(this).attr("responseIndex", index + 1);
+      $(this).attr("contenteditable", false);
 
-      text = $("<div>")
+      const text = $("<div>")
         .append($(this).clone())
         .html();
 
@@ -172,7 +172,7 @@ export const reIndexResponses = htmlStr => {
   return $(parsedHTML).html();
 };
 
-export const removeSpanFromTemplate = tmpl => {
+export const removeIndexFromTemplate = tmpl => {
   let temp = ` ${tmpl}`.slice(1);
   if (!window.$) {
     return temp;
@@ -181,9 +181,8 @@ export const removeSpanFromTemplate = tmpl => {
   $(parsedHTML)
     .find("textinput, mathinput, textdropdown, response")
     .each(function() {
-      $(this)
-        .find("span")
-        .remove("span");
+      $(this).removeAttr("responseindex");
+      $(this).removeAttr("contenteditable");
     });
   return $(parsedHTML).html();
 };
@@ -199,5 +198,5 @@ export default {
   parseTemplate,
   reIndexResponses,
   canInsert,
-  removeSpanFromTemplate
+  removeIndexFromTemplate
 };

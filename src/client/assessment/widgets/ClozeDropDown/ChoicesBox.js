@@ -22,12 +22,19 @@ const ChoicesBox = ({ resprops, id }) => {
     onChange: changeAnswers,
     item,
     qIndex,
-    disableResponse
+    disableResponse,
+    isReviewTab,
+    cAnswers
   } = resprops;
+
   if (!id) return null;
   const { response_ids } = item;
   const { index } = find(response_ids, response => response.id === id);
-  const userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
+  let userAnswer = find(userAnswers, answer => (answer ? answer.id : "") === id);
+
+  if (isReviewTab) {
+    userAnswer = find(cAnswers, answer => (answer ? answer.id : "") === id);
+  }
 
   const selectChange = val => {
     if (changeAnswers) {

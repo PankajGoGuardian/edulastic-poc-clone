@@ -357,6 +357,7 @@ MultipleChoice.propTypes = {
   advancedAreOpen: PropTypes.bool,
   isSidebarCollapsed: PropTypes.bool.isRequired,
   flowLayout: PropTypes.bool,
+  disableResponse: PropTypes.bool,
   col: PropTypes.object
 };
 
@@ -373,7 +374,8 @@ MultipleChoice.defaultProps = {
   advancedAreOpen: false,
   fillSections: () => {},
   cleanSections: () => {},
-  flowLayout: false
+  flowLayout: false,
+  disableResponse: false
 };
 
 const enhance = compose(

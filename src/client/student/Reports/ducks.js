@@ -1,6 +1,6 @@
 import { createAction, createSelector as createSelectorator } from "redux-starter-kit";
 import { takeEvery, put, call, all, select } from "redux-saga/effects";
-import { values, groupBy, last } from "lodash";
+import { values, groupBy, last, maxBy } from "lodash";
 import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { assignmentApi, reportsApi } from "@edulastic/api";
@@ -12,6 +12,7 @@ import {
   setAssignmentsLoadingAction
 } from "../sharedDucks/AssignmentModule/ducks";
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
+import { testActivity as testActivityConstants } from "@edulastic/constants";
 
 // constants
 export const getCurrentGroup = createSelectorator(["user.user.orgData.defaultClass"], r => r);
@@ -73,24 +74,36 @@ const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 export const filterSelector = state => state.studentReport.filter;
 
-const isReport = assignment => {
+const isReport = (assignment, currentGroup, classIds) => {
   // either user has ran out of attempts
   // or assignments is past dueDate
-  let maxAttempts = (assignment && assignment.maxAttempts) || 1;
-  let attempts = (assignment.reports && assignment.reports.length) || 0;
-  const isExpired = maxAttempts <= attempts || new Date(assignment.endDate) < new Date();
+  const maxAttempts = (assignment && assignment.maxAttempts) || 1;
+  const attempts = (assignment.reports && assignment.reports.length) || 0;
+  let { endDate, class: groups = [] } = assignment;
+  if (!endDate) {
+    endDate = (maxBy(groups.filter(cl => (currentGroup ? cl._id === currentGroup : true)) || [], "endDate") || {})
+      .endDate;
+    if (!endDate) {
+      // IF POLICIES ARE MANUAL CLOSE UNTIL AUTHOR REDIRECT END DATE WILL BE undefined
+      const currentClass =
+        groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
+      return currentClass.closed;
+    }
+  }
+  const isExpired = maxAttempts <= attempts || new Date(endDate) < new Date();
   return isExpired;
 };
 
 const statusFilter = filterType => assignment => {
   const lastAttempt = last(assignment.reports) || {};
-  const isSubmitted = (assignment.reports.length === 1 && lastAttempt.status != 0) || assignment.reports.length > 1;
-  const isGraded = false; // need to impliment graded status from API
+  const isSubmitted = (assignment.reports.length === 1 && lastAttempt.status === 1) || assignment.reports.length > 1;
+  const isAbsent = lastAttempt.status === 2 || !assignment.reports.length;
+  const isGraded = lastAttempt.graded == testActivityConstants.studentAssignmentConstants.assignmentStatus.GRADED;
   switch (filterType) {
     case FILTERS.MISSED:
-      return !isSubmitted;
+      return isAbsent;
     case FILTERS.SUBMITTED:
-      return isSubmitted;
+      return isSubmitted && !isGraded;
     case FILTERS.GRADED:
       return isGraded;
     default:
@@ -102,16 +115,19 @@ export const getAssignmentsSelector = createSelector(
   assignmentsSelector,
   reportsSelector,
   filterSelector,
-  (assignmentsObj, reportsObj, filter) => {
+  getCurrentGroup,
+  getClassIds,
+  (assignmentsObj, reportsObj, filter, currentGroup, classIds) => {
     // group reports by assignmentsID
     const groupedReports = groupBy(values(reportsObj), "assignmentId");
     const assignments = values(assignmentsObj)
       .sort((a, b) => a.createdAt > b.createdAt)
       .map(assignment => ({
         ...assignment,
-        reports: groupedReports[assignment._id] || []
+        reports:
+          (groupedReports[assignment._id] && groupedReports[assignment._id].filter(item => item.status !== 0)) || []
       }))
-      .filter(isReport)
+      .filter(assignment => isReport(assignment, currentGroup, classIds))
       .filter(statusFilter(filter));
     return assignments;
   }

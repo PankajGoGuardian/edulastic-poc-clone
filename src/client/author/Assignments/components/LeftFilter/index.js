@@ -12,6 +12,7 @@ import {
   // IconDuplicate,
   IconMoreVertical
 } from "@edulastic/icons";
+import { themeColor } from "@edulastic/colors";
 
 import selectsData from "../../../TestPage/components/common/selectsData";
 import { receiveAssignmentsSummaryAction, receiveAssignmentsAction } from "../../../src/actions/assignments";
@@ -50,7 +51,15 @@ const ExtendedInput = ({ value, onChange, visible }) => {
   useLayoutEffect(() => {
     renameInput.current.select();
   }, [visible]);
-  return <Input placeholder="Name this folder" value={value} onChange={onChange} ref={renameInput} />;
+  return (
+    <Input
+      style={{ "border-color": themeColor }}
+      placeholder="Name this folder"
+      value={value}
+      onChange={onChange}
+      ref={renameInput}
+    />
+  );
 };
 class LeftFilter extends React.Component {
   state = {

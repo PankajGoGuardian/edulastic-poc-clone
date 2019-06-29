@@ -1,17 +1,16 @@
 import { Link } from "react-router-dom";
-import { Card, Checkbox, Button } from "antd";
+import { Card, Checkbox, Button, Menu } from "antd";
 import styled from "styled-components";
 import { FlexContainer } from "@edulastic/common";
-import { mobileWidth } from "@edulastic/colors";
+import { mobileWidth, themeColor, white, linkColor, tabGrey } from "@edulastic/colors";
 import { themes } from "../../../../student/themes";
 
 const classBoardTheme = themes.default.classboard;
-
 export const Anchor = styled.a`
-  color: #69727e;
+  color: ${linkColor};
 `;
 export const AnchorLink = styled(Link)`
-  color: #69727e;
+  color: ${linkColor};
 `;
 
 export const PaginationInfo = styled.span`
@@ -19,7 +18,7 @@ export const PaginationInfo = styled.span`
   display: inline-block;
   font-size: 11px;
   word-spacing: 5px;
-  color: #69727e;
+  color: ${linkColor};
   @media (max-width: ${mobileWidth}) {
     display: none;
   }
@@ -96,11 +95,11 @@ const StyledTabButton = styled.a`
   padding: 6px 35px;
   font-size: 11px;
   font-weight: 600;
-  background-color: ${({ active }) => (active ? "#00AD50" : "#FFFFFF")};
-  color: ${({ active }) => (active ? "#FFFFFF" : "#7C848E")};
+  background-color: ${({ active }) => (active ? themeColor : white)};
+  color: ${({ active }) => (active ? white : tabGrey)};
   &:hover {
-    background-color: ${({ active }) => (active ? "#00AD50" : "#42d184")};
-    color: #ffffff;
+    background-color: ${themeColor};
+    color: ${white};
   }
 `;
 export const BothButton = styled(StyledTabButton)`
@@ -117,28 +116,38 @@ export const QuestionButton = styled(StyledTabButton)`
 `;
 
 export const RedirectButton = styled(StyledTabButton)`
-  border-radius: 4px;
+  border-radius: ${props => (props.first ? "4px 0 0 4px" : props.last ? "0 4px 4px 0" : 0)};
   display: flex;
-  align-items: center;
-  padding-left: 15px;
-  padding-right: 25px;
-  color: #00ad50;
-  img {
-    margin-right: 10px;
+  width: 150px;
+  color: ${themeColor};
+  margin-right: ${props => (!props.last ? "3px" : "")};
+  position: relative;
+  justify-content: center;
+`;
+
+export const DropMenu = styled(Menu)`
+  margin-top: 10px;
+`;
+
+export const MenuItems = styled(Menu.Item)`
+  &:not(.ant-dropdown-menu-item-disabled):hover {
+    color: ${white};
+    background-color: ${themeColor};
   }
 `;
 
-export const PrintButton = styled(StyledTabButton)`
-  margin-left: auto;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding-left: 15px;
-  padding-right: 25px;
-  color: #00ad50;
-  img {
-    margin-right: 10px;
-  }
+export const CaretUp = styled.i`
+  position: absolute;
+  top: -20px;
+  color: ${white};
+  right: 12px;
+  font-size: 30px;
+`;
+
+export const ButtonIconWrap = styled.span`
+  display: block;
+  left: 10px;
+  position: absolute;
 `;
 
 export const BarDiv = styled.div`
@@ -162,6 +171,11 @@ export const SpaceDiv = styled.div`
 export const ButtonSpace = styled.div`
   display: inline-block;
   width: 13px;
+`;
+
+export const ClassBoardFeats = styled.div`
+  display: flex;
+  box-shadow: 0px 3px 20px 0px rgb(210, 210, 217);
 `;
 
 export const StyledButton = styled(Button)`

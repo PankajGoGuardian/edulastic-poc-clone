@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { cloneDeep, isEqual } from "lodash";
 
-import { mainBlueColor } from "@edulastic/colors";
+import { themeColorLight } from "@edulastic/colors";
 
 import HorizontalLines from "./components/HorizontalLines";
 import VerticalLines from "./components/VerticalLines";
@@ -98,7 +98,7 @@ const LineChart = ({ data, previewTab, saveAnswer, gridParams, view, correct, di
 
       <HorizontalLines gridParams={gridParams} displayGridlines={displayHorizontalLines(showGridlines)} />
 
-      <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={mainBlueColor} />
+      <polyline points={getPolylinePoints()} strokeWidth={3} fill="none" stroke={themeColorLight} />
 
       <ArrowPair getActivePoint={getActivePoint} />
 

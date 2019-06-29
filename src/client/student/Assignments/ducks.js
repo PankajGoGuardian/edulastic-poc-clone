@@ -5,7 +5,8 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { getCurrentSchool, fetchUserAction, fetchUser, getUserRole } from "../Login/ducks";
+import { assignmentPolicyOptions } from "@edulastic/constants";
+import { getCurrentSchool, fetchUser, getUserRole } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
 // external actions
@@ -18,6 +19,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
+const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
   ALL: "all",
@@ -284,22 +286,19 @@ export const isLiveAssignment = (assignment, currentGroup, classIds) => {
       .endDate;
     const currentClass =
       groups.find(cl => (currentGroup ? cl._id === currentGroup : classIds.find(x => x === cl._id))) || {};
-    // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
     if (!endDate) {
-      if (
-        assignment.openPolicy !== "Automatically on Start Date" &&
-        assignment.closePolicy !== "Automatically on Due Date"
-      ) {
+      // IF POLICIES MANUAL OPEN AND MANUAL CLOSE
+      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE && assignment.closePolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive = currentClass.open && (!currentClass.closed || currentClass.closeDate > Date.now());
         return isLive;
       }
       // IF MANUAL OPEN AND AUTO CLOSE
-      if (assignment.openPolicy !== "Automatically on Start Date") {
+      if (assignment.openPolicy !== POLICY_AUTO_ON_STARTDATE) {
         const isLive = currentClass.open && (!currentClass.closed || currentClass.endDate > Date.now());
         return isLive;
       }
       // IF MANUAL CLOSE AND AUTO OPEN
-      if (assignment.openPolicy !== "Automatically on Due Date") {
+      if (assignment.openPolicy !== POLICY_AUTO_ON_DUEDATE) {
         const isLive =
           currentClass.startDate < Date.now() && (!currentClass.closed || currentClass.closedDate > Date.now());
         return isLive;

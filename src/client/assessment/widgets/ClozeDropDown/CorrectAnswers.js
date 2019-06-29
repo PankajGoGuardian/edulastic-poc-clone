@@ -130,7 +130,7 @@ class CorrectAnswers extends Component {
       options,
       t,
       item,
-      templateMarkUp,
+      template,
       hasGroupResponses,
       configureOptions,
       uiStyle
@@ -157,7 +157,7 @@ class CorrectAnswers extends Component {
                 options={options}
                 uiStyle={uiStyle}
                 item={item}
-                templateMarkUp={templateMarkUp}
+                template={template}
                 configureOptions={configureOptions}
                 hasGroupResponses={hasGroupResponses}
                 onUpdateValidationValue={this.updateCorrectValidationAnswers}
@@ -179,7 +179,7 @@ class CorrectAnswers extends Component {
                       item={item}
                       configureOptions={configureOptions}
                       hasGroupResponses={hasGroupResponses}
-                      templateMarkUp={templateMarkUp}
+                      template={template}
                       uiStyle={uiStyle}
                       onUpdateValidationValue={answers => this.updateAltCorrectValidationAnswers(answers, i)}
                       onUpdatePoints={this.handleUpdateAltValidationScore(i)}
@@ -203,9 +203,10 @@ CorrectAnswers.propTypes = {
   t: PropTypes.func.isRequired,
   stimulus: PropTypes.string,
   options: PropTypes.array,
-  templateMarkUp: PropTypes.string,
+  template: PropTypes.string,
   question: PropTypes.object.isRequired,
   hasGroupResponses: PropTypes.bool,
+  item: PropTypes.object.isRequired,
   configureOptions: PropTypes.object.isRequired,
   uiStyle: PropTypes.object,
   fillSections: PropTypes.func,
@@ -217,7 +218,7 @@ CorrectAnswers.defaultProps = {
   options: [],
   validation: {},
   hasGroupResponses: false,
-  templateMarkUp: "",
+  template: "",
   uiStyle: {
     responsecontainerposition: "bottom",
     fontsize: "normal",

@@ -1,6 +1,7 @@
 //@ts-check
 import React from "react";
-
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import {
   realtimeGradebookActivityAddAction,
@@ -11,22 +12,28 @@ import {
   realtimeGradebookRedirectAction
 } from "../../../src/reducers/testActivity";
 import useRealtimeUpdates from "../../useRealtimeUpdates";
+import { receiveTestActivitydAction } from "../../../src/actions/classBoard";
 
 const Shell = ({
   addActivity,
   classId,
   assignmentId,
   addItem,
+  match,
+  loadTestActivity,
   submitActivity,
   removeQuestions,
-  addQuestionsMaxScore,
-  redirect
+  addQuestionsMaxScore
 }) => {
+  const redirectCheck = payload => {
+    const { assignmentId, classId } = match.params;
+    loadTestActivity(assignmentId, classId);
+  };
   const client = useRealtimeUpdates(`gradebook:${classId}:${assignmentId}`, {
     addActivity,
     addItem,
     submitActivity,
-    redirect
+    redirect: redirectCheck
     //TODO: need to comeback to it when we need to handle realtime impact of regrading
     // removeQuestions,
     // addQuestionsMaxScore
@@ -35,14 +42,18 @@ const Shell = ({
   return null;
 };
 
-export default connect(
-  null,
-  {
-    addActivity: realtimeGradebookActivityAddAction,
-    addItem: realtimeGradebookTestItemAddAction,
-    submitActivity: realtimeGradebookActivitySubmitAction,
-    removeQuestions: realtimeGradebookQuestionsRemoveAction,
-    addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
-    redirect: realtimeGradebookRedirectAction
-  }
+export default compose(
+  withRouter,
+  connect(
+    null,
+    {
+      addActivity: realtimeGradebookActivityAddAction,
+      addItem: realtimeGradebookTestItemAddAction,
+      submitActivity: realtimeGradebookActivitySubmitAction,
+      removeQuestions: realtimeGradebookQuestionsRemoveAction,
+      addQuestionsMaxScore: realtimeGradebookQuestionAddMaxScoreAction,
+      loadTestActivity: receiveTestActivitydAction,
+      redirect: realtimeGradebookRedirectAction
+    }
+  )
 )(Shell);

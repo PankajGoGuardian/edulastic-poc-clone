@@ -62,32 +62,54 @@ class Container extends Component {
   };
 
   componentDidMount() {
-    const { getItemDetailById, match, modalItemId, setRedirectTest } = this.props;
-    getItemDetailById(modalItemId || match.params.id, { data: true, validation: true });
+    const { getItemDetailById, match, modalItemId, setRedirectTest, isTestFlow, history, t } = this.props;
+    const { itemId, testId } = match.params;
+
+    getItemDetailById(modalItemId || match.params.id || match.params.itemId, { data: true, validation: true });
 
     if (match.params.testId) {
       setRedirectTest(match.params.testId);
     }
+
+    if (isTestFlow) {
+      getItemDetailById(itemId, { data: true, validation: true });
+      history.replace({
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
+          : `/author/items/${match.params.id}/pickup-questiontype`,
+        state: {
+          backText: t("component.itemDetail.backText"),
+          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
+          rowIndex: 0,
+          tabIndex: 0,
+          testItemId: isTestFlow ? itemId : match.params._id
+        }
+      });
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem } = this.props;
+    const { getItemDetailById, match, rows, history, t, loading, redirectOnEmptyItem, isTestFlow } = this.props;
     const oldId = prevProps.match.params.id;
     const newId = match.params.id;
+    const { itemId, testId } = match.params;
 
     if (oldId !== newId) {
       getItemDetailById(newId, { data: true, validation: true });
     }
 
     if (!loading && (rows.length === 0 || rows[0].widgets.length === 0) && redirectOnEmptyItem) {
+      getItemDetailById(itemId, { data: true, validation: true });
       history.replace({
-        pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+        pathname: isTestFlow
+          ? `/author/tests/${testId}/createItem/${itemId}/pickup-questiontype`
+          : `/author/items/${match.params.id}/pickup-questiontype`,
         state: {
           backText: t("component.itemDetail.backText"),
-          backUrl: "/author/items",
+          backUrl: isTestFlow ? `/author/tests/${testId}/createItem/${itemId}` : "/author/items",
           rowIndex: 0,
           tabIndex: 0,
-          testItemId: match.params._id
+          testItemId: isTestFlow ? itemId : match.params._id
         }
       });
     }
@@ -171,22 +193,23 @@ class Container extends Component {
   };
 
   handleAdd = ({ rowIndex, tabIndex }) => {
-    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType } = this.props;
+    const { match, history, t, changeView, modalItemId, navigateToPickupQuestionType, isTestFlow } = this.props;
     changeView("edit");
 
     if (modalItemId) {
       navigateToPickupQuestionType();
       return;
     }
-
     history.push({
-      pathname: `/author/items/${match.params.id}/pickup-questiontype`,
+      pathname: isTestFlow
+        ? `/author/tests/${match.params.testId}/createItem/${match.params.itemId}/pickup-questiontype`
+        : `/author/items/${match.params.id}/pickup-questiontype`,
       state: {
         backText: t("component.itemDetail.backText"),
         backUrl: match.url,
         rowIndex,
         tabIndex,
-        testItemId: match.params._id
+        testItemId: isTestFlow ? match.params.itemId : match.params._id
       }
     });
   };
@@ -221,10 +244,9 @@ class Container extends Component {
   };
 
   handleSave = () => {
-    const { updateItemDetailById, match, item, createType, itemId, onCompleteItemCreation } = this.props;
-    if (createType === "Duplicate") {
-      updateItemDetailById(itemId, item, match.params.id, true);
-      onCompleteItemCreation();
+    const { updateItemDetailById, match, item, isTestFlow } = this.props;
+    if (isTestFlow) {
+      updateItemDetailById(match.params.itemId, item, match.params.testId, true);
     } else {
       updateItemDetailById(match.params.id, item, match.params.testId);
     }
@@ -312,7 +334,7 @@ class Container extends Component {
   );
 
   renderButtons = () => {
-    const { item, updating, testItemStatus, changePreview, preview, view } = this.props;
+    const { item, updating, testItemStatus, changePreview, preview, view, isTestFlow } = this.props;
 
     const { enableEdit } = this.state;
 
@@ -321,7 +343,8 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        isTestFlow &&
+        ((testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit);
     }
 
     return (
@@ -364,6 +387,7 @@ class Container extends Component {
       setItemLevelScore,
       setItemLevelScoring,
       view,
+      isTestFlow,
       preview
     } = this.props;
     const qLength = rows.flatMap(x => x.widgets.filter(x => x.widgetType === "question")).length;
@@ -372,8 +396,20 @@ class Container extends Component {
     if (item) {
       const { _id: testItemId } = item;
       showPublishButton =
-        (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED) || enableEdit;
+        (!isTestFlow && (testItemId && testItemStatus && testItemStatus !== testItemStatusConstants.PUBLISHED)) ||
+        enableEdit;
     }
+    const { testId } = match.params;
+    let breadCrumb = [
+      {
+        title: "TEST LIBRARY",
+        to: "/author/tests"
+      },
+      {
+        title: "TEST",
+        to: `/author/tests/${testId}#review`
+      }
+    ];
     return (
       <Layout>
         {showModal && item && (
@@ -418,6 +454,7 @@ class Container extends Component {
             saving={updating}
             view={view}
             previewTab={preview}
+            isTestFlow={isTestFlow}
             onEnableEdit={this.handleEnableEdit}
             showPublishButton={showPublishButton}
             hasAuthorPermission={hasAuthorPermission}
@@ -436,7 +473,7 @@ class Container extends Component {
         <BreadCrumbBar>
           <Col md={view === "preview" ? 12 : 24}>
             {windowWidth > MAX_MOBILE_WIDTH ? (
-              <SecondHeadBar>
+              <SecondHeadBar breadcrumb={isTestFlow ? breadCrumb : undefined}>
                 {item && view !== "preview" && qLength > 1 && (
                   <Row type="flex" justify="end" style={{ width: 250 }}>
                     <Col style={{ paddingRight: 5 }}>Item Level Scoring</Col>
@@ -526,7 +563,8 @@ Container.propTypes = {
   toggleSideBar: PropTypes.func.isRequired,
   redirectOnEmptyItem: PropTypes.bool,
   setItemLevelScore: PropTypes.func,
-  setItemLevelScoring: PropTypes.func
+  setItemLevelScoring: PropTypes.func,
+  isTestFlow: PropTypes.bool
 };
 
 Container.defaultProps = {
@@ -540,7 +578,8 @@ Container.defaultProps = {
   redirectOnEmptyItem: true,
   testItemStatus: "",
   setItemLevelScore: () => {},
-  setItemLevelScoring: () => {}
+  setItemLevelScoring: () => {},
+  isTestFlow: false
 };
 
 const enhance = compose(

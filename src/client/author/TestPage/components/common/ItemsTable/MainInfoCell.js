@@ -25,7 +25,7 @@ class MainInfoCell extends React.Component {
   };
 
   render() {
-    const { data, testId, showModal, addDuplicate } = this.props;
+    const { data, testId, showModal, addDuplicate, readOnlyMode = false } = this.props;
     const { isShowPreviewModal } = this.state;
     return (
       <div>
@@ -36,6 +36,7 @@ class MainInfoCell extends React.Component {
         <PreviewModal
           isVisible={isShowPreviewModal}
           testId={testId}
+          readOnlyMode={readOnlyMode}
           page="addItems"
           addDuplicate={addDuplicate}
           showModal={showModal}
@@ -49,6 +50,7 @@ class MainInfoCell extends React.Component {
 
 MainInfoCell.propTypes = {
   data: PropTypes.object.isRequired,
+  readOnlyMode: PropTypes.bool,
   showModal: PropTypes.bool,
   addDuplicate: PropTypes.func
 };
@@ -56,8 +58,8 @@ MainInfoCell.propTypes = {
 export default withRouter(MainInfoCell);
 
 const TypeContainer = styled.div`
-  margin-top: 31px;
-  width: 30%;
+  margin-top: 30px;
+  display: flex;
   .ant-tag {
     background: rgba(0, 176, 255, 0.2);
     color: rgb(0, 131, 190);

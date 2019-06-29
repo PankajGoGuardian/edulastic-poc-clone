@@ -58,7 +58,7 @@ FroalaEditor.DEFAULTS.specialCharacterSets = [
   }
 ];
 
-FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Response</span>`);
+FroalaEditor.DefineIconTemplate("response", `<span class="custom-toolbar-btn">Drop Area</span>`);
 FroalaEditor.DefineIconTemplate("responseBoxes", `<span class="custom-toolbar-btn">Response Boxes</span>`);
 FroalaEditor.DefineIconTemplate("textinput", `<span class="custom-toolbar-btn">Text Input</span>`);
 FroalaEditor.DefineIconTemplate("textdropdown", `<span class="custom-toolbar-btn">Text Dropdown</span>`);
@@ -223,6 +223,18 @@ export const ToolbarContainer = styled.div.attrs({
   }
 `;
 
+// if (theme === "border") {
+export const Placeholder = styled.div.attrs({
+  className: "froala-placeholder"
+})`
+  position: absolute;
+  top: ${props => (props.theme === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
+  left: ${props => (props.theme === "border" ? "23px" : 0)};
+  right: 0;
+  opacity: 0.7;
+  color: #cccccc;
+`;
+
 //adds h1 & h2 buttons commands to froala editor.
 headings(FroalaEditor);
 
@@ -309,7 +321,6 @@ const CustomEditor = ({
         "script",
         ".fa",
         "span",
-        "p",
         "path",
         "line",
         "textinput",
@@ -434,6 +445,11 @@ const CustomEditor = ({
                 cursorEl.remove();
                 return;
               }
+              return;
+            }
+            if (cursorEl.tagName === "SPAN" && $(cursorEl).hasClass("input__math") && $(cursorEl).attr("data-latex")) {
+              cursorEl.remove();
+              return;
             }
           }
         },
@@ -441,7 +457,7 @@ const CustomEditor = ({
           if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
           this.image.showProgressBar();
           // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.COURSE)
+          uploadToS3(image[0], aws.s3Folders.DEFAULT)
             .then(result => {
               this.image.insert(result);
             })
@@ -585,13 +601,13 @@ const CustomEditor = ({
     // Register response commnad for Response Button
     FroalaEditor.DefineIcon("response", { NAME: "response", template: "response" });
     FroalaEditor.RegisterCommand("response", {
-      title: "Response",
+      title: "Drop Area",
       focus: true,
       undo: true,
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<Response id="${uuid()}" contentEditable="false">Response</Response>&nbsp;`);
+        this.html.insert(`&nbsp;<Response id="${uuid()}" contentEditable="false"></Response>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -605,7 +621,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextInput id="${uuid()}" contentEditable="false">Text Input</TextInput>`);
+        this.html.insert(`&nbsp;<TextInput id="${uuid()}" contentEditable="false"></TextInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -619,7 +635,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<TextDropdown id="${uuid()}" contentEditable="false">Text Dropdown</TextDropdown>`);
+        this.html.insert(`&nbsp;<TextDropdown id="${uuid()}" contentEditable="false"></TextDropdown>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -633,7 +649,7 @@ const CustomEditor = ({
       refreshAfterCallback: true,
       callback() {
         if (!canInsert(this.selection.element()) || !canInsert(this.selection.endElement())) return false;
-        this.html.insert(`<MathInput id="${uuid()}" contentEditable="false">Math Input</MathInput>`);
+        this.html.insert(`&nbsp;<MathInput id="${uuid()}" contentEditable="false"></MathInput>&nbsp;`);
         this.undo.saveStep();
       }
     });
@@ -706,6 +722,7 @@ const CustomEditor = ({
     setContent(replaceLatexesWithMathHtml(value));
   }, [value]);
 
+  const showPlaceholder = config.placeholder && (!content || content === "<p><br></p>");
   return (
     <>
       <MathModal
@@ -720,6 +737,11 @@ const CustomEditor = ({
       />
       <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
+        {showPlaceholder && (
+          <Placeholder toolbarExpanded={toolbarExpanded} theme={theme} showMargin={!tag}>
+            {config.placeholder}
+          </Placeholder>
+        )}
         <Editor
           tag={tag}
           model={content}

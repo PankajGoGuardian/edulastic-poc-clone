@@ -172,7 +172,7 @@ export const Detail = styled.div`
 
 export const TypeCategory = styled.div`
   display: flex;
-  margin-right: 24px;
+  margin-right: 10px;
   margin-bottom: 10px;
 
   @media (max-width: ${tabletWidth}) {

@@ -16,7 +16,7 @@ import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { nonAutoGradableTypes } from "@edulastic/constants";
-import defaultTheme from "../defaultThemeStyle";
+import { playersTheme } from "../assessmentPlayersTheme";
 
 import {
   ControlBtn,
@@ -45,10 +45,6 @@ import SvgDraw from "./SvgDraw";
 import Tools from "./Tools";
 import { saveScratchPadAction } from "../../actions/userWork";
 import { currentItemAnswerChecksSelector } from "../../selectors/test";
-
-/* eslint import/no-webpack-loader-syntax: off */
-// eslint-disable-next-line
-// const defaultTheme = require('sass-extract-loader?{"plugins": ["sass-extract-js"]}!../../styles/vars.scss');
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -96,7 +92,7 @@ class AssessmentPlayerDefault extends React.Component {
   };
 
   static defaultProps = {
-    theme: defaultTheme
+    theme: playersTheme
   };
 
   changeTool = val => this.setState({ tool: val });

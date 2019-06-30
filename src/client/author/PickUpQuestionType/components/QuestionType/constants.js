@@ -64,6 +64,13 @@ import GRGraphingQuadrant from "../../../src/assets/graphing/graphing-quadrant.s
 import GRNumberLineDragDrop from "../../../src/assets/graphing/line-drag-drop.svg";
 import GRNumberLinePlot from "../../../src/assets/graphing/line-plot.svg";
 
+// Charts
+import LinePlot from "../../../src/assets/charts/line-plot.svg";
+import DotPlot from "../../../src/assets/charts/dot-plot.svg";
+import Histogram from "../../../src/assets/charts/histogram.svg";
+import BarChart from "../../../src/assets/charts/bar-chart.svg";
+import LineChart from "../../../src/assets/charts/line-chart.svg";
+
 // Video&Passages
 import VPVideoPlayer from "../../../src/assets/video-and-passages/player.svg";
 import VPPassage from "../../../src/assets/video-and-passages/passage.svg";
@@ -82,7 +89,7 @@ export const getCards = onSelectQuestionType => {
   return [
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: LinePlot,
       data: {
         title: "Line plot",
         firstMount: true,
@@ -171,7 +178,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: DotPlot,
       data: {
         title: "Dot plot",
         firstMount: true,
@@ -260,7 +267,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: Histogram,
       data: {
         title: "Histogram",
         firstMount: true,
@@ -351,7 +358,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: BarChart,
       data: {
         title: "Bar chart",
         firstMount: true,
@@ -441,7 +448,7 @@ export const getCards = onSelectQuestionType => {
     },
     {
       type: "charts",
-      cardImage: CMSortList,
+      cardImage: LineChart,
       data: {
         title: "Line chart",
         firstMount: true,

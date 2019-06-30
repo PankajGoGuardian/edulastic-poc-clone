@@ -20,8 +20,19 @@ const getBarDataKey = analyzeBy => {
 };
 
 const getYLabel = analyzeBy => {
-  const proportion = analyzeBy === analyzeByMode.SCORE ? "(%)" : "";
-  return { value: `Avg. score ${proportion}`, angle: -90, position: "insideLeft", dy: 35 };
+  let label;
+  switch (analyzeBy) {
+    case analyzeByMode.RAW_SCORE:
+      label = "Avg. score";
+      break;
+    case analyzeByMode.MASTERY_LEVEL:
+    case analyzeByMode.MASTERY_SCORE:
+      label = "Student (%)";
+      break;
+    default:
+      label = "Avg. score (%)";
+  }
+  return { value: label, angle: -90, position: "insideLeft", dy: 35 };
 };
 
 const makeMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
@@ -114,10 +125,9 @@ const SimpleBarChartContainer = ({
 
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
-      case analyzeByMode.MASTERY_LEVEL:
         return `${Math.round(Number(formattedScore))}%`;
       default:
-        return formattedScore;
+        return "";
     }
   };
 

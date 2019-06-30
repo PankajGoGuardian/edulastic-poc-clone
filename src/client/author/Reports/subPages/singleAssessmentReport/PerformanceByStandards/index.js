@@ -28,6 +28,7 @@ import {
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
 import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
+import { getUserRole } from "../../../../src/selectors/user";
 
 const MasteryLevels = ({ scaleInfo }) => (
   <MasteryLevelWrapper>
@@ -42,7 +43,7 @@ const MasteryLevels = ({ scaleInfo }) => (
 
 const PAGE_SIZE = 15;
 
-const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings }) => {
+const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
   const [compareBy, setCompareBy] = useState(compareByMode.CLASS);
@@ -63,7 +64,7 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
     )
   );
 
-  const getTitleByTestId = testId => {
+  const getTitleByTestId = () => {
     const {
       selectedTest: { title: testTitle = "" }
     } = settings;
@@ -230,7 +231,8 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
   const nextButtonDisabled = (page + 1) * PAGE_SIZE >= tableData.length || tableData.length < PAGE_SIZE;
 
   const { testId } = match.params;
-  const assignmentInfo = `${getTitleByTestId(testId)} (ID: ${testId})`;
+  const testName = getTitleByTestId(testId);
+  const assignmentInfo = `${testName} (ID: ${testId})`;
 
   const standardsDropdownData = standardsList.map(s => ({ key: s.id, title: s.name }));
   const selectedStandardId = standardsDropdownData.find(s => s.key === standardId);
@@ -268,7 +270,9 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
               Reset
             </ResetButton>
           )}
-          {analyzeBy === analyzeByMode.MASTERY_LEVEL && <MasteryLevels scaleInfo={scaleInfo} />}
+          {(analyzeBy === analyzeByMode.MASTERY_LEVEL || analyzeBy === analyzeByMode.MASTERY_SCORE) && (
+            <MasteryLevels scaleInfo={scaleInfo} />
+          )}
         </div>
         <SimpleBarChartContainer
           report={report}
@@ -327,16 +331,17 @@ const reportPropType = PropTypes.shape({
 
 PerformanceByStandards.propTypes = {
   loading: PropTypes.bool.isRequired,
+  settings: PropTypes.object.isRequired,
   report: reportPropType.isRequired,
   match: PropTypes.object.isRequired,
   getPerformanceByStandards: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
-  location: PropTypes.object.isRequired
+  role: PropTypes.string.isRequired
 };
 
 const enhance = connect(
   state => ({
     loading: getPerformanceByStandardsLoadingSelector(state),
+    role: getUserRole(state),
     report: getPerformanceByStandardsReportSelector(state)
   }),
   {

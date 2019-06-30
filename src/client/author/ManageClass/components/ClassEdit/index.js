@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import * as moment from "moment";
 import { connect } from "react-redux";
 import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { isEmpty, find, get } from "lodash";
 import { Form, Divider, Spin } from "antd";
 import { withNamespaces } from "@edulastic/localization";
@@ -50,9 +51,10 @@ class ClassEdit extends React.Component {
     changeView: () => null
   };
 
-  componentDidUpdate({ updating, changeView }, { submitted }) {
+  componentDidUpdate({ updating, history, selctedClass }, { submitted }) {
     if (updating && submitted) {
-      changeView("details");
+      const { _id: classId } = selctedClass;
+      history.push(`/author/manageClass/${classId}`);
     }
   }
 
@@ -122,10 +124,11 @@ class ClassEdit extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, changeView, isSearching, selctedClass, updating } = this.props;
+    const { curriculums, form, courseList, isSearching, selctedClass, updating, changeView, history } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
+      _id: classId,
       thumbnail = "",
       tags = [],
       name,
@@ -140,7 +143,7 @@ class ClassEdit extends React.Component {
 
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => changeView("details")} />
+        <Header onCancel={() => history.push(`/author/manageClass/${classId}`)} />
         <Spin spinning={updating}>
           <Container>
             <Divider orientation="left">
@@ -185,6 +188,7 @@ const ClassEditForm = Form.create()(ClassEdit);
 
 const enhance = compose(
   withNamespaces("classEdit"),
+  withRouter,
   connect(
     state => ({
       curriculums: getCurriculumsListSelector(state),

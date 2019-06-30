@@ -12,14 +12,14 @@ const ClassListContainer = ({
   isModalVisible,
   googleCourseList,
   syncClass,
-  onCreate,
   setEntity
 }) => {
   const closeModal = () => setModal(false);
   const selectedGroups = groups.filter(i => !!i.code).map(i => i.code);
+
   return (
     <React.Fragment>
-      <Header onCreate={onCreate} />
+      <Header />
       <ClassSelectModal
         visible={isModalVisible}
         close={closeModal}
@@ -39,7 +39,6 @@ ClassListContainer.propTypes = {
   archiveGroups: PropTypes.array.isRequired,
   isModalVisible: PropTypes.bool.isRequired,
   googleCourseList: PropTypes.array.isRequired,
-  onCreate: PropTypes.func.isRequired,
   setEntity: PropTypes.func.isRequired
 };
 

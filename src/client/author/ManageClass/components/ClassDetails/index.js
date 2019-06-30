@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { get } from "lodash";
-
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import { fetchStudentsByIdAction } from "../../ducks";
 
 import Header from "./Header";
@@ -12,21 +13,19 @@ import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
-const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
+const ClassDetails = ({ selctedClass, changeView, loadStudents, history }) => {
+  const { _id: classId } = selctedClass;
   if (loadStudents) {
-    const { _id: classId } = selctedClass;
     loadStudents({ classId });
   }
 
   const handleEditClick = () => {
-    if (updateView) {
-      updateView("update");
-    }
+    history.push(`/author/manageClass/${classId}/edit`);
   };
 
   const printPreview = () => {
-    if (updateView) {
-      updateView("printview");
+    if (changeView) {
+      changeView("printview");
     }
   };
 
@@ -38,7 +37,7 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
         <SubHeader
           {...selctedClass}
           viewAssessmentHandler={viewAssessmentHandler}
-          backToView={() => updateView("listView")}
+          backToView={() => history.push(`/author/manageClass`)}
         />
         <StyledDivider orientation="left" />
         <MainInfo entity={selctedClass} />
@@ -53,15 +52,20 @@ const ClassDetails = ({ selctedClass, updateView, loadStudents }) => {
 
 ClassDetails.propTypes = {
   selctedClass: PropTypes.object.isRequired,
-  updateView: PropTypes.func.isRequired,
+  changeView: PropTypes.func.isRequired,
   loadStudents: PropTypes.func.isRequired
 };
 
-export default connect(
-  state => ({
-    selctedClass: get(state, "manageClass.entity")
-  }),
-  {
-    loadStudents: fetchStudentsByIdAction
-  }
-)(ClassDetails);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      selctedClass: get(state, "manageClass.entity")
+    }),
+    {
+      loadStudents: fetchStudentsByIdAction
+    }
+  )
+);
+
+export default enhance(ClassDetails);

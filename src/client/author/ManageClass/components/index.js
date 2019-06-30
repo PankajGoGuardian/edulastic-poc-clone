@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
+import { compose } from "redux";
+import { withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 
 // actions
@@ -19,24 +21,23 @@ import ClassDetails from "./ClassDetails";
 import ClassEdit from "./ClassEdit";
 import PrintPreview from "./PrintPreview";
 
-const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, ...restProps }) => {
-
+const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, history, ...restProps }) => {
   const [view, setView] = useState("listView");
-
   useEffect(() => {
     if (view === "listView") {
       fetchGroups();
       fetchArchiveGroups();
     }
-  }, [view]);
+  }, []);
 
   const updateView = v => {
     setView(v);
   };
 
   const setEntity = entity => {
+    const { _id: classId } = entity;
     setClass(entity);
-    updateView("details");
+    history.push(`/author/manageClass/${classId}`);
   };
 
   const renderView = () => {
@@ -47,18 +48,12 @@ const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, s
       case "update":
         return <ClassEdit changeView={updateView} />;
       case "details":
-        return <ClassDetails updateView={updateView} />;
+        return <ClassDetails changeView={updateView} />;
       case "printview":
         return <PrintPreview />;
       case "listView":
         return (
-          <ClassListContainer
-            {...restProps}
-            onCreate={() => updateView("create")}
-            setEntity={setEntity}
-            groups={groups}
-            archiveGroups={archiveGroups}
-          />
+          <ClassListContainer {...restProps} setEntity={setEntity} groups={groups} archiveGroups={archiveGroups} />
         );
     }
   };
@@ -76,18 +71,23 @@ ManageClass.propTypes = {
   googleCourseList: PropTypes.array.isRequired
 };
 
-export default connect(
-  state => ({
-    groups: getGroupsSelector(state),
-    archiveGroups: getArchiveGroupsSelector(state),
-    isModalVisible: state.manageClass.showModal,
-    googleCourseList: state.manageClass.googleCourseList
-  }),
-  {
-    fetchGroups: fetchGroupsAction,
-    fetchArchiveGroups: fetchArchiveGroupsAction,
-    setModal: setModalAction,
-    syncClass: syncClassAction,
-    setClass: setClassAction
-  }
-)(ManageClass);
+const enhance = compose(
+  withRouter,
+  connect(
+    state => ({
+      groups: getGroupsSelector(state),
+      archiveGroups: getArchiveGroupsSelector(state),
+      isModalVisible: state.manageClass.showModal,
+      googleCourseList: state.manageClass.googleCourseList
+    }),
+    {
+      fetchGroups: fetchGroupsAction,
+      fetchArchiveGroups: fetchArchiveGroupsAction,
+      setModal: setModalAction,
+      syncClass: syncClassAction,
+      setClass: setClassAction
+    }
+  )
+);
+
+export default enhance(ManageClass);

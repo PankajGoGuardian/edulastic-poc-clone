@@ -42,11 +42,12 @@ const checkUserExist = data =>
     })
     .then(result => result.data.result);
 
-const googleLogin = () =>
+const googleLogin = params =>
   api
     .callApi({
       url: `${prefix}/login-google`,
-      method: "get"
+      method: "get",
+      params
     })
     .then(result => result.data.result);
 
@@ -58,11 +59,12 @@ const cleverLogin = () =>
     })
     .then(result => result.data.result);
 
-const msoLogin = () =>
+const msoLogin = params =>
   api
     .callApi({
       url: `${prefix}/login-mso`,
-      method: "get"
+      method: "get",
+      params
     })
     .then(result => result.data.result);
 

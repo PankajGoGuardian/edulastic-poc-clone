@@ -378,10 +378,17 @@ function* changeClass({ payload }) {
 
 function* googleLogin({ payload }) {
   try {
+    let classCode = "";
     if (payload) {
-      localStorage.setItem("thirdPartySignOnRole", payload);
+      if (typeof payload === "string") {
+        localStorage.setItem("thirdPartySignOnRole", payload);
+      } else {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
+        classCode = payload.classCode;
+      }
     }
-    const res = yield call(authApi.googleLogin);
+    const res = yield call(authApi.googleLogin, { classCode });
     window.location.href = res;
   } catch (e) {
     yield call(message.error, "Google Login failed");
@@ -390,6 +397,12 @@ function* googleLogin({ payload }) {
 
 function* googleSSOLogin({ payload }) {
   try {
+    if (payload.edulasticRole === "student") {
+      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.googleSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
@@ -400,10 +413,17 @@ function* googleSSOLogin({ payload }) {
 
 function* msoLogin({ payload }) {
   try {
+    let classCode = "";
     if (payload) {
-      localStorage.setItem("thirdPartySignOnRole", payload);
+      if (typeof payload === "string") {
+        localStorage.setItem("thirdPartySignOnRole", payload);
+      } else {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
+        classCode = payload.classCode;
+      }
     }
-    const res = yield call(authApi.msoLogin);
+    const res = yield call(authApi.msoLogin, { classCode });
     window.location.href = res;
   } catch (e) {
     yield call(message.error, "MSO Login failed");
@@ -412,6 +432,12 @@ function* msoLogin({ payload }) {
 
 function* msoSSOLogin({ payload }) {
   try {
+    if (payload.edulasticRole === "student") {
+      let classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.msoSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {
@@ -434,6 +460,12 @@ function* cleverLogin({ payload }) {
 
 function* cleverSSOLogin({ payload }) {
   try {
+    if (payload.role === "student") {
+      classCode = localStorage.getItem("thirdPartySignOnClassCode");
+      if (classCode) {
+        payload.classCode = classCode;
+      }
+    }
     const res = yield call(authApi.cleverSSOLogin, payload);
     yield put(getUserDataAction(res));
   } catch (e) {

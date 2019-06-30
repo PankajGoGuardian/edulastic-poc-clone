@@ -63,6 +63,11 @@ class StudentSignup extends React.Component {
     form.validateFieldsAndScroll((err, { password, email, name, classCode }) => {
       if (!err) {
         if (method === GOOGLE) {
+          const { googleLoginAction } = this.props;
+          googleLoginAction({ role: "student", classCode });
+        } else if (method === OFFICE) {
+          const { msoLoginAction } = this.props;
+          msoLoginAction({ role: "student", classCode });
         } else {
           signup({
             password,
@@ -86,12 +91,6 @@ class StudentSignup extends React.Component {
     this.setState({
       method: key
     });
-    const { googleLoginAction, msoLoginAction } = this.props;
-    if (key === GOOGLE) {
-      googleLoginAction("student");
-    } else if (key === OFFICE) {
-      msoLoginAction("student");
-    }
   };
 
   renderGeneralFormFields = () => {
@@ -180,7 +179,7 @@ class StudentSignup extends React.Component {
     );
   };
 
-  renderGoogleForm = () => {
+  renderGoogleORMSOForm = () => {
     const {
       form: { getFieldDecorator },
       t,
@@ -261,13 +260,14 @@ class StudentSignup extends React.Component {
                           {method === GOOGLE && <Description>{t("component.signup.codeFieldDesc")}</Description>}
                           <Form onSubmit={this.handleSubmit}>
                             {method !== GOOGLE && method !== OFFICE && this.renderGeneralFormFields()}
-                            {method === GOOGLE && this.renderGoogleForm()}
+                            {(method === GOOGLE || method === OFFICE) && this.renderGoogleORMSOForm()}
                             <FormItem>
                               <RegisterButton data-cy="signup" type="primary" htmlType="submit">
                                 {method !== GOOGLE &&
                                   method !== OFFICE &&
                                   t("component.signup.student.signupstudentbtn")}
-                                {method === GOOGLE && t("component.signup.student.signupentercode")}
+                                {(method === GOOGLE || method === OFFICE) &&
+                                  t("component.signup.student.signupentercode")}
                               </RegisterButton>
                             </FormItem>
                           </Form>

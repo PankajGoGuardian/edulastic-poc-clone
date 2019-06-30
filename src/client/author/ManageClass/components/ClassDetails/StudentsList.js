@@ -13,7 +13,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
     onChange: (_, selectedRows) => {
       selectStudents(selectedRows);
     },
-    selectedRowKeys: selectedStudent.map(({ email }) => email)
+    selectedRowKeys: selectedStudent.map(({ email, username }) => email || username)
   };
 
   const empty = isEmpty(students);
@@ -62,7 +62,7 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
     }
   ];
 
-  const rowKey = recode => recode.email;
+  const rowKey = recode => recode.email || recode.username;
 
   return (
     <Spin tip="Loading..." spinning={!loaded}>

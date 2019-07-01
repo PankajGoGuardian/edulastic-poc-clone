@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 import React from "react";
 import PropTypes from "prop-types";
-import { find } from "lodash";
+import { find, isEqual } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
 import CheckedBlock from "./CheckedBlock";
@@ -24,10 +24,23 @@ class ClozeMathInput extends React.Component {
     this.wrappedRef = React.createRef();
   }
 
-  componentDidMount() {
-    const { resprops = {}, id } = this.props;
+  static getDerivedStateFromProps({ resprops = {}, id }, { userAnswers, currentMathQuill }) {
     const { answers = {} } = resprops;
-    const { maths: _userAnwers = [] } = answers;
+    const { maths: _userAnswers = [] } = answers;
+
+    if (currentMathQuill && !isEqual(userAnswers, _userAnswers)) {
+      const prevLatex = currentMathQuill.latex();
+      const nextAnswer = _userAnswers[id] ? _userAnswers[id].value || "" : "";
+      if (!isEqual(prevLatex, nextAnswer)) {
+        currentMathQuill.latex(nextAnswer);
+      }
+    }
+    return { userAnswers: _userAnswers };
+  }
+
+  componentDidMount() {
+    const { id } = this.props;
+    const { userAnswers } = this.state;
 
     const _this = this;
 
@@ -45,7 +58,7 @@ class ClozeMathInput extends React.Component {
 
       const mQuill = MQ.MathField(this.mathRef.current, config);
       this.setState({ currentMathQuill: mQuill });
-      mQuill.latex(_userAnwers[id] ? _userAnwers[id].value || "" : "");
+      mQuill.latex(userAnswers[id] ? userAnswers[id].value || "" : "");
     }
     document.addEventListener("mousedown", this.clickOutside);
   }

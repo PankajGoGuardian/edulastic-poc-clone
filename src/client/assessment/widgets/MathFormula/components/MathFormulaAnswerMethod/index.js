@@ -9,7 +9,7 @@ import { withNamespaces } from "@edulastic/localization";
 import { mobileWidth } from "@edulastic/colors";
 
 import { Label } from "../../../../styled/WidgetOptions/Label";
-import { WidgetMethods, WidgetSecondMethod } from "../../../../styled/Widget";
+import { WidgetMethods } from "../../../../styled/Widget";
 
 import { IconTrash } from "../../styled/IconTrash";
 import ThousandsSeparators from "./options/ThousandsSeparators";
@@ -263,40 +263,22 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "tolerance":
-          return (
-            <WidgetSecondMethod>
-              <Tolerance options={options} onChange={changeOptions} />
-            </WidgetSecondMethod>
-          );
+          return <Tolerance options={options} onChange={changeOptions} />;
         case "significantDecimalPlaces":
-          return (
-            <WidgetSecondMethod>
-              <SignificantDecimalPlaces options={options} onChange={changeOptions} />
-            </WidgetSecondMethod>
-          );
+          return <SignificantDecimalPlaces options={options} onChange={changeOptions} />;
         case "setThousandsSeparator":
           return (
-            <WidgetSecondMethod>
-              <ThousandsSeparators
-                separators={options.setThousandsSeparator}
-                onChange={handleChangeThousandsSeparator}
-                onAdd={handleAddThousandsSeparator}
-                onDelete={handleDeleteThousandsSeparator}
-              />
-            </WidgetSecondMethod>
+            <ThousandsSeparators
+              separators={options.setThousandsSeparator}
+              onChange={handleChangeThousandsSeparator}
+              onAdd={handleAddThousandsSeparator}
+              onDelete={handleDeleteThousandsSeparator}
+            />
           );
         case "setDecimalSeparator":
-          return (
-            <WidgetSecondMethod>
-              <DecimalSeparator options={options} onChange={changeOptions} />
-            </WidgetSecondMethod>
-          );
+          return <DecimalSeparator options={options} onChange={changeOptions} />;
         case "allowedUnits":
-          return (
-            <WidgetSecondMethod>
-              <Units options={options} onChange={changeOptions} />
-            </WidgetSecondMethod>
-          );
+          return <Units options={options} onChange={changeOptions} />;
         case "allowNumericOnly":
           return (
             <CheckOption
@@ -308,11 +290,7 @@ const MathFormulaAnswerMethod = ({
             />
           );
         case "allowedVariables":
-          return (
-            <WidgetSecondMethod>
-              <AllowedVariables options={options} onChange={changeOptions} />
-            </WidgetSecondMethod>
-          );
+          return <AllowedVariables options={options} onChange={changeOptions} />;
         case "rule":
           return <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />;
         default:

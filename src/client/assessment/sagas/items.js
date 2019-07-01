@@ -107,7 +107,7 @@ function* saveUserResponse({ payload }) {
       testItemId,
       assignmentId,
       testActivityId: userTestActivityId,
-      groupId,
+      groupId: "5cf4e66ae64817849083c057",
       timesSpent,
       shuffledOptions: shuffles,
       bookmarked
@@ -127,6 +127,7 @@ function* loadUserResponse({ payload }) {
     const items = yield select(state => state.test && state.test.items);
     const item = items[itemIndex];
     const { answers } = yield call(itemsApi.getUserResponse, item._id);
+    console.log("answers are", answers);
     yield put({
       type: LOAD_ANSWERS,
       payload: {

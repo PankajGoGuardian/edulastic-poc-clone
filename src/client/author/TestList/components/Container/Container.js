@@ -39,7 +39,7 @@ import {
   updateDefaultGradesAction,
   updateDefaultSubjectAction
 } from "../../ducks";
-import { getTestsCreatingSelector, clearTestDataAction } from "../../../TestPage/ducks";
+import { getTestsCreatingSelector, clearTestDataAction, clearCreatedItemsAction } from "../../../TestPage/ducks";
 import { clearSelectedItemsAction } from "../../../TestPage/components/AddItems/ducks";
 import { getCurriculumsListSelector, getStandardsListSelector } from "../../../src/selectors/dictionaries";
 import {
@@ -116,6 +116,7 @@ class TestList extends Component {
     clearDictStandards: PropTypes.func.isRequired,
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
+    clearCreatedItems: PropTypes.func,
     clearSelectedItems: PropTypes.func
   };
 
@@ -150,6 +151,7 @@ class TestList extends Component {
       interestedSubjects = [],
       match: { params = {} },
       getCurriculumStandards,
+      clearCreatedItems,
       clearSelectedItems,
       clearDictStandards
     } = this.props;
@@ -248,6 +250,7 @@ class TestList extends Component {
       clearDictStandards();
       getCurriculumStandards(curriculumId, gradeArray, "");
     }
+    clearCreatedItems();
     clearSelectedItems();
   }
 
@@ -326,11 +329,12 @@ class TestList extends Component {
   };
 
   handleCreate = () => {
-    const { history, clearSelectedItems, clearTestData, mode } = this.props;
+    const { history, clearCreatedItems, clearSelectedItems, clearTestData, mode } = this.props;
     if (mode !== "embedded") {
       history.push("/author/tests/select");
     }
     clearTestData();
+    clearCreatedItems();
     clearSelectedItems();
   };
 
@@ -756,6 +760,7 @@ const enhance = compose(
       addTestToModule: createTestInModuleAction,
       clearDictStandards: clearDictStandardsAction,
       clearSelectedItems: clearSelectedItemsAction,
+      clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
       removeTestFromPlaylistAction: removeTestFromPlaylistAction,

@@ -22,10 +22,13 @@ const transformItemRow = ([row], qid) => [
 ];
 
 const splitItems = (item, testItem) => {
-  return testItem.data.questions.map(({ id: qid, ...qRest }) => ({
-    item: transformItemRow(item, qid),
-    question: { id: qid, ...qRest }
-  }));
+  return (
+    testItem.data &&
+    testItem.data.questions.map(({ id: qid, ...qRest }) => ({
+      item: transformItemRow(item, qid),
+      question: { id: qid, ...qRest }
+    }))
+  );
 };
 
 const SortableItem = SortableElement(
@@ -50,7 +53,7 @@ const SortableItem = SortableElement(
      * @type {{item:Object,question:Object}[]}
      */
     const items = testItem.itemLevelScoring
-      ? [{ item, question: testItem.data.questions[0] }]
+      ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
       : splitItems(item, testItem);
 
     return (

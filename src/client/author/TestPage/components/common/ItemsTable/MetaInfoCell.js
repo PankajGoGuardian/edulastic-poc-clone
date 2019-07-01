@@ -81,13 +81,15 @@ class MetaInfoCell extends Component {
     // getting grades and subjects from each question array in test items
     const { testItems = [] } = newTest;
 
-    const questionGrades = testItems.flatMap(item => item.data.questions).flatMap(question => question.grades || []);
+    const questionGrades = testItems
+      .flatMap(item => (item.data && item.data.questions) || [])
+      .flatMap(question => question.grades || []);
     const questionSubjects = testItems
-      .flatMap(item => item.data.questions)
+      .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.subjects || []);
     //alignment object inside questions contains subject and domains
     const getAlignmentsObject = testItems
-      .flatMap(item => item.data.questions)
+      .flatMap(item => (item.data && item.data.questions) || [])
       .flatMap(question => question.alignment || []);
 
     const subjects = getAlignmentsObject.map(alignment => alignment.subject);

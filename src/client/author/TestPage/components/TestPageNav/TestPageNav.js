@@ -3,16 +3,16 @@ import PropTypes from "prop-types";
 import { FlexContainer } from "@edulastic/common";
 import { Container, Link } from "./styled";
 
-function TestPageNav({ onChange, current, buttons, showPublishButton = true }) {
+function TestPageNav({ onChange, current, buttons, showPublishButton = true, owner = false }) {
   return (
     <Container>
       {buttons.map(({ value, text, icon }, index) => (
         <Link
           data-cy={value}
-          style={!showPublishButton && index <= 1 ? { cursor: "not-allowed" } : {}}
+          style={!showPublishButton && owner && index <= 1 ? { cursor: "not-allowed" } : {}}
           key={value}
           active={(current === value).toString()}
-          onClick={!showPublishButton && index <= 1 ? "" : onChange(value)}
+          onClick={!showPublishButton && owner && index <= 1 ? "" : onChange(value)}
         >
           <FlexContainer>
             {icon}
@@ -27,6 +27,7 @@ function TestPageNav({ onChange, current, buttons, showPublishButton = true }) {
 TestPageNav.propTypes = {
   onChange: PropTypes.func.isRequired,
   current: PropTypes.string.isRequired,
+  owner: PropTypes.bool,
   showPublishButton: PropTypes.bool,
   buttons: PropTypes.array.isRequired
 };

@@ -124,12 +124,13 @@ class ClozeMathInput extends React.Component {
   };
 
   render() {
-    const { resprops = {} } = this.props;
+    const { resprops = {}, id } = this.props;
     const { item } = resprops;
     const { showKeyboard } = this.state;
+    const width = item.ui_style[id] && item.ui_style[id].widthpx;
 
     return (
-      <span ref={this.wrappedRef}>
+      <span ref={this.wrappedRef} style={{ width: !width ? "auto" : `${width}px` }}>
         <span ref={this.mathRef} onClick={this.showKeyboardModal} />
         {showKeyboard && (
           <KeyboardWrapper>
@@ -150,8 +151,10 @@ class ClozeMathInput extends React.Component {
 const MathInput = ({ resprops = {}, id }) => {
   const { item, answers = {}, evaluation = [], checked, onInnerClick } = resprops;
   const { maths: _mathAnswers = [] } = answers;
+  const width = item.ui_style[id] && item.ui_style[id].widthpx;
   return checked ? (
     <CheckedBlock
+      width={width}
       evaluation={evaluation}
       userAnswer={_mathAnswers[id]}
       item={item}

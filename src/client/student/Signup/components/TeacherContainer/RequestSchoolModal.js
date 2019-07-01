@@ -98,6 +98,10 @@ class RequestSchool extends React.Component {
     }
   };
 
+  transformInput = value => {
+    return value.trim();
+  };
+
   render() {
     const { isOpen, handleCancel, form, districts, isSearching, autocompleteDistricts } = this.props;
     const { getFieldDecorator } = form;
@@ -139,7 +143,10 @@ class RequestSchool extends React.Component {
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
-              rules: [{ required: true, message: "Please provide a valid school name." }]
+              rules: [
+                { transform: this.transformInput },
+                { required: true, message: "Please provide a valid school name." }
+              ]
             })(<Input placeholder="Enter your school name" />)}
           </Form.Item>
           <Form.Item label="District">
@@ -184,7 +191,10 @@ class RequestSchool extends React.Component {
           <FlexItems>
             <Form.Item label="Zip">
               {getFieldDecorator("zip", {
-                rules: [{ required: true, message: "Please provide a valid zip code." }]
+                rules: [
+                  { transform: this.transformInput },
+                  { required: true, message: "Please provide a valid zip code." }
+                ]
               })(<Input placeholder="Enter Zip Code" />)}
             </Form.Item>
             <Form.Item label="State">

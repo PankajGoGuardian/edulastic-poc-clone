@@ -86,6 +86,8 @@ function* saveUserResponse({ payload }) {
     const currentItem = items.length && items[itemIndex];
 
     const questions = getQuestionIds(currentItem);
+    const bookmarked = !!(yield select(state => state.assessmentBookmarks[currentItem._id]));
+
     const itemAnswers = {};
     const shuffles = {};
     let timesSpent = {};
@@ -107,7 +109,8 @@ function* saveUserResponse({ payload }) {
       testActivityId: userTestActivityId,
       groupId,
       timesSpent,
-      shuffledOptions: shuffles
+      shuffledOptions: shuffles,
+      bookmarked
     };
     if (userWork) activity.userWork = userWork;
 

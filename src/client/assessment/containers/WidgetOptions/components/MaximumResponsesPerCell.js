@@ -8,7 +8,7 @@ import CommonInput from "./common/CommonInput";
 const MaximumResponsesPerCell = ({ t, type, ...restProps }) => (
   <Fragment>
     <Label>{t("component.options.maximumResponsesPerCell")}</Label>
-    <CommonInput data-cy="maximumResponsesPerCellInput" type={type} {...restProps} />
+    <CommonInput data-cy="maximumResponsesPerCellInput" min={0} type={type} {...restProps} />
   </Fragment>
 );
 

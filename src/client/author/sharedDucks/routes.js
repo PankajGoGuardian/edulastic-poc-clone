@@ -2,6 +2,8 @@ import { LOCATION_CHANGE } from "connected-react-router";
 import { takeEvery, select, put } from "redux-saga/effects";
 import { get } from "lodash";
 import { togglePresentationModeAction } from "../src/actions/testActivity";
+import { clearAnswersAction } from "../src/actions/answers";
+import { CHANGE_PREVIEW, REMOVE_ANSWERS } from "../../assessment/constants/actions";
 
 const isAPresentationModePath = path =>
   path.includes("/author/classboard") ||
@@ -19,6 +21,12 @@ function* routerWatcherSaga({ payload }) {
 
     if (isPresentationMode && !isAPresentationModePath(newLocation)) {
       yield put(togglePresentationModeAction(false));
+    }
+
+    const locationArray = newLocation.split("/");
+    const lastSegment = locationArray.pop();
+    if (lastSegment === "item-detail") {
+      yield put(clearAnswersAction());
     }
   } catch (e) {
     console.log(e);

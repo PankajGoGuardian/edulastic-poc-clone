@@ -10,7 +10,15 @@ import { IconCheck, IconLightBulb, IconBookmark } from "@edulastic/icons";
 import ButtonLink from "./ButtonLink";
 import { checkAnswerEvaluation } from "../../actions/checkanswer";
 
-const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForItem, isNonAutoGradable = false }) => (
+const TestButton = ({
+  t,
+  checkAnswerEvaluation,
+  settings,
+  answerChecksUsedForItem,
+  isNonAutoGradable = false,
+  toggleBookmark,
+  isBookmarked = false
+}) => (
   <Container>
     {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
       <StyledButton
@@ -30,7 +38,12 @@ const TestButton = ({ t, checkAnswerEvaluation, settings, answerChecksUsedForIte
       </ButtonLink>
     </StyledButton>
     <StyledButton>
-      <ButtonLink color="primary" icon={<IconBookmark color={white} width={10} height={16} />} style={{ color: white }}>
+      <ButtonLink
+        color={isBookmarked ? "success" : "primary"}
+        onClick={toggleBookmark}
+        icon={<IconBookmark color={white} width={10} height={16} />}
+        style={{ color: isBookmarked ? "yellow" : "white" }}
+      >
         {t("common.test.bookmark")}
       </ButtonLink>
     </StyledButton>

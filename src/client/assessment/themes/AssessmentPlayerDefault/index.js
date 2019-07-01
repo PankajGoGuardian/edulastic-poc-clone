@@ -6,18 +6,18 @@ import { withRouter } from "react-router-dom";
 import { ThemeProvider } from "styled-components";
 import { Affix } from "antd";
 import { ActionCreators } from "redux-undo";
+import { get } from "lodash";
 import { withWindowSizes } from "@edulastic/common";
+import { playersTheme } from "../assessmentPlayersTheme";
 import QuestionSelectDropdown from "../common/QuestionSelectDropdown";
 import MainWrapper from "./MainWrapper";
-import HeaderLeftMenu from "../common/HeaderLeftMenu";
 import HeaderMainMenu from "../common/HeaderMainMenu";
 import HeaderRightMenu from "../common/HeaderRightMenu";
 import ToolbarModal from "../common/ToolbarModal";
 import SavePauseModalMobile from "../common/SavePauseModalMobile";
 import SubmitConfirmation from "../common/SubmitConfirmation";
 import { nonAutoGradableTypes } from "@edulastic/constants";
-import { playersTheme } from "../assessmentPlayersTheme";
-
+import { toggleBookmarkAction } from "../../sharedDucks/bookmark";
 import {
   ControlBtn,
   ToolButton,
@@ -244,6 +244,8 @@ class AssessmentPlayerDefault extends React.Component {
       settings,
       previewPlayer,
       scratchPad,
+      toggleBookmark,
+      isBookmarked,
       answerChecksUsedForItem
     } = this.props;
 
@@ -278,6 +280,7 @@ class AssessmentPlayerDefault extends React.Component {
         }
       });
 
+    console.log("it is bookmarked ? ", isBookmarked);
     const scratchPadMode = tool === 5;
     return (
       <ThemeProvider theme={theme}>
@@ -374,6 +377,8 @@ class AssessmentPlayerDefault extends React.Component {
                         settings={settings}
                         isNonAutoGradable={isNonAutoGradable}
                         checkAnwser={() => this.changeTabItemState("check")}
+                        toggleBookmark={() => toggleBookmark(item._id)}
+                        isBookmarked={isBookmarked}
                       />
                     )}
                     {windowWidth >= LARGE_DESKTOP_WIDTH && (
@@ -430,14 +435,16 @@ const enhance = compose(
         ? state.userWork.present[ownProps.items[ownProps.currentItem]._id] || null
         : null,
       settings: state.test.settings,
-      answerChecksUsedForItem: currentItemAnswerChecksSelector(state)
+      answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+      isBookmarked: !!get(state, ["assessmentBookmarks", ownProps.items[ownProps.currentItem]._id], false)
     }),
     {
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
       saveScratchPad: saveScratchPadAction,
       undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo
+      redoScratchPad: ActionCreators.redo,
+      toggleBookmark: toggleBookmarkAction
     }
   )
 );

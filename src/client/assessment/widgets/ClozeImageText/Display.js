@@ -4,7 +4,7 @@ import { withTheme } from "styled-components";
 import { isUndefined, get } from "lodash";
 import { helpers, Stimulus } from "@edulastic/common";
 
-import { clozeImage, canvasDimensions } from "@edulastic/constants";
+import { clozeImage } from "@edulastic/constants";
 // import { QuestionHeader } from "../../styled/QuestionHeader";
 
 // import { FaSellcast } from "react-icons/fa";
@@ -155,17 +155,17 @@ class Display extends Component {
     const imageWidth = this.getWidth();
     const imageHeight = this.getHeight();
     const canvasHeight = imageHeight + (imageOptions.y || 0);
-    const canvasWidth = imageWidth + +(imageOptions.x || 0);
+    const canvasWidth = imageWidth + (imageOptions.x || 0);
 
     const previewTemplateBoxLayout = (
       <StyledPreviewTemplateBox
         fontSize={fontSize}
-        height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+        height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
       >
         <StyledPreviewContainer
           data-cy="image-text-answer-board"
-          width={canvasWidth > canvasDimensions.maxWidth ? canvasWidth : canvasDimensions.maxWidth}
-          height={canvasHeight > canvasDimensions.maxHeight ? canvasHeight : canvasDimensions.maxHeight}
+          width={canvasWidth > clozeImage.maxWidth ? canvasWidth : clozeImage.maxWidth}
+          height={canvasHeight > clozeImage.maxHeight ? canvasHeight : clozeImage.maxHeight}
         >
           <StyledPreviewImage
             imageSrc={imageUrl || ""}

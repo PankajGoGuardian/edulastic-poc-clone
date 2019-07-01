@@ -63,7 +63,8 @@ const MatchListPreview = ({
   qIndex,
   showBorder,
   setQuestionData,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const {
     possible_responses: posResponses,
@@ -271,6 +272,7 @@ const MatchListPreview = ({
                   item={disableResponse ? validArray[i] : ans[i]}
                   getStyles={getStyles}
                   disableResponse={disableResponse}
+                  changePreviewTab={changePreviewTab}
                 />
               </DropContainer>
             </AnswerItem>
@@ -345,6 +347,7 @@ const MatchListPreview = ({
                                 item={ite}
                                 getStyles={getStyles}
                                 disableResponse={disableResponse}
+                                changePreviewTab={changePreviewTab}
                               />
                             )
                         )}
@@ -413,7 +416,8 @@ MatchListPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 MatchListPreview.defaultProps = {

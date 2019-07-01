@@ -1,13 +1,12 @@
 import React, { Fragment } from "react";
 import PropTypes from "prop-types";
 import { SortableContainer, SortableElement, SortableHandle } from "react-sortable-hoc";
-
-import { FlexContainer } from "@edulastic/common";
+import { get } from "lodash";
+import { FlexContainer, AnswerContext } from "@edulastic/common";
 
 import TestItemPreview from "../../../../../../assessment/components/TestItemPreview";
 import MetaInfoCell from "../ReviewItemsTable/MetaInfoCell/MetaInfoCell";
 import { TestItemWrapper, PreviewButton, PointsInput, PointsLabel, QuestionIndex, QuestionCheckbox } from "./styled";
-import { get } from "lodash";
 
 const transformItemRow = ([row], qid) => [
   {
@@ -53,6 +52,7 @@ const SortableItem = SortableElement(
     const items = testItem.itemLevelScoring
       ? [{ item, question: testItem.data.questions[0] }]
       : splitItems(item, testItem);
+
     return (
       <TestItemWrapper data-cy={metaInfoData.id}>
         {mobile ? (
@@ -81,18 +81,20 @@ const SortableItem = SortableElement(
               </FlexContainer>
             </FlexContainer>
             <FlexContainer>
-              <TestItemPreview
-                style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
-                cols={item}
-                metaData={metaInfoData.id}
-                previewTab="clear"
-                verticalDivider={item.verticalDivider}
-                disableResponse
-                scrolling={item.scrolling}
-                questions={questions}
-                windowWidth="100%"
-                isReviewTab
-              />
+              <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                <TestItemPreview
+                  style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                  cols={item}
+                  metaData={metaInfoData.id}
+                  previewTab="clear"
+                  verticalDivider={item.verticalDivider}
+                  disableResponse
+                  scrolling={item.scrolling}
+                  questions={questions}
+                  windowWidth="100%"
+                  isReviewTab
+                />
+              </AnswerContext.Provider>
             </FlexContainer>
           </FlexContainer>
         ) : (
@@ -108,19 +110,20 @@ const SortableItem = SortableElement(
                     {index === 0 && <DragHandle />}
                     <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
                   </FlexContainer>
-
-                  <TestItemPreview
-                    style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
-                    cols={_item}
-                    previewTab="clear"
-                    metaData={metaInfoData.id}
-                    disableResponse
-                    verticalDivider={item.verticalDivider}
-                    scrolling={item.scrolling}
-                    questions={questions}
-                    windowWidth="100%"
-                    isReviewTab
-                  />
+                  <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
+                    <TestItemPreview
+                      style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
+                      cols={_item}
+                      previewTab="clear"
+                      metaData={metaInfoData.id}
+                      disableResponse
+                      verticalDivider={item.verticalDivider}
+                      scrolling={item.scrolling}
+                      questions={questions}
+                      windowWidth="100%"
+                      isReviewTab
+                    />
+                  </AnswerContext.Provider>
                 </FlexContainer>
                 <FlexContainer style={{ flex: 1 }}>
                   {index === 0 && <PreviewButton onClick={() => onPreview(metaInfoData.id)}>Preview</PreviewButton>}

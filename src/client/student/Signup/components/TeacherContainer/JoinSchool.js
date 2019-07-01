@@ -28,7 +28,7 @@ const { Option } = Select;
 
 const SchoolDropDownItemTemplate = ({ itemData: school }) => {
   const { address, location } = school;
-  const schoolLocation = address || location;
+  const schoolLocation = address || location || {};
 
   return (
     <OptionBody>
@@ -36,7 +36,7 @@ const SchoolDropDownItemTemplate = ({ itemData: school }) => {
         <span>{school.schoolName || school.name}</span>
         {`${schoolLocation.city ? schoolLocation.city + ", " : ""} ${
           schoolLocation.state ? schoolLocation.state + ", " : ""
-        } ${schoolLocation.zip}`}
+        } ${schoolLocation.zip ? schoolLocation.zip : ""}`}
       </SchoolInfo>
       <DistrictInfo>
         <span>District:</span>
@@ -155,8 +155,8 @@ const JoinSchool = ({
         ...item,
         title: item.schoolName,
         key: item.schoolId,
-        zip: item.address.zip,
-        city: item.address.city
+        zip: get(item, "address.zip", ""),
+        city: get(item, "address.city", "")
       };
     });
   }, [schools]);

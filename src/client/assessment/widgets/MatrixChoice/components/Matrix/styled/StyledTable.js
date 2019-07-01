@@ -1,11 +1,13 @@
 import styled from "styled-components";
 import { Table } from "antd";
 import { mobileWidth } from "@edulastic/colors";
+import { previewFontSize, previewFontWeight } from "@edulastic/fonts";
 
 export const StyledTable = styled(Table)`
   table {
     width: 100%;
-    font-size: ${props => props.fontSize};
+    font-size: ${previewFontSize || (props => props.fontSize)};
+    font-weight: ${previewFontWeight};
     border: 1px solid ${props => props.theme.widgets.matrixChoice.styledTableBorderColor};
     tbody {
       border-collapse: collapse;

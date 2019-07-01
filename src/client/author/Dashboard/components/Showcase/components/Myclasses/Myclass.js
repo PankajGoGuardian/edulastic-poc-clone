@@ -6,7 +6,7 @@ import { CardsContainer, CardBox } from "./styled";
 import CardImage from "./components/CardImage/cardImage";
 import CardTextContent from "./components/CardTextContent/cardTextContent";
 import { receiveTeacherDashboardAction } from "../../../../duck";
-
+import CreateClassPage from "./components/CreateClassPage/createClassPage";
 const Card = ({ data }) => {
   return (
     <CardBox>
@@ -20,7 +20,7 @@ const Card = ({ data }) => {
   );
 };
 
-const MyClasses = ({ getTeacherDashboard, classData }) => {
+const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
   useEffect(() => {
     getTeacherDashboard();
   }, []);
@@ -54,8 +54,8 @@ const MyClasses = ({ getTeacherDashboard, classData }) => {
       <TextWrapper size="20px" color="#434B5D">
         My classes
       </TextWrapper>
-      <Row gutter={15}>{classData.length == 0 ? <Spin /> : ClassCards}</Row>
-
+      <Row gutter={15}>{loading === true ? <Spin /> : ClassCards}</Row>
+      {!loading && classData.length == 0 && <CreateClassPage />}
       {showAllCards ? (
         <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(false)}>
           SEE LESS CLASSES »
@@ -71,7 +71,8 @@ const MyClasses = ({ getTeacherDashboard, classData }) => {
 
 export default connect(
   state => ({
-    classData: state.dashboardTeacher.data
+    classData: state.dashboardTeacher.data,
+    loading: state.dashboardTeacher.loading
   }),
   {
     getTeacherDashboard: receiveTeacherDashboardAction

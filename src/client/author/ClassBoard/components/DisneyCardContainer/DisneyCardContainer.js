@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { round, shuffle } from "lodash";
-import { Col, Row } from "antd";
+import { round, shuffle, get } from "lodash";
+import { Col, Row, Spin } from "antd";
 import { greenSecondary, yellow, red } from "@edulastic/colors";
+import { connect } from "react-redux";
 
 import CardCheckbox from "./CardCheckbox/CardCheckbox";
 
@@ -34,13 +35,14 @@ import {
 } from "./styled";
 import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getFirstName } from "../../Transformer";
-export default class DisneyCardContainer extends Component {
+class DisneyCardContainer extends Component {
   static propTypes = {
     selectedStudents: PropTypes.object.isRequired,
     studentSelect: PropTypes.func.isRequired,
     studentUnselect: PropTypes.func.isRequired,
     viewResponses: PropTypes.func.isRequired,
-    isPresentationMode: PropTypes.bool
+    isPresentationMode: PropTypes.bool,
+    isLoading: PropTypes.bool
   };
 
   constructor(props) {
@@ -67,12 +69,13 @@ export default class DisneyCardContainer extends Component {
       viewResponses,
       isPresentationMode,
       endDate,
-      updateDisabledList
+      updateDisabledList,
+      isLoading
     } = this.props;
 
     const noDataNotification = () => {
       return (
-        <NoDataWrapper height="300px" width="95%" margin="20px auto">
+        <NoDataWrapper height="300px" margin="20px auto">
           <NoDataBox width="300px" height="200px" descSize="14px">
             <img src={NoDataIcon} svgWidth="40px" alt="noData" />
             <h4>No Data</h4>
@@ -81,6 +84,8 @@ export default class DisneyCardContainer extends Component {
         </NoDataWrapper>
       );
     };
+
+    const showLoader = () => <Spin size="small" />;
 
     let styledCard = [];
 
@@ -230,7 +235,14 @@ export default class DisneyCardContainer extends Component {
     if (isPresentationMode) {
       styledCard = shuffle(styledCard);
     }
-
-    return testActivity.length > 0 ? <StyledCardContiner>{styledCard}</StyledCardContiner> : noDataNotification();
+    return (
+      <StyledCardContiner>
+        {!isLoading ? (testActivity && testActivity.length > 0 ? styledCard : noDataNotification()) : showLoader()}
+      </StyledCardContiner>
+    );
   }
 }
+
+export default connect(state => ({
+  isLoading: get(state, "classResponse.loading")
+}))(DisneyCardContainer);

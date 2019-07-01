@@ -32,6 +32,7 @@ import {
   StyledParaSSS,
   RightAlignedCol
 } from "./styled";
+import { NoDataBox, NoDataWrapper, NoDataIcon } from "../../../src/components/common/NoDataNotification";
 import { getAvatarName, getFirstName } from "../../Transformer";
 export default class DisneyCardContainer extends Component {
   static propTypes = {
@@ -68,6 +69,19 @@ export default class DisneyCardContainer extends Component {
       endDate,
       updateDisabledList
     } = this.props;
+
+    const noDataNotification = () => {
+      return (
+        <NoDataWrapper height="300px" width="95%" margin="20px auto">
+          <NoDataBox width="300px" height="200px" descSize="14px">
+            <img src={NoDataIcon} svgWidth="40px" alt="noData" />
+            <h4>No Data</h4>
+            <p>Students have not yet been assigned</p>
+          </NoDataBox>
+        </NoDataWrapper>
+      );
+    };
+
     let styledCard = [];
 
     if (testActivity.length > 0) {
@@ -217,10 +231,6 @@ export default class DisneyCardContainer extends Component {
       styledCard = shuffle(styledCard);
     }
 
-    return testActivity.length > 0 ? (
-      <StyledCardContiner>{styledCard}</StyledCardContiner>
-    ) : (
-      <h2 style={{ textAlign: "center" }}>There is no students attending this assignment at the moment</h2>
-    );
+    return testActivity.length > 0 ? <StyledCardContiner>{styledCard}</StyledCardContiner> : noDataNotification();
   }
 }

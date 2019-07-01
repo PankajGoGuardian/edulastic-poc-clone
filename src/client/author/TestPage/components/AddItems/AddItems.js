@@ -41,6 +41,7 @@ import ItemsTable from "../common/ItemsTable/ItemsTable";
 import ItemFilter from "../../../ItemList/components/ItemFilter/ItemFilter";
 import { getClearSearchState, filterMenuItems } from "../../../ItemList";
 import ModalCreateTestItem from "../ModalCreateTestItem/ModalCreateTestItem";
+import PerfectScrollbar from "react-perfect-scrollbar";
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -288,13 +289,9 @@ class AddItems extends PureComponent {
             items={filterMenuItems}
             t={t}
           />
-          <PerfectScrollbar
-            ref={e => {
-              this.itemsScrollBar = e;
-            }}
-            style={{ padding: windowWidth > 768 ? "0px 30px 30px" : "0px" }}
-          >
-            <ListItems id="item-list">
+
+          <ListItems id="item-list">
+            <PerfectScrollbar>
               <ItemsTableContainer>
                 <ItemsMenu>
                   <QuestionsFound>{count} questions found</QuestionsFound>
@@ -327,8 +324,8 @@ class AddItems extends PureComponent {
                   {!loading && this.renderPagination()}
                 </ListWrapper>
               </ItemsTableContainer>
-            </ListItems>
-          </PerfectScrollbar>
+            </PerfectScrollbar>
+          </ListItems>
         </MainList>
         {createTestItemModalVisible && (
           <ModalCreateTestItem type={questionCreateType} setAuthoredByMeFilter={this.setAuthoredByMeFilter} />

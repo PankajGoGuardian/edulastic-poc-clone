@@ -14,7 +14,7 @@ const HeaderBar = ({
   onRemoveSelected,
   onCollapse,
   owner,
-  readOnlyMode,
+  isEditable,
   itemTotal,
   selectedItems,
   onMoveTo,
@@ -47,7 +47,7 @@ const HeaderBar = ({
 
   return (
     <Container windowWidth={windowWidth}>
-      {owner && !readOnlyMode && (
+      {owner && isEditable && (
         <Item>
           <SelectAllCheckbox data-cy="selectAllCh" onChange={onSelectAll}>
             Select All
@@ -59,7 +59,7 @@ const HeaderBar = ({
           {windowWidth > 468 && <span>View as Student</span>}
         </ButtonLink>
       </ActionButton>
-      {owner && !readOnlyMode && (
+      {owner && isEditable && (
         <ActionButton data-cy="removeSelected" style={{ marginLeft: 0 }}>
           <ButtonLink
             onClick={onRemoveSelected}
@@ -70,7 +70,7 @@ const HeaderBar = ({
           </ButtonLink>
         </ActionButton>
       )}
-      {owner && !readOnlyMode && (
+      {owner && isEditable && (
         <ActionButton data-cy="moveto" style={{ marginLeft: 0 }}>
           <ButtonLink onClick={handleMoveTo} color="primary" icon={<IconMoveTo color={blue} width={12} height={12} />}>
             {windowWidth > 468 && <span>Move to</span>}
@@ -99,7 +99,7 @@ HeaderBar.propTypes = {
   onRemoveSelected: PropTypes.func.isRequired,
   onCollapse: PropTypes.func.isRequired,
   owner: PropTypes.bool,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   itemTotal: PropTypes.number.isRequired,
   selectedItems: PropTypes.array.isRequired,
   windowWidth: PropTypes.number.isRequired,

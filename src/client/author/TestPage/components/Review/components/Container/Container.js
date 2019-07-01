@@ -207,7 +207,7 @@ class Review extends PureComponent {
       onChangeSubjects,
       questions,
       owner,
-      readOnlyMode = false,
+      isEditable = false,
       createTestItemModalVisible,
       itemsSubjectAndGrade,
       checkAnswer,
@@ -260,7 +260,7 @@ class Review extends PureComponent {
                 onCollapse={this.handleCollapse}
                 onMoveTo={this.handleMoveTo}
                 owner={owner}
-                readOnlyMode={readOnlyMode}
+                isEditable={isEditable}
                 windowWidth={windowWidth}
                 setCollapse={isCollapse}
                 onShowTestPreview={this.showTestPreviewModal}
@@ -286,7 +286,7 @@ class Review extends PureComponent {
                   onSortEnd={this.moveTestItems}
                   types={types}
                   owner={owner}
-                  readOnlyMode={readOnlyMode}
+                  isEditable={isEditable}
                   scoring={test.scoring}
                   questions={questions}
                   mobile={!isSmallSize}
@@ -307,7 +307,7 @@ class Review extends PureComponent {
               grades={grades}
               subjects={subjects}
               owner={owner}
-              readOnlyMode={readOnlyMode}
+              isEditable={isEditable}
               summary={test.summary || {}}
               onChangeField={this.handleChangeField}
               thumbnail={test.thumbnail}
@@ -322,7 +322,7 @@ class Review extends PureComponent {
           isVisible={isModalVisible}
           onClose={this.closeModal}
           showModal={true}
-          readOnlyMode={readOnlyMode}
+          isEditable={isEditable}
           owner={owner}
           addDuplicate={this.handleDuplicateItem}
           page="review"

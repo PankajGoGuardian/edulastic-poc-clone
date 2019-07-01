@@ -189,7 +189,7 @@ class Container extends PureComponent {
     const { current, editEnable } = this.state;
     const { authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const readOnlyMode = owner && editEnable;
+    const isEditable = owner && editEnable;
 
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
@@ -200,7 +200,7 @@ class Container extends PureComponent {
             onAddItems={this.handleAddItems}
             selectedItems={selectedItems}
             current={current}
-            readOnlyMode={!readOnlyMode}
+            isEditable={isEditable}
             onSaveTestId={this.handleSaveTestId}
             test={test}
             gotoSummary={this.handleNavChange("description")}
@@ -227,7 +227,7 @@ class Container extends PureComponent {
             onChangeGrade={this.handleChangeGrade}
             onChangeSubjects={this.handleChangeSubject}
             owner={owner}
-            readOnlyMode={!readOnlyMode}
+            isEditable={isEditable}
             current={current}
           />
         );
@@ -235,7 +235,7 @@ class Container extends PureComponent {
         return (
           <Setting
             current={current}
-            readOnlyMode={!readOnlyMode}
+            isEditable={isEditable}
             onShowSource={this.handleNavChange("source")}
             owner={owner}
           />

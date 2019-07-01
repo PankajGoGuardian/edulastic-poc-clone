@@ -47,7 +47,6 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   }
 
   const btnStyle = {
-    width: uiStyle[id] ? `${uiStyle[id].widthpx}px` : 140,
     height: 0,
     widthpx: showAnswer ? "auto" : 140,
     heightpx: 0,
@@ -71,6 +70,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     btnStyle.height = btnStyle.heightpx;
   }
 
+  btnStyle.width =
+    (responsecontainerindividuals[index] && responsecontainerindividuals[index].widthpx) || uiStyle.widthpx;
+
   return (
     <span className="template_box dropdown" style={{ fontSize, padding: 20, overflow: "hidden" }}>
       {showAnswer && (
@@ -81,12 +83,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                     ${status}
                     ${showAnswer ? "show-answer" : ""}`}
           style={btnStyle}
+          title={userSelections[index] && userSelections[index].value}
         >
           <span className="index">{index + 1}</span>
           <span
             className="text"
             style={{
               width: "100%",
+              display: "block",
               whiteSpace: "nowrap",
               textOverflow: "ellipsis",
               overflow: "hidden"
@@ -106,6 +110,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
                 ${userSelections.length > 0 && userSelections[index] ? "check-answer" : ""} 
                 ${status}`}
           style={btnStyle}
+          title={userSelections[index] && userSelections[index].value}
         >
           {showIndex && (
             <Fragment>

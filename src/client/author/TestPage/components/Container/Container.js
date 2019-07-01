@@ -189,7 +189,7 @@ class Container extends PureComponent {
     const { current, editEnable } = this.state;
     const { authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !params.id;
-    const readOnlyMode = (testStatus && testStatus !== statusConstants.PUBLISHED && params.id) || editEnable;
+    const readOnlyMode = owner && editEnable;
 
     // TODO: fix this shit!!
     const selectedItems = test.testItems.map(item => (_isObject(item) ? item._id : item)).filter(_identity);
@@ -376,7 +376,7 @@ class Container extends PureComponent {
     const { showShareModal, current, editEnable } = this.state;
     const { _id: testId, status, authors } = test;
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
-    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
+    const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId && owner) || editEnable;
     const showShareButton = !!testId;
     const showEditButton =
       authors &&

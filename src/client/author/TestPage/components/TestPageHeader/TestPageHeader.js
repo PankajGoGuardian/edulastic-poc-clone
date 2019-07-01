@@ -103,6 +103,7 @@ const TestPageHeader = ({
         onChange={onChangeNav}
         current={current}
         buttons={navButtons}
+        owner={owner}
         showPublishButton={!showShareButton || showPublishButton}
       />
 

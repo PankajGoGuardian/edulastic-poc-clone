@@ -28,7 +28,7 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
       dataIndex: "grade",
       render: (_, row) => {
         const grade = findGrade(row.grade);
-        return <div>{grade.text}</div>;
+        return <div>{grade.value || grade.text}</div>;
       }
     },
     {

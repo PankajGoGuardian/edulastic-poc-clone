@@ -164,7 +164,10 @@ class ComposeQuestion extends Component {
               <StyledDropZone
                 style={{
                   justifyContent: "flex-start !important",
-                  alignItems: "flex-start !important"
+                  alignItems: "flex-start !important",
+                  minHeight: maxHeight,
+                  minWidth: maxWidth,
+                  height: "unset"
                 }}
                 loading={loading}
                 isDragActive={isDragActive}

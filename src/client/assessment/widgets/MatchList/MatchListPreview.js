@@ -75,7 +75,6 @@ const MatchListPreview = ({
     shuffleOptions
   } = item;
 
-  console.log("list here is", list, userAnswer);
   const alternateAnswers = {};
   if (validation && validation.alt_responses && validation.alt_responses.length > 0) {
     const { alt_responses: altAnswers } = validation;

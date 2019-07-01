@@ -30,8 +30,7 @@ const TableRow = ({
   theme,
   isResizable,
   item,
-  disableResponse,
-  changePreviewTab
+  disableResponse
 }) => {
   const styles = {
     columnContainerStyle: {
@@ -95,7 +94,6 @@ const TableRow = ({
                     onDrop={onDrop}
                     item={answerValue}
                     disableResponse={disableResponse}
-                    changePreviewTab={changePreviewTab}
                   />
                 );
               })}
@@ -126,8 +124,7 @@ TableRow.propTypes = {
   validArray: PropTypes.array.isRequired,
   theme: PropTypes.object.isRequired,
   isResizable: PropTypes.bool.isRequired,
-  item: PropTypes.object.isRequired,
-  changePreviewTab: PropTypes.func.isRequired
+  item: PropTypes.object.isRequired
 };
 
 export default withTheme(TableRow);

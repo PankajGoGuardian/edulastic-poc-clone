@@ -69,8 +69,7 @@ const OrderList = ({
   cleanSections,
   theme,
   disableResponse,
-  t,
-  changePreviewTab
+  t
 }) => {
   const [correctTab, setCorrectTab] = useState(0);
 
@@ -104,7 +103,6 @@ const OrderList = ({
 
   const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
     const newPreviewList = arrayMove(userAnswer, oldIndex, newIndex);
-    changePreviewTab();
 
     saveAnswer(newPreviewList);
   };
@@ -186,7 +184,7 @@ const OrderList = ({
     itemForPreview.validation.alt_responses &&
     itemForPreview.validation.alt_responses.length > 0;
 
-  const alternateAnswers = {};
+  let alternateAnswers = {};
 
   if (hasAltAnswers) {
     const altAnswers = itemForPreview.validation.alt_responses;

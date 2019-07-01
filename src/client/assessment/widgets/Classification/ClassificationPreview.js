@@ -40,8 +40,7 @@ const ClassificationPreview = ({
   theme,
   qIndex,
   showQuestionNumber,
-  disableResponse,
-  changePreviewTab
+  disableResponse
 }) => {
   const styles = {
     itemContainerStyle: {
@@ -279,7 +278,6 @@ const ClassificationPreview = ({
                       isResizable={view === EDIT}
                       item={item}
                       disableResponse={disableResponse}
-                      changePreviewTab={changePreviewTab}
                     />
                   )
               )}
@@ -318,7 +316,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             ) : (
                               dragItems.includes(ite) && (
@@ -331,7 +328,6 @@ const ClassificationPreview = ({
                                   onDrop={onDrop}
                                   item={ite}
                                   disableResponse={disableResponse}
-                                  changePreviewTab={changePreviewTab}
                                 />
                               )
                             )
@@ -370,7 +366,6 @@ const ClassificationPreview = ({
                               onDrop={onDrop}
                               item={ite}
                               disableResponse={disableResponse}
-                              changePreviewTab={changePreviewTab}
                             />
                           ) : (
                             dragItems.includes(ite) && (
@@ -383,7 +378,6 @@ const ClassificationPreview = ({
                                 onDrop={onDrop}
                                 item={ite}
                                 disableResponse={disableResponse}
-                                changePreviewTab={changePreviewTab}
                               />
                             )
                           )
@@ -441,8 +435,7 @@ ClassificationPreview.propTypes = {
   theme: PropTypes.object.isRequired,
   qIndex: PropTypes.number,
   showQuestionNumber: PropTypes.bool,
-  disableResponse: PropTypes.bool,
-  changePreviewTab: PropTypes.func.isRequired
+  disableResponse: PropTypes.bool
 };
 
 ClassificationPreview.defaultProps = {

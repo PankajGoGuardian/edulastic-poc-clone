@@ -48,6 +48,7 @@ import { toggleAdvancedSections } from "../actions/questions";
 import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
+import { clearAnswersAction } from "../../author/src/actions/answers";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -230,6 +231,12 @@ class QuestionWrapper extends Component {
     }
   }
 
+  componentWillUnmount() {
+    const { clearAnswers } = this.props;
+
+    clearAnswers();
+  }
+
   render() {
     const {
       noPadding,
@@ -393,7 +400,8 @@ QuestionWrapper.propTypes = {
   advancedAreOpen: PropTypes.bool,
   handleAdvancedOpen: PropTypes.func,
   userRole: PropTypes.string.isRequired,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  clearAnswers: PropTypes.func.isRequired
 };
 
 QuestionWrapper.defaultProps = {
@@ -429,7 +437,8 @@ const enhance = compose(
     }),
     {
       setQuestionData: setQuestionDataAction,
-      handleAdvancedOpen: toggleAdvancedSections
+      handleAdvancedOpen: toggleAdvancedSections,
+      clearAnswers: clearAnswersAction
     }
   )
 );

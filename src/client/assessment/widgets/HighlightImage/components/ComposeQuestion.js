@@ -68,9 +68,9 @@ class ComposeQuestion extends Component {
           let value = val;
 
           if (prop === "height") {
-            value = value < 600 ? value : 600;
+            value = value < maxHeight ? value : maxHeight;
           } else if (prop === "width") {
-            value = value < 700 ? value : 700;
+            value = value < maxWidth ? value : maxWidth;
           }
 
           draft.image[prop] = value;
@@ -142,7 +142,7 @@ class ComposeQuestion extends Component {
         <DropZoneToolbar
           width={+width}
           height={+height}
-          maxWidth={700}
+          maxWidth={maxWidth}
           altText={altText}
           handleChange={handleImageToolbarChange}
         />

@@ -28,6 +28,10 @@ const specSource = {
   beginDrag(props) {
     const item = { item: props.obj, index: props.index };
     props.onClick({});
+
+    if (props.previewTab !== CLEAR) {
+      props.changePreviewTab();
+    }
     return item;
   },
 

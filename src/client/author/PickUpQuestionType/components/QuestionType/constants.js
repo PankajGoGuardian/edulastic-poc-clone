@@ -1,5 +1,5 @@
 import { themeColor, svgMapFillColor, svgMapStrokeColor } from "@edulastic/colors";
-import { math, questionType } from "@edulastic/constants";
+import { math, questionType, canvasDimensions } from "@edulastic/constants";
 
 import uuid from "uuid/v4";
 import {
@@ -544,8 +544,8 @@ export const getCards = onSelectQuestionType => {
         title: "Highlight Image",
         image: {
           source: "",
-          width: 700,
-          height: 600,
+          width: canvasDimensions.maxWidth,
+          height: canvasDimensions.maxHeight,
           altText: ""
         },
         line_color: [themeColor],

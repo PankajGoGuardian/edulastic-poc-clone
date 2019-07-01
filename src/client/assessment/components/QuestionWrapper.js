@@ -49,6 +49,7 @@ import { Chart } from "../widgets/Charts";
 import { getUserRole } from "../../author/src/selectors/user";
 import AudioControls from "../AudioControls";
 import { clearAnswersAction } from "../../author/src/actions/answers";
+import { CLEAR } from "../constants/constantsForQuestions";
 
 const QuestionContainer = styled.div`
   padding: ${({ noPadding }) => (noPadding ? "0px" : null)};
@@ -232,9 +233,10 @@ class QuestionWrapper extends Component {
   }
 
   componentWillUnmount() {
-    const { clearAnswers } = this.props;
+    const { clearAnswers, changePreviewTab } = this.props;
 
     clearAnswers();
+    changePreviewTab(CLEAR);
   }
 
   render() {

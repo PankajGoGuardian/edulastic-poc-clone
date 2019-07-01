@@ -42,12 +42,11 @@ const checkUserExist = data =>
     })
     .then(result => result.data.result);
 
-const googleLogin = params =>
+const googleLogin = () =>
   api
     .callApi({
       url: `${prefix}/login-google`,
-      method: "get",
-      params
+      method: "get"
     })
     .then(result => result.data.result);
 
@@ -59,12 +58,11 @@ const cleverLogin = () =>
     })
     .then(result => result.data.result);
 
-const msoLogin = params =>
+const msoLogin = () =>
   api
     .callApi({
       url: `${prefix}/login-mso`,
-      method: "get",
-      params
+      method: "get"
     })
     .then(result => result.data.result);
 
@@ -102,6 +100,14 @@ const V1Redirect = id =>
     })
     .then(result => result.data);
 
+const validateClassCode = params =>
+  api
+    .callApi({
+      url: `${prefix}/class-code/validate/`,
+      params
+    })
+    .then(result => result.data.result);
+
 export default {
   login,
   signup,
@@ -114,5 +120,6 @@ export default {
   msoSSOLogin,
   checkUserExist,
   signupWithGoogle,
-  V1Redirect
+  V1Redirect,
+  validateClassCode
 };

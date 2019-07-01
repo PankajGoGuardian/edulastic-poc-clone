@@ -345,7 +345,7 @@ export function* fetchV1Redirect({ payload: id }) {
       type: SET_USER,
       payload: user
     });
-    let redirectUrl = (role === "student")? "/home/assignments": "/author/assignments";
+    let redirectUrl = role === "student" ? "/home/assignments" : "/author/assignments";
     yield put(push(redirectUrl));
   } catch (e) {
     console.log(e);
@@ -388,10 +388,15 @@ function* googleLogin({ payload }) {
         classCode = payload.classCode;
       }
     }
-    const res = yield call(authApi.googleLogin, { classCode });
+
+    if (classCode) {
+      const validate = yield call(authApi.validateClassCode, { classCode });
+    }
+
+    const res = yield call(authApi.googleLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, "Google Login failed");
+    yield call(message.error, e.data && e.data.message ? e.data.message : "Google Login failed");
   }
 }
 
@@ -423,10 +428,13 @@ function* msoLogin({ payload }) {
         classCode = payload.classCode;
       }
     }
-    const res = yield call(authApi.msoLogin, { classCode });
+    if (classCode) {
+      const validate = yield call(authApi.validateClassCode, { classCode });
+    }
+    const res = yield call(authApi.msoLogin);
     window.location.href = res;
   } catch (e) {
-    yield call(message.error, "MSO Login failed");
+    yield call(message.error, e.data && e.data.message ? e.data.message : "MSO Login failed");
   }
 }
 

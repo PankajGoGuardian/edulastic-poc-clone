@@ -12,9 +12,7 @@ const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler,
         <StyledIcon type="left" size={30} onClick={backToView} />
         <TitleWarapper>
           <div>{name}</div>
-          <p>
-            {institutionName}, {ownerName}
-          </p>
+          <p>District name {institutionName}</p>
         </TitleWarapper>
       </LeftContent>
       <RightContent>

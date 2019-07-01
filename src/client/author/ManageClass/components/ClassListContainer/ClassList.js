@@ -40,14 +40,6 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
       }
     },
     {
-      title: "Tags",
-      dataIndex: "tags",
-      render: (_, row) => {
-        const { tags = [] } = row;
-        return tags.map((tag, index) => <span key={index}>{tag}, </span>);
-      }
-    },
-    {
       title: "Students",
       dataIndex: "studentCount",
       render: (studentCount = 0) => studentCount

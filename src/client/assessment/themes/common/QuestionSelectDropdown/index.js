@@ -5,7 +5,7 @@ import { withNamespaces } from "@edulastic/localization";
 
 import SelectContainer from "./SelectContainer";
 
-const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, skinb, t }) => (
+const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, skinb, t, bookmarks = [] }) => (
   <SelectContainer skinb={skinb}>
     <Select
       defaultValue={currentItem}
@@ -17,6 +17,7 @@ const QuestionSelectDropdown = ({ gotoQuestion, options, currentItem, skinb, t }
       {options.map((item, index) => (
         <Select.Option key={index} value={item}>
           {`${t("common.layout.selectbox.question")} ${index + 1}/ ${options.length}`}
+          {bookmarks[index] ? <i className="fa fa-flag" style={{ color: "green", marginLeft: "5px" }} /> : ""}
         </Select.Option>
       ))}
     </Select>

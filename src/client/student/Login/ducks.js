@@ -269,7 +269,10 @@ function* signup({ payload }) {
     }
   } catch (err) {
     const errorMessage = "Email already exist";
-    yield call(message.error, err && err.message ? err.message : errorMessage);
+    const msg1 = get(err, "data.message", "");
+    const msg2 = get(err, "message", "");
+    const msg = msg1 || msg2 || errorMessage;
+    yield call(message.error, msg);
   }
 }
 

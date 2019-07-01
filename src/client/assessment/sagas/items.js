@@ -107,7 +107,7 @@ function* saveUserResponse({ payload }) {
       testItemId,
       assignmentId,
       testActivityId: userTestActivityId,
-      groupId: "5cf4e66ae64817849083c057",
+      groupId,
       timesSpent,
       shuffledOptions: shuffles,
       bookmarked

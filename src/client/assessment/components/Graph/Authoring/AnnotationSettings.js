@@ -1,12 +1,15 @@
 import React, { Component, Fragment } from "react";
 import PropTypes from "prop-types";
 import { compose } from "redux";
+
 import { withNamespaces } from "@edulastic/localization";
+
 import { Row } from "../../../styled/WidgetOptions/Row";
 import { Col } from "../../../styled/WidgetOptions/Col";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { Subtitle } from "../../../styled/Subtitle";
-import QuillInput from "../common/QuillInput";
+import { WidgetFRInput } from "../../../styled/Widget";
+import QuestionTextArea from "../../QuestionTextArea";
 
 class AnnotationSettings extends Component {
   handleInputChange = (name, value) => {
@@ -27,45 +30,64 @@ class AnnotationSettings extends Component {
         <Row gutter={60}>
           <Col md={12}>
             <Label>Title</Label>
-            <QuillInput value={title} onChange={value => this.handleInputChange("title", value)} toolbarId="title" />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="annotationTitle"
+                toolbarSize="SM"
+                value={title}
+                onChange={value => this.handleInputChange("title", value)}
+              />
+            </WidgetFRInput>
           </Col>
           <Col md={12}>
             <Label>Label top</Label>
-            <QuillInput
-              value={labelTop}
-              onChange={value => this.handleInputChange("labelTop", value)}
-              toolbarId="labelTop"
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="annotationLabelTop"
+                toolbarSize="SM"
+                value={labelTop}
+                onChange={value => this.handleInputChange("labelTop", value)}
+              />
+            </WidgetFRInput>
           </Col>
         </Row>
 
         <Row gutter={60}>
           <Col md={12}>
             <Label>Label left</Label>
-            <QuillInput
-              value={labelLeft}
-              onChange={value => this.handleInputChange("labelLeft", value)}
-              toolbarId="labelLeft"
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="annotationLabelLeft"
+                toolbarSize="SM"
+                value={labelLeft}
+                onChange={value => this.handleInputChange("labelLeft", value)}
+              />
+            </WidgetFRInput>
           </Col>
           <Col md={12}>
             <Label>Label right</Label>
-            <QuillInput
-              value={labelRight}
-              onChange={value => this.handleInputChange("labelRight", value)}
-              toolbarId="labelRight"
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="annotationLabelRight"
+                toolbarSize="SM"
+                value={labelRight}
+                onChange={value => this.handleInputChange("labelRight", value)}
+              />
+            </WidgetFRInput>
           </Col>
         </Row>
 
         <Row gutter={60}>
           <Col md={12}>
             <Label>Label bottom</Label>
-            <QuillInput
-              value={labelBottom}
-              onChange={value => this.handleInputChange("labelBottom", value)}
-              toolbarId="labelBottom"
-            />
+            <WidgetFRInput>
+              <QuestionTextArea
+                toolbarId="annotationLabelBottom"
+                toolbarSize="SM"
+                value={labelBottom}
+                onChange={value => this.handleInputChange("labelBottom", value)}
+              />
+            </WidgetFRInput>
           </Col>
         </Row>
       </Fragment>

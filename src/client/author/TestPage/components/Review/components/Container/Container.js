@@ -272,6 +272,7 @@ class Review extends PureComponent {
                   items={test.testItems}
                   setSelected={this.setSelected}
                   selected={selected}
+                  isEditable={isEditable}
                   handlePreview={this.handlePreviewTestItem}
                 />
               ) : (

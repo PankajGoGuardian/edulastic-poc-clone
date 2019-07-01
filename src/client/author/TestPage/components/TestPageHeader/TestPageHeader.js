@@ -75,6 +75,7 @@ const TestPageHeader = ({
   creating,
   onShare,
   onPublish,
+  showEditButton = false,
   editEnable = false,
   windowWidth,
   onEnableEdit,
@@ -116,23 +117,21 @@ const TestPageHeader = ({
             <IconShare color="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && owner && (
+        {showShareButton && owner && showPublishButton && (
           <EduButton
             title={"Save as Draft"}
             data-cy="save"
             style={{ width: 42, padding: 0 }}
-            disabled={creating || !showPublishButton}
             size="large"
             onClick={onSave}
           >
             <IconDiskette color="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && owner && (
+        {showShareButton && owner && showPublishButton && (
           <EduButton
             title={"Publish Test"}
             data-cy="publish"
-            disabled={!showPublishButton}
             style={{ width: 42, padding: 0 }}
             size="large"
             onClick={() => {
@@ -142,7 +141,7 @@ const TestPageHeader = ({
             <IconSend color="#00AD50" stroke="#00AD50" />
           </EduButton>
         )}
-        {showShareButton && owner && (
+        {showShareButton && showEditButton && (
           <EduButton
             title={"Edit Test"}
             disabled={editEnable}

@@ -378,6 +378,13 @@ class Container extends PureComponent {
     const owner = (authors && authors.some(x => x._id === userId)) || !testId;
     const showPublishButton = (testStatus && testStatus !== statusConstants.PUBLISHED && testId) || editEnable;
     const showShareButton = !!testId;
+    const showEditButton =
+      authors &&
+      authors.some(x => x._id === userId) &&
+      testStatus &&
+      testStatus === statusConstants.PUBLISHED &&
+      !editEnable;
+
     return (
       <>
         {this.renderModal()}
@@ -395,6 +402,7 @@ class Container extends PureComponent {
           onPublish={this.handlePublishTest}
           title={test.title}
           creating={creating}
+          showEditButton={showEditButton}
           owner={owner}
           windowWidth={windowWidth}
           showPublishButton={showPublishButton}

@@ -397,7 +397,7 @@ class AssessmentPlayerDefault extends React.Component {
             </Header>
           </Affix>
           <Main skin>
-            <MainWrapper>
+            <MainWrapper skin>
               {testItemState === "" && <TestItemPreview cols={itemRows} questions={questions} />}
               {testItemState === "check" && (
                 <TestItemPreview

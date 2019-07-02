@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { withNamespaces } from "@edulastic/localization";
 import { Header, PointField } from "./styled_components";
+import QuadrantsPointField from "../common/QuadrantsPointField";
 import { GraphDisplay } from "../Display";
 
 class CorrectAnswer extends Component {
@@ -28,19 +29,35 @@ class CorrectAnswer extends Component {
   render() {
     const { t, response, graphData, previewTab, view, disableResponse } = this.props;
     const { responseScore } = this.state;
+    const PointFieldWithContext = QuadrantsPointField(PointField);
+
     return (
       <div>
         <Header>
-          <PointField
-            type="number"
-            value={responseScore}
-            onChange={this.updateScore}
-            onBlur={this.updateScore}
-            disabled={false}
-            min={0}
-            step={0.5}
-          />
-          <span>{t("component.correctanswers.points")}</span>
+          {graphData.graphType === "quadrants" ? (
+            <PointFieldWithContext
+              type="number"
+              value={responseScore}
+              onChange={this.updateScore}
+              onBlur={this.updateScore}
+              disabled={false}
+              min={0}
+              step={0.5}
+            />
+          ) : (
+            <React.Fragment>
+              <PointField
+                type="number"
+                value={responseScore}
+                onChange={this.updateScore}
+                onBlur={this.updateScore}
+                disabled={false}
+                min={0}
+                step={0.5}
+              />
+              <span>{t("component.correctanswers.points")}</span>
+            </React.Fragment>
+          )}
         </Header>
         <GraphDisplay
           disableResponse={disableResponse}

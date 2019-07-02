@@ -13,6 +13,8 @@ export const analyzeByMode = {
 };
 
 export const compareByMode = {
+  SCHOOL: "school",
+  TEACHER: "teacher",
   CLASS: "class",
   STUDENTS: "students",
   RACE: "race",
@@ -25,6 +27,20 @@ export const compareByMode = {
 const lexicSort = field => (a, b) => (a[field] >= b[field] ? (a[field] === b[field] ? 0 : 1) : -1);
 
 export const compareByColumns = {
+  [compareByMode.SCHOOL]: {
+    title: "School",
+    dataIndex: "schoolId",
+    key: "schoolId",
+    sorter: lexicSort("schoolName"),
+    render: (schoolId, school) => school.schoolName
+  },
+  [compareByMode.TEACHER]: {
+    title: "Teacher",
+    dataIndex: "teacherId",
+    key: "teacherId",
+    sorter: lexicSort("teacherName"),
+    render: (teacherId, teacher) => teacher.teacherName
+  },
   [compareByMode.CLASS]: {
     title: "Class",
     dataIndex: "groupId",
@@ -245,7 +261,9 @@ const groupAnalysisByCompare = (data, viewBy, compareBy) => {
 };
 
 const analysisDataSource = (compareBy, studInfo, teacherInfo) => ({
-  dataSource: compareBy === compareByMode.CLASS ? teacherInfo : studInfo,
+  dataSource: [compareByMode.SCHOOL, compareByMode.TEACHER, compareByMode.CLASS].includes(compareBy)
+    ? teacherInfo
+    : studInfo,
   dataField: compareByColumns[compareBy].key
 });
 

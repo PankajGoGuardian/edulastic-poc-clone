@@ -27,7 +27,6 @@ import {
 } from "./ducks";
 
 import dropDownFormat from "./static/json/dropDownFormat.json";
-import chartNavigatorLinks from "../../../common/static/json/singleAssessmentSummaryChartNavigator.json";
 import { getUserRole } from "../../../../src/selectors/user";
 
 const MasteryLevels = ({ scaleInfo }) => (
@@ -46,13 +45,20 @@ const PAGE_SIZE = 15;
 const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, match, settings, role }) => {
   const [viewBy, setViewBy] = useState(viewByMode.STANDARDS);
   const [analyzeBy, setAnalyzeBy] = useState(analyzeByMode.SCORE);
-  const [compareBy, setCompareBy] = useState(compareByMode.CLASS);
+  const [compareBy, setCompareBy] = useState(role === "teacher" ? compareByMode.CLASS : compareByMode.SCHOOL);
   const [standardId, setStandardId] = useState(0);
   const [selectedStandards, setSelectedStandards] = useState([]);
   const [selectedDomains, setSelectedDomains] = useState([]);
   const [totalStandards, setTotalStandards] = useState(0);
   const [totalDomains, setTotalDomains] = useState(0);
   const [page, setPage] = useState(0);
+
+  const filteredDropDownData = dropDownFormat.compareByDropDownData.filter(o => {
+    if (o.allowedRoles) {
+      return o.allowedRoles.includes(role);
+    }
+    return true;
+  });
 
   const [filter, setFilter] = useState(
     dropDownFormat.filterDropDownData.reduce(
@@ -290,9 +296,9 @@ const PerformanceByStandards = ({ loading, report, getPerformanceByStandards, ma
           <CardDropdownWrapper>
             <ControlDropDown
               prefix="Compare By"
-              by={dropDownFormat.compareByDropDownData[0]}
+              by={filteredDropDownData[0]}
               selectCB={handleCompareByChange}
-              data={dropDownFormat.compareByDropDownData}
+              data={filteredDropDownData}
             />
             <Button.Group size="middle">
               <Button onClick={handlePrevPage} disabled={prevButtonDisabled}>

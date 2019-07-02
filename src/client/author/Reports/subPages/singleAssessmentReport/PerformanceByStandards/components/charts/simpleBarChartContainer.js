@@ -105,6 +105,7 @@ const SimpleBarChartContainer = ({
             return unselectedColor;
         }
       }
+      return unselectedColor;
     };
 
     return chartData.map((item, key) => (

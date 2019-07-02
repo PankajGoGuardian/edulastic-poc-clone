@@ -99,7 +99,9 @@ class RequestSchool extends React.Component {
   };
 
   transformInput = value => {
-    return value.trim();
+    if (value) {
+      return value.trim();
+    }
   };
 
   render() {
@@ -143,6 +145,7 @@ class RequestSchool extends React.Component {
         <Form {...formItemLayout} onSubmit={this.handleSubmit}>
           <Form.Item label="Name">
             {getFieldDecorator("name", {
+              validateTrigger: ["onChange", "onBlur"],
               rules: [
                 { transform: this.transformInput },
                 { required: true, message: "Please provide a valid school name." }
@@ -191,6 +194,7 @@ class RequestSchool extends React.Component {
           <FlexItems>
             <Form.Item label="Zip">
               {getFieldDecorator("zip", {
+                validateTrigger: ["onChange", "onBlur"],
                 rules: [
                   { transform: this.transformInput },
                   { required: true, message: "Please provide a valid zip code." }

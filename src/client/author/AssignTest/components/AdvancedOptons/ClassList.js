@@ -64,10 +64,8 @@ class ClassList extends React.Component {
   }
 
   componentDidMount() {
-    const { classList, schools, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
-    if (isEmpty(classList)) {
-      this.loadClassList();
-    }
+    const { schools, loadSchoolsData, courseList, loadCourseListData, userOrgId } = this.props;
+    this.loadClassList();
     if (isEmpty(schools)) {
       loadSchoolsData({ districtId: userOrgId });
     }
@@ -81,7 +79,9 @@ class ClassList extends React.Component {
     const { searchTerms } = this.state;
     loadClassListData({
       districtId: userOrgId,
-      search: searchTerms
+      search: searchTerms,
+      page: 1,
+      limit: 10000
     });
   };
 

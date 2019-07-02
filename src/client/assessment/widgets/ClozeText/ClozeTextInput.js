@@ -85,9 +85,11 @@ const ClozeTextInput = ({ resprops, id }) => {
     disableResponse,
     responseIds,
     isReviewTab,
-    cAnswers
+    cAnswers,
+    view,
+    previewTab,
+    responsecontainerindividuals
   } = resprops;
-
   const ref = useRef();
 
   const MInput = item.multiple_line ? TextArea : Input;
@@ -127,8 +129,19 @@ const ClozeTextInput = ({ resprops, id }) => {
       type
     });
   };
+  let width = style.widthpx || "auto";
+  const responseStyle = find(responsecontainerindividuals, container => container.id === id);
+  if (view === "edit") {
+    width = (responseStyle && responseStyle.widthpx) || (style.widthpx || "auto");
+  } else {
+    if (!value.length) {
+      width = style.widthpx || "auto";
+    } else {
+      width = (responseStyle && responseStyle.previewWidth) || (style.widthpx || "auto");
+    }
+  }
   return (
-    <CustomInput style={style} title={value.length ? value : null}>
+    <CustomInput style={{ ...style, width: "auto" }} title={value.length ? value : null}>
       {showIndex && <IndexBox>{index + 1}</IndexBox>}
       <MInput
         ref={ref}
@@ -150,7 +163,9 @@ const ClozeTextInput = ({ resprops, id }) => {
           overflow: "hidden",
           textOverflow: "ellipsis",
           whiteSpace: "nowrap",
-          background: item.background
+          fontSize: style.fontSize,
+          background: item.background,
+          width: `${width}px` || "auto"
         }}
         placeholder={placeholder}
       />

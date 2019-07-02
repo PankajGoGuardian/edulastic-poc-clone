@@ -50,7 +50,8 @@ import {
   FilterButton,
   TableWrapper
 } from "./styled";
-import { storeInLocalStorage, getFromLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
+import { getUserRole } from "../../../src/selectors/user";
 
 const { releaseGradeLabels } = test;
 
@@ -78,6 +79,7 @@ class Assignments extends Component {
       districtId,
       loadFolders,
       assignmentsSummary,
+      userRole,
       defaultFilters,
       orgData
     } = this.props;
@@ -92,6 +94,7 @@ class Assignments extends Component {
     }
     filters = {
       ...filters,
+      testType: userRole !== "teacher" ? "common" : "",
       ...defaultFilters
     };
     loadAssignments({ filters });
@@ -310,6 +313,7 @@ const enhance = compose(
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       districtId: getDistrictIdSelector(state),
       isAdvancedView: getAssignmentViewSelector(state),
+      userRole: getUserRole(state),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, "user.user.orgData", {})
     }),

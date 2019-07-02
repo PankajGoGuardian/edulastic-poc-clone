@@ -1,10 +1,10 @@
 import React from "react";
 import { Icon } from "antd";
-
+import GoogleClassRoomImg from "../../../../../../assets/images/google-classroom.png";
 import { CreateCardBox, CreateClassButton, SyncClassDiv, SyncImg } from "./styled";
 const CreateClassPage = () => {
   const createClassHandler = () => {
-    console.log("create class");
+    console.log("Navigate to create class page after manage class routing is complete");
   };
 
   return (
@@ -15,7 +15,7 @@ const CreateClassPage = () => {
       </CreateClassButton>
       <p>or</p>
       <SyncClassDiv>
-        <SyncImg src="https://app.edulastic.com/webresources/images/google-classroom.png" width={35} />
+        <SyncImg src={GoogleClassRoomImg} width={35} />
         <p>Sync with google classroom</p>
       </SyncClassDiv>
     </CreateCardBox>

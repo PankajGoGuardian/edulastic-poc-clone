@@ -24,6 +24,7 @@ const ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const CheckboxTemplateBoxLayout = ({
   showAnswer,
+  checkAnswer,
   responseContainers,
   image,
   canvasHeight,
@@ -86,7 +87,7 @@ const CheckboxTemplateBoxLayout = ({
 
           return (
             <React.Fragment key={index}>
-              {!showAnswer && (
+              {!showAnswer && !checkAnswer && (
                 <DropContainer
                   index={index}
                   style={{
@@ -154,7 +155,7 @@ const CheckboxTemplateBoxLayout = ({
                   </Pointer>
                 </DropContainer>
               )}
-              {showAnswer && (
+              {(showAnswer || checkAnswer) && (
                 <div
                   style={{
                     ...btnStyle,
@@ -243,6 +244,7 @@ CheckboxTemplateBoxLayout.propTypes = {
   stemnumeration: PropTypes.string.isRequired,
   evaluation: PropTypes.array.isRequired,
   showAnswer: PropTypes.bool.isRequired,
+  checkAnswer: PropTypes.bool.isRequired,
   onDropHandler: PropTypes.func.isRequired,
   image: PropTypes.any.isRequired,
   drop: PropTypes.func.isRequired,

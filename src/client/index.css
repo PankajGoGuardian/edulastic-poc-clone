@@ -442,7 +442,7 @@ template {
 }
 
 .response-btn .text {
-  padding: 4px 8px;
+  padding: 8px;
   background: lightgray;
   border-top-right-radius: 4px;
   border-bottom-right-radius: 4px;
@@ -792,7 +792,7 @@ input[type="checkbox"] {
   background: #fce0e8;
   color: #878282;
   align-items: center;
-  padding: 0 40px 0 10px;
+  padding: 8px 20px 8px 7px;
 }
 
 .check-answer.wrong .index {

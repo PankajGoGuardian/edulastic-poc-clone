@@ -96,7 +96,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
               overflow: "hidden"
             }}
           >
-            {userSelections[index] && userSelections[index].value}
+            {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
           <IconWrapper>
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}
@@ -127,7 +127,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
             }}
             className="text"
           >
-            {userSelections[index] && userSelections[index].value}
+            {userSelections[index] && userSelections[index].value}&nbsp;
           </span>
           <IconWrapper>
             {userSelections.length > 0 && userSelections[index] && status === "right" && <RightIcon />}

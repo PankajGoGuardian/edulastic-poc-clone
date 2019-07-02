@@ -47,6 +47,7 @@ const Link = styled.a`
   }
   img {
     display: block;
-    max-width: 300px;
+    width: 200px;
+    max-width: 100%;
   }
 `;

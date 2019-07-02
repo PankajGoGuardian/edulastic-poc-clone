@@ -61,10 +61,12 @@ const SortableItem = SortableElement(
         {mobile ? (
           <FlexContainer flexDirection="column" alignItems="flex-start">
             <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
-              <FlexContainer flexDirection="column" justifyContent="center">
-                <DragHandle />
-                <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
-              </FlexContainer>
+              {isEditable && (
+                <FlexContainer flexDirection="column" justifyContent="center">
+                  <DragHandle />
+                  <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
+                </FlexContainer>
+              )}
 
               <FlexContainer>
                 <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
@@ -111,7 +113,7 @@ const SortableItem = SortableElement(
                     justifyContent="center"
                   >
                     {index === 0 && <DragHandle />}
-                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                    {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
                   </FlexContainer>
                   <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                     <TestItemPreview

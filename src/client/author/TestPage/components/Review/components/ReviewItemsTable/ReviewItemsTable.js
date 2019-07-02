@@ -9,7 +9,7 @@ import MainInfoCell from "./MainInfoCell/MainInfoCell";
 import MetaInfoCell from "./MetaInfoCell/MetaInfoCell";
 import { getItemsTypesSelector, getStandardsSelector } from "../../ducks";
 
-const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview }) => {
+const ItemsTable = ({ items, types, standards, selected, setSelected, handlePreview, isEditable }) => {
   const columns = [
     {
       title: "Main info",
@@ -68,7 +68,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
   };
   return (
     <ReviewTableWrapper
-      rowSelection={rowSelection}
+      rowSelection={isEditable ? rowSelection : ""}
       columns={columns}
       dataSource={data}
       showHeader={false}
@@ -80,6 +80,7 @@ const ItemsTable = ({ items, types, standards, selected, setSelected, handlePrev
 ItemsTable.propTypes = {
   items: PropTypes.array.isRequired,
   types: PropTypes.object.isRequired,
+  isEditable: PropTypes.bool,
   handlePreview: PropTypes.func,
   standards: PropTypes.object.isRequired
 };

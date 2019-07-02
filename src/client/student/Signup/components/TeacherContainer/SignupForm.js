@@ -161,7 +161,7 @@ class Signup extends React.Component {
                           span={20}
                           offset={2}
                           onClick={() => {
-                            googleLoginAction("teacher");
+                            googleLoginAction({ role: "teacher" });
                           }}
                         >
                           <img src={googleIcon} alt="" /> {t("component.signup.googlesignupbtn")}
@@ -173,7 +173,7 @@ class Signup extends React.Component {
                           span={20}
                           offset={2}
                           onClick={() => {
-                            msoLoginAction("teacher");
+                            msoLoginAction({ role: "teacher" });
                           }}
                         >
                           <img src={icon365} alt="" /> {t("component.signup.office365signupbtn")}

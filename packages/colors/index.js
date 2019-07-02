@@ -123,14 +123,14 @@ export const extraDesktopWidthMax = "1600px";
 
 export const authorAssignment = {
   assignmentStatusBg: {
-    NOT_OPEN: "#999999",
-    IN_PROGRESS: "#F9942D",
-    IN_GRADING: "#fc9a2b",
+    NOT_OPEN: "#95B0CD",
+    IN_PROGRESS: "#5AABEB",
+    IN_GRADING: "#F9942D",
     NOT_GRADED: "#e06666",
-    GRADES_HELD: "#f8f033",
-    SUBMITTED: "#5EB500",
+    GRADES_HELD: "#00AD50",
+    SUBMITTED: "#F9942D",
     NOT_STARTED: "#AAAFB5",
-    DONE: "#6aa84f"
+    DONE: "#00AD50"
   },
   lightBlue: "#12a6e8"
 };

@@ -1,8 +1,8 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { Col, Select } from "antd";
+import { Col, Select, Row } from "antd";
 import { pick } from "lodash";
-import { MathInput, withWindowSizes } from "@edulastic/common";
+import { MathInput, withWindowSizes, FlexContainer } from "@edulastic/common";
 
 import { math } from "@edulastic/constants";
 import { withNamespaces } from "@edulastic/localization";
@@ -26,6 +26,7 @@ import { Container } from "./styled/Container";
 import { StyledRow } from "./styled/StyledRow";
 
 import { AllowedVariables, CheckOption, DecimalSeparator, Field, SignificantDecimalPlaces, Tolerance } from "./options";
+import styled from "styled-components";
 
 const { methods: methodsConst, methodOptions: methodOptionsConst, fields: fieldsConst } = math;
 
@@ -33,6 +34,10 @@ const methods = Object.keys(methodsConst);
 
 const clearOptions = (method, options) => pick(options, methodOptionsConst[method]);
 
+const RuleContainer = styled.div`
+  max-width: 420px;
+  flex: 3;
+`;
 const MathFormulaAnswerMethod = ({
   onChange,
   onDelete,
@@ -291,8 +296,6 @@ const MathFormulaAnswerMethod = ({
           );
         case "allowedVariables":
           return <AllowedVariables options={options} onChange={changeOptions} />;
-        case "rule":
-          return <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />;
         default:
           return null;
       }
@@ -344,33 +347,39 @@ const MathFormulaAnswerMethod = ({
 
       {showAdditionals.findIndex(el => el === `${method}_${index}`) >= 0 ? (
         <AdditionalContainer>
-          <AdditionalCompareUsing>
-            <Col spn={index === 0 ? 12 : 11}>
-              <Label>{t("component.math.compareUsing")}</Label>
-              <Select
-                data-cy="method-selection-dropdown"
-                size="large"
-                value={method}
-                style={{ width: "100%", height: 42 }}
-                onChange={val => {
-                  onChange("method", val);
-                  handleChangeAdditionals(`${method}_${index}`, "pop");
-                  handleChangeAdditionals(`${val}_${index}`, "push");
-                }}
-              >
-                {methods.map(methodKey => (
-                  <Select.Option
-                    data-cy={`method-selection-dropdown-list-${methodKey}`}
-                    key={methodKey}
-                    value={methodsConst[methodKey]}
-                  >
-                    {t(`component.math.${methodsConst[methodKey]}`)}
-                  </Select.Option>
-                ))}
-              </Select>
-            </Col>
-          </AdditionalCompareUsing>
-
+          <FlexContainer justifyContent="space-between" alignItems="none">
+            <AdditionalCompareUsing>
+              <Col spn={index === 0 ? 12 : 11}>
+                <Label>{t("component.math.compareUsing")}</Label>
+                <Select
+                  data-cy="method-selection-dropdown"
+                  size="large"
+                  value={method}
+                  style={{ width: "100%", height: 42 }}
+                  onChange={val => {
+                    onChange("method", val);
+                    handleChangeAdditionals(`${method}_${index}`, "pop");
+                    handleChangeAdditionals(`${val}_${index}`, "push");
+                  }}
+                >
+                  {methods.map(methodKey => (
+                    <Select.Option
+                      data-cy={`method-selection-dropdown-list-${methodKey}`}
+                      key={methodKey}
+                      value={methodsConst[methodKey]}
+                    >
+                      {t(`component.math.${methodsConst[methodKey]}`)}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Col>
+            </AdditionalCompareUsing>
+            {methodOptions.includes("rule") && (
+              <RuleContainer>
+                <Rule onChange={changeOptions} t={t} syntax={options.syntax} argument={options.argument} />
+              </RuleContainer>
+            )}
+          </FlexContainer>
           <WidgetMethods>{renderMethodsOptions()}</WidgetMethods>
 
           {index + 1 === answer.length && (

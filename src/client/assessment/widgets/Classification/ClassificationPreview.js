@@ -64,7 +64,7 @@ const ClassificationPreview = ({
       minHeight: 140,
       borderRadius: 4
     },
-    correctAnswersMargins: { marginBottom: 0, marginRight: 30 }
+    correctAnswersMargins: { marginBottom: 0, marginRight: 30, width: "100%" }
   };
 
   const {

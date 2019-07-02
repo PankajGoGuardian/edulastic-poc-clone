@@ -88,7 +88,7 @@ const SortableItem = SortableElement(
             <FlexContainer>
               <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                 <TestItemPreview
-                  style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex" }}
+                  style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex" }}
                   cols={item}
                   metaData={metaInfoData.id}
                   previewTab="clear"
@@ -108,7 +108,7 @@ const SortableItem = SortableElement(
               <FlexContainer justifyContent="space-between" alignItems="flex-start">
                 <FlexContainer alignItems="flex-start" style={{ flex: 3 }}>
                   <FlexContainer
-                    style={{ visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
+                    style={{ marginTop: 30, visibility: index === 0 ? "visible" : "hidden", flex: 1 }}
                     flexDirection="column"
                     justifyContent="center"
                   >
@@ -117,7 +117,7 @@ const SortableItem = SortableElement(
                   </FlexContainer>
                   <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                     <TestItemPreview
-                      style={{ marginTop: -40, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
+                      style={{ marginTop: -10, padding: 0, boxShadow: "none", display: "flex", flex: 11 }}
                       cols={_item}
                       previewTab="clear"
                       metaData={metaInfoData.id}

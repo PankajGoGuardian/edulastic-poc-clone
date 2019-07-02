@@ -141,7 +141,7 @@ const updateMarksContainer = (board, xMin, xMax, containerSettings) => {
 
 const getConfig = mark => ({
   mounted: mark.visProp.cssclass.includes("mounted"),
-  position: mark.X(),
+  position: +mark.X().toFixed(4),
   point: mark.labelHTML,
   id: mark.id
 });

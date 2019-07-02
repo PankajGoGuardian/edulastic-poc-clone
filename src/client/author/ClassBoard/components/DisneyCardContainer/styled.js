@@ -18,6 +18,7 @@ export const StyledCardContiner = styled(FlexContainer)`
   flex-wrap: wrap;
   width: 95%;
   justify-content: flex-start;
+  position: relative;
 `;
 
 export const DisneyCard = styled.div``;

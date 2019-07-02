@@ -91,15 +91,18 @@ const ReviewSummary = ({
         <TableHeaderCol span={8}>Points</TableHeaderCol>
       </Row>
       {summary.standards &&
-        summary.standards.map(data => (
-          <TableBodyRow key={data.key}>
-            <TableBodyCol span={8}>
-              <Standard>{data.identifier}</Standard>
-            </TableBodyCol>
-            <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
-            <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
-          </TableBodyRow>
-        ))}
+        summary.standards.map(
+          data =>
+            !data.isEquivalentStandard && (
+              <TableBodyRow key={data.key}>
+                <TableBodyCol span={8}>
+                  <Standard>{data.identifier}</Standard>
+                </TableBodyCol>
+                <TableBodyCol span={8}>{data.totalQuestions}</TableBodyCol>
+                <TableBodyCol span={8}>{data.totalPoints}</TableBodyCol>
+              </TableBodyRow>
+            )
+        )}
     </Container>
   );
 };

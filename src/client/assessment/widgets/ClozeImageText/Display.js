@@ -167,7 +167,7 @@ class Display extends Component {
     const { responseBoxMaxTop, responseBoxMaxLeft } = this.getResponseBoxMaxValues();
 
     if (canvasHeight < responseBoxMaxTop) {
-      canvasHeight = responseBoxMaxTop;
+      canvasHeight = responseBoxMaxTop + 20;
     }
 
     if (canvasWidth < responseBoxMaxLeft) {

@@ -157,7 +157,12 @@ const StandardsModal = ({
               <ELOList>
                 <Container>
                   {filteredELO.map(c => (
-                    <FlexContainer key={c._id} alignItems="flex-start" style={{ marginBottom: 15 }}>
+                    <FlexContainer
+                      key={c._id}
+                      alignItems="flex-start"
+                      justifyContent="flex-start"
+                      style={{ marginBottom: 15 }}
+                    >
                       <Checkbox
                         onChange={() => handleCheckELO(c)}
                         checked={state.eloStandards.some(item => item._id === c._id)}

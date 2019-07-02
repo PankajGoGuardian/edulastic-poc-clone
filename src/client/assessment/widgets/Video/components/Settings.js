@@ -77,7 +77,7 @@ class Settings extends Component {
     const isHostedVideo = videoType === videoTypes.HOSTED;
 
     return (
-      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+      <Widget style={{ display: advancedAreOpen && isHostedVideo ? "block" : "none" }}>
         <Subtitle>{t("component.video.settings")}</Subtitle>
         {!!modalSettings.modalName && (
           <FileSelectModal
@@ -90,71 +90,44 @@ class Settings extends Component {
         )}
 
         <Block>
-          {isHostedVideo && (
-            <Row>
-              <Col md={24}>
-                <Label>{t("component.video.posterImage")}</Label>
-                <FlexContainer>
-                  <Input size="large" value={uiStyle.posterImage} disabled />
-                  <Button
-                    icon={!uiStyle.posterImage ? <IconEdit /> : <IconPlus />}
-                    color="primary"
-                    onClick={() => setModalSettings({ editMode: !uiStyle.posterImage, modalName: "posterImage" })}
-                  >
-                    {!uiStyle.posterImage ? "Edit" : "Add"}
-                  </Button>
-                </FlexContainer>
-              </Col>
-            </Row>
-          )}
           <Row>
-            <Col md={12}>
-              <Label>{t("component.video.width")}</Label>
-              <Input
-                type="number"
-                size="large"
-                style={{ width: "90%" }}
-                value={uiStyle.width}
-                onChange={e => _change("width", +e.target.value)}
-              />
-            </Col>
-            <Col md={12}>
-              <Label>{t("component.video.height")}</Label>
-              <Input
-                type="number"
-                size="large"
-                style={{ width: "90%" }}
-                value={uiStyle.height}
-                onChange={e => _change("height", +e.target.value)}
-              />
+            <Col md={24}>
+              <Label>{t("component.video.posterImage")}</Label>
+              <FlexContainer>
+                <Input size="large" value={uiStyle.posterImage} disabled />
+                <Button
+                  icon={!uiStyle.posterImage ? <IconEdit /> : <IconPlus />}
+                  color="primary"
+                  onClick={() => setModalSettings({ editMode: !uiStyle.posterImage, modalName: "posterImage" })}
+                >
+                  {!uiStyle.posterImage ? "Edit" : "Add"}
+                </Button>
+              </FlexContainer>
             </Col>
           </Row>
-          {isHostedVideo && (
-            <Fragment>
-              <Row>
-                <Col md={6}>
-                  <Checkbox checked={uiStyle.hideControls} onChange={e => _change("hideControls", e.target.checked)}>
-                    {t("component.video.hideControls")}
-                  </Checkbox>
-                </Col>
-              </Row>
-              <Row>
-                <Col md={24}>
-                  <Label>{t("component.video.captionURL")}</Label>
-                  <FlexContainer>
-                    <Input size="large" value={uiStyle.captionURL} disabled />
-                    <Button
-                      icon={!uiStyle.captionURL ? <IconEdit /> : <IconPlus />}
-                      color="primary"
-                      onClick={() => setModalSettings({ editMode: !uiStyle.captionURL, modalName: "captionURL" })}
-                    >
-                      {!uiStyle.captionURL ? "Edit" : "Add"}
-                    </Button>
-                  </FlexContainer>
-                </Col>
-              </Row>
-            </Fragment>
-          )}
+
+          <Row>
+            <Col md={6}>
+              <Checkbox checked={uiStyle.hideControls} onChange={e => _change("hideControls", e.target.checked)}>
+                {t("component.video.hideControls")}
+              </Checkbox>
+            </Col>
+          </Row>
+          <Row>
+            <Col md={24}>
+              <Label>{t("component.video.captionURL")}</Label>
+              <FlexContainer>
+                <Input size="large" value={uiStyle.captionURL} disabled />
+                <Button
+                  icon={!uiStyle.captionURL ? <IconEdit /> : <IconPlus />}
+                  color="primary"
+                  onClick={() => setModalSettings({ editMode: !uiStyle.captionURL, modalName: "captionURL" })}
+                >
+                  {!uiStyle.captionURL ? "Edit" : "Add"}
+                </Button>
+              </FlexContainer>
+            </Col>
+          </Row>
         </Block>
       </Widget>
     );

@@ -4,17 +4,54 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Layout, Spin } from "antd";
 import { useRealtimeV2 } from "@edulastic/common";
-import { get, partial } from "lodash";
+import { get, values } from "lodash";
 import { getCurrentGroup, getClasses } from "../../Login/ducks";
+import useInterval from "@use-it/interval";
 
 // actions
-import { fetchAssignmentsAction, getAssignmentsSelector, transformAssignmentForRedirect } from "../ducks";
+import {
+  fetchAssignmentsAction,
+  getAssignmentsSelector,
+  assignmentsSelector,
+  transformAssignmentForRedirect
+} from "../ducks";
 
-import { addRealtimeAssignmentAction } from "../../sharedDucks/AssignmentModule/ducks";
+import { addRealtimeAssignmentAction, rerenderAssignmentsAction } from "../../sharedDucks/AssignmentModule/ducks";
 import { addRealtimeReportAction } from "../../sharedDucks/ReportsModule/ducks";
 // components
 import AssignmentCard from "../../sharedComponents/AssignmentCard";
 import NoDataIcon from "../../assets/nodata.svg";
+
+const withinThreshold = (targetDate, threshold) => {
+  const diff = new Date(targetDate) - Date.now();
+  if (diff > 0 && diff <= threshold) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ *
+ * @param {Object[]} assignments
+ * @returns {boolean}
+ */
+const needRealtimeDateTracking = assignments => {
+  const threshold = 24 * 60 * 60 * 1000; // 24 hours
+  for (const assignment of assignments) {
+    if (assignment.endDate && withinThreshold(assignment.endDate, threshold)) {
+      return true;
+    }
+    for (const cls of assignment.class) {
+      if (cls.startDate && withinThreshold(cls.startDate, threshold)) {
+        return true;
+      }
+      if (cls.endDate && withinThreshold(cls.endDate, threshold)) {
+        return true;
+      }
+    }
+  }
+  return false;
+};
 
 const Content = ({
   flag,
@@ -25,7 +62,9 @@ const Content = ({
   userId,
   addRealtimeAssignment,
   addRealtimeReport,
-  isLoading
+  isLoading,
+  rerenderAssignments,
+  allAssignments
 }) => {
   useEffect(() => {
     fetchAssignments(currentGroup);
@@ -43,6 +82,12 @@ const Content = ({
   };
 
   useRealtimeV2(topics, { addAssignment: transformAssignment, addReport: addRealtimeReport });
+
+  useInterval(() => {
+    if (needRealtimeDateTracking(allAssignments)) {
+      rerenderAssignments();
+    }
+  }, 60 * 1000);
 
   const noDataNotification = () => {
     return (
@@ -84,6 +129,7 @@ export default connect(
     flag: state.ui.flag,
     currentGroup: getCurrentGroup(state),
     assignments: getAssignmentsSelector(state),
+    allAssignments: values(assignmentsSelector(state)),
     allClasses: getClasses(state),
     userId: get(state, "user.user._id"),
     isLoading: get(state, "studentAssignment.isLoading")
@@ -91,7 +137,8 @@ export default connect(
   {
     fetchAssignments: fetchAssignmentsAction,
     addRealtimeAssignment: addRealtimeAssignmentAction,
-    addRealtimeReport: addRealtimeReportAction
+    addRealtimeReport: addRealtimeReportAction,
+    rerenderAssignments: rerenderAssignmentsAction
   }
 )(Content);
 

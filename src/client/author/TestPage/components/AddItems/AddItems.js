@@ -50,7 +50,7 @@ class AddItems extends PureComponent {
     receiveTestItems: PropTypes.func.isRequired,
     onAddItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
-    readOnlyMode: PropTypes.bool,
+    isEditable: PropTypes.bool,
     selectedItems: PropTypes.array.isRequired,
     windowWidth: PropTypes.number.isRequired,
     page: PropTypes.number.isRequired,
@@ -264,7 +264,7 @@ class AddItems extends PureComponent {
       curriculumStandards,
       loading,
       items,
-      readOnlyMode,
+      isEditable,
       onAddItems,
       t,
       createTestItemModalVisible,
@@ -316,7 +316,7 @@ class AddItems extends PureComponent {
                       testId={this.props.match.params.id}
                       search={search}
                       showModal={true}
-                      readOnlyMode={readOnlyMode}
+                      isEditable={isEditable}
                       addDuplicate={this.handleDuplicateItem}
                       gotoSummary={gotoSummary}
                     />

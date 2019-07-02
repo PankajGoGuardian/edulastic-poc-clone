@@ -88,7 +88,7 @@ class PreviewModal extends React.Component {
       loading,
       item = { rows: [], data: {}, authors: [] },
       currentAuthorId,
-      readOnlyMode = false,
+      isEditable = false,
       checkAnswer,
       showAnswer,
       preview,
@@ -108,7 +108,7 @@ class PreviewModal extends React.Component {
           {showEvaluationButtons && (
             <FlexContainer justifyContent={"flex-end"} style={{ "flex-basis": "400px" }}>
               <ButtonsWrapper>
-                {allowDuplicate && !readOnlyMode && (
+                {allowDuplicate && isEditable && (
                   <EduButton
                     title="Duplicate"
                     style={{ width: 42, padding: 0 }}
@@ -118,7 +118,7 @@ class PreviewModal extends React.Component {
                     <IconDuplicate color="#00AD50" />
                   </EduButton>
                 )}
-                {authorHasPermission && !readOnlyMode && (
+                {authorHasPermission && isEditable && (
                   <EduButton
                     title="Edit Test"
                     style={{ width: 42, padding: 0 }}
@@ -161,7 +161,7 @@ PreviewModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   data: PropTypes.object.isRequired,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   owner: PropTypes.bool,
   addDuplicate: PropTypes.func,
   showModal: PropTypes.bool,

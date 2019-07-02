@@ -5,4 +5,5 @@ export const Stimulus = styled.div`
   color: #444444;
   margin-top: 3px;
   cursor: pointer;
+  word-break: break-all;
 `;

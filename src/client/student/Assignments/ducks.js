@@ -254,7 +254,7 @@ export function* watcherSaga() {
 }
 
 // selectors
-const assignmentsSelector = state => state.studentAssignment.byId;
+export const assignmentsSelector = state => state.studentAssignment.byId;
 const reportsSelector = state => state.studentReport.byId;
 
 export const filterSelector = state => state.studentAssignment.filter;

@@ -38,7 +38,7 @@ const exactCompareFunction = ({ answers, userResponse = [] }) => {
       });
     });
 
-    const currentScore = matches === totalMatches ? totalScore : 0;
+    const currentScore = totalMatches && matches === totalMatches ? totalScore : 0;
 
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);

@@ -3,16 +3,40 @@ import PropTypes from "prop-types";
 import { compose } from "redux";
 import { withTheme } from "styled-components";
 
+import { Col } from "antd";
+import produce from "immer";
+import { FlexContainer } from "@edulastic/common";
 import WidgetOptions from "../../../containers/WidgetOptions";
 
-import Extras from "./Extras";
 import Settings from "./Settings";
+import Extras from "../../../containers/Extras";
+import { Label } from "../../../styled/WidgetOptions/Label";
+import { StyledRow } from "../styled/StyledRow";
+import { StyledInput } from "../styled/StyledInput";
+import { Subtitle } from "../../../styled/Subtitle";
+import { Widget } from "../../../styled/Widget";
 
 const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advancedAreOpen, setQuestionData }) => {
   const [modalSettings, setModalSettings] = useState({
     editMode: false,
     modalName: ""
   });
+
+  const handleUiChange = (prop, value) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft.ui_style[prop] = value;
+      })
+    );
+  };
+
+  const handleChange = (prop, value) => {
+    setQuestionData(
+      produce(item, draft => {
+        draft[prop] = value;
+      })
+    );
+  };
 
   return (
     <WidgetOptions
@@ -32,15 +56,40 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
         advancedAreOpen={advancedAreOpen}
       />
 
-      <Extras
-        t={t}
-        item={item}
-        theme={theme}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-        advancedAreOpen={advancedAreOpen}
-        setQuestionData={setQuestionData}
-      />
+      <Widget style={{ display: advancedAreOpen ? "block" : "none" }}>
+        <Subtitle>{t("component.options.extras")}</Subtitle>
+
+        <StyledRow gutter={32}>
+          <Col span={12}>
+            <Label>{t("component.video.width")}</Label>
+            <StyledInput
+              size="large"
+              type="number"
+              value={item && item.ui_style && item.ui_style.width ? item.ui_style.width : ""}
+              onChange={e => handleUiChange("width", e.target.value)}
+            />
+          </Col>
+          <Col span={12}>
+            <Label>{t("component.video.height")}</Label>
+            <StyledInput
+              size="large"
+              type="number"
+              value={item && item.ui_style && item.ui_style.height ? item.ui_style.height : ""}
+              onChange={e => handleUiChange("height", e.target.value)}
+            />
+          </Col>
+        </StyledRow>
+        <StyledRow gutter={32}>
+          <Col span={24}>
+            <Label>{t("component.video.transcript")}</Label>
+            <StyledInput
+              size="large"
+              value={item.transcript || ""}
+              onChange={e => handleChange("transcript", e.target.value)}
+            />
+          </Col>
+        </StyledRow>
+      </Widget>
     </WidgetOptions>
   );
 };

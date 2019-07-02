@@ -22,10 +22,13 @@ const transformItemRow = ([row], qid) => [
 ];
 
 const splitItems = (item, testItem) => {
-  return testItem.data.questions.map(({ id: qid, ...qRest }) => ({
-    item: transformItemRow(item, qid),
-    question: { id: qid, ...qRest }
-  }));
+  return (
+    testItem.data &&
+    testItem.data.questions.map(({ id: qid, ...qRest }) => ({
+      item: transformItemRow(item, qid),
+      question: { id: qid, ...qRest }
+    }))
+  );
 };
 
 const SortableItem = SortableElement(
@@ -35,7 +38,7 @@ const SortableItem = SortableElement(
     item,
     testItem,
     onCheck,
-    readOnlyMode = false,
+    isEditable = false,
     points,
     onChangePoints,
     owner,
@@ -50,7 +53,7 @@ const SortableItem = SortableElement(
      * @type {{item:Object,question:Object}[]}
      */
     const items = testItem.itemLevelScoring
-      ? [{ item, question: testItem.data.questions[0] }]
+      ? [{ item, question: (testItem.data && testItem.data.questions[0]) || {} }]
       : splitItems(item, testItem);
 
     return (
@@ -58,10 +61,12 @@ const SortableItem = SortableElement(
         {mobile ? (
           <FlexContainer flexDirection="column" alignItems="flex-start">
             <FlexContainer justifyContent="space-between" style={{ width: "100%", marginBottom: "15px" }}>
-              <FlexContainer flexDirection="column" justifyContent="center">
-                <DragHandle />
-                <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
-              </FlexContainer>
+              {isEditable && (
+                <FlexContainer flexDirection="column" justifyContent="center">
+                  <DragHandle />
+                  <QuestionCheckbox data-cy="queCheckbox" checked={selected.includes(indx)} onChange={handleCheck} />
+                </FlexContainer>
+              )}
 
               <FlexContainer>
                 <PreviewButton data-cy="previewButton" onClick={() => onPreview(metaInfoData.id)}>
@@ -73,7 +78,7 @@ const SortableItem = SortableElement(
                     data-cy="points"
                     size="large"
                     type="number"
-                    disabled={!owner || readOnlyMode}
+                    disabled={!owner || !isEditable}
                     value={points}
                     onChange={e => onChangePoints(metaInfoData.id, +e.target.value)}
                   />
@@ -108,7 +113,7 @@ const SortableItem = SortableElement(
                     justifyContent="center"
                   >
                     {index === 0 && <DragHandle />}
-                    <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />
+                    {isEditable && <QuestionCheckbox checked={selected.includes(indx)} onChange={handleCheck} />}
                   </FlexContainer>
                   <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
                     <TestItemPreview
@@ -132,7 +137,7 @@ const SortableItem = SortableElement(
                     <PointsInput
                       size="large"
                       type="number"
-                      disabled={!owner || readOnlyMode}
+                      disabled={!owner || !isEditable}
                       value={
                         testItem.itemLevelScoring
                           ? testItem.itemLevelScore
@@ -162,7 +167,7 @@ const List = SortableContainer(
     testItems,
     onChangePoints,
     types,
-    readOnlyMode = false,
+    isEditable = false,
     standards,
     scoring,
     onPreview,
@@ -219,7 +224,7 @@ const List = SortableContainer(
             index={i}
             owner={owner}
             indx={i}
-            readOnlyMode={readOnlyMode}
+            isEditable={isEditable}
             item={item}
             testItem={testItems[i]}
             points={getPoints(i)}
@@ -244,7 +249,7 @@ List.propTypes = {
   onPreview: PropTypes.func.isRequired,
   testItems: PropTypes.array.isRequired,
   types: PropTypes.any.isRequired,
-  readOnlyMode: PropTypes.bool,
+  isEditable: PropTypes.bool,
   standards: PropTypes.object.isRequired,
   scoring: PropTypes.object.isRequired,
   owner: PropTypes.bool,

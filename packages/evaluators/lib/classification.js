@@ -57,7 +57,7 @@ var exactCompareFunction = function exactCompareFunction(_ref) {
         }
       });
     });
-    var currentScore = matches === totalMatches ? totalScore : 0;
+    var currentScore = totalMatches && matches === totalMatches ? totalScore : 0;
     score = Math.max(score, currentScore);
     maxScore = Math.max(maxScore, totalScore);
 

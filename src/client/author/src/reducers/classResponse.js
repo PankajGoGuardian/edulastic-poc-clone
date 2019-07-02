@@ -8,14 +8,12 @@ import {
 const initialState = {
   data: {},
   error: null,
-  loading: false,
+  loading: true,
   showScore: false
 };
 
 const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
-    case RECEIVE_CLASS_RESPONSE_REQUEST:
-      return { ...state, loading: true };
     case RECEIVE_CLASS_RESPONSE_SUCCESS:
       return {
         ...state,

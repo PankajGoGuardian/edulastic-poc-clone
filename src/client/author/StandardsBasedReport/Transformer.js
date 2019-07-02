@@ -10,20 +10,30 @@ export const getStandardWisePerformance = (testActivities, std) => {
 
   const questionActivitiesByQid = groupBy(questionActivities, "_id");
   let performanceStudentWise = {};
-  for (let qid of std.qIds) {
-    const questionActs = questionActivitiesByQid[qid] || [];
+  if (std && std.qIds) {
+    for (let qid of std.qIds) {
+      const questionActs = questionActivitiesByQid[qid] || [];
 
-    for (let qAct of questionActs) {
-      if (qAct.scoringDisabled || qAct.disabled) {
-        continue;
-      }
-      const { studentId } = qAct;
-      if (!performanceStudentWise[studentId]) {
-        performanceStudentWise[studentId] = qAct.score / qAct.maxScore;
-      } else {
-        performanceStudentWise[studentId] = (performanceStudentWise[studentId] + qAct.score / qAct.maxScore) / 2;
+
+      for (let qAct of questionActs) {
+        if (qAct.scoringDisabled || qAct.disabled) {
+          continue;
+        }
+        const { studentId } = qAct;
+        if (!performanceStudentWise[studentId]) {
+          performanceStudentWise[studentId] = { score: qAct.score, maxScore: qAct.maxScore, count: 1 };
+        } else {
+          performanceStudentWise[studentId].score += qAct.score;
+          performanceStudentWise[studentId].maxScore += qAct.maxScore;
+          performanceStudentWise[studentId].count++;
+        }
       }
     }
+  }
+
+  for (const key of Object.keys(performanceStudentWise)) {
+    const { score, maxScore } = performanceStudentWise[key];
+    performanceStudentWise[key] = score / maxScore;
   }
 
   return performanceStudentWise;

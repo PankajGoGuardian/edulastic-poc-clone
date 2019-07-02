@@ -147,18 +147,12 @@ export const WidgetSubHeading = styled.div`
 `;
 
 export const WidgetMethods = styled.div`
-  display: flex;
-  flex-wrap: wrap;
+  columns: 2;
 
   > div {
-    width: 50%;
+    width: 100%;
     margin-top: 26px;
-    order: 1;
-
-    &:nth-child(1),
-    &:nth-child(2) {
-      margin-top: 0;
-    }
+    display: inline-block;
   }
 
   .ant-checkbox-wrapper {
@@ -170,10 +164,6 @@ export const WidgetMethods = styled.div`
     width: calc(100% - 35px) !important;
     max-width: 295px;
   }
-`;
-
-export const WidgetSecondMethod = styled.div`
-  order: 2 !important;
 `;
 
 export const WidgetFRInput = styled.div`

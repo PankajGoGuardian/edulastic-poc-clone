@@ -28,7 +28,7 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
       dataIndex: "grade",
       render: (_, row) => {
         const grade = findGrade(row.grade);
-        return <div>{grade.text}</div>;
+        return <div>{grade.value || grade.text}</div>;
       }
     },
     {
@@ -37,14 +37,6 @@ const ClassList = ({ groups, archiveGroups, setEntity }) => {
       render: (_, row) => {
         const subject = findSubject(row.subject);
         return <div>{subject.text}</div>;
-      }
-    },
-    {
-      title: "Tags",
-      dataIndex: "tags",
-      render: (_, row) => {
-        const { tags = [] } = row;
-        return tags.map((tag, index) => <span key={index}>{tag}, </span>);
       }
     },
     {

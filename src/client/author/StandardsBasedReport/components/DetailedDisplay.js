@@ -1,6 +1,6 @@
 //@ts-check
 import React, { Component } from "react";
-import { Icon } from "antd";
+import { Icon, Row, Col } from "antd";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import PropTypes from "prop-types";
@@ -130,8 +130,31 @@ class DetailedDisplay extends Component {
             </DetailCardTitle>
             <DetailCardSubTitle>{`Standard: ${data.identifier}`}</DetailCardSubTitle>
             <DetailCardDesc>{data.desc}</DetailCardDesc>
-            <DetailCardSubTitle>MasterySummary</DetailCardSubTitle>
-            <MasterySummary strokeColor={this.props.color} percent={round(parseFloat(performancePercentage), 2) || 0} />
+            <Row style={{ marginTop: "10px" }}>
+              <Col span={15}>
+                {" "}
+                <p style={{ fontSize: "14px", color: "rgba(0,0,0,0.3)", fontWeight: "bold" }}>MASTERY SUMMARY</p>
+              </Col>
+              <Col span={9}>
+                <MasterySummary
+                  strokeColor={this.props.color}
+                  showInfo={false}
+                  percent={round(parseFloat(performancePercentage), 2) || 0}
+                />
+              </Col>
+            </Row>
+            <Row style={{ marginTop: "10px" }}>
+              <Col span={15}>
+                {" "}
+                <p style={{ fontSize: "14px", color: "rgba(0,0,0,0.3)", fontWeight: "bold" }}>PERFORMANCE SUMMARY</p>
+              </Col>
+              <Col span={9}>
+                {" "}
+                <p style={{ fontSize: "14px", fontWeight: "bold", color: "#5eb500" }}>
+                  {round(parseFloat(performancePercentage), 2) || 0}%{" "}
+                </p>
+              </Col>
+            </Row>
           </DetailCardHeader>
           <DetailTable columns={columns} dataSource={this.displayData()} pagination={false} />
         </DetailCard>

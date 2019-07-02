@@ -148,6 +148,61 @@ const getColoredAnswer = answerArr => {
   return answerArr;
 };
 
+const getCorrectAnswer = answerArr => {
+  if (Array.isArray(answerArr)) {
+    return answerArr.map(el => {
+      switch (el.type) {
+        case CONSTANT.TOOLS.SEGMENTS_POINT:
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
+          return {
+            colors: Colors.green[CONSTANT.TOOLS.POINT],
+            pointColor: Colors.green[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_INCLUDED:
+          return {
+            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
+            rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_BOTH_POINT_HOLLOW:
+          return {
+            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
+            rightPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_LEFT_POINT_HOLLOW:
+          return {
+            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
+            rightPointColor: Colors.green[CONSTANT.TOOLS.POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.SEGMENT_RIGHT_POINT_HOLLOW:
+          return {
+            lineColor: Colors.green[CONSTANT.TOOLS.POINT],
+            leftPointColor: Colors.green[CONSTANT.TOOLS.POINT],
+            rightPointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+        case CONSTANT.TOOLS.RAY_LEFT_DIRECTION_RIGHT_HOLLOW:
+        case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
+          return {
+            colors: Colors.green[CONSTANT.TOOLS.POINT],
+            pointColor: Colors.green[CONSTANT.TOOLS.SEGMENTS_POINT],
+            ...el
+          };
+        default:
+          return null;
+      }
+    });
+  }
+  return answerArr;
+};
+
 const getCompareResult = evaluation => {
   if (!evaluation) {
     return null;
@@ -346,7 +401,7 @@ class AxisSegmentsContainer extends PureComponent {
 
     if (showAnswer) {
       this._graph.resetAnswers();
-      this._graph.loadSegmentsAnswers(getColoredAnswer(elements));
+      this._graph.loadSegmentsAnswers(getCorrectAnswer(elements));
       return;
     }
 

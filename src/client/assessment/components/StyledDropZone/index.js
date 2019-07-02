@@ -29,7 +29,7 @@ const StyledDropZone = ({
       {loading ? (
         <div
           style={{
-            margin: "0 auto",
+            margin: "auto",
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
@@ -44,7 +44,7 @@ const StyledDropZone = ({
           <Fragment>
             <div
               style={{
-                margin: "0 auto",
+                margin: "auto",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",

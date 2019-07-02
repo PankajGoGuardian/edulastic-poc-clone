@@ -3,6 +3,7 @@ import { schema } from "normalizr";
 
 import { takeLatest, put, call } from "redux-saga/effects";
 import { questionsApi } from "@edulastic/api";
+import { cloneDeep } from "lodash";
 
 // assignments schema
 export const assignmentSchema = new schema.Entity("assignments", {}, { idAttribute: "_id" });
@@ -17,6 +18,7 @@ export const SET_FILTER = "[studentAssignment] set filter";
 
 export const CHECK_ANSWER = "check answer";
 export const ADD_EVALUATION = "add evaluation";
+export const RERENDER_ASSIGNMENTS = "rerender assignments";
 
 // action dispatchers
 export const setAssignmentsLoadingAction = createAction(SET_LOADING);
@@ -24,6 +26,7 @@ export const setAssignmentsAction = createAction(SET_ASSIGNMENTS);
 export const setActiveAssignmentAction = createAction(SET_ACTIVE_ASSIGNMENT);
 export const setFilterAction = createAction(SET_FILTER);
 export const addRealtimeAssignmentAction = createAction(ADD_ASSIGNMENT_REALTIME);
+export const rerenderAssignmentsAction = createAction(RERENDER_ASSIGNMENTS);
 
 // initial State
 const initialState = {
@@ -66,7 +69,15 @@ export default createReducer(initialState, {
   [SET_ACTIVE_ASSIGNMENT]: (state, { payload }) => {
     state.current = payload;
   },
-  [SET_FILTER]: setFilter
+  [SET_FILTER]: setFilter,
+  [RERENDER_ASSIGNMENTS]: state => {
+    /**
+     * one of the few places , using cloneDeep is justified.
+     * Just clonning deeply and replacing the value with cloned value would cause the selectors
+     * to rerun and cause rerender
+     */
+    state.byId = cloneDeep(state.byId);
+  }
 });
 
 function* addEvaluation(action) {

@@ -132,7 +132,7 @@ class QuestionViewContainer extends Component {
 
     if (!isEmpty(testActivity)) {
       data = testActivity
-        .filter(student => student.status != "notStarted")
+        .filter(student => student.status != "notStarted" || student.redirect)
         .map(st => {
           const name = isPresentationMode ? st.fakeName : st.studentName;
           const stData = {

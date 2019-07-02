@@ -74,7 +74,7 @@ class TableDisplay extends Component {
     if (submittedActs.length && !state.dataLoaded) {
       const firstStandard = standards.sort((a, b) => (b.masterySummary || 0) - (a.masterySummary || 0))[0];
       const perfomancePercentage = getPerfomancePercentage(props.testActivities, firstStandard);
-      return { selectedRow: 1, stdId: firstStandard._id, perfomancePercentage, dataLoaded: true };
+      return { selectedRow: 1, stdId: firstStandard ? firstStandard._id : "", perfomancePercentage, dataLoaded: true };
     }
   }
 
@@ -234,7 +234,7 @@ class TableDisplay extends Component {
           </StyledCard>
         )}
 
-        {selectedRow !== 0 && (
+        {selectedRow !== 0 && this.state.stdId != "" && (
           <DetailedDisplay
             onClose={e => this.onCaretClick(e, 0, stdId)}
             data={standards.find(std => std._id === stdId)}

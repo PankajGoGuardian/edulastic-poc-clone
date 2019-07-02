@@ -10,7 +10,6 @@ import selectsData from "../../../TestPage/components/common/selectsData";
 
 const { allGrades, allSubjects } = selectsData;
 
-
 // eslint-disable-next-line max-len
 const RightFields = ({
   defaultSchool,
@@ -24,14 +23,11 @@ const RightFields = ({
   userOrgData,
   ...restProps
 }) => {
-
   const [startDate, setStartDate] = useState(moment());
-
 
   //@todo default term id is not coming in terms list.
   // For now below logic is implemented to set default term end date
   const { endDate } = userOrgData.terms.filter(term => term.endDate > Date.now())[0];
-
 
   const updateSubject = e => {
     setSubject(e);

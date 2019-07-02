@@ -239,7 +239,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
         skipped = false;
       }
 
-      if (graded === false) {
+      if (graded === false && !notStarted) {
         questionMap[_id].manualGradedNum += 1;
       } else if (score === maxScore && !notStarted && score > 0) {
         questionMap[_id].correctNum += 1;

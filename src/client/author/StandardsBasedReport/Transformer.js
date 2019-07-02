@@ -14,7 +14,11 @@ export const getStandardWisePerformance = (testActivities, std) => {
     for (let qid of std.qIds) {
       const questionActs = questionActivitiesByQid[qid] || [];
 
+
       for (let qAct of questionActs) {
+        if (qAct.scoringDisabled || qAct.disabled) {
+          continue;
+        }
         const { studentId } = qAct;
         if (!performanceStudentWise[studentId]) {
           performanceStudentWise[studentId] = { score: qAct.score, maxScore: qAct.maxScore, count: 1 };

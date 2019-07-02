@@ -20,10 +20,16 @@ import {
 } from "@edulastic/colors";
 import { signupAction, googleLoginAction, cleverLoginAction, msoLoginAction } from "../../../Login/ducks";
 import {
+  getPartnerKeyFromUrl,
+  validatePartnerUrl,
+  getPartnerLoginUrl,
+  getPartnerStudentSignupUrl,
+  getPartnerDASignupUrl,
   isDistrictPolicyAllowed,
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl
 } from "../../../../common/utils/helpers";
+import { Partners } from "../../../../common/utils/static/partnerData";
 
 import teacherBg from "../../../assets/bg-teacher.png";
 import userIcon from "../../../assets/user-icon.svg";
@@ -114,6 +120,9 @@ class Signup extends React.Component {
 
     const changeValidValue = value => trim(value);
 
+    const partnerKey = getPartnerKeyFromUrl(location.pathname);
+    const partner = Partners[partnerKey];
+
     return (
       <div>
         <RegistrationWrapper image={image}>
@@ -123,7 +132,7 @@ class Signup extends React.Component {
             </Col>
             <Col span={12} align="right">
               <span>{t("component.signup.alreadyhaveanaccount")}</span>
-              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>
+              <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
                 {t("common.signinbtn")}
               </Link>
             </Col>
@@ -137,13 +146,19 @@ class Signup extends React.Component {
                   </h1>
                   {!isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link to="/adminsignup">{t("component.signup.signupasadmin")}</Link>
+                      <Link to={getPartnerDASignupUrl(partner)}>{t("component.signup.signupasadmin")}</Link>
                     </LinkDiv>
                   ) : null}
                   {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") ||
                   !isSignupUsingDaURL ? (
                     <LinkDiv>
-                      <Link to={isSignupUsingDaURL ? getDistrictStudentSignupUrl(districtShortName) : "/studentsignup"}>
+                      <Link
+                        to={
+                          isSignupUsingDaURL
+                            ? getDistrictStudentSignupUrl(districtShortName)
+                            : getPartnerStudentSignupUrl(partner)
+                        }
+                      >
                         {t("component.signup.signupasstudent")}
                       </Link>
                     </LinkDiv>

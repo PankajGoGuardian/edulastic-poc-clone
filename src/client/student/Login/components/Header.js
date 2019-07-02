@@ -6,7 +6,11 @@ import { compose } from "redux";
 import { Row, Col } from "antd";
 import { Link } from "react-router-dom";
 import { springGreen } from "@edulastic/colors";
-import { getDistrictGetStartedUrl, isDistrictPolicyAllowed } from "../../../common/utils/helpers";
+import {
+  getPartnerGetStartedUrl,
+  getDistrictGetStartedUrl,
+  isDistrictPolicyAllowed
+} from "../../../common/utils/helpers";
 
 const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShortName }) => (
   <RegistrationHeader type="flex" align="middle">
@@ -27,9 +31,7 @@ const Header = ({ t, Partners, isSignupUsingDaURL, districtPolicy, districtShort
               isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") ||
               isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp")
                 ? getDistrictGetStartedUrl(districtShortName)
-                : isSignupUsingDaURL
-                ? "Change this"
-                : "/getstarted"
+                : getPartnerGetStartedUrl(Partners)
             }
           >
             {t("common.signupbtn")}

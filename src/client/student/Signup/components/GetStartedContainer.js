@@ -7,86 +7,115 @@ import { compose } from "redux";
 import { withNamespaces } from "@edulastic/localization";
 import { springGreen, mainTextColor, greyGraphstroke, greenDark3, grey } from "@edulastic/colors";
 import {
+  getPartnerKeyFromUrl,
+  validatePartnerUrl,
+  getPartnerLoginUrl,
+  getPartnerStudentSignupUrl,
+  getPartnerTeacherSignupUrl,
+  getPartnerDASignupUrl,
   isDistrictPolicyAllowed,
   getDistrictLoginUrl,
   getDistrictStudentSignupUrl,
   getDistrictTeacherSignupUrl
 } from "../../../common/utils/helpers";
+import { Partners } from "../../../common/utils/static/partnerData";
 
 import loginBg from "../../assets/bg-login.png";
 import studentBg from "../../assets/small-bg-student.png";
 import teacherBg from "../../assets/small-bg-teacher.png";
 import adminBg from "../../assets/small-bg-adm.png";
 
-const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => (
-  <RegistrationWrapper>
-    <RegistrationBg
-      src={generalSettings && isSignupUsingDaURL ? generalSettings.pageBackground : isSignupUsingDaURL ? "" : loginBg}
-      alt="bg"
-    />
-    <RegistrationHeader type="flex" align="middle">
-      <Col span={12}>
-        <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
-      </Col>
-      <Col span={12} align="right">
-        <span>{t("component.signup.alreadyhaveanaccount")}</span>
-        <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : "/login"}>{t("common.signinbtn")}</Link>
-      </Col>
-    </RegistrationHeader>
-    <RegistrationBody type="flex" align="middle">
-      <Col
-        xs={{ span: 22, offset: 1 }}
-        sm={{ span: 20, offset: 2 }}
-        md={{ span: 18, offset: 3 }}
-        lg={{ span: 12, offset: 6 }}
-      >
-        <Row>
-          <BannerText xs={24}>
-            <h1>{t("component.signup.getstarted.getstartedtext")}</h1>
-            <h4>
-              {t("component.signup.getstarted.subtext")} <br /> {t("component.signup.getstarted.subtext2")}
-            </h4>
-          </BannerText>
-        </Row>
-        <ChooseSignupBox>
-          <h3>{t("component.signup.getstarted.createaccount")}</h3>
-          <CircleDiv size={60} top={-24} left={30} />
-          <CircleDiv size={45} top={64} left={-30} />
-          <CircleDiv size={30} bottom={35} right={-40} />
-          <div className="signupbox-container">
-            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") || !isSignupUsingDaURL ? (
-              <StudentSignupBox
-                data-cy="student"
-                to={isSignupUsingDaURL ? getDistrictStudentSignupUrl(districtShortName) : "/studentsignup"}
-                xs={24}
-                sm={8}
-              >
-                <span>{t("component.signup.getstarted.imstudent")}</span>
-              </StudentSignupBox>
-            ) : null}
-            {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") || !isSignupUsingDaURL ? (
-              <TeacherSignupBox
-                to={isSignupUsingDaURL ? getDistrictTeacherSignupUrl(districtShortName) : "/signup"}
-                xs={24}
-                sm={8}
-              >
-                <span>{t("component.signup.getstarted.imteacher")}</span>
-              </TeacherSignupBox>
-            ) : null}
-            {!isSignupUsingDaURL ? (
-              <AdminSignupBox to="/adminsignup" xs={24} sm={8}>
-                <span>{t("component.signup.getstarted.imadmin")}</span>
-              </AdminSignupBox>
-            ) : null}
-          </div>
-        </ChooseSignupBox>
-      </Col>
-    </RegistrationBody>
-    <Copyright>
-      <Col span={24}>{t("common.copyright")}</Col>
-    </Copyright>
-  </RegistrationWrapper>
-);
+const GetStarted = ({ t, isSignupUsingDaURL, generalSettings, districtPolicy, districtShortName }) => {
+  const partnerKey = getPartnerKeyFromUrl(location.pathname);
+  const partner = Partners[partnerKey];
+
+  return (
+    <RegistrationWrapper>
+      {!isSignupUsingDaURL && !validatePartnerUrl(partner) ? <Redirect exact to="/login" /> : null}
+      <RegistrationBg
+        src={
+          generalSettings && isSignupUsingDaURL
+            ? generalSettings.pageBackground
+            : isSignupUsingDaURL
+            ? ""
+            : partner.background
+        }
+        alt="bg"
+      />
+      <RegistrationHeader type="flex" align="middle">
+        <Col span={12}>
+          <img src="//cdn.edulastic.com/JS/webresources/images/as/as-dashboard-logo.png" alt="Edulastic" />
+        </Col>
+        <Col span={12} align="right">
+          <span>{t("component.signup.alreadyhaveanaccount")}</span>
+          <Link to={isSignupUsingDaURL ? getDistrictLoginUrl(districtShortName) : getPartnerLoginUrl(partner)}>
+            {t("common.signinbtn")}
+          </Link>
+        </Col>
+      </RegistrationHeader>
+      <RegistrationBody type="flex" align="middle">
+        <Col
+          xs={{ span: 22, offset: 1 }}
+          sm={{ span: 20, offset: 2 }}
+          md={{ span: 18, offset: 3 }}
+          lg={{ span: 12, offset: 6 }}
+        >
+          <Row>
+            <BannerText xs={24}>
+              <h1>{t("component.signup.getstarted.getstartedtext")}</h1>
+              <h4>
+                {t("component.signup.getstarted.subtext")} <br /> {t("component.signup.getstarted.subtext2")}
+              </h4>
+            </BannerText>
+          </Row>
+          <ChooseSignupBox>
+            <h3>{t("component.signup.getstarted.createaccount")}</h3>
+            <CircleDiv size={60} top={-24} left={30} />
+            <CircleDiv size={45} top={64} left={-30} />
+            <CircleDiv size={30} bottom={35} right={-40} />
+            <div className="signupbox-container">
+              {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "studentSignUp") || !isSignupUsingDaURL ? (
+                <StudentSignupBox
+                  data-cy="student"
+                  to={
+                    isSignupUsingDaURL
+                      ? getDistrictStudentSignupUrl(districtShortName)
+                      : getPartnerStudentSignupUrl(partner)
+                  }
+                  xs={24}
+                  sm={8}
+                >
+                  <span>{t("component.signup.getstarted.imstudent")}</span>
+                </StudentSignupBox>
+              ) : null}
+              {isDistrictPolicyAllowed(isSignupUsingDaURL, districtPolicy, "teacherSignUp") || !isSignupUsingDaURL ? (
+                <TeacherSignupBox
+                  to={
+                    isSignupUsingDaURL
+                      ? getDistrictTeacherSignupUrl(districtShortName)
+                      : getPartnerTeacherSignupUrl(partner)
+                  }
+                  xs={24}
+                  sm={8}
+                >
+                  <span>{t("component.signup.getstarted.imteacher")}</span>
+                </TeacherSignupBox>
+              ) : null}
+              {!isSignupUsingDaURL ? (
+                <AdminSignupBox to={getPartnerDASignupUrl(partner)} xs={24} sm={8}>
+                  <span>{t("component.signup.getstarted.imadmin")}</span>
+                </AdminSignupBox>
+              ) : null}
+            </div>
+          </ChooseSignupBox>
+        </Col>
+      </RegistrationBody>
+      <Copyright>
+        <Col span={24}>{t("common.copyright")}</Col>
+      </Copyright>
+    </RegistrationWrapper>
+  );
+};
 
 GetStarted.propTypes = {
   t: PropTypes.func.isRequired

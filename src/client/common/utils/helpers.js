@@ -1,5 +1,6 @@
 import { signUpState } from "@edulastic/constants";
 import { isUndefined, isEmpty } from "lodash";
+import { Partners } from "./static/partnerData";
 
 export const getWordsInURLPathName = pathname => {
   let path = pathname;
@@ -43,6 +44,67 @@ export const isLoggedInForLoggedOutRoute = user => {
     }
   }
   return false;
+};
+
+export const validatePartnerUrl = partner => {
+  const pathname = location.pathname;
+  if (partner.keyName !== "login" && pathname.includes("partnerLogin") && pathname.includes(partner.keyName)) {
+    return true;
+  } else if (partner.keyName === "login" && !pathname.includes("partnerLogin") && pathname.includes(partner.keyName)) {
+    return true;
+  }
+  return false;
+};
+
+export const getPartnerLoginUrl = partner => {
+  if (partner.keyName === "login") {
+    return `/login`;
+  } else {
+    return `/partnerLogin/${partner.keyName}/`;
+  }
+};
+
+export const getPartnerTeacherSignupUrl = partner => {
+  if (partner.keyName === "login") {
+    return `/signup`;
+  } else {
+    return `/partnerLogin/${partner.keyName}/signup`;
+  }
+};
+
+export const getPartnerStudentSignupUrl = partner => {
+  if (partner.keyName === "login") {
+    return `/studentsignup`;
+  } else {
+    return `/partnerLogin/${partner.keyName}/studentsignup`;
+  }
+};
+
+export const getPartnerDASignupUrl = partner => {
+  if (partner.keyName === "login") {
+    return `/adminsignup`;
+  } else {
+    return `/partnerLogin/${partner.keyName}/adminsignup`;
+  }
+};
+
+export const getPartnerGetStartedUrl = partner => {
+  if (partner.keyName === "login") {
+    return `/getStarted`;
+  } else {
+    return `/partnerLogin/${partner.keyName}/getStarted/`;
+  }
+};
+
+export const getPartnerKeyFromUrl = pathname => {
+  const pathArr = pathname.split("/");
+  let partnersArr = Object.keys(Partners);
+  let tempPartner = pathArr[partnersArr.length - 1];
+  const foundPartner = partnersArr.find(item => item === tempPartner);
+  if (foundPartner) {
+    return foundPartner;
+  }
+  return "login";
 };
 
 export const getDistrictLoginUrl = districtShortName => {

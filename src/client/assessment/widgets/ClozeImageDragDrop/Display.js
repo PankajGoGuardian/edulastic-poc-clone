@@ -384,6 +384,7 @@ class Display extends Component {
         stemnumeration={stemnumeration}
         fontSize={fontSize}
         showAnswer={showAnswer}
+        checkAnswer={checkAnswer}
         userSelections={userAnswers}
         evaluation={evaluation}
         drop={drop}

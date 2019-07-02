@@ -1022,10 +1022,10 @@ textinput::before {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 4px;
 }
-
+/* 
 .imagelabeldragdrop-droppable.active .index-box {
   background: #00b0ff;
-}
+} */
 
 .iseditablearialabel .index-box {
   border-radius: 4px;

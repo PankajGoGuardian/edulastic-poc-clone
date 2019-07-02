@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { find } from "lodash";
 import styled from "styled-components";
 import { MathKeyboard } from "@edulastic/common";
+
 import CheckedBlock from "./CheckedBlock";
 
 class ClozeMathInput extends React.Component {
@@ -123,15 +124,31 @@ class ClozeMathInput extends React.Component {
     }
   };
 
+  getStyles = uiStyles => {
+    const btnStyle = {};
+    if (uiStyles.fontSize) {
+      btnStyle.fontSize = uiStyles.fontSize;
+    }
+    if (uiStyles.width) {
+      btnStyle.width = uiStyles.width;
+    }
+    return uiStyles;
+  };
+
   render() {
     const { resprops = {}, id } = this.props;
-    const { item } = resprops;
+    const { item, uiStyles = {} } = resprops;
     const { showKeyboard } = this.state;
     const width = item.ui_style[id] && item.ui_style[id].widthpx;
+    const btnStyle = this.getStyles(uiStyles);
+
+    if (width) {
+      btnStyle.width = `${width}px`;
+    }
 
     return (
-      <span ref={this.wrappedRef} style={{ width: !width ? "auto" : `${width}px` }}>
-        <span ref={this.mathRef} onClick={this.showKeyboardModal} />
+      <span ref={this.wrappedRef} style={btnStyle}>
+        <span ref={this.mathRef} onClick={this.showKeyboardModal} style={btnStyle} />
         {showKeyboard && (
           <KeyboardWrapper>
             <MathKeyboard

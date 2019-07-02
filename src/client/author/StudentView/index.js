@@ -125,7 +125,8 @@ class StudentViewContainer extends Component {
       variableSetIds,
       isPresentationMode,
       testItemsOrder,
-      testItemIds
+      testItemIds,
+      entities
     } = this.props;
 
     const { loading, filter, showFeedbackPopup } = this.state;
@@ -137,6 +138,18 @@ class StudentViewContainer extends Component {
       }
       return studentId === userId;
     });
+    const totalNumber = currentStudent.questionActivities.filter(
+      x => !x.scoringDisabled || !x.disabled || (x.notStarted && !(x.skipped && !x.score))
+    ).length;
+    const correctNumber = currentStudent.questionActivities.filter(x => x.score === x.maxScore && x.score > 0).length;
+
+    const wrongNumber = currentStudent.questionActivities.filter(
+      x => x.score === 0 && x.maxScore > 0 && /* x.graded &&*/ !x.skipped
+    ).length;
+
+    const partiallyCorrectNumber = currentStudent.questionActivities.filter(x => x.score > 0 && x.score < x.maxScore)
+      .length;
+
     const studentTestActivity = studentResponse && studentResponse.testActivity;
     const initFeedbackValue =
       (studentTestActivity && studentTestActivity.feedback && studentTestActivity.feedback.text) || "";
@@ -173,16 +186,16 @@ class StudentViewContainer extends Component {
         <StyledFlexContainer justifyContent="space-between">
           <StudentButtonDiv>
             <AllButton active={filter === null} onClick={() => this.setState({ filter: null })}>
-              ALL
+              ALL ({totalNumber})
             </AllButton>
             <CorrectButton active={filter === "correct"} onClick={() => this.setState({ filter: "correct" })}>
-              CORRECT
+              CORRECT ({correctNumber})
             </CorrectButton>
             <WrongButton active={filter === "wrong"} onClick={() => this.setState({ filter: "wrong" })}>
-              WRONG
+              WRONG ({wrongNumber})
             </WrongButton>
             <PartiallyCorrectButton active={filter === "partial"} onClick={() => this.setState({ filter: "partial" })}>
-              PARTIALLY CORRECT
+              PARTIALLY CORRECT ({partiallyCorrectNumber})
             </PartiallyCorrectButton>
           </StudentButtonDiv>
           <GiveOverallFeedBackButton onClick={() => this.handleShowFeedbackPopup(true)} active>
@@ -221,7 +234,8 @@ const enhance = compose(
       testItemsOrder: getTestItemsOrderSelector(state),
       variableSetIds: getDynamicVariablesSetIdForViewResponse(state, ownProps.selectedStudent),
       isPresentationMode: get(state, ["author_classboard_testActivity", "presentationMode"], false),
-      testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", [])
+      testItemIds: get(state, "author_classboard_testActivity.data.test.testItems", []),
+      entities: get(state, "author_classboard_testActivity.entities", [])
     }),
     {
       loadStudentResponses: receiveStudentResponseAction,

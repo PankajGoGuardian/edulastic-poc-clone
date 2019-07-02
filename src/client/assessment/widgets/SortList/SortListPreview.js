@@ -38,8 +38,8 @@ const SortListPreview = ({
   userAnswer,
   saveAnswer,
   showQuestionNumber,
-  qIndex,
-  disableResponse
+  disableResponse,
+  changePreviewTab
 }) => {
   const { source = [], instructor_stimulus, stimulus } = item;
 
@@ -200,6 +200,7 @@ const SortListPreview = ({
                 onDrop={onDrop}
                 obj={draggableItem}
                 disableResponse={disableResponse}
+                changePreviewTab={changePreviewTab}
               />
             </DropContainer>
           ))}
@@ -233,6 +234,7 @@ const SortListPreview = ({
                 onDrop={onDrop}
                 obj={disableResponse ? inCorrectList[valid_response[i]] : selectedItem}
                 disableResponse={disableResponse}
+                changePreviewTab={changePreviewTab}
               />
             </DropContainer>
           ))}
@@ -260,7 +262,8 @@ SortListPreview.propTypes = {
   saveAnswer: PropTypes.func.isRequired,
   showQuestionNumber: PropTypes.bool,
   qIndex: PropTypes.number,
-  disableResponse: PropTypes.bool
+  disableResponse: PropTypes.bool,
+  changePreviewTab: PropTypes.func.isRequired
 };
 
 SortListPreview.defaultProps = {

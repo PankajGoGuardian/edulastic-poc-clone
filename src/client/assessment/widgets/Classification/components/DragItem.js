@@ -8,6 +8,7 @@ import { IconCheck } from "../styled/IconCheck";
 import { IconClose } from "../styled/IconClose";
 import { IndexBox } from "../styled/IndexBox";
 import { getStyles } from "../utils";
+import { CLEAR } from "../../../constants/constantsForQuestions";
 
 function collectSource(connector, monitor) {
   return {
@@ -18,6 +19,9 @@ function collectSource(connector, monitor) {
 
 const specSource = {
   beginDrag(props) {
+    if (props.previewTab !== CLEAR && typeof props.changePreviewTab === "function") {
+      props.changePreviewTab();
+    }
     return { item: props.item };
   },
 

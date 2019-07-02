@@ -222,7 +222,14 @@ class Review extends PureComponent {
       currentTestId
     } = this.state;
     const totalPoints = test.scoring.total;
+
     const questionsCount = test.testItems.length;
+
+    // when redirected from other pages, sometimes, test will only be having
+    // ids in its testitems, which could create issues.
+    if (test.testItem && test.testItems.some(i => typeof i === "string")) {
+      return <div />;
+    }
 
     const selected = test.testItems.reduce((acc, element, i) => {
       if (element.selected) {

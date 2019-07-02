@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-export const Column = styled.td`
+export const Column = styled.div`
   padding: 0 16px 0 16px;
   word-break: break-word;
   min-width: 90px;

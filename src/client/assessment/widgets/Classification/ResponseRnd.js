@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
@@ -6,6 +6,7 @@ import { Rnd } from "react-rnd";
 import produce from "immer";
 import { get } from "lodash";
 import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
+import { lightGrey } from "@edulastic/colors";
 
 const ResponseRnd = props => {
   const { children, question, setQuestionData, isResizable, minHeight, width, height, index } = props;
@@ -77,7 +78,13 @@ const ResponseRnd = props => {
   return (
     <div style={{ position: "relative", minHeight: height }}>
       <Rnd
-        style={{ overflow: "hidden" }}
+        style={{
+          overflow: "hidden",
+          display: "flex",
+          flexDirection: "column",
+          padding: "2px",
+          border: `1px solid ${lightGrey}`
+        }}
         default={{
           x: rndX,
           y: rndY,
@@ -99,10 +106,7 @@ const ResponseRnd = props => {
         onResizeStop={handleResponseResizeStop}
         {...props}
       >
-        {React.Children.map(children, child => {
-          if (rndHeight > 0) {
-            child.props.style.height = rndHeight;
-          }
+        {React.Children.map(children, (child, childIndex) => {
           return React.cloneElement(child);
         })}
       </Rnd>

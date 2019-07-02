@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
@@ -16,6 +16,7 @@ const TableRow = ({
   colCount,
   arrayOfRows,
   rowTitles,
+  colTitles,
   drop,
   answers,
   preview,
@@ -44,6 +45,15 @@ const TableRow = ({
     }
   };
 
+  const [dragAreaEl, setDragAreaEl] = useState(null);
+
+  const dragAreaRef = useRef();
+
+  useEffect(() => {
+    console.log(dragAreaRef);
+    setDragAreaEl(dragAreaRef);
+  }, [dragAreaRef]);
+
   const cols = [];
 
   let validIndex = -1;
@@ -52,10 +62,9 @@ const TableRow = ({
     if (arrayOfRows.has(index) && rowTitles.length > 0) {
       cols.push(
         <RowTitleCol key={index + startIndex + colCount} colCount={colCount}>
-          <CenteredText
-            style={{ wordWrap: "break-word", textAlign: "left" }}
-            dangerouslySetInnerHTML={{ __html: rowTitles[index / colCount] || "" }}
-          />
+          <CenteredText style={{ wordWrap: "break-word", textAlign: "left" }}>
+            {rowTitles[index / colCount]}
+          </CenteredText>
         </RowTitleCol>
       );
     }
@@ -68,6 +77,7 @@ const TableRow = ({
         colCount={colCount}
       >
         <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
+          <h2>{colTitles[index % colCount]}</h2>
           <DropContainer
             style={{
               ...styles.columnContainerStyle,

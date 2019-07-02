@@ -9,7 +9,7 @@ var _scoring = require("./const/scoring");
 
 // exact-match evaluator
 var exactMatchEvaluator = function exactMatchEvaluator() {
-  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+  var userResponse = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "";
   var validAnswer = arguments.length > 1 ? arguments[1] : undefined;
   var altAnswers = arguments.length > 2 ? arguments[2] : undefined;
 

@@ -5,11 +5,9 @@ import { withTheme } from "styled-components";
 
 import { Col } from "antd";
 import produce from "immer";
-import { FlexContainer } from "@edulastic/common";
 import WidgetOptions from "../../../containers/WidgetOptions";
 
 import Settings from "./Settings";
-import Extras from "../../../containers/Extras";
 import { Label } from "../../../styled/WidgetOptions/Label";
 import { StyledRow } from "../styled/StyledRow";
 import { StyledInput } from "../styled/StyledInput";
@@ -25,7 +23,7 @@ const AdvancedOptions = ({ t, theme, item, fillSections, cleanSections, advanced
   const handleUiChange = (prop, value) => {
     setQuestionData(
       produce(item, draft => {
-        draft.ui_style[prop] = value;
+        draft.ui_style[prop] = +value;
       })
     );
   };

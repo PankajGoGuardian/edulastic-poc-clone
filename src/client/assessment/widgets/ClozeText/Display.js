@@ -53,7 +53,6 @@ class ClozeTextDisplay extends Component {
     };
 
     const btnStyle = {
-      width: widthpx || 140,
       height: 0,
       minWidth: `${response.minWidth}px`,
       minHeight: `${response.minHeight}px`,
@@ -171,8 +170,7 @@ class ClozeTextDisplay extends Component {
           }
         : {
             userAnswers: userSelections,
-            style: { height: btnStyle.height },
-            btnStyle,
+            style: btnStyle,
             onChange: this._changeInput,
             placeholder: btnStyle.placeholder,
             type: btnStyle.inputtype,

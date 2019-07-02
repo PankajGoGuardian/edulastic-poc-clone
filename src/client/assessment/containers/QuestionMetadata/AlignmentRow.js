@@ -37,7 +37,7 @@ const AlignmentRow = ({
   recentStandardsList = [],
   clearStandards
 }) => {
-  const { subject, curriculumId, curriculum, grades, standards = [] } = alignment;
+  const { subject, curriculumId, curriculum, grades = [], standards = [] } = alignment;
   const [showModal, setShowModal] = useState(false);
   const setSubject = val => {
     storeInLocalStorage("defaultSubject", val);
@@ -187,7 +187,9 @@ const AlignmentRow = ({
             <Col md={7}>
               <CustomTreeSelect
                 data-cy="subjectStandardSet"
-                title={`${curriculum}${curriculum ? "-" : ""}Grade ${grades}`}
+                title={`${curriculum}${curriculum && grades.length ? " - " : ""}${grades.length ? "Grade - " : ""}${
+                  grades.length ? grades : ""
+                }`}
                 style={{ marginTop: 11 }}
               >
                 <Fragment>

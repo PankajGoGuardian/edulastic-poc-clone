@@ -1,9 +1,10 @@
-import React, { memo, Component, createRef } from "react";
+import React, { memo, Component, Fragment } from "react";
 import styled from "styled-components";
 import PropTypes from "prop-types";
 import { mobileWidth, extraDesktopWidthMax } from "@edulastic/colors";
 import { Affix } from "antd";
-import DragScroll, { UPWARDS } from "@edulastic/common/src/components/DragScroll";
+import DragScroll, { UPWARDS, DOWNWARDS } from "@edulastic/common/src/components/DragScroll";
+import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 
 class HeaderWrapper extends Component {
   render = () => {
@@ -13,16 +14,34 @@ class HeaderWrapper extends Component {
       <HeaderContainer type={type}>
         <Affix className="fixed-header" style={{ position: "fixed", top: 0, right: 0 }}>
           <Container type={type}>{children}</Container>
-          <DragScroll
-            style={{
-              position: "absolute",
-              top: 0,
-              bottom: 0,
-              left: 0,
-              right: 0
-            }}
-            direction={UPWARDS}
-          />
+          <ScrollContext.Consumer>
+            {context => (
+              <Fragment>
+                <DragScroll
+                  context={context}
+                  style={{
+                    position: "absolute",
+                    top: 0,
+                    bottom: 0,
+                    left: 0,
+                    right: 0
+                  }}
+                  direction={UPWARDS}
+                />
+                <DragScroll
+                  context={context}
+                  style={{
+                    position: "fixed",
+                    bottom: 0,
+                    left: 0,
+                    right: 0,
+                    height: 50
+                  }}
+                  direction={DOWNWARDS}
+                />
+              </Fragment>
+            )}
+          </ScrollContext.Consumer>
         </Affix>
       </HeaderContainer>
     );

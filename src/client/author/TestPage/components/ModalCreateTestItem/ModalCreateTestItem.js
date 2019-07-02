@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
 import { connect } from "react-redux";
 import { Modal } from "antd";
 
+import ScrollContext from "@edulastic/common/src/contexts/ScrollContext";
 import { getCreateItemModalItemIdSelector } from "../../../src/selectors/testItem";
 import { toggleCreateItemModalAction } from "../../../src/actions/testItem";
 import ItemDetail from "../../../ItemDetail";
@@ -33,6 +34,8 @@ const ModalCreateTestItem = ({
   saveQuestion,
   setAuthoredByMeFilter
 }) => {
+  const modalRef = useRef(null);
+
   const [currentTab, setCurrentTab] = useState(
     createType === "Duplicate" ? createTestItemModalTabs.ITEM_DETAIL : createTestItemModalTabs.PICKUP_QUESTION_TYPE
   );
@@ -114,10 +117,17 @@ const ModalCreateTestItem = ({
     }
   };
 
+  const getScrollElement = () => {
+    const refElement = modalRef && modalRef.current ? modalRef.current : window;
+    return refElement;
+  };
+
   return (
-    <FullScreenModal>
-      <ModalWrapper>{renderContent()}</ModalWrapper>
-    </FullScreenModal>
+    <ScrollContext.Provider value={{ getScrollElement }}>
+      <FullScreenModal innerRef={modalRef}>
+        <ModalWrapper>{renderContent()}</ModalWrapper>
+      </FullScreenModal>
+    </ScrollContext.Provider>
   );
 };
 

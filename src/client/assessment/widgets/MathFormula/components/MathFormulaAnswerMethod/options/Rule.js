@@ -97,7 +97,7 @@ RulePure.propTypes = {
 };
 
 RulePure.defaultProps = {
-  syntax: "",
+  syntax: math.syntaxes.DECIMAL,
   argument: ""
 };
 

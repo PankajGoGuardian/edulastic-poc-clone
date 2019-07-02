@@ -97,10 +97,7 @@ class Assignments extends Component {
     loadAssignments({ filters });
 
     loadFolders();
-    if (isEmpty(assignmentsSummary)) {
-      loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 } });
-    }
-
+    loadAssignmentsSummary({ districtId, filters: { ...filters, pageNo: 1 }, filtering: true });
     const newFilterState = {
       ...filterState,
       ...filters

@@ -10,7 +10,8 @@ import { withNamespaces } from "@edulastic/localization";
 import { FlexContainer } from "@edulastic/common";
 // actions
 import { getDictCurriculumsAction } from "../../../src/actions/dictionaries";
-import { updateClassAction } from "../../ducks";
+import { updateClassAction, fetchStudentsByIdAction } from "../../ducks";
+
 // selectors
 import { getCurriculumsListSelector } from "../../../src/selectors/dictionaries";
 import { getUserOrgData } from "../../../src/selectors/user";
@@ -41,15 +42,10 @@ class ClassEdit extends React.Component {
     searchCourseList: PropTypes.func.isRequired,
     isSearching: PropTypes.bool.isRequired,
     courseList: PropTypes.array.isRequired,
-    changeView: PropTypes.func,
     updating: PropTypes.bool.isRequired
   };
 
   state = {};
-
-  static defaultProps = {
-    changeView: () => null
-  };
 
   componentDidUpdate({ updating, history, selctedClass }, { submitted }) {
     if (updating && submitted) {
@@ -59,7 +55,11 @@ class ClassEdit extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums } = this.props;
+    const { curriculums, getCurriculums, selctedClass, loadStudents, match } = this.props;
+    if (isEmpty(selctedClass)) {
+      const { classId } = match.params;
+      loadStudents({ classId });
+    }
 
     if (isEmpty(curriculums)) {
       getCurriculums();
@@ -124,7 +124,17 @@ class ClassEdit extends React.Component {
   };
 
   render() {
-    const { curriculums, form, courseList, isSearching, selctedClass, updating, changeView, history } = this.props;
+    const {
+      curriculums,
+      form,
+      courseList,
+      isSearching,
+      selctedClass,
+      updating,
+      history,
+      loadStudents,
+      match
+    } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
@@ -140,7 +150,7 @@ class ClassEdit extends React.Component {
       course,
       institutionId
     } = selctedClass;
-
+    if (isEmpty(selctedClass)) return <Spin />;
     return (
       <Form onSubmit={this.handleSubmit}>
         <Header onCancel={() => history.push(`/author/manageClass/${classId}`)} />
@@ -202,7 +212,8 @@ const enhance = compose(
     {
       getCurriculums: getDictCurriculumsAction,
       updateClass: updateClassAction,
-      searchCourseList: receiveSearchCourseAction
+      searchCourseList: receiveSearchCourseAction,
+      loadStudents: fetchStudentsByIdAction
     }
   )
 );

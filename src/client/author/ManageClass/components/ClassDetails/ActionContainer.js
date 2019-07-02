@@ -15,8 +15,6 @@ import { enrollmentApi } from "@edulastic/api";
 import { getUserOrgData, getUserOrgId, getUserRole } from "../../../src/selectors/user";
 import AddMultipleStudentsInfoModal from "./AddmultipleStduentsInfoModel";
 
-
-
 import {
   DividerDiv,
   TitleWarapper,
@@ -46,7 +44,6 @@ const ActionContainer = ({
   selectedStudent,
   changeTTS,
   loadStudents
-
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus);
   const [sentReq, setReqStatus] = useState(false);
@@ -59,7 +56,6 @@ const ActionContainer = ({
 
   const { _id: classId } = selectedClass;
   let formRef = null;
-
 
   const toggleModal = key => {
     setModalStatus({ [key]: !isOpen[key] });
@@ -115,7 +111,6 @@ const ActionContainer = ({
 
           addStudentRequest(pickBy(values, identity));
           setReqStatus(true);
-
         }
       });
     }
@@ -306,7 +301,6 @@ const ActionContainer = ({
 
 ActionContainer.propTypes = {
   addStudentRequest: PropTypes.func.isRequired,
-  printPreview: PropTypes.func.isRequired,
   selectedClass: PropTypes.object.isRequired,
   orgData: PropTypes.object.isRequired,
   submitted: PropTypes.bool.isRequired,

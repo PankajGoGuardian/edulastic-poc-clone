@@ -132,7 +132,6 @@ class ClassCreate extends React.Component {
       form,
       courseList,
       userOrgData,
-      changeView,
       isSearching,
       creating,
       error,

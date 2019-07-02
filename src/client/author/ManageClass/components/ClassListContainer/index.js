@@ -5,15 +5,7 @@ import ClassList from "./ClassList";
 import ClassSelectModal from "./ClassSelectModal";
 
 // eslint-disable-next-line max-len
-const ClassListContainer = ({
-  setModal,
-  groups,
-  archiveGroups,
-  isModalVisible,
-  googleCourseList,
-  syncClass,
-  setEntity
-}) => {
+const ClassListContainer = ({ setModal, groups, archiveGroups, isModalVisible, googleCourseList, syncClass }) => {
   const closeModal = () => setModal(false);
   const selectedGroups = groups.filter(i => !!i.code).map(i => i.code);
 
@@ -27,7 +19,7 @@ const ClassListContainer = ({
         syncClass={syncClass}
         selectedGroups={selectedGroups}
       />
-      <ClassList groups={groups} archiveGroups={archiveGroups} setEntity={setEntity} />
+      <ClassList groups={groups} archiveGroups={archiveGroups} />
     </React.Fragment>
   );
 };
@@ -38,8 +30,7 @@ ClassListContainer.propTypes = {
   groups: PropTypes.array.isRequired,
   archiveGroups: PropTypes.array.isRequired,
   isModalVisible: PropTypes.bool.isRequired,
-  googleCourseList: PropTypes.array.isRequired,
-  setEntity: PropTypes.func.isRequired
+  googleCourseList: PropTypes.array.isRequired
 };
 
 export default ClassListContainer;

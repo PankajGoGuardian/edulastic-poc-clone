@@ -4,8 +4,7 @@ import { greyDarken, greenDark } from "@edulastic/colors";
 
 import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, AnchorLink, ClassCode } from "./styled";
 
-const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler, backToView }) => {
-  const ownerName = owners[0].name;
+const SubHeader = ({ name, districtName, institutionName, code, backToView }) => {
   return (
     <ContainerHeader>
       <LeftContent>
@@ -13,7 +12,7 @@ const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler,
         <TitleWarapper>
           <div>{name}</div>
           <p>
-            {institutionName}, {ownerName}
+            {districtName},{institutionName}
           </p>
         </TitleWarapper>
       </LeftContent>
@@ -32,18 +31,16 @@ const SubHeader = ({ name, institutionName, owners, code, viewAssessmentHandler,
 SubHeader.propTypes = {
   name: PropTypes.string,
   institutionName: PropTypes.string,
-  owners: PropTypes.array,
+  districtName: PropTypes.string,
   code: PropTypes.string,
-  viewAssessmentHandler: PropTypes.func,
   backToView: PropTypes.func.isRequired
 };
 
 SubHeader.defaultProps = {
   name: "",
   institutionName: "",
-  owners: [],
-  code: "",
-  viewAssessmentHandler: () => null
+  districtName: "",
+  code: ""
 };
 
 export default SubHeader;

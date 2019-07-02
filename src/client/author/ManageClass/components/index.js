@@ -15,50 +15,15 @@ import { setModalAction, syncClassAction, setClassAction } from "../ducks";
 
 // components
 
-import ClassCreate from "./ClassCreate";
 import ClassListContainer from "./ClassListContainer";
-import ClassDetails from "./ClassDetails";
-import ClassEdit from "./ClassEdit";
-import PrintPreview from "./PrintPreview";
 
 const ManageClass = ({ fetchGroups, fetchArchiveGroups, groups, archiveGroups, setClass, history, ...restProps }) => {
-  const [view, setView] = useState("listView");
   useEffect(() => {
-    if (view === "listView") {
-      fetchGroups();
-      fetchArchiveGroups();
-    }
+    fetchGroups();
+    fetchArchiveGroups();
   }, []);
 
-  const updateView = v => {
-    setView(v);
-  };
-
-  const setEntity = entity => {
-    const { _id: classId } = entity;
-    setClass(entity);
-    history.push(`/author/manageClass/${classId}`);
-  };
-
-  const renderView = () => {
-    // eslint-disable-next-line default-case
-    switch (view) {
-      case "create":
-        return <ClassCreate changeView={updateView} />;
-      case "update":
-        return <ClassEdit changeView={updateView} />;
-      case "details":
-        return <ClassDetails changeView={updateView} />;
-      case "printview":
-        return <PrintPreview />;
-      case "listView":
-        return (
-          <ClassListContainer {...restProps} setEntity={setEntity} groups={groups} archiveGroups={archiveGroups} />
-        );
-    }
-  };
-
-  return renderView();
+  return <ClassListContainer {...restProps} groups={groups} archiveGroups={archiveGroups} />;
 };
 
 ManageClass.propTypes = {

@@ -188,7 +188,7 @@ class SuccessPage extends React.Component {
                 </FlexShareWithBox>
                 <FlexShareTitle>Share</FlexShareTitle>
                 <FlexShareBox>
-                  <TitleCopy copyable>
+                  <TitleCopy copyable={{ text: shareUrl }}>
                     <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
                   </TitleCopy>
                 </FlexShareBox>

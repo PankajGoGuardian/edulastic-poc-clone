@@ -88,9 +88,9 @@ export const setItemDetailDataAction = item => ({
   payload: { item }
 });
 
-export const updateItemDetailByIdAction = (id, data, testId, addToTest = false) => ({
+export const updateItemDetailByIdAction = (id, data, testId, addToTest = false, redirect = true) => ({
   type: UPDATE_ITEM_DETAIL_REQUEST,
-  payload: { id, data, testId, addToTest }
+  payload: { id, data, testId, addToTest, redirect }
 });
 
 export const updateItemDetailSuccess = item => ({
@@ -551,8 +551,8 @@ export function* updateItemSaga({ payload }) {
     data.data.questions = get(payload, "data.data.questions", questions);
 
     const { testId, ...item } = yield call(testItemsApi.updateById, payload.id, data, payload.testId);
-
-    if (payload.redirect && item._id !== payload.id) {
+    const { redirect = true } = payload; // added for doc based assesment, where redirection is not required.
+    if (redirect && item._id !== payload.id) {
       yield put(
         replace(
           payload.testId

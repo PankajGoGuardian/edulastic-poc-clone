@@ -169,6 +169,15 @@ export const IconWrapper = styled.span`
   top: 3px;
 `;
 
+export const ShareUrlDiv = styled.div`
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  height: 25px;
+  width: calc(100% - 80px);
+  display: inline-block;
+`;
+
 export const TitleCopy = styled(Paragraph)`
   &.ant-typography {
     color: ${themeColor};
@@ -178,6 +187,16 @@ export const TitleCopy = styled(Paragraph)`
   }
   button {
     margin-right: 10px;
+  }
+  i.anticon.anticon-copy {
+    display: flex;
+    align-items: center;
+    &:after {
+      content: "Copy";
+      font-size: 12px;
+      color: ${themeColor};
+      margin-left: 3px;
+    }
   }
   svg {
     width: 20px;

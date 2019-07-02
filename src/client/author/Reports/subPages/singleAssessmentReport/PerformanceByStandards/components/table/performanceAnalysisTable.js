@@ -1,10 +1,10 @@
-import React, { useState } from "react";
 import PropTypes from "prop-types";
 import styled from "styled-components";
 import { Table } from "antd";
 import { uniqBy } from "lodash";
 
 import { compareByColumns, analyzeByMode, viewByMode, reduceAverageStandardScore } from "../../util/transformers";
+import { getHSLFromRange1 } from "../../../../../common/util";
 
 const makeStandardColumnConfig = skill => ({
   [viewByMode.STANDARDS]: {
@@ -17,6 +17,8 @@ const makeStandardColumnConfig = skill => ({
   }
 });
 
+const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
+
 const PerformanceAnalysisTable = ({
   report,
   viewBy,
@@ -26,7 +28,6 @@ const PerformanceAnalysisTable = ({
   selectedDomains,
   tableData
 }) => {
-  // const [sortKey, setSortKey] =
   const formatScore = score => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
@@ -93,6 +94,10 @@ const PerformanceAnalysisTable = ({
     };
   };
 
+  const { scaleInfo } = report;
+
+  const getMasteryScore = getMasteryColorByScore(scaleInfo);
+
   const makeStandardColumns = averageScoreByView => {
     const { selectedData, dataField, standardColumnsData } = makeStandardColumnData()[viewBy];
 
@@ -126,7 +131,9 @@ const PerformanceAnalysisTable = ({
           const score = standard[field];
 
           if ([analyzeByMode.SCORE, analyzeByMode.RAW_SCORE].includes(analyzeBy)) {
-            color = score < 0.5 ? "#ffc6c6" : "#c7e8b2";
+            color = getHSLFromRange1(score * 100);
+          } else {
+            color = getMasteryScore(score);
           }
 
           return <ScoreCell color={color}>{standard ? formatScore(standard[field]) : "N/A"}</ScoreCell>;

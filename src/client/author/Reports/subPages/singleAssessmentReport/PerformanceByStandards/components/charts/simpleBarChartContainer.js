@@ -5,6 +5,7 @@ import { Cell } from "recharts";
 import SimpleBarChart from "../../../../../common/components/charts/simpleBarChart";
 import { chartParseData, viewByMode, analyzeByMode } from "../../util/transformers";
 import { TooltipWrapper, TooltipLabel } from "./styled";
+import { getHSLFromRange1 } from "../../../../../common/util";
 
 const getBarDataKey = analyzeBy => {
   switch (analyzeBy) {
@@ -35,7 +36,7 @@ const getYLabel = analyzeBy => {
   return { value: label, angle: -90, position: "insideLeft", dy: 35 };
 };
 
-const makeMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
+const getMasteryColorByScore = scaleInfo => score => scaleInfo.find(info => info.score === Math.floor(score)).color;
 
 const defaultSkillInfo = { standard: "", domain: "" };
 
@@ -70,7 +71,7 @@ const SimpleBarChartContainer = ({
 
   const { skillInfo, scaleInfo } = report;
 
-  const getMasteryScore = makeMasteryColorByScore(scaleInfo);
+  const getMasteryScore = getMasteryColorByScore(scaleInfo);
 
   const tickFormatter = id => {
     const dataField = viewBy === viewByMode.STANDARDS ? "standardId" : "domainId";
@@ -89,18 +90,22 @@ const SimpleBarChartContainer = ({
     const unselectedColor = "#bbbbbb";
     const badScoreColor = "#ffc6c6";
 
-    const itemInSelected = item =>
-      selectedData.includes(item[field])
-        ? analyzeBy === analyzeByMode.MASTERY_LEVEL
-          ? getMasteryScore(item.masteryScoreRaw)
-          : analyzeBy === analyzeByMode.RAW_SCORE
-          ? item.totalScore < 0.5
-            ? badScoreColor
-            : selectedColor
-          : item.totalScore < 50
-          ? badScoreColor
-          : selectedColor
-        : unselectedColor;
+    const itemInSelected = item => {
+      if (selectedData.includes(item[field])) {
+        switch (analyzeBy) {
+          case analyzeByMode.MASTERY_SCORE:
+            return getMasteryScore(item.masteryScore);
+          case analyzeByMode.MASTERY_LEVEL:
+            return getMasteryScore(item.masteryScoreRaw);
+          case analyzeByMode.RAW_SCORE:
+            return getHSLFromRange1(item.totalScore * 100);
+          case analyzeByMode.SCORE:
+            return getHSLFromRange1(item.totalScore);
+          default:
+            return unselectedColor;
+        }
+      }
+    };
 
     return chartData.map((item, key) => (
       <Cell key={`bar-cell-${key}`} style={{ cursor: "pointer" }} fill={itemInSelected(item)} />
@@ -121,6 +126,17 @@ const SimpleBarChartContainer = ({
   };
 
   const formatLabel = score => {
+    const formattedScore = Number(score).toFixed(2);
+
+    switch (analyzeBy) {
+      case analyzeByMode.SCORE:
+        return `${Math.round(Number(formattedScore))}%`;
+      default:
+        return formattedScore;
+    }
+  };
+
+  const yTickformatLabel = score => {
     const formattedScore = Number(score).toFixed(2);
 
     switch (analyzeBy) {
@@ -199,7 +215,7 @@ const SimpleBarChartContainer = ({
       barDataKey={barDataKey}
       yLabel={yLabel}
       xTickFormatter={tickFormatter}
-      yTickFormatter={formatLabel}
+      yTickFormatter={yTickformatLabel}
       onBarClick={onBarClick}
       formatScore={formatLabel}
       renderBarCells={renderBarCells}

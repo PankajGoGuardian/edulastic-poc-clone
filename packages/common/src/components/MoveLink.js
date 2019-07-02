@@ -30,6 +30,7 @@ const Link = styled.a`
   text-decoration: none;
   color: #00ad50;
   cursor: pointer;
+  word-break: break-all;
 
   :hover {
     color: #00ad50;

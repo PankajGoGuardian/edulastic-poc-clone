@@ -266,7 +266,7 @@ class Review extends PureComponent {
                 onShowTestPreview={this.showTestPreviewModal}
               />
             </SecondHeader>
-            <Paper>
+            <Paper padding="15px">
               {isCollapse ? (
                 <ItemsTable
                   items={test.testItems}

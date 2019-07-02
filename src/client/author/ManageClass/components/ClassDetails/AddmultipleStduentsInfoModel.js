@@ -5,11 +5,13 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
     setinfoModelVisible(false);
     setInfoModalData([]);
   };
+  const newInfoModalData = Object.assign({}, infoModalData[0]);
+  newInfoModalData["fullName"] = newInfoModalData.firstName + " " + newInfoModalData.lastName;
   const columns = [
     {
       title: "Name",
-      dataIndex: "firstName",
-      key: "firstName"
+      dataIndex: "fullName",
+      key: "fullName"
     },
     {
       title: "Username",
@@ -24,7 +26,7 @@ const AddMultipleStudentsInfoModal = ({ infoModelVisible, setinfoModelVisible, i
   ];
   return (
     <Modal title="Student details" footer={null} visible={infoModelVisible} onCancel={handleCancel} width={700}>
-      <Table dataSource={infoModalData} columns={columns} pagination={false} />
+      <Table dataSource={[newInfoModalData]} columns={columns} pagination={false} />
     </Modal>
   );
 };

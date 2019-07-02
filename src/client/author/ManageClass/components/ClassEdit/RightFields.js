@@ -40,6 +40,7 @@ const RightFields = ({
   };
 
   const handleSearch = debounce(keyword => searchCourse(keyword), 500);
+  const handleFocus = debounce((keyword = "") => searchCourse(keyword), 500);
   const defaultStandardSetIds = defaultStandardSets.map(({ _id }) => _id);
   const standardSets = filter(curriculums, el => el.subject === subject);
   const isExist = find(courseList, ({ _id }) => _id === defaultCourse.id);
@@ -147,6 +148,7 @@ const RightFields = ({
           showArrow={false}
           filterOption={false}
           onSearch={handleSearch}
+          onFocus={handleFocus}
           notFoundContent={null}
           loading={isSearching}
         >

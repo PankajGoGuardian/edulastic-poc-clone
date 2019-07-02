@@ -16,9 +16,11 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     response_ids: { dropDowns }
   } = item;
   const { index } = find(dropDowns, res => res.id === id) || {};
+  const width = item.ui_style[id] && item.ui_style[id].widthpx;
 
   return checked ? (
     <CheckedBlock
+      width={width}
       item={item}
       userAnswer={_dropDownAnswers[id]}
       id={id}
@@ -27,7 +29,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       onInnerClick={onInnerClick}
     />
   ) : (
-    <StyeldSelect onChange={text => save({ value: text, index }, "dropDowns", id)} value={val} style={uiStyles}>
+    <StyeldSelect
+      width={width}
+      onChange={text => save({ value: text, index }, "dropDowns", id)}
+      value={val}
+      style={{ ...uiStyles, width: !width ? "auto" : `${width}px` }}
+    >
       {options &&
         options[id] &&
         options[id].map((response, respID) => (
@@ -49,6 +56,5 @@ export default ClozeDropDown;
 const StyeldSelect = styled(Select)`
   min-width: 120px;
   margin: 0px 4px;
-  width: ${({ width }) => (!width ? null : `${width}`)};
   min-height: 35px;
 `;

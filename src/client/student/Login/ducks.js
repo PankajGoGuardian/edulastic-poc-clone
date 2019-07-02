@@ -382,18 +382,21 @@ function* changeClass({ payload }) {
 function* googleLogin({ payload }) {
   try {
     let classCode = "";
+    let role = "";
     if (payload) {
-      if (typeof payload === "string") {
-        localStorage.setItem("thirdPartySignOnRole", payload);
-      } else {
+      if (payload.role === "teacher") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        role = "teacher";
+      } else if (payload.role === "student") {
         localStorage.setItem("thirdPartySignOnRole", payload.role);
         localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
         classCode = payload.classCode;
+        role = "student";
       }
     }
 
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode });
+      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "googleSignOn", role });
     }
 
     const res = yield call(authApi.googleLogin);
@@ -422,17 +425,20 @@ function* googleSSOLogin({ payload }) {
 function* msoLogin({ payload }) {
   try {
     let classCode = "";
+    let role = "";
     if (payload) {
-      if (typeof payload === "string") {
-        localStorage.setItem("thirdPartySignOnRole", payload);
-      } else {
+      if (payload.role === "teacher") {
+        localStorage.setItem("thirdPartySignOnRole", payload.role);
+        role = "teacher";
+      } else if (payload.role === "student") {
         localStorage.setItem("thirdPartySignOnRole", payload.role);
         localStorage.setItem("thirdPartySignOnClassCode", payload.classCode);
         classCode = payload.classCode;
+        role = "student";
       }
     }
     if (classCode) {
-      const validate = yield call(authApi.validateClassCode, { classCode });
+      const validate = yield call(authApi.validateClassCode, { classCode, signOnMethod: "office365SignOn", role });
     }
     const res = yield call(authApi.msoLogin);
     window.location.href = res;

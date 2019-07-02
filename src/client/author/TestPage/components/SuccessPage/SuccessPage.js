@@ -22,6 +22,7 @@ import {
   FlexShareWithBox,
   IconWrapper,
   TitleCopy,
+  ShareUrlDiv,
   ImageWrapper
 } from "./styled";
 import { getPlaylistSelector, receivePlaylistByIdAction } from "../../../PlaylistPage/ducks";
@@ -187,8 +188,9 @@ class SuccessPage extends React.Component {
                 </FlexShareWithBox>
                 <FlexShareTitle>Share</FlexShareTitle>
                 <FlexShareBox>
-                  <TitleCopy copyable>{shareUrl}</TitleCopy>
-                  <span>COPY</span>
+                  <TitleCopy copyable>
+                    <ShareUrlDiv title={shareUrl}>{shareUrl}</ShareUrlDiv>
+                  </TitleCopy>
                 </FlexShareBox>
               </FlexShareContainer>
             </FlexContainerWrapperRight>

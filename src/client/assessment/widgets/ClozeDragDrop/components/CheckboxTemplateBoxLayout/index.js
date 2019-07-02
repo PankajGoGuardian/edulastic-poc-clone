@@ -52,14 +52,14 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   if (btnStyle === undefined) {
     btnStyle = responseBtnStyle;
   }
-  if (btnStyle && btnStyle.widthpx === 0) {
-    btnStyle.widthpx = responseBtnStyle.widthpx;
+  if (btnStyle && !btnStyle.width) {
+    btnStyle.width = responseBtnStyle.widthpx;
   }
-  if (btnStyle && btnStyle.heightpx === 0) {
-    btnStyle.heightpx = responseBtnStyle.heightpx;
+  if (btnStyle && !btnStyle.height) {
+    btnStyle.height = responseBtnStyle.heightpx;
   }
-  if (btnStyle && btnStyle.wordwrap === undefined && responseBtnStyle.wordwrap) {
-    btnStyle.wordwrap = responseBtnStyle.wordwrap;
+  if (btnStyle && btnStyle.whiteSpace === undefined && responseBtnStyle.whiteSpace) {
+    btnStyle.whiteSpace = responseBtnStyle.whiteSpace;
   }
 
   const getLabel = () => {
@@ -83,7 +83,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       }
     }
     return (
-      <CheckboxContainer>
+      <CheckboxContainer width={btnStyle.width}>
         <MathSpan
           clas="clipText"
           title={striptags(formulaLabel) || null}

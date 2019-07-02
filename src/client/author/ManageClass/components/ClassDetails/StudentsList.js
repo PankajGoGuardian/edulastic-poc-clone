@@ -30,10 +30,10 @@ const StudentsList = ({ loaded, students, selectStudents, selectedStudent }) => 
     },
     {
       title: "Username",
-      dataIndex: "email",
+      dataIndex: "username",
       width: "12%",
       defaultSortOrder: "descend",
-      sorter: (a, b) => a.email > b.email
+      sorter: (a, b) => a.username > b.username
     },
     {
       title: "TTS enabled",

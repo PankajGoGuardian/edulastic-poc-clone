@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import { Rnd } from "react-rnd";
 import produce from "immer";
 import { get } from "lodash";
-import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 import { lightGrey } from "@edulastic/colors";
+import { setQuestionDataAction } from "../../../author/QuestionEditor/ducks";
 
 const ResponseRnd = props => {
   const { children, question, setQuestionData, isResizable, minHeight, width, height, index } = props;
@@ -106,8 +106,8 @@ const ResponseRnd = props => {
         onResizeStop={handleResponseResizeStop}
         {...props}
       >
-        {React.Children.map(children, (child, childIndex) => {
-          return React.cloneElement(child);
+        {React.Children.map(children, child => {
+          return child ? React.cloneElement(child) : null;
         })}
       </Rnd>
     </div>

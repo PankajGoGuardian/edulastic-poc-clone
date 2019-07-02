@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { withTheme } from "styled-components";
 
@@ -7,7 +7,7 @@ import { CenteredText } from "@edulastic/common";
 import DropContainer from "../../../components/DropContainer";
 
 import DragItem from "./DragItem";
-import { Column } from "../styled/Column";
+import { Column, ColumnLabel } from "../styled/Column";
 import { RowTitleCol } from "../styled/RowTitleCol";
 import ResponseRnd from "../ResponseRnd";
 
@@ -45,15 +45,6 @@ const TableRow = ({
     }
   };
 
-  const [dragAreaEl, setDragAreaEl] = useState(null);
-
-  const dragAreaRef = useRef();
-
-  useEffect(() => {
-    console.log(dragAreaRef);
-    setDragAreaEl(dragAreaRef);
-  }, [dragAreaRef]);
-
   const cols = [];
 
   let validIndex = -1;
@@ -77,7 +68,9 @@ const TableRow = ({
         colCount={colCount}
       >
         <ResponseRnd question={item} height={height} index={index} isResizable={isResizable}>
-          <h2>{colTitles[index % colCount]}</h2>
+          {colTitles[index % colCount] || colTitles[index % colCount] === "" ? (
+            <ColumnLabel dangerouslySetInnerHTML={{ __html: colTitles[index % colCount] }} />
+          ) : null}
           <DropContainer
             style={{
               ...styles.columnContainerStyle,
@@ -115,7 +108,7 @@ const TableRow = ({
     );
   }
 
-  return <tr>{cols}</tr>;
+  return <div style={{ display: "flex" }}>{cols}</div>;
 };
 
 TableRow.propTypes = {

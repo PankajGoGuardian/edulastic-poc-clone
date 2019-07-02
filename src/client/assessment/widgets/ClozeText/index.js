@@ -127,7 +127,6 @@ class ClozeText extends Component {
 
   handleAddAnswer = userAnswer => {
     const { saveAnswer, setQuestionData, item } = this.props;
-    console.log("handleAddAnswer caled", userAnswer);
     let newAnswer = cloneDeep(userAnswer);
     saveAnswer(newAnswer);
     setQuestionData(

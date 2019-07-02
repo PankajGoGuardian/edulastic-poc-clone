@@ -33,7 +33,7 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
 
   const allCards = [...sortableCards, ...unSortablecards];
   const latestAssingments = allCards.slice(0, 3);
-  let ClassCards;
+  let ClassCards = null;
 
   if (!showAllCards) {
     ClassCards = latestAssingments.map(item => (
@@ -56,11 +56,12 @@ const MyClasses = ({ getTeacherDashboard, classData, loading }) => {
       </TextWrapper>
       <Row gutter={15}>{loading === true ? <Spin /> : ClassCards}</Row>
       {!loading && classData.length == 0 && <CreateClassPage />}
-      {showAllCards ? (
+      {showAllCards && classData.length > 0 && (
         <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(false)}>
           SEE LESS CLASSES »
         </LinkWrapper>
-      ) : (
+      )}
+      {!showAllCards && classData.length > 0 && (
         <LinkWrapper size="11px" color="#00AD50" display="block" textalign="end" onClick={() => setShowAllCards(true)}>
           SEE ALL MY CLASSES »
         </LinkWrapper>

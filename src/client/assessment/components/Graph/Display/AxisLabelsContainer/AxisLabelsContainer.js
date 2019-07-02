@@ -50,6 +50,16 @@ const getColoredAnswer = answerArr => {
   return answerArr;
 };
 
+const getCorrectAnswer = answerArr => {
+  if (Array.isArray(answerArr)) {
+    return answerArr.map(el => ({
+      className: "correct",
+      ...el
+    }));
+  }
+  return answerArr;
+};
+
 const getCompareResult = evaluation => {
   if (!evaluation) {
     return null;
@@ -184,7 +194,7 @@ class AxisLabelsContainer extends PureComponent {
 
     if (showAnswer) {
       this._graph.removeMarksAnswers();
-      this._graph.loadMarksAnswers(list, getColoredAnswer(elements));
+      this._graph.loadMarksAnswers(list, getCorrectAnswer(elements));
       return;
     }
 

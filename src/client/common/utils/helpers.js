@@ -69,7 +69,7 @@ export const isDistrictPolicyAllowed = (isSignupUsingDaURL, districtPolicy, name
 };
 
 export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) => {
-  if (isSignupUsingDaURL && districtPolicy && !isEmpty(districtPolicy)) {
+  if (isSignupUsingDaURL && districtPolicy && typeof districtPolicy === "object") {
     return true;
   }
   return false;

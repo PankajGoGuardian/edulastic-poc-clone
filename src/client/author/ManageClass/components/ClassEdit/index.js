@@ -106,20 +106,15 @@ class ClassEdit extends React.Component {
   searchCourse = keyword => {
     const { searchCourseList, userOrgData } = this.props;
     const { districtId } = userOrgData;
-    let searchTerms,
-      key = keyword.trim();
-    if (keyword == "") {
-      searchTerms = {
-        districtId
-      };
-    } else {
-      searchTerms = {
-        districtId,
-        search: {
-          name: { type: "cont", value: key },
-          number: { type: "eq", value: key },
-          operator: "or"
-        }
+    const key = keyword.trim();
+    const searchTerms = {
+      districtId
+    };
+    if (key) {
+      searchTerms["search"] = {
+        name: { type: "cont", value: key },
+        number: { type: "eq", value: key },
+        operator: "or"
       };
     }
 

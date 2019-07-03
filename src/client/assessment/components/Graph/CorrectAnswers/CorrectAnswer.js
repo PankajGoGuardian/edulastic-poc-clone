@@ -27,37 +27,22 @@ class CorrectAnswer extends Component {
   };
 
   render() {
-    const { t, response, graphData, previewTab, view, disableResponse } = this.props;
+    const { response, graphData, previewTab, view, disableResponse } = this.props;
     const { responseScore } = this.state;
     const PointFieldWithContext = QuadrantsPointField(PointField);
 
     return (
       <div>
         <Header>
-          {graphData.graphType === "quadrants" ? (
-            <PointFieldWithContext
-              type="number"
-              value={responseScore}
-              onChange={this.updateScore}
-              onBlur={this.updateScore}
-              disabled={false}
-              min={0}
-              step={0.5}
-            />
-          ) : (
-            <React.Fragment>
-              <PointField
-                type="number"
-                value={responseScore}
-                onChange={this.updateScore}
-                onBlur={this.updateScore}
-                disabled={false}
-                min={0}
-                step={0.5}
-              />
-              <span>{t("component.correctanswers.points")}</span>
-            </React.Fragment>
-          )}
+          <PointFieldWithContext
+            type="number"
+            value={responseScore}
+            onChange={this.updateScore}
+            onBlur={this.updateScore}
+            disabled={false}
+            min={0}
+            step={0.5}
+          />
         </Header>
         <GraphDisplay
           disableResponse={disableResponse}

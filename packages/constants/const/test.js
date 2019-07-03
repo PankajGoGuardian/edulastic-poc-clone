@@ -1,6 +1,7 @@
 module.exports = {
   type: {
     ASSESSMENT: "assessment",
+    COMMON: "common assessment",
     PRACTICE: "practice"
   },
   settingCategories: [

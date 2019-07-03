@@ -5,7 +5,7 @@ import { createSelector } from "reselect";
 import { normalize } from "normalizr";
 import { push } from "connected-react-router";
 import { assignmentApi, reportsApi, testActivityApi, testsApi } from "@edulastic/api";
-import { assignmentPolicyOptions } from "@edulastic/constants";
+import { test as testConst, assignmentPolicyOptions } from "@edulastic/constants";
 import { getCurrentSchool, fetchUser, getUserRole } from "../Login/ducks";
 
 import { getCurrentGroup, getClassIds } from "../Reports/ducks";
@@ -19,6 +19,7 @@ import {
 
 import { setReportsAction, reportSchema } from "../sharedDucks/ReportsModule/ducks";
 
+const { COMMON, ASSESSMENT } = testConst;
 const { POLICY_AUTO_ON_STARTDATE, POLICY_AUTO_ON_DUEDATE } = assignmentPolicyOptions;
 // constants
 export const FILTERS = {
@@ -161,11 +162,7 @@ function* startAssignment({ payload }) {
       testId
     });
     // set Activity id
-    yield put(
-      push(
-        `/student/${testType === "common assessment" ? "assessment" : testType}/${testId}/uta/${testActivityId}/qid/0`
-      )
-    );
+    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
 
     // TODO:load previous responses if resume!!
   } catch (e) {
@@ -184,11 +181,7 @@ function* resumeAssignment({ payload }) {
     }
     yield put(setActiveAssignmentAction(assignmentId));
     yield put(setResumeAssignment(true));
-    yield put(
-      push(
-        `/student/${testType === "common assessment" ? "assessment" : testType}/${testId}/uta/${testActivityId}/qid/0`
-      )
-    );
+    yield put(push(`/student/${testType === COMMON ? ASSESSMENT : testType}/${testId}/uta/${testActivityId}/qid/0`));
   } catch (e) {
     console.log(e);
   }

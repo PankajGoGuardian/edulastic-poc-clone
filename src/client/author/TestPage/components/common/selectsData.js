@@ -1,3 +1,5 @@
+import { test } from "@edulastic/constants";
+const { ASSESSMENT, PRACTICE, COMMON } = test.type;
 const allGrades = [
   { value: "K", text: "Kindergarten" },
   { value: "1", text: "Grade 1" },
@@ -70,16 +72,16 @@ const closePolicyForAdmin = [
 
 const testTypes = [
   { value: "", text: "All" },
-  { value: "common assessment", text: "Common Assessments" },
-  { value: "assessment", text: "Class Assessments" },
-  { value: "practice", text: "Practice" }
+  { value: COMMON, text: "Common Assessments" },
+  { value: ASSESSMENT, text: "Class Assessments" },
+  { value: PRACTICE, text: "Practice" }
 ];
 
 const AdminTestTypes = [
   { value: "", text: "All" },
-  { value: "common assesment", text: "Common Assessments" },
-  { value: "assessment", text: "Class Assessments" },
-  { value: "practice", text: "Practice" }
+  { value: COMMON, text: "Common Assessments" },
+  { value: ASSESSMENT, text: "Class Assessments" },
+  { value: PRACTICE, text: "Practice" }
 ];
 
 const allStatus = [

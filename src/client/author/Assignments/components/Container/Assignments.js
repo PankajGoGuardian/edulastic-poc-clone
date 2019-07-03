@@ -53,7 +53,7 @@ import {
 import { storeInLocalStorage } from "@edulastic/api/src/utils/Storage";
 import { getUserRole } from "../../../src/selectors/user";
 
-const { releaseGradeLabels } = test;
+const { releaseGradeLabels, type } = test;
 
 const initialFilterState = {
   grades: [],
@@ -94,7 +94,7 @@ class Assignments extends Component {
     }
     filters = {
       ...filters,
-      testType: userRole !== "teacher" ? "common" : "",
+      testType: userRole !== "teacher" ? type.COMMON : "",
       ...defaultFilters
     };
     loadAssignments({ filters });

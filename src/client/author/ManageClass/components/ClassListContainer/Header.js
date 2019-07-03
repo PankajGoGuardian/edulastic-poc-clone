@@ -2,7 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { compose } from "redux";
-import { withRouter } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { white } from "@edulastic/colors";
 import { GoogleLogin } from "react-google-login";
 // components
@@ -32,9 +32,6 @@ const Header = ({ fetchClassList, history }) => {
   const handleError = err => {
     console.log("error", err);
   };
-  const createClassHandler = () => {
-    history.push(`/author/manageClass/createClass`);
-  };
   return (
     <HeaderWrapper>
       <Title>
@@ -51,9 +48,11 @@ const Header = ({ fetchClassList, history }) => {
           prompt="consent"
           responseType="code"
         />
-        <CreateClassButton onClick={createClassHandler}>
-          <CreateIcon color={white} /> Create Class{" "}
-        </CreateClassButton>
+        <Link to={`/author/manageClass/createClass`}>
+          <CreateClassButton>
+            <CreateIcon color={white} /> Create Class{" "}
+          </CreateClassButton>
+        </Link>
       </ButtonsWrapper>
     </HeaderWrapper>
   );
@@ -64,7 +63,6 @@ Header.propTypes = {
 };
 
 const enhance = compose(
-  withRouter,
   connect(
     null,
     { fetchClassList: fetchClassListAction }

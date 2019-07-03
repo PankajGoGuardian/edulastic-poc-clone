@@ -14,32 +14,28 @@ import StudentsList from "./StudentsList";
 import MainInfo from "./MainInfo";
 import { Container, StyledDivider } from "./styled";
 
-const ClassDetails = ({ selctedClass, dataLoaded, loadStudents, history, match }) => {
-  useEffect(() => {}, [selctedClass]);
-
-  if (!dataLoaded && isEmpty(selctedClass)) {
-    const { classId } = match.params;
-    loadStudents({ classId });
-  }
+const ClassDetails = ({ selectedClass, dataLoaded, loadStudents, history, match }) => {
+  useEffect(() => {
+    if (isEmpty(selectedClass)) {
+      const { classId } = match.params;
+      loadStudents({ classId });
+    }
+  }, []);
 
   const handleEditClick = () => {
-    const classId = selctedClass._id || match.params.classId;
+    const classId = selectedClass._id || match.params.classId;
     history.push(`/author/manageClass/${classId}/edit`);
   };
 
   const viewAssessmentHandler = () => {};
-  if (isEmpty(selctedClass)) return <Spin />;
+  if (!dataLoaded) return <Spin />;
   return (
     <>
       <Header onEdit={handleEditClick} />
       <Container>
-        <SubHeader
-          {...selctedClass}
-          viewAssessmentHandler={viewAssessmentHandler}
-          backToView={() => history.push(`/author/manageClass`)}
-        />
+        <SubHeader {...selectedClass} viewAssessmentHandler={viewAssessmentHandler} />
         <StyledDivider orientation="left" />
-        <MainInfo entity={selctedClass} />
+        <MainInfo entity={selectedClass} />
 
         <ActionContainer loadStudents={loadStudents} />
 
@@ -50,15 +46,16 @@ const ClassDetails = ({ selctedClass, dataLoaded, loadStudents, history, match }
 };
 
 ClassDetails.propTypes = {
-  selctedClass: PropTypes.object.isRequired,
-  loadStudents: PropTypes.func.isRequired
+  selectedClass: PropTypes.object.isRequired,
+  loadStudents: PropTypes.func.isRequired,
+  dataLoaded: PropTypes.bool.isRequired
 };
 
 const enhance = compose(
   withRouter,
   connect(
     state => ({
-      selctedClass: get(state, "manageClass.entity"),
+      selectedClass: get(state, "manageClass.entity"),
       dataLoaded: get(state, "manageClass.dataLoaded")
     }),
     {

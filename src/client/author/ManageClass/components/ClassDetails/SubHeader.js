@@ -1,14 +1,17 @@
 import React from "react";
 import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
 import { greyDarken, greenDark } from "@edulastic/colors";
 
 import { ContainerHeader, LeftContent, RightContent, TitleWarapper, StyledIcon, AnchorLink, ClassCode } from "./styled";
 
-const SubHeader = ({ name, districtName, institutionName, code, backToView }) => {
+const SubHeader = ({ name, districtName, institutionName, code }) => {
   return (
     <ContainerHeader>
       <LeftContent>
-        <StyledIcon type="left" size={30} onClick={backToView} />
+        <Link to={`/author/manageClass`}>
+          <StyledIcon type="left" size={30} />
+        </Link>
         <TitleWarapper>
           <div>{name}</div>
           <p>
@@ -32,8 +35,7 @@ SubHeader.propTypes = {
   name: PropTypes.string,
   institutionName: PropTypes.string,
   districtName: PropTypes.string,
-  code: PropTypes.string,
-  backToView: PropTypes.func.isRequired
+  code: PropTypes.string
 };
 
 SubHeader.defaultProps = {

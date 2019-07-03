@@ -124,17 +124,7 @@ class ClassEdit extends React.Component {
   };
 
   render() {
-    const {
-      curriculums,
-      form,
-      courseList,
-      isSearching,
-      selctedClass,
-      updating,
-      history,
-      loadStudents,
-      match
-    } = this.props;
+    const { curriculums, form, courseList, isSearching, selctedClass, updating, loaded } = this.props;
     const { getFieldDecorator, getFieldValue } = form;
 
     const {
@@ -150,10 +140,10 @@ class ClassEdit extends React.Component {
       course,
       institutionId
     } = selctedClass;
-    if (isEmpty(selctedClass)) return <Spin />;
+    if (!loaded) return <Spin />;
     return (
       <Form onSubmit={this.handleSubmit}>
-        <Header onCancel={() => history.push(`/author/manageClass/${classId}`)} />
+        <Header classId={classId} />
         <Spin spinning={updating}>
           <Container>
             <Divider orientation="left">
@@ -207,7 +197,8 @@ const enhance = compose(
       userOrgData: getUserOrgData(state),
       userId: get(state, "user.user._id"),
       updating: get(state, "manageClass.updating"),
-      selctedClass: get(state, "manageClass.entity", {})
+      selctedClass: get(state, "manageClass.entity", {}),
+      loaded: get(state, "manageClass.loaded")
     }),
     {
       getCurriculums: getDictCurriculumsAction,

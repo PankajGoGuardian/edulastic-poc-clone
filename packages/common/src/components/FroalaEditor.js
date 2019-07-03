@@ -3,7 +3,7 @@
 /* global $ */
 import React, { useState, useEffect, useRef } from "react";
 import PropTypes from "prop-types";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import { cloneDeep, debounce } from "lodash";
 import { message } from "antd";
 import Editor from "react-froala-wysiwyg";
@@ -20,6 +20,7 @@ import headings from "./FroalaPlugins/headings";
 import MathModal from "./MathModal";
 
 import { getMathHtml, replaceLatexesWithMathHtml, replaceMathHtmlWithLatexes } from "../utils/mathUtils";
+import { getFontSize } from "../../../../src/client/assessment/utils/helpers";
 
 // register custom math buttton
 FroalaEditor.DefineIconTemplate(
@@ -166,8 +167,7 @@ const BackgroundStyleWrapper = styled.div.attrs({
   position: relative;
   width: 100%;
   display: block;
-
-  .fr-box.fr-basic .fr-wrapper {
+  font-size: ${props => getFontSize(props.theme.fontSize || "normal", true)} .fr-box.fr-basic .fr-wrapper {
     background: ${props => props.backgroundColor || "rgb(255, 255, 255)"};
   }
 
@@ -176,8 +176,8 @@ const BackgroundStyleWrapper = styled.div.attrs({
     padding-top: ${props => (props.toolbarExpanded ? "50px" : "initial")};
   }
 
-  ${({ theme }) => {
-    if (theme === "border") {
+  ${({ border }) => {
+    if (border === "border") {
       return `
         .fr {
           &-box {
@@ -223,13 +223,13 @@ export const ToolbarContainer = styled.div.attrs({
   }
 `;
 
-// if (theme === "border") {
+// if (border === "border") {
 export const Placeholder = styled.div.attrs({
   className: "froala-placeholder"
 })`
   position: absolute;
-  top: ${props => (props.theme === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
-  left: ${props => (props.theme === "border" ? "23px" : 0)};
+  top: ${props => (props.border === "border" ? 20 : 0) + (props.toolbarExpanded ? 50 : 0) + "px"};
+  left: ${props => (props.border === "border" ? "23px" : 0)};
   right: 0;
   opacity: 0.7;
   color: #cccccc;
@@ -275,11 +275,11 @@ const CustomEditor = ({
   additionalToolbarOptions,
   initOnClick,
   theme,
+  border,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null);
   const toolbarContainerRef = useRef(null);
-
   const [showMathModal, setMathModal] = useState(false);
   const [mathModalIsEditable, setMathModalIsEditable] = useState(true);
   const [currentLatex, setCurrentLatex] = useState("");
@@ -735,10 +735,15 @@ const CustomEditor = ({
         onSave={saveMathModal}
         onClose={closeMathModal}
       />
-      <BackgroundStyleWrapper backgroundColor={config.backgroundColor} toolbarExpanded={toolbarExpanded} theme={theme}>
+      <BackgroundStyleWrapper
+        backgroundColor={config.backgroundColor}
+        toolbarExpanded={toolbarExpanded}
+        border={border}
+        theme={theme}
+      >
         {toolbarId && <ToolbarContainer innerRef={toolbarContainerRef} toolbarId={toolbarId} />}
         {showPlaceholder && (
-          <Placeholder toolbarExpanded={toolbarExpanded} theme={theme} showMargin={!tag}>
+          <Placeholder toolbarExpanded={toolbarExpanded} border={border} showMargin={!tag}>
             {config.placeholder}
           </Placeholder>
         )}
@@ -766,7 +771,7 @@ CustomEditor.propTypes = {
   additionalToolbarOptions: PropTypes.array,
   readOnly: PropTypes.bool,
   initOnClick: PropTypes.bool,
-  theme: PropTypes.string
+  border: PropTypes.string
 };
 
 CustomEditor.defaultProps = {
@@ -776,7 +781,7 @@ CustomEditor.defaultProps = {
   toolbarSize: "STD",
   additionalToolbarOptions: [],
   readOnly: false,
-  theme: "default"
+  border: "none"
 };
 
-export default withMathFormula(CustomEditor);
+export default withTheme(withMathFormula(CustomEditor));

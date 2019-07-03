@@ -44,7 +44,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.sortList.enterQuestion")}
           onChange={stimulus => handleItemChangeChange("stimulus", stimulus)}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

@@ -424,7 +424,7 @@ class ComposeQuestion extends Component {
           placeholder={t("component.cloze.imageDragDrop.thisisstem")}
           onChange={this.onChangeQuestion}
           value={item.stimulus}
-          theme="border"
+          border="border"
         />
         <PaddingDiv top={30} />
         <FormContainer>

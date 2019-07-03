@@ -161,7 +161,7 @@ class TemplateMarkup extends Component {
           additionalToolbarOptions={["textdropdown"]}
           value={item.template}
           onChange={this.onChangeMarkUp}
-          theme="border"
+          border="border"
         />
       </Widget>
     );

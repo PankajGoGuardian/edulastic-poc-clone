@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { keyBy, get } from "lodash";
@@ -8,23 +8,25 @@ import { test as testConstants } from "@edulastic/constants";
 import AssignmentContentWrapper from "../../styled/assignmentContentWrapper";
 import TestItemPreview from "../../../assessment/components/TestItemPreview";
 import { getItemSelector } from "../../sharedDucks/TestItem";
-import { previewShowAnswerAction } from "../../../author/TestPage/ducks";
+
 const { releaseGradeLabels } = testConstants;
-const ReportListContent = ({ item = {}, flag, testActivityById, showAnswer }) => {
-  useEffect(() => {
-    // TODO show answer to the user
-    // if (item) showAnswer({ id: item._id });
-  }, [item]);
+
+const ReportListContent = ({ item = {}, flag, testActivityById }) => {
   const { releaseScore = "" } = testActivityById;
   const questions = keyBy(get(item, "data.questions", []), "id");
+  let showAnswerProps = { view: "preview" };
+  if (releaseScore === releaseGradeLabels.WITH_ANSWERS) {
+    showAnswerProps = { preview: "show" };
+  }
+
   return (
     <AssignmentsContent flag={flag}>
       <AssignmentContentWrapper>
         <Wrapper>
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             <TestItemPreview
+              {...showAnswerProps}
               cols={item.rows || []}
-              view={"preview"}
               questions={questions}
               verticalDivider={item.verticalDivider}
               scrolling={item.scrolling}
@@ -43,9 +45,7 @@ export default connect(
     item: getItemSelector(state),
     testActivityById: get(state, `[studentReport][byId][${props.reportId}]`, {})
   }),
-  {
-    showAnswer: previewShowAnswerAction
-  }
+  null
 )(ReportListContent);
 
 ReportListContent.propTypes = {

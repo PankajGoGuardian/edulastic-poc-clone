@@ -29,7 +29,7 @@ function* loadTestActivityReport({ payload }) {
     }
 
     const [test, reports] = yield all([
-      call(testsApi.getById, data.testId, { data: true }),
+      call(testsApi.getById, data.testId, { data: true, testActivityId, groupId }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId)
     ]);
     yield put(replaceTestItemsAction(test.testItems));

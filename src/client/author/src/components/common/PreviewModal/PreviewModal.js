@@ -9,6 +9,7 @@ import { FlexContainer, EduButton } from "@edulastic/common";
 import Modal from "react-responsive-modal";
 import { withRouter } from "react-router-dom";
 
+import { questionType } from "@edulastic/constants";
 import { IconPencilEdit, IconDuplicate } from "@edulastic/icons";
 import { testItemsApi } from "@edulastic/api";
 import TestItemPreview from "../../../../../assessment/components/TestItemPreview";
@@ -30,8 +31,7 @@ class PreviewModal extends React.Component {
     super(props);
 
     this.state = {
-      flag: false,
-      manuallyGradableQn: ["formulaessay", "highlightImage", "essayRichText", "essayPlainText"]
+      flag: false
     };
   }
 
@@ -95,13 +95,11 @@ class PreviewModal extends React.Component {
       preview,
       showEvaluationButtons
     } = this.props;
-    const { manuallyGradableQn } = this.state;
     const questions = keyBy(get(item, "data.questions", []), "id");
-    const { authors = [], rows, data } = item;
+    const { authors = [], rows, data = {} } = item;
     const questionsType = data.questions && data.questions.map(question => question.type);
-    const intersectionCount = intersection(questionsType, manuallyGradableQn).length;
-    const isShowAnswerVisible =
-      questionsType && !(intersectionCount < 0) && !(intersectionCount === questionsType.length);
+    const intersectionCount = intersection(questionsType, questionType.manuallyGradableQn).length;
+    const isShowAnswerVisible = questionsType && !!intersectionCount && !(intersectionCount === questionsType.length);
 
     const getAuthorsId = authors.map(item => item._id);
     const authorHasPermission = getAuthorsId.includes(currentAuthorId);

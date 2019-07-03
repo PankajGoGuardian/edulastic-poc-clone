@@ -8,6 +8,7 @@ import { withWindowSizes } from "@edulastic/common";
 import { connect } from "react-redux";
 import { compose } from "redux";
 import styled from "styled-components";
+import { questionType } from "@edulastic/constants";
 
 import { clearAnswersAction } from "../../../actions/answers";
 import { Container, PreviewBar, DisplayBlock } from "./styled_components";
@@ -19,8 +20,7 @@ class ButtonAction extends Component {
 
     this.state = {
       attempts: 0,
-      option: false,
-      manuallyGradableQn: ["formulaessay", "highlightImage", "essayRichText", "essayPlainText"]
+      option: false
     };
   }
 
@@ -40,7 +40,7 @@ class ButtonAction extends Component {
   };
 
   render() {
-    const { option, attempts, manuallyGradableQn } = this.state;
+    const { option, attempts } = this.state;
     const {
       t,
       view,
@@ -103,7 +103,7 @@ class ButtonAction extends Component {
                   </ButtonLink>
                 </Button>
               )}
-              {!manuallyGradableQn.includes(authorQuestions.type) && (
+              {!questionType.manuallyGradableQn.includes(authorQuestions.type) && (
                 <Button
                   style={{ height: "25px" }}
                   htmlType="button"

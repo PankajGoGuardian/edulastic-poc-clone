@@ -300,7 +300,9 @@ export function* fetchUser() {
   try {
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
-      localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
       yield put(push(getLoggedOutUrl()));
       return;
     }
@@ -324,7 +326,9 @@ export function* fetchUser() {
     console.log(error);
     yield call(message.error, "failed loading user data");
     if (!(error.response && error.response.status === 501)) {
-      window.localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      if (!location.pathname.toLocaleLowerCase().includes(getLoggedOutUrl())) {
+        localStorage.setItem("loginRedirectUrl", getCurrentPath());
+      }
       yield put(push(getLoggedOutUrl()));
     }
   }

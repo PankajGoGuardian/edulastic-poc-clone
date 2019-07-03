@@ -28,7 +28,9 @@ const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
   }, [data]);
 
   const getPolylinePoints = () =>
-    localData.map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams)}`).join(" ");
+    localData
+      .map((dot, index) => `${step * index + step / 2 + 2},${convertUnitToPx(dot.y, gridParams) + 20}`)
+      .join(" ");
 
   const getActivePoint = index =>
     active !== null
@@ -78,12 +80,12 @@ const LinePlot = ({ data, previewTab, saveAnswer, gridParams, view, correct, dis
     <svg
       style={{ userSelect: "none" }}
       width={width}
-      height={height}
+      height={height + 40}
       onMouseMove={onMouseMove}
       onMouseUp={onMouseUp}
       onMouseLeave={onMouseLeave}
     >
-      <Line x1={0} y1={height - margin} x2={width - margin} y2={height - margin} strokeWidth={1} />
+      <Line x1={0} y1={height - margin + 20} x2={width - margin} y2={height - margin + 20} strokeWidth={1} />
 
       <Crosses
         activeIndex={activeIndex}

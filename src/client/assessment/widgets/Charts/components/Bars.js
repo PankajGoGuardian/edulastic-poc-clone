@@ -24,7 +24,7 @@ const Bars = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams, p
 
   const getCenterX = index => step * index + margin / 2 + padding + (step * (1 - 0.8)) / 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const handleMouse = index => () => {
     handleMouseAction(index)();

@@ -24,7 +24,7 @@ const Crosses = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
 
   const getCenterX = index => step * index + 2;
 
-  const getCenterY = dot => convertUnitToPx(dot.y, gridParams);
+  const getCenterY = dot => convertUnitToPx(dot.y, gridParams) + 20;
 
   const renderValidationIcons = index => (
     <g transform={`translate(${getCenterX(index) + step / 2 - 6},${getCenterY(bars[index]) - 30})`}>
@@ -55,7 +55,8 @@ const Crosses = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
                 margin -
                 17 -
                 ind * yAxisStep -
-                yAxisStep / 2})`}
+                yAxisStep / 2 +
+                20})`}
               fill={themeColorLight}
               d="M24.778,21.419L19.276,15.917L24.777,10.415L21.949,7.585L16.447,13.087L10.945,7.585L8.117,10.415L13.618,15.917L8.116,21.419L10.946,24.248L16.447,18.746L21.948,24.248Z"
             />
@@ -91,7 +92,7 @@ const Crosses = ({ bars, onPointOver, onMouseDown, activeIndex, view, gridParams
               />
             </Fragment>
           )}
-          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height}>
+          <Text textAnchor="middle" x={getCenterX(index) + step / 2} y={height + 20}>
             {dot.x}
           </Text>
         </Fragment>

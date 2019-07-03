@@ -147,7 +147,7 @@ const ClassListModal = ({
           >
             {standardsList.map(standard => {
               return (
-                <Select.Option value={standard.value} key={standard.value}>
+                <Select.Option value={standard.value} key={standard.value} disabled={standard.disabled}>
                   {standard.text}
                 </Select.Option>
               );
